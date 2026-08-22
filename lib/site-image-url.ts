@@ -24,7 +24,10 @@ export function publicSiteImageSrc(name: string, url: string): string {
   return url.trim();
 }
 
-/** Remote CMS URLs must skip Next `/_next/image` — large Supabase files often 400 there. */
+/**
+ * True for absolute http(s) CMS URLs (Supabase Storage, etc.).
+ * Local `/media/...` paths are false — those are served from this origin.
+ */
 export function isRemoteCmsImageUrl(url: string): boolean {
   return /^https?:\/\//i.test(url.trim());
 }

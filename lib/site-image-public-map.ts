@@ -16,6 +16,7 @@ import {
   canHideSiteImageOnClear,
   isSiteImageClearedSrc,
 } from "@/lib/site-image-url";
+import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";
 
 /** SiteSetting key — v2 avoids a TOAST-stuck legacy row that hung full SELECT/UPDATE. */
 export const SITE_IMAGE_PUBLIC_MAP_KEY = "site-image-public-map-v2";
@@ -160,7 +161,7 @@ export function storedMapToSiteImageMap(
       ? { src: slot.url, alt: slot.altText }
       : getDefaultSiteImage(name);
     map[name] = {
-      src: value.src,
+      src: preferLocalOptimizedSiteImage(name, value.src),
       alt: typeof value.alt === "string" && value.alt ? value.alt : fallback.alt,
     };
   }

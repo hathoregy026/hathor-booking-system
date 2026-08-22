@@ -6,6 +6,7 @@ import { useRef, type ComponentPropsWithoutRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useWellnessEditorialScroll } from "@/hooks/useWellnessEditorialScroll";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 const MEDIA = {
   spa: "/media/hathor/r2/wellness-hero.webp",
@@ -37,6 +38,7 @@ function BoringMedia({ src, alt, priority = false, className = "" }: MediaProps)
         fill
         priority={priority}
         sizes="(max-width: 1024px) 100vw, 70vw"
+        quality={SITE_IMAGE_QUALITY}
         className="wb-media__image"
       />
     </figure>

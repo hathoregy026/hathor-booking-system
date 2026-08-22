@@ -14,6 +14,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useAboutEditorialFlow } from "@/hooks/useAboutEditorialFlow";
 import { ABOUT_PAGE } from "@/lib/page-content";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 function AboutMedia({
   slot,
@@ -42,6 +43,7 @@ function AboutMedia({
         fill
         priority={priority}
         sizes="(max-width: 950px) 100vw, 70vw"
+        quality={SITE_IMAGE_QUALITY}
         className="ab-media__image"
       />
     </figure>

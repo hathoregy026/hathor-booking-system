@@ -16,6 +16,7 @@ import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useContactEditorialScroll } from "@/hooks/useContactEditorialScroll";
 import { CONTACT_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 function ContactMedia({
   slot,
@@ -42,6 +43,7 @@ function ContactMedia({
         fill
         priority={priority}
         sizes="(max-width: 950px) 100vw, 70vw"
+        quality={SITE_IMAGE_QUALITY}
         className="ce-media__image"
       />
     </figure>

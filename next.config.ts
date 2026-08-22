@@ -84,6 +84,9 @@ const nextConfig: NextConfig = {
     // Prefer WebP over AVIF: re-encoding already-compressed photo WebPs as
     // AVIF at the old q75 default looked blocky / “pixelated” site-wide.
     formats: ["image/webp"],
+    // Keep optimized derivatives on the Vercel image cache so repeat views
+    // do not re-fetch origin files from Supabase Storage.
+    minimumCacheTTL: 60 * 60 * 24 * 31,
     remotePatterns: [
       {
         protocol: "https",

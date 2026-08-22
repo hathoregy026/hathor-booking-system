@@ -8,6 +8,7 @@ import {
 } from "react";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import type { ResolvedSiteImage, SiteImageMap } from "@/lib/resolve-site-images";
+import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";
 
 type SiteImagesContextValue = {
   getImage: (name: string) => ResolvedSiteImage;
@@ -22,7 +23,13 @@ type SiteImagesProviderProps = {
 
 export function SiteImagesProvider({ images, children }: SiteImagesProviderProps) {
   const getImage = useCallback(
-    (name: string): ResolvedSiteImage => images[name] ?? getDefaultSiteImage(name),
+    (name: string): ResolvedSiteImage => {
+      const image = images[name] ?? getDefaultSiteImage(name);
+      return {
+        ...image,
+        src: preferLocalOptimizedSiteImage(name, image.src),
+      };
+    },
     [images],
   );
 

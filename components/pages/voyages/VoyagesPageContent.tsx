@@ -16,6 +16,7 @@ import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 function VoyageMedia({
   slot,
@@ -43,6 +44,7 @@ function VoyageMedia({
         fill
         priority={priority}
         sizes="(max-width: 950px) 100vw, 80vw"
+        quality={SITE_IMAGE_QUALITY}
         className="vb-media__image"
       />
     </figure>

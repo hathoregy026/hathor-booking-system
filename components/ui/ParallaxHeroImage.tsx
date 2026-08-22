@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { isRemoteCmsImageUrl } from "@/lib/site-image-url";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { shouldLightenMotionForDevice } from "@/lib/touch-device";
 
@@ -59,7 +58,6 @@ export function ParallaxHeroImage({
           className="object-cover"
           sizes={sizes}
           quality={SITE_IMAGE_QUALITY}
-          unoptimized={isRemoteCmsImageUrl(src)}
         />
       </motion.div>
     </div>
