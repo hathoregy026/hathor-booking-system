@@ -486,3 +486,482 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* ==========================================================================
+   14. DATA TABLES (Step 3)
+   ========================================================================== */
+
+.admin-shell .admin-datatable__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+@media (min-width: 640px) {
+  .admin-shell .admin-datatable__head {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-shell .admin-datatable__head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Vertical scroll container so `position: sticky` on thead has something to
+   stick inside. Horizontal overflow stays available as a last resort, but the
+   card layouts below 1024px mean it should rarely engage. */
+.admin-shell .admin-table-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.admin-shell .admin-datatable__body {
+  overflow-x: auto;
+}
+
+/* Sticky column headers sit *below* the glass app header, not under it. */
+.admin-shell .admin-table-sticky thead th,
+.admin-shell .admin-table thead th {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 2;
+  background: var(--table-row-alt);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* A seam under the sticky row, since box-shadow on <th> is unreliable. */
+.admin-shell .admin-table-sticky thead th::after,
+.admin-shell .admin-table thead th::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.admin-shell .admin-table tbody tr {
+  transition:
+    background-color var(--dur-fast) var(--ease-out-quart),
+    box-shadow var(--dur-fast) var(--ease-out-quart);
+}
+
+/* ==========================================================================
+   15. ROW ACTION MENU
+   ========================================================================== */
+
+.admin-shell .admin-row-actions {
+  position: relative;
+  display: inline-flex;
+}
+
+.admin-shell .admin-row-actions__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  transition:
+    background-color var(--dur-fast) var(--ease-out-quart),
+    color var(--dur-fast) var(--ease-out-quart),
+    border-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.admin-shell .admin-row-actions__trigger:hover:not(:disabled),
+.admin-shell .admin-row-actions__trigger[aria-expanded="true"] {
+  background: var(--bg-glass-hover);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.admin-shell .admin-row-actions__trigger:disabled {
+  opacity: 0.45;
+}
+
+.admin-shell .admin-row-actions__menu {
+  position: absolute;
+  z-index: 50;
+  min-width: 11rem;
+  padding: 0.375rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--popover-border);
+  background: var(--popover-bg);
+  box-shadow: var(--popover-shadow);
+  transform-origin: top right;
+}
+
+.admin-shell .admin-row-actions__menu--end {
+  right: 0;
+  top: calc(100% + 0.375rem);
+}
+
+.admin-shell .admin-row-actions__menu--start {
+  left: 0;
+  top: calc(100% + 0.375rem);
+  transform-origin: top left;
+}
+
+.admin-shell .admin-row-actions__menu--up {
+  top: auto;
+  bottom: calc(100% + 0.375rem);
+  transform-origin: bottom right;
+}
+
+.admin-shell .admin-row-actions__menu--up.admin-row-actions__menu--start {
+  transform-origin: bottom left;
+}
+
+.admin-shell .admin-row-actions__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.admin-shell .admin-row-actions__item:hover:not(:disabled) {
+  background: var(--bg-glass-hover);
+}
+
+.admin-shell .admin-row-actions__item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   16. ACCORDION (Step 4)
+   ========================================================================== */
+
+.admin-shell .admin-accordion {
+  overflow: hidden;
+}
+
+.admin-shell .admin-accordion__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 1rem;
+}
+
+.admin-shell .admin-accordion__trigger {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1.125rem 1.25rem;
+  text-align: left;
+  transition: background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.admin-shell .admin-accordion__trigger:hover {
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+.admin-shell .admin-accordion__trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: 0.75rem;
+}
+
+.admin-shell .admin-accordion__icon {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+
+.admin-shell .admin-accordion__titles {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.admin-shell .admin-accordion__title {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.admin-shell .admin-accordion__description {
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.admin-shell .admin-accordion__summary {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.admin-shell .admin-accordion__chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform var(--dur-base) var(--ease-smooth);
+}
+
+.admin-shell .admin-accordion[data-open="true"] .admin-accordion__chevron {
+  transform: rotate(180deg);
+}
+
+.admin-shell .admin-accordion__action {
+  flex-shrink: 0;
+}
+
+.admin-shell .admin-accordion__body {
+  padding: 0 1.25rem 1.25rem;
+}
+
+/* ==========================================================================
+   17. FLOATING-LABEL FIELDS
+   ========================================================================== */
+
+.admin-shell .admin-field {
+  position: relative;
+  display: block;
+}
+
+.admin-shell .admin-field > .input,
+.admin-shell .admin-field > textarea.input {
+  height: auto;
+  padding: 1.35rem 0.875rem 0.5rem;
+}
+
+.admin-shell .admin-field__label {
+  position: absolute;
+  left: 0.875rem;
+  top: 0.9rem;
+  transform-origin: left top;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition:
+    transform var(--dur-fast) var(--ease-out-quart),
+    color var(--dur-fast) var(--ease-out-quart);
+}
+
+/* Float when focused, or whenever the field holds a value. */
+.admin-shell .admin-field > .input:focus + .admin-field__label,
+.admin-shell .admin-field > .input:not(:placeholder-shown) + .admin-field__label {
+  transform: translateY(-0.6rem) scale(0.78);
+  color: var(--accent);
+}
+
+.admin-shell .admin-field[data-invalid="true"] > .input {
+  border-color: var(--danger);
+}
+
+.admin-shell .admin-field[data-invalid="true"] .admin-field__label {
+  color: var(--danger);
+}
+
+.admin-shell .admin-field__error {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   18. UPLOAD DROPZONE
+   ========================================================================== */
+
+.admin-shell .admin-dropzone {
+  position: relative;
+  border-radius: 1rem;
+  transition:
+    outline-color var(--dur-fast) var(--ease-out-quart),
+    background-color var(--dur-fast) var(--ease-out-quart);
+  outline: 2px dashed transparent;
+  outline-offset: 4px;
+}
+
+.admin-shell .admin-dropzone[data-dragging="true"] {
+  outline-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+/* Enlarge the empty placeholder into a real target. */
+.admin-shell .admin-dropzone .border-dashed {
+  min-height: 9rem;
+  transition:
+    border-color var(--dur-fast) var(--ease-out-quart),
+    background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.admin-shell .admin-dropzone[data-dragging="true"] .border-dashed {
+  border-color: var(--accent) !important;
+}
+
+/* ==========================================================================
+   19. TOASTS (Step 5)
+   ========================================================================== */
+
+.admin-toast-viewport {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  width: min(24rem, calc(100vw - 2rem));
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+@media (max-width: 639.98px) {
+  .admin-toast-viewport {
+    top: auto;
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+}
+
+.admin-toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--popover-bg);
+  box-shadow: var(--popover-shadow);
+  padding: 0.875rem 1rem;
+  pointer-events: auto;
+  will-change: transform, opacity;
+}
+
+.admin-toast__message {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.admin-toast__close {
+  flex-shrink: 0;
+  border-radius: 0.375rem;
+  padding: 0.125rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+  transition:
+    opacity var(--dur-fast) var(--ease-out-quart),
+    color var(--dur-fast) var(--ease-out-quart);
+}
+
+.admin-toast__close:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.admin-toast__timer {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  transform-origin: left center;
+  opacity: 0.65;
+}
+
+.admin-toast--success {
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+}
+.admin-toast--success .admin-toast__icon,
+.admin-toast--success .admin-toast__timer {
+  color: var(--success);
+  background: var(--success);
+}
+
+.admin-toast--error {
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+}
+.admin-toast--error .admin-toast__icon,
+.admin-toast--error .admin-toast__timer {
+  color: var(--danger);
+  background: var(--danger);
+}
+
+.admin-toast--warning {
+  border-color: color-mix(in srgb, var(--warning) 40%, transparent);
+}
+.admin-toast--warning .admin-toast__icon,
+.admin-toast--warning .admin-toast__timer {
+  color: var(--warning);
+  background: var(--warning);
+}
+
+.admin-toast--info {
+  border-color: color-mix(in srgb, var(--info) 40%, transparent);
+}
+.admin-toast--info .admin-toast__icon,
+.admin-toast--info .admin-toast__timer {
+  color: var(--info);
+  background: var(--info);
+}
+
+/* The icon must not inherit the timer's background fill. */
+.admin-toast__icon {
+  background: none !important;
+  margin-top: 0.125rem;
+}
+
+/* ==========================================================================
+   20. BUTTON STATES
+   ========================================================================== */
+
+.admin-shell .admin-action-btn {
+  transition:
+    transform var(--dur-fast) var(--ease-out-quart),
+    filter var(--dur-fast) var(--ease-out-quart),
+    background-color var(--dur-fast) var(--ease-out-quart),
+    border-color var(--dur-fast) var(--ease-out-quart),
+    opacity var(--dur-fast) var(--ease-out-quart);
+}
+
+@media (hover: hover) {
+  .admin-shell .admin-action-btn:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+}
+
+.admin-shell .admin-action-btn:not(:disabled):active {
+  transform: translateY(0) scale(0.975);
+}
+
+.admin-shell .admin-action-btn[data-loading="true"] {
+  cursor: progress;
+}
+
+.admin-shell .btn-primary:focus-visible,
+.admin-shell .btn-outline:focus-visible,
+.admin-shell .btn-ghost:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

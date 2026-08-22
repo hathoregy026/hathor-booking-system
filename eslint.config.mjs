@@ -18,6 +18,13 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "_local/**",
+      // Scratch/probe files kept at the repo root during design work.
+      ".tmp-*",
+      ".tmp-*/**",
+      "_tmp_*",
+      "archive/**",
+      "OLD DASHBOARD BACK UP/**",
+      "redesign/**",
       "scripts/_tmp-*/**",
       "scripts/_tmp-*.mjs",
       "scripts/_tmp-*.json",

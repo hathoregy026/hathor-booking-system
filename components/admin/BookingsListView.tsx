@@ -271,7 +271,7 @@ export function BookingsListView({
         </div>
       ) : (
         <>
-          <ul className="divide-y divide-[var(--border)] border-t border-[var(--border)] md:hidden">
+          <ul className="divide-y divide-[var(--border)] border-t border-[var(--border)] lg:hidden">
             {bookings.map((booking) => (
               <BookingMobileCard
                 key={booking.id}
@@ -286,8 +286,8 @@ export function BookingsListView({
             ))}
           </ul>
 
-          <div className="hidden overflow-x-auto md:block">
-            <table className="w-full text-sm">
+          <div className="admin-table-scroll hidden lg:block">
+            <table className="admin-table-sticky w-full text-sm">
               <thead>
                 <tr
                   className="border-y text-left"

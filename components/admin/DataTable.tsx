@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CalendarX2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { displayBookingStatus, isPendingBookingStatus } from "@/lib/admin-bookings";
 
 type DataTableProps = {
@@ -9,6 +10,14 @@ type DataTableProps = {
   isLoading?: boolean;
   isEmpty?: boolean;
   emptyMessage?: string;
+  /**
+   * Headline for the empty state. Previously hardcoded to "No bookings found",
+   * which was wrong for every non-booking table.
+   */
+  emptyTitle?: string;
+  emptyIcon?: LucideIcon;
+  /** Number of skeleton rows while loading. */
+  skeletonRows?: number;
   children: ReactNode;
 };
 
@@ -19,19 +28,16 @@ export function DataTable({
   isLoading,
   isEmpty = false,
   emptyMessage,
+  emptyTitle = "Nothing here yet",
+  emptyIcon: EmptyIcon = CalendarX2,
+  skeletonRows = 5,
   children,
 }: DataTableProps) {
   return (
-    <div className="card overflow-hidden">
+    <div className="card admin-datatable overflow-hidden">
       {(title || action) && (
-        <div
-          className="flex flex-col gap-3 px-4 py-4 sm:px-6 sm:py-5 md:flex-row md:items-center md:justify-between"
-          style={{
-            borderBottom:
-              "1px solid color-mix(in srgb, var(--border) 50%, transparent)",
-          }}
-        >
-          <div>
+        <div className="admin-datatable__head">
+          <div className="min-w-0">
             {title && (
               <h2 className="admin-heading text-base sm:text-lg">{title}</h2>
             )}
@@ -44,25 +50,21 @@ export function DataTable({
       )}
 
       {isLoading ? (
-        <div className="space-y-3 p-6">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-10 animate-pulse rounded-lg"
-              style={{ background: "var(--border)", opacity: 0.4 }}
-            />
+        <div className="space-y-3 p-4 sm:p-6" aria-hidden>
+          {Array.from({ length: skeletonRows }).map((_, index) => (
+            <div key={index} className="admin-skeleton h-10 rounded-lg" />
           ))}
         </div>
       ) : isEmpty && emptyMessage ? (
         <div className="admin-empty-state">
-          <CalendarX2 className="admin-empty-state__icon h-12 w-12" aria-hidden />
-          <p className="text-base font-semibold">No bookings found</p>
+          <EmptyIcon className="admin-empty-state__icon h-12 w-12" aria-hidden />
+          <p className="text-base font-semibold">{emptyTitle}</p>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
             {emptyMessage}
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">{children}</div>
+        <div className="admin-datatable__body">{children}</div>
       )}
     </div>
   );

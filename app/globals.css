@@ -1,8 +1,9 @@
 @import "tailwindcss";
 @import "react-day-picker/style.css";
 @import "./booking.css";
-@import "./admin.css";
-@import "./admin-shell.css";
+/* admin.css + admin-shell.css are imported by app/admin/layout.tsx so the
+   admin design system (and its unscoped [data-theme] token blocks) no longer
+   ship on every public page. */
 @import "./lux-footer.css";
 
 :root {

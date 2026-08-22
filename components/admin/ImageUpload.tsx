@@ -182,6 +182,7 @@ export function ImageUpload({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const policyHint =
     "Uploads are converted to WebP automatically (heroes ≤ 800 KB, content/gallery ≤ 400 KB) so the live site stays fast.";
@@ -222,8 +223,8 @@ export function ImageUpload({
     onLocalPreviewChange?.(next);
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  /** Shared by the file input and drag-and-drop. */
+  const acceptFile = (file: File | null | undefined, resetInput?: () => void) => {
     setError(null);
     setUploadProgress(null);
     setUploadComplete(false);
@@ -240,12 +241,39 @@ export function ImageUpload({
       setError(validationError);
       setSelectedFile(null);
       replaceLocalPreview(null);
-      event.target.value = "";
+      resetInput?.();
       return;
     }
 
     setSelectedFile(file);
     replaceLocalPreview(URL.createObjectURL(file));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.target;
+    acceptFile(input.files?.[0], () => {
+      input.value = "";
+    });
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    if (isUploading) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+    if (!isDragging) setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    // Ignore bubbling from children — only clear when the pointer truly exits.
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+    setIsDragging(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    if (isUploading) return;
+    event.preventDefault();
+    setIsDragging(false);
+    acceptFile(event.dataTransfer.files?.[0]);
   };
 
   const handleUpload = async () => {
@@ -330,8 +358,20 @@ export function ImageUpload({
       : `Uploading... ${uploadProgress ?? 0}%`;
   const showUploadProgress = uploadProgress !== null && (isUploading || uploadComplete);
 
+  const dropProps = isActionsOnly
+    ? {}
+    : {
+        onDragOver: handleDragOver,
+        onDragLeave: handleDragLeave,
+        onDrop: handleDrop,
+      };
+
   return (
-    <div className={isCompact ? "space-y-2" : "space-y-3"}>
+    <div
+      className={`${isCompact ? "space-y-2" : "space-y-3"} admin-dropzone`}
+      data-dragging={isDragging ? "true" : undefined}
+      {...dropProps}
+    >
       {!isCompact ? (
         <span
           className="block text-sm font-medium"
