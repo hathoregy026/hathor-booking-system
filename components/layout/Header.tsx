@@ -167,7 +167,7 @@ export function Header() {
   const editorialNav = usesEditorialOverlayNav(pathname);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
-  const chromeNav = editorialNav || isPhone;
+  const chromeNav = true;
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
   const [suitesNavTone, setSuitesNavTone] = useState<"ivory" | "ink" | null>(

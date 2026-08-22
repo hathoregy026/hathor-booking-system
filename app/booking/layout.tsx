@@ -6,6 +6,7 @@ import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import { getLiveSiteSettingsSafe } from "@/lib/live-site-settings";
 import "../public.css";
+import "../site-nav.css";
 import "../night-mode.css";
 import "../site-coming-soon.css";
 
