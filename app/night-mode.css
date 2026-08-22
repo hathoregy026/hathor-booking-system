@@ -416,6 +416,11 @@ html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-togg
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-active .public-theme-toggle__thumb,
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__thumb,
 html[data-public-theme="night"] .public-theme-toggle__thumb {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
   background: #f3efe6 !important;
   color: #b69f64 !important;
   box-shadow: 0 1px 3px rgb(28 25 23 / 0.16) !important;

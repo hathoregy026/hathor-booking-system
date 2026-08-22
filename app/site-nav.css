@@ -5,7 +5,7 @@
   --nav-word-gap: 116px;
   --nav-logo-gap: 200px;
   /* Gold editorial pill — matches burger height on chrome pages */
-  --theme-toggle-w: 8.75rem;
+  --theme-toggle-w: 6.1rem;
   --theme-toggle-h: 2.15rem;
   --theme-toggle-gap: var(--nav-word-gap);
 }
@@ -463,9 +463,9 @@
   --chrome-ink: #1c1917;
   --chrome-pad: 2.35rem;
   --chrome-icon: 2.15rem;
-  --theme-toggle-w: 8.75rem;
+  --theme-toggle-w: 6.1rem;
   --theme-toggle-h: var(--chrome-icon);
-  --theme-toggle-pad: 0.16rem;
+  --theme-toggle-pad: 0.22rem;
   background: var(--chrome-cream) !important;
   border-bottom: 1px solid rgb(28 25 23 / 0.06);
   box-shadow: none;
@@ -604,7 +604,7 @@
   .public-site .hathor-header--chrome {
     --chrome-pad: 1rem;
     --chrome-icon: 1.85rem;
-    --theme-toggle-w: 7.35rem;
+    --theme-toggle-w: 5.35rem;
     --theme-toggle-h: 1.85rem;
   }
 
@@ -1195,13 +1195,15 @@
   background: rgba(28, 25, 23, 0.28);
 }
 
-/* Gold editorial mode pill — every public header including homepage */
+/* Gold editorial mode pill — compact, even inner spacing on every breakpoint */
 .public-site .public-theme-toggle {
-  --theme-toggle-pad: 0.16rem;
+  --theme-toggle-space: 0.22rem;
+  --theme-toggle-pad: var(--theme-toggle-space);
   --theme-toggle-thumb: calc(
-    var(--theme-toggle-h, 2.15rem) - (var(--theme-toggle-pad) * 2)
+    var(--theme-toggle-h, 2.15rem) - (var(--theme-toggle-space) * 2)
   );
-  width: var(--theme-toggle-w, 8.75rem);
+  width: max-content;
+  min-width: 0;
   height: var(--theme-toggle-h, 2.15rem);
   color: #b69f64;
 }
@@ -1209,10 +1211,13 @@
 .public-site .public-theme-toggle__track {
   position: relative;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  width: 100%;
+  justify-content: flex-start;
+  width: max-content;
   height: 100%;
-  padding: var(--theme-toggle-pad);
+  padding: var(--theme-toggle-space);
+  gap: var(--theme-toggle-space);
   border-radius: 9999px;
   border: 1px solid transparent;
   overflow: hidden;
@@ -1226,6 +1231,7 @@
 }
 
 .public-site .public-theme-toggle.is-night .public-theme-toggle__track {
+  flex-direction: row-reverse;
   background: #161311;
   border-color: #b69f64;
 }
@@ -1234,35 +1240,36 @@
   position: relative;
   z-index: 1;
   display: block;
-  width: 100%;
+  flex: 0 0 auto;
+  width: auto;
+  margin: 0;
+  padding: 0;
   font-family: "Playfair Display", "Times New Roman", serif;
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   font-style: italic;
   font-weight: 400;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   line-height: 1;
   color: #f7f1e6;
   pointer-events: none;
   white-space: nowrap;
-}
-
-.public-site .public-theme-toggle.is-day .public-theme-toggle__label {
-  padding-left: calc(var(--theme-toggle-thumb) + 0.42rem);
-  padding-right: 0.55rem;
   text-align: left;
 }
 
+.public-site .public-theme-toggle.is-day .public-theme-toggle__label,
 .public-site .public-theme-toggle.is-night .public-theme-toggle__label {
-  padding-left: 0.55rem;
-  padding-right: calc(var(--theme-toggle-thumb) + 0.42rem);
-  text-align: right;
+  padding: 0;
+  text-align: left;
 }
 
 .public-site .public-theme-toggle__thumb {
-  position: absolute;
-  top: 50%;
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
   z-index: 2;
   display: grid;
+  flex: 0 0 var(--theme-toggle-thumb);
   place-items: center;
   width: var(--theme-toggle-thumb);
   height: var(--theme-toggle-thumb);
@@ -1270,33 +1277,48 @@
   background: #f3efe6;
   color: #b69f64;
   box-shadow: 0 1px 3px rgb(28 25 23 / 0.16);
-  transform: translateY(-50%);
-  transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1), right 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: none;
+  transition: none;
 }
 
-.public-site .public-theme-toggle.is-day .public-theme-toggle__thumb {
-  left: var(--theme-toggle-pad);
+.public-site .public-theme-toggle.is-day .public-theme-toggle__thumb,
+.public-site .public-theme-toggle.is-night .public-theme-toggle__thumb {
+  left: auto;
   right: auto;
 }
 
-.public-site .public-theme-toggle.is-night .public-theme-toggle__thumb {
-  left: auto;
-  right: var(--theme-toggle-pad);
-}
-
 .public-site .public-theme-toggle__icon {
-  width: 0.92rem;
-  height: 0.92rem;
+  width: 0.82rem;
+  height: 0.82rem;
   display: block;
 }
 
-@media (max-width: 480px) {
+@media (min-width: 481px) and (max-width: 1024px) {
+  .public-site .public-theme-toggle {
+    --theme-toggle-space: 0.2rem;
+  }
+
   .public-site .public-theme-toggle__label {
-    font-size: 0.62rem;
+    font-size: 0.6rem;
   }
 
   .public-site .public-theme-toggle__icon {
-    width: 0.78rem;
-    height: 0.78rem;
+    width: 0.76rem;
+    height: 0.76rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .public-site .public-theme-toggle {
+    --theme-toggle-space: 0.18rem;
+  }
+
+  .public-site .public-theme-toggle__label {
+    font-size: 0.56rem;
+  }
+
+  .public-site .public-theme-toggle__icon {
+    width: 0.7rem;
+    height: 0.7rem;
   }
 }
