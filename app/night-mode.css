@@ -384,6 +384,19 @@ html[data-public-theme="night"] .hathor-header:not(.hathor-header--chrome) .hath
   color: #1c1917 !important;
 }
 
+.public-site
+  .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+    .hathor-header--explore-open
+  ):not(.hathor-header--editorial-open)
+  .hathor-header__menu-btn,
+.public-site
+  .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+    .hathor-header--explore-open
+  ):not(.hathor-header--editorial-open)
+  .hathor-header__menu-btn--left {
+  color: #ffffff !important;
+}
+
 /* Gold / charcoal editorial pill — beats land/scroll glass styles. */
 .public-site .hathor-header .public-theme-toggle,
 .public-site .hathor-header--owo-hero-layout .public-theme-toggle,

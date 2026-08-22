@@ -492,6 +492,33 @@
   border-bottom-color: transparent !important;
 }
 
+/* Homepage land: white burger + logo over the hero. Ink again once cream returns. */
+.public-site .hathor-header--chrome.hathor-header--home .hathor-header__logo--icon {
+  transition: filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.public-site
+  .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+    .hathor-header--explore-open
+  ):not(.hathor-header--editorial-open)
+  .hathor-header__menu-btn--left,
+.public-site
+  .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+    .hathor-header--explore-open
+  ):not(.hathor-header--editorial-open)
+  .hathor-header__menu-btn--left
+  svg {
+  color: #ffffff !important;
+}
+
+.public-site
+  .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+    .hathor-header--explore-open
+  ):not(.hathor-header--editorial-open)
+  .hathor-header__logo--icon {
+  filter: brightness(0) invert(1);
+}
+
 .public-site .hathor-header--chrome .hathor-header__col--nav-left,
 .public-site .hathor-header--chrome .hathor-header__col--nav-right {
   display: none !important;
