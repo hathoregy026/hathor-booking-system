@@ -1073,8 +1073,36 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
   .nib-intro__titles h2 { font-size: clamp(3.2rem, 15vw, 5rem); }
   .nib-atelier__copy h2,
   .nib-story-end h2 { font-size: clamp(3.8rem, 17vw, 5.8rem); }
-  .nib-value > h2 { font-size: clamp(4.5rem, 22vw, 7rem); }
-  .nib-story__meta { font-size: 0.78rem; }
+  /*
+   * Keep the editorial scale without letting long chapter names leave the
+   * phone canvas. These headings remain animated; only their narrow-screen
+   * measure and type scale change.
+   */
+  .nib-value > h2 {
+    width: calc(100% - 3rem);
+    max-width: calc(100% - 3rem);
+    font-size: clamp(3.25rem, 13.5vw, 4.1rem);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .nib-story > h2 {
+    width: calc(100% - 3rem);
+    max-width: calc(100% - 3rem);
+    font-size: clamp(3rem, 13vw, 3.95rem);
+    line-height: 0.86;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .nib-story__meta {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  .nib-story__meta > * { min-width: 0; }
   .nib-story__meta a { padding: 0.55rem 1rem; }
   .nib-contact,
   .nib-double,

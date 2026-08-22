@@ -221,6 +221,41 @@
   }
 }
 
+/*
+ * Phone dock: retain both booking and contact actions, but reduce the booking
+ * pill's footprint so it does not sit across the reading column. This changes
+ * presentation only; the existing booking trigger and modal remain untouched.
+ */
+@media (max-width: 480px) {
+  .public-fab {
+    --hathor-btn-width: 7.25rem;
+    --hathor-btn-pad-x: 0.9rem;
+    --hathor-btn-font-size: 0.66rem;
+    --hathor-btn-tracking: 0.13em;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .public-fab--right {
+    right: max(0.75rem, env(safe-area-inset-right));
+  }
+
+  .public-fab__cluster {
+    gap: 0.45rem;
+  }
+
+  .public-fab__book {
+    width: 7.25rem;
+    min-width: 7.25rem;
+    max-width: 7.25rem;
+    padding-inline: 0.9rem;
+  }
+
+  .public-fab__book-text {
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .public-fab__book-slot,
   .public-fab__chat-main,

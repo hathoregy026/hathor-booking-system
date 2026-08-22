@@ -108,6 +108,21 @@ main .mod-scroll__intro__text > p {
   max-width: 22rem !important;
 }
 
+@media (max-width: 950px) {
+  main .mod-scroll__intro__text {
+    width: min(100%, 32rem) !important;
+    max-width: min(100%, 32rem) !important;
+    margin-right: 0 !important;
+    transform: none !important;
+  }
+
+  main .mod-scroll__intro__text p,
+  main .mod-scroll__intro__text > p {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
 @media (max-width: 480px) {
   main .mod-scroll__intro__text,
   main .mod-scroll__intro__text p,
