@@ -52,6 +52,12 @@
  *
  *   [5] The day/night switch sat outside the right edge and could not be
  *       tapped at ANY width from 768px to 1024px. Fixed in section 1.
+ *
+ *   [6] Scrolling the hero stretched the Book Now letters into distorted
+ *       glyphs on phone and tablet, because the scroll timeline tweened
+ *       `scaleX: 4` there instead of the `width` it uses on desktop.
+ *       Section 7 makes the width animatable so the pill can grow the way it
+ *       does on desktop. Pairs with lib/hero-scroll-stage.ts.
  * ============================================================================
  */
 
@@ -642,5 +648,169 @@
 @media (max-width: 1024.98px) and (prefers-reduced-motion: reduce) {
   html[data-ex-experience] .home-am-opening__list {
     scroll-behavior: auto;
+  }
+}
+
+/* ==========================================================================
+   7. HERO "BOOK NOW" — grow the pill by WIDTH, never by scaleX
+   --------------------------------------------------------------------------
+   Symptom: scrolling the hero on a phone or tablet stretched the button's
+   letters into distorted, elongated glyphs.
+
+   Cause: lib/hero-scroll-stage.ts tweened `scaleX: 4` on narrow viewports.
+   scaleX is a geometric transform, so it stretched the pill, every glyph AND
+   the 1px border horizontally. Desktop never had the bug because it tweens
+   `width`, which grows the box and lets the label re-centre at its natural
+   proportions.
+
+   Why scaleX was used: mobile-touch.css pins the tablet width with
+
+       width: var(--hathor-logo-gap, ...) !important;
+       max-width: var(--hathor-logo-gap, ...) !important;
+
+   and an !important declaration always outranks the inline style GSAP writes,
+   so a `width` tween could never take effect there.
+
+   Fix: keep that !important rule — it is what anchors the resting width to the
+   split-logo gap so Book Now sits dead-centre between the two logo halves —
+   but make the value it resolves to animatable. --hero-cta-w defaults to the
+   very same expression, so nothing changes at rest; the scroll timeline then
+   tweens the variable and the real width follows.
+
+   max-width must be released too, or it would clamp the growth.
+
+   The companion change is in lib/hero-scroll-stage.ts (narrowCtaTargetW),
+   which also caps the stretch to the viewport: x4 is a desktop figure, and on
+   a 390px phone it drove a 156px pill to 624px — 160% of the screen.
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience]
+    .public-site
+    .home-hero-container
+    .hero-button
+    .hero-cta,
+  html[data-ex-experience].ex-home
+    .home-hero-container
+    .hero-button
+    .hero-cta {
+    width: var(--hero-cta-w, var(--hathor-logo-gap, clamp(156px, 22vw, 220px)))
+      !important;
+    max-width: none !important;
+    /* The label spreads by letter-spacing only — it is never scaled. */
+    will-change: width;
+  }
+
+  /* Nothing inside the pill may be scaled; only spaced. */
+  html[data-ex-experience] .public-site .home-hero-container .hero-cta-text {
+    transform: none !important;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   8. HERO TYPE — restore the desktop proportions, at phone scale
+   --------------------------------------------------------------------------
+   The hero is two overlapping lines: the roman title ("Timeless Elegance")
+   and the script ("Welcome Aboard"). What makes the composition work is that
+   the SCRIPT IS LARGER THAN THE TITLE — measured on desktop:
+
+       title  120px, occupying 63% of the viewport
+       script 174px, occupying 43%
+       script / title = 1.45
+
+   The stored phone values inverted that relationship:
+
+       phone  title 58px, script 46px  ->  ratio 0.79
+
+   so the script stopped reading as the flourish laid over the title and
+   became a small caption under it. That is the single biggest reason the
+   phone hero did not look like the desktop one.
+
+   Tablet had no values at all, so 768-1024px inherited the full desktop
+   120/174 — at 768px the title alone took 91% of the width and the script
+   ran off the right edge.
+
+   Both sizes are driven by CSS variables, so this overrides the VARIABLES
+   rather than any font-size rule — the whole hero (title, script, and the
+   split-letter logo variants that read the same vars) stays consistent.
+
+   The vw coefficients hold the 1.45 ratio exactly: 16 / 11 = 1.4545.
+   Upper clamps are the desktop values, so nothing here can ever exceed them.
+
+   Measured after (ratio restored at every width, no overflow):
+       391px  -> title  43px (2 lines)   script  63px (57% vw)   ratio 1.47
+       768px  -> title  85px             script 123px (57% vw)   ratio 1.45
+      1441px  -> title 120px (63% vw)    script 174px (43% vw)   ratio 1.45  [untouched]
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .public-site,
+  html[data-ex-experience] .public-site .home-hero-container {
+    --typo-hero-title-size: clamp(28px, 11vw, 120px) !important;
+    --typo-hero-subtitle-size: clamp(40px, 16vw, 174px) !important;
+  }
+
+  /* Rolling marquee sat at 10px — under the legible floor on a phone. */
+  html[data-ex-experience] .luxury-marquee__text {
+    font-size: 12px;
+  }
+}
+
+/* ==========================================================================
+   9. AMENITIES COPY — alignment and measure on phone
+   --------------------------------------------------------------------------
+   Three separate desktop assumptions were making this section read as a mess
+   on a phone. All three are corrected only below 768px.
+
+   (a) DRAG OFFSETS. The dashboard stores nudge offsets that are applied as
+       absolute pixel `left` / `top` on each role:
+
+           eyebrow   left +40px, top -48px
+           body                  top -55px
+
+       They were dialled against a 90px title inside a ~620px column. At phone
+       scale the title is ~41px, so a -48px pull is larger than the line it is
+       nudging and the eyebrow lands ON TOP of the title. Zeroing them lets the
+       block stack cleanly on the gap values (--am-typo-gap-*), which are small
+       and scale-independent. Desktop and tablet keep the offsets.
+
+   (b) MEASURE. `.home-am-intro__body` carries `max-width: min(28rem, 42vw)`
+       with no narrow override. 42vw is a two-column desktop figure; on a
+       391px phone it resolved to 164px inside a 338px caption, breaking the
+       sentence into 8 ragged lines of 2-3 words. Now 88vw -> 3 clean lines.
+
+   (c) BODY SIZE. The amenities body has no phone value either, so it rendered
+       at the desktop 22px. The site's own body role drops 18px -> 16px on
+       phone; 19px keeps the amenities copy a touch more prominent than plain
+       body text, as it is on desktop, without shouting.
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence {
+    --am-typo-title-x: 0px !important;
+    --am-typo-title-y: 0px !important;
+    --am-typo-indication-x: 0px !important;
+    --am-typo-indication-y: 0px !important;
+    --am-typo-body-x: 0px !important;
+    --am-typo-body-y: 0px !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    .home-am-intro__body {
+    max-width: 88vw !important;
+    width: auto !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(.typo-on-images-body, .home-am-nature__body, .home-am-intro__body) {
+    font-size: 19px !important;
+    line-height: 1.5 !important;
   }
 }

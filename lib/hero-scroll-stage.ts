@@ -74,7 +74,8 @@ export function mountHeroScrollStage({
   const logoMark = hero.querySelector(".hero-logo-mark");
   const lineRight = hero.querySelector(".hero-line--right");
   const lineLeft = hero.querySelector(".hero-line--left");
-  const cta = hero.querySelector(".hero-cta");
+  /* HTMLElement (not Element) — the CTA width is driven via .style custom props. */
+  const cta = hero.querySelector<HTMLElement>(".hero-cta");
   const ctaText = hero.querySelector(".hero-cta-text");
   const kicker = hero.querySelector(".hero-kicker");
   const sub = hero.querySelector(".hero-sub");
@@ -161,6 +162,8 @@ export function mountHeroScrollStage({
   const isTabletHero = window.matchMedia(
     "(min-width: 481px) and (max-width: 1024px)",
   ).matches;
+  /* Phone + tablet both grow the Book Now pill by width, never by scaleX. */
+  const isNarrowCta = isPhoneHero || isTabletHero;
 
   if (prefersReduced) {
     killByPrefix("hero-stage");
@@ -174,7 +177,11 @@ export function mountHeroScrollStage({
     if (kicker) gsap.set(kicker, { opacity: 1, y: 0 });
     if (sub) gsap.set(sub, { opacity: 1, y: 0 });
     if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
-    if (cta) gsap.set(cta, { clearProps: "width,height,letterSpacing" });
+    if (cta) {
+      /* scaleX is legacy state from the old stretch; clear it defensively. */
+      gsap.set(cta, { scaleX: 1, clearProps: "width,height,letterSpacing,scaleX" });
+      cta.style.removeProperty("--hero-cta-w");
+    }
     if (ctaText) gsap.set(ctaText, { clearProps: "letterSpacing" });
 
     if (logoMark) {
@@ -352,15 +359,36 @@ export function mountHeroScrollStage({
 
     const baseW = cta ? cta.offsetWidth || 168 : 168;
     const targetW = baseW * 4;
-    const phoneCtaScale = targetW / Math.max(baseW, 1);
+    /*
+     * Narrow-screen Book Now stretch.
+     *
+     * Phone and tablet used to tween `scaleX: 4`. scaleX is a geometric
+     * transform, so it stretched the pill, EVERY GLYPH and the 1px border
+     * horizontally — the letters came out visibly distorted. Desktop never had
+     * this because it tweens `width`, which grows the box and lets the text
+     * re-centre at its natural proportions.
+     *
+     * scaleX was a workaround: mobile-touch.css pins the tablet width with
+     * `width: ... !important`, which GSAP's inline `width` can never outrank.
+     * The fix is to animate a custom property that the width expression reads
+     * (see home-responsive.css section 6), so the !important rule stays in
+     * place — it still anchors the resting width to the split-logo gap — while
+     * the value inside it animates.
+     *
+     * `targetW` is also a desktop number: x4 of a 156px pill is 624px, which is
+     * 160% of a 390px viewport. Cap the narrow target to the viewport less a
+     * gutter so the pill grows to fill the screen instead of overflowing it.
+     */
+    const narrowCtaTargetW = Math.min(targetW, Math.max(baseW, w - 32));
     if (cta) {
-      if (window.matchMedia("(max-width: 480px)").matches) {
+      if (isNarrowCta) {
         gsap.set(cta, {
           height: 52,
           scaleX: 1,
           transformOrigin: "50% 50%",
           force3D: true,
         });
+        cta.style.setProperty("--hero-cta-w", `${baseW}px`);
       } else {
         gsap.set(cta, { width: baseW, height: 52 });
       }
@@ -530,11 +558,18 @@ export function mountHeroScrollStage({
         tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.26 }, 0.1);
       }
 
-      /* Phone CTA: scaleX — CSS often locks width with !important on narrow */
+      /*
+       * Phone CTA: grow the real width via --hero-cta-w. Tweening scaleX here
+       * stretched every glyph and the border (see narrowCtaTargetW above).
+       */
       if (cta) {
         tl.to(
           cta,
-          { scaleX: phoneCtaScale, ease: "none", duration: 0.42 },
+          {
+            "--hero-cta-w": `${narrowCtaTargetW}px`,
+            ease: "none",
+            duration: 0.42,
+          },
           0.48,
         );
       }
@@ -646,9 +681,14 @@ export function mountHeroScrollStage({
           transformOrigin: "50% 50%",
           force3D: true,
         });
+        /* Width, not scaleX — same reason as the phone branch. */
         tl.to(
           cta,
-          { scaleX: phoneCtaScale, ease: "none", duration: tabletCtaDuration },
+          {
+            "--hero-cta-w": `${narrowCtaTargetW}px`,
+            ease: "none",
+            duration: tabletCtaDuration,
+          },
           tabletCtaStart,
         );
       }
