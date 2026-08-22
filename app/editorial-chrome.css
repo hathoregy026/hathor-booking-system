@@ -431,3 +431,33 @@
     justify-content: flex-end;
   }
 }
+
+/* Voyages leaves the horizontal story at 950px. Once it stacks, the intro
+   support copy and wordmark must rejoin document flow instead of floating over
+   the oversized title. This rule intentionally follows the shared chrome
+   overrides above. */
+@media (max-width: 950px) {
+  .voyages-boring .vb-intro__body,
+  .voyages-boring .vb-intro__wordmark,
+  .voyages-boring .vb-copyright {
+    position: static;
+    inset: auto;
+    width: auto;
+    max-width: none;
+    text-align: left;
+  }
+
+  .voyages-boring .vb-intro__body {
+    width: min(34rem, 100%);
+    margin-top: clamp(2.5rem, 8vw, 4.5rem);
+  }
+
+  .voyages-boring .vb-intro__wordmark {
+    justify-content: flex-start;
+    margin-top: 1.6rem;
+  }
+
+  .voyages-boring .vb-copyright {
+    margin-top: 1rem;
+  }
+}

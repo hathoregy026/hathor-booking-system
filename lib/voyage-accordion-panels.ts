@@ -119,25 +119,27 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
   },
 };
 
-function parseDurationAndRoute(name: string): {
+function parseDurationAndRoute(name: unknown): {
   durationLabel: string;
   routeTitle: string;
 } {
-  const parts = name.split(/\s*[—–]\s*/);
+  const safeName =
+    typeof name === "string" && name.trim() ? name.trim() : "Nile Voyage";
+  const parts = safeName.split(/\s*[—–]\s*/);
   if (parts.length >= 2) {
     return {
       durationLabel: parts[0]!.trim(),
       routeTitle: parts.slice(1).join(" — ").trim(),
     };
   }
-  const slash = name.match(/^(.+?\bDays?)\s*[-–—]\s*(.+)$/i);
+  const slash = safeName.match(/^(.+?\bDays?)\s*[-–—]\s*(.+)$/i);
   if (slash) {
     return {
       durationLabel: slash[1]!.trim(),
       routeTitle: slash[2]!.trim(),
     };
   }
-  return { durationLabel: "Voyage", routeTitle: name };
+  return { durationLabel: "Voyage", routeTitle: safeName };
 }
 
 /** Resolve open-panel copy for a voyage; falls back from name/description. */
@@ -147,13 +149,15 @@ export function resolveVoyagePanelContent(input: {
   description: string;
   href?: string;
 }): VoyagePanelContent {
+  const safeDescription =
+    typeof input.description === "string" ? input.description.trim() : "";
   const known = PANEL_BY_SLUG[input.slug];
   if (known) {
     return {
       ...known,
       detailsHref: input.href ?? known.detailsHref,
       /* Prefer curated open-panel copy; fall back to cruise description. */
-      summary: known.summary || input.description.trim(),
+      summary: known.summary || safeDescription,
     };
   }
 
@@ -162,7 +166,7 @@ export function resolveVoyagePanelContent(input: {
     durationLabel: parsed.durationLabel,
     routeTitle: parsed.routeTitle,
     summary:
-      input.description.trim() ||
+      safeDescription ||
       "Sail the Nile aboard Hathor — intimate, all-inclusive, and composed at a dahabiya’s pace.",
     railQuote: "Private dahabiya itineraries on the Nile.",
     features: SHARED_FEATURES,

@@ -147,7 +147,11 @@ export function buildVoyagesPageItems(
 
   const ordered = order
     .map((slug) => bySlug.get(slug))
-    .filter((item): item is HomepageAccordionCruise => Boolean(item));
+    .filter((item): item is HomepageAccordionCruise => Boolean(item))
+    .map((item) => ({
+      ...item,
+      href: item.slug === "nile-majesty" ? "/charter" : "/cruises",
+    }));
 
   if (ordered.length > 0) return ordered;
 

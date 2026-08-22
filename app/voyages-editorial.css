@@ -40,15 +40,14 @@
   --vb-hair: rgb(20 18 14 / 16%);
 
   /* ---- type stacks (all already loaded by this site) */
-  --vb-display: "Bitho Luxury", "Rollgates Luxury Italic", cursive;
+  --vb-display: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
   --vb-edit: "Rolling Fonte", Georgia, "Times New Roman", serif;
   --vb-script: "Besty Script", "Rollgates Luxury Italic", cursive;
   --vb-meta: var(--font-hathor-body), "Plus Jakarta Sans", "Helvetica Neue",
     Arial, sans-serif;
 
-  /* ---- scale. A script face needs more room than caps, so the display
-     sizes run a little smaller and the leading a little looser. */
-  --vb-t-xl: clamp(2.8rem, 7.4vw, 8.6rem);
+  /* ---- editorial scale */
+  --vb-t-xl: clamp(4.5rem, 10.5vw, 12rem);
   --vb-t-l: clamp(2.3rem, 5.4vw, 6rem);
   --vb-t-m: clamp(1.8rem, 3.4vw, 3.6rem);
   --vb-t-s: clamp(1.3rem, 2vw, 2.2rem);
@@ -148,15 +147,13 @@ html:has(.voyages-boring) footer.lux-footer {
   width: 100%;
 }
 
-/* ------------------------------------------------------------ type classes
-   The script display face carries its weight in the stroke, so it is never
-   uppercased and never tracked tight. */
+/* ------------------------------------------------------------ type classes */
 .voyages-boring .vb-display {
   font-family: var(--vb-display);
   font-weight: 400;
   font-style: normal;
-  line-height: 1.02;
-  letter-spacing: 0;
+  line-height: 0.82;
+  letter-spacing: -0.055em;
 }
 
 .voyages-boring .vb-display--xl {
@@ -503,41 +500,71 @@ html:has(.voyages-boring) footer.lux-footer {
 }
 
 /* -------------------------------------------------------------- 01 · intro
-   80vw, the content settled into the lower right — the reference's own
-   proportion. Almost no words. */
+   Full-width type field with the reference's asymmetry and Hathor's own
+   wordmark, copy and fonts. */
 .vb-intro {
-  width: 80vw;
-  padding-left: calc(var(--vb-pad) + 3.4em);
-  justify-content: flex-end;
-  align-items: flex-end;
+  width: 100vw;
+  padding: clamp(7rem, 12vh, 10rem) var(--ed-gutter, var(--vb-pad))
+    clamp(6.5rem, 10vh, 8rem);
+  justify-content: center;
+  align-items: stretch;
   background: var(--vb-paper);
 }
 
 .vb-intro__content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: clamp(0.7rem, 1.8vw, 1.5rem);
-  text-align: right;
-  max-width: 100%;
+  width: min(79vw, 92rem);
+  margin: auto;
 }
 
-.vb-tracked {
+.vb-marker,
+.vb-copyright {
   font-size: var(--vb-t-meta);
-  letter-spacing: 0.44em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--vb-ink-soft);
+  color: var(--vb-gold-deep);
+}
+
+.vb-marker {
+  position: absolute;
+  top: 50%;
+  left: var(--ed-gutter, var(--vb-pad));
+  transform: translateY(-50%);
+}
+
+.vb-intro__title-line {
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.vb-intro__title-line--middle {
+  padding-left: 0.55em;
+}
+
+.vb-intro__title-line--last {
+  overflow: visible;
+  margin-top: 0.04em;
+  padding-right: 0.1em;
+  padding-bottom: 0.22em;
+  line-height: 1.05;
+  text-align: right;
+}
+
+.vb-intro__title-line--last > * {
+  font-family: "Bitho Luxury", "Rollgates Luxury Italic", cursive;
+  font-size: 0.76em;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .vb-intro__nav {
   position: absolute;
   z-index: 4;
-  top: calc(var(--vb-band-pad) * 0.6);
-  right: var(--vb-pad);
+  top: clamp(6.75rem, 15vh, 8rem);
+  left: var(--ed-gutter, var(--vb-pad));
   display: flex;
   gap: 1.5rem;
-  transform-origin: bottom right;
-  transform: rotate(-90deg) translateY(-100%);
   font-size: var(--vb-t-meta);
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -564,25 +591,59 @@ html:has(.voyages-boring) footer.lux-footer {
   width: 100%;
 }
 
-.vb-intro__mark,
+.vb-copyright,
 .vb-intro__scroll {
   position: absolute;
-  bottom: calc(var(--vb-band-pad) * 0.5);
+  bottom: var(--ed-bottom, 1.5rem);
   font-size: var(--vb-t-meta);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--vb-ink-soft);
 }
 
-.vb-intro__mark {
-  left: calc(var(--vb-pad) + 3.4em);
+.vb-copyright {
+  left: var(--ed-gutter, var(--vb-pad));
 }
 
 .vb-intro__scroll {
   left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.7rem;
+}
+
+.vb-intro__body {
+  position: absolute;
+  right: var(--ed-gutter, var(--vb-pad));
+  bottom: calc(var(--ed-bottom, 1.5rem) + 2.55rem);
+  width: min(23rem, 27vw);
+  text-align: right;
+}
+
+.vb-intro__wordmark {
+  position: absolute;
+  right: var(--ed-gutter, var(--vb-pad));
+  bottom: var(--ed-bottom, 1.5rem);
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  font-family: var(--vb-edit);
+  font-size: var(--vb-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--vb-gold-deep);
+}
+
+.vb-intro__wordmark em {
+  font-family: "Bitho Luxury", cursive;
+  font-size: 1.7em;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.vb-intro__wordmark strong {
+  font-weight: 400;
 }
 
 .vb-intro__scroll i {
@@ -725,8 +786,9 @@ html:has(.voyages-boring) footer.lux-footer {
 }
 
 .vb-creed__row {
-  display: flex;
-  align-items: baseline;
+  display: grid;
+  grid-template-columns: min-content minmax(0, 1fr) minmax(15rem, 0.62fr);
+  align-items: center;
   gap: clamp(0.8rem, 2vw, 1.6rem);
   cursor: default;
   transform: translateY(calc((1 - var(--reveal, 1)) * 30px));
@@ -734,6 +796,27 @@ html:has(.voyages-boring) footer.lux-footer {
   transition:
     transform 1.1s var(--vb-ease-long),
     opacity 1.1s var(--vb-ease-long);
+}
+
+.vb-creed__body {
+  max-width: 34ch;
+  margin-left: auto !important;
+  font-family: var(--vb-meta);
+  font-size: var(--vb-t-meta);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: rgb(11 10 8 / 68%);
+  opacity: 0;
+  transform: translateX(1rem);
+  transition:
+    opacity 0.65s var(--vb-ease-long),
+    transform 0.65s var(--vb-ease-long);
+}
+
+.vb-creed__row:hover .vb-creed__body,
+.vb-creed__row:focus-within .vb-creed__body {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .vb-creed__numeral {
@@ -1122,8 +1205,8 @@ html:has(.voyages-boring) footer.lux-footer {
   }
 
   .vb-intro__content {
-    align-items: flex-start;
-    text-align: left;
+    width: 100%;
+    margin: 0;
   }
 
   .vb-intro__nav {
@@ -1134,13 +1217,34 @@ html:has(.voyages-boring) footer.lux-footer {
     margin-bottom: 1.4rem;
   }
 
-  .vb-intro__mark {
-    position: static;
-    margin-top: 1.6rem;
+  .vb-marker {
+    top: calc(var(--vb-band-pad) * 0.62);
+    left: var(--vb-pad);
+    transform: none;
   }
 
   .vb-intro__scroll {
     display: none;
+  }
+
+  .vb-intro__body,
+  .vb-intro__wordmark,
+  .vb-copyright {
+    position: static;
+  }
+
+  .vb-intro__body {
+    width: min(34rem, 100%);
+    margin-top: clamp(2.5rem, 8vw, 4.5rem) !important;
+    text-align: left;
+  }
+
+  .vb-intro__wordmark {
+    margin-top: 1.6rem !important;
+  }
+
+  .vb-copyright {
+    margin-top: 1rem !important;
   }
 
   /* the picture plate stacks; the rider stops overlapping */
@@ -1203,6 +1307,17 @@ html:has(.voyages-boring) footer.lux-footer {
 
   .vb-creed__list:hover .vb-creed__row:not(:hover) .vb-creed__title {
     opacity: 1;
+  }
+
+  .vb-creed__row {
+    grid-template-columns: min-content minmax(0, 1fr);
+  }
+
+  .vb-creed__body {
+    grid-column: 2;
+    margin: 0 !important;
+    opacity: 1;
+    transform: none;
   }
 
   .vb-item {
@@ -1271,13 +1386,21 @@ html:has(.voyages-boring) footer.lux-footer {
 
 @media (max-width: 620px) {
   .voyages-boring {
-    --vb-t-xl: clamp(2.4rem, 12vw, 3.6rem);
+    --vb-t-xl: clamp(3.5rem, 18vw, 5.6rem);
     --vb-t-l: clamp(1.9rem, 9vw, 2.8rem);
     --vb-t-m: clamp(1.6rem, 7vw, 2.2rem);
   }
 
   .vb-creed__title {
     font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  .vb-intro__title-line--middle {
+    padding-left: 0.2em;
+  }
+
+  .vb-intro__title-line--last {
+    margin-top: 0.12em;
   }
 
   .vb-duet__a,

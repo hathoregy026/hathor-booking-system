@@ -211,23 +211,38 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                   <a href="#reserve">Reserve</a>
                 </nav>
 
+                <p className="vb-marker">Voyages</p>
+
                 <div className="vb-intro__content">
-                  <Eyebrow>{VOYAGES_PAGE.opening.eyebrow}</Eyebrow>
                   <div data-anima-title>
                     <h1 className="vb-display vb-display--xl">
-                      <span className="vb-line">
-                        <AnimaSplitLine line={0}>
-                          {VOYAGES_PAGE.hero.title}
+                      <span className="vb-line vb-intro__title-line">
+                        <AnimaSplitLine line={0}>Our</AnimaSplitLine>
+                      </span>
+                      <span className="vb-line vb-intro__title-line vb-intro__title-line--middle">
+                        <AnimaSplitLine line={1}>Voyages</AnimaSplitLine>
+                      </span>
+                      <span className="vb-line vb-intro__title-line vb-intro__title-line--last">
+                        <AnimaSplitLine line={2}>
+                          {VOYAGES_PAGE.hero.secondTitle}
                         </AnimaSplitLine>
                       </span>
                     </h1>
                   </div>
-                  <p className="vb-tracked">Luxor — Aswan</p>
                 </div>
 
-                <p className="vb-intro__mark">
+                <p className="vb-intro__body">{VOYAGES_PAGE.opening.body[0]}</p>
+
+                <p className="vb-copyright">
                   Hathor Cruise <span className="vb-reg">®</span> 2026
                 </p>
+
+                <p className="vb-intro__wordmark" aria-label="Hathor Nile Cruise">
+                  <span>Hathor</span>
+                  <em>Nile</em>
+                  <strong>Cruise</strong>
+                </p>
+
                 <p className="vb-intro__scroll">
                   <i />
                   Scroll
@@ -332,6 +347,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                         <h2 className="vb-creed__title vb-display">
                           {item.title}
                         </h2>
+                        <p className="vb-creed__body">{item.body}</p>
                       </li>
                     ))}
                   </ol>
