@@ -261,7 +261,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                 <p className="vb-duet__script">{VOYAGES_PAGE.opening.script}</p>
               </Scene>
 
-              <Scene className="vb-marquee" aria-label="Hathor voyage values">
+              <Scene className="vb-marquee">
                 <div className="vb-marquee__line" aria-hidden="true">
                   <span>Intimate</span><i>·</i><span>All-inclusive</span><i>·</i>
                   <span>Private</span><i>·</i><span>Intimate</span><i>·</i>

@@ -1,81 +1,24 @@
-/* ==========================================================================
-   VOYAGES — EDITORIAL
-   Third page in the "Normal is Boring" family, deliberately built on a
-   different spine from Contact and About:
-
-     · the display face is a SCRIPT (Bitho Luxury), so headlines are set in
-       sentence case at generous leading instead of tight uppercase — the page
-       reads as handwriting on paper rather than stone-cut caps
-     · a centred chapter-title opening, not a left-aligned one
-     · a departure-board data strip
-     · stacked full-bleed bands instead of an overlapping image pair
-     · Roman numerals throughout: a ragged I/II/III creed, and a giant
-       outlined ghost numeral behind every itinerary panel
-     · a filmstrip of day-chapters at unequal heights
-     · a staggered feature masonry with a deliberate 12rem push-down
-     · circular disc buttons instead of pills
-
-   Fonts are the ones this page already used:
-     --vb-display  Bitho Luxury          script display
-     --vb-edit     Rolling Fonte         numerals, chapter titles
-     --vb-script   Besty Script          the rare flourish line
-     --vb-meta     Plus Jakarta Sans     labels, body, data
-
-   Motion comes from custom properties written per-scene by
-   hooks/useVoyagesEditorialFlow.ts:  --reveal  --parallax  --focus  --vb-flip
-   ========================================================================== */
-
 .voyages-boring {
-  /* ---- palette */
-  --vb-paper: #ece4da;
-  --vb-paper-warm: #f3ede4;
-  --vb-ink: #14120e;
-  --vb-ink-soft: #4a453c;
+  --vb-cream: #f3ead8;
+  --vb-cream-deep: #e8dcc4;
+  --vb-ink: #15120d;
   --vb-gold: #b69f64;
-  --vb-gold-deep: #806b35;
-  --vb-wash-sand: #ded4c6;
-  --vb-wash-stone: #cfc7ba;
-  --vb-wash-olive: #adaa8a;
-  --vb-black: #0b0a08;
-  --vb-hair: rgb(20 18 14 / 16%);
-
-  /* ---- type stacks (all already loaded by this site) */
+  --vb-gold-pale: #d8c89e;
   --vb-display: var(--font-hathor-gamgote), "Gamgote", Georgia, serif;
-  --vb-edit: "Rolling Fonte", Georgia, "Times New Roman", serif;
-  --vb-script: "Besty Script", "Rollgates Luxury Italic", cursive;
-  --vb-meta: var(--font-hathor-body), "Plus Jakarta Sans", "Helvetica Neue",
-    Arial, sans-serif;
-
-  /* ---- editorial scale */
-  --vb-t-xl: clamp(4.5rem, 10.5vw, 12rem);
-  --vb-t-l: clamp(2.3rem, 5.4vw, 6rem);
-  --vb-t-m: clamp(1.8rem, 3.4vw, 3.6rem);
-  --vb-t-s: clamp(1.3rem, 2vw, 2.2rem);
-  --vb-t-body: clamp(0.95rem, 1.05vw, 1.15rem);
-  --vb-t-meta: clamp(0.66rem, 0.72vw, 0.8rem);
-
-  /* ---- grid + rhythm */
-  --vb-pad: clamp(1rem, 2.4vw, 2.6rem);
-  --vb-gap: clamp(0.75rem, 1.5vw, 1.5rem);
-  --vb-col: calc((100vw - (var(--vb-pad) * 2) - (var(--vb-gap) * 11)) / 12);
-  --vb-band-pad: clamp(3.5rem, 9vw, 11rem);
-  --vb-push: clamp(2.5rem, 8vw, 12rem);
-
-  --vb-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --vb-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --vb-ease-long: cubic-bezier(0.16, 1, 0.3, 1);
-
+  --vb-script: var(--font-hathor-agraham), "Agraham", "Bitho Luxury", cursive;
+  --vb-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  --vb-pad: clamp(1.25rem, 2.8vw, 3.2rem);
+  --vb-ease: cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   width: 100%;
   max-width: 100vw;
-  background: var(--vb-paper);
+  overflow: clip;
+  background: var(--vb-cream);
   color: var(--vb-ink);
-  font-family: var(--vb-meta);
-  font-weight: 300;
+  font-family: var(--vb-body);
   -webkit-font-smoothing: antialiased;
 }
 
-/* --------------------------------------------------------------- host chrome */
 html[data-voyages-boring],
 html[data-voyages-boring] body,
 html[data-voyages-boring] .public-site,
@@ -85,277 +28,79 @@ html:has(.voyages-boring) body,
 html:has(.voyages-boring) .public-site,
 html:has(.voyages-boring) .public-main {
   overflow-x: clip;
-  background: #ece4da;
+  background: var(--vb-cream, #f3ead8);
 }
 
 html:has(.voyages-boring) .hathor-header {
-  background: rgb(236 228 218 / 82%) !important;
-  box-shadow: 0 1px 0 rgb(20 18 14 / 10%);
-  backdrop-filter: blur(14px) saturate(0.92);
+  background: linear-gradient(180deg, rgb(15 12 8 / 58%), transparent) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
 html:has(.voyages-boring) .hathor-header a,
 html:has(.voyages-boring) .hathor-header button {
-  color: #14120e !important;
-  text-shadow: none !important;
+  color: #fff7e7 !important;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 35%) !important;
 }
 
 html:has(.voyages-boring) .hathor-header__logo--icon {
-  filter: brightness(0.16) saturate(0.4) !important;
+  filter: brightness(0) invert(1) !important;
 }
 
-html:has(.voyages-boring) .public-fab {
+html:has(.voyages-boring) .public-fab,
+html:has(.voyages-boring) .lux-footer {
   display: none !important;
 }
 
-html:has(.voyages-boring) .lux-footer,
-html:has(.voyages-boring) footer.lux-footer {
-  display: none !important;
-}
-
-/* ------------------------------------------------------------------- reset */
 .voyages-boring *,
 .voyages-boring *::before,
 .voyages-boring *::after {
   box-sizing: border-box;
 }
 
-.voyages-boring h1,
-.voyages-boring h2,
-.voyages-boring h3,
-.voyages-boring p,
-.voyages-boring ol,
-.voyages-boring ul,
-.voyages-boring dl,
-.voyages-boring dd,
-.voyages-boring figure {
+.voyages-boring :where(h1, h2, p, ol, figure) {
   margin: 0;
   padding: 0;
 }
 
-.voyages-boring ol,
-.voyages-boring ul {
-  list-style: none;
-}
+.voyages-boring ol { list-style: none; }
+.voyages-boring a { color: inherit; text-decoration: none; }
 
-.voyages-boring a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.voyages-boring main {
-  width: 100%;
-}
-
-/* ------------------------------------------------------------ type classes */
-.voyages-boring .vb-display {
+.vb-display {
   font-family: var(--vb-display);
   font-weight: 400;
-  font-style: normal;
-  line-height: 0.82;
   letter-spacing: -0.055em;
+  line-height: 0.82;
 }
 
-.voyages-boring .vb-display--xl {
-  font-size: var(--vb-t-xl);
+.vb-kicker {
+  font-size: clamp(0.62rem, 0.72vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.23em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-.voyages-boring .vb-display--l {
-  font-size: var(--vb-t-l);
-}
-
-.voyages-boring .vb-edit {
-  font-family: var(--vb-edit);
-  font-weight: 400;
-  line-height: 1.1;
-}
-
-.voyages-boring .vb-script {
-  font-family: var(--vb-script);
-  font-size: var(--vb-t-s);
-  line-height: 1.35;
-  color: var(--vb-gold-deep);
-}
-
-.voyages-boring .vb-eyebrow {
-  font-family: var(--vb-edit);
-  font-size: var(--vb-t-body);
-  font-style: italic;
-  color: var(--vb-gold-deep);
-}
-
-.voyages-boring .vb-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
-}
-
-/* clip-mask reveal — a script face has long ascenders and descenders, so the
-   mask gets extra room top and bottom or the swashes get shaved. */
-.voyages-boring .vb-line {
+.vb-line {
   display: block;
   overflow: clip;
-  padding: 0.12em 0.06em 0.16em;
-  margin: -0.12em -0.06em -0.16em;
+  padding: 0.08em 0.05em 0.14em;
+  margin: -0.08em -0.05em -0.14em;
 }
 
-.voyages-boring .vb-line > * {
+.vb-line > * {
   display: block;
   transform: translateY(calc((1 - var(--reveal, 1)) * 105%));
-  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
-  transition:
-    transform 0.9s var(--vb-ease-soft),
-    opacity 0.9s var(--vb-ease-soft);
+  opacity: calc(0.12 + var(--reveal, 1) * 0.88);
+  transition: transform 1s var(--vb-ease), opacity 0.8s ease;
 }
 
-/* ------------------------------------------------------------------- links */
-.voyages-boring .vb-link {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 0.06em;
-}
-
-.voyages-boring .vb-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: var(--vb-lw, 0%);
-  height: 1px;
-  background: currentcolor;
-  transition: width 0.4s var(--vb-ease-soft);
-}
-
-.voyages-boring .vb-link:hover {
-  --vb-lw: 100%;
-}
-
-/* -------------------------------------------------------------- disc button
-   A circle rather than a pill — this page's signature control. */
-.voyages-boring .vb-disc {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: clamp(5.2rem, 6.2vw, 6.6rem);
-  aspect-ratio: 1 / 1;
-  flex: 0 0 auto;
-  border: 1px solid currentcolor;
-  border-radius: 50%;
-  overflow: hidden;
-  isolation: isolate;
-  text-align: center;
-  cursor: pointer;
-  transition: color 0.34s var(--vb-ease-soft);
-}
-
-.voyages-boring .vb-disc > span {
-  position: relative;
-  z-index: 2;
-  padding: 0 1.1em;
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  line-height: 1.35;
-}
-
-.voyages-boring .vb-disc > i {
-  position: relative;
-  z-index: 2;
-  margin-top: 0.25em;
-  font-style: normal;
-  font-size: var(--vb-t-meta);
-  transition: transform 0.4s var(--vb-ease);
-}
-
-.voyages-boring .vb-disc::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  inset: -1px;
-  border-radius: 50%;
-  background: currentcolor;
-  transform: scale(var(--vb-ds, 0));
-  transition: transform 0.45s var(--vb-ease-soft);
-}
-
-.voyages-boring .vb-disc:hover {
-  --vb-ds: 1;
-}
-
-.voyages-boring .vb-disc:hover > span,
-.voyages-boring .vb-disc:hover > i {
-  mix-blend-mode: difference;
-  filter: invert(1);
-}
-
-.voyages-boring .vb-disc:hover > i {
-  transform: translate(0.15em, -0.15em);
-}
-
-/* ---------------------------------------------------------------- pill button */
-.voyages-boring .vb-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  isolation: isolate;
-  padding: calc(0.72em - 1px) calc(1.5em - 1px);
-  border: 1px solid currentcolor;
-  border-radius: calc(0.72em * 3);
-  background: transparent;
-  color: inherit;
-  font-family: var(--vb-meta);
-  font-size: var(--vb-t-meta);
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.voyages-boring .vb-btn > span {
-  position: relative;
-  z-index: 2;
-}
-
-.voyages-boring .vb-btn::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  inset: -1px;
-  background: currentcolor;
-  transform: translate3d(var(--vb-bx, -101%), var(--vb-by, -101%), 0);
-  transition: transform 0.42s var(--vb-ease-soft);
-}
-
-.voyages-boring .vb-btn:hover {
-  --vb-bx: 0%;
-  --vb-by: 0%;
-}
-
-.voyages-boring .vb-btn:hover > span {
-  mix-blend-mode: difference;
-  filter: invert(1);
-}
-
-.voyages-boring .vb-btn--xl {
-  padding: calc(1.05em - 1px) calc(2.6em - 1px);
-  border-radius: calc(1.05em * 3);
-}
-
-.voyages-boring .vb-btn--solid {
-  background: var(--vb-ink);
-  color: var(--vb-paper);
-  border-color: var(--vb-ink);
-}
-
-/* ---------------------------------------------------------------- progress */
 .vb-progress {
   position: fixed;
-  z-index: 100;
-  inset: 0 0 auto;
+  z-index: 90;
+  inset: auto 0 0;
   height: 2px;
+  background: rgb(255 255 255 / 14%);
   pointer-events: none;
 }
 
@@ -363,1090 +108,381 @@ html:has(.voyages-boring) footer.lux-footer {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--vb-gold, #b69f64);
+  background: var(--vb-gold);
   transform: scaleX(0);
-  transform-origin: 0 50%;
+  transform-origin: left;
 }
 
-/* ============================================================ HORIZONTAL ACT */
-.vb-run {
-  position: relative;
-  width: 100%;
-}
+.vb-run { position: relative; }
+.vb-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.vb-track { display: flex; width: max-content; height: 100%; will-change: transform; }
+.vb-scene { position: relative; flex: 0 0 auto; height: 100%; overflow: hidden; }
 
-.vb-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
-  display: flex;
-  align-items: stretch;
-}
-
-.vb-track {
-  display: flex;
-  align-items: stretch;
-  width: max-content;
-  height: 100%;
-  will-change: transform;
-}
-
-.vb-scene {
-  position: relative;
-  flex: 0 0 auto;
-  height: 100%;
-  padding: calc(var(--vb-band-pad) * 0.9) var(--vb-pad);
-  display: flex;
-  flex-direction: column;
-}
-
-/* -------------------------------------------------------- vertical marquee */
-.vb-rail {
-  position: absolute;
-  z-index: 6;
-  top: 0;
-  left: 0;
-  width: 2.4em;
-  height: 100%;
-  overflow: hidden;
-  background: var(--vb-ink);
-  color: var(--vb-paper);
-  font-size: var(--vb-t-meta);
-  pointer-events: none;
-}
-
-.vb-rail__inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  gap: 2.5rem;
-  white-space: nowrap;
-  transform-origin: top left;
-  transform: rotate(90deg) translateY(-2.4em);
-  animation: vb-rail-run 40s linear infinite;
-}
-
-.vb-rail__inner em {
-  font-style: normal;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  line-height: 2.4;
-}
-
-.vb-rail__inner b {
-  color: var(--vb-gold);
-  font-weight: 400;
-}
-
-@keyframes vb-rail-run {
-  to {
-    transform: rotate(90deg) translateY(-2.4em) translateX(-50%);
-  }
-}
-
-/* ------------------------------------------------------------ media system */
-.vb-media {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: var(--vb-ratio, 4 / 3);
-  background: var(--vb-wash-sand);
-}
-
+.vb-media { position: relative; overflow: hidden; aspect-ratio: var(--vb-ratio, auto); }
 .vb-media__image {
   object-fit: cover;
-  transform: translateY(calc((var(--parallax, 0.5) - 0.5) * -4%))
-    scale(calc(1.06 + var(--focus, 0) * 0.02));
-  transition: transform 0.8s var(--vb-ease-soft);
+  transform: scale(calc(1.045 - var(--focus, 0) * 0.025));
+  transition: transform 1.6s var(--vb-ease), filter 0.8s ease;
 }
 
-.vb-flip {
-  position: relative;
-  overflow: hidden;
-}
+.vb-flip { position: relative; overflow: hidden; }
+.vb-flip .vb-media { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vb-flip__over { z-index: 2; }
+.vb-flip--left .vb-flip__over { clip-path: inset(0 calc((1 - var(--vb-flip, 0)) * 100%) 0 0); }
+.vb-flip--right .vb-flip__over { clip-path: inset(0 0 0 calc((1 - var(--vb-flip, 0)) * 100%)); }
+.vb-flip--up .vb-flip__over { clip-path: inset(calc((1 - var(--vb-flip, 0)) * 100%) 0 0); }
 
-.vb-flip .vb-media {
-  width: 100%;
-  height: 100%;
-}
-
-.vb-flip__over {
-  position: absolute !important;
-  inset: 0;
-}
-
-.vb-flip--left .vb-flip__over {
-  clip-path: inset(0 0 0 calc((1 - var(--vb-flip, 0)) * 100%));
-}
-
-.vb-flip--right .vb-flip__over {
-  clip-path: inset(0 calc((1 - var(--vb-flip, 0)) * 100%) 0 0);
-}
-
-.vb-flip--up .vb-flip__over {
-  clip-path: inset(calc((1 - var(--vb-flip, 0)) * 100%) 0 0 0);
-}
-
-/* =========================================================== IMAGE MECHANICS
-   Long, slow easing throughout. Nothing on this page snaps. */
-.vb-media__image {
-  transform: translateY(calc((var(--parallax, 0.5) - 0.5) * -8%))
-    scale(calc(1.08 + var(--focus, 0) * 0.05));
-  transition: transform 1.4s var(--vb-ease-long);
-}
-
-.vb-flip__over {
-  transition: clip-path 1.1s var(--vb-ease-long);
-}
-
-/* -------------------------------------------------------------- 01 · intro
-   Full-width type field with the reference's asymmetry and Hathor's own
-   wordmark, copy and fonts. */
+/* Opening: one decisive composition, with the next image chapter implied. */
 .vb-intro {
   width: 100vw;
-  padding: clamp(7rem, 12vh, 10rem) var(--ed-gutter, var(--vb-pad))
-    clamp(6.5rem, 10vh, 8rem);
-  justify-content: center;
-  align-items: stretch;
-  background: var(--vb-paper);
+  background: var(--vb-ink);
+  color: #fff8ea;
 }
 
-.vb-intro__content {
-  width: min(79vw, 92rem);
-  margin: auto;
+.vb-intro__image { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vb-intro__image .vb-media__image { object-position: 58% center; }
+.vb-intro__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(10 8 5 / 76%) 0%, rgb(10 8 5 / 34%) 48%, rgb(10 8 5 / 6%) 76%),
+    linear-gradient(0deg, rgb(10 8 5 / 38%), transparent 48%);
 }
 
-.vb-marker,
-.vb-copyright {
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.24em;
+.vb-intro .vb-kicker { position: absolute; z-index: 2; top: 18%; left: var(--vb-pad); color: var(--vb-gold-pale); }
+.vb-intro__title {
+  position: absolute;
+  z-index: 2;
+  top: 28%;
+  left: var(--vb-pad);
+  width: min(64vw, 62rem);
+  font-size: clamp(5rem, 11vw, 11.8rem);
+  text-shadow: 0 6px 34px rgb(0 0 0 / 34%);
+}
+.vb-intro__offset { margin-left: 0.42em; }
+.vb-intro__script {
+  width: max-content;
+  margin: -0.15em 0 0 1.55em;
+  color: var(--vb-gold-pale);
+  font-family: var(--vb-script);
+  font-size: 0.5em;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.vb-intro__copy {
+  position: absolute;
+  z-index: 2;
+  right: var(--vb-pad);
+  bottom: clamp(5.5rem, 10vh, 8.5rem);
+  width: min(28rem, 31vw);
+  font-size: clamp(0.9rem, 1.05vw, 1.08rem);
+  line-height: 1.7;
+}
+.vb-intro__cue {
+  position: absolute;
+  z-index: 2;
+  left: var(--vb-pad);
+  bottom: clamp(2rem, 5vh, 3.8rem);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgb(255 248 234 / 55%);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--vb-gold-deep);
 }
 
-.vb-marker {
+/* The reference's principal full image with a smaller moving plate. */
+.vb-principal { width: 112vw; background: var(--vb-cream-deep); }
+.vb-principal__wide { position: absolute; inset: 0 18vw 0 0; }
+.vb-principal__portrait {
+  position: absolute;
+  z-index: 2;
+  right: 5vw;
+  top: 13vh;
+  width: min(26vw, 31rem);
+  height: 72vh;
+  box-shadow: 0 35px 90px rgb(20 14 7 / 25%);
+}
+
+.vb-manifesto { width: 90vw; background: var(--vb-cream); }
+.vb-manifesto__inner { position: absolute; left: 12%; right: 11%; bottom: 11%; }
+.vb-manifesto .vb-kicker { margin-bottom: clamp(2rem, 6vh, 5rem); color: #806b35; }
+.vb-manifesto__title { font-size: clamp(4.4rem, 8.5vw, 9.2rem); }
+.vb-manifesto__offset { margin-left: 0.72em; }
+.vb-manifesto__copy {
+  width: min(31rem, 43%);
+  margin: clamp(2rem, 5vh, 4.5rem) 0 0 auto;
+  font-size: clamp(0.95rem, 1vw, 1.08rem);
+  line-height: 1.75;
+}
+
+.vb-duet { width: 118vw; }
+.vb-duet--ink { background: #12100d; color: #f8ecd5; }
+.vb-duet--paper { background: #dfd3bc; color: var(--vb-ink); }
+.vb-duet__portrait { position: absolute; left: 8vw; top: 10vh; width: 29vw; height: 78vh; }
+.vb-duet__landscape { position: absolute; right: 7vw; top: 19vh; width: 61vw; height: 64vh; }
+.vb-duet__script {
+  position: absolute;
+  z-index: 4;
+  left: 31vw;
+  bottom: 8vh;
+  width: 39rem;
+  max-width: 43vw;
+  color: var(--vb-gold-pale);
+  font-family: var(--vb-script);
+  font-size: clamp(2.2rem, 4.5vw, 5.5rem);
+  line-height: 0.95;
+  text-shadow: 0 5px 24px rgb(0 0 0 / 45%);
+}
+
+.vb-marquee { width: 72vw; background: var(--vb-gold); color: #17130d; }
+.vb-marquee__line {
   position: absolute;
   top: 50%;
-  left: var(--ed-gutter, var(--vb-pad));
-  transform: translateY(-50%);
-}
-
-.vb-intro__title-line {
-  width: 100%;
-  text-transform: uppercase;
-}
-
-.vb-intro__title-line--middle {
-  padding-left: 0.55em;
-}
-
-.vb-intro__title-line--last {
-  overflow: visible;
-  margin-top: 0.04em;
-  padding-right: 0.1em;
-  padding-bottom: 0.22em;
-  line-height: 1.05;
-  text-align: right;
-}
-
-.vb-intro__title-line--last > * {
-  font-family: "Bitho Luxury", "Rollgates Luxury Italic", cursive;
-  font-size: 0.76em;
-  font-style: italic;
-  text-transform: none;
-  letter-spacing: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.32em;
+  width: max-content;
+  transform: translate3d(calc(var(--scene-progress, 0) * -23%), -50%, 0);
+  font-family: var(--vb-display);
+  font-size: clamp(5rem, 10vw, 11rem);
+  letter-spacing: -0.05em;
+  line-height: 0.8;
   white-space: nowrap;
 }
+.vb-marquee__line i { font-family: var(--vb-script); font-weight: 400; color: var(--vb-cream); }
 
-.vb-intro__nav {
-  position: absolute;
-  z-index: 4;
-  top: clamp(6.75rem, 15vh, 8rem);
-  left: var(--ed-gutter, var(--vb-pad));
-  display: flex;
-  gap: 1.5rem;
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--vb-ink-soft);
-}
-
-.vb-intro__nav a {
-  position: relative;
-  padding-bottom: 0.3em;
-}
-
-.vb-intro__nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1px;
-  background: var(--vb-gold-deep);
-  transition: width 0.6s var(--vb-ease-long);
-}
-
-.vb-intro__nav a:hover::after {
-  width: 100%;
-}
-
-.vb-copyright,
-.vb-intro__scroll {
-  position: absolute;
-  bottom: var(--ed-bottom, 1.5rem);
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--vb-ink-soft);
-}
-
-.vb-copyright {
-  left: var(--ed-gutter, var(--vb-pad));
-}
-
-.vb-intro__scroll {
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-.vb-intro__body {
-  position: absolute;
-  right: var(--ed-gutter, var(--vb-pad));
-  bottom: calc(var(--ed-bottom, 1.5rem) + 2.55rem);
-  width: min(23rem, 27vw);
-  text-align: right;
-}
-
-.vb-intro__wordmark {
-  position: absolute;
-  right: var(--ed-gutter, var(--vb-pad));
-  bottom: var(--ed-bottom, 1.5rem);
-  display: flex;
-  align-items: baseline;
-  gap: 0.6em;
-  font-family: var(--vb-edit);
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--vb-gold-deep);
-}
-
-.vb-intro__wordmark em {
-  font-family: "Bitho Luxury", cursive;
-  font-size: 1.7em;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.vb-intro__wordmark strong {
-  font-weight: 400;
-}
-
-.vb-intro__scroll i {
-  display: block;
-  width: 3.4rem;
-  height: 1px;
-  background: var(--vb-ink);
-  transform-origin: 0 50%;
-  animation: vb-hint 3.4s var(--vb-ease-long) infinite;
-}
-
-@keyframes vb-hint {
-  0%,
-  100% {
-    transform: scaleX(0.3);
-  }
-  50% {
-    transform: scaleX(1);
-  }
-}
-
-/* -------------------------------------------------- 02 · the picture plate
-   A single frame at a fixed unequal ratio filling the panel height, with a
-   second frame riding across its lower right. No text on this panel. */
-.vb-plate {
-  width: auto;
-  padding: 0 0 0 calc(var(--vb-col) * 0.9);
-  justify-content: center;
-  background: var(--vb-paper);
-}
-
-.vb-plate__single {
-  height: 100svh;
-  width: auto;
-  aspect-ratio: 1279 / 960;
-}
-
-.vb-plate__flip {
-  position: absolute;
-  z-index: 3;
-  right: calc(var(--vb-col) * -1.4);
-  bottom: calc(var(--vb-band-pad) * 0.55);
-  width: calc(var(--vb-col) * 4);
-  aspect-ratio: 835 / 557;
-  box-shadow: 0 2.5rem 5rem rgb(20 18 14 / 24%);
-}
-
-/* ---------------------------------------------------------- 03 · text pane
-   Ten columns wide, the words sitting low in the panel with a deep gap under
-   the title. The only paragraph on the whole horizontal act. */
-.vb-pane {
-  width: calc(var(--vb-col) * 8 + var(--vb-gap) * 7);
-  justify-content: flex-end;
-  background: var(--vb-wash-sand);
-}
-
-.vb-pane__inner {
-  padding-left: calc(var(--vb-col) * 0.8);
-  padding-bottom: calc(var(--vb-band-pad) * 0.4);
-}
-
-.vb-pane__title {
-  font-size: var(--vb-t-l);
-  line-height: 1;
-  margin-bottom: clamp(2rem, 6vw, 4.9rem);
-}
-
-.vb-pane__body {
-  font-size: var(--vb-t-body);
-  line-height: 1.7;
-  color: var(--vb-ink-soft);
-  max-width: 38ch;
-}
-
-/* -------------------------------------------------------------- 04/05 · duets
-   Two frames at unequal ratios and heights, wiping in opposite directions. */
-.vb-duet {
-  width: auto;
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(1rem, 2.6vw, 2.8rem);
-  padding: 0 clamp(1.4rem, 3.4vw, 3.4rem) 0
-    calc(var(--vb-pad) + 3.4em);
-  background: var(--vb-paper);
-}
-
-.vb-duet--ink {
-  background: var(--vb-black);
-  color: var(--vb-paper);
-}
-
-.vb-duet__a {
-  height: 72svh;
-  width: auto;
-  align-self: flex-start;
-  margin-top: calc(var(--vb-band-pad) * 0.55);
-}
-
-.vb-duet__b {
-  height: 58svh;
-  width: auto;
-  align-self: flex-end;
-  margin-bottom: calc(var(--vb-band-pad) * 0.5);
-}
-
-.vb-duet__line {
-  position: absolute;
-  left: calc(var(--vb-pad) + 3.4em);
-  bottom: calc(var(--vb-band-pad) * 0.42);
-  max-width: 22ch;
-  color: var(--vb-gold);
-}
-
-/* ------------------------------------------------------------- 06 · creed
-   Three lines, nothing else — and a photograph that follows the pointer. */
-.vb-creed {
-  width: 78vw;
-  justify-content: center;
-  padding: calc(var(--vb-band-pad) * 0.8) var(--vb-pad)
-    calc(var(--vb-band-pad) * 0.8) calc(var(--vb-pad) + 3.4em);
-  background: var(--vb-wash-olive);
-  color: var(--vb-black);
-}
-
-.vb-creed__wrap {
-  position: relative;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.vb-creed__list {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(0.6rem, 2vw, 1.8rem);
-}
-
+.vb-creed { width: 116vw; background: var(--vb-cream); }
+.vb-creed__wrap { position: absolute; inset: 12vh 7vw 8vh; }
+.vb-creed .vb-kicker { margin-bottom: 5vh; color: #806b35; }
+.vb-creed__list { border-top: 1px solid rgb(21 18 13 / 22%); }
 .vb-creed__row {
   display: grid;
-  grid-template-columns: min-content minmax(0, 1fr) minmax(15rem, 0.62fr);
+  grid-template-columns: 3.5rem minmax(24rem, 1fr) minmax(18rem, 29rem);
   align-items: center;
-  gap: clamp(0.8rem, 2vw, 1.6rem);
-  cursor: default;
-  transform: translateY(calc((1 - var(--reveal, 1)) * 30px));
-  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
-  transition:
-    transform 1.1s var(--vb-ease-long),
-    opacity 1.1s var(--vb-ease-long);
+  gap: 2vw;
+  min-height: 22vh;
+  border-bottom: 1px solid rgb(21 18 13 / 22%);
 }
-
-.vb-creed__body {
-  max-width: 34ch;
-  margin-left: auto !important;
-  font-family: var(--vb-meta);
-  font-size: var(--vb-t-meta);
-  line-height: 1.7;
-  letter-spacing: 0.03em;
-  color: rgb(11 10 8 / 68%);
-  opacity: 0;
-  transform: translateX(1rem);
-  transition:
-    opacity 0.65s var(--vb-ease-long),
-    transform 0.65s var(--vb-ease-long);
-}
-
-.vb-creed__row:hover .vb-creed__body,
-.vb-creed__row:focus-within .vb-creed__body {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.vb-creed__numeral {
-  font-size: var(--vb-t-s);
-  letter-spacing: 0.08em;
-  opacity: 0.65;
-}
-
-.vb-creed__title {
-  font-size: clamp(2.4rem, 7vw, 7.4rem);
-  line-height: 1;
-  transition: opacity 0.7s var(--vb-ease-long);
-}
-
-/* dim the other lines while one is hovered — the page focuses with you */
-.vb-creed__list:hover .vb-creed__row:not(:hover) .vb-creed__title {
-  opacity: 0.35;
-}
-
+.vb-creed__numeral { color: #806b35; font-size: 0.75rem; letter-spacing: 0.18em; }
+.vb-creed__title { font-size: clamp(3.1rem, 5.4vw, 6.3rem); transition: color 0.3s ease, opacity 0.3s ease; }
+.vb-creed__body { max-width: 27rem; font-size: clamp(0.86rem, 0.9vw, 1rem); line-height: 1.65; }
+.vb-creed__list:hover .vb-creed__row:not(:hover) .vb-creed__title { opacity: 0.35; }
+.vb-creed__row:hover .vb-creed__title { color: #806b35; }
 .vb-follow {
   position: absolute;
-  z-index: 4;
-  top: 0;
+  z-index: 5;
   left: 0;
-  width: clamp(11em, 15vw, 16em);
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  pointer-events: none;
-  box-shadow: 0 2rem 4rem rgb(11 10 8 / 26%);
-  transform: translate3d(var(--fx, 50%), var(--fy, 50%), 0)
-    translate(-50%, -50%) scale(0.86);
+  top: 0;
+  width: clamp(10rem, 16vw, 15rem);
+  aspect-ratio: 4 / 5;
+  transform: translate3d(calc(var(--fx) - 50%), calc(var(--fy) - 50%), 0) rotate(-2deg);
   opacity: 0;
-  transition:
-    opacity 0.6s var(--vb-ease-long),
-    scale 0.7s var(--vb-ease-long);
+  pointer-events: none;
+  box-shadow: 0 22px 65px rgb(35 24 10 / 24%);
+  transition: opacity 0.25s ease;
 }
+.vb-follow.is-on { opacity: 1; }
+.vb-follow__img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.25s ease; }
+.vb-follow__img.is-active { opacity: 1; }
 
-.vb-follow.is-on {
-  opacity: 1;
-  transform: translate3d(var(--fx, 50%), var(--fy, 50%), 0)
-    translate(-50%, -50%) scale(1);
-}
+.vb-journeys-intro { width: 74vw; padding: 17vh 8vw 8vh; background: #17140f; color: #f8ecd5; }
+.vb-journeys-intro .vb-kicker { color: var(--vb-gold-pale); }
+.vb-journeys-intro__title { margin-top: 10vh; font-size: clamp(4.8rem, 8vw, 8.5rem); }
+.vb-journeys-intro > p:last-child { width: min(28rem, 70%); margin: 9vh 0 0 auto; font-size: 0.95rem; line-height: 1.75; }
 
-.vb-follow__img {
-  position: absolute !important;
+.vb-journey { width: 88vw; background: #0d0b08; color: #fff7e7; }
+.vb-journey__image { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vb-journey__shade {
+  position: absolute;
   inset: 0;
-  aspect-ratio: auto;
-  /* wipe in from the bottom rather than crossfade */
-  clip-path: inset(100% 0 0 0);
-  transition: clip-path 0.85s var(--vb-ease-long);
+  background: linear-gradient(0deg, rgb(7 6 4 / 76%) 0%, transparent 58%), linear-gradient(90deg, rgb(7 6 4 / 28%), transparent 45%);
+}
+.vb-journey__number { position: absolute; top: 16vh; left: var(--vb-pad); font-size: 0.72rem; letter-spacing: 0.2em; }
+.vb-journey__meta {
+  position: absolute;
+  right: var(--vb-pad);
+  top: 16vh;
+  display: flex;
+  gap: 0.9rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+.vb-journey__title { position: absolute; left: var(--vb-pad); bottom: 13vh; width: min(64rem, 80%); font-size: clamp(4.6rem, 8.2vw, 9rem); text-shadow: 0 5px 30px rgb(0 0 0 / 42%); }
+.vb-journey__link {
+  position: absolute;
+  right: var(--vb-pad);
+  bottom: 8vh;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgb(255 247 231 / 58%);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.vb-journey__link span, .vb-close__link span, .vb-intro__cue span { display: inline-block; transition: transform 0.35s var(--vb-ease); }
+.vb-journey__link:hover span, .vb-close__link:hover span, .vb-intro__cue:hover span { transform: translate(0.3rem, -0.15rem); }
+
+.vb-close { width: 90vw; background: #0f0d09; color: #fff7e7; }
+.vb-close__image { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vb-close__shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(10 8 5 / 76%), rgb(10 8 5 / 14%)); }
+.vb-close .vb-kicker { position: absolute; left: 10%; top: 24%; color: var(--vb-gold-pale); }
+.vb-close__title { position: absolute; left: 10%; top: 35%; font-size: clamp(5rem, 9vw, 10rem); }
+.vb-close__script { position: absolute; left: 22%; top: 58%; color: var(--vb-gold-pale); font-family: var(--vb-script); font-size: clamp(2rem, 4vw, 4.8rem); }
+.vb-close__link {
+  position: absolute;
+  left: 10%;
+  bottom: 12%;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgb(255 247 231 / 58%);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
 }
 
-.vb-follow__img.is-active {
-  clip-path: inset(0 0 0 0);
-}
-
-/* ------------------------------------------------------- 07 · itinerary items
-   Picture filling most of the panel, then a wall label with four corners. */
-.vb-item {
-  width: min(74vw, 48rem);
-  padding: 0;
-  justify-content: flex-end;
-  overflow: hidden;
-}
-
-.vb-item--sand {
-  background: var(--vb-paper-warm);
-  color: var(--vb-ink);
-}
-
-.vb-item--ink {
-  background: var(--vb-black);
-  color: var(--vb-paper);
-}
-
-.vb-item--olive {
-  background: var(--vb-wash-olive);
-  color: var(--vb-black);
-}
-
-.vb-item--stone {
-  background: var(--vb-wash-stone);
-  color: var(--vb-ink);
-}
-
-.vb-item__media {
-  position: relative;
-  flex: 0 0 auto;
-  width: 100%;
-  height: 62svh;
-  aspect-ratio: auto;
-}
-
-.vb-item__plate {
-  position: relative;
-  flex: 1 1 auto;
+.vb-reserve {
   display: grid;
   place-items: center;
-  padding: clamp(1rem, 2vw, 1.5rem);
-}
-
-.vb-item__route {
-  font-size: var(--vb-t-m);
+  min-height: 92svh;
+  padding: 9rem var(--vb-pad);
+  background: var(--vb-cream);
   text-align: center;
-  transform: translateY(calc((1 - var(--reveal, 1)) * 22px));
-  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
-  transition:
-    transform 1.1s var(--vb-ease-long),
-    opacity 1.1s var(--vb-ease-long);
 }
-
-.vb-item__corner {
-  position: absolute;
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  max-width: 40%;
-  opacity: 0.78;
-}
-
-.vb-item__corner--tl {
-  top: 1.05rem;
-  left: 1.2rem;
-  font-size: var(--vb-t-body);
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.vb-item__corner--tr {
-  top: 1.05rem;
-  right: 1.2rem;
-  font-family: var(--vb-edit);
-  font-size: var(--vb-t-body);
-  letter-spacing: 0.1em;
-}
-
-.vb-item__corner--bl {
-  bottom: 1.1rem;
-  left: 1.2rem;
-}
-
-.vb-item__corner--br {
-  bottom: 1.1rem;
-  right: 1.2rem;
-  text-align: right;
-  opacity: 1;
-}
-
-/* --------------------------------------------------------------- 08 · close
-   A wide, slow colour panel — a held breath before the page goes vertical. */
-.vb-close {
-  width: 130vw;
-  justify-content: center;
-  align-items: center;
-  background: var(--vb-gold);
-  color: var(--vb-black);
-}
-
-.vb-close__line {
-  font-size: var(--vb-t-l);
-  text-align: center;
-  max-width: 20ch;
-  transform: translateY(calc((1 - var(--reveal, 1)) * 26px));
-  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
-  transition:
-    transform 1.2s var(--vb-ease-long),
-    opacity 1.2s var(--vb-ease-long);
-}
-
-/* ========================================================== VERTICAL CODA */
-.vb-chapter {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  padding: var(--vb-band-pad) var(--vb-pad) calc(var(--vb-band-pad) * 0.5);
-  text-align: center;
-  background: var(--vb-paper);
-}
-
-.vb-double {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--vb-gap);
-  padding: 0 var(--vb-pad) calc(var(--vb-band-pad) * 0.5);
-  background: var(--vb-paper);
-}
-
-.vb-double__a {
-  width: calc(var(--vb-col) * 6 + var(--vb-gap) * 5);
-  max-height: 88svh;
-}
-
-.vb-double__b {
-  width: calc(var(--vb-col) * 4 + var(--vb-gap) * 3);
-  max-height: 88svh;
-  margin-top: calc(var(--vb-band-pad) * 0.4);
-}
-
-/* three lines, the last pulled to the right */
-.vb-lines {
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--vb-band-pad) * 0.4) var(--vb-pad) var(--vb-band-pad);
-  background: var(--vb-paper);
-}
-
-.vb-lines p {
-  font-size: var(--vb-t-l);
-  line-height: 1.04;
-}
-
-.vb-lines__b {
-  padding-left: calc(var(--vb-col) * 1.2);
-}
-
-.vb-lines__c {
-  align-self: flex-end;
-  text-align: right;
-}
-
-.vb-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(1.4rem, 3vw, 2.4rem);
-  padding: 0 var(--vb-pad) var(--vb-band-pad);
-  text-align: center;
-  background: var(--vb-paper);
-}
-
-.vb-cta__body {
-  font-size: var(--vb-t-body);
-  line-height: 1.7;
-  color: var(--vb-ink-soft);
-  max-width: 34ch;
-}
-
-/* ------------------------------------------------------------------- foot
-   A full-bleed photograph behind the departure index. */
-.vb-foot {
-  position: relative;
-  overflow: hidden;
-  padding: var(--vb-band-pad) var(--vb-pad) calc(var(--vb-band-pad) * 0.4);
-  color: #fff;
-  isolation: isolate;
-}
-
-.vb-foot__bg {
-  position: absolute !important;
-  inset: 0;
-  z-index: -2;
-  aspect-ratio: auto;
-}
-
-.vb-foot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: rgb(11 10 8 / 62%);
-}
-
-.vb-foot__index {
-  border-top: 1px solid rgb(255 255 255 / 26%);
-}
-
-.vb-foot__row {
+.vb-reserve .vb-kicker { color: #806b35; }
+.vb-reserve__title { max-width: 70rem; margin-top: 2.5rem; font-size: clamp(5rem, 10vw, 11rem); }
+.vb-reserve__copy { max-width: 30rem; margin-top: 2.5rem; font-size: 0.95rem; line-height: 1.75; }
+.vb-reserve__button {
   display: grid;
-  grid-template-columns: 3.2em minmax(0, 1fr) auto 2em;
-  align-items: baseline;
-  gap: var(--vb-gap);
-  padding: clamp(0.9rem, 2vw, 1.6rem) 0;
-  border-bottom: 1px solid rgb(255 255 255 / 26%);
-  transition: background-color 0.6s var(--vb-ease-long);
-}
-
-.vb-foot__row:hover {
-  background: rgb(255 255 255 / 8%);
-}
-
-.vb-foot__row > .vb-edit {
-  font-size: var(--vb-t-s);
-  color: var(--vb-gold);
-}
-
-.vb-foot__route {
-  font-family: var(--vb-display);
-  font-size: clamp(1.4rem, 2.6vw, 2.6rem);
-  line-height: 1.05;
-}
-
-.vb-foot__nights {
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
+  place-items: center;
+  width: clamp(8.5rem, 11vw, 10.5rem);
+  aspect-ratio: 1;
+  margin-top: 3rem;
+  border: 1px solid #806b35;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--vb-ink);
+  font-family: var(--vb-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.8;
-  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.45s var(--vb-ease), color 0.45s var(--vb-ease), transform 0.45s var(--vb-ease);
 }
+.vb-reserve__button:hover { background: var(--vb-ink); color: var(--vb-cream); transform: rotate(-4deg); }
 
-.vb-foot__row i {
-  justify-self: end;
-  font-style: normal;
-  transition: transform 0.5s var(--vb-ease);
-}
-
-.vb-foot__row:hover i {
-  transform: translate(0.25em, -0.25em);
-}
-
-.vb-foot__legal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2rem, 5vw, 4rem);
-  font-size: var(--vb-t-meta);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.82;
-}
-
-.vb-foot__legal nav {
-  display: flex;
-  gap: 1.6rem;
-}
-
-/* ==========================================================================
-   RESPONSIVE — 950px is the structural break
-   ========================================================================== */
 @media (max-width: 950px) {
-  .voyages-boring {
-    --vb-band-pad: clamp(3rem, 12vw, 5rem);
-  }
+  html:has(.voyages-boring) .hathor-header { background: linear-gradient(180deg, rgb(12 10 7 / 68%), transparent) !important; }
+  .vb-progress { display: none; }
+  .vb-run, .vb-stage { height: auto !important; }
+  .vb-stage { position: relative; overflow: visible; }
+  .vb-track { display: block; width: 100%; height: auto; transform: none !important; }
+  .vb-scene { width: 100%; height: auto; min-height: 80svh; }
 
-  .vb-run {
-    height: auto !important;
-  }
+  .vb-intro { min-height: 100svh; }
+  .vb-intro__veil { background: linear-gradient(0deg, rgb(9 7 5 / 70%), rgb(9 7 5 / 12%) 70%), linear-gradient(90deg, rgb(9 7 5 / 36%), transparent); }
+  .vb-intro .vb-kicker { top: 16%; }
+  .vb-intro__title { top: auto; bottom: 22%; width: 90%; font-size: clamp(4.5rem, 16vw, 8rem); }
+  .vb-intro__copy { right: var(--vb-pad); bottom: 6%; width: min(30rem, 58vw); }
+  .vb-intro__cue { display: none; }
 
-  .vb-stage {
-    position: relative;
-    top: auto;
-    height: auto;
-    overflow: visible;
-    display: block;
-  }
+  .vb-principal { min-height: 85svh; }
+  .vb-principal__wide { inset: 0 12vw 0 0; }
+  .vb-principal__portrait { right: 3vw; top: 14%; width: 36vw; height: 68%; }
 
-  .vb-track {
-    display: block;
-    width: 100%;
-    height: auto;
-    transform: none !important;
-  }
+  .vb-manifesto { min-height: 90svh; }
+  .vb-manifesto__inner { left: var(--vb-pad); right: var(--vb-pad); }
+  .vb-manifesto__title { font-size: clamp(4rem, 12vw, 7rem); }
+  .vb-manifesto__copy { width: min(30rem, 62%); }
 
-  .vb-scene {
-    width: 100% !important;
-    height: auto;
-    min-height: 0;
-    padding: var(--vb-band-pad) var(--vb-pad);
-    flex-direction: column;
-  }
+  .vb-duet { min-height: 90svh; }
+  .vb-duet__portrait { left: 5vw; width: 36vw; }
+  .vb-duet__landscape { right: 4vw; width: 65vw; }
+  .vb-duet__script { left: 22vw; max-width: 62vw; }
 
-  .vb-rail {
-    position: relative;
-    width: 100%;
-    height: 2.6em;
-    margin-top: var(--vb-header-clear, 4rem);
-  }
+  .vb-marquee { min-height: 52svh; }
+  .vb-marquee__line { transform: translate3d(-10%, -50%, 0); font-size: clamp(5rem, 15vw, 9rem); }
 
-  .vb-rail__inner {
-    position: relative;
-    transform: none;
-    animation: vb-rail-run-flat 32s linear infinite;
-  }
+  .vb-creed { min-height: 100svh; }
+  .vb-creed__wrap { inset: 10vh var(--vb-pad) 7vh; }
+  .vb-creed__row { grid-template-columns: 2rem 1fr; gap: 1rem; min-height: 25vh; }
+  .vb-creed__body { grid-column: 2; max-width: 32rem; padding-bottom: 1.25rem; }
+  .vb-follow { display: none; }
 
-  @keyframes vb-rail-run-flat {
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  .vb-intro {
-    padding-left: var(--vb-pad);
-    padding-top: calc(var(--vb-band-pad) * 1.2);
-    align-items: flex-start;
-  }
-
-  .vb-intro__content {
-    width: 100%;
-    margin: 0;
-  }
-
-  .vb-intro__nav {
-    position: static;
-    transform: none;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1.4rem;
-  }
-
-  .vb-marker {
-    top: calc(var(--vb-band-pad) * 0.62);
-    left: var(--vb-pad);
-    transform: none;
-  }
-
-  .vb-intro__scroll {
-    display: none;
-  }
-
-  .vb-intro__body,
-  .vb-intro__wordmark,
-  .vb-copyright {
-    position: static;
-  }
-
-  .vb-intro__body {
-    width: min(34rem, 100%);
-    margin-top: clamp(2.5rem, 8vw, 4.5rem) !important;
-    text-align: left;
-  }
-
-  .vb-intro__wordmark {
-    margin-top: 1.6rem !important;
-  }
-
-  .vb-copyright {
-    margin-top: 1rem !important;
-  }
-
-  /* the picture plate stacks; the rider stops overlapping */
-  .vb-plate {
-    padding: var(--vb-band-pad) var(--vb-pad);
-  }
-
-  .vb-plate__single {
-    width: 100%;
-    height: auto;
-  }
-
-  .vb-plate__flip {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: 74%;
-    margin: -14% 0 0 auto;
-  }
-
-  .vb-pane__inner {
-    padding-left: 0;
-    padding-bottom: 0;
-  }
-
-  /* duets become a vertical pair, still offset */
-  .vb-duet {
-    flex-direction: column;
-    align-items: stretch;
-    gap: clamp(1.2rem, 6vw, 2rem);
-    padding: var(--vb-band-pad) var(--vb-pad);
-  }
-
-  .vb-duet__a,
-  .vb-duet__b {
-    width: 84%;
-    height: auto;
-    margin: 0;
-    align-self: flex-start;
-  }
-
-  .vb-duet__b {
-    align-self: flex-end;
-  }
-
-  .vb-duet__line {
-    position: static;
-    max-width: none;
-    margin-top: 0.4rem;
-  }
-
-  /* no pointer to follow on a phone */
-  .vb-follow {
-    display: none;
-  }
-
-  .vb-creed__wrap {
-    height: auto;
-  }
-
-  .vb-creed__list:hover .vb-creed__row:not(:hover) .vb-creed__title {
-    opacity: 1;
-  }
-
-  .vb-creed__row {
-    grid-template-columns: min-content minmax(0, 1fr);
-  }
-
-  .vb-creed__body {
-    grid-column: 2;
-    margin: 0 !important;
-    opacity: 1;
-    transform: none;
-  }
-
-  .vb-item {
-    padding: 0;
-  }
-
-  .vb-item__media {
-    height: auto;
-    aspect-ratio: 4 / 5;
-  }
-
-  .vb-item__plate {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.7rem;
-    padding: 1.3rem var(--vb-pad) 1.6rem;
-  }
-
-  .vb-item__corner {
-    position: static;
-    max-width: 100%;
-    text-align: left;
-  }
-
-  .vb-item__route {
-    text-align: left;
-    order: -1;
-  }
-
-  .vb-close {
-    padding: calc(var(--vb-band-pad) * 1.4) var(--vb-pad);
-  }
-
-  .vb-double {
-    flex-direction: column;
-  }
-
-  .vb-double__a,
-  .vb-double__b {
-    width: 100%;
-    max-height: none;
-    margin-top: 0;
-  }
-
-  .vb-double__b {
-    width: 78%;
-    margin-left: auto;
-  }
-
-  .vb-lines__b {
-    padding-left: 0;
-  }
-
-  .vb-lines__c {
-    align-self: flex-start;
-    text-align: left;
-  }
-
-  .vb-foot__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.9rem;
-  }
+  .vb-journeys-intro { min-height: 76svh; padding: 14vh var(--vb-pad) 8vh; }
+  .vb-journeys-intro__title { font-size: clamp(4.5rem, 13vw, 7.5rem); }
+  .vb-journey { min-height: 88svh; }
+  .vb-journey__title { width: 86%; font-size: clamp(4rem, 12vw, 7.5rem); }
+  .vb-close { min-height: 88svh; }
 }
 
 @media (max-width: 620px) {
-  .voyages-boring {
-    --vb-t-xl: clamp(3.5rem, 18vw, 5.6rem);
-    --vb-t-l: clamp(1.9rem, 9vw, 2.8rem);
-    --vb-t-m: clamp(1.6rem, 7vw, 2.2rem);
-  }
+  .vb-kicker { font-size: 0.58rem; letter-spacing: 0.2em; }
+  .vb-intro__image .vb-media__image { object-position: 64% center; }
+  .vb-intro .vb-kicker { top: 15%; }
+  .vb-intro__title { bottom: 25%; font-size: clamp(4.15rem, 20vw, 6.3rem); }
+  .vb-intro__offset { margin-left: 0.18em; }
+  .vb-intro__script { margin-left: 0.75em; font-size: 0.58em; }
+  .vb-intro__copy { left: var(--vb-pad); right: var(--vb-pad); bottom: 5%; width: auto; font-size: 0.78rem; line-height: 1.6; }
 
-  .vb-creed__title {
-    font-size: clamp(2rem, 11vw, 3rem);
-  }
+  .vb-principal { min-height: 76svh; }
+  .vb-principal__wide { inset: 0; }
+  .vb-principal__portrait { right: var(--vb-pad); top: auto; bottom: -1px; width: 42vw; height: 48%; border: 0.55rem solid var(--vb-cream-deep); border-bottom: 0; }
 
-  .vb-intro__title-line--middle {
-    padding-left: 0.2em;
-  }
+  .vb-manifesto { min-height: 84svh; }
+  .vb-manifesto__inner { top: 12%; bottom: auto; }
+  .vb-manifesto .vb-kicker { margin-bottom: 3.5rem; }
+  .vb-manifesto__title { font-size: clamp(3.7rem, 17vw, 5.3rem); }
+  .vb-manifesto__offset { margin-left: 0.2em; }
+  .vb-manifesto__copy { width: 88%; margin-top: 3rem; font-size: 0.82rem; }
 
-  .vb-intro__title-line--last {
-    margin-top: 0.12em;
-  }
+  .vb-duet { min-height: 88svh; }
+  .vb-duet__portrait { left: var(--vb-pad); top: 9%; width: 43vw; height: 58%; }
+  .vb-duet__landscape { right: var(--vb-pad); top: 36%; width: 68vw; height: 43%; }
+  .vb-duet__script { left: var(--vb-pad); bottom: 5%; max-width: 82%; font-size: clamp(2.2rem, 10vw, 3.7rem); }
 
-  .vb-duet__a,
-  .vb-duet__b,
-  .vb-double__b {
-    width: 100%;
-  }
+  .vb-marquee { min-height: 42svh; }
+  .vb-marquee__line { font-size: clamp(4.5rem, 21vw, 6.5rem); }
 
-  .vb-foot__row {
-    grid-template-columns: 2.4em minmax(0, 1fr) 1.6em;
-    row-gap: 0.2rem;
-  }
+  .vb-creed { min-height: auto; padding: 6rem 0 5rem; }
+  .vb-creed__wrap { position: relative; inset: auto; padding: 0 var(--vb-pad); }
+  .vb-creed .vb-kicker { margin-bottom: 2.5rem; }
+  .vb-creed__row { display: grid; grid-template-columns: 1.5rem 1fr; min-height: 0; padding: 2.2rem 0; }
+  .vb-creed__title { font-size: clamp(2.8rem, 12.8vw, 4rem); }
+  .vb-creed__body { font-size: 0.78rem; line-height: 1.6; }
 
-  .vb-foot__nights {
-    grid-column: 2;
-  }
+  .vb-journeys-intro { min-height: 70svh; }
+  .vb-journeys-intro__title { margin-top: 4rem; font-size: clamp(4rem, 18vw, 5.8rem); }
+  .vb-journeys-intro > p:last-child { width: 88%; margin-top: 3.5rem; font-size: 0.8rem; }
 
-  .vb-foot__row i {
-    grid-row: 1;
-    grid-column: 3;
-  }
+  .vb-journey { min-height: 78svh; }
+  .vb-journey__image .vb-media__image { object-position: center; }
+  .vb-journey__number { top: 14%; }
+  .vb-journey__meta { left: var(--vb-pad); right: auto; top: 19%; max-width: 84%; flex-wrap: wrap; row-gap: 0.35rem; }
+  .vb-journey__title { bottom: 17%; width: 90%; font-size: clamp(3.5rem, 16vw, 5.2rem); }
+  .vb-journey__link { left: var(--vb-pad); right: auto; bottom: 7%; }
+
+  .vb-close { min-height: 82svh; }
+  .vb-close__shade { background: linear-gradient(0deg, rgb(10 8 5 / 78%), rgb(10 8 5 / 9%) 74%); }
+  .vb-close .vb-kicker { left: var(--vb-pad); top: auto; bottom: 37%; }
+  .vb-close__title { left: var(--vb-pad); top: auto; bottom: 22%; font-size: clamp(4.6rem, 20vw, 6.2rem); }
+  .vb-close__script { left: var(--vb-pad); top: auto; bottom: 14%; width: 88%; font-size: clamp(1.8rem, 8vw, 2.8rem); }
+  .vb-close__link { left: var(--vb-pad); bottom: 5%; }
+
+  .vb-reserve { min-height: 84svh; padding-block: 7rem; }
+  .vb-reserve__title { font-size: clamp(4.1rem, 19vw, 6rem); }
+  .vb-reserve__copy { font-size: 0.82rem; }
 }
 
-/* ------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .voyages-boring .vb-line > *,
-  .voyages-boring .vb-creed__row,
-  .voyages-boring .vb-item__route,
-  .voyages-boring .vb-close__line,
-  .voyages-boring .vb-media__image {
-    transform: none !important;
-    opacity: 1 !important;
-    transition: none !important;
-  }
-
-  .vb-rail__inner,
-  .vb-intro__scroll i {
-    animation: none !important;
-  }
-
-  .vb-flip__over,
-  .vb-follow__img {
-    clip-path: none !important;
-  }
-
-  .vb-follow {
-    display: none;
-  }
+  .vb-line > *, .vb-media__image, .vb-reserve__button { transition: none !important; }
+  .vb-line > * { transform: none !important; opacity: 1 !important; }
+  .vb-media__image { transform: none !important; }
 }
