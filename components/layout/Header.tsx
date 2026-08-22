@@ -165,6 +165,7 @@ export function Header() {
     [navItems],
   );
   const editorialNav = usesEditorialOverlayNav(pathname);
+  const isHome = pathname === "/" || pathname === "/ex";
   const [exploreOpen, setExploreOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const chromeNav = true;
@@ -481,6 +482,7 @@ export function Header() {
     navCompact && "hathor-header--nav-compact",
     editorialNav && "hathor-header--editorial-nav",
     chromeNav && "hathor-header--chrome",
+    chromeNav && isHome && "hathor-header--home",
     exploreOpen &&
       (chromeNav && !isPhone
         ? "hathor-header--editorial-open"

@@ -473,6 +473,25 @@
   -webkit-backdrop-filter: none;
 }
 
+/*
+ * Homepage only: no bar at land. Cream returns after a short scroll
+ * (hathor-header--nav-compact). Inner pages keep the solid cream bar.
+ */
+.public-site .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact) {
+  background: transparent !important;
+  border-bottom-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.public-site .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact)::before {
+  opacity: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom-color: transparent !important;
+}
+
 .public-site .hathor-header--chrome .hathor-header__col--nav-left,
 .public-site .hathor-header--chrome .hathor-header__col--nav-right {
   display: none !important;
