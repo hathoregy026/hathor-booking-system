@@ -65,7 +65,7 @@
    1. NAVIGATION — restore an affordance across 481-767px
    ========================================================================== */
 
-@media (min-width: 481px) and (max-width: 767.98px) {
+@media (min-width: 481px) and (max-width: 899.98px) {
   /*
    * Bring back the burger that the 481-1024 rule in site-nav.css suppresses.
    * The word nav cannot help here: it does not switch on until 768px.
@@ -104,7 +104,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024.98px) {
+@media (min-width: 900px) and (max-width: 1024.98px) {
   /*
    * At exactly 1024px both the burger and the word nav were rendering.
    * The word nav is live from 768px up, so the burger is redundant here.
@@ -174,7 +174,14 @@
 @media (max-width: 1024.98px) {
   /* Belt-and-braces against sideways drift from oversized absolute children. */
   html[data-ex-experience] body {
-    overflow-x: hidden;
+    /*
+     * `hidden` promotes body to a scroll container and breaks every sticky
+     * homepage stage on touch widths. `clip` prevents sideways paint without
+     * stealing the document's vertical scroll, so the desktop choreography
+     * remains pinned and scrubbed on phone/tablet.
+     */
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   /*
@@ -498,6 +505,35 @@
   }
 }
 
+@media (max-width: 480px) {
+  /* Keep the first amenities story clear of the persistent phone actions. */
+  html[data-ex-experience] .home-am-intro__caption {
+    bottom: max(6.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
+  }
+
+  /*
+   * The 42% desktop-derived caption band was shorter than its phone copy,
+   * placing the first title line underneath the fixed header. Give text and
+   * media balanced halves while keeping the same vertical wipe choreography.
+   */
+  html[data-ex-experience] .home-am-slider__caption-col {
+    height: 48%;
+    padding: calc(var(--site-nav-bar-height, 3.25rem) + 1rem) 1.15rem 1rem;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-stack {
+    min-height: 0;
+    max-height: 100%;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider
+    .typo-on-images-title {
+    font-size: min(var(--am-typo-title-size, 84px), 9.6vw) !important;
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1024.98px) {
   /*
    * Tablet keeps the desktop two-column layout, so the caption columns are
@@ -786,7 +822,7 @@
        body text, as it is on desktop, without shouting.
    ========================================================================== */
 
-@media (max-width: 767.98px) {
+@media (max-width: 1024.98px) {
   html[data-ex-experience][data-ex-experience]
     .ex-root
     .home-am-sequence {
@@ -797,6 +833,9 @@
     --am-typo-body-x: 0px !important;
     --am-typo-body-y: 0px !important;
   }
+}
+
+@media (max-width: 767.98px) {
 
   html[data-ex-experience][data-ex-experience]
     .ex-root
@@ -810,7 +849,7 @@
     .ex-root
     .home-am-sequence
     :is(.typo-on-images-body, .home-am-nature__body, .home-am-intro__body) {
-    font-size: 19px !important;
-    line-height: 1.5 !important;
+    font-size: 17px !important;
+    line-height: 1.48 !important;
   }
 }

@@ -359,7 +359,7 @@ html[data-cruises-intro] .hathor-header button {
   }
 
   .cr-intro__scene {
-    width: 100vw;
+    width: 100%;
     height: auto;
     min-height: 100svh;
   }
@@ -451,7 +451,7 @@ html[data-cruises-intro] .hathor-header button {
   }
 
   .cr-intro__scene {
-    width: 100vw;
+    width: 100%;
     height: auto;
     min-height: 100svh;
   }

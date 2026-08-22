@@ -452,6 +452,27 @@
     margin-top: clamp(2.5rem, 8vw, 4.5rem);
   }
 
+  /*
+   * About, Contact, and Cruises also leave their pinned desktop act at this
+   * breakpoint. Keep their support copy in document flow; the shared chrome
+   * absolute position otherwise lays it directly over the following mark.
+   */
+  .about-boring .ab-intro__body,
+  .contact-editorial .ce-intro__body,
+  .cr-intro .cr-intro__body {
+    position: static;
+    inset: auto;
+    width: min(34rem, 100%);
+    max-width: none;
+    margin-top: 0;
+    text-align: left;
+  }
+
+  .about-boring .ab-intro__mark,
+  .contact-editorial .ce-intro__mark {
+    margin-top: clamp(1.4rem, 5vw, 2.2rem);
+  }
+
   .voyages-boring .vb-intro__wordmark {
     justify-content: flex-start;
     margin-top: 1.6rem;

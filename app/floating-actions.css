@@ -236,11 +236,22 @@
   }
 
   .public-fab--right {
-    right: max(0.75rem, env(safe-area-inset-right));
+    right: 0;
+    left: 0;
+    width: 100%;
   }
 
   .public-fab__cluster {
+    position: relative;
+    justify-content: center;
     gap: 0.45rem;
+    width: 100%;
+    padding-inline: max(0.75rem, env(safe-area-inset-left));
+  }
+
+  .public-fab__chat {
+    position: absolute;
+    right: max(0.75rem, env(safe-area-inset-right));
   }
 
   .public-fab__book {
