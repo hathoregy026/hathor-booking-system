@@ -2,7 +2,7 @@
 
 import { usePublicTheme } from "./PublicThemeProvider";
 
-/** Ref sun: disk with eight rays, inner half filled. */
+/** Ref sun: eight rays, left half of the disk filled. */
 function RefSunIcon() {
   return (
     <svg
@@ -17,29 +17,29 @@ function RefSunIcon() {
         strokeWidth="1.35"
         strokeLinecap="round"
       >
-        <path d="M12 2.2v1.7" />
-        <path d="M12 20.1v1.7" />
-        <path d="M2.2 12h1.7" />
-        <path d="M20.1 12h1.7" />
-        <path d="M5.05 5.05l1.2 1.2" />
-        <path d="M17.75 17.75l1.2 1.2" />
-        <path d="M5.05 18.95l1.2-1.2" />
-        <path d="M17.75 6.25l1.2-1.2" />
+        <path d="M12 2.15v1.65" />
+        <path d="M12 20.2v1.65" />
+        <path d="M2.15 12h1.65" />
+        <path d="M20.2 12h1.65" />
+        <path d="M5.02 5.02l1.18 1.18" />
+        <path d="M17.8 17.8l1.18 1.18" />
+        <path d="M5.02 18.98l1.18-1.18" />
+        <path d="M17.8 6.2l1.18-1.18" />
       </g>
       <circle
         cx="12"
         cy="12"
-        r="4.15"
+        r="4.2"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.35"
       />
-      <path fill="currentColor" d="M12 7.85a4.15 4.15 0 0 1 0 8.3Z" />
+      <path fill="currentColor" d="M12 7.8A4.2 4.2 0 0 0 12 16.2V7.8Z" />
     </svg>
   );
 }
 
-/** Ref moon: gold crescent outline. */
+/** Ref moon: left-facing gold crescent. */
 function RefMoonIcon() {
   return (
     <svg
@@ -54,7 +54,7 @@ function RefMoonIcon() {
         strokeWidth="1.4"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M14.6 5.15a7.05 7.05 0 1 0 4.05 10.15 5.55 5.55 0 1 1-4.05-10.15Z"
+        d="M15.1 5.1A7.05 7.05 0 1 1 8.4 18.7 5.55 5.55 0 1 0 15.1 5.1Z"
       />
     </svg>
   );
@@ -77,18 +77,18 @@ export function PublicThemeToggle() {
       }}
       aria-label={isDay ? "Switch to night mode" : "Switch to day mode"}
       aria-pressed={!isDay}
-      title={isDay ? "Night mode" : "Day mode"}
+      title={isDay ? "Day mode" : "Night mode"}
     >
       <span className="public-theme-toggle__track">
-        <span className="public-theme-toggle__label" aria-hidden="true">
-          {isDay ? "night mode" : "day mode"}
-        </span>
         <span className="public-theme-toggle__thumb">
           {isDay ? <RefSunIcon /> : <RefMoonIcon />}
         </span>
+        <span className="public-theme-toggle__label" aria-hidden="true">
+          {isDay ? "day mode" : "night mode"}
+        </span>
       </span>
       <span className="sr-only">
-        {isDay ? "Day view, switch to night mode" : "Night view, switch to day mode"}
+        {isDay ? "Day mode, switch to night mode" : "Night mode, switch to day mode"}
       </span>
     </button>
   );

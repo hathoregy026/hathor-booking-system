@@ -398,8 +398,8 @@ html[data-public-theme="night"] .public-theme-toggle {
 .public-site .hathor-header--owo-hero-layout.hathor-header--nav-compact .public-theme-toggle__track,
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__track,
 html[data-public-theme="night"] .public-theme-toggle__track {
-  background: #b69f64 !important;
-  border-color: transparent !important;
+  background: #c4b57b !important;
+  border-color: #c4b57b !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -408,8 +408,8 @@ html[data-public-theme="night"] .public-theme-toggle__track {
 .public-site .hathor-header .public-theme-toggle.is-night .public-theme-toggle__track,
 .public-site .hathor-header--owo-hero-layout .public-theme-toggle.is-night .public-theme-toggle__track,
 html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-toggle__track {
-  background: #161311 !important;
-  border-color: #b69f64 !important;
+  background: #1a1714 !important;
+  border-color: #c4b57b !important;
 }
 
 .public-site .hathor-header .public-theme-toggle__thumb,
@@ -421,11 +421,11 @@ html[data-public-theme="night"] .public-theme-toggle__thumb {
   left: auto !important;
   right: auto !important;
   transform: none !important;
-  background: #f3efe6 !important;
-  color: #b69f64 !important;
-  box-shadow: 0 1px 3px rgb(28 25 23 / 0.16) !important;
+  background: #f2efe6 !important;
+  color: #c4b57b !important;
+  box-shadow: none !important;
 }
 
 .public-site .hathor-header .public-theme-toggle__label {
-  color: #f7f1e6 !important;
+  color: #f2efe6 !important;
 }

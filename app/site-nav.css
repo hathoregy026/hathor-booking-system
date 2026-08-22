@@ -5,7 +5,7 @@
   --nav-word-gap: 116px;
   --nav-logo-gap: 200px;
   /* Gold editorial pill — matches burger height on chrome pages */
-  --theme-toggle-w: 6.1rem;
+  --theme-toggle-w: 6.35rem;
   --theme-toggle-h: 2.15rem;
   --theme-toggle-gap: var(--nav-word-gap);
 }
@@ -463,9 +463,9 @@
   --chrome-ink: #1c1917;
   --chrome-pad: 2.35rem;
   --chrome-icon: 2.15rem;
-  --theme-toggle-w: 6.1rem;
+  --theme-toggle-w: 6.35rem;
   --theme-toggle-h: var(--chrome-icon);
-  --theme-toggle-pad: 0.22rem;
+  --theme-toggle-pad: 0.14rem;
   background: var(--chrome-cream) !important;
   border-bottom: 1px solid rgb(28 25 23 / 0.06);
   box-shadow: none;
@@ -604,7 +604,7 @@
   .public-site .hathor-header--chrome {
     --chrome-pad: 1rem;
     --chrome-icon: 1.85rem;
-    --theme-toggle-w: 5.35rem;
+    --theme-toggle-w: 5.45rem;
     --theme-toggle-h: 1.85rem;
   }
 
@@ -1195,33 +1195,35 @@
   background: rgba(28, 25, 23, 0.28);
 }
 
-/* Gold editorial mode pill — compact, even inner spacing on every breakpoint */
+/* Mode pill — match the day/night ref: thumb + current-mode label */
 .public-site .public-theme-toggle {
-  --theme-toggle-space: 0.22rem;
+  --theme-toggle-space: 0.14rem;
   --theme-toggle-pad: var(--theme-toggle-space);
   --theme-toggle-thumb: calc(
     var(--theme-toggle-h, 2.15rem) - (var(--theme-toggle-space) * 2)
   );
-  width: max-content;
-  min-width: 0;
+  --theme-toggle-w: calc(var(--theme-toggle-thumb) * 3.25 + var(--theme-toggle-space) * 2);
+  width: var(--theme-toggle-w);
+  min-width: var(--theme-toggle-w);
   height: var(--theme-toggle-h, 2.15rem);
-  color: #b69f64;
+  color: #c4b57b;
 }
 
 .public-site .public-theme-toggle__track {
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  width: max-content;
+  width: 100%;
   height: 100%;
   padding: var(--theme-toggle-space);
-  gap: var(--theme-toggle-space);
+  gap: 0;
   border-radius: 9999px;
-  border: 1px solid transparent;
+  border: 1px solid #c4b57b;
   overflow: hidden;
-  background: #b69f64;
+  background: #c4b57b;
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -1232,34 +1234,37 @@
 
 .public-site .public-theme-toggle.is-night .public-theme-toggle__track {
   flex-direction: row-reverse;
-  background: #161311;
-  border-color: #b69f64;
+  background: #1a1714;
+  border-color: #c4b57b;
 }
 
 .public-site .public-theme-toggle__label {
   position: relative;
   z-index: 1;
-  display: block;
-  flex: 0 0 auto;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
   width: auto;
+  min-width: 0;
   margin: 0;
-  padding: 0;
+  padding: 0 0.15rem;
   font-family: "Playfair Display", "Times New Roman", serif;
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   font-style: italic;
   font-weight: 400;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   line-height: 1;
-  color: #f7f1e6;
+  color: #f2efe6;
   pointer-events: none;
   white-space: nowrap;
-  text-align: left;
+  text-align: center;
 }
 
 .public-site .public-theme-toggle.is-day .public-theme-toggle__label,
 .public-site .public-theme-toggle.is-night .public-theme-toggle__label {
-  padding: 0;
-  text-align: left;
+  padding: 0 0.15rem;
+  text-align: center;
 }
 
 .public-site .public-theme-toggle__thumb {
@@ -1274,9 +1279,9 @@
   width: var(--theme-toggle-thumb);
   height: var(--theme-toggle-thumb);
   border-radius: 9999px;
-  background: #f3efe6;
-  color: #b69f64;
-  box-shadow: 0 1px 3px rgb(28 25 23 / 0.16);
+  background: #f2efe6;
+  color: #c4b57b;
+  box-shadow: none;
   transform: none;
   transition: none;
 }
@@ -1288,37 +1293,38 @@
 }
 
 .public-site .public-theme-toggle__icon {
-  width: 0.82rem;
-  height: 0.82rem;
+  width: 0.88rem;
+  height: 0.88rem;
   display: block;
 }
 
 @media (min-width: 481px) and (max-width: 1024px) {
   .public-site .public-theme-toggle {
-    --theme-toggle-space: 0.2rem;
+    --theme-toggle-space: 0.13rem;
   }
 
   .public-site .public-theme-toggle__label {
-    font-size: 0.6rem;
+    font-size: 0.66rem;
   }
 
   .public-site .public-theme-toggle__icon {
-    width: 0.76rem;
-    height: 0.76rem;
+    width: 0.8rem;
+    height: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .public-site .public-theme-toggle {
-    --theme-toggle-space: 0.18rem;
+    --theme-toggle-space: 0.12rem;
   }
 
   .public-site .public-theme-toggle__label {
-    font-size: 0.56rem;
+    font-size: 0.6rem;
+    padding: 0 0.1rem;
   }
 
   .public-site .public-theme-toggle__icon {
-    width: 0.7rem;
-    height: 0.7rem;
+    width: 0.72rem;
+    height: 0.72rem;
   }
 }
