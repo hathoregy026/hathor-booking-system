@@ -28,10 +28,12 @@ export type AggregateBookingTicket = {
 
 export type BookingTicketAvgAggregateOutputType = {
   quantity: number | null
+  unitPriceCents: number | null
 }
 
 export type BookingTicketSumAggregateOutputType = {
   quantity: number | null
+  unitPriceCents: number | null
 }
 
 export type BookingTicketMinAggregateOutputType = {
@@ -39,6 +41,7 @@ export type BookingTicketMinAggregateOutputType = {
   bookingId: string | null
   ticketTypeId: string | null
   quantity: number | null
+  unitPriceCents: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +51,7 @@ export type BookingTicketMaxAggregateOutputType = {
   bookingId: string | null
   ticketTypeId: string | null
   quantity: number | null
+  unitPriceCents: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,6 +61,7 @@ export type BookingTicketCountAggregateOutputType = {
   bookingId: number
   ticketTypeId: number
   quantity: number
+  unitPriceCents: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -65,10 +70,12 @@ export type BookingTicketCountAggregateOutputType = {
 
 export type BookingTicketAvgAggregateInputType = {
   quantity?: true
+  unitPriceCents?: true
 }
 
 export type BookingTicketSumAggregateInputType = {
   quantity?: true
+  unitPriceCents?: true
 }
 
 export type BookingTicketMinAggregateInputType = {
@@ -76,6 +83,7 @@ export type BookingTicketMinAggregateInputType = {
   bookingId?: true
   ticketTypeId?: true
   quantity?: true
+  unitPriceCents?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -85,6 +93,7 @@ export type BookingTicketMaxAggregateInputType = {
   bookingId?: true
   ticketTypeId?: true
   quantity?: true
+  unitPriceCents?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +103,7 @@ export type BookingTicketCountAggregateInputType = {
   bookingId?: true
   ticketTypeId?: true
   quantity?: true
+  unitPriceCents?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -190,6 +200,7 @@ export type BookingTicketGroupByOutputType = {
   bookingId: string
   ticketTypeId: string
   quantity: number
+  unitPriceCents: number | null
   createdAt: Date
   updatedAt: Date
   _count: BookingTicketCountAggregateOutputType | null
@@ -222,6 +233,7 @@ export type BookingTicketWhereInput = {
   bookingId?: Prisma.StringFilter<"BookingTicket"> | string
   ticketTypeId?: Prisma.StringFilter<"BookingTicket"> | string
   quantity?: Prisma.IntFilter<"BookingTicket"> | number
+  unitPriceCents?: Prisma.IntNullableFilter<"BookingTicket"> | number | null
   createdAt?: Prisma.DateTimeFilter<"BookingTicket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BookingTicket"> | Date | string
   booking?: Prisma.XOR<Prisma.BookingScalarRelationFilter, Prisma.BookingWhereInput>
@@ -233,6 +245,7 @@ export type BookingTicketOrderByWithRelationInput = {
   bookingId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   booking?: Prisma.BookingOrderByWithRelationInput
@@ -248,6 +261,7 @@ export type BookingTicketWhereUniqueInput = Prisma.AtLeast<{
   bookingId?: Prisma.StringFilter<"BookingTicket"> | string
   ticketTypeId?: Prisma.StringFilter<"BookingTicket"> | string
   quantity?: Prisma.IntFilter<"BookingTicket"> | number
+  unitPriceCents?: Prisma.IntNullableFilter<"BookingTicket"> | number | null
   createdAt?: Prisma.DateTimeFilter<"BookingTicket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BookingTicket"> | Date | string
   booking?: Prisma.XOR<Prisma.BookingScalarRelationFilter, Prisma.BookingWhereInput>
@@ -259,6 +273,7 @@ export type BookingTicketOrderByWithAggregationInput = {
   bookingId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BookingTicketCountOrderByAggregateInput
@@ -276,6 +291,7 @@ export type BookingTicketScalarWhereWithAggregatesInput = {
   bookingId?: Prisma.StringWithAggregatesFilter<"BookingTicket"> | string
   ticketTypeId?: Prisma.StringWithAggregatesFilter<"BookingTicket"> | string
   quantity?: Prisma.IntWithAggregatesFilter<"BookingTicket"> | number
+  unitPriceCents?: Prisma.IntNullableWithAggregatesFilter<"BookingTicket"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BookingTicket"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BookingTicket"> | Date | string
 }
@@ -283,6 +299,7 @@ export type BookingTicketScalarWhereWithAggregatesInput = {
 export type BookingTicketCreateInput = {
   id?: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   booking: Prisma.BookingCreateNestedOneWithoutBookingTicketsInput
@@ -294,6 +311,7 @@ export type BookingTicketUncheckedCreateInput = {
   bookingId: string
   ticketTypeId: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -301,6 +319,7 @@ export type BookingTicketUncheckedCreateInput = {
 export type BookingTicketUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   booking?: Prisma.BookingUpdateOneRequiredWithoutBookingTicketsNestedInput
@@ -312,6 +331,7 @@ export type BookingTicketUncheckedUpdateInput = {
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -321,6 +341,7 @@ export type BookingTicketCreateManyInput = {
   bookingId: string
   ticketTypeId: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -328,6 +349,7 @@ export type BookingTicketCreateManyInput = {
 export type BookingTicketUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -337,6 +359,7 @@ export type BookingTicketUncheckedUpdateManyInput = {
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -361,12 +384,14 @@ export type BookingTicketCountOrderByAggregateInput = {
   bookingId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type BookingTicketAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrder
 }
 
 export type BookingTicketMaxOrderByAggregateInput = {
@@ -374,6 +399,7 @@ export type BookingTicketMaxOrderByAggregateInput = {
   bookingId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -383,12 +409,14 @@ export type BookingTicketMinOrderByAggregateInput = {
   bookingId?: Prisma.SortOrder
   ticketTypeId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type BookingTicketSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  unitPriceCents?: Prisma.SortOrder
 }
 
 export type BookingTicketCreateNestedManyWithoutTicketTypeInput = {
@@ -478,6 +506,7 @@ export type BookingTicketUncheckedUpdateManyWithoutBookingNestedInput = {
 export type BookingTicketCreateWithoutTicketTypeInput = {
   id?: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   booking: Prisma.BookingCreateNestedOneWithoutBookingTicketsInput
@@ -487,6 +516,7 @@ export type BookingTicketUncheckedCreateWithoutTicketTypeInput = {
   id?: string
   bookingId: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -525,6 +555,7 @@ export type BookingTicketScalarWhereInput = {
   bookingId?: Prisma.StringFilter<"BookingTicket"> | string
   ticketTypeId?: Prisma.StringFilter<"BookingTicket"> | string
   quantity?: Prisma.IntFilter<"BookingTicket"> | number
+  unitPriceCents?: Prisma.IntNullableFilter<"BookingTicket"> | number | null
   createdAt?: Prisma.DateTimeFilter<"BookingTicket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BookingTicket"> | Date | string
 }
@@ -532,6 +563,7 @@ export type BookingTicketScalarWhereInput = {
 export type BookingTicketCreateWithoutBookingInput = {
   id?: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   ticketType: Prisma.TicketTypeCreateNestedOneWithoutBookingTicketsInput
@@ -541,6 +573,7 @@ export type BookingTicketUncheckedCreateWithoutBookingInput = {
   id?: string
   ticketTypeId: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -575,6 +608,7 @@ export type BookingTicketCreateManyTicketTypeInput = {
   id?: string
   bookingId: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -582,6 +616,7 @@ export type BookingTicketCreateManyTicketTypeInput = {
 export type BookingTicketUpdateWithoutTicketTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   booking?: Prisma.BookingUpdateOneRequiredWithoutBookingTicketsNestedInput
@@ -591,6 +626,7 @@ export type BookingTicketUncheckedUpdateWithoutTicketTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -599,6 +635,7 @@ export type BookingTicketUncheckedUpdateManyWithoutTicketTypeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -607,6 +644,7 @@ export type BookingTicketCreateManyBookingInput = {
   id?: string
   ticketTypeId: string
   quantity?: number
+  unitPriceCents?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -614,6 +652,7 @@ export type BookingTicketCreateManyBookingInput = {
 export type BookingTicketUpdateWithoutBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ticketType?: Prisma.TicketTypeUpdateOneRequiredWithoutBookingTicketsNestedInput
@@ -623,6 +662,7 @@ export type BookingTicketUncheckedUpdateWithoutBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -631,6 +671,7 @@ export type BookingTicketUncheckedUpdateManyWithoutBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   ticketTypeId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -642,6 +683,7 @@ export type BookingTicketSelect<ExtArgs extends runtime.Types.Extensions.Interna
   bookingId?: boolean
   ticketTypeId?: boolean
   quantity?: boolean
+  unitPriceCents?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
@@ -653,6 +695,7 @@ export type BookingTicketSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   bookingId?: boolean
   ticketTypeId?: boolean
   quantity?: boolean
+  unitPriceCents?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
@@ -664,6 +707,7 @@ export type BookingTicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   bookingId?: boolean
   ticketTypeId?: boolean
   quantity?: boolean
+  unitPriceCents?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
@@ -675,11 +719,12 @@ export type BookingTicketSelectScalar = {
   bookingId?: boolean
   ticketTypeId?: boolean
   quantity?: boolean
+  unitPriceCents?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BookingTicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "bookingId" | "ticketTypeId" | "quantity" | "createdAt" | "updatedAt", ExtArgs["result"]["bookingTicket"]>
+export type BookingTicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "bookingId" | "ticketTypeId" | "quantity" | "unitPriceCents" | "createdAt" | "updatedAt", ExtArgs["result"]["bookingTicket"]>
 export type BookingTicketInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
   ticketType?: boolean | Prisma.TicketTypeDefaultArgs<ExtArgs>
@@ -704,6 +749,7 @@ export type $BookingTicketPayload<ExtArgs extends runtime.Types.Extensions.Inter
     bookingId: string
     ticketTypeId: string
     quantity: number
+    unitPriceCents: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["bookingTicket"]>
@@ -1135,6 +1181,7 @@ export interface BookingTicketFieldRefs {
   readonly bookingId: Prisma.FieldRef<"BookingTicket", 'String'>
   readonly ticketTypeId: Prisma.FieldRef<"BookingTicket", 'String'>
   readonly quantity: Prisma.FieldRef<"BookingTicket", 'Int'>
+  readonly unitPriceCents: Prisma.FieldRef<"BookingTicket", 'Int'>
   readonly createdAt: Prisma.FieldRef<"BookingTicket", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BookingTicket", 'DateTime'>
 }

@@ -45,7 +45,11 @@ const LIST_SQL = `
       ARRAY[]::text[]
     ) AS "roomTypes",
     COALESCE(
-      (SELECT SUM(bt.quantity * tt."priceCents")::int
+      b."totalPriceCents",
+      (SELECT SUM(br."unitPriceCents")::int
+       FROM "BookingRoom" br
+       WHERE br."bookingId" = b.id),
+      (SELECT SUM(bt.quantity * COALESCE(bt."unitPriceCents", tt."priceCents"))::int
        FROM "BookingTicket" bt
        JOIN "TicketType" tt ON tt.id = bt."ticketTypeId"
        WHERE bt."bookingId" = b.id),

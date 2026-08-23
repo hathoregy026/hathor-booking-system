@@ -13,9 +13,7 @@ import {
   standardRateLabel,
   type RatePlanId,
 } from "@/lib/rate-plans";
-
-const ROOM_PLACEHOLDER =
-  "linear-gradient(135deg, #2f4f4f 0%, #3d5c5c 45%, #c9a96e 100%)";
+import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 
 type RoomSelectionProps = {
   duration: StayDurationValue | "";
@@ -92,6 +90,7 @@ export function RoomSelection({
             const adults = roomConfigs.reduce((sum, cfg) => sum + cfg.adults, 0);
             const children = roomConfigs.reduce((sum, cfg) => sum + cfg.children, 0);
             const guestTotal = adults + children;
+            const visuals = getBookingRoomVisuals(room.name, room.roomType);
 
             const detailsParams = new URLSearchParams();
             if (checkInDate) detailsParams.set("checkInDate", checkInDate);
@@ -109,12 +108,15 @@ export function RoomSelection({
               >
                 <div
                   className="historia-room-card__image"
-                  style={{ background: ROOM_PLACEHOLDER }}
+                  style={{ backgroundImage: `url(${visuals.cover})` }}
+                  role="img"
+                  aria-label={`${room.name} aboard Hathor Dahabiya`}
                 />
                 <div className="historia-room-card__body">
                   <h3 className="historia-room-card__name">{room.name}</h3>
                   <p className="historia-room-card__meta">
                     {room.roomType ?? "Stateroom"} · up to {room.capacity} guests
+                    {` · ${visuals.sizeSqm} m²`}
                     {guestTotal > 0 ? ` · ${guestTotal} in your party` : ""}
                   </p>
                   {room.description ? (

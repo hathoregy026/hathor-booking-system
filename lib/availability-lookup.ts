@@ -4,6 +4,7 @@ import {
   filterRoomsForConfigs,
   getSchedulesFromCheckIn,
   resolveCruiseByDuration,
+  sortRoomsForBooking,
   type AvailabilityRoomRecord,
 } from "@/lib/availability-search";
 import { getSchedulesInDateRange, getUnavailableRoomsBySchedule } from "@/lib/booking";
@@ -224,7 +225,7 @@ export async function runAvailabilityLookup(
   }
 
   const { cruise } = context;
-  const allRooms = cruise.rooms;
+  const allRooms = sortRoomsForBooking(cruise.rooms);
 
   if (allRooms.length === 0) {
     return {

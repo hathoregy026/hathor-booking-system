@@ -5,6 +5,10 @@ import {
 } from "@/lib/booking-search-config";
 import { withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
+import {
+  getBookingRoomVisuals,
+  HATHOR_BOOKING_INCLUSIONS,
+} from "@/lib/booking-room-media";
 
 export type BookingRoomDetails = {
   roomId: string;
@@ -24,6 +28,10 @@ export type BookingRoomDetails = {
   nights: number;
   days: number;
   imageUrl: string | null;
+  galleryImages: readonly string[];
+  sizeSqm: number;
+  childrenAllowed: boolean;
+  inclusions: readonly string[];
 };
 
 function formatRouteForTitle(ports: string | null): string {
@@ -165,6 +173,7 @@ export async function getBookingRoomDetails(
   const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;
   const priceCents = Math.round(room.cruise.basePriceCents * multiplier);
   const { nights, days, departureDay } = resolveItineraryMeta(room.cruise.slug);
+  const visuals = getBookingRoomVisuals(room.name, room.roomType);
 
   const metaParts = [
     nights > 0 ? `${nights} Nights / ${days} Days` : null,
@@ -194,7 +203,11 @@ export async function getBookingRoomDetails(
     departureDay,
     nights,
     days,
-    imageUrl: room.cruise.imageUrl,
+    imageUrl: visuals.cover,
+    galleryImages: visuals.gallery,
+    sizeSqm: visuals.sizeSqm,
+    childrenAllowed: visuals.childrenAllowed,
+    inclusions: HATHOR_BOOKING_INCLUSIONS,
   };
   });
 }

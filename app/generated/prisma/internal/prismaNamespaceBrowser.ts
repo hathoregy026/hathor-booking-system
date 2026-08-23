@@ -147,6 +147,9 @@ export const BookingScalarFieldEnum = {
   holdExpiresAt: 'holdExpiresAt',
   customerEmail: 'customerEmail',
   customerName: 'customerName',
+  totalPriceCents: 'totalPriceCents',
+  currency: 'currency',
+  priceSnapshotAt: 'priceSnapshotAt',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -160,6 +163,7 @@ export const BookingRoomScalarFieldEnum = {
   bookingId: 'bookingId',
   roomId: 'roomId',
   cruiseScheduleId: 'cruiseScheduleId',
+  unitPriceCents: 'unitPriceCents',
   createdAt: 'createdAt'
 } as const
 
@@ -171,6 +175,7 @@ export const BookingTicketScalarFieldEnum = {
   bookingId: 'bookingId',
   ticketTypeId: 'ticketTypeId',
   quantity: 'quantity',
+  unitPriceCents: 'unitPriceCents',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

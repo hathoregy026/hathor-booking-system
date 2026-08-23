@@ -110,11 +110,14 @@ model Booking {
   holdExpiresAt    DateTime?
   customerEmail    String?
   customerName     String?
+  totalPriceCents  Int?
+  currency         String        @default("USD")
+  priceSnapshotAt  DateTime?
   deletedAt        DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  cruiseSchedule CruiseSchedule @relation(fields: [cruiseScheduleId], references: [id])
+  cruiseSchedule CruiseSchedule  @relation(fields: [cruiseScheduleId], references: [id])
   bookingRooms   BookingRoom[]
   bookingTickets BookingTicket[]
 
@@ -129,6 +132,7 @@ model BookingRoom {
   bookingId        String
   roomId           String
   cruiseScheduleId String
+  unitPriceCents   Int?
   createdAt        DateTime @default(now())
 
   booking        Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -140,12 +144,13 @@ model BookingRoom {
 }
 
 model BookingTicket {
-  id           String   @id @default(cuid())
-  bookingId    String
-  ticketTypeId String
-  quantity     Int      @default(1)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String   @id @default(cuid())
+  bookingId      String
+  ticketTypeId   String
+  quantity       Int      @default(1)
+  unitPriceCents Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   booking    Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   ticketType TicketType @relation(fields: [ticketTypeId], references: [id])
@@ -214,7 +219,9 @@ model SiteImage {
   @@index([pagePath, category])
 }
 
-/** Temporary key/value store (hero logo tuner). Safe to drop later. */
+/**
+ * Temporary key/value store (hero logo tuner). Safe to drop later.
+ */
 model SiteSetting {
   key       String   @id
   value     String

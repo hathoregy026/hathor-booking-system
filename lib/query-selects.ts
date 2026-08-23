@@ -48,6 +48,7 @@ export const cruiseListSelect = buildCruiseListSelect({ bin: false });
 
 export const bookingListSelect = {
   id: true,
+  totalPriceCents: true,
   customerName: true,
   customerEmail: true,
   status: true,
@@ -62,12 +63,14 @@ export const bookingListSelect = {
   },
   bookingRooms: {
     select: {
+      unitPriceCents: true,
       room: { select: { name: true, roomType: true } },
     },
   },
   bookingTickets: {
     select: {
       quantity: true,
+      unitPriceCents: true,
       ticketType: { select: { priceCents: true } },
     },
   },
@@ -75,6 +78,7 @@ export const bookingListSelect = {
 
 export const dashboardBookingSelect = {
   id: true,
+  totalPriceCents: true,
   customerName: true,
   status: true,
   cruiseSchedule: {
@@ -86,6 +90,7 @@ export const dashboardBookingSelect = {
   bookingTickets: {
     select: {
       quantity: true,
+      unitPriceCents: true,
       ticketType: { select: { priceCents: true } },
     },
   },

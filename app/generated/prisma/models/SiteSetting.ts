@@ -14,7 +14,8 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model SiteSetting
- * * Temporary key/value store (hero logo tuner). Safe to drop later.
+ * *
+ *  * Temporary key/value store (hero logo tuner). Safe to drop later.
  */
 export type SiteSettingModel = runtime.Types.Result.DefaultSelection<Prisma.$SiteSettingPayload>
 

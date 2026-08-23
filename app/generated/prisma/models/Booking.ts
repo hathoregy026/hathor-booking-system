@@ -20,8 +20,18 @@ export type BookingModel = runtime.Types.Result.DefaultSelection<Prisma.$Booking
 
 export type AggregateBooking = {
   _count: BookingCountAggregateOutputType | null
+  _avg: BookingAvgAggregateOutputType | null
+  _sum: BookingSumAggregateOutputType | null
   _min: BookingMinAggregateOutputType | null
   _max: BookingMaxAggregateOutputType | null
+}
+
+export type BookingAvgAggregateOutputType = {
+  totalPriceCents: number | null
+}
+
+export type BookingSumAggregateOutputType = {
+  totalPriceCents: number | null
 }
 
 export type BookingMinAggregateOutputType = {
@@ -31,6 +41,9 @@ export type BookingMinAggregateOutputType = {
   holdExpiresAt: Date | null
   customerEmail: string | null
   customerName: string | null
+  totalPriceCents: number | null
+  currency: string | null
+  priceSnapshotAt: Date | null
   deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +56,9 @@ export type BookingMaxAggregateOutputType = {
   holdExpiresAt: Date | null
   customerEmail: string | null
   customerName: string | null
+  totalPriceCents: number | null
+  currency: string | null
+  priceSnapshotAt: Date | null
   deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,12 +71,23 @@ export type BookingCountAggregateOutputType = {
   holdExpiresAt: number
   customerEmail: number
   customerName: number
+  totalPriceCents: number
+  currency: number
+  priceSnapshotAt: number
   deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type BookingAvgAggregateInputType = {
+  totalPriceCents?: true
+}
+
+export type BookingSumAggregateInputType = {
+  totalPriceCents?: true
+}
 
 export type BookingMinAggregateInputType = {
   id?: true
@@ -69,6 +96,9 @@ export type BookingMinAggregateInputType = {
   holdExpiresAt?: true
   customerEmail?: true
   customerName?: true
+  totalPriceCents?: true
+  currency?: true
+  priceSnapshotAt?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +111,9 @@ export type BookingMaxAggregateInputType = {
   holdExpiresAt?: true
   customerEmail?: true
   customerName?: true
+  totalPriceCents?: true
+  currency?: true
+  priceSnapshotAt?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -93,6 +126,9 @@ export type BookingCountAggregateInputType = {
   holdExpiresAt?: true
   customerEmail?: true
   customerName?: true
+  totalPriceCents?: true
+  currency?: true
+  priceSnapshotAt?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -137,6 +173,18 @@ export type BookingAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BookingAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BookingSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BookingMinAggregateInputType
@@ -167,6 +215,8 @@ export type BookingGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: BookingCountAggregateInputType | true
+  _avg?: BookingAvgAggregateInputType
+  _sum?: BookingSumAggregateInputType
   _min?: BookingMinAggregateInputType
   _max?: BookingMaxAggregateInputType
 }
@@ -178,10 +228,15 @@ export type BookingGroupByOutputType = {
   holdExpiresAt: Date | null
   customerEmail: string | null
   customerName: string | null
+  totalPriceCents: number | null
+  currency: string
+  priceSnapshotAt: Date | null
   deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: BookingCountAggregateOutputType | null
+  _avg: BookingAvgAggregateOutputType | null
+  _sum: BookingSumAggregateOutputType | null
   _min: BookingMinAggregateOutputType | null
   _max: BookingMaxAggregateOutputType | null
 }
@@ -211,6 +266,9 @@ export type BookingWhereInput = {
   holdExpiresAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   customerEmail?: Prisma.StringNullableFilter<"Booking"> | string | null
   customerName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  currency?: Prisma.StringFilter<"Booking"> | string
+  priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -226,6 +284,9 @@ export type BookingOrderByWithRelationInput = {
   holdExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  priceSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -244,6 +305,9 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   holdExpiresAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   customerEmail?: Prisma.StringNullableFilter<"Booking"> | string | null
   customerName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  currency?: Prisma.StringFilter<"Booking"> | string
+  priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -259,12 +323,17 @@ export type BookingOrderByWithAggregationInput = {
   holdExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  priceSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BookingCountOrderByAggregateInput
+  _avg?: Prisma.BookingAvgOrderByAggregateInput
   _max?: Prisma.BookingMaxOrderByAggregateInput
   _min?: Prisma.BookingMinOrderByAggregateInput
+  _sum?: Prisma.BookingSumOrderByAggregateInput
 }
 
 export type BookingScalarWhereWithAggregatesInput = {
@@ -277,6 +346,9 @@ export type BookingScalarWhereWithAggregatesInput = {
   holdExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   customerEmail?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   customerName?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  totalPriceCents?: Prisma.IntNullableWithAggregatesFilter<"Booking"> | number | null
+  currency?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  priceSnapshotAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
@@ -288,6 +360,9 @@ export type BookingCreateInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -303,6 +378,9 @@ export type BookingUncheckedCreateInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -316,6 +394,9 @@ export type BookingUpdateInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,6 +412,9 @@ export type BookingUncheckedUpdateInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -345,6 +429,9 @@ export type BookingCreateManyInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -356,6 +443,9 @@ export type BookingUpdateManyMutationInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,6 +458,9 @@ export type BookingUncheckedUpdateManyInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -390,9 +483,16 @@ export type BookingCountOrderByAggregateInput = {
   holdExpiresAt?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  totalPriceCents?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  priceSnapshotAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BookingAvgOrderByAggregateInput = {
+  totalPriceCents?: Prisma.SortOrder
 }
 
 export type BookingMaxOrderByAggregateInput = {
@@ -402,6 +502,9 @@ export type BookingMaxOrderByAggregateInput = {
   holdExpiresAt?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  totalPriceCents?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  priceSnapshotAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -414,9 +517,16 @@ export type BookingMinOrderByAggregateInput = {
   holdExpiresAt?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
+  totalPriceCents?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  priceSnapshotAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BookingSumOrderByAggregateInput = {
+  totalPriceCents?: Prisma.SortOrder
 }
 
 export type BookingScalarRelationFilter = {
@@ -470,6 +580,14 @@ export type EnumBookingStatusFieldUpdateOperationsInput = {
   set?: $Enums.BookingStatus
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type BookingCreateNestedOneWithoutBookingRoomsInput = {
   create?: Prisma.XOR<Prisma.BookingCreateWithoutBookingRoomsInput, Prisma.BookingUncheckedCreateWithoutBookingRoomsInput>
   connectOrCreate?: Prisma.BookingCreateOrConnectWithoutBookingRoomsInput
@@ -504,6 +622,9 @@ export type BookingCreateWithoutCruiseScheduleInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -517,6 +638,9 @@ export type BookingUncheckedCreateWithoutCruiseScheduleInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -560,6 +684,9 @@ export type BookingScalarWhereInput = {
   holdExpiresAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   customerEmail?: Prisma.StringNullableFilter<"Booking"> | string | null
   customerName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  currency?: Prisma.StringFilter<"Booking"> | string
+  priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -571,6 +698,9 @@ export type BookingCreateWithoutBookingRoomsInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -585,6 +715,9 @@ export type BookingUncheckedCreateWithoutBookingRoomsInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -613,6 +746,9 @@ export type BookingUpdateWithoutBookingRoomsInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -627,6 +763,9 @@ export type BookingUncheckedUpdateWithoutBookingRoomsInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -639,6 +778,9 @@ export type BookingCreateWithoutBookingTicketsInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -653,6 +795,9 @@ export type BookingUncheckedCreateWithoutBookingTicketsInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -681,6 +826,9 @@ export type BookingUpdateWithoutBookingTicketsInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -695,6 +843,9 @@ export type BookingUncheckedUpdateWithoutBookingTicketsInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -707,6 +858,9 @@ export type BookingCreateManyCruiseScheduleInput = {
   holdExpiresAt?: Date | string | null
   customerEmail?: string | null
   customerName?: string | null
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -718,6 +872,9 @@ export type BookingUpdateWithoutCruiseScheduleInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -731,6 +888,9 @@ export type BookingUncheckedUpdateWithoutCruiseScheduleInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -744,6 +904,9 @@ export type BookingUncheckedUpdateManyWithoutCruiseScheduleInput = {
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -796,6 +959,9 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   holdExpiresAt?: boolean
   customerEmail?: boolean
   customerName?: boolean
+  totalPriceCents?: boolean
+  currency?: boolean
+  priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -812,6 +978,9 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   holdExpiresAt?: boolean
   customerEmail?: boolean
   customerName?: boolean
+  totalPriceCents?: boolean
+  currency?: boolean
+  priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -825,6 +994,9 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   holdExpiresAt?: boolean
   customerEmail?: boolean
   customerName?: boolean
+  totalPriceCents?: boolean
+  currency?: boolean
+  priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -838,12 +1010,15 @@ export type BookingSelectScalar = {
   holdExpiresAt?: boolean
   customerEmail?: boolean
   customerName?: boolean
+  totalPriceCents?: boolean
+  currency?: boolean
+  priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "holdExpiresAt" | "customerEmail" | "customerName" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "holdExpiresAt" | "customerEmail" | "customerName" | "totalPriceCents" | "currency" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.Booking$bookingRoomsArgs<ExtArgs>
@@ -871,6 +1046,9 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     holdExpiresAt: Date | null
     customerEmail: string | null
     customerName: string | null
+    totalPriceCents: number | null
+    currency: string
+    priceSnapshotAt: Date | null
     deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1306,6 +1484,9 @@ export interface BookingFieldRefs {
   readonly holdExpiresAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly customerEmail: Prisma.FieldRef<"Booking", 'String'>
   readonly customerName: Prisma.FieldRef<"Booking", 'String'>
+  readonly totalPriceCents: Prisma.FieldRef<"Booking", 'Int'>
+  readonly currency: Prisma.FieldRef<"Booking", 'String'>
+  readonly priceSnapshotAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Booking", 'DateTime'>

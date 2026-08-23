@@ -90,6 +90,8 @@ next-env.d.ts
 /scripts/tmp-*.mjs
 /scripts/scrape-*.json
 /scripts/scraped-*.json
+/backups/
+/scraped/
 /assets/CLONE. httpssprings.estate/
 /assets/GPT SITE RESTORE/
 /assets/NORMAL IS DEF BORING/

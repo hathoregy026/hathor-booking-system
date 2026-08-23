@@ -123,6 +123,9 @@ export async function POST(request: NextRequest) {
             holdExpiresAt: null,
             customerName,
             customerEmail: parsed.email,
+            totalPriceCents: expectedPriceCents,
+            currency: "USD",
+            priceSnapshotAt: new Date(),
           },
           select: { id: true, status: true },
         });
@@ -132,6 +135,7 @@ export async function POST(request: NextRequest) {
             bookingId: created.id,
             roomId: parsed.roomId,
             cruiseScheduleId: parsed.cruiseScheduleId,
+            unitPriceCents: expectedPriceCents,
           },
         });
 
@@ -140,6 +144,7 @@ export async function POST(request: NextRequest) {
             bookingId: created.id,
             ticketTypeId: ticketType.id,
             quantity: 1,
+            unitPriceCents: ticketType.priceCents,
           },
         });
 

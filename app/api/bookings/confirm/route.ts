@@ -30,6 +30,10 @@ type TicketInput = {
   quantity: number;
 };
 
+type ResolvedTicketLine = TicketInput & {
+  unitPriceCents: number;
+};
+
 function roomIdsMatch(left: string[], right: string[]): boolean {
   if (left.length !== right.length) return false;
   const sortedLeft = [...left].sort();
@@ -41,20 +45,22 @@ async function resolveTicketLines(
   cruiseId: string,
   roomCount: number,
   tickets: TicketInput[],
-): Promise<TicketInput[]> {
+): Promise<ResolvedTicketLine[]> {
   const [defaultType, cruiseTicketTypes] = await Promise.all([
     ensureDefaultTicketType(cruiseId),
     prisma.ticketType.findMany({
       where: { cruiseId },
-      select: { id: true },
+      select: { id: true, priceCents: true },
     }),
   ]);
 
-  const validIds = new Set(cruiseTicketTypes.map((ticket) => ticket.id));
+  const pricesById = new Map(
+    cruiseTicketTypes.map((ticket) => [ticket.id, ticket.priceCents]),
+  );
   const aggregated = new Map<string, number>();
 
   for (const ticket of tickets) {
-    const ticketTypeId = validIds.has(ticket.ticketTypeId)
+    const ticketTypeId = pricesById.has(ticket.ticketTypeId)
       ? ticket.ticketTypeId
       : defaultType.id;
     aggregated.set(
@@ -70,6 +76,7 @@ async function resolveTicketLines(
   return [...aggregated.entries()].map(([ticketTypeId, quantity]) => ({
     ticketTypeId,
     quantity,
+    unitPriceCents: pricesById.get(ticketTypeId) ?? defaultType.priceCents,
   }));
 }
 
@@ -100,7 +107,7 @@ export async function POST(request: NextRequest) {
 
         const heldRooms = await tx.bookingRoom.findMany({
           where: { bookingId: parsed.bookingId },
-          select: { roomId: true },
+          select: { roomId: true, unitPriceCents: true },
         });
 
         const heldRoomIds = heldRooms.map((entry) => entry.roomId);
@@ -178,8 +185,14 @@ export async function POST(request: NextRequest) {
             bookingId: parsed.bookingId,
             ticketTypeId: ticket.ticketTypeId,
             quantity: ticket.quantity,
+            unitPriceCents: ticket.unitPriceCents,
           })),
         });
+
+        const totalPriceCents = heldRooms.reduce(
+          (sum, room) => sum + (room.unitPriceCents ?? 0),
+          0,
+        );
 
         return tx.booking.update({
           where: { id: parsed.bookingId },
@@ -188,16 +201,25 @@ export async function POST(request: NextRequest) {
             customerName: parsed.customerName,
             customerEmail: parsed.customerEmail,
             holdExpiresAt: null,
+            ...(booking.totalPriceCents === null
+              ? {
+                  totalPriceCents,
+                  currency: "USD",
+                  priceSnapshotAt: new Date(),
+                }
+              : {}),
           },
           include: {
             bookingRooms: {
               select: {
+                unitPriceCents: true,
                 room: { select: { name: true, roomType: true } },
               },
             },
             bookingTickets: {
               select: {
                 quantity: true,
+                unitPriceCents: true,
                 ticketType: { select: { priceCents: true } },
               },
             },
@@ -220,14 +242,12 @@ export async function POST(request: NextRequest) {
       cruiseSchedule: confirmedBooking.cruiseSchedule,
       bookingRooms: confirmedBooking.bookingRooms,
       bookingTickets: confirmedBooking.bookingTickets,
+      totalPriceCents: confirmedBooking.totalPriceCents,
     });
 
     if (emailDetails) {
       try {
-        console.log(
-          "[email] confirm: sending booking confirmed email to",
-          emailDetails.guestEmail,
-        );
+        console.log("[email] confirm: sending guest booking email");
         await sendBookingConfirmedEmail(
           emailDetails.guestEmail,
           emailDetails.guestName,

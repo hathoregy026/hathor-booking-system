@@ -21,13 +21,19 @@ const EMPTY_STATS: DashboardStats = {
 };
 
 function computeTotalCents(
+  bookingTotalPriceCents: number | null,
   tickets: {
     quantity: number;
+    unitPriceCents: number | null;
     ticketType: { priceCents: number };
   }[],
 ) {
+  if (bookingTotalPriceCents !== null) return bookingTotalPriceCents;
   return tickets.reduce(
-    (sum, ticket) => sum + ticket.quantity * ticket.ticketType.priceCents,
+    (sum, ticket) =>
+      sum +
+      ticket.quantity *
+        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
     0,
   );
 }
@@ -64,7 +70,10 @@ export async function GET() {
         cruiseName: booking.cruiseSchedule.cruise.name,
         departureTime: booking.cruiseSchedule.departureTime.toISOString(),
         status: booking.status,
-        totalPriceCents: computeTotalCents(booking.bookingTickets),
+        totalPriceCents: computeTotalCents(
+          booking.totalPriceCents,
+          booking.bookingTickets,
+        ),
       })),
     });
   } catch (error) {

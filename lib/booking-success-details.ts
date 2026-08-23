@@ -68,6 +68,7 @@ export async function getBookingSuccessDetails(
     },
     select: {
       id: true,
+      totalPriceCents: true,
       status: true,
       customerName: true,
       customerEmail: true,
@@ -86,6 +87,7 @@ export async function getBookingSuccessDetails(
       },
       bookingRooms: {
         select: {
+          unitPriceCents: true,
           room: {
             select: {
               name: true,
@@ -98,6 +100,7 @@ export async function getBookingSuccessDetails(
       bookingTickets: {
         select: {
           quantity: true,
+          unitPriceCents: true,
           ticketType: { select: { priceCents: true } },
         },
       },
@@ -117,17 +120,23 @@ export async function getBookingSuccessDetails(
   const durationMeta = resolveDurationMeta(cruise.slug);
 
   const roomPriceCents = booking.bookingRooms.reduce((sum, entry) => {
+    if (entry.unitPriceCents !== null) return sum + entry.unitPriceCents;
     const multiplier =
       entry.room.priceMultiplier > 0 ? entry.room.priceMultiplier : 1;
     return sum + Math.round(cruise.basePriceCents * multiplier);
   }, 0);
 
   const ticketPriceCents = booking.bookingTickets.reduce(
-    (sum, ticket) => sum + ticket.quantity * ticket.ticketType.priceCents,
+    (sum, ticket) =>
+      sum +
+      ticket.quantity *
+        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
     0,
   );
 
-  const totalPriceCents = roomPriceCents > 0 ? roomPriceCents : ticketPriceCents;
+  const totalPriceCents =
+    booking.totalPriceCents ??
+    (roomPriceCents > 0 ? roomPriceCents : ticketPriceCents);
 
   return {
     bookingId: booking.id,

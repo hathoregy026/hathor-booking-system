@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Check } from "lucide-react";
+import { Baby, Check, Maximize2, Users } from "lucide-react";
 import { getBookingRoomDetails } from "@/lib/booking-room-details";
 import { formatPrice } from "@/lib/client-dates";
 
@@ -98,8 +99,43 @@ export default async function BookingCruiseDetailsPage({
         </div>
       </div>
 
+      <section className="booking-room-gallery" aria-label={`${details.roomName} gallery`}>
+        {details.galleryImages.slice(0, 4).map((image, index) => (
+          <div
+            key={image}
+            className={`booking-room-gallery__item booking-room-gallery__item--${index + 1}`}
+          >
+            <Image
+              src={image}
+              alt={`${details.roomName} ${index + 1}`}
+              fill
+              sizes={index === 0 ? "(max-width: 1024px) 100vw, 66vw" : "(max-width: 480px) 50vw, 33vw"}
+              className="object-cover"
+            />
+          </div>
+        ))}
+      </section>
+
       <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:gap-12">
         <div>
+          <dl className="booking-room-facts">
+            <div>
+              <Maximize2 aria-hidden />
+              <dt>Room size</dt>
+              <dd>{details.sizeSqm} m²</dd>
+            </div>
+            <div>
+              <Users aria-hidden />
+              <dt>Occupancy</dt>
+              <dd>Up to {details.capacity} guests</dd>
+            </div>
+            <div>
+              <Baby aria-hidden />
+              <dt>Children</dt>
+              <dd>{details.childrenAllowed ? "Welcome" : "Adults only"}</dd>
+            </div>
+          </dl>
+
           {details.description && (
             <section className="mb-10">
               <h2 className="booking-serif text-2xl font-medium">Overview</h2>
@@ -117,7 +153,7 @@ export default async function BookingCruiseDetailsPage({
           )}
 
           {details.amenities.length > 0 && (
-            <section>
+            <section className="mb-10">
               <h2 className="booking-serif text-2xl font-medium">
                 Amenities &amp; Features
               </h2>
@@ -142,6 +178,21 @@ export default async function BookingCruiseDetailsPage({
               </ul>
             </section>
           )}
+
+          <section>
+            <h2 className="booking-serif text-2xl font-medium">
+              Included with your voyage
+            </h2>
+            <div className="mt-3 h-px w-16" style={{ background: "var(--booking-gold)" }} />
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2" style={{ color: "var(--booking-muted)" }}>
+              {details.inclusions.map((inclusion) => (
+                <li key={inclusion} className="flex items-start gap-3 text-sm">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "var(--booking-gold-dark)" }} aria-hidden />
+                  <span>{inclusion}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
 
         <aside className="lux-booking-widget h-fit">

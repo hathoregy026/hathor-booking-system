@@ -9,13 +9,19 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 function computeTotalCents(
+  bookingTotalPriceCents: number | null,
   tickets: {
     quantity: number;
+    unitPriceCents: number | null;
     ticketType: { priceCents: number };
   }[],
 ) {
+  if (bookingTotalPriceCents !== null) return bookingTotalPriceCents;
   return tickets.reduce(
-    (sum, ticket) => sum + ticket.quantity * ticket.ticketType.priceCents,
+    (sum, ticket) =>
+      sum +
+      ticket.quantity *
+        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
     0,
   );
 }
@@ -46,6 +52,7 @@ export async function GET() {
           take: 20,
           select: {
             id: true,
+            totalPriceCents: true,
             customerName: true,
             createdAt: true,
             cruiseSchedule: {
@@ -56,6 +63,7 @@ export async function GET() {
             bookingTickets: {
               select: {
                 quantity: true,
+                unitPriceCents: true,
                 ticketType: { select: { priceCents: true } },
               },
             },
@@ -69,7 +77,10 @@ export async function GET() {
       customerName: booking.customerName ?? "Guest",
       cruiseName: booking.cruiseSchedule.cruise.name,
       createdAt: booking.createdAt.toISOString(),
-      totalPriceCents: computeTotalCents(booking.bookingTickets),
+      totalPriceCents: computeTotalCents(
+        booking.totalPriceCents,
+        booking.bookingTickets,
+      ),
     }));
 
     return NextResponse.json({

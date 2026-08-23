@@ -49,13 +49,25 @@ function withParsedGuest<T extends { customerName: string }>(
 }
 
 function computeTotalCents(
+  bookingTotalPriceCents: number | null,
+  rooms: { unitPriceCents: number | null }[],
   tickets: {
     quantity: number;
+    unitPriceCents: number | null;
     ticketType: { priceCents: number };
   }[],
 ) {
+  if (bookingTotalPriceCents !== null) return bookingTotalPriceCents;
+  const roomTotal = rooms.reduce(
+    (sum, room) => sum + (room.unitPriceCents ?? 0),
+    0,
+  );
+  if (roomTotal > 0) return roomTotal;
   return tickets.reduce(
-    (sum, ticket) => sum + ticket.quantity * ticket.ticketType.priceCents,
+    (sum, ticket) =>
+      sum +
+      ticket.quantity *
+        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
     0,
   );
 }
@@ -80,7 +92,11 @@ export function serializeAdminBooking(
     roomTypes: booking.bookingRooms.map(
       (entry) => entry.room.roomType ?? entry.room.name,
     ),
-    totalPriceCents: computeTotalCents(booking.bookingTickets),
+    totalPriceCents: computeTotalCents(
+      booking.totalPriceCents,
+      booking.bookingRooms,
+      booking.bookingTickets,
+    ),
     createdAt: booking.createdAt.toISOString(),
     deletedAt: booking.deletedAt?.toISOString() ?? null,
   });

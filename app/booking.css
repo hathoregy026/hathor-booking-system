@@ -2820,7 +2820,7 @@
 }
 
 .historia-room-selection {
-  max-width: 48rem;
+  max-width: 64rem;
   margin: 0 auto;
   padding: 0 1rem 2rem;
 }
@@ -2869,6 +2869,121 @@
 .historia-room-card__image {
   min-height: 8rem;
   border-radius: 2px;
+  background-position: center;
+  background-size: cover;
+}
+
+.booking-room-gallery {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr 1fr;
+  grid-template-rows: repeat(2, minmax(9rem, 1fr));
+  gap: 0.5rem;
+  min-height: 25rem;
+  margin: -1.5rem 0 3rem;
+}
+
+.booking-room-gallery__item {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--booking-bg-alt);
+}
+
+.booking-room-gallery__item--1 {
+  grid-row: 1 / 3;
+}
+
+.booking-room-gallery__item--2 {
+  grid-row: 1 / 3;
+}
+
+.booking-room-gallery__item img {
+  transition: transform 600ms ease;
+}
+
+.booking-room-gallery__item:hover img {
+  transform: scale(1.025);
+}
+
+.booking-room-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-bottom: 2.5rem;
+  border-block: 1px solid var(--booking-border);
+}
+
+.booking-room-facts > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.75rem;
+  padding: 1.15rem 1rem;
+}
+
+.booking-room-facts > div + div {
+  border-left: 1px solid var(--booking-border);
+}
+
+.booking-room-facts svg {
+  grid-row: 1 / 3;
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--booking-gold-dark);
+}
+
+.booking-room-facts dt {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--booking-muted);
+}
+
+.booking-room-facts dd {
+  margin-top: 0.2rem;
+  font-family: var(--booking-serif);
+  font-size: 0.95rem;
+  color: var(--booking-text);
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .booking-room-gallery {
+    min-height: 21rem;
+    margin-top: -1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-room-gallery {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 14rem 8rem;
+    min-height: 0;
+    margin: -1.25rem -1rem 2.25rem;
+    gap: 0.3rem;
+  }
+
+  .booking-room-gallery__item--1 {
+    grid-column: 1 / 3;
+    grid-row: 1;
+  }
+
+  .booking-room-gallery__item--2,
+  .booking-room-gallery__item--3 {
+    grid-row: 2;
+  }
+
+  .booking-room-gallery__item--4 {
+    display: none;
+  }
+
+  .booking-room-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-room-facts > div + div {
+    border-top: 1px solid var(--booking-border);
+    border-left: 0;
+  }
 }
 
 .historia-room-card__name {

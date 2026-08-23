@@ -98,12 +98,38 @@ export function roomMatchesConfig(
   );
 }
 
+/** Room category is chosen after dates; search only enforces occupancy policy. */
+export function roomCanHostGuests(
+  room: AvailabilityRoomRecord,
+  config: RoomSearchConfig,
+): boolean {
+  const guestCount = config.adults + config.children;
+  const isLuxuryRoom = roomMatchesLuxuryType(room.roomType, "luxury-rooms");
+
+  return room.capacity >= guestCount && !(isLuxuryRoom && config.children > 0);
+}
+
+export function sortRoomsForBooking(
+  rooms: AvailabilityRoomRecord[],
+): AvailabilityRoomRecord[] {
+  const order = (room: AvailabilityRoomRecord) => {
+    const identity = `${room.name} ${room.roomType ?? ""}`.toLowerCase();
+    if (identity.includes("king")) return 0;
+    if (identity.includes("twin")) return 1;
+    if (identity.includes("royal") || identity.includes("presidential")) return 3;
+    if (identity.includes("suite") || identity.includes("deluxe")) return 2;
+    return 4;
+  };
+
+  return [...rooms].sort((a, b) => order(a) - order(b));
+}
+
 export function filterRoomsForConfigs(
   rooms: AvailabilityRoomRecord[],
   configs: RoomSearchConfig[],
 ): AvailabilityRoomRecord[] {
   return rooms.filter((room) =>
-    configs.some((config) => roomMatchesConfig(room, config)),
+    configs.some((config) => roomCanHostGuests(room, config)),
   );
 }
 
@@ -111,7 +137,7 @@ function countMatchingRooms(
   rooms: AvailabilityRoomRecord[],
   config: RoomSearchConfig,
 ): number {
-  return rooms.filter((room) => roomMatchesConfig(room, config)).length;
+  return rooms.filter((room) => roomCanHostGuests(room, config)).length;
 }
 
 /** Whether distinct available rooms can satisfy every requested room configuration. */
@@ -127,7 +153,7 @@ export function canAssignRoomConfigs(
   for (const config of sortedConfigs) {
     const match = rooms.find(
       (room) =>
-        !usedRoomIds.has(room.id) && roomMatchesConfig(room, config),
+        !usedRoomIds.has(room.id) && roomCanHostGuests(room, config),
     );
 
     if (!match) return false;

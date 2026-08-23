@@ -49,7 +49,11 @@ export async function POST(request: NextRequest) {
           cruiseId: parsed.cruiseId,
           deletedAt: null,
         },
-        select: { id: true },
+        select: {
+          id: true,
+          priceMultiplier: true,
+          cruise: { select: { basePriceCents: true } },
+        },
       });
 
       if (rooms.length !== parsed.roomIds.length) {
@@ -60,6 +64,19 @@ export async function POST(request: NextRequest) {
 
       const holdExpiresAt = addUtcMinutes(15);
       const now = utcNow();
+      const roomPrices = new Map(
+        rooms.map((room) => {
+          const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;
+          return [
+            room.id,
+            Math.round(room.cruise.basePriceCents * multiplier),
+          ] as const;
+        }),
+      );
+      const totalPriceCents = parsed.roomIds.reduce(
+        (sum, roomId) => sum + (roomPrices.get(roomId) ?? 0),
+        0,
+      );
 
       const blocked = await prisma.bookingRoom.findMany({
         where: {
@@ -93,6 +110,9 @@ export async function POST(request: NextRequest) {
           cruiseScheduleId: parsed.cruiseScheduleId,
           status: BookingStatus.PENDING_HOLD,
           holdExpiresAt,
+          totalPriceCents,
+          currency: "USD",
+          priceSnapshotAt: now,
         },
         select: { id: true, status: true },
       });
@@ -103,6 +123,7 @@ export async function POST(request: NextRequest) {
             bookingId: booking.id,
             roomId,
             cruiseScheduleId: parsed.cruiseScheduleId,
+            unitPriceCents: roomPrices.get(roomId),
           })),
         });
       } catch (error) {

@@ -54,8 +54,10 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
   }[];
   bookingTickets: {
     quantity: number;
+    unitPriceCents: number | null;
     ticketType: { priceCents: number };
   }[];
+  totalPriceCents: number | null;
 }): BookingEmailDetails | null {
   const email = booking.customerEmail?.trim();
   if (!email) return null;
@@ -65,10 +67,14 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
     booking.bookingRooms[0]?.room.roomType ??
     booking.bookingRooms[0]?.room.name ??
     "Luxury accommodation";
-  const totalPriceCents = booking.bookingTickets.reduce(
-    (sum, ticket) => sum + ticket.quantity * ticket.ticketType.priceCents,
+  const ticketFallbackCents = booking.bookingTickets.reduce(
+    (sum, ticket) =>
+      sum +
+      ticket.quantity *
+        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
     0,
   );
+  const totalPriceCents = booking.totalPriceCents ?? ticketFallbackCents;
 
   return {
     bookingId: booking.id,

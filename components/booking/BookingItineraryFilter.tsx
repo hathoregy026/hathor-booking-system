@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Baby,
@@ -18,18 +18,13 @@ import {
 import { useRouter } from "next/navigation";
 import {
   createDefaultRoomConfigs,
-  durationSupportsRoomType,
   findStayDurationOption,
-  LUXURY_ROOM_TYPE_OPTIONS,
-  normalizeRoomConfigsForDuration,
   STAY_DURATION_OPTIONS,
-  type LuxuryRoomTypeValue,
   type RoomSearchConfig,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
 import {
   clampRoomSearchConfig,
-  getMaxCapacityForLuxuryType,
 } from "@/lib/room-capacity";
 
 const PRIVATE_CHARTER_OPTION = "private-charter" as const;
@@ -147,9 +142,6 @@ export function BookingItineraryFilter({
 
   const handleDurationChange = (nextDuration: StayDurationValue) => {
     setDuration(nextDuration);
-    setRoomConfigs((current) =>
-      normalizeRoomConfigsForDuration(nextDuration, current),
-    );
     setError(null);
   };
 
@@ -178,16 +170,10 @@ export function BookingItineraryFilter({
     });
   };
 
-  const handleRoomTypeChange = (roomType: LuxuryRoomTypeValue) => {
-    setRoomConfigs((current) =>
-      current.map((room) => clampRoomSearchConfig({ ...room, roomType })),
-    );
-  };
-
   const updatePrimaryRoomGuests = (patch: Partial<RoomSearchConfig>) => {
     setRoomConfigs((current) => {
       const next = [...current];
-      next[0] = clampRoomSearchConfig({ ...next[0], ...patch });
+      next[0] = { ...next[0], ...patch };
       return next;
     });
   };
@@ -203,25 +189,12 @@ export function BookingItineraryFilter({
     }
     onApply({
       duration,
-      roomConfigs: normalizeRoomConfigsForDuration(duration, roomConfigs),
+      roomConfigs,
     });
   };
 
   const primaryRoom = roomConfigs[0];
-  const maxGuestsRoom1 = primaryRoom
-    ? getMaxCapacityForLuxuryType(primaryRoom.roomType)
-    : 4;
-  const roomTypeLabel =
-    LUXURY_ROOM_TYPE_OPTIONS.find(
-      (option) => option.value === primaryRoom?.roomType,
-    )?.label ?? "Select";
-  const accommodationOptions = useMemo(
-    () =>
-      LUXURY_ROOM_TYPE_OPTIONS.filter((option) =>
-        durationSupportsRoomType(duration, option.value),
-      ),
-    [duration],
-  );
+  const maxGuestsRoom1 = 4;
 
   return (
     <section className="hathor-voyage-stage" aria-label="Guests and itinerary">
@@ -303,7 +276,7 @@ export function BookingItineraryFilter({
                 </div>
               </div>
 
-              <div className="hathor-voyage-card__pair">
+              <div className="hathor-voyage-card__pair hathor-voyage-card__pair--itinerary">
                 <div className="hathor-voyage-field">
                   <label
                     htmlFor="booking-filter-embarkation"
@@ -337,36 +310,12 @@ export function BookingItineraryFilter({
                   </div>
                 </div>
 
-                <div className="hathor-voyage-field">
-                  <label
-                    htmlFor="booking-filter-accommodation"
-                    className="hathor-voyage-field__label"
-                  >
-                    Accommodation
-                  </label>
-                  <div className="hathor-voyage-field__control">
-                    <BedDouble
-                      className="hathor-voyage-field__icon"
-                      aria-hidden
-                      strokeWidth={1.5}
-                    />
-                    <select
-                      id="booking-filter-accommodation"
-                      className="hathor-voyage-field__select"
-                      value={primaryRoom?.roomType ?? ""}
-                      onChange={(event) =>
-                        handleRoomTypeChange(
-                          event.target.value as LuxuryRoomTypeValue,
-                        )
-                      }
-                    >
-                      {accommodationOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="hathor-voyage-field hathor-voyage-field--choice-note">
+                  <span className="hathor-voyage-field__label">Accommodation</span>
+                  <p className="hathor-voyage-field__readonly">
+                    <BedDouble className="hathor-voyage-field__icon" aria-hidden strokeWidth={1.5} />
+                    <span>Choose King, Twin, Suite or Royal after selecting dates</span>
+                  </p>
                 </div>
               </div>
 
@@ -497,7 +446,7 @@ export function BookingItineraryFilter({
             </div>
             <div>
               <dt>Accommodation</dt>
-              <dd>{roomTypeLabel}</dd>
+              <dd>Choose after dates</dd>
             </div>
             <div>
               <dt>Preference</dt>
