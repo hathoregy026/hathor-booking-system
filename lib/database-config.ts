@@ -18,10 +18,22 @@ export type DatabasePoolConfig = {
   maxUses: number;
 };
 
-const DEFAULT_CONNECTION_LIMIT = 5;
+/**
+ * Raised from 5. With 5, a single Next page render (layout CMS read + page
+ * data + parallel component queries) could saturate the pool, and callers then
+ * waited pool_timeout before failing. The database itself allows 60.
+ */
+const DEFAULT_CONNECTION_LIMIT = 10;
 const DEFAULT_POOL_TIMEOUT_SEC = 15;
 const DEFAULT_CONNECT_TIMEOUT_SEC = 10;
-const DEFAULT_IDLE_TIMEOUT_MS = 5_000;
+/**
+ * Raised from 5_000. A 5-second idle timeout discarded every connection
+ * between page loads, so almost every request had to open new ones. Where
+ * opening a connection is slow or unreliable, that turned an occasional
+ * problem into a constant one. 30s keeps connections warm across a browsing
+ * session while still releasing them well before the pooler would.
+ */
+const DEFAULT_IDLE_TIMEOUT_MS = 30_000;
 const DEFAULT_MAX_USES = 100;
 
 function parsePositiveInt(

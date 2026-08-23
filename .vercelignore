@@ -17,3 +17,7 @@ build-output.txt
 scripts/out-*
 node_modules
 .git
+backups/
+scripts/diagnose-*
+hathoor-booking.json
+assets/LOGOS/*.ai
