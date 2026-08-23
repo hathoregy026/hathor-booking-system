@@ -72,6 +72,28 @@ export function BookingFlow() {
     [],
   );
 
+  /**
+   * MUST stay above the early returns below.
+   *
+   * React requires every render to call the same hooks in the same order.
+   * This useMemo previously sat *after* `if (isSuccess) return ...`, so the
+   * moment a booking succeeded the component returned early, ran one fewer
+   * hook than the previous render, and React threw error #300 ("Rendered
+   * fewer hooks than expected") — which surfaced to the guest as
+   * "This page couldn't load", immediately after their booking was saved.
+   */
+  const maxReachableStep = useMemo((): HistoriaBookingStep => {
+    if (selectedRoomIds.length > 0) return 4;
+    if (searchAttempted && availableRooms.length > 0) return 3;
+    if (itineraryConfigured) return 2;
+    return 1;
+  }, [
+    availableRooms.length,
+    itineraryConfigured,
+    searchAttempted,
+    selectedRoomIds.length,
+  ]);
+
   if (isSuccess) {
     return (
       <div className="mx-auto max-w-2xl">
@@ -165,18 +187,6 @@ export function BookingFlow() {
     selectedDateKey && duration
       ? formatCompactStayLabel(selectedDateKey, duration)
       : null;
-
-  const maxReachableStep = useMemo((): HistoriaBookingStep => {
-    if (selectedRoomIds.length > 0) return 4;
-    if (searchAttempted && availableRooms.length > 0) return 3;
-    if (itineraryConfigured) return 2;
-    return 1;
-  }, [
-    availableRooms.length,
-    itineraryConfigured,
-    searchAttempted,
-    selectedRoomIds.length,
-  ]);
 
   const handleStepNavigate = (step: HistoriaBookingStep) => {
     if (step > maxReachableStep || step === checkoutStep) return;
