@@ -49,9 +49,11 @@ smallest change that satisfies an invariant, and say what you verified.
   whenever pricing code is touched.
 - Prices are integer cents everywhere in storage and transport. Dollars appear only in
   the UI layer (`MoneyInput`, `formatPrice`). Never store a float.
-- Cabin price = `cruise.basePriceCents × room.priceMultiplier`. Multipliers are
-  1.0 room / 1.5 suite / 1.8 royal suite, and reproduce the published tiers exactly.
-  Do not "fix" a price by editing a multiplier without checking all nine tiers.
+- Cabin price = `cruise.basePriceCents × room.priceMultiplier`. Published tier ratios:
+  **4-night and 7-night** — 1.0 room / 1.5 suite / 1.8 royal suite. **3-night** has no
+  luxury rooms; suite = 1.0×, royal suite = **1.2×** (not 1.8). Multipliers are derived
+  from catalog `priceCents / basePriceCents` at seed time — do not "fix" a price by
+  editing a multiplier without checking all nine tiers.
 
 ## Availability rules
 
