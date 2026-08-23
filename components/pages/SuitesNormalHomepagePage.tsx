@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { usePublicTheme } from "@/components/public/PublicThemeProvider";
+import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import {
   SUITES_CLIP_FIX_CSS,
@@ -34,6 +36,7 @@ function buildSuitesLiveCss(cmsCss = "") {
     SUITES_TERMS_STAGE_CSS,
     SUITES_COLLECTION_PANEL_CSS,
     SUITES_EDITORIAL_CHROME_CSS,
+    EMBEDDED_PUBLIC_THEME_CSS,
   ].join("\n");
 }
 
@@ -258,11 +261,14 @@ function applyImages(doc: Document, images: Record<string, string>) {
 
 export function SuitesNormalHomepagePage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { theme } = usePublicTheme();
 
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
     const doc = iframe?.contentDocument;
     if (!doc?.head) return;
+
+    doc.documentElement.dataset.publicTheme = theme;
 
     if (!doc.getElementById("hathor-font-faces")) {
       const fonts = doc.createElement("link");
@@ -330,7 +336,11 @@ export function SuitesNormalHomepagePage() {
     } catch {
       /* Clip-fix still applies if CMS is unreachable. */
     }
-  }, []);
+  }, [theme]);
+
+  useEffect(() => {
+    void apply();
+  }, [apply]);
 
   return (
     <main className="suites-normal-clone" aria-label="Hathor Suites">

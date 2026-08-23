@@ -442,3 +442,437 @@ html[data-public-theme="night"] .public-theme-toggle__thumb {
 .public-site .hathor-header .public-theme-toggle__label {
   color: #f2efe6 !important;
 }
+
+/* ==========================================================================
+   HATHOR NIGHT V2 — semantic warm-dark system
+   --------------------------------------------------------------------------
+   This final layer intentionally supersedes the original experimental glass
+   theme above. Every selector is night-only. It changes color, borders and
+   shadows only; geometry, typography, media and motion remain untouched.
+   ========================================================================== */
+
+html[data-public-theme="night"] {
+  color-scheme: dark;
+  --night-canvas: #0f0d0a;
+  --night-surface: #17130f;
+  --night-surface-raised: #211b14;
+  --night-surface-soft: #2a2219;
+  --night-text: #f4eddf;
+  --night-text-soft: #d2c7b5;
+  --night-muted: #a99c88;
+  --night-gold: #c9ad72;
+  --night-gold-strong: #ddc78f;
+  --night-line: rgb(201 173 114 / 24%);
+  --night-line-soft: rgb(244 237 223 / 10%);
+  --night-shadow: 0 18px 60px rgb(0 0 0 / 42%);
+  --night-atmosphere:
+    radial-gradient(circle at 16% -12%, rgb(201 173 114 / 11%), transparent 34rem),
+    radial-gradient(circle at 92% 18%, rgb(128 107 53 / 8%), transparent 30rem),
+    linear-gradient(180deg, #12100c 0%, var(--night-canvas) 42%, #0c0a08 100%);
+
+  --bg-gradient: var(--night-atmosphere);
+  --surface-glass: rgb(23 19 15 / 92%);
+  --border-lux: 1px solid var(--night-line);
+  --text-silk: var(--night-text);
+  --text-muted: var(--night-muted);
+  --accent-gold: var(--night-gold);
+  --glass-shadow: var(--night-shadow);
+  --bg-main: var(--night-canvas);
+  --bg-surface: var(--night-surface);
+  --bg-hover: var(--night-surface-soft);
+  --text-main: var(--night-text);
+  --accent: var(--night-gold);
+  --bg-dark: var(--night-canvas);
+  --bg-dark-surface: var(--night-surface-raised);
+  --text-primary: var(--night-text);
+  --text-secondary: var(--night-muted);
+  --public-bg: var(--night-canvas);
+  --public-surface: var(--night-surface);
+  --public-card: var(--night-surface-raised);
+  --public-text: var(--night-text);
+  --public-muted: var(--night-muted);
+  --public-border: var(--night-line);
+  --public-gold: var(--night-gold);
+  --public-gold-hover: var(--night-gold-strong);
+  --hieroglyph-cream: var(--night-canvas);
+  --hieroglyph-opacity: 0.022;
+  --hathor-dark: var(--night-canvas);
+  --hathor-dark-2: var(--night-surface);
+  --hathor-surface: var(--night-surface-raised);
+  --hathor-cream: var(--night-text);
+  --hathor-text-light: var(--night-text-soft);
+  --hathor-muted: var(--night-muted);
+  --hathor-accent: var(--night-gold);
+}
+
+html[data-public-theme="night"],
+html[data-public-theme="night"] body {
+  background-color: var(--night-canvas) !important;
+  background-image: var(--night-atmosphere) !important;
+  color: var(--night-text-soft);
+  letter-spacing: normal;
+}
+
+html[data-public-theme="night"] :is(
+    .public-site,
+    .hathor-site,
+    .preview-site,
+    .public-main,
+    .page-transition,
+    .public-page-body,
+    .home-experience-route
+  ) {
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text-soft);
+  letter-spacing: normal;
+}
+
+/* Homepage paper and section surfaces. */
+html[data-public-theme="night"][data-ex-experience][data-ex-experience] .ex-root {
+  --ex-cream: var(--night-canvas) !important;
+  --cream: var(--night-canvas) !important;
+  --cream-deep: var(--night-surface) !important;
+  --ink: var(--night-text) !important;
+  --ink-soft: var(--night-text-soft) !important;
+  --muted: var(--night-muted) !important;
+  --blush: var(--night-surface-raised) !important;
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"][data-ex-experience] .ex-root :is(
+    .gallery-section,
+    .testimonials-section,
+    .cta-section
+  ) {
+  background-color: var(--night-surface) !important;
+  color: var(--night-text-soft);
+}
+
+/* Editorial page token remaps. */
+html[data-public-theme="night"] .voyages-boring {
+  --vb-cream-1: var(--night-canvas);
+  --vb-cream-2: var(--night-surface-raised);
+  --vb-gold-1: var(--night-gold-strong);
+  --vb-gold-2: var(--night-gold);
+  --vb-gold-3: var(--night-text-soft);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] .about-boring {
+  --ab-paper: var(--night-canvas);
+  --ab-paper-warm: var(--night-surface);
+  --ab-ink: var(--night-text);
+  --ab-ink-soft: var(--night-text-soft);
+  --ab-gold: var(--night-gold);
+  --ab-gold-deep: var(--night-gold-strong);
+  --ab-wash-sand: var(--night-surface-raised);
+  --ab-wash-stone: var(--night-surface-soft);
+  --ab-wash-olive: #30291c;
+  --ab-black: #080705;
+  --ab-hair: var(--night-line);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .contact-editorial {
+  --ce-paper: var(--night-canvas);
+  --ce-paper-warm: var(--night-surface);
+  --ce-ink: var(--night-text);
+  --ce-ink-soft: var(--night-text-soft);
+  --ce-gold: var(--night-gold);
+  --ce-gold-deep: var(--night-gold-strong);
+  --ce-wash-sand: var(--night-surface-raised);
+  --ce-wash-stone: var(--night-surface-soft);
+  --ce-wash-olive: #30291c;
+  --ce-black: #080705;
+  --ce-hair: var(--night-line);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .wellness-boring {
+  --wb-gold: var(--night-gold);
+  --wb-gold-deep: var(--night-gold-strong);
+  --wb-ink: var(--night-text);
+  --wb-cream: var(--night-surface);
+  --wb-paper: var(--night-canvas);
+  --wb-black: #080705;
+  --wb-blue: #1c201f;
+  --wb-grey: var(--night-surface-raised);
+  --wb-red: #6f3b31;
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .cr-intro {
+  --cr-gold: var(--night-gold);
+  --cr-gold-deep: var(--night-gold-strong);
+  --cr-ink: var(--night-text);
+  --cr-paper: var(--night-canvas);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .mask-reveal-route {
+  --mr-cream: var(--night-canvas);
+  --mr-cream-deep: var(--night-surface);
+  --mr-cream-soft: var(--night-surface-raised);
+  --mr-gold: var(--night-gold);
+  --mr-gold-soft: var(--night-gold-strong);
+  --mr-ink: var(--night-text);
+  --mr-muted: rgb(210 199 181 / 72%);
+  --mr-line: var(--night-line);
+  --mr-card-line: var(--night-line-soft);
+}
+
+html[data-public-theme="night"] :is(.mask-reveal-page, .mr-filters-desktop, .mr-filters) {
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] :is([data-charter-page], [data-highlights-page]) {
+  --lx-ink: var(--night-text);
+  --lx-ivory: var(--night-canvas);
+  --lx-gold: var(--night-gold);
+  --lx-gold-soft: var(--night-gold-strong);
+  --lx-text: var(--night-text);
+  --lx-muted: var(--night-muted);
+  --lx-copy-light: rgb(244 237 223 / 78%);
+  --lx-border: var(--night-line);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] :is(.gastronomy-dining-shell, .nib-dining) {
+  --nib-gold: var(--night-gold);
+  --nib-gold-deep: var(--night-gold-strong);
+  --nib-cream: var(--night-text-soft);
+  --nib-cream-soft: var(--night-surface-raised);
+  --nib-night: var(--night-canvas);
+  background-color: var(--night-canvas) !important;
+}
+
+html[data-public-theme="night"] :is(
+  .voyages-boring,
+  .about-boring,
+  .contact-editorial,
+  .wellness-boring,
+  .cr-intro,
+  .nib-dining,
+  [data-charter-page],
+  [data-highlights-page]
+) {
+  --ed-meta-color: var(--night-gold);
+  --ed-copy-color: rgb(244 237 223 / 82%);
+  --ed-copy-on-dark: var(--night-text);
+}
+
+html[data-public-theme="night"] .voyages-boring .vb-intro__body,
+html[data-public-theme="night"] .about-boring .ab-intro__body,
+html[data-public-theme="night"] .contact-editorial .ce-intro__body,
+html[data-public-theme="night"] .wellness-boring .wb-intro__body,
+html[data-public-theme="night"] .cr-intro .cr-intro__body,
+html[data-public-theme="night"] .nib-dining .nib-intro__copy {
+  color: rgb(244 237 223 / 82%) !important;
+}
+
+html[data-public-theme="night"] .nib-surface--cream {
+  background-color: var(--night-canvas) !important;
+  background-image: radial-gradient(circle at 68% 38%, rgb(201 173 114 / 9%), transparent 32%) !important;
+}
+
+html[data-public-theme="night"] .suites-native-route {
+  --sn-cream: var(--night-canvas);
+  --sn-cream-deep: var(--night-surface);
+  --sn-cream-soft: var(--night-surface-raised);
+  --sn-hero-cream: var(--night-text-soft);
+  --sn-gold: var(--night-gold);
+  --sn-gold-soft: var(--night-gold-strong);
+  --sn-gold-deep: var(--night-gold-strong);
+  --sn-ink: var(--night-text);
+  --sn-on-bg: var(--night-text);
+  --sn-on-bg-muted: var(--night-muted);
+  --sn-muted: var(--night-muted);
+  --sn-line: var(--night-line);
+  --sn-card-line: var(--night-line-soft);
+  --sn-page-atmosphere: var(--night-atmosphere);
+}
+
+html[data-public-theme="night"] :is(.suites-native-shell, .suites-normal-clone) {
+  background-color: var(--night-canvas) !important;
+  background-image: var(--night-atmosphere) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] :is(.venetian-page, .page-accommodation, .page-cruises) {
+  --cream: var(--night-canvas);
+  --cream-deep: var(--night-surface);
+  --ink: var(--night-text);
+  --ink-soft: var(--night-text-soft);
+  --muted: var(--night-muted);
+  --lux-paper: var(--night-canvas);
+  --lux-paper-deep: var(--night-surface);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text-soft) !important;
+}
+
+/* Page-owned host canvases use hardcoded day colors; night must win them. */
+html[data-public-theme="night"]:has(.voyages-boring),
+html[data-public-theme="night"]:has(.voyages-boring) body,
+html[data-public-theme="night"]:has(.voyages-boring) :is(.public-site, .public-main),
+html[data-public-theme="night"]:has(.about-boring),
+html[data-public-theme="night"]:has(.about-boring) body,
+html[data-public-theme="night"]:has(.about-boring) :is(.public-site, .public-main),
+html[data-public-theme="night"]:has(.contact-editorial),
+html[data-public-theme="night"]:has(.contact-editorial) body,
+html[data-public-theme="night"]:has(.contact-editorial) :is(.public-site, .public-main),
+html[data-public-theme="night"]:has(.wellness-boring),
+html[data-public-theme="night"]:has(.wellness-boring) body,
+html[data-public-theme="night"]:has(.wellness-boring) :is(.public-site, .public-main),
+html[data-public-theme="night"][data-mask-reveal],
+html[data-public-theme="night"][data-mask-reveal] body,
+html[data-public-theme="night"][data-mask-reveal] .public-site,
+html[data-public-theme="night"][data-gastronomy-dining],
+html[data-public-theme="night"][data-gastronomy-dining] body {
+  background-color: var(--night-canvas) !important;
+  background-image: var(--night-atmosphere) !important;
+  color: var(--night-text-soft) !important;
+}
+
+/* One dark chrome across every public route. */
+html[data-public-theme="night"] .hathor-header,
+html[data-public-theme="night"]:has(.voyages-boring) .hathor-header,
+html[data-public-theme="night"]:has(.about-boring) .hathor-header,
+html[data-public-theme="night"]:has(.contact-editorial) .hathor-header,
+html[data-public-theme="night"]:has(.wellness-boring) .hathor-header,
+html[data-public-theme="night"]:has(.cr-intro) .hathor-header {
+  background: rgb(15 13 10 / 88%) !important;
+  border-color: var(--night-line-soft) !important;
+  box-shadow: 0 1px 0 var(--night-line-soft) !important;
+  color: var(--night-text) !important;
+  backdrop-filter: blur(16px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(0.9) !important;
+}
+
+html[data-public-theme="night"] .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.voyages-boring) .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.about-boring) .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.contact-editorial) .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.wellness-boring) .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.cr-intro) .hathor-header :is(a, button) {
+  color: var(--night-text) !important;
+  text-shadow: none !important;
+}
+
+html[data-public-theme="night"] body .public-site .hathor-header img.hathor-header__logo--icon {
+  filter: brightness(0) invert(93%) sepia(14%) saturate(360%) hue-rotate(350deg) brightness(102%) contrast(92%) !important;
+}
+
+/* Editorial menu sheets. */
+html[data-public-theme="night"] .eno {
+  --eno-cream: var(--night-surface);
+  --eno-cream-deep: var(--night-canvas);
+  --eno-gold: var(--night-gold);
+  --eno-gold-deep: var(--night-gold-strong);
+  --eno-ink: var(--night-text);
+  --eno-muted: var(--night-muted);
+  --eno-line: var(--night-line);
+}
+
+html[data-public-theme="night"] .eno-prelayer--1 { background: #302719 !important; }
+html[data-public-theme="night"] .eno-prelayer--2 { background: #231c14 !important; }
+html[data-public-theme="night"] .eno-prelayer--3 { background: var(--night-canvas) !important; }
+html[data-public-theme="night"] .eno-panel { background: var(--night-surface) !important; }
+
+/* Footer, cards and elevated surfaces. */
+html[data-public-theme="night"] :is(.owo-footer, .lux-footer) {
+  background-color: #0b0907 !important;
+  background-image: linear-gradient(180deg, #12100c, #0b0907) !important;
+  border-color: var(--night-line) !important;
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .hathor-header__dropdown-list,
+    .hathor-cruise-card,
+    .lux-cta-band,
+    .hathor-collage__panel,
+    .hathor-page-hero__content,
+    [data-page-transition] .pt-hero__copy,
+    .preview-hero__inner,
+    .owo-hero__inner
+  ) {
+  background-color: var(--night-surface-raised) !important;
+  border-color: var(--night-line) !important;
+  color: var(--night-text-soft) !important;
+  box-shadow: var(--night-shadow);
+}
+
+/* Standard accessible dark form controls. */
+html[data-public-theme="night"] .public-site :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    textarea,
+    select
+  ) {
+  background-color: var(--night-surface-raised) !important;
+  border-color: var(--night-line) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .public-site :is(input, textarea)::placeholder {
+  color: var(--night-muted) !important;
+  opacity: 1;
+}
+
+html[data-public-theme="night"] .public-site :is(input, textarea, select):focus-visible {
+  border-color: var(--night-gold) !important;
+  outline: 2px solid rgb(201 173 114 / 34%);
+  outline-offset: 2px;
+}
+
+html[data-public-theme="night"] .public-site :is(
+    .public-btn-gold,
+    .public-btn-outline-gold,
+    .btn-primary:not(.hero-cta)
+  ) {
+  background-color: transparent !important;
+  border-color: var(--night-gold) !important;
+  color: var(--night-gold-strong) !important;
+  box-shadow: none !important;
+}
+
+html[data-public-theme="night"] .public-site :is(
+    .public-btn-gold,
+    .public-btn-outline-gold,
+    .btn-primary:not(.hero-cta)
+  ):hover {
+  background-color: var(--night-gold) !important;
+  color: var(--night-canvas) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .public-fab__book,
+    .public-fab__chat-main,
+    .public-fab__icon-btn
+  ) {
+  background-color: var(--night-surface-raised) !important;
+  border-color: var(--night-line) !important;
+  color: var(--night-gold-strong) !important;
+  box-shadow: 0 10px 34px rgb(0 0 0 / 38%) !important;
+}
+
+html[data-public-theme="night"] .public-theme-toggle {
+  color: var(--night-gold) !important;
+}
+
+html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-toggle__track {
+  background: var(--night-surface-raised) !important;
+  border-color: var(--night-gold) !important;
+}
+
+html[data-public-theme="night"] ::selection {
+  background: var(--night-gold);
+  color: var(--night-canvas);
+}
