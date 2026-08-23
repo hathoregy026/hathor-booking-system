@@ -6,12 +6,15 @@ import {
   ChevronDown,
   ChevronRight,
   Loader2,
+  Pencil,
   Plus,
   RotateCcw,
   Save,
   Trash2,
 } from "lucide-react";
 import { ActionButton } from "@/components/admin/ActionButton";
+import { RowActions, type RowAction } from "@/components/admin/RowActions";
+import { MoneyInput } from "@/components/admin/MoneyInput";
 import { useToast } from "@/components/admin/ToastProvider";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { getPermanentDeleteDate } from "@/lib/booking-retention";
@@ -570,74 +573,82 @@ export default function AdminCruisesPage() {
         <div className="admin-card p-4 sm:p-6">
           <h2 className="admin-heading text-sm">Add New Cruise</h2>
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <label className="block text-sm sm:col-span-2">
-              <span
-                className="mb-1 block font-medium"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Name
-              </span>
+            <div className="admin-field sm:col-span-2">
               <input
+                id="new-cruise-name"
                 value={newCruise.name}
                 onChange={handleNameChange}
-                placeholder="Cruise name"
-                className="admin-input w-full px-3 py-2 text-sm"
+                placeholder=" "
+                className="admin-input w-full text-sm"
               />
-            </label>
-            <label className="block text-sm sm:col-span-2">
-              <span
-                className="mb-1 block font-medium"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Slug{" "}
-                <span
-                  className="font-normal"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  (optional)
-                </span>
-              </span>
+              <label className="admin-field__label" htmlFor="new-cruise-name">
+                Name
+              </label>
+            </div>
+
+            <div className="admin-field sm:col-span-2">
               <input
+                id="new-cruise-slug"
                 value={newCruise.slug}
                 onChange={handleSlugChange}
-                placeholder="nile-sunset-cruise"
-                className="admin-input w-full px-3 py-2 text-sm font-mono"
+                placeholder=" "
+                className="admin-input w-full font-mono text-sm"
               />
-            </label>
-            <input
-              value={newCruise.ports}
-              onChange={(event) =>
+              <label className="admin-field__label" htmlFor="new-cruise-slug">
+                Slug (optional)
+              </label>
+            </div>
+
+            <div className="admin-field">
+              <input
+                id="new-cruise-ports"
+                value={newCruise.ports}
+                onChange={(event) =>
+                  setNewCruise((current) => ({
+                    ...current,
+                    ports: event.target.value,
+                  }))
+                }
+                placeholder=" "
+                className="admin-input w-full text-sm"
+              />
+              <label className="admin-field__label" htmlFor="new-cruise-ports">
+                Ports (e.g. Luxor, Aswan)
+              </label>
+            </div>
+
+            <MoneyInput
+              id="new-cruise-price"
+              label="Base price"
+              valueCents={newCruise.basePriceCents}
+              onChangeCents={(cents) =>
                 setNewCruise((current) => ({
                   ...current,
-                  ports: event.target.value,
+                  basePriceCents: cents,
                 }))
               }
-              placeholder="Ports (e.g. Luxor, Aswan)"
-              className="admin-input rounded-lg px-3 py-2 text-sm"
             />
-            <input
-              type="number"
-              value={newCruise.basePriceCents}
-              onChange={(event) =>
-                setNewCruise((current) => ({
-                  ...current,
-                  basePriceCents: Number(event.target.value),
-                }))
-              }
-              placeholder="Base price (cents)"
-              className="admin-input rounded-lg px-3 py-2 text-sm"
-            />
-            <input
-              value={newCruise.description}
-              onChange={(event) =>
-                setNewCruise((current) => ({
-                  ...current,
-                  description: event.target.value,
-                }))
-              }
-              placeholder="Description"
-              className="admin-input rounded-lg px-3 py-2 text-sm"
-            />
+
+            <div className="admin-field sm:col-span-2">
+              <input
+                id="new-cruise-description"
+                value={newCruise.description}
+                onChange={(event) =>
+                  setNewCruise((current) => ({
+                    ...current,
+                    description: event.target.value,
+                  }))
+                }
+                placeholder=" "
+                className="admin-input w-full text-sm"
+              />
+              <label
+                className="admin-field__label"
+                htmlFor="new-cruise-description"
+              >
+                Description
+              </label>
+            </div>
           </div>
           <button
             type="button"
@@ -690,7 +701,7 @@ export default function AdminCruisesPage() {
 
             return (
               <div key={cruise.id} className="admin-card overflow-hidden">
-                <div className="flex items-start gap-3 px-5 py-4">
+                <div className="flex items-start gap-3 px-4 py-4 sm:px-5">
                   <input
                     type="checkbox"
                     checked={selectedKeys.has(cruiseSelectKey)}
@@ -704,10 +715,12 @@ export default function AdminCruisesPage() {
                     onClick={() =>
                       setExpandedId(isExpanded ? null : cruise.id)
                     }
-                    className="flex min-w-0 flex-1 items-center justify-between text-left transition-colors duration-200 hover:opacity-90"
+                    className="admin-cruise-row__toggle flex min-w-0 flex-1 items-center justify-between gap-3 text-left"
                   >
-                    <div>
-                      <p className="admin-heading font-semibold">{cruise.name}</p>
+                    <div className="min-w-0">
+                      <p className="admin-heading truncate font-semibold">
+                        {cruise.name}
+                      </p>
                       <p className="admin-subheading text-sm">
                         {cruise.rooms.length} rooms · Base{" "}
                         {formatPrice(cruise.basePriceCents)}
@@ -734,29 +747,66 @@ export default function AdminCruisesPage() {
                       />
                     )}
                   </button>
-                  {viewMode === "active" && (
-                    <ActionButton
-                      variant="outline"
-                      icon={Trash2}
-                      onClick={() =>
-                        runBinAction(
-                          "soft-delete",
-                          [cruise.id],
-                          [],
-                          `Move "${cruise.name}" and its rooms to the recycle bin?`,
-                        )
-                      }
-                      disabled={isBulkWorking}
-                      className="shrink-0 px-3 py-1.5 text-xs"
-                    >
-                      Delete
-                    </ActionButton>
-                  )}
+                  <RowActions
+                    label={`Actions for ${cruise.name}`}
+                    disabled={isBulkWorking}
+                    actions={
+                      viewMode === "active"
+                        ? ([
+                            {
+                              label: isExpanded ? "Collapse" : "Edit details",
+                              icon: Pencil,
+                              onSelect: () =>
+                                setExpandedId(isExpanded ? null : cruise.id),
+                            },
+                            {
+                              label: "Move to recycle bin",
+                              icon: Trash2,
+                              tone: "danger",
+                              separated: true,
+                              onSelect: () =>
+                                runBinAction(
+                                  "soft-delete",
+                                  [cruise.id],
+                                  [],
+                                  `Move "${cruise.name}" and its rooms to the recycle bin?`,
+                                ),
+                            },
+                          ] satisfies RowAction[])
+                        : ([
+                            {
+                              label: "Restore",
+                              icon: RotateCcw,
+                              tone: "success",
+                              onSelect: () =>
+                                runBinAction(
+                                  "restore",
+                                  [cruise.id],
+                                  [],
+                                  `Restore "${cruise.name}" and its rooms?`,
+                                ),
+                            },
+                            {
+                              label: "Delete permanently",
+                              icon: Trash2,
+                              tone: "danger",
+                              separated: true,
+                              onSelect: () =>
+                                runBinAction(
+                                  "purge",
+                                  [cruise.id],
+                                  [],
+                                  `Permanently delete "${cruise.name}" and its rooms? This cannot be undone.`,
+                                ),
+                            },
+                          ] satisfies RowAction[])
+                    }
+                  />
                 </div>
 
                 {isExpanded && (
                   <div
-                    className="px-5 py-5"
+                    className="px-4 py-5 sm:px-5"
                     style={{
                       borderTop:
                         "1px solid color-mix(in srgb, var(--border) 50%, transparent)",
@@ -784,26 +834,18 @@ export default function AdminCruisesPage() {
                               className="admin-input w-full px-3 py-2"
                             />
                           </label>
-                          <label className="block text-sm">
-                            <span
-                              className="mb-1 block font-medium"
-                              style={{ color: "var(--text-primary)" }}
-                            >
-                              Base Price (cents)
-                            </span>
-                            <input
-                              type="number"
-                              value={cruise.basePriceCents}
-                              onChange={(event) =>
-                                updateCruiseField(
-                                  cruise.id,
-                                  "basePriceCents",
-                                  Number(event.target.value),
-                                )
-                              }
-                              className="admin-input w-full px-3 py-2"
-                            />
-                          </label>
+                          <MoneyInput
+                            id={`cruise-price-${cruise.id}`}
+                            label="Base price"
+                            valueCents={cruise.basePriceCents}
+                            onChangeCents={(cents) =>
+                              updateCruiseField(
+                                cruise.id,
+                                "basePriceCents",
+                                cents,
+                              )
+                            }
+                          />
                           <label className="block text-sm sm:col-span-2">
                             <span
                               className="mb-1 block font-medium"

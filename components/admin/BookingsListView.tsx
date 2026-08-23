@@ -1,11 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { differenceInDays, format, formatDistanceToNow, parseISO } from "date-fns";
-import { Check, Loader2, Phone, Users, X } from "lucide-react";
+import { Ban, Check, Loader2, Phone, Users } from "lucide-react";
 import { BookingStatus } from "@/app/generated/prisma/enums";
 import { ActionButton } from "@/components/admin/ActionButton";
 import { StatusBadge } from "@/components/admin/DataTable";
+import { RowActions, type RowAction } from "@/components/admin/RowActions";
 import type { AdminBookingDto } from "@/lib/admin-bookings";
 import { isPendingBookingStatus } from "@/lib/admin-bookings";
 import { getPermanentDeleteDate } from "@/lib/booking-retention";
@@ -43,46 +43,6 @@ function getInitials(name: string) {
 function getTripDays(departure: string, arrival: string) {
   const days = differenceInDays(parseISO(arrival), parseISO(departure));
   return Math.max(1, days);
-}
-
-function IconButton({
-  label,
-  onClick,
-  disabled,
-  tone = "default",
-  children,
-}: {
-  label: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  tone?: "default" | "success" | "danger";
-  children: ReactNode;
-}) {
-  const tones = {
-    default: "text-muted hover:bg-[var(--bg-glass-hover)] hover:text-[var(--text-primary)]",
-    success: "hover:opacity-90",
-    danger: "hover:opacity-90",
-  };
-  const color =
-    tone === "success"
-      ? "var(--success)"
-      : tone === "danger"
-        ? "var(--danger)"
-        : undefined;
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      title={label}
-      className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50 ${tones[tone]}`}
-      style={color ? { color } : undefined}
-    >
-      {children}
-    </button>
-  );
 }
 
 function BookingMobileCard({
@@ -459,31 +419,53 @@ export function BookingsListView({
                       )}
                       {viewMode === "active" && (
                         <td className="px-4 py-3">
-                          <div className="flex items-center justify-end gap-1">
-                            {canConfirm && (
-                              <IconButton
-                                label={`Confirm ${booking.guestName}`}
-                                tone="success"
-                                disabled={isUpdating}
-                                onClick={() => onConfirm(booking.id)}
-                              >
-                                {isUpdating ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <Check className="h-4 w-4" strokeWidth={2.2} />
-                                )}
-                              </IconButton>
-                            )}
-                            {canCancel && (
-                              <IconButton
-                                label={`Cancel ${booking.guestName}`}
-                                tone="danger"
-                                disabled={isUpdating}
-                                onClick={() => onCancel(booking.id)}
-                              >
-                                <X className="h-4 w-4" strokeWidth={2.2} />
-                              </IconButton>
-                            )}
+                          <div className="flex items-center justify-end">
+                            {(() => {
+                              const rowActions: RowAction[] = [];
+                              if (canConfirm) {
+                                rowActions.push({
+                                  label: "Confirm booking",
+                                  icon: Check,
+                                  tone: "success",
+                                  onSelect: () => onConfirm(booking.id),
+                                });
+                              }
+                              if (canCancel) {
+                                rowActions.push({
+                                  label: "Cancel booking",
+                                  icon: Ban,
+                                  tone: "danger",
+                                  separated: rowActions.length > 0,
+                                  onSelect: () => onCancel(booking.id),
+                                });
+                              }
+
+                              if (rowActions.length === 0) {
+                                return (
+                                  <span className="text-muted" aria-hidden>
+                                    —
+                                  </span>
+                                );
+                              }
+
+                              return isUpdating ? (
+                                <span
+                                  className="flex h-9 w-9 items-center justify-center"
+                                  role="status"
+                                  aria-label={`Updating ${booking.guestName}`}
+                                >
+                                  <Loader2
+                                    className="h-4 w-4 animate-spin"
+                                    aria-hidden
+                                  />
+                                </span>
+                              ) : (
+                                <RowActions
+                                  label={`Actions for ${booking.guestName}`}
+                                  actions={rowActions}
+                                />
+                              );
+                            })()}
                           </div>
                         </td>
                       )}
