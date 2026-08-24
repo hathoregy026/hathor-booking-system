@@ -853,3 +853,432 @@
     line-height: 1.48 !important;
   }
 }
+
+/* ==========================================================================
+   10. EDITORIAL SECTION TYPE — cap dashboard sizes on tablet + phone
+   --------------------------------------------------------------------------
+   Page titles, indications, body and on-image roles inherit desktop px values
+   with !important from the typography injector. min(var, clamp) keeps the CMS
+   authoritative whenever it fits and only scales down when the line would
+   overflow its column — same contract as section 4 for amenities display type.
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(
+      .typo-page-title,
+      .radius-heading h2,
+      .home-carousel-h2 h2,
+      .gallery-h2 h2,
+      .testimonial-h2 h2,
+      .home-text-h2 h2
+    ) {
+    font-size: min(var(--typo-page-title-size, 44px), clamp(28px, 5.4vw, 44px)) !important;
+    line-height: 1.08 !important;
+    overflow-wrap: break-word;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(.typo-page-subtitle, .home-carousel-h3 h3) {
+    font-size: min(var(--typo-page-subtitle-size, 13px), clamp(11px, 2.8vw, 13px)) !important;
+    letter-spacing: min(var(--typo-page-subtitle-letter-spacing, 4px), 0.28em) !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(.typo-body-text, .radius-p p, .home-text-p p) {
+    font-size: min(var(--typo-body-text-size, 17px), clamp(15px, 3.8vw, 17px)) !important;
+    line-height: 1.62 !important;
+    max-width: 46ch;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(
+      .typo-on-images-title,
+      .ex-stack-scroll__title,
+      .ex-stack-scroll__title-line,
+      .hcta-heading
+    ) {
+    font-size: min(var(--typo-on-images-title-size, 44px), clamp(26px, 7.2vw, 52px)) !important;
+    line-height: 1.04 !important;
+    overflow-wrap: break-word;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(.typo-on-images-indication, .ex-stack-scroll__eyebrow) {
+    font-size: min(var(--typo-on-images-indication-size, 13px), clamp(11px, 2.6vw, 13px)) !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(.typo-on-images-body, .ex-stack-scroll__body, .home-text-p p) {
+    font-size: min(var(--typo-on-images-body-size, 17px), clamp(15px, 3.6vw, 19px)) !important;
+    line-height: 1.55 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(
+      .typo-page-title,
+      .radius-heading h2,
+      .home-carousel-h2 h2,
+      .gallery-h2 h2,
+      .testimonial-h2 h2,
+      .home-text-h2 h2
+    ) {
+    font-size: min(var(--typo-page-title-size, 44px), clamp(26px, 8.2vw, 36px)) !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    :is(
+      .typo-on-images-title,
+      .ex-stack-scroll__title,
+      .ex-stack-scroll__title-line,
+      .hcta-heading
+    ) {
+    font-size: min(var(--typo-on-images-title-size, 44px), clamp(24px, 9vw, 40px)) !important;
+  }
+}
+
+/* ==========================================================================
+   11. ABOUT + TEXT BLOCKS — spacing and measure
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .about-section {
+    padding-top: clamp(56px, 9vw, 88px);
+    padding-bottom: clamp(48px, 7vw, 72px);
+  }
+
+  html[data-ex-experience] .about-layout {
+    gap: clamp(28px, 5vw, 52px);
+  }
+
+  html[data-ex-experience] .radius-p {
+    max-width: none;
+    margin-bottom: clamp(22px, 4vw, 28px);
+  }
+
+  html[data-ex-experience] .text-img-section {
+    padding: clamp(48px, 8vw, 72px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  }
+
+  html[data-ex-experience] .text-img-row + .text-img-row {
+    margin-top: clamp(36px, 6vw, 56px);
+  }
+
+  html[data-ex-experience] .home-text-img-parent {
+    max-height: min(46vh, 24rem);
+    aspect-ratio: 16 / 11;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .about-section .section-inner {
+    width: 100%;
+    padding-inline: clamp(14px, 4vw, 20px);
+  }
+
+  html[data-ex-experience] .radius-button,
+  html[data-ex-experience] .home-text-button {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   12. CAROUSEL — swipe lane proportions on tablet + phone
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .services-section {
+    padding-bottom: clamp(56px, 9vw, 96px);
+  }
+
+  html[data-ex-experience] .services-intro {
+    margin-bottom: clamp(24px, 4vw, 36px);
+    padding-inline: clamp(8px, 2vw, 16px);
+  }
+
+  html[data-ex-experience] .carousel-heading {
+    padding: clamp(18px, 3.5vw, 24px) clamp(16px, 3vw, 20px);
+  }
+
+  html[data-ex-experience] .carousel-heading h2 {
+    font-size: clamp(1rem, 3.2vw, 1.35rem) !important;
+    letter-spacing: 0.06em;
+    line-height: 1.15;
+  }
+
+  html[data-ex-experience] .carousel-nav {
+    margin-top: clamp(18px, 3vw, 24px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024.98px) {
+  html[data-ex-experience] .carousel-container {
+    height: clamp(380px, 52vh, 580px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience] .carousel-slide {
+    flex: 0 0 100%;
+  }
+
+  html[data-ex-experience] .carousel-container {
+    height: clamp(360px, 58vh, 520px);
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .carousel-container {
+    height: clamp(320px, 54vh, 440px);
+  }
+
+  html[data-ex-experience] .services-cta {
+    margin-top: clamp(24px, 5vw, 32px);
+    padding-inline: clamp(14px, 4vw, 20px);
+  }
+}
+
+/* ==========================================================================
+   13. SCROLL RUNWAYS — shorter sticky stages on touch (same choreography)
+   --------------------------------------------------------------------------
+   home-experience.css sets 400/360svh (hcta), 340/260svh (helm), 420/380svh
+   (stack). These overrides tighten the runway so each scene completes in a
+   natural thumb-scroll distance without removing any phase.
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .hcta-track {
+    height: 380svh;
+  }
+
+  html[data-ex-experience] .home-helm-portal {
+    height: 300svh;
+  }
+
+  html[data-ex-experience] .ex-stack-scroll {
+    height: var(--stack-runway-vh, 400svh) !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience] .hcta-track {
+    height: 340svh;
+  }
+
+  html[data-ex-experience] .home-helm-portal {
+    height: 280svh;
+  }
+
+  html[data-ex-experience] .ex-stack-scroll {
+    height: var(--stack-runway-vh, 360svh) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .hcta-track {
+    height: 300svh;
+  }
+
+  html[data-ex-experience] .home-helm-portal {
+    height: 240svh;
+  }
+
+  html[data-ex-experience] .home-helm-portal__wheel {
+    width: min(78vw, 46svh, 360px);
+  }
+
+  html[data-ex-experience] .ex-stack-scroll {
+    height: var(--stack-runway-vh, 320svh) !important;
+  }
+}
+
+/* ==========================================================================
+   14. CAMPAIGN (hcta) — invitation + on-image copy at phone/tablet scale
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .hcta-silk {
+    padding-top: calc(
+      var(--site-nav-bar-height, 3.25rem) + clamp(1.25rem, 3vh, 2.25rem)
+    );
+  }
+
+  html[data-ex-experience] .hcta-silk-row {
+    font-size: clamp(2.25rem, min(10.5vw, 13svh), 5.5rem) !important;
+    letter-spacing: 0.035em !important;
+  }
+
+  html[data-ex-experience] .hcta-copy {
+    padding: 0 clamp(1rem, 4vw, 2rem);
+  }
+
+  html[data-ex-experience] .hcta-heading {
+    margin-bottom: clamp(1.25rem, 4vw, 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .hcta-silk-row {
+    font-size: clamp(1.85rem, min(10vw, 11.5svh), 3.25rem) !important;
+    letter-spacing: 0.028em !important;
+  }
+
+  html[data-ex-experience] .hcta-track .btn.hcta-book {
+    min-height: 44px;
+    padding-inline: clamp(1.25rem, 5vw, 1.75rem);
+  }
+}
+
+/* ==========================================================================
+   15. GALLERY + TESTIMONIALS — marquee and card rhythm
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .gallery-section {
+    padding-top: clamp(48px, 7vw, 72px);
+  }
+
+  html[data-ex-experience] .gallery-container {
+    padding: clamp(20px, 3.5vh, 36px) 0 clamp(20px, 3vh, 32px);
+  }
+
+  html[data-ex-experience] .testimonials-section {
+    padding: clamp(56px, 8vw, 96px) var(--content-gutter, clamp(12px, 2.2vw, 28px));
+  }
+
+  html[data-ex-experience] .testimonials-header {
+    margin-bottom: clamp(32px, 5vw, 44px);
+  }
+
+  html[data-ex-experience] .testimonial-card {
+    padding: clamp(20px, 4vw, 24px) clamp(18px, 3.5vw, 22px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience] .gallery-marquee {
+    --gallery-card: clamp(260px, 78vw, 360px);
+    --gallery-gap: 12px;
+    margin-bottom: clamp(48px, 8vw, 64px);
+  }
+
+  html[data-ex-experience] .gallery-item {
+    height: clamp(220px, 58vw, 300px);
+  }
+
+  html[data-ex-experience] .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .gallery-marquee {
+    --gallery-card: clamp(240px, 84vw, 320px);
+  }
+
+  html[data-ex-experience] .gallery-item {
+    height: clamp(200px, 54vw, 280px);
+  }
+
+  html[data-ex-experience] .instagram-follow {
+    margin-top: 0.85rem;
+  }
+}
+
+/* ==========================================================================
+   16. LANDMARK STACK — fog stage breathing room on narrow viewports
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience] .ex-stack-scroll__viewport {
+    height: 100svh;
+    min-height: 100svh;
+  }
+
+  html[data-ex-experience] .ex-stack-scroll__copy {
+    padding: clamp(1.25rem, 4vw, 2rem);
+    max-width: min(36rem, 92vw);
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .ex-stack-scroll__title-line {
+    white-space: normal !important;
+    overflow-wrap: break-word;
+  }
+}
+
+/* ==========================================================================
+   17. LUXURY MARQUEE — legible floor on true phones
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .luxury-marquee__text {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+  }
+}
+
+/* ==========================================================================
+   18. AMENITIES TABLET PORTRAIT — stack slider narrative at 768-899px
+   --------------------------------------------------------------------------
+   home-dining-slider.css keeps a two-column slider through 1024px. On portrait
+   tablets the caption column is ~345px while display type still targets 90px.
+   Section 4 caps the size; here the author's phone column stack (section 3) is
+   extended so the story reads vertically without changing desktop (>1024).
+   ========================================================================== */
+
+@media (min-width: 768px) and (max-width: 899.98px) {
+  html[data-ex-experience] .home-am-slider__row {
+    flex-direction: column;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-col,
+  html[data-ex-experience] .home-am-slider__images-col {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-col {
+    height: 46%;
+    padding: calc(var(--site-nav-bar-height, 3.25rem) + 1.25rem) 1.75rem 1rem;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col {
+    height: 54%;
+  }
+
+  html[data-ex-experience] .home-am-video__caption {
+    flex: none;
+    width: 100%;
+    max-width: none;
+  }
+
+  html[data-ex-experience] .home-am-video__copy {
+    top: 5.5rem;
+    left: 1.75rem;
+    width: calc(100% - 3.5rem);
+  }
+
+  html[data-ex-experience] .home-am-video__title {
+    right: 1.75rem;
+    left: 1.75rem;
+    bottom: 40vh;
+    max-width: none;
+    text-align: left;
+  }
+}
