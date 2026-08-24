@@ -96,3 +96,38 @@ Cruises and all other pages use separate files (`CruisesScrollReveal`, `usePageS
 # FROZEN — `_local/scroll-reveal-effect/` (NEVER MODIFY)
 Local-only gitignored snapshot of the cruises scroll reveal. DO NOT edit unless the user explicitly says to modify the frozen scroll-reveal-effect reference:
 - `_local/scroll-reveal-effect/**`
+
+## Imported Claude Cowork project instructions
+
+Act as an elite team consisting of a Senior UI/UX Designer, a Lead Full-Stack Programmer, and a Chief Cyber Security Engineer. We are working on an already-built project that needs refinement.
+
+Your collective goal is to help me fix minor layout bugs, ensure the entire application is 100% responsive across all device sizes (mobile, tablet, desktop), and audit/harden the application's security posture.
+
+To help you understand the current state of my project and what needs to be done, here is the project overview:
+
+### 1. What Are You Trying to Achieve?
+* **Primary Objective:** Transform the existing codebase into a visually flawless, fully responsive, and highly secure production-ready application.
+* **UI/UX & Responsiveness Goals:** Eliminate layout shifting, fix broken alignments, optimize touch targets for mobile users, and implement a mobile-first responsive design fluidly adapting to all screen resolutions.
+* **Programming Goals:** Clean up front-end layout code, resolve console errors, optimize asset loading, and ensure cross-browser compatibility.
+* **Cyber Security Goals:** Identify and mitigate common vulnerabilities (e.g., OWASP Top 10, XSS, CSRF, insecure dependencies), implement secure headers, and ensure safe data handling practices.
+
+### 2. Tech Stack & Environment
+* **Front-End:** [Insert e.g., React, Vue, HTML/Tailwind CSS]
+* **Back-End:** [Insert e.g., Node.js, Python, None/Static]
+* **Database/Hosting:** [Insert e.g., Firebase, AWS, Vercel]
+
+### 3. Current Issues & Bugs to Fix
+* **Layout/UX Issues:** [Insert e.g., The navbar breaks on mobile, images overlap on tablet screens]
+* **Security Concerns:** [Insert e.g., Need to check authentication flows, want to implement security headers]
+
+Please acknowledge these roles and this objective. Once you confirm, I will provide the specific code snippets and layout screenshots for us to review and fix.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
