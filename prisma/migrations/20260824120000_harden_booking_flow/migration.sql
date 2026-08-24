@@ -1,29 +1,40 @@
 -- One immediate-confirmation booking flow, authoritative rate-plan snapshots,
 -- structured guest contact data, and durable public-API throttling.
 
-CREATE TYPE "BookingRatePlan" AS ENUM ('STANDARD', 'NON_REFUNDABLE');
-CREATE TYPE "BookingPaymentStatus" AS ENUM ('PENDING', 'PAID', 'PARTIALLY_REFUNDED', 'REFUNDED', 'FAILED');
+DO $$ BEGIN
+  CREATE TYPE "BookingRatePlan" AS ENUM ('STANDARD', 'NON_REFUNDABLE');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$ BEGIN
+  CREATE TYPE "BookingPaymentStatus" AS ENUM ('PENDING', 'PAID', 'PARTIALLY_REFUNDED', 'REFUNDED', 'FAILED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 ALTER TABLE "Booking"
-  ADD COLUMN "ratePlan" "BookingRatePlan" NOT NULL DEFAULT 'STANDARD',
-  ADD COLUMN "paymentStatus" "BookingPaymentStatus" NOT NULL DEFAULT 'PENDING',
-  ADD COLUMN "idempotencyKey" TEXT,
-  ADD COLUMN "customerPhone" TEXT,
-  ADD COLUMN "adultCount" INTEGER,
-  ADD COLUMN "childCount" INTEGER,
-  ADD COLUMN "specialRequests" TEXT,
-  ADD COLUMN "marketingOptIn" BOOLEAN NOT NULL DEFAULT false,
-  ADD COLUMN "marketingOptInAt" TIMESTAMP(3),
-  ADD COLUMN "termsAcceptedAt" TIMESTAMP(3);
+  ADD COLUMN IF NOT EXISTS "ratePlan" "BookingRatePlan" NOT NULL DEFAULT 'STANDARD',
+  ADD COLUMN IF NOT EXISTS "paymentStatus" "BookingPaymentStatus" NOT NULL DEFAULT 'PENDING',
+  ADD COLUMN IF NOT EXISTS "idempotencyKey" TEXT,
+  ADD COLUMN IF NOT EXISTS "customerPhone" TEXT,
+  ADD COLUMN IF NOT EXISTS "adultCount" INTEGER,
+  ADD COLUMN IF NOT EXISTS "childCount" INTEGER,
+  ADD COLUMN IF NOT EXISTS "specialRequests" TEXT,
+  ADD COLUMN IF NOT EXISTS "marketingOptIn" BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS "marketingOptInAt" TIMESTAMP(3),
+  ADD COLUMN IF NOT EXISTS "termsAcceptedAt" TIMESTAMP(3);
 
-CREATE UNIQUE INDEX "Booking_idempotencyKey_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "Booking_idempotencyKey_key"
   ON "Booking"("idempotencyKey");
 
-ALTER TABLE "Booking"
-  ADD CONSTRAINT "Booking_adultCount_nonnegative"
-    CHECK ("adultCount" IS NULL OR "adultCount" >= 0),
-  ADD CONSTRAINT "Booking_childCount_nonnegative"
+DO $$ BEGIN
+  ALTER TABLE "Booking" ADD CONSTRAINT "Booking_adultCount_nonnegative"
+    CHECK ("adultCount" IS NULL OR "adultCount" >= 0);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$ BEGIN
+  ALTER TABLE "Booking" ADD CONSTRAINT "Booking_childCount_nonnegative"
     CHECK ("childCount" IS NULL OR "childCount" >= 0);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Recover structured values from historical customerName blobs without
 -- rewriting or losing the original source text.
@@ -47,7 +58,7 @@ SET
   )
 WHERE "customerName" IS NOT NULL;
 
-CREATE TABLE "ApiRateLimit" (
+CREATE TABLE IF NOT EXISTS "ApiRateLimit" (
   "key" TEXT NOT NULL,
   "count" INTEGER NOT NULL,
   "resetAt" TIMESTAMP(3) NOT NULL,
@@ -55,7 +66,7 @@ CREATE TABLE "ApiRateLimit" (
   CONSTRAINT "ApiRateLimit_pkey" PRIMARY KEY ("key")
 );
 
-CREATE INDEX "ApiRateLimit_resetAt_idx" ON "ApiRateLimit"("resetAt");
+CREATE INDEX IF NOT EXISTS "ApiRateLimit_resetAt_idx" ON "ApiRateLimit"("resetAt");
 
 -- Keep editable branding, but remove stale request/paid wording from the live
 -- transactional templates.
@@ -82,7 +93,9 @@ WHERE "name" = 'Hathor Luxury Royal Suite';
 
 -- Select one canonical schedule per cruise/UTC calendar date. Prefer a row
 -- carrying a live booking, then any historical booking, then the oldest row.
-CREATE TEMP TABLE "_CruiseScheduleMerge" ON COMMIT DROP AS
+DO $$ BEGIN
+DROP TABLE IF EXISTS "_CruiseScheduleMerge";
+CREATE TABLE "_CruiseScheduleMerge" AS
 WITH schedule_stats AS (
   SELECT
     cs.id,
@@ -128,7 +141,10 @@ DELETE FROM "CruiseSchedule" cs
 USING "_CruiseScheduleMerge" merge
 WHERE cs.id = merge.old_id;
 
+DROP TABLE "_CruiseScheduleMerge";
+END $$;
+
 -- Prisma cannot represent this expression index, but it is the database-level
 -- invariant that prevents timezone-shifted duplicate rows on one sailing day.
-CREATE UNIQUE INDEX "CruiseSchedule_cruiseId_departureDate_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "CruiseSchedule_cruiseId_departureDate_key"
   ON "CruiseSchedule"("cruiseId", ("departureTime"::date));

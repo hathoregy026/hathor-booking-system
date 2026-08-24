@@ -34,6 +34,10 @@ const result = await client.query(
   `SELECT migration_name FROM "_prisma_migrations"
    WHERE finished_at IS NOT NULL AND rolled_back_at IS NULL`,
 );
+const failures = await client.query(
+  `SELECT migration_name, logs FROM "_prisma_migrations"
+   WHERE finished_at IS NULL AND rolled_back_at IS NULL`,
+);
 await client.end();
 const applied = new Set(result.rows.map((row) => row.migration_name));
 
@@ -41,6 +45,22 @@ for (const migration of baselineMigrations) {
   if (!applied.has(migration)) {
     run(npx, ["prisma", "migrate", "resolve", "--applied", migration]);
   }
+}
+
+for (const failure of failures.rows) {
+  const isKnownRetryableFailure =
+    failure.migration_name === "20260824120000_harden_booking_flow" &&
+    String(failure.logs).includes('relation "_CruiseScheduleMerge" does not exist');
+  if (!isKnownRetryableFailure) {
+    throw new Error(`Unrecognized failed migration: ${failure.migration_name}`);
+  }
+  run(npx, [
+    "prisma",
+    "migrate",
+    "resolve",
+    "--rolled-back",
+    failure.migration_name,
+  ]);
 }
 
 run(npx, ["prisma", "migrate", "deploy"]);
