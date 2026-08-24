@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { AccommodationSpringsDesignPage } from "@/components/pages/AccommodationSpringsDesignPage";
+import { RoomCollectionPage } from "@/components/pages/rooms/RoomCollectionPage";
+import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
@@ -46,9 +47,11 @@ export default async function RoyalSuitesPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <AccommodationSpringsDesignPage
-        frameSrc="/accommodation-springs/royal-suites/index.html"
-        title="Luxury Royal Suites"
+      <RoomCollectionPage
+        rooms={ROOM_SHOWCASES.filter((room) => room.slug === "royal-suite")}
+        eyebrow="Hathor's signature residence"
+        title="Royal, by nature"
+        support="The most expansive private residence aboard, framed by Main Deck views and exceptional space."
       />
     </StandalonePageVisibilityShell>
   );

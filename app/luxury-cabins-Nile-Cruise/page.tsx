@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { AccommodationSpringsDesignPage } from "@/components/pages/AccommodationSpringsDesignPage";
+import { RoomCollectionPage } from "@/components/pages/rooms/RoomCollectionPage";
+import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
@@ -48,9 +49,11 @@ export default async function LuxuryCabinsPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <AccommodationSpringsDesignPage
-        frameSrc="/accommodation-springs/luxury-rooms/index.html"
-        title="Luxury Rooms"
+      <RoomCollectionPage
+        rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
+        eyebrow="Luxury rooms aboard Hathor"
+        title="Cabins, shaped by the Nile"
+        support="Choose a king or twin retreat, each composed for two guests and panoramic river light."
       />
     </StandalonePageVisibilityShell>
   );

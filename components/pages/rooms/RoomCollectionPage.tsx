@@ -2,9 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
-import { ROOM_SHOWCASES } from "@/lib/room-showcase";
+import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
 
-export function RoomCollectionPage() {
+type RoomCollectionPageProps = {
+  rooms?: readonly RoomShowcase[];
+  eyebrow?: string;
+  title?: string;
+  support?: string;
+};
+
+export function RoomCollectionPage({
+  rooms = ROOM_SHOWCASES,
+  eyebrow = "Hathor accommodation",
+  title = "Rooms, made for the Nile",
+  support = "Four distinct ways to wake beside the river.",
+}: RoomCollectionPageProps) {
+  const [titleLead, titleTail = ""] = title.split(", ");
   return (
     <div className="public-site hathor-site room-showcase-route">
       <PublicNavbar />
@@ -13,9 +26,9 @@ export function RoomCollectionPage() {
         <Image src="/media/hathor/scraped/suites-hero.webp" alt="Hathor rooms and suites" fill priority sizes="100vw" />
         <div className="room-collection__wash" aria-hidden="true" />
         <div className="room-collection__hero-copy">
-          <p>Hathor accommodation</p>
-          <h1>Rooms,<br /><em>made for the Nile</em></h1>
-          <span>Four distinct ways to wake beside the river.</span>
+          <p>{eyebrow}</p>
+          <h1>{titleLead}{titleTail ? <>,<br /><em>{titleTail}</em></> : null}</h1>
+          <span>{support}</span>
         </div>
       </section>
 
@@ -26,7 +39,7 @@ export function RoomCollectionPage() {
       </section>
 
       <ol className="room-collection__list">
-        {ROOM_SHOWCASES.map((room, index) => (
+        {rooms.map((room, index) => (
           <li key={room.slug} className="room-collection__item">
             <Link href={`/rooms/${room.slug}`} className="room-collection__media">
               <Image src={room.images[0]} alt={room.name} fill sizes="(max-width: 1024px) 100vw, 62vw" />
