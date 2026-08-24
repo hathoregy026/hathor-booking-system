@@ -6,6 +6,7 @@ import { getBookingSuccessDetails } from "@/lib/booking-success-details";
 type PageProps = {
   searchParams: Promise<{
     bookingId?: string;
+    token?: string;
   }>;
 };
 
@@ -37,8 +38,9 @@ function BookingSuccessError({
 export default async function BookingSuccessPage({ searchParams }: PageProps) {
   const query = await searchParams;
   const bookingId = query.bookingId?.trim();
+  const token = query.token?.trim();
 
-  if (!bookingId) {
+  if (!bookingId || !token) {
     return (
       <BookingSuccessError
         title="Booking not found"
@@ -50,7 +52,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
   let details = null;
 
   try {
-    details = await getBookingSuccessDetails(bookingId);
+    details = await getBookingSuccessDetails(bookingId, token);
   } catch {
     return (
       <BookingSuccessError
@@ -85,15 +87,14 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
 
         <div className="space-y-3">
           <h1 className="booking-serif text-2xl font-semibold sm:text-4xl">
-            Booking Request Received!
+            Reservation Confirmed
           </h1>
           <p
             className="mx-auto max-w-xl text-sm leading-relaxed sm:text-base"
             style={{ color: "var(--booking-muted)" }}
           >
-            Thank you! Your booking request has been received. Our team will
-            contact you shortly at the email/phone number you provided to
-            confirm your reservation and arrange payment.
+            Your cabin is reserved at the price below. No payment has been
+            collected yet; the full balance remains pending.
           </p>
         </div>
 
@@ -121,6 +122,11 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
               <dd className="booking-serif mt-1 text-base font-semibold leading-snug">
                 {details.cruiseTitle}
               </dd>
+            </div>
+
+            <div>
+              <dt style={{ color: "var(--booking-muted)" }}>Rate</dt>
+              <dd className="mt-0.5 font-medium">{details.ratePlanLabel}</dd>
             </div>
 
             {details.durationMeta && (
@@ -182,7 +188,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
 
         {details.customerEmail && (
           <p className="text-sm" style={{ color: "var(--booking-muted)" }}>
-            A copy of your request is associated with{" "}
+            Your confirmation was sent to{" "}
             <span className="font-medium">{details.customerEmail}</span>.
           </p>
         )}

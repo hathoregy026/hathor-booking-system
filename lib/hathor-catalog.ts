@@ -124,7 +124,7 @@ export const HATHOR_CRUISES: HathorCruiseSeed[] = [
       },
       {
         roomNumber: "SUITE-3N",
-        name: "Hathor Luxury Suite",
+        name: "Luxury Suite",
         roomType: "Luxury Suite",
         capacity: 4,
         priceCents: usdToCents(HATHOR_THREE_NIGHT_CABIN_PRICES_USD.luxurySuite),
@@ -134,7 +134,7 @@ export const HATHOR_CRUISES: HathorCruiseSeed[] = [
       },
       {
         roomNumber: "ROYAL-3N",
-        name: "Hathor Luxury Royal Suite",
+        name: "Luxury Royal Suite",
         roomType: "Luxury Royal Suite",
         capacity: 4,
         priceCents: usdToCents(HATHOR_THREE_NIGHT_CABIN_PRICES_USD.luxuryRoyalSuite),
@@ -167,7 +167,7 @@ export const HATHOR_CRUISES: HathorCruiseSeed[] = [
       },
       {
         roomNumber: "TWIN-4N",
-        name: "Hathor Dahabiya Twin Bed",
+        name: "Luxury Twin Bed",
         roomType: "Luxury Room",
         capacity: 2,
         priceCents: usdToCents(HATHOR_FOUR_NIGHT_CABIN_PRICES_USD.luxuryRoom),
@@ -222,7 +222,7 @@ export const HATHOR_CRUISES: HathorCruiseSeed[] = [
       },
       {
         roomNumber: "TWIN-7N",
-        name: "Hathor Dahabiya Twin Bed",
+        name: "Luxury Twin Bed",
         roomType: "Luxury Room",
         capacity: 2,
         priceCents: usdToCents(HATHOR_SEVEN_NIGHT_CABIN_PRICES_USD.luxuryRoom),

@@ -13,10 +13,12 @@ export async function getUnavailableRoomIds({
   cruiseScheduleId,
   roomIds,
   excludeBookingId,
-}: ActiveBookingFilter): Promise<string[]> {
+}: ActiveBookingFilter,
+database: Prisma.TransactionClient | typeof prisma = prisma,
+): Promise<string[]> {
   const now = utcNow();
 
-  const blocked = await prisma.bookingRoom.findMany({
+  const blocked = await database.bookingRoom.findMany({
     where: {
       cruiseScheduleId,
       roomId: { in: roomIds },
@@ -39,6 +41,36 @@ export async function getUnavailableRoomIds({
   });
 
   return [...new Set(blocked.map((entry) => entry.roomId))];
+}
+
+/**
+ * Serialize writes for each physical cabin/sailing before availability is
+ * checked. The lock key uses cruise + UTC date + room, so even a legacy
+ * duplicate schedule row cannot sell the same cabin twice.
+ */
+export async function lockBookingInventory(
+  tx: Prisma.TransactionClient,
+  cruiseScheduleId: string,
+  roomIds: string[],
+): Promise<void> {
+  const schedule = await tx.cruiseSchedule.findUnique({
+    where: { id: cruiseScheduleId },
+    select: { cruiseId: true, departureTime: true },
+  });
+
+  if (!schedule) {
+    throw new InvalidBookingError("Cruise schedule not found");
+  }
+
+  const sailingDate = schedule.departureTime.toISOString().slice(0, 10);
+  const sortedRoomIds = [...new Set(roomIds)].sort();
+
+  for (const roomId of sortedRoomIds) {
+    const lockKey = `${schedule.cruiseId}:${sailingDate}:${roomId}`;
+    await tx.$queryRaw<Array<{ locked: boolean }>>`
+      SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0)) IS NULL AS locked
+    `;
+  }
 }
 
 /** Batch availability check — one query for all schedules (faster on pooled DB). */

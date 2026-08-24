@@ -43,6 +43,11 @@ export type TicketType = Prisma.TicketTypeModel
  */
 export type Booking = Prisma.BookingModel
 /**
+ * Model ApiRateLimit
+ * 
+ */
+export type ApiRateLimit = Prisma.ApiRateLimitModel
+/**
  * Model BookingRoom
  * 
  */

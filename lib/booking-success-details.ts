@@ -8,6 +8,7 @@ import {
 } from "@/lib/booking-search-config";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { prisma } from "@/lib/prisma";
+import { verifyBookingAccessToken } from "@/lib/booking-access-token";
 
 export type BookingSuccessDetails = {
   bookingId: string;
@@ -19,11 +20,12 @@ export type BookingSuccessDetails = {
   guestSummary: string;
   totalPriceCents: number;
   customerEmail: string | null;
+  ratePlanLabel: string;
 };
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
   [BookingStatus.PENDING_HOLD]: "Pending Confirmation",
-  [BookingStatus.CONFIRMED]: "Confirmed",
+  [BookingStatus.CONFIRMED]: "Confirmed · Payment Pending",
   [BookingStatus.CANCELLED]: "Cancelled",
   [BookingStatus.EXPIRED]: "Expired",
 };
@@ -60,7 +62,9 @@ export function parseGuestSummary(customerName: string | null): string {
 
 export async function getBookingSuccessDetails(
   bookingId: string,
+  accessToken: string,
 ): Promise<BookingSuccessDetails | null> {
+  if (!verifyBookingAccessToken(bookingId, accessToken)) return null;
   const booking = await prisma.booking.findFirst({
     where: {
       id: bookingId,
@@ -72,6 +76,9 @@ export async function getBookingSuccessDetails(
       status: true,
       customerName: true,
       customerEmail: true,
+      adultCount: true,
+      childCount: true,
+      ratePlan: true,
       cruiseSchedule: {
         select: {
           departureTime: true,
@@ -145,8 +152,15 @@ export async function getBookingSuccessDetails(
     durationMeta,
     checkInDate: booking.cruiseSchedule.departureTime.toISOString(),
     roomType: primaryRoom?.roomType ?? null,
-    guestSummary: parseGuestSummary(booking.customerName),
+    guestSummary:
+      booking.adultCount !== null && booking.childCount !== null
+        ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
+        : parseGuestSummary(booking.customerName),
     totalPriceCents,
     customerEmail: booking.customerEmail,
+    ratePlanLabel:
+      booking.ratePlan === "NON_REFUNDABLE"
+        ? "Non-refundable rate · 10% saving"
+        : "Standard flexible rate",
   };
 }

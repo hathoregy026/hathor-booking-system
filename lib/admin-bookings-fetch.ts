@@ -8,6 +8,10 @@ type SqlRow = {
   id: string;
   customerName: string | null;
   customerEmail: string | null;
+  customerPhone: string | null;
+  adultCount: number | null;
+  childCount: number | null;
+  specialRequests: string | null;
   status: string;
   deletedAt: Date | null;
   createdAt: Date;
@@ -24,6 +28,10 @@ const LIST_SQL = `
     b.id,
     b."customerName",
     b."customerEmail",
+    b."customerPhone",
+    b."adultCount",
+    b."childCount",
+    b."specialRequests",
     b.status::text AS status,
     b."deletedAt",
     b."createdAt",
@@ -70,10 +78,16 @@ function mapRow(row: SqlRow): AdminBookingDto {
     id: row.id,
     customerName,
     guestName: parsed.guestName,
-    guestPhone: parsed.guestPhone,
-    partyLabel: parsed.partyLabel,
-    partySize: parsed.partySize,
-    specialRequests: parsed.specialRequests,
+    guestPhone: row.customerPhone ?? parsed.guestPhone,
+    partyLabel:
+      row.adultCount !== null && row.childCount !== null
+        ? `${row.adultCount} adult${row.adultCount === 1 ? "" : "s"}, ${row.childCount} child${row.childCount === 1 ? "" : "ren"}`
+        : parsed.partyLabel,
+    partySize:
+      row.adultCount !== null && row.childCount !== null
+        ? row.adultCount + row.childCount
+        : parsed.partySize,
+    specialRequests: row.specialRequests ?? parsed.specialRequests,
     customerEmail: row.customerEmail ?? "—",
     status: row.status,
     cruiseName: row.cruiseName,

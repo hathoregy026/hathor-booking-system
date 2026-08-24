@@ -4,8 +4,10 @@ import { handleRouteError } from "@/lib/api";
 import {
   BookingConflictError,
   InvalidBookingError,
+  lockBookingInventory,
   lockBookingRow,
 } from "@/lib/booking";
+import { createBookingAccessToken } from "@/lib/booking-access-token";
 import {
   UnauthorizedBookingError,
   verifyHoldToken,
@@ -20,6 +22,13 @@ import {
   sendBookingConfirmedEmail,
 } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
+import { getSiteBaseUrl } from "@/lib/public-url";
+import { validateRoomGuestCapacityForDbRoom } from "@/lib/room-capacity";
+import {
+  assertTrustedPublicJsonRequest,
+  enforcePublicRateLimit,
+  requireIdempotencyKey,
+} from "@/lib/public-api-security";
 import { confirmBookingSchema } from "@/lib/validations";
 
 export const dynamic = "force-dynamic";
@@ -82,6 +91,14 @@ async function resolveTicketLines(
 
 export async function POST(request: NextRequest) {
   try {
+    assertTrustedPublicJsonRequest(request);
+    await enforcePublicRateLimit({
+      request,
+      scope: "booking-confirm",
+      limit: 12,
+      windowMs: 10 * 60_000,
+    });
+    const idempotencyKey = requireIdempotencyKey(request);
     const body = await request.json();
     const parsed = confirmBookingSchema.parse(body);
 
@@ -89,11 +106,46 @@ export async function POST(request: NextRequest) {
       throw new UnauthorizedBookingError();
     }
 
-    const confirmedBooking = await withDb(async () =>
+    const confirmationResult = await withDb(async () =>
       prisma.$transaction(async (tx) => {
         const booking = await lockBookingRow(tx, parsed.bookingId);
 
-        if (!booking || booking.status !== BookingStatus.PENDING_HOLD) {
+        if (!booking || booking.idempotencyKey !== idempotencyKey) {
+          throw new InvalidBookingError();
+        }
+
+        const include = {
+          bookingRooms: {
+            select: {
+              unitPriceCents: true,
+              room: { select: { name: true, roomType: true } },
+            },
+          },
+          bookingTickets: {
+            select: {
+              quantity: true,
+              unitPriceCents: true,
+              ticketType: { select: { priceCents: true } },
+            },
+          },
+          cruiseSchedule: {
+            select: {
+              departureTime: true,
+              arrivalTime: true,
+              cruise: { select: { name: true } },
+            },
+          },
+        } as const;
+
+        if (booking.status === BookingStatus.CONFIRMED) {
+          const confirmed = await tx.booking.findUniqueOrThrow({
+            where: { id: booking.id },
+            include,
+          });
+          return { booking: confirmed, alreadyConfirmed: true };
+        }
+
+        if (booking.status !== BookingStatus.PENDING_HOLD) {
           throw new InvalidBookingError();
         }
 
@@ -107,7 +159,11 @@ export async function POST(request: NextRequest) {
 
         const heldRooms = await tx.bookingRoom.findMany({
           where: { bookingId: parsed.bookingId },
-          select: { roomId: true, unitPriceCents: true },
+          select: {
+            roomId: true,
+            unitPriceCents: true,
+            room: { select: { capacity: true, roomType: true } },
+          },
         });
 
         const heldRoomIds = heldRooms.map((entry) => entry.roomId);
@@ -121,6 +177,19 @@ export async function POST(request: NextRequest) {
             "Room selection does not match the active hold",
           );
         }
+
+        const heldRoom = heldRooms[0];
+        if (!heldRoom || parsed.adults + parsed.children > heldRoom.room.capacity) {
+          throw new InvalidBookingError("Guest count exceeds room capacity");
+        }
+        const capacityError = validateRoomGuestCapacityForDbRoom(
+          heldRoom.room.roomType,
+          parsed.adults,
+          parsed.children,
+        );
+        if (capacityError) throw new InvalidBookingError(capacityError);
+
+        await lockBookingInventory(tx, booking.cruiseScheduleId, heldRoomIds);
 
         const overlap = await tx.bookingRoom.findFirst({
           where: {
@@ -194,12 +263,19 @@ export async function POST(request: NextRequest) {
           0,
         );
 
-        return tx.booking.update({
+        const confirmed = await tx.booking.update({
           where: { id: parsed.bookingId },
           data: {
             status: BookingStatus.CONFIRMED,
             customerName: parsed.customerName,
             customerEmail: parsed.customerEmail,
+            customerPhone: parsed.customerPhone,
+            adultCount: parsed.adults,
+            childCount: parsed.children,
+            specialRequests: parsed.specialRequests || null,
+            marketingOptIn: parsed.marketingOptIn,
+            marketingOptInAt: parsed.marketingOptIn ? new Date() : null,
+            termsAcceptedAt: new Date(),
             holdExpiresAt: null,
             ...(booking.totalPriceCents === null
               ? {
@@ -209,43 +285,33 @@ export async function POST(request: NextRequest) {
                 }
               : {}),
           },
-          include: {
-            bookingRooms: {
-              select: {
-                unitPriceCents: true,
-                room: { select: { name: true, roomType: true } },
-              },
-            },
-            bookingTickets: {
-              select: {
-                quantity: true,
-                unitPriceCents: true,
-                ticketType: { select: { priceCents: true } },
-              },
-            },
-            cruiseSchedule: {
-              select: {
-                departureTime: true,
-                arrivalTime: true,
-                cruise: { select: { name: true } },
-              },
-            },
-          },
+          include,
         });
+        return { booking: confirmed, alreadyConfirmed: false };
       }),
     );
+
+    const confirmedBooking = confirmationResult.booking;
+    const accessToken = createBookingAccessToken(confirmedBooking.id);
+    const bookingUrl = `${getSiteBaseUrl()}/booking/success?bookingId=${encodeURIComponent(confirmedBooking.id)}&token=${encodeURIComponent(accessToken)}`;
 
     const emailDetails = buildEmailDetailsFromConfirmBooking({
       id: confirmedBooking.id,
       customerName: confirmedBooking.customerName,
       customerEmail: confirmedBooking.customerEmail,
+      customerPhone: confirmedBooking.customerPhone,
+      adultCount: confirmedBooking.adultCount,
+      childCount: confirmedBooking.childCount,
+      specialRequests: confirmedBooking.specialRequests,
+      ratePlan: confirmedBooking.ratePlan,
       cruiseSchedule: confirmedBooking.cruiseSchedule,
       bookingRooms: confirmedBooking.bookingRooms,
       bookingTickets: confirmedBooking.bookingTickets,
       totalPriceCents: confirmedBooking.totalPriceCents,
+      bookingUrl,
     });
 
-    if (emailDetails) {
+    if (emailDetails && !confirmationResult.alreadyConfirmed) {
       try {
         console.log("[email] confirm: sending guest booking email");
         await sendBookingConfirmedEmail(
@@ -277,9 +343,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       bookingId: confirmedBooking.id,
+      accessToken,
       status: confirmedBooking.status,
-      customerName: confirmedBooking.customerName,
-      customerEmail: confirmedBooking.customerEmail,
       rooms: confirmedBooking.bookingRooms,
       tickets: confirmedBooking.bookingTickets,
     });

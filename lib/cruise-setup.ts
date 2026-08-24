@@ -2,6 +2,21 @@ import { parseToUtcDate, exactUtcDayBounds } from "@/lib/dates";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { prisma } from "@/lib/prisma";
 
+async function findScheduleOnUtcDay(cruiseId: string, dayStart: Date, dayEnd: Date) {
+  return prisma.cruiseSchedule.findFirst({
+    where: {
+      cruiseId,
+      departureTime: { gte: dayStart, lt: dayEnd },
+    },
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    select: {
+      id: true,
+      departureTime: true,
+      arrivalTime: true,
+    },
+  });
+}
+
 export async function ensureDefaultTicketType(
   cruiseId: string,
   basePriceCents = 0,
@@ -43,17 +58,7 @@ export async function ensureScheduleForCheckIn(
   const { dayStart, dayEnd } = exactUtcDayBounds(checkInDateIso);
 
   // Only reuse a schedule departing on the selected check-in day (UTC).
-  const exactDeparture = await prisma.cruiseSchedule.findFirst({
-    where: {
-      cruiseId,
-      departureTime: { gte: dayStart, lt: dayEnd },
-    },
-    select: {
-      id: true,
-      departureTime: true,
-      arrivalTime: true,
-    },
-  });
+  const exactDeparture = await findScheduleOnUtcDay(cruiseId, dayStart, dayEnd);
 
   if (exactDeparture) return exactDeparture;
 
@@ -84,18 +89,27 @@ export async function ensureScheduleForCheckIn(
   arrivalTime.setUTCDate(arrivalTime.getUTCDate() + nights);
   arrivalTime.setUTCHours(0, 0, 0, 0);
 
-  return prisma.cruiseSchedule.create({
-    data: {
-      cruiseId,
-      departureTime: departure,
-      arrivalTime,
-    },
-    select: {
-      id: true,
-      departureTime: true,
-      arrivalTime: true,
-    },
-  });
+  try {
+    return await prisma.cruiseSchedule.create({
+      data: {
+        cruiseId,
+        departureTime: departure,
+        arrivalTime,
+      },
+      select: {
+        id: true,
+        departureTime: true,
+        arrivalTime: true,
+      },
+    });
+  } catch (error) {
+    if ((error as { code?: string }).code !== "P2002") throw error;
+    const departureEnd = new Date(departure);
+    departureEnd.setUTCDate(departureEnd.getUTCDate() + 1);
+    const existing = await findScheduleOnUtcDay(cruiseId, departure, departureEnd);
+    if (existing) return existing;
+    throw error;
+  }
 }
 
 export async function ensureScheduleForDateRange(
@@ -122,16 +136,17 @@ export async function ensureScheduleForDateRange(
 
   if (existing) return existing;
 
-  return prisma.cruiseSchedule.create({
-    data: {
-      cruiseId,
-      departureTime: startDate,
-      arrivalTime: endDate,
-    },
-    select: {
-      id: true,
-      departureTime: true,
-      arrivalTime: true,
-    },
-  });
+  try {
+    return await prisma.cruiseSchedule.create({
+      data: { cruiseId, departureTime: startDate, arrivalTime: endDate },
+      select: { id: true, departureTime: true, arrivalTime: true },
+    });
+  } catch (error) {
+    if ((error as { code?: string }).code !== "P2002") throw error;
+    const dayEnd = new Date(startDate);
+    dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+    const concurrent = await findScheduleOnUtcDay(cruiseId, startDate, dayEnd);
+    if (concurrent) return concurrent;
+    throw error;
+  }
 }

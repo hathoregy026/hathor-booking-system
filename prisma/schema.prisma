@@ -23,6 +23,19 @@ enum BookingStatus {
   EXPIRED
 }
 
+enum BookingRatePlan {
+  STANDARD
+  NON_REFUNDABLE
+}
+
+enum BookingPaymentStatus {
+  PENDING
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
 enum ContentSection {
   HERO
   ABOUT
@@ -104,18 +117,28 @@ model TicketType {
 }
 
 model Booking {
-  id               String        @id @default(cuid())
+  id               String               @id @default(cuid())
   cruiseScheduleId String
-  status           BookingStatus @default(PENDING_HOLD)
+  status           BookingStatus        @default(PENDING_HOLD)
+  ratePlan         BookingRatePlan      @default(STANDARD)
+  paymentStatus    BookingPaymentStatus @default(PENDING)
+  idempotencyKey   String?              @unique
   holdExpiresAt    DateTime?
   customerEmail    String?
   customerName     String?
+  customerPhone    String?
+  adultCount       Int?
+  childCount       Int?
+  specialRequests  String?
+  marketingOptIn   Boolean              @default(false)
+  marketingOptInAt DateTime?
+  termsAcceptedAt  DateTime?
   totalPriceCents  Int?
-  currency         String        @default("USD")
+  currency         String               @default("USD")
   priceSnapshotAt  DateTime?
   deletedAt        DateTime?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
 
   cruiseSchedule CruiseSchedule  @relation(fields: [cruiseScheduleId], references: [id])
   bookingRooms   BookingRoom[]
@@ -125,6 +148,15 @@ model Booking {
   @@index([deletedAt])
   @@index([deletedAt, createdAt])
   @@index([status, deletedAt, createdAt])
+}
+
+model ApiRateLimit {
+  key       String   @id
+  count     Int
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
 }
 
 model BookingRoom {

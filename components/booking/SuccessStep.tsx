@@ -82,7 +82,7 @@ export function SuccessStep() {
           className="flex justify-between border-t pt-3 font-semibold"
           style={{ borderColor: "var(--booking-border)" }}
         >
-          <span>Total paid</span>
+          <span>Total · payment pending</span>
           <span className="booking-serif text-lg">{formatPrice(totalPrice)}</span>
         </div>
       </div>

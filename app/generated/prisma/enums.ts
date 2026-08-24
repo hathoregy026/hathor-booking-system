@@ -19,6 +19,25 @@ export const BookingStatus = {
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
 
+export const BookingRatePlan = {
+  STANDARD: 'STANDARD',
+  NON_REFUNDABLE: 'NON_REFUNDABLE'
+} as const
+
+export type BookingRatePlan = (typeof BookingRatePlan)[keyof typeof BookingRatePlan]
+
+
+export const BookingPaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED',
+  REFUNDED: 'REFUNDED',
+  FAILED: 'FAILED'
+} as const
+
+export type BookingPaymentStatus = (typeof BookingPaymentStatus)[keyof typeof BookingPaymentStatus]
+
+
 export const ContentSection = {
   HERO: 'HERO',
   ABOUT: 'ABOUT',

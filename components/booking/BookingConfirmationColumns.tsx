@@ -1,13 +1,13 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import {
   getSelectedRoomIdsForCheckout,
   validateRoomSelection,
 } from "@/components/booking/BookingSearchResults";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
-import { buildBookingCustomerName } from "@/lib/booking-guest-details";
 import {
   findStayDurationOption,
   formatGuestsSummary,
@@ -31,21 +31,6 @@ const COUNTRY_CODES = [
   { code: "+33", label: "France (+33)" },
 ];
 
-const COUNTRIES = [
-  "Egypt",
-  "United States",
-  "United Kingdom",
-  "United Arab Emirates",
-  "Saudi Arabia",
-  "Germany",
-  "France",
-  "Italy",
-  "Spain",
-  "Australia",
-  "Canada",
-  "Other",
-];
-
 type GuestFormState = {
   salutation: string;
   firstName: string;
@@ -53,11 +38,6 @@ type GuestFormState = {
   email: string;
   countryCode: string;
   phone: string;
-  address: string;
-  city: string;
-  country: string;
-  postalCode: string;
-  sameAddressForBilling: boolean;
   marketingOptIn: boolean;
   termsAccepted: boolean;
 };
@@ -70,6 +50,8 @@ type BookingConfirmationColumnsProps = {
 };
 
 export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumnsProps) {
+  const router = useRouter();
+  const idempotencyKey = useRef(crypto.randomUUID());
   const {
     duration,
     checkInDate,
@@ -89,7 +71,7 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     setError,
     setHoldExpiresAt,
     setBookingId,
-    setSuccess,
+    setTotalPrice,
   } = useBookingStore();
 
   const [form, setForm] = useState<GuestFormState>({
@@ -99,11 +81,6 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     email: "",
     countryCode: "+20",
     phone: "",
-    address: "",
-    city: "",
-    country: "Egypt",
-    postalCode: "",
-    sameAddressForBilling: true,
     marketingOptIn: false,
     termsAccepted: false,
   });
@@ -146,11 +123,8 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     if (!form.phone.trim() || form.phone.replace(/\D/g, "").length < 6) {
       next.phone = "Valid phone number required";
     }
-    if (!form.address.trim()) next.address = "Address is required";
-    if (!form.city.trim()) next.city = "City is required";
-    if (!form.country.trim()) next.country = "Country is required";
     if (!form.termsAccepted) {
-      next.termsAccepted = "You must accept the terms and conditions";
+      next.termsAccepted = "Please acknowledge the reservation and payment status";
     }
 
     setFieldErrors(next);
@@ -181,13 +155,10 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
       return;
     }
 
-    const fullName = buildBookingCustomerName({
-      fullName: `${form.salutation} ${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
-      phone: `${form.countryCode} ${form.phone.trim()}`.trim(),
-      adults: roomConfigs.reduce((sum, cfg) => sum + cfg.adults, 0),
-      children: roomConfigs.reduce((sum, cfg) => sum + cfg.children, 0),
-      specialRequests: combinedSpecialRequests,
-    });
+    const fullName = `${form.salutation} ${form.firstName.trim()} ${form.lastName.trim()}`.trim();
+    const customerPhone = `${form.countryCode} ${form.phone.trim()}`.trim();
+    const adults = roomConfigs.reduce((sum, cfg) => sum + cfg.adults, 0);
+    const children = roomConfigs.reduce((sum, cfg) => sum + cfg.children, 0);
 
     setIsLoading(true);
     setError(null);
@@ -196,13 +167,17 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
     try {
       const holdResponse = await fetch("/api/bookings/hold", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotencyKey.current,
+        },
         body: JSON.stringify({
           cruiseId: selectedCruiseId,
           cruiseScheduleId: selectedScheduleId,
           roomIds: checkoutRoomIds,
           startDate,
           endDate,
+          ratePlan: selectedRatePlan,
         }),
       });
 
@@ -221,6 +196,7 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
 
       setBookingId(holdData.bookingId);
       setHoldExpiresAt(holdData.holdExpiresAt);
+      setTotalPrice(holdData.totalPriceCents);
 
       const tickets = selectedRooms
         .map((room) => ({
@@ -231,12 +207,21 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
 
       const confirmResponse = await fetch("/api/bookings/confirm", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotencyKey.current,
+        },
         body: JSON.stringify({
           bookingId: holdData.bookingId,
           holdSecret: holdData.holdSecret,
           customerName: fullName,
           customerEmail: form.email.trim(),
+          customerPhone,
+          adults,
+          children,
+          specialRequests: combinedSpecialRequests,
+          marketingOptIn: form.marketingOptIn,
+          termsAccepted: form.termsAccepted,
           roomIds: checkoutRoomIds,
           tickets,
         }),
@@ -260,7 +245,9 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
         );
       }
 
-      setSuccess(true);
+      router.push(
+        `/booking/success?bookingId=${encodeURIComponent(confirmData.bookingId)}&token=${encodeURIComponent(confirmData.accessToken)}`,
+      );
     } catch (submitError) {
       setError(
         submitError instanceof Error
@@ -471,143 +458,22 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
               )}
             </div>
 
-            <div className="hathor-checkout-form__field">
-              <label htmlFor="address">Address</label>
-              <input
-                id="address"
-                type="text"
-                autoComplete="street-address"
-                className={fieldClass}
-                value={form.address}
-                onChange={(e) => setForm((c) => ({ ...c, address: e.target.value }))}
-              />
-              {fieldErrors.address && (
-                <p className="hathor-checkout-form__error">{fieldErrors.address}</p>
-              )}
-            </div>
-
-            <div className="hathor-checkout-form__row hathor-checkout-form__row--2">
-              <div className="hathor-checkout-form__field">
-                <label htmlFor="city">City</label>
-                <input
-                  id="city"
-                  type="text"
-                  autoComplete="address-level2"
-                  className={fieldClass}
-                  value={form.city}
-                  onChange={(e) => setForm((c) => ({ ...c, city: e.target.value }))}
-                />
-                {fieldErrors.city && (
-                  <p className="hathor-checkout-form__error">{fieldErrors.city}</p>
-                )}
-              </div>
-              <div className="hathor-checkout-form__field">
-                <label htmlFor="postalCode">Postal Code</label>
-                <input
-                  id="postalCode"
-                  type="text"
-                  autoComplete="postal-code"
-                  className={fieldClass}
-                  value={form.postalCode}
-                  onChange={(e) =>
-                    setForm((c) => ({ ...c, postalCode: e.target.value }))
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="hathor-checkout-form__field">
-              <label htmlFor="country">Country</label>
-              <select
-                id="country"
-                className={fieldClass}
-                value={form.country}
-                onChange={(e) => setForm((c) => ({ ...c, country: e.target.value }))}
-              >
-                {COUNTRIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              {fieldErrors.country && (
-                <p className="hathor-checkout-form__error">{fieldErrors.country}</p>
-              )}
-            </div>
           </div>
         </section>
 
-        {/* Right — payment placeholders */}
+        {/* Right — reservation acknowledgement */}
         <section className="hathor-checkout-column hathor-checkout-column--payment">
           <h2 className="hathor-checkout-column__title booking-serif">
-            Payment Method
+            Confirm Reservation
           </h2>
 
           <p className="hathor-checkout-payment-note">
-            Card fields are for display only. Your reservation is confirmed without
-            online payment — our team will contact you to complete payment securely.
+            No payment is collected during this testing period. Confirming reserves
+            the selected cabin at the price shown. Payment remains pending until a
+            secure payment system is added.
           </p>
 
-          <div className="hathor-checkout-form" aria-disabled="true">
-            <div className="hathor-checkout-form__field">
-              <label htmlFor="cardName">Name on Card</label>
-              <input
-                id="cardName"
-                type="text"
-                className={`${fieldClass} hathor-checkout-field--placeholder`}
-                placeholder="As shown on card"
-                disabled
-                readOnly
-              />
-            </div>
-            <div className="hathor-checkout-form__field">
-              <label htmlFor="cardNumber">Card Number</label>
-              <input
-                id="cardNumber"
-                type="text"
-                className={`${fieldClass} hathor-checkout-field--placeholder`}
-                placeholder="•••• •••• •••• ••••"
-                disabled
-                readOnly
-              />
-            </div>
-            <div className="hathor-checkout-form__row hathor-checkout-form__row--2">
-              <div className="hathor-checkout-form__field">
-                <label htmlFor="cardExpiry">MM / YY</label>
-                <input
-                  id="cardExpiry"
-                  type="text"
-                  className={`${fieldClass} hathor-checkout-field--placeholder`}
-                  placeholder="MM / YY"
-                  disabled
-                  readOnly
-                />
-              </div>
-              <div className="hathor-checkout-form__field">
-                <label htmlFor="cardCvv">CVV</label>
-                <input
-                  id="cardCvv"
-                  type="text"
-                  className={`${fieldClass} hathor-checkout-field--placeholder`}
-                  placeholder="•••"
-                  disabled
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-
           <div className="hathor-checkout-checkboxes">
-            <label className="hathor-checkout-checkbox">
-              <input
-                type="checkbox"
-                checked={form.sameAddressForBilling}
-                onChange={(e) =>
-                  setForm((c) => ({ ...c, sameAddressForBilling: e.target.checked }))
-                }
-              />
-              <span>Use same address as contact</span>
-            </label>
             <label className="hathor-checkout-checkbox">
               <input
                 type="checkbox"
@@ -627,10 +493,8 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
                 }
               />
               <span>
-                I agree to the{" "}
-                <a href="/contact" className="hathor-checkout-link">
-                  Terms &amp; Conditions
-                </a>
+                I understand this confirms my reservation, but no payment has
+                been collected and the balance remains due.
               </span>
             </label>
             {fieldErrors.termsAccepted && (
@@ -665,7 +529,7 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
                   Processing…
                 </>
               ) : (
-                "Book Now"
+                "Confirm Reservation"
               )}
             </button>
           </div>

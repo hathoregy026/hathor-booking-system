@@ -75,7 +75,7 @@ export const LUXURY_ROOM_TYPE_OPTIONS: {
 
 /** Maps luxury UI labels to database roomType values */
 export const LUXURY_TO_DB_ROOM_TYPES: Record<LuxuryRoomTypeValue, string[]> = {
-  "luxury-rooms": ["Luxury Room", "Luxury King Bed", "Hathor Dahabiya Twin Bed"],
+  "luxury-rooms": ["Luxury Room", "Luxury King Bed", "Luxury Twin Bed"],
   "luxury-suites": ["Luxury Suite", "Suite", "Deluxe"],
   "luxury-royal-suites": ["Luxury Royal Suite", "Royal Suite", "Presidential"],
 };

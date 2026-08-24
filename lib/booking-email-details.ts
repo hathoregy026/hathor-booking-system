@@ -44,6 +44,11 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
   id: string;
   customerName: string | null;
   customerEmail: string | null;
+  customerPhone: string | null;
+  adultCount: number | null;
+  childCount: number | null;
+  specialRequests: string | null;
+  ratePlan: "STANDARD" | "NON_REFUNDABLE";
   cruiseSchedule: {
     departureTime: Date;
     arrivalTime: Date;
@@ -58,6 +63,7 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
     ticketType: { priceCents: number };
   }[];
   totalPriceCents: number | null;
+  bookingUrl: string;
 }): BookingEmailDetails | null {
   const email = booking.customerEmail?.trim();
   if (!email) return null;
@@ -80,13 +86,22 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
     bookingId: booking.id,
     guestName: parsed.guestName,
     guestEmail: email,
-    guestPhone: parsed.guestPhone,
+    guestPhone: booking.customerPhone ?? parsed.guestPhone,
     cruiseName: booking.cruiseSchedule.cruise.name,
     checkInDate: format(booking.cruiseSchedule.departureTime, "MMMM d, yyyy"),
     checkOutDate: format(booking.cruiseSchedule.arrivalTime, "MMMM d, yyyy"),
     roomType: roomLabel,
-    guests: parsed.guests,
+    guests:
+      booking.adultCount !== null && booking.childCount !== null
+        ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
+        : parsed.guests,
     totalPrice: formatPrice(totalPriceCents),
+    ratePlan:
+      booking.ratePlan === "NON_REFUNDABLE"
+        ? "Non-refundable rate (10% saving)"
+        : "Standard flexible rate",
+    specialRequests: booking.specialRequests ?? undefined,
+    bookingUrl: booking.bookingUrl,
   };
 }
 

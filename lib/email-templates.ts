@@ -57,25 +57,25 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
   },
   BookingConfirmed: {
     name: "BookingConfirmed",
-    subject: "Your Hathor Dahabiya cruise is confirmed",
+    subject: "Reservation confirmed — payment pending | Hathor Dahabiya",
     logoUrl: HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
-    heroHeading: "Welcome Aboard, {guestName}",
+    heroHeading: "Reservation Confirmed, {guestName}",
     bodyText:
-      "Your Hathor Dahabiya cruise is officially confirmed. We are preparing an unforgettable journey along the Nile, just for you.",
+      "Your cabin is reserved. No payment has been collected yet; the full balance remains pending.",
   },
   AdminAlert: {
     name: "AdminAlert",
-    subject: "New booking request — {guestName}",
+    subject: "New confirmed reservation — {guestName}",
     logoUrl: HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
-    heroHeading: "New Booking Request",
+    heroHeading: "New Confirmed Reservation",
     bodyText:
-      "Please log in to the admin dashboard to review and confirm this booking.",
+      "This reservation was confirmed automatically without collecting payment. Follow up through your approved payment process.",
   },
 };
 

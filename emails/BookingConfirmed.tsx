@@ -12,7 +12,7 @@ import {
   GoldDivider,
 } from "./components/EmailUi";
 import { sampleBookingDetails, sampleGuestName } from "./sample-data";
-import { emailColors, SITE_URL } from "./styles";
+import { emailColors } from "./styles";
 
 type BookingConfirmedEmailProps = {
   guestName: string;
@@ -24,9 +24,9 @@ export const PreviewProps: BookingConfirmedEmailProps = {
   details: sampleBookingDetails,
 };
 
-const DEFAULT_HERO = "Welcome Aboard, {guestName}";
+const DEFAULT_HERO = "Reservation Confirmed, {guestName}";
 const DEFAULT_BODY =
-  "Your Hathor Dahabiya cruise is officially confirmed. We are preparing an unforgettable journey along the Nile, just for you.";
+  "Your cabin is reserved. No payment has been collected yet; our team will contact you separately when secure online payment becomes available.";
 
 const HIGHLIGHTS = [
   "Luxury cabin with panoramic Nile views",
@@ -50,17 +50,21 @@ export default function BookingConfirmedEmail({
 
   return (
     <EmailLayout
-      preview="Your Hathor Dahabiya cruise is officially confirmed"
+      preview="Your Hathor reservation is confirmed — payment is pending"
       footerVariant="guest-reply"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
     >
-      <EmailEyebrow color={emailColors.success}>Booking Confirmed</EmailEyebrow>
+      <EmailEyebrow color={emailColors.success}>Reservation Confirmed · Payment Pending</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
+      <EmailBodyText muted>
+        Security note: Hathor will never ask you to send card details, passwords,
+        or verification codes by email or messaging apps.
+      </EmailBodyText>
       <BookingSummary details={details} showBookingReference />
 
       <table
@@ -109,7 +113,9 @@ export default function BookingConfirmedEmail({
         </tbody>
       </table>
 
-      <EmailCtaButton href={SITE_URL} label="View Your Booking" />
+      {details.bookingUrl ? (
+        <EmailCtaButton href={details.bookingUrl} label="View Your Reservation" />
+      ) : null}
     </EmailLayout>
   );
 }

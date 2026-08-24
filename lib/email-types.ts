@@ -9,4 +9,7 @@ export type BookingEmailDetails = {
   roomType: string;
   guests: string;
   totalPrice: string;
+  ratePlan?: string;
+  specialRequests?: string;
+  bookingUrl?: string;
 };

@@ -55,17 +55,20 @@ async function sendEmail(input: {
     return;
   }
 
-  console.log(`[email] sending ${input.label} to ${input.to}`);
-  console.log(`[email] logo: ${input.theme.logoUrl}`);
-  console.log(`[email] hero: ${input.theme.heroImageUrl}`);
-
-  const html = await render(input.renderMessage(input.theme));
+  console.log(`[email] sending ${input.label}`);
+  const message = input.renderMessage(input.theme);
+  const [html, text] = await Promise.all([
+    render(message),
+    render(message, { plainText: true }),
+  ]);
 
   const result = await resend.emails.send({
     from: getFromAddress(),
     to: input.to,
     subject: input.subject,
     html,
+    text,
+    replyTo: process.env.RESEND_REPLY_TO?.trim() || undefined,
   });
 
   if (result.error) {

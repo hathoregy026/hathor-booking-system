@@ -42,6 +42,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const purgedRateLimits = await prisma.apiRateLimit.deleteMany({
+      where: { resetAt: { lt: now } },
+    });
+
     const expiredCruises = await prisma.cruise.findMany({
       where: { deletedAt: { lt: purgeBefore } },
       select: { id: true },
@@ -73,6 +77,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       expiredCount: expiredHolds.count,
       purgedBookingsCount: purgedBookings.count,
+      purgedRateLimitsCount: purgedRateLimits.count,
       purgedCruisesCount: purgedCruises,
       skippedCruisesCount: skippedCruises,
       purgedRoomsCount: purgedRooms,

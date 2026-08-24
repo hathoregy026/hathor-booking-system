@@ -32,6 +32,8 @@ export const luxuryRoomTypeSchema = z.enum([
   "luxury-royal-suites",
 ]);
 
+export const bookingRatePlanSchema = z.enum(["standard", "non-refundable"]);
+
 export const roomSearchConfigSchema = z
   .object({
     roomType: luxuryRoomTypeSchema,
@@ -118,19 +120,33 @@ export const createHoldSchema = z.object({
   cruiseScheduleId: z.string().min(1, "cruiseScheduleId is required"),
   roomIds: z
     .array(z.string().min(1))
-    .min(1, "At least one room is required"),
+    .length(1, "Select exactly one cabin or suite"),
   startDate: utcIsoDateString,
   endDate: utcIsoDateString,
+  ratePlan: bookingRatePlanSchema.default("standard"),
 });
 
 export const confirmBookingSchema = z.object({
   bookingId: z.string().min(1, "bookingId is required"),
   holdSecret: z.string().min(1, "holdSecret is required"),
-  customerName: z.string().min(1, "customerName is required"),
-  customerEmail: z.string().email("Valid email is required"),
+  customerName: z.string().trim().min(1, "customerName is required").max(120),
+  customerEmail: z.string().trim().email("Valid email is required").max(254),
+  customerPhone: z
+    .string()
+    .trim()
+    .min(6, "Valid phone number is required")
+    .max(32)
+    .regex(/^[+()\d\s.-]+$/, "Valid phone number is required"),
+  adults: z.number().int().min(1).max(MAX_GUESTS_PER_ROOM),
+  children: z.number().int().min(0).max(MAX_GUESTS_PER_ROOM),
+  specialRequests: z.string().trim().max(2000).default(""),
+  marketingOptIn: z.boolean().default(false),
+  termsAccepted: z.literal(true, {
+    error: "Reservation acknowledgement is required",
+  }),
   roomIds: z
     .array(z.string().min(1))
-    .min(1, "At least one room is required"),
+    .length(1, "Select exactly one cabin or suite"),
   tickets: z
     .array(
       z.object({
@@ -139,6 +155,19 @@ export const confirmBookingSchema = z.object({
       }),
     )
     .default([]),
+}).superRefine((data, ctx) => {
+  if (data.adults + data.children > MAX_GUESTS_PER_ROOM) {
+    ctx.addIssue({
+      code: "custom",
+      message: `Maximum ${MAX_GUESTS_PER_ROOM} guests per room`,
+      path: ["adults"],
+    });
+  }
+});
+
+export const bookingLookupSchema = z.object({
+  bookingId: z.string().trim().min(10).max(64),
+  email: z.string().trim().email().max(254),
 });
 
 export const cruiseSearchSchema = z

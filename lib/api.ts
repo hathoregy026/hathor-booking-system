@@ -1,12 +1,30 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { BookingConflictError, InvalidBookingError } from "@/lib/booking";
+import {
+  PublicRequestError,
+  RateLimitExceededError,
+} from "@/lib/public-api-security";
 
 export function jsonError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status });
 }
 
 export function handleRouteError(error: unknown) {
+  if (error instanceof RateLimitExceededError) {
+    return NextResponse.json(
+      { error: error.message },
+      {
+        status: 429,
+        headers: { "Retry-After": String(error.retryAfterSeconds) },
+      },
+    );
+  }
+
+  if (error instanceof PublicRequestError) {
+    return jsonError(error.message, error.status);
+  }
+
   if (error instanceof ZodError) {
     return NextResponse.json(
       { error: "Validation failed", details: error.flatten() },

@@ -78,7 +78,7 @@ export function serializeAdminBooking(
   const departureTime = booking.cruiseSchedule.departureTime.toISOString();
   const arrivalTime = booking.cruiseSchedule.arrivalTime.toISOString();
 
-  return withParsedGuest({
+  const legacy = withParsedGuest({
     id: booking.id,
     customerName: booking.customerName ?? "—",
     customerEmail: booking.customerEmail ?? "—",
@@ -100,6 +100,19 @@ export function serializeAdminBooking(
     createdAt: booking.createdAt.toISOString(),
     deletedAt: booking.deletedAt?.toISOString() ?? null,
   });
+  const adults = booking.adultCount;
+  const children = booking.childCount;
+  return {
+    ...legacy,
+    guestPhone: booking.customerPhone ?? legacy.guestPhone,
+    partyLabel:
+      adults !== null && children !== null
+        ? `${adults} adult${adults === 1 ? "" : "s"}, ${children} child${children === 1 ? "" : "ren"}`
+        : legacy.partyLabel,
+    partySize:
+      adults !== null && children !== null ? adults + children : legacy.partySize,
+    specialRequests: booking.specialRequests ?? legacy.specialRequests,
+  };
 }
 
 /** True for checkout pending state (`PENDING` or legacy `PENDING_HOLD`). */

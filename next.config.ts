@@ -1,13 +1,8 @@
 import type { NextConfig } from "next";
 
 /*
- * Content Security Policy — shipped in REPORT-ONLY mode.
- *
- * Report-only means the browser logs violations to the devtools console but
- * blocks nothing, so this cannot break a page. Check the console on the
- * heaviest pages (home, gastronomy, suites, /admin) for a few days; once the
- * report is quiet, switch the header key below from
- * "Content-Security-Policy-Report-Only" to "Content-Security-Policy".
+ * Content Security Policy — enforced to block unapproved scripts, frames,
+ * forms, plug-ins and network destinations.
  *
  * 'unsafe-inline' / 'unsafe-eval' on script-src are required by Next's inline
  * bootstrap and by GSAP/Lenis-style runtime code. Tightening those needs a
@@ -28,18 +23,13 @@ const CSP_DIRECTIVES = [
   "worker-src 'self' blob:",
   "frame-src 'self'",
   "manifest-src 'self'",
-  /*
-   * NOTE: `upgrade-insecure-requests` is intentionally omitted. Browsers
-   * ignore it in a report-only policy and log a console warning about it.
-   * Add it back at the same time you switch the header key below to the
-   * enforcing "Content-Security-Policy".
-   */
+  "upgrade-insecure-requests",
 ].join("; ");
 
 /* Applied to every route. None of these change rendering. */
 const SECURITY_HEADERS = [
   {
-    key: "Content-Security-Policy-Report-Only",
+    key: "Content-Security-Policy",
     value: CSP_DIRECTIVES,
   },
   {

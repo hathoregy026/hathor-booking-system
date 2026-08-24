@@ -7,13 +7,6 @@ import { formatPrice } from "@/lib/client-dates";
 
 type PageProps = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{
-    checkInDate?: string;
-    duration?: string;
-    scheduleId?: string;
-    adults?: string;
-    children?: string;
-  }>;
 };
 
 const ROOM_PLACEHOLDER =
@@ -21,27 +14,13 @@ const ROOM_PLACEHOLDER =
 
 export default async function BookingCruiseDetailsPage({
   params,
-  searchParams,
 }: PageProps) {
   const { id } = await params;
-  const query = await searchParams;
   const details = await getBookingRoomDetails(id);
 
   if (!details) {
     notFound();
   }
-
-  const checkoutParams = new URLSearchParams({
-    roomId: details.roomId,
-    cruiseId: details.cruiseId,
-    priceCents: String(details.priceCents),
-  });
-
-  if (query.checkInDate) checkoutParams.set("checkInDate", query.checkInDate);
-  if (query.duration) checkoutParams.set("duration", query.duration);
-  if (query.scheduleId) checkoutParams.set("scheduleId", query.scheduleId);
-  if (query.adults) checkoutParams.set("adults", query.adults);
-  if (query.children) checkoutParams.set("children", query.children);
 
   const imageStyle = details.imageUrl
     ? { backgroundImage: `url(${details.imageUrl})` }
@@ -211,7 +190,7 @@ export default async function BookingCruiseDetailsPage({
           </p>
 
           <Link
-            href={`/booking/checkout?${checkoutParams.toString()}`}
+            href="/?book=1"
             className="booking-btn-primary mt-6 flex w-full items-center justify-center px-6 py-3.5 text-sm font-semibold"
           >
             Check Availability
@@ -225,8 +204,8 @@ export default async function BookingCruiseDetailsPage({
           </Link>
 
           <p className="mt-6 text-center text-xs leading-relaxed text-[var(--lux-text-grey,#b8b8b8)]">
-            Guest details confirmed on the next step. No payment required to
-            request a booking.
+            Guest details are confirmed on the next step. No payment is
+            collected during testing.
           </p>
         </aside>
       </div>

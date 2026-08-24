@@ -64,6 +64,9 @@ function buildSummaryRows(
     { label: "Room Type", value: details.roomType },
     { label: "Adults", value: adults },
     { label: "Children", value: children },
+    ...(details.ratePlan
+      ? [{ label: "Rate", value: details.ratePlan }]
+      : []),
     { label: "Total Price", value: details.totalPrice, bold: true, gold: true },
   );
 
@@ -206,7 +209,7 @@ export function GuestInfoTable({
     { label: "Full Name", value: details.guestName },
     { label: "Email", value: details.guestEmail },
     { label: "Phone Number", value: details.guestPhone ?? "—" },
-    { label: "Special Requests", value: "—" },
+    { label: "Special Requests", value: details.specialRequests || "None" },
   ];
 
   return (

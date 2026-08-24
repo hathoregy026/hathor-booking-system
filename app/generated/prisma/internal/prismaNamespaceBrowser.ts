@@ -56,6 +56,7 @@ export const ModelName = {
   Room: 'Room',
   TicketType: 'TicketType',
   Booking: 'Booking',
+  ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
   BookingTicket: 'BookingTicket',
   SiteContent: 'SiteContent',
@@ -144,9 +145,19 @@ export const BookingScalarFieldEnum = {
   id: 'id',
   cruiseScheduleId: 'cruiseScheduleId',
   status: 'status',
+  ratePlan: 'ratePlan',
+  paymentStatus: 'paymentStatus',
+  idempotencyKey: 'idempotencyKey',
   holdExpiresAt: 'holdExpiresAt',
   customerEmail: 'customerEmail',
   customerName: 'customerName',
+  customerPhone: 'customerPhone',
+  adultCount: 'adultCount',
+  childCount: 'childCount',
+  specialRequests: 'specialRequests',
+  marketingOptIn: 'marketingOptIn',
+  marketingOptInAt: 'marketingOptInAt',
+  termsAcceptedAt: 'termsAcceptedAt',
   totalPriceCents: 'totalPriceCents',
   currency: 'currency',
   priceSnapshotAt: 'priceSnapshotAt',
@@ -156,6 +167,16 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const ApiRateLimitScalarFieldEnum = {
+  key: 'key',
+  count: 'count',
+  resetAt: 'resetAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApiRateLimitScalarFieldEnum = (typeof ApiRateLimitScalarFieldEnum)[keyof typeof ApiRateLimitScalarFieldEnum]
 
 
 export const BookingRoomScalarFieldEnum = {
