@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node scripts/verify-production-migration-baseline.mjs && npx prisma migrate resolve --applied 20250620120000_add_blog_post && npx prisma migrate resolve --applied 20250623151000_booking_list_indexes && npx prisma migrate resolve --applied 20250628120000_add_site_image && npx prisma migrate resolve --applied 20260718190000_add_site_setting && npx prisma migrate resolve --applied 20260823120000_add_booking_price_snapshots && npx prisma migrate deploy && npm run build",
+  "buildCommand": "node scripts/deploy-with-migrations.mjs",
   "headers": [
     {
       "source": "/sw.js",
