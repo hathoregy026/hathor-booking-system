@@ -300,12 +300,6 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
-      // Live-site room detail paths (same links) → cruises until detail pages exist
-      {
-        source: "/rooms/:slug",
-        destination: "/cruises",
-        permanent: false,
-      },
     ];
   },
 };

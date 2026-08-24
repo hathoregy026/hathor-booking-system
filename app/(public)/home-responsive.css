@@ -1233,6 +1233,76 @@
 }
 
 /* ==========================================================================
+   19. FINAL PHONE / TABLET COMPOSITION GUARDS
+   --------------------------------------------------------------------------
+   Preserve the desktop section order and visual language while preventing a
+   transformed child, CMS-authored line, or flex item from widening the page.
+   These rules are intentionally narrow-only: desktop (>1024px) is untouched.
+   ========================================================================== */
+
+@media (max-width: 1024.98px) {
+  html[data-ex-experience]
+    .ex-root
+    :is(
+      .section-inner,
+      .about-layout,
+      .services-intro,
+      .home-carousel,
+      .ex-stack-scroll__copy,
+      .testimonials-grid,
+      .hcta-copy
+    ) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  html[data-ex-experience] .radius-img-container,
+  html[data-ex-experience] .radius-img-container-inner {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  html[data-ex-experience] .radius-img-container-inner {
+    aspect-ratio: 4 / 5;
+    max-height: min(64svh, 42rem);
+    overflow: hidden;
+  }
+
+  html[data-ex-experience] .radius-img-container-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  html[data-ex-experience] .home-carousel .carousel-track {
+    touch-action: pan-x pan-y;
+    scroll-padding-inline: var(--content-gutter, 1rem);
+  }
+}
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience] .about-layout {
+    align-items: stretch;
+  }
+
+  html[data-ex-experience] .about-layout > * {
+    width: 100%;
+    min-width: 0;
+  }
+
+  html[data-ex-experience] .services-intro,
+  html[data-ex-experience] .testimonials-header {
+    text-align: left;
+  }
+
+  html[data-ex-experience] .carousel-slide__hit,
+  html[data-ex-experience] .testimonial-card,
+  html[data-ex-experience] .gallery-item {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ==========================================================================
    18. AMENITIES TABLET PORTRAIT — stack slider narrative at 768-899px
    --------------------------------------------------------------------------
    home-dining-slider.css keeps a two-column slider through 1024px. On portrait

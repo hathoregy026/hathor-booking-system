@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AccommodationSpringsDesignPage } from "@/components/pages/AccommodationSpringsDesignPage";
+import { RoomCollectionPage } from "@/components/pages/rooms/RoomCollectionPage";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
@@ -46,10 +46,7 @@ export default async function RoomsPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <AccommodationSpringsDesignPage
-        frameSrc="/accommodation-springs/luxury-suites/index.html"
-        title="Luxury Suites"
-      />
+      <RoomCollectionPage />
     </StandalonePageVisibilityShell>
   );
 }
