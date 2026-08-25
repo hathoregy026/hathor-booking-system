@@ -927,7 +927,17 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/#moving-tilted-cards",
     displayOrder: 5,
   },
+  {
+    name: "burger-nav-image",
+    altText: "Burger menu — right panel photo",
+    url: HATHOR_MEDIA.royalSuite,
+    category: "nav",
+    pagePath: "/#burger-nav",
+    displayOrder: 0,
+  },
 ];
+
+export const BURGER_NAV_IMAGE_SLOT_NAME = "burger-nav-image" as const;
 
 export type SiteImageName = (typeof SITE_IMAGE_SLOTS)[number]["name"];
 

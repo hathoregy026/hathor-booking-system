@@ -187,6 +187,7 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "scraped-royal-7": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   "scraped-royal-8": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   "suites-nile-still": "/suites",
+  "burger-nav-image": "/suites",
 };
 
 /**
@@ -266,6 +267,10 @@ export function resolveSiteImageLivePath(
     adminGroupPagePath === "/#our-voyages"
   ) {
     return buildSiteImageLivePath("/", name);
+  }
+
+  if (adminGroupPagePath === "/#burger-nav") {
+    return buildSiteImageLivePath("/suites", name);
   }
 
   if (adminGroupPagePath === "/#dining-plates") {

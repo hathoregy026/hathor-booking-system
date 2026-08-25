@@ -6,6 +6,7 @@ export const IMAGE_CATEGORIES = [
   "spa",
   "landmark",
   "itinerary",
+  "nav",
   "general",
 ] as const;
 

@@ -18,12 +18,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
-import { HATHOR_MEDIA } from "@/lib/hathor-media";
+import { BURGER_NAV_IMAGE_SLOT_NAME } from "@/lib/site-image-slots";
 import type { HeaderNavItem } from "@/lib/public-nav";
+import { ManagedImage } from "@/components/ui/ManagedImage";
 import "./EditorialNavOverlay.css";
 
 const LAYER_COLORS = ["#8b6914", "#c9a96e", "#ece8df"] as const;
-const OVERLAY_IMAGE_SRC = HATHOR_MEDIA.royalSuite;
 
 type EditorialNavOverlayProps = {
   open: boolean;
@@ -104,14 +104,14 @@ export function EditorialNavOverlay({
       </div>
 
       <div className="eno-photo" aria-hidden="true">
-        <Image
-          src={OVERLAY_IMAGE_SRC}
+        <ManagedImage
+          name={BURGER_NAV_IMAGE_SLOT_NAME}
           alt=""
           fill
           sizes="(min-width: 1025px) 56vw, (min-width: 768px) 44vw, 100vw"
           className="eno-photo__img"
           quality={90}
-          priority={false}
+          previewAnchor={false}
         />
         <span className="eno-photo__veil" />
       </div>
@@ -148,14 +148,11 @@ export function EditorialNavOverlay({
           <p className="eno-kicker">Luxury voyages on the Nile</p>
           <button
             type="button"
-            className="eno-book"
+            className="btn eno-book"
             onClick={handleBookNow}
             tabIndex={open ? 0 : -1}
           >
-            <span>Book now</span>
-            <span className="eno-book__arrow" aria-hidden="true">
-              →
-            </span>
+            Book Now
           </button>
         </header>
 

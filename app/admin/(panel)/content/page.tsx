@@ -120,7 +120,10 @@ export default function AdminContentPage() {
           (raw === "amenities-sequence" && path.includes("amenities-sequence")) ||
           (raw === "amenities" && path.includes("amenities-sequence")) ||
           (raw === "dining-plates" && path.includes("dining-plates")) ||
-          (raw === "plates" && path.includes("dining-plates"))
+          (raw === "plates" && path.includes("dining-plates")) ||
+          (raw === "burger-nav" && path.includes("burger-nav")) ||
+          (raw === "burger-nav-image" && path.includes("burger-nav")) ||
+          (raw === "burger" && path.includes("burger-nav"))
         );
       });
 

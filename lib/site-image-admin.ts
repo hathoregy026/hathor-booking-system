@@ -205,6 +205,7 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "scraped-cabin-7": "Luxury Cabin Gallery — Photo 7",
   "scraped-cabin-8": "Luxury Cabin Gallery — Photo 8",
   "suites-nile-still": "Suites — Nile still",
+  "burger-nav-image": "Burger menu — right panel photo",
 };
 
 export type SiteImageLayoutKind = "hero" | "gallery" | "standard";
@@ -239,6 +240,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "room-luxury": "hero",
     "cabins-hero": "hero",
     "room-royal": "hero",
+    "burger-nav-image": "hero",
   };
 
 const LAYOUT_LABELS: Record<SiteImageLayoutKind, string> = {
@@ -301,6 +303,7 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
   if (pageTitle === "Floating IG" || pageTitle === "Floating IG images") {
     return "Floating IG Bubble Images";
   }
+  if (pageTitle === "Burger Nav Image") return "Burger Nav Image";
   if (pageTitle === "Moving Tilted Cards") return "Moving Tilted Cards Images";
   if (pageTitle === "Suites") return "Suites Images";
   if (pageTitle === "Dining") return "Dining Images";
@@ -398,6 +401,22 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     );
   });
 
+  const burgerNavItems: SiteImageAdminItem[] = [];
+  const burgerNavSeen = new Set<string>();
+  const burgerNavSlot = byName.get("burger-nav-image");
+  if (burgerNavSlot) {
+    pushUniqueItem(
+      burgerNavItems,
+      burgerNavSeen,
+      toAdminItem(
+        burgerNavSlot,
+        "/#burger-nav",
+        "Burger menu — right panel photo",
+        1,
+      ),
+    );
+  }
+
   const ourVoyagesItems: SiteImageAdminItem[] = [];
   const ourVoyagesSeen = new Set<string>();
   OUR_VOYAGES_ADMIN_CARDS.forEach((card, index) => {
@@ -473,6 +492,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       slot.pagePath === "/#amenities-sequence" ||
       slot.pagePath === "/#moving-tilted-cards" ||
       slot.pagePath === "/#floating-ig" ||
+      slot.pagePath === "/#burger-nav" ||
       slot.pagePath === "/#our-voyages"
     ) {
       continue;
@@ -484,6 +504,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
         appearPath === "/#amenities-sequence" ||
         appearPath === "/#moving-tilted-cards" ||
         appearPath === "/#floating-ig" ||
+        appearPath === "/#burger-nav" ||
         appearPath === "/#our-voyages" ||
         appearPath === "/cruises" ||
         appearPath === "/suites"
@@ -552,6 +573,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Photos for the Sail with Hathor floating Instagram bubbles only. Each bubble has its own upload — independent from Homepage, Our Voyages, and every other page.",
       items: floatingIgItems,
+    },
+    {
+      pagePath: "/#burger-nav",
+      title: "Burger Nav Image",
+      description:
+        "Right-panel photo in the open burger menu on Suites, Cruises, and other inner pages. Filter this tab to replace it without touching any other page photos.",
+      items: burgerNavItems,
     },
     {
       pagePath: "/cruises",
