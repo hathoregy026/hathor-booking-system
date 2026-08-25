@@ -80,7 +80,7 @@ export function RoomSelection({ duration, checkInDate, roomConfigs, availableRoo
                   <span className="historia-room-card__index">0{roomIndex + 1}</span>
                 </div>
                 <div className="historia-room-card__body">
-                  <p className="historia-room-card__kicker"><Sparkles aria-hidden /> Hathor accommodation</p>
+                  <p className="historia-room-card__kicker"><Sparkles aria-hidden /> Room {String(roomIndex + 1).padStart(2, "0")}</p>
                   <h3 className="historia-room-card__name">{room.name}</h3>
                   <dl className="historia-room-card__facts">
                     <div><BedDouble aria-hidden /><dt>Type</dt><dd>{room.roomType ?? "Stateroom"}</dd></div>
@@ -96,7 +96,7 @@ export function RoomSelection({ duration, checkInDate, roomConfigs, availableRoo
                     <label className="historia-room-card__rate-option"><input type="radio" name={`rate-${selectionKey}`} checked={selectedRate === "non-refundable"} onChange={() => setRateByRoom((current) => ({ ...current, [selectionKey]: "non-refundable" }))} /><span>{nonRefundableRateLabel(durationLabel)} — {formatPrice(nonRefundablePrice)}</span></label>
                   </fieldset>
 
-                  <button type="button" className="public-btn-gold historia-room-card__book" onClick={() => onBookRoom(selectionKey, selectedRate)}>Book</button>
+                  <button type="button" className="public-btn-outline-gold historia-room-card__book" onClick={() => onBookRoom(selectionKey, selectedRate)}>Book</button>
                 </div>
               </article>
             );

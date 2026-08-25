@@ -1,0 +1,267 @@
+/* Booking accommodation surfaces — derived from the live Contact editorial page. */
+.booking-page {
+  --br-paper: #ece4da;
+  --br-paper-warm: #f3ede4;
+  --br-sand: #ded4c6;
+  --br-stone: #cfc7ba;
+  --br-olive: #adaa8a;
+  --br-ink: #14120e;
+  --br-soft: #4a453c;
+  --br-gold: #b69f64;
+  --br-gold-deep: #806b35;
+  --br-hair: rgb(20 18 14 / 16%);
+  --br-display: "Italiana", var(--font-hathor-gamgote), Georgia, serif;
+  --br-edit: "Playfair Display", Georgia, serif;
+  --br-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+}
+
+.booking-page :is(.historia-room-selection, .booking-room-editorial) {
+  color: var(--br-ink);
+  font-family: var(--br-body);
+}
+
+.booking-page :is(.historia-room-selection__intro h2, .historia-room-card__name, .booking-room-editorial h1, .booking-room-editorial h2) {
+  font-family: var(--br-display);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -.018em;
+}
+
+.booking-page :is(.historia-room-selection__intro h2 em, .booking-room-editorial h2 em) {
+  font-family: var(--br-edit);
+  font-weight: 300;
+  text-transform: none;
+}
+
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--br-gold) !important;
+  background: transparent !important;
+  color: var(--br-gold-deep) !important;
+  box-shadow: none;
+  transition: color .34s cubic-bezier(.22,.61,.36,1), transform .34s cubic-bezier(.22,.61,.36,1);
+}
+
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold)::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  border-radius: inherit;
+  background: var(--br-gold);
+  transform: translate3d(-102%, 0, 0);
+  transition: transform .42s cubic-bezier(.22,.61,.36,1);
+}
+
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold):hover,
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold):focus-visible {
+  background: transparent !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+}
+
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold):hover::before,
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold):focus-visible::before {
+  transform: translate3d(0, 0, 0);
+}
+
+.historia-room-selection {
+  width: min(100%, 100rem);
+  max-width: none;
+  padding-inline: clamp(1rem, 3vw, 2.6rem);
+}
+
+.historia-room-selection__intro {
+  min-height: min(58svh, 43rem);
+  align-content: center;
+}
+
+.historia-room-selection__intro h2 {
+  font-size: clamp(3.8rem, 7vw, 8rem);
+  line-height: .84;
+}
+
+.historia-room-selection__eyebrow,
+.historia-room-card__kicker,
+.booking-room-editorial__eyebrow {
+  font-family: var(--br-edit);
+  font-size: clamp(.85rem, 1vw, 1.05rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: .01em;
+  text-transform: none;
+}
+
+.historia-room-selection__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.historia-room-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 0;
+  background: var(--br-paper-warm);
+  box-shadow: 0 2rem 5rem rgb(20 18 14 / 9%);
+}
+
+.historia-room-card:nth-child(4n + 2),
+.historia-room-card:nth-child(4n + 3) { background: var(--br-sand); }
+.historia-room-card:nth-child(4n + 4) { background: var(--br-stone); }
+
+.historia-room-card__media {
+  min-height: clamp(22rem, 34vw, 38rem);
+}
+
+.historia-room-card__body {
+  flex: 1;
+  justify-content: flex-start;
+  padding: clamp(1.5rem, 3vw, 3rem);
+}
+
+.historia-room-card__name {
+  font-size: clamp(2.35rem, 3.7vw, 4.8rem);
+  line-height: .88;
+}
+
+.historia-room-card__facts {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-color: var(--br-hair);
+}
+
+.historia-room-card__facts > div {
+  grid-template-columns: 1fr;
+  align-content: start;
+  padding-inline: .6rem;
+}
+
+.historia-room-card__facts svg { grid-row: auto; }
+.historia-room-card__desc { color: var(--br-soft); }
+.historia-room-card__rate { margin-top: auto; padding-top: 1.5rem; }
+
+.booking-room-editorial {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 6rem;
+  background: var(--br-paper);
+}
+
+.booking-room-editorial__crumbs { padding-inline: clamp(1rem, 2.6vw, 2.6rem); }
+.booking-room-editorial__hero { min-height: calc(100svh - 5rem); }
+
+.booking-room-editorial__hero-copy h1 {
+  max-width: min(90vw, 82rem);
+  font-size: clamp(4rem, 8.2vw, 10rem);
+  line-height: .82;
+}
+
+.booking-room-editorial__intro,
+.booking-room-editorial__utilities,
+.booking-room-editorial__included {
+  min-height: 100svh;
+  align-content: center;
+  padding-inline: clamp(1rem, 6vw, 7rem);
+}
+
+.booking-room-editorial__intro { background: var(--br-paper); }
+.booking-room-editorial__utilities { background: var(--br-olive); }
+.booking-room-editorial__included { background: var(--br-paper-warm); }
+
+.booking-room-editorial__intro h2,
+.booking-room-editorial__utilities h2,
+.booking-room-editorial__included h2,
+.booking-room-gallery__head h2 {
+  font-size: clamp(3.7rem, 7.3vw, 8.8rem);
+  line-height: .84;
+}
+
+.booking-room-gallery {
+  display: block;
+  min-height: 100svh;
+  padding: clamp(4rem, 8vw, 8rem) 0;
+  background: var(--br-black, #0b0a08);
+  color: #f7f1e6;
+}
+
+.booking-room-gallery__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, .42fr);
+  align-items: end;
+  gap: 2rem;
+  padding: 0 clamp(1rem, 6vw, 7rem) clamp(2rem, 5vw, 4rem);
+}
+
+.booking-room-gallery__head h2 { grid-row: span 2; }
+.booking-room-gallery__head > p:last-child { max-width: 27ch; color: rgb(247 241 230 / 68%); line-height: 1.6; }
+
+.booking-room-gallery__track {
+  display: flex;
+  gap: clamp(.6rem, 1vw, 1rem);
+  overflow-x: auto;
+  padding: 0 clamp(1rem, 6vw, 7rem) 1.25rem;
+  scroll-padding-inline: clamp(1rem, 6vw, 7rem);
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--br-gold) rgb(255 255 255 / 12%);
+  scrollbar-width: thin;
+}
+
+.booking-room-gallery__item,
+.booking-room-gallery__item--4 {
+  position: relative;
+  display: block;
+  flex: 0 0 min(68vw, 72rem);
+  height: min(72svh, 48rem);
+  margin: 0;
+  overflow: hidden;
+  scroll-snap-align: center;
+}
+
+.booking-room-gallery__item:nth-child(even) { flex-basis: min(52vw, 54rem); }
+.booking-room-gallery__item figcaption { right: 1rem; display: flex; justify-content: space-between; }
+
+.booking-room-editorial__reserve {
+  min-height: 72svh;
+  margin: 0;
+  padding-inline: clamp(1rem, 6vw, 7rem);
+  border: 0;
+  background: var(--br-stone);
+}
+
+@media (max-width: 1024px) {
+  .historia-room-selection__list { grid-template-columns: 1fr; }
+  .historia-room-card { flex-direction: row; }
+  .historia-room-card__media { flex: 0 0 42%; min-height: 36rem; }
+  .historia-room-card__body { min-width: 0; }
+  .booking-room-gallery__item { flex-basis: 74vw; }
+  .booking-room-gallery__item:nth-child(even) { flex-basis: 62vw; }
+}
+
+@media (max-width: 600px) {
+  .historia-room-selection__intro { min-height: 68svh; }
+  .historia-room-card { flex-direction: column; }
+  .historia-room-card__media { min-height: 58svh; }
+  .historia-room-card__facts { grid-template-columns: 1fr; }
+  .historia-room-card__facts > div + div { border-left: 0; border-top: 1px solid var(--br-hair); }
+  .booking-room-editorial__hero { min-height: 92svh; }
+  .booking-room-editorial__hero-copy h1 { font-size: clamp(3.2rem, 16vw, 5.2rem); }
+  .booking-room-editorial__intro,
+  .booking-room-editorial__utilities,
+  .booking-room-editorial__included { min-height: auto; padding-block: 5rem; }
+  .booking-room-gallery__head { grid-template-columns: 1fr; }
+  .booking-room-gallery__head h2 { grid-row: auto; }
+  .booking-room-gallery__item,
+  .booking-room-gallery__item:nth-child(even) { flex-basis: 88vw; height: 68svh; }
+  .booking-room-editorial__reserve { min-height: 72svh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-page :is(.public-btn-gold, .public-btn-outline-gold),
+  .booking-page :is(.public-btn-gold, .public-btn-outline-gold)::before { transition: none; }
+}

@@ -9,6 +9,7 @@ import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "../site-coming-soon.css";
+import "../booking-rooms-contact.css";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

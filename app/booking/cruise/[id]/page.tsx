@@ -59,12 +59,19 @@ export default async function BookingCruiseDetailsPage({ params }: PageProps) {
       </section>
 
       <section className="booking-room-gallery" aria-label={`${details.roomName} gallery`}>
-        {details.galleryImages.slice(0, 4).map((image, index) => (
+        <header className="booking-room-gallery__head">
+          <p className="booking-room-editorial__eyebrow">Room gallery</p>
+          <h2>Move through<br /><em>your space</em></h2>
+          <p>Swipe or scroll sideways to explore every view.</p>
+        </header>
+        <div className="booking-room-gallery__track" tabIndex={0} aria-label={`Scrollable images of ${details.roomName}`}>
+        {details.galleryImages.slice(0, 5).map((image, index) => (
           <figure key={image} className={`booking-room-gallery__item booking-room-gallery__item--${index + 1}`}>
-            <Image src={image} alt={`${details.roomName} ${index + 1}`} fill sizes={index === 0 ? "(max-width: 1024px) 100vw, 58vw" : "(max-width: 480px) 50vw, 32vw"} className="object-cover" />
-            <figcaption>View {String(index + 1).padStart(2, "0")}</figcaption>
+            <Image src={image} alt={`${details.roomName}, view ${index + 1}`} fill sizes="(max-width: 600px) 88vw, (max-width: 1024px) 72vw, 68vw" className="object-cover" />
+            <figcaption><span>View {String(index + 1).padStart(2, "0")}</span><span>{details.roomName}</span></figcaption>
           </figure>
         ))}
+        </div>
       </section>
 
       <section className="booking-room-editorial__utilities">
@@ -85,7 +92,7 @@ export default async function BookingCruiseDetailsPage({ params }: PageProps) {
       <aside className="booking-room-editorial__reserve">
         <div><p className="booking-room-editorial__eyebrow">Reserve this room</p><h2>{formatPrice(details.priceCents)}</h2><span>per {details.roomType?.toLowerCase().includes("suite") ? "suite" : "cabin"} · up to {details.capacity} guests</span></div>
         <div className="booking-room-editorial__actions">
-          <Link href="/?book=1" className="public-btn-gold">Check availability</Link>
+          <Link href="/?book=1" className="public-btn-outline-gold">Check availability</Link>
           <Link href="/book" className="public-btn-outline-gold">Search all sailings</Link>
         </div>
       </aside>
