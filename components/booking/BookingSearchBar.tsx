@@ -5,6 +5,10 @@ import { format, parseISO } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { CalendarDays, ChevronDown, Loader2, Users, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import {
+  lockBodyScroll,
+  unlockBodyScroll,
+} from "@/lib/body-scroll-lock";
 import { calendarDateToUtcIso } from "@/lib/client-dates";
 import {
   formatGuestsSummary,
@@ -107,11 +111,13 @@ export function BookingSearchBar({
   }, [calendarOpen, guestsOpen, isMobile]);
 
   useEffect(() => {
-    if (!isMobile || (!calendarOpen && !guestsOpen)) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (!isMobile || (!calendarOpen && !guestsOpen)) {
+      unlockBodyScroll("booking-search");
+      return;
+    }
+    lockBodyScroll("booking-search");
     return () => {
-      document.body.style.overflow = previousOverflow;
+      unlockBodyScroll("booking-search");
     };
   }, [calendarOpen, guestsOpen, isMobile]);
 

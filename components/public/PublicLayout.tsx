@@ -4,6 +4,7 @@ import { DeployFreshness } from "@/components/public/DeployFreshness";
 import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
 import { PageVisibilityChrome } from "@/components/public/PageVisibilityChrome";
+import { PublicScrollGuardian } from "@/components/public/PublicScrollGuardian";
 import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
@@ -69,6 +70,7 @@ export function PublicLayout({
           <script dangerouslySetInnerHTML={{ __html: bootScript }} />
           <DeployFreshness deployId={deployId} />
           <PublicScrollInfrastructure />
+          <PublicScrollGuardian />
           <ScrollPositionRestore />
           <LuxuryTextAnimations />
           <AnimaTitleScroll />

@@ -3321,7 +3321,7 @@
   min-height: calc(100svh - 8.15rem);
   padding: clamp(1.1rem, 2.2vh, 1.7rem) 2rem 2rem;
   display: flex;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hathor-voyage-stage__media {
@@ -3371,7 +3371,8 @@
   grid-template-columns: minmax(0, 47.5rem) 13.75rem;
   gap: .65rem;
   width: min(62rem, 100% - 2rem);
-  height: clamp(32.5rem, 72svh, 41.25rem);
+  min-height: clamp(32.5rem, 72svh, 41.25rem);
+  height: auto;
   margin: 0 auto;
 }
 
@@ -3499,7 +3500,7 @@
 .hathor-voyage-card__form {
   min-height: 0;
   padding: 1.8rem 1.7rem 1rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hathor-voyage-card__dates, .hathor-voyage-card__pair {
@@ -3798,8 +3799,8 @@
   }
 
   .hathor-voyage-stage__layout {
-    height: calc(100svh - 21.4rem);
-    min-height: 28rem;
+    min-height: calc(100svh - 21.4rem);
+    height: auto;
     transform: translateX(3.5rem);
   }
 

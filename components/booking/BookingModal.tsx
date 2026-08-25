@@ -1,6 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  ensureDocumentScrollUnlocked,
+  lockBodyScroll,
+  unlockBodyScroll,
+} from "@/lib/body-scroll-lock";
 import { BedDouble, CalendarDays, MapPin, Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
@@ -113,21 +118,13 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
       resetModal();
     }
 
-    const scrollY = window.scrollY;
-    const body = document.body;
-    const previousOverflow = body.style.overflow;
-    const previousPosition = body.style.position;
-    const previousTop = body.style.top;
-    const previousWidth = body.style.width;
-    const previousPaddingRight = body.style.paddingRight;
-
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    body.style.overflow = "hidden";
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}px`;
-    body.style.width = "100%";
-    if (scrollbarWidth > 0) {
-      body.style.paddingRight = `${scrollbarWidth}px`;
+    /* Steal the lock if another overlay holds it so Book Now never fails open. */
+    if (!lockBodyScroll("booking-modal")) {
+      ensureDocumentScrollUnlocked({
+        force: true,
+        reason: "booking-modal-open",
+      });
+      lockBodyScroll("booking-modal");
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -138,12 +135,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
     dialogRef.current?.focus();
 
     return () => {
-      body.style.overflow = previousOverflow;
-      body.style.position = previousPosition;
-      body.style.top = previousTop;
-      body.style.width = previousWidth;
-      body.style.paddingRight = previousPaddingRight;
-      window.scrollTo(0, scrollY);
+      unlockBodyScroll("booking-modal");
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [open, handleClose, itineraryConfigured, resetModal, storeDuration, storeRoomConfigs]);

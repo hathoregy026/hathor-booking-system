@@ -47,10 +47,20 @@ function BookModalAutoOpen({
 }
 
 export function BookingModalProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [routePath, setRoutePath] = useState(pathname);
 
   const openBooking = useCallback(() => setOpen(true), []);
   const closeBooking = useCallback(() => setOpen(false), []);
+
+  /* Close modal when navigating away — keeps body scroll from staying locked. */
+  if (pathname !== routePath) {
+    setRoutePath(pathname);
+    if (open) {
+      setOpen(false);
+    }
+  }
 
   return (
     <BookingModalContext.Provider value={{ openBooking, closeBooking }}>

@@ -10,6 +10,7 @@ import {
   restoreScrollPositionIfReload,
   setScrollRestorationManual,
 } from "@/lib/scroll-position-restore";
+import { ensureDocumentScrollUnlocked } from "@/lib/body-scroll-lock";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
@@ -34,6 +35,10 @@ export function ScrollPositionRestore() {
   const pathname = usePathname() || "/";
 
   useEffect(() => {
+    ensureDocumentScrollUnlocked({
+      force: true,
+      reason: "scroll-position-restore",
+    });
     setScrollRestorationManual();
 
     if (isSoftClientNavigation(pathname)) {
