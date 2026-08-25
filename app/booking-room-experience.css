@@ -1,0 +1,398 @@
+/* Booking rooms — Contact page's full-viewport editorial language. */
+.booking-page {
+  --br-paper: #ece4da;
+  --br-paper-warm: #f3ede4;
+  --br-sand: #ded4c6;
+  --br-stone: #cfc7ba;
+  --br-olive: #adaa8a;
+  --br-ink: #14120e;
+  --br-soft: #4a453c;
+  --br-gold: #b69f64;
+  --br-gold-deep: #806b35;
+  --br-hair: rgb(20 18 14 / 16%);
+  --br-display: "Italiana", var(--font-hathor-gamgote), Georgia, serif;
+  --br-edit: "Playfair Display", Georgia, serif;
+  --br-body: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+}
+
+html[data-room-editorial],
+html[data-room-editorial] body,
+html[data-room-editorial] .public-site,
+html[data-room-editorial] .booking-page,
+html[data-room-editorial] .booking-shell-bg,
+html[data-room-editorial] .booking-main {
+  overflow-x: clip;
+}
+
+/* Both requested surfaces own the full booking canvas. */
+.booking-page:has(.historia-room-selection) .booking-main,
+.booking-page:has(.booking-room-editorial) .booking-main {
+  width: 100%;
+  max-width: none;
+  padding-inline: 0;
+  padding-bottom: 0;
+}
+
+.booking-page:has(.historia-room-selection) .booking-shell-bg,
+.booking-page:has(.booking-room-editorial) .booking-shell-bg {
+  background: var(--br-paper);
+}
+
+.booking-page :is(.historia-room-selection, .booking-room-editorial) {
+  color: var(--br-ink);
+  font-family: var(--br-body);
+}
+
+.booking-page :is(.historia-room-selection__intro h2, .historia-room-card__name, .booking-room-editorial h1, .booking-room-editorial h2) {
+  font-family: var(--br-display);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -.018em;
+}
+
+.booking-page :is(.historia-room-selection__intro h2 em, .booking-room-editorial h2 em) {
+  font-family: var(--br-edit);
+  font-weight: 300;
+  text-transform: none;
+}
+
+/* Exact homepage public button states — no bespoke booking animation. */
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold) {
+  overflow: visible !important;
+  border: 1px solid #b69f64 !important;
+  background: #faf8f5 !important;
+  color: #b69f64 !important;
+  box-shadow: 0 8px 22px rgba(44, 36, 25, .1) !important;
+  transition:
+    background .35s cubic-bezier(.22, 1, .36, 1),
+    color .35s cubic-bezier(.22, 1, .36, 1),
+    border-color .35s ease,
+    box-shadow .35s ease,
+    transform .35s cubic-bezier(.22, 1, .36, 1) !important;
+}
+
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold)::before { content: none !important; }
+
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold):hover,
+.booking-page :is(.public-btn-gold, .public-btn-outline-gold):focus-visible {
+  border-color: #b69f64 !important;
+  background: #b69f64 !important;
+  color: #fff !important;
+  box-shadow: 0 10px 26px rgba(182, 159, 100, .35) !important;
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------------------------------------------
+ * Available accommodation: edge-to-edge, two rooms in one full-width row.
+ * ------------------------------------------------------------------------- */
+.booking-page .historia-room-selection {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 clamp(4rem, 7vw, 8rem);
+}
+
+.booking-page .historia-room-selection__intro {
+  min-height: min(72svh, 52rem);
+  align-content: center;
+  margin: 0;
+  padding: clamp(4rem, 8vw, 9rem) clamp(1rem, 5vw, 6rem);
+  border-bottom: 1px solid var(--br-hair);
+  background: var(--br-paper);
+}
+
+.booking-page .historia-room-selection__intro h2 {
+  font-size: clamp(4rem, 8vw, 9.5rem);
+  line-height: .82;
+}
+
+.booking-page .historia-room-selection__intro > p { color: var(--br-soft); }
+
+.booking-page .historia-room-selection__eyebrow,
+.booking-page .historia-room-card__kicker,
+.booking-page .booking-room-kicker {
+  margin: 0 0 1rem;
+  color: var(--br-gold-deep);
+  font-family: var(--br-edit);
+  font-size: clamp(.85rem, 1vw, 1.05rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: .01em;
+  text-transform: none;
+}
+
+.booking-page .historia-room-selection__toolbar { padding: 1.5rem clamp(1rem, 2.5vw, 3rem); margin: 0; }
+
+.booking-page .historia-room-selection__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  width: 100%;
+  padding: 0;
+  background: var(--br-hair);
+}
+
+.booking-page .historia-room-card {
+  display: flex;
+  min-width: 0;
+  min-height: 100svh;
+  flex-direction: column;
+  border: 0;
+  background: var(--br-paper-warm);
+  box-shadow: none;
+}
+
+.booking-page .historia-room-card:nth-child(4n + 2),
+.booking-page .historia-room-card:nth-child(4n + 3) { background: var(--br-sand); }
+.booking-page .historia-room-card:nth-child(4n + 4) { background: var(--br-stone); }
+
+.booking-page .historia-room-card__media {
+  position: relative;
+  min-height: 58svh;
+  overflow: hidden;
+}
+
+.booking-page .historia-room-card__image { inset: 0; min-height: 100%; border-radius: 0; }
+
+.booking-page .historia-room-card__body {
+  flex: 1;
+  justify-content: flex-start;
+  padding: clamp(1.5rem, 3.2vw, 3.8rem);
+}
+
+.booking-page .historia-room-card__name {
+  font-size: clamp(2.8rem, 4.4vw, 6rem);
+  line-height: .84;
+}
+
+.booking-page .historia-room-card__facts {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-color: var(--br-hair);
+}
+
+.booking-page .historia-room-card__facts > div { grid-template-columns: 1fr; align-content: start; padding-inline: .6rem; }
+.booking-page .historia-room-card__facts svg { grid-row: auto; }
+.booking-page .historia-room-card__desc { color: var(--br-soft); }
+.booking-page .historia-room-card__rate { margin-top: auto; padding-top: 1.5rem; }
+
+/* -------------------------------------------------------------------------
+ * Room details: same pinned horizontal-stage model as Contact on desktop.
+ * ------------------------------------------------------------------------- */
+.booking-page .booking-room-editorial {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background: var(--br-paper);
+}
+
+.booking-room-editorial__progress {
+  position: fixed;
+  z-index: 100;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+}
+
+.booking-room-editorial__progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--br-gold);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.booking-room-run { position: relative; width: 100%; }
+
+.booking-room-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: calc(100svh - 4.5rem);
+  overflow: hidden;
+}
+
+.booking-room-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+.booking-room-scene {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100vw;
+  height: 100%;
+  overflow: hidden;
+}
+
+.booking-room-scene__image { object-fit: cover; }
+
+.booking-room-scene--hero { color: #f7f1e6; }
+
+.booking-room-scene__wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 60%, rgba(182,159,100,.4), transparent 42%),
+    linear-gradient(90deg, rgba(20,16,12,.68), transparent 68%),
+    linear-gradient(0deg, rgba(20,15,10,.62), transparent 55%);
+}
+
+.booking-room-editorial__crumbs {
+  position: absolute;
+  z-index: 2;
+  top: clamp(1rem, 3vw, 2.5rem);
+  left: clamp(1rem, 3vw, 2.6rem);
+  display: flex;
+  gap: .65rem;
+  padding: 0;
+  color: rgb(247 241 230 / 72%);
+  font-size: .63rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.booking-room-editorial__crumbs a { color: inherit; text-decoration: none; }
+
+.booking-room-hero-copy {
+  position: absolute;
+  z-index: 2;
+  left: clamp(1rem, 5vw, 6rem);
+  right: clamp(1rem, 5vw, 6rem);
+  bottom: clamp(2rem, 6vw, 6rem);
+}
+
+.booking-room-hero-copy .booking-room-kicker { color: var(--br-gold); }
+
+.booking-room-hero-copy h1 {
+  max-width: 88rem;
+  font-size: clamp(4rem, 8.3vw, 10rem);
+  line-height: .81;
+  text-shadow: 0 4px 40px rgba(0,0,0,.4);
+}
+
+.booking-room-meta { margin-top: 1.2rem; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; }
+
+.booking-room-scroll-hint {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  font-size: .65rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.booking-room-scroll-hint i { display: block; width: 3rem; height: 1px; background: currentcolor; }
+
+.booking-room-scene--statement,
+.booking-room-scene--utilities,
+.booking-room-scene--included,
+.booking-room-scene--reserve {
+  display: grid;
+  align-content: center;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 7vw, 8rem);
+  padding: clamp(4rem, 8vw, 8rem) clamp(1rem, 6vw, 7rem);
+}
+
+.booking-room-scene--statement { width: min(92vw, 88rem); background: var(--br-paper); }
+.booking-room-scene--utilities { width: min(94vw, 96rem); background: var(--br-olive); }
+.booking-room-scene--included { width: min(88vw, 88rem); background: var(--br-paper-warm); }
+.booking-room-scene--reserve { width: 100vw; background: var(--br-stone); }
+
+.booking-room-scene :is(h2) { font-size: clamp(4rem, 7.5vw, 9rem); line-height: .83; }
+
+.booking-room-statement-copy > p { max-width: 42rem; color: var(--br-soft); font-size: clamp(1rem, 1.25vw, 1.3rem); line-height: 1.75; }
+.booking-room-facts { margin-top: 2rem; }
+
+.booking-room-scene--image { width: min(82vw, 88rem); padding: clamp(1rem, 3vw, 3rem); background: #0b0a08; }
+.booking-room-scene--image:nth-of-type(even) { width: min(68vw, 72rem); background: var(--br-sand); }
+
+.booking-room-scene--image figure { position: relative; width: 100%; height: 100%; margin: 0; overflow: hidden; }
+.booking-room-scene--image figcaption { position: absolute; z-index: 2; inset: auto 1.2rem 1.2rem; display: flex; justify-content: space-between; color: #f7f1e6; font-size: .65rem; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 2px 12px rgba(0,0,0,.5); }
+
+.booking-room-scene--utilities ol,
+.booking-room-scene--included ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-room-scene--utilities li {
+  display: grid;
+  grid-template-columns: 2.5rem 1.4rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: clamp(.75rem, 1.3vw, 1.25rem) 0;
+  border-top: 1px solid rgb(11 10 8 / 22%);
+}
+
+.booking-room-scene--utilities li:last-child { border-bottom: 1px solid rgb(11 10 8 / 22%); }
+.booking-room-scene--utilities li > span { font-family: var(--br-edit); font-style: italic; color: var(--br-gold-deep); }
+.booking-room-scene--utilities li svg { width: 1.1rem; color: var(--br-gold-deep); }
+.booking-room-scene--utilities li p { margin: 0; }
+
+.booking-room-scene--included li {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--br-hair);
+  color: var(--br-soft);
+}
+
+.booking-room-scene--included li svg { width: 1rem; flex: none; color: var(--br-gold-deep); }
+
+.booking-room-scene--reserve { align-items: end; }
+.booking-room-scene--reserve h2 { font-size: clamp(5rem, 10vw, 12rem); }
+.booking-room-scene--reserve > div:first-child > p:last-child { color: var(--br-soft); letter-spacing: .1em; text-transform: uppercase; }
+.booking-room-editorial__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .8rem; }
+
+@media (max-width: 950px) {
+  .booking-page .historia-room-selection__list { grid-template-columns: 1fr; }
+  .booking-page .historia-room-card { min-height: auto; flex-direction: row; }
+  .booking-page .historia-room-card__media { flex: 0 0 44%; min-height: 42rem; }
+  .booking-page .historia-room-card__body { min-width: 0; }
+
+  .booking-room-stage { position: relative; display: block; height: auto; overflow: visible; }
+  .booking-room-track { display: block; width: 100%; height: auto; transform: none !important; }
+  .booking-room-scene { width: 100%; min-height: 100svh; height: auto; }
+  .booking-room-scene--hero { height: 100svh; }
+  .booking-room-scene--statement,
+  .booking-room-scene--utilities,
+  .booking-room-scene--included,
+  .booking-room-scene--reserve { grid-template-columns: 1fr; width: 100%; }
+  .booking-room-scene--image,
+  .booking-room-scene--image:nth-of-type(even) { width: 100%; height: 100svh; padding: clamp(.6rem, 2vw, 1.25rem); }
+  .booking-room-editorial__actions { justify-content: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .booking-page .historia-room-selection__intro { min-height: 74svh; }
+  .booking-page .historia-room-card { flex-direction: column; }
+  .booking-page .historia-room-card__media { min-height: 62svh; }
+  .booking-page .historia-room-card__facts { grid-template-columns: 1fr; }
+  .booking-page .historia-room-card__facts > div + div { border-left: 0; border-top: 1px solid var(--br-hair); }
+  .booking-room-hero-copy h1 { font-size: clamp(3.2rem, 16vw, 5.2rem); overflow-wrap: anywhere; }
+  .booking-room-scroll-hint { position: static; margin-top: 1.5rem; }
+  .booking-room-scene--statement,
+  .booking-room-scene--utilities,
+  .booking-room-scene--included,
+  .booking-room-scene--reserve { min-height: auto; padding-block: 5rem; }
+  .booking-room-scene--image,
+  .booking-room-scene--image:nth-of-type(even) { height: 82svh; min-height: 82svh; }
+  .booking-room-editorial__actions { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-page :is(.public-btn-gold, .public-btn-outline-gold) { transition: none !important; }
+}
