@@ -3,8 +3,10 @@ import localFont from "next/font/local";
 import { Inter, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { BookingPageLayout } from "@/components/booking/BookingPageLayout";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
+import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import { getLiveSiteSettingsSafe } from "@/lib/live-site-settings";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
@@ -51,11 +53,15 @@ export default async function BookingFlowLayout({
     );
   }
 
+  const cms = await loadPublicCmsBundle();
+
   return (
     <div
       className={`${playfair.variable} ${inter.variable} ${gamgote.variable} ${plusJakarta.variable}`}
     >
-      <BookingPageLayout>{children}</BookingPageLayout>
+      <SiteImagesProvider images={cms.siteImages}>
+        <BookingPageLayout>{children}</BookingPageLayout>
+      </SiteImagesProvider>
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import { Inter, Playfair_Display } from "next/font/google";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
+import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import { getLiveSiteSettingsSafe } from "@/lib/live-site-settings";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
@@ -32,7 +34,11 @@ export default async function BookRouteLayout({
     );
   }
 
+  const cms = await loadPublicCmsBundle();
+
   return (
-    <div className={`${playfair.variable} ${inter.variable}`}>{children}</div>
+    <div className={`${playfair.variable} ${inter.variable}`}>
+      <SiteImagesProvider images={cms.siteImages}>{children}</SiteImagesProvider>
+    </div>
   );
 }

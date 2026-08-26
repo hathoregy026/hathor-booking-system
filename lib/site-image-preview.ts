@@ -22,6 +22,7 @@ export function siteImageAnchorId(name: string): string {
  */
 export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
   "home-hero-poster",
+  "burger-nav-image",
   "home-story-craft-large",
   "home-carousel-suite-3n",
   "home-carousel-royal-3n",
@@ -187,7 +188,7 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "scraped-royal-7": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   "scraped-royal-8": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
   "suites-nile-still": "/suites",
-  "burger-nav-image": "/suites",
+  "burger-nav-image": "/",
 };
 
 /**

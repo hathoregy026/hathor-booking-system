@@ -6,6 +6,7 @@ import { logDbError, withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
 import { adminSiteContentSelect } from "@/lib/query-selects";
 import { SITE_CONTENT_SECTIONS } from "@/lib/site-content";
+import { purgeReplacedWebsiteImage } from "@/lib/website-image-storage";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -51,6 +52,24 @@ export async function PUT(request: NextRequest) {
         { error: "At least one section is required" },
         { status: 400 },
       );
+    }
+
+    const previous = await prisma.siteContent.findMany({
+      where: { section: { in: body.sections.map((section) => section.section) } },
+      select: { section: true, imageUrl: true },
+    });
+    const previousBySection = new Map(
+      previous.map((row) => [row.section, row.imageUrl]),
+    );
+    for (const section of body.sections) {
+      const nextUrl = section.imageUrl ?? null;
+      const previousUrl = previousBySection.get(section.section) ?? null;
+      if (previousUrl !== nextUrl) {
+        await purgeReplacedWebsiteImage({
+          previousUrl,
+          nextUrl,
+        });
+      }
     }
 
     const updates = await prisma.$transaction(

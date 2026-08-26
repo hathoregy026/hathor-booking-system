@@ -932,7 +932,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Burger menu — right panel photo",
     url: HATHOR_MEDIA.royalSuite,
     category: "nav",
-    pagePath: "/#burger-nav",
+    pagePath: "/",
     displayOrder: 0,
   },
 ];

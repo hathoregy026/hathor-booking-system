@@ -260,8 +260,15 @@ export async function rebuildSiteImagePublicMap(): Promise<StoredSiteImagePublic
     );
     const overrides = buildSiteImageOverridesMap(records);
     /* Compact: slot → src string (alt resolved from slots at read time). */
+    /* Keep globally visible slots first so a truncated map still includes them. */
     const compact: Record<string, string> = {};
+    const priorityNames = ["burger-nav-image"];
+    for (const name of priorityNames) {
+      const entry = overrides[name];
+      if (entry?.src) compact[name] = entry.src;
+    }
     for (const [name, entry] of Object.entries(overrides)) {
+      if (compact[name]) continue;
       compact[name] = entry.src;
     }
     const payload = JSON.stringify(compact);

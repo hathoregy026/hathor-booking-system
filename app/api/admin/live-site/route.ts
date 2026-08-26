@@ -3,12 +3,15 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
+import { prisma } from "@/lib/prisma";
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
+  LIVE_SITE_SETTINGS_KEY,
   getLiveSiteSettings,
   parseLiveSiteSettings,
   saveLiveSiteSettings,
 } from "@/lib/live-site-settings";
+import { purgeReplacedWebsiteImage } from "@/lib/website-image-storage";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -40,6 +43,25 @@ export async function PUT(request: NextRequest) {
   try {
     const body = (await request.json()) as { settings?: unknown };
     const settings = parseLiveSiteSettings(body.settings);
+    const previousRow = await prisma.siteSetting.findUnique({
+      where: { key: LIVE_SITE_SETTINGS_KEY },
+      select: { value: true },
+    });
+    let previousRaw: unknown = previousRow?.value ?? null;
+    if (typeof previousRaw === "string") {
+      try {
+        previousRaw = JSON.parse(previousRaw) as unknown;
+      } catch {
+        /* keep the raw string */
+      }
+    }
+    const previous = parseLiveSiteSettings(previousRaw);
+    if (previous.backgroundImageUrl !== settings.backgroundImageUrl) {
+      await purgeReplacedWebsiteImage({
+        previousUrl: previous.backgroundImageUrl,
+        nextUrl: settings.backgroundImageUrl,
+      });
+    }
     const saved = await saveLiveSiteSettings(settings);
 
     revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");

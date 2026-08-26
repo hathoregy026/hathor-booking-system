@@ -3,7 +3,7 @@ import { IMAGE_CATEGORIES } from "@/lib/image-categories";
 import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
-import { deleteWebsiteImageByUrl } from "@/lib/website-image-storage";
+import { purgeReplacedWebsiteImage } from "@/lib/website-image-storage";
 import {
   SITE_IMAGE_CLEARED_SRC,
   canHideSiteImageOnClear,
@@ -109,7 +109,11 @@ export async function updateSiteImage(id: string, input: SiteImageUpdateInput) {
       prisma.siteImage.findUnique({ where: { id } }),
     );
     if (existing && existing.url !== data.url) {
-      void deleteWebsiteImageByUrl(existing.url);
+      await purgeReplacedWebsiteImage({
+        previousUrl: existing.url,
+        nextUrl: data.url,
+        slotName: existing.name,
+      });
     }
   }
 
@@ -126,7 +130,11 @@ export async function deleteSiteImage(id: string) {
     prisma.siteImage.findUnique({ where: { id } }),
   );
   if (existing) {
-    void deleteWebsiteImageByUrl(existing.url);
+    await purgeReplacedWebsiteImage({
+      previousUrl: existing.url,
+      nextUrl: null,
+      slotName: existing.name,
+    });
   }
   return withDb(() => prisma.siteImage.delete({ where: { id } }));
 }
@@ -140,7 +148,7 @@ export type SiteImageBulkItem = {
 
 /**
  * Upsert CMS site images. When the URL changes (or is cleared), the previous
- * Supabase Storage object is removed so replaces do not leave orphans.
+ * Storage object and any leftover files in that slot folder are deleted.
  */
 export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
   const results = [];
@@ -162,8 +170,11 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
         ? SITE_IMAGE_CLEARED_SRC
         : slot.url;
       if (existing) {
-        /* Don't block the response on storage cleanup */
-        void deleteWebsiteImageByUrl(existing.url);
+        await purgeReplacedWebsiteImage({
+          previousUrl: existing.url,
+          nextUrl: clearedUrl,
+          slotName: slot.name,
+        });
         const updated = await withDb(() =>
           prisma.siteImage.update({
             where: { id: existing.id },
@@ -196,7 +207,11 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
 
     if (existing) {
       if (existing.url !== nextUrl) {
-        void deleteWebsiteImageByUrl(existing.url);
+        await purgeReplacedWebsiteImage({
+          previousUrl: existing.url,
+          nextUrl,
+          slotName: slot.name,
+        });
       }
       const updated = await withDb(() =>
         prisma.siteImage.update({

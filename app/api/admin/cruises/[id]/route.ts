@@ -3,6 +3,7 @@ import { handleRouteError } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { buildCruiseListSelect } from "@/lib/query-selects";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
+import { purgeReplacedWebsiteImage } from "@/lib/website-image-storage";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -21,7 +22,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
     const existing = await prisma.cruise.findUnique({
       where: { id },
-      select: { deletedAt: true },
+      select: { deletedAt: true, imageUrl: true },
     });
 
     if (!existing) {
@@ -33,6 +34,15 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         { error: "Restore cruise from recycle bin before editing" },
         { status: 400 },
       );
+    }
+
+    const nextImageUrl =
+      body.imageUrl !== undefined ? body.imageUrl?.trim() || null : undefined;
+    if (nextImageUrl !== undefined && nextImageUrl !== existing.imageUrl) {
+      await purgeReplacedWebsiteImage({
+        previousUrl: existing.imageUrl,
+        nextUrl: nextImageUrl,
+      });
     }
 
     const cruise = await prisma.cruise.update({
@@ -49,7 +59,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
           ? { ports: body.ports.trim() || null }
           : {}),
         ...(body.imageUrl !== undefined
-          ? { imageUrl: body.imageUrl?.trim() || null }
+          ? { imageUrl: nextImageUrl }
           : {}),
       },
       select: buildCruiseListSelect({ bin: false }),

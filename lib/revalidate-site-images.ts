@@ -20,7 +20,11 @@ const SITE_IMAGE_REVALIDATE_PATHS = [
   "/blogs",
   "/suites",
   "/experiences",
+  "/booking",
+  "/book",
 ] as const;
+
+const GLOBAL_NAV_IMAGE_SLOTS = new Set(["burger-nav-image"]);
 
 /**
  * Rebuild denormalized public image map, then invalidate CMS cache + paths.
@@ -40,6 +44,14 @@ export async function revalidateSiteImagePages(
   }
 
   const paths = new Set<string>();
+  const touchesGlobalNav = slotNames.some((name) =>
+    GLOBAL_NAV_IMAGE_SLOTS.has(name),
+  );
+  if (touchesGlobalNav) {
+    for (const path of SITE_IMAGE_REVALIDATE_PATHS) {
+      paths.add(path);
+    }
+  }
   for (const name of slotNames) {
     const slot = getSiteImageSlot(name);
     if (slot?.pagePath) paths.add(slot.pagePath);

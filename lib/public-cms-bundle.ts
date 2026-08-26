@@ -76,7 +76,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v12";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v13";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -97,7 +97,7 @@ const PUBLIC_CMS_KEYS = [
 /** Keys known to exceed ~2KB — full SELECT value hangs on some pooler paths. */
 const CHUNKED_SETTING_KEYS = new Set<string>([SITE_IMAGE_PUBLIC_MAP_KEY]);
 /** Max expected public image-map payload (src-only overrides). */
-const IMAGE_MAP_MAX_CHARS = 12_000;
+const IMAGE_MAP_MAX_CHARS = 48_000;
 
 const CMS_BUILD_SKIP = "CMS_SKIP_BUILD_RESOLUTION";
 
