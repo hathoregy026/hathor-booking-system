@@ -36,7 +36,7 @@ const inquirySchema = z.object({
   message: z
     .string()
     .trim()
-    .min(10, "Message is required")
+    .min(3, "Message is required")
     .max(4000, "Message is too long")
     .refine((value) => !/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(value), {
       message: "Message contains unsupported characters",

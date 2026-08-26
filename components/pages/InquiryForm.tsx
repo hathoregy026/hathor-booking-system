@@ -96,13 +96,12 @@ export function InquiryForm({
     <form
       className={["hathor-form-card", className].filter(Boolean).join(" ")}
       onSubmit={handleSubmit}
-      noValidate
     >
       <h2 className="section-title typo-page-title text-2xl">{title}</h2>
       {intro ? <p className="section-body typo-body-text mt-3">{intro}</p> : null}
 
       <div className="mt-8 space-y-4">
-        <div className="sr-only" aria-hidden="true">
+        <div hidden aria-hidden="true" style={{ display: "none" }}>
           <label htmlFor={`${type}-website`}>Website</label>
           <input
             id={`${type}-website`}
@@ -228,7 +227,7 @@ export function InquiryForm({
             rows={5}
             className="lux-input resize-none"
             required
-            minLength={10}
+            minLength={3}
             maxLength={4000}
           />
         </div>
