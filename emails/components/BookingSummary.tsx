@@ -75,9 +75,9 @@ function buildSummaryRows(
 
 function labelCell(isAlt: boolean) {
   return {
-    backgroundColor: isAlt ? emailColors.rowAlt : emailColors.card,
-    borderBottom: `1px solid ${emailColors.border}`,
-    padding: "14px 18px",
+    backgroundColor: isAlt ? emailColors.rowAlt : emailColors.paperWarm,
+    borderBottom: `1px solid ${emailColors.borderSolid}`,
+    padding: "14px 16px",
     verticalAlign: "top" as const,
     width: "42%",
   };
@@ -85,9 +85,9 @@ function labelCell(isAlt: boolean) {
 
 function valueCell(isAlt: boolean) {
   return {
-    backgroundColor: isAlt ? emailColors.rowAlt : emailColors.card,
-    borderBottom: `1px solid ${emailColors.border}`,
-    padding: "14px 18px",
+    backgroundColor: isAlt ? emailColors.rowAlt : emailColors.paperWarm,
+    borderBottom: `1px solid ${emailColors.borderSolid}`,
+    padding: "14px 16px",
     verticalAlign: "top" as const,
     width: "58%",
   };
@@ -122,7 +122,7 @@ export function BookingSummary({
               cellSpacing={0}
               width="100%"
               style={{
-                border: `1px solid ${emailColors.border}`,
+                border: `1px solid ${emailColors.borderSolid}`,
                 borderCollapse: "collapse",
                 width: "100%",
               }}
@@ -132,8 +132,8 @@ export function BookingSummary({
                   const isAlt = index % 2 === 1;
                   const isLast = index === rows.length - 1;
                   const bottomBorder = isLast
-                    ? `2px solid ${emailColors.gold}`
-                    : `1px solid ${emailColors.border}`;
+                    ? `1px solid ${emailColors.borderSolid}`
+                    : `1px solid ${emailColors.borderSolid}`;
 
                   return (
                     <tr key={row.label}>
@@ -145,11 +145,11 @@ export function BookingSummary({
                       >
                         <Text
                           style={{
-                            color: emailColors.textMuted,
+                            color: emailColors.goldDark,
                             fontFamily: emailFonts.body,
-                            fontSize: "11px",
+                            fontSize: "10px",
                             fontWeight: 600,
-                            letterSpacing: "2px",
+                            letterSpacing: "0.16em",
                             lineHeight: "1.4",
                             margin: 0,
                             textTransform: "uppercase",
@@ -167,13 +167,13 @@ export function BookingSummary({
                         <Text
                           style={{
                             color: row.gold
-                              ? emailColors.gold
-                              : emailColors.textPrimary,
+                              ? emailColors.goldDark
+                              : emailColors.ink,
                             fontFamily: row.gold
-                              ? emailFonts.display
+                              ? emailFonts.editorial
                               : emailFonts.body,
-                            fontSize: row.gold ? "20px" : "15px",
-                            fontWeight: row.bold ? 600 : 400,
+                            fontSize: row.gold ? "18px" : "14px",
+                            fontWeight: row.bold ? 500 : 300,
                             lineHeight: "1.5",
                             margin: 0,
                             textAlign: "right",
@@ -230,7 +230,7 @@ export function GuestInfoTable({
               cellSpacing={0}
               width="100%"
               style={{
-                border: `1px solid ${emailColors.border}`,
+                border: `1px solid ${emailColors.borderSolid}`,
                 borderCollapse: "collapse",
                 width: "100%",
               }}
@@ -243,11 +243,11 @@ export function GuestInfoTable({
                       <td style={labelCell(isAlt)}>
                         <Text
                           style={{
-                            color: emailColors.textMuted,
+                            color: emailColors.goldDark,
                             fontFamily: emailFonts.body,
-                            fontSize: "11px",
+                            fontSize: "10px",
                             fontWeight: 600,
-                            letterSpacing: "2px",
+                            letterSpacing: "0.16em",
                             lineHeight: "1.4",
                             margin: 0,
                             textTransform: "uppercase",
@@ -259,9 +259,10 @@ export function GuestInfoTable({
                       <td style={valueCell(isAlt)}>
                         <Text
                           style={{
-                            color: emailColors.textPrimary,
+                            color: emailColors.ink,
                             fontFamily: emailFonts.body,
-                            fontSize: "15px",
+                            fontSize: "14px",
+                            fontWeight: 300,
                             lineHeight: "1.5",
                             margin: 0,
                             textAlign: "right",

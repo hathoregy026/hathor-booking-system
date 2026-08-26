@@ -22,7 +22,7 @@ export const PreviewProps: BookingReceivedEmailProps = {
   details: sampleBookingDetails,
 };
 
-const DEFAULT_HERO = "Thank You, {guestName}";
+const DEFAULT_HERO = "Thank You";
 const DEFAULT_BODY =
   "Your booking request has been received. Our team is reviewing your reservation and will contact you within 24 hours to confirm your luxury Nile cruise experience.";
 
@@ -36,7 +36,10 @@ export default function BookingReceivedEmail({
   heroHeading,
   bodyText,
 }: BookingReceivedEmailProps) {
-  const heading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, { guestName });
+  const rawHeading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, {
+    guestName,
+  });
+  const heading = (rawHeading.split(",")[0] || DEFAULT_HERO).trim();
   const body = bodyText?.trim() || DEFAULT_BODY;
 
   return (
@@ -48,8 +51,9 @@ export default function BookingReceivedEmail({
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
     >
-      <EmailEyebrow>Booking Request Received</EmailEyebrow>
+      <EmailEyebrow>Booking Request</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
+      <EmailBodyText>For {guestName}</EmailBodyText>
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
       <BookingSummary details={details} />

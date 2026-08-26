@@ -12,6 +12,8 @@ import "../site-nav.css";
 import "../night-mode.css";
 import "../site-coming-soon.css";
 import "../booking-room-details-experience.css";
+import "../specular-button.css";
+import "../booking-success.css";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],

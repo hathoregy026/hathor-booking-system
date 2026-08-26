@@ -48,13 +48,13 @@ export default function AdminAlertEmail({
     <EmailLayout
       preview="New confirmed Hathor reservation — payment pending"
       footerVariant="admin"
-      logoWidth={72}
+      logoWidth={56}
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
     >
-      <EmailEyebrow>Admin Notification</EmailEyebrow>
+      <EmailEyebrow>Admin</EmailEyebrow>
       <EmailHeading align="left" size="medium">
         {heading}
       </EmailHeading>
@@ -73,9 +73,12 @@ export default function AdminAlertEmail({
                 style={{
                   color: emailColors.textMuted,
                   fontFamily: emailFonts.body,
-                  fontSize: "13px",
+                  fontSize: "12px",
+                  fontWeight: 300,
+                  letterSpacing: "0.06em",
                   lineHeight: "1.5",
                   margin: 0,
+                  textTransform: "uppercase",
                 }}
               >
                 Received {receivedDate} at {receivedTime}
@@ -85,7 +88,7 @@ export default function AdminAlertEmail({
         </tbody>
       </table>
 
-      <GoldDivider width="60px" />
+      <GoldDivider width="40px" />
 
       <GuestInfoTable details={details} />
       <BookingSummary

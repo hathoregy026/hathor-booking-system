@@ -65,8 +65,8 @@ export async function PUT(request: NextRequest) {
     };
 
     const shared = body.shared ?? {};
-    const primaryColor = shared.primaryColor?.trim() || "#C9A96E";
-    const backgroundColor = shared.backgroundColor?.trim() || "#FAF8F5";
+    const primaryColor = shared.primaryColor?.trim() || "#b69f64";
+    const backgroundColor = shared.backgroundColor?.trim() || "#ece4da";
 
     const incoming = body.templates ?? [];
     if (!incoming.length) {

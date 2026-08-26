@@ -53,7 +53,7 @@ function clip(value: string | null | undefined, max: number): string | null {
 export function buildEmailPreviewTheme(
   template: EmailTemplateRecord,
 ): EmailTemplateOverrides {
-  const version = `${template.updatedAt ?? "draft"}-${Date.now()}`;
+  const version = String(Date.now());
   const logoBase =
     pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
   const heroBase =
@@ -62,8 +62,8 @@ export function buildEmailPreviewTheme(
   return {
     logoUrl: withEmailCacheBust(logoBase, version) ?? logoBase,
     heroImageUrl: withEmailCacheBust(heroBase, version) ?? heroBase,
-    primaryColor: template.primaryColor,
-    backgroundColor: template.backgroundColor,
+    primaryColor: template.primaryColor?.trim() || "#b69f64",
+    backgroundColor: template.backgroundColor?.trim() || "#ece4da",
     heroHeading: template.heroHeading,
     bodyText: template.bodyText,
   };

@@ -33,7 +33,7 @@ const cellReset = {
 
 export function EmailHeroBanner({
   heroImageUrl,
-  alt = "Luxury Hathor Dahabiya cruise on the Nile at sunset",
+  alt = "Luxury Hathor Dahabiya cruise on the Nile",
 }: {
   heroImageUrl: string;
   alt?: string;
@@ -77,7 +77,7 @@ export function EmailHeroBanner({
   );
 }
 
-/** Centered Hathor ring icon on a full-bleed dark header. */
+/** Hathor ring icon on paper — matches Contact/About brand mark. */
 export function EmailLogo({
   width = emailLayout.iconSize,
   logoUrl,
@@ -102,8 +102,8 @@ export function EmailLogo({
             align="center"
             style={{
               ...cellReset,
-              backgroundColor: emailColors.dark,
-              padding: "36px 24px 28px",
+              backgroundColor: emailColors.cream,
+              padding: "40px 24px 20px",
             }}
           >
             <Img
@@ -122,33 +122,6 @@ export function EmailLogo({
                 width: `${width}px`,
               }}
             />
-            <Text
-              style={{
-                color: emailColors.gold,
-                fontFamily: emailFonts.body,
-                fontSize: "11px",
-                fontWeight: 600,
-                letterSpacing: "0.28em",
-                lineHeight: "1.4",
-                margin: "18px 0 0",
-                textAlign: "center",
-                textTransform: "uppercase",
-              }}
-            >
-              Hathor Dahabiya
-            </Text>
-          </td>
-        </tr>
-        <tr>
-          <td
-            style={{
-              backgroundColor: emailColors.gold,
-              fontSize: 0,
-              height: "3px",
-              lineHeight: 0,
-            }}
-          >
-            &nbsp;
           </td>
         </tr>
       </tbody>
@@ -167,11 +140,11 @@ export function GoldSectionTitle({
   return (
     <Text
       style={{
-        color: color ?? emailColors.gold,
+        color: color ?? emailColors.goldDark,
         fontFamily: emailFonts.body,
         fontSize: "11px",
-        fontWeight: 600,
-        letterSpacing: "3px",
+        fontWeight: 500,
+        letterSpacing: "0.18em",
         lineHeight: "1.4",
         margin: "0 0 16px",
         textAlign: "left",
@@ -211,11 +184,11 @@ export function EmailFooter({
             >
               <Text
                 style={{
-                  color: emailColors.cream,
+                  color: emailColors.copyOnDark,
                   fontFamily: emailFonts.body,
-                  fontSize: "13px",
+                  fontSize: "12px",
                   fontWeight: 500,
-                  letterSpacing: "1px",
+                  letterSpacing: "0.18em",
                   lineHeight: "1.5",
                   margin: "0 0 8px",
                   textTransform: "uppercase",
@@ -227,12 +200,13 @@ export function EmailFooter({
                 style={{
                   color: primaryColor,
                   fontFamily: emailFonts.body,
-                  fontSize: "12px",
+                  fontSize: "11px",
+                  letterSpacing: "0.12em",
                   lineHeight: "1.5",
                   margin: 0,
                 }}
               >
-                © {new Date().getFullYear()} Hathor Dahabiya. All rights reserved.
+                © {new Date().getFullYear()} Hathor Cruise ®
               </Text>
             </td>
           </tr>
@@ -256,72 +230,51 @@ export function EmailFooter({
             style={{
               ...cellReset,
               backgroundColor: emailColors.dark,
-              padding: "48px 32px",
+              padding: "48px 32px 44px",
             }}
           >
-            <table
-              role="presentation"
-              cellPadding={0}
-              cellSpacing={0}
-              style={{ borderCollapse: "collapse", margin: "0 auto 20px" }}
-            >
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      backgroundColor: primaryColor,
-                      fontSize: 0,
-                      height: "2px",
-                      lineHeight: 0,
-                      width: "60px",
-                    }}
-                  >
-                    &nbsp;
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
             <Text
               style={{
-                color: emailColors.cream,
+                color: emailColors.copyOnDark,
                 fontFamily: emailFonts.display,
                 fontSize: "28px",
-                fontWeight: 500,
-                lineHeight: "1.3",
-                margin: "0 0 6px",
+                fontWeight: 400,
+                letterSpacing: "0.04em",
+                lineHeight: "1.15",
+                margin: "0 0 8px",
+                textTransform: "uppercase",
               }}
             >
-              Hathor Dahabiya
+              Hathor
             </Text>
             <Text
               style={{
                 color: primaryColor,
-                fontFamily: emailFonts.body,
-                fontSize: "12px",
+                fontFamily: emailFonts.editorial,
+                fontSize: "15px",
                 fontStyle: "italic",
                 fontWeight: 400,
-                letterSpacing: "1px",
                 lineHeight: "1.5",
                 margin: "0 0 28px",
               }}
             >
-              Luxury Cruises on the Nile
+              Luxury cruises on the Nile
             </Text>
 
             <Text
               style={{
-                color: emailColors.textMuted,
+                color: "rgba(246, 239, 223, 0.72)",
                 fontFamily: emailFonts.body,
-                fontSize: "14px",
+                fontSize: "13px",
+                fontWeight: 300,
                 lineHeight: "1.7",
-                margin: "0 0 6px",
+                margin: "0 0 4px",
               }}
             >
               <Link
                 href="mailto:reservations@hathorcruise.com"
                 style={{
-                  color: emailColors.cream,
+                  color: emailColors.copyOnDark,
                   textDecoration: "underline",
                 }}
               >
@@ -330,11 +283,12 @@ export function EmailFooter({
             </Text>
             <Text
               style={{
-                color: emailColors.textMuted,
+                color: "rgba(246, 239, 223, 0.72)",
                 fontFamily: emailFonts.body,
-                fontSize: "14px",
+                fontSize: "13px",
+                fontWeight: 300,
                 lineHeight: "1.7",
-                margin: "0 0 28px",
+                margin: "0 0 24px",
               }}
             >
               +20 127 049 6896
@@ -343,11 +297,12 @@ export function EmailFooter({
             {variant === "guest-reply" ? (
               <Text
                 style={{
-                  color: emailColors.textMuted,
+                  color: "rgba(246, 239, 223, 0.62)",
                   fontFamily: emailFonts.body,
-                  fontSize: "13px",
+                  fontSize: "12px",
+                  fontWeight: 300,
                   lineHeight: "1.7",
-                  margin: "0 0 28px",
+                  margin: "0 0 24px",
                 }}
               >
                 Questions? Reply directly to this email — we are here to help.
@@ -358,13 +313,15 @@ export function EmailFooter({
               style={{
                 color: primaryColor,
                 fontFamily: emailFonts.body,
-                fontSize: "11px",
-                letterSpacing: "1px",
+                fontSize: "10px",
+                fontWeight: 500,
+                letterSpacing: "0.18em",
                 lineHeight: "1.5",
                 margin: 0,
+                textTransform: "uppercase",
               }}
             >
-              © {new Date().getFullYear()} Hathor Dahabiya. All rights reserved.
+              © {new Date().getFullYear()} Hathor Cruise ®
             </Text>
           </td>
         </tr>
@@ -385,6 +342,7 @@ export function EmailLayout({
 }: EmailLayoutProps) {
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
   const bannerUrl = heroImageUrl?.trim() || null;
+  const paper = theme.backgroundColor || emailColors.cream;
 
   return (
     <Html lang="en" dir="ltr">
@@ -410,20 +368,20 @@ export function EmailLayout({
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
-            background: ${theme.backgroundColor} !important;
+            background: ${paper} !important;
           }
           .email-shell { width: 100% !important; max-width: 100% !important; }
           .email-content { width: 100% !important; max-width: ${emailLayout.contentMaxWidth} !important; }
           @media only screen and (max-width: 680px) {
-            .email-card { padding: 36px 22px !important; }
-            .email-heading { font-size: 28px !important; }
+            .email-card { padding: 36px 22px 44px !important; }
+            .email-heading { font-size: 34px !important; letter-spacing: -0.01em !important; }
           }
         `}</style>
       </Head>
       <Preview>{preview}</Preview>
       <Body
         style={{
-          backgroundColor: theme.backgroundColor,
+          backgroundColor: paper,
           fontFamily: emailFonts.body,
           margin: 0,
           padding: 0,
@@ -439,7 +397,7 @@ export function EmailLayout({
           width="100%"
           className="email-shell"
           style={{
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: paper,
             borderCollapse: "collapse",
             margin: 0,
             padding: 0,
@@ -482,7 +440,7 @@ export function EmailLayout({
                         align="center"
                         style={{
                           ...cellReset,
-                          backgroundColor: theme.cardBackground,
+                          backgroundColor: paper,
                         }}
                       >
                         <table
@@ -503,33 +461,10 @@ export function EmailLayout({
                               <td
                                 className="email-card"
                                 style={{
-                                  backgroundColor: theme.cardBackground,
+                                  backgroundColor: paper,
                                   padding: emailLayout.paddingCard,
                                 }}
                               >
-                                <table
-                                  role="presentation"
-                                  cellPadding={0}
-                                  cellSpacing={0}
-                                  width="100%"
-                                  style={{ borderCollapse: "collapse" }}
-                                >
-                                  <tbody>
-                                    <tr>
-                                      <td
-                                        style={{
-                                          borderTop: `3px solid ${theme.primaryColor}`,
-                                          fontSize: 0,
-                                          height: 0,
-                                          lineHeight: 0,
-                                          padding: 0,
-                                        }}
-                                      >
-                                        &nbsp;
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
                                 {children}
                               </td>
                             </tr>

@@ -216,11 +216,16 @@ export function toEmailThemeOverrides(
   };
 }
 
-/** Cache-busted image URLs for sending emails (avoids stale Supabase CDN bytes). */
+/**
+ * Hosted HTTPS image URLs for outbound mail (never CID attachments).
+ * Cache-bust with digits only — Gmail’s image proxy is picky about query strings.
+ */
 export function buildEmailSendTheme(
   template: EmailTemplateRecord,
 ): EmailTemplateOverrides {
-  const version = template.updatedAt ?? new Date().toISOString();
+  const version = String(
+    template.updatedAt ? Date.parse(template.updatedAt) || Date.now() : Date.now(),
+  );
   const logoBase =
     pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
   const heroBase =
@@ -229,8 +234,8 @@ export function buildEmailSendTheme(
   return {
     logoUrl: withEmailCacheBust(logoBase, version) ?? logoBase,
     heroImageUrl: withEmailCacheBust(heroBase, version) ?? heroBase,
-    primaryColor: template.primaryColor,
-    backgroundColor: template.backgroundColor,
+    primaryColor: template.primaryColor?.trim() || emailColors.gold,
+    backgroundColor: template.backgroundColor?.trim() || emailColors.background,
     heroHeading: template.heroHeading,
     bodyText: template.bodyText,
   };
@@ -242,10 +247,11 @@ export function withEmailCacheBust(
 ): string | null {
   const base = url?.trim();
   if (!base) return null;
-  const token = version?.trim();
-  if (!token) return base;
-  const separator = base.includes("?") ? "&" : "?";
-  return `${base}${separator}v=${encodeURIComponent(token)}`;
+  /* Strip prior query; attach a digits-only bust token. */
+  const clean = base.split("?")[0] ?? base;
+  const digits = (version?.trim() || "").replace(/\D/g, "").slice(0, 16);
+  if (!digits) return clean;
+  return `${clean}?v=${digits}`;
 }
 
 export function getEmailTemplatePreviewLogoSrc(

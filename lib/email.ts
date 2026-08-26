@@ -4,7 +4,6 @@ import { Resend } from "resend";
 import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
-import { buildInlineEmailImages } from "@/lib/email-inline-images";
 import {
   getEmailTemplateForSend,
   resolveEmailSubject,
@@ -56,28 +55,14 @@ async function sendEmail(input: {
     return;
   }
 
-  const remoteLogo = input.theme.logoUrl?.trim() || "";
-  const remoteHero = input.theme.heroImageUrl?.trim() || null;
-
-  const inlined = await buildInlineEmailImages({
-    logoUrl: remoteLogo,
-    heroImageUrl: remoteHero,
-  });
-
-  const sendTheme: EmailTemplateOverrides = {
-    ...input.theme,
-    logoUrl: inlined.logoUrl,
-    heroImageUrl: inlined.heroImageUrl,
-  };
-
+  /* Hosted HTTPS <img> only — never CID attachments (Gmail lists those as files). */
   console.log(
     `[email] sending ${input.label}`,
-    `inline=${inlined.attachments.length}`,
-    `logo=${inlined.logoUrl.startsWith("cid:") ? "cid" : "remote"}`,
-    `hero=${inlined.heroImageUrl?.startsWith("cid:") ? "cid" : inlined.heroImageUrl ? "remote" : "none"}`,
+    `logo=${input.theme.logoUrl ? "hosted" : "none"}`,
+    `hero=${input.theme.heroImageUrl ? "hosted" : "none"}`,
   );
 
-  const message = input.renderMessage(sendTheme);
+  const message = input.renderMessage(input.theme);
   const [html, text] = await Promise.all([
     render(message),
     render(message, { plainText: true }),
@@ -90,15 +75,6 @@ async function sendEmail(input: {
     html,
     text,
     replyTo: process.env.RESEND_REPLY_TO?.trim() || undefined,
-    attachments:
-      inlined.attachments.length > 0
-        ? inlined.attachments.map((attachment) => ({
-            filename: attachment.filename,
-            content: attachment.content,
-            contentId: attachment.contentId,
-            contentType: attachment.contentType,
-          }))
-        : undefined,
   });
 
   if (result.error) {

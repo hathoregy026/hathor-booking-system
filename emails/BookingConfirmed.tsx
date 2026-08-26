@@ -12,7 +12,7 @@ import {
   GoldDivider,
 } from "./components/EmailUi";
 import { sampleBookingDetails, sampleGuestName } from "./sample-data";
-import { emailColors } from "./styles";
+import { emailColors, emailFonts } from "./styles";
 
 type BookingConfirmedEmailProps = {
   guestName: string;
@@ -24,7 +24,7 @@ export const PreviewProps: BookingConfirmedEmailProps = {
   details: sampleBookingDetails,
 };
 
-const DEFAULT_HERO = "Reservation Confirmed, {guestName}";
+const DEFAULT_HERO = "Reservation Confirmed";
 const DEFAULT_BODY =
   "Your cabin is reserved. No payment has been collected yet; our team will contact you separately when secure online payment becomes available.";
 
@@ -45,7 +45,11 @@ export default function BookingConfirmedEmail({
   heroHeading,
   bodyText,
 }: BookingConfirmedEmailProps) {
-  const heading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, { guestName });
+  const rawHeading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, {
+    guestName,
+  });
+  /* Short display title; guest name is shown on the line below. */
+  const heading = (rawHeading.split(",")[0] || DEFAULT_HERO).trim();
   const body = bodyText?.trim() || DEFAULT_BODY;
 
   return (
@@ -57,8 +61,11 @@ export default function BookingConfirmedEmail({
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
     >
-      <EmailEyebrow color={emailColors.success}>Reservation Confirmed · Payment Pending</EmailEyebrow>
+      <EmailEyebrow>Reservation</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
+      <EmailBodyText>
+        For {guestName} · Payment pending
+      </EmailBodyText>
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
       <EmailBodyText muted>
@@ -72,14 +79,16 @@ export default function BookingConfirmedEmail({
         cellPadding={0}
         cellSpacing={0}
         width="100%"
-        style={{ borderCollapse: "collapse", margin: "32px 0 0" }}
+        style={{ borderCollapse: "collapse", margin: "36px 0 0" }}
       >
         <tbody>
           <tr>
             <td
               style={{
-                border: `1px solid ${emailColors.border}`,
-                padding: "28px 32px",
+                backgroundColor: emailColors.paperWarm,
+                borderTop: `1px solid ${emailColors.borderSolid}`,
+                borderBottom: `1px solid ${emailColors.borderSolid}`,
+                padding: "28px 8px",
               }}
             >
               <table
@@ -87,22 +96,22 @@ export default function BookingConfirmedEmail({
                 cellPadding={0}
                 cellSpacing={0}
                 width="100%"
-                style={{ borderCollapse: "collapse", margin: "0 0 20px" }}
+                style={{ borderCollapse: "collapse", margin: "0 0 18px" }}
               >
                 <tbody>
                   <tr>
                     <td
                       style={{
-                        color: emailColors.gold,
-                        fontFamily:
-                          "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
-                        fontSize: "26px",
+                        color: emailColors.ink,
+                        fontFamily: emailFonts.editorial,
+                        fontSize: "22px",
                         fontWeight: 500,
-                        lineHeight: "1.35",
+                        lineHeight: "1.3",
                         padding: 0,
+                        textAlign: "center",
                       }}
                     >
-                      Your Journey Awaits
+                      Your journey awaits
                     </td>
                   </tr>
                 </tbody>

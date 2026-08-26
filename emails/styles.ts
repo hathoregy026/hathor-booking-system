@@ -1,36 +1,42 @@
 import { getSiteBaseUrl } from "@/lib/public-url";
 
-/** Hathor luxury email design tokens — inline CSS only at render time. */
+/**
+ * Contact / About editorial DNA for booking emails.
+ * Paper ground, ink type, Hathor gold — matched to contact-editorial / about-editorial.
+ */
 export const emailColors = {
-  gold: "#C9A96E",
-  goldDark: "#A8864E",
-  goldLight: "#E8D5B5",
-  dark: "#0A0A0A",
-  cream: "#FAF8F5",
-  card: "#FFFFFF",
-  textPrimary: "#0A0A0A",
-  textSecondary: "#5C5C5C",
-  textMuted: "#8A8A8A",
-  border: "#E8E2D9",
-  borderGold: "#C9A96E",
-  success: "#2D6A4F",
-  infoBg: "#FDF8EF",
-  rowAlt: "#FAF8F5",
+  gold: "#b69f64",
+  goldDark: "#806b35",
+  goldLight: "#ded4c6",
+  dark: "#0b0a08",
+  ink: "#14120e",
+  cream: "#ece4da",
+  paperWarm: "#f3ede4",
+  card: "#f3ede4",
+  textPrimary: "#14120e",
+  textSecondary: "#4a453c",
+  textMuted: "#6b6560",
+  border: "rgba(20, 18, 14, 0.16)",
+  borderSolid: "#cfc7ba",
+  borderGold: "#b69f64",
+  success: "#806b35",
+  infoBg: "#ded4c6",
+  rowAlt: "#ece4da",
+  copyOnDark: "#f6efdf",
   /** @deprecated use cream */
-  background: "#FAF8F5",
+  background: "#ece4da",
 } as const;
 
 /**
- * Closest Google Fonts pairing to the live site stack
- * (Plus Jakarta Sans body + editorial serif display).
- * Custom faces (Gamgote / Bitho) are not loadable in most email clients.
+ * Mail-safe Google Fonts closest to Contact/About:
+ * Italiana (display) · Playfair Display (editorial) · Plus Jakarta Sans (meta/body).
  */
 export const emailFonts = {
-  display:
-    "'Cormorant Garamond', Georgia, 'Times New Roman', Times, serif",
+  display: "'Italiana', Georgia, 'Times New Roman', Times, serif",
+  editorial: "'Playfair Display', Georgia, 'Times New Roman', Times, serif",
   body: "'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
   /** @deprecated use display */
-  serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+  serif: "'Italiana', Georgia, 'Times New Roman', serif",
   /** @deprecated use body */
   sans: "'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
 } as const;
@@ -41,17 +47,17 @@ export const EMAIL_LOGO_FILENAME = "hathor-email-icon.png";
 
 export const EMAIL_LOGO_URL = `${getSiteBaseUrl()}/email/${EMAIL_LOGO_FILENAME}`;
 
-/** Full-bleed editorial canvas — fills the client viewport width up to max. */
+/** Full-bleed editorial canvas. */
 export const emailLayout = {
   maxWidth: "100%",
-  contentMaxWidth: "680px",
+  contentMaxWidth: "640px",
   paddingDesktop: "48px",
   paddingMobile: "28px",
-  paddingCard: "48px 40px",
-  sectionGap: "32px",
-  heroHeight: 360,
-  iconSize: 72,
+  paddingCard: "44px 36px 52px",
+  sectionGap: "28px",
+  heroHeight: 420,
+  iconSize: 64,
 } as const;
 
 export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Italiana&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap";

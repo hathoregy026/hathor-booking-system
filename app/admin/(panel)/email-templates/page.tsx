@@ -53,8 +53,8 @@ function pickShared(templates: EmailTemplateRecord[]): SharedBranding {
   return {
     logoUrl: first?.logoUrl ?? null,
     heroImageUrl: first?.heroImageUrl ?? null,
-    primaryColor: first?.primaryColor ?? "#C9A96E",
-    backgroundColor: first?.backgroundColor ?? "#FAF8F5",
+    primaryColor: first?.primaryColor ?? "#b69f64",
+    backgroundColor: first?.backgroundColor ?? "#ece4da",
   };
 }
 
@@ -77,8 +77,8 @@ export default function AdminEmailTemplatesPage() {
   const [shared, setShared] = useState<SharedBranding>({
     logoUrl: null,
     heroImageUrl: null,
-    primaryColor: "#C9A96E",
-    backgroundColor: "#FAF8F5",
+    primaryColor: "#b69f64",
+    backgroundColor: "#ece4da",
   });
   const [copies, setCopies] = useState<TemplateCopy[]>([]);
 

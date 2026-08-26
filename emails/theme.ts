@@ -23,10 +23,12 @@ export function resolveEmailTheme(
     logoUrl: overrides?.logoUrl?.trim() || HATHOR_EMAIL_LOGO_URL,
     primaryColor,
     goldDark:
-      primaryColor === emailColors.gold ? emailColors.goldDark : primaryColor,
+      primaryColor.toLowerCase() === emailColors.gold.toLowerCase()
+        ? emailColors.goldDark
+        : primaryColor,
     backgroundColor,
-    cardBackground: emailColors.card,
-    borderColor: emailColors.border,
+    cardBackground: emailColors.paperWarm,
+    borderColor: emailColors.borderSolid,
     infoBg: emailColors.infoBg,
   };
 }

@@ -4,23 +4,27 @@ import { emailColors, emailFonts } from "../styles";
 
 const cellReset = { padding: 0, margin: 0 } as const;
 
-/** Small gold uppercase label above headings. */
+/** Contact/About style: italic Playfair in parentheses, gold-deep. */
 export function EmailEyebrow({
   children,
   align = "center",
-  color = emailColors.gold,
+  color = emailColors.goldDark,
 }: {
   children: string;
   align?: "left" | "center" | "right";
   color?: string;
 }) {
+  const label = children.trim().startsWith("(")
+    ? children.trim()
+    : `(${children.trim()})`;
+
   return (
     <table
       role="presentation"
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "0 0 12px" }}
+      style={{ borderCollapse: "collapse", margin: "0 0 18px" }}
     >
       <tbody>
         <tr>
@@ -28,11 +32,57 @@ export function EmailEyebrow({
             <Text
               style={{
                 color,
-                fontFamily: emailFonts.body,
-                fontSize: "11px",
-                fontWeight: 600,
-                letterSpacing: "3px",
+                fontFamily: emailFonts.editorial,
+                fontSize: "15px",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: "0.02em",
                 lineHeight: "1.4",
+                margin: 0,
+              }}
+            >
+              {label}
+            </Text>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+}
+
+/** Italiana-style uppercase display heading. */
+export function EmailHeading({
+  children,
+  align = "center",
+  size = "large",
+}: {
+  children: ReactNode;
+  align?: "left" | "center" | "right";
+  size?: "large" | "medium";
+}) {
+  const fontSize = size === "large" ? "42px" : "30px";
+  const lineHeight = size === "large" ? "0.95" : "1.05";
+
+  return (
+    <table
+      role="presentation"
+      cellPadding={0}
+      cellSpacing={0}
+      width="100%"
+      style={{ borderCollapse: "collapse", margin: "0 0 20px" }}
+    >
+      <tbody>
+        <tr>
+          <td align={align} style={cellReset}>
+            <Text
+              className="email-heading"
+              style={{
+                color: emailColors.ink,
+                fontFamily: emailFonts.display,
+                fontSize,
+                fontWeight: 400,
+                letterSpacing: "-0.012em",
+                lineHeight,
                 margin: 0,
                 textTransform: "uppercase",
               }}
@@ -46,51 +96,7 @@ export function EmailEyebrow({
   );
 }
 
-/** Editorial display heading — Cormorant Garamond (site-aligned). */
-export function EmailHeading({
-  children,
-  align = "center",
-  size = "large",
-}: {
-  children: ReactNode;
-  align?: "left" | "center" | "right";
-  size?: "large" | "medium";
-}) {
-  const fontSize = size === "large" ? "36px" : "26px";
-  const lineHeight = size === "large" ? "1.22" : "1.3";
-
-  return (
-    <table
-      role="presentation"
-      cellPadding={0}
-      cellSpacing={0}
-      width="100%"
-      style={{ borderCollapse: "collapse", margin: "0 0 16px" }}
-    >
-      <tbody>
-        <tr>
-          <td align={align} style={cellReset}>
-            <Text
-              className="email-heading"
-              style={{
-                color: emailColors.dark,
-                fontFamily: emailFonts.display,
-                fontSize,
-                fontWeight: 500,
-                lineHeight,
-                margin: 0,
-              }}
-            >
-              {children}
-            </Text>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
-}
-
-/** Plus Jakarta Sans body copy. */
+/** Plus Jakarta Sans body — light weight like Contact/About. */
 export function EmailBodyText({
   children,
   align = "center",
@@ -106,19 +112,20 @@ export function EmailBodyText({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
+      style={{ borderCollapse: "collapse", margin: "0 0 22px" }}
     >
       <tbody>
         <tr>
           <td align={align} style={cellReset}>
             <Text
               style={{
-                color: muted ? emailColors.textSecondary : emailColors.textPrimary,
+                color: muted ? emailColors.textMuted : emailColors.textSecondary,
                 fontFamily: emailFonts.body,
-                fontSize: "16px",
-                fontWeight: 400,
-                lineHeight: "1.7",
+                fontSize: muted ? "13px" : "15px",
+                fontWeight: 300,
+                lineHeight: "1.65",
                 margin: 0,
+                maxWidth: "36em",
               }}
             >
               {children}
@@ -130,15 +137,15 @@ export function EmailBodyText({
   );
 }
 
-/** Gold horizontal rule accent. */
-export function GoldDivider({ width = "80px" }: { width?: string }) {
+/** Hairline rule — Contact/About editorial, not a thick gold bar. */
+export function GoldDivider({ width = "48px" }: { width?: string }) {
   return (
     <table
       role="presentation"
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "0 0 24px" }}
+      style={{ borderCollapse: "collapse", margin: "0 0 28px" }}
     >
       <tbody>
         <tr>
@@ -172,7 +179,7 @@ export function GoldDivider({ width = "80px" }: { width?: string }) {
   );
 }
 
-/** Highlight card with gold left border. */
+/** Soft sand info card. */
 export function EmailInfoCard({
   title,
   children,
@@ -188,25 +195,24 @@ export function EmailInfoCard({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "32px 0 0" }}
+      style={{ borderCollapse: "collapse", margin: "28px 0 0" }}
     >
       <tbody>
         <tr>
           <td
             style={{
               backgroundColor: emailColors.infoBg,
-              borderLeft: `4px solid ${borderColor}`,
-              borderRadius: "4px",
-              padding: "24px 28px",
+              borderLeft: `3px solid ${borderColor}`,
+              padding: "24px 26px",
             }}
           >
             <Text
               style={{
-                color: emailColors.dark,
-                fontFamily: emailFonts.display,
+                color: emailColors.ink,
+                fontFamily: emailFonts.editorial,
                 fontSize: "20px",
                 fontWeight: 500,
-                lineHeight: "1.4",
+                lineHeight: "1.35",
                 margin: "0 0 10px",
               }}
             >
@@ -216,9 +222,9 @@ export function EmailInfoCard({
               style={{
                 color: emailColors.textSecondary,
                 fontFamily: emailFonts.body,
-                fontSize: "15px",
-                fontWeight: 400,
-                lineHeight: "1.7",
+                fontSize: "14px",
+                fontWeight: 300,
+                lineHeight: "1.65",
                 margin: 0,
               }}
             >
@@ -231,7 +237,7 @@ export function EmailInfoCard({
   );
 }
 
-/** Gold CTA button — table-based for Outlook. */
+/** Pill CTA — ink border, uppercase tracked label (Contact DNA). */
 export function EmailCtaButton({
   href,
   label,
@@ -245,7 +251,7 @@ export function EmailCtaButton({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "32px 0 8px" }}
+      style={{ borderCollapse: "collapse", margin: "36px 0 8px" }}
     >
       <tbody>
         <tr>
@@ -261,25 +267,25 @@ export function EmailCtaButton({
                   <td
                     align="center"
                     style={{
-                      backgroundColor: emailColors.gold,
-                      borderRadius: "2px",
+                      backgroundColor: emailColors.ink,
+                      borderRadius: "999px",
                       padding: 0,
                     }}
                   >
                     <Button
                       href={href}
                       style={{
-                        backgroundColor: emailColors.gold,
-                        border: "none",
-                        borderRadius: "2px",
-                        color: emailColors.dark,
+                        backgroundColor: emailColors.ink,
+                        border: `1px solid ${emailColors.ink}`,
+                        borderRadius: "999px",
+                        color: emailColors.copyOnDark,
                         display: "inline-block",
                         fontFamily: emailFonts.body,
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        letterSpacing: "2px",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        letterSpacing: "0.14em",
                         lineHeight: "1",
-                        padding: "16px 36px",
+                        padding: "16px 34px",
                         textDecoration: "none",
                         textTransform: "uppercase",
                       }}
@@ -297,7 +303,7 @@ export function EmailCtaButton({
   );
 }
 
-/** Bullet list with gold markers. */
+/** Soft list with gold markers. */
 export function EmailBulletList({ items }: { items: readonly string[] }) {
   return (
     <table
@@ -312,22 +318,23 @@ export function EmailBulletList({ items }: { items: readonly string[] }) {
           <tr key={item}>
             <td
               valign="top"
-              width="24"
+              width="22"
               style={{
                 color: emailColors.gold,
                 fontFamily: emailFonts.body,
-                fontSize: "16px",
+                fontSize: "14px",
                 lineHeight: "1.7",
                 padding: "0 0 10px",
               }}
             >
-              ◆
+              ·
             </td>
             <td
               style={{
                 color: emailColors.textSecondary,
                 fontFamily: emailFonts.body,
-                fontSize: "15px",
+                fontSize: "14px",
+                fontWeight: 300,
                 lineHeight: "1.7",
                 padding: "0 0 10px",
               }}
