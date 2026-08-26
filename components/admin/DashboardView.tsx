@@ -6,6 +6,7 @@ import { format, parseISO } from "date-fns";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   AlertTriangle,
+  BarChart3,
   CheckCircle2,
   DollarSign,
   Globe,
@@ -55,6 +56,7 @@ type QuickAction = {
 
 const QUICK_ACTIONS: QuickAction[] = [
   { href: "/admin/cruises", label: "Add New Cruise", icon: Ship, primary: true },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/bookings", label: "View All Bookings", icon: List },
   { href: "/admin/pages", label: "Pages", icon: LayoutGrid },
   { href: "/admin/preload-screen", label: "Preload Screen", icon: Sparkles },

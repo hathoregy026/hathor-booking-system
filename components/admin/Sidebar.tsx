@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
+  BarChart3,
   FileText,
   ImageIcon,
   LayoutDashboard,
@@ -28,6 +29,7 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const NAV: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket },
   { href: "/admin/cruises", label: "Cruises", icon: Ship },
   { href: "/admin/website-text", label: "Website Text", icon: FileText },
