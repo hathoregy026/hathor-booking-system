@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError, jsonError } from "@/lib/api";
 import { logDbError, withDb } from "@/lib/db-safe";
 import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
+import { HATHOR_EMAIL_LOGO_URL } from "@/lib/email-branding-urls";
 import {
   EMAIL_TEMPLATE_NAMES,
   getDefaultEmailTemplate,
@@ -81,11 +82,7 @@ export async function PUT(request: NextRequest) {
         const defaults = getDefaultEmailTemplate(name);
         const existing = existingRows.find((row) => row.name === name);
 
-        const logoUrl = resolvePersistedImageUrl(
-          shared.logoUrl,
-          existing?.logoUrl,
-          defaults.logoUrl ?? "",
-        );
+        const logoUrl = HATHOR_EMAIL_LOGO_URL;
         const heroImageUrl = resolvePersistedImageUrl(
           shared.heroImageUrl,
           existing?.heroImageUrl,

@@ -138,12 +138,7 @@ function applySharedEmailBranding(
 
   return {
     ...template,
-    logoUrl:
-      pickReliableEmailImageUrl(
-        template.logoUrl,
-        shared?.logoUrl,
-        defaults.logoUrl,
-      ) ?? defaults.logoUrl,
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
     heroImageUrl:
       pickReliableEmailImageUrl(
         template.heroImageUrl,
@@ -206,7 +201,7 @@ export function toEmailThemeOverrides(
   if (!template) return undefined;
 
   return {
-    logoUrl: pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL,
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
     heroImageUrl:
       pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL,
     primaryColor: template.primaryColor,
@@ -218,7 +213,7 @@ export function toEmailThemeOverrides(
 
 /**
  * Hosted HTTPS image URLs for outbound mail (never CID attachments).
- * Cache-bust with digits only — Gmail’s image proxy is picky about query strings.
+ * Logo is always the locked Hathor icon. Cache-bust with digits only.
  */
 export function buildEmailSendTheme(
   template: EmailTemplateRecord,
@@ -226,13 +221,11 @@ export function buildEmailSendTheme(
   const version = String(
     template.updatedAt ? Date.parse(template.updatedAt) || Date.now() : Date.now(),
   );
-  const logoBase =
-    pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
   const heroBase =
     pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
 
   return {
-    logoUrl: withEmailCacheBust(logoBase, version) ?? logoBase,
+    logoUrl: withEmailCacheBust(HATHOR_EMAIL_LOGO_URL, version) ?? HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: withEmailCacheBust(heroBase, version) ?? heroBase,
     primaryColor: template.primaryColor?.trim() || emailColors.gold,
     backgroundColor: template.backgroundColor?.trim() || emailColors.background,
@@ -255,9 +248,9 @@ export function withEmailCacheBust(
 }
 
 export function getEmailTemplatePreviewLogoSrc(
-  template: EmailTemplateRecord,
+  _template: EmailTemplateRecord,
 ): string {
-  return pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
+  return HATHOR_EMAIL_LOGO_URL;
 }
 
 export function getEmailTemplatePreviewLogoFallback(): string {

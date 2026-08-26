@@ -3,7 +3,6 @@ import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
-import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
 import {
   HATHOR_EMAIL_HERO_URL,
   HATHOR_EMAIL_LOGO_URL,
@@ -18,6 +17,7 @@ import {
   type EmailTemplateOverrides,
   type EmailTemplateRecord,
 } from "@/lib/email-templates";
+import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
 
 export type EmailPreviewDraftShared = {
   logoUrl?: string | null;
@@ -49,18 +49,17 @@ function clip(value: string | null | undefined, max: number): string | null {
   return trimmed.slice(0, max);
 }
 
-/** Fresh cache-bust so dashboard preview never shows stale logo/hero bytes. */
+/** Dashboard preview — absolute production asset URLs (allowed by CSP img-src). */
 export function buildEmailPreviewTheme(
   template: EmailTemplateRecord,
 ): EmailTemplateOverrides {
   const version = String(Date.now());
-  const logoBase =
-    pickReliableEmailImageUrl(template.logoUrl) ?? HATHOR_EMAIL_LOGO_URL;
   const heroBase =
     pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
 
   return {
-    logoUrl: withEmailCacheBust(logoBase, version) ?? logoBase,
+    logoUrl:
+      withEmailCacheBust(HATHOR_EMAIL_LOGO_URL, version) ?? HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: withEmailCacheBust(heroBase, version) ?? heroBase,
     primaryColor: template.primaryColor?.trim() || "#b69f64",
     backgroundColor: template.backgroundColor?.trim() || "#ece4da",
@@ -81,10 +80,7 @@ export function buildDraftEmailTemplates(
   const byName = new Map((baseRows ?? []).map((row) => [row.name, row]));
   const now = new Date().toISOString();
 
-  const sharedLogo =
-    pickReliableEmailImageUrl(shared?.logoUrl) ??
-    pickReliableEmailImageUrl(baseRows?.[0]?.logoUrl) ??
-    HATHOR_EMAIL_LOGO_URL;
+  const sharedLogo = HATHOR_EMAIL_LOGO_URL;
   const sharedHero =
     pickReliableEmailImageUrl(shared?.heroImageUrl) ??
     pickReliableEmailImageUrl(baseRows?.[0]?.heroImageUrl) ??

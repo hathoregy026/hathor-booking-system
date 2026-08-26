@@ -268,9 +268,12 @@ export function EmailTemplatePreviewModal({
                 <iframe
                   key={`${activePreview.name}-${frameKey}`}
                   title={`${TEMPLATE_LABELS[activePreview.name]} preview`}
-                  srcDoc={activePreview.html}
+                  srcDoc={activePreview.html.replace(
+                    /<head([^>]*)>/i,
+                    `<head$1><base href="${typeof window !== "undefined" ? `${window.location.origin}/` : "https://hathor-booking-system.vercel.app/"}" />`,
+                  )}
                   className="h-full w-full border-0 bg-white"
-                  sandbox="allow-same-origin allow-popups"
+                  /* Intentionally unsandboxed so brand images/fonts load under site CSP. */
                 />
               </div>
             </div>

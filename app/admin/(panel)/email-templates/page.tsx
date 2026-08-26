@@ -51,7 +51,7 @@ const TEMPLATE_META: Record<
 function pickShared(templates: EmailTemplateRecord[]): SharedBranding {
   const first = templates[0];
   return {
-    logoUrl: first?.logoUrl ?? null,
+    logoUrl: "/email/hathor-email-icon.png",
     heroImageUrl: first?.heroImageUrl ?? null,
     primaryColor: first?.primaryColor ?? "#b69f64",
     backgroundColor: first?.backgroundColor ?? "#ece4da",
@@ -240,27 +240,47 @@ export default function AdminEmailTemplatesPage() {
         <div>
           <h2 className="admin-heading text-lg">Shared branding</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Logo, hero image, and colors apply to all three templates.
+            Hero image and colors apply to all three templates. The logo icon is
+            fixed.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <EmailImageUpload
-            label="Logo"
-            field="logoUrl"
-            value={shared.logoUrl}
-            onUploaded={(url) => {
-              setShared((current) => ({ ...current, logoUrl: url }));
-              showToast("success", "Logo uploaded and applied to all templates");
-              void loadTemplates();
-            }}
-          />
+          <div className="space-y-3">
+            <span
+              className="block text-sm font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Logo
+            </span>
+            <div
+              className="flex h-40 items-center justify-center overflow-hidden rounded-2xl border"
+              style={{
+                borderColor: "var(--border)",
+                background: "#ece4da",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/email/hathor-email-icon.png"
+                alt="Hathor icon"
+                className="h-16 w-16 object-contain"
+              />
+            </div>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              Locked brand mark — the Hathor ring icon is used on every email.
+            </p>
+          </div>
           <EmailImageUpload
             label="Hero image"
             field="heroImageUrl"
             value={shared.heroImageUrl}
             onUploaded={(url) => {
-              setShared((current) => ({ ...current, heroImageUrl: url }));
+              setShared((current) => ({
+                ...current,
+                logoUrl: current.logoUrl,
+                heroImageUrl: url,
+              }));
               showToast("success", "Hero uploaded and applied to all templates");
               void loadTemplates();
             }}
@@ -424,9 +444,9 @@ export default function AdminEmailTemplatesPage() {
         style={{ color: "var(--text-secondary)" }}
       >
         <Mail className="h-4 w-4 shrink-0" aria-hidden />
-        Images upload to Supabase and apply to every template immediately. Click
-        &ldquo;Save all templates&rdquo; after editing copy or colors. Use Preview
-        or Send test email to verify.
+        Images upload to Supabase for the hero only. The Hathor icon is locked.
+        Click &ldquo;Save all templates&rdquo; after editing copy or colors. Use
+        Preview or Send test email to verify.
       </div>
 
       <EmailTemplatePreviewModal
