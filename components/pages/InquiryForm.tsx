@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 
@@ -16,6 +17,14 @@ type InquiryFormProps = {
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
+function subscribeNoop() {
+  return () => {};
+}
+
+function useIsClient() {
+  return useSyncExternalStore(subscribeNoop, () => true, () => false);
+}
+
 export function InquiryForm({
   type,
   title,
@@ -27,6 +36,27 @@ export function InquiryForm({
 }: InquiryFormProps) {
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const portalReady = useIsClient();
+  const titleId = useId();
+
+  useEffect(() => {
+    if (state !== "success" || type !== "contact") return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setState("idle");
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [state, type]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -81,45 +111,67 @@ export function InquiryForm({
     }
   }
 
-  if (state === "success") {
-    if (type === "contact") {
-      return (
-        <div
-          className={[
-            "hathor-form-card hathor-form-card--success contact-success",
-            className,
-          ]
-            .filter(Boolean)
-            .join(" ")}
-          role="status"
-          aria-live="polite"
-        >
-          <div className="contact-success__seal" aria-hidden="true">
-            <Check strokeWidth={1.7} />
-          </div>
-          <p className="contact-success__eyebrow">Message sent</p>
-          <h2 className="contact-success__title">Thank you</h2>
-          <p className="contact-success__copy">
-            Your note has reached our reservations desk. A confirmation email
-            is on its way to the address you provided.
-          </p>
-          <div className="contact-success__status">
-            <span aria-hidden="true" />
-            <p>Our team will respond within 24 hours.</p>
-          </div>
-          <button
-            type="button"
-            className="ce-btn contact-success__again"
-            onClick={() => setState("idle")}
+  const contactSuccessPopup =
+    type === "contact" && state === "success" && portalReady
+      ? createPortal(
+          <div
+            className="contact-success-popup"
+            role="presentation"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                setState("idle");
+              }
+            }}
           >
-            Send another message
-          </button>
-        </div>
-      );
-    }
+            <div
+              className="contact-success-popup__panel"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={titleId}
+            >
+              <button
+                type="button"
+                className="contact-success-popup__close"
+                aria-label="Close thank you message"
+                onClick={() => setState("idle")}
+              >
+                ×
+              </button>
+              <div className="contact-success-popup__seal" aria-hidden="true">
+                <Check strokeWidth={1.7} />
+              </div>
+              <p className="contact-success-popup__eyebrow">Message sent</p>
+              <h2 id={titleId} className="contact-success-popup__title">
+                Thank you
+              </h2>
+              <p className="contact-success-popup__copy">
+                Your note has reached our reservations desk. A confirmation
+                email is on its way to the address you provided.
+              </p>
+              <div className="contact-success-popup__status">
+                <span aria-hidden="true" />
+                <p>Our team will respond within 24 hours.</p>
+              </div>
+              <button
+                type="button"
+                className="ce-btn contact-success-popup__again"
+                onClick={() => setState("idle")}
+              >
+                Send another message
+              </button>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null;
 
+  if (state === "success" && type !== "contact") {
     return (
-      <div className={["hathor-form-card hathor-form-card--success", className].filter(Boolean).join(" ")}>
+      <div
+        className={["hathor-form-card hathor-form-card--success", className]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <h2 className="section-title typo-page-title text-2xl">Thank You</h2>
         <p className="section-body typo-body-text mt-4">
           Your message has been received. Our reservations team will respond
@@ -130,159 +182,164 @@ export function InquiryForm({
   }
 
   return (
-    <form
-      className={["hathor-form-card", className].filter(Boolean).join(" ")}
-      onSubmit={handleSubmit}
-    >
-      <h2 className="section-title typo-page-title text-2xl">{title}</h2>
-      {intro ? <p className="section-body typo-body-text mt-3">{intro}</p> : null}
-
-      <div className="mt-8 space-y-4">
-        <div hidden aria-hidden="true" style={{ display: "none" }}>
-          <label htmlFor={`${type}-website`}>Website</label>
-          <input
-            id={`${type}-website`}
-            name="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-          />
-        </div>
-
-        <div>
-          <label className="lux-label" htmlFor={`${type}-name`}>
-            Name
-          </label>
-          <input
-            id={`${type}-name`}
-            name="name"
-            type="text"
-            className="lux-input"
-            required
-            minLength={2}
-            maxLength={120}
-            autoComplete="name"
-          />
-        </div>
-
-        <div>
-          <label className="lux-label" htmlFor={`${type}-email`}>
-            Email
-          </label>
-          <input
-            id={`${type}-email`}
-            name="email"
-            type="email"
-            className="lux-input"
-            required
-            maxLength={254}
-            autoComplete="email"
-          />
-        </div>
-
-        <div>
-          <label className="lux-label" htmlFor={`${type}-phone`}>
-            Phone
-          </label>
-          <input
-            id={`${type}-phone`}
-            name="phone"
-            type="tel"
-            className="lux-input"
-            maxLength={30}
-            autoComplete="tel"
-          />
-        </div>
-
-        {showCharterFields ? (
-          <>
-            <div>
-              <label className="lux-label" htmlFor={`${type}-address`}>
-                Address
-              </label>
-              <input
-                id={`${type}-address`}
-                name="address"
-                type="text"
-                className="lux-input"
-                maxLength={300}
-                autoComplete="street-address"
-              />
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div>
-                <label className="lux-label" htmlFor={`${type}-checkIn`}>
-                  Check In
-                </label>
-                <input
-                  id={`${type}-checkIn`}
-                  name="checkIn"
-                  type="date"
-                  className="lux-input"
-                />
-              </div>
-              <div>
-                <label className="lux-label" htmlFor={`${type}-adults`}>
-                  Adults
-                </label>
-                <input
-                  id={`${type}-adults`}
-                  name="adults"
-                  type="number"
-                  min={0}
-                  max={50}
-                  defaultValue={2}
-                  className="lux-input"
-                />
-              </div>
-              <div>
-                <label className="lux-label" htmlFor={`${type}-children`}>
-                  Children
-                </label>
-                <input
-                  id={`${type}-children`}
-                  name="children"
-                  type="number"
-                  min={0}
-                  max={50}
-                  defaultValue={0}
-                  className="lux-input"
-                />
-              </div>
-            </div>
-          </>
+    <>
+      <form
+        className={["hathor-form-card", className].filter(Boolean).join(" ")}
+        onSubmit={handleSubmit}
+      >
+        <h2 className="section-title typo-page-title text-2xl">{title}</h2>
+        {intro ? (
+          <p className="section-body typo-body-text mt-3">{intro}</p>
         ) : null}
 
-        <div>
-          <label className="lux-label" htmlFor={`${type}-message`}>
-            Message
-          </label>
-          <textarea
-            id={`${type}-message`}
-            name="message"
-            rows={5}
-            className="lux-input resize-none"
-            required
-            minLength={3}
-            maxLength={4000}
-          />
+        <div className="mt-8 space-y-4">
+          <div hidden aria-hidden="true" style={{ display: "none" }}>
+            <label htmlFor={`${type}-website`}>Website</label>
+            <input
+              id={`${type}-website`}
+              name="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
+          <div>
+            <label className="lux-label" htmlFor={`${type}-name`}>
+              Name
+            </label>
+            <input
+              id={`${type}-name`}
+              name="name"
+              type="text"
+              className="lux-input"
+              required
+              minLength={2}
+              maxLength={120}
+              autoComplete="name"
+            />
+          </div>
+
+          <div>
+            <label className="lux-label" htmlFor={`${type}-email`}>
+              Email
+            </label>
+            <input
+              id={`${type}-email`}
+              name="email"
+              type="email"
+              className="lux-input"
+              required
+              maxLength={254}
+              autoComplete="email"
+            />
+          </div>
+
+          <div>
+            <label className="lux-label" htmlFor={`${type}-phone`}>
+              Phone
+            </label>
+            <input
+              id={`${type}-phone`}
+              name="phone"
+              type="tel"
+              className="lux-input"
+              maxLength={30}
+              autoComplete="tel"
+            />
+          </div>
+
+          {showCharterFields ? (
+            <>
+              <div>
+                <label className="lux-label" htmlFor={`${type}-address`}>
+                  Address
+                </label>
+                <input
+                  id={`${type}-address`}
+                  name="address"
+                  type="text"
+                  className="lux-input"
+                  maxLength={300}
+                  autoComplete="street-address"
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label className="lux-label" htmlFor={`${type}-checkIn`}>
+                    Check In
+                  </label>
+                  <input
+                    id={`${type}-checkIn`}
+                    name="checkIn"
+                    type="date"
+                    className="lux-input"
+                  />
+                </div>
+                <div>
+                  <label className="lux-label" htmlFor={`${type}-adults`}>
+                    Adults
+                  </label>
+                  <input
+                    id={`${type}-adults`}
+                    name="adults"
+                    type="number"
+                    min={0}
+                    max={50}
+                    defaultValue={2}
+                    className="lux-input"
+                  />
+                </div>
+                <div>
+                  <label className="lux-label" htmlFor={`${type}-children`}>
+                    Children
+                  </label>
+                  <input
+                    id={`${type}-children`}
+                    name="children"
+                    type="number"
+                    min={0}
+                    max={50}
+                    defaultValue={0}
+                    className="lux-input"
+                  />
+                </div>
+              </div>
+            </>
+          ) : null}
+
+          <div>
+            <label className="lux-label" htmlFor={`${type}-message`}>
+              Message
+            </label>
+            <textarea
+              id={`${type}-message`}
+              name="message"
+              rows={5}
+              className="lux-input resize-none"
+              required
+              minLength={3}
+              maxLength={4000}
+            />
+          </div>
+
+          {state === "error" && errorMessage ? (
+            <p className="text-sm text-red-700" role="alert">
+              {errorMessage}
+            </p>
+          ) : null}
+
+          <button
+            type="submit"
+            className={submitClassName}
+            disabled={state === "submitting"}
+          >
+            {state === "submitting" ? "Sending…" : submitLabel}
+          </button>
         </div>
-
-        {state === "error" && errorMessage ? (
-          <p className="text-sm text-red-700" role="alert">
-            {errorMessage}
-          </p>
-        ) : null}
-
-        <button
-          type="submit"
-          className={submitClassName}
-          disabled={state === "submitting"}
-        >
-          {state === "submitting" ? "Sending…" : submitLabel}
-        </button>
-      </div>
-    </form>
+      </form>
+      {contactSuccessPopup}
+    </>
   );
 }

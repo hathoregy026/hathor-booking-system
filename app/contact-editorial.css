@@ -917,124 +917,148 @@ html:has(.contact-editorial) footer.lux-footer {
   color: rgb(74 69 60 / 55%);
 }
 
-/* --- contact completion: an editorial seal, not an empty replacement card */
-.contact-editorial .contact-success {
+/* --- contact thank-you popup (portal overlay; cream + gold editorial seal) */
+.contact-success-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: max(1.25rem, env(safe-area-inset-top))
+    max(1.25rem, env(safe-area-inset-right))
+    max(1.25rem, env(safe-area-inset-bottom))
+    max(1.25rem, env(safe-area-inset-left));
+  background: rgb(20 18 14 / 42%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.contact-success-popup__panel {
   position: relative;
+  width: min(100%, 40rem);
+  max-height: min(92vh, 40rem);
+  overflow: auto;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  column-gap: clamp(1.2rem, 2.8vw, 2.2rem);
+  column-gap: clamp(1rem, 2.5vw, 1.85rem);
   align-items: start;
-  max-width: 48rem;
-  min-height: clamp(22rem, 34vw, 31rem);
-  padding: clamp(1.8rem, 4vw, 3.8rem) 0 0;
-  border-top: 1px solid var(--ce-gold-deep);
+  padding: clamp(1.8rem, 4vw, 2.85rem) clamp(1.5rem, 3.5vw, 2.6rem)
+    clamp(1.7rem, 3.5vw, 2.5rem);
+  border-top: 1px solid var(--ce-gold-deep, #806b35);
+  background:
+    radial-gradient(circle at 12% 8%, rgb(182 159 100 / 18%), transparent 52%),
+    var(--ce-paper-warm, #f3ede4);
+  color: var(--ce-ink, #14120e);
+  box-shadow:
+    0 1.6rem 3.4rem rgb(20 18 14 / 18%),
+    0 0 0 1px rgb(182 159 100 / 14%);
 }
 
-.contact-editorial .contact-success::after {
-  content: "";
+.contact-success-popup__close {
   position: absolute;
-  top: -5rem;
-  left: -8rem;
-  width: 25rem;
-  height: 25rem;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(182 159 100 / 19%), transparent 68%);
-  pointer-events: none;
+  top: 0.7rem;
+  right: 0.85rem;
+  z-index: 2;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--ce-ink-soft, #4a453c);
+  font-size: 1.55rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.25s ease;
 }
 
-.contact-editorial .contact-success__seal {
-  position: relative;
-  z-index: 1;
+.contact-success-popup__close:hover,
+.contact-success-popup__close:focus-visible {
+  color: var(--ce-ink, #14120e);
+  outline: none;
+}
+
+.contact-success-popup__seal {
   grid-row: 1 / span 4;
   display: grid;
   place-items: center;
-  width: clamp(4.5rem, 7vw, 6.4rem);
+  width: clamp(4.1rem, 7vw, 5.6rem);
   aspect-ratio: 1;
-  border: 1px solid var(--ce-gold-deep);
+  border: 1px solid var(--ce-gold-deep, #806b35);
   border-radius: 50%;
-  color: var(--ce-gold-deep);
+  color: var(--ce-gold-deep, #806b35);
   box-shadow:
-    0 0 0 0.45rem rgb(182 159 100 / 9%),
-    0 1.2rem 3rem rgb(128 107 53 / 12%);
+    0 0 0 0.4rem rgb(182 159 100 / 10%),
+    0 1rem 2.4rem rgb(128 107 53 / 12%);
 }
 
-.contact-editorial .contact-success__seal svg {
+.contact-success-popup__seal svg {
   width: 42%;
   height: 42%;
 }
 
-.contact-editorial .contact-success__eyebrow {
-  position: relative;
-  z-index: 1;
-  margin: 0 0 0.65rem;
-  font-family: var(--ce-meta);
-  font-size: var(--ce-t-meta);
+.contact-success-popup__eyebrow {
+  margin: 0.15rem 0 0.55rem;
+  padding-right: 1.8rem;
+  font-family: var(--ce-meta, "Plus Jakarta Sans", sans-serif);
+  font-size: var(--ce-t-meta, 0.72rem);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ce-gold-deep);
+  color: var(--ce-gold-deep, #806b35);
 }
 
-.contact-editorial .contact-success__title {
-  position: relative;
-  z-index: 1;
+.contact-success-popup__title {
   margin: 0;
-  font-family: var(--ce-display);
-  font-size: clamp(3rem, 6vw, 6.5rem);
+  font-family: var(--ce-display, Italiana, Georgia, serif);
+  font-size: clamp(2.7rem, 6vw, 4.6rem);
   font-weight: 400;
   line-height: 0.94;
   letter-spacing: -0.045em;
-  color: var(--ce-ink);
+  color: var(--ce-ink, #14120e);
 }
 
-.contact-editorial .contact-success__copy {
-  position: relative;
-  z-index: 1;
-  max-width: 37rem;
-  margin: clamp(1.25rem, 2.3vw, 2rem) 0 0;
-  font-family: var(--ce-edit);
-  font-size: clamp(1.05rem, 1.45vw, 1.35rem);
+.contact-success-popup__copy {
+  max-width: 28rem;
+  margin: clamp(0.95rem, 2vw, 1.35rem) 0 0;
+  font-family: var(--ce-edit, "Playfair Display", Georgia, serif);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
   font-style: italic;
   line-height: 1.65;
-  color: var(--ce-ink-soft);
+  color: var(--ce-ink-soft, #4a453c);
 }
 
-.contact-editorial .contact-success__status {
-  position: relative;
-  z-index: 1;
+.contact-success-popup__status {
   grid-column: 2;
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  margin-top: 1.4rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--ce-hair);
+  margin-top: 1.25rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid var(--ce-hair, rgb(20 18 14 / 14%));
 }
 
-.contact-editorial .contact-success__status > span {
+.contact-success-popup__status > span {
   width: 0.48rem;
   height: 0.48rem;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: var(--ce-gold);
+  background: var(--ce-gold, #b69f64);
   box-shadow: 0 0 0 0.28rem rgb(182 159 100 / 14%);
 }
 
-.contact-editorial .contact-success__status p {
-  font-family: var(--ce-meta);
-  font-size: var(--ce-t-meta);
+.contact-success-popup__status p {
+  margin: 0;
+  font-family: var(--ce-meta, "Plus Jakarta Sans", sans-serif);
+  font-size: var(--ce-t-meta, 0.72rem);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ce-ink-soft);
+  color: var(--ce-ink-soft, #4a453c);
 }
 
-.contact-editorial .contact-success__again {
-  position: relative;
-  z-index: 1;
+.contact-success-popup__again {
   grid-column: 2;
   justify-self: start;
-  margin-top: clamp(1.6rem, 3vw, 2.5rem);
+  margin-top: clamp(1.35rem, 2.8vw, 1.9rem);
 }
 
 /* --- reservations card */
@@ -1313,35 +1337,28 @@ html:has(.contact-editorial) footer.lux-footer {
     flex: 1 1 auto;
   }
 
-  .contact-editorial .contact-success {
+  .contact-success-popup__panel {
     display: flex;
-    min-height: 0;
     flex-direction: column;
-    padding-top: 1.8rem;
+    padding: 1.65rem 1.35rem 1.7rem;
   }
 
-  .contact-editorial .contact-success::after {
-    top: -4rem;
-    left: -9rem;
-    width: 20rem;
-    height: 20rem;
+  .contact-success-popup__seal {
+    width: 4.35rem;
+    margin-bottom: 1.25rem;
   }
 
-  .contact-editorial .contact-success__seal {
-    width: 4.65rem;
-    margin-bottom: 1.6rem;
+  .contact-success-popup__title {
+    font-size: clamp(2.85rem, 14vw, 3.8rem);
   }
 
-  .contact-editorial .contact-success__title {
-    font-size: clamp(3.25rem, 16vw, 4.8rem);
-  }
-
-  .contact-editorial .contact-success__status {
+  .contact-success-popup__status,
+  .contact-success-popup__again {
     width: 100%;
   }
 
-  .contact-editorial .contact-success__again {
-    margin-top: 1.8rem;
+  .contact-success-popup__again {
+    margin-top: 1.55rem;
   }
 }
 
