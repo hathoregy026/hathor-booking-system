@@ -253,7 +253,7 @@ export function BookingsListView({
                   className="border-y text-left"
                   style={{
                     borderColor: "var(--border)",
-                    background: "color-mix(in srgb, var(--border) 35%, transparent)",
+                    background: "var(--table-row-alt)",
                   }}
                 >
                   <th className="w-10 px-4 py-2.5">

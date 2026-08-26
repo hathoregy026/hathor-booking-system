@@ -514,9 +514,9 @@
   }
 }
 
-/* Vertical scroll container so `position: sticky` on thead has something to
-   stick inside. Horizontal overflow stays available as a last resort, but the
-   card layouts below 1024px mean it should rarely engage. */
+/* Horizontal overflow only. `overflow-x: auto` still makes this a scroll
+   container, so sticky thead must use `top: 0` — not the app header height —
+   or the first data row is immediately shoved under the column labels. */
 .admin-shell .admin-table-scroll {
   overflow-x: auto;
   overflow-y: visible;
@@ -526,8 +526,20 @@
   overflow-x: auto;
 }
 
-/* Sticky column headers sit *below* the glass app header, not under it. */
-.admin-shell .admin-table-sticky thead th,
+.admin-shell .admin-table-sticky {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Card-local sticky: stick to the table scrollport, not the glass header. */
+.admin-shell .admin-table-sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--table-row-alt);
+}
+
+/* Page-level tables (dashboard, blogs): sit *below* the glass app header. */
 .admin-shell .admin-table thead th {
   position: sticky;
   top: var(--header-h);
