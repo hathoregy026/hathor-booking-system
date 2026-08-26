@@ -5,6 +5,14 @@
  */
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
+/**
+ * Dashboard/CMS is the live source. Never swap these for a stale
+ * `/public/media/hathor/optimized/{name}.webp` mirror.
+ */
+export const CMS_CANONICAL_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
+  "home-hero-poster",
+]);
+
 export const LOCAL_OPTIMIZED_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
   "about-hero",
   "cruises-hero",
@@ -41,7 +49,6 @@ export const LOCAL_OPTIMIZED_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
   "home-carousel-royal-3n",
   "home-carousel-royal-4n",
   "home-carousel-royal-7n",
-  "home-hero-poster",
   "home-split-courtyard",
   "home-story-craft-large",
   "home-story-dining",
@@ -115,6 +122,7 @@ export function localOptimizedSiteImagePath(name: string): string {
 export function preferLocalOptimizedSiteImage(name: string, src: string): string {
   const trimmed = src.trim();
   if (!trimmed) return trimmed;
+  if (CMS_CANONICAL_SITE_IMAGE_SLOTS.has(name)) return trimmed;
   if (!isSupabaseStorageUrl(trimmed)) return trimmed;
   if (!LOCAL_OPTIMIZED_SITE_IMAGE_SLOTS.has(name)) return trimmed;
   return localOptimizedSiteImagePath(name);

@@ -1,5 +1,5 @@
 import type { AdminTheme } from "@/lib/admin-theme";
-import { hathorImage } from "@/lib/hathor-media";
+import { HATHOR_MEDIA } from "@/lib/hathor-media";
 
 /** Hero header icon — default (light on hero video) */
 export const HATHOR_HERO_ICON_SRC =
@@ -67,7 +67,7 @@ export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-hero-nile-promo-v20260811.mp4";
 
 /** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
-export const HATHOR_HERO_POSTER_SRC = hathorImage("home-hero-poster");
+export const HATHOR_HERO_POSTER_SRC = HATHOR_MEDIA.heroHomepage;
 
 export function getHathorLogoSrc(theme: AdminTheme): string {
   return theme === "day" ? HATHOR_LOGO_DAY_SRC : HATHOR_LOGO_SRC;

@@ -84,9 +84,13 @@ export default async function HomePage() {
     amenitiesTypographyToCss(amenitiesTypo),
     amenitiesTypographyToCss(amenitiesTypoMobile),
   );
+  const heroPosterSrc = cms.siteImages["home-hero-poster"]?.src?.trim();
 
   return (
     <HomeExperienceShell>
+      {heroPosterSrc ? (
+        <link rel="preload" as="image" href={heroPosterSrc} fetchPriority="high" />
+      ) : null}
       <style
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}

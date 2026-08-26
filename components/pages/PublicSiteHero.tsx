@@ -61,7 +61,7 @@ export type PublicSiteHeroProps = {
   goldDust?: boolean;
   /**
    * When true, play the homepage hero video. Poster frame uses `posterImageName`
-   * CMS slot (falls back to about-hero if omitted). Skips dark wash + gold tint.
+   * CMS slot (`home-hero-poster` on the homepage). Skips dark wash + gold tint.
    */
   playVideo?: boolean;
   /** Letter colour set from Hero Logo Tune — default keeps live gold WebPs. */
@@ -92,7 +92,7 @@ export function PublicSiteHero({
    * (or phone when a mobile MP4 exists). Avoids downloading the desktop file on phones.
    */
   const [useLiveVideo, setUseLiveVideo] = useState(false);
-  const heroImage = useSiteImage(posterImageName ?? "about-hero");
+  const heroImage = useSiteImage(posterImageName ?? "home-hero-poster");
   const videoPoster = playVideo
     ? toVercelOptimizedSrc(heroImage.src)
     : heroImage.src;
@@ -332,6 +332,13 @@ export function PublicSiteHero({
       aria-label="Hero"
     >
       <div className="hero-media">
+        {/* eslint-disable-next-line @next/next/no-img-element -- CMS hero still / video poster */}
+        <img
+          src={playVideo ? videoPoster : heroImage.src}
+          alt={heroImage.alt}
+          decoding="async"
+          fetchPriority="high"
+        />
         {playVideo && useLiveVideo ? (
           <video
             ref={heroVideoRef}
@@ -340,7 +347,7 @@ export function PublicSiteHero({
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="none"
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
           >
             {HATHOR_HERO_VIDEO_MOBILE_SRC ? (
@@ -356,15 +363,7 @@ export function PublicSiteHero({
               media="(min-width: 481px)"
             />
           </video>
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element -- CMS hero still; next/image fill not needed here
-          <img
-            src={playVideo ? videoPoster : heroImage.src}
-            alt={heroImage.alt}
-            decoding="async"
-            fetchPriority="high"
-          />
-        )}
+        ) : null}
       </div>
       {showMediaWash ? (
         <div className="hero-overlay" aria-hidden="true" />

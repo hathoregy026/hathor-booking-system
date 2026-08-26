@@ -11,8 +11,9 @@ export function hathorVideo(key: string): string {
 
 /** Default site image URLs — local Hathor media (WebP), not Unsplash. */
 export const HATHOR_MEDIA = {
-  heroHomepage: hathorImage("home-hero-poster"),
-  heroHomepageAlt: "Hathor Dahabiya sailing on the Nile at sunset",
+  /** Matches CMS `home-hero-poster` (dashboard gold still). Live hero reads CMS. */
+  heroHomepage: "/media/hathor/home-hero-poster.webp",
+  heroHomepageAlt: "Hathor Dahabiya hero video cover",
   postHeroMedia: hathorImage("home-post-hero-media"),
   postHeroMediaAlt: "Hathor Dahabiya on the Nile with ancient Egyptian landmarks",
   storyCraftLarge: hathorImage("home-story-craft-large"),

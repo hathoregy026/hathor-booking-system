@@ -48,7 +48,6 @@ const ROWS = [
   ["home-carousel-royal-3n", "content", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-carousel-royal-3n/cruises-homepage-itinerary-3n-aswan-luxor-royal-suite-msndoppa.webp"],
   ["home-carousel-royal-4n", "content", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-carousel-royal-4n/cruises-homepage-itinerary-4n-luxor-aswan-royal-suite-msndopev.webp"],
   ["home-carousel-royal-7n", "content", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-carousel-royal-7n/cruises-homepage-itinerary-7n-round-trip-royal-suite-msndp0ym.webp"],
-  ["home-hero-poster", "hero", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-hero-poster/homepage-hero-video-poster-cover-msovpwea.webp"],
   ["home-split-courtyard", "content", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-split-courtyard/homepage-amenities-sequence-2-rising-full-bleed-photo-msi02x8e.webp"],
   ["home-voyage-3n-aswan-luxor", "content", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-voyage-3n-aswan-luxor/our-voyages-row-1-3-nights-4-days-aswan-to-luxor-msmcr97a.webp"],
   ["home-voyage-4n-luxor-aswan", "content", "https://jgkmiettciwacrpcubil.supabase.co/storage/v1/object/public/website-images/site-images/home-voyage-4n-luxor-aswan/our-voyages-row-2-4-nights-5-days-luxor-to-aswan-msmcr90n.webp"],
@@ -228,7 +227,9 @@ async function main() {
   const names = fs
     .readdirSync(outDir)
     .filter((f) => f.endsWith(".webp"))
-    .map((f) => f.slice(0, -5));
+    .map((f) => f.slice(0, -5))
+    /* Hero poster is CMS-canonical — never re-add a local mirror. */
+    .filter((name) => name !== "home-hero-poster");
   writeInventory(names);
 
   const failed = results.filter((r) => r.action === "failed").length;

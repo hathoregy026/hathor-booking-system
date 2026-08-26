@@ -1051,6 +1051,17 @@ h1, h2, h3, h4, p {
   transform: scale(1.02);
 }
 
+/* Homepage video + CMS poster stacked: gold still stays visible until the reel plays. */
+html[data-ex-experience] .hero-media video,
+html[data-ex-experience] .hero-media img {
+  position: absolute;
+  inset: 0;
+}
+
+html[data-ex-experience] .hero-media video {
+  z-index: 1;
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;
