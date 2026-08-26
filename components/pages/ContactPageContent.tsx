@@ -91,9 +91,8 @@ function Scene({
   );
 }
 
-/** Parenthesised eyebrow — the reference's signature label form. */
 function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="ce-eyebrow">({children})</p>;
+  return <p className="ce-eyebrow">{children}</p>;
 }
 
 const CHANNELS = [
@@ -148,7 +147,6 @@ export function ContactPageContent() {
   useContactEditorialScroll({ rootRef, runRef, trackRef });
 
   const formTitle = contact.formTitle.trim() || CONTACT_PAGE.form.title;
-  const formIntro = contact.formIntro.trim() || CONTACT_PAGE.form.intro;
 
   return (
     <div ref={rootRef} className="contact-editorial">
@@ -222,7 +220,7 @@ export function ContactPageContent() {
                   backAlt="Royal suite aboard Hathor Dahabiya"
                 />
                 <p className="ce-lead__caption">
-                  <span>(Aboard)</span> Luxor — Aswan
+                  <span>Aboard</span> Luxor — Aswan
                 </p>
               </Scene>
 
@@ -230,7 +228,6 @@ export function ContactPageContent() {
               <Scene className="ce-manifesto">
                 <div className="ce-manifesto__aside">
                   <Eyebrow>A line open</Eyebrow>
-                  <p className="ce-meta-copy">{formIntro}</p>
                 </div>
                 <div className="ce-manifesto__headline" data-anima-title>
                   <h2 className="ce-edit ce-edit--xl">
@@ -310,7 +307,7 @@ export function ContactPageContent() {
               <Scene className="ce-hours" id="hours">
                 <div className="ce-hours__frame">
                   <span className="ce-hours__corner ce-hours__corner--tl">
-                    (Working hours)
+                    Working hours
                   </span>
                   <span className="ce-hours__corner ce-hours__corner--tr">
                     Cairo · EET
@@ -362,7 +359,6 @@ export function ContactPageContent() {
 
           <div className="ce-epilogue__board">
             <div className="ce-epilogue__compose">
-              <p className="ce-epilogue__lead ce-edit">{formIntro}</p>
               <InquiryForm
                 type="contact"
                 title="Your message"
@@ -374,7 +370,7 @@ export function ContactPageContent() {
             </div>
 
             <aside className="ce-epilogue__card">
-              <span className="ce-card__tag">(Reservations)</span>
+              <span className="ce-card__tag">Reservations</span>
               <ContactMedia
                 slot="contact-hero"
                 alt="Hathor Dahabiya on the Nile"

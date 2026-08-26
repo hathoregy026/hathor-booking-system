@@ -248,6 +248,7 @@ html:has(.contact-editorial) footer.lux-footer {
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
+  box-sizing: border-box;
   padding: calc(0.72em - 1px) calc(1.5em - 1px);
   border: 1px solid var(--ce-ink);
   border-radius: calc(0.72em * 3);
@@ -261,6 +262,14 @@ html:has(.contact-editorial) footer.lux-footer {
   white-space: nowrap;
   cursor: pointer;
   transition: color 0.34s var(--ce-ease-soft);
+}
+
+/* Call / Email / WhatsApp — identical pill size on every breakpoint */
+.contact-editorial .ce-row .ce-btn {
+  width: 13.5rem;
+  min-width: min(13.5rem, 100%);
+  max-width: 100%;
+  justify-self: end;
 }
 
 .contact-editorial .ce-btn > span {
