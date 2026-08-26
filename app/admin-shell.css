@@ -1071,3 +1071,34 @@
   transform: translateY(-0.6rem) scale(0.78);
   color: var(--accent);
 }
+
+/* Website Text CMS workspace — wins over legacy .wt-layout 2-col */
+@media (min-width: 900px) {
+  .admin-shell .wt-layout {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .admin-shell .wt-panel--text .wt-layout {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    grid-template-areas:
+      "pages inspector"
+      "pages editor";
+  }
+}
+
+@media (min-width: 1280px) {
+  .admin-shell .wt-panel--text .wt-layout {
+    grid-template-columns: 13.75rem minmax(0, 1fr) 20rem;
+    grid-template-areas: "pages editor inspector";
+  }
+
+  .admin-shell .wt-inspector {
+    position: sticky;
+    top: calc(var(--header-h, 4rem) + 0.75rem);
+    max-height: calc(100vh - var(--header-h, 4rem) - 5.75rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    align-self: start;
+  }
+}

@@ -66,7 +66,9 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <label className="wt-field">
+    <label
+      className={`wt-field${multiline && rows >= 3 ? " wt-field--wide" : ""}`}
+    >
       <span className="wt-field__meta">
         <span className="wt-field__label">{label}</span>
         {hint ? <span className="wt-field__hint">{hint}</span> : null}
@@ -405,7 +407,7 @@ export function WebsiteTextPanel() {
         <button
           key={item.id}
           type="button"
-          className={`wt-tags__item${active ? " is-active" : ""}`}
+          className={`wt-pages__item${active ? " is-active" : ""}`}
           aria-current={active ? "page" : undefined}
           onClick={() => selectPage(item.id as PageId)}
         >
@@ -424,14 +426,9 @@ export function WebsiteTextPanel() {
   }
 
   return (
-    <div id="website-text" className="wt-panel">
+    <div id="website-text" className="wt-panel wt-panel--text">
       <header className="wt-topbar">
         <div className="wt-topbar__copy">
-          <h1 className="wt-topbar__title">Website Text</h1>
-          <p className="wt-topbar__subtitle">
-            Pick a page tag, then edit that page&apos;s words, fonts, and sizes.
-            Switch Desktop / Phone to keep a separate phone version.
-          </p>
           <AdminDevicePreviewToggle
             value={device}
             onChange={setDevice}
@@ -466,12 +463,12 @@ export function WebsiteTextPanel() {
         </div>
       </header>
 
-      <nav className="wt-tags" aria-label="Website pages">
-        <p className="wt-tags__label">Pages</p>
-        <div className="wt-tags__list">{renderNavItems()}</div>
-      </nav>
-
       <div className="wt-layout">
+        <nav className="wt-pages" aria-label="Website pages">
+          <p className="wt-pages__label">Pages</p>
+          <div className="wt-pages__list">{renderNavItems()}</div>
+        </nav>
+
         <div className="wt-editor">
           <div className="wt-editor__toolbar">
             <div>
@@ -510,14 +507,7 @@ export function WebsiteTextPanel() {
             </div>
           ) : null}
 
-          <div className="wt-editor__form">
-            <WebsiteTextStyleBar
-              page={heroKey}
-              typo={typo}
-              onPatch={patchPageStyle}
-              onClearRole={clearPageStyle}
-            />
-
+          <div className="wt-editor__form" key={`${activePage}-${device}`}>
             <Section
               step={1}
               title="Hero titles"
@@ -2330,6 +2320,16 @@ export function WebsiteTextPanel() {
             ) : null}
           </div>
         </div>
+
+        <aside className="wt-inspector" aria-label="Page typography">
+          <WebsiteTextStyleBar
+            key={heroKey}
+            page={heroKey}
+            typo={typo}
+            onPatch={patchPageStyle}
+            onClearRole={clearPageStyle}
+          />
+        </aside>
       </div>
 
       <div className={`wt-savebar${dirty ? " wt-savebar--dirty" : ""}`}>
