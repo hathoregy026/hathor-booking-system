@@ -5,7 +5,8 @@ export type SharedEmailBranding = {
   heroImageUrl: string | null;
 };
 
-const SITE_EMAIL_ASSET_PATH = /\/email\/hathor-email-(logo|hero)\./i;
+/** Site-hosted email assets under /email/* (icon, logo wordmark, hero). */
+const SITE_EMAIL_ASSET_PATH = /\/email\/hathor-email-(icon|logo|hero)\./i;
 const LEGACY_SUPABASE_EMAIL_IMAGES_PATH =
   /\/storage\/v1\/object\/public\/email-images\//i;
 
@@ -22,7 +23,7 @@ function isTrustedEmailHost(hostname: string): boolean {
   }
 }
 
-/** Outbound email images: prefer site-hosted `/email/*`, allow legacy Supabase. */
+/** Outbound email images: prefer site-hosted `/email/*`, allow Supabase email-images. */
 export function isReliableHostedEmailImageUrl(
   url: string | null | undefined,
 ): boolean {
@@ -57,7 +58,7 @@ export function isReliableHostedEmailImageUrl(
 export function pickReliableEmailImageUrl(
   ...candidates: Array<string | null | undefined>
 ): string | null {
-  /* Prefer site-hosted /email assets over legacy Supabase. */
+  /* Prefer site-hosted /email assets over Supabase uploads. */
   let legacy: string | null = null;
   for (const candidate of candidates) {
     const resolved = toAbsolutePublicUrl(candidate?.trim() || null);

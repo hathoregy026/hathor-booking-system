@@ -39,6 +39,7 @@ export function EmailHeroBanner({
   alt?: string;
 }) {
   const src = heroImageUrl?.trim() || "";
+  if (!src) return null;
 
   return (
     <table
@@ -46,7 +47,7 @@ export function EmailHeroBanner({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: 0 }}
+      style={{ borderCollapse: "collapse", margin: 0, width: "100%" }}
     >
       <tbody>
         <tr>
@@ -54,15 +55,16 @@ export function EmailHeroBanner({
             <Img
               src={src}
               alt={alt}
-              width={600}
-              height={240}
+              width={1200}
+              height={emailLayout.heroHeight}
               style={{
                 border: 0,
                 display: "block",
                 height: "auto",
                 margin: 0,
-                maxHeight: "240px",
+                maxHeight: `${emailLayout.heroHeight}px`,
                 maxWidth: "100%",
+                objectFit: "cover",
                 outline: "none",
                 textDecoration: "none",
                 width: "100%",
@@ -75,14 +77,16 @@ export function EmailHeroBanner({
   );
 }
 
+/** Centered Hathor ring icon on a full-bleed dark header. */
 export function EmailLogo({
-  width = 200,
+  width = emailLayout.iconSize,
   logoUrl,
 }: {
   width?: number;
   logoUrl: string;
 }) {
   const src = logoUrl?.trim() || "";
+  if (!src) return null;
 
   return (
     <table
@@ -90,7 +94,7 @@ export function EmailLogo({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: 0 }}
+      style={{ borderCollapse: "collapse", margin: 0, width: "100%" }}
     >
       <tbody>
         <tr>
@@ -99,14 +103,14 @@ export function EmailLogo({
             style={{
               ...cellReset,
               backgroundColor: emailColors.dark,
-              padding: "28px 32px",
+              padding: "36px 24px 28px",
             }}
           >
             <Img
               src={src}
-              alt="Hathor Luxury Dahabiya Cruise"
+              alt="Hathor"
               width={width}
-              height={64}
+              height={width}
               style={{
                 border: 0,
                 display: "block",
@@ -115,9 +119,24 @@ export function EmailLogo({
                 maxWidth: `${width}px`,
                 outline: "none",
                 textDecoration: "none",
-                width: "100%",
+                width: `${width}px`,
               }}
             />
+            <Text
+              style={{
+                color: emailColors.gold,
+                fontFamily: emailFonts.body,
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.28em",
+                lineHeight: "1.4",
+                margin: "18px 0 0",
+                textAlign: "center",
+                textTransform: "uppercase",
+              }}
+            >
+              Hathor Dahabiya
+            </Text>
           </td>
         </tr>
         <tr>
@@ -178,7 +197,7 @@ export function EmailFooter({
         cellPadding={0}
         cellSpacing={0}
         width="100%"
-        style={{ borderCollapse: "collapse", marginTop: "0" }}
+        style={{ borderCollapse: "collapse", marginTop: "0", width: "100%" }}
       >
         <tbody>
           <tr>
@@ -187,7 +206,7 @@ export function EmailFooter({
               style={{
                 ...cellReset,
                 backgroundColor: emailColors.dark,
-                padding: "32px 24px",
+                padding: "40px 28px",
               }}
             >
               <Text
@@ -213,7 +232,7 @@ export function EmailFooter({
                   margin: 0,
                 }}
               >
-                © 2025 Hathor Dahabiya. All rights reserved.
+                © {new Date().getFullYear()} Hathor Dahabiya. All rights reserved.
               </Text>
             </td>
           </tr>
@@ -228,7 +247,7 @@ export function EmailFooter({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", marginTop: "0" }}
+      style={{ borderCollapse: "collapse", marginTop: "0", width: "100%" }}
     >
       <tbody>
         <tr>
@@ -237,7 +256,7 @@ export function EmailFooter({
             style={{
               ...cellReset,
               backgroundColor: emailColors.dark,
-              padding: "40px 32px",
+              padding: "48px 32px",
             }}
           >
             <table
@@ -267,9 +286,9 @@ export function EmailFooter({
               style={{
                 color: emailColors.cream,
                 fontFamily: emailFonts.display,
-                fontSize: "22px",
+                fontSize: "28px",
                 fontWeight: 500,
-                lineHeight: "1.4",
+                lineHeight: "1.3",
                 margin: "0 0 6px",
               }}
             >
@@ -284,7 +303,7 @@ export function EmailFooter({
                 fontWeight: 400,
                 letterSpacing: "1px",
                 lineHeight: "1.5",
-                margin: "0 0 24px",
+                margin: "0 0 28px",
               }}
             >
               Luxury Cruises on the Nile
@@ -315,7 +334,7 @@ export function EmailFooter({
                 fontFamily: emailFonts.body,
                 fontSize: "14px",
                 lineHeight: "1.7",
-                margin: "0 0 24px",
+                margin: "0 0 28px",
               }}
             >
               +20 127 049 6896
@@ -328,7 +347,7 @@ export function EmailFooter({
                   fontFamily: emailFonts.body,
                   fontSize: "13px",
                   lineHeight: "1.7",
-                  margin: "0 0 24px",
+                  margin: "0 0 28px",
                 }}
               >
                 Questions? Reply directly to this email — we are here to help.
@@ -345,7 +364,7 @@ export function EmailFooter({
                 margin: 0,
               }}
             >
-              © 2025 Hathor Dahabiya. All rights reserved.
+              © {new Date().getFullYear()} Hathor Dahabiya. All rights reserved.
             </Text>
           </td>
         </tr>
@@ -358,7 +377,7 @@ export function EmailLayout({
   preview,
   children,
   footerVariant = "guest",
-  logoWidth = 200,
+  logoWidth = emailLayout.iconSize,
   logoUrl,
   heroImageUrl,
   primaryColor,
@@ -387,10 +406,17 @@ export function EmailLayout({
         <link href={GOOGLE_FONTS_URL} rel="stylesheet" />
         <title>{preview}</title>
         <style>{`
-          @media only screen and (max-width: 620px) {
-            .email-container { width: 100% !important; }
-            .email-card { padding: 28px 20px !important; }
-            .email-heading { font-size: 26px !important; }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background: ${theme.backgroundColor} !important;
+          }
+          .email-shell { width: 100% !important; max-width: 100% !important; }
+          .email-content { width: 100% !important; max-width: ${emailLayout.contentMaxWidth} !important; }
+          @media only screen and (max-width: 680px) {
+            .email-card { padding: 36px 22px !important; }
+            .email-heading { font-size: 28px !important; }
           }
         `}</style>
       </Head>
@@ -401,6 +427,7 @@ export function EmailLayout({
           fontFamily: emailFonts.body,
           margin: 0,
           padding: 0,
+          width: "100%",
           WebkitTextSizeAdjust: "100%",
           textSizeAdjust: "100%",
         }}
@@ -410,6 +437,7 @@ export function EmailLayout({
           cellPadding={0}
           cellSpacing={0}
           width="100%"
+          className="email-shell"
           style={{
             backgroundColor: theme.backgroundColor,
             borderCollapse: "collapse",
@@ -420,22 +448,16 @@ export function EmailLayout({
         >
           <tbody>
             <tr>
-              <td
-                align="center"
-                style={{
-                  backgroundColor: theme.backgroundColor,
-                  padding: "24px 12px",
-                }}
-              >
+              <td align="center" style={{ ...cellReset, width: "100%" }}>
                 <table
                   role="presentation"
                   cellPadding={0}
                   cellSpacing={0}
-                  width="600"
-                  className="email-container"
+                  width="100%"
                   style={{
                     borderCollapse: "collapse",
-                    maxWidth: emailLayout.maxWidth,
+                    margin: 0,
+                    maxWidth: "100%",
                     width: "100%",
                   }}
                 >
@@ -457,12 +479,10 @@ export function EmailLayout({
                     ) : null}
                     <tr>
                       <td
-                        className="email-card"
+                        align="center"
                         style={{
+                          ...cellReset,
                           backgroundColor: theme.cardBackground,
-                          borderLeft: `1px solid ${theme.borderColor}`,
-                          borderRight: `1px solid ${theme.borderColor}`,
-                          padding: emailLayout.paddingCard,
                         }}
                       >
                         <table
@@ -470,25 +490,51 @@ export function EmailLayout({
                           cellPadding={0}
                           cellSpacing={0}
                           width="100%"
-                          style={{ borderCollapse: "collapse" }}
+                          className="email-content"
+                          style={{
+                            borderCollapse: "collapse",
+                            margin: "0 auto",
+                            maxWidth: emailLayout.contentMaxWidth,
+                            width: "100%",
+                          }}
                         >
                           <tbody>
                             <tr>
                               <td
+                                className="email-card"
                                 style={{
-                                  borderTop: `3px solid ${theme.primaryColor}`,
-                                  fontSize: 0,
-                                  height: 0,
-                                  lineHeight: 0,
-                                  padding: 0,
+                                  backgroundColor: theme.cardBackground,
+                                  padding: emailLayout.paddingCard,
                                 }}
                               >
-                                &nbsp;
+                                <table
+                                  role="presentation"
+                                  cellPadding={0}
+                                  cellSpacing={0}
+                                  width="100%"
+                                  style={{ borderCollapse: "collapse" }}
+                                >
+                                  <tbody>
+                                    <tr>
+                                      <td
+                                        style={{
+                                          borderTop: `3px solid ${theme.primaryColor}`,
+                                          fontSize: 0,
+                                          height: 0,
+                                          lineHeight: 0,
+                                          padding: 0,
+                                        }}
+                                      >
+                                        &nbsp;
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                {children}
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                        {children}
                       </td>
                     </tr>
                     <tr>

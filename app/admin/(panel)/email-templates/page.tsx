@@ -243,7 +243,7 @@ export default function AdminEmailTemplatesPage() {
             value={shared.logoUrl}
             onUploaded={(url) => {
               setShared((current) => ({ ...current, logoUrl: url }));
-              showToast("success", "Logo uploaded — save to persist copy changes");
+              showToast("success", "Logo uploaded and applied to all templates");
               void loadTemplates();
             }}
           />
@@ -253,7 +253,7 @@ export default function AdminEmailTemplatesPage() {
             value={shared.heroImageUrl}
             onUploaded={(url) => {
               setShared((current) => ({ ...current, heroImageUrl: url }));
-              showToast("success", "Hero uploaded — save to persist copy changes");
+              showToast("success", "Hero uploaded and applied to all templates");
               void loadTemplates();
             }}
           />
@@ -416,8 +416,9 @@ export default function AdminEmailTemplatesPage() {
         style={{ color: "var(--text-secondary)" }}
       >
         <Mail className="h-4 w-4 shrink-0" aria-hidden />
-        Images upload directly to Supabase. Click &ldquo;Save all templates&rdquo; after
-        editing copy or colors. Use Preview or Send test email to verify.
+        Images upload to Supabase and apply to every template immediately. Click
+        &ldquo;Save all templates&rdquo; after editing copy or colors. Use Preview
+        or Send test email to verify.
       </div>
 
       <EmailTemplatePreviewModal

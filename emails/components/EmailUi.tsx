@@ -46,7 +46,7 @@ export function EmailEyebrow({
   );
 }
 
-/** Playfair Display heading — h1 style. */
+/** Editorial display heading — Cormorant Garamond (site-aligned). */
 export function EmailHeading({
   children,
   align = "center",
@@ -56,8 +56,8 @@ export function EmailHeading({
   align?: "left" | "center" | "right";
   size?: "large" | "medium";
 }) {
-  const fontSize = size === "large" ? "32px" : "24px";
-  const lineHeight = size === "large" ? "1.25" : "1.35";
+  const fontSize = size === "large" ? "36px" : "26px";
+  const lineHeight = size === "large" ? "1.22" : "1.3";
 
   return (
     <table
@@ -71,6 +71,7 @@ export function EmailHeading({
         <tr>
           <td align={align} style={cellReset}>
             <Text
+              className="email-heading"
               style={{
                 color: emailColors.dark,
                 fontFamily: emailFonts.display,
@@ -89,7 +90,7 @@ export function EmailHeading({
   );
 }
 
-/** Inter body copy. */
+/** Plus Jakarta Sans body copy. */
 export function EmailBodyText({
   children,
   align = "center",

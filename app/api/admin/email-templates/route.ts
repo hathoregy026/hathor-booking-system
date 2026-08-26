@@ -15,10 +15,14 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function normalizeOptionalImageUrl(
-  url: string | null | undefined,
-): string | null {
-  return pickReliableEmailImageUrl(url);
+function resolvePersistedImageUrl(
+  incoming: string | null | undefined,
+  previous: string | null | undefined,
+  fallback: string,
+): string {
+  return (
+    pickReliableEmailImageUrl(incoming, previous, fallback) ?? fallback
+  );
 }
 
 export async function GET() {
@@ -61,8 +65,6 @@ export async function PUT(request: NextRequest) {
     };
 
     const shared = body.shared ?? {};
-    const logoUrl = normalizeOptionalImageUrl(shared.logoUrl);
-    const heroImageUrl = normalizeOptionalImageUrl(shared.heroImageUrl);
     const primaryColor = shared.primaryColor?.trim() || "#C9A96E";
     const backgroundColor = shared.backgroundColor?.trim() || "#FAF8F5";
 
@@ -72,9 +74,23 @@ export async function PUT(request: NextRequest) {
     }
 
     await withDb(async () => {
+      const existingRows = await prisma.emailTemplate.findMany();
+
       for (const name of EMAIL_TEMPLATE_NAMES) {
         const patch = incoming.find((entry) => entry.name === name);
         const defaults = getDefaultEmailTemplate(name);
+        const existing = existingRows.find((row) => row.name === name);
+
+        const logoUrl = resolvePersistedImageUrl(
+          shared.logoUrl,
+          existing?.logoUrl,
+          defaults.logoUrl ?? "",
+        );
+        const heroImageUrl = resolvePersistedImageUrl(
+          shared.heroImageUrl,
+          existing?.heroImageUrl,
+          defaults.heroImageUrl ?? "",
+        );
 
         if (!patch) {
           await prisma.emailTemplate.upsert({

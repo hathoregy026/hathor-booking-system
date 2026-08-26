@@ -20,30 +20,38 @@ export const emailColors = {
   background: "#FAF8F5",
 } as const;
 
+/**
+ * Closest Google Fonts pairing to the live site stack
+ * (Plus Jakarta Sans body + editorial serif display).
+ * Custom faces (Gamgote / Bitho) are not loadable in most email clients.
+ */
 export const emailFonts = {
   display:
-    "'Playfair Display', Georgia, 'Times New Roman', Times, serif",
-  body: "Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "'Cormorant Garamond', Georgia, 'Times New Roman', Times, serif",
+  body: "'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
   /** @deprecated use display */
-  serif: "'Playfair Display', Georgia, 'Times New Roman', serif",
+  serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
   /** @deprecated use body */
-  sans: "Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+  sans: "'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
 } as const;
 
 export const SITE_URL = getSiteBaseUrl();
 
-export const EMAIL_LOGO_FILENAME =
-  "e-mail-logo-egypttoor-booking-cruise-honeymoon.png";
+export const EMAIL_LOGO_FILENAME = "hathor-email-icon.png";
 
-export const EMAIL_LOGO_URL = `${getSiteBaseUrl()}/assets/${EMAIL_LOGO_FILENAME}`;
+export const EMAIL_LOGO_URL = `${getSiteBaseUrl()}/email/${EMAIL_LOGO_FILENAME}`;
 
+/** Full-bleed editorial canvas — fills the client viewport width up to max. */
 export const emailLayout = {
-  maxWidth: "600px",
-  paddingDesktop: "40px",
-  paddingMobile: "32px",
-  paddingCard: "36px 32px",
+  maxWidth: "100%",
+  contentMaxWidth: "680px",
+  paddingDesktop: "48px",
+  paddingMobile: "28px",
+  paddingCard: "48px 40px",
   sectionGap: "32px",
+  heroHeight: 360,
+  iconSize: 72,
 } as const;
 
 export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap";
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";

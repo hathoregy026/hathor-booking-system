@@ -48,7 +48,7 @@ export default function AdminAlertEmail({
     <EmailLayout
       preview="New confirmed Hathor reservation — payment pending"
       footerVariant="admin"
-      logoWidth={160}
+      logoWidth={72}
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}

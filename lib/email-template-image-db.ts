@@ -42,7 +42,7 @@ export async function propagateEmailImageToAllTemplates(
   const absoluteUrl = url.trim();
   if (!isReliableHostedEmailImageUrl(absoluteUrl)) {
     throw new Error(
-      "Email images must be uploaded to the Supabase email-images bucket.",
+      "Email images must use the Supabase email-images bucket or the site /email assets.",
     );
   }
 

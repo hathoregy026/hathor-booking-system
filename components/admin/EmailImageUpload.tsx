@@ -179,8 +179,8 @@ export function EmailImageUpload({
       </button>
 
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-        JPG, PNG, or WebP — max 5 MB. Uploads directly to Supabase and applies to all
-        email templates.
+        JPG, PNG, or WebP — max 5 MB. Uploads to the email-images bucket and
+        apply to all booking emails right away.
       </p>
 
       {error ? (

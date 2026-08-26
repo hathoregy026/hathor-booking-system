@@ -175,6 +175,7 @@ export async function middleware(request: NextRequest) {
       if (
         pathname === "/sw.js" ||
         pathname.startsWith("/branding/") ||
+        pathname.startsWith("/email/") ||
         pathname.startsWith("/fonts/") ||
         pathname.startsWith("/_next/") ||
         pathname.startsWith("/media/") ||
@@ -230,6 +231,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sw\\.js|media/|videos/|assets/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sw\\.js|media/|videos/|assets/|email/).*)",
   ],
 };

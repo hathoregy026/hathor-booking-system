@@ -95,10 +95,10 @@ export default function BookingConfirmedEmail({
                       style={{
                         color: emailColors.gold,
                         fontFamily:
-                          "'Playfair Display', Georgia, 'Times New Roman', serif",
-                        fontSize: "22px",
+                          "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
+                        fontSize: "26px",
                         fontWeight: 500,
-                        lineHeight: "1.4",
+                        lineHeight: "1.35",
                         padding: 0,
                       }}
                     >
