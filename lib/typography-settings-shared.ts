@@ -456,6 +456,65 @@ export const heroPagesSchema = z.object({
 
 export type HeroPages = z.infer<typeof heroPagesSchema>;
 
+/** Roles that Website Text can override per public page. */
+export const PAGE_STYLE_ROLES = [
+  "hero_title",
+  "hero_subtitle",
+  "page_title",
+  "page_subtitle",
+  "body_text",
+] as const;
+
+export type PageStyleRole = (typeof PAGE_STYLE_ROLES)[number];
+
+export const PAGE_STYLE_ROLE_LABELS: Record<PageStyleRole, string> = {
+  hero_title: "Hero first line",
+  hero_subtitle: "Hero second line",
+  page_title: "Section titles",
+  page_subtitle: "Small labels",
+  body_text: "Body text",
+};
+
+export const pageStyleOverridesSchema = z.object({
+  hero_title: typographyTextStyleSchema.optional(),
+  hero_subtitle: typographyTextStyleSchema.optional(),
+  page_title: typographyTextStyleSchema.optional(),
+  page_subtitle: typographyTextStyleSchema.optional(),
+  body_text: typographyTextStyleSchema.optional(),
+});
+
+export type PageStyleOverrides = z.infer<typeof pageStyleOverridesSchema>;
+
+export const pageStylesSchema = z.object({
+  home: pageStyleOverridesSchema,
+  cruises: pageStyleOverridesSchema,
+  highlights: pageStyleOverridesSchema,
+  about: pageStyleOverridesSchema,
+  gastronomy: pageStyleOverridesSchema,
+  wellness: pageStyleOverridesSchema,
+  charter: pageStyleOverridesSchema,
+  contact: pageStyleOverridesSchema,
+  blog: pageStyleOverridesSchema,
+  partners: pageStyleOverridesSchema,
+  suites: pageStyleOverridesSchema,
+  luxury_cabins: pageStyleOverridesSchema,
+  royal_suites: pageStyleOverridesSchema,
+});
+
+export type PageStyles = z.infer<typeof pageStylesSchema>;
+
+export const DEFAULT_PAGE_STYLES: PageStyles = Object.fromEntries(
+  HERO_PAGE_KEYS.map((key) => [key, {}]),
+) as PageStyles;
+
+export function resolvePageStyle(
+  settings: TypographySettings,
+  page: HeroPageKey,
+  role: PageStyleRole,
+): TypographyTextStyle {
+  return settings.page_styles[page][role] ?? settings[role];
+}
+
 export const DEFAULT_ON_IMAGES_COPY: OnImagesCopy = {
   title: "EVERY LANDMARK,\nA PLEASURE.",
   indication: "Nile · Hathor",
@@ -484,6 +543,8 @@ export const typographySettingsSchema = z.object({
   /** @deprecated Prefer hero_pages.home — kept for older saved payloads */
   hero_copy: heroCopySchema,
   hero_pages: heroPagesSchema,
+  /** Optional per-page font/size overrides. Empty = inherit site typography. */
+  page_styles: pageStylesSchema.optional().default(DEFAULT_PAGE_STYLES),
   on_images_copy: onImagesCopySchema,
   marquee_copy: marqueeCopySchema,
   our_voyages_copy: ourVoyagesCopySchema,
@@ -626,6 +687,9 @@ export const DEFAULT_TYPOGRAPHY_SETTINGS: TypographySettings = {
   hero_pages: Object.fromEntries(
     HERO_PAGE_KEYS.map((key) => [key, { ...DEFAULT_HERO_PAGES[key] }]),
   ) as HeroPages,
+  page_styles: Object.fromEntries(
+    HERO_PAGE_KEYS.map((key) => [key, {}]),
+  ) as PageStyles,
   on_images_copy: { ...DEFAULT_ON_IMAGES_COPY },
   marquee_copy: { ...DEFAULT_MARQUEE_COPY },
   our_voyages_copy: { ...DEFAULT_OUR_VOYAGES_COPY },
@@ -946,6 +1010,29 @@ function parseHeroPages(raw: unknown, legacyHome?: HeroCopy): HeroPages {
   return pages;
 }
 
+function parsePageStyles(raw: unknown): PageStyles {
+  const src =
+    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const pages = {} as PageStyles;
+  for (const key of HERO_PAGE_KEYS) {
+    const entry =
+      src[key] && typeof src[key] === "object"
+        ? (src[key] as Record<string, unknown>)
+        : {};
+    const overrides: PageStyleOverrides = {};
+    for (const role of PAGE_STYLE_ROLES) {
+      if (entry[role] && typeof entry[role] === "object") {
+        overrides[role] = parseTextStyle(
+          entry[role],
+          DEFAULT_TYPOGRAPHY_SETTINGS[role],
+        );
+      }
+    }
+    pages[key] = overrides;
+  }
+  return pages;
+}
+
 export function resolveHeroPageCopy(
   settings: Pick<TypographySettings, "hero_pages" | "hero_copy">,
   page: HeroPageKey,
@@ -1104,6 +1191,7 @@ export function parseTypographySettings(raw: unknown): TypographySettings {
       return { ...pages.home };
     })(),
     hero_pages: parseHeroPages(src.hero_pages, parseHeroCopy(src.hero_copy)),
+    page_styles: parsePageStyles(src.page_styles),
     on_images_copy: parseOnImagesCopy(src.on_images_copy),
     marquee_copy: parseMarqueeCopy(src.marquee_copy),
     our_voyages_copy: parseOurVoyagesCopy(src.our_voyages_copy),
@@ -1136,6 +1224,18 @@ export function isTypographySettingsEqual(
       a.hero_pages[key].second === b.hero_pages[key].second,
   );
   if (!pagesEqual) return false;
+  const pageStylesEqual = HERO_PAGE_KEYS.every((page) =>
+    PAGE_STYLE_ROLES.every((role) => {
+      const left = a.page_styles[page][role];
+      const right = b.page_styles[page][role];
+      if (!left && !right) return true;
+      if (!left || !right) return false;
+      return (Object.keys(left) as (keyof TypographyTextStyle)[]).every(
+        (key) => left[key] === right[key],
+      );
+    }),
+  );
+  if (!pageStylesEqual) return false;
   return (
     a.on_images_copy.title === b.on_images_copy.title &&
     a.on_images_copy.indication === b.on_images_copy.indication &&
@@ -1600,14 +1700,77 @@ html[data-ex-experience] .ex-root .luxury-marquee .luxury-marquee__item {
   letter-spacing: 0.1em !important;
   line-height: 1.15 !important;
 }
-.public-site .typo-on-images,
+  .public-site .typo-on-images,
 .public-site .typo-on-images *,
 .public-site .venetian-page .room-fs-ui .char,
 .public-site .venetian-page .room-fs-ui .word,
 .public-site .venetian-page .room-fs-ui .line {
   color: var(--typo-on-images-title-color) !important;
   -webkit-text-fill-color: var(--typo-on-images-title-color) !important;
-}`;
+}
+${pageStylesToImportantCss(settings)}`;
 })()}
 `.trim();
+}
+
+function pageRoleBlock(selector: string, role: PageStyleRole): string {
+  const p = `--typo-${role.replace(/_/g, "-")}`;
+  return `${selector} {
+  font-family: var(${p}-font) !important;
+  font-size: var(${p}-size) !important;
+  color: var(${p}-color) !important;
+  -webkit-text-fill-color: var(${p}-color) !important;
+  line-height: var(${p}-line-height) !important;
+  letter-spacing: var(${p}-letter-spacing) !important;
+  text-shadow: var(${p}-shadow) !important;
+  text-transform: none !important;
+  font-weight: 400 !important;
+}`;
+}
+
+function pageStylesToImportantCss(settings: TypographySettings): string {
+  return HERO_PAGE_KEYS.map((page) => {
+    const overrides = settings.page_styles[page];
+    const roles = PAGE_STYLE_ROLES.filter((role) => overrides[role]);
+    if (roles.length === 0) return "";
+    const varLines = roles
+      .flatMap((role) =>
+        Object.entries(roleCssVars(role, overrides[role]!)).map(
+          ([key, value]) => `  ${key}: ${value} !important;`,
+        ),
+      )
+      .join("\n");
+    const scope = `html[data-wt-page="${page}"]`;
+    const blocks = [
+      `${scope} .public-site,\n${scope} {\n${varLines}\n}`,
+    ];
+    if (overrides.hero_title) {
+      blocks.push(
+        pageRoleBlock(
+          `${scope} .wt-page-hero`,
+          "hero_title",
+        ),
+      );
+    }
+    if (overrides.hero_subtitle) {
+      blocks.push(
+        pageRoleBlock(
+          `${scope} .wt-page-hero-second`,
+          "hero_subtitle",
+        ),
+      );
+    }
+    if (overrides.page_title) {
+      blocks.push(pageRoleBlock(`${scope} .wt-page-title`, "page_title"));
+    }
+    if (overrides.page_subtitle) {
+      blocks.push(pageRoleBlock(`${scope} .wt-page-kicker`, "page_subtitle"));
+    }
+    if (overrides.body_text) {
+      blocks.push(pageRoleBlock(`${scope} .wt-page-body`, "body_text"));
+    }
+    return blocks.join("\n");
+  })
+    .filter(Boolean)
+    .join("\n");
 }

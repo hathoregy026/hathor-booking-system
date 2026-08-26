@@ -24,7 +24,7 @@ export const ADMIN_CMS_LINKS: AdminCmsLink[] = [
   {
     href: "/admin/website-text",
     label: "Website Text",
-    description: "Homepage and page copy, desktop and phone",
+    description: "Page-by-page copy, fonts, and sizes — desktop and phone",
   },
   {
     href: "/admin/content",

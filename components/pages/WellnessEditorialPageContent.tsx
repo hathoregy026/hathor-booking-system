@@ -6,7 +6,11 @@ import { useRef, type ComponentPropsWithoutRef } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useWellnessEditorialScroll } from "@/hooks/useWellnessEditorialScroll";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
+import { stackedHeroLines } from "@/lib/website-text-shared";
 
 const MEDIA = {
   spa: "/media/hathor/r2/wellness-hero.webp",
@@ -83,6 +87,19 @@ export function WellnessEditorialPageContent() {
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   useWellnessEditorialScroll({ rootRef, runRef, trackRef });
+  const typography = useTypographySettings();
+  const { pages } = useWebsiteText();
+  const wellnessHero = resolveHeroPageCopy(typography, "wellness");
+  const wellnessLines = stackedHeroLines(wellnessHero.main, wellnessHero.second);
+  const chunk = Math.max(1, Math.ceil(wellnessLines.length / 3));
+  const wellnessParts = [
+    wellnessLines.slice(0, chunk),
+    wellnessLines.slice(chunk, chunk * 2),
+    wellnessLines.slice(chunk * 2),
+  ];
+  const introBody =
+    pages.wellness.heroSupport.trim() ||
+    "In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and deeply restful suites move with you between Luxor and Aswan.";
 
   return (
     <div ref={rootRef} className="wellness-boring">
@@ -104,20 +121,34 @@ export function WellnessEditorialPageContent() {
                   <p className="wb-copyright">Hathor Cruise ©2026</p>
 
                   <div className="wb-intro__title" id="wellness" data-anima-title>
-                    <h1 className="wb-intro__title-part wb-intro__title-part--one">
-                      <AnimaSplitLine line={0}>Rituals</AnimaSplitLine><br /><AnimaSplitLine line={1}>of renewal</AnimaSplitLine>
-                    </h1>
-                    <h1 className="wb-intro__title-part wb-intro__title-part--two">
-                      <AnimaSplitLine line={2}>that</AnimaSplitLine><br /><AnimaSplitLine line={3}>travel</AnimaSplitLine><br /><AnimaSplitLine line={4}>with you</AnimaSplitLine>
-                    </h1>
-                    <h1 className="wb-intro__title-part wb-intro__title-part--three">
-                      <AnimaSplitLine line={5}>on</AnimaSplitLine><br /><AnimaSplitLine line={6}>the Nile</AnimaSplitLine>
-                    </h1>
+                    {wellnessParts.map((part, partIndex) => {
+                      const partClass =
+                        partIndex === 0
+                          ? "wb-intro__title-part--one"
+                          : partIndex === 1
+                            ? "wb-intro__title-part--two"
+                            : "wb-intro__title-part--three";
+                      const start = partIndex * chunk;
+                      if (part.length === 0) return null;
+                      return (
+                        <h1
+                          key={partClass}
+                          className={`wb-intro__title-part ${partClass} ${partIndex === 0 ? "wt-page-hero" : "wt-page-hero-second"}`}
+                        >
+                          {part.map((line, lineIndex) => (
+                            <span key={`${line}-${lineIndex}`}>
+                              <AnimaSplitLine line={start + lineIndex}>
+                                {line}
+                              </AnimaSplitLine>
+                              {lineIndex < part.length - 1 ? <br /> : null}
+                            </span>
+                          ))}
+                        </h1>
+                      );
+                    })}
                   </div>
 
-                  <p className="wb-intro__body">
-                    In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and deeply restful suites move with you between Luxor and Aswan.
-                  </p>
+                  <p className="wb-intro__body wt-page-body">{introBody}</p>
                   <div className="wb-intro__wordmark" aria-label="Hathor Nile wellness">
                     <span>HATHOR</span><em>Nile</em><strong>wellness</strong>
                   </div>

@@ -8,6 +8,7 @@ import { HeroLogoSettingsProvider } from "@/components/public/HeroLogoSettingsPr
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { TypographySettingsProvider } from "@/components/public/TypographySettingsProvider";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
+import { WebsiteTextPageScope } from "@/components/public/WebsiteTextPageScope";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
   resolveComingSoonForRequest,
@@ -191,6 +192,7 @@ export default async function PublicSiteLayout({
               initial={cms.websiteText}
               initialMobile={cms.websiteTextMobile}
             >
+              <WebsiteTextPageScope />
               <PageVisibilityProvider settings={pageVisibility}>
                 <PublicLayout
                   welcomeSplash={welcomeSplash}

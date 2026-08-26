@@ -9,7 +9,7 @@ export default function AdminWebsiteTextPage() {
     <div className="mx-auto max-w-7xl space-y-6">
       <CmsPageHeader
         title="Website Text"
-        description="Homepage and page copy for desktop and phone. Changes publish to the live CMS bundle."
+        description="Pick a page tag, then edit that page's copy, fonts, and sizes. Desktop and phone versions save separately."
         icon={FileText}
         compact
       />

@@ -12,10 +12,13 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { useAboutEditorialFlow } from "@/hooks/useAboutEditorialFlow";
 import { ABOUT_PAGE } from "@/lib/page-content";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
+import { stackedHeroLines } from "@/lib/website-text-shared";
 
 function AboutMedia({
   slot,
@@ -155,6 +158,10 @@ export function AboutPageContent() {
   const trackRef = useRef<HTMLDivElement>(null);
   const { pages } = useWebsiteText();
   const about = pages.about;
+  const typography = useTypographySettings();
+  const aboutHero = resolveHeroPageCopy(typography, "about");
+  const aboutHeroLines = stackedHeroLines(aboutHero.main, aboutHero.second);
+  const aboutLineClass = ["ab-line--a", "ab-line--b", "ab-line--c"] as const;
   useAboutEditorialFlow({ rootRef, runRef, trackRef });
 
   const lead = about.intro[0] ?? ABOUT_PAGE.intro[0];
@@ -183,20 +190,21 @@ export function AboutPageContent() {
                   <Eyebrow>About</Eyebrow>
 
                   <div className="ab-intro__title" id="about" data-anima-title>
-                    <h1 className="ab-display ab-display--xl">
-                      <span className="ab-line ab-line--a">
-                        <AnimaSplitLine line={0}>Welcome aboard</AnimaSplitLine>
-                      </span>
-                      <span className="ab-line ab-line--b">
-                        <AnimaSplitLine line={1}>Hathor</AnimaSplitLine>
-                      </span>
-                      <span className="ab-line ab-line--c">
-                        <AnimaSplitLine line={2}>Dahabiya</AnimaSplitLine>
-                      </span>
+                    <h1 className="ab-display ab-display--xl wt-page-hero">
+                      {aboutHeroLines.map((line, index) => (
+                        <span
+                          key={`${line}-${index}`}
+                          className={`ab-line ${aboutLineClass[index] ?? ""}`}
+                        >
+                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                        </span>
+                      ))}
                     </h1>
                   </div>
 
-                  <p className="ab-intro__body">{ABOUT_PAGE.hero.subtitle}</p>
+                  <p className="ab-intro__body wt-page-body">
+                    {about.heroSupport.trim() || ABOUT_PAGE.hero.subtitle}
+                  </p>
                 </div>
 
                 <p className="ab-intro__mark">
@@ -376,7 +384,9 @@ export function AboutPageContent() {
                       </span>
                     </h2>
                   </div>
-                  <p className="ab-meta-copy">{ABOUT_PAGE.diningPromo.body}</p>
+                  <p className="ab-meta-copy wt-page-body">
+                    {about.diningIntro.trim() || ABOUT_PAGE.diningPromo.body}
+                  </p>
                   <Link href="/gastronomy" className="ab-btn">
                     <span>Explore dining</span>
                   </Link>
@@ -396,7 +406,9 @@ export function AboutPageContent() {
                 />
                 <div className="ab-closing__copy">
                   <Eyebrow>Next</Eyebrow>
-                  <p className="ab-display ab-display--l">Welcome aboard</p>
+                  <p className="ab-display ab-display--l wt-page-title">
+                    {about.welcomeTitle.trim() || "Welcome aboard"}
+                  </p>
                 </div>
               </Scene>
             </div>

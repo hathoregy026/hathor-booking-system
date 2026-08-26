@@ -4,6 +4,7 @@ import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
@@ -47,12 +48,20 @@ export default async function RoyalSuitesPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <RoomCollectionPage
-        rooms={ROOM_SHOWCASES.filter((room) => room.slug === "royal-suite")}
-        eyebrow="Hathor's signature residence"
-        title="Royal, by nature"
-        support="The most expansive private residence aboard, framed by Main Deck views and exceptional space."
-      />
+      <PublicCmsTextRuntime
+        websiteText={cms.websiteText}
+        websiteTextMobile={cms.websiteTextMobile}
+        typography={cms.typography}
+        typographyMobile={cms.typographyMobile}
+      >
+        <RoomCollectionPage
+          variant="royal"
+          rooms={ROOM_SHOWCASES.filter((room) => room.slug === "royal-suite")}
+          eyebrow="Hathor's signature residence"
+          title="Royal, by nature"
+          support="The most expansive private residence aboard, framed by Main Deck views and exceptional space."
+        />
+      </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
   );
 }

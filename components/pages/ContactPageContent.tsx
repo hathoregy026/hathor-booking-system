@@ -13,11 +13,14 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { useContactEditorialScroll } from "@/hooks/useContactEditorialScroll";
 import { CONTACT_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
+import { stackedHeroLines } from "@/lib/website-text-shared";
 
 function ContactMedia({
   slot,
@@ -138,6 +141,10 @@ export function ContactPageContent() {
   const trackRef = useRef<HTMLDivElement>(null);
   const { pages } = useWebsiteText();
   const contact = pages.contact;
+  const typography = useTypographySettings();
+  const contactHero = resolveHeroPageCopy(typography, "contact");
+  const contactHeroLines = stackedHeroLines(contactHero.main, contactHero.second);
+  const contactLineClass = ["ce-line--a", "ce-line--b", "ce-line--c"] as const;
   useContactEditorialScroll({ rootRef, runRef, trackRef });
 
   const formTitle = contact.formTitle.trim() || CONTACT_PAGE.form.title;
@@ -170,20 +177,21 @@ export function ContactPageContent() {
                   <Eyebrow>Contact</Eyebrow>
 
                   <div className="ce-intro__title" id="contact" data-anima-title>
-                    <h1 className="ce-display ce-display--xl">
-                      <span className="ce-line ce-line--a">
-                        <AnimaSplitLine line={0}>We would love</AnimaSplitLine>
-                      </span>
-                      <span className="ce-line ce-line--b">
-                        <AnimaSplitLine line={1}>to hear</AnimaSplitLine>
-                      </span>
-                      <span className="ce-line ce-line--c">
-                        <AnimaSplitLine line={2}>from you</AnimaSplitLine>
-                      </span>
+                    <h1 className="ce-display ce-display--xl wt-page-hero">
+                      {contactHeroLines.map((line, index) => (
+                        <span
+                          key={`${line}-${index}`}
+                          className={`ce-line ${contactLineClass[index] ?? ""}`}
+                        >
+                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                        </span>
+                      ))}
                     </h1>
                   </div>
 
-                  <p className="ce-intro__body">{CONTACT_PAGE.hero.subtitle}</p>
+                  <p className="ce-intro__body wt-page-body">
+                    {contact.heroSupport.trim() || CONTACT_PAGE.hero.subtitle}
+                  </p>
                 </div>
 
                 <p className="ce-intro__mark">

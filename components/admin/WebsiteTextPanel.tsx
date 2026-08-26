@@ -20,35 +20,20 @@ import {
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   type HeroPageKey,
+  type PageStyleRole,
   parseTypographySettings,
   type TypographySettings,
+  type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
+import { WebsiteTextStyleBar } from "@/components/admin/WebsiteTextStyleBar";
 
 type PageId = (typeof WEBSITE_TEXT_NAV)[number]["id"];
-
-const PRIMARY_PAGE_IDS: PageId[] = [
-  "home",
-  "about",
-  "cruises",
-  "highlights",
-  "gastronomy",
-  "wellness",
-  "charter",
-  "contact",
-];
-
-const MORE_PAGE_IDS: PageId[] = [
-  "rooms",
-  "cabins",
-  "royal",
-  "blog",
-  "partners",
-];
 
 const PAGE_HERO_KEY: Record<PageId, HeroPageKey> = {
   home: "home",
   about: "about",
   cruises: "cruises",
+  suites: "suites",
   highlights: "highlights",
   gastronomy: "gastronomy",
   wellness: "wellness",
@@ -246,6 +231,7 @@ export function WebsiteTextPanel() {
     () =>
       JSON.stringify(text) !== JSON.stringify(savedText) ||
       JSON.stringify(typo.hero_pages) !== JSON.stringify(savedTypo.hero_pages) ||
+      JSON.stringify(typo.page_styles) !== JSON.stringify(savedTypo.page_styles) ||
       JSON.stringify(typo.marquee_copy) !==
         JSON.stringify(savedTypo.marquee_copy) ||
       JSON.stringify(typo.on_images_copy) !==
@@ -259,7 +245,9 @@ export function WebsiteTextPanel() {
     () =>
       JSON.stringify(desktopText) !== JSON.stringify(savedDesktopText) ||
       JSON.stringify(desktopTypo.hero_pages) !==
-        JSON.stringify(savedDesktopTypo.hero_pages),
+        JSON.stringify(savedDesktopTypo.hero_pages) ||
+      JSON.stringify(desktopTypo.page_styles) !==
+        JSON.stringify(savedDesktopTypo.page_styles),
     [desktopText, savedDesktopText, desktopTypo, savedDesktopTypo],
   );
 
@@ -267,7 +255,9 @@ export function WebsiteTextPanel() {
     () =>
       JSON.stringify(phoneText) !== JSON.stringify(savedPhoneText) ||
       JSON.stringify(phoneTypo.hero_pages) !==
-        JSON.stringify(savedPhoneTypo.hero_pages),
+        JSON.stringify(savedPhoneTypo.hero_pages) ||
+      JSON.stringify(phoneTypo.page_styles) !==
+        JSON.stringify(savedPhoneTypo.page_styles),
     [phoneText, savedPhoneText, phoneTypo, savedPhoneTypo],
   );
 
@@ -359,7 +349,7 @@ export function WebsiteTextPanel() {
     WEBSITE_TEXT_NAV[0];
   const heroKey = PAGE_HERO_KEY[activePage];
   const heroCopy = typo.hero_pages[heroKey];
-  const primaryIndex = PRIMARY_PAGE_IDS.indexOf(activePage);
+  const pageIndex = WEBSITE_TEXT_NAV.findIndex((item) => item.id === activePage);
 
   const setHero = (patch: Partial<{ main: string; second: string }>) => {
     setTypo((prev) => ({
@@ -371,18 +361,50 @@ export function WebsiteTextPanel() {
     }));
   };
 
-  const renderNavItems = (ids: PageId[]) =>
-    ids.map((id) => {
-      const item = WEBSITE_TEXT_NAV.find((nav) => nav.id === id);
-      if (!item) return null;
-      const active = activePage === id;
+  const patchPageStyle = (
+    role: PageStyleRole,
+    patch: Partial<TypographyTextStyle>,
+  ) => {
+    setTypo((prev) => {
+      const current =
+        prev.page_styles?.[heroKey]?.[role] ?? prev[role];
+      return {
+        ...prev,
+        page_styles: {
+          ...prev.page_styles,
+          [heroKey]: {
+            ...prev.page_styles?.[heroKey],
+            [role]: { ...current, ...patch },
+          },
+        },
+      };
+    });
+  };
+
+  const clearPageStyle = (role: PageStyleRole) => {
+    setTypo((prev) => {
+      const nextPage = { ...(prev.page_styles?.[heroKey] ?? {}) };
+      delete nextPage[role];
+      return {
+        ...prev,
+        page_styles: {
+          ...prev.page_styles,
+          [heroKey]: nextPage,
+        },
+      };
+    });
+  };
+
+  const renderNavItems = () =>
+    WEBSITE_TEXT_NAV.map((item) => {
+      const active = activePage === item.id;
       return (
         <button
-          key={id}
+          key={item.id}
           type="button"
-          className={`wt-nav__item${active ? " is-active" : ""}`}
+          className={`wt-tags__item${active ? " is-active" : ""}`}
           aria-current={active ? "page" : undefined}
-          onClick={() => selectPage(id)}
+          onClick={() => selectPage(item.id as PageId)}
         >
           {item.label}
         </button>
@@ -404,8 +426,8 @@ export function WebsiteTextPanel() {
         <div className="wt-topbar__copy">
           <h1 className="wt-topbar__title">Website Text</h1>
           <p className="wt-topbar__subtitle">
-            Switch Desktop / Phone to edit each version. Phone preview shows the
-            live page in a {ADMIN_PHONE_PREVIEW_WIDTH}px frame.
+            Pick a page tag, then edit that page&apos;s words, fonts, and sizes.
+            Switch Desktop / Phone to keep a separate phone version.
           </p>
           <AdminDevicePreviewToggle
             value={device}
@@ -441,25 +463,22 @@ export function WebsiteTextPanel() {
         </div>
       </header>
 
-      <div className="wt-layout">
-        <aside className="wt-nav" aria-label="Website pages">
-          <p className="wt-nav__label">Pages</p>
-          <div className="wt-nav__list">{renderNavItems(PRIMARY_PAGE_IDS)}</div>
-          <p className="wt-nav__label wt-nav__label--spaced">More</p>
-          <div className="wt-nav__list">{renderNavItems(MORE_PAGE_IDS)}</div>
-        </aside>
+      <nav className="wt-tags" aria-label="Website pages">
+        <p className="wt-tags__label">Pages</p>
+        <div className="wt-tags__list">{renderNavItems()}</div>
+      </nav>
 
+      <div className="wt-layout">
         <div className="wt-editor">
           <div className="wt-editor__toolbar">
             <div>
-              {primaryIndex >= 0 ? (
-                <p className="wt-editor__eyebrow">
-                  Page {primaryIndex + 1} of {PRIMARY_PAGE_IDS.length}
-                </p>
-              ) : (
-                <p className="wt-editor__eyebrow">Additional page</p>
-              )}
+              <p className="wt-editor__eyebrow">
+                {pageIndex >= 0
+                  ? `Page ${pageIndex + 1} of ${WEBSITE_TEXT_NAV.length}`
+                  : "Page"}
+              </p>
               <h2 className="wt-editor__title">{activeMeta.label}</h2>
+              <p className="wt-editor__path">{activeMeta.href}</p>
             </div>
             <a
               className="wt-preview"
@@ -489,14 +508,24 @@ export function WebsiteTextPanel() {
           ) : null}
 
           <div className="wt-editor__form">
+            <WebsiteTextStyleBar
+              page={heroKey}
+              typo={typo}
+              onPatch={patchPageStyle}
+              onClearRole={clearPageStyle}
+            />
+
             <Section
               step={1}
               title="Hero titles"
-              description="The large heading pair at the top of this page."
+              description="The large heading pair at the top of this page. Use Enter for stacked lines."
             >
               <Field
                 label="First line"
                 value={heroCopy.main}
+                multiline
+                rows={2}
+                hint="Use Enter for a stacked second line"
                 onChange={(main) => setHero({ main })}
               />
               <Field
@@ -892,6 +921,19 @@ export function WebsiteTextPanel() {
             {activePage === "about" ? (
               <>
                 <Section step={2} title="Introduction">
+                  <Field
+                    label="Hero subtitle"
+                    value={text.pages.about.heroSupport}
+                    multiline
+                    rows={3}
+                    hint="Short line under the stacked hero title"
+                    onChange={(heroSupport) =>
+                      patchPage("about", {
+                        ...text.pages.about,
+                        heroSupport,
+                      })
+                    }
+                  />
                   <Field
                     label="Intro paragraphs"
                     value={paragraphsToText(text.pages.about.intro)}
@@ -1466,6 +1508,19 @@ export function WebsiteTextPanel() {
               <>
                 <Section step={2} title="Spa">
                   <Field
+                    label="Hero subtitle"
+                    value={text.pages.wellness.heroSupport}
+                    multiline
+                    rows={4}
+                    hint="Intro paragraph under the wellness hero title"
+                    onChange={(heroSupport) =>
+                      patchPage("wellness", {
+                        ...text.pages.wellness,
+                        heroSupport,
+                      })
+                    }
+                  />
+                  <Field
                     label="Title"
                     value={text.pages.wellness.spaTitle}
                     onChange={(spaTitle) =>
@@ -1580,6 +1635,19 @@ export function WebsiteTextPanel() {
 
             {activePage === "contact" ? (
               <Section step={2} title="Contact form">
+                <Field
+                  label="Hero subtitle"
+                  value={text.pages.contact.heroSupport}
+                  multiline
+                  rows={2}
+                  hint="Line under the stacked contact title"
+                  onChange={(heroSupport) =>
+                    patchPage("contact", {
+                      ...text.pages.contact,
+                      heroSupport,
+                    })
+                  }
+                />
                 <Field
                   label="Form title"
                   value={text.pages.contact.formTitle}

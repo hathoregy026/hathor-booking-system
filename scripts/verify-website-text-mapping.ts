@@ -21,8 +21,16 @@ function assert(condition: boolean, message: string) {
 }
 
 assert(
-  DEFAULT_WEBSITE_TEXT.pages.cruises.overviewTitle.length > 0,
-  "cruises.overviewTitle default",
+  DEFAULT_WEBSITE_TEXT.pages.about.heroSupport.length > 0,
+  "about.heroSupport default",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.contact.heroSupport.length > 0,
+  "contact.heroSupport default",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.wellness.heroSupport.length > 0,
+  "wellness.heroSupport default",
 );
 assert(
   DEFAULT_WEBSITE_TEXT.pages.cruises.overviewIntro.length > 0,

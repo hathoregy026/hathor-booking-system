@@ -4,6 +4,7 @@ import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
@@ -49,12 +50,20 @@ export default async function LuxuryCabinsPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <RoomCollectionPage
-        rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
-        eyebrow="Luxury rooms aboard Hathor"
-        title="Cabins, shaped by the Nile"
-        support="Choose a king or twin retreat, each composed for two guests and panoramic river light."
-      />
+      <PublicCmsTextRuntime
+        websiteText={cms.websiteText}
+        websiteTextMobile={cms.websiteTextMobile}
+        typography={cms.typography}
+        typographyMobile={cms.typographyMobile}
+      >
+        <RoomCollectionPage
+          variant="cabins"
+          rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
+          eyebrow="Luxury rooms aboard Hathor"
+          title="Cabins, shaped by the Nile"
+          support="Choose a king or twin retreat, each composed for two guests and panoramic river light."
+        />
+      </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
   );
 }

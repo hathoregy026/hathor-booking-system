@@ -3,8 +3,9 @@ import { GastronomyPageContent } from "@/components/pages/GastronomyPageContent"
 import { GastronomyDiningRuntime } from "@/components/pages/GastronomyDiningRuntime";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
-import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
+import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
@@ -28,11 +29,18 @@ export default async function GastronomyPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <GastronomyDiningRuntime />
-      <SiteImagesProvider images={cms.siteImages}>
-        <SiteImagePreviewScroll />
-        <GastronomyPageContent />
-      </SiteImagesProvider>
+      <PublicCmsTextRuntime
+        websiteText={cms.websiteText}
+        websiteTextMobile={cms.websiteTextMobile}
+        typography={cms.typography}
+        typographyMobile={cms.typographyMobile}
+      >
+        <GastronomyDiningRuntime />
+        <SiteImagesProvider images={cms.siteImages}>
+          <SiteImagePreviewScroll />
+          <GastronomyPageContent />
+        </SiteImagesProvider>
+      </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
   );
 }

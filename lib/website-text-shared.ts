@@ -60,6 +60,8 @@ export type WebsiteText = {
   pages: {
     about: {
       intro: string[];
+      /** Intro subtitle under the stacked hero title */
+      heroSupport: string;
       accommodationsTitle: string;
       accommodationsIntro: string;
       accommodationsOutro: string;
@@ -97,6 +99,8 @@ export type WebsiteText = {
       venues: Array<{ title: string; description: string }>;
     };
     wellness: {
+      /** Intro subtitle under the stacked hero title */
+      heroSupport: string;
       spaTitle: string;
       spaParagraphs: string[];
       fitnessTitle: string;
@@ -110,6 +114,8 @@ export type WebsiteText = {
       cta: string;
     };
     contact: {
+      /** Intro subtitle under the stacked hero title */
+      heroSupport: string;
       formTitle: string;
       formIntro: string;
     };
@@ -265,6 +271,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
   pages: {
     about: {
       intro: [...ABOUT_PAGE.intro],
+      heroSupport: ABOUT_PAGE.hero.subtitle,
       accommodationsTitle: ABOUT_PAGE.accommodations.title,
       accommodationsIntro: ABOUT_PAGE.accommodations.intro,
       accommodationsOutro: ABOUT_PAGE.accommodations.outro,
@@ -304,6 +311,8 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       })),
     },
     wellness: {
+      heroSupport:
+        "In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and deeply restful suites move with you between Luxor and Aswan.",
       spaTitle: WELLNESS_PAGE.spa.title,
       spaParagraphs: [...WELLNESS_PAGE.spa.paragraphs],
       fitnessTitle: WELLNESS_PAGE.fitness.title,
@@ -317,6 +326,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       cta: CHARTER_PAGE.overview.cta,
     },
     contact: {
+      heroSupport: CONTACT_PAGE.hero.subtitle,
       formTitle: CONTACT_PAGE.form.title,
       formIntro: CONTACT_PAGE.form.intro,
     },
@@ -485,6 +495,14 @@ export function parseWebsiteText(raw: unknown): WebsiteText {
   } catch {
     return structuredClone(DEFAULT_WEBSITE_TEXT);
   }
+}
+
+/** Split hero first/second lines into stacked display lines. */
+export function stackedHeroLines(main: string, second: string): string[] {
+  return [
+    ...main.split(/\n/).map((line) => line.trim()).filter(Boolean),
+    second.trim(),
+  ].filter(Boolean);
 }
 
 export function paragraphsToText(arr: string[]): string {

@@ -3,6 +3,7 @@ import { AccommodationSpringsDesignPage } from "@/components/pages/Accommodation
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
@@ -46,10 +47,17 @@ export default async function RoomsPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
-      <AccommodationSpringsDesignPage
-        frameSrc="/accommodation-springs/luxury-suites/index.html"
-        title="Luxury Suites"
-      />
+      <PublicCmsTextRuntime
+        websiteText={cms.websiteText}
+        websiteTextMobile={cms.websiteTextMobile}
+        typography={cms.typography}
+        typographyMobile={cms.typographyMobile}
+      >
+        <AccommodationSpringsDesignPage
+          frameSrc="/accommodation-springs/luxury-suites/index.html"
+          title="Luxury Suites"
+        />
+      </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
   );
 }

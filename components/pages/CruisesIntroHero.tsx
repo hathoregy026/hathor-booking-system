@@ -10,6 +10,8 @@ import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useCruisesIntroScroll } from "@/hooks/useCruisesIntroScroll";
 import { CRUISES_PAGE } from "@/lib/page-content";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { normalizeOptionalText } from "@/lib/website-text-shared";
 
 function Scene({
   className = "",
@@ -35,6 +37,10 @@ export function CruisesIntroHero() {
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   useCruisesIntroScroll({ runRef, trackRef });
+  const { pages } = useWebsiteText();
+  const introBody =
+    normalizeOptionalText(pages.cruises.overviewIntro) ??
+    CRUISES_PAGE.hero.subtitle;
 
   return (
     <div className="cr-intro" aria-label="Cruises introduction">
@@ -55,7 +61,7 @@ export function CruisesIntroHero() {
                 <p className="cr-intro__marker">Cruises</p>
                 <p className="cr-intro__copyright">Hathor Dahabiya ©2026</p>
 
-                <div className="cr-intro__titles" data-anima-title>
+                <div className="cr-intro__titles wt-page-hero" data-anima-title>
                   <h1 className="cr-intro__title cr-intro__title--one">
                     <AnimaSplitLine line={0}>Cruises</AnimaSplitLine>
                     <br />
@@ -73,7 +79,7 @@ export function CruisesIntroHero() {
                   </h1>
                 </div>
 
-                <p className="cr-intro__body">{CRUISES_PAGE.hero.subtitle}</p>
+                <p className="cr-intro__body wt-page-body">{introBody}</p>
                 <div className="cr-intro__wordmark" aria-label="Hathor Nile dahabiya">
                   <span>HATHOR</span>
                   <em>Nile</em>
