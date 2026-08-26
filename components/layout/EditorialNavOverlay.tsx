@@ -198,14 +198,17 @@ export function EditorialNavOverlay({
                   className="eno-sub"
                   hidden={!expanded}
                 >
-                  <Link
-                    href={item.href}
-                    className="eno-sublink"
-                    onClick={(event) => handleNavClick(event, item.href)}
-                    tabIndex={open && expanded ? 0 : -1}
-                  >
-                    Overview
-                  </Link>
+                  {/* About / Voyages already list the landing page (Our Story / Our Voyages) — no duplicate Overview. */}
+                  {item.id !== "about" && item.id !== "experiences" ? (
+                    <Link
+                      href={item.href}
+                      className="eno-sublink"
+                      onClick={(event) => handleNavClick(event, item.href)}
+                      tabIndex={open && expanded ? 0 : -1}
+                    >
+                      Overview
+                    </Link>
+                  ) : null}
                   {item.links.map((link) => (
                     <Link
                       key={`${item.id}-${link.href}-${link.label}`}
