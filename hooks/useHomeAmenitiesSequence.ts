@@ -88,13 +88,8 @@ export function useHomeAmenitiesSequence(
      * Hathor Lenis + overflow-x:clip break CSS sticky. Manual fixed pin per
      * chapter stage (no ST pin wrappers — those leave the sticky grid).
      */
-    /*
-     * Keep the proven desktop pinning unchanged and opt phones into the same
-     * chapter choreography. Tablets retain their existing native flow.
-     */
-    const pinnedExperienceMq = window.matchMedia(
-      "(min-width: 1025px), (max-width: 480px)",
-    );
+    /* Touch layouts use native CSS sticky; manual fixed pinning is desktop-only. */
+    const desktopMq = window.matchMedia("(min-width: 1025px)");
     type PinMode = "start" | "fixed" | "end";
     type PinTarget = {
       key: string;
@@ -146,7 +141,7 @@ export function useHomeAmenitiesSequence(
 
     const syncChapterPin = (target: PinTarget) => {
       const { chapter, stage, z } = target;
-      if (!pinnedExperienceMq.matches) {
+      if (!desktopMq.matches) {
         clearPin(target);
         return;
       }

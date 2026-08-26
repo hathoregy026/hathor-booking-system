@@ -11,19 +11,13 @@ export type PatternFn = (
 
 export type PatternMap = Record<string, PatternFn>;
 
-const isLgUp = () =>
-  window.matchMedia(
-    "(min-width: 1025px), (min-width: 980px) and (min-aspect-ratio: 10/11)",
-  ).matches;
+/* The responsive sequence deliberately keeps the desktop choreography. */
+const isLgUp = () => true;
 
 function pattern(
   entries: Record<string, SpringsParallaxProps>,
 ): Record<string, SpringsParallaxProps> {
   return entries;
-}
-
-function lvh(): number {
-  return window.innerHeight / 100;
 }
 
 export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
@@ -168,40 +162,23 @@ export const SPRINGS_AMENITIES_PATTERNS: PatternMap = {
     } else if (el?.dataset.distance && el.dataset.distance !== "1") {
       distance = parseFloat(el.dataset.distance) || distance;
     }
-    const mobileExit = Math.max(captionH - 40, 100 * lvh() - captionH);
-    if (isLgUp()) {
-      return pattern({
-        "parallax--160-0": {
-          "clip-path":
-            "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
-          transform: `translateY(${captionH / 3}px)`,
-        },
-        "parallax--300-0": {
-          "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          transform: `translateY(${captionH / 3}px)`,
-        },
-        "parallax--400-0": {
-          "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          transform: `translateY(${-distance}px)`,
-        },
-        "parallax--430-0": {
-          "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          transform: `translateY(${-2 * distance}px)`,
-        },
-      });
-    }
     return pattern({
-      "parallax--60-0": {
-        "clip-path": "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+      "parallax--160-0": {
+        "clip-path":
+          "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
         transform: `translateY(${captionH / 3}px)`,
       },
-      "parallax--100-0": {
+      "parallax--300-0": {
         "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         transform: `translateY(${captionH / 3}px)`,
       },
-      "parallax--170-0": {
+      "parallax--400-0": {
         "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        transform: `translateY(${-mobileExit}px)`,
+        transform: `translateY(${-distance}px)`,
+      },
+      "parallax--430-0": {
+        "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        transform: `translateY(${-2 * distance}px)`,
       },
     });
   },

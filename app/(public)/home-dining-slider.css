@@ -1641,16 +1641,18 @@ html[data-ex-experience]
 /* ========== Tablet ========== */
 @media (max-width: 1024px) {
   .home-am-sequence {
-    --sticky-under-previous-distance: 90svh;
-    --sticky-under-next-distance: 90svh;
+    --sticky-under-previous-distance: 100svh;
+    --sticky-under-next-distance: 100svh;
   }
 
   .home-am-intro {
-    height: 150svh;
+    height: 300svh;
   }
 
-  .home-am-video {
-    height: 350svh;
+  .home-am-video.home-am-chapter--under-previous {
+    clip-path: polygon(0 100svh, 100% 100svh, 100% 100%, 0 100%);
+    height: 600svh;
+    margin-top: -200svh;
   }
 
   .home-am-slider {
@@ -1658,13 +1660,51 @@ html[data-ex-experience]
   }
 
   .home-am-opening {
-    height: 250svh;
+    height: 400svh;
     min-height: 0;
   }
 
+  /* Keep the desktop intro split and remove the old mobile-only cream sheet. */
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: clamp(4.75rem, 11vh, 7rem) clamp(1rem, 3vw, 2.5rem);
+  }
+
+  .home-am-intro__cream--phone {
+    display: none;
+  }
+
+  .home-am-intro__cream:not(.home-am-intro__cream--phone)
+    .home-am-intro__cream-text {
+    display: none;
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
+    left: clamp(1rem, 3vw, 2.5rem);
+    right: auto;
+    top: clamp(5.5rem, 38vh, 42vh);
+    bottom: auto;
+    max-width: 42vw;
+    text-align: left;
+  }
+
+  .home-am-video__title-body {
+    display: block;
+  }
+
+  .home-am-video__title-stack {
+    top: clamp(5rem, 12vh, 7rem);
+    right: clamp(1rem, 3vw, 2.5rem);
+    bottom: auto;
+    width: calc(50vw - 2 * clamp(1rem, 3vw, 2.5rem));
+    max-width: 48vw;
+  }
+
   .home-am-opening__list-wrap {
-    flex: 0 0 min(28vw, 12rem);
-    width: min(28vw, 12rem);
+    flex: 0 0 min(17vw, 12rem);
+    width: min(17vw, 12rem);
   }
 
   .home-am-opening__list-item {
@@ -1673,11 +1713,7 @@ html[data-ex-experience]
   }
 
   .home-am-video__copy {
-    width: min(20rem, 46vw);
-  }
-
-  .home-am-video__title-stack {
-    max-width: min(30rem, 52vw);
+    width: min(20rem, 38vw);
   }
 
   /* Springs i-video__image: full-stage rising cover on tablet. */
@@ -1691,93 +1727,138 @@ html[data-ex-experience]
 
   .home-am-video__caption {
     flex: none;
-    width: min(50%, 36rem);
-    max-width: none;
+    width: 50vw;
+    max-width: 50vw;
+  }
+
+  .home-am-opening__caption {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .home-am-opening__caption-title {
+    flex-basis: 0;
+  }
+
+  .home-am-opening__right-column {
+    padding-top: 100svh;
+  }
+
+  /* Desktop typography proportions, reduced to fit the same split columns. */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider__caption
+    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
+    font-size: clamp(24px, 4.2vw, 43px) !important;
+    line-height: 0.92 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider__caption
+    .typo-on-images-indication {
+    font-size: clamp(9px, 1.2vw, 12px) !important;
+    line-height: 1.2 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider__caption
+    .typo-on-images-body {
+    font-size: clamp(12px, 1.55vw, 16px) !important;
+    line-height: 1.42 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
+    font-size: clamp(18px, 2.8vw, 29px) !important;
+    line-height: 0.94 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-indication {
+    font-size: clamp(8px, 1.05vw, 11px) !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-body {
+    font-size: clamp(11px, 1.35vw, 14px) !important;
+    line-height: 1.4 !important;
   }
 }
 
 /* ========== Phone ========== */
 @media (max-width: 480px) {
   .home-am-sequence {
-    --sticky-under-previous-distance: 80svh;
-    --sticky-under-next-distance: 80svh;
+    --am-typo-gap-title-sub: 6px;
+    --am-typo-gap-sub-body: 6px;
+    --am-typo-gap-body-cta: 10px;
   }
 
-  .home-am-intro {
-    height: 150svh;
-  }
-
-  .home-am-intro__caption {
-    max-width: 88vw;
+  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
+    top: max(5.25rem, 24vh);
+    left: 0.8rem;
+    right: auto;
+    bottom: auto;
+    width: calc(50vw - 1.6rem);
+    max-width: calc(50vw - 1.6rem);
     text-align: left;
-    left: 1.15rem;
-    right: 1.15rem;
   }
 
-  .home-am-intro__cream {
-    width: 100%;
-    height: 42%;
-    top: auto;
-    bottom: 0;
-    align-items: center;
-  }
-
-  .home-am-video {
-    height: 350svh;
+  .home-am-intro__body {
+    max-width: 100%;
   }
 
   .home-am-video__hero,
   .home-am-video__hero-wrap {
-    transform-origin: bottom center;
-    top: auto;
-    bottom: 0;
-    height: 38%;
+    transform-origin: bottom right;
+    top: 0;
+    bottom: auto;
+    height: 100%;
   }
 
   .home-am-video__copy {
-    top: 5.5rem;
-    left: 1.15rem;
-    width: calc(100% - 2.3rem);
+    top: max(5rem, 12vh);
+    left: 0.8rem;
+    width: calc(38vw - 0.8rem);
   }
 
-  .home-am-video__title {
-    right: 1.15rem;
-    left: 1.15rem;
-    bottom: 38vh;
-    max-width: none;
-    text-align: left;
-  }
-
-  /* Springs i-video__image: full-stage rising cover on phone. */
-  .home-am-video__inset {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: auto;
-    z-index: 2;
+  .home-am-video__title-stack {
+    top: max(5rem, 12vh);
+    right: 0.8rem;
+    bottom: auto;
+    width: calc(50vw - 1.6rem);
+    max-width: calc(50vw - 1.6rem);
   }
 
   .home-am-video__caption {
     flex: none;
-    width: 100%;
-    max-width: none;
-  }
-
-  .home-am-slider {
-    height: 600svh;
+    width: 50vw;
+    max-width: 50vw;
+    padding: 0.8rem;
   }
 
   .home-am-slider__row {
     flex-direction: row;
   }
 
-  .home-am-slider__caption-col {
+  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
     flex: 0 0 calc(50vw + 2px);
     width: calc(50vw + 2px);
     height: 100%;
     max-width: none;
     justify-content: center;
-    padding: clamp(0.8rem, 4vw, 1.15rem);
+    padding: 0.8rem;
   }
 
   .home-am-slider__images-col {
@@ -1799,46 +1880,10 @@ html[data-ex-experience]
     min-height: 0;
   }
 
-  .home-am-slider__caption .typo-on-images-title > .home-am-title-line {
-    white-space: normal;
-  }
-
-  .home-am-slider__caption .typo-on-images-title,
-  .home-am-slider__caption .typo-on-images-indication,
-  .home-am-slider__caption .typo-on-images-body {
-    max-width: 100%;
-    overflow-wrap: break-word;
-  }
-
   .home-am-slider__scrollbar {
     right: 0.55rem;
     bottom: 1rem;
     height: 76px;
-  }
-
-  /* Phone-scale clone of the desktop split-screen opening choreography. */
-  .home-am-opening {
-    height: 400svh;
-    min-height: 0;
-    pointer-events: none;
-    z-index: 4;
-  }
-
-  .home-am-intro .home-am-chapter__stage,
-  .home-am-video .home-am-chapter__stage,
-  .home-am-slider .home-am-chapter__stage,
-  .home-am-opening .home-am-chapter__stage,
-  .home-am-nature .home-am-chapter__stage,
-  .home-am-intro .sticky__layer--sticky,
-  .home-am-video .sticky__layer--sticky,
-  .home-am-slider .sticky__layer--sticky,
-  .home-am-opening .sticky__layer--sticky,
-  .home-am-nature .sticky__layer--sticky {
-    position: relative;
-    top: auto;
-    height: calc(100 * var(--am-svh));
-    max-height: none;
-    contain: none;
   }
 
   .home-am-opening__content {
@@ -1862,7 +1907,7 @@ html[data-ex-experience]
     height: 100%;
     max-width: none;
     margin-left: -2px;
-    padding: 0.85rem;
+    padding: 0.8rem 0.8rem max(6.25rem, env(safe-area-inset-bottom));
     background: transparent;
     display: flex;
     flex-direction: column;
@@ -1891,7 +1936,7 @@ html[data-ex-experience]
   .home-am-opening__right-inner {
     margin-left: 50vw;
     width: 50vw;
-    padding: 1.1rem 0.55rem 2rem;
+    padding: 1rem 0.45rem 2rem;
     min-height: 0;
     background: transparent;
   }
@@ -1899,49 +1944,29 @@ html[data-ex-experience]
   .home-am-opening__cards-band {
     flex-direction: row;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .home-am-opening__list-wrap {
-    flex: 0 0 21vw;
-    width: 21vw;
+    flex: 0 0 20vw;
+    width: 20vw;
   }
 
   .home-am-opening__rail-copy {
     position: sticky;
     top: 22vh;
     order: initial;
-    max-width: calc(29vw - 1.65rem);
+    max-width: calc(30vw - 1.3rem);
     padding: 0;
-  }
-
-  .home-am-opening__rail-copy .typo-on-images-title > .home-am-title-line {
-    white-space: normal;
   }
 
   .home-am-opening__cta.public-btn-outline-gold {
     width: 100%;
     min-width: 0;
-    padding-inline: 0.5rem;
-  }
-
-  .home-am-nature__gold-band {
-    min-height: 100%;
-    margin: 0;
-    padding: 0 1.15rem clamp(1.15rem, 3.5vh, 1.75rem);
-  }
-
-  .home-am-nature.home-am-chapter--under-next {
-    --sticky-under-next-distance: clamp(14rem, 48vh, 20rem);
-  }
-
-  .home-am-nature__copy {
-    max-width: none;
-    padding-top: 0.35rem;
-  }
-
-  .home-am-nature__gold-wash {
-    opacity: 0.5;
+    min-height: 28px;
+    padding-inline: 0.35rem;
+    font-size: 7px !important;
+    letter-spacing: 0.12em;
   }
 
   /* Match the desktop climbing card rail instead of a separate swipe carousel. */
@@ -1963,6 +1988,109 @@ html[data-ex-experience]
 
   .home-am-opening__list-item:first-child {
     margin-top: 0;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__title,
+      .home-am-intro__title .home-am-title-line,
+      .home-am-video__title .typo-on-images-title,
+      .home-am-video__title .home-am-title-line
+    ) {
+    font-size: clamp(17px, 4.8vw, 20px) !important;
+    line-height: 0.92 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(.home-am-intro__indication, .home-am-video__copy .typo-on-images-indication) {
+    font-size: clamp(7px, 2vw, 9px) !important;
+    line-height: 1.2 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__body,
+      .home-am-video__copy .typo-on-images-body,
+      .home-am-video__title-body
+    ) {
+    font-size: clamp(9px, 2.55vw, 11px) !important;
+    line-height: 1.38 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider__caption
+    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
+    font-size: clamp(16px, 4.8vw, 20px) !important;
+    line-height: 0.92 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider__caption
+    .typo-on-images-indication {
+    font-size: clamp(7px, 2vw, 9px) !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-slider__caption
+    .typo-on-images-body {
+    font-size: clamp(9px, 2.55vw, 11px) !important;
+    line-height: 1.38 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__caption
+    :is(.home-am-opening__title, .home-am-opening__title .home-am-title-line) {
+    font-size: clamp(17px, 4.8vw, 20px) !important;
+    line-height: 0.92 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
+    font-size: clamp(11px, 3.2vw, 13px) !important;
+    line-height: 0.94 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-indication {
+    font-size: clamp(6px, 1.75vw, 7.5px) !important;
+    line-height: 1.2 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-body {
+    font-size: clamp(8px, 2.25vw, 9.5px) !important;
+    line-height: 1.35 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__list-item-text {
+    left: 6px !important;
+    bottom: 6px !important;
+    width: calc(100% - 12px) !important;
+    font-size: 6px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.04em !important;
   }
 }
 

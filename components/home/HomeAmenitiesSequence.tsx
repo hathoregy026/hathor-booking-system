@@ -481,7 +481,7 @@ export function HomeAmenitiesSequence({
             >
               <div
                 data-plugin="parallax"
-                data-parallax-enable-mq="lg-up"
+                data-parallax-enable-mq="null"
                 data-parallax-clamp="true"
                 data-parallax-measure-selector="[data-am-chapter]"
                 data-parallax-0-0='{"transform":"translateX(0%) scale(1.2)"}'
@@ -548,7 +548,7 @@ export function HomeAmenitiesSequence({
             className="home-am-intro__cream"
             data-am-intro-cream
             data-plugin="parallax"
-            data-parallax-enable-mq="lg-up"
+            data-parallax-enable-mq="null"
             data-parallax-clamp="true"
             data-parallax-measure-selector="[data-am-chapter]"
             data-parallax-0-0='{"clip-path":"polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)"}'
@@ -731,7 +731,7 @@ export function HomeAmenitiesSequence({
               className="home-am-slider__row"
               data-plugin="parallax"
               data-parallax-pattern="infrastructureSliderScroll"
-              data-parallax-enable-mq="desktop-or-phone"
+              data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector=".sticky"
             >
@@ -739,7 +739,7 @@ export function HomeAmenitiesSequence({
                 className="home-am-slider__caption-col"
                 data-amenities-caption-col
                 data-plugin="parallax"
-                data-parallax-enable-mq="desktop-or-phone"
+                data-parallax-enable-mq="null"
                 data-parallax-clamp="true"
                 data-parallax-measure-selector=".sticky"
                 data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
@@ -788,7 +788,7 @@ export function HomeAmenitiesSequence({
                 className="home-am-slider__images-col"
                 data-amenities-images-col
                 data-plugin="parallax"
-                data-parallax-enable-mq="desktop-or-phone"
+                data-parallax-enable-mq="null"
                 data-parallax-clamp="true"
                 data-parallax-measure-selector=".sticky"
                 data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
@@ -805,7 +805,7 @@ export function HomeAmenitiesSequence({
                       className="home-am-slider__panel"
                       data-amenities-panel
                       data-plugin="parallax"
-                      data-parallax-enable-mq="desktop-or-phone"
+                      data-parallax-enable-mq="null"
                       data-parallax-clamp="true"
                       data-parallax-measure-selector=".sticky"
                       style={
@@ -864,7 +864,7 @@ export function HomeAmenitiesSequence({
               className="home-am-opening__images"
               data-am-opening-left
               data-plugin="parallax"
-              data-parallax-enable-mq="desktop-or-phone"
+              data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector=".sticky"
               data-parallax-0-0='{"clip-path":"polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)"}'
@@ -896,7 +896,7 @@ export function HomeAmenitiesSequence({
               className="home-am-opening__caption"
               data-am-opening-title-panel
               data-plugin="parallax"
-              data-parallax-enable-mq="desktop-or-phone"
+              data-parallax-enable-mq="null"
               data-parallax-clamp="true"
               data-parallax-measure-selector=".sticky"
               data-parallax-0-0='{"clip-path":"polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"}'
@@ -938,7 +938,7 @@ export function HomeAmenitiesSequence({
           className="home-am-opening__right-column sticky__layer"
           data-am-opening-right
           data-plugin="parallax"
-          data-parallax-enable-mq="desktop-or-phone"
+          data-parallax-enable-mq="null"
           data-parallax-clamp="true"
           data-parallax-measure-selector=".sticky"
           data-parallax-0-0='{"clip-path":"polygon(49.75vw 0vh, 100% 0vh, 100% 0vh, 49.75vw 0vh)"}'
