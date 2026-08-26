@@ -10,6 +10,11 @@ import {
   resolveCmsText,
   resolveOverviewIntroParagraphs,
 } from "../lib/website-text-shared";
+import {
+  DEFAULT_TYPOGRAPHY_SETTINGS,
+  livePageFontFamily,
+  resolvePageStyle,
+} from "../lib/typography-settings-shared";
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -98,6 +103,42 @@ const ctaParsed = parseWebsiteText({
 assert(
   ctaParsed.home.cta.title === DEFAULT_WEBSITE_TEXT.home.cta.title,
   "legacy EX_CTA title soft-migrates to MarketingCtaBand default",
+);
+
+assert(
+  livePageFontFamily("contact", "hero_title", "Bitho Luxury") === "Italiana",
+  "contact hero uses live Italiana",
+);
+assert(
+  livePageFontFamily("about", "body_text", "Gamgote") ===
+    "Rollgates Luxury Italic",
+  "about body uses live Rollgates",
+);
+assert(
+  livePageFontFamily("cruises", "hero_title", "Gabigaile") === "Bitho Luxury",
+  "cruises hero uses live Bitho",
+);
+assert(
+  livePageFontFamily("wellness", "hero_subtitle", "Carista") === "Bitho Luxury",
+  "wellness second line uses live Bitho",
+);
+assert(
+  livePageFontFamily("gastronomy", "hero_title", "Gabigaile") === "Bitho Luxury",
+  "gastronomy hero uses live Bitho",
+);
+assert(
+  livePageFontFamily("luxury_cabins", "hero_title", "Bitho Luxury") ===
+    "Gamgote",
+  "luxury cabins hero uses live Gamgote",
+);
+assert(
+  livePageFontFamily("home", "hero_title", "Bitho Luxury") === "Bitho Luxury",
+  "home hero inherits site-wide face",
+);
+assert(
+  resolvePageStyle(DEFAULT_TYPOGRAPHY_SETTINGS, "contact", "hero_title")
+    .fontFamily === "Italiana",
+  "resolvePageStyle maps contact to Italiana",
 );
 
 if (process.exitCode) {

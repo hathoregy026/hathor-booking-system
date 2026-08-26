@@ -6,6 +6,8 @@ import {
   PAGE_STYLE_ROLE_LABELS,
   PAGE_STYLE_ROLES,
   hathorFontStackForAdmin,
+  livePageFontFamily,
+  resolvePageStyle,
   type HathorLuxuryFont,
   type HeroPageKey,
   type PageStyleRole,
@@ -145,14 +147,20 @@ export function WebsiteTextStyleBar({
           <h3 className="wt-style__title">Fonts &amp; text sizes</h3>
         </div>
         <p className="wt-style__hint">
-          Changes apply to this page, not the rest of the site. Leave a row
-          untouched to keep the shared site style.
+          Each row shows the font this page uses on the live site. Changing a
+          font updates this page only.
         </p>
       </header>
       <div className="wt-style__grid">
         {PAGE_STYLE_ROLES.map((role) => {
           const custom = Boolean(typo.page_styles?.[page]?.[role]);
-          const style = typo.page_styles?.[page]?.[role] ?? typo[role];
+          const style = resolvePageStyle(typo, page, role);
+          const liveFont = livePageFontFamily(
+            page,
+            role,
+            typo[role].fontFamily,
+          );
+          const showsLiveFace = !custom && liveFont !== typo[role].fontFamily;
           return (
             <div
               key={role}
@@ -166,8 +174,10 @@ export function WebsiteTextStyleBar({
                     className="wt-style__reset"
                     onClick={() => onClearRole(role)}
                   >
-                    Use site default
+                    Use live font
                   </button>
+                ) : showsLiveFace ? (
+                  <span className="wt-style__inherited">Live page font</span>
                 ) : (
                   <span className="wt-style__inherited">Site default</span>
                 )}

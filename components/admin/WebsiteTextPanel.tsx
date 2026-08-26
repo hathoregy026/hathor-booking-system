@@ -19,6 +19,7 @@ import {
 } from "@/lib/website-text-shared";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
+  resolvePageStyle,
   type HeroPageKey,
   type PageStyleRole,
   parseTypographySettings,
@@ -367,7 +368,8 @@ export function WebsiteTextPanel() {
   ) => {
     setTypo((prev) => {
       const current =
-        prev.page_styles?.[heroKey]?.[role] ?? prev[role];
+        prev.page_styles?.[heroKey]?.[role] ??
+        resolvePageStyle(prev, heroKey, role);
       return {
         ...prev,
         page_styles: {

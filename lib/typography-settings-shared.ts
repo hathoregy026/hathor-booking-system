@@ -475,6 +475,56 @@ export const PAGE_STYLE_ROLE_LABELS: Record<PageStyleRole, string> = {
   body_text: "Body text",
 };
 
+/**
+ * Fonts the live page actually paints — not the site-wide Typography defaults.
+ * PublicSiteHero pages (home, charter, highlights, blog, partners) inherit
+ * site-wide hero faces, so they are omitted here.
+ */
+const ITALIANA_EDITORIAL_FONTS = {
+  hero_title: "Italiana",
+  hero_subtitle: "Italiana",
+  page_title: "Italiana",
+  page_subtitle: "Playfair Display Italic",
+  body_text: "Rollgates Luxury Italic",
+} as const satisfies Record<PageStyleRole, HathorLuxuryFont>;
+
+const BITHO_EDITORIAL_FONTS = {
+  hero_title: "Bitho Luxury",
+  hero_subtitle: "Bitho Luxury",
+  page_title: "Bitho Luxury",
+  page_subtitle: "Piloner Thin",
+  body_text: "Rollgates Luxury Italic",
+} as const satisfies Record<PageStyleRole, HathorLuxuryFont>;
+
+const GAMGOTE_COLLECTION_FONTS = {
+  hero_title: "Gamgote",
+  hero_subtitle: "Gamgote",
+  page_title: "Gamgote",
+  page_subtitle: "Piloner Thin",
+  body_text: "Piloner Thin",
+} as const satisfies Record<PageStyleRole, HathorLuxuryFont>;
+
+export const LIVE_PAGE_FONTS: Partial<
+  Record<HeroPageKey, Partial<Record<PageStyleRole, HathorLuxuryFont>>>
+> = {
+  contact: ITALIANA_EDITORIAL_FONTS,
+  about: ITALIANA_EDITORIAL_FONTS,
+  wellness: BITHO_EDITORIAL_FONTS,
+  cruises: BITHO_EDITORIAL_FONTS,
+  gastronomy: BITHO_EDITORIAL_FONTS,
+  suites: BITHO_EDITORIAL_FONTS,
+  luxury_cabins: GAMGOTE_COLLECTION_FONTS,
+  royal_suites: GAMGOTE_COLLECTION_FONTS,
+};
+
+export function livePageFontFamily(
+  page: HeroPageKey,
+  role: PageStyleRole,
+  siteWide: HathorLuxuryFont,
+): HathorLuxuryFont {
+  return LIVE_PAGE_FONTS[page]?.[role] ?? siteWide;
+}
+
 export const pageStyleOverridesSchema = z.object({
   hero_title: typographyTextStyleSchema.optional(),
   hero_subtitle: typographyTextStyleSchema.optional(),
@@ -512,7 +562,12 @@ export function resolvePageStyle(
   page: HeroPageKey,
   role: PageStyleRole,
 ): TypographyTextStyle {
-  return settings.page_styles[page][role] ?? settings[role];
+  const override = settings.page_styles[page]?.[role];
+  if (override) return override;
+  const base = settings[role];
+  const live = LIVE_PAGE_FONTS[page]?.[role];
+  if (!live || live === base.fontFamily) return base;
+  return { ...base, fontFamily: live };
 }
 
 export const DEFAULT_ON_IMAGES_COPY: OnImagesCopy = {
@@ -1713,18 +1768,10 @@ ${pageStylesToImportantCss(settings)}`;
 `.trim();
 }
 
-function pageRoleBlock(selector: string, role: PageStyleRole): string {
+function pageFontFamilyBlock(selector: string, role: PageStyleRole): string {
   const p = `--typo-${role.replace(/_/g, "-")}`;
   return `${selector} {
   font-family: var(${p}-font) !important;
-  font-size: var(${p}-size) !important;
-  color: var(${p}-color) !important;
-  -webkit-text-fill-color: var(${p}-color) !important;
-  line-height: var(${p}-line-height) !important;
-  letter-spacing: var(${p}-letter-spacing) !important;
-  text-shadow: var(${p}-shadow) !important;
-  text-transform: none !important;
-  font-weight: 400 !important;
 }`;
 }
 
@@ -1733,41 +1780,36 @@ function pageStylesToImportantCss(settings: TypographySettings): string {
     const overrides = settings.page_styles[page];
     const roles = PAGE_STYLE_ROLES.filter((role) => overrides[role]);
     if (roles.length === 0) return "";
+    /* Font only — do not stamp site-wide size/color onto editorial pages. */
     const varLines = roles
-      .flatMap((role) =>
-        Object.entries(roleCssVars(role, overrides[role]!)).map(
-          ([key, value]) => `  ${key}: ${value} !important;`,
-        ),
-      )
+      .map((role) => {
+        const vars = roleCssVars(role, overrides[role]!);
+        const fontKey = `--typo-${role.replace(/_/g, "-")}-font`;
+        return `  ${fontKey}: ${vars[fontKey]} !important;`;
+      })
       .join("\n");
     const scope = `html[data-wt-page="${page}"]`;
     const blocks = [
       `${scope} .public-site,\n${scope} {\n${varLines}\n}`,
     ];
     if (overrides.hero_title) {
-      blocks.push(
-        pageRoleBlock(
-          `${scope} .wt-page-hero`,
-          "hero_title",
-        ),
-      );
+      blocks.push(pageFontFamilyBlock(`${scope} .wt-page-hero`, "hero_title"));
     }
     if (overrides.hero_subtitle) {
       blocks.push(
-        pageRoleBlock(
-          `${scope} .wt-page-hero-second`,
-          "hero_subtitle",
-        ),
+        pageFontFamilyBlock(`${scope} .wt-page-hero-second`, "hero_subtitle"),
       );
     }
     if (overrides.page_title) {
-      blocks.push(pageRoleBlock(`${scope} .wt-page-title`, "page_title"));
+      blocks.push(pageFontFamilyBlock(`${scope} .wt-page-title`, "page_title"));
     }
     if (overrides.page_subtitle) {
-      blocks.push(pageRoleBlock(`${scope} .wt-page-kicker`, "page_subtitle"));
+      blocks.push(
+        pageFontFamilyBlock(`${scope} .wt-page-kicker`, "page_subtitle"),
+      );
     }
     if (overrides.body_text) {
-      blocks.push(pageRoleBlock(`${scope} .wt-page-body`, "body_text"));
+      blocks.push(pageFontFamilyBlock(`${scope} .wt-page-body`, "body_text"));
     }
     return blocks.join("\n");
   })
