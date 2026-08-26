@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BookingStatus } from "@/app/generated/prisma/client";
+import {
+  BookingStatus,
+  Prisma,
+} from "@/app/generated/prisma/client";
 import { handleRouteError } from "@/lib/api";
 import {
   BookingConflictError,
@@ -7,14 +10,16 @@ import {
   lockBookingInventory,
   lockBookingRow,
 } from "@/lib/booking";
-import { createBookingAccessToken } from "@/lib/booking-access-token";
+import {
+  assertBookingAccessTokenConfiguration,
+  createBookingAccessToken,
+} from "@/lib/booking-access-token";
 import {
   UnauthorizedBookingError,
   verifyHoldToken,
 } from "@/lib/booking-hold-token";
 import { assertHoldBookingRequest } from "@/lib/booking-validation";
 import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
-import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { withDb } from "@/lib/db-safe";
 import { utcNow } from "@/lib/dates";
 import {
@@ -51,17 +56,36 @@ function roomIdsMatch(left: string[], right: string[]): boolean {
 }
 
 async function resolveTicketLines(
+  tx: Prisma.TransactionClient,
   cruiseId: string,
   roomCount: number,
   tickets: TicketInput[],
 ): Promise<ResolvedTicketLine[]> {
-  const [defaultType, cruiseTicketTypes] = await Promise.all([
-    ensureDefaultTicketType(cruiseId),
-    prisma.ticketType.findMany({
-      where: { cruiseId },
+  let cruiseTicketTypes = await tx.ticketType.findMany({
+    where: { cruiseId },
+    orderBy: [{ priceCents: "asc" }, { id: "asc" }],
+    select: { id: true, priceCents: true },
+  });
+
+  let defaultType = cruiseTicketTypes[0];
+  if (!defaultType) {
+    const cruise = await tx.cruise.findUnique({
+      where: { id: cruiseId },
+      select: { basePriceCents: true },
+    });
+    if (!cruise) throw new InvalidBookingError("Cruise not found");
+
+    defaultType = await tx.ticketType.create({
+      data: {
+        cruiseId,
+        name: "Standard",
+        description: "Standard cabin fare",
+        priceCents: cruise.basePriceCents,
+      },
       select: { id: true, priceCents: true },
-    }),
-  ]);
+    });
+    cruiseTicketTypes = [defaultType];
+  }
 
   const pricesById = new Map(
     cruiseTicketTypes.map((ticket) => [ticket.id, ticket.priceCents]),
@@ -105,6 +129,9 @@ export async function POST(request: NextRequest) {
     if (!verifyHoldToken(parsed.bookingId, parsed.holdSecret)) {
       throw new UnauthorizedBookingError();
     }
+    assertBookingAccessTokenConfiguration();
+    const accessToken = createBookingAccessToken(parsed.bookingId);
+    const bookingUrl = `${getSiteBaseUrl()}/booking/success?bookingId=${encodeURIComponent(parsed.bookingId)}&token=${encodeURIComponent(accessToken)}`;
 
     const confirmationResult = await withDb(async () =>
       prisma.$transaction(async (tx) => {
@@ -240,6 +267,7 @@ export async function POST(request: NextRequest) {
         });
 
         const ticketLines = await resolveTicketLines(
+          tx,
           schedule.cruiseId,
           heldRoomIds.length,
           parsed.tickets,
@@ -292,8 +320,6 @@ export async function POST(request: NextRequest) {
     );
 
     const confirmedBooking = confirmationResult.booking;
-    const accessToken = createBookingAccessToken(confirmedBooking.id);
-    const bookingUrl = `${getSiteBaseUrl()}/booking/success?bookingId=${encodeURIComponent(confirmedBooking.id)}&token=${encodeURIComponent(accessToken)}`;
 
     const emailDetails = buildEmailDetailsFromConfirmBooking({
       id: confirmedBooking.id,

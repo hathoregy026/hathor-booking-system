@@ -22,6 +22,11 @@ function accessSecret(): string {
   return secret;
 }
 
+/** Fail before confirming a booking if its private lookup token cannot be signed. */
+export function assertBookingAccessTokenConfiguration(): void {
+  accessSecret();
+}
+
 function sign(value: string): string {
   return createHmac("sha256", accessSecret()).update(value).digest("base64url");
 }

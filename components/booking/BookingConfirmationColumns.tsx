@@ -237,8 +237,12 @@ export function BookingConfirmationColumns({ onBack }: BookingConfirmationColumn
       }
 
       if (!confirmResponse.ok) {
+        const safeMessage =
+          confirmData.error === "Internal server error"
+            ? "We could not confirm your reservation. Your cabin selection is still safe to retry."
+            : confirmData.error;
         throw new Error(
-          confirmData.error ??
+          safeMessage ??
             (confirmResponse.status === 503
               ? "Database is busy. Please wait and try again."
               : "Failed to confirm booking"),

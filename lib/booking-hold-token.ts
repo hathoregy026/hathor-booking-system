@@ -15,6 +15,11 @@ function getHoldSigningSecret(): string {
   return secret;
 }
 
+/** Fail before creating a hold if the server cannot sign its authorization token. */
+export function assertHoldTokenConfiguration(): void {
+  getHoldSigningSecret();
+}
+
 /** HMAC-signed token proving the caller created the hold. Format: bookingId:expMs:signature */
 export function createHoldToken(bookingId: string, expiresAt: Date): string {
   const expMs = String(expiresAt.getTime());

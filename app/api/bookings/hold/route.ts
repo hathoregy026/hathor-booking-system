@@ -11,7 +11,10 @@ import {
   lockBookingInventory,
 } from "@/lib/booking";
 import { assertHoldBookingRequest } from "@/lib/booking-validation";
-import { createHoldToken } from "@/lib/booking-hold-token";
+import {
+  assertHoldTokenConfiguration,
+  createHoldToken,
+} from "@/lib/booking-hold-token";
 import { withDb } from "@/lib/db-safe";
 import { addUtcMinutes, utcNow } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
@@ -38,6 +41,7 @@ export async function POST(request: NextRequest) {
     const idempotencyKey = requireIdempotencyKey(request);
     const body = await request.json();
     const parsed = createHoldSchema.parse(body);
+    assertHoldTokenConfiguration();
     const ratePlan =
       parsed.ratePlan === "non-refundable"
         ? BookingRatePlan.NON_REFUNDABLE

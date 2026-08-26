@@ -317,7 +317,7 @@ html[data-room-editorial] .booking-main {
 .booking-room-statement-copy > p { max-width: 42rem; color: var(--br-soft); font-size: clamp(1rem, 1.25vw, 1.3rem); line-height: 1.75; }
 .booking-room-facts { margin-top: 2rem; }
 
-.booking-room-scene--image { width: min(88vw, 96rem); padding: 0; background: transparent; }
+.booking-room-scene--image { width: min(88vw, 96rem); margin-right: clamp(.45rem, .7vw, .8rem); padding: 0; background: transparent; }
 .booking-room-scene--image:nth-of-type(even) { width: min(76vw, 82rem); background: transparent; }
 
 .booking-room-scene--image figure { position: relative; width: 100%; height: 100%; margin: 0; overflow: hidden; }
@@ -381,7 +381,7 @@ html[data-room-editorial] .booking-main {
   .booking-room-scene--included,
   .booking-room-scene--reserve { grid-template-columns: 1fr; width: 100%; }
   .booking-room-scene--image,
-  .booking-room-scene--image:nth-of-type(even) { width: 100%; height: 100svh; padding: clamp(.6rem, 2vw, 1.25rem); }
+  .booking-room-scene--image:nth-of-type(even) { width: 100%; height: 100svh; margin-right: 0; margin-bottom: .75rem; padding: 0; }
   .booking-room-editorial__actions { justify-content: flex-start; }
 }
 
