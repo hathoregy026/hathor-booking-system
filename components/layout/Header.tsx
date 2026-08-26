@@ -167,8 +167,8 @@ export function Header() {
   const editorialNav = usesEditorialOverlayNav(pathname);
   const isHome = pathname === "/" || pathname === "/ex";
   const [exploreOpen, setExploreOpen] = useState(false);
-  const [isPhone, setIsPhone] = useState(false);
   const chromeNav = true;
+  const phoneViewportRef = useRef(false);
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
   const [suitesNavTone, setSuitesNavTone] = useState<"ivory" | "ink" | null>(
@@ -232,13 +232,11 @@ export function Header() {
     const media = window.matchMedia("(max-width: 480px)");
     const sync = () => {
       const next = media.matches;
-      setIsPhone((prev) => {
-        if (prev !== next) {
-          unlockBodyScroll(EXPLORE_LOCK_OWNER);
-          setExploreOpen(false);
-        }
-        return next;
-      });
+      if (phoneViewportRef.current !== next) {
+        phoneViewportRef.current = next;
+        unlockBodyScroll(EXPLORE_LOCK_OWNER);
+        setExploreOpen(false);
+      }
     };
     sync();
     media.addEventListener("change", sync);
@@ -484,7 +482,7 @@ export function Header() {
     chromeNav && "hathor-header--chrome",
     chromeNav && isHome && "hathor-header--home",
     exploreOpen &&
-      (chromeNav && !isPhone
+      (chromeNav
         ? "hathor-header--editorial-open"
         : "hathor-header--explore-open"),
     suitesNavTone === "ink" && "hathor-header--suites-ink",

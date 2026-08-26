@@ -634,13 +634,31 @@
   margin: 0;
 }
 
+/*
+ * Chrome menu open (phone + tablet + desktop): keep the fixed header UNDER
+ * the editorial overlay. Hide burger, centered logo, and theme toggle so they
+ * cannot paint over the cream panel / close control. Close lives in .eno-close.
+ */
 .public-site .hathor-header.hathor-header--editorial-open {
   z-index: 1200;
   pointer-events: none;
 }
 
-.public-site .hathor-header.hathor-header--editorial-open .hathor-header__menu-btn--left {
+.public-site .hathor-header.hathor-header--editorial-open .hathor-header__menu-btn--left,
+.public-site .hathor-header.hathor-header--editorial-open .hathor-header__menu-zone,
+.public-site .hathor-header.hathor-header--editorial-open .hathor-header__col--logo,
+.public-site .hathor-header.hathor-header--editorial-open .hathor-header__col--right {
   visibility: hidden;
+  pointer-events: none;
+}
+
+/* Phone + tablet: also kill paint in case visibility alone races the open animation. */
+@media (max-width: 1024px) {
+  .public-site .hathor-header.hathor-header--editorial-open .hathor-header__menu-btn--left,
+  .public-site .hathor-header.hathor-header--editorial-open .hathor-header__logo--icon,
+  .public-site .hathor-header.hathor-header--editorial-open .public-theme-toggle {
+    opacity: 0;
+  }
 }
 
 .public-site .hathor-header--chrome.hathor-header--explore-open {
