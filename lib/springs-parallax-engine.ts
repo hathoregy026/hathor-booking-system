@@ -217,6 +217,12 @@ export function createSpringsParallax(
       if (enableMq === "sm-down" && window.matchMedia("(min-width: 481px)").matches) {
         continue;
       }
+      if (
+        enableMq === "desktop-or-phone" &&
+        window.matchMedia("(min-width: 481px) and (max-width: 1024px)").matches
+      ) {
+        continue;
+      }
 
       const localMeasure =
         el.getAttribute("data-parallax-measure-selector") || measureSelector;
