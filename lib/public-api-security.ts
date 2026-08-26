@@ -53,6 +53,20 @@ export function assertTrustedPublicJsonRequest(request: Request): void {
   }
 }
 
+/** Read JSON with an actual byte limit, including chunked requests without Content-Length. */
+export async function readPublicJsonBody(request: Request): Promise<unknown> {
+  const rawBody = await request.text();
+  if (new TextEncoder().encode(rawBody).byteLength > MAX_PUBLIC_JSON_BYTES) {
+    throw new PublicRequestError("Request body is too large", 413);
+  }
+
+  try {
+    return JSON.parse(rawBody) as unknown;
+  } catch {
+    throw new PublicRequestError("Invalid request body", 400);
+  }
+}
+
 export function requireIdempotencyKey(request: Request): string {
   const value = request.headers.get("idempotency-key")?.trim() ?? "";
   if (!/^[A-Za-z0-9._:-]{16,128}$/.test(value)) {

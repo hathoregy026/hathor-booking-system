@@ -19,7 +19,7 @@ export function InquiryForm({
   type,
   title,
   intro,
-  submitLabel = "Send Request",
+  submitLabel = "Send Message",
   showCharterFields = false,
   className,
   submitClassName = "btn btn-primary",
@@ -41,6 +41,7 @@ export function InquiryForm({
       email: String(data.get("email") ?? ""),
       phone: String(data.get("phone") ?? "") || undefined,
       message: String(data.get("message") ?? ""),
+      website: String(data.get("website") ?? ""),
       address: showCharterFields
         ? String(data.get("address") ?? "") || undefined
         : undefined,
@@ -101,6 +102,17 @@ export function InquiryForm({
       {intro ? <p className="section-body typo-body-text mt-3">{intro}</p> : null}
 
       <div className="mt-8 space-y-4">
+        <div className="sr-only" aria-hidden="true">
+          <label htmlFor={`${type}-website`}>Website</label>
+          <input
+            id={`${type}-website`}
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
         <div>
           <label className="lux-label" htmlFor={`${type}-name`}>
             Name

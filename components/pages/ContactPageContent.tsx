@@ -363,7 +363,7 @@ export function ContactPageContent() {
                 type="contact"
                 title="Your message"
                 intro="Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours."
-                submitLabel="Send Request"
+                submitLabel="Send Message"
                 className="ce-form"
                 submitClassName="ce-btn ce-btn--xl"
               />

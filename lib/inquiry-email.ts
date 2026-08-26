@@ -24,6 +24,7 @@ export type InquiryPayload = {
   adults?: number;
   children?: number;
   preferredRoute?: string;
+  website?: string;
 };
 
 function escapeHtml(value: string): string {
@@ -39,8 +40,7 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
   const adminEmail = getAdminNotificationEmail();
 
   if (!resend || !adminEmail) {
-    console.warn("[inquiry] email skipped — Resend or ADMIN_EMAIL not configured");
-    return;
+    throw new Error("Inquiry email service is not configured");
   }
 
   const label = payload.type === "charter" ? "Charter request" : "Contact inquiry";
@@ -81,13 +81,31 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
     replyTo: payload.email,
     subject: `Hathor ${label} — ${payload.name}`,
     html: lines.join("\n"),
+    text: [
+      `Type: ${label}`,
+      `Name: ${payload.name}`,
+      `Email: ${payload.email}`,
+      payload.phone ? `Phone: ${payload.phone}` : "",
+      payload.address ? `Address: ${payload.address}` : "",
+      payload.checkIn ? `Check-in: ${payload.checkIn}` : "",
+      payload.adults !== undefined ? `Adults: ${payload.adults}` : "",
+      payload.children !== undefined ? `Children: ${payload.children}` : "",
+      payload.preferredRoute
+        ? `Preferred route: ${payload.preferredRoute}`
+        : "",
+      "",
+      "Message:",
+      payload.message,
+    ]
+      .filter((line, index, all) => line || all[index - 1] !== "")
+      .join("\n"),
   });
 
   if (result.error) {
     throw new Error(result.error.message);
   }
 
-  console.log(`[inquiry] ${label} sent to ${adminEmail}`);
+  console.log(`[inquiry] ${label} accepted by email provider`);
 }
 
 export function getInquiryFallbackMailto(payload: InquiryPayload): string {
