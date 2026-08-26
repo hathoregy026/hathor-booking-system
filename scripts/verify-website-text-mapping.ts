@@ -46,8 +46,38 @@ assert(
   "voyages.heroSupport default",
 );
 assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.scrollHint.length > 0,
+  "voyages.scrollHint default",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.promiseLabel.length > 0,
+  "voyages.promiseLabel default",
+);
+assert(
   DEFAULT_WEBSITE_TEXT.pages.voyages.manifesto.length === 3,
   "voyages.manifesto default count",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.itineraries.length === 4,
+  "voyages.itineraries default count",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.itineraries.every(
+    (item) =>
+      item.title.length > 0 &&
+      item.durationLabel.length > 0 &&
+      item.body.length > 0 &&
+      item.cta.length > 0,
+  ),
+  "voyages.itineraries fields populated",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.charterBody.length > 0,
+  "voyages.charterBody default",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.ctaSecondary.length > 0,
+  "voyages.ctaSecondary default",
 );
 assert(
   DEFAULT_WEBSITE_TEXT.pages.rooms.amenitiesIntro.length > 0,
@@ -79,6 +109,25 @@ assert(
 assert(
   parsed.pages.cruises.overviewIntro.length > 0,
   "overviewIntro filled from defaults after merge",
+);
+
+const voyagesLegacy = parseWebsiteText({
+  pages: {
+    voyages: {
+      heroSupport: "Legacy voyages lead",
+    },
+  },
+});
+assert(
+  voyagesLegacy.pages.voyages.heroSupport === "Legacy voyages lead",
+  "legacy voyages heroSupport is kept",
+);
+assert(
+  voyagesLegacy.pages.voyages.itineraries.length === 4 &&
+    voyagesLegacy.pages.voyages.scrollHint.length > 0 &&
+    voyagesLegacy.pages.voyages.charterBody.length > 0 &&
+    voyagesLegacy.pages.voyages.ctaSecondary.length > 0,
+  "new voyages fields fill from defaults after merge",
 );
 
 const soft = resolveOverviewIntroParagraphs(

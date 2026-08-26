@@ -109,6 +109,65 @@ export const VOYAGES_PAGE = {
   },
 } as const;
 
+export type VoyagesItineraryCms = {
+  slug: string;
+  title: string;
+  durationLabel: string;
+  meta: string;
+  body: string;
+  cta: string;
+};
+
+/** Four itinerary cards on /voyages — also supplies homepage Our Voyages summary/CTA. */
+export const VOYAGES_ITINERARY_CMS_DEFAULTS: VoyagesItineraryCms[] = [
+  {
+    slug: "3-nights-aswan-luxor",
+    title: "Aswan to Luxor",
+    durationLabel: "3 Nights / 4 Days",
+    meta: "Aswan → Luxor",
+    body: "An intimate south-to-north passage — Philae, Kom Ombo, and Edfu unfold at a dahabiya’s unhurried pace, ending among Luxor’s temples.",
+    cta: "Check Voyage Details",
+  },
+  {
+    slug: "4-nights-luxor-aswan",
+    title: "Luxor to Aswan",
+    durationLabel: "4 Nights / 5 Days",
+    meta: "Luxor → Aswan",
+    body: "The classic Nile voyage from Luxor’s monumental banks to Aswan’s quiet grace — temples, feluccas, and evenings lit by river sunset.",
+    cta: "Check Voyage Details",
+  },
+  {
+    slug: "7-nights-luxor-aswan-luxor",
+    title: "Luxor to Aswan to Luxor",
+    durationLabel: "7 Nights / 8 Days",
+    meta: "Luxor → Aswan → Luxor",
+    body: "The ultimate Nile experience. Drift between Luxor and Aswan in absolute privacy, discovering ancient wonders at your own pace aboard Hathor.",
+    cta: "Check Voyage Details",
+  },
+  {
+    slug: "nile-majesty",
+    title: "Nile Majesty",
+    durationLabel: "Private charter",
+    meta: "Custom itinerary",
+    body: "The dahabiya entirely yours — itinerary, dining, and shore days composed around your party with Hathor’s dedicated crew.",
+    cta: "Explore private charter",
+  },
+];
+
+export function resolveVoyagesItineraryCms(
+  list: readonly VoyagesItineraryCms[] | undefined,
+  slug: string,
+  index: number,
+): VoyagesItineraryCms {
+  const fallback =
+    VOYAGES_ITINERARY_CMS_DEFAULTS[index] ?? VOYAGES_ITINERARY_CMS_DEFAULTS[0]!;
+  if (!list || list.length === 0) return fallback;
+  const bySlug = slug
+    ? list.find((item) => item.slug === slug)
+    : undefined;
+  return bySlug ?? list[index] ?? fallback;
+}
+
 const CHARTER_VOYAGE: HomepageAccordionCruise = {
   id: "catalog-nile-majesty",
   name: "Private Charter — Nile Majesty",

@@ -1172,6 +1172,17 @@ export function WebsiteTextPanel() {
                       })
                     }
                   />
+                  <Field
+                    label="Scroll hint"
+                    value={text.pages.voyages.scrollHint}
+                    hint="Small cue under the intro lead"
+                    onChange={(scrollHint) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        scrollHint,
+                      })
+                    }
+                  />
                 </Section>
                 <Section
                   step={3}
@@ -1230,8 +1241,18 @@ export function WebsiteTextPanel() {
                 <Section
                   step={4}
                   title="The promise"
-                  description="Three manifesto values with hover image follow."
+                  description="Three manifesto values. Titles also drive the vertical ribbon."
                 >
+                  <Field
+                    label="Section label"
+                    value={text.pages.voyages.promiseLabel}
+                    onChange={(promiseLabel) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        promiseLabel,
+                      })
+                    }
+                  />
                   {text.pages.voyages.manifesto.map((item, index) => (
                     <ItemCard key={index} title={`Promise ${index + 1}`}>
                       <Field
@@ -1310,6 +1331,99 @@ export function WebsiteTextPanel() {
                 </Section>
                 <Section
                   step={6}
+                  title="Itinerary cards"
+                  description="The four voyage cards on /voyages. Summary and CTA also appear on homepage Our Voyages."
+                >
+                  {text.pages.voyages.itineraries.map((item, index) => (
+                    <ItemCard
+                      key={item.slug || index}
+                      title={
+                        [
+                          "3 nights · Aswan to Luxor",
+                          "4 nights · Luxor to Aswan",
+                          "7 nights · round trip",
+                          "Private charter · Nile Majesty",
+                        ][index] ?? `Voyage ${index + 1}`
+                      }
+                    >
+                      <Field
+                        label="Title"
+                        value={item.title}
+                        onChange={(title) => {
+                          const itineraries = text.pages.voyages.itineraries.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, title } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            itineraries,
+                          });
+                        }}
+                      />
+                      <Field
+                        label="Duration"
+                        value={item.durationLabel}
+                        onChange={(durationLabel) => {
+                          const itineraries = text.pages.voyages.itineraries.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, durationLabel } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            itineraries,
+                          });
+                        }}
+                      />
+                      <Field
+                        label="Route / meta"
+                        value={item.meta}
+                        onChange={(meta) => {
+                          const itineraries = text.pages.voyages.itineraries.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, meta } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            itineraries,
+                          });
+                        }}
+                      />
+                      <Field
+                        label="Summary"
+                        value={item.body}
+                        multiline
+                        rows={3}
+                        hint="Card body on /voyages and homepage Our Voyages"
+                        onChange={(body) => {
+                          const itineraries = text.pages.voyages.itineraries.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, body } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            itineraries,
+                          });
+                        }}
+                      />
+                      <Field
+                        label="Link label"
+                        value={item.cta}
+                        onChange={(cta) => {
+                          const itineraries = text.pages.voyages.itineraries.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, cta } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            itineraries,
+                          });
+                        }}
+                      />
+                    </ItemCard>
+                  ))}
+                </Section>
+                <Section
+                  step={7}
                   title="Private charter"
                   description="Charter closing chapter before the reserve CTA."
                 >
@@ -1349,6 +1463,18 @@ export function WebsiteTextPanel() {
                     }
                   />
                   <Field
+                    label="Body"
+                    value={text.pages.voyages.charterBody}
+                    multiline
+                    rows={3}
+                    onChange={(charterBody) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        charterBody,
+                      })
+                    }
+                  />
+                  <Field
                     label="CTA label"
                     value={text.pages.voyages.charterCta}
                     onChange={(charterCta) =>
@@ -1360,7 +1486,7 @@ export function WebsiteTextPanel() {
                   />
                 </Section>
                 <Section
-                  step={7}
+                  step={8}
                   title="Reserve CTA"
                   description="Final booking band at the bottom of /voyages."
                 >
@@ -1403,6 +1529,17 @@ export function WebsiteTextPanel() {
                       patchPage("voyages", {
                         ...text.pages.voyages,
                         ctaPrimary,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Secondary link"
+                    value={text.pages.voyages.ctaSecondary}
+                    hint="Text link under Book Now"
+                    onChange={(ctaSecondary) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        ctaSecondary,
                       })
                     }
                   />

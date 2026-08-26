@@ -5,9 +5,12 @@ import {
   useTypographyInlineStyle,
   useTypographySettings,
 } from "@/components/public/TypographySettingsProvider";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import type { SiteImageName } from "@/lib/site-image-slots";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
+import { resolveVoyagesItineraryCms } from "@/lib/voyages-page-content";
+import { resolveCmsText } from "@/lib/website-text-shared";
 import styles from "./LuxuryAccordion.module.css";
 
 export type LuxuryAccordionItem = {
@@ -35,6 +38,7 @@ export default function LuxuryAccordion({
   embedded = false,
 }: LuxuryAccordionProps) {
   const { our_voyages_copy: voyagesCopy } = useTypographySettings();
+  const { pages } = useWebsiteText();
   const titleStyle = useTypographyInlineStyle("our_voyages_title");
   const indicationStyle = useTypographyInlineStyle("our_voyages_indication");
   const nameStyle = useTypographyInlineStyle("our_voyages_main_hover");
@@ -59,6 +63,19 @@ export default function LuxuryAccordion({
           description: item.description,
           href: item.href,
         });
+        const cms = resolveVoyagesItineraryCms(
+          pages.voyages.itineraries,
+          item.slug ?? "",
+          index,
+        );
+        const summary = resolveCmsText(
+          cms.body,
+          panel.summary || item.description,
+        );
+        const ctaLabel = resolveCmsText(
+          cms.cta,
+          item.ctaLabel || panel.detailsLabel,
+        );
         const isFirst = index === 0;
         const isLast = index === items.length - 1;
 
@@ -126,10 +143,10 @@ export default function LuxuryAccordion({
                   className={`${styles.summary} typo-our-voyages-body-hover`}
                   style={bodyStyle}
                 >
-                  {panel.summary || item.description}
+                  {summary}
                 </p>
                 <Link href={panel.detailsHref} className={styles.cta}>
-                  <span>{item.ctaLabel || panel.detailsLabel}</span>
+                  <span>{ctaLabel}</span>
                   <span className={styles.ctaArrow} aria-hidden="true">→</span>
                 </Link>
               </div>

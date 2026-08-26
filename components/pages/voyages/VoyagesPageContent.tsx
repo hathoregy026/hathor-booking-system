@@ -18,7 +18,10 @@ import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
-import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
+import {
+  resolveVoyagesItineraryCms,
+  VOYAGES_PAGE,
+} from "@/lib/voyages-page-content";
 import {
   resolveCmsText,
   stackedHeroLines,
@@ -202,6 +205,15 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
     "Your river",
     "Your rhythm",
   ]);
+  const manifestoItems =
+    copy.manifesto.length > 0 ? copy.manifesto : VOYAGES_PAGE.manifesto;
+  const ribbonFromManifesto = manifestoItems
+    .map((item) => item.title.trim())
+    .filter(Boolean);
+  const ribbonPhrases =
+    ribbonFromManifesto.length > 0
+      ? ribbonFromManifesto
+      : VOYAGES_PAGE.manifesto.map((item) => item.title);
 
   useVoyagesEditorialFlow({ rootRef, runRef, trackRef });
 
@@ -232,7 +244,9 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     VOYAGES_PAGE.hero.subtitle,
                   )}
                 </p>
-                <span className="vb-intro__scroll" aria-hidden="true">Scroll to sail <i>→</i></span>
+                <span className="vb-intro__scroll" aria-hidden="true">
+                  {resolveCmsText(copy.scrollHint, "Scroll to sail")} <i>→</i>
+                </span>
               </Scene>
 
               <Scene className="vb-principal">
@@ -296,8 +310,10 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
               <Scene className="vb-ribbon">
                 <div className="vb-ribbon__track">
-                  <span>Intimate scale</span><i>✦</i><span>All-inclusive grace</span><i>✦</i>
-                  <span>Private rhythm</span><i>✦</i><span>Intimate scale</span><i>✦</i>
+                  {[...ribbonPhrases, ...ribbonPhrases].flatMap((phrase, index) => [
+                    <span key={`phrase-${index}`}>{phrase}</span>,
+                    <i key={`mark-${index}`}>✦</i>,
+                  ])}
                 </div>
               </Scene>
 
@@ -322,12 +338,11 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
               <Scene className="vb-values">
                 <div className="vb-values__wrap" ref={wrapRef}>
-                  <p className="vb-section-label">The promise</p>
+                  <p className="vb-section-label">
+                    {resolveCmsText(copy.promiseLabel, "The promise")}
+                  </p>
                   <ol className="vb-values__list">
-                    {(copy.manifesto.length > 0
-                      ? copy.manifesto
-                      : VOYAGES_PAGE.manifesto
-                    ).map((item, index) => (
+                    {manifestoItems.map((item, index) => (
                       <li
                         className="vb-values__item"
                         key={`${item.title}-${index}`}
@@ -369,13 +384,25 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               {itineraries.map((voyage, index) => {
-                const isCharter = voyage.slug === "nile-majesty";
                 const panel = resolveVoyagePanelContent({
                   slug: voyage.slug,
                   name: voyage.name,
                   description: voyage.description,
                   href: voyage.href,
                 });
+                const cms = resolveVoyagesItineraryCms(
+                  copy.itineraries,
+                  voyage.slug,
+                  index,
+                );
+                const title = resolveCmsText(cms.title, panel.routeTitle);
+                const durationLabel = resolveCmsText(
+                  cms.durationLabel,
+                  panel.durationLabel,
+                );
+                const meta = resolveCmsText(cms.meta, voyage.ports);
+                const detailsLabel = resolveCmsText(cms.cta, panel.detailsLabel);
+                const body = resolveCmsText(cms.body, panel.summary);
 
                 return (
                   <Scene className={`vb-project vb-project--${index + 1}`} key={voyage.id}>
@@ -389,14 +416,19 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     </div>
                     <div className="vb-project__content">
                       <span className="vb-project__number">0{index + 1}</span>
-                      <h2 className="vb-project__title vb-display">{panel.routeTitle}</h2>
+                      <h2 className="vb-project__title vb-display">{title}</h2>
                       <p className="vb-project__meta">
-                        {isCharter ? "Private charter" : panel.durationLabel}
-                        <i>—</i>
-                        {isCharter ? "Custom itinerary" : voyage.ports}
+                        {durationLabel}
+                        {meta ? (
+                          <>
+                            <i>—</i>
+                            {meta}
+                          </>
+                        ) : null}
                       </p>
+                      {body ? <p className="vb-project__body">{body}</p> : null}
                       <Link className="vb-project__link" href={panel.detailsHref}>
-                        {isCharter ? "Explore private charter" : panel.detailsLabel}<span>↗</span>
+                        {detailsLabel}<span>↗</span>
                       </Link>
                     </div>
                   </Scene>
@@ -418,6 +450,12 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     {resolveCmsText(
                       copy.charterScript,
                       VOYAGES_PAGE.charter.script,
+                    )}
+                  </p>
+                  <p className="vb-charter__body">
+                    {resolveCmsText(
+                      copy.charterBody,
+                      VOYAGES_PAGE.charter.body,
                     )}
                   </p>
                   <Link className="vb-charter__link" href={VOYAGES_PAGE.charter.cta.href}>
@@ -452,9 +490,17 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
           <p className="vb-reserve__body">
             {resolveCmsText(copy.ctaBody, VOYAGES_PAGE.cta.body)}
           </p>
-          <BookNowTrigger className="vb-reserve__button">
-            {resolveCmsText(copy.ctaPrimary, VOYAGES_PAGE.cta.primary)}
-          </BookNowTrigger>
+          <div className="vb-reserve__actions">
+            <BookNowTrigger className="vb-reserve__button">
+              {resolveCmsText(copy.ctaPrimary, VOYAGES_PAGE.cta.primary)}
+            </BookNowTrigger>
+            <Link className="vb-reserve__secondary" href={VOYAGES_PAGE.cta.secondary.href}>
+              {resolveCmsText(
+                copy.ctaSecondary,
+                VOYAGES_PAGE.cta.secondary.label,
+              )}
+            </Link>
+          </div>
         </section>
       </main>
     </div>

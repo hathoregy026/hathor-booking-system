@@ -25,7 +25,10 @@ import {
   ROYAL_SUITES_PAGE,
   WELLNESS_PAGE,
 } from "@/lib/page-content";
-import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
+import {
+  VOYAGES_ITINERARY_CMS_DEFAULTS,
+  VOYAGES_PAGE,
+} from "@/lib/voyages-page-content";
 import {
   DEFAULT_SUITES_NATIVE_CMS,
   type SuitesNativeCmsFields,
@@ -90,23 +93,38 @@ export type WebsiteText = {
       heroLabel: string;
       /** Intro lead under the stacked hero title */
       heroSupport: string;
+      /** Hint under the intro lead */
+      scrollHint: string;
       statementLabel: string;
       /** Stacked display title — use Enter for lines */
       statementTitle: string;
       statementBody: string;
       openingScript: string;
+      /** Label above the three manifesto values */
+      promiseLabel: string;
       manifesto: Array<{ title: string; body: string }>;
       itinerariesLabel: string;
       itinerariesTitle: string;
       itinerariesBody: string;
+      /** Four itinerary cards (order matches homepage Our Voyages) */
+      itineraries: Array<{
+        slug: string;
+        title: string;
+        durationLabel: string;
+        meta: string;
+        body: string;
+        cta: string;
+      }>;
       charterLabel: string;
       charterTitle: string;
       charterScript: string;
+      charterBody: string;
       charterCta: string;
       reserveLabel: string;
       ctaTitle: string;
       ctaBody: string;
       ctaPrimary: string;
+      ctaSecondary: string;
     };
     /** Native /suites-preview (and future /suites) editorial ownership */
     suites: SuitesNativeCmsFields;
@@ -319,10 +337,12 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     voyages: {
       heroLabel: VOYAGES_PAGE.opening.eyebrow,
       heroSupport: VOYAGES_PAGE.hero.subtitle,
+      scrollHint: "Scroll to sail",
       statementLabel: "The Hathor way",
       statementTitle: "Sail slowly\nDiscover deeply\nRemember always",
       statementBody: VOYAGES_PAGE.opening.body[0] ?? "",
       openingScript: VOYAGES_PAGE.opening.script,
+      promiseLabel: "The promise",
       manifesto: VOYAGES_PAGE.manifesto.map((item) => ({
         title: item.title,
         body: item.body,
@@ -330,14 +350,17 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       itinerariesLabel: "Choose your passage",
       itinerariesTitle: "The Nile\nYour rhythm",
       itinerariesBody: VOYAGES_PAGE.opening.body[1] ?? "",
+      itineraries: VOYAGES_ITINERARY_CMS_DEFAULTS.map((item) => ({ ...item })),
       charterLabel: VOYAGES_PAGE.charter.eyebrow,
       charterTitle: "Your river\nYour rhythm",
       charterScript: VOYAGES_PAGE.charter.script,
+      charterBody: VOYAGES_PAGE.charter.body,
       charterCta: VOYAGES_PAGE.charter.cta.label,
       reserveLabel: "Begin your journey",
       ctaTitle: VOYAGES_PAGE.cta.title,
       ctaBody: VOYAGES_PAGE.cta.body,
       ctaPrimary: VOYAGES_PAGE.cta.primary,
+      ctaSecondary: VOYAGES_PAGE.cta.secondary.label,
     },
     suites: { ...DEFAULT_SUITES_NATIVE_CMS },
     highlights: {
