@@ -1,5 +1,4 @@
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
-import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { DeployFreshness } from "@/components/public/DeployFreshness";
 import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { LuxuryTextAnimations } from "@/components/public/LuxuryTextAnimations";
@@ -61,26 +60,24 @@ export function PublicLayout({
 
   return (
     <PublicThemeProvider>
-      <BookingModalProvider>
-        {/*
-          Welcome splash removed from public land — no preload overlay.
-          Floating BOOK NOW / chat mount from GlobalSiteChrome (root sibling).
-        */}
-        <div className="public-site hathor-site">
-          <script dangerouslySetInnerHTML={{ __html: bootScript }} />
-          <DeployFreshness deployId={deployId} />
-          <PublicScrollInfrastructure />
-          <PublicScrollGuardian />
-          <ScrollPositionRestore />
-          <LuxuryTextAnimations />
-          <AnimaTitleScroll />
-          <SiteImagePreviewScroll />
-          <PublicNavbar />
-          <PageVisibilityChrome>
-            <PageTransition>{children}</PageTransition>
-          </PageVisibilityChrome>
-        </div>
-      </BookingModalProvider>
+      {/*
+        Welcome splash removed from public land — no preload overlay.
+        Booking modal + FAB come from root SiteBookingChrome (one host only).
+      */}
+      <div className="public-site hathor-site">
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        <DeployFreshness deployId={deployId} />
+        <PublicScrollInfrastructure />
+        <PublicScrollGuardian />
+        <ScrollPositionRestore />
+        <LuxuryTextAnimations />
+        <AnimaTitleScroll />
+        <SiteImagePreviewScroll />
+        <PublicNavbar />
+        <PageVisibilityChrome>
+          <PageTransition>{children}</PageTransition>
+        </PageVisibilityChrome>
+      </div>
     </PublicThemeProvider>
   );
 }

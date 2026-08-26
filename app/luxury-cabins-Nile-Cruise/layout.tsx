@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
-import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
@@ -10,9 +9,5 @@ import "../rooms/rooms-showcase.css";
 export default function LuxuryCabinsLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  return (
-    <PublicThemeProvider>
-      <BookingModalProvider>{children}</BookingModalProvider>
-    </PublicThemeProvider>
-  );
+  return <PublicThemeProvider>{children}</PublicThemeProvider>;
 }

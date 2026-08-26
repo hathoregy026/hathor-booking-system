@@ -16,7 +16,7 @@ import {
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
-import { GlobalFloatingActions } from "@/components/public/GlobalFloatingActions";
+import { SiteBookingChrome } from "@/components/public/SiteBookingChrome";
 import "./hathor-fonts.css";
 import "./globals.css";
 import "./mobile-touch.css";
@@ -145,8 +145,7 @@ gtag('config', 'G-3QKFST6VXE');`,
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <TouchDeviceBootstrap />
-        {children}
-        <GlobalFloatingActions />
+        <SiteBookingChrome>{children}</SiteBookingChrome>
         <Analytics />
       </body>
     </html>
