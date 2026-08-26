@@ -139,6 +139,27 @@ export function durationSupportsRoomType(
   );
 }
 
+export function luxuryRoomTypeForDbRoomType(
+  dbRoomType: string | null,
+): LuxuryRoomTypeValue {
+  const normalized = dbRoomType?.trim().toLowerCase() ?? "";
+
+  for (const [luxuryType, dbTypes] of Object.entries(
+    LUXURY_TO_DB_ROOM_TYPES,
+  ) as [LuxuryRoomTypeValue, string[]][]) {
+    if (
+      dbTypes.some((dbType) => {
+        const allowed = dbType.toLowerCase();
+        return normalized === allowed || normalized.includes(allowed);
+      })
+    ) {
+      return luxuryType;
+    }
+  }
+
+  return "luxury-rooms";
+}
+
 function roomMatchesLuxuryTypeFromCatalog(
   dbRoomType: string,
   luxuryType: LuxuryRoomTypeValue,
@@ -210,12 +231,17 @@ export function buildAvailabilityQueryParams(
   duration: StayDurationValue,
   checkInDate: string,
   rooms: RoomSearchConfig[],
+  roomId?: string | null,
 ): URLSearchParams {
-  return new URLSearchParams({
+  const params = new URLSearchParams({
     duration,
     checkInDate,
     rooms: JSON.stringify(rooms),
   });
+
+  if (roomId) params.set("roomId", roomId);
+
+  return params;
 }
 
 export function matchCruiseByDuration(

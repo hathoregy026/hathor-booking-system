@@ -52,6 +52,7 @@ export async function fetchAvailabilitySearch(
   duration: StayDurationValue,
   checkInDate: string,
   roomConfigs: RoomSearchConfig[],
+  roomId?: string | null,
 ): Promise<
   AvailabilityResponse & {
     error?: string;
@@ -62,6 +63,7 @@ export async function fetchAvailabilitySearch(
     duration,
     checkInDate,
     roomConfigs,
+    roomId,
   );
 
   const response = await fetch(`/api/cruises?${params.toString()}`);

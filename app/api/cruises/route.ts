@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
     roomType: searchParams.get("roomType"),
     adults: searchParams.get("adults"),
     children: searchParams.get("children"),
+    roomId: searchParams.get("roomId"),
   });
 
   try {
@@ -57,6 +58,7 @@ export async function GET(request: NextRequest) {
         roomType: searchParams.get("roomType") ?? undefined,
         adults: searchParams.get("adults") ?? undefined,
         children: searchParams.get("children") ?? undefined,
+        roomId: searchParams.get("roomId") ?? undefined,
       });
 
       const roomConfigs = buildRoomConfigsFromParams({
@@ -104,7 +106,7 @@ export async function GET(request: NextRequest) {
         parsed.duration,
         parsed.checkInDate,
         roomConfigs,
-        { previewOnly },
+        { previewOnly, roomId: parsed.roomId },
       );
 
       console.log("[api/cruises] cruise search result:", {

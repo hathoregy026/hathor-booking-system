@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { BookingItineraryFilter } from "@/components/booking/BookingItineraryFilter";
 import { CheckoutCalendar } from "@/components/booking/CheckoutCalendar";
 import { GuestPaymentForm } from "@/components/booking/GuestPaymentForm";
@@ -9,8 +10,6 @@ import { ProgressBar, type HistoriaBookingStep } from "@/components/booking/Prog
 import { RoomSelection } from "@/components/booking/RoomSelection";
 import { SuccessStep } from "@/components/booking/SuccessStep";
 import {
-  formatCheckInFromDateKey,
-  formatCheckoutFromDateKey,
   formatCompactStayLabel,
 } from "@/lib/booking-modal-helpers";
 import {
@@ -18,7 +17,10 @@ import {
   getAvailabilityErrorMessage,
 } from "@/lib/booking-availability-client";
 import { checkInIsoFromDateKey } from "@/lib/departure-dates";
-import type { StayDurationValue } from "@/lib/booking-search-config";
+import type {
+  RoomSearchConfig,
+  StayDurationValue,
+} from "@/lib/booking-search-config";
 import type { RatePlanId } from "@/lib/rate-plans";
 import { useBookingStore } from "@/store/bookingStore";
 
@@ -27,7 +29,20 @@ function dateKeyFromCheckInIso(iso: string | null): string | null {
   return iso.slice(0, 10);
 }
 
-export function BookingFlow() {
+export type RoomBookingEntry = {
+  duration: StayDurationValue;
+  roomConfig: RoomSearchConfig;
+  roomId: string;
+  roomName: string;
+  cruiseId: string;
+};
+
+export function BookingReservationFlow({
+  initialRoomBooking = null,
+}: {
+  initialRoomBooking?: RoomBookingEntry | null;
+}) {
+  const router = useRouter();
   const {
     isSuccess,
     itineraryConfigured,
@@ -37,6 +52,8 @@ export function BookingFlow() {
     roomConfigs,
     availableRooms,
     selectedRoomIds,
+    preferredRoomId,
+    preferredRoomName,
     searchAttempted,
     isLoading,
     error,
@@ -48,7 +65,6 @@ export function BookingFlow() {
     setAvailability,
     setSearchAttempted,
     setError,
-    setIsLoading,
     selectRoomForCheckout,
     hydrateFromModal,
     totalPrice,
@@ -60,6 +76,40 @@ export function BookingFlow() {
   const [isUpdatingDates, setIsUpdatingDates] = useState(false);
 
   const selectedDateKey = pendingDateKey;
+  const [roomEntryReady, setRoomEntryReady] = useState(!initialRoomBooking);
+
+  useEffect(() => {
+    if (!initialRoomBooking) return;
+
+    const current = useBookingStore.getState();
+    if (
+      current.preferredRoomId !== initialRoomBooking.roomId ||
+      !current.itineraryConfigured
+    ) {
+      useBookingStore.setState({
+        duration: initialRoomBooking.duration,
+        roomConfigs: [initialRoomBooking.roomConfig],
+        itineraryConfigured: true,
+        checkoutStep: 2,
+        checkInDate: null,
+        startDate: null,
+        endDate: null,
+        searchAttempted: false,
+        availableSchedules: [],
+        availableRooms: [],
+        selectedRoomIds: [],
+        selectedRatePlan: "standard",
+        selectedScheduleId: null,
+        selectedCruiseId: initialRoomBooking.cruiseId,
+        preferredRoomId: initialRoomBooking.roomId,
+        preferredRoomName: initialRoomBooking.roomName,
+        totalPrice: 0,
+        error: null,
+      });
+    }
+    const frame = requestAnimationFrame(() => setRoomEntryReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, [initialRoomBooking]);
 
   const stepTitles = useMemo(
     () =>
@@ -102,6 +152,17 @@ export function BookingFlow() {
     );
   }
 
+  if (!roomEntryReady) {
+    return (
+      <div className="hathor-booking-gate" aria-busy="true">
+        <div className="hathor-booking-gate__panel">
+          <p className="hathor-booking-gate__eyebrow">Hathor Dahabiya</p>
+          <h1 className="hathor-booking-gate__title">Preparing available dates</h1>
+        </div>
+      </div>
+    );
+  }
+
   if (!itineraryConfigured || !duration) {
     return (
       <div className="hathor-booking-gate">
@@ -126,6 +187,10 @@ export function BookingFlow() {
   }
 
   const handleGoBackFromDates = () => {
+    if (preferredRoomId) {
+      router.push(`/booking/cruise/${encodeURIComponent(preferredRoomId)}`);
+      return;
+    }
     setCheckoutStep(1);
   };
 
@@ -153,6 +218,7 @@ export function BookingFlow() {
         duration,
         checkInIso,
         roomConfigs,
+        preferredRoomId,
       );
 
       if (!availability.schedules?.length) {
@@ -167,7 +233,11 @@ export function BookingFlow() {
       setEndDate(availability.endDate);
       setAvailability(availability);
       setSearchAttempted(true);
-      setCheckoutStep(3);
+      if (preferredRoomId) {
+        selectRoomForCheckout(preferredRoomId);
+      } else {
+        setCheckoutStep(3);
+      }
     } catch (updateError) {
       setError(
         updateError instanceof Error
@@ -239,7 +309,9 @@ export function BookingFlow() {
           <h1 className="booking-serif hathor-booking-flow__title">{activeTitle}</h1>
           <p className="hathor-booking-flow__subtitle">
             {checkoutStep === 2
-              ? "Choose your check-in date from available sailings."
+              ? preferredRoomName
+                ? `Choose from dates when ${preferredRoomName} is available.`
+                : "Choose your check-in date from available sailings."
               : checkoutStep === 3
                 ? "Choose from available staterooms for your sailing dates."
                 : "Review your reservation and enter guest details to confirm."}
@@ -269,6 +341,8 @@ export function BookingFlow() {
           onUpdateDates={() => void handleUpdateDates()}
           isUpdating={isUpdatingDates}
           canUpdate={Boolean(selectedDateKey)}
+          preferredRoomId={preferredRoomId}
+          actionLabel={preferredRoomId ? "Continue with selected date" : undefined}
         />
       ) : null}
 

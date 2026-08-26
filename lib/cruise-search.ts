@@ -262,7 +262,7 @@ export async function runCruiseSearch(
   duration: StayDurationValue,
   checkInDate: string,
   roomConfigsInput: RoomSearchConfig[],
-  options?: { previewOnly?: boolean },
+  options?: { previewOnly?: boolean; roomId?: string },
 ): Promise<CruiseSearchResponse> {
   const durationOption = findStayDurationOption(duration);
   const { startDate, endDate } = computeStayDates(checkInDate, duration);
@@ -288,6 +288,7 @@ export async function runCruiseSearch(
 
   const availability = await runAvailabilityLookup({
     cruiseId: resolvedCruise.id,
+    roomId: options?.roomId,
     startDate,
     endDate,
     checkInDate,

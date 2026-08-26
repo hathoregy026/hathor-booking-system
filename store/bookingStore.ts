@@ -46,6 +46,8 @@ type BookingStore = {
   selectedRoomIds: string[];
   selectedRatePlan: RatePlanId;
   selectedScheduleId: string | null;
+  preferredRoomId: string | null;
+  preferredRoomName: string | null;
   passengerDetails: PassengerDetails;
   holdExpiresAt: string | null;
   bookingId: string | null;
@@ -111,6 +113,8 @@ const initialState = {
   selectedRoomIds: [] as string[],
   selectedRatePlan: "standard" as RatePlanId,
   selectedScheduleId: null as string | null,
+  preferredRoomId: null as string | null,
+  preferredRoomName: null as string | null,
   passengerDetails: initialPassengerDetails,
   holdExpiresAt: null as string | null,
   bookingId: null as string | null,
@@ -165,6 +169,8 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
       selectedRatePlan: "standard",
       selectedScheduleId: null,
       selectedCruiseId: "",
+      preferredRoomId: null,
+      preferredRoomName: null,
       totalPrice: 0,
       error: null,
     }),

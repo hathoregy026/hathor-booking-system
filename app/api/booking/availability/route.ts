@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
         rooms: searchParams.get("rooms"),
         from,
         to,
+        roomId: searchParams.get("roomId") ?? undefined,
       });
 
       const roomConfigs = normalizeRoomConfigsForDuration(
@@ -55,6 +56,7 @@ export async function GET(request: NextRequest) {
         roomConfigs,
         from: parseISO(parsed.from),
         to: parseISO(parsed.to),
+        roomId: parsed.roomId,
       });
 
       return NextResponse.json({
@@ -84,6 +86,7 @@ export async function GET(request: NextRequest) {
         roomType: searchParams.get("roomType") ?? undefined,
         adults: searchParams.get("adults") ?? undefined,
         children: searchParams.get("children") ?? undefined,
+        roomId: searchParams.get("roomId") ?? undefined,
       });
 
       const duration = parsed.duration;
@@ -110,6 +113,7 @@ export async function GET(request: NextRequest) {
         duration,
         parsed.checkInDate,
         normalizedRooms,
+        { roomId: parsed.roomId },
       );
 
       return NextResponse.json(result);

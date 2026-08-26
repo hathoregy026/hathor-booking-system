@@ -204,6 +204,7 @@ export const cruiseSearchSchema = z
     roomType: luxuryRoomTypeSchema.optional(),
     adults: z.coerce.number().int().min(1).max(MAX_GUESTS_PER_ROOM).optional(),
     children: z.coerce.number().int().min(0).max(MAX_GUESTS_PER_ROOM).optional(),
+    roomId: z.string().trim().min(1).max(128).optional(),
   })
   .refine(
     (data) => {
@@ -311,6 +312,7 @@ export const cruiseCalendarQuerySchema = z.object({
   rooms: roomsJsonParam,
   from: calendarDateParam,
   to: calendarDateParam,
+  roomId: z.string().trim().min(1).max(128).optional(),
 });
 
 export type CruiseCalendarQuery = z.infer<typeof cruiseCalendarQuerySchema>;

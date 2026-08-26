@@ -65,6 +65,7 @@ function computeMinPriceCents(
 export async function getCruiseCalendarDays(input: {
   duration: StayDurationValue;
   roomConfigs: RoomSearchConfig[];
+  roomId?: string;
   from: Date;
   to: Date;
 }): Promise<{
@@ -109,10 +110,13 @@ export async function getCruiseCalendarDays(input: {
 
     if (!cruiseRecord) return null;
 
-    const matchingRooms = filterRoomsForConfigs(
+    const roomsMatchingConfig = filterRoomsForConfigs(
       cruiseRecord.rooms,
       roomConfigs,
     );
+    const matchingRooms = input.roomId
+      ? roomsMatchingConfig.filter((room) => room.id === input.roomId)
+      : roomsMatchingConfig;
 
     const ticketType = await ensureDefaultTicketType(
       cruiseRecord.id,

@@ -21,6 +21,9 @@ import {
 import { useRef } from "react";
 import { useRoomDetailsViewportScroll } from "@/hooks/useRoomDetailsViewportScroll";
 import type { BookingRoomDetails } from "@/lib/booking-room-details";
+import {
+  luxuryRoomTypeForDbRoomType,
+} from "@/lib/booking-search-config";
 import { formatPrice } from "@/lib/client-dates";
 import { useBookingStore } from "@/store/bookingStore";
 
@@ -41,15 +44,41 @@ export function RoomDetailsEditorial({ details }: { details: BookingRoomDetails 
   const rootRef = useRef<HTMLElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const selectRoomForCheckout = useBookingStore((state) => state.selectRoomForCheckout);
   const setCheckoutStep = useBookingStore((state) => state.setCheckoutStep);
   useRoomDetailsViewportScroll({ rootRef, runRef, trackRef });
 
   const images = details.galleryImages.slice(0, 5);
+  const bookNowHref = details.stayDuration
+    ? `/booking?roomId=${encodeURIComponent(details.roomId)}`
+    : "/?book=1";
 
   const handleBookNow = () => {
-    selectRoomForCheckout(details.roomId);
-    router.push("/booking");
+    if (!details.stayDuration) return;
+
+    useBookingStore.setState({
+      duration: details.stayDuration,
+      roomConfigs: [{
+        roomType: luxuryRoomTypeForDbRoomType(details.roomType),
+        adults: 1,
+        children: 0,
+      }],
+      itineraryConfigured: true,
+      checkoutStep: 2,
+      checkInDate: null,
+      startDate: null,
+      endDate: null,
+      searchAttempted: false,
+      availableSchedules: [],
+      availableRooms: [],
+      selectedRoomIds: [],
+      selectedRatePlan: "standard",
+      selectedScheduleId: null,
+      selectedCruiseId: details.cruiseId,
+      preferredRoomId: details.roomId,
+      preferredRoomName: details.roomName,
+      totalPrice: 0,
+      error: null,
+    });
   };
 
   const handleBackToRooms = () => {
@@ -124,7 +153,7 @@ export function RoomDetailsEditorial({ details }: { details: BookingRoomDetails 
                 <p>Per {details.roomType?.toLowerCase().includes("suite") ? "suite" : "cabin"} · up to {details.capacity} guests</p>
               </div>
               <div className="booking-room-editorial__actions">
-                <button type="button" className="public-btn-outline-gold" onClick={handleBookNow}>Book Now</button>
+                <Link href={bookNowHref} className="public-btn-outline-gold" onClick={handleBookNow}>Book Now</Link>
                 <button type="button" className="public-btn-outline-gold" onClick={handleBackToRooms}>Back to rooms</button>
               </div>
             </section>

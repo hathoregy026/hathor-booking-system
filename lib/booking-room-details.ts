@@ -32,6 +32,7 @@ export type BookingRoomDetails = {
   sizeSqm: number;
   childrenAllowed: boolean;
   inclusions: readonly string[];
+  stayDuration: StayDurationValue | null;
 };
 
 function formatRouteForTitle(ports: string | null): string {
@@ -100,30 +101,58 @@ function resolveAmenities(input: {
   return amenitiesByRoomType(input.roomType);
 }
 
-function resolveItineraryMeta(slug: string): {
+function stayDurationFromNights(nights: number): StayDurationValue | null {
+  if (nights === 3) return "3-nights-aswan-luxor";
+  if (nights === 4) return "4-nights-luxor-aswan";
+  if (nights === 7) return "7-nights-luxor-aswan-luxor";
+  return null;
+}
+
+function resolveItineraryMeta(input: {
+  slug: string;
+  name: string;
+  description: string | null;
+}): {
   nights: number;
   days: number;
   departureDay: string | null;
+  stayDuration: StayDurationValue | null;
 } {
-  const fromCatalog = HATHOR_CRUISES.find((cruise) => cruise.slug === slug);
+  const fromCatalog = HATHOR_CRUISES.find((cruise) => cruise.slug === input.slug);
   if (fromCatalog) {
     return {
       nights: fromCatalog.nights,
       days: fromCatalog.days,
       departureDay: fromCatalog.departureDay,
+      stayDuration: stayDurationFromNights(fromCatalog.nights),
     };
   }
 
-  const fromDuration = findStayDurationOption(slug as StayDurationValue);
+  const fromDuration = findStayDurationOption(input.slug as StayDurationValue);
   if (fromDuration) {
     return {
       nights: fromDuration.nights,
       days: fromDuration.nights + 1,
-      departureDay: null,
+      departureDay: fromDuration.nights === 3 ? "Wednesday" : "Saturday",
+      stayDuration: fromDuration.value,
     };
   }
 
-  return { nights: 0, days: 0, departureDay: null };
+  const itineraryText = `${input.name} ${input.description ?? ""}`.toLowerCase();
+  const matchedNights = [3, 4, 7].find((nights) =>
+    itineraryText.includes(`${nights}-night`) ||
+    itineraryText.includes(`${nights} night`),
+  );
+  const stayDuration = matchedNights
+    ? stayDurationFromNights(matchedNights)
+    : null;
+
+  return {
+    nights: matchedNights ?? 0,
+    days: matchedNights ? matchedNights + 1 : 0,
+    departureDay: matchedNights === 3 ? "Wednesday" : matchedNights ? "Saturday" : null,
+    stayDuration,
+  };
 }
 
 function stripAmenitiesBlock(description: string | null): string {
@@ -172,7 +201,11 @@ export async function getBookingRoomDetails(
 
   const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;
   const priceCents = Math.round(room.cruise.basePriceCents * multiplier);
-  const { nights, days, departureDay } = resolveItineraryMeta(room.cruise.slug);
+  const { nights, days, departureDay, stayDuration } = resolveItineraryMeta({
+    slug: room.cruise.slug,
+    name: room.cruise.name,
+    description: room.cruise.description,
+  });
   const visuals = getBookingRoomVisuals(room.name, room.roomType);
 
   const metaParts = [
@@ -208,6 +241,7 @@ export async function getBookingRoomDetails(
     sizeSqm: visuals.sizeSqm,
     childrenAllowed: visuals.childrenAllowed,
     inclusions: HATHOR_BOOKING_INCLUSIONS,
+    stayDuration,
   };
   });
 }

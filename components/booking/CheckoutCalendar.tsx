@@ -78,6 +78,8 @@ type CheckoutCalendarProps = {
   onUpdateDates: () => void;
   isUpdating?: boolean;
   canUpdate?: boolean;
+  preferredRoomId?: string | null;
+  actionLabel?: string;
 };
 
 function MonthPanel({
@@ -183,6 +185,8 @@ export function CheckoutCalendar({
   onUpdateDates,
   isUpdating = false,
   canUpdate = false,
+  preferredRoomId = null,
+  actionLabel = "Update Dates of Stay",
 }: CheckoutCalendarProps) {
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
   const [days, setDays] = useState<CruiseCalendarDay[]>([]);
@@ -244,6 +248,7 @@ export function CheckoutCalendar({
           from: calendarDateToUtcIso(from),
           to: calendarDateToUtcIso(to),
         });
+        if (preferredRoomId) params.set("roomId", preferredRoomId);
 
         const response = await fetch(`/api/cruises/calendar?${params.toString()}`, {
           signal: controller.signal,
@@ -274,7 +279,15 @@ export function CheckoutCalendar({
 
     void load();
     return () => controller.abort();
-  }, [duration, visibleYear, visibleMonthIndex, monthBYear, monthBIndex, roomsKey]);
+  }, [
+    duration,
+    visibleYear,
+    visibleMonthIndex,
+    monthBYear,
+    monthBIndex,
+    roomsKey,
+    preferredRoomId,
+  ]);
 
   const dayMeta = useMemo(
     () => new Map(days.map((day) => [day.date, day])),
@@ -390,7 +403,7 @@ export function CheckoutCalendar({
           onClick={onUpdateDates}
           disabled={!canUpdate || isUpdating}
         >
-          {isUpdating ? "Updating…" : "Update Dates of Stay"}
+          {isUpdating ? "Updating…" : actionLabel}
         </button>
       </div>
     </section>

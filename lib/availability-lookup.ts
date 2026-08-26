@@ -29,6 +29,7 @@ import {
 
 type AvailabilityLookupInput = {
   cruiseId: string;
+  roomId?: string;
   startDate: string;
   endDate: string;
   checkInDate?: string;
@@ -177,8 +178,15 @@ export function computeCheckInAvailability(input: {
 export async function runAvailabilityLookup(
   input: AvailabilityLookupInput,
 ): Promise<AvailabilityLookupResult> {
-  const { cruiseId, startDate, endDate, checkInDate, roomConfigs, previewOnly = false } =
-    input;
+  const {
+    cruiseId,
+    roomId,
+    startDate,
+    endDate,
+    checkInDate,
+    roomConfigs,
+    previewOnly = false,
+  } = input;
 
   const context = await withDb(async () => {
     const cruise = await prisma.cruise.findFirst({
@@ -238,11 +246,15 @@ export async function runAvailabilityLookup(
     };
   }
 
-  const roomsForSearch: AvailabilityRoomRecord[] = roomConfigs
+  const roomsMatchingConfig: AvailabilityRoomRecord[] = roomConfigs
     ? filterRoomsForConfigs(allRooms, roomConfigs)
     : allRooms;
 
-  if (roomConfigs && roomsForSearch.length === 0) {
+  const roomsForSearch = roomId
+    ? roomsMatchingConfig.filter((room) => room.id === roomId)
+    : roomsMatchingConfig;
+
+  if ((roomConfigs || roomId) && roomsForSearch.length === 0) {
     return {
       cruiseId,
       startDate,

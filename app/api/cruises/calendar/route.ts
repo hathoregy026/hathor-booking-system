@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
       rooms: searchParams.get("rooms"),
       from: searchParams.get("from"),
       to: searchParams.get("to"),
+      roomId: searchParams.get("roomId") ?? undefined,
     });
 
     const from = parseISO(parsed.from);
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
         parsed.duration,
         parsed.rooms,
       ),
+      roomId: parsed.roomId,
       from,
       to,
     });
