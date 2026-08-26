@@ -167,6 +167,19 @@ assert(
   "contact hero uses live Italiana",
 );
 assert(
+  livePageFontFamily("voyages", "hero_title", "Bitho Luxury") === "Italiana",
+  "voyages hero uses live Italiana",
+);
+assert(
+  livePageFontFamily("voyages", "page_title", "Gamgote") === "Italiana",
+  "voyages section titles use live Italiana",
+);
+assert(
+  resolvePageStyle(DEFAULT_TYPOGRAPHY_SETTINGS, "voyages", "hero_title")
+    .fontFamily === "Italiana",
+  "resolvePageStyle maps voyages to Italiana",
+);
+assert(
   livePageFontFamily("about", "body_text", "Gamgote") ===
     "Rollgates Luxury Italic",
   "about body uses live Rollgates",

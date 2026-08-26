@@ -178,6 +178,10 @@
 /* ---------- Support copy: one italic serif, one size ---------- */
 
 .voyages-boring .vb-intro__body,
+.voyages-boring .vb-intro__lead,
+.voyages-boring .vb-statement__body,
+.voyages-boring .vb-values__body,
+.voyages-boring .vb-reserve__body,
 .voyages-boring .vb-manifesto__body,
 .voyages-boring .vb-epilogue__contact,
 .voyages-boring .vb-epilogue__contact p,

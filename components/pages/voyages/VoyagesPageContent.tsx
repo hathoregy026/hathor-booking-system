@@ -226,10 +226,10 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
           <div className="vb-stage">
             <div ref={trackRef} className="vb-track">
               <Scene className="vb-intro" id="voyages">
-                <p className="vb-section-label">
+                <p className="vb-section-label wt-page-kicker">
                   {resolveCmsText(copy.heroLabel, VOYAGES_PAGE.opening.eyebrow)}
                 </p>
-                <h1 className="vb-intro__title vb-display wt-page-hero">
+                <h1 className="vb-intro__title vb-display vb-display--xl wt-page-hero">
                   <SplitTitle
                     lines={
                       heroTitleLines.length > 0
@@ -238,7 +238,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     }
                   />
                 </h1>
-                <p className="vb-intro__lead">
+                <p className="vb-intro__lead wt-page-body">
                   {resolveCmsText(
                     copy.heroSupport,
                     VOYAGES_PAGE.hero.subtitle,
@@ -269,13 +269,13 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-statement">
-                <p className="vb-section-label">
+                <p className="vb-section-label wt-page-kicker">
                   {resolveCmsText(copy.statementLabel, "The Hathor way")}
                 </p>
-                <h2 className="vb-statement__title vb-display">
+                <h2 className="vb-statement__title vb-display vb-display--l wt-page-title">
                   <SplitTitle lines={statementTitleLines} />
                 </h2>
-                <p className="vb-statement__body">
+                <p className="vb-statement__body wt-page-body">
                   {resolveCmsText(
                     copy.statementBody,
                     VOYAGES_PAGE.opening.body[0] ?? "",
@@ -300,12 +300,12 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                   frontAlt="A Hathor suite"
                   backAlt="The Royal Suite"
                 />
-                <p className="vb-image-story__script">
+                <div className="vb-image-story__script">
                   {resolveCmsText(
                     copy.openingScript,
                     VOYAGES_PAGE.opening.script,
                   )}
-                </p>
+                </div>
               </Scene>
 
               <Scene className="vb-ribbon">
@@ -338,7 +338,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
               <Scene className="vb-values">
                 <div className="vb-values__wrap" ref={wrapRef}>
-                  <p className="vb-section-label">
+                  <p className="vb-section-label wt-page-kicker">
                     {resolveCmsText(copy.promiseLabel, "The promise")}
                   </p>
                   <ol className="vb-values__list">
@@ -350,8 +350,8 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                         onPointerLeave={() => setActive(-1)}
                       >
                         <span className="vb-values__number">0{index + 1}</span>
-                        <h2 className="vb-values__title vb-display">{item.title}</h2>
-                        <p className="vb-values__body">{item.body}</p>
+                        <h2 className="vb-values__title vb-display vb-display--m wt-page-title">{item.title}</h2>
+                        <p className="vb-values__body wt-page-body">{item.body}</p>
                       </li>
                     ))}
                   </ol>
@@ -369,13 +369,13 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-projects-intro" id="itineraries">
-                <p className="vb-section-label">
+                <p className="vb-section-label wt-page-kicker">
                   {resolveCmsText(copy.itinerariesLabel, "Choose your passage")}
                 </p>
-                <h2 className="vb-projects-intro__title vb-display">
+                <h2 className="vb-projects-intro__title vb-display vb-display--xl wt-page-title">
                   <SplitTitle lines={itinerariesTitleLines} />
                 </h2>
-                <p className="vb-projects-intro__body">
+                <p className="vb-projects-intro__body wt-page-body">
                   {resolveCmsText(
                     copy.itinerariesBody,
                     VOYAGES_PAGE.opening.body[1] ?? "",
@@ -416,7 +416,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                     </div>
                     <div className="vb-project__content">
                       <span className="vb-project__number">0{index + 1}</span>
-                      <h2 className="vb-project__title vb-display">{title}</h2>
+                      <h2 className="vb-project__title vb-display vb-display--l wt-page-title">{title}</h2>
                       <p className="vb-project__meta">
                         {durationLabel}
                         {meta ? (
@@ -426,7 +426,7 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                           </>
                         ) : null}
                       </p>
-                      {body ? <p className="vb-project__body">{body}</p> : null}
+                      {body ? <p className="vb-project__body wt-page-body">{body}</p> : null}
                       <Link className="vb-project__link" href={panel.detailsHref}>
                         {detailsLabel}<span>↗</span>
                       </Link>
@@ -437,22 +437,22 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
               <Scene className="vb-charter">
                 <div className="vb-charter__copy">
-                  <p className="vb-section-label">
+                  <p className="vb-section-label wt-page-kicker">
                     {resolveCmsText(
                       copy.charterLabel,
                       VOYAGES_PAGE.charter.eyebrow,
                     )}
                   </p>
-                  <h2 className="vb-charter__title vb-display">
+                  <h2 className="vb-charter__title vb-display vb-display--xl wt-page-title">
                     <SplitTitle lines={charterTitleLines} />
                   </h2>
-                  <p className="vb-charter__script">
+                  <div className="vb-charter__script">
                     {resolveCmsText(
                       copy.charterScript,
                       VOYAGES_PAGE.charter.script,
                     )}
-                  </p>
-                  <p className="vb-charter__body">
+                  </div>
+                  <p className="vb-charter__body wt-page-body">
                     {resolveCmsText(
                       copy.charterBody,
                       VOYAGES_PAGE.charter.body,
@@ -481,13 +481,13 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
         </section>
 
         <section className="vb-reserve" id="reserve">
-          <p className="vb-section-label">
+          <p className="vb-section-label wt-page-kicker">
             {resolveCmsText(copy.reserveLabel, "Begin your journey")}
           </p>
-          <h2 className="vb-reserve__title vb-display">
+          <h2 className="vb-reserve__title vb-display vb-display--xl wt-page-title">
             {resolveCmsText(copy.ctaTitle, VOYAGES_PAGE.cta.title)}
           </h2>
-          <p className="vb-reserve__body">
+          <p className="vb-reserve__body wt-page-body">
             {resolveCmsText(copy.ctaBody, VOYAGES_PAGE.cta.body)}
           </p>
           <div className="vb-reserve__actions">
