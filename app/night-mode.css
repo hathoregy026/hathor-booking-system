@@ -551,13 +551,24 @@ html[data-public-theme="night"][data-ex-experience] .ex-root :is(
 
 /* Editorial page token remaps. */
 html[data-public-theme="night"] .voyages-boring {
-  --vb-cream-1: var(--night-canvas);
-  --vb-cream-2: var(--night-surface-raised);
-  --vb-gold-1: var(--night-gold-strong);
-  --vb-gold-2: var(--night-gold);
-  --vb-gold-3: var(--night-text-soft);
+  --vb-paper: var(--night-canvas);
+  --vb-paper-warm: var(--night-surface);
+  --vb-ink: var(--night-text);
+  --vb-ink-soft: var(--night-text-soft);
+  --vb-gold: var(--night-gold);
+  --vb-gold-deep: var(--night-gold-strong);
+  --vb-wash-sand: var(--night-surface-raised);
+  --vb-wash-stone: var(--night-surface-soft);
+  --vb-wash-olive: #30291c;
+  --vb-black: #080705;
+  --vb-hair: var(--night-line);
+  --vb-cream-1: var(--vb-paper);
+  --vb-cream-2: var(--vb-paper-warm);
+  --vb-gold-1: var(--vb-wash-sand);
+  --vb-gold-2: var(--vb-gold);
+  --vb-gold-3: var(--vb-ink);
   background-color: var(--night-canvas) !important;
-  color: var(--night-text-soft) !important;
+  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .about-boring {
