@@ -32,7 +32,12 @@ const pool = new pg.Pool({
     : { rejectUnauthorized: false },
 });
 
-const TEMPLATE_NAMES = ["BookingReceived", "BookingConfirmed", "AdminAlert"];
+const TEMPLATE_NAMES = [
+  "BookingReceived",
+  "BookingConfirmed",
+  "AdminAlert",
+  "ContactReceived",
+];
 
 const ensureTableSql = `
 CREATE TABLE IF NOT EXISTS "EmailTemplate" (
@@ -80,7 +85,9 @@ try {
           name,
           name === "AdminAlert"
             ? "New booking request — {guestName}"
-            : `Your Hathor ${name === "BookingConfirmed" ? "cruise is confirmed" : "booking request has been received"}`,
+            : name === "ContactReceived"
+              ? "We received your message | Hathor Dahabiya"
+              : `Your Hathor ${name === "BookingConfirmed" ? "cruise is confirmed" : "booking request has been received"}`,
           LOGO_URL,
           HERO_URL,
         ],

@@ -36,6 +36,17 @@ const DEFAULTS = [
     bodyText:
       "Please log in to the admin dashboard to review and confirm this booking.",
   },
+  {
+    name: "ContactReceived",
+    subject: "We received your message | Hathor Dahabiya",
+    logoUrl:
+      "https://hathor-booking-system.vercel.app/email/hathor-email-icon.png",
+    primaryColor: "#b69f64",
+    backgroundColor: "#ece4da",
+    heroHeading: "Thank you, {guestName}",
+    bodyText:
+      "Your note has reached the Hathor reservations desk. We will reply within 24 hours.",
+  },
 ];
 
 const connectionString = process.env.DATABASE_URL;

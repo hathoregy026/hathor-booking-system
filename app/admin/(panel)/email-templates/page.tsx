@@ -46,6 +46,11 @@ const TEMPLATE_META: Record<
     label: "Admin Alert",
     description: "Notifies your team of new booking requests.",
   },
+  ContactReceived: {
+    label: "Contact Reply",
+    description:
+      "Sent to guests after they contact us. Edit the thank-you heading and message here.",
+  },
 };
 
 function pickShared(templates: EmailTemplateRecord[]): SharedBranding {
@@ -201,7 +206,7 @@ export default function AdminEmailTemplatesPage() {
     <div className="mx-auto max-w-5xl space-y-6">
       <CmsPageHeader
         title="Email Templates"
-        description="One shared brand for all automated booking emails"
+        description="Brand and copy for booking emails and the contact-form reply"
         icon={Mail}
         action={
           <div className="flex flex-wrap gap-2">
@@ -240,7 +245,8 @@ export default function AdminEmailTemplatesPage() {
         <div>
           <h2 className="admin-heading text-lg">Shared branding</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Hero image and colors apply to all three templates. The logo icon is
+            Hero image and colors apply to booking emails. The contact reply uses
+            the same logo and colors, without a hero image. The logo icon is
             fixed.
           </p>
         </div>
@@ -262,7 +268,7 @@ export default function AdminEmailTemplatesPage() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/email/hathor-email-icon.png"
+                src="/email/hathor-email-icon.png?v=transparent"
                 alt="Hathor icon"
                 className="h-16 w-16 object-contain"
               />
@@ -409,7 +415,9 @@ export default function AdminEmailTemplatesPage() {
                 className="mb-1 block font-medium"
                 style={{ color: "var(--text-primary)" }}
               >
-                Hero heading
+                {activeCopy.name === "ContactReceived"
+                  ? "Thank you heading"
+                  : "Hero heading"}
               </span>
               <input
                 value={activeCopy.heroHeading}
@@ -417,7 +425,7 @@ export default function AdminEmailTemplatesPage() {
                   updateCopy(activeCopy.name, { heroHeading: event.target.value })
                 }
                 className="input w-full px-3 py-2"
-                placeholder="Thank You, {guestName}"
+                placeholder="Thank you, {guestName}"
               />
             </label>
 
@@ -426,7 +434,9 @@ export default function AdminEmailTemplatesPage() {
                 className="mb-1 block font-medium"
                 style={{ color: "var(--text-primary)" }}
               >
-                Body text
+                {activeCopy.name === "ContactReceived"
+                  ? "Thank you message"
+                  : "Body text"}
               </span>
               <textarea
                 value={activeCopy.bodyText}

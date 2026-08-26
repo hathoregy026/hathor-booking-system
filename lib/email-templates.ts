@@ -13,6 +13,7 @@ export const EMAIL_TEMPLATE_NAMES = [
   "BookingReceived",
   "BookingConfirmed",
   "AdminAlert",
+  "ContactReceived",
 ] as const;
 
 export type EmailTemplateName = (typeof EMAIL_TEMPLATE_NAMES)[number];
@@ -76,6 +77,17 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     heroHeading: "New Confirmed Reservation",
     bodyText:
       "This reservation was confirmed automatically without collecting payment. Follow up through your approved payment process.",
+  },
+  ContactReceived: {
+    name: "ContactReceived",
+    subject: "We received your message | Hathor Dahabiya",
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    primaryColor: emailColors.gold,
+    backgroundColor: emailColors.background,
+    heroHeading: "Thank you, {guestName}",
+    bodyText:
+      "Your note has reached the Hathor reservations desk. We will reply within 24 hours.",
   },
 };
 
@@ -214,13 +226,14 @@ export function toEmailThemeOverrides(
 /**
  * Hosted HTTPS image URLs for outbound mail (never CID attachments).
  * Logo is always the locked Hathor icon. Cache-bust with digits only.
+ * `20260826` forces clients to refetch after the transparent PNG swap.
  */
 export function buildEmailSendTheme(
   template: EmailTemplateRecord,
 ): EmailTemplateOverrides {
-  const version = String(
-    template.updatedAt ? Date.parse(template.updatedAt) || Date.now() : Date.now(),
-  );
+  const version = `20260826${
+    template.updatedAt ? Date.parse(template.updatedAt) || Date.now() : Date.now()
+  }`;
   const heroBase =
     pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
 

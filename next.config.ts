@@ -160,6 +160,24 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/email/hathor-email-icon.png",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
+        source: "/email/hathor-email-logo.png",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+      {
         source: "/email/:path*",
         headers: [
           {

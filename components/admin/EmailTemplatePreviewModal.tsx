@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Eye, Loader2, Monitor, RefreshCw, Smartphone, X } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
-import type { EmailTemplateName } from "@/lib/email-templates";
+import { EMAIL_TEMPLATE_NAMES, type EmailTemplateName } from "@/lib/email-templates";
 
 type EmailPreview = {
   name: EmailTemplateName;
@@ -30,6 +30,7 @@ const TEMPLATE_LABELS: Record<EmailTemplateName, string> = {
   BookingReceived: "Booking Received",
   BookingConfirmed: "Booking Confirmed",
   AdminAlert: "Admin Alert",
+  ContactReceived: "Contact Reply",
 };
 
 type EmailTemplatePreviewModalProps = {
@@ -229,8 +230,7 @@ export function EmailTemplatePreviewModal({
           className="flex gap-1 overflow-x-auto border-b px-4 py-2 sm:px-6"
           style={{ borderColor: "var(--border)" }}
         >
-          {(["BookingReceived", "BookingConfirmed", "AdminAlert"] as const).map(
-            (name) => (
+          {EMAIL_TEMPLATE_NAMES.map((name) => (
               <button
                 key={name}
                 type="button"
@@ -241,8 +241,7 @@ export function EmailTemplatePreviewModal({
               >
                 {TEMPLATE_LABELS[name]}
               </button>
-            ),
-          )}
+          ))}
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">

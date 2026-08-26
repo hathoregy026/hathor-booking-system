@@ -2,6 +2,7 @@ import { render } from "@react-email/render";
 import AdminAlertEmail from "@/emails/AdminAlert";
 import BookingConfirmedEmail from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
+import ContactReceivedEmail from "@/emails/ContactReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
 import {
   HATHOR_EMAIL_HERO_URL,
@@ -53,7 +54,7 @@ function clip(value: string | null | undefined, max: number): string | null {
 export function buildEmailPreviewTheme(
   template: EmailTemplateRecord,
 ): EmailTemplateOverrides {
-  const version = String(Date.now());
+  const version = `20260826${Date.now()}`;
   const heroBase =
     pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
 
@@ -146,6 +147,13 @@ async function renderTemplateHtml(
       return render(
         AdminAlertEmail({
           details: sampleBookingDetails,
+          ...overrides,
+        }),
+      );
+    case "ContactReceived":
+      return render(
+        ContactReceivedEmail({
+          guestName: sampleGuestName,
           ...overrides,
         }),
       );

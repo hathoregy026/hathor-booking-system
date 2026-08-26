@@ -112,6 +112,7 @@ export function EmailLogo({
               width={width}
               height={width}
               style={{
+                backgroundColor: "transparent",
                 border: 0,
                 display: "block",
                 height: "auto",
