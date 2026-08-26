@@ -1,13 +1,19 @@
 import { JWT } from "google-auth-library";
 import { z } from "zod";
 import { format, parse } from "date-fns";
-import type { GaAdminReport, GaAdminTopPage } from "@/lib/ga-admin-report";
+import type {
+  GaAdminDeviceSlice,
+  GaAdminRankedItem,
+  GaAdminReport,
+  GaAdminTopPage,
+} from "@/lib/ga-admin-report";
 
 const GA_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
 const ANALYTICS_DATA_BASE = "https://analyticsdata.googleapis.com/v1beta";
 const REPORT_TTL_MS = 60_000;
-const FETCH_TIMEOUT_MS = 12_000;
+const FETCH_TIMEOUT_MS = 18_000;
 const PROPERTY_ID_PATTERN = /^\d{6,20}$/;
+const DATE_RANGE = { startDate: "7daysAgo", endDate: "today" } as const;
 
 const serviceAccountSchema = z.object({
   type: z.literal("service_account"),
@@ -38,7 +44,7 @@ const gaRowSchema = z.object({
     .array(z.object({ value: z.string().max(2000).optional() }))
     .optional(),
   metricValues: z
-    .array(z.object({ value: z.string().max(32).optional() }))
+    .array(z.object({ value: z.string().max(48).optional() }))
     .optional(),
 });
 
@@ -79,10 +85,22 @@ type ReportCache = {
 let tokenCache: TokenCache | null = null;
 let reportCache: ReportCache | null = null;
 
-function parseMetric(value: string | undefined): number {
+function parseCount(value: string | undefined): number {
   const parsed = Number.parseInt(value ?? "0", 10);
   if (!Number.isFinite(parsed) || parsed < 0) return 0;
   return parsed;
+}
+
+function parseDecimal(value: string | undefined): number {
+  const parsed = Number.parseFloat(value ?? "0");
+  if (!Number.isFinite(parsed) || parsed < 0) return 0;
+  return parsed;
+}
+
+function parseBounceRate(value: string | undefined): number {
+  const parsed = parseDecimal(value);
+  const percent = parsed <= 1 ? parsed * 100 : parsed;
+  return Math.min(100, percent);
 }
 
 function readPropertyId(): string {
@@ -192,6 +210,60 @@ function sanitizeTitle(value: string | undefined, fallback: string): string {
   return title;
 }
 
+function sanitizeLabel(value: string | undefined, fallback = "Unknown"): string {
+  const cleaned = (value ?? "")
+    .replace(/[<>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!cleaned || cleaned === "(not set)") return fallback;
+  if (cleaned.length > 80) return `${cleaned.slice(0, 77)}…`;
+  return cleaned;
+}
+
+function formatSource(source: string | undefined, medium: string | undefined): string {
+  const src = sanitizeLabel(source, "(direct)");
+  const med = sanitizeLabel(medium, "(none)");
+  if (med === "(none)" || med === "(not set)") return src;
+  return `${src} / ${med}`;
+}
+
+const DEVICE_LABELS: Record<string, string> = {
+  desktop: "Desktop",
+  mobile: "Mobile",
+  tablet: "Tablet",
+  smarttv: "Smart TV",
+};
+
+function parseDevice(value: string | undefined): GaAdminDeviceSlice["key"] {
+  const key = sanitizeLabel(value, "other")
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
+  if (key === "desktop" || key === "mobile" || key === "tablet") return key;
+  if (key === "smarttv") return "smarttv";
+  return "other";
+}
+
+async function runOptionalReport(
+  token: string,
+  propertyId: string,
+  body: Record<string, unknown>,
+  accountEmail: string,
+): Promise<z.infer<typeof gaReportSchema> | null> {
+  try {
+    return await runGaRequest(
+      token,
+      propertyId,
+      "runReport",
+      body,
+      accountEmail,
+    );
+  } catch (error) {
+    if (error instanceof GaAccessError && error.setupHint) throw error;
+    console.error("Optional GA report skipped");
+    return null;
+  }
+}
+
 async function runGaRequest(
   token: string,
   propertyId: string,
@@ -250,7 +322,8 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
   const token = await getAccessToken(account);
   const days = lastSevenUtcDates();
 
-  const [realtime, daily, totals, pages] = await Promise.all([
+  const [realtime, daily, totals, pages, sources, countries, devices] =
+    await Promise.all([
     runGaRequest(
       token,
       propertyId,
@@ -263,7 +336,7 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       propertyId,
       "runReport",
       {
-        dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+        dateRanges: [DATE_RANGE],
         dimensions: [{ name: "date" }],
         metrics: [{ name: "activeUsers" }, { name: "screenPageViews" }],
         orderBys: [{ dimension: { dimensionName: "date" } }],
@@ -276,8 +349,14 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       propertyId,
       "runReport",
       {
-        dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
-        metrics: [{ name: "activeUsers" }, { name: "screenPageViews" }],
+        dateRanges: [DATE_RANGE],
+        metrics: [
+          { name: "activeUsers" },
+          { name: "screenPageViews" },
+          { name: "sessions" },
+          { name: "bounceRate" },
+          { name: "averageSessionDuration" },
+        ],
       },
       account.client_email,
     ),
@@ -286,11 +365,47 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       propertyId,
       "runReport",
       {
-        dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+        dateRanges: [DATE_RANGE],
         dimensions: [{ name: "pagePath" }, { name: "pageTitle" }],
         metrics: [{ name: "screenPageViews" }],
         orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
+        limit: 10,
+      },
+      account.client_email,
+    ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges: [DATE_RANGE],
+        dimensions: [{ name: "sessionSource" }, { name: "sessionMedium" }],
+        metrics: [{ name: "sessions" }],
+        orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
         limit: 8,
+      },
+      account.client_email,
+    ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges: [DATE_RANGE],
+        dimensions: [{ name: "country" }],
+        metrics: [{ name: "sessions" }],
+        orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+        limit: 8,
+      },
+      account.client_email,
+    ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges: [DATE_RANGE],
+        dimensions: [{ name: "deviceCategory" }],
+        metrics: [{ name: "sessions" }],
+        orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+        limit: 6,
       },
       account.client_email,
     ),
@@ -301,8 +416,8 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
     const compact = row.dimensionValues?.[0]?.value ?? "";
     if (!/^\d{8}$/.test(compact)) continue;
     byDate.set(compact, {
-      visitors: parseMetric(row.metricValues?.[0]?.value),
-      pageViews: parseMetric(row.metricValues?.[1]?.value),
+      visitors: parseCount(row.metricValues?.[0]?.value),
+      pageViews: parseCount(row.metricValues?.[1]?.value),
     });
   }
 
@@ -321,22 +436,61 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
     return {
       path,
       title: sanitizeTitle(row.dimensionValues?.[1]?.value, path),
-      pageViews: parseMetric(row.metricValues?.[0]?.value),
+      pageViews: parseCount(row.metricValues?.[0]?.value),
     };
   });
+
+  const sourceRows: GaAdminRankedItem[] = (sources?.rows ?? []).map((row) => ({
+    label: formatSource(
+      row.dimensionValues?.[0]?.value,
+      row.dimensionValues?.[1]?.value,
+    ),
+    value: parseCount(row.metricValues?.[0]?.value),
+  }));
+
+  const countryRows: GaAdminRankedItem[] = (countries?.rows ?? []).map((row) => ({
+    label: sanitizeLabel(row.dimensionValues?.[0]?.value, "Unknown"),
+    value: parseCount(row.metricValues?.[0]?.value),
+  }));
+
+  const deviceTotals = new Map<string, number>();
+  for (const row of devices?.rows ?? []) {
+    const key = parseDevice(row.dimensionValues?.[0]?.value);
+    deviceTotals.set(
+      key,
+      (deviceTotals.get(key) ?? 0) + parseCount(row.metricValues?.[0]?.value),
+    );
+  }
+  const deviceRows: GaAdminDeviceSlice[] = [...deviceTotals.entries()]
+    .map(([key, value]) => ({
+      key,
+      label: DEVICE_LABELS[key] ?? "Other",
+      value,
+    }))
+    .filter((slice) => slice.value > 0)
+    .sort((left, right) => right.value - left.value);
+
+  const totalsRow =
+    totals.rows?.[0]?.metricValues ?? totals.totals?.[0]?.metricValues;
 
   const report: GaAdminReport = {
     range: {
       startDate: days[0]?.iso ?? "",
       endDate: days[days.length - 1]?.iso ?? "",
     },
-    realtimeActiveUsers: parseMetric(realtime.rows?.[0]?.metricValues?.[0]?.value),
+    realtimeActiveUsers: parseCount(realtime.rows?.[0]?.metricValues?.[0]?.value),
     totals: {
-      visitors: parseMetric(totals.rows?.[0]?.metricValues?.[0]?.value),
-      pageViews: parseMetric(totals.rows?.[0]?.metricValues?.[1]?.value),
+      visitors: parseCount(totalsRow?.[0]?.value),
+      pageViews: parseCount(totalsRow?.[1]?.value),
+      sessions: parseCount(totalsRow?.[2]?.value),
+      bounceRate: parseBounceRate(totalsRow?.[3]?.value),
+      averageSessionDurationSeconds: parseDecimal(totalsRow?.[4]?.value),
     },
     series,
     topPages,
+    sources: sourceRows,
+    countries: countryRows,
+    devices: deviceRows,
   };
 
   reportCache = { report, expiresAt: Date.now() + REPORT_TTL_MS };

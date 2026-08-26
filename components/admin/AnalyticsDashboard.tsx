@@ -6,24 +6,36 @@ import {
   Activity,
   AlertTriangle,
   BarChart3,
+  Clock3,
   Eye,
+  Globe2,
+  MonitorSmartphone,
+  MousePointerClick,
   RefreshCw,
+  Share2,
   Users,
 } from "lucide-react";
 import {
   Area,
   CartesianGrid,
+  Cell,
   ComposedChart,
+  Legend,
   Line,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { ActionButton } from "@/components/admin/ActionButton";
+import { DataTable } from "@/components/admin/DataTable";
 import { StatCard } from "@/components/admin/StatCard";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import type {
+  GaAdminDeviceSlice,
+  GaAdminRankedItem,
   GaAdminReport,
   GaAdminReportResponse,
 } from "@/lib/ga-admin-report";
@@ -32,9 +44,37 @@ type Cubic = [number, number, number, number];
 const EASE_SMOOTH: Cubic = [0.32, 0.72, 0, 1];
 
 const numberFmt = new Intl.NumberFormat("en-GB");
+const percentFmt = new Intl.NumberFormat("en-GB", {
+  maximumFractionDigits: 1,
+});
+
+const DEVICE_COLORS: Record<string, string> = {
+  desktop: "#b69f64",
+  mobile: "#8b6914",
+  tablet: "#c9a96e",
+  smarttv: "#d4c4a0",
+  other: "#6e6450",
+};
 
 function formatCount(value: number): string {
   return numberFmt.format(value);
+}
+
+function formatPercent(value: number): string {
+  return `${percentFmt.format(value)}%`;
+}
+
+function formatDuration(seconds: number): string {
+  if (seconds < 1) return "0s";
+  const total = Math.round(seconds);
+  const minutes = Math.floor(total / 60);
+  const rest = total % 60;
+  if (minutes === 0) return `${rest}s`;
+  return `${minutes}m ${String(rest).padStart(2, "0")}s`;
+}
+
+function deviceFill(key: string): string {
+  return DEVICE_COLORS[key] ?? DEVICE_COLORS.other;
 }
 
 function ChartTooltip({
@@ -65,6 +105,111 @@ function ChartTooltip({
       <p style={{ color: "var(--accent)" }}>
         Page views · {formatCount(pageViews)}
       </p>
+    </div>
+  );
+}
+
+function RankedBars({
+  items,
+  empty,
+}: {
+  items: GaAdminRankedItem[];
+  empty: string;
+}) {
+  const peak = Math.max(1, ...items.map((item) => item.value));
+  if (items.length === 0) {
+    return (
+      <p className="mt-5 text-sm" style={{ color: "var(--text-muted)" }}>
+        {empty}
+      </p>
+    );
+  }
+
+  return (
+    <ul className="mt-5 space-y-3">
+      {items.map((item) => {
+        const width = Math.max(6, Math.round((item.value / peak) * 100));
+        return (
+          <li key={item.label}>
+            <div className="flex items-baseline justify-between gap-3 text-sm">
+              <span className="min-w-0 truncate font-medium">{item.label}</span>
+              <span className="shrink-0 tabular-nums" style={{ color: "var(--text-muted)" }}>
+                {formatCount(item.value)}
+              </span>
+            </div>
+            <div
+              className="mt-1.5 h-1.5 overflow-hidden rounded-full"
+              style={{ background: "color-mix(in srgb, var(--accent) 16%, var(--border))" }}
+            >
+              <div
+                className="h-full rounded-full"
+                style={{ width: `${width}%`, background: "var(--accent)" }}
+              />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function DevicePie({
+  devices,
+  reduceMotion,
+}: {
+  devices: GaAdminDeviceSlice[];
+  reduceMotion: boolean | null;
+}) {
+  const data = devices.map((slice) => ({
+    ...slice,
+    fill: deviceFill(slice.key),
+  }));
+
+  if (data.length === 0) {
+    return (
+      <p className="mt-5 text-sm" style={{ color: "var(--text-muted)" }}>
+        Device mix will appear after the first sessions land.
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-2 h-[220px] w-full min-w-0 sm:h-[260px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="label"
+            innerRadius="52%"
+            outerRadius="78%"
+            paddingAngle={2}
+            stroke="none"
+            isAnimationActive={!reduceMotion}
+          >
+            {data.map((slice) => (
+              <Cell key={slice.key} fill={slice.fill} />
+            ))}
+          </Pie>
+          <Tooltip
+            formatter={(value) => formatCount(Number(value ?? 0))}
+            contentStyle={{
+              background: "var(--bg-glass)",
+              border: "1px solid var(--border)",
+              borderRadius: 12,
+              color: "var(--text-primary)",
+            }}
+          />
+          <Legend
+            verticalAlign="bottom"
+            formatter={(value) => (
+              <span style={{ color: "var(--text-secondary)", fontSize: 12 }}>
+                {value}
+              </span>
+            )}
+          />
+        </PieChart>
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -116,6 +261,7 @@ export function AnalyticsDashboard() {
     () => Math.max(0, ...series.map((point) => point.pageViews)),
     [series],
   );
+  const pageViewTotal = report?.totals.pageViews ?? 0;
 
   const gridMotion = reduceMotion
     ? {}
@@ -198,6 +344,26 @@ export function AnalyticsDashboard() {
             value={formatCount(report?.totals.visitors ?? 0)}
             icon={Users}
             hint="Unique visitors · last 7 days"
+            isLoading={isLoading}
+            className="h-full"
+          />
+        </motion.div>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Bounce rate"
+            value={formatPercent(report?.totals.bounceRate ?? 0)}
+            icon={MousePointerClick}
+            hint="Sessions that were not engaged"
+            isLoading={isLoading}
+            className="h-full"
+          />
+        </motion.div>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Avg. session"
+            value={formatDuration(report?.totals.averageSessionDurationSeconds ?? 0)}
+            icon={Clock3}
+            hint="Average time on the site"
             isLoading={isLoading}
             className="h-full"
           />
@@ -309,43 +475,129 @@ export function AnalyticsDashboard() {
         </div>
       </section>
 
-      <section className="card p-4 sm:p-6">
-        <h2 className="admin-heading text-base sm:text-lg">Top pages</h2>
-        <p className="admin-subheading mt-1">Most viewed paths this week</p>
-        {isLoading ? (
-          <div className="mt-5 space-y-3">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="admin-skeleton h-10 w-full rounded-xl" />
-            ))}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Device breakdown</h2>
+              <p className="admin-subheading mt-1">Desktop, mobile, and tablet sessions</p>
+            </div>
+            <MonitorSmartphone
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
           </div>
-        ) : !report?.topPages.length ? (
-          <p className="mt-5 text-sm" style={{ color: "var(--text-muted)" }}>
-            No page views yet. Once visitors land, paths will appear here.
-          </p>
-        ) : (
-          <ul className="mt-5 divide-y" style={{ borderColor: "var(--border)" }}>
-            {report.topPages.map((page) => (
-              <li
-                key={page.path}
-                className="flex items-baseline justify-between gap-4 py-3"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{page.title}</p>
-                  <p
-                    className="truncate font-mono text-[11px]"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    {page.path}
-                  </p>
-                </div>
-                <p className="shrink-0 tabular-nums text-sm font-semibold">
-                  {formatCount(page.pageViews)}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {isLoading ? (
+            <div className="admin-skeleton mt-5 h-[220px] w-full rounded-2xl" />
+          ) : (
+            <DevicePie devices={report?.devices ?? []} reduceMotion={reduceMotion} />
+          )}
+        </section>
+
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Top traffic sources</h2>
+              <p className="admin-subheading mt-1">Source / medium by sessions</p>
+            </div>
+            <Share2
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
+          </div>
+          {isLoading ? (
+            <div className="mt-5 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="admin-skeleton h-8 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <RankedBars
+              items={report?.sources ?? []}
+              empty="No referral sources yet."
+            />
+          )}
+        </section>
+
+        <section className="card p-4 sm:p-6 lg:col-span-2">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Top countries</h2>
+              <p className="admin-subheading mt-1">Where sessions originated</p>
+            </div>
+            <Globe2
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
+          </div>
+          {isLoading ? (
+            <div className="mt-5 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="admin-skeleton h-8 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <RankedBars
+              items={report?.countries ?? []}
+              empty="No country data yet."
+            />
+          )}
+        </section>
+      </div>
+
+      <DataTable
+        title="Top performing pages"
+        description="Most visited paths this week, ranked by page views"
+        isLoading={isLoading}
+        isEmpty={!isLoading && !(report?.topPages.length)}
+        emptyTitle="No page views yet"
+        emptyMessage="Once visitors land, paths will appear here."
+        emptyIcon={Eye}
+        skeletonRows={6}
+      >
+        <div className="admin-table-scroll">
+          <table className="admin-table min-w-full text-sm">
+            <thead>
+              <tr>
+                <th className="px-4 py-3 text-left sm:px-6">Page</th>
+                <th className="px-4 py-3 text-left sm:px-6">Path</th>
+                <th className="px-4 py-3 text-right sm:px-6">Views</th>
+                <th className="hidden px-4 py-3 text-right sm:table-cell sm:px-6">
+                  Share
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {(report?.topPages ?? []).map((page) => {
+                const share =
+                  pageViewTotal > 0 ? (page.pageViews / pageViewTotal) * 100 : 0;
+                return (
+                  <tr key={page.path}>
+                    <td className="max-w-[14rem] truncate px-4 py-3 font-medium sm:px-6">
+                      {page.title}
+                    </td>
+                    <td
+                      className="max-w-[16rem] truncate px-4 py-3 font-mono text-[11px] sm:px-6"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      {page.path}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums sm:px-6">
+                      {formatCount(page.pageViews)}
+                    </td>
+                    <td className="hidden px-4 py-3 text-right tabular-nums sm:table-cell sm:px-6">
+                      {formatPercent(share)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </DataTable>
     </div>
   );
 }
