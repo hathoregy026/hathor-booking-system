@@ -10,12 +10,14 @@ type RoomScrollRefs = {
   trackRef: RefObject<HTMLDivElement | null>;
 };
 
-export function useRoomDetailsHorizontalScroll({ rootRef, runRef, trackRef }: RoomScrollRefs) {
+export function useRoomDetailsViewportScroll({ rootRef, runRef, trackRef }: RoomScrollRefs) {
   useEffect(() => {
     const root = rootRef.current;
     const run = runRef.current;
     const track = trackRef.current;
     if (!root || !run || !track) return;
+    const stage = run.querySelector<HTMLElement>(".booking-room-stage");
+    if (!stage) return;
 
     const progress = root.querySelector<HTMLElement>("[data-room-progress]");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -38,7 +40,8 @@ export function useRoomDetailsHorizontalScroll({ rootRef, runRef, trackRef }: Ro
 
     const update = () => {
       if (!desktop) return;
-      target = clamp(-run.getBoundingClientRect().top / scrollDistance);
+      const stickyOffset = Number.parseFloat(getComputedStyle(stage).top) || 0;
+      target = clamp((stickyOffset - run.getBoundingClientRect().top) / scrollDistance);
       if (!frame) frame = requestAnimationFrame(render);
     };
 
@@ -52,8 +55,9 @@ export function useRoomDetailsHorizontalScroll({ rootRef, runRef, trackRef }: Ro
       }
       travel = Math.max(1, track.scrollWidth - window.innerWidth);
       scrollDistance = Math.max(1, travel * 0.74);
-      run.style.height = `${scrollDistance + window.innerHeight}px`;
-      target = clamp(-run.getBoundingClientRect().top / scrollDistance);
+      const stickyOffset = Number.parseFloat(getComputedStyle(stage).top) || 0;
+      run.style.height = `${scrollDistance + stage.clientHeight}px`;
+      target = clamp((stickyOffset - run.getBoundingClientRect().top) / scrollDistance);
       current = target;
       track.style.transform = `translate3d(${-current * travel}px, 0, 0)`;
       if (progress) progress.style.transform = `scaleX(${current})`;

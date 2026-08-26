@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Baby,
   Bath,
@@ -18,9 +19,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useRef } from "react";
-import { useRoomDetailsHorizontalScroll } from "@/hooks/useRoomDetailsHorizontalScroll";
+import { useRoomDetailsViewportScroll } from "@/hooks/useRoomDetailsViewportScroll";
 import type { BookingRoomDetails } from "@/lib/booking-room-details";
 import { formatPrice } from "@/lib/client-dates";
+import { useBookingStore } from "@/store/bookingStore";
 
 function amenityIcon(amenity: string): LucideIcon {
   const value = amenity.toLowerCase();
@@ -35,12 +37,25 @@ function amenityIcon(amenity: string): LucideIcon {
 }
 
 export function RoomDetailsEditorial({ details }: { details: BookingRoomDetails }) {
+  const router = useRouter();
   const rootRef = useRef<HTMLElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  useRoomDetailsHorizontalScroll({ rootRef, runRef, trackRef });
+  const selectRoomForCheckout = useBookingStore((state) => state.selectRoomForCheckout);
+  const setCheckoutStep = useBookingStore((state) => state.setCheckoutStep);
+  useRoomDetailsViewportScroll({ rootRef, runRef, trackRef });
 
   const images = details.galleryImages.slice(0, 5);
+
+  const handleBookNow = () => {
+    selectRoomForCheckout(details.roomId);
+    router.push("/booking");
+  };
+
+  const handleBackToRooms = () => {
+    setCheckoutStep(3);
+    router.push("/booking");
+  };
 
   return (
     <article ref={rootRef} className="booking-room-editorial">
@@ -109,8 +124,8 @@ export function RoomDetailsEditorial({ details }: { details: BookingRoomDetails 
                 <p>Per {details.roomType?.toLowerCase().includes("suite") ? "suite" : "cabin"} · up to {details.capacity} guests</p>
               </div>
               <div className="booking-room-editorial__actions">
-                <Link href="/?book=1" className="public-btn-outline-gold">Check availability</Link>
-                <Link href="/book" className="public-btn-outline-gold">Search all sailings</Link>
+                <button type="button" className="public-btn-outline-gold" onClick={handleBookNow}>Book Now</button>
+                <button type="button" className="public-btn-outline-gold" onClick={handleBackToRooms}>Back to rooms</button>
               </div>
             </section>
           </div>
