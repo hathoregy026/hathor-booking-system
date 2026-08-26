@@ -2,17 +2,15 @@
 
 import { useRef, useState } from "react";
 import { AlertCircle, ImageIcon, Loader2, Upload } from "lucide-react";
-import { adminFetch } from "@/lib/admin-fetch";
-import {
-  STORAGE_CACHE_CONTROL,
-  validateEmailImageFile,
-} from "@/lib/image-upload";
+import { adminFetch, ADMIN_UPLOAD_TIMEOUT_MS } from "@/lib/admin-fetch";
+import { validateEmailImageFile } from "@/lib/image-upload";
 
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 type EmailImageUploadProps = {
   label: string;
-  field: "logoUrl" | "heroImageUrl";
+  /** Only hero is changeable — logo is locked in the dashboard. */
+  field: "heroImageUrl";
   value: string | null;
   onUploaded: (url: string) => void;
 };
@@ -26,6 +24,7 @@ export function EmailImageUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [previewBust, setPreviewBust] = useState(0);
 
   const handleUpload = async (file: File) => {
     setError(null);
@@ -37,60 +36,31 @@ export function EmailImageUpload({
         throw new Error(validationError);
       }
 
-      const signResponse = await adminFetch("/api/admin/email-templates/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          field,
-          fileName: file.name,
-          contentType: file.type || "application/octet-stream",
-          fileSize: file.size,
-        }),
-      });
-
-      const signData = (await signResponse.json()) as {
-        signedUrl?: string;
-        publicUrl?: string;
-        error?: string;
-      };
-
-      if (!signResponse.ok || !signData.signedUrl || !signData.publicUrl) {
-        throw new Error(signData.error ?? "Could not start upload");
-      }
-
       const form = new FormData();
-      form.append("cacheControl", STORAGE_CACHE_CONTROL);
-      form.append("", file);
-      const uploadResponse = await fetch(signData.signedUrl, {
-        method: "PUT",
-        body: form,
-      });
+      form.append("field", field);
+      form.append("file", file, file.name);
 
-      if (!uploadResponse.ok) {
-        throw new Error(
-          `Upload to storage failed (${uploadResponse.status}). Try a smaller JPG or PNG under 5 MB.`,
-        );
-      }
+      const response = await adminFetch(
+        "/api/admin/email-templates/upload",
+        {
+          method: "POST",
+          body: form,
+          cache: "no-store",
+        },
+        ADMIN_UPLOAD_TIMEOUT_MS,
+      );
 
-      const saveResponse = await adminFetch("/api/admin/email-templates/upload", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          field,
-          publicUrl: signData.publicUrl,
-        }),
-      });
-
-      const saveData = (await saveResponse.json()) as {
+      const data = (await response.json()) as {
         url?: string;
         error?: string;
       };
 
-      if (!saveResponse.ok || !saveData.url) {
-        throw new Error(saveData.error ?? "Failed to save image URL");
+      if (!response.ok || !data.url) {
+        throw new Error(data.error ?? "Upload failed");
       }
 
-      onUploaded(saveData.url);
+      setPreviewBust(Date.now());
+      onUploaded(data.url);
     } catch (uploadError) {
       setError(
         uploadError instanceof Error ? uploadError.message : "Upload failed",
@@ -103,6 +73,10 @@ export function EmailImageUpload({
     }
   };
 
+  const previewSrc = value
+    ? `${value}${value.includes("?") ? "&" : "?"}cb=${previewBust || "1"}`
+    : null;
+
   return (
     <div className="space-y-3">
       <span
@@ -112,14 +86,15 @@ export function EmailImageUpload({
         {label}
       </span>
 
-      {value ? (
+      {previewSrc ? (
         <div
           className="overflow-hidden rounded-2xl border"
           style={{ borderColor: "var(--border)", background: "var(--input-bg)" }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={value}
+            key={previewSrc}
+            src={previewSrc}
             alt={`${label} preview`}
             className="max-h-40 w-full object-contain p-2"
             onError={(event) => {
@@ -159,8 +134,8 @@ export function EmailImageUpload({
         className="hidden"
         id={`email-upload-${field}`}
         onChange={(event) => {
-          const file = event.target.files?.[0];
-          if (file) void handleUpload(file);
+          const next = event.target.files?.[0];
+          if (next) void handleUpload(next);
         }}
       />
 
@@ -175,12 +150,12 @@ export function EmailImageUpload({
         ) : (
           <Upload className="h-4 w-4" aria-hidden />
         )}
-        {isUploading ? "Uploading…" : `Upload ${label}`}
+        {isUploading ? "Uploading…" : `Replace ${label}`}
       </button>
 
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-        JPG, PNG, or WebP — max 5 MB. Uploads to the email-images bucket and
-        apply to all booking emails right away.
+        JPG, PNG, or WebP — max 5 MB. Stored in Supabase. Replacing deletes the
+        previous hero file completely.
       </p>
 
       {error ? (

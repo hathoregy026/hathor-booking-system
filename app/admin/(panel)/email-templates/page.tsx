@@ -278,10 +278,12 @@ export default function AdminEmailTemplatesPage() {
             onUploaded={(url) => {
               setShared((current) => ({
                 ...current,
-                logoUrl: current.logoUrl,
                 heroImageUrl: url,
               }));
-              showToast("success", "Hero uploaded and applied to all templates");
+              showToast(
+                "success",
+                "Hero replaced in Supabase — previous file deleted",
+              );
               void loadTemplates();
             }}
           />

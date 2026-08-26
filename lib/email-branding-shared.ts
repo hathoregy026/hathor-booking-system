@@ -1,13 +1,14 @@
 import { toAbsolutePublicUrl, VERCEL_PRODUCTION_ORIGIN } from "@/lib/public-url";
+import { EMAIL_IMAGE_BUCKET } from "@/lib/image-upload";
 
 export type SharedEmailBranding = {
   logoUrl: string | null;
   heroImageUrl: string | null;
 };
 
-/** Site-hosted email assets under /email/* (icon, logo wordmark, hero). */
+/** Site-hosted email assets under /email/* (locked logo icon + fallback hero). */
 const SITE_EMAIL_ASSET_PATH = /\/email\/hathor-email-(icon|logo|hero)\./i;
-const LEGACY_SUPABASE_EMAIL_IMAGES_PATH =
+const SUPABASE_EMAIL_IMAGES_PATH =
   /\/storage\/v1\/object\/public\/email-images\//i;
 
 function isTrustedEmailHost(hostname: string): boolean {
@@ -23,7 +24,7 @@ function isTrustedEmailHost(hostname: string): boolean {
   }
 }
 
-/** Outbound email images: prefer site-hosted `/email/*`, allow Supabase email-images. */
+/** True for site `/email/*` or Supabase `email-images` public URLs. */
 export function isReliableHostedEmailImageUrl(
   url: string | null | undefined,
 ): boolean {
@@ -52,23 +53,53 @@ export function isReliableHostedEmailImageUrl(
     return false;
   }
 
-  return LEGACY_SUPABASE_EMAIL_IMAGES_PATH.test(resolved);
+  return SUPABASE_EMAIL_IMAGES_PATH.test(resolved);
 }
 
+/**
+ * First reliable candidate wins (order matters).
+ * Dashboard Supabase hero uploads must beat the static site fallback.
+ */
 export function pickReliableEmailImageUrl(
   ...candidates: Array<string | null | undefined>
 ): string | null {
-  /* Prefer site-hosted /email assets over Supabase uploads. */
-  let legacy: string | null = null;
   for (const candidate of candidates) {
     const resolved = toAbsolutePublicUrl(candidate?.trim() || null);
-    if (!resolved || !isReliableHostedEmailImageUrl(resolved)) continue;
-    if (SITE_EMAIL_ASSET_PATH.test(resolved)) return resolved;
-    if (!legacy && LEGACY_SUPABASE_EMAIL_IMAGES_PATH.test(resolved)) {
-      legacy = resolved;
+    if (resolved && isReliableHostedEmailImageUrl(resolved)) {
+      return resolved;
     }
   }
-  return legacy;
+  return null;
+}
+
+/** Object key inside the email-images bucket, or null if not a bucket URL. */
+export function emailImagesObjectPathFromUrl(
+  url: string | null | undefined,
+): string | null {
+  const resolved = toAbsolutePublicUrl(url?.trim() || null);
+  if (!resolved) return null;
+  const match = resolved.match(
+    /\/storage\/v1\/object\/public\/email-images\/([^?&#]+)/i,
+  );
+  if (!match?.[1]) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
+export function isSupabaseEmailImageUrl(
+  url: string | null | undefined,
+): boolean {
+  return Boolean(emailImagesObjectPathFromUrl(url));
+}
+
+export function buildEmailImagesPublicUrl(objectPath: string): string | null {
+  const base = process.env.SUPABASE_URL?.replace(/\/$/, "");
+  if (!base) return null;
+  const clean = objectPath.replace(/^\/+/, "");
+  return `${base}/storage/v1/object/public/${EMAIL_IMAGE_BUCKET}/${clean}`;
 }
 
 /** Collect the best logo/hero URLs from any template row (shared branding). */
