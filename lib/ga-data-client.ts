@@ -1,19 +1,32 @@
 import { JWT } from "google-auth-library";
 import { z } from "zod";
 import { format, parse } from "date-fns";
-import type {
-  GaAdminDeviceSlice,
-  GaAdminRankedItem,
-  GaAdminReport,
-  GaAdminTopPage,
+import { BookingStatus } from "@/app/generated/prisma/enums";
+import { withDb } from "@/lib/db-safe";
+import {
+  GA_ADMIN_RANGES,
+  type GaAdminDeviceSlice,
+  type GaAdminRangeId,
+  type GaAdminRankedItem,
+  type GaAdminReport,
+  type GaAdminTopPage,
+  type GaRealtimeMinute,
+  type GaRealtimeReport,
 } from "@/lib/ga-admin-report";
+import { prisma } from "@/lib/prisma";
 
 const GA_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
 const ANALYTICS_DATA_BASE = "https://analyticsdata.googleapis.com/v1beta";
-const REPORT_TTL_MS = 60_000;
+const REPORT_TTL_MS = 8 * 60 * 1000;
+const REALTIME_TTL_MS = 30_000;
 const FETCH_TIMEOUT_MS = 18_000;
 const PROPERTY_ID_PATTERN = /^\d{6,20}$/;
-const DATE_RANGE = { startDate: "7daysAgo", endDate: "today" } as const;
+const CONVERSION_EVENTS = [
+  "purchase",
+  "begin_checkout",
+  "generate_lead",
+  "booking_confirmed",
+] as const;
 
 const serviceAccountSchema = z.object({
   type: z.literal("service_account"),
@@ -82,8 +95,16 @@ type ReportCache = {
   expiresAt: number;
 };
 
+type RealtimeCache = {
+  report: GaRealtimeReport;
+  expiresAt: number;
+};
+
 let tokenCache: TokenCache | null = null;
-let reportCache: ReportCache | null = null;
+const reportCache = new Map<GaAdminRangeId, ReportCache>();
+const reportInflight = new Map<GaAdminRangeId, Promise<GaAdminReport>>();
+let realtimeCache: RealtimeCache | null = null;
+let realtimeInflight: Promise<GaRealtimeReport> | null = null;
 
 function parseCount(value: string | undefined): number {
   const parsed = Number.parseInt(value ?? "0", 10);
@@ -180,21 +201,51 @@ async function getAccessToken(account: ServiceAccount): Promise<string> {
   }
 }
 
-function lastSevenUtcDates(): { compact: string; iso: string; label: string }[] {
-  const days: { compact: string; iso: string; label: string }[] = [];
+function utcDayMs(now: Date, offsetDays: number): number {
+  return Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + offsetDays,
+  );
+}
+
+function dayPoint(ms: number): { compact: string; iso: string; label: string } {
+  const iso = new Date(ms).toISOString().slice(0, 10);
+  return {
+    compact: iso.replaceAll("-", ""),
+    iso,
+    label: format(parse(iso, "yyyy-MM-dd", new Date()), "d MMM"),
+  };
+}
+
+function seriesDaysForRange(
+  rangeId: GaAdminRangeId,
+): { compact: string; iso: string; label: string }[] {
   const now = new Date();
-  for (let offset = 6; offset >= 0; offset -= 1) {
-    const day = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - offset),
-    );
-    const iso = day.toISOString().slice(0, 10);
-    days.push({
-      compact: iso.replaceAll("-", ""),
-      iso,
-      label: format(parse(iso, "yyyy-MM-dd", new Date()), "d MMM"),
-    });
+  const todayMs = utcDayMs(now, 0);
+  if (rangeId === "today") return [dayPoint(todayMs)];
+  if (rangeId === "yesterday") return [dayPoint(utcDayMs(now, -1))];
+  const count = GA_ADMIN_RANGES[rangeId].dayCount;
+  const days: { compact: string; iso: string; label: string }[] = [];
+  for (let offset = count - 1; offset >= 0; offset -= 1) {
+    days.push(dayPoint(utcDayMs(now, -offset)));
   }
   return days;
+}
+
+function bookingBoundsForRange(rangeId: GaAdminRangeId): { gte: Date; lt: Date } {
+  const now = new Date();
+  const todayStart = new Date(utcDayMs(now, 0));
+  const tomorrow = new Date(utcDayMs(now, 1));
+  if (rangeId === "today") return { gte: todayStart, lt: tomorrow };
+  if (rangeId === "yesterday") {
+    return { gte: new Date(utcDayMs(now, -1)), lt: todayStart };
+  }
+  const count = GA_ADMIN_RANGES[rangeId].dayCount;
+  return {
+    gte: new Date(utcDayMs(now, -(count - 1))),
+    lt: tomorrow,
+  };
 }
 
 function sanitizePath(value: string | undefined): string {
@@ -248,12 +299,13 @@ async function runOptionalReport(
   propertyId: string,
   body: Record<string, unknown>,
   accountEmail: string,
+  method: "runReport" | "runRealtimeReport" = "runReport",
 ): Promise<z.infer<typeof gaReportSchema> | null> {
   try {
     return await runGaRequest(
       token,
       propertyId,
-      "runReport",
+      method,
       body,
       accountEmail,
     );
@@ -312,35 +364,63 @@ async function runGaRequest(
   return parsed.data;
 }
 
-export async function fetchGaAdminReport(): Promise<GaAdminReport> {
-  if (reportCache && reportCache.expiresAt > Date.now()) {
-    return reportCache.report;
+async function countConfirmedBookings(rangeId: GaAdminRangeId): Promise<number> {
+  try {
+    const bounds = bookingBoundsForRange(rangeId);
+    return await withDb(() =>
+      prisma.booking.count({
+        where: {
+          deletedAt: null,
+          status: BookingStatus.CONFIRMED,
+          createdAt: { gte: bounds.gte, lt: bounds.lt },
+        },
+      }),
+    );
+  } catch {
+    return 0;
   }
+}
 
+function parseEventCounts(
+  rows: z.infer<typeof gaReportSchema>["rows"],
+): { checkoutStarts: number; purchases: number; leads: number; bookingEvents: number } {
+  const counts = {
+    checkoutStarts: 0,
+    purchases: 0,
+    leads: 0,
+    bookingEvents: 0,
+  };
+  for (const row of rows ?? []) {
+    const name = (row.dimensionValues?.[0]?.value ?? "").trim();
+    const count = parseCount(row.metricValues?.[0]?.value);
+    if (name === "begin_checkout") counts.checkoutStarts = count;
+    else if (name === "purchase") counts.purchases = count;
+    else if (name === "generate_lead") counts.leads = count;
+    else if (name === "booking_confirmed") counts.bookingEvents = count;
+  }
+  return counts;
+}
+
+async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport> {
   const propertyId = readPropertyId();
   const account = readServiceAccount();
   const token = await getAccessToken(account);
-  const days = lastSevenUtcDates();
+  const range = GA_ADMIN_RANGES[rangeId];
+  const dateRanges = [{ startDate: range.startDate, endDate: range.endDate }];
+  const days = seriesDaysForRange(rangeId);
 
-  const [realtime, daily, totals, pages, sources, countries, devices] =
+  const [daily, totals, pages, sources, countries, devices, events, bookings] =
     await Promise.all([
-    runGaRequest(
-      token,
-      propertyId,
-      "runRealtimeReport",
-      { metrics: [{ name: "activeUsers" }] },
-      account.client_email,
-    ),
     runGaRequest(
       token,
       propertyId,
       "runReport",
       {
-        dateRanges: [DATE_RANGE],
+        dateRanges,
         dimensions: [{ name: "date" }],
         metrics: [{ name: "activeUsers" }, { name: "screenPageViews" }],
         orderBys: [{ dimension: { dimensionName: "date" } }],
-        limit: 14,
+        limit: Math.min(100, Math.max(14, days.length)),
       },
       account.client_email,
     ),
@@ -349,7 +429,7 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       propertyId,
       "runReport",
       {
-        dateRanges: [DATE_RANGE],
+        dateRanges,
         metrics: [
           { name: "activeUsers" },
           { name: "screenPageViews" },
@@ -365,7 +445,7 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       propertyId,
       "runReport",
       {
-        dateRanges: [DATE_RANGE],
+        dateRanges,
         dimensions: [{ name: "pagePath" }, { name: "pageTitle" }],
         metrics: [{ name: "screenPageViews" }],
         orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
@@ -377,7 +457,7 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       token,
       propertyId,
       {
-        dateRanges: [DATE_RANGE],
+        dateRanges,
         dimensions: [{ name: "sessionSource" }, { name: "sessionMedium" }],
         metrics: [{ name: "sessions" }],
         orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
@@ -389,7 +469,7 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       token,
       propertyId,
       {
-        dateRanges: [DATE_RANGE],
+        dateRanges,
         dimensions: [{ name: "country" }],
         metrics: [{ name: "sessions" }],
         orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
@@ -401,7 +481,7 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       token,
       propertyId,
       {
-        dateRanges: [DATE_RANGE],
+        dateRanges,
         dimensions: [{ name: "deviceCategory" }],
         metrics: [{ name: "sessions" }],
         orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
@@ -409,6 +489,24 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
       },
       account.client_email,
     ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges,
+        dimensions: [{ name: "eventName" }],
+        metrics: [{ name: "eventCount" }],
+        dimensionFilter: {
+          filter: {
+            fieldName: "eventName",
+            inListFilter: { values: [...CONVERSION_EVENTS] },
+          },
+        },
+        limit: 12,
+      },
+      account.client_email,
+    ),
+    countConfirmedBookings(rangeId),
   ]);
 
   const byDate = new Map<string, { visitors: number; pageViews: number }>();
@@ -472,19 +570,34 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
 
   const totalsRow =
     totals.rows?.[0]?.metricValues ?? totals.totals?.[0]?.metricValues;
+  const visitors = parseCount(totalsRow?.[0]?.value);
+  const eventCounts = parseEventCounts(events?.rows);
+  const bookingCount = Math.max(bookings, eventCounts.purchases, eventCounts.bookingEvents);
+  const rate = visitors > 0 ? Math.min(100, (bookingCount / visitors) * 100) : 0;
 
-  const report: GaAdminReport = {
+  return {
     range: {
-      startDate: days[0]?.iso ?? "",
-      endDate: days[days.length - 1]?.iso ?? "",
+      id: rangeId,
+      label: range.label,
+      startDate: range.startDate,
+      endDate: range.endDate,
+      startIso: days[0]?.iso ?? "",
+      endIso: days[days.length - 1]?.iso ?? "",
     },
-    realtimeActiveUsers: parseCount(realtime.rows?.[0]?.metricValues?.[0]?.value),
+    generatedAt: new Date().toISOString(),
     totals: {
-      visitors: parseCount(totalsRow?.[0]?.value),
+      visitors,
       pageViews: parseCount(totalsRow?.[1]?.value),
       sessions: parseCount(totalsRow?.[2]?.value),
       bounceRate: parseBounceRate(totalsRow?.[3]?.value),
       averageSessionDurationSeconds: parseDecimal(totalsRow?.[4]?.value),
+    },
+    conversions: {
+      bookings: bookingCount,
+      checkoutStarts: eventCounts.checkoutStarts,
+      purchases: eventCounts.purchases,
+      leads: eventCounts.leads,
+      rate,
     },
     series,
     topPages,
@@ -492,7 +605,96 @@ export async function fetchGaAdminReport(): Promise<GaAdminReport> {
     countries: countryRows,
     devices: deviceRows,
   };
+}
 
-  reportCache = { report, expiresAt: Date.now() + REPORT_TTL_MS };
-  return report;
+export async function fetchGaAdminReport(
+  rangeId: GaAdminRangeId,
+): Promise<GaAdminReport> {
+  const cached = reportCache.get(rangeId);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.report;
+  }
+
+  const pending = reportInflight.get(rangeId);
+  if (pending) return pending;
+
+  const load = loadGaAdminReport(rangeId)
+    .then((report) => {
+      reportCache.set(rangeId, {
+        report,
+        expiresAt: Date.now() + REPORT_TTL_MS,
+      });
+      return report;
+    })
+    .finally(() => {
+      reportInflight.delete(rangeId);
+    });
+
+  reportInflight.set(rangeId, load);
+  return load;
+}
+
+async function loadGaRealtimeReport(): Promise<GaRealtimeReport> {
+  const propertyId = readPropertyId();
+  const account = readServiceAccount();
+  const token = await getAccessToken(account);
+
+  const [totals, byMinute] = await Promise.all([
+    runGaRequest(
+      token,
+      propertyId,
+      "runRealtimeReport",
+      { metrics: [{ name: "activeUsers" }] },
+      account.client_email,
+    ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        metrics: [{ name: "activeUsers" }],
+        dimensions: [{ name: "minutesAgo" }],
+        orderBys: [{ dimension: { dimensionName: "minutesAgo" } }],
+        limit: 30,
+      },
+      account.client_email,
+      "runRealtimeReport",
+    ),
+  ]);
+
+  const minuteMap = new Map<number, number>();
+  for (const row of byMinute?.rows ?? []) {
+    const ago = parseCount(row.dimensionValues?.[0]?.value);
+    if (ago > 29) continue;
+    minuteMap.set(ago, parseCount(row.metricValues?.[0]?.value));
+  }
+
+  const minutes: GaRealtimeMinute[] = [];
+  for (let ago = 29; ago >= 0; ago -= 1) {
+    minutes.push({ minutesAgo: ago, users: minuteMap.get(ago) ?? 0 });
+  }
+
+  return {
+    activeUsers: parseCount(totals.rows?.[0]?.metricValues?.[0]?.value),
+    minutes,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
+export async function fetchGaRealtimeReport(): Promise<GaRealtimeReport> {
+  if (realtimeCache && realtimeCache.expiresAt > Date.now()) {
+    return realtimeCache.report;
+  }
+  if (realtimeInflight) return realtimeInflight;
+
+  const load = loadGaRealtimeReport()
+    .then((report) => {
+      realtimeCache = { report, expiresAt: Date.now() + REALTIME_TTL_MS };
+      return report;
+    })
+    .finally(() => {
+      realtimeInflight = null;
+    });
+
+  realtimeInflight = load;
+  return load;
 }

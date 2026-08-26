@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  Activity,
   AlertTriangle,
   BarChart3,
   Clock3,
@@ -11,8 +10,10 @@ import {
   Globe2,
   MonitorSmartphone,
   MousePointerClick,
+  Percent,
   RefreshCw,
   Share2,
+  Ticket,
   Users,
 } from "lucide-react";
 import {
@@ -35,10 +36,14 @@ import { StatCard } from "@/components/admin/StatCard";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import type {
   GaAdminDeviceSlice,
+  GaAdminRangeId,
   GaAdminRankedItem,
   GaAdminReport,
   GaAdminReportResponse,
+  GaRealtimeReport,
+  GaRealtimeResponse,
 } from "@/lib/ga-admin-report";
+import { GA_ADMIN_RANGE_IDS, GA_ADMIN_RANGES } from "@/lib/ga-admin-report";
 
 type Cubic = [number, number, number, number];
 const EASE_SMOOTH: Cubic = [0.32, 0.72, 0, 1];
@@ -214,19 +219,76 @@ function DevicePie({
   );
 }
 
+function LiveMonitor({
+  live,
+  isLoading,
+}: {
+  live: GaRealtimeReport | null;
+  isLoading: boolean;
+}) {
+  const peak = Math.max(1, ...(live?.minutes.map((point) => point.users) ?? [1]));
+
+  return (
+    <section
+      className="card flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
+      aria-live="polite"
+    >
+      <div className="flex items-center gap-3">
+        <span className="ga-live-dot shrink-0" aria-hidden />
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--text-muted)" }}>
+            Live active users
+          </p>
+          <p className="mt-1 text-3xl font-bold tabular-nums tracking-tight">
+            {isLoading && !live ? "—" : formatCount(live?.activeUsers ?? 0)}
+          </p>
+          <p className="mt-0.5 text-xs" style={{ color: "var(--text-muted)" }}>
+            Right now · last 30 minutes
+          </p>
+        </div>
+      </div>
+      <div
+        className="flex h-12 w-full max-w-md items-end gap-px sm:h-14"
+        aria-hidden
+      >
+        {(live?.minutes ?? Array.from({ length: 30 }, (_, index) => ({
+          minutesAgo: 29 - index,
+          users: 0,
+        }))).map((point) => (
+          <span
+            key={point.minutesAgo}
+            className="min-w-0 flex-1 rounded-sm"
+            style={{
+              height: `${Math.max(8, Math.round((point.users / peak) * 100))}%`,
+              background: point.users > 0 ? "#22c55e" : "var(--border)",
+              opacity: point.users > 0 ? 0.85 : 0.45,
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function AnalyticsDashboard() {
   const reduceMotion = useReducedMotion();
+  const [rangeId, setRangeId] = useState<GaAdminRangeId>("7d");
   const [report, setReport] = useState<GaAdminReport | null>(null);
+  const [live, setLive] = useState<GaRealtimeReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [liveLoading, setLiveLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [setupHint, setSetupHint] = useState<string | null>(null);
 
-  const load = useCallback(async (signal?: AbortSignal) => {
+  const load = useCallback(async (nextRange: GaAdminRangeId, signal?: AbortSignal) => {
     setIsLoading(true);
     setError(null);
     setSetupHint(null);
     try {
-      const response = await adminFetch("/api/admin/analytics", { signal });
+      const response = await adminFetch(
+        `/api/admin/analytics?range=${encodeURIComponent(nextRange)}`,
+        { signal },
+      );
       const body = (await response.json()) as GaAdminReportResponse;
       if (!body.ok) {
         setReport(null);
@@ -248,13 +310,38 @@ export function AnalyticsDashboard() {
     }
   }, []);
 
+  const loadLive = useCallback(async (signal?: AbortSignal) => {
+    try {
+      const response = await adminFetch("/api/admin/analytics/realtime", { signal });
+      const body = (await response.json()) as GaRealtimeResponse;
+      if (signal?.aborted) return;
+      if (body.ok) setLive(body.report);
+    } catch {
+      /* live card fails independently of the main report */
+    } finally {
+      if (!signal?.aborted) setLiveLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const controller = new AbortController();
-    // Mount-triggered load has nowhere else to live in a client component.
     // eslint-disable-next-line react-hooks/set-state-in-effect -- initial analytics fetch on mount
-    void load(controller.signal);
+    void load(rangeId, controller.signal);
     return () => controller.abort();
-  }, [load]);
+  }, [load, rangeId]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- live users poll on mount
+    void loadLive(controller.signal);
+    const timer = window.setInterval(() => {
+      void loadLive();
+    }, 30_000);
+    return () => {
+      controller.abort();
+      window.clearInterval(timer);
+    };
+  }, [loadLive]);
 
   const series = useMemo(() => report?.series ?? [], [report]);
   const peakViews = useMemo(
@@ -293,18 +380,40 @@ export function AnalyticsDashboard() {
         <div>
           <h1 className="admin-page-title">Analytics</h1>
           <p className="admin-page-subtitle">
-            Live site traffic from Google Analytics — last 7 days
+            Site traffic and bookings · {report?.range.label ?? GA_ADMIN_RANGES[rangeId].label}
           </p>
         </div>
-        <ActionButton
-          variant="outline"
-          icon={RefreshCw}
-          onClick={() => void load()}
-          disabled={isLoading}
-          className="shrink-0 px-4 py-2"
-        >
-          {isLoading ? "Refreshing…" : "Refresh"}
-        </ActionButton>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <label className="sr-only" htmlFor="ga-range">
+            Date range
+          </label>
+          <select
+            id="ga-range"
+            className="admin-input min-h-11 min-w-[12.5rem] px-3"
+            value={rangeId}
+            onChange={(event) => {
+              const next = event.target.value;
+              if ((GA_ADMIN_RANGE_IDS as readonly string[]).includes(next)) {
+                setRangeId(next as GaAdminRangeId);
+              }
+            }}
+          >
+            {GA_ADMIN_RANGE_IDS.map((id) => (
+              <option key={id} value={id}>
+                {GA_ADMIN_RANGES[id].label}
+              </option>
+            ))}
+          </select>
+          <ActionButton
+            variant="outline"
+            icon={RefreshCw}
+            onClick={() => void load(rangeId)}
+            disabled={isLoading}
+            className="shrink-0 px-4 py-2"
+          >
+            {isLoading ? "Refreshing…" : "Refresh"}
+          </ActionButton>
+        </div>
       </div>
 
       {error && (
@@ -319,7 +428,7 @@ export function AnalyticsDashboard() {
           </div>
           <button
             type="button"
-            onClick={() => void load()}
+            onClick={() => void load(rangeId)}
             className="btn-outline shrink-0 px-4 py-2 text-xs"
           >
             Retry
@@ -327,14 +436,42 @@ export function AnalyticsDashboard() {
         </div>
       )}
 
+      <LiveMonitor live={live} isLoading={liveLoading} />
+
       <motion.section className="admin-bento" aria-label="Traffic summary" {...gridMotion}>
+        <motion.div className="col-span-2" {...tileMotion}>
+          <StatCard
+            feature
+            label="Conversion rate"
+            value={formatPercent(report?.conversions.rate ?? 0)}
+            icon={Percent}
+            hint={
+              report
+                ? `${formatCount(report.conversions.bookings)} bookings / ${formatCount(report.totals.visitors)} visitors`
+                : "Confirmed bookings ÷ visitors"
+            }
+            isLoading={isLoading}
+            className="h-full"
+          >
+            {report && (
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Checkouts {formatCount(report.conversions.checkoutStarts)}
+                {" · "}
+                Purchases {formatCount(report.conversions.purchases)}
+                {" · "}
+                Leads {formatCount(report.conversions.leads)}
+              </p>
+            )}
+          </StatCard>
+        </motion.div>
         <motion.div {...tileMotion}>
           <StatCard
-            label="Live now"
-            value={formatCount(report?.realtimeActiveUsers ?? 0)}
-            icon={Activity}
-            hint="Active users in the last 30 minutes"
+            label="Bookings"
+            value={formatCount(report?.conversions.bookings ?? 0)}
+            icon={Ticket}
+            hint="Confirmed reservations in this range"
             isLoading={isLoading}
+            href="/admin/bookings"
             className="h-full"
           />
         </motion.div>
@@ -343,7 +480,7 @@ export function AnalyticsDashboard() {
             label="Visitors"
             value={formatCount(report?.totals.visitors ?? 0)}
             icon={Users}
-            hint="Unique visitors · last 7 days"
+            hint={report?.range.label ?? "Selected range"}
             isLoading={isLoading}
             className="h-full"
           />
@@ -376,7 +513,7 @@ export function AnalyticsDashboard() {
             hint={
               peakViews > 0
                 ? `Peak day ${formatCount(peakViews)} views`
-                : "Last 7 days"
+                : report?.range.label ?? "Selected range"
             }
             isLoading={isLoading}
             className="h-full"
@@ -420,6 +557,8 @@ export function AnalyticsDashboard() {
                   tick={{ fill: "var(--text-muted)", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
+                  interval={series.length > 14 ? Math.ceil(series.length / 8) : 0}
+                  minTickGap={16}
                 />
                 <YAxis
                   allowDecimals={false}

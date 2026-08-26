@@ -1102,3 +1102,30 @@
     align-self: start;
   }
 }
+
+/* Live analytics pulse — status only, scoped to the admin analytics card. */
+.admin-shell .ga-live-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 113, 0.55);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .admin-shell .ga-live-dot {
+    animation: ga-live-pulse 1.8s ease-out infinite;
+  }
+}
+
+@keyframes ga-live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 113, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 113, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 113, 0);
+  }
+}

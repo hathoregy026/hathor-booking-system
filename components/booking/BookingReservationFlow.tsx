@@ -2,21 +2,20 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BookingItineraryFilter } from "@/components/booking/BookingItineraryFilter";
 import { CheckoutCalendar } from "@/components/booking/CheckoutCalendar";
 import { GuestPaymentForm } from "@/components/booking/GuestPaymentForm";
 import { ProgressBar, type HistoriaBookingStep } from "@/components/booking/ProgressBar";
 import { RoomSelection } from "@/components/booking/RoomSelection";
 import { SuccessStep } from "@/components/booking/SuccessStep";
-import {
-  formatCompactStayLabel,
-} from "@/lib/booking-modal-helpers";
+import { formatCompactStayLabel } from "@/lib/booking-modal-helpers";
 import {
   fetchAvailabilitySearch,
   getAvailabilityErrorMessage,
 } from "@/lib/booking-availability-client";
 import { checkInIsoFromDateKey } from "@/lib/departure-dates";
+import { trackGaEvent } from "@/lib/ga-browser";
 import type {
   RoomSearchConfig,
   StayDurationValue,
@@ -110,6 +109,13 @@ export function BookingReservationFlow({
     const frame = requestAnimationFrame(() => setRoomEntryReady(true));
     return () => cancelAnimationFrame(frame);
   }, [initialRoomBooking]);
+
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (checkoutStep !== 4 || isSuccess || checkoutTracked.current) return;
+    checkoutTracked.current = true;
+    trackGaEvent("begin_checkout");
+  }, [checkoutStep, isSuccess]);
 
   const stepTitles = useMemo(
     () =>

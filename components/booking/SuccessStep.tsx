@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { CheckCircle2, Ship } from "lucide-react";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { trackGaEvent } from "@/lib/ga-browser";
 import { useBookingStore } from "@/store/bookingStore";
 
 export function SuccessStep() {
@@ -15,6 +17,14 @@ export function SuccessStep() {
     bookingId,
     resetBooking,
   } = useBookingStore();
+
+  const trackedId = useRef<string | null>(null);
+  useEffect(() => {
+    if (!bookingId || trackedId.current === bookingId) return;
+    trackedId.current = bookingId;
+    trackGaEvent("booking_confirmed");
+    trackGaEvent("purchase");
+  }, [bookingId]);
 
   const selectedRooms = availableRooms.filter((room) =>
     selectedRoomIds.includes(room.id),
