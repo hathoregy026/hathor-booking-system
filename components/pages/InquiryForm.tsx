@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 
 type InquiryFormProps = {
@@ -81,6 +82,42 @@ export function InquiryForm({
   }
 
   if (state === "success") {
+    if (type === "contact") {
+      return (
+        <div
+          className={[
+            "hathor-form-card hathor-form-card--success contact-success",
+            className,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="contact-success__seal" aria-hidden="true">
+            <Check strokeWidth={1.7} />
+          </div>
+          <p className="contact-success__eyebrow">Message sent</p>
+          <h2 className="contact-success__title">Thank you</h2>
+          <p className="contact-success__copy">
+            Your note has reached our reservations desk. A confirmation email
+            is on its way to the address you provided.
+          </p>
+          <div className="contact-success__status">
+            <span aria-hidden="true" />
+            <p>Our team will respond within 24 hours.</p>
+          </div>
+          <button
+            type="button"
+            className="ce-btn contact-success__again"
+            onClick={() => setState("idle")}
+          >
+            Send another message
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className={["hathor-form-card hathor-form-card--success", className].filter(Boolean).join(" ")}>
         <h2 className="section-title typo-page-title text-2xl">Thank You</h2>
