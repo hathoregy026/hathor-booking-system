@@ -271,19 +271,6 @@ export function StaggeredMenu({
                     hidden={!expanded}
                   >
                     <ul className="sm-panel-group-links" role="list">
-                      {/* About / Voyages already list the landing page (Our Story / Our Voyages) — no duplicate Overview. */}
-                      {item.id !== "about" && item.id !== "experiences" ? (
-                        <li>
-                          <Link
-                            href={item.href}
-                            className="sm-panel-link sm-panel-link--child sm-panel-link--overview"
-                            onClick={(event) => handleNavClick(event, item.href)}
-                            tabIndex={open && expanded ? 0 : -1}
-                          >
-                            Overview
-                          </Link>
-                        </li>
-                      ) : null}
                       {item.links.map((link) => (
                         <li key={`${item.id}-${link.href}-${link.label}`}>
                           <Link
