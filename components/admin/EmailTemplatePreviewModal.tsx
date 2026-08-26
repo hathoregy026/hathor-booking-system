@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Eye, Loader2, Monitor, Smartphone, X } from "lucide-react";
+import { Eye, Loader2, Monitor, RefreshCw, Smartphone, X } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import type { EmailTemplateName } from "@/lib/email-templates";
 
@@ -9,6 +9,21 @@ type EmailPreview = {
   name: EmailTemplateName;
   subject: string;
   html: string;
+};
+
+export type EmailPreviewDraft = {
+  shared: {
+    logoUrl: string | null;
+    heroImageUrl: string | null;
+    primaryColor: string;
+    backgroundColor: string;
+  };
+  templates: Array<{
+    name: EmailTemplateName;
+    subject: string;
+    heroHeading: string;
+    bodyText: string;
+  }>;
 };
 
 const TEMPLATE_LABELS: Record<EmailTemplateName, string> = {
@@ -20,28 +35,58 @@ const TEMPLATE_LABELS: Record<EmailTemplateName, string> = {
 type EmailTemplatePreviewModalProps = {
   open: boolean;
   onClose: () => void;
+  /** Live form state — preview always renders these edits (saved or not). */
+  draft: EmailPreviewDraft | null;
+  initialTemplate?: EmailTemplateName;
 };
 
 export function EmailTemplatePreviewModal({
   open,
   onClose,
+  draft,
+  initialTemplate = "BookingReceived",
 }: EmailTemplatePreviewModalProps) {
   const [previews, setPreviews] = useState<EmailPreview[]>([]);
-  const [activeName, setActiveName] = useState<EmailTemplateName>("BookingReceived");
+  const [activeName, setActiveName] = useState<EmailTemplateName>(initialTemplate);
   const [viewport, setViewport] = useState<"desktop" | "mobile">("desktop");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [frameKey, setFrameKey] = useState(0);
 
   const loadPreviews = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await adminFetch("/api/admin/email-templates/preview");
+      const response = draft
+        ? await adminFetch("/api/admin/email-templates/preview", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "no-store",
+            },
+            cache: "no-store",
+            body: JSON.stringify({
+              shared: draft.shared,
+              templates: draft.templates,
+            }),
+          })
+        : await adminFetch("/api/admin/email-templates/preview", {
+            cache: "no-store",
+            headers: { "Cache-Control": "no-store" },
+          });
+
       const data = await response.json();
       if (!response.ok && !data.previews) {
         throw new Error(data.error ?? "Failed to load previews");
       }
       setPreviews(data.previews as EmailPreview[]);
+      setGeneratedAt(
+        typeof data.generatedAt === "string"
+          ? data.generatedAt
+          : new Date().toISOString(),
+      );
+      setFrameKey((key) => key + 1);
       if (data.warning) {
         setError(data.warning);
       }
@@ -52,13 +97,13 @@ export function EmailTemplatePreviewModal({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [draft]);
 
   useEffect(() => {
-    if (open) {
-      loadPreviews();
-    }
-  }, [open, loadPreviews]);
+    if (!open) return;
+    setActiveName(initialTemplate);
+    void loadPreviews();
+  }, [open, initialTemplate, loadPreviews]);
 
   if (!open) return null;
 
@@ -92,11 +137,21 @@ export function EmailTemplatePreviewModal({
               className="text-xs font-semibold uppercase tracking-wider"
               style={{ color: "var(--accent)" }}
             >
-              Email Preview
+              Live Email Preview
             </p>
             <h2 id="email-preview-title" className="admin-heading text-lg">
               Preview Emails
             </h2>
+            <p
+              className="mt-1 text-xs"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Shows your current dashboard edits
+              {generatedAt
+                ? ` · rendered ${new Date(generatedAt).toLocaleTimeString()}`
+                : ""}
+              .
+            </p>
             {activePreview ? (
               <p
                 className="mt-1 truncate text-sm"
@@ -109,6 +164,20 @@ export function EmailTemplatePreviewModal({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void loadPreviews()}
+              disabled={isLoading}
+              className="btn-outline inline-flex h-9 items-center gap-1.5 px-3 text-xs disabled:opacity-60"
+            >
+              {isLoading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5" aria-hidden />
+              )}
+              Refresh
+            </button>
+
             <div
               className="inline-flex rounded-lg p-1"
               style={{ background: "var(--bg-secondary)" }}
@@ -177,13 +246,13 @@ export function EmailTemplatePreviewModal({
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
-          {isLoading ? (
+          {isLoading && previews.length === 0 ? (
             <div
               className="flex items-center justify-center gap-2 py-20"
               style={{ color: "var(--text-secondary)" }}
             >
               <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-              Rendering email previews...
+              Rendering latest email edits...
             </div>
           ) : error && previews.length === 0 ? (
             <div className="py-16 text-center text-sm text-red-600">{error}</div>
@@ -197,10 +266,11 @@ export function EmailTemplatePreviewModal({
                 }}
               >
                 <iframe
+                  key={`${activePreview.name}-${frameKey}`}
                   title={`${TEMPLATE_LABELS[activePreview.name]} preview`}
                   srcDoc={activePreview.html}
                   className="h-full w-full border-0 bg-white"
-                  sandbox="allow-same-origin"
+                  sandbox="allow-same-origin allow-popups"
                 />
               </div>
             </div>

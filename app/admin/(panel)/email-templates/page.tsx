@@ -87,6 +87,14 @@ export default function AdminEmailTemplatesPage() {
     [copies, activeTab],
   );
 
+  const previewDraft = useMemo(
+    () => ({
+      shared,
+      templates: copies,
+    }),
+    [shared, copies],
+  );
+
   const loadTemplates = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -424,6 +432,8 @@ export default function AdminEmailTemplatesPage() {
       <EmailTemplatePreviewModal
         open={previewOpen}
         onClose={() => setPreviewOpen(false)}
+        draft={previewDraft}
+        initialTemplate={activeTab}
       />
     </div>
   );

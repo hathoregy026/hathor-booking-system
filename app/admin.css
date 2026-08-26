@@ -862,8 +862,8 @@ select.admin-input option:checked {
 }
 
 .email-preview-frame--desktop {
-  width: min(100%, 680px);
-  height: min(72vh, 720px);
+  width: min(100%, 920px);
+  height: min(78vh, 820px);
 }
 
 .email-preview-frame--mobile {
