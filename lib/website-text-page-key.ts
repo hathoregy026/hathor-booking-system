@@ -10,6 +10,7 @@ export function pathnameToWebsiteTextPage(pathname: string): HeroPageKey | null 
   if (path === "/") return "home";
   if (path === "/about") return "about";
   if (path === "/cruises" || path === "/cruises-list") return "cruises";
+  if (path === "/voyages") return "voyages";
   if (path === "/highlights") return "highlights";
   if (path === "/gastronomy") return "gastronomy";
   if (path === "/wellness") return "wellness";

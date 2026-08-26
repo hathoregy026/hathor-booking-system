@@ -34,6 +34,7 @@ const PAGE_HERO_KEY: Record<PageId, HeroPageKey> = {
   home: "home",
   about: "about",
   cruises: "cruises",
+  voyages: "voyages",
   suites: "suites",
   highlights: "highlights",
   gastronomy: "gastronomy",
@@ -1134,6 +1135,274 @@ export function WebsiteTextPanel() {
                       patchPage("cruises", {
                         ...text.pages.cruises,
                         ctaBody,
+                      })
+                    }
+                  />
+                </Section>
+              </>
+            ) : null}
+
+            {activePage === "voyages" ? (
+              <>
+                <Section
+                  step={2}
+                  title="Introduction"
+                  description="Opening label and lead under the stacked hero title on /voyages."
+                >
+                  <Field
+                    label="Section label"
+                    value={text.pages.voyages.heroLabel}
+                    onChange={(heroLabel) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        heroLabel,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Hero lead"
+                    value={text.pages.voyages.heroSupport}
+                    multiline
+                    rows={4}
+                    hint="Paragraph under the intro title"
+                    onChange={(heroSupport) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        heroSupport,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={3}
+                  title="Statement"
+                  description="“The Hathor way” chapter after the opening image pair."
+                >
+                  <Field
+                    label="Section label"
+                    value={text.pages.voyages.statementLabel}
+                    onChange={(statementLabel) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        statementLabel,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Title"
+                    value={text.pages.voyages.statementTitle}
+                    multiline
+                    rows={3}
+                    hint="Use Enter for stacked title lines"
+                    onChange={(statementTitle) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        statementTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Body"
+                    value={text.pages.voyages.statementBody}
+                    multiline
+                    rows={4}
+                    onChange={(statementBody) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        statementBody,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Script line"
+                    value={text.pages.voyages.openingScript}
+                    multiline
+                    rows={2}
+                    hint="Italic line over the image story"
+                    onChange={(openingScript) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        openingScript,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={4}
+                  title="The promise"
+                  description="Three manifesto values with hover image follow."
+                >
+                  {text.pages.voyages.manifesto.map((item, index) => (
+                    <ItemCard key={index} title={`Promise ${index + 1}`}>
+                      <Field
+                        label="Title"
+                        value={item.title}
+                        onChange={(title) => {
+                          const manifesto = text.pages.voyages.manifesto.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, title } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            manifesto,
+                          });
+                        }}
+                      />
+                      <Field
+                        label="Body"
+                        value={item.body}
+                        multiline
+                        rows={3}
+                        onChange={(body) => {
+                          const manifesto = text.pages.voyages.manifesto.map(
+                            (entry, i) =>
+                              i === index ? { ...entry, body } : entry,
+                          );
+                          patchPage("voyages", {
+                            ...text.pages.voyages,
+                            manifesto,
+                          });
+                        }}
+                      />
+                    </ItemCard>
+                  ))}
+                </Section>
+                <Section
+                  step={5}
+                  title="Itineraries intro"
+                  description="Copy above the four voyage project cards."
+                >
+                  <Field
+                    label="Section label"
+                    value={text.pages.voyages.itinerariesLabel}
+                    onChange={(itinerariesLabel) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        itinerariesLabel,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Title"
+                    value={text.pages.voyages.itinerariesTitle}
+                    multiline
+                    rows={2}
+                    hint="Use Enter for stacked title lines"
+                    onChange={(itinerariesTitle) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        itinerariesTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Body"
+                    value={text.pages.voyages.itinerariesBody}
+                    multiline
+                    rows={4}
+                    onChange={(itinerariesBody) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        itinerariesBody,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={6}
+                  title="Private charter"
+                  description="Charter closing chapter before the reserve CTA."
+                >
+                  <Field
+                    label="Section label"
+                    value={text.pages.voyages.charterLabel}
+                    onChange={(charterLabel) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        charterLabel,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Title"
+                    value={text.pages.voyages.charterTitle}
+                    multiline
+                    rows={2}
+                    hint="Use Enter for stacked title lines"
+                    onChange={(charterTitle) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        charterTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Script"
+                    value={text.pages.voyages.charterScript}
+                    multiline
+                    rows={2}
+                    onChange={(charterScript) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        charterScript,
+                      })
+                    }
+                  />
+                  <Field
+                    label="CTA label"
+                    value={text.pages.voyages.charterCta}
+                    onChange={(charterCta) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        charterCta,
+                      })
+                    }
+                  />
+                </Section>
+                <Section
+                  step={7}
+                  title="Reserve CTA"
+                  description="Final booking band at the bottom of /voyages."
+                >
+                  <Field
+                    label="Section label"
+                    value={text.pages.voyages.reserveLabel}
+                    onChange={(reserveLabel) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        reserveLabel,
+                      })
+                    }
+                  />
+                  <Field
+                    label="CTA title"
+                    value={text.pages.voyages.ctaTitle}
+                    onChange={(ctaTitle) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        ctaTitle,
+                      })
+                    }
+                  />
+                  <Field
+                    label="CTA body"
+                    value={text.pages.voyages.ctaBody}
+                    multiline
+                    rows={3}
+                    onChange={(ctaBody) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        ctaBody,
+                      })
+                    }
+                  />
+                  <Field
+                    label="Button label"
+                    value={text.pages.voyages.ctaPrimary}
+                    onChange={(ctaPrimary) =>
+                      patchPage("voyages", {
+                        ...text.pages.voyages,
+                        ctaPrimary,
                       })
                     }
                   />

@@ -42,6 +42,14 @@ assert(
   "cruises.overviewIntro default",
 );
 assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.heroSupport.length > 0,
+  "voyages.heroSupport default",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.voyages.manifesto.length === 3,
+  "voyages.manifesto default count",
+);
+assert(
   DEFAULT_WEBSITE_TEXT.pages.rooms.amenitiesIntro.length > 0,
   "rooms.amenitiesIntro default",
 );

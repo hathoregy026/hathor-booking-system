@@ -25,6 +25,7 @@ import {
   ROYAL_SUITES_PAGE,
   WELLNESS_PAGE,
 } from "@/lib/page-content";
+import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
 import {
   DEFAULT_SUITES_NATIVE_CMS,
   type SuitesNativeCmsFields,
@@ -82,6 +83,30 @@ export type WebsiteText = {
       ctaTitle: string;
       /** Bottom reserve CTA body */
       ctaBody: string;
+    };
+    /** Dedicated /voyages editorial page */
+    voyages: {
+      /** Small label above the intro title */
+      heroLabel: string;
+      /** Intro lead under the stacked hero title */
+      heroSupport: string;
+      statementLabel: string;
+      /** Stacked display title — use Enter for lines */
+      statementTitle: string;
+      statementBody: string;
+      openingScript: string;
+      manifesto: Array<{ title: string; body: string }>;
+      itinerariesLabel: string;
+      itinerariesTitle: string;
+      itinerariesBody: string;
+      charterLabel: string;
+      charterTitle: string;
+      charterScript: string;
+      charterCta: string;
+      reserveLabel: string;
+      ctaTitle: string;
+      ctaBody: string;
+      ctaPrimary: string;
     };
     /** Native /suites-preview (and future /suites) editorial ownership */
     suites: SuitesNativeCmsFields;
@@ -159,6 +184,7 @@ export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
   { id: "home", label: "Homepage", href: "/" },
   { id: "about", label: "About", href: "/about" },
   { id: "cruises", label: "Cruises", href: "/cruises" },
+  { id: "voyages", label: "Voyages", href: "/voyages" },
   { id: "suites", label: "Suites (Native)", href: "/suites-preview" },
   { id: "highlights", label: "Highlights", href: "/highlights" },
   { id: "gastronomy", label: "Gastronomy", href: "/gastronomy" },
@@ -289,6 +315,29 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
         "Discover Luxury Rooms, Suites, Royal Suites, and Dining, Hathor Flavors.",
       ctaTitle: "Reserve your voyage",
       ctaBody: CRUISES_PAGE.hero.subtitle,
+    },
+    voyages: {
+      heroLabel: VOYAGES_PAGE.opening.eyebrow,
+      heroSupport: VOYAGES_PAGE.hero.subtitle,
+      statementLabel: "The Hathor way",
+      statementTitle: "Sail slowly\nDiscover deeply\nRemember always",
+      statementBody: VOYAGES_PAGE.opening.body[0] ?? "",
+      openingScript: VOYAGES_PAGE.opening.script,
+      manifesto: VOYAGES_PAGE.manifesto.map((item) => ({
+        title: item.title,
+        body: item.body,
+      })),
+      itinerariesLabel: "Choose your passage",
+      itinerariesTitle: "The Nile\nYour rhythm",
+      itinerariesBody: VOYAGES_PAGE.opening.body[1] ?? "",
+      charterLabel: VOYAGES_PAGE.charter.eyebrow,
+      charterTitle: "Your river\nYour rhythm",
+      charterScript: VOYAGES_PAGE.charter.script,
+      charterCta: VOYAGES_PAGE.charter.cta.label,
+      reserveLabel: "Begin your journey",
+      ctaTitle: VOYAGES_PAGE.cta.title,
+      ctaBody: VOYAGES_PAGE.cta.body,
+      ctaPrimary: VOYAGES_PAGE.cta.primary,
     },
     suites: { ...DEFAULT_SUITES_NATIVE_CMS },
     highlights: {

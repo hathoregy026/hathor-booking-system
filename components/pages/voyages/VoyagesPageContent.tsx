@@ -12,10 +12,25 @@ import {
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { VOYAGES_PAGE } from "@/lib/voyages-page-content";
+import {
+  resolveCmsText,
+  stackedHeroLines,
+} from "@/lib/website-text-shared";
+
+function splitTitleLines(value: string, fallback: string[]): string[] {
+  const lines = value
+    .split(/\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return lines.length > 0 ? lines : fallback;
+}
 
 function VoyageMedia({
   slot,
@@ -169,6 +184,24 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const { wrapRef, active, setActive } = useFollowImage();
   const itineraries = voyages.slice(0, 4);
+  const { pages } = useWebsiteText();
+  const copy = pages.voyages;
+  const typography = useTypographySettings();
+  const hero = resolveHeroPageCopy(typography, "voyages");
+  const heroTitleLines = stackedHeroLines(hero.main, hero.second);
+  const statementTitleLines = splitTitleLines(copy.statementTitle, [
+    "Sail slowly",
+    "Discover deeply",
+    "Remember always",
+  ]);
+  const itinerariesTitleLines = splitTitleLines(copy.itinerariesTitle, [
+    "The Nile",
+    "Your rhythm",
+  ]);
+  const charterTitleLines = splitTitleLines(copy.charterTitle, [
+    "Your river",
+    "Your rhythm",
+  ]);
 
   useVoyagesEditorialFlow({ rootRef, runRef, trackRef });
 
@@ -181,11 +214,24 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
           <div className="vb-stage">
             <div ref={trackRef} className="vb-track">
               <Scene className="vb-intro" id="voyages">
-                <p className="vb-section-label">Hathor Voyages</p>
-                <h1 className="vb-intro__title vb-display">
-                  <SplitTitle lines={["Our Voyages", "Shaped by", "The Nile"]} />
+                <p className="vb-section-label">
+                  {resolveCmsText(copy.heroLabel, VOYAGES_PAGE.opening.eyebrow)}
+                </p>
+                <h1 className="vb-intro__title vb-display wt-page-hero">
+                  <SplitTitle
+                    lines={
+                      heroTitleLines.length > 0
+                        ? heroTitleLines
+                        : ["Our Voyages", "Shaped by", "The Nile"]
+                    }
+                  />
                 </h1>
-                <p className="vb-intro__lead">{VOYAGES_PAGE.hero.subtitle}</p>
+                <p className="vb-intro__lead">
+                  {resolveCmsText(
+                    copy.heroSupport,
+                    VOYAGES_PAGE.hero.subtitle,
+                  )}
+                </p>
                 <span className="vb-intro__scroll" aria-hidden="true">Scroll to sail <i>→</i></span>
               </Scene>
 
@@ -209,11 +255,18 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-statement">
-                <p className="vb-section-label">The Hathor way</p>
+                <p className="vb-section-label">
+                  {resolveCmsText(copy.statementLabel, "The Hathor way")}
+                </p>
                 <h2 className="vb-statement__title vb-display">
-                  <SplitTitle lines={["Sail slowly", "Discover deeply", "Remember always"]} />
+                  <SplitTitle lines={statementTitleLines} />
                 </h2>
-                <p className="vb-statement__body">{VOYAGES_PAGE.opening.body[0]}</p>
+                <p className="vb-statement__body">
+                  {resolveCmsText(
+                    copy.statementBody,
+                    VOYAGES_PAGE.opening.body[0] ?? "",
+                  )}
+                </p>
               </Scene>
 
               <Scene className="vb-image-story">
@@ -233,7 +286,12 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                   frontAlt="A Hathor suite"
                   backAlt="The Royal Suite"
                 />
-                <p className="vb-image-story__script">{VOYAGES_PAGE.opening.script}</p>
+                <p className="vb-image-story__script">
+                  {resolveCmsText(
+                    copy.openingScript,
+                    VOYAGES_PAGE.opening.script,
+                  )}
+                </p>
               </Scene>
 
               <Scene className="vb-ribbon">
@@ -266,10 +324,13 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                 <div className="vb-values__wrap" ref={wrapRef}>
                   <p className="vb-section-label">The promise</p>
                   <ol className="vb-values__list">
-                    {VOYAGES_PAGE.manifesto.map((item, index) => (
+                    {(copy.manifesto.length > 0
+                      ? copy.manifesto
+                      : VOYAGES_PAGE.manifesto
+                    ).map((item, index) => (
                       <li
                         className="vb-values__item"
-                        key={item.numeral}
+                        key={`${item.title}-${index}`}
                         onPointerEnter={() => setActive(index)}
                         onPointerLeave={() => setActive(-1)}
                       >
@@ -293,11 +354,18 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
               </Scene>
 
               <Scene className="vb-projects-intro" id="itineraries">
-                <p className="vb-section-label">Choose your passage</p>
+                <p className="vb-section-label">
+                  {resolveCmsText(copy.itinerariesLabel, "Choose your passage")}
+                </p>
                 <h2 className="vb-projects-intro__title vb-display">
-                  <SplitTitle lines={["The Nile", "Your rhythm"]} />
+                  <SplitTitle lines={itinerariesTitleLines} />
                 </h2>
-                <p className="vb-projects-intro__body">{VOYAGES_PAGE.opening.body[1]}</p>
+                <p className="vb-projects-intro__body">
+                  {resolveCmsText(
+                    copy.itinerariesBody,
+                    VOYAGES_PAGE.opening.body[1] ?? "",
+                  )}
+                </p>
               </Scene>
 
               {itineraries.map((voyage, index) => {
@@ -337,13 +405,27 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
               <Scene className="vb-charter">
                 <div className="vb-charter__copy">
-                  <p className="vb-section-label">Private charter</p>
+                  <p className="vb-section-label">
+                    {resolveCmsText(
+                      copy.charterLabel,
+                      VOYAGES_PAGE.charter.eyebrow,
+                    )}
+                  </p>
                   <h2 className="vb-charter__title vb-display">
-                    <SplitTitle lines={["Your river", "Your rhythm"]} />
+                    <SplitTitle lines={charterTitleLines} />
                   </h2>
-                  <p className="vb-charter__script">{VOYAGES_PAGE.charter.script}</p>
+                  <p className="vb-charter__script">
+                    {resolveCmsText(
+                      copy.charterScript,
+                      VOYAGES_PAGE.charter.script,
+                    )}
+                  </p>
                   <Link className="vb-charter__link" href={VOYAGES_PAGE.charter.cta.href}>
-                    {VOYAGES_PAGE.charter.cta.label}<span>→</span>
+                    {resolveCmsText(
+                      copy.charterCta,
+                      VOYAGES_PAGE.charter.cta.label,
+                    )}
+                    <span>→</span>
                   </Link>
                 </div>
                 <Flip
@@ -361,10 +443,18 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
         </section>
 
         <section className="vb-reserve" id="reserve">
-          <p className="vb-section-label">Begin your journey</p>
-          <h2 className="vb-reserve__title vb-display">{VOYAGES_PAGE.cta.title}</h2>
-          <p className="vb-reserve__body">{VOYAGES_PAGE.cta.body}</p>
-          <BookNowTrigger className="vb-reserve__button">{VOYAGES_PAGE.cta.primary}</BookNowTrigger>
+          <p className="vb-section-label">
+            {resolveCmsText(copy.reserveLabel, "Begin your journey")}
+          </p>
+          <h2 className="vb-reserve__title vb-display">
+            {resolveCmsText(copy.ctaTitle, VOYAGES_PAGE.cta.title)}
+          </h2>
+          <p className="vb-reserve__body">
+            {resolveCmsText(copy.ctaBody, VOYAGES_PAGE.cta.body)}
+          </p>
+          <BookNowTrigger className="vb-reserve__button">
+            {resolveCmsText(copy.ctaPrimary, VOYAGES_PAGE.cta.primary)}
+          </BookNowTrigger>
         </section>
       </main>
     </div>

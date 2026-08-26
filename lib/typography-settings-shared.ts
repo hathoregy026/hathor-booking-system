@@ -391,6 +391,7 @@ export const DEFAULT_HERO_COPY: HeroCopy = {
 export const HERO_PAGE_KEYS = [
   "home",
   "cruises",
+  "voyages",
   "highlights",
   "about",
   "gastronomy",
@@ -409,6 +410,7 @@ export type HeroPageKey = (typeof HERO_PAGE_KEYS)[number];
 export const HERO_PAGE_LABELS: Record<HeroPageKey, string> = {
   home: "Homepage",
   cruises: "Cruises",
+  voyages: "Voyages",
   highlights: "Highlights",
   about: "About",
   gastronomy: "Gastronomy",
@@ -425,6 +427,7 @@ export const HERO_PAGE_LABELS: Record<HeroPageKey, string> = {
 export const DEFAULT_HERO_PAGES: Record<HeroPageKey, HeroCopy> = {
   home: { ...DEFAULT_HERO_COPY },
   cruises: { main: "Dahabiya Cruises List", second: "Sail Egypt" },
+  voyages: { main: "Our Voyages\nShaped by", second: "The Nile" },
   highlights: { main: "Dahabiya Cruise", second: "Highlights" },
   about: { main: "Welcome Aboard Hathor", second: "Dahabiya Cruise" },
   gastronomy: { main: "Hathor Flavors", second: "Fine Dining" },
@@ -441,6 +444,7 @@ export const DEFAULT_HERO_PAGES: Record<HeroPageKey, HeroCopy> = {
 export const heroPagesSchema = z.object({
   home: heroCopySchema,
   cruises: heroCopySchema,
+  voyages: heroCopySchema,
   highlights: heroCopySchema,
   about: heroCopySchema,
   gastronomy: heroCopySchema,
@@ -511,6 +515,7 @@ export const LIVE_PAGE_FONTS: Partial<
   about: ITALIANA_EDITORIAL_FONTS,
   wellness: BITHO_EDITORIAL_FONTS,
   cruises: BITHO_EDITORIAL_FONTS,
+  voyages: BITHO_EDITORIAL_FONTS,
   gastronomy: BITHO_EDITORIAL_FONTS,
   suites: BITHO_EDITORIAL_FONTS,
   luxury_cabins: GAMGOTE_COLLECTION_FONTS,
@@ -538,6 +543,7 @@ export type PageStyleOverrides = z.infer<typeof pageStyleOverridesSchema>;
 export const pageStylesSchema = z.object({
   home: pageStyleOverridesSchema,
   cruises: pageStyleOverridesSchema,
+  voyages: pageStyleOverridesSchema,
   highlights: pageStyleOverridesSchema,
   about: pageStyleOverridesSchema,
   gastronomy: pageStyleOverridesSchema,
