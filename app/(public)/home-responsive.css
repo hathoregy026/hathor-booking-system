@@ -1423,361 +1423,679 @@
 }
 
 
+
 /* ==========================================================================
-   19. AMENITIES PHONE (<=480) — desktop layout, minimized sizes only
+   19. HOMEPAGE AMENITIES — PHONE EDITORIAL LAYOUT (<=767.98px)
    --------------------------------------------------------------------------
-   Same split composition as desktop: 50vw columns, cream half-panel, gold
-   caption bands, opening right rail, same slides, same scroll choreography.
-   Only padding / type / gaps are reduced so the story fits a phone width.
-   Does not alter tablet (481+) or desktop.
-   Loaded last so it wins over any earlier stacked phone leftovers.
+   REPLACES the previous "keep the desktop 50/50 composition, just shrink it"
+   approach, which is why this section is a redesign rather than a tweak.
 
-   TYPE SCALE — why it is not a pure proportional shrink:
-   Desktop runs ~90px titles / 22px body inside a ~620px column. Scaled
-   linearly into a 195px phone column (50vw of 390px) that is ~28px / ~7px,
-   and the previous revision of this block did exactly that — titles at
-   clamp(16px,4.6vw,20px), eyebrows at clamp(7px,1.9vw,9px), body at
-   clamp(9px,2.4vw,11px), card labels at 6px. Sub-10px copy is below the
-   legible floor on a phone, which is what made this section read as
-   butchered even though the composition was right.
-   So the composition is scaled proportionally and the TYPE is held at a
-   readable floor instead — the layout matches desktop, the words are
-   readable. Body sits at ~13px in a ~173px measure (~24 characters per
-   line); that is the narrowest a two-column composition can go on a phone
-   and still be read, and is the deliberate trade for keeping the desktop
-   layout rather than stacking.
+   WHY THE OLD APPROACH FAILED
+   The desktop composition is a two-column stage: a 50vw photo column beside a
+   50vw caption column, inside a 100svh sticky stage. Scaled to a 390px phone
+   that becomes two ~195px columns, so:
+     - every photograph was cropped to a ~195px-wide vertical sliver ("images
+       look cut out"),
+     - the sticky stage forced each image to 844px tall — the full phone
+       screen — so the crop was both narrow AND extremely tall ("tall full
+       phone screen"),
+     - the caption column left ~173px of measure, about 24 characters a line,
+     - and six chapters of 100svh runway made the section scroll for ~21,000px.
+   No amount of type-scaling fixes a layout whose columns are 195px wide.
 
-   Titles WRAP here (white-space: normal). The previous revision forced
-   `nowrap`, so a title longer than the 195px column ran off the edge and was
-   clipped by the stage's overflow rather than breaking onto a second line.
+   THE PHONE DESIGN
+   One column, full-bleed width, vertical rhythm — the same language the site
+   already uses, composed for a portrait screen:
+     - Photographs are full-width at a fixed 4/5 portrait ratio. They are
+       never full-screen-tall and never sliced into a column, so the subject
+       of each shot survives the crop.
+     - Caption sits under its photograph on the cream/gold ground, full
+       measure (~calc(100vw - 2.8rem), roughly 46 characters a line).
+     - Scroll is natural. The pinned/scrubbed fog masks, clip-path wipes and
+       ken-burns transforms are neutralised, replaced by a single soft
+       fade-up. This is the "smooth" half of the brief: scrubbed clip-path
+       masks are the main source of stutter on a phone.
+     - Runways collapse to content height, so the section is a normal length.
+
+   OVERRIDING THE MOTION JS
+   hooks/useExScrollMotion.ts and the amenities sequence write clip-path,
+   opacity, transform and visibility as INLINE styles every scroll frame.
+   Inline styles outrank normal declarations, so every rule here that has to
+   beat one carries !important — that is deliberate, not defensive noise.
+
+   SCOPE
+   Everything is inside @media (max-width: 767.98px) and every selector is
+   prefixed html[data-ex-experience], the homepage-only attribute. Tablets
+   at 768px+ and desktop keep the existing composition untouched.
    ========================================================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 767.98px) {
+  /* ---------- 19.1 Collapse the sticky runways ---------- */
+
   html[data-ex-experience] .home-am-sequence {
-    --am-typo-gap-title-sub: 7px;
-    --am-typo-gap-sub-body: 7px;
-    --am-typo-gap-body-cta: 12px;
+    --sticky-under-previous-distance: 0px !important;
+    --sticky-under-next-distance: 0px !important;
+    --am-typo-gap-title-sub: 10px;
+    --am-typo-gap-sub-body: 10px;
+    --am-typo-gap-body-cta: 18px;
   }
 
-  /* ---- intro: keep desktop left caption + right cream half ---- */
-  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone) {
-    display: flex !important;
-    align-items: flex-start;
-    justify-content: flex-start;
-    top: 0;
-    right: 0;
-    bottom: auto;
-    width: 50% !important;
-    height: 100% !important;
-    padding: clamp(4.5rem, 14vh, 6rem) 0.75rem 0.85rem;
+  html[data-ex-experience] .home-am-sequence .home-am-chapter,
+  html[data-ex-experience] .home-am-intro,
+  html[data-ex-experience] .home-am-video,
+  html[data-ex-experience] .home-am-slider,
+  html[data-ex-experience] .home-am-opening,
+  html[data-ex-experience] .home-am-nature,
+  html[data-ex-experience] .home-am-nature-gold {
+    /*
+     * Every chapter is display:grid with a single named area
+     * ("sticky_content"), so ALL its children land in the same cell and
+     * paint on top of one another — that is how the desktop overlays the
+     * pinned stage and the opening chapter's gold rail column.
+     * On phone the children must flow one after another instead, so the
+     * chapter reverts to a plain block. Without this the opening chapter
+     * renders its photo stage and its card rail stacked on the same pixels
+     * (visible as a tall empty gold panel over the photo).
+     */
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    clip-path: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
   }
 
-  html[data-ex-experience] .home-am-intro__cream--phone {
-    display: none !important;
+  /* Stages stop pinning — content flows in normal order. */
+  html[data-ex-experience] .home-am-sequence .home-am-chapter__stage,
+  html[data-ex-experience] .home-am-sequence .sticky__layer,
+  html[data-ex-experience] .home-am-sequence .sticky__layer--sticky,
+  html[data-ex-experience] .home-am-nature__stage {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    contain: none !important;
+    overflow: visible !important;
+    clip-path: none !important;
+    transform: none !important;
   }
 
-  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone)
-    .home-am-intro__cream-text {
-    display: none;
-  }
-
-  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
-    left: 0.7rem;
-    right: auto;
-    top: max(5rem, 20vh);
-    bottom: auto;
-    width: calc(50vw - 1.4rem);
-    max-width: calc(50vw - 1.4rem);
-    text-align: left;
-  }
-
-  html[data-ex-experience] .home-am-intro__body {
-    max-width: 100%;
-  }
-
-  /* ---- video: desktop copy left / title right / gold caption 50vw ---- */
-  html[data-ex-experience] .home-am-video__hero,
-  html[data-ex-experience] .home-am-video__hero-wrap {
-    transform-origin: bottom right;
-    top: 0;
-    bottom: auto;
-    height: 100%;
-  }
-
-  html[data-ex-experience] .home-am-video__copy {
-    top: max(5rem, 12vh);
-    left: 0.7rem;
-    width: calc(46vw - 0.7rem);
-  }
-
-  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
-    top: max(5rem, 12vh);
-    right: 0.7rem;
-    bottom: auto;
-    left: auto;
-    width: calc(50vw - 1.4rem);
-    max-width: calc(50vw - 1.4rem);
-  }
-
-  html[data-ex-experience] .home-am-video__title-body {
-    display: block;
-  }
-
-  html[data-ex-experience] .home-am-video__caption {
-    flex: none;
-    width: 50vw !important;
-    max-width: 50vw !important;
-    padding: 0.75rem;
-  }
-
-  /* ---- slider: force desktop row split ---- */
-  html[data-ex-experience] .home-am-slider__row {
-    flex-direction: row !important;
-  }
-
-  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
-    flex: 0 0 calc(50vw + 2px) !important;
-    width: calc(50vw + 2px) !important;
-    height: 100% !important;
-    max-width: none !important;
-    justify-content: center;
-    padding: 0.75rem;
-  }
-
-  html[data-ex-experience] .home-am-slider__images-col {
-    flex: 0 0 50vw !important;
-    width: 50vw !important;
-    height: 100% !important;
-    max-width: none !important;
-    min-height: 0;
-    margin-left: -2px;
-  }
-
-  html[data-ex-experience] .home-am-slider__images-col::before {
-    display: block;
-    width: 3px;
-  }
-
-  html[data-ex-experience] .home-am-slider__scrollbar {
-    right: 0.5rem;
-    bottom: 0.9rem;
-    height: 72px;
-  }
-
-  /* ---- opening: desktop side-by-side + right rail ---- */
-  html[data-ex-experience] .home-am-opening__content {
-    flex-direction: row !important;
-    flex-wrap: nowrap;
-    height: 100% !important;
+  /* The gold band behind the middle chapters must not keep a fixed height. */
+  html[data-ex-experience] .home-am-dark-band {
+    height: auto !important;
     min-height: 0 !important;
   }
 
-  html[data-ex-experience] .home-am-opening__images {
-    flex: 0 0 calc(50vw + 2px) !important;
-    width: calc(50vw + 2px) !important;
-    height: 100% !important;
-    max-width: none !important;
+  /* ---------- 19.2 Neutralise the scrubbed reveal styles ----------
+     These are the inline clip-path / opacity / transform values the motion
+     hook writes each frame. Forced open so nothing is masked or invisible. */
+
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__media,
+    .home-am-intro__caption,
+    .home-am-intro__cream,
+    .home-am-video__hero-wrap,
+    .home-am-video__hero,
+    .home-am-video__inset,
+    .home-am-video__text-container,
+    .home-am-video__title-stack,
+    .home-am-video__caption,
+    .home-am-slider__caption-col,
+    .home-am-slider__images-col,
+    .home-am-slider__panel,
+    .home-am-opening__images,
+    .home-am-opening__images-media,
+    .home-am-opening__caption,
+    .home-am-opening__right-column,
+    .home-am-opening__right-inner,
+    .home-am-nature__media,
+    .home-am-nature__gold-band
+  ) {
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    filter: none !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
   }
 
-  html[data-ex-experience] .home-am-opening__caption {
+  /* Media inner wrappers carry the ken-burns scale — flatten them. */
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__media-picture,
+    .home-am-video__hero img,
+    .home-am-video__inset img,
+    .home-am-slider__panel img,
+    .home-am-opening__images-media img,
+    .home-am-nature__media img
+  ) {
+    transform: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+  }
+
+  /*
+   * Text and CTAs are revealed by GSAP, which starts them at opacity:0 and
+   * only animates them in when their ScrollTrigger fires. Those triggers are
+   * bound to the pinned runways that this section collapses, so without the
+   * override below the copy stays invisible forever — the dining chapter's
+   * title and its "Discover" button were both sitting at opacity:0.
+   * Descendant spans are included because the atelier text splitter wraps
+   * every line/word in its own span and animates those individually.
+   */
+  html[data-ex-experience] .home-am-sequence :is(
+    .typo-on-images-title,
+    .typo-on-images-indication,
+    .typo-on-images-body,
+    .home-am-title-line,
+    .home-am-on-cream-title,
+    .home-am-intro__title,
+    .home-am-intro__indication,
+    .home-am-intro__body,
+    .home-am-video__title,
+    .home-am-video__title-body,
+    .home-am-nature__title,
+    .home-am-nature__indication,
+    .home-am-nature__body,
+    .home-am-nature__cta,
+    .home-am-opening__title,
+    .home-am-opening__caption-title,
+    .home-am-opening__rail-copy,
+    .home-am-opening__cta,
+    .home-am-opening__list-item,
+    .home-am-opening__list-item-text
+  ),
+  html[data-ex-experience] .home-am-sequence :is(
+    .typo-on-images-title,
+    .typo-on-images-indication,
+    .typo-on-images-body,
+    .home-am-title-line,
+    .home-am-on-cream-title,
+    .home-am-intro__title,
+    .home-am-intro__body,
+    .home-am-nature__title,
+    .home-am-nature__body,
+    .home-am-opening__title
+  ) > span {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    /* The dining title also starts at filter:blur(7px) and is sharpened by
+       the same trigger that never fires here, so it must be cleared too. */
+    filter: none !important;
+  }
+
+  /* The intro's dimming veil was tuned for text sitting ON the photo.
+     Copy now sits below the photo, so the veil only muddies it. */
+  html[data-ex-experience] .home-am-intro__dim {
+    opacity: 0 !important;
+  }
+
+  /* ---------- 19.3 The shared photo frame: full width, 4/5 portrait ---------- */
+
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__media,
+    .home-am-video__hero-wrap,
+    .home-am-opening__images,
+    .home-am-nature__media
+  ) {
     position: relative !important;
-    flex: 0 0 50vw !important;
-    width: 50vw !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+    aspect-ratio: 4 / 5;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__media,
+    .home-am-video__hero-wrap,
+    .home-am-opening__images,
+    .home-am-nature__media
+  ) :is(img, .home-am-intro__media-picture, .home-am-video__hero, .home-am-opening__images-media) {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
     height: 100% !important;
-    max-width: none !important;
-    margin-left: -2px;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  /* Soft fade-up in place of the fog wipes — one cheap, smooth transition. */
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__media,
+    .home-am-video__hero-wrap,
+    .home-am-opening__images,
+    .home-am-nature__media
+  ) {
+    animation: am-phone-rise 0.7s ease-out both;
+  }
+
+  @keyframes am-phone-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- 19.4 Captions: single column under the photo ---------- */
+
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__content,
+    .home-am-video__text-container,
+    .home-am-opening__content
+  ) {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 0;
+  }
+
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__caption,
+    .home-am-video__title-stack,
+    .home-am-video__caption,
+    .home-am-opening__caption,
+    .home-am-nature__copy
+  ) {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
     bottom: auto !important;
-    padding: 0.75rem 0.75rem max(5.5rem, env(safe-area-inset-bottom));
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 1.4rem 1.4rem 1.75rem !important;
+    text-align: left !important;
+    align-items: flex-start !important;
     background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
   }
 
-  html[data-ex-experience] .home-am-opening__caption-title {
-    width: 100%;
-    flex: none;
-    text-align: right;
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__body,
+    .home-am-nature__body,
+    .home-am-video__title-body
+  ) {
+    max-width: 46ch !important;
   }
 
-  html[data-ex-experience] .home-am-opening__title,
-  html[data-ex-experience] .home-am-opening__title .home-am-title-line {
-    text-align: right;
+  /*
+   * The intro's cream half-panel is dropped on phone. It exists on desktop to
+   * fill the right half of the split stage, and its copy is the SAME sentence
+   * already printed in .home-am-intro__body directly above ("A five star
+   * dahabiya on the ancient Nile..."). In a single-column layout that reads
+   * as the paragraph repeating itself, so the panel goes rather than the
+   * caption. (There are two of these panels in the markup — a desktop
+   * duplicate — hence no :not() qualifier here.)
+   */
+  html[data-ex-experience] .home-am-intro__cream {
+    display: none !important;
   }
+
+  /* Decorative desktop-only furniture that reads as clutter on a phone.
+     NOTE: .home-am-nature__gold-wash is deliberately NOT in this list — see
+     the rule below. It looks decorative but it is load-bearing. */
+  html[data-ex-experience] .home-am-opening__gradient,
+  html[data-ex-experience] .home-am-slider__scrollbar,
+  html[data-ex-experience] .home-am-slider__images-col::before {
+    display: none !important;
+  }
+
+  /*
+   * The dining chapter's gold band has a photograph behind it
+   * (.home-am-nature__gold-photo, absolutely positioned) and the white copy
+   * sits on top. The "wash" is the gold veil between the two. Hiding it left
+   * white text directly over a bright sunset photo, which read as blurred
+   * and illegible. It is kept and pushed to a heavier opacity than desktop
+   * uses, because on a phone the copy sits over the busiest part of the crop. */
+  html[data-ex-experience] .home-am-nature__gold-wash {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0.88 !important;
+  }
+
+  /* ---------- 19.5 Video chapter ---------- */
+
+  /* Second (inset) photograph becomes its own full-width portrait frame. */
+  html[data-ex-experience] .home-am-video__inset {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 5;
+    z-index: auto !important;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  html[data-ex-experience] .home-am-video__title {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left !important;
+  }
+
+  /* ---------- 19.6 Slider chapter: 4 stacked editorial cards ----------
+     Desktop crossfades four absolutely-stacked panels/captions against each
+     other. On a phone they are un-stacked into normal flow so all four
+     voyages are simply readable one after another — no scrub required. */
+
+  html[data-ex-experience] .home-am-slider__row {
+    flex-direction: column !important;
+    height: auto !important;
+  }
+
+  /* overflow:hidden + a percentage height on the caption column clipped the
+     un-stacked captions to ~197px, so captions 2-4 were cut off and bled into
+     the next chapter. Both the clip and the height cap have to go. */
+  html[data-ex-experience] .home-am-slider__caption-col,
+  html[data-ex-experience] .home-am-slider__images-col {
+    position: relative !important;
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Images first, then the four captions beneath them. */
+  html[data-ex-experience] .home-am-slider__images-col { order: -1; }
+
+  html[data-ex-experience] .home-am-slider__panel {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption-stack {
+    position: relative !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    /* max-height:100% resolved against the clipped column above. */
+    max-height: none !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    padding: 0 1.4rem 1.5rem !important;
+  }
+
+  html[data-ex-experience] .home-am-slider__caption {
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    clip-path: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left !important;
+    padding: 1.1rem 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  html[data-ex-experience] .home-am-slider__caption:first-child {
+    border-top: 0;
+  }
+
+  /* ---------- 19.7 Opening chapter: photo, copy, then the card rail ---------- */
 
   html[data-ex-experience] .home-am-opening__right-column {
-    min-height: 350vh;
-    padding-top: 100svh;
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    padding-top: 0 !important;
+    min-height: 0 !important;
     background: var(--am-gold);
   }
 
   html[data-ex-experience] .home-am-opening__right-inner {
-    margin-left: 50vw !important;
-    width: 50vw !important;
-    padding: 0.9rem 0.45rem 1.75rem;
-    min-height: 0;
+    position: relative !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 1.5rem 1.4rem 2rem !important;
     background: transparent;
   }
 
   html[data-ex-experience] .home-am-opening__cards-band {
-    flex-direction: row !important;
-    align-items: flex-start;
-    gap: 0.35rem;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Copy above the thumbnails reads better than beside them. */
+  html[data-ex-experience] .home-am-opening__rail-copy {
+    position: relative !important;
+    top: auto !important;
+    order: -1;
+    max-width: 100% !important;
+    padding: 0 !important;
   }
 
   html[data-ex-experience] .home-am-opening__list-wrap {
-    flex: 0 0 19vw !important;
-    width: 19vw !important;
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
+  /* Four thumbnails as a 2x2 grid — a swipe rail hides half the content. */
   html[data-ex-experience] .home-am-opening__list {
-    display: block;
-    overflow: visible;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem !important;
+    overflow: visible !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   html[data-ex-experience] .home-am-opening__list-item {
-    width: 100%;
-    min-width: 0;
-    margin-top: 10px;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    aspect-ratio: 1 / 1;
   }
 
-  html[data-ex-experience] .home-am-opening__list-item:first-child {
-    margin-top: 0;
+  html[data-ex-experience] .home-am-opening__list-item-media,
+  html[data-ex-experience] .home-am-opening__list-item-media > span,
+  html[data-ex-experience] .home-am-opening__list-item-media img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
 
-  html[data-ex-experience] .home-am-opening__rail-copy {
-    position: sticky;
-    top: 22vh;
-    max-width: calc(31vw - 1.2rem);
-    padding: 0;
-  }
+  /* ---------- 19.8 Nature / dining chapter ---------- */
 
-  /* 34px min-height keeps this a usable tap target (was 28px @ 7px type). */
-  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold {
-    width: 100%;
-    min-width: 0;
-    min-height: 34px;
-    padding-inline: 0.4rem;
-    font-size: 10px !important;
-    letter-spacing: 0.08em;
-  }
-
-  /* ---- nature: same gold-band copy, tighter ---- */
   html[data-ex-experience] .home-am-nature__gold-band {
-    padding: 0 0.85rem clamp(1.1rem, 3vh, 1.6rem);
+    position: relative !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 1.5rem 1.4rem 2rem !important;
   }
 
-  html[data-ex-experience] .home-am-nature__copy {
-    max-width: min(44rem, 94%);
-    padding-top: 0.3rem;
+  html[data-ex-experience] .home-am-nature__content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
   }
 
-  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
-    min-height: 36px;
-    padding-inline: 0.8rem;
-    font-size: 11px !important;
-    letter-spacing: 0.1em;
-  }
+  /* ---------- 19.9 Type scale ----------
+     Full-measure column, so these are real reading sizes rather than the
+     sub-10px values the two-column phone layout was forced into.
+     Doubled .ex-root / .home-am-sequence reach (0,6,1) so they beat the
+     amenities typography injector's own !important declarations. */
 
-  /* ---- type scale: desktop hierarchy, held at a legible floor ---- */
   html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
+      .typo-on-images-title,
       .home-am-intro__title,
-      .home-am-intro__title .home-am-title-line,
-      .home-am-video__title .typo-on-images-title,
-      .home-am-video__title .home-am-title-line,
-      .home-am-slider__caption .typo-on-images-title,
-      .home-am-slider__caption .typo-on-images-title .home-am-title-line,
-      .home-am-opening__caption .home-am-opening__title,
-      .home-am-opening__caption .home-am-opening__title .home-am-title-line,
       .home-am-nature__title,
-      .home-am-nature__title .home-am-title-line
+      .home-am-opening__title,
+      .home-am-on-cream-title,
+      .home-am-title-line
     ) {
-    font-size: clamp(19px, 5.4vw, 24px) !important;
-    line-height: 1 !important;
-    /* Was nowrap — long titles ran off the 50vw column and were clipped. */
+    font-size: clamp(30px, 8.4vw, 40px) !important;
+    line-height: 1.04 !important;
     white-space: normal !important;
     overflow-wrap: break-word;
+    text-align: left !important;
   }
 
   html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
+      .typo-on-images-indication,
       .home-am-intro__indication,
-      .home-am-video__copy .typo-on-images-indication,
-      .home-am-slider__caption .typo-on-images-indication,
       .home-am-nature__indication
     ) {
-    font-size: clamp(10px, 2.7vw, 11px) !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.06em !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.16em !important;
+    text-transform: uppercase !important;
+    text-align: left !important;
   }
 
   html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
+      .typo-on-images-body,
       .home-am-intro__body,
-      .home-am-video__copy .typo-on-images-body,
+      .home-am-nature__body,
       .home-am-video__title-body,
-      .home-am-slider__caption .typo-on-images-body,
-      .home-am-nature__body
+      .home-am-intro__cream-text,
+      .home-am-opening__caption-text
     ) {
-    font-size: clamp(12.5px, 3.4vw, 14px) !important;
-    line-height: 1.45 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    /* The dining band centres its copy on desktop; left-aligning it here
+       keeps one consistent edge down the whole phone column. */
+    text-align: left !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-opening__rail-copy
-    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
-    font-size: clamp(14px, 3.9vw, 17px) !important;
-    line-height: 1.02 !important;
-    white-space: normal !important;
-    overflow-wrap: break-word;
-  }
-
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-opening__rail-copy
-    .typo-on-images-indication {
-    font-size: 9.5px !important;
-    line-height: 1.25 !important;
-  }
-
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-opening__rail-copy
-    .typo-on-images-body {
-    font-size: clamp(11px, 3vw, 12px) !important;
-    line-height: 1.4 !important;
-  }
-
-  /*
-   * Card labels sit inside ~74px thumbnails. They need to beat the amenities
-   * typography injector's generic body rule
-   *   html[data-ex-experience] .ex-root .home-am-sequence
-   *     .typo-on-images-body:not(.home-am-video__title-body)   -> (0,5,1)
-   * which otherwise paints them at the 22px body size and overflows the card
-   * by ~3x. Doubling .ex-root and .home-am-sequence reaches (0,6,1) so this
-   * wins outright regardless of source order.
-   */
+  /* Thumbnail labels sit inside ~46vw tiles now, so they can be read. */
   html[data-ex-experience][data-ex-experience]
     .ex-root.ex-root
     .home-am-sequence.home-am-sequence
     .home-am-opening__list-item-text {
-    left: 7px !important;
-    bottom: 7px !important;
-    width: calc(100% - 14px) !important;
-    font-size: 9px !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 9px !important;
+    width: auto !important;
+    font-size: 11px !important;
     line-height: 1.25 !important;
-    letter-spacing: 0.03em !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  /* ---------- 19.10 Colour: captions that moved off the photograph ----------
+     On desktop the intro and video captions sit ON their photograph, so the
+     amenities typography injector paints them with its "on image" role
+     (white). In this phone layout those two captions moved BELOW the photo
+     onto the cream page ground, where white is nearly invisible.
+     They are re-pointed at the injector's own "on cream" role tokens, so the
+     Amenities Typography dashboard stays authoritative — change the colour
+     there and this follows it.
+     Only the intro and video captions are treated: the slider, opening and
+     nature captions sit inside .home-am-dark-band (gold), where the existing
+     white "on gold" role is already correct.
+     -webkit-text-fill-color is included because the injector sets it too, and
+     it wins over `color` where both are present. */
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
+    :is(.home-am-intro__caption, .home-am-video__title-stack, .home-am-video__caption)
+    :is(.typo-on-images-title, .home-am-intro__title, .home-am-on-cream-title, .home-am-title-line) {
+    color: var(--am-typo-title-on-cream, #b69f64) !important;
+    -webkit-text-fill-color: var(--am-typo-title-on-cream, #b69f64) !important;
+    text-shadow: none !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
+    :is(.home-am-intro__caption, .home-am-video__title-stack, .home-am-video__caption)
+    :is(.typo-on-images-indication, .home-am-intro__indication) {
+    color: var(--am-typo-indication-on-cream, #8b724b) !important;
+    -webkit-text-fill-color: var(--am-typo-indication-on-cream, #8b724b) !important;
+    text-shadow: none !important;
+  }
+
+  /* Body copy is the one place the raw token is not used. The dashboard's
+     "body on cream" is the same gold as the title (#b69f64), which at
+     display size is fine but at 16px on #ece8df sits near 2.3:1 contrast —
+     unreadable for a paragraph. It is darkened toward the page's own ink so
+     it stays in the same warm family while actually being readable. */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
+    :is(.home-am-intro__caption, .home-am-video__title-stack, .home-am-video__caption)
+    :is(.typo-on-images-body, .home-am-intro__body, .home-am-video__title-body) {
+    color: #6b5836 !important;
+    -webkit-text-fill-color: #6b5836 !important;
+    text-shadow: none !important;
+  }
+
+  /* CTAs: full-width and a proper 48px tap target. */
+  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold,
+  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding-inline: 1.5rem !important;
+    font-size: 12px !important;
+    letter-spacing: 0.14em !important;
+  }
+}
+
+/* ==========================================================================
+   20. REDUCED MOTION — phone amenities
+   ========================================================================== */
+
+@media (max-width: 767.98px) and (prefers-reduced-motion: reduce) {
+  html[data-ex-experience] .home-am-sequence :is(
+    .home-am-intro__media,
+    .home-am-video__hero-wrap,
+    .home-am-opening__images,
+    .home-am-nature__media
+  ) {
+    animation: none !important;
   }
 }
