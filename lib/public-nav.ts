@@ -65,13 +65,8 @@ export const NAV_CRUISES: NavGroup = {
 
 export const NAV_EXPERIENCES: NavGroup = {
   id: "experiences",
-  label: "Voyages",
+  label: "Experiences",
   links: [
-    {
-      href: "/voyages",
-      label: "Our Voyages",
-      description: "Private dahabiya itineraries on the Nile",
-    },
     {
       href: "/highlights",
       label: "Highlights",
@@ -170,14 +165,14 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_CRUISES.id,
     label: NAV_CRUISES.label,
-    href: "/cruises-list",
+    href: "/voyages",
     links: NAV_CRUISES.links,
   },
   {
     type: "group",
     id: NAV_EXPERIENCES.id,
     label: NAV_EXPERIENCES.label,
-    href: "/voyages",
+    href: "/highlights",
     links: NAV_EXPERIENCES.links,
   },
   {
@@ -214,7 +209,7 @@ export function navHrefMatches(pathname: string, href: string): boolean {
 }
 
 /**
- * Left editorial overlay nav — Suites / Cruises / Voyages / About / Contact
+ * Left editorial overlay nav — Suites / Cruises / Experiences / About / Contact
  * and their dropdown destinations only. Homepage keeps the current header.
  */
 export function usesEditorialOverlayNav(pathname: string): boolean {

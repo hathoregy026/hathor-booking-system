@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Desktop/tablet left overlay for Suites, Cruises, Voyages, About, Contact
+ * Desktop/tablet left overlay for Suites, Cruises, Experiences, About, Contact
  * (and their dropdown destinations). Homepage does not mount this.
  *
  * Open is CSS-driven so the cream menu cannot get stuck off-screen:
