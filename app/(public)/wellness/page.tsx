@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { WellnessEditorialPageContent } from "@/components/pages/WellnessEditorialPageContent";
-import "../../wellness-editorial.css";
+import "../../wellness-editorial-v4.css";
 import "../../editorial-chrome.css";
 
 export const metadata: Metadata = {
