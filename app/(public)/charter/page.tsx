@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { CharterPageContent } from "@/components/pages/CharterPageContent";
+import "../../charter-editorial.css";
+import "../../editorial-chrome.css";
 
 export const metadata: Metadata = {
   title: "Private Dahabiya Charter on the Nile in Egypt",

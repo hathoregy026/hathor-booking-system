@@ -131,7 +131,7 @@ export function CharterRequestForm({
         aria-labelledby="charter-request-heading"
       >
         <div className="ch-form__success" role="status" aria-live="polite">
-          <h2 id="charter-request-heading" className="ce-display">
+          <h2 id="charter-request-heading" className="chr-display">
             Thank you.
           </h2>
           <p>
@@ -151,8 +151,8 @@ export function CharterRequestForm({
     >
       {!compact ? (
         <div className="ch-request__intro">
-          <p className="ce-label">Private Concierge</p>
-          <h2 id="charter-request-heading" className="ce-display">
+          <p className="chr-eyebrow">Private Concierge</p>
+          <h2 id="charter-request-heading" className="chr-display">
             {CHARTER_PRIVATE.inquiry.title}
           </h2>
           <p>{CHARTER_PRIVATE.inquiry.lead}</p>
@@ -395,11 +395,13 @@ export function CharterRequestForm({
 
         <button
           type="submit"
-          className="ce-btn"
+          className="chr-btn chr-btn--solid"
           disabled={state === "submitting"}
           aria-busy={state === "submitting"}
         >
-          {state === "submitting" ? "Sending…" : "Request a Bespoke Quote"}
+          <span>
+            {state === "submitting" ? "Sending…" : "Request a Bespoke Quote"}
+          </span>
         </button>
       </form>
     </section>
