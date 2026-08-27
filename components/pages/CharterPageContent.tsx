@@ -98,11 +98,62 @@ function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="chr-eyebrow">{children}</p>;
 }
 
+/** Break a phrase into short whole-word lines (never mid-word). */
+function phraseLines(text: string, wordsPerLine = 2): string[] {
+  const words = text
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (words.length <= wordsPerLine) return text.trim() ? [text.trim()] : [];
+  const lines: string[] = [];
+  for (let i = 0; i < words.length; i += wordsPerLine) {
+    lines.push(words.slice(i, i + wordsPerLine).join(" "));
+  }
+  return lines;
+}
+
+/** Whole-phrase title lines — never wrap mid-word. */
+function TitleLines({
+  lines,
+  as: Tag = "h2",
+  className = "chr-display chr-display--m",
+}: {
+  lines: string[];
+  as?: "h1" | "h2";
+  className?: string;
+}) {
+  const lineClass = ["chr-line--a", "chr-line--b", "chr-line--c", "chr-line--a"] as const;
+  return (
+    <Tag className={className} data-anima-title>
+      {lines.map((line, index) => (
+        <span
+          key={`${line}-${index}`}
+          className={`chr-line ${lineClass[index] ?? "chr-line--a"}`}
+        >
+          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
 const CHAPTER_INDEX = [
   { href: "#promise", label: "Promise" },
   { href: "#residence", label: "Residence" },
   { href: "#passages", label: "Passages" },
   { href: "#charter-request", label: "Request" },
+] as const;
+
+const VALUE_TITLE_LINES = ["Privacy.", "Flexibility.", "Care."] as const;
+
+const PASSAGE_IMAGES = [
+  "home-voyage-nile-majesty",
+  "home-voyage-4n-luxor-aswan",
+  "home-voyage-3n-aswan-luxor",
+  "home-voyage-7n-roundtrip",
+  "charter-itinerary",
+  "about-hero",
+  "home-cinematic-still",
 ] as const;
 
 export function CharterPageContent() {
@@ -113,8 +164,9 @@ export function CharterPageContent() {
   const charter = pages.charter;
   const typography = useTypographySettings();
   const charterHero = resolveHeroPageCopy(typography, "charter");
-  const charterHeroLines = stackedHeroLines(charterHero.main, charterHero.second);
-  const titleLineClass = ["chr-line--a", "chr-line--b", "chr-line--c"] as const;
+  const charterHeroLines = stackedHeroLines(charterHero.main, charterHero.second).flatMap(
+    (line) => phraseLines(line, 2),
+  );
   const routes = CHARTER_PAGE.overview.routes;
   const [preferredRoute, setPreferredRoute] = useState<string>(routes[0] ?? "");
   const copy = CHARTER_PRIVATE;
@@ -142,63 +194,75 @@ export function CharterPageContent() {
         >
           <div className="chr-stage">
             <div ref={trackRef} className="chr-track">
-              {/* 01 — Index prologue: vertical chapter rail + asymmetric title */}
+              {/* 01 — Index: title + edge image */}
               <Scene className="chr-index">
-                <ol className="chr-index__chapters" aria-label="Charter chapters">
-                  {CHAPTER_INDEX.map((item, i) => (
-                    <li key={item.href}>
-                      <a href={item.href}>
-                        <span>{String(i + 1).padStart(2, "0")}</span>
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
+                <div className="chr-index__copy">
+                  <ol className="chr-index__chapters" aria-label="Charter chapters">
+                    {CHAPTER_INDEX.map((item, i) => (
+                      <li key={item.href}>
+                        <a href={item.href}>
+                          <span>{String(i + 1).padStart(2, "0")}</span>
+                          {item.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
 
-                <div className="chr-index__core">
                   <Eyebrow>{copy.hero.kicker}</Eyebrow>
-                  <div className="chr-index__title" id="charter" data-anima-title>
-                    <h1 className="chr-display chr-display--xl wt-page-hero">
-                      {charterHeroLines.map((line, index) => (
-                        <span
-                          key={`${line}-${index}`}
-                          className={`chr-line ${titleLineClass[index] ?? ""}`}
-                        >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
-                        </span>
-                      ))}
-                    </h1>
+                  <div className="chr-index__title" id="charter">
+                    <TitleLines
+                      as="h1"
+                      className="chr-display chr-display--xl wt-page-hero"
+                      lines={charterHeroLines}
+                    />
                   </div>
                   <p className="chr-index__lead wt-page-body">
                     {CHARTER_PAGE.hero.subtitle}
                   </p>
+                  <div className="chr-index__meta">
+                    <p className="chr-meta">Exclusive vessel</p>
+                    <p className="chr-meta">Twelve guests · Three decks</p>
+                  </div>
+                  <p className="chr-index__scroll">
+                    <i />
+                    Scroll rightward
+                  </p>
                 </div>
 
-                <div className="chr-index__meta">
-                  <p className="chr-meta">Exclusive vessel</p>
-                  <p className="chr-meta">Twelve guests · Three decks</p>
-                </div>
-
-                <p className="chr-index__scroll">
-                  <i />
-                  Scroll rightward
-                </p>
+                <FlipImage
+                  className="chr-index__visual"
+                  axis="left"
+                  ratio="4 / 5"
+                  front="charter-hero"
+                  back="about-hero"
+                  frontAlt="Private Hathor Dahabiya on the Nile"
+                  backAlt="Hathor Dahabiya sailing the Nile"
+                />
               </Scene>
 
-              {/* 02 — Vessel claim: immersive plane + sand wash */}
+              {/* 02 — Vessel claim */}
               <Scene className="chr-claim" id="promise">
-                <CharterMedia
-                  slot="charter-hero"
-                  alt="Private Hathor Dahabiya charter on the Nile"
-                  priority
-                  className="chr-claim__media"
-                  ratio="16 / 10"
-                />
+                <div className="chr-claim__visual">
+                  <CharterMedia
+                    slot="charter-hero"
+                    alt="Private Hathor Dahabiya charter on the Nile"
+                    priority
+                    className="chr-claim__main"
+                    ratio="16 / 10"
+                  />
+                  <FlipImage
+                    className="chr-claim__inset"
+                    axis="up"
+                    ratio="4 / 5"
+                    front="charter-privacy"
+                    back="home-split-courtyard"
+                    frontAlt="Private sun deck reserved for your party"
+                    backAlt="Life aboard Hathor"
+                  />
+                </div>
                 <div className="chr-claim__wash">
                   <Eyebrow>The vessel is yours</Eyebrow>
-                  <p className="chr-edit chr-edit--m">
-                    {copy.hero.subhead}
-                  </p>
+                  <p className="chr-edit chr-edit--m">{copy.hero.subhead}</p>
                   <div className="chr-claim__actions">
                     <a className="chr-btn" href="#charter-request">
                       <span>{copy.hero.primaryCta}</span>
@@ -210,34 +274,27 @@ export function CharterPageContent() {
                 </div>
               </Scene>
 
-              {/* 03 — Promise spine: staggered vertical pillars */}
+              {/* 03 — Promise spine */}
               <Scene className="chr-spine">
                 <header className="chr-spine__head">
                   <Eyebrow>{copy.value.kicker}</Eyebrow>
-                  <h2 className="chr-display chr-display--m" data-anima-title>
-                    <span className="chr-line">
-                      <AnimaSplitLine line={0}>{copy.value.title}</AnimaSplitLine>
-                    </span>
-                  </h2>
+                  <TitleLines lines={[...VALUE_TITLE_LINES]} />
                   <p className="chr-support">
                     {charter.benefitsIntro || copy.value.intro}
                   </p>
                 </header>
                 <div className="chr-spine__columns">
                   {copy.value.pillars.map((pillar, index) => (
-                    <article
-                      key={pillar.title}
-                      className={`chr-spine__col chr-spine__col--${index + 1}`}
-                    >
-                      <span className="chr-spine__n chr-edit">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
+                    <article key={pillar.title} className="chr-spine__col">
                       <CharterMedia
                         slot={pillar.image}
                         alt={pillar.title}
                         className="chr-spine__media"
-                        ratio={index === 1 ? "3 / 4" : "4 / 5"}
+                        ratio="4 / 5"
                       />
+                      <span className="chr-spine__n chr-edit">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                       <h3 className="chr-display">{pillar.title}</h3>
                       <p className="chr-support">{pillar.body}</p>
                     </article>
@@ -245,15 +302,14 @@ export function CharterPageContent() {
                 </div>
               </Scene>
 
-              {/* 04 — Residence specification wall */}
+              {/* 04 — Residence wall */}
               <Scene className="chr-residence" id="residence">
                 <header className="chr-residence__head">
                   <Eyebrow>{copy.fleet.kicker}</Eyebrow>
-                  <h2 className="chr-display chr-display--l" data-anima-title>
-                    <span className="chr-line">
-                      <AnimaSplitLine line={0}>{copy.fleet.title}</AnimaSplitLine>
-                    </span>
-                  </h2>
+                  <TitleLines
+                    className="chr-display chr-display--l"
+                    lines={["Our", "Accommodations"]}
+                  />
                   <p className="chr-support">{copy.fleet.intro}</p>
                   <ul className="chr-residence__stats">
                     {copy.fleet.stats.map((stat) => (
@@ -263,18 +319,25 @@ export function CharterPageContent() {
                 </header>
                 <div className="chr-residence__wall">
                   {copy.fleet.cards.map((card, index) => {
-                    const count = card.capacity.match(/\d+/)?.[0] ?? String(index + 1);
+                    const count =
+                      card.capacity.match(/\d+/)?.[0] ?? String(index + 1);
                     return (
                       <article key={card.title} className="chr-datum">
-                        <div className="chr-datum__frame">
-                          <span className="chr-datum__corner chr-datum__corner--tl">
-                            {card.detail}
-                          </span>
-                          <span className="chr-datum__corner chr-datum__corner--tr">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <p className="chr-datum__count chr-edit">{count}</p>
+                        <CharterMedia
+                          slot={card.image}
+                          alt={card.title}
+                          className="chr-datum__media"
+                          ratio="5 / 4"
+                        />
+                        <div className="chr-datum__body">
+                          <div className="chr-datum__top">
+                            <p className="chr-datum__count chr-edit">{count}</p>
+                            <span className="chr-meta">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                          </div>
                           <h3 className="chr-display">{card.title}</h3>
+                          <p className="chr-meta">{card.detail}</p>
                           <p className="chr-support">{card.body}</p>
                           <ul className="chr-datum__amenities">
                             {card.amenities.map((item) => (
@@ -284,12 +347,6 @@ export function CharterPageContent() {
                           <Link className="chr-link" href={card.href}>
                             {card.hrefLabel}
                           </Link>
-                          <CharterMedia
-                            slot={card.image}
-                            alt={card.title}
-                            className="chr-datum__peek"
-                            ratio="5 / 4"
-                          />
                         </div>
                       </article>
                     );
@@ -298,29 +355,22 @@ export function CharterPageContent() {
                 <p className="chr-residence__outro chr-support">{copy.fleet.outro}</p>
               </Scene>
 
-              {/* 05 — Craft strip: bespoke experiences as layered essay */}
+              {/* 05 — Craft strip */}
               <Scene className="chr-craft">
                 <header className="chr-craft__head">
                   <Eyebrow>{copy.experiences.kicker}</Eyebrow>
-                  <h2 className="chr-display chr-display--m" data-anima-title>
-                    <span className="chr-line">
-                      <AnimaSplitLine line={0}>
-                        {copy.experiences.title}
-                      </AnimaSplitLine>
-                    </span>
-                  </h2>
+                  <TitleLines
+                    lines={["Crafted for", "your party alone"]}
+                  />
                 </header>
                 <div className="chr-craft__strip">
                   {copy.experiences.items.map((item, index) => (
-                    <article
-                      key={item.title}
-                      className={`chr-craft__tile chr-craft__tile--${index + 1}`}
-                    >
+                    <article key={item.title} className="chr-craft__tile">
                       <CharterMedia
                         slot={item.image}
                         alt={item.title}
                         className="chr-craft__media"
-                        ratio={index % 2 === 0 ? "3 / 4" : "4 / 5"}
+                        ratio="3 / 4"
                       />
                       <div className="chr-craft__copy">
                         <span className="chr-meta">
@@ -334,117 +384,164 @@ export function CharterPageContent() {
                 </div>
               </Scene>
 
-              {/* 06 — Passage river: interactive route ribbon */}
+              {/* 06 — Passage river with route imagery */}
               <Scene className="chr-river" id="passages">
-                <header className="chr-river__head">
-                  <Eyebrow>{copy.passages.kicker}</Eyebrow>
-                  <h2 className="chr-display chr-display--l" data-anima-title>
-                    <span className="chr-line">
-                      <AnimaSplitLine line={0}>{copy.passages.title}</AnimaSplitLine>
-                    </span>
-                  </h2>
-                  <p className="chr-support">{copy.passages.lead}</p>
-                  <p className="chr-river__pref chr-edit">
-                    Preferred · {preferredRoute}
-                  </p>
-                </header>
-                <div className="chr-river__line" aria-hidden="true" />
-                <div className="chr-river__routes" role="list">
-                  {copy.passages.routes.map((route, index) => {
-                    const active = preferredRoute === route;
-                    return (
-                      <button
-                        key={route}
-                        type="button"
-                        role="listitem"
-                        className={`chr-passage${active ? " is-active" : ""}`}
-                        onClick={() => selectRoute(route)}
-                      >
-                        <span className="chr-passage__n">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <span className="chr-passage__route chr-display">
-                          {route}
-                        </span>
-                        <span className="chr-passage__cta">
-                          {active ? "Selected · Request quote" : "Secure this passage"}
-                        </span>
-                      </button>
-                    );
-                  })}
+                <div className="chr-river__aside">
+                  <FlipImage
+                    className="chr-river__hero"
+                    axis="right"
+                    ratio="4 / 5"
+                    front="home-voyage-nile-majesty"
+                    back="charter-itinerary"
+                    frontAlt="Nile passage aboard Hathor"
+                    backAlt="A voyage composed around your itinerary"
+                  />
+                </div>
+                <div className="chr-river__main">
+                  <header className="chr-river__head">
+                    <Eyebrow>{copy.passages.kicker}</Eyebrow>
+                    <TitleLines
+                      className="chr-display chr-display--l"
+                      lines={["Compose", "your route"]}
+                    />
+                    <p className="chr-support">{copy.passages.lead}</p>
+                    <p className="chr-river__pref chr-edit">
+                      Preferred · {preferredRoute}
+                    </p>
+                  </header>
+                  <div className="chr-river__routes" role="list">
+                    {copy.passages.routes.map((route, index) => {
+                      const active = preferredRoute === route;
+                      const image =
+                        PASSAGE_IMAGES[index % PASSAGE_IMAGES.length];
+                      return (
+                        <button
+                          key={route}
+                          type="button"
+                          role="listitem"
+                          className={`chr-passage${active ? " is-active" : ""}`}
+                          onClick={() => selectRoute(route)}
+                        >
+                          <CharterMedia
+                            slot={image}
+                            alt={route}
+                            className="chr-passage__media"
+                            ratio="1 / 1"
+                          />
+                          <span className="chr-passage__n">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="chr-passage__route chr-display">
+                            {route}
+                          </span>
+                          <span className="chr-passage__cta">
+                            {active
+                              ? "Selected · Request quote"
+                              : "Secure this passage"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </Scene>
 
-              {/* 07 — Chronology: three measured steps */}
+              {/* 07 — Chronology */}
               <Scene className="chr-chrono">
-                <header className="chr-chrono__head">
-                  <Eyebrow>{copy.process.kicker}</Eyebrow>
-                  <h2 className="chr-display chr-display--m" data-anima-title>
-                    <span className="chr-line">
-                      <AnimaSplitLine line={0}>{copy.process.title}</AnimaSplitLine>
-                    </span>
-                  </h2>
-                </header>
-                <ol className="chr-chrono__steps">
-                  {copy.process.steps.map((step) => (
-                    <li key={step.n} className="chr-step">
-                      <span className="chr-step__n chr-edit">{step.n}</span>
-                      <h3 className="chr-display">{step.title}</h3>
-                      <p className="chr-support">{step.body}</p>
-                    </li>
-                  ))}
-                </ol>
-                <FlipImage
-                  className="chr-chrono__media"
-                  axis="up"
-                  ratio="5 / 4"
-                  front="charter-rhythm"
-                  back="charter-service"
-                  frontAlt="Unhurried sailing rhythm along the Nile"
-                  backAlt="Dedicated hospitality aboard Hathor"
-                />
+                <div className="chr-chrono__copy">
+                  <header className="chr-chrono__head">
+                    <Eyebrow>{copy.process.kicker}</Eyebrow>
+                    <TitleLines lines={["Three", "measured steps"]} />
+                  </header>
+                  <ol className="chr-chrono__steps">
+                    {copy.process.steps.map((step) => (
+                      <li key={step.n} className="chr-step">
+                        <span className="chr-step__n chr-edit">{step.n}</span>
+                        <h3 className="chr-display">{step.title}</h3>
+                        <p className="chr-support">{step.body}</p>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+                <div className="chr-chrono__visuals">
+                  <FlipImage
+                    className="chr-chrono__media"
+                    axis="up"
+                    ratio="5 / 4"
+                    front="charter-rhythm"
+                    back="charter-service"
+                    frontAlt="Unhurried sailing rhythm along the Nile"
+                    backAlt="Dedicated hospitality aboard Hathor"
+                  />
+                  <CharterMedia
+                    slot="gastronomy-celebration"
+                    alt="Private celebration aboard Hathor"
+                    className="chr-chrono__secondary"
+                    ratio="4 / 5"
+                  />
+                </div>
               </Scene>
 
               {/* 08 — Confidence archive */}
               <Scene className="chr-archive">
-                <header className="chr-archive__head">
-                  <Eyebrow>{copy.trust.kicker}</Eyebrow>
-                  <h2 className="chr-display chr-display--l" data-anima-title>
-                    <span className="chr-line">
-                      <AnimaSplitLine line={0}>{copy.trust.title}</AnimaSplitLine>
-                    </span>
-                  </h2>
-                </header>
-                <ul className="chr-archive__facts">
-                  {(charter.benefits.length ? charter.benefits : copy.trust.facts).map(
-                    (fact) => (
+                <div className="chr-archive__visuals">
+                  <CharterMedia
+                    slot="home-story-way-of-life"
+                    alt="Life aboard a private Hathor charter"
+                    className="chr-archive__media chr-archive__media--a"
+                    ratio="4 / 5"
+                  />
+                  <CharterMedia
+                    slot="home-story-dining"
+                    alt="Private dining aboard Hathor"
+                    className="chr-archive__media chr-archive__media--b"
+                    ratio="3 / 4"
+                  />
+                </div>
+                <div className="chr-archive__copy">
+                  <header className="chr-archive__head">
+                    <Eyebrow>{copy.trust.kicker}</Eyebrow>
+                    <TitleLines
+                      className="chr-display chr-display--l"
+                      lines={["Quiet", "proof"]}
+                    />
+                  </header>
+                  <ul className="chr-archive__facts">
+                    {(charter.benefits.length
+                      ? charter.benefits
+                      : copy.trust.facts
+                    ).map((fact) => (
                       <li key={fact}>{fact}</li>
-                    ),
-                  )}
-                </ul>
-                <div className="chr-archive__quotes">
-                  {copy.trust.quotes.map((item) => (
-                    <figure key={item.attribution} className="chr-quote">
-                      <blockquote className="chr-edit">{item.quote}</blockquote>
-                      <cite>{item.attribution}</cite>
-                    </figure>
-                  ))}
+                    ))}
+                  </ul>
+                  <div className="chr-archive__quotes">
+                    {copy.trust.quotes.map((item) => (
+                      <figure key={item.attribution} className="chr-quote">
+                        <blockquote className="chr-edit">{item.quote}</blockquote>
+                        <cite>{item.attribution}</cite>
+                      </figure>
+                    ))}
+                  </div>
                 </div>
               </Scene>
             </div>
           </div>
         </section>
 
-        {/* Epilogue — always vertical: request + concierge */}
+        {/* Epilogue */}
         <section className="chr-epilogue" aria-labelledby="chr-epilogue-title">
           <header className="chr-epilogue__head">
             <Eyebrow>Private concierge</Eyebrow>
             <h2
               id="chr-epilogue-title"
               className="chr-display chr-display--l"
-              data-anima-title
             >
-              {copy.finale.title}
+              <span className="chr-line chr-line--a">
+                <AnimaSplitLine line={0}>Your Journey,</AnimaSplitLine>
+              </span>
+              <span className="chr-line chr-line--b">
+                <AnimaSplitLine line={1}>Redefined.</AnimaSplitLine>
+              </span>
             </h2>
             <p className="chr-support">
               {charter.overviewIntro || copy.finale.body}
@@ -470,6 +567,12 @@ export function CharterPageContent() {
                 alt="Private Hathor charter at dusk on the Nile"
                 className="chr-epilogue__media"
                 ratio="356 / 460"
+              />
+              <CharterMedia
+                slot="charter-service"
+                alt="Dedicated crew aboard Hathor"
+                className="chr-epilogue__media-alt"
+                ratio="5 / 3"
               />
               <h3 className="chr-display">Begin the conversation</h3>
               <p className="chr-support">
