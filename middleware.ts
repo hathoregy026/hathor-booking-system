@@ -221,8 +221,34 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     console.error("Middleware error:", error);
 
-    if (request.nextUrl.pathname.startsWith("/api/admin")) {
+    const { pathname } = request.nextUrl;
+
+    if (pathname.startsWith("/api/admin")) {
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+
+    /*
+     * FAIL CLOSED on protected surfaces.
+     *
+     * This catch previously ended in a blanket `NextResponse.next()`, which
+     * meant *any* unexpected throw above — a missing env var in
+     * getProductionOrigin(), a malformed URL, a future edit to this file —
+     * handed the caller the admin HTML with no session check at all. The auth
+     * check is the thing most likely to be skipped by an error, so an error
+     * must never be the thing that grants access.
+     *
+     * Protected paths therefore bounce to /admin/login on failure; everything
+     * else (public marketing pages) still degrades open, which is correct —
+     * a broken middleware should not take the public site down.
+     */
+    const isProtected =
+      (pathname.startsWith("/admin") && !PUBLIC_ADMIN_PATHS.includes(pathname)) ||
+      matchesPrefix(pathname, ADMIN_ONLY_PREFIXES);
+
+    if (isProtected) {
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("from", pathname);
+      return withHtmlNoStore(NextResponse.redirect(loginUrl));
     }
 
     return NextResponse.next();

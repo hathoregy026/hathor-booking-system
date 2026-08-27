@@ -25,8 +25,52 @@
 }
 
 /* ==========================================================================
-   1. STAGE
+   1. STAGE + HORIZONTAL CONTAINMENT
    ========================================================================== */
+
+/*
+ * `clip`, never `hidden`.
+ *
+ * The spec says: if one axis is `hidden` and the other is `visible`, the
+ * visible axis computes to `auto`. So `overflow-x: hidden` here quietly made
+ * .admin-shell a scroll container. `position: sticky` pins to its nearest
+ * scrollport, so the glass header pinned to this box — which grows with the
+ * page and never scrolls — and therefore scrolled straight off the top of the
+ * viewport. Measured before the fix: header at -800px after scrolling 800px,
+ * at 1440/1280/740px wide alike. Page-level sticky <thead> broke identically.
+ *
+ * `overflow: clip` contains the same overflow WITHOUT creating a scroll
+ * container, so sticky is live again and wide children are still clipped.
+ */
+.admin-shell {
+  overflow-x: clip;
+}
+
+.admin-shell .admin-main {
+  overflow-x: clip;
+  /* Clear the fixed phone bottom-nav AND the iOS home indicator. Previously a
+     flat pb-24 (6rem), which left ~2px under a 34px home indicator. */
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  /* Bottom nav is phones-only; from the tablet rail up, normal spacing. */
+  .admin-shell .admin-main {
+    padding-bottom: 2rem;
+  }
+}
+
+/*
+ * Fallback for engines without `overflow: clip` (Safari < 16, Chrome < 90).
+ * They keep the old `hidden` behaviour: no horizontal scrollbar, non-sticky
+ * header. Correct-but-plainer beats a horizontally scrolling admin.
+ */
+@supports not (overflow: clip) {
+  .admin-shell,
+  .admin-shell .admin-main {
+    overflow-x: hidden;
+  }
+}
 
 .admin-shell .admin-shell__stage {
   padding-left: var(--shell-pad);
@@ -319,6 +363,39 @@
   flex-direction: column;
   padding: 1rem;
   min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Tile typography — one named scale instead of per-card Tailwind steps.
+   This is the "design DNA" bit: every stat tile now reads from the same two
+   rules, so labels and numbers line up across the dashboard by construction
+   rather than by everyone remembering the same utility classes.
+   -------------------------------------------------------------------------- */
+
+.admin-shell .admin-tile__label {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.admin-shell .admin-tile__value {
+  margin-top: 0.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  /* Fluid rather than stepped: a long currency string in a half-width phone
+     tile scales down instead of overflowing. Upper bound matches the old
+     text-3xl (1.875rem); lower bound stays comfortably legible. */
+  font-size: clamp(1.25rem, 1.02rem + 1.15vw, 1.875rem);
+  /* Last-resort guard if a value is still too wide to fit. */
+  overflow-wrap: anywhere;
+}
+
+.admin-shell .admin-tile__value--feature {
+  /* Old text-3xl → sm:text-4xl, now continuous. */
+  font-size: clamp(1.5rem, 1.15rem + 1.75vw, 2.25rem);
 }
 
 @media (min-width: 640px) {

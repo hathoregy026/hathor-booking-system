@@ -83,15 +83,21 @@ export function StatCard({
         {change && <span className={pillClass}>{change}</span>}
       </div>
 
-      <p
-        className="mt-5 text-sm font-medium"
-        style={{ color: "var(--text-secondary)" }}
-      >
+      <p className="admin-tile__label" style={{ color: "var(--text-secondary)" }}>
         {label}
       </p>
+      {/*
+        Sizing moved out of fixed Tailwind step-classes into
+        `.admin-tile__value` (admin-shell.css), which clamps against viewport
+        width. Fixed text-2xl/3xl steps cannot know how narrow a half-width
+        tile gets on a phone: a six-figure currency value needs ~162px, while a
+        2-up tile at 360px offers ~122px of inner width — so it spilled out of
+        its box. clamp() shrinks the number instead. Short counts (the usual
+        case) never reach the lower bound and render exactly as before.
+      */}
       <p
-        className={`mt-1 font-bold tabular-nums tracking-tight ${
-          feature ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
+        className={`admin-tile__value ${
+          feature ? "admin-tile__value--feature" : ""
         }`}
       >
         {value}

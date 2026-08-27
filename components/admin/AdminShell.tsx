@@ -68,10 +68,23 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
   }, [mobileMenuOpen]);
 
   return (
-    <div
-      className="admin-shell min-h-screen overflow-x-hidden"
-      data-theme={theme}
-    >
+    /*
+     * Horizontal containment for the shell and <main> now lives in
+     * admin-shell.css as `overflow-x: clip` — deliberately NOT Tailwind's
+     * `overflow-x-hidden`.
+     *
+     * Per the CSS overflow spec, when one axis is `hidden` and the other is
+     * `visible`, the visible axis computes to `auto`. That silently turned this
+     * element into a scroll container, and a `position: sticky` descendant pins
+     * itself to its nearest scrollport — this box, not the viewport. Since the
+     * shell grows with its content and never scrolls itself, the sticky header
+     * never re-pinned and slid off the top of the screen at every breakpoint
+     * (measured: header at -800px when scrolled 800px). Page-level sticky table
+     * headers (`top: var(--header-h)`) broke for the same reason.
+     *
+     * `clip` contains overflow without establishing a scroll container.
+     */
+    <div className="admin-shell min-h-screen" data-theme={theme}>
       <div className="admin-shell__glow" aria-hidden />
 
       <Sidebar
@@ -94,7 +107,11 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
           />
         </Suspense>
 
-        <main className="admin-main mx-auto w-full max-w-[1600px] flex-1 overflow-x-hidden px-4 py-6 pb-24 sm:px-6 md:pb-8 lg:px-8 lg:py-8">
+        {/* overflow-x + bottom padding come from .admin-main in admin-shell.css:
+            `clip` (not hidden) so sticky table headers keep working, and a
+            bottom pad that clears the phone bottom-nav *plus* the iOS home
+            indicator via env(safe-area-inset-bottom). */}
+        <main className="admin-main mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           {children}
         </main>
       </div>
