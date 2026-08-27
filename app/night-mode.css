@@ -672,6 +672,22 @@ html[data-public-theme="night"] .highlights-editorial {
   color: var(--night-text) !important;
 }
 
+html[data-public-theme="night"] .partners-editorial {
+  --pn-paper: var(--night-canvas);
+  --pn-paper-warm: var(--night-surface);
+  --pn-ink: var(--night-text);
+  --pn-ink-soft: var(--night-text-soft);
+  --pn-gold: var(--night-gold);
+  --pn-gold-deep: var(--night-gold-strong);
+  --pn-wash-sand: var(--night-surface-raised);
+  --pn-wash-stone: var(--night-surface-soft);
+  --pn-wash-olive: #30291c;
+  --pn-black: #080705;
+  --pn-hair: var(--night-line);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
 html[data-public-theme="night"] :is(.gastronomy-dining-shell, .nib-dining) {
   --nib-gold: var(--night-gold);
   --nib-gold-deep: var(--night-gold-strong);
@@ -687,6 +703,7 @@ html[data-public-theme="night"] :is(
   .contact-editorial,
   .wellness-boring,
   .highlights-editorial,
+  .partners-editorial,
   .cr-intro,
   .nib-dining,
   [data-charter-page]
@@ -701,6 +718,7 @@ html[data-public-theme="night"] .about-boring .ab-intro__body,
 html[data-public-theme="night"] .contact-editorial .ce-intro__body,
 html[data-public-theme="night"] .wellness-boring .wb-intro__body,
 html[data-public-theme="night"] .highlights-editorial .hl-intro__body,
+html[data-public-theme="night"] .partners-editorial .pn-covenant__lead,
 html[data-public-theme="night"] .cr-intro .cr-intro__body,
 html[data-public-theme="night"] .nib-dining .nib-intro__copy {
   color: rgb(244 237 223 / 82%) !important;
@@ -762,6 +780,9 @@ html[data-public-theme="night"]:has(.wellness-boring) :is(.public-site, .public-
 html[data-public-theme="night"]:has(.highlights-editorial),
 html[data-public-theme="night"]:has(.highlights-editorial) body,
 html[data-public-theme="night"]:has(.highlights-editorial) :is(.public-site, .public-main),
+html[data-public-theme="night"]:has(.partners-editorial),
+html[data-public-theme="night"]:has(.partners-editorial) body,
+html[data-public-theme="night"]:has(.partners-editorial) :is(.public-site, .public-main),
 html[data-public-theme="night"][data-mask-reveal],
 html[data-public-theme="night"][data-mask-reveal] body,
 html[data-public-theme="night"][data-mask-reveal] .public-site,
@@ -779,6 +800,7 @@ html[data-public-theme="night"]:has(.about-boring) .hathor-header,
 html[data-public-theme="night"]:has(.contact-editorial) .hathor-header,
 html[data-public-theme="night"]:has(.wellness-boring) .hathor-header,
 html[data-public-theme="night"]:has(.highlights-editorial) .hathor-header,
+html[data-public-theme="night"]:has(.partners-editorial) .hathor-header,
 html[data-public-theme="night"]:has(.cr-intro) .hathor-header {
   background: rgb(15 13 10 / 88%) !important;
   border-color: var(--night-line-soft) !important;
@@ -794,6 +816,7 @@ html[data-public-theme="night"]:has(.about-boring) .hathor-header :is(a, button)
 html[data-public-theme="night"]:has(.contact-editorial) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.wellness-boring) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.highlights-editorial) .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.partners-editorial) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.cr-intro) .hathor-header :is(a, button) {
   color: var(--night-text) !important;
   text-shadow: none !important;

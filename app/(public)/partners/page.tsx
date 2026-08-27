@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { PartnersPageContent } from "@/components/pages/PartnersPageContent";
+import "../../partners-editorial.css";
+import "../../editorial-chrome.css";
 
 export const metadata: Metadata = {
   title: "Hathor Dahabiya Travel and Hospitality Partners",
