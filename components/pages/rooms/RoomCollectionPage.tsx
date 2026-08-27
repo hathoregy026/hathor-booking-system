@@ -5,6 +5,8 @@ import Link from "next/link";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { FavoriteButton } from "@/components/selection/FavoriteButton";
+import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
 import { resolveCmsText } from "@/lib/website-text-shared";
 
@@ -105,24 +107,50 @@ export function RoomCollectionPage({
         <ol className="room-collection__list">
           {rooms.map((room, index) => (
             <li key={room.slug} className="room-collection__item">
-              <Link
-                href={`/rooms/${room.slug}`}
-                className="room-collection__media"
-                aria-label={`Explore ${room.name}`}
-              >
+              {/*
+                The media element keeps its class, grid cell, dimensions and
+                position: relative exactly as before. It is a <div> rather than
+                an <a> so the Favorite control can be a SIBLING of the link —
+                a <button> inside an <a> is invalid HTML. Navigation is restored
+                by a transparent stretched link covering the same area.
+              */}
+              <div className="room-collection__media">
                 <Image
                   src={room.images[0]}
                   alt={`${room.name} interior aboard Hathor Dahabiya`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 62vw"
                 />
+                <Link
+                  href={`/rooms/${room.slug}`}
+                  className="room-collection__media-link"
+                  aria-label={`Explore ${room.name}`}
+                />
+                {/*
+                  Both controls live in one absolutely-positioned stack, so the
+                  card's dimensions, grid and image crop are untouched.
+                */}
+                <div className="hathor-select-stack room-collection__select">
+                  <FavoriteButton
+                    type="residence"
+                    slug={room.slug}
+                    name={room.name}
+                    variant="card"
+                  />
+                  <AddToVoyageButton
+                    kind="residence"
+                    slug={room.slug}
+                    name={room.name}
+                    variant="card"
+                  />
+                </div>
                 <span className="room-collection__number">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <span className="room-collection__media-caption">
                   Nile residence · Hathor
                 </span>
-              </Link>
+              </div>
               <div className="room-collection__copy">
                 <p className="room-kicker wt-page-kicker">{room.eyebrow}</p>
                 <h2 className="wt-page-title">{room.name}</h2>

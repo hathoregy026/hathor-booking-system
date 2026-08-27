@@ -1,0 +1,540 @@
+/*
+ * FavoritesPanel — Hathor selection system.
+ *
+ * Deliberately speaks the EditorialNavOverlay language: a cream sheet that
+ * arrives over a dimmed page, a gold hairline rail, uppercase editorial meta,
+ * numbered rows. Palette is the existing #8b6914 / #c9a96e / #ece8df set.
+ * No card shadows, no rounded product tiles, no badges, no cart iconography.
+ *
+ * Co-located and imported by the component, as EditorialNavOverlay.css is.
+ * Every rule is scoped under .hfp.
+ */
+
+.hfp {
+  --hfp-gold: #c9a96e;
+  --hfp-gold-deep: #8b6914;
+  --hfp-cream: #ece8df;
+  --hfp-ink: #241d14;
+  --hfp-line: rgba(139, 105, 20, 0.22);
+
+  position: fixed;
+  inset: 0;
+  z-index: 1300; /* above header (1200), above the suites iframe (1000) */
+  pointer-events: none;
+}
+
+.hfp[hidden] {
+  display: none;
+}
+
+.hfp__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgba(24, 20, 14, 0.42);
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+
+.hfp__sheet {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(30rem, 100vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--hfp-cream);
+  color: var(--hfp-ink);
+  box-shadow: -1px 0 0 0 var(--hfp-line);
+  transform: translateX(100%);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.hfp.is-open {
+  pointer-events: auto;
+}
+
+.hfp.is-open .hfp__backdrop {
+  opacity: 1;
+}
+
+.hfp.is-open .hfp__sheet {
+  transform: translateX(0);
+}
+
+/* ---------------------------------------------------------------- */
+/* Head                                                              */
+/* ---------------------------------------------------------------- */
+
+.hfp__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.75rem clamp(1.25rem, 4vw, 2.25rem) 1.25rem;
+  border-bottom: 1px solid var(--hfp-line);
+}
+
+.hfp__eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hfp-gold-deep);
+}
+
+.hfp__title {
+  margin: 0;
+  font-family: var(--font-hathor-display, Georgia, serif);
+  font-size: clamp(1.7rem, 4.4vw, 2.15rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.hfp__close {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  margin: -0.5rem -0.5rem 0 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 200ms ease;
+}
+
+.hfp__close:hover {
+  opacity: 1;
+}
+
+.hfp__close:focus-visible,
+.hfp__action:focus-visible,
+.hfp__remove:focus-visible,
+.hfp__cta:focus-visible {
+  outline: 2px solid var(--hfp-gold);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Body / list                                                       */
+/* ---------------------------------------------------------------- */
+
+.hfp__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hfp__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hfp__item {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 1.1rem;
+  padding: 1.25rem clamp(1.25rem, 4vw, 2.25rem);
+  border-bottom: 1px solid var(--hfp-line);
+}
+
+.hfp__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: rgba(139, 105, 20, 0.08);
+}
+
+.hfp__media img {
+  object-fit: cover;
+}
+
+.hfp__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.hfp__type {
+  margin: 0 0 0.3rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hfp-gold-deep);
+}
+
+.hfp__name {
+  margin: 0;
+  font-family: var(--font-hathor-display, Georgia, serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.hfp__meta {
+  margin: 0.4rem 0 0;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  opacity: 0.72;
+}
+
+/*
+ * Action row. The third slot is intentionally reserved for "Add to My Voyage",
+ * which arrives in a later stage — the row is already a wrapping flex line, so
+ * adding it will not change these dimensions.
+ */
+.hfp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1.1rem;
+  margin-top: auto;
+  padding-top: 0.85rem;
+}
+
+.hfp__action {
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--hfp-gold);
+}
+
+.hfp__remove {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0.3rem 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  transition: opacity 200ms ease;
+}
+
+.hfp__remove:hover {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------- */
+/* Empty state                                                       */
+/* ---------------------------------------------------------------- */
+
+.hfp__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: clamp(2.5rem, 9vw, 4.5rem) clamp(1.25rem, 4vw, 2.25rem);
+}
+
+.hfp__empty-rule {
+  width: 3.2rem;
+  height: 1px;
+  margin-bottom: 0.6rem;
+  background: var(--hfp-gold);
+}
+
+.hfp__empty h3 {
+  margin: 0;
+  font-family: var(--font-hathor-display, Georgia, serif);
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.hfp__empty p {
+  margin: 0;
+  max-width: 24rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  opacity: 0.75;
+}
+
+.hfp__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  margin-top: 0.6rem;
+  padding: 0 1.6rem;
+  border: 1px solid var(--hfp-gold);
+  border-radius: 999px;
+  background: var(--hfp-gold);
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- */
+/* Foot                                                              */
+/* ---------------------------------------------------------------- */
+
+.hfp__foot {
+  flex: 0 0 auto;
+  padding: 1rem clamp(1.25rem, 4vw, 2.25rem)
+    max(1rem, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hfp-line);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------- */
+/* Theme + environment                                               */
+/* ---------------------------------------------------------------- */
+
+[data-public-theme="dark"] .hfp__sheet {
+  background: #16120c;
+  color: #efe7d8;
+}
+
+[data-public-theme="dark"] .hfp {
+  --hfp-line: rgba(201, 169, 110, 0.26);
+}
+
+[data-public-theme="dark"] .hfp__eyebrow,
+[data-public-theme="dark"] .hfp__type {
+  color: var(--hfp-gold);
+}
+
+@media (max-width: 600px) {
+  .hfp__sheet {
+    width: 100vw;
+  }
+
+  .hfp__item {
+    grid-template-columns: 4.75rem minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hfp__backdrop,
+  .hfp__sheet {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Tabs — the in-sheet switch, so phones need only one header control */
+/* ---------------------------------------------------------------- */
+
+.hfp__tabs {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 1.5rem;
+  padding: 0.85rem clamp(1.25rem, 4vw, 2.25rem);
+  border-bottom: 1px solid var(--hfp-line);
+}
+
+.hfp__tab {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0.35rem 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  border-bottom: 1px solid transparent;
+  transition: opacity 200ms ease, border-color 200ms ease;
+}
+
+.hfp__tab.is-active {
+  opacity: 1;
+  border-bottom-color: var(--hfp-gold);
+}
+
+.hfp__tab:focus-visible {
+  outline: 2px solid var(--hfp-gold);
+  outline-offset: 3px;
+}
+
+.hfp__tab-count {
+  margin-left: 0.4rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--hfp-gold-deep);
+}
+
+/* ---------------------------------------------------------------- */
+/* My Voyage view                                                     */
+/* ---------------------------------------------------------------- */
+
+.hfp__section {
+  padding: 1.25rem clamp(1.25rem, 4vw, 2.25rem);
+  border-bottom: 1px solid var(--hfp-line);
+}
+
+.hfp__section-title {
+  margin: 0 0 0.65rem;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hfp-gold-deep);
+}
+
+.hfp__section-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hfp__item--flush {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.hfp__prompt {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.hfp__note {
+  margin: 0.6rem 0 0;
+  font-size: 0.65rem;
+  line-height: 1.55;
+  opacity: 0.6;
+}
+
+.hfp__counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+}
+
+.hfp__counter {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.hfp__counter-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.hfp__counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hfp__counter-controls button {
+  appearance: none;
+  border: 1px solid var(--hfp-line);
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  transition: border-color 200ms ease, opacity 200ms ease;
+}
+
+.hfp__counter-controls button:hover:not(:disabled) {
+  border-color: var(--hfp-gold);
+}
+
+.hfp__counter-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.hfp__counter-controls button:focus-visible {
+  outline: 2px solid var(--hfp-gold);
+  outline-offset: 2px;
+}
+
+.hfp__counter-controls svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  stroke: currentColor;
+  fill: none;
+}
+
+.hfp__counter-value {
+  min-width: 1.1rem;
+  text-align: center;
+  font-family: var(--font-hathor-display, Georgia, serif);
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.hfp__section--price {
+  background: rgba(139, 105, 20, 0.05);
+}
+
+.hfp__price-label {
+  margin: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hfp-gold-deep);
+}
+
+.hfp__price {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-hathor-display, Georgia, serif);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.hfp__primary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.5rem;
+  padding: 1.5rem clamp(1.25rem, 4vw, 2.25rem) 2rem;
+}
+
+/* Handoff guidance shown above the primary actions in My Voyage. */
+.hfp__handoff {
+  margin: 0;
+  padding: 0 clamp(1.25rem, 4vw, 2.25rem);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--hfp-gold-deep);
+}
+
+[data-public-theme="dark"] .hfp__handoff {
+  color: var(--hfp-gold);
+}

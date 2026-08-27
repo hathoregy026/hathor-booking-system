@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { FavoriteButton } from "@/components/selection/FavoriteButton";
+import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import type { RoomShowcase } from "@/lib/room-showcase";
 
 export function RoomDetailPage({ room }: { room: RoomShowcase }) {
@@ -43,7 +45,7 @@ export function RoomDetailPage({ room }: { room: RoomShowcase }) {
       <section className="room-detail__reserve">
         <p className="room-kicker">Choose a date and itinerary</p>
         <h2>Stay in the {room.name}</h2>
-        <div><BookNowTrigger className="room-pill">Check availability</BookNowTrigger><Link href="/rooms" className="room-text-link">Explore other rooms</Link></div>
+        <div><BookNowTrigger className="room-pill">Check availability</BookNowTrigger><FavoriteButton type="residence" slug={room.slug} name={room.name} variant="inline" /><AddToVoyageButton kind="residence" slug={room.slug} name={room.name} variant="inline" /><Link href="/rooms" className="room-text-link">Explore other rooms</Link></div>
       </section>
     </main>
     </div>

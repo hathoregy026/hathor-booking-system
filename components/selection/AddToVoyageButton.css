@@ -1,0 +1,259 @@
+/*
+ * AddToVoyageButton — matches FavoriteButton's proportions and palette exactly,
+ * so the two controls read as one restrained pair wherever they sit together.
+ * Scoped under .hathor-atv. No existing rule is touched.
+ */
+
+.hathor-atv {
+  --atv-size: 2.5rem;
+  --atv-icon: 1.05rem;
+  --atv-gold: #c9a96e;
+  --atv-gold-deep: #8b6914;
+  --atv-cream: #ece8df;
+
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.hathor-atv:focus-visible {
+  outline: 2px solid var(--atv-gold);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+.hathor-atv__icon {
+  display: block;
+  width: var(--atv-icon);
+  height: var(--atv-icon);
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  transition: color 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hathor-atv.is-selected .hathor-atv__icon {
+  transform: rotate(-18deg);
+}
+
+/* Card overlay disc — identical geometry to .hathor-fav--card. */
+.hathor-atv--card {
+  position: absolute;
+  width: var(--atv-size);
+  height: var(--atv-size);
+  border-radius: 999px;
+  color: var(--atv-cream);
+  background: rgba(24, 20, 14, 0.34);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: inset 0 0 0 1px rgba(236, 232, 223, 0.28);
+  transition: background 240ms ease, box-shadow 240ms ease, color 240ms ease;
+}
+
+.hathor-atv--card:hover {
+  background: rgba(24, 20, 14, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.6);
+}
+
+.hathor-atv--card.is-selected {
+  color: var(--atv-gold);
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.7);
+}
+
+/* Quiet text action beside a primary CTA. */
+.hathor-atv--inline,
+.hathor-atv--panel {
+  opacity: 0.78;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: opacity 200ms ease, color 200ms ease;
+}
+
+.hathor-atv--inline:hover,
+.hathor-atv--panel:hover,
+.hathor-atv--inline.is-selected,
+.hathor-atv--panel.is-selected {
+  opacity: 1;
+  color: var(--atv-gold-deep);
+}
+
+.hathor-atv--panel {
+  gap: 0.4rem;
+  min-height: 0;
+  padding: 0.3rem 0;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.hathor-atv--panel .hathor-atv__icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.hathor-atv__label {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hathor-atv__notice {
+  flex-basis: 100%;
+  margin: 0.5rem 0 0;
+  font-size: 0.65rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--atv-gold-deep);
+}
+
+[data-public-theme="dark"] .hathor-atv--inline:hover,
+[data-public-theme="dark"] .hathor-atv--panel:hover,
+[data-public-theme="dark"] .hathor-atv--inline.is-selected,
+[data-public-theme="dark"] .hathor-atv--panel.is-selected,
+[data-public-theme="dark"] .hathor-atv__notice {
+  color: var(--atv-gold);
+}
+
+@media (pointer: coarse) {
+  .hathor-atv {
+    --atv-size: 2.75rem;
+    --atv-icon: 1.2rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Voyage-change confirmation                                        */
+/* ---------------------------------------------------------------- */
+
+.hathor-atv-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 1400; /* above the selection sheet (1300) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.hathor-atv-confirm__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgba(24, 20, 14, 0.5);
+  cursor: pointer;
+}
+
+.hathor-atv-confirm__panel {
+  position: relative;
+  width: min(26rem, 100%);
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  background: #ece8df;
+  color: #241d14;
+  box-shadow: 0 24px 60px rgba(24, 20, 14, 0.28);
+}
+
+.hathor-atv-confirm__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8b6914;
+}
+
+.hathor-atv-confirm__panel h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-hathor-display, Georgia, serif);
+  font-size: clamp(1.2rem, 3.6vw, 1.45rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.hathor-atv-confirm__panel p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  opacity: 0.78;
+}
+
+.hathor-atv-confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.hathor-atv-confirm__primary {
+  appearance: none;
+  border: 1px solid #c9a96e;
+  border-radius: 999px;
+  background: #c9a96e;
+  color: #fff;
+  cursor: pointer;
+  min-height: 2.75rem;
+  padding: 0 1.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hathor-atv-confirm__secondary {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  min-height: 2.75rem;
+  padding: 0;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.hathor-atv-confirm__secondary:hover {
+  opacity: 1;
+}
+
+.hathor-atv-confirm__primary:focus-visible,
+.hathor-atv-confirm__secondary:focus-visible {
+  outline: 2px solid #8b6914;
+  outline-offset: 3px;
+}
+
+[data-public-theme="dark"] .hathor-atv-confirm__panel {
+  background: #16120c;
+  color: #efe7d8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hathor-atv__icon,
+  .hathor-atv--card,
+  .hathor-atv--inline,
+  .hathor-atv--panel {
+    transition: none;
+  }
+
+  .hathor-atv.is-selected .hathor-atv__icon {
+    transform: none;
+  }
+}

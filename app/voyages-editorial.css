@@ -685,3 +685,68 @@ html:has(.voyages-boring) .lux-footer { display: none !important; }
   .vb-ribbon__track,
   .vb-intro__scroll i { animation: none !important; }
 }
+
+/* ------------------------------------------------------------------ */
+/* Favorites — additive only. No existing rule above is modified.       */
+/*                                                                      */
+/* .vb-project__content is already position: relative, so this reuses   */
+/* that context and adds none. The control is absolutely positioned and */
+/* therefore contributes no height: grid rows, the pinned track, the    */
+/* clip-path reveal and every ScrollTrigger measurement are unchanged.  */
+/* It is deliberately NOT placed inside .vb-project__media-wrap, which  */
+/* is overflow:hidden and carries the animated clip-path and transform. */
+/*                                                                      */
+/* Desktop/tablet: the empty lower half of the 4rem number column.      */
+/* ≤660px the content switches to display:block and the Details link    */
+/* moves into flow at the bottom, so the control moves to the top-right */
+/* of the number line instead.                                          */
+/* ------------------------------------------------------------------ */
+
+.vb-project__content .vb-project__fav {
+  position: absolute;
+  left: 0;
+  bottom: 3.2vh;
+  z-index: 2;
+}
+
+@media (max-width: 660px) {
+  .vb-project__content .vb-project__fav {
+    left: auto;
+    right: 0;
+    top: 1.2rem;
+    bottom: auto;
+  }
+}
+
+/*
+ * Selection stack on voyage panels. Absolutely positioned inside the existing
+ * position: relative .vb-project__content — no grid row, no height, no change
+ * to any ScrollTrigger measurement, clip-path or transform.
+ */
+.vb-project__content .vb-project__select {
+  position: absolute;
+  left: 0;
+  bottom: 2.4vh;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hathor-select-stack .hathor-fav--card,
+.hathor-select-stack .hathor-atv--card {
+  position: static;
+  top: auto;
+  right: auto;
+}
+
+@media (max-width: 660px) {
+  .vb-project__content .vb-project__select {
+    left: auto;
+    right: 0;
+    top: 1rem;
+    bottom: auto;
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+}

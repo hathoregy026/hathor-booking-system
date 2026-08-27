@@ -17,6 +17,7 @@ import {
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
 import { SiteBookingChrome } from "@/components/public/SiteBookingChrome";
+import { SelectionProvider } from "@/components/selection/SelectionProvider";
 import "./hathor-fonts.css";
 import "./globals.css";
 import "./mobile-touch.css";
@@ -152,7 +153,14 @@ gtag('config', 'G-3QKFST6VXE');`,
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <TouchDeviceBootstrap />
-        <SiteBookingChrome>{children}</SiteBookingChrome>
+        {/*
+          Favorites + My Voyage state. Renders no markup of its own — it hydrates
+          the selection store after mount and keeps tabs in sync. Sits above
+          SiteBookingChrome so booking chrome can read selections later.
+        */}
+        <SelectionProvider>
+          <SiteBookingChrome>{children}</SiteBookingChrome>
+        </SelectionProvider>
         <Analytics />
       </body>
     </html>

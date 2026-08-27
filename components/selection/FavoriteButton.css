@@ -1,0 +1,183 @@
+/*
+ * FavoriteButton — Hathor selection system.
+ *
+ * Co-located with the component and imported by it, matching the
+ * EditorialNavOverlay.css convention. Deliberately touches no existing
+ * stylesheet and defines no global selectors: every rule is scoped under
+ * .hathor-fav.
+ *
+ * Palette is taken from the existing editorial system (gold #c9a96e, deep gold
+ * #8b6914, cream #ece8df) rather than introducing new brand colours.
+ */
+
+.hathor-fav {
+  --hathor-fav-size: 2.5rem;
+  --hathor-fav-icon: 1.125rem;
+  --hathor-fav-gold: #c9a96e;
+  --hathor-fav-gold-deep: #8b6914;
+  --hathor-fav-cream: #ece8df;
+
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  /* Touch target never smaller than 44px, without changing the visual disc. */
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.hathor-fav:focus-visible {
+  outline: 2px solid var(--hathor-fav-gold);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+/*
+ * The icon box is a fixed square in BOTH states. The saved state changes fill
+ * and colour only — never size, weight, padding or the number of elements — so
+ * toggling can never reflow the card around it.
+ */
+.hathor-fav__icon {
+  display: block;
+  width: var(--hathor-fav-icon);
+  height: var(--hathor-fav-icon);
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  transition:
+    fill 200ms ease,
+    color 200ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * CSS overrides Lucide's fill="none" presentation attribute, so one element
+ * serves both states — no swapping between an outline and a solid icon.
+ */
+.hathor-fav.is-saved .hathor-fav__icon {
+  fill: currentColor;
+}
+
+/* Restrained acknowledgement: a single small settle, no bounce, no burst. */
+.hathor-fav.is-pulsing .hathor-fav__icon {
+  transform: scale(1.12);
+}
+
+/* ------------------------------------------------------------------ */
+/* Variant: card — an overlay disc on top of card media                 */
+/* ------------------------------------------------------------------ */
+
+.hathor-fav--card {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  z-index: 3;
+
+  width: var(--hathor-fav-size);
+  height: var(--hathor-fav-size);
+  border-radius: 999px;
+
+  color: var(--hathor-fav-cream);
+  background: rgba(24, 20, 14, 0.34);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: inset 0 0 0 1px rgba(236, 232, 223, 0.28);
+
+  transition:
+    background 240ms ease,
+    box-shadow 240ms ease,
+    color 240ms ease;
+}
+
+.hathor-fav--card:hover {
+  background: rgba(24, 20, 14, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.6);
+}
+
+.hathor-fav--card.is-saved {
+  color: var(--hathor-fav-gold);
+  box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.7);
+}
+
+/* ------------------------------------------------------------------ */
+/* Variant: inline — a quiet text action beside a primary CTA           */
+/* ------------------------------------------------------------------ */
+
+.hathor-fav--inline {
+  color: currentColor;
+  opacity: 0.78;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    opacity 200ms ease,
+    color 200ms ease;
+}
+
+.hathor-fav--inline:hover {
+  opacity: 1;
+  color: var(--hathor-fav-gold-deep);
+}
+
+.hathor-fav--inline.is-saved {
+  opacity: 1;
+  color: var(--hathor-fav-gold-deep);
+}
+
+/*
+ * The label is width-locked to its widest state so the two labels
+ * ("Save" / "Saved") cannot nudge neighbouring content when toggled.
+ */
+.hathor-fav__label {
+  display: inline-block;
+  min-width: 3.25rem;
+  text-align: left;
+  font-size: inherit;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Theme + environment                                                  */
+/* ------------------------------------------------------------------ */
+
+[data-public-theme="dark"] .hathor-fav--inline:hover,
+[data-public-theme="dark"] .hathor-fav--inline.is-saved {
+  color: var(--hathor-fav-gold);
+}
+
+[data-public-theme="dark"] .hathor-fav--card {
+  background: rgba(12, 10, 7, 0.46);
+}
+
+/* Coarse pointers get a slightly larger disc; the hit area is already 44px. */
+@media (pointer: coarse) {
+  .hathor-fav {
+    --hathor-fav-size: 2.75rem;
+    --hathor-fav-icon: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hathor-fav__icon,
+  .hathor-fav--card,
+  .hathor-fav--inline {
+    transition: none;
+  }
+
+  .hathor-fav.is-pulsing .hathor-fav__icon {
+    transform: none;
+  }
+}

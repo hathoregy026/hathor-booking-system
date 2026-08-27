@@ -14,6 +14,8 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { FavoriteButton } from "@/components/selection/FavoriteButton";
+import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
@@ -430,6 +432,26 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                       <Link className="vb-project__link" href={panel.detailsHref}>
                         {detailsLabel}<span>↗</span>
                       </Link>
+                      {/*
+                        Absolutely positioned inside the existing
+                        position: relative .vb-project__content — adds no grid
+                        row, no height, and no ScrollTrigger measurement change.
+                      */}
+                      <div className="hathor-select-stack vb-project__select">
+                        <FavoriteButton
+                          type="voyage"
+                          slug={voyage.slug}
+                          name={title}
+                          variant="inline"
+                          showLabel={false}
+                        />
+                        <AddToVoyageButton
+                          kind="voyage"
+                          slug={voyage.slug}
+                          name={title}
+                          variant="card"
+                        />
+                      </div>
                     </div>
                   </Scene>
                 );

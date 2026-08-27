@@ -9,6 +9,7 @@ import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import { shouldShowFloatingActions } from "@/lib/floating-actions-visibility";
+import { useSelectionPanelOpen } from "@/components/selection/SelectionProvider";
 
 const HERO_CTA_SELECTOR =
   ".home-hero-container .hero-button .hero-cta, .home-hero-container .hero-cta";
@@ -18,6 +19,12 @@ export function FloatingActions() {
   const [chatOpen, setChatOpen] = useState(false);
   const [showBook, setShowBook] = useState(false);
   const [nearFooter, setNearFooter] = useState(false);
+  /*
+   * A selection sheet is a modal surface. Park the dock while one is open so no
+   * fixed chrome competes with it — the existing --hidden state is reused, and
+   * normal behaviour resumes the moment the sheet closes. Nothing permanent.
+   */
+  const selectionOpen = useSelectionPanelOpen();
   const visible = shouldShowFloatingActions(pathname);
 
   useEffect(() => {
@@ -120,10 +127,13 @@ export function FloatingActions() {
 
   if (!visible) return null;
 
+  const parked = nearFooter || selectionOpen;
+
   return (
     <div
-      className={`public-fab public-fab--right${nearFooter ? " public-fab--hidden" : ""}`}
-      aria-hidden={nearFooter}
+      className={`public-fab public-fab--right${parked ? " public-fab--hidden" : ""}`}
+      aria-hidden={parked}
+      inert={parked || undefined}
     >
       {chatOpen ? (
         <button

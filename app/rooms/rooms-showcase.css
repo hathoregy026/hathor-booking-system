@@ -714,3 +714,65 @@
     transition: none !important;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Favorites — additive only. No existing rule above is modified.       */
+/*                                                                      */
+/* .room-collection__media keeps its own position: relative, so no new  */
+/* positioning context is introduced. The media element is now a <div>  */
+/* with a transparent stretched link, which lets the Favorite control   */
+/* sit beside the link instead of inside it (a <button> may not be      */
+/* nested in an <a>). The link sits above the decorative numeral and    */
+/* caption so clicking anywhere on the media still navigates, exactly   */
+/* as it did when the whole media was one anchor.                       */
+/* ------------------------------------------------------------------ */
+
+.room-collection__media-link {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+.room-collection__media .room-collection__fav {
+  top: 1.5rem;
+  left: 1.5rem;
+  right: auto;
+  z-index: 5;
+}
+
+@media (max-width: 600px) {
+  .room-collection__media .room-collection__fav {
+    top: 1.1rem;
+    left: 1.1rem;
+  }
+}
+
+/*
+ * Selection stack — Favorite + Add to My Voyage as one absolutely-positioned
+ * column over the media. Contributes no flow height, so card dimensions, the
+ * two-column grid and the image crop are unchanged. The card-variant controls
+ * are neutralised to static inside the stack so the stack alone positions them.
+ */
+.room-collection__media .room-collection__select {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hathor-select-stack .hathor-fav--card,
+.hathor-select-stack .hathor-atv--card {
+  position: static;
+  top: auto;
+  right: auto;
+}
+
+@media (max-width: 600px) {
+  .room-collection__media .room-collection__select {
+    top: 1.1rem;
+    left: 1.1rem;
+  }
+}
