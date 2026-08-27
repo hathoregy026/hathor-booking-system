@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { BlogPageContent } from "@/components/pages/BlogPageContent";
 import { serializeBlogPostSummaries } from "@/lib/blog-display";
 import { getPublishedBlogPosts } from "@/lib/blog-posts";
+import "../../journal-editorial.css";
+import "../../editorial-chrome.css";
 
 export const metadata: Metadata = {
   title: "Hathor Journal | Luxury Nile Cruise Stories and Egypt Travel",

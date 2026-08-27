@@ -4,8 +4,10 @@
 .voyages-boring,
 .about-boring,
 .contact-editorial,
-.wellness-boring,
+.wellness-editorial,
 .highlights-editorial,
+.partners-editorial,
+.journal-editorial,
 .cr-intro,
 .nib-dining,
 [data-charter-page] {
@@ -30,7 +32,11 @@
 .contact-editorial .ce-rail,
 .contact-editorial .ce-rail__inner,
 .highlights-editorial .hl-rail,
-.highlights-editorial .hl-rail__inner {
+.highlights-editorial .hl-rail__inner,
+.partners-editorial .pn-rail,
+.partners-editorial .pn-rail__inner,
+.journal-editorial .jn-rail,
+.journal-editorial .jn-rail__inner {
   display: none !important;
   animation: none !important;
 }
@@ -92,24 +98,18 @@
 .contact-editorial .ce-epilogue__legal span,
 .contact-editorial .ce-epilogue__title > span,
 .contact-editorial .ce-epilogue__feature > span,
-.wellness-boring .wb-marker,
-.wellness-boring p.wb-marker,
-.wellness-boring .wb-copyright,
-.wellness-boring p.wb-copyright,
-.wellness-boring .wb-intro__menu,
-.wellness-boring .wb-intro__menu a,
-.wellness-boring .wb-intro__wordmark,
-.wellness-boring .wb-intro__wordmark span,
-.wellness-boring .wb-intro__wordmark em,
-.wellness-boring .wb-intro__wordmark strong,
-.wellness-boring .wb-epilogue__social,
-.wellness-boring .wb-epilogue__social a,
-.wellness-boring .wb-epilogue__social span,
-.wellness-boring .wb-epilogue__legal,
-.wellness-boring .wb-epilogue__legal a,
-.wellness-boring .wb-epilogue__legal span,
-.wellness-boring .wb-epilogue__title > span,
-.wellness-boring .wb-epilogue__feature > span,
+.wellness-editorial .we-threshold__mark,
+.wellness-editorial p.we-threshold__mark,
+.wellness-editorial .we-threshold__index,
+.wellness-editorial .we-threshold__index a,
+.wellness-editorial .we-threshold__cue,
+.wellness-editorial .we-epilogue__card-links,
+.wellness-editorial .we-epilogue__card-links a,
+.wellness-editorial .we-epilogue__legal,
+.wellness-editorial .we-epilogue__legal a,
+.wellness-editorial .we-epilogue__legal span,
+.wellness-editorial .we-rite__meta,
+.wellness-editorial .we-historia__corner,
 .cr-intro .cr-intro__marker,
 .cr-intro .cr-intro__copyright,
 .cr-intro .cr-intro__menu,
@@ -132,6 +132,28 @@
 .nib-dining .nib-epilogue__legal a,
 .nib-dining .nib-epilogue__legal span,
 .nib-dining .nib-epilogue__feature > span,
+.partners-editorial .pn-open__mark,
+.partners-editorial .pn-open__scroll,
+.partners-editorial .pn-open__nav,
+.partners-editorial .pn-open__nav a,
+.partners-editorial .pn-open__spine span,
+.partners-editorial .pn-open__spine em,
+.partners-editorial .pn-epilogue__legal,
+.partners-editorial .pn-epilogue__legal a,
+.partners-editorial .pn-epilogue__legal span,
+.partners-editorial .pn-card__tag,
+.partners-editorial .pn-epilogue__card-links a,
+.journal-editorial .jn-folio__nav,
+.journal-editorial .jn-folio__nav a,
+.journal-editorial .jn-folio__mark,
+.journal-editorial .jn-folio__scroll,
+.journal-editorial .jn-folio__mast,
+.journal-editorial .jn-folio__mast span,
+.journal-editorial .jn-epilogue__legal,
+.journal-editorial .jn-epilogue__legal a,
+.journal-editorial .jn-epilogue__legal span,
+.journal-editorial .jn-card__tag,
+.journal-editorial .jn-epilogue__card-links a,
 [data-charter-page] .lx-label,
 [data-highlights-page] .lx-label {
   font-family: var(--ed-meta-font) !important;
@@ -150,19 +172,25 @@
 .voyages-boring .vb-intro__book:hover,
 .about-boring .ab-intro__menu a:hover,
 .contact-editorial .ce-intro__menu a:hover,
-.wellness-boring .wb-intro__menu a:hover,
+.wellness-editorial .we-threshold__index a:hover,
 .cr-intro .cr-intro__menu a:hover,
 .cr-intro .cr-intro__book:hover,
 .voyages-boring .vb-epilogue__social a:hover,
 .about-boring .ab-epilogue__social a:hover,
 .contact-editorial .ce-epilogue__social a:hover,
-.wellness-boring .wb-epilogue__social a:hover,
+.wellness-editorial .we-epilogue__card-links a:hover,
 .nib-dining .nib-epilogue__social a:hover,
 .voyages-boring .vb-epilogue__legal a:hover,
 .about-boring .ab-epilogue__legal a:hover,
 .contact-editorial .ce-epilogue__legal a:hover,
-.wellness-boring .wb-epilogue__legal a:hover,
-.nib-dining .nib-epilogue__legal a:hover {
+.wellness-editorial .we-epilogue__legal a:hover,
+.nib-dining .nib-epilogue__legal a:hover,
+.partners-editorial .pn-epilogue__legal a:hover,
+.partners-editorial .pn-open__nav a:hover,
+.partners-editorial .pn-epilogue__card-links a:hover,
+.journal-editorial .jn-folio__nav a:hover,
+.journal-editorial .jn-epilogue__legal a:hover,
+.journal-editorial .jn-epilogue__card-links a:hover {
   color: #b69f64 !important;
 }
 
@@ -170,8 +198,6 @@
 .voyages-boring .vb-last-project__copy .vb-marker,
 .about-boring .ab-projects-intro > .ab-marker,
 .about-boring .ab-last-project__copy .ab-marker,
-.wellness-boring .wb-projects-intro > .wb-marker,
-.wellness-boring .wb-last-project__copy .wb-marker,
 .contact-editorial .ce-projects-intro > .ce-marker,
 .contact-editorial .ce-last-project__copy .ce-marker {
   color: #b69f64 !important;
@@ -202,12 +228,11 @@
 .contact-editorial .ce-epilogue__form-lead,
 .contact-editorial .ce-epilogue__feature p,
 .highlights-editorial .hl-intro__body,
-.wellness-boring .wb-intro__body,
-.wellness-boring .wb-manifesto__body,
-.wellness-boring .wb-epilogue__contact,
-.wellness-boring .wb-epilogue__contact p,
-.wellness-boring .wb-epilogue__contact a,
-.wellness-boring .wb-epilogue__feature p,
+.partners-editorial .pn-covenant__lead,
+.partners-editorial .pn-epilogue__statement > .pn-edit,
+.wellness-editorial .we-threshold__body,
+.wellness-editorial .we-inhale__lyric,
+.journal-editorial .jn-folio__body,
 .cr-intro .cr-intro__body,
 .nib-dining .nib-intro__copy {
   font-family: var(--ed-copy-font) !important;
@@ -226,9 +251,9 @@
 .about-boring .ab-collage > p,
 .about-boring .ab-projects-intro > p:last-child,
 .about-boring .ab-last-project__copy > p:last-child,
-.wellness-boring .wb-collage > p,
-.wellness-boring .wb-projects-intro > p:last-child,
-.wellness-boring .wb-last-project__copy > p:last-child {
+.partners-editorial .pn-orbit__head .pn-meta-copy,
+.partners-editorial .pn-craft__copy .pn-meta-copy,
+.partners-editorial .pn-star__note {
   font-family: var(--ed-copy-font) !important;
   font-style: italic !important;
   font-weight: 400 !important;
@@ -242,7 +267,6 @@
 .voyages-boring .vb-intro > .vb-intro__inner > .vb-marker,
 .about-boring .ab-intro > .ab-intro__inner > .ab-marker,
 .contact-editorial .ce-intro > .ce-intro__inner > .ce-marker,
-.wellness-boring .wb-intro > .wb-intro__inner > .wb-marker,
 .cr-intro .cr-intro__marker {
   position: absolute;
   top: 50%;
@@ -254,7 +278,6 @@
 .voyages-boring .vb-copyright,
 .about-boring .ab-copyright,
 .contact-editorial .ce-copyright,
-.wellness-boring .wb-copyright,
 .cr-intro .cr-intro__copyright {
   position: absolute;
   left: var(--ed-gutter);
@@ -266,7 +289,6 @@
 .about-boring .ab-intro__body,
 .contact-editorial .ce-intro__body,
 .highlights-editorial .hl-intro__body,
-.wellness-boring .wb-intro__body,
 .cr-intro .cr-intro__body {
   position: absolute;
   right: var(--ed-gutter);
@@ -280,7 +302,6 @@
 .voyages-boring .vb-intro__wordmark,
 .about-boring .ab-intro__wordmark,
 .contact-editorial .ce-intro__wordmark,
-.wellness-boring .wb-intro__wordmark,
 .cr-intro .cr-intro__wordmark {
   position: absolute;
   right: var(--ed-gutter);
@@ -301,9 +322,6 @@
 .contact-editorial .ce-intro__wordmark span,
 .contact-editorial .ce-intro__wordmark em,
 .contact-editorial .ce-intro__wordmark strong,
-.wellness-boring .wb-intro__wordmark span,
-.wellness-boring .wb-intro__wordmark em,
-.wellness-boring .wb-intro__wordmark strong,
 .cr-intro .cr-intro__wordmark span,
 .cr-intro .cr-intro__wordmark em,
 .cr-intro .cr-intro__wordmark strong {
@@ -333,8 +351,7 @@
 
 /* Epilogue support lines: centered, same scale */
 .voyages-boring .vb-epilogue__contact,
-.about-boring .ab-epilogue__contact,
-.wellness-boring .wb-epilogue__contact {
+.about-boring .ab-epilogue__contact {
   display: flex;
   min-height: 28svh;
   align-items: center;
@@ -346,9 +363,7 @@
 .voyages-boring .vb-epilogue__contact p,
 .voyages-boring .vb-epilogue__contact a,
 .about-boring .ab-epilogue__contact p,
-.about-boring .ab-epilogue__contact a,
-.wellness-boring .wb-epilogue__contact p,
-.wellness-boring .wb-epilogue__contact a {
+.about-boring .ab-epilogue__contact a {
   grid-column: auto;
   max-width: 34rem;
   margin: 0 auto;
@@ -365,7 +380,6 @@
 .voyages-boring .vb-epilogue__social,
 .about-boring .ab-epilogue__social,
 .contact-editorial .ce-epilogue__social,
-.wellness-boring .wb-epilogue__social,
 .nib-dining .nib-epilogue__social {
   display: flex;
   flex-wrap: wrap;
@@ -378,8 +392,10 @@
   .voyages-boring,
   .about-boring,
   .contact-editorial,
-  .wellness-boring,
+  .wellness-editorial,
   .highlights-editorial,
+  .partners-editorial,
+  .journal-editorial,
   .cr-intro,
   .nib-dining {
     --ed-gutter: 2rem;
@@ -388,7 +404,6 @@
   .voyages-boring .vb-intro > .vb-intro__inner > .vb-marker,
   .about-boring .ab-intro > .ab-intro__inner > .ab-marker,
   .contact-editorial .ce-intro > .ce-intro__inner > .ce-marker,
-  .wellness-boring .wb-intro > .wb-intro__inner > .wb-marker,
   .cr-intro .cr-intro__marker {
     top: 7rem;
     transform: none;
@@ -397,7 +412,6 @@
   .voyages-boring .vb-intro__body,
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
-  .wellness-boring .wb-intro__body,
   .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
     width: min(30rem, 66vw);
@@ -408,8 +422,10 @@
   .voyages-boring,
   .about-boring,
   .contact-editorial,
-  .wellness-boring,
+  .wellness-editorial,
   .highlights-editorial,
+  .partners-editorial,
+  .journal-editorial,
   .cr-intro,
   .nib-dining {
     --ed-gutter: 1.25rem;
@@ -421,7 +437,7 @@
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
   .highlights-editorial .hl-intro__body,
-  .wellness-boring .wb-intro__body,
+  .journal-editorial .jn-folio__body,
   .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
     left: var(--ed-gutter);
@@ -435,7 +451,6 @@
   .voyages-boring .vb-intro__wordmark,
   .about-boring .ab-intro__wordmark,
   .contact-editorial .ce-intro__wordmark,
-  .wellness-boring .wb-intro__wordmark,
   .cr-intro .cr-intro__wordmark {
     max-width: calc(100% - (var(--ed-gutter) * 2));
     flex-wrap: wrap;
@@ -484,6 +499,13 @@
   .contact-editorial .ce-intro__mark,
   .highlights-editorial .hl-intro__mark {
     margin-top: clamp(1.4rem, 5vw, 2.2rem);
+  }
+
+  .wellness-editorial .we-threshold__body {
+    position: static;
+    width: min(34rem, 100%);
+    max-width: none;
+    text-align: left;
   }
 
   .voyages-boring .vb-intro__wordmark {
