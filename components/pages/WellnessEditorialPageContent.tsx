@@ -2,280 +2,490 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, type ComponentPropsWithoutRef } from "react";
+import {
+  useRef,
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
-import { useWellnessEditorialScroll } from "@/hooks/useWellnessEditorialScroll";
-import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
+import { useWellnessEditorialScroll } from "@/hooks/useWellnessEditorialScroll";
+import { WELLNESS_PAGE } from "@/lib/page-content";
+import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { stackedHeroLines } from "@/lib/website-text-shared";
 
-const MEDIA = {
-  spa: "/media/hathor/r2/wellness-hero.webp",
-  fitness: "/media/hathor/r2/wellness-fitness.webp",
-  suite: "/media/hathor/optimized/room-suite.webp",
-  royal: "/media/hathor/optimized/room-royal.webp",
-  luxury: "/media/hathor/optimized/room-luxury.webp",
-  voyage: "/media/hathor/optimized/cruises-hero.webp",
-  deck: "/media/hathor/optimized/home-call-to-action.webp",
-  craft: "/media/hathor/optimized/home-story-craft-large.webp",
-  dining: "/media/hathor/optimized/dining-intro-hero.webp",
-  river: "/media/hathor/optimized/home-voyage-nile-majesty.webp",
-  legacy: "/media/hathor/optimized/home-story-legacy-large.webp",
-} as const;
-
-type MediaProps = {
-  src: string;
+function WellnessMedia({
+  slot,
+  alt,
+  priority = false,
+  className = "",
+  ratio,
+}: {
+  slot: string;
   alt: string;
   priority?: boolean;
   className?: string;
-};
-
-function BoringMedia({ src, alt, priority = false, className = "" }: MediaProps) {
+  ratio?: string;
+}) {
+  const image = useSiteImage(slot);
   return (
-    <figure className={`wb-media ${className}`}>
+    <figure
+      className={`we-media ${className}`}
+      style={
+        ratio ? ({ ["--we-ratio" as string]: ratio } as CSSProperties) : undefined
+      }
+    >
       <Image
-        src={src}
-        alt={alt}
+        src={originSrcForNextImage(image.src)}
+        alt={alt || image.alt}
         fill
         priority={priority}
-        sizes="(max-width: 1024px) 100vw, 70vw"
+        sizes="(max-width: 950px) 100vw, 70vw"
         quality={SITE_IMAGE_QUALITY}
-        className="wb-media__image"
+        className="we-media__image"
       />
     </figure>
   );
 }
 
-function Scene({ className = "", children, ...props }: ComponentPropsWithoutRef<"section">) {
-  return <section className={`wb-scene ${className}`} {...props}>{children}</section>;
+function FlipImage({
+  front,
+  back,
+  frontAlt,
+  backAlt = "",
+  className = "",
+  axis = "left",
+  ratio,
+}: {
+  front: string;
+  back: string;
+  frontAlt: string;
+  backAlt?: string;
+  className?: string;
+  axis?: "up" | "left" | "right";
+  ratio?: string;
+}) {
+  return (
+    <div className={`we-flip we-flip--${axis} ${className}`} data-we-flip>
+      <WellnessMedia
+        slot={front}
+        alt={frontAlt}
+        className="we-flip__base"
+        ratio={ratio}
+      />
+      <WellnessMedia
+        slot={back}
+        alt={backAlt}
+        className="we-flip__overlay"
+        ratio={ratio}
+      />
+    </div>
+  );
 }
 
-const principles = [
+function Scene({
+  className = "",
+  children,
+  ...props
+}: ComponentPropsWithoutRef<"section">) {
+  return (
+    <section className={`we-scene ${className}`} {...props}>
+      {children}
+    </section>
+  );
+}
+
+function Eyebrow({ children }: { children: ReactNode }) {
+  return <p className="we-eyebrow">{children}</p>;
+}
+
+/** Onboard rituals — catalogue rows, not Contact channels or About principles. */
+const RITUALS = [
   {
     number: "01",
-    title: "RESTORATION",
-    text: "A quiet spa ritual shaped around Egyptian botanicals, warm touch, and the unhurried cadence of the Nile.",
-    image: MEDIA.spa,
+    word: "Massage",
+    detail: "Warm-oil recovery after temple days",
+    meta: "Seneb · 60–90 min",
   },
   {
     number: "02",
-    title: "MOVEMENT",
-    text: "Panoramic training in Historia Fitness, with considered equipment and a river horizon that makes every breath feel lighter.",
-    image: MEDIA.fitness,
+    word: "Botanical",
+    detail: "Egyptian plant therapies for skin and calm",
+    meta: "Signature · daily",
   },
   {
     number: "03",
-    title: "REPOSE",
-    text: "Private suites become part of the ritual: deep sleep, soft morning light, generous bathrooms, and space to return to yourself.",
-    image: MEDIA.royal,
+    word: "Recovery",
+    detail: "Quieting treatments between shore and sail",
+    meta: "Balance · as needed",
+  },
+  {
+    number: "04",
+    word: "Stillness",
+    detail: "Private suite rest as part of the ritual",
+    meta: "Cabin · continuous",
   },
 ] as const;
 
-const experiences = [
-  { meta: "DAILY", place: "SENEB SPA", number: "01", title: "The Spa", image: MEDIA.spa, href: "#reserve" },
-  { meta: "DAILY", place: "HISTORIA", number: "02", title: "Fitness", image: MEDIA.fitness, href: "#reserve" },
-  { meta: "SUNRISE", place: "NILE DECK", number: "03", title: "Breathwork", image: MEDIA.deck, href: "#reserve" },
-  { meta: "PRIVATE", place: "ROYAL SUITE", number: "04", title: "Deep Rest", image: MEDIA.royal, href: "/royal-suites" },
-  { meta: "MORNING", place: "LUXURY SUITE", number: "05", title: "Slow Living", image: MEDIA.luxury, href: "/luxury-cabins-Nile-Cruise" },
+const INDEX = [
+  { href: "#seneb", label: "Seneb" },
+  { href: "#rituals", label: "Rituals" },
+  { href: "#historia", label: "Historia" },
+  { href: "#reserve", label: "Reserve" },
 ] as const;
 
 export function WellnessEditorialPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  useWellnessEditorialScroll({ rootRef, runRef, trackRef });
-  const typography = useTypographySettings();
   const { pages } = useWebsiteText();
+  const wellness = pages.wellness;
+  const typography = useTypographySettings();
   const wellnessHero = resolveHeroPageCopy(typography, "wellness");
-  const wellnessLines = stackedHeroLines(wellnessHero.main, wellnessHero.second);
-  const chunk = Math.max(1, Math.ceil(wellnessLines.length / 3));
-  const wellnessParts = [
-    wellnessLines.slice(0, chunk),
-    wellnessLines.slice(chunk, chunk * 2),
-    wellnessLines.slice(chunk * 2),
-  ];
+  const wellnessHeroLines = stackedHeroLines(
+    wellnessHero.main,
+    wellnessHero.second,
+  );
+  const lineClass = ["we-line--a", "we-line--b", "we-line--c"] as const;
+  useWellnessEditorialScroll({ rootRef, runRef, trackRef });
+
   const introBody =
-    pages.wellness.heroSupport.trim() ||
-    "In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and deeply restful suites move with you between Luxor and Aswan.";
+    wellness.heroSupport.trim() ||
+    "In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and restful suites move with you between Luxor and Aswan.";
+
+  const spaTitle = wellness.spaTitle.trim() || WELLNESS_PAGE.spa.title;
+  const spaParagraphs =
+    wellness.spaParagraphs.filter((p) => p.trim()).length > 0
+      ? wellness.spaParagraphs.filter((p) => p.trim())
+      : [...WELLNESS_PAGE.spa.paragraphs];
+  const fitnessTitle =
+    wellness.fitnessTitle.trim() || WELLNESS_PAGE.fitness.title;
+  const fitnessBody =
+    wellness.fitnessBody.trim() || WELLNESS_PAGE.fitness.body;
 
   return (
-    <div ref={rootRef} className="wellness-boring">
-      <div className="wb-progress" aria-hidden="true"><i data-wb-progress /></div>
+    <div ref={rootRef} className="wellness-editorial">
+      <div className="we-progress" aria-hidden="true">
+        <i data-we-progress />
+      </div>
 
       <main>
-        <section ref={runRef} className="wb-run" aria-label="Hathor wellness journey">
-          <div className="wb-stage">
-            <div ref={trackRef} className="wb-track">
-              <Scene className="wb-intro">
-                <div className="wb-intro__inner">
-                  <nav className="wb-intro__menu" aria-label="Wellness page sections">
-                    <a href="#wellness">Wellness</a>
-                    <a href="#fitness">Gym</a>
-                    <Link href="/suites">Suites</Link>
-                    <a href="#reserve">Reserve</a>
-                  </nav>
-                  <p className="wb-marker">Wellness</p>
-                  <p className="wb-copyright">Hathor Cruise ©2026</p>
+        <section
+          ref={runRef}
+          className="we-run"
+          aria-label="Hathor wellness on the Nile"
+        >
+          <div className="we-stage">
+            <div ref={trackRef} className="we-track">
+              {/* 01 — Threshold: vertical ritual index + offset typographic field */}
+              <Scene className="we-threshold">
+                <ol className="we-threshold__index" aria-label="Wellness chapters">
+                  {INDEX.map((item, i) => (
+                    <li key={item.href}>
+                      <a href={item.href}>
+                        <span>{String(i + 1).padStart(2, "0")}</span>
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
 
-                  <div className="wb-intro__title" id="wellness" data-anima-title>
-                    {wellnessParts.map((part, partIndex) => {
-                      const partClass =
-                        partIndex === 0
-                          ? "wb-intro__title-part--one"
-                          : partIndex === 1
-                            ? "wb-intro__title-part--two"
-                            : "wb-intro__title-part--three";
-                      const start = partIndex * chunk;
-                      if (part.length === 0) return null;
-                      return (
-                        <h1
-                          key={partClass}
-                          className={`wb-intro__title-part ${partClass} ${partIndex === 0 ? "wt-page-hero" : "wt-page-hero-second"}`}
+                <div className="we-threshold__field">
+                  <Eyebrow>Wellness</Eyebrow>
+                  <div
+                    className="we-threshold__title"
+                    id="wellness"
+                    data-anima-title
+                  >
+                    <h1 className="we-display we-display--xl wt-page-hero">
+                      {wellnessHeroLines.map((line, index) => (
+                        <span
+                          key={`${line}-${index}`}
+                          className={`we-line ${lineClass[index] ?? ""}`}
                         >
-                          {part.map((line, lineIndex) => (
-                            <span key={`${line}-${lineIndex}`}>
-                              <AnimaSplitLine line={start + lineIndex}>
-                                {line}
-                              </AnimaSplitLine>
-                              {lineIndex < part.length - 1 ? <br /> : null}
-                            </span>
-                          ))}
-                        </h1>
-                      );
-                    })}
+                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                        </span>
+                      ))}
+                    </h1>
                   </div>
-
-                  <p className="wb-intro__body wt-page-body">{introBody}</p>
-                  <div className="wb-intro__wordmark" aria-label="Hathor Nile wellness">
-                    <span>HATHOR</span><em>Nile</em><strong>wellness</strong>
-                  </div>
+                  <p className="we-threshold__body wt-page-body">{introBody}</p>
                 </div>
-              </Scene>
 
-              <Scene className="wb-image-lead">
-                <BoringMedia src={MEDIA.spa} alt="Seneb Spa aboard Hathor" priority className="wb-image-lead__main" />
-                <div className="wb-flip wb-image-lead__flip">
-                  <BoringMedia src={MEDIA.suite} alt="Hathor suite prepared for rest" />
-                  <BoringMedia src={MEDIA.fitness} alt="Historia Fitness overlooking the Nile" />
-                </div>
-              </Scene>
-
-              <Scene className="wb-manifesto">
-                <p className="wb-marker">Our ritual</p>
-                <div className="wb-manifesto__headline wb-big-title" data-anima-title>
-                  <AnimaSplitLine line={0}>Spaces that invite</AnimaSplitLine>
-                  <AnimaSplitLine line={1}>the body to</AnimaSplitLine>
-                  <AnimaSplitLine line={2}>release</AnimaSplitLine>
-                  <AnimaSplitLine line={3}>and recover</AnimaSplitLine>
-                </div>
-                <p className="wb-manifesto__body">
-                  Every moment aboard Hathor is designed as part of your well-being. The spa restores, the gym energises, and each suite protects the quiet that follows—so discovery along the Nile never asks you to leave comfort behind.
+                <p className="we-threshold__mark">
+                  Luxor <i /> Aswan
+                </p>
+                <p className="we-threshold__cue">
+                  Drift
+                  <i />
                 </p>
               </Scene>
 
-              <Scene className="wb-collage">
-                <div className="wb-collage__tile wb-collage__tile--one wb-flip"><BoringMedia src={MEDIA.royal} alt="Royal suite calm" /><BoringMedia src={MEDIA.suite} alt="Suite details aboard Hathor" /></div>
-                <div className="wb-collage__tile wb-collage__tile--two wb-flip"><BoringMedia src={MEDIA.fitness} alt="Fitness with Nile views" /><BoringMedia src={MEDIA.spa} alt="Private wellness ritual" /></div>
-                <p>At Hathor, wellness is not a room you visit. It is the quality of the light, the privacy of your suite, the freedom to move, and the feeling of returning from an Egyptian temple to a vessel that already knows how you wish to rest.</p>
+              {/* 02 — Quiet inhale: single tall crop + lyric */}
+              <Scene className="we-inhale">
+                <WellnessMedia
+                  slot="wellness-hero"
+                  alt="Seneb Spa aboard Hathor Dahabiya"
+                  priority
+                  className="we-inhale__media"
+                  ratio="3 / 4"
+                />
+                <p className="we-inhale__lyric we-edit">
+                  Health, in the Egyptian sense —
+                  <em> seneb </em>
+                  as quiet continuity.
+                </p>
               </Scene>
 
-              <Scene className="wb-marquee" aria-label="Wellness values">
-                <div className="wb-marquee__rail">
-                  {[0, 1, 2].map((item) => <span key={item}>WELLNESS <b>✦</b></span>)}
+              {/* 03 — Seneb immersive: image + wash information plane */}
+              <Scene className="we-seneb" id="seneb">
+                <div className="we-seneb__visual">
+                  <WellnessMedia
+                    slot="wellness-hero"
+                    alt="Restorative spa treatments aboard Hathor"
+                    className="we-seneb__main"
+                    ratio="1279 / 960"
+                  />
+                  <FlipImage
+                    className="we-seneb__inset"
+                    axis="up"
+                    ratio="668 / 554"
+                    front="room-suite"
+                    back="wellness-fitness"
+                    frontAlt="Suite rest aboard Hathor"
+                    backAlt="Historia Fitness overlooking the Nile"
+                  />
                 </div>
-              </Scene>
 
-              <Scene className="wb-image-pair">
-                <div className="wb-flip wb-image-pair__left"><BoringMedia src={MEDIA.deck} alt="Open-air calm on the Nile" /><BoringMedia src={MEDIA.river} alt="Hathor sailing the Nile" /></div>
-                <div className="wb-flip wb-image-pair__right"><BoringMedia src={MEDIA.luxury} alt="Luxury suite repose" /><BoringMedia src={MEDIA.dining} alt="Nourishing dining aboard Hathor" /></div>
-              </Scene>
-
-              <Scene className="wb-principles" id="fitness">
-                {principles.map((principle) => (
-                  <article className="wb-principle" key={principle.number}>
-                    <p className="wb-principle__copy">{principle.text}</p>
-                    <div className="wb-principle__heading">
-                      <span>{principle.number}</span>
-                      <h2 data-anima-title>{principle.title}</h2>
-                    </div>
-                    <BoringMedia src={principle.image} alt={`${principle.title.toLowerCase()} aboard Hathor`} className="wb-principle__hover" />
-                  </article>
-                ))}
-              </Scene>
-
-              <Scene className="wb-projects-intro">
-                <p className="wb-marker">Experiences</p>
-                <p>Luxury never needs to announce itself. On Hathor it is felt in private care, intelligent spaces, and the freedom to choose movement, stillness, or sleep as the Nile carries you onward.</p>
-              </Scene>
-
-              {experiences.map((experience, index) => (
-                <Scene className={`wb-project wb-project--${index + 1}`} key={experience.number}>
-                  <div className="wb-project__shell">
-                    <BoringMedia src={experience.image} alt={`${experience.title} aboard Hathor`} className="wb-project__image" />
-                    <div className="wb-project__data">
-                      <span>{experience.meta}</span><span>{experience.place}</span><span>{experience.number}</span>
-                      <Link href={experience.href}>The experience</Link>
-                    </div>
-                    <h2 data-anima-title>{experience.title}</h2>
+                <div className="we-seneb__plane">
+                  <Eyebrow>Seneb Spa</Eyebrow>
+                  <h2 className="we-display we-display--l" data-anima-title>
+                    <span className="we-line">
+                      <AnimaSplitLine line={0}>{spaTitle}</AnimaSplitLine>
+                    </span>
+                  </h2>
+                  <div className="we-seneb__copy">
+                    {spaParagraphs.slice(0, 3).map((paragraph) => (
+                      <p key={paragraph.slice(0, 48)} className="we-meta-copy">
+                        {paragraph}
+                      </p>
+                    ))}
                   </div>
-                </Scene>
-              ))}
-
-              <Scene className="wb-last-project">
-                <div className="wb-last-project__images">
-                  <BoringMedia src={MEDIA.suite} alt="Hathor suite living space" />
-                  <BoringMedia src={MEDIA.craft} alt="Handcrafted detail aboard Hathor" />
-                  <BoringMedia src={MEDIA.legacy} alt="Egyptian character aboard Hathor" />
-                  <Link href="/suites" className="wb-last-project__link"><span>↗</span> Explore suites</Link>
-                </div>
-                <div className="wb-last-project__copy">
-                  <p className="wb-marker">Suites</p>
-                  <div className="wb-big-title" data-anima-title>
-                    <AnimaSplitLine line={0}>Who said</AnimaSplitLine>
-                    <AnimaSplitLine line={1}>that true rest</AnimaSplitLine>
-                    <AnimaSplitLine line={2}>cannot be</AnimaSplitLine>
-                    <AnimaSplitLine line={3}>adventurous</AnimaSplitLine>
-                  </div>
-                  <p>Our suites ignore passing trends in favour of craftsmanship, generous proportions, considered storage, private bathrooms, and the rare luxury of waking beside a different Nile horizon.</p>
                 </div>
               </Scene>
 
-              <Scene className="wb-closing">
-                <div className="wb-flip wb-closing__media"><BoringMedia src={MEDIA.voyage} alt="Hathor journeying through Egypt" /><BoringMedia src={MEDIA.deck} alt="Golden hour aboard Hathor" /></div>
+              {/* 04 — Ritual catalogue ledger */}
+              <Scene className="we-rituals" id="rituals">
+                <div className="we-rituals__head">
+                  <Eyebrow>Onboard rituals</Eyebrow>
+                  <p className="we-meta-copy">
+                    Four ways the body returns to itself while the Nile keeps
+                    moving.
+                  </p>
+                </div>
+
+                <ol className="we-rituals__list">
+                  {RITUALS.map((ritual) => (
+                    <li key={ritual.number} className="we-rite">
+                      <span className="we-rite__num">{ritual.number}</span>
+                      <h3 className="we-rite__word we-display">{ritual.word}</h3>
+                      <div className="we-rite__detail">
+                        <p className="we-rite__meta">{ritual.meta}</p>
+                        <p className="we-rite__text">{ritual.detail}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </Scene>
+
+              {/* 05 — Historia framed datum */}
+              <Scene className="we-historia" id="historia">
+                <div className="we-historia__frame">
+                  <span className="we-historia__corner we-historia__corner--tl">
+                    {fitnessTitle}
+                  </span>
+                  <span className="we-historia__corner we-historia__corner--tr">
+                    Nile view
+                  </span>
+
+                  <p className="we-historia__datum we-edit">
+                    <span>360</span>
+                    <i>°</i>
+                  </p>
+
+                  <p className="we-historia__body we-meta-copy">{fitnessBody}</p>
+
+                  <span className="we-historia__corner we-historia__corner--bl">
+                    Daily · open
+                  </span>
+                  <span className="we-historia__corner we-historia__corner--br">
+                    Movement
+                  </span>
+                </div>
+
+                <WellnessMedia
+                  slot="wellness-fitness"
+                  alt="Historia Fitness Center with panoramic Nile views"
+                  className="we-historia__media"
+                  ratio="4 / 5"
+                />
+              </Scene>
+
+              {/* 06 — Asymmetric visual essay: rest after movement */}
+              <Scene className="we-essay">
+                <div className="we-essay__stack">
+                  <FlipImage
+                    className="we-essay__tall"
+                    axis="left"
+                    ratio="3 / 4"
+                    front="wellness-fitness"
+                    back="home-call-to-action"
+                    frontAlt="Movement aboard Hathor"
+                    backAlt="Open-air calm on the Nile deck"
+                  />
+                  <WellnessMedia
+                    slot="room-royal"
+                    alt="Royal Suite repose aboard Hathor"
+                    className="we-essay__wide"
+                    ratio="5 / 3"
+                  />
+                </div>
+                <div className="we-essay__copy">
+                  <Eyebrow>After movement</Eyebrow>
+                  <div data-anima-title>
+                    <h2 className="we-edit we-edit--xl">
+                      <span className="we-line">
+                        <AnimaSplitLine line={0}>Rest is not</AnimaSplitLine>
+                      </span>
+                      <span className="we-line we-line--indent">
+                        <AnimaSplitLine line={1}>the absence of</AnimaSplitLine>
+                      </span>
+                      <span className="we-line">
+                        <AnimaSplitLine line={2}>the voyage</AnimaSplitLine>
+                      </span>
+                    </h2>
+                  </div>
+                  <p className="we-meta-copy">
+                    Suites become part of the ritual: soft morning light, deep
+                    sleep, and the rare luxury of waking beside a different Nile
+                    horizon.
+                  </p>
+                  <Link href="/suites" className="we-btn">
+                    <span>Explore suites</span>
+                  </Link>
+                </div>
+              </Scene>
+
+              {/* 07 — Pulse pause */}
+              <Scene className="we-pulse" aria-label="Quiet pause">
+                <p className="we-pulse__phrase we-edit">
+                  The river keeps time —
+                  <br />
+                  so you do not have to.
+                </p>
+              </Scene>
+
+              {/* 08 — Closing wipe */}
+              <Scene className="we-closing">
+                <FlipImage
+                  className="we-closing__media"
+                  axis="right"
+                  ratio="1483 / 960"
+                  front="home-voyage-nile-majesty"
+                  back="wellness-hero"
+                  frontAlt="Sailing the Nile aboard Hathor"
+                  backAlt="Seneb Spa calm aboard Hathor"
+                />
+                <div className="we-closing__copy">
+                  <Eyebrow>Next</Eyebrow>
+                  <p className="we-display we-display--l">Book stillness</p>
+                </div>
               </Scene>
             </div>
           </div>
         </section>
 
-        <section className="wb-epilogue" id="reserve">
-          <header className="wb-epilogue__title">
-            <span>(Reserve)</span>
-            <h2 data-anima-title>BEGIN YOUR<br />NILE RETURN</h2>
+        <section className="we-epilogue" id="reserve">
+          <header className="we-epilogue__head">
+            <Eyebrow>Reserve</Eyebrow>
+            <h2 className="we-display we-display--xl" data-anima-title>
+              <span className="we-line">
+                <AnimaSplitLine line={0}>A quieter Nile</AnimaSplitLine>
+              </span>
+              <span className="we-line we-line--indent">
+                <AnimaSplitLine line={1}>awaits</AnimaSplitLine>
+              </span>
+            </h2>
           </header>
-          <div className="wb-epilogue__images">
-            <BoringMedia src={MEDIA.fitness} alt="Historia Fitness experience" />
-            <BoringMedia src={MEDIA.spa} alt="Seneb Spa experience" />
+
+          <div className="we-epilogue__board">
+            <div className="we-epilogue__statement">
+              <p className="we-edit we-edit--l">
+                Shape a private voyage with time for Seneb Spa, Historia Fitness,
+                restorative suite rituals, and the temples of Egypt.
+              </p>
+              <div className="we-epilogue__pills">
+                <BookNowTrigger className="we-btn we-btn--solid">
+                  Book Now
+                </BookNowTrigger>
+                <Link href="/contact" className="we-btn">
+                  <span>Enquire</span>
+                </Link>
+              </div>
+              <a
+                className="we-link we-meta-copy"
+                href={`mailto:${PUBLIC_CONTACT.email}`}
+              >
+                {PUBLIC_CONTACT.email}
+              </a>
+            </div>
+
+            <aside className="we-epilogue__card">
+              <span className="we-card__tag">Floating oasis</span>
+              <WellnessMedia
+                slot="wellness-hero"
+                alt="Seneb Spa aboard Hathor"
+                className="we-epilogue__card-media"
+                ratio="356 / 460"
+              />
+              <h3 className="we-display">Seneb</h3>
+              <p className="we-epilogue__card-body">
+                Spa · Fitness · Suite rest
+                <br />
+                between Luxor and Aswan
+              </p>
+              <div className="we-epilogue__card-links">
+                <a
+                  className="we-link"
+                  href="https://www.instagram.com/hathorcruise/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Instagram
+                </a>
+                <Link className="we-link" href="/suites">
+                  Suites
+                </Link>
+              </div>
+            </aside>
           </div>
-          <div className="wb-epilogue__statement wb-big-title" data-anima-title>
-            <span>Wellness at</span><span>its most</span><span>personal</span>
+
+          <div className="we-epilogue__legal">
+            <span>
+              Hathor Cruise <span className="we-reg">®</span> 2026
+            </span>
+            <nav aria-label="Legal">
+              <Link href="/contact">Privacy</Link>
+              <Link href="/contact">Cookies</Link>
+              <Link href="/contact">Legal</Link>
+            </nav>
           </div>
-          <div className="wb-epilogue__contact">
-            <p>Tell us how you want to feel on the Nile. Our team will help shape a private voyage with time for Seneb Spa, Historia Fitness, restorative suite rituals, nourishing cuisine, and the temples of Egypt.</p>
-            <a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a>
-          </div>
-          <BookNowTrigger className="wb-epilogue__button">Book your voyage</BookNowTrigger>
-          <div className="wb-epilogue__social"><a href="https://www.instagram.com/hathorcruise/">INSTAGRAM</a><span>|</span><a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a><span>|</span></div>
-          <div className="wb-epilogue__feature">
-            <div className="wb-epilogue__monogram" aria-hidden="true">HATHOR</div>
-            <span>(NILE)</span>
-            <BoringMedia src={MEDIA.royal} alt="Hathor Royal Suite" />
-            <h3>ROYAL SUITES</h3>
-            <p>Privacy and renewal in the heart<br />of an ever-changing Nile landscape</p>
-          </div>
-          <div className="wb-epilogue__legal"><span>HATHOR CRUISE ©2026</span><Link href="/contact">PRIVACY</Link><Link href="/contact">COOKIES</Link><Link href="/contact">LEGAL</Link></div>
         </section>
       </main>
     </div>

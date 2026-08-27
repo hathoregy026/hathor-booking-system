@@ -447,7 +447,7 @@ export function AboutPageContent() {
               <p className="ab-edit ab-edit--l">{about.welcomeBody}</p>
               <div className="ab-epilogue__pills">
                 <BookNowTrigger className="ab-btn ab-btn--solid">
-                  Book Now
+                  <span>Book Now</span>
                 </BookNowTrigger>
                 <Link href="/cruises-list" className="ab-btn">
                   <span>Explore cruises</span>

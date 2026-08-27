@@ -441,15 +441,6 @@ export function HighlightsPageContent() {
                     className="hl-dining__main"
                     ratio="1090 / 960"
                   />
-                  <FlipImage
-                    className="hl-dining__stack"
-                    axis="left"
-                    ratio="668 / 554"
-                    front="room-royal"
-                    back="highlights-lifestyle"
-                    frontAlt="Royal suite aboard Hathor"
-                    backAlt="Deck living on the Nile"
-                  />
                 </div>
 
                 <div className="hl-dining__copy">
@@ -559,7 +550,7 @@ export function HighlightsPageContent() {
               </p>
               <div className="hl-epilogue__pills">
                 <BookNowTrigger className="hl-btn hl-btn--solid">
-                  Book Now
+                  <span>Book Now</span>
                 </BookNowTrigger>
                 <Link href="/charter" className="hl-btn">
                   <span>Private charter</span>

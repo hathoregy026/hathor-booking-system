@@ -398,7 +398,7 @@ export function ContactPageContent() {
                   <span>WhatsApp</span>
                 </a>
                 <BookNowTrigger className="ce-btn ce-btn--solid">
-                  Book Now
+                  <span>Book Now</span>
                 </BookNowTrigger>
               </div>
             </aside>

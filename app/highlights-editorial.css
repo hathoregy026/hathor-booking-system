@@ -235,19 +235,25 @@ html:has(.highlights-editorial) footer.lux-footer {
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
-  padding: calc(0.72em - 1px) calc(1.5em - 1px);
-  border: 1px solid currentcolor;
-  border-radius: calc(0.72em * 3);
+  box-sizing: border-box;
+  min-height: 2.85rem;
+  padding: 0 1.65rem;
+  border: 1px solid var(--hl-ink);
+  border-radius: 999px;
   background: transparent;
-  color: inherit;
+  color: var(--hl-ink);
   font-family: var(--hl-meta);
   font-size: var(--hl-t-meta);
   font-weight: 400;
   letter-spacing: 0.14em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
-  transition: color 0.34s var(--hl-ease-soft);
+  transition:
+    color 0.34s var(--hl-ease-soft),
+    border-color 0.34s var(--hl-ease-soft),
+    background-color 0.34s var(--hl-ease-soft);
 }
 
 .highlights-editorial .hl-btn > span {
@@ -260,25 +266,29 @@ html:has(.highlights-editorial) footer.lux-footer {
   position: absolute;
   z-index: 1;
   inset: -1px;
-  background: currentcolor;
+  background: var(--hl-ink);
   transform: translate3d(var(--hl-bx, -101%), var(--hl-by, -101%), 0);
   transition: transform 0.42s var(--hl-ease-soft);
 }
 
 .highlights-editorial .hl-btn:hover {
+  color: var(--hl-paper);
   --hl-bx: 0%;
   --hl-by: 0%;
-}
-
-/* the label has to flip against the incoming fill */
-.highlights-editorial .hl-btn:hover > span {
-  mix-blend-mode: difference;
-  filter: invert(1);
 }
 
 .highlights-editorial .hl-btn--solid {
   background: var(--hl-ink);
   color: var(--hl-paper);
+  border-color: var(--hl-ink);
+}
+
+.highlights-editorial .hl-btn--solid::before {
+  background: var(--hl-paper);
+}
+
+.highlights-editorial .hl-btn--solid:hover {
+  color: var(--hl-ink);
   border-color: var(--hl-ink);
 }
 
@@ -905,7 +915,13 @@ html:has(.highlights-editorial) footer.lux-footer {
 .hl-epilogue__pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hl-epilogue__pills .hl-btn {
+  min-width: 12.75rem;
+  height: 2.85rem;
 }
 
 .hl-epilogue__card {
@@ -1216,6 +1232,8 @@ html:has(.highlights-editorial) footer.lux-footer {
 
   .hl-epilogue__pills .hl-btn {
     flex: 1 1 auto;
+    min-width: min(12.75rem, 100%);
+    height: 2.85rem;
   }
 }
 

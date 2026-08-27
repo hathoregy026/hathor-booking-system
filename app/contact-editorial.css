@@ -249,19 +249,24 @@ html:has(.contact-editorial) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
-  padding: calc(0.72em - 1px) calc(1.5em - 1px);
+  min-height: 2.85rem;
+  padding: 0 1.65rem;
   border: 1px solid var(--ce-ink);
-  border-radius: calc(0.72em * 3);
+  border-radius: 999px;
   background: transparent;
   color: var(--ce-ink);
   font-family: var(--ce-meta);
   font-size: var(--ce-t-meta);
   font-weight: 400;
   letter-spacing: 0.14em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
-  transition: color 0.34s var(--ce-ease-soft);
+  transition:
+    color 0.34s var(--ce-ease-soft),
+    border-color 0.34s var(--ce-ease-soft),
+    background-color 0.34s var(--ce-ease-soft);
 }
 
 /* Call / Email / WhatsApp — identical pill size on every breakpoint */
@@ -269,6 +274,7 @@ html:has(.contact-editorial) footer.lux-footer {
   width: 13.5rem;
   min-width: min(13.5rem, 100%);
   max-width: 100%;
+  height: 2.85rem;
   justify-self: end;
 }
 
@@ -296,20 +302,35 @@ html:has(.contact-editorial) footer.lux-footer {
 .contact-editorial .ce-btn--solid {
   background: var(--ce-ink);
   color: var(--ce-paper);
+  border-color: var(--ce-ink);
 }
 
 .contact-editorial .ce-btn--solid::before {
-  background: var(--ce-gold);
+  background: var(--ce-paper);
 }
 
 .contact-editorial .ce-btn--solid:hover {
   color: var(--ce-ink);
+  border-color: var(--ce-ink);
 }
 
 .contact-editorial .ce-btn--xl {
-  padding: calc(1.05em - 1px) calc(2.6em - 1px);
-  border-radius: calc(1.05em * 3);
+  min-height: 3.25rem;
+  padding: 0 2.4rem;
+  border-radius: 999px;
   font-size: calc(var(--ce-t-meta) * 1.05);
+}
+
+.contact-editorial .ce-card__pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.contact-editorial .ce-card__pills .ce-btn {
+  min-width: 12.75rem;
+  height: 2.85rem;
 }
 
 /* ---------------------------------------------------------------- progress */
@@ -1110,8 +1131,14 @@ html:has(.contact-editorial) footer.lux-footer {
 .ce-card__pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
   margin-top: 0.3rem;
+}
+
+.ce-card__pills .ce-btn {
+  min-width: 12.75rem;
+  height: 2.85rem;
 }
 
 /* --- legal bar */
@@ -1346,6 +1373,8 @@ html:has(.contact-editorial) footer.lux-footer {
 
   .ce-card__pills .ce-btn {
     flex: 1 1 auto;
+    min-width: min(12.75rem, 100%);
+    height: 2.85rem;
   }
 
   .contact-success-popup__panel {

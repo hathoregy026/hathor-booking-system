@@ -477,21 +477,36 @@ html:has(.wellness-boring) .public-fab { display: none !important; }
 .wb-epilogue__contact a { grid-column: 2; }
 .wb-epilogue__contact a { align-self: start; color: var(--wb-gold-deep); text-decoration: underline; }
 .wb-epilogue__button {
-  display: flex;
-  width: min(54rem, 82vw);
-  aspect-ratio: 5/1;
-  margin: 0 auto 14vh;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--wb-gold-deep);
+  box-sizing: border-box;
+  width: auto;
+  min-width: 12.75rem;
+  height: 2.85rem;
+  aspect-ratio: auto;
+  margin: 0 auto 14vh;
+  padding: 0 1.65rem;
+  border: 1px solid var(--wb-ink);
   border-radius: 999px;
-  color: var(--wb-ink);
-  background: transparent;
-  font: italic clamp(2rem, 3.7vw, 4.5rem)/1 var(--wb-copy);
+  color: var(--wb-paper);
+  background: var(--wb-ink);
+  font-family: var(--font-hathor-body), "Piloner Thin", "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.66rem, 0.72vw, 0.8rem);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: color .3s ease, background .3s ease, transform .3s ease;
+  transition: color .34s ease, background .34s ease, border-color .34s ease;
 }
-.wb-epilogue__button:hover { color: var(--wb-cream); background: var(--wb-gold-deep); transform: scale(1.015); }
+.wb-epilogue__button:hover {
+  color: var(--wb-ink);
+  background: var(--wb-paper);
+  border-color: var(--wb-ink);
+  transform: none;
+}
 .wb-epilogue__social { display: flex; justify-content: center; gap: 1rem; color: var(--wb-gold-deep); font-size: clamp(1.2rem, 2vw, 2.35rem); }
 .wb-epilogue__feature { position: relative; min-height: 138svh; padding-top: 25svh; text-align: center; }
 .wb-epilogue__monogram { position: absolute; inset: 5% 0 auto; color: rgb(128 107 53 / 12%); font-size: 26vw; line-height: .7; }
@@ -599,7 +614,12 @@ html:has(.wellness-boring) .public-fab { display: none !important; }
   .wb-epilogue__statement { font-size: clamp(3.7rem, 17vw, 5.3rem); }
   .wb-epilogue__contact { display: block; padding: 3rem 0; font-size: 1.25rem; }
   .wb-epilogue__contact a { display: block; margin-top: 2rem; overflow-wrap: anywhere; }
-  .wb-epilogue__button { width: 100%; font-size: 2rem; }
+  .wb-epilogue__button {
+    width: 100%;
+    min-width: 0;
+    height: 2.85rem;
+    font-size: clamp(0.66rem, 0.72vw, 0.8rem);
+  }
   .wb-epilogue__social { flex-wrap: wrap; font-size: 1rem; }
   .wb-epilogue__feature .wb-media { width: 82vw; }
   .wb-epilogue__legal { flex-wrap: wrap; gap: 1rem; }
