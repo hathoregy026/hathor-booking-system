@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { HighlightsPageContent } from "@/components/pages/highlights/HighlightsPageContent";
+import "../../highlights-editorial.css";
+import "../../editorial-chrome.css";
 
 export const metadata: Metadata = {
   title: "Dahabiya Nile Cruise Highlights in Egypt",

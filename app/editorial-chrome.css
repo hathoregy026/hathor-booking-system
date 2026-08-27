@@ -5,10 +5,10 @@
 .about-boring,
 .contact-editorial,
 .wellness-boring,
+.highlights-editorial,
 .cr-intro,
 .nib-dining,
-[data-charter-page],
-[data-highlights-page] {
+[data-charter-page] {
   --ed-gutter: 2.2rem;
   --ed-bottom: 1.5rem;
   --ed-meta-font: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
@@ -28,7 +28,9 @@
 .about-boring .ab-rail,
 .about-boring .ab-rail__inner,
 .contact-editorial .ce-rail,
-.contact-editorial .ce-rail__inner {
+.contact-editorial .ce-rail__inner,
+.highlights-editorial .hl-rail,
+.highlights-editorial .hl-rail__inner {
   display: none !important;
   animation: none !important;
 }
@@ -199,6 +201,7 @@
 .contact-editorial .ce-manifesto__body,
 .contact-editorial .ce-epilogue__form-lead,
 .contact-editorial .ce-epilogue__feature p,
+.highlights-editorial .hl-intro__body,
 .wellness-boring .wb-intro__body,
 .wellness-boring .wb-manifesto__body,
 .wellness-boring .wb-epilogue__contact,
@@ -262,6 +265,7 @@
 .voyages-boring .vb-intro__body,
 .about-boring .ab-intro__body,
 .contact-editorial .ce-intro__body,
+.highlights-editorial .hl-intro__body,
 .wellness-boring .wb-intro__body,
 .cr-intro .cr-intro__body {
   position: absolute;
@@ -375,6 +379,7 @@
   .about-boring,
   .contact-editorial,
   .wellness-boring,
+  .highlights-editorial,
   .cr-intro,
   .nib-dining {
     --ed-gutter: 2rem;
@@ -404,6 +409,7 @@
   .about-boring,
   .contact-editorial,
   .wellness-boring,
+  .highlights-editorial,
   .cr-intro,
   .nib-dining {
     --ed-gutter: 1.25rem;
@@ -414,6 +420,7 @@
   .voyages-boring .vb-intro__body,
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
+  .highlights-editorial .hl-intro__body,
   .wellness-boring .wb-intro__body,
   .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
@@ -463,6 +470,7 @@
    */
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
+  .highlights-editorial .hl-intro__body,
   .cr-intro .cr-intro__body {
     position: static;
     inset: auto;
@@ -473,7 +481,8 @@
   }
 
   .about-boring .ab-intro__mark,
-  .contact-editorial .ce-intro__mark {
+  .contact-editorial .ce-intro__mark,
+  .highlights-editorial .hl-intro__mark {
     margin-top: clamp(1.4rem, 5vw, 2.2rem);
   }
 

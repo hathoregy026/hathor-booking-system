@@ -1,0 +1,1245 @@
+/* ==========================================================================
+   HIGHLIGHTS — EDITORIAL
+   Same design language as About and Contact. Highlights uses the About scene grammar — manifesto, collage, numbered principles, museum wall cards for landmarks, and editorial split for life aboard.\n\n   Motion is driven by custom properties written per-scene by
+   hooks/useHighlightsEditorialScroll.ts:  --reveal  --parallax  --focus  --hl-flip
+   ========================================================================== */
+
+.highlights-editorial {
+  /* ---- palette: one paper, one ink, three washes, gold as the only accent */
+  --hl-paper: #ece4da;
+  --hl-paper-warm: #f3ede4;
+  --hl-ink: #14120e;
+  --hl-ink-soft: #4a453c;
+  --hl-gold: #b69f64;
+  --hl-gold-deep: #806b35;
+  --hl-wash-sand: #ded4c6;
+  --hl-wash-stone: #cfc7ba;
+  --hl-wash-olive: #adaa8a;
+  --hl-black: #0b0a08;
+  --hl-hair: rgb(20 18 14 / 16%);
+
+  /* ---- type stacks (every face is already in the project) */
+  --hl-display: "Italiana", var(--font-hathor-display), "Gamgote", Georgia, serif;
+  --hl-edit: "Playfair Display", Georgia, "Times New Roman", serif;
+  --hl-meta: var(--font-hathor-body), "Piloner Thin", "Helvetica Neue", Arial,
+    sans-serif;
+
+  /* ---- fluid scale */
+  --hl-t-xl: clamp(3.1rem, 9.4vw, 11rem);
+  --hl-t-l: clamp(2.5rem, 6.6vw, 7.6rem);
+  --hl-t-m: clamp(1.9rem, 4.4vw, 5rem);
+  --hl-t-s: clamp(1.35rem, 2.2vw, 2.5rem);
+  --hl-t-body: clamp(0.95rem, 1.05vw, 1.15rem);
+  --hl-t-meta: clamp(0.66rem, 0.72vw, 0.8rem);
+
+  /* ---- grid + rhythm */
+  --hl-pad: clamp(1rem, 2.4vw, 2.6rem);
+  --hl-gap: clamp(0.75rem, 1.5vw, 1.5rem);
+  --hl-col: calc((100vw - (var(--hl-pad) * 2) - (var(--hl-gap) * 11)) / 12);
+  --hl-band: clamp(3.5rem, 9vw, 11rem);
+
+  --hl-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --hl-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  background: var(--hl-paper);
+  color: var(--hl-ink);
+  font-family: var(--hl-meta);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------- host chrome */
+html[data-highlights-editorial],
+html[data-highlights-editorial] body,
+html[data-highlights-editorial] .public-site,
+html[data-highlights-editorial] .public-main,
+html:has(.highlights-editorial),
+html:has(.highlights-editorial) body,
+html:has(.highlights-editorial) .public-site,
+html:has(.highlights-editorial) .public-main {
+  overflow-x: clip;
+  background: #ece4da;
+}
+
+html:has(.highlights-editorial) .hathor-header {
+  background: rgb(236 228 218 / 82%) !important;
+  box-shadow: 0 1px 0 rgb(20 18 14 / 10%);
+  backdrop-filter: blur(14px) saturate(0.92);
+}
+
+html:has(.highlights-editorial) .hathor-header a,
+html:has(.highlights-editorial) .hathor-header button {
+  color: #14120e !important;
+  text-shadow: none !important;
+}
+
+html:has(.highlights-editorial) .hathor-header__logo--icon {
+  filter: brightness(0.16) saturate(0.4) !important;
+}
+
+html:has(.highlights-editorial) .public-fab {
+  display: none !important;
+}
+
+html:has(.highlights-editorial) .lux-footer,
+html:has(.highlights-editorial) footer.lux-footer {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------------- reset */
+.highlights-editorial *,
+.highlights-editorial *::before,
+.highlights-editorial *::after {
+  box-sizing: border-box;
+}
+
+.highlights-editorial h1,
+.highlights-editorial h2,
+.highlights-editorial h3,
+.highlights-editorial p,
+.highlights-editorial ol,
+.highlights-editorial figure {
+  margin: 0;
+  padding: 0;
+}
+
+.highlights-editorial ol {
+  list-style: none;
+}
+
+.highlights-editorial a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.highlights-editorial main {
+  width: 100%;
+}
+
+/* ------------------------------------------------------------ type classes */
+.highlights-editorial .hl-display {
+  font-family: var(--hl-display);
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: -0.012em;
+}
+
+.highlights-editorial .hl-display--xl {
+  font-size: var(--hl-t-xl);
+  letter-spacing: -0.022em;
+}
+
+.highlights-editorial .hl-display--l {
+  font-size: var(--hl-t-l);
+}
+
+.highlights-editorial .hl-edit {
+  font-family: var(--hl-edit);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.005em;
+}
+
+.highlights-editorial .hl-edit--xl {
+  font-size: var(--hl-t-l);
+}
+
+.highlights-editorial .hl-edit--l {
+  font-size: var(--hl-t-s);
+  line-height: 1.3;
+}
+
+.highlights-editorial .hl-eyebrow {
+  font-family: var(--hl-edit);
+  font-size: var(--hl-t-body);
+  font-style: italic;
+  color: var(--hl-gold-deep);
+}
+
+.highlights-editorial .hl-meta-copy {
+  font-family: var(--hl-meta);
+  font-size: var(--hl-t-body);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--hl-ink-soft);
+  max-width: 36ch;
+}
+
+.highlights-editorial .hl-reg {
+  font-size: 0.55em;
+  vertical-align: super;
+  margin: 0 0.1em;
+}
+
+/* clip-mask reveal */
+.highlights-editorial .hl-line {
+  display: block;
+  overflow: clip;
+  padding-bottom: 0.06em;
+}
+
+.highlights-editorial .hl-line > * {
+  display: block;
+  transform: translateY(calc((1 - var(--reveal, 1)) * 105%));
+  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
+  transition:
+    transform 0.9s var(--hl-ease-soft),
+    opacity 0.9s var(--hl-ease-soft);
+}
+
+/* the ragged setting — each line steps in by a fractional column */
+.highlights-editorial .hl-line--b {
+  padding-left: calc(var(--hl-col) * 2.05 + var(--hl-gap));
+}
+
+.highlights-editorial .hl-line--c {
+  padding-left: calc(var(--hl-col) * 0.9);
+}
+
+.highlights-editorial .hl-line--indent {
+  padding-left: calc(var(--hl-col) * 1.1);
+}
+
+/* ------------------------------------------------------------------- links */
+.highlights-editorial .hl-link {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.06em;
+}
+
+.highlights-editorial .hl-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--hl-lw, 0%);
+  height: 1px;
+  background: currentcolor;
+  transition: width 0.4s var(--hl-ease-soft);
+}
+
+.highlights-editorial .hl-link:hover {
+  --hl-lw: 100%;
+}
+
+/* ----------------------------------------------------------------- buttons */
+.highlights-editorial .hl-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  padding: calc(0.72em - 1px) calc(1.5em - 1px);
+  border: 1px solid currentcolor;
+  border-radius: calc(0.72em * 3);
+  background: transparent;
+  color: inherit;
+  font-family: var(--hl-meta);
+  font-size: var(--hl-t-meta);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.34s var(--hl-ease-soft);
+}
+
+.highlights-editorial .hl-btn > span {
+  position: relative;
+  z-index: 2;
+}
+
+.highlights-editorial .hl-btn::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: -1px;
+  background: currentcolor;
+  transform: translate3d(var(--hl-bx, -101%), var(--hl-by, -101%), 0);
+  transition: transform 0.42s var(--hl-ease-soft);
+}
+
+.highlights-editorial .hl-btn:hover {
+  --hl-bx: 0%;
+  --hl-by: 0%;
+}
+
+/* the label has to flip against the incoming fill */
+.highlights-editorial .hl-btn:hover > span {
+  mix-blend-mode: difference;
+  filter: invert(1);
+}
+
+.highlights-editorial .hl-btn--solid {
+  background: var(--hl-ink);
+  color: var(--hl-paper);
+  border-color: var(--hl-ink);
+}
+
+/* ---------------------------------------------------------------- progress */
+.hl-progress {
+  position: fixed;
+  z-index: 100;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+}
+
+.hl-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--hl-gold, #b69f64);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ============================================================ HORIZONTAL ACT */
+.hl-run {
+  position: relative;
+  width: 100%;
+}
+
+.hl-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+.hl-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+.hl-scene {
+  position: relative;
+  flex: 0 0 auto;
+  height: 100%;
+  padding: calc(var(--hl-band) * 0.9) var(--hl-pad);
+  display: flex;
+  flex-direction: column;
+}
+
+/* -------------------------------------------------------- vertical marquee */
+.hl-rail {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  width: 2.4em;
+  height: 100%;
+  overflow: hidden;
+  background: var(--hl-ink);
+  color: var(--hl-paper);
+  font-size: var(--hl-t-meta);
+  pointer-events: none;
+}
+
+.hl-rail__inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  gap: 2.5rem;
+  white-space: nowrap;
+  transform-origin: top left;
+  transform: rotate(90deg) translateY(-2.4em);
+  animation: hl-rail-run 38s linear infinite;
+}
+
+.hl-rail__inner em {
+  font-style: normal;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  line-height: 2.4;
+}
+
+.hl-rail__inner b {
+  color: var(--hl-gold);
+  font-weight: 400;
+}
+
+@keyframes hl-rail-run {
+  to {
+    transform: rotate(90deg) translateY(-2.4em) translateX(-50%);
+  }
+}
+
+/* ------------------------------------------------------------ media system */
+.hl-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--hl-ratio, 4 / 3);
+  background: var(--hl-wash-sand);
+}
+
+.hl-media__image {
+  object-fit: cover;
+  transform: translateY(calc((var(--parallax, 0.5) - 0.5) * -4%))
+    scale(calc(1.06 + var(--focus, 0) * 0.02));
+  transition: transform 0.8s var(--hl-ease-soft);
+}
+
+.hl-flip {
+  position: relative;
+  overflow: hidden;
+}
+
+.hl-flip .hl-media {
+  width: 100%;
+  height: 100%;
+}
+
+.hl-flip__overlay {
+  position: absolute !important;
+  inset: 0;
+}
+
+.hl-flip--left .hl-flip__overlay {
+  clip-path: inset(0 0 0 calc((1 - var(--hl-flip, 0)) * 100%));
+}
+
+.hl-flip--right .hl-flip__overlay {
+  clip-path: inset(0 calc((1 - var(--hl-flip, 0)) * 100%) 0 0);
+}
+
+.hl-flip--up .hl-flip__overlay {
+  clip-path: inset(calc((1 - var(--hl-flip, 0)) * 100%) 0 0 0);
+}
+
+/* ------------------------------------------------------------- 01 · intro */
+.hl-intro {
+  width: min(94vw, 78rem);
+  padding-left: calc(var(--hl-pad) + 3.4em);
+  justify-content: center;
+  background: var(--hl-paper);
+}
+
+.hl-intro__inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 3vw, 2.8rem);
+}
+
+.hl-intro__body {
+  font-family: var(--hl-meta);
+  font-size: var(--hl-t-body);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--hl-ink-soft);
+  max-width: 32ch;
+  margin-left: calc(var(--hl-col) * 0.9);
+}
+
+.hl-intro__nav {
+  position: absolute;
+  z-index: 4;
+  top: calc(var(--hl-band) * 0.9);
+  right: var(--hl-pad);
+  display: flex;
+  gap: 1.6rem;
+  transform-origin: bottom right;
+  transform: rotate(-90deg) translateY(-100%);
+  font-size: var(--hl-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hl-intro__nav a {
+  position: relative;
+  padding-bottom: 0.3em;
+  color: var(--hl-ink-soft);
+  transition: color 0.3s var(--hl-ease-soft);
+}
+
+.hl-intro__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--hl-gold-deep);
+  transition: width 0.4s var(--hl-ease-soft);
+}
+
+.hl-intro__nav a:hover {
+  color: var(--hl-ink);
+}
+
+.hl-intro__nav a:hover::after {
+  width: 100%;
+}
+
+.hl-intro__mark,
+.hl-intro__scroll {
+  position: absolute;
+  bottom: calc(var(--hl-band) * 0.55);
+  font-size: var(--hl-t-meta);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hl-ink-soft);
+}
+
+.hl-intro__mark {
+  left: calc(var(--hl-pad) + 3.4em);
+}
+
+.hl-intro__scroll {
+  right: var(--hl-pad);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hl-intro__scroll i {
+  display: block;
+  width: 3.2rem;
+  height: 1px;
+  background: var(--hl-ink);
+  transform-origin: 0 50%;
+  animation: hl-scroll-hint 2.4s var(--hl-ease-soft) infinite;
+}
+
+@keyframes hl-scroll-hint {
+  0%,
+  100% {
+    transform: scaleX(0.35);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+}
+
+/* -------------------------------------------------------- 02 · image lead */
+.hl-lead {
+  width: min(96vw, 82rem);
+  justify-content: center;
+  background: var(--hl-paper);
+}
+
+.hl-lead__main {
+  width: calc(var(--hl-col) * 8.6 + var(--hl-gap) * 7);
+  height: 74svh;
+  max-height: 74svh;
+  aspect-ratio: auto;
+}
+
+.hl-lead__inset {
+  position: absolute;
+  z-index: 3;
+  right: var(--hl-pad);
+  top: 50%;
+  width: calc(var(--hl-col) * 4.2 + var(--hl-gap) * 3);
+  aspect-ratio: 835 / 557;
+  transform: translateY(-42%);
+  box-shadow: 0 2rem 4rem rgb(20 18 14 / 14%);
+}
+
+.hl-lead__caption {
+  position: absolute;
+  left: calc(var(--hl-pad) + 3.4em);
+  bottom: calc(var(--hl-band) * 0.55);
+  font-size: var(--hl-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hl-ink-soft);
+}
+
+.hl-lead__caption span {
+  font-family: var(--hl-edit);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--hl-gold-deep);
+  margin-right: 0.5em;
+}
+
+/* --------------------------------------------------------- 03 · manifesto */
+.hl-manifesto {
+  width: min(80vw, 64rem);
+  justify-content: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  background: var(--hl-wash-sand);
+}
+
+.hl-manifesto__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: calc(var(--hl-col) * 3.4 + var(--hl-gap) * 2);
+}
+
+/* ----------------------------------------------------------- 04 · collage
+   Two unequal tiles at unequal heights — the off-grid placement is the point. */
+.hl-collage {
+  width: min(96vw, 80rem);
+  justify-content: center;
+  background: var(--hl-paper-warm);
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--hl-col) * 4.1 + var(--hl-gap) * 3))
+    minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  gap: clamp(1.2rem, 2.6vw, 2.6rem) clamp(1.5rem, 3.4vw, 3.4rem);
+}
+
+.hl-collage__tile--one {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+}
+
+.hl-collage__tile--two {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  margin-top: calc(var(--hl-band) * 0.35);
+  max-height: 64svh;
+}
+
+.hl-collage__copy {
+  grid-column: 1;
+  grid-row: 2;
+  max-width: none;
+}
+
+/* ------------------------------------------------------- 05 · principles
+   The numbered manifesto. A photograph peeks in from behind each row on
+   hover — a clip-path wipe, not a fade. */
+.hl-principles {
+  width: min(94vw, 82rem);
+  justify-content: center;
+  gap: clamp(1.6rem, 3.4vw, 3.2rem);
+  background: var(--hl-paper);
+}
+
+.hl-principles__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.hl-principles__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.hl-principle {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    3.4em
+    minmax(0, calc(var(--hl-col) * 3.4))
+    4.5em
+    minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--hl-gap);
+  padding: clamp(1rem, 2vw, 1.8rem) 0;
+  border-top: 1px solid var(--hl-hair);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 26px));
+  opacity: calc(0.15 + var(--reveal, 1) * 0.85);
+  transition:
+    transform 0.8s var(--hl-ease-soft),
+    opacity 0.8s var(--hl-ease-soft);
+}
+
+.hl-principle:last-child {
+  border-bottom: 1px solid var(--hl-hair);
+}
+
+.hl-principle__num {
+  font-family: var(--hl-edit);
+  font-size: var(--hl-t-body);
+  font-style: italic;
+  color: var(--hl-gold-deep);
+}
+
+.hl-principle__word {
+  font-size: var(--hl-t-m);
+  line-height: 0.9;
+}
+
+.hl-principle__count {
+  font-size: var(--hl-t-s);
+  color: var(--hl-gold-deep);
+  line-height: 1;
+}
+
+.hl-principle__copy {
+  font-family: var(--hl-meta);
+  font-size: var(--hl-t-body);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--hl-ink-soft);
+  max-width: 44ch;
+}
+
+/* the peek image, revealed by a wipe on row hover */
+.hl-principle__peek {
+  position: absolute;
+  z-index: 3;
+  right: calc(var(--hl-col) * 0.4);
+  top: 50%;
+  width: calc(var(--hl-col) * 2.2);
+  transform: translateY(-50%);
+  clip-path: inset(0 0 100% 0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    clip-path 0.5s var(--hl-ease-soft),
+    opacity 0.35s var(--hl-ease-soft);
+}
+
+.hl-principle:hover .hl-principle__peek {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------ 06 · cards
+   One full-panel wash per stay; four data points at the corners of a frame. */
+.hl-card {
+  width: min(88vw, 60rem);
+  justify-content: center;
+}
+
+.hl-card--cream {
+  background: var(--hl-paper-warm);
+  color: var(--hl-ink);
+}
+
+.hl-card--ink {
+  background: var(--hl-black);
+  color: var(--hl-paper);
+}
+
+.hl-card--gold {
+  background: var(--hl-wash-olive);
+  color: var(--hl-black);
+}
+
+.hl-card__frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+}
+
+.hl-card__media {
+  width: 100%;
+  flex: 0 0 auto;
+  aspect-ratio: 1279 / 820;
+  max-height: 46svh;
+}
+
+.hl-card__plate {
+  position: relative;
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  min-height: 11rem;
+  padding: clamp(1rem, 2vw, 1.6rem);
+}
+
+.hl-card__title {
+  font-size: var(--hl-t-l);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 20px));
+  opacity: calc(0.2 + var(--reveal, 1) * 0.8);
+  transition:
+    transform 0.9s var(--hl-ease-soft),
+    opacity 0.9s var(--hl-ease-soft);
+}
+
+.hl-card__corner {
+  position: absolute;
+  font-size: var(--hl-t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hl-card__corner--tl {
+  top: 1.1rem;
+  left: 1.2rem;
+  font-size: var(--hl-t-body);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.hl-card__corner--tr {
+  top: 1.1rem;
+  right: 1.2rem;
+  text-align: right;
+}
+
+.hl-card__corner--bl {
+  bottom: 1.15rem;
+  left: 1.2rem;
+}
+
+.highlights-editorial .hl-card__corner--br {
+  /* wins over .hl-btn's position: relative — the pill IS the corner datum */
+  position: absolute;
+  bottom: 0.9rem;
+  right: 1.2rem;
+}
+
+/* ------------------------------------------------------------ 07 · dining */
+.hl-dining {
+  width: min(90vw, 76rem);
+  justify-content: center;
+  background: var(--hl-wash-sand);
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--hl-col) * 5.6 + var(--hl-gap) * 4))
+    minmax(0, 1fr);
+  align-content: center;
+  gap: clamp(1.6rem, 4vw, 4rem);
+}
+
+.hl-dining__media {
+  position: relative;
+}
+
+.hl-dining__main {
+  width: 100%;
+  max-height: 60svh;
+}
+
+.hl-dining__stack {
+  position: absolute;
+  z-index: 2;
+  right: calc(var(--hl-col) * -1.1);
+  bottom: calc(var(--hl-band) * -0.22);
+  width: calc(var(--hl-col) * 3.1);
+  box-shadow: 0 1.6rem 3.2rem rgb(20 18 14 / 16%);
+}
+
+.hl-dining__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.9rem, 2vw, 1.6rem);
+}
+
+/* ----------------------------------------------------------- 08 · closing */
+.hl-closing {
+  width: min(100vw, 70rem);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1.4rem, 3vw, 2.6rem);
+  background: var(--hl-paper);
+}
+
+.hl-closing__media {
+  width: 100%;
+  aspect-ratio: 1483 / 960;
+  max-height: 62svh;
+}
+
+.hl-closing__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+/* ================================================================ EPILOGUE */
+.hl-epilogue {
+  position: relative;
+  padding: var(--hl-band) var(--hl-pad) calc(var(--hl-band) * 0.55);
+  background: var(--hl-wash-stone);
+  color: var(--hl-ink);
+}
+
+.hl-epilogue__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.hl-epilogue__pair {
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--hl-col) * 6 + var(--hl-gap) * 5))
+    minmax(0, calc(var(--hl-col) * 4 + var(--hl-gap) * 3));
+  gap: var(--hl-gap);
+  align-items: start;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+.hl-epilogue__pair .hl-media {
+  max-height: 80svh;
+}
+
+.hl-epilogue__board {
+  display: grid;
+  grid-template-columns:
+    minmax(0, calc(var(--hl-col) * 7 + var(--hl-gap) * 6))
+    minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.hl-epilogue__statement {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 3vw, 2.4rem);
+  align-items: flex-start;
+}
+
+.hl-epilogue__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.hl-epilogue__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: clamp(1.2rem, 2vw, 1.9rem);
+  background: var(--hl-paper);
+}
+
+.hl-card__tag {
+  font-family: var(--hl-edit);
+  font-style: italic;
+  font-size: var(--hl-t-body);
+  color: var(--hl-gold-deep);
+}
+
+.hl-epilogue__card-media {
+  width: 100%;
+  max-height: 26rem;
+}
+
+.hl-epilogue__card h3 {
+  font-size: var(--hl-t-s);
+}
+
+.hl-epilogue__card-body {
+  font-family: var(--hl-meta);
+  font-size: var(--hl-t-body);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--hl-ink-soft);
+}
+
+.hl-epilogue__card-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: var(--hl-t-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hl-epilogue__legal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--hl-hair);
+  font-size: var(--hl-t-meta);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hl-ink-soft);
+}
+
+.hl-epilogue__legal nav {
+  display: flex;
+  gap: 1.6rem;
+}
+
+.hl-epilogue__legal a:hover {
+  color: var(--hl-ink);
+}
+
+/* ==========================================================================
+   RESPONSIVE — 950px is the structural break
+   ========================================================================== */
+@media (max-width: 1180px) {
+  .hl-principle {
+    grid-template-columns:
+      3em
+      minmax(0, calc(var(--hl-col) * 4))
+      4em;
+    row-gap: 0.5rem;
+  }
+
+  .hl-principle__copy {
+    grid-column: 2 / -1;
+    max-width: none;
+  }
+
+  .hl-principle__peek {
+    display: none;
+  }
+}
+
+@media (max-width: 950px) {
+  .highlights-editorial {
+    --hl-band: clamp(3rem, 12vw, 5rem);
+  }
+
+  .hl-run {
+    height: auto !important;
+  }
+
+  .hl-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
+
+  .hl-track {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+  }
+
+  .hl-scene {
+    width: 100% !important;
+    height: auto;
+    min-height: 0;
+    padding: var(--hl-band) var(--hl-pad);
+  }
+
+  .hl-rail {
+    position: relative;
+    width: 100%;
+    height: 2.6em;
+    /* clear the fixed site header so the strip is not hidden behind it */
+    margin-top: var(--hl-header-clear, 4rem);
+  }
+
+  .hl-rail__inner {
+    position: relative;
+    transform: none;
+    animation: hl-rail-run-flat 28s linear infinite;
+  }
+
+  @keyframes hl-rail-run-flat {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* drop the fractional-column indents — no room to spare */
+  .highlights-editorial .hl-line--b,
+  .highlights-editorial .hl-line--c,
+  .highlights-editorial .hl-line--indent,
+  .hl-intro__body {
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .hl-intro {
+    padding-left: var(--hl-pad);
+    padding-top: calc(var(--hl-band) * 1.4);
+  }
+
+  .hl-intro__nav {
+    position: static;
+    transform: none;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .hl-intro__mark,
+  .hl-lead__caption {
+    position: static;
+    margin-top: clamp(1.6rem, 5vw, 2.4rem);
+  }
+
+  .hl-intro__scroll {
+    display: none;
+  }
+
+  .hl-lead__main {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    max-height: none;
+  }
+
+  .hl-lead__inset {
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 78%;
+    margin: -14% 0 0 auto;
+    transform: none;
+  }
+
+  .hl-manifesto__aside {
+    max-width: none;
+  }
+
+  /* collage stacks */
+  .hl-collage {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.2rem, 5vw, 2rem);
+  }
+
+  .hl-collage__tile--two {
+    margin-top: 0;
+    max-height: none;
+    width: 82%;
+    align-self: flex-end;
+  }
+
+  /* wall cards: media then plate, corners become a stacked label block */
+  .hl-card__media {
+    max-height: none;
+    aspect-ratio: 4 / 3;
+  }
+
+  .hl-card__plate {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+    min-height: 0;
+    padding: 1.4rem 0 0;
+  }
+
+  .hl-card__corner,
+  .highlights-editorial .hl-card__corner--br {
+    position: static;
+    text-align: left;
+  }
+
+  .highlights-editorial .hl-card__corner--br {
+    align-self: flex-start;
+    margin-top: 0.4rem;
+  }
+
+  .hl-card__title {
+    order: -1;
+  }
+
+  .hl-dining {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.6rem, 6vw, 2.6rem);
+  }
+
+  .hl-dining__stack {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 62%;
+    margin: -18% 0 0 auto;
+  }
+
+  .hl-dining__main {
+    max-height: none;
+  }
+
+  .hl-closing__media {
+    max-height: none;
+  }
+
+  .hl-epilogue__pair,
+  .hl-epilogue__board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hl-epilogue__pair .hl-media {
+    max-height: none;
+  }
+
+  .hl-epilogue__legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .highlights-editorial {
+    --hl-t-xl: clamp(2.6rem, 13vw, 4.2rem);
+    --hl-t-l: clamp(2rem, 9.5vw, 3.1rem);
+    --hl-t-m: clamp(1.6rem, 7.5vw, 2.4rem);
+  }
+
+  .hl-principle {
+    grid-template-columns: 2.6em minmax(0, 1fr) auto;
+    align-items: start;
+    row-gap: 0.4rem;
+  }
+
+  .hl-principle__word {
+    grid-column: 2;
+  }
+
+  .hl-principle__count {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .hl-principle__copy {
+    grid-column: 2 / -1;
+  }
+
+  .hl-collage__tile--two {
+    width: 100%;
+  }
+
+  .hl-dining__stack {
+    width: 72%;
+  }
+
+  .hl-epilogue__pills .hl-btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .highlights-editorial .hl-line > *,
+  .highlights-editorial .hl-principle,
+  .highlights-editorial .hl-media__image,
+  .highlights-editorial .hl-card__title {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .hl-rail__inner,
+  .hl-intro__scroll i {
+    animation: none !important;
+  }
+
+  .hl-flip__overlay {
+    clip-path: none !important;
+  }
+
+  .hl-principle__peek {
+    display: none;
+  }
+}

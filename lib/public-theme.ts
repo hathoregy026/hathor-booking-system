@@ -76,6 +76,8 @@ export function getBithoTitleReadyCriticalStyle(): string {
     "html:not(.hathor-bitho-ready) .about-boring .ab-intro__title-part,",
     "html:not(.hathor-bitho-ready) .contact-editorial .ce-intro__title,",
     "html:not(.hathor-bitho-ready) .contact-editorial .ce-intro__title-part,",
+    "html:not(.hathor-bitho-ready) .highlights-editorial .hl-intro__title,",
+    "html:not(.hathor-bitho-ready) .highlights-editorial .hl-intro__title .hl-line,",
     "html:not(.hathor-bitho-ready) .wellness-boring .wb-intro__title,",
     "html:not(.hathor-bitho-ready) .wellness-boring .wb-intro__title-part,",
     "html:not(.hathor-bitho-ready) .cr-intro .cr-intro__title,",
