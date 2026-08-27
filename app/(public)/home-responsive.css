@@ -1380,8 +1380,8 @@
     right: auto;
     top: max(5rem, 22vh);
     bottom: auto;
-    width: calc(50vw - 1.4rem);
-    max-width: calc(50vw - 1.4rem);
+    width: calc(50vw - 1.4rem) !important;
+    max-width: calc(50vw - 1.4rem) !important;
     text-align: left;
   }
 
@@ -1409,8 +1409,8 @@
     right: 0.7rem;
     bottom: auto;
     left: auto;
-    width: calc(50vw - 1.4rem);
-    max-width: calc(50vw - 1.4rem);
+    width: calc(50vw - 1.4rem) !important;
+    max-width: calc(50vw - 1.4rem) !important;
   }
 
   html[data-ex-experience] .home-am-video__title-body {
@@ -1576,10 +1576,12 @@
     letter-spacing: 0.14em;
   }
 
-  /* ---- type scale: desktop hierarchy, fit ~50vw columns ---- */
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+  /* ---- type scale: desktop hierarchy, fit ~50vw columns ----
+     Triple [data-ex-experience] + doubled ancestors beat section 4’s
+     (0,5,1) 10.5vw cap and the CMS body <style> injector. Phone only. */
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
       .home-am-intro__title,
       .home-am-intro__title .home-am-title-line,
@@ -1597,9 +1599,9 @@
     white-space: nowrap !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
       .home-am-intro__indication,
       .home-am-video__copy .typo-on-images-indication,
@@ -1610,9 +1612,9 @@
     line-height: 1.2 !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
       .home-am-intro__body,
       .home-am-video__copy .typo-on-images-body,
@@ -1624,8 +1626,8 @@
     line-height: 1.38 !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
     .home-am-opening__rail-copy
     :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
     font-size: clamp(11px, 3vw, 13px) !important;
@@ -1633,24 +1635,24 @@
     white-space: nowrap !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
     .home-am-opening__rail-copy
     .typo-on-images-indication {
     font-size: clamp(6px, 1.7vw, 7.5px) !important;
     line-height: 1.2 !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
     .home-am-opening__rail-copy
     .typo-on-images-body {
     font-size: clamp(8px, 2.15vw, 9.5px) !important;
     line-height: 1.35 !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
     .home-am-opening__list-item-text {
     left: 6px !important;
     bottom: 6px !important;
