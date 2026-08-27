@@ -98,7 +98,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
   }
 })();
 </script>
-<script id="preloader-js-js" src="scripts/preloader.js?v=hathor-restore-motion-20260820"></script>
+<script id="preloader-js-js" src="scripts/preloader.js?v=hathor-no-loader-scroll-20260828"></script>
 
 <meta name="generator" content="WordPress 7.0.4">
 
@@ -219,6 +219,32 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
     .mod-title--lines .line {
       overflow: hidden !important;
       padding: 0 !important;
+    }
+
+    .loader__progress,
+    .loader__percent,
+    .header__progress,
+    .header__percent {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    @media (min-width: 951px) {
+      html:not(.mobile),
+      html:not(.mobile) body {
+        overflow: hidden !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      html:not(.mobile) #smooth-wrapper,
+      html:not(.mobile) #smooth-content,
+      html:not(.mobile) main {
+        overflow: hidden !important;
+        max-height: 100vh !important;
+      }
     }
 
     :root {

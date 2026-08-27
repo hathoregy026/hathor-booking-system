@@ -4,6 +4,15 @@ let first_charge = true;
 (!localStorage.getItem('first_charge')) ? localStorage.setItem('first_charge', 1) : first_charge = false ;
 
 const HATHOR_LOGO_WORDMARK = "Hathor";
+const isHathorEmbed = window.parent !== window;
+
+function hideLoaderUi() {
+    document.querySelectorAll('.loader__progress, .loader__percent, .header__progress, .header__percent').forEach((node) => {
+        node.style.display = 'none';
+        node.style.visibility = 'hidden';
+        node.style.opacity = '0';
+    });
+}
 
 function patchHathorLogoWordmark() {
     document.querySelectorAll('.logo__boring').forEach((el) => {
@@ -14,7 +23,33 @@ function patchHathorLogoWordmark() {
     });
 }
 
+function startEmbeddedInit() {
+    hideLoaderUi();
+    try {
+        gsap.set('body', { opacity: 1 });
+        gsap.set('main', { opacity: 1 });
+    } catch (err) {}
+
+    patchHathorLogoWordmark();
+
+    const kick = () => {
+        if (typeof init !== 'function') {
+            window.setTimeout(kick, 50);
+            return;
+        }
+        init();
+    };
+
+    window.setTimeout(kick, 50);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    hideLoaderUi();
+
+    if (isHathorEmbed) {
+        startEmbeddedInit();
+        return;
+    }
 
     try {
         gsap.set('body',{opacity:1});
@@ -98,10 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if(fake_progress > porcentLoad) fake_progress = porcentLoad;
             if(fake_progress > 100) fake_progress = 100;
 
-            progress_bar.style = '--progress:'+fake_progress+'%'+'';
-            const progress_width = progress_bar.getBoundingClientRect().width;
+            if (progress_bar) progress_bar.style = '--progress:'+fake_progress+'%'+'';
+            const progress_width = progress_bar ? progress_bar.getBoundingClientRect().width : 0;
             const porcentLoadent = Math.trunc(( progress_width * 100) / window.innerWidth) + '%';
-            if(porcentLoadent!='1%') progress_number.innerHTML = porcentLoadent;
+            if(progress_number && porcentLoadent!='1%') progress_number.innerHTML = porcentLoadent;
 
             ///complete
             if(fake_progress==100 && setFakeNumber && loaderAnim_end) loadComplete(); 
@@ -131,9 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if(setFakeNumber!='') clearInterval(setFakeNumber) 
         if(first_charge){
             const porcentLoadent = '100%';
-            progress_number.innerHTML = porcentLoadent;
-            gsap.to(progress_bar,{ opacity:0, duration: .5,  ease: 'linear' })
-            gsap.to(progress_number,{opacity:0, duration: .33, ease: 'linear'},'<')
+            if (progress_number) progress_number.innerHTML = porcentLoadent;
+            if (progress_bar) gsap.to(progress_bar,{ opacity:0, duration: .5,  ease: 'linear' })
+            if (progress_number) gsap.to(progress_number,{opacity:0, duration: .33, ease: 'linear'},'<')
             ///init
             setTimeout(() => {
                 init()
@@ -141,8 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }else{
             gsap.set('body',{opacity:1})
             setTimeout(() => { logo_tl.progress(0).timeScale(timescale).play() }, 500);
-            progress_bar.style.display = 'none';
-            progress_number.style.display = 'none';
+            hideLoaderUi();
             ///init
             setTimeout(() => {
                 logo_tl.progress(1)
@@ -156,6 +190,5 @@ document.addEventListener('DOMContentLoaded', () => {
         
     
 })
-
 
 

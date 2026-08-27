@@ -31,6 +31,8 @@ function buildSuitesLiveCss(cmsCss = "") {
   return [
     SUITES_CLIP_FIX_CSS,
     CLONE_MENU_HIDE_CSS,
+    SUITES_LOADER_HIDE_CSS,
+    SUITES_HORIZONTAL_SCROLL_CSS,
     cmsCss,
     SUITES_SPLITTEXT_TYPE_GUARD_CSS,
     SUITES_TERMS_STAGE_CSS,
@@ -291,6 +293,36 @@ html body main :is(.bg-white, .bg-beige, .bg-red) :is(
 }
 `;
 
+const SUITES_LOADER_HIDE_CSS = `
+.loader__progress,
+.loader__percent,
+.header__progress,
+.header__percent {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+`;
+
+const SUITES_HORIZONTAL_SCROLL_CSS = `
+@media (min-width: 951px) {
+  html:not(.mobile),
+  html:not(.mobile) body {
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  html:not(.mobile) #smooth-wrapper,
+  html:not(.mobile) #smooth-content,
+  html:not(.mobile) main {
+    overflow: hidden !important;
+    max-height: 100vh !important;
+  }
+}
+`;
+
 const CLONE_MENU_HIDE_CSS = `
 html body,
 html body main {
@@ -385,6 +417,17 @@ function fitTermsToViewport(doc: Document) {
   }
 }
 
+function refreshSuitesHorizontalScroll(doc: Document) {
+  const win = doc.defaultView;
+  if (!win || win.innerWidth <= 950) return;
+
+  const script = doc.createElement("script");
+  script.textContent =
+    'try{if(typeof setScrollH==="function")setScrollH();if(window.ScrollTrigger)ScrollTrigger.refresh();}catch(e){console.warn("suites scroll refresh",e)}';
+  doc.body.appendChild(script);
+  script.remove();
+}
+
 function applyImages(doc: Document, images: Record<string, string>) {
   doc.querySelectorAll("img").forEach((node) => {
     const img = node as HTMLImageElement;
@@ -444,7 +487,10 @@ export function SuitesNormalHomepagePage() {
     patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
-    const runTermsFit = () => fitTermsToViewport(doc);
+    const runTermsFit = () => {
+      fitTermsToViewport(doc);
+      refreshSuitesHorizontalScroll(doc);
+    };
     runTermsFit();
     void doc.fonts?.ready.then(runTermsFit);
 
@@ -479,8 +525,8 @@ export function SuitesNormalHomepagePage() {
       patchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
       retargetCloneLinks(doc);
-      fitTermsToViewport(doc);
-      void doc.fonts?.ready.then(() => fitTermsToViewport(doc));
+      runTermsFit();
+      void doc.fonts?.ready.then(runTermsFit);
       if (data.images) applyImages(doc, data.images);
     } catch {
       /* Clip-fix still applies if CMS is unreachable. */
@@ -499,7 +545,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-flip-complete-20260820"
+        src="/suites-normal/index.html?v=hathor-no-loader-scroll-20260828"
         title="Hathor Suites"
         onLoad={() => void apply()}
       />
