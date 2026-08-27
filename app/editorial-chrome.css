@@ -9,6 +9,7 @@
 .highlights-editorial,
 .partners-editorial,
 .journal-editorial,
+.article-editorial,
 .cr-intro,
 .nib-dining,
 [data-charter-page] {
@@ -39,7 +40,9 @@
 .partners-editorial .pn-rail,
 .partners-editorial .pn-rail__inner,
 .journal-editorial .jn-rail,
-.journal-editorial .jn-rail__inner {
+.journal-editorial .jn-rail__inner,
+.article-editorial .ar-rail,
+.article-editorial .ar-rail__inner {
   display: none !important;
   animation: none !important;
 }
@@ -165,6 +168,24 @@
 .journal-editorial .jn-epilogue__legal span,
 .journal-editorial .jn-card__tag,
 .journal-editorial .jn-epilogue__card-links a,
+.article-editorial .ar-colophon__mark,
+.article-editorial .ar-colophon__scroll,
+.article-editorial .ar-colophon__nav,
+.article-editorial .ar-colophon__nav a,
+.article-editorial .ar-colophon__rail time,
+.article-editorial .ar-colophon__rail span,
+.article-editorial .ar-colophon__rail a,
+.article-editorial .ar-lede__frame span,
+.article-editorial .ar-evidence__caption span,
+.article-editorial .ar-threshold__cue,
+.article-editorial .ar-article__kicker span,
+.article-editorial .ar-epilogue__aside time,
+.article-editorial .ar-further__item time,
+.article-editorial .ar-epilogue__legal,
+.article-editorial .ar-epilogue__legal a,
+.article-editorial .ar-epilogue__legal span,
+.article-editorial .ar-card__tag,
+.article-editorial .ar-epilogue__card-links a,
 [data-charter-page] .lx-label,
 [data-highlights-page] .lx-label {
   font-family: var(--ed-meta-font) !important;
@@ -203,7 +224,11 @@
 .partners-editorial .pn-epilogue__card-links a:hover,
 .journal-editorial .jn-folio__nav a:hover,
 .journal-editorial .jn-epilogue__legal a:hover,
-.journal-editorial .jn-epilogue__card-links a:hover {
+.journal-editorial .jn-epilogue__card-links a:hover,
+.article-editorial .ar-colophon__nav a:hover,
+.article-editorial .ar-colophon__rail a:hover,
+.article-editorial .ar-epilogue__legal a:hover,
+.article-editorial .ar-epilogue__card-links a:hover {
   color: #b69f64 !important;
 }
 
@@ -246,6 +271,8 @@
 .wellness-editorial .we-threshold__body,
 .wellness-editorial .we-inhale__lyric,
 .journal-editorial .jn-folio__body,
+.article-editorial .ar-evidence__caption .ar-meta-copy,
+.article-editorial .ar-epilogue__statement > .ar-edit,
 .cr-intro .cr-intro__body,
 .nib-dining .nib-intro__copy {
   font-family: var(--ed-copy-font) !important;
@@ -409,6 +436,7 @@
   .highlights-editorial,
   .partners-editorial,
   .journal-editorial,
+  .article-editorial,
   .cr-intro,
   .nib-dining {
     --ed-gutter: 2rem;
@@ -439,6 +467,7 @@
   .highlights-editorial,
   .partners-editorial,
   .journal-editorial,
+  .article-editorial,
   .cr-intro,
   .nib-dining {
     --ed-gutter: 1.25rem;

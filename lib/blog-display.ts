@@ -68,6 +68,16 @@ export function getBlogHeroImageName(slug: string): (typeof BLOG_HERO_IMAGE_NAME
   return BLOG_HERO_IMAGE_NAMES[hash]!;
 }
 
+/** Supporting crop for article layouts — offset from the hero slot. */
+export function getBlogSupportImageName(
+  slug: string,
+): (typeof BLOG_HERO_IMAGE_NAMES)[number] {
+  const hero = getBlogHeroImageName(slug);
+  const index = BLOG_HERO_IMAGE_NAMES.indexOf(hero);
+  const next = (index + 2) % BLOG_HERO_IMAGE_NAMES.length;
+  return BLOG_HERO_IMAGE_NAMES[next]!;
+}
+
 export function getBlogArticleParagraphs(
   content: string,
   excerpt: string,

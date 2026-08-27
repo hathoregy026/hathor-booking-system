@@ -5,9 +5,15 @@ import { BlogPostPageContent } from "@/components/pages/BlogPostPageContent";
 import {
   getBlogHeroImageName,
   serializeBlogPostDetail,
+  serializeBlogPostSummaries,
 } from "@/lib/blog-display";
 import { prepareBlogContentForRender } from "@/lib/blog-html";
-import { getPublishedBlogPostBySlug } from "@/lib/blog-posts";
+import {
+  getPublishedBlogPostBySlug,
+  getPublishedBlogPosts,
+} from "@/lib/blog-posts";
+import "../../../article-editorial.css";
+import "../../../editorial-chrome.css";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -57,11 +63,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const contentHtml = prepareBlogContentForRender(post.content, post.excerpt);
+  const related = serializeBlogPostSummaries(
+    (await getPublishedBlogPosts())
+      .filter((entry) => entry.slug !== post.slug)
+      .slice(0, 3),
+  );
 
   return (
     <BlogPostPageContent
       post={serializeBlogPostDetail(post)}
       heroImageName={getBlogHeroImageName(post.slug)}
+      related={related}
     >
       <BlogArticleBody html={contentHtml} />
     </BlogPostPageContent>
