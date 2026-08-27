@@ -1,0 +1,4 @@
+interface:
+  display_name: "LuxuryHathor"
+  short_description: "Create aligned, collision-free Hathor pages"
+  default_prompt: "Use $luxuryhathor to create an original, collision-free page with the About and Contact DNA and exact rightward scroll behavior."

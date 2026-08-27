@@ -250,7 +250,8 @@ html:has(.partners-editorial) footer.lux-footer {
   align-items: center;
   justify-content: center;
   min-width: 12.75rem;
-  height: 2.85rem;
+  min-height: 44px;
+  height: auto;
   padding: 0 1.6rem;
   border: 1px solid var(--pn-ink);
   border-radius: 999px;
@@ -348,12 +349,13 @@ html:has(.partners-editorial) footer.lux-footer {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
-  max-height: 100svh;
-  padding: calc(var(--pn-band) * 0.55) var(--pn-pad) calc(var(--pn-band) * 0.45);
+    padding: calc(var(--pn-band) * 0.55) var(--pn-pad) calc(var(--pn-band) * 0.45);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
+  isolation: isolate;
+  min-width: 0;
 }
 
 /* ------------------------------------------------------------ media system */
@@ -449,7 +451,7 @@ html:has(.partners-editorial) footer.lux-footer {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--pn-ink-soft);
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .pn-open__inner {
@@ -595,7 +597,7 @@ html:has(.partners-editorial) footer.lux-footer {
 .pn-gallery__inset {
   width: min(42%, 18rem);
   align-self: flex-end;
-  margin-top: -12%;
+  margin-top: -4%;
   margin-left: auto;
   box-shadow: 0 1.4rem 2.8rem rgb(20 18 14 / 14%);
   z-index: 2;
@@ -832,7 +834,7 @@ html:has(.partners-editorial) footer.lux-footer {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--pn-ink-soft);
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .pn-datum__corner--tl {
@@ -1110,7 +1112,7 @@ html:has(.partners-editorial) footer.lux-footer {
   }
 
   .pn-gallery__inset {
-    margin-top: -8%;
+    margin-top: 0;
     width: min(55%, 14rem);
   }
 
@@ -1270,5 +1272,72 @@ html:has(.partners-editorial) footer.lux-footer {
 
   .pn-flip__overlay {
     clip-path: inset(0 0 0 0) !important;
+  }
+}
+
+/* ===================================================== LUXURYHATHOR INTEGRITY */
+.partners-editorial .anima-split-char {
+  transform: none !important;
+  will-change: auto;
+}
+
+@media (min-width: 951px) {
+  .partners-editorial {
+    --pn-t-xl: clamp(3rem, 4.9vw, 5.25rem);
+  }
+
+  .partners-editorial .pn-scene {
+    overflow: hidden;
+  }
+
+  .partners-editorial .pn-open {
+    width: min(100vw, 90rem);
+  }
+
+  .partners-editorial .pn-open__grid {
+    grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr) minmax(12rem, 17rem);
+    gap: clamp(1.5rem, 3vw, 3.25rem);
+  }
+
+  .partners-editorial .pn-open__title,
+  .partners-editorial .pn-open__title h1 {
+    width: 100%;
+    max-width: none;
+    overflow: visible;
+  }
+
+  .partners-editorial .pn-line,
+  .partners-editorial .pn-line > * {
+    overflow: visible;
+    white-space: nowrap;
+  }
+
+  .partners-editorial .pn-open .pn-line > * {
+    transform: translateY(calc((1 - var(--reveal, 1)) * 14%));
+  }
+
+  .partners-editorial .pn-line--b,
+  .partners-editorial .pn-line--c,
+  .partners-editorial .pn-line--indent {
+    margin-left: clamp(0.25rem, 0.7vw, 0.7rem);
+  }
+
+  .partners-editorial .pn-star__name,
+  .partners-editorial .pn-bridge__phrase {
+    height: auto;
+    overflow: visible;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 950px) {
+  .partners-editorial .pn-scene,
+  .partners-editorial .pn-line,
+  .partners-editorial .pn-line > * {
+    overflow: visible;
+  }
+
+  .partners-editorial .pn-line > * {
+    white-space: normal;
   }
 }

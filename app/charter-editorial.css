@@ -208,7 +208,7 @@ html:has(.charter-editorial) footer.lux-footer {
   display: block;
   overflow: clip;
   padding-bottom: 0.08em;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .charter-editorial .chr-line > * {
@@ -286,7 +286,9 @@ html:has(.charter-editorial) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
-  min-height: 2.75rem;
+  flex: 0 0 auto;
+  line-height: 1;
+  min-height: 44px;
   padding: 0 1.45rem;
   border: 1px solid var(--chr-ink);
   border-radius: 999px;
@@ -392,13 +394,14 @@ html:has(.charter-editorial) footer.lux-footer {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
-  max-height: 100svh;
-  padding: calc(var(--chr-header-clear) + 0.75rem) var(--chr-pad)
+    padding: calc(var(--chr-header-clear) + 0.75rem) var(--chr-pad)
     clamp(1.1rem, 2.5vh, 2rem);
   display: flex;
   flex-direction: column;
   gap: clamp(0.75rem, 1.6vh, 1.35rem);
-  overflow: hidden;
+  overflow: visible;
+  isolation: isolate;
+  min-width: 0;
   min-width: 0;
 }
 
@@ -706,7 +709,7 @@ html:has(.charter-editorial) footer.lux-footer {
   min-height: 0;
   background: rgb(236 228 218 / 0.55);
   border: 1px solid var(--chr-hair);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .chr-datum__media {
@@ -748,11 +751,9 @@ html:has(.charter-editorial) footer.lux-footer {
 }
 
 .chr-datum .chr-support {
-  max-width: none;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
+  min-width: 0;
 }
 
 .chr-residence__outro {
@@ -807,11 +808,9 @@ html:has(.charter-editorial) footer.lux-footer {
 }
 
 .chr-craft__copy .chr-support {
-  max-width: none;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
+  min-width: 0;
 }
 
 /* ----------------------------------------------------------- 06 · river */
@@ -853,11 +852,10 @@ html:has(.charter-editorial) footer.lux-footer {
 }
 
 .chr-river__pref {
-  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
-  color: var(--chr-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  min-width: 0;
 }
 
 .chr-river__routes {
@@ -867,7 +865,7 @@ html:has(.charter-editorial) footer.lux-footer {
   flex: 1 1 auto;
   min-height: 0;
   align-content: start;
-  overflow: auto;
+  overflow: visible;
 }
 
 .chr-passage {
@@ -907,12 +905,11 @@ html:has(.charter-editorial) footer.lux-footer {
 }
 
 .chr-passage__route {
-  font-size: clamp(0.95rem, 1.2vw, 1.25rem);
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: none;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  min-width: 0;
+  text-wrap: balance;
 }
 
 .chr-passage__cta {
@@ -1160,7 +1157,8 @@ html:has(.charter-editorial) footer.lux-footer {
 
 .chr-epilogue__pills .chr-btn {
   min-width: 10.5rem;
-  height: 2.75rem;
+  min-height: 44px;
+  height: auto;
 }
 
 .chr-epilogue__legal {
@@ -1279,7 +1277,7 @@ html:has(.charter-editorial) footer.lux-footer {
 
 .charter-editorial .ch-form .chr-btn {
   align-self: flex-start;
-  min-height: 3rem;
+  min-height: 44px;
   padding: 0 1.85rem;
 }
 
@@ -1304,7 +1302,8 @@ html:has(.charter-editorial) footer.lux-footer {
     text-align: center;
     line-height: 1.25;
     height: auto;
-    min-height: 2.75rem;
+    min-height: 44px;
+  height: auto;
     padding: 0.65rem 1.2rem;
   }
 
@@ -1404,7 +1403,7 @@ html:has(.charter-editorial) footer.lux-footer {
     right: auto;
     bottom: auto;
     width: 55%;
-    margin: -18% 0 0 auto;
+    margin: -6% 0 0 auto;
   }
 
   .chr-claim__wash {
@@ -1511,5 +1510,68 @@ html:has(.charter-editorial) footer.lux-footer {
 
   .chr-flip__overlay {
     clip-path: none !important;
+  }
+}
+
+/* ===================================================== LUXURYHATHOR INTEGRITY */
+.charter-editorial .anima-split-char {
+  transform: none !important;
+  will-change: auto;
+}
+
+@media (min-width: 951px) {
+  .charter-editorial {
+    --chr-t-xl: clamp(3.25rem, 5.35vw, 5.8rem);
+  }
+
+  .charter-editorial .chr-scene {
+    overflow: hidden;
+  }
+
+  .charter-editorial .chr-index {
+    width: min(100vw, 90rem);
+    gap: clamp(2rem, 4vw, 4.5rem);
+  }
+
+  .charter-editorial .chr-index__copy {
+    flex-basis: 60%;
+  }
+
+  .charter-editorial .chr-index__visual {
+    flex-basis: 31%;
+    width: min(31%, 21rem);
+  }
+
+  .charter-editorial .chr-index__title,
+  .charter-editorial .chr-index__title h1 {
+    width: 100%;
+    max-width: none;
+    overflow: visible;
+  }
+
+  .charter-editorial .chr-line {
+    overflow: visible;
+    white-space: nowrap;
+  }
+
+  .charter-editorial .chr-line > * {
+    white-space: nowrap;
+    transform: translateY(calc((1 - var(--reveal, 1)) * 14%));
+  }
+
+  .charter-editorial .chr-line--b,
+  .charter-editorial .chr-line--c {
+    padding-left: clamp(0.35rem, 1vw, 1rem);
+  }
+}
+
+@media (max-width: 950px) {
+  .charter-editorial .chr-scene {
+    overflow: visible;
+  }
+
+  .charter-editorial .chr-line,
+  .charter-editorial .chr-line > * {
+    white-space: normal;
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, type RefObject } from "react";
 import { editorialFlipProgress } from "@/lib/editorial-flip-progress";
+import { attachEditorialRemeasure } from "@/lib/editorial-remeasure";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
@@ -37,8 +38,6 @@ export function useWellnessEditorialScroll({
     let frame = 0;
     let target = 0;
     let current = 0;
-    let lastWidth = window.innerWidth;
-
     html.setAttribute("data-wellness-editorial", "");
 
     const applyFlips = (mode: "horizontal" | "vertical") => {
@@ -130,29 +129,24 @@ export function useWellnessEditorialScroll({
       if (!frame) frame = requestAnimationFrame(tick);
     };
 
-    const onResize = () => {
-      const width = window.innerWidth;
-      const widthChanged = Math.abs(width - lastWidth) > 24;
-      lastWidth = width;
-      if (!widthChanged && window.innerWidth <= 950) {
-        applyVerticalVars();
-        return;
-      }
+    const remeasure = () => {
       measure();
       updateTarget();
     };
 
     window.addEventListener("scroll", updateTarget, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
-    reduced.addEventListener("change", onResize);
-    document.fonts?.ready.then(onResize).catch(() => undefined);
+    reduced.addEventListener("change", remeasure);
+    const detachRemeasure = attachEditorialRemeasure({
+      observe: track,
+      onRemeasure: remeasure,
+    });
     measure();
     requestAnimationFrame(measure);
 
     return () => {
       window.removeEventListener("scroll", updateTarget);
-      window.removeEventListener("resize", onResize);
-      reduced.removeEventListener("change", onResize);
+      reduced.removeEventListener("change", remeasure);
+      detachRemeasure();
       if (frame) cancelAnimationFrame(frame);
       html.removeAttribute("data-wellness-editorial");
       run.style.height = "";

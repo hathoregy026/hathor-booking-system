@@ -639,10 +639,8 @@
   }
 
   .room-collection__hero-support {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    display: block;
+    overflow: visible;
   }
 
   .room-collection__hero-mark {

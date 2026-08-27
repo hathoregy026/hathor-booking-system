@@ -179,7 +179,7 @@ html:has(.highlights-editorial) footer.lux-footer {
 /* clip-mask reveal */
 .highlights-editorial .hl-line {
   display: block;
-  overflow: clip;
+  overflow: visible;
   padding-bottom: 0.06em;
 }
 
@@ -236,7 +236,9 @@ html:has(.highlights-editorial) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
-  min-height: 3rem;
+  flex: 0 0 auto;
+  line-height: 1;
+  min-height: 44px;
   padding: 0.9rem 1.85rem;
   border: 1px solid var(--hl-ink);
   border-radius: 999px;
@@ -345,6 +347,10 @@ html:has(.highlights-editorial) footer.lux-footer {
   padding: calc(var(--hl-band) * 0.9) var(--hl-pad);
   display: flex;
   flex-direction: column;
+  overflow: visible;
+  isolation: isolate;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* -------------------------------------------------------- vertical marquee */
@@ -547,7 +553,9 @@ html:has(.highlights-editorial) footer.lux-footer {
 
 .hl-lead__main {
   width: calc(var(--hl-col) * 8.6 + var(--hl-gap) * 7);
-  height: 74svh;
+  height: auto;
+  max-height: min(56svh, 30rem);
+  aspect-ratio: 16 / 10;
   max-height: 74svh;
   aspect-ratio: auto;
 }
@@ -763,13 +771,26 @@ html:has(.highlights-editorial) footer.lux-footer {
   position: relative;
   flex: 1 1 auto;
   display: grid;
-  place-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 0.75rem;
+  row-gap: 0.65rem;
   min-height: 11rem;
   padding: clamp(1rem, 2vw, 1.6rem);
+  min-width: 0;
 }
 
 .hl-card__title {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  max-width: 18ch;
+  min-width: 0;
   font-size: var(--hl-t-l);
+  text-wrap: balance;
   transform: translateY(calc((1 - var(--reveal, 1)) * 20px));
   opacity: calc(0.2 + var(--reveal, 1) * 0.8);
   transition:
@@ -778,15 +799,18 @@ html:has(.highlights-editorial) footer.lux-footer {
 }
 
 .hl-card__corner {
-  position: absolute;
+  position: static;
   font-size: var(--hl-t-meta);
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .hl-card__corner--tl {
-  top: 1.1rem;
-  left: 1.2rem;
+  grid-column: 1;
+  grid-row: 1;
   font-size: var(--hl-t-body);
   font-style: italic;
   letter-spacing: 0;
@@ -794,21 +818,27 @@ html:has(.highlights-editorial) footer.lux-footer {
 }
 
 .hl-card__corner--tr {
-  top: 1.1rem;
-  right: 1.2rem;
+  grid-column: 2;
+  grid-row: 1;
   text-align: right;
+  justify-self: end;
 }
 
 .hl-card__corner--bl {
-  bottom: 1.15rem;
-  left: 1.2rem;
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
 }
 
 .highlights-editorial .hl-card__corner--br {
-  /* wins over .hl-btn's position: relative — the pill IS the corner datum */
-  position: absolute;
-  bottom: 0.9rem;
-  right: 1.2rem;
+  position: static;
+  grid-column: 2;
+  grid-row: 3;
+  bottom: auto;
+  right: auto;
+  margin-top: 0;
+  align-self: end;
+  justify-self: end;
 }
 
 /* ------------------------------------------------------------ 07 · dining */
@@ -927,8 +957,10 @@ html:has(.highlights-editorial) footer.lux-footer {
 .hl-epilogue__pills .hl-btn {
   flex: 0 0 auto;
   min-width: 13.5rem;
-  min-height: 3rem;
-  height: 3rem;
+  min-height: 44px;
+  height: auto;
+  min-height: 44px;
+  height: auto;
   padding: 0 1.85rem;
 }
 
@@ -1144,7 +1176,7 @@ html:has(.highlights-editorial) footer.lux-footer {
     right: auto;
     top: auto;
     width: 78%;
-    margin: -14% 0 0 auto;
+    margin: -6% 0 0 auto;
     transform: none;
   }
 
@@ -1271,7 +1303,8 @@ html:has(.highlights-editorial) footer.lux-footer {
   .hl-epilogue__pills .hl-btn {
     flex: 1 1 auto;
     min-width: min(13.5rem, 100%);
-    height: 3rem;
+    min-height: 44px;
+  height: auto;
   }
 }
 
@@ -1297,5 +1330,69 @@ html:has(.highlights-editorial) footer.lux-footer {
 
   .hl-principle__peek {
     display: none;
+  }
+}
+
+/* ===================================================== LUXURYHATHOR INTEGRITY */
+.highlights-editorial .anima-split-char {
+  transform: none !important;
+  will-change: auto;
+}
+
+@media (min-width: 951px) {
+  .highlights-editorial {
+    --hl-t-xl: clamp(3.4rem, 6.25vw, 6.6rem);
+  }
+
+  .highlights-editorial .hl-scene {
+    overflow: hidden;
+  }
+
+  .highlights-editorial .hl-intro {
+    width: min(100vw, 90rem);
+    padding-left: calc(var(--hl-pad) + 3.4em);
+    padding-right: clamp(5rem, 8vw, 8rem);
+  }
+
+  .highlights-editorial .hl-intro__inner,
+  .highlights-editorial .hl-intro__title,
+  .highlights-editorial .hl-intro__title h1 {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  .highlights-editorial .hl-line,
+  .highlights-editorial .hl-line > * {
+    overflow: visible;
+    white-space: nowrap;
+  }
+
+  .highlights-editorial .hl-intro .hl-line > * {
+    transform: translateY(calc((1 - var(--reveal, 1)) * 14%));
+  }
+
+  .highlights-editorial .hl-line--b,
+  .highlights-editorial .hl-line--c,
+  .highlights-editorial .hl-line--indent {
+    padding-left: clamp(0.4rem, 1.4vw, 1.4rem);
+  }
+
+  .highlights-editorial .hl-intro__mark,
+  .highlights-editorial .hl-intro__scroll {
+    bottom: max(1.25rem, calc(var(--hl-band) * 0.42));
+  }
+}
+
+@media (max-width: 950px) {
+  .highlights-editorial .hl-scene,
+  .highlights-editorial .hl-line,
+  .highlights-editorial .hl-line > * {
+    overflow: visible;
+  }
+
+  .highlights-editorial .hl-line > * {
+    white-space: normal;
   }
 }

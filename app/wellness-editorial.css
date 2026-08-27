@@ -224,15 +224,18 @@ html:has(.wellness-editorial) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: 44px;
   padding: calc(0.72em - 1px) calc(1.5em - 1px);
   border: 1px solid var(--we-ink);
-  border-radius: calc(0.72em * 3);
+  border-radius: 999px;
   background: transparent;
   color: var(--we-ink);
   font-family: var(--we-meta);
   font-size: var(--we-t-meta);
   font-weight: 400;
   letter-spacing: 0.14em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
@@ -318,13 +321,15 @@ html:has(.wellness-editorial) footer.lux-footer {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
-  max-height: 100svh;
   box-sizing: border-box;
   padding: calc(var(--we-header-clear) + 0.4rem) var(--we-pad)
     calc(var(--we-band) * 0.55);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* Stage clips the track; scenes must not clip essential text/actions. */
+  overflow: visible;
+  isolation: isolate;
+  min-width: 0;
 }
 
 /* ------------------------------------------------------------ media / flip */
@@ -558,9 +563,9 @@ html:has(.wellness-editorial) footer.lux-footer {
 
 .we-seneb__main {
   width: 100%;
-  max-height: min(68svh, 34rem);
-  height: min(68svh, 34rem);
-  aspect-ratio: auto;
+  max-height: min(52svh, 28rem);
+  height: auto;
+  aspect-ratio: 4 / 3;
 }
 
 .we-seneb__inset {
@@ -584,7 +589,7 @@ html:has(.wellness-editorial) footer.lux-footer {
   color: var(--we-ink);
   background: var(--we-wash-olive);
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .we-seneb__plane .we-display {
@@ -676,7 +681,9 @@ html:has(.wellness-editorial) footer.lux-footer {
   font-size: clamp(1.55rem, 2.8vw, 2.8rem);
   margin: 0;
   line-height: 0.95;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
+  min-width: 0;
 }
 
 .we-rite__detail {
@@ -745,8 +752,10 @@ html:has(.wellness-editorial) footer.lux-footer {
 .we-historia__frame {
   position: relative;
   flex: 1 1 54%;
+  min-width: 0;
   min-height: 0;
-  height: min(62svh, 32rem);
+  height: auto;
+  max-height: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -755,7 +764,7 @@ html:has(.wellness-editorial) footer.lux-footer {
   padding: clamp(2.4rem, 4vw, 3.4rem) clamp(1.4rem, 3vw, 2.6rem);
   border: 1px solid var(--we-hair);
   background: var(--we-paper-warm);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .we-historia__corner {
@@ -764,8 +773,10 @@ html:has(.wellness-editorial) footer.lux-footer {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--we-ink-soft);
-  max-width: 38%;
-  white-space: nowrap;
+  max-width: min(38%, 12rem);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
 }
 
 .we-historia__corner--tl {
@@ -810,7 +821,10 @@ html:has(.wellness-editorial) footer.lux-footer {
   margin: 0;
   font-size: clamp(1.4rem, 2.4vw, 2.2rem);
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
+  max-width: 18ch;
+  min-width: 0;
 }
 
 .we-historia__body {
@@ -851,7 +865,11 @@ html:has(.wellness-editorial) footer.lux-footer {
   position: relative;
   flex: 1 1 56%;
   min-width: 0;
-  height: min(64svh, 34rem);
+  height: auto;
+  max-height: min(56svh, 30rem);
+  aspect-ratio: 5 / 4;
+  /* Deliberate image/image overlap only — copy lives in sibling column. */
+  isolation: isolate;
 }
 
 .we-essay__tall {
@@ -935,9 +953,9 @@ html:has(.wellness-editorial) footer.lux-footer {
 
 .we-closing__media {
   width: 100%;
-  max-height: min(58svh, 30rem);
-  height: min(58svh, 30rem);
-  aspect-ratio: auto;
+  max-height: min(48svh, 26rem);
+  height: auto;
+  aspect-ratio: 16 / 10;
 }
 
 .we-closing__copy {
@@ -945,12 +963,15 @@ html:has(.wellness-editorial) footer.lux-footer {
   align-items: baseline;
   justify-content: space-between;
   gap: 1.5rem;
+  min-width: 0;
 }
 
 .we-closing__copy .we-display {
   font-size: var(--we-t-m);
   margin: 0;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: balance;
+  min-width: 0;
 }
 
 /* ============================================================== EPILOGUE */
@@ -1008,6 +1029,11 @@ html:has(.wellness-editorial) footer.lux-footer {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
+}
+
+.we-epilogue__pills .we-btn {
+  min-width: 12.75rem;
+  min-height: 44px;
 }
 
 .we-epilogue__card {
@@ -1217,7 +1243,8 @@ html:has(.wellness-editorial) footer.lux-footer {
     right: auto;
     bottom: auto;
     width: 68%;
-    margin: -14% 0 1.2rem auto;
+    /* Image/image overlap only — kept clear of the text plane below. */
+    margin: -6% 0 1.2rem auto;
   }
 
   .we-seneb__plane {
@@ -1449,5 +1476,85 @@ html:has(.wellness-editorial) footer.lux-footer {
 
   .we-flip__overlay {
     clip-path: none !important;
+  }
+}
+
+/* ===================================================== LUXURYHATHOR INTEGRITY */
+.wellness-editorial .anima-split-char {
+  transform: none !important;
+  will-change: auto;
+}
+
+@media (min-width: 951px) {
+  .wellness-editorial {
+    --we-t-xl: clamp(3.15rem, 5.15vw, 5.6rem);
+  }
+
+  .wellness-editorial .we-scene {
+    overflow: hidden;
+  }
+
+  .wellness-editorial .we-threshold {
+    width: min(100vw, 90rem);
+    grid-template-columns: minmax(6rem, 7.5rem) minmax(0, 1fr) minmax(13rem, 17rem);
+    column-gap: clamp(1.5rem, 3vw, 3.25rem);
+  }
+
+  .wellness-editorial .we-threshold__title,
+  .wellness-editorial .we-threshold__title h1 {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  .wellness-editorial .we-threshold__title h1 {
+    display: grid;
+    gap: 0.08em;
+    line-height: 1;
+  }
+
+  .wellness-editorial .we-line,
+  .wellness-editorial .we-line > * {
+    overflow: visible;
+    white-space: nowrap;
+  }
+
+  .wellness-editorial .we-threshold .we-line > * {
+    transform: translateY(calc((1 - var(--reveal, 1)) * 12%));
+  }
+
+  .wellness-editorial .we-line--b,
+  .wellness-editorial .we-line--c,
+  .wellness-editorial .we-line--d,
+  .wellness-editorial .we-line--indent {
+    padding-left: clamp(0.25rem, 0.8vw, 0.8rem);
+  }
+
+  .wellness-editorial .we-threshold__media {
+    height: auto;
+    max-height: min(54svh, 27rem);
+    aspect-ratio: 3 / 4;
+  }
+
+  .wellness-editorial .we-rite__word,
+  .wellness-editorial .we-historia__title,
+  .wellness-editorial .we-edit--xl,
+  .wellness-editorial .we-closing__copy .we-display {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 950px) {
+  .wellness-editorial .we-scene,
+  .wellness-editorial .we-line,
+  .wellness-editorial .we-line > * {
+    overflow: visible;
+  }
+
+  .wellness-editorial .we-line > * {
+    white-space: normal;
   }
 }
