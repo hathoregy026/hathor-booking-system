@@ -196,16 +196,24 @@
 }
 
 /* ==========================================================================
-   3. AMENITIES SEQUENCE — stacked full-width chapters at ≤767px
+   3. AMENITIES SEQUENCE — extend the author's phone layout to 481-767px
    --------------------------------------------------------------------------
-   Lifted from the author's single-column phone layout so the narrative
-   reads as full-width photo + caption (not a 50/50 desktop split) on true
-   phones and small tablets. `home-dining-slider.css` still carries a ≤480px
-   50/50 leftover; !important + sequence-scoped selectors here beat it.
-   Desktop (>1024) and tablet landscape two-column layout are untouched.
+   These declarations are lifted from the existing
+   `@media (max-width: 480px)` block in home-dining-slider.css so the
+   narrative reads identically on a large phone or small tablet. The values
+   are the author's, not new art direction. The <=480px band is deliberately
+   NOT included, so the original block continues to own true phone widths.
    ========================================================================== */
 
-@media (max-width: 767.98px) {
+@media (min-width: 481px) and (max-width: 767.98px) {
+  /*
+   * Large-phone / small-tablet band ONLY. True phones (<=480px) are owned by
+   * section 19 at the end of this file, which keeps the DESKTOP two-column
+   * composition (same slides, same choreography) and only minimizes it.
+   * Do not widen this query to cover <=480px — that replaces the desktop
+   * composition with a stacked one, which is not what this page's phone
+   * layout is meant to be.
+   */
   html[data-ex-experience] .home-am-sequence {
     --sticky-under-previous-distance: 80svh;
     --sticky-under-next-distance: 80svh;
@@ -215,23 +223,18 @@
     height: 150svh;
   }
 
-  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
-    max-width: 88vw !important;
-    width: auto !important;
+  html[data-ex-experience] .home-am-intro__caption {
+    max-width: 88vw;
     text-align: left;
-    left: 1.6rem !important;
-    right: 1.6rem !important;
-    top: auto !important;
-    bottom: auto !important;
+    left: 1.6rem;
+    right: 1.6rem;
   }
 
-  html[data-ex-experience] .home-am-intro__cream,
-  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone) {
-    width: 100% !important;
-    height: 42% !important;
-    top: auto !important;
-    right: 0;
-    bottom: 0 !important;
+  html[data-ex-experience] .home-am-intro__cream {
+    width: 100%;
+    height: 42%;
+    top: auto;
+    bottom: 0;
     align-items: center;
   }
 
@@ -243,16 +246,16 @@
 
   html[data-ex-experience] .home-am-video__hero,
   html[data-ex-experience] .home-am-video__hero-wrap {
-    transform-origin: bottom center !important;
-    top: auto !important;
-    bottom: 0 !important;
-    height: 42% !important;
+    transform-origin: bottom center;
+    top: auto;
+    bottom: 0;
+    height: 42%;
   }
 
   html[data-ex-experience] .home-am-video__copy {
-    top: 6rem !important;
-    left: 1.6rem !important;
-    width: calc(100% - 3.2rem) !important;
+    top: 6rem;
+    left: 1.6rem;
+    width: calc(100% - 3.2rem);
   }
 
   html[data-ex-experience] .home-am-video__title {
@@ -271,20 +274,11 @@
     z-index: 2;
   }
 
-  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
-    top: auto !important;
-    right: 1.6rem !important;
-    left: 1.6rem !important;
-    bottom: 40vh !important;
-    width: auto !important;
-    max-width: calc(100vw - 3.2rem) !important;
-  }
-
   /* Was collapsing to 49% of the viewport — the headline defect at 701px. */
   html[data-ex-experience] .home-am-video__caption {
     flex: none;
-    width: 100% !important;
-    max-width: none !important;
+    width: 100%;
+    max-width: none;
   }
 
   /* ---- slider chapter ---- */
@@ -294,31 +288,27 @@
   }
 
   html[data-ex-experience] .home-am-slider__row {
-    flex-direction: column !important;
+    flex-direction: column;
   }
 
   html[data-ex-experience] .home-am-slider__caption-col,
-  html[data-ex-experience] .home-am-slider__images-col,
-  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
-    flex: 0 0 auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+  html[data-ex-experience] .home-am-slider__images-col {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
     margin-right: 0;
     margin-left: 0;
-    height: auto !important;
   }
 
-  html[data-ex-experience] .home-am-slider__caption-col,
-  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
-    height: 42% !important;
+  html[data-ex-experience] .home-am-slider__caption-col {
+    height: 42%;
     justify-content: flex-end;
     padding: 1.6rem;
   }
 
   html[data-ex-experience] .home-am-slider__images-col {
-    flex: 1 1 auto !important;
+    flex: 1 1 auto;
     min-height: 0;
-    height: auto !important;
   }
 
   html[data-ex-experience] .home-am-slider__images-col::before {
@@ -340,42 +330,36 @@
   }
 
   html[data-ex-experience] .home-am-opening__content {
-    flex-direction: column !important;
-    flex-wrap: wrap;
-    height: auto !important;
-    min-height: 100svh !important;
+    flex-direction: column;
+    height: auto;
+    min-height: 100svh;
   }
 
   html[data-ex-experience] .home-am-opening__images {
-    flex: 0 1 auto !important;
-    width: 100% !important;
-    height: 70svh !important;
-    max-width: none !important;
+    flex: 0 1 auto;
+    width: 100%;
+    height: 70svh;
   }
 
   html[data-ex-experience] .home-am-opening__caption {
-    flex: none !important;
-    width: 100% !important;
-    height: auto !important;
-    max-width: none !important;
+    flex: none;
+    width: 100%;
+    height: auto;
     margin-left: 0;
-    position: absolute !important;
-    bottom: 0 !important;
+    position: absolute;
+    bottom: 0;
     padding: 1.6rem;
     background: transparent;
-    align-items: flex-start;
-    justify-content: flex-end;
   }
 
   html[data-ex-experience] .home-am-opening__caption-title {
     width: 60%;
     flex: none;
-    text-align: left !important;
+    text-align: left;
   }
 
-  html[data-ex-experience] .home-am-opening__title,
-  html[data-ex-experience] .home-am-opening__title .home-am-title-line {
-    text-align: left !important;
+  html[data-ex-experience] .home-am-opening__title {
+    text-align: left;
   }
 
   html[data-ex-experience] .home-am-opening__right-column {
@@ -384,42 +368,42 @@
   }
 
   html[data-ex-experience] .home-am-opening__right-inner {
-    margin-left: 0 !important;
-    width: 100% !important;
+    margin-left: 0;
+    width: 100%;
     padding: 1.6rem;
     min-height: 0;
     background: var(--am-gold);
   }
 
   html[data-ex-experience] .home-am-opening__cards-band {
-    flex-direction: column !important;
+    flex-direction: column;
     gap: 1rem;
   }
 
   html[data-ex-experience] .home-am-opening__list-wrap {
-    flex: none !important;
-    width: 100% !important;
+    flex: none;
+    width: 100%;
   }
 
   /* Was 143px wide (20% of viewport) holding 90px type. */
   html[data-ex-experience] .home-am-opening__rail-copy {
-    position: relative !important;
-    top: auto !important;
+    position: relative;
+    top: auto;
     order: -1;
-    max-width: none !important;
+    max-width: none;
     padding: 0;
   }
 
   /* Card rail keeps its horizontal swipe — just re-proportioned. */
   html[data-ex-experience] .home-am-opening__list {
-    display: flex !important;
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     gap: 12px;
     overflow-x: auto;
     margin-top: 0;
     padding-left: 0;
-    width: calc(100% + 1.6rem) !important;
+    width: calc(100% + 1.6rem);
     margin-right: -1.6rem;
     padding-right: 1.6rem;
     -webkit-overflow-scrolling: touch;
@@ -427,10 +411,10 @@
   }
 
   html[data-ex-experience] .home-am-opening__list-item {
-    flex: 0 0 42% !important;
-    width: 42% !important;
-    min-width: 42% !important;
-    margin-top: 0 !important;
+    flex: 0 0 42%;
+    width: 42%;
+    min-width: 42%;
+    margin-top: 0;
     scroll-snap-align: start;
   }
 
@@ -532,20 +516,13 @@
 
 @media (max-width: 480px) {
   /*
-   * Caption stack height only — layout is the full-width stack from section 3.
-   * Do not reintroduce a 50/50 desktop split at phone width.
+   * Phone amenities keep the desktop two-column composition.
+   * Do not reintroduce the old stacked 42%/48% caption bands here —
+   * size scaling lives in section 19 at the end of this file.
    */
   html[data-ex-experience] .home-am-slider__caption-stack {
     min-height: 0;
     max-height: 100%;
-  }
-
-  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold,
-  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
-    min-height: 44px;
-    font-size: 12px !important;
-    letter-spacing: 0.12em;
-    padding-inline: 0.85rem;
   }
 }
 
@@ -870,85 +847,81 @@
 }
 
 /* ==========================================================================
-   9b. AMENITIES ON-IMAGE TEXT — hard legibility floor
+   9b. AMENITIES ON-IMAGE TEXT — hard legibility floor (phone + tablet)
    --------------------------------------------------------------------------
-   CMS Amenities Typography injects !important px sizes. Combined with leftover
-   ≤480px clamps in home-dining-slider.css, live phone type measured at
-   eyebrow 7.4px / body 9.4px / titles 18px. This block is more specific than
-   those injectors and only RAISES undersized values (max() with the stored
-   size) — a deliberately larger dashboard value still wins, subject to the
-   existing 10.5vw overflow cap from section 4.
-   Homepage-only (`html[data-ex-experience]`) and ≤767px only.
+   The Amenities Typography dashboard (lib/amenities-typography.ts) writes a
+   literal px font-size with !important straight onto .typo-on-images-title /
+   -indication / -body (and their per-role aliases) at roughly the same
+   selector specificity as this stylesheet's own overrides above, so on ties
+   whichever <style> tag lands later in the document wins — in practice the
+   dashboard's injected block, leaving mobile "phone" values as small as
+   ~7-9px (confirmed live: indication 7.4px, body 9.4px, title 18px at a
+   390px viewport) even though the min()/clamp() floors in section 10 assume
+   they're competing against the desktop default (44/13/17px), not a tiny
+   admin-configured mobile record.
+   Fix: re-assert a fixed floor with deliberately over-qualified selectors
+   (doubled ancestor classes — same trick as the
+   [data-ex-experience][data-ex-experience] pattern already used in this
+   file) so specificity wins outright regardless of source order. NOTE: this
+   intentionally does NOT read the dashboard's --am-typo-*-size custom
+   property — live testing showed that variable resolves to the *desktop*
+   record's value (e.g. 90px title) even on this mobile-scoped selector,
+   because custom properties inherit/cascade independently of which media
+   query's literal font-size rule actually won, so max(var(...), floor)
+   made titles balloon to 90px instead of floor to a sane size. Fixed px
+   values are the reliable option here.
+   Homepage-only (html[data-ex-experience]) + tablet-band-only — desktop is
+   untouched, and phones (<=480px) are deliberately EXCLUDED because section
+   19 at the end of this file owns phone sizing: it keeps the desktop
+   two-column composition, so its type must fit a ~50vw column and is set
+   there. A 28-40px floor inside a 195px column would wrap every title into
+   a ragged stack.
    ========================================================================== */
 
-@media (max-width: 767.98px) {
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+@media (min-width: 481px) and (max-width: 1024.98px) {
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
       .typo-on-images-title,
-      .typo-on-images-title .home-am-title-line,
-      .home-am-on-cream-title,
       .home-am-intro__title,
-      .home-am-intro__title .home-am-title-line,
-      .home-am-video__title .typo-on-images-title,
-      .home-am-video__title .home-am-title-line,
-      .home-am-slider__caption .typo-on-images-title,
-      .home-am-slider__caption .typo-on-images-title .home-am-title-line,
-      .home-am-opening__title,
-      .home-am-opening__title .home-am-title-line,
-      .home-am-opening__caption-title,
-      .home-am-opening__rail-copy .typo-on-images-title,
-      .home-am-opening__rail-copy .typo-on-images-title .home-am-title-line,
       .home-am-nature__title,
-      .home-am-nature__title .home-am-title-line,
-      .home-am-title-line
+      .home-am-opening__title,
+      .home-am-on-cream-title
     ) {
-    font-size: max(28px, min(var(--am-typo-title-size, 84px), 10.5vw)) !important;
-    line-height: 0.96 !important;
-    white-space: normal !important;
-    overflow-wrap: break-word;
+    font-size: clamp(28px, 8vw, 40px) !important;
+    line-height: 1.06 !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
       .typo-on-images-indication,
-      .home-am-intro__indication,
-      .home-am-video__copy .typo-on-images-indication,
-      .home-am-slider__caption .typo-on-images-indication,
-      .home-am-opening__rail-copy .typo-on-images-indication,
-      .home-am-nature__indication
+      .home-am-nature__indication,
+      .home-am-intro__indication
     ) {
-    font-size: max(13px, var(--am-typo-indication-size, 13px)) !important;
-    line-height: 1.25 !important;
+    font-size: 13px !important;
+    letter-spacing: 0.08em !important;
   }
 
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-sequence
+  html[data-ex-experience][data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
     :is(
       .typo-on-images-body,
+      .home-am-nature__body,
       .home-am-intro__body,
-      .home-am-video__copy .typo-on-images-body,
-      .home-am-video__title-body,
-      .home-am-slider__caption .typo-on-images-body,
-      .home-am-opening__rail-copy .typo-on-images-body,
-      .home-am-nature__body
+      .home-am-opening__caption-text,
+      .home-am-intro__cream-text
     ) {
-    font-size: max(16px, var(--am-typo-body-size, 16px)) !important;
-    line-height: 1.48 !important;
-  }
-
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-opening__list-item-text {
-    font-size: max(12px, 2.8vw) !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.04em;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
   }
 }
+
+/* Phone (<=480px) amenities type is set in section 19 — it must fit the
+   desktop 50vw column composition, so it is not floored here. */
 
 /* ==========================================================================
    10. EDITORIAL SECTION TYPE — cap dashboard sizes on tablet + phone
@@ -1446,5 +1419,365 @@
     bottom: 40vh;
     max-width: none;
     text-align: left;
+  }
+}
+
+
+/* ==========================================================================
+   19. AMENITIES PHONE (<=480) — desktop layout, minimized sizes only
+   --------------------------------------------------------------------------
+   Same split composition as desktop: 50vw columns, cream half-panel, gold
+   caption bands, opening right rail, same slides, same scroll choreography.
+   Only padding / type / gaps are reduced so the story fits a phone width.
+   Does not alter tablet (481+) or desktop.
+   Loaded last so it wins over any earlier stacked phone leftovers.
+
+   TYPE SCALE — why it is not a pure proportional shrink:
+   Desktop runs ~90px titles / 22px body inside a ~620px column. Scaled
+   linearly into a 195px phone column (50vw of 390px) that is ~28px / ~7px,
+   and the previous revision of this block did exactly that — titles at
+   clamp(16px,4.6vw,20px), eyebrows at clamp(7px,1.9vw,9px), body at
+   clamp(9px,2.4vw,11px), card labels at 6px. Sub-10px copy is below the
+   legible floor on a phone, which is what made this section read as
+   butchered even though the composition was right.
+   So the composition is scaled proportionally and the TYPE is held at a
+   readable floor instead — the layout matches desktop, the words are
+   readable. Body sits at ~13px in a ~173px measure (~24 characters per
+   line); that is the narrowest a two-column composition can go on a phone
+   and still be read, and is the deliberate trade for keeping the desktop
+   layout rather than stacking.
+
+   Titles WRAP here (white-space: normal). The previous revision forced
+   `nowrap`, so a title longer than the 195px column ran off the edge and was
+   clipped by the stage's overflow rather than breaking onto a second line.
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .home-am-sequence {
+    --am-typo-gap-title-sub: 7px;
+    --am-typo-gap-sub-body: 7px;
+    --am-typo-gap-body-cta: 12px;
+  }
+
+  /* ---- intro: keep desktop left caption + right cream half ---- */
+  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    width: 50% !important;
+    height: 100% !important;
+    padding: clamp(4.5rem, 14vh, 6rem) 0.75rem 0.85rem;
+  }
+
+  html[data-ex-experience] .home-am-intro__cream--phone {
+    display: none !important;
+  }
+
+  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone)
+    .home-am-intro__cream-text {
+    display: none;
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
+    left: 0.7rem;
+    right: auto;
+    top: max(5rem, 20vh);
+    bottom: auto;
+    width: calc(50vw - 1.4rem);
+    max-width: calc(50vw - 1.4rem);
+    text-align: left;
+  }
+
+  html[data-ex-experience] .home-am-intro__body {
+    max-width: 100%;
+  }
+
+  /* ---- video: desktop copy left / title right / gold caption 50vw ---- */
+  html[data-ex-experience] .home-am-video__hero,
+  html[data-ex-experience] .home-am-video__hero-wrap {
+    transform-origin: bottom right;
+    top: 0;
+    bottom: auto;
+    height: 100%;
+  }
+
+  html[data-ex-experience] .home-am-video__copy {
+    top: max(5rem, 12vh);
+    left: 0.7rem;
+    width: calc(46vw - 0.7rem);
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
+    top: max(5rem, 12vh);
+    right: 0.7rem;
+    bottom: auto;
+    left: auto;
+    width: calc(50vw - 1.4rem);
+    max-width: calc(50vw - 1.4rem);
+  }
+
+  html[data-ex-experience] .home-am-video__title-body {
+    display: block;
+  }
+
+  html[data-ex-experience] .home-am-video__caption {
+    flex: none;
+    width: 50vw !important;
+    max-width: 50vw !important;
+    padding: 0.75rem;
+  }
+
+  /* ---- slider: force desktop row split ---- */
+  html[data-ex-experience] .home-am-slider__row {
+    flex-direction: row !important;
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
+    flex: 0 0 calc(50vw + 2px) !important;
+    width: calc(50vw + 2px) !important;
+    height: 100% !important;
+    max-width: none !important;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col {
+    flex: 0 0 50vw !important;
+    width: 50vw !important;
+    height: 100% !important;
+    max-width: none !important;
+    min-height: 0;
+    margin-left: -2px;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col::before {
+    display: block;
+    width: 3px;
+  }
+
+  html[data-ex-experience] .home-am-slider__scrollbar {
+    right: 0.5rem;
+    bottom: 0.9rem;
+    height: 72px;
+  }
+
+  /* ---- opening: desktop side-by-side + right rail ---- */
+  html[data-ex-experience] .home-am-opening__content {
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  html[data-ex-experience] .home-am-opening__images {
+    flex: 0 0 calc(50vw + 2px) !important;
+    width: calc(50vw + 2px) !important;
+    height: 100% !important;
+    max-width: none !important;
+  }
+
+  html[data-ex-experience] .home-am-opening__caption {
+    position: relative !important;
+    flex: 0 0 50vw !important;
+    width: 50vw !important;
+    height: 100% !important;
+    max-width: none !important;
+    margin-left: -2px;
+    bottom: auto !important;
+    padding: 0.75rem 0.75rem max(5.5rem, env(safe-area-inset-bottom));
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+
+  html[data-ex-experience] .home-am-opening__caption-title {
+    width: 100%;
+    flex: none;
+    text-align: right;
+  }
+
+  html[data-ex-experience] .home-am-opening__title,
+  html[data-ex-experience] .home-am-opening__title .home-am-title-line {
+    text-align: right;
+  }
+
+  html[data-ex-experience] .home-am-opening__right-column {
+    min-height: 350vh;
+    padding-top: 100svh;
+    background: var(--am-gold);
+  }
+
+  html[data-ex-experience] .home-am-opening__right-inner {
+    margin-left: 50vw !important;
+    width: 50vw !important;
+    padding: 0.9rem 0.45rem 1.75rem;
+    min-height: 0;
+    background: transparent;
+  }
+
+  html[data-ex-experience] .home-am-opening__cards-band {
+    flex-direction: row !important;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-wrap {
+    flex: 0 0 19vw !important;
+    width: 19vw !important;
+  }
+
+  html[data-ex-experience] .home-am-opening__list {
+    display: block;
+    overflow: visible;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-item {
+    width: 100%;
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-item:first-child {
+    margin-top: 0;
+  }
+
+  html[data-ex-experience] .home-am-opening__rail-copy {
+    position: sticky;
+    top: 22vh;
+    max-width: calc(31vw - 1.2rem);
+    padding: 0;
+  }
+
+  /* 34px min-height keeps this a usable tap target (was 28px @ 7px type). */
+  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold {
+    width: 100%;
+    min-width: 0;
+    min-height: 34px;
+    padding-inline: 0.4rem;
+    font-size: 10px !important;
+    letter-spacing: 0.08em;
+  }
+
+  /* ---- nature: same gold-band copy, tighter ---- */
+  html[data-ex-experience] .home-am-nature__gold-band {
+    padding: 0 0.85rem clamp(1.1rem, 3vh, 1.6rem);
+  }
+
+  html[data-ex-experience] .home-am-nature__copy {
+    max-width: min(44rem, 94%);
+    padding-top: 0.3rem;
+  }
+
+  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
+    min-height: 36px;
+    padding-inline: 0.8rem;
+    font-size: 11px !important;
+    letter-spacing: 0.1em;
+  }
+
+  /* ---- type scale: desktop hierarchy, held at a legible floor ---- */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__title,
+      .home-am-intro__title .home-am-title-line,
+      .home-am-video__title .typo-on-images-title,
+      .home-am-video__title .home-am-title-line,
+      .home-am-slider__caption .typo-on-images-title,
+      .home-am-slider__caption .typo-on-images-title .home-am-title-line,
+      .home-am-opening__caption .home-am-opening__title,
+      .home-am-opening__caption .home-am-opening__title .home-am-title-line,
+      .home-am-nature__title,
+      .home-am-nature__title .home-am-title-line
+    ) {
+    font-size: clamp(19px, 5.4vw, 24px) !important;
+    line-height: 1 !important;
+    /* Was nowrap — long titles ran off the 50vw column and were clipped. */
+    white-space: normal !important;
+    overflow-wrap: break-word;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__indication,
+      .home-am-video__copy .typo-on-images-indication,
+      .home-am-slider__caption .typo-on-images-indication,
+      .home-am-nature__indication
+    ) {
+    font-size: clamp(10px, 2.7vw, 11px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.06em !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__body,
+      .home-am-video__copy .typo-on-images-body,
+      .home-am-video__title-body,
+      .home-am-slider__caption .typo-on-images-body,
+      .home-am-nature__body
+    ) {
+    font-size: clamp(12.5px, 3.4vw, 14px) !important;
+    line-height: 1.45 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
+    font-size: clamp(14px, 3.9vw, 17px) !important;
+    line-height: 1.02 !important;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-indication {
+    font-size: 9.5px !important;
+    line-height: 1.25 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-body {
+    font-size: clamp(11px, 3vw, 12px) !important;
+    line-height: 1.4 !important;
+  }
+
+  /*
+   * Card labels sit inside ~74px thumbnails. They need to beat the amenities
+   * typography injector's generic body rule
+   *   html[data-ex-experience] .ex-root .home-am-sequence
+   *     .typo-on-images-body:not(.home-am-video__title-body)   -> (0,5,1)
+   * which otherwise paints them at the 22px body size and overflows the card
+   * by ~3x. Doubling .ex-root and .home-am-sequence reaches (0,6,1) so this
+   * wins outright regardless of source order.
+   */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root.ex-root
+    .home-am-sequence.home-am-sequence
+    .home-am-opening__list-item-text {
+    left: 7px !important;
+    bottom: 7px !important;
+    width: calc(100% - 14px) !important;
+    font-size: 9px !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.03em !important;
   }
 }
