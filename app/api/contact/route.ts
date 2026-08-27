@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendInquiryEmail } from "@/lib/inquiry-email";
+import {
+  isKnownResidenceSlug,
+  isKnownVoyageSlug,
+} from "@/lib/selection-catalog";
+import { SELECTION_ENQUIRY_LIMITS } from "@/lib/selection-enquiry";
 import { CHARTER_PAGE } from "@/lib/page-content";
 import {
   assertTrustedPublicJsonRequest,
@@ -61,6 +66,61 @@ const inquirySchema = z.object({
         "Invalid preferred route",
       ),
   ),
+  /*
+   * My Voyage selection. Deliberately narrow: stable catalog slugs and small
+   * integers only. `.strict()` rejects unknown keys, so a client cannot smuggle
+   * a price, a product name, a route or markup through this object. Every
+   * human-readable string in the email is resolved server-side from
+   * HATHOR_CRUISES / ROOM_SHOWCASES, never echoed from this payload.
+   */
+  selection: z
+    .object({
+      voyageSlug: z
+        .string()
+        .trim()
+        .max(SELECTION_ENQUIRY_LIMITS.maxSlugLength)
+        .refine(isKnownVoyageSlug, "Unknown voyage")
+        .optional(),
+      residenceSlug: z
+        .string()
+        .trim()
+        .max(SELECTION_ENQUIRY_LIMITS.maxSlugLength)
+        .refine(isKnownResidenceSlug, "Unknown accommodation")
+        .optional(),
+      roomType: z
+        .enum(["luxury-rooms", "luxury-suites", "luxury-royal-suites"])
+        .optional(),
+      adults: z.coerce
+        .number()
+        .int()
+        .min(0)
+        .max(SELECTION_ENQUIRY_LIMITS.maxGuests)
+        .optional(),
+      children: z.coerce
+        .number()
+        .int()
+        .min(0)
+        .max(SELECTION_ENQUIRY_LIMITS.maxGuests)
+        .optional(),
+      charter: z.boolean().optional(),
+      favorites: z
+        .array(
+          z
+            .object({
+              type: z.enum(["voyage", "residence", "charter"]),
+              slug: z
+                .string()
+                .trim()
+                .max(SELECTION_ENQUIRY_LIMITS.maxSlugLength),
+            })
+            .strict(),
+        )
+        .max(SELECTION_ENQUIRY_LIMITS.maxFavorites)
+        .optional(),
+    })
+    .strict()
+    .optional(),
+
   // Hidden honeypot. Real visitors never fill this; simple form bots usually do.
   website: z.literal("").optional(),
 });

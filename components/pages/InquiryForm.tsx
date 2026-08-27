@@ -3,8 +3,18 @@
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
+import "./InquiryForm.css";
 import { trackGaEvent } from "@/lib/ga-browser";
 import type { InquiryPayload } from "@/lib/inquiry-email";
+import {
+  buildSelectionEnquiry,
+  resolveSelectionSummary,
+} from "@/lib/selection-enquiry";
+import {
+  useFavorites,
+  useSelectionHydrated,
+  useVoyageSelection,
+} from "@/components/selection/SelectionProvider";
 
 type InquiryFormProps = {
   type: InquiryPayload["type"];
@@ -35,6 +45,22 @@ export function InquiryForm({
   className,
   submitClassName = "btn btn-primary",
 }: InquiryFormProps) {
+  /*
+   * My Voyage carries into the enquiry automatically — the guest never re-enters
+   * what they already chose. Read-only here; opening the form does not clear the
+   * selection, and the contact fields stay fully editable.
+   */
+  const voyageSelection = useVoyageSelection();
+  const favorites = useFavorites();
+  const selectionHydrated = useSelectionHydrated();
+  const selection = selectionHydrated
+    ? buildSelectionEnquiry(voyageSelection, favorites)
+    : undefined;
+  /* "Reference" is an internal ids line for the reservations desk only. */
+  const selectionLines = resolveSelectionSummary(selection).filter(
+    (line) => line.label !== "Reference",
+  );
+
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const portalReady = useIsClient();
@@ -86,6 +112,8 @@ export function InquiryForm({
       children: showCharterFields
         ? Number(data.get("children") ?? 0) || undefined
         : undefined,
+      /* Slugs and integers only — the server resolves every readable string. */
+      selection,
     };
 
     try {
@@ -192,6 +220,23 @@ export function InquiryForm({
         <h2 className="section-title typo-page-title text-2xl">{title}</h2>
         {intro ? (
           <p className="section-body typo-body-text mt-3">{intro}</p>
+        ) : null}
+
+        {selectionLines.length > 0 ? (
+          <section className="hathor-form-selection" aria-label="Your selection">
+            <p className="hathor-form-selection__title">Your Hathor voyage</p>
+            <dl className="hathor-form-selection__list">
+              {selectionLines.map((line) => (
+                <div key={`${line.label}-${line.value}`}>
+                  <dt>{line.label}</dt>
+                  <dd>{line.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="hathor-form-selection__note">
+              Sent with your message. Adjust it any time in My Voyage.
+            </p>
+          </section>
         ) : null}
 
         <div className="mt-8 space-y-4">

@@ -1,0 +1,64 @@
+/*
+ * Read-only My Voyage summary inside the concierge enquiry form.
+ * Additive and scoped — it touches no existing form rule.
+ */
+
+.hathor-form-selection {
+  margin-top: 1.75rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(139, 105, 20, 0.24);
+  background: rgba(139, 105, 20, 0.05);
+}
+
+.hathor-form-selection__title {
+  margin: 0 0 0.75rem;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8b6914;
+}
+
+.hathor-form-selection__list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.hathor-form-selection__list > div {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 38%) minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.hathor-form-selection__list dt {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.68;
+}
+
+.hathor-form-selection__list dd {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.hathor-form-selection__note {
+  margin: 0.9rem 0 0;
+  font-size: 0.65rem;
+  line-height: 1.5;
+  opacity: 0.6;
+}
+
+[data-public-theme="dark"] .hathor-form-selection__title {
+  color: #c9a96e;
+}
+
+@media (max-width: 560px) {
+  .hathor-form-selection__list > div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}

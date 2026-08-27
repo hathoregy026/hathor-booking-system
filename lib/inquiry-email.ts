@@ -12,6 +12,10 @@ import {
   interpolateEmailText,
 } from "@/lib/email-templates";
 import { getAdminNotificationEmail, getResendFromAddress } from "@/lib/resend-config";
+import {
+  resolveSelectionSummary,
+  type SelectionEnquiry,
+} from "@/lib/selection-enquiry";
 
 let resendClient: Resend | null = null;
 
@@ -36,6 +40,8 @@ export type InquiryPayload = {
   children?: number;
   preferredRoute?: string;
   website?: string;
+  /** Bounded My Voyage selection. Slugs and integers only — never a price. */
+  selection?: SelectionEnquiry;
 };
 
 function escapeHtml(value: string): string {
@@ -82,6 +88,22 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
     );
   }
 
+  /*
+   * Resolved server-side from trusted catalog data. No client-supplied price,
+   * name or route reaches this block.
+   */
+  const selectionLines = resolveSelectionSummary(payload.selection);
+
+  if (selectionLines.length > 0) {
+    lines.push(`<hr>`, `<p><strong>HATHOR VOYAGE SELECTION</strong></p>`);
+    for (const line of selectionLines) {
+      lines.push(
+        `<p><strong>${escapeHtml(line.label)}:</strong> ${escapeHtml(line.value)}</p>`,
+      );
+    }
+    lines.push(`<hr>`);
+  }
+
   lines.push(
     `<p><strong>Message:</strong></p><p>${escapeHtml(payload.message).replaceAll("\n", "<br>")}</p>`,
   );
@@ -96,6 +118,13 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
     payload.adults !== undefined ? `Adults: ${payload.adults}` : "",
     payload.children !== undefined ? `Children: ${payload.children}` : "",
     payload.preferredRoute ? `Preferred route: ${payload.preferredRoute}` : "",
+    ...(selectionLines.length > 0
+      ? [
+          "",
+          "HATHOR VOYAGE SELECTION",
+          ...selectionLines.map((line) => `${line.label}: ${line.value}`),
+        ]
+      : []),
     "",
     "Message:",
     payload.message,
