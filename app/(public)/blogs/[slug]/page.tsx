@@ -3,11 +3,15 @@ import { notFound } from "next/navigation";
 import { BlogArticleBody } from "@/components/pages/BlogArticleBody";
 import { BlogPostPageContent } from "@/components/pages/BlogPostPageContent";
 import {
+  getBlogArticleImageNames,
   getBlogHeroImageName,
   serializeBlogPostDetail,
   serializeBlogPostSummaries,
 } from "@/lib/blog-display";
-import { prepareBlogContentForRender } from "@/lib/blog-html";
+import {
+  prepareBlogContentForRender,
+  splitBlogHtmlIntoBlocks,
+} from "@/lib/blog-html";
 import {
   getPublishedBlogPostBySlug,
   getPublishedBlogPosts,
@@ -63,6 +67,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const contentHtml = prepareBlogContentForRender(post.content, post.excerpt);
+
+  /*
+   * The reading section threads photographs between the prose. Splitting here
+   * (server-side, where cheerio already runs) keeps the HTML balanced and
+   * avoids shipping a parser to the browser. Four runs gives three interludes,
+   * which suits article lengths from ~400 to ~2000 words; shorter pieces
+   * simply yield fewer blocks and fewer pictures.
+   */
+  const articleBlocks = splitBlogHtmlIntoBlocks(contentHtml, 4);
+  const interludeSlots = getBlogArticleImageNames(
+    post.slug,
+    Math.max(0, articleBlocks.length - 1),
+  );
+
   const related = serializeBlogPostSummaries(
     (await getPublishedBlogPosts())
       .filter((entry) => entry.slug !== post.slug)
@@ -74,8 +92,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       post={serializeBlogPostDetail(post)}
       heroImageName={getBlogHeroImageName(post.slug)}
       related={related}
-    >
-      <BlogArticleBody html={contentHtml} />
-    </BlogPostPageContent>
+      interludeSlots={interludeSlots}
+      articleBlocks={articleBlocks.map((block, index) => (
+        <BlogArticleBody key={index} html={block} />
+      ))}
+    />
   );
 }

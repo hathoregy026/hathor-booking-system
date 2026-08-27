@@ -91,3 +91,20 @@ export function getBlogArticleParagraphs(
   }
   return [excerpt];
 }
+
+/**
+ * A deterministic run of image slots for one article, offset by the slug so
+ * two articles rarely open with the same picture, and with no slot repeating
+ * back-to-back inside a single piece.
+ */
+export function getBlogArticleImageNames(
+  slug: string,
+  count: number,
+): Array<(typeof BLOG_HERO_IMAGE_NAMES)[number]> {
+  const pool = BLOG_HERO_IMAGE_NAMES;
+  const start = pool.indexOf(getBlogHeroImageName(slug));
+  return Array.from(
+    { length: Math.max(0, count) },
+    (_, index) => pool[(start + 1 + index * 2) % pool.length]!,
+  );
+}
