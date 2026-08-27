@@ -1427,46 +1427,41 @@
 /* ==========================================================================
    19. HOMEPAGE AMENITIES — PHONE EDITORIAL LAYOUT (<=767.98px)
    --------------------------------------------------------------------------
-   REPLACES the previous "keep the desktop 50/50 composition, just shrink it"
-   approach, which is why this section is a redesign rather than a tweak.
+   Phone-only redesign of the Amenities sequence. Desktop and tablet (768px+)
+   are untouched: every rule below sits inside @media (max-width: 767.98px)
+   and is scoped to html[data-ex-experience], the homepage-only attribute.
 
-   WHY THE OLD APPROACH FAILED
-   The desktop composition is a two-column stage: a 50vw photo column beside a
-   50vw caption column, inside a 100svh sticky stage. Scaled to a 390px phone
-   that becomes two ~195px columns, so:
-     - every photograph was cropped to a ~195px-wide vertical sliver ("images
-       look cut out"),
-     - the sticky stage forced each image to 844px tall — the full phone
-       screen — so the crop was both narrow AND extremely tall ("tall full
-       phone screen"),
-     - the caption column left ~173px of measure, about 24 characters a line,
-     - and six chapters of 100svh runway made the section scroll for ~21,000px.
-   No amount of type-scaling fixes a layout whose columns are 195px wide.
+   WHY THE DESKTOP COMPOSITION CANNOT SIMPLY BE SHRUNK
+   Desktop is a two-column stage — a 50vw photo column beside a 50vw caption
+   column inside a 100svh sticky frame. At 390px those columns are ~195px, so
+   every photograph became a narrow vertical sliver, the sticky frame forced
+   each one to full screen height, and the caption had ~24 characters a line.
+   The fix is a different composition carrying the same art direction, not a
+   scaled-down copy of the desktop one.
 
-   THE PHONE DESIGN
-   One column, full-bleed width, vertical rhythm — the same language the site
-   already uses, composed for a portrait screen:
-     - Photographs are full-width at a fixed 4/5 portrait ratio. They are
-       never full-screen-tall and never sliced into a column, so the subject
-       of each shot survives the crop.
-     - Caption sits under its photograph on the cream/gold ground, full
-       measure (~calc(100vw - 2.8rem), roughly 46 characters a line).
-     - Scroll is natural. The pinned/scrubbed fog masks, clip-path wipes and
-       ken-burns transforms are neutralised, replaced by a single soft
-       fade-up. This is the "smooth" half of the brief: scrubbed clip-path
-       masks are the main source of stutter on a phone.
-     - Runways collapse to content height, so the section is a normal length.
+   THE PHONE COMPOSITION
+   One column with a strict alternating rhythm: photograph, then its words,
+   then the next photograph. Never a run of images followed by a run of text.
+   That rhythm is the point of section 19.6 below — on desktop the slider's
+   four voyages live in two separate columns (four panels in one, four
+   captions in the other), which in a single column reads as four photos in a
+   row and then four paragraphs in a row. They are re-paired here.
+
+   MOTION
+   Scroll-driven, compositor-only, and written in pure CSS via
+   `animation-timeline: view()`. No JavaScript, no scroll listeners, nothing
+   that can stutter on a mid-range phone: photographs drift gently inside
+   their frame, captions rise and settle as they enter. Wrapped in @supports
+   so a browser without scroll-driven animations simply gets the static
+   layout, and disabled entirely under prefers-reduced-motion.
 
    OVERRIDING THE MOTION JS
-   hooks/useExScrollMotion.ts and the amenities sequence write clip-path,
-   opacity, transform and visibility as INLINE styles every scroll frame.
-   Inline styles outrank normal declarations, so every rule here that has to
-   beat one carries !important — that is deliberate, not defensive noise.
-
-   SCOPE
-   Everything is inside @media (max-width: 767.98px) and every selector is
-   prefixed html[data-ex-experience], the homepage-only attribute. Tablets
-   at 768px+ and desktop keep the existing composition untouched.
+   hooks/useExScrollMotion.ts writes clip-path, opacity, transform and filter
+   as INLINE styles every frame, and its triggers are bound to the pinned
+   runways this section collapses — so those start-states (opacity:0,
+   blur(7px), closed clip-paths) would otherwise never resolve. Every rule
+   here that has to beat an inline style carries !important. That is
+   deliberate, not defensive noise.
    ========================================================================== */
 
 @media (max-width: 767.98px) {
@@ -1477,7 +1472,11 @@
     --sticky-under-next-distance: 0px !important;
     --am-typo-gap-title-sub: 10px;
     --am-typo-gap-sub-body: 10px;
-    --am-typo-gap-body-cta: 18px;
+    --am-typo-gap-body-cta: 20px;
+    /* Shared rhythm tokens so spacing stays consistent across chapters. */
+    --am-phone-gutter: 1.4rem;
+    --am-phone-copy-top: 1.5rem;
+    --am-phone-copy-bottom: 2.4rem;
   }
 
   html[data-ex-experience] .home-am-sequence .home-am-chapter,
@@ -1489,13 +1488,10 @@
   html[data-ex-experience] .home-am-nature-gold {
     /*
      * Every chapter is display:grid with a single named area
-     * ("sticky_content"), so ALL its children land in the same cell and
-     * paint on top of one another — that is how the desktop overlays the
-     * pinned stage and the opening chapter's gold rail column.
-     * On phone the children must flow one after another instead, so the
-     * chapter reverts to a plain block. Without this the opening chapter
-     * renders its photo stage and its card rail stacked on the same pixels
-     * (visible as a tall empty gold panel over the photo).
+     * ("sticky_content"), so ALL its children land in the same cell and paint
+     * on top of one another — that is how desktop overlays the pinned stage
+     * with the opening chapter's gold rail column. On phone the children must
+     * flow one after another, so the chapter reverts to a plain block.
      */
     display: block !important;
     height: auto !important;
@@ -1508,11 +1504,11 @@
     pointer-events: auto !important;
   }
 
-  /* Stages stop pinning — content flows in normal order. */
   html[data-ex-experience] .home-am-sequence .home-am-chapter__stage,
   html[data-ex-experience] .home-am-sequence .sticky__layer,
   html[data-ex-experience] .home-am-sequence .sticky__layer--sticky,
-  html[data-ex-experience] .home-am-nature__stage {
+  html[data-ex-experience] .home-am-nature__stage,
+  html[data-ex-experience] .home-am-nature-gold__stage {
     position: relative !important;
     top: auto !important;
     height: auto !important;
@@ -1524,20 +1520,16 @@
     transform: none !important;
   }
 
-  /* The gold band behind the middle chapters must not keep a fixed height. */
   html[data-ex-experience] .home-am-dark-band {
     height: auto !important;
     min-height: 0 !important;
   }
 
-  /* ---------- 19.2 Neutralise the scrubbed reveal styles ----------
-     These are the inline clip-path / opacity / transform values the motion
-     hook writes each frame. Forced open so nothing is masked or invisible. */
+  /* ---------- 19.2 Clear the unresolved reveal start-states ---------- */
 
   html[data-ex-experience] .home-am-sequence :is(
     .home-am-intro__media,
     .home-am-intro__caption,
-    .home-am-intro__cream,
     .home-am-video__hero-wrap,
     .home-am-video__hero,
     .home-am-video__inset,
@@ -1565,28 +1557,13 @@
     -webkit-mask-image: none !important;
   }
 
-  /* Media inner wrappers carry the ken-burns scale — flatten them. */
-  html[data-ex-experience] .home-am-sequence :is(
-    .home-am-intro__media-picture,
-    .home-am-video__hero img,
-    .home-am-video__inset img,
-    .home-am-slider__panel img,
-    .home-am-opening__images-media img,
-    .home-am-nature__media img
-  ) {
-    transform: none !important;
-    clip-path: none !important;
-    opacity: 1 !important;
-  }
-
   /*
-   * Text and CTAs are revealed by GSAP, which starts them at opacity:0 and
-   * only animates them in when their ScrollTrigger fires. Those triggers are
-   * bound to the pinned runways that this section collapses, so without the
-   * override below the copy stays invisible forever — the dining chapter's
-   * title and its "Discover" button were both sitting at opacity:0.
+   * Copy and CTAs are revealed by GSAP, which starts them at opacity:0 (and,
+   * for the dining title, filter:blur(7px)) and only animates them in when
+   * their ScrollTrigger fires. Those triggers are bound to the runways
+   * collapsed above, so without this the words never appear at all.
    * Descendant spans are included because the atelier text splitter wraps
-   * every line/word in its own span and animates those individually.
+   * each line in its own span and animates those individually.
    */
   html[data-ex-experience] .home-am-sequence :is(
     .typo-on-images-title,
@@ -1627,40 +1604,52 @@
     transform: none !important;
     clip-path: none !important;
     -webkit-clip-path: none !important;
-    /* The dining title also starts at filter:blur(7px) and is sharpened by
-       the same trigger that never fires here, so it must be cleared too. */
     filter: none !important;
   }
 
-  /* The intro's dimming veil was tuned for text sitting ON the photo.
-     Copy now sits below the photo, so the veil only muddies it. */
+  /* Veil tuned for copy sitting ON the photo; the copy now sits below it. */
   html[data-ex-experience] .home-am-intro__dim {
     opacity: 0 !important;
   }
 
-  /* ---------- 19.3 The shared photo frame: full width, 4/5 portrait ---------- */
+  /* ---------- 19.3 The photograph frame: full width, 4/5 portrait ---------- */
 
   html[data-ex-experience] .home-am-sequence :is(
     .home-am-intro__media,
     .home-am-video__hero-wrap,
+    .home-am-video__inset,
+    .home-am-slider__panel,
     .home-am-opening__images,
     .home-am-nature__media
   ) {
     position: relative !important;
     inset: auto !important;
+    z-index: auto !important;
     width: 100% !important;
     max-width: 100% !important;
     flex: none !important;
     aspect-ratio: 4 / 5;
     height: auto !important;
     min-height: 0 !important;
+    /*
+     * 4:5 is the right portrait crop on a 390-430px handset, but at the top
+     * of this range (767px) it computes to a 959px-tall frame — taller than
+     * the viewport, which is the "images fill the whole screen" problem
+     * coming back on large phones. Capping the height lets the ratio yield
+     * on wider screens: the frame simply becomes less tall than 4:5 rather
+     * than overflowing. 78svh keeps a slice of the next block visible, so
+     * there is always a cue to keep scrolling.
+     */
+    max-height: min(78svh, 620px);
+    margin: 0 !important;
     overflow: hidden;
-    border-radius: 2px;
   }
 
   html[data-ex-experience] .home-am-sequence :is(
     .home-am-intro__media,
     .home-am-video__hero-wrap,
+    .home-am-video__inset,
+    .home-am-slider__panel,
     .home-am-opening__images,
     .home-am-nature__media
   ) :is(img, .home-am-intro__media-picture, .home-am-video__hero, .home-am-opening__images-media) {
@@ -1672,22 +1661,7 @@
     object-position: center !important;
   }
 
-  /* Soft fade-up in place of the fog wipes — one cheap, smooth transition. */
-  html[data-ex-experience] .home-am-sequence :is(
-    .home-am-intro__media,
-    .home-am-video__hero-wrap,
-    .home-am-opening__images,
-    .home-am-nature__media
-  ) {
-    animation: am-phone-rise 0.7s ease-out both;
-  }
-
-  @keyframes am-phone-rise {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ---------- 19.4 Captions: single column under the photo ---------- */
+  /* ---------- 19.4 Copy blocks: one column, one consistent left edge ---------- */
 
   html[data-ex-experience] .home-am-sequence :is(
     .home-am-intro__content,
@@ -1722,7 +1696,7 @@
     flex: none !important;
     height: auto !important;
     margin: 0 !important;
-    padding: 1.4rem 1.4rem 1.75rem !important;
+    padding: var(--am-phone-copy-top) var(--am-phone-gutter) var(--am-phone-copy-bottom) !important;
     text-align: left !important;
     align-items: flex-start !important;
     background: transparent;
@@ -1737,56 +1711,25 @@
   }
 
   /*
-   * The intro's cream half-panel is dropped on phone. It exists on desktop to
-   * fill the right half of the split stage, and its copy is the SAME sentence
-   * already printed in .home-am-intro__body directly above ("A five star
-   * dahabiya on the ancient Nile..."). In a single-column layout that reads
-   * as the paragraph repeating itself, so the panel goes rather than the
-   * caption. (There are two of these panels in the markup — a desktop
-   * duplicate — hence no :not() qualifier here.)
+   * The intro's cream half-panel is dropped. It exists on desktop to fill the
+   * right half of the split stage, and its copy is the SAME sentence already
+   * printed in .home-am-intro__body directly above it — in a single column
+   * that reads as the paragraph repeating itself. (Two of these exist in the
+   * markup, a desktop duplicate, hence no :not() qualifier.)
    */
   html[data-ex-experience] .home-am-intro__cream {
     display: none !important;
   }
 
-  /* Decorative desktop-only furniture that reads as clutter on a phone.
-     NOTE: .home-am-nature__gold-wash is deliberately NOT in this list — see
-     the rule below. It looks decorative but it is load-bearing. */
+  /* Desktop furniture that reads as clutter in a single column.
+     NOTE: .home-am-nature__gold-wash is deliberately absent — see 19.8. */
   html[data-ex-experience] .home-am-opening__gradient,
   html[data-ex-experience] .home-am-slider__scrollbar,
   html[data-ex-experience] .home-am-slider__images-col::before {
     display: none !important;
   }
 
-  /*
-   * The dining chapter's gold band has a photograph behind it
-   * (.home-am-nature__gold-photo, absolutely positioned) and the white copy
-   * sits on top. The "wash" is the gold veil between the two. Hiding it left
-   * white text directly over a bright sunset photo, which read as blurred
-   * and illegible. It is kept and pushed to a heavier opacity than desktop
-   * uses, because on a phone the copy sits over the busiest part of the crop. */
-  html[data-ex-experience] .home-am-nature__gold-wash {
-    display: block !important;
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    opacity: 0.88 !important;
-  }
-
   /* ---------- 19.5 Video chapter ---------- */
-
-  /* Second (inset) photograph becomes its own full-width portrait frame. */
-  html[data-ex-experience] .home-am-video__inset {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 4 / 5;
-    z-index: auto !important;
-    overflow: hidden;
-    border-radius: 2px;
-  }
 
   html[data-ex-experience] .home-am-video__title {
     position: relative !important;
@@ -1796,59 +1739,48 @@
     text-align: left !important;
   }
 
-  /* ---------- 19.6 Slider chapter: 4 stacked editorial cards ----------
-     Desktop crossfades four absolutely-stacked panels/captions against each
-     other. On a phone they are un-stacked into normal flow so all four
-     voyages are simply readable one after another — no scrub required. */
+  html[data-ex-experience] .home-am-video__title-body {
+    display: block;
+  }
+
+  /* ---------- 19.6 Slider chapter: pair each voyage with its photograph ----
+     THIS IS THE CORE OF THE REDESIGN.
+     Desktop crossfades four absolutely-positioned panels in .images-col
+     against four absolutely-positioned captions in .caption-col. Flatten
+     those columns into normal flow and the single column reads:
+         IMG IMG IMG IMG TXT TXT TXT TXT
+     — four photographs in a row, then four paragraphs in a row.
+     `display: contents` dissolves the two column boxes (and the caption
+     stack) so their children become direct flex items of .home-am-slider__row.
+     Once they are siblings, `order` interleaves them into
+         IMG TXT IMG TXT IMG TXT IMG TXT
+     without touching the markup or the desktop layout. The gold ground is
+     unaffected because .home-am-dark-band behind them is already gold. */
 
   html[data-ex-experience] .home-am-slider__row {
+    display: flex !important;
     flex-direction: column !important;
     height: auto !important;
+    width: 100% !important;
   }
 
-  /* overflow:hidden + a percentage height on the caption column clipped the
-     un-stacked captions to ~197px, so captions 2-4 were cut off and bled into
-     the next chapter. Both the clip and the height cap have to go. */
   html[data-ex-experience] .home-am-slider__caption-col,
-  html[data-ex-experience] .home-am-slider__images-col {
-    position: relative !important;
-    display: block !important;
-    flex: 0 0 auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Images first, then the four captions beneath them. */
-  html[data-ex-experience] .home-am-slider__images-col { order: -1; }
-
-  html[data-ex-experience] .home-am-slider__panel {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    border-radius: 2px;
-    margin-bottom: 0.5rem;
-  }
-
+  html[data-ex-experience] .home-am-slider__images-col,
   html[data-ex-experience] .home-am-slider__caption-stack {
-    position: relative !important;
-    display: block !important;
-    height: auto !important;
-    min-height: 0 !important;
-    /* max-height:100% resolved against the clipped column above. */
-    max-height: none !important;
-    max-width: 100% !important;
-    overflow: visible !important;
-    padding: 0 1.4rem 1.5rem !important;
+    display: contents !important;
   }
+
+  html[data-ex-experience] .home-am-slider__panel:nth-of-type(1) { order: 1; }
+  html[data-ex-experience] .home-am-slider__caption:nth-of-type(1) { order: 2; }
+  html[data-ex-experience] .home-am-slider__panel:nth-of-type(2) { order: 3; }
+  html[data-ex-experience] .home-am-slider__caption:nth-of-type(2) { order: 4; }
+  html[data-ex-experience] .home-am-slider__panel:nth-of-type(3) { order: 5; }
+  html[data-ex-experience] .home-am-slider__caption:nth-of-type(3) { order: 6; }
+  html[data-ex-experience] .home-am-slider__panel:nth-of-type(4) { order: 7; }
+  html[data-ex-experience] .home-am-slider__caption:nth-of-type(4) { order: 8; }
+  /* Any further slides added later fall to the end rather than to the top. */
+  html[data-ex-experience] .home-am-slider__panel,
+  html[data-ex-experience] .home-am-slider__caption { order: 99; }
 
   html[data-ex-experience] .home-am-slider__caption {
     position: relative !important;
@@ -1859,16 +1791,39 @@
     clip-path: none !important;
     width: 100% !important;
     max-width: 100% !important;
+    height: auto !important;
     text-align: left !important;
-    padding: 1.1rem 0 !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding: var(--am-phone-copy-top) var(--am-phone-gutter) var(--am-phone-copy-bottom) !important;
+    counter-increment: am-voyage;
   }
 
-  html[data-ex-experience] .home-am-slider__caption:first-child {
-    border-top: 0;
+  /*
+   * Editorial slide numbering. Desktop shows a pager ("01 / 04") because the
+   * four voyages are one crossfading stage; in a single column that pager has
+   * nothing to page through, so the number moves onto each caption instead —
+   * it keeps the sense of a numbered set. Pure CSS counter, no markup change.
+   */
+  html[data-ex-experience] .home-am-slider__caption::before {
+    counter-reset: am-voyage-total 4;
+    content: "0" counter(am-voyage) " / 0" counter(am-voyage-total);
+    display: block;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.62);
   }
 
-  /* ---------- 19.7 Opening chapter: photo, copy, then the card rail ---------- */
+  html[data-ex-experience] .home-am-slider__caption-stack {
+    counter-reset: am-voyage;
+  }
+
+  /* ---------- 19.7 Opening chapter ----------
+     Reading order is photograph, its title, the four cards, then the copy and
+     its call to action — IMG TXT IMG TXT. Putting the rail copy before the
+     cards (as desktop does, where they sit side by side) would place two text
+     blocks back to back in a single column. */
 
   html[data-ex-experience] .home-am-opening__right-column {
     position: relative !important;
@@ -1885,36 +1840,37 @@
     width: 100% !important;
     max-width: 100% !important;
     min-height: 0 !important;
-    padding: 1.5rem 1.4rem 2rem !important;
+    padding: 0 var(--am-phone-gutter) var(--am-phone-copy-bottom) !important;
     background: transparent;
   }
 
   html[data-ex-experience] .home-am-opening__cards-band {
+    display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 1.5rem !important;
+    gap: var(--am-phone-copy-top) !important;
   }
 
-  /* Copy above the thumbnails reads better than beside them. */
   html[data-ex-experience] .home-am-opening__rail-copy {
     position: relative !important;
     top: auto !important;
-    order: -1;
+    order: 2;
     max-width: 100% !important;
     padding: 0 !important;
   }
 
   html[data-ex-experience] .home-am-opening__list-wrap {
+    order: 1;
     flex: none !important;
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  /* Four thumbnails as a 2x2 grid — a swipe rail hides half the content. */
+  /* Four thumbnails as a 2x2 grid — a swipe rail hides half of them. */
   html[data-ex-experience] .home-am-opening__list {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
-    gap: 0.6rem !important;
+    gap: 0.55rem !important;
     overflow: visible !important;
     width: 100% !important;
     margin: 0 !important;
@@ -1926,6 +1882,7 @@
     min-width: 0 !important;
     margin: 0 !important;
     aspect-ratio: 1 / 1;
+    overflow: hidden;
   }
 
   html[data-ex-experience] .home-am-opening__list-item-media,
@@ -1936,14 +1893,14 @@
     object-fit: cover !important;
   }
 
-  /* ---------- 19.8 Nature / dining chapter ---------- */
+  /* ---------- 19.8 Dining chapter ---------- */
 
   html[data-ex-experience] .home-am-nature__gold-band {
     position: relative !important;
     min-height: 0 !important;
     height: auto !important;
     margin: 0 !important;
-    padding: 1.5rem 1.4rem 2rem !important;
+    padding: 0 !important;
   }
 
   html[data-ex-experience] .home-am-nature__content {
@@ -1952,11 +1909,29 @@
     height: auto !important;
   }
 
+  /*
+   * The gold band has a photograph behind it (.home-am-nature__gold-photo,
+   * absolutely positioned) with white copy on top. The "wash" is the gold
+   * veil between the two — it looks decorative but it is load-bearing.
+   * Hiding it leaves white text directly over a bright sunset photograph,
+   * which reads as blurred and illegible. Kept, and pushed heavier than
+   * desktop because on a phone the copy sits over the busiest part of the crop.
+   */
+  html[data-ex-experience] .home-am-nature__gold-wash {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0.9 !important;
+  }
+
   /* ---------- 19.9 Type scale ----------
      Full-measure column, so these are real reading sizes rather than the
-     sub-10px values the two-column phone layout was forced into.
-     Doubled .ex-root / .home-am-sequence reach (0,6,1) so they beat the
-     amenities typography injector's own !important declarations. */
+     sub-10px values a two-column phone layout was forced into. The doubled
+     .ex-root / .home-am-sequence reach (0,6,1) so they beat the amenities
+     typography injector's own !important declarations regardless of the
+     order its <style> tag is injected in. */
 
   html[data-ex-experience][data-ex-experience]
     .ex-root.ex-root
@@ -1969,10 +1944,14 @@
       .home-am-on-cream-title,
       .home-am-title-line
     ) {
-    font-size: clamp(30px, 8.4vw, 40px) !important;
-    line-height: 1.04 !important;
+    font-size: clamp(29px, 8vw, 38px) !important;
+    line-height: 1.06 !important;
+    letter-spacing: 0.005em !important;
     white-space: normal !important;
     overflow-wrap: break-word;
+    /* Keeps a two-word line from leaving one orphan word below it when a
+       long title has to wrap. Ignored by browsers that lack it. */
+    text-wrap: balance;
     text-align: left !important;
   }
 
@@ -1984,11 +1963,12 @@
       .home-am-intro__indication,
       .home-am-nature__indication
     ) {
-    font-size: 12px !important;
+    font-size: 11px !important;
     line-height: 1.3 !important;
-    letter-spacing: 0.16em !important;
+    letter-spacing: 0.24em !important;
     text-transform: uppercase !important;
     text-align: left !important;
+    opacity: 0.85;
   }
 
   html[data-ex-experience][data-ex-experience]
@@ -1999,17 +1979,15 @@
       .home-am-intro__body,
       .home-am-nature__body,
       .home-am-video__title-body,
-      .home-am-intro__cream-text,
       .home-am-opening__caption-text
     ) {
     font-size: 16px !important;
-    line-height: 1.6 !important;
-    /* The dining band centres its copy on desktop; left-aligning it here
-       keeps one consistent edge down the whole phone column. */
+    line-height: 1.62 !important;
+    /* The dining band centres its copy on desktop; left-aligning it keeps one
+       consistent edge down the whole phone column. */
     text-align: left !important;
   }
 
-  /* Thumbnail labels sit inside ~46vw tiles now, so they can be read. */
   html[data-ex-experience][data-ex-experience]
     .ex-root.ex-root
     .home-am-sequence.home-am-sequence
@@ -2025,17 +2003,14 @@
 
   /* ---------- 19.10 Colour: captions that moved off the photograph ----------
      On desktop the intro and video captions sit ON their photograph, so the
-     amenities typography injector paints them with its "on image" role
-     (white). In this phone layout those two captions moved BELOW the photo
-     onto the cream page ground, where white is nearly invisible.
-     They are re-pointed at the injector's own "on cream" role tokens, so the
-     Amenities Typography dashboard stays authoritative — change the colour
-     there and this follows it.
-     Only the intro and video captions are treated: the slider, opening and
-     nature captions sit inside .home-am-dark-band (gold), where the existing
-     white "on gold" role is already correct.
-     -webkit-text-fill-color is included because the injector sets it too, and
-     it wins over `color` where both are present. */
+     typography injector paints them with its "on image" role (white). Here
+     those captions moved BELOW the photo onto the cream page ground, where
+     white is invisible. They are re-pointed at the injector's own "on cream"
+     tokens so the Amenities Typography dashboard stays authoritative.
+     Only intro and video are treated — the slider, opening and dining
+     captions sit inside .home-am-dark-band (gold), where white is correct.
+     -webkit-text-fill-color is included because the injector sets it too and
+     it wins over `color` wherever both are present. */
 
   html[data-ex-experience][data-ex-experience]
     .ex-root.ex-root
@@ -2058,10 +2033,10 @@
   }
 
   /* Body copy is the one place the raw token is not used. The dashboard's
-     "body on cream" is the same gold as the title (#b69f64), which at
-     display size is fine but at 16px on #ece8df sits near 2.3:1 contrast —
-     unreadable for a paragraph. It is darkened toward the page's own ink so
-     it stays in the same warm family while actually being readable. */
+     "body on cream" is the same gold as the title (#b69f64), which at display
+     size is fine but at 16px on #ece8df sits near 2.3:1 contrast — unreadable
+     for a paragraph. Darkened toward the page's own ink so it stays in the
+     same warm family while actually being legible. */
   html[data-ex-experience][data-ex-experience]
     .ex-root.ex-root
     .home-am-sequence.home-am-sequence
@@ -2072,30 +2047,94 @@
     text-shadow: none !important;
   }
 
-  /* CTAs: full-width and a proper 48px tap target. */
+  /* ---------- 19.11 Calls to action ---------- */
+
   html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold,
   html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
     display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
     width: auto !important;
     min-width: 0 !important;
     min-height: 48px !important;
-    padding-inline: 1.5rem !important;
+    margin-top: 0.4rem;
+    padding-inline: 1.6rem !important;
     font-size: 12px !important;
-    letter-spacing: 0.14em !important;
+    letter-spacing: 0.16em !important;
   }
 }
 
 /* ==========================================================================
-   20. REDUCED MOTION — phone amenities
+   20. HOMEPAGE AMENITIES — PHONE SCROLL MOTION (<=767.98px)
+   --------------------------------------------------------------------------
+   Scroll-driven animation via `animation-timeline: view()`. The browser ties
+   these keyframes to each element's own progress through the viewport and
+   runs them on the compositor — no JavaScript, no scroll listener, no layout
+   work per frame, which is what keeps it smooth on a phone. Everything is
+   inside @supports, so a browser without scroll-driven animations gets the
+   plain static layout rather than a broken one, and the whole block is off
+   under prefers-reduced-motion.
+
+   Only `transform` and `opacity` are animated. Deliberately no clip-path or
+   mask animation here — those repaint every frame and were the main source of
+   the stutter the desktop choreography exhibits on phones.
    ========================================================================== */
 
-@media (max-width: 767.98px) and (prefers-reduced-motion: reduce) {
-  html[data-ex-experience] .home-am-sequence :is(
-    .home-am-intro__media,
-    .home-am-video__hero-wrap,
-    .home-am-opening__images,
-    .home-am-nature__media
-  ) {
-    animation: none !important;
+@media (max-width: 767.98px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Photographs drift slowly inside their fixed frame — a restrained
+       parallax. The 1.12 scale gives the drift room so no edge is exposed. */
+    html[data-ex-experience] .home-am-sequence :is(
+      .home-am-intro__media,
+      .home-am-video__hero-wrap,
+      .home-am-video__inset,
+      .home-am-slider__panel,
+      .home-am-opening__images,
+      .home-am-nature__media
+    ) :is(img, .home-am-intro__media-picture, .home-am-video__hero, .home-am-opening__images-media) {
+      animation: am-phone-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+      will-change: transform;
+    }
+
+    @keyframes am-phone-drift {
+      from { transform: scale(1.12) translateY(-3.2%); }
+      to   { transform: scale(1.12) translateY(3.2%); }
+    }
+
+    /* Copy rises and settles as it enters, then holds. Finishing by 55% of
+       the entry range means it is fully readable well before it reaches the
+       middle of the screen. */
+    html[data-ex-experience] .home-am-sequence :is(
+      .home-am-intro__caption,
+      .home-am-video__title-stack,
+      .home-am-video__caption,
+      .home-am-slider__caption,
+      .home-am-opening__caption,
+      .home-am-opening__rail-copy,
+      .home-am-nature__copy
+    ) {
+      animation: am-phone-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% entry 55%;
+    }
+
+    @keyframes am-phone-rise {
+      from { opacity: 0; transform: translateY(26px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Thumbnails lift in as a set, slightly after the grid appears. */
+    html[data-ex-experience] .home-am-opening__list-item {
+      animation: am-phone-tile linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 45%;
+    }
+
+    @keyframes am-phone-tile {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
   }
 }
