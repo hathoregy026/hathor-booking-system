@@ -28,6 +28,12 @@ const DEFAULT_LOGO_LAND_DURATION = 0.65;
 const LOGO_LAND_STAGGER = 0.06;
 const LOGO_LAND_DELAY = 0;
 const LOGO_LAND_EASE = "power3.out";
+/** Homepage land: hold main hero titles, then rise (seconds). Logo / CTA / blinds untouched. */
+const TITLE_LAND_DELAY = 6;
+const TITLE_LAND_DURATION = 1.2;
+const TITLE_LAND_STAGGER = 0.22;
+const TITLE_LAND_FROM_Y = 64;
+const TITLE_LAND_EASE = "power3.out";
 /** Desktop scrub: per-letter exit — long silk drift, one-by-one cascade. */
 const LOGO_SCROLL_LETTER_DURATION = 1.05;
 const LOGO_SCROLL_LETTER_STAGGER = 0.12;
@@ -113,6 +119,19 @@ export function mountHeroScrollStage({
     markHeroMotionReady();
   }
 
+  /* Hold main hero titles until the delayed land rise — do not touch logo / CTA. */
+  if (
+    !skipLanding &&
+    !prefersReduced &&
+    (lineRight || lineLeft)
+  ) {
+    gsap.set([lineRight, lineLeft].filter(Boolean), {
+      y: TITLE_LAND_FROM_Y,
+      opacity: 0,
+      force3D: true,
+    });
+  }
+
   function isSplitLetterLogo() {
     return Boolean(logoMark?.querySelector(".hathor-logo-split"));
   }
@@ -146,7 +165,47 @@ export function mountHeroScrollStage({
   };
 
   let landingTween: gsap.core.Tween | null = null;
+  let titleLandTween: gsap.core.Tween | null = null;
   let logoReadyForScroll = false;
+  let titlesLanded = skipLanding || prefersReduced;
+
+  const getTitleLines = () =>
+    [lineRight, lineLeft].filter(Boolean) as Element[];
+
+  const snapTitlesLanded = () => {
+    titleLandTween?.kill();
+    titleLandTween = null;
+    const lines = getTitleLines();
+    if (lines.length) {
+      gsap.set(lines, { y: 0, opacity: 1, clearProps: "transform" });
+    }
+    titlesLanded = true;
+  };
+
+  const playTitleLanding = () => {
+    if (titlesLanded || prefersReduced) {
+      snapTitlesLanded();
+      return;
+    }
+    const lines = getTitleLines();
+    if (!lines.length) {
+      titlesLanded = true;
+      return;
+    }
+    gsap.set(lines, { y: TITLE_LAND_FROM_Y, opacity: 0, force3D: true });
+    titleLandTween = gsap.to(lines, {
+      y: 0,
+      opacity: 1,
+      duration: TITLE_LAND_DURATION,
+      stagger: TITLE_LAND_STAGGER,
+      ease: TITLE_LAND_EASE,
+      delay: TITLE_LAND_DELAY,
+      onComplete: () => {
+        titlesLanded = true;
+        titleLandTween = null;
+      },
+    });
+  };
 
   const markLogoReady = () => {
     logoReadyForScroll = true;
@@ -320,8 +379,14 @@ export function mountHeroScrollStage({
   const build = () => {
     killByPrefix("hero-stage");
 
-    if (lineRight) gsap.set(lineRight, { x: 0, opacity: 1, clearProps: "transform" });
-    if (lineLeft) gsap.set(lineLeft, { x: 0, opacity: 1, clearProps: "transform" });
+    if (titlesLanded) {
+      if (lineRight) gsap.set(lineRight, { x: 0, opacity: 1, clearProps: "transform" });
+      if (lineLeft) gsap.set(lineLeft, { x: 0, opacity: 1, clearProps: "transform" });
+    } else {
+      /* Preserve delayed title land (y/opacity); only reset scrub x. */
+      if (lineRight) gsap.set(lineRight, { x: 0 });
+      if (lineLeft) gsap.set(lineLeft, { x: 0 });
+    }
     if (kicker) gsap.set(kicker, { opacity: 1, y: 0 });
     if (sub) gsap.set(sub, { opacity: 1, y: 0 });
     if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
@@ -883,6 +948,7 @@ export function mountHeroScrollStage({
     markHeroMotionReady();
     document.documentElement.classList.add("ex-scroll-ready");
     document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
+    playTitleLanding();
     logPhonePerfDev({
       surface: "hero-stage",
       phoneSticky: true,
@@ -894,6 +960,7 @@ export function mountHeroScrollStage({
       requestAnimationFrame(() => {
         if (skipLanding) {
           snapLogoLanded();
+          snapTitlesLanded();
           return;
         }
         const img = logoMark?.querySelector("img");
@@ -903,6 +970,7 @@ export function mountHeroScrollStage({
         } else {
           playLanding();
         }
+        playTitleLanding();
       });
     });
   }
@@ -913,15 +981,30 @@ export function mountHeroScrollStage({
       landingTween.progress(1).kill();
     }
     snapLogoLanded();
+    if (!titlesLanded) snapTitlesLanded();
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
     if (lenis) lenis.off("scroll", onFirstScroll);
+  };
+
+  /** If the guest scrolls during the 6s title hold, reveal titles so scrub is never blank. */
+  const onFirstScrollTitles = () => {
+    if (!titlesLanded) snapTitlesLanded();
+    window.removeEventListener("wheel", onFirstScrollTitles);
+    window.removeEventListener("touchstart", onFirstScrollTitles);
+    if (lenis) lenis.off("scroll", onFirstScrollTitles);
   };
 
   if (logoMark && !isPhoneHero) {
     window.addEventListener("wheel", onFirstScroll, { passive: true });
     window.addEventListener("touchstart", onFirstScroll, { passive: true });
     if (lenis) lenis.on("scroll", onFirstScroll);
+  }
+
+  if (!titlesLanded) {
+    window.addEventListener("wheel", onFirstScrollTitles, { passive: true });
+    window.addEventListener("touchstart", onFirstScrollTitles, { passive: true });
+    if (lenis) lenis.on("scroll", onFirstScrollTitles);
   }
 
   let resizeTimer: ReturnType<typeof setTimeout>;
@@ -987,8 +1070,14 @@ export function mountHeroScrollStage({
     window.removeEventListener("orientationchange", onResize);
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
-    if (lenis) lenis.off("scroll", onFirstScroll);
+    window.removeEventListener("wheel", onFirstScrollTitles);
+    window.removeEventListener("touchstart", onFirstScrollTitles);
+    if (lenis) {
+      lenis.off("scroll", onFirstScroll);
+      lenis.off("scroll", onFirstScrollTitles);
+    }
     landingTween?.kill();
+    titleLandTween?.kill();
     killByPrefix("hero-stage");
     root.classList.remove("hero-motion-ready");
   };
