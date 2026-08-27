@@ -246,8 +246,8 @@ html:has(.about-boring) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
-  min-height: 2.85rem;
-  padding: 0 1.65rem;
+  min-height: 3rem;
+  padding: 0.9rem 1.85rem;
   border: 1px solid var(--ab-ink);
   border-radius: 999px;
   background: transparent;
@@ -256,35 +256,41 @@ html:has(.about-boring) footer.lux-footer {
   font-size: var(--ab-t-meta);
   font-weight: 400;
   letter-spacing: 0.14em;
-  line-height: 1;
+  line-height: 1.2;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
+  vertical-align: middle;
   transition:
     color 0.34s var(--ab-ease-soft),
-    border-color 0.34s var(--ab-ease-soft),
-    background-color 0.34s var(--ab-ease-soft);
+    background-color 0.34s var(--ab-ease-soft),
+    border-color 0.34s var(--ab-ease-soft);
 }
 
 .about-boring .ab-btn > span {
   position: relative;
   z-index: 2;
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .about-boring .ab-btn::before {
   content: "";
   position: absolute;
   z-index: 1;
-  inset: -1px;
+  inset: 0;
   background: var(--ab-ink);
-  transform: translate3d(var(--ab-bx, -101%), var(--ab-by, -101%), 0);
-  transition: transform 0.42s var(--ab-ease-soft);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--ab-ease-soft);
 }
 
 .about-boring .ab-btn:hover {
   color: var(--ab-paper);
-  --ab-bx: 0%;
-  --ab-by: 0%;
+}
+
+.about-boring .ab-btn:hover::before {
+  transform: scaleX(1);
 }
 
 .about-boring .ab-btn--solid {
@@ -299,7 +305,6 @@ html:has(.about-boring) footer.lux-footer {
 
 .about-boring .ab-btn--solid:hover {
   color: var(--ab-ink);
-  border-color: var(--ab-ink);
 }
 
 /* ---------------------------------------------------------------- progress */
@@ -930,8 +935,11 @@ html:has(.about-boring) footer.lux-footer {
 }
 
 .ab-epilogue__pills .ab-btn {
-  min-width: 12.75rem;
-  height: 2.85rem;
+  flex: 0 0 auto;
+  min-width: 13.5rem;
+  min-height: 3rem;
+  height: 3rem;
+  padding: 0 1.85rem;
 }
 
 .ab-epilogue__card {
@@ -1242,8 +1250,8 @@ html:has(.about-boring) footer.lux-footer {
 
   .ab-epilogue__pills .ab-btn {
     flex: 1 1 auto;
-    min-width: min(12.75rem, 100%);
-    height: 2.85rem;
+    min-width: min(13.5rem, 100%);
+    height: 3rem;
   }
 }
 

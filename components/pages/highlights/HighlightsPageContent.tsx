@@ -556,9 +556,9 @@ export function HighlightsPageContent() {
                   <span>Private charter</span>
                 </Link>
               </div>
-                      <ul className="hl-meta-copy" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              <ul className="hl-epilogue__journey">
                 {HIGHLIGHTS_JOURNEY_LINKS.map((link) => (
-                  <li key={link.href + link.label} style={{ marginBottom: "0.75rem" }}>
+                  <li key={link.href + link.label}>
                     <Link className="hl-link" href={link.href}>
                       {link.label}
                     </Link>

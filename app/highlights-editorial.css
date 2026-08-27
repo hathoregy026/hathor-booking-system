@@ -236,8 +236,8 @@ html:has(.highlights-editorial) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
-  min-height: 2.85rem;
-  padding: 0 1.65rem;
+  min-height: 3rem;
+  padding: 0.9rem 1.85rem;
   border: 1px solid var(--hl-ink);
   border-radius: 999px;
   background: transparent;
@@ -246,35 +246,41 @@ html:has(.highlights-editorial) footer.lux-footer {
   font-size: var(--hl-t-meta);
   font-weight: 400;
   letter-spacing: 0.14em;
-  line-height: 1;
+  line-height: 1.2;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
+  vertical-align: middle;
   transition:
     color 0.34s var(--hl-ease-soft),
-    border-color 0.34s var(--hl-ease-soft),
-    background-color 0.34s var(--hl-ease-soft);
+    background-color 0.34s var(--hl-ease-soft),
+    border-color 0.34s var(--hl-ease-soft);
 }
 
 .highlights-editorial .hl-btn > span {
   position: relative;
   z-index: 2;
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .highlights-editorial .hl-btn::before {
   content: "";
   position: absolute;
   z-index: 1;
-  inset: -1px;
+  inset: 0;
   background: var(--hl-ink);
-  transform: translate3d(var(--hl-bx, -101%), var(--hl-by, -101%), 0);
-  transition: transform 0.42s var(--hl-ease-soft);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--hl-ease-soft);
 }
 
 .highlights-editorial .hl-btn:hover {
   color: var(--hl-paper);
-  --hl-bx: 0%;
-  --hl-by: 0%;
+}
+
+.highlights-editorial .hl-btn:hover::before {
+  transform: scaleX(1);
 }
 
 .highlights-editorial .hl-btn--solid {
@@ -289,7 +295,6 @@ html:has(.highlights-editorial) footer.lux-footer {
 
 .highlights-editorial .hl-btn--solid:hover {
   color: var(--hl-ink);
-  border-color: var(--hl-ink);
 }
 
 /* ---------------------------------------------------------------- progress */
@@ -920,8 +925,41 @@ html:has(.highlights-editorial) footer.lux-footer {
 }
 
 .hl-epilogue__pills .hl-btn {
-  min-width: 12.75rem;
-  height: 2.85rem;
+  flex: 0 0 auto;
+  min-width: 13.5rem;
+  min-height: 3rem;
+  height: 3rem;
+  padding: 0 1.85rem;
+}
+
+.hl-epilogue__journey {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 42rem;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+.hl-epilogue__journey li {
+  font-family: var(--hl-meta);
+  font-size: var(--hl-t-body);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--hl-ink-soft);
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.highlights-editorial .hl-edit,
+.highlights-editorial .hl-meta-copy {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .hl-epilogue__card {
@@ -1232,8 +1270,8 @@ html:has(.highlights-editorial) footer.lux-footer {
 
   .hl-epilogue__pills .hl-btn {
     flex: 1 1 auto;
-    min-width: min(12.75rem, 100%);
-    height: 2.85rem;
+    min-width: min(13.5rem, 100%);
+    height: 3rem;
   }
 }
 

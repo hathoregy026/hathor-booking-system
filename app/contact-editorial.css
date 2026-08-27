@@ -239,8 +239,7 @@ html:has(.contact-editorial) footer.lux-footer {
 }
 
 /* ----------------------------------------------------------------- buttons
-   em-derived radius keeps the pill perfectly round at any size; the fill
-   slides in diagonally from the corner rather than fading. */
+   Equal pill geometry; fill scales from the left for clear contrast. */
 .contact-editorial .ce-btn {
   position: relative;
   display: inline-flex;
@@ -249,8 +248,8 @@ html:has(.contact-editorial) footer.lux-footer {
   overflow: hidden;
   isolation: isolate;
   box-sizing: border-box;
-  min-height: 2.85rem;
-  padding: 0 1.65rem;
+  min-height: 3rem;
+  padding: 0.9rem 1.85rem;
   border: 1px solid var(--ce-ink);
   border-radius: 999px;
   background: transparent;
@@ -259,14 +258,15 @@ html:has(.contact-editorial) footer.lux-footer {
   font-size: var(--ce-t-meta);
   font-weight: 400;
   letter-spacing: 0.14em;
-  line-height: 1;
+  line-height: 1.2;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
+  vertical-align: middle;
   transition:
     color 0.34s var(--ce-ease-soft),
-    border-color 0.34s var(--ce-ease-soft),
-    background-color 0.34s var(--ce-ease-soft);
+    background-color 0.34s var(--ce-ease-soft),
+    border-color 0.34s var(--ce-ease-soft);
 }
 
 /* Call / Email / WhatsApp — identical pill size on every breakpoint */
@@ -274,29 +274,35 @@ html:has(.contact-editorial) footer.lux-footer {
   width: 13.5rem;
   min-width: min(13.5rem, 100%);
   max-width: 100%;
-  height: 2.85rem;
+  height: 3rem;
+  padding: 0 1.85rem;
   justify-self: end;
 }
 
 .contact-editorial .ce-btn > span {
   position: relative;
   z-index: 2;
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .contact-editorial .ce-btn::before {
   content: "";
   position: absolute;
   z-index: 1;
-  inset: -1px;
+  inset: 0;
   background: var(--ce-ink);
-  transform: translate3d(var(--ce-bx, -101%), var(--ce-by, -101%), 0);
-  transition: transform 0.42s var(--ce-ease-soft);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--ce-ease-soft);
 }
 
 .contact-editorial .ce-btn:hover {
   color: var(--ce-paper);
-  --ce-bx: 0%;
-  --ce-by: 0%;
+}
+
+.contact-editorial .ce-btn:hover::before {
+  transform: scaleX(1);
 }
 
 .contact-editorial .ce-btn--solid {
@@ -311,11 +317,11 @@ html:has(.contact-editorial) footer.lux-footer {
 
 .contact-editorial .ce-btn--solid:hover {
   color: var(--ce-ink);
-  border-color: var(--ce-ink);
 }
 
 .contact-editorial .ce-btn--xl {
   min-height: 3.25rem;
+  height: 3.25rem;
   padding: 0 2.4rem;
   border-radius: 999px;
   font-size: calc(var(--ce-t-meta) * 1.05);
@@ -329,8 +335,11 @@ html:has(.contact-editorial) footer.lux-footer {
 }
 
 .contact-editorial .ce-card__pills .ce-btn {
-  min-width: 12.75rem;
-  height: 2.85rem;
+  flex: 0 0 auto;
+  min-width: 13.5rem;
+  min-height: 3rem;
+  height: 3rem;
+  padding: 0 1.85rem;
 }
 
 /* ---------------------------------------------------------------- progress */
@@ -1137,8 +1146,11 @@ html:has(.contact-editorial) footer.lux-footer {
 }
 
 .ce-card__pills .ce-btn {
-  min-width: 12.75rem;
-  height: 2.85rem;
+  flex: 0 0 auto;
+  min-width: 13.5rem;
+  min-height: 3rem;
+  height: 3rem;
+  padding: 0 1.85rem;
 }
 
 /* --- legal bar */
@@ -1373,8 +1385,8 @@ html:has(.contact-editorial) footer.lux-footer {
 
   .ce-card__pills .ce-btn {
     flex: 1 1 auto;
-    min-width: min(12.75rem, 100%);
-    height: 2.85rem;
+    min-width: min(13.5rem, 100%);
+    height: 3rem;
   }
 
   .contact-success-popup__panel {
