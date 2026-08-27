@@ -348,7 +348,7 @@ export type OurVoyagesCopy = z.infer<typeof ourVoyagesCopySchema>;
 
 export const DEFAULT_OUR_VOYAGES_COPY: OurVoyagesCopy = {
   title: "Our Voyages",
-  indication: "Private dahabiya itineraries",
+  indication: "Private Dahabiya itineraries",
 };
 
 /** Homepage luxury marquee — one phrase per line (✦ dividers added on site) */
@@ -436,7 +436,7 @@ export const DEFAULT_HERO_PAGES: Record<HeroPageKey, HeroCopy> = {
   contact: { main: "Contact", second: "Us" },
   blog: { main: "Sail on", second: "the Nile" },
   partners: { main: "Our Partners", second: "Trusted Worldwide" },
-  suites: { main: "Cabins & Suits", second: "River Suites" },
+  suites: { main: "Cabins & Suites", second: "River Suites" },
   luxury_cabins: { main: "Luxury Rooms", second: "Nile Cabins" },
   royal_suites: { main: "Luxury Royal Suites", second: "Royal Views" },
 };
@@ -579,7 +579,7 @@ export function resolvePageStyle(
 export const DEFAULT_ON_IMAGES_COPY: OnImagesCopy = {
   title: "EVERY LANDMARK,\nA PLEASURE.",
   indication: "Nile · Hathor",
-  body: "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.",
+  body: "A five-star Dahabiya where Nile history, contemporary comfort and intimate sailing come together.",
 };
 
 export const typographySettingsSchema = z.object({
@@ -1129,10 +1129,15 @@ function parseOnImagesCopy(raw: unknown): OnImagesCopy {
     typeof src.indication === "string"
       ? src.indication.slice(0, 160)
       : DEFAULT_ON_IMAGES_COPY.indication;
-  const body =
+  let body =
     typeof src.body === "string"
       ? src.body.slice(0, 1200)
       : DEFAULT_ON_IMAGES_COPY.body;
+  const legacyFiveStar =
+    "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.";
+  if (body.trim() === legacyFiveStar) {
+    body = DEFAULT_ON_IMAGES_COPY.body;
+  }
   const candidate = { title, indication, body };
   const parsed = onImagesCopySchema.safeParse(candidate);
   return parsed.success ? parsed.data : { ...DEFAULT_ON_IMAGES_COPY };

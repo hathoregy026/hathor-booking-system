@@ -40,7 +40,7 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
     durationLabel: "3 Nights / 4 Days",
     routeTitle: "Aswan to Luxor",
     summary:
-      "An intimate south-to-north passage — Philae, Kom Ombo, and Edfu unfold at a dahabiya’s unhurried pace, ending among Luxor’s temples.",
+      "An intimate south-to-north passage — Philae, Kom Ombo and Edfu unfold at a Dahabiya’s unhurried pace, ending among Luxor’s temples.",
     railQuote: "Four days on the Nile. A lifetime of golden light.",
     features: SHARED_FEATURES,
     highlights: [
@@ -49,7 +49,7 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
       "Edfu Temple of Horus",
     ],
     priceCaption: "Per Person",
-    detailsLabel: "Check Voyage Details",
+    detailsLabel: "View Voyage",
     detailsHref: "/cruises-list",
     enquireLabel: "Enquire Now",
     watchLabel: "Watch Journey",
@@ -59,7 +59,7 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
     durationLabel: "4 Nights / 5 Days",
     routeTitle: "Luxor to Aswan",
     summary:
-      "The classic Nile voyage from Luxor’s monumental banks to Aswan’s quiet grace — temples, feluccas, and evenings lit by river sunset.",
+      "The classic Nile voyage from Luxor’s monumental banks to Aswan’s quiet grace — temples, feluccas and evenings lit by river sunset.",
     railQuote: "Sail the classic Nile. Arrive forever changed.",
     features: SHARED_FEATURES,
     highlights: [
@@ -69,7 +69,7 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
       "Philae Temple",
     ],
     priceCaption: "Per Person",
-    detailsLabel: "Check Voyage Details",
+    detailsLabel: "View Voyage",
     detailsHref: "/cruises-list",
     enquireLabel: "Enquire Now",
     watchLabel: "Watch Journey",
@@ -79,9 +79,9 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
     durationLabel: "7 Nights / 8 Days",
     routeTitle: "Luxor to Aswan to Luxor",
     summary:
-      "The ultimate Nile experience. Drift between Luxor and Aswan in absolute privacy, discovering ancient wonders at your own pace aboard Hathor.",
+      "The complete Nile circuit between Luxor and Aswan — time for temples, river light and quieter days aboard Hathor.",
     railQuote:
-      "A week of discovery. A lifetime of extraordinary memories.",
+      "A week on the Nile. Time enough to linger.",
     features: SHARED_FEATURES,
     highlights: [
       "Valley of the Kings (Private Access)",
@@ -91,7 +91,7 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
       "Five-Star Hathor Service",
     ],
     priceCaption: "Per Person",
-    detailsLabel: "Check Voyage Details",
+    detailsLabel: "View Voyage",
     detailsHref: "/cruises-list",
     enquireLabel: "Enquire Now",
     watchLabel: "Watch Journey",
@@ -101,17 +101,17 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
     durationLabel: "Private Charter",
     routeTitle: "Nile Majesty",
     summary:
-      "The dahabiya entirely yours — itinerary, dining, and shore days composed around your party with Hathor’s dedicated crew.",
+      "Private charter gives your group exclusive use of Hathor, with the freedom to shape itinerary, dining and shore experiences around your party.",
     railQuote: "Your river. Your rhythm. Entirely yours.",
     features: CHARTER_FEATURES,
     highlights: [
-      "Fully private dahabiya",
+      "Fully private Dahabiya",
       "Custom itinerary design",
       "Dedicated crew & butler",
       "Exclusive private dining",
     ],
     priceCaption: "Charter From",
-    detailsLabel: "Check Voyage Details",
+    detailsLabel: "Discover Charter",
     detailsHref: "/charter",
     enquireLabel: "Enquire Now",
     watchLabel: "Watch Journey",
@@ -167,8 +167,8 @@ export function resolveVoyagePanelContent(input: {
     routeTitle: parsed.routeTitle,
     summary:
       safeDescription ||
-      "Sail the Nile aboard Hathor — intimate, all-inclusive, and composed at a dahabiya’s pace.",
-    railQuote: "Private dahabiya itineraries on the Nile.",
+      "Sail the Nile aboard Hathor — intimate, all-inclusive, and composed at a Dahabiya’s pace.",
+    railQuote: "Private Dahabiya itineraries on the Nile.",
     features: SHARED_FEATURES,
     highlights: [
       "Temple visits with private guides",
@@ -177,7 +177,7 @@ export function resolveVoyagePanelContent(input: {
       "Butler & crew service",
     ],
     priceCaption: "Per Person",
-    detailsLabel: "Check Voyage Details",
+    detailsLabel: "View Voyage",
     detailsHref: input.href ?? "/cruises-list",
     enquireLabel: "Enquire Now",
     watchLabel: "Watch Journey",

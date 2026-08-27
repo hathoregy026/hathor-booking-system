@@ -32,7 +32,7 @@ export function LuxuryCabinsPageContent() {
           .replace(/[,.]?\s*Hathor Dahabiya\.?/gi, "")
           .trim() || LUXURY_CABINS_PAGE.overview.title,
         copy: introParagraphs,
-        stats: ["12 Luxury Cabins & Suites", "22 Square Meters", "Panoramic Nile View"],
+        stats: ["12 Luxury Cabins & Suites", "22 Square Metres", "Panoramic Nile View"],
       }}
       copyPlacement={{
         ...LUXURY_CABINS_PAGE.copyPlacement,

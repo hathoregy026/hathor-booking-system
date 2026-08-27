@@ -32,7 +32,7 @@ export function RoyalSuitesPageContent() {
         copy: introParagraphs,
         stats: [
           "2 Luxury Suites & 2 Royal Suites",
-          "56 Square Meters",
+          "56 Square Metres",
           "Panoramic Nile View",
         ],
       }}

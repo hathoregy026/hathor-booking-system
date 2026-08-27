@@ -6,7 +6,6 @@
 import {
   HOMEPAGE_ABOUT,
   HOMEPAGE_DINING,
-  HOMEPAGE_HIGHLIGHTS,
   HOMEPAGE_ITINERARIES,
   HOMEPAGE_LIFESTYLE,
   HOMEPAGE_PARTNERS,
@@ -241,7 +240,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       {
         title: "EVERY LANDMARK,\nA PLEASURE.",
         indication: "Sail The Nile On Hathor",
-        body: "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.",
+        body: "A five-star Dahabiya where Nile history, contemporary comfort and intimate sailing come together.",
       },
       {
         title: "WHERE TIME\nMOVES GENTLY.",
@@ -251,12 +250,12 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       {
         title: "WHERE HISTORY\nMEETS ELEGANCE",
         indication: "Bar Hathor",
-        body: "Refined evenings aboard Hathor: history, comfort, and style where the Nile meets luxury.",
+        body: "With a limited number of cabins and suites, service remains personal, discreet and responsive throughout the journey.",
       },
       {
         title: "GOLDEN HOUR\nON THE NILE.",
         indication: "History · Comfort · Style",
-        body: "From ancient shores to quiet decks at dusk. Every moment aboard Hathor is composed for wonder.",
+        body: "As the light softens over the Nile, the decks become a quiet place for sunset drinks, conversation and uninterrupted views.",
       },
     ],
     textBlocks: [
@@ -330,7 +329,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       overviewIntro: CRUISES_PAGE.hero.subtitle,
       continueTitle: "Continue exploring\naboard Hathor",
       continueBody:
-        "Discover Luxury Rooms, Suites, Royal Suites, and Dining, Hathor Flavors.",
+        "Discover Luxury Rooms, Suites, Royal Suites and Dining aboard Hathor.",
       ctaTitle: "Reserve your voyage",
       ctaBody: CRUISES_PAGE.hero.subtitle,
     },
@@ -384,7 +383,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     },
     wellness: {
       heroSupport:
-        "In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and deeply restful suites move with you between Luxor and Aswan.",
+        "The journey is designed around time: longer views, quieter mornings and fewer reasons to rush. Seneb Spa, Historia Fitness and restful suites move with you between Luxor and Aswan.",
       spaTitle: WELLNESS_PAGE.spa.title,
       spaParagraphs: [...WELLNESS_PAGE.spa.paragraphs],
       fitnessTitle: WELLNESS_PAGE.fitness.title,
@@ -490,6 +489,47 @@ export function deepMergeWebsiteText(
  */
 const LEGACY_EX_CTA_TITLE = "Begin your Nile escape";
 
+const LEGACY_STACK_SLIDE_BODIES: ReadonlyArray<{
+  match: string;
+  next: string;
+}> = [
+  {
+    match:
+      "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.",
+    next: "A five-star Dahabiya where Nile history, contemporary comfort and intimate sailing come together.",
+  },
+  {
+    match:
+      "Refined evenings aboard Hathor: history, comfort, and style where the Nile meets luxury.",
+    next: "With a limited number of cabins and suites, service remains personal, discreet and responsive throughout the journey.",
+  },
+  {
+    match:
+      "From ancient shores to quiet decks at dusk. Every moment aboard Hathor is composed for wonder.",
+    next: "As the light softens over the Nile, the decks become a quiet place for sunset drinks, conversation and uninterrupted views.",
+  },
+];
+
+const LEGACY_INDULGE_BODY =
+  "Indulge yourself in a timeless luxury on the Hathor Dahabiya Nile Cruise. Enjoy the luxurious cabins that blend modern comfort with timeless Egyptian charm. From panoramic Nile view suites to gourmet fine dining and tranquil spa moments, every detail of your journey is crafted for relaxation, exclusivity, and authentic cultural elegance. Enjoy the ultimate Luxury Dahabiya Nile Cruise and feel the charm of a Private Nile cruise Egypt.";
+
+const LEGACY_ABOUT_MEDITATIVE =
+  "Dahabiya Nile Cruise Egypt is one of the ways to experience the Nile, a trip of a peaceful and meditative nature which was once revered by pharaohs and other explorers. It is now also a special and personal way of seeing Egypt and all its awesome scenery.";
+
+function replaceLegacyPlainText(value: string): string {
+  const trimmed = value.trim();
+  for (const entry of LEGACY_STACK_SLIDE_BODIES) {
+    if (trimmed === entry.match) return entry.next;
+  }
+  if (trimmed === LEGACY_INDULGE_BODY) {
+    return "Experience a quieter expression of luxury, shaped by space, privacy and attentive service.";
+  }
+  if (trimmed === LEGACY_ABOUT_MEDITATIVE) {
+    return "A Dahabiya journey offers one of the most intimate ways to experience the Nile. Its slower pace, smaller scale and quieter anchorages create a more personal connection with the river and the places along its banks.";
+  }
+  return value;
+}
+
 export function migrateLegacyWebsiteTextFields(raw: unknown): unknown {
   if (!isPlainObject(raw)) return raw;
   const next: Record<string, unknown> = { ...raw };
@@ -509,23 +549,77 @@ export function migrateLegacyWebsiteTextFields(raw: unknown): unknown {
     next.home = home;
   }
 
+  if (home && isPlainObject(home.about) && typeof home.about.body === "string") {
+    const about = { ...home.about };
+    const aboutBody = about.body as string;
+    const oldAbout =
+      "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you. Experience the finest Luxurious Dahabiya in Egypt, where every moment is crafted to inspire wonder and serenity.";
+    if (aboutBody.trim() === oldAbout || aboutBody.trim() === LEGACY_INDULGE_BODY) {
+      about.body =
+        "Hathor is an intimate luxury Dahabiya for travellers who prefer space, privacy and an unhurried pace between Luxor and Aswan.";
+    }
+    const legacyWelcomeAsAbout =
+      "Welcome aboard Hathor, an intimate luxury Dahabiya created for unhurried journeys between Luxor and Aswan. Thoughtful service, refined accommodation and the quiet rhythm of the Nile define every voyage.";
+    if (aboutBody.trim() === legacyWelcomeAsAbout) {
+      about.body =
+        "Hathor is an intimate luxury Dahabiya for travellers who prefer space, privacy and an unhurried pace between Luxor and Aswan.";
+    }
+    home.about = about;
+    next.home = home;
+  }
+
   /* Bar / slide 3 title: keep two-line WHERE HISTORY / MEETS ELEGANCE phrasing. */
   if (home && Array.isArray(home.stackSlides)) {
     const slides = home.stackSlides.map((slide, index) => {
-      if (index !== 2 || !isPlainObject(slide)) return slide;
-      const title = typeof slide.title === "string" ? slide.title : "";
-      const normalized = title.replace(/\s+/g, " ").trim().replace(/\.$/, "");
-      if (/^WHERE HISTORY\s+MEETS (LUXURY|HISTORY)$/i.test(normalized)) {
-        return { ...slide, title: "WHERE HISTORY\nMEETS ELEGANCE" };
+      if (!isPlainObject(slide)) return slide;
+      let nextSlide: Record<string, unknown> = { ...slide };
+      if (index === 2) {
+        const title = typeof slide.title === "string" ? slide.title : "";
+        const normalized = title.replace(/\s+/g, " ").trim().replace(/\.$/, "");
+        if (/^WHERE HISTORY\s+MEETS (LUXURY|HISTORY)$/i.test(normalized)) {
+          nextSlide = { ...nextSlide, title: "WHERE HISTORY\nMEETS ELEGANCE" };
+        }
       }
-      return slide;
+      if (typeof slide.body === "string") {
+        nextSlide = { ...nextSlide, body: replaceLegacyPlainText(slide.body) };
+      }
+      return nextSlide;
     });
     home.stackSlides = slides;
     next.home = home;
   }
 
+  if (home && Array.isArray(home.textBlocks)) {
+    home.textBlocks = home.textBlocks.map((block) => {
+      if (!isPlainObject(block) || typeof block.body !== "string") return block;
+      const diningLegacy =
+        "Restaurant craft meets warm hospitality: fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.";
+      if (block.body.trim() === diningLegacy) {
+        return {
+          ...block,
+          body: "Seasonal menus bring together Egyptian flavours, fresh ingredients and attentive service, served in settings shaped by the river.",
+        };
+      }
+      return block;
+    });
+    next.home = home;
+  }
+
   const pages = isPlainObject(next.pages) ? { ...next.pages } : null;
   if (!pages) return next;
+
+  const aboutPage = isPlainObject(pages.about) ? { ...pages.about } : null;
+  if (aboutPage) {
+    if (typeof aboutPage.welcomeBody === "string") {
+      aboutPage.welcomeBody = replaceLegacyPlainText(aboutPage.welcomeBody);
+    }
+    if (Array.isArray(aboutPage.intro)) {
+      aboutPage.intro = aboutPage.intro.map((p) =>
+        typeof p === "string" ? replaceLegacyPlainText(p) : p,
+      );
+    }
+    pages.about = aboutPage;
+  }
 
   const cruises = isPlainObject(pages.cruises) ? { ...pages.cruises } : null;
   if (cruises) {

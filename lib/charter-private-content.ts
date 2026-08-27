@@ -4,7 +4,7 @@
  * invented aviation certifications.
  */
 
-import { CHARTER_PAGE, GASTRONOMY_PAGE, ROOMS_PAGE } from "@/lib/page-content";
+import { CHARTER_PAGE, ROOMS_PAGE } from "@/lib/page-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
 export const CHARTER_PRIVATE = {
@@ -13,8 +13,8 @@ export const CHARTER_PRIVATE = {
     headline: CHARTER_PAGE.hero.title,
     secondLine: CHARTER_PAGE.hero.secondTitle,
     subhead:
-      "Your private Nile — exclusively yours. Custom itineraries, dedicated crew, and a floating residence composed around your party.",
-    primaryCta: "Request a Bespoke Quote",
+      "Private charter gives your group exclusive use of Hathor, with the freedom to shape the journey around your preferred pace, dining arrangements and shore experiences.",
+    primaryCta: "Request a Private Charter",
     secondaryCta: "Check Availability",
   },
   inquiry: {
@@ -33,13 +33,13 @@ export const CHARTER_PRIVATE = {
         image: "charter-privacy" as const,
       },
       {
-        title: "Ultimate Flexibility",
-        body: "Customized itinerary on your schedule. Sail Luxor to Aswan, reverse the route, or extend toward Dendera and Cairo — composed around you.",
+        title: "Flexible Itineraries",
+        body: "A customised itinerary on your schedule. Sail Luxor to Aswan, reverse the route, or extend toward Dendera and Cairo — composed around you.",
         image: "charter-itinerary" as const,
       },
       {
-        title: "Uncompromising Care",
-        body: "Dedicated crew & chef, luxury accommodation & service, and attentive hospitality shaped for safety, comfort, and seamless days on the Nile.",
+        title: "Dedicated Care",
+        body: "Dedicated crew and chef, refined accommodation and attentive hospitality shaped for comfort and seamless days on the Nile.",
         image: "charter-service" as const,
       },
     ],
@@ -55,7 +55,7 @@ export const CHARTER_PRIVATE = {
         title: ROOMS_PAGE.categories[0].title,
         body: ROOMS_PAGE.categories[0].body,
         image: "room-luxury" as const,
-        capacity: "8 Luxury Cabins",
+        capacity: "8 Cabins",
         detail: "22 sqm · ensuite · Nile-view comfort",
         amenities: ["Smart systems", "Ensuite bathroom", "High-speed Wi-Fi"],
         href: ROOMS_PAGE.categories[0].href,
@@ -65,7 +65,7 @@ export const CHARTER_PRIVATE = {
         title: ROOMS_PAGE.categories[1].title,
         body: ROOMS_PAGE.categories[1].body,
         image: "room-suite" as const,
-        capacity: "2 Elegant Suites",
+        capacity: "2 Suites",
         detail: "46 sqm · Lower Deck · Jacuzzi",
         amenities: ["Panoramic Nile view", "Jacuzzi", "Dual bathrooms"],
         href: "/rooms",
@@ -75,31 +75,31 @@ export const CHARTER_PRIVATE = {
         title: ROOMS_PAGE.categories[2].title,
         body: ROOMS_PAGE.categories[2].body,
         image: "room-royal" as const,
-        capacity: "2 Magnificent Royal Suites",
-        detail: "56 sqm · Main Deck · signature luxury",
-        amenities: ["Prime Nile views", "Jacuzzi", "Two luxurious bathrooms"],
+        capacity: "2 Royal Suites",
+        detail: "56 sqm · Main Deck · private space",
+        amenities: ["Prime Nile views", "Jacuzzi", "Two bathrooms"],
         href: ROOMS_PAGE.categories[2].href!,
         hrefLabel: ROOMS_PAGE.categories[2].hrefLabel ?? "View Full Specs",
       },
     ],
   },
   experiences: {
-    kicker: "Bespoke onboard experiences",
+    kicker: "Private onboard experiences",
     title: "Crafted for your party alone",
     items: [
       {
         title: "Private dining",
-        body: GASTRONOMY_PAGE.restaurant.service,
+        body: "Private dining can be arranged in selected onboard settings for guests seeking a more personal experience.",
         image: "gastronomy-restaurant" as const,
       },
       {
         title: "Ground & river concierge",
-        body: "Dedicated crew coordinate landings, guides, and transfers so every shore moment arrives without friction.",
+        body: "Dedicated crew coordinate landings, guides and transfers so every shore moment arrives without friction.",
         image: "charter-service" as const,
       },
       {
         title: "Your own rhythm",
-        body: "Wake, sail, and dine when it suits you. Music, quiet decks, and celebration — the ship changes mood with you.",
+        body: "Wake, sail and dine when it suits you. Quiet decks and celebration — the ship changes mood with you.",
         image: "charter-rhythm" as const,
       },
       {
@@ -112,7 +112,7 @@ export const CHARTER_PRIVATE = {
   passages: {
     kicker: "Featured charter passages",
     title: "Compose your route",
-    lead: "Select a preferred passage. We refine every landing, hour, and shore experience around your guests.",
+    lead: "Select a preferred passage. We refine every landing, hour and shore experience around your guests.",
     routes: CHARTER_PAGE.overview.routes,
   },
   process: {
@@ -122,12 +122,12 @@ export const CHARTER_PRIVATE = {
       {
         n: "01",
         title: "Submit Request",
-        body: "Share your dates, party size, preferred route, and how you wish to travel.",
+        body: "Share your dates, party size, preferred route and how you wish to travel.",
       },
       {
         n: "02",
         title: "Receive a Custom Proposal",
-        body: "Our charter team prepares a tailored offer — vessel exclusivity, itinerary options, and clear pricing.",
+        body: "Our team works with you to create a private Nile journey tailored to your dates, group and travel priorities.",
       },
       {
         n: "03",
@@ -142,8 +142,8 @@ export const CHARTER_PRIVATE = {
     facts: [
       "No other guests onboard — 100% private",
       "Dedicated crew & private chef",
-      "Luxury cabins, suites & royal suites",
-      "Customized Nile itineraries",
+      "Cabins, suites & Royal Suites",
+      "Customised Nile itineraries",
     ],
     quotes: [
       {

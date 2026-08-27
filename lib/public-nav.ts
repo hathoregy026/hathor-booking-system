@@ -48,7 +48,7 @@ export const NAV_CRUISES: NavGroup = {
     {
       href: "/voyages",
       label: "Our Voyages",
-      description: "Private dahabiya itineraries on the Nile",
+      description: "Private Dahabiya itineraries on the Nile",
     },
     {
       href: "/cruises-list",

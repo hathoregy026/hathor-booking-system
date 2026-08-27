@@ -7,15 +7,15 @@ export const VOYAGES_PAGE = {
     title: "Our Voyages",
     secondTitle: "The Nile",
     subtitle:
-      "Private dahabiya itineraries — intimate sailings, legendary ports, and the unhurried rhythm of the river.",
+      "Private Dahabiya itineraries — intimate sailings, legendary ports and the unhurried rhythm of the river.",
   },
   opening: {
     eyebrow: "Hathor Voyages",
-    title: "Sail at a dahabiya's pace",
+    title: "Sail at a Dahabiya's pace",
     script: "Four days on the Nile. A lifetime of golden light.",
     body: [
-      "Every Hathor voyage is composed for discovery without hurry — temples at golden hour, evenings lit by river sunset, and shore days shaped around your party.",
-      "From intimate three-night passages to the complete seven-night round trip, each itinerary carries the same promise: all-inclusive luxury, private excursions, and crew who know the Nile by heart.",
+      "Every Hathor voyage is composed for discovery without hurry — temples in soft light, evenings lit by river sunset and shore days shaped around your party.",
+      "From intimate three-night passages to the complete seven-night round trip, each itinerary carries the same promise: considered inclusions, private excursions and crew who know the Nile well.",
     ],
     primaryCta: { label: "View All Itineraries", href: "/cruises-list" },
     secondaryCta: { label: "Enquire Now", href: "/contact" },
@@ -24,17 +24,17 @@ export const VOYAGES_PAGE = {
     {
       numeral: "I",
       title: "Intimate scale",
-      body: "A handful of cabins — never a floating hotel. Hathor moves with the current, not the crowd.",
+      body: "A limited number of guests creates a quieter atmosphere, more personal service and greater freedom throughout the voyage.",
     },
     {
       numeral: "II",
       title: "All-inclusive grace",
-      body: "Gourmet dining, premium beverages, and shore excursions woven into every sailing.",
+      body: "Dining, accommodation, scheduled excursions and onboard service are brought together in one considered journey.",
     },
     {
       numeral: "III",
       title: "Private rhythm",
-      body: "Temples when the light is right. Deck time when the river asks you to stay.",
+      body: "The pace of each journey allows time for the river, the temples and the quieter moments in between.",
     },
   ],
   features: {
@@ -44,7 +44,7 @@ export const VOYAGES_PAGE = {
       {
         id: "inclusive",
         label: "All-Inclusive Luxury",
-        body: "Fine dining, premium beverages, and attentive service from embarkation to farewell.",
+        body: "Fine dining, selected beverages and attentive service from embarkation to farewell.",
       },
       {
         id: "excursions",
@@ -82,7 +82,7 @@ export const VOYAGES_PAGE = {
       {
         kicker: "Unwind",
         title: "Deck & current",
-        body: "Sun-warmed teak, soft current, and the quiet theatre of the river between discoveries.",
+        body: "Sun-warmed teak, soft current and the quiet theatre of the river between discoveries.",
         slot: "highlights-lifestyle" as SiteImageName,
       },
       {
@@ -97,13 +97,13 @@ export const VOYAGES_PAGE = {
     eyebrow: "Private charter",
     title: "Nile Majesty",
     script: "Your river. Your rhythm. Entirely yours.",
-    body: "The dahabiya entirely yours — itinerary, dining, and shore days composed around your party with Hathor's dedicated crew.",
-    cta: { label: "Explore Charter", href: "/charter" },
+    body: "Private charter gives your group exclusive use of Hathor, with the freedom to shape the journey around your preferred pace, dining arrangements and shore experiences.",
+    cta: { label: "Discover Charter", href: "/charter" },
     image: "home-voyage-nile-majesty" as SiteImageName,
   },
   cta: {
     title: "Reserve your voyage",
-    body: "Choose your itinerary, select your suite, and step aboard Hathor.",
+    body: "Choose your itinerary, select your suite and step aboard Hathor.",
     primary: "Book Now",
     secondary: { label: "Scheduled Voyages", href: "/cruises-list" },
   },
@@ -125,32 +125,32 @@ export const VOYAGES_ITINERARY_CMS_DEFAULTS: VoyagesItineraryCms[] = [
     title: "Aswan to Luxor",
     durationLabel: "3 Nights / 4 Days",
     meta: "Aswan → Luxor",
-    body: "An intimate south-to-north passage — Philae, Kom Ombo, and Edfu unfold at a dahabiya’s unhurried pace, ending among Luxor’s temples.",
-    cta: "Check Voyage Details",
+    body: "An intimate south-to-north passage — Philae, Kom Ombo and Edfu unfold at a Dahabiya’s unhurried pace, ending among Luxor’s temples.",
+    cta: "View Voyage",
   },
   {
     slug: "4-nights-luxor-aswan",
     title: "Luxor to Aswan",
     durationLabel: "4 Nights / 5 Days",
     meta: "Luxor → Aswan",
-    body: "The classic Nile voyage from Luxor’s monumental banks to Aswan’s quiet grace — temples, feluccas, and evenings lit by river sunset.",
-    cta: "Check Voyage Details",
+    body: "The classic Nile voyage from Luxor’s monumental banks to Aswan’s quiet grace — temples, feluccas and evenings lit by river sunset.",
+    cta: "View Voyage",
   },
   {
     slug: "7-nights-luxor-aswan-luxor",
     title: "Luxor to Aswan to Luxor",
     durationLabel: "7 Nights / 8 Days",
     meta: "Luxor → Aswan → Luxor",
-    body: "The ultimate Nile experience. Drift between Luxor and Aswan in absolute privacy, discovering ancient wonders at your own pace aboard Hathor.",
-    cta: "Check Voyage Details",
+    body: "The complete Nile circuit between Luxor and Aswan — time for temples, river light and quieter days aboard Hathor.",
+    cta: "View Voyage",
   },
   {
     slug: "nile-majesty",
     title: "Nile Majesty",
     durationLabel: "Private charter",
     meta: "Custom itinerary",
-    body: "The dahabiya entirely yours — itinerary, dining, and shore days composed around your party with Hathor’s dedicated crew.",
-    cta: "Explore private charter",
+    body: "Private charter gives your group exclusive use of Hathor, with the freedom to shape itinerary, dining and shore experiences around your party.",
+    cta: "Discover Charter",
   },
 ];
 
@@ -172,7 +172,7 @@ const CHARTER_VOYAGE: HomepageAccordionCruise = {
   id: "catalog-nile-majesty",
   name: "Private Charter — Nile Majesty",
   description:
-    "The dahabiya entirely yours — itinerary, dining, and shore days composed around your party with Hathor's dedicated crew.",
+    "Private charter gives your group exclusive use of Hathor, with the freedom to shape itinerary, dining and shore experiences around your party.",
   imageName: "home-voyage-nile-majesty",
   ports: "Custom itinerary",
   basePriceCents: 0,

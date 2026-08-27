@@ -39,12 +39,12 @@ export type LegacyRoomStep = {
 export const HOMEPAGE_LEGACY_ROOM_STACK = {
   headline: "Continuing a Legacy",
   intro:
-    "Indulge yourself in timeless luxury on the Hathor Dahabiya Nile Cruise. From panoramic Nile view suites to gourmet fine dining and tranquil spa moments, every detail is crafted for relaxation and exclusivity.",
+    "A quieter expression of luxury, defined by space, privacy and attentive service — from Nile-view cabins to spa moments and fine dining aboard Hathor.",
   steps: [
     {
       id: "luxury-cabin",
       label: "Luxury Cabin",
-      body: "Handsome cabins overlook iconic Nile landmarks — refined comfort and thoughtful design for every sailing.",
+      body: "Cabins overlook iconic Nile landmarks — refined comfort and thoughtful design for every sailing.",
       image: {
         name: "room-luxury",
         alt: "Luxury cabin aboard Hathor Dahabiya",
@@ -53,7 +53,7 @@ export const HOMEPAGE_LEGACY_ROOM_STACK = {
     {
       id: "luxury-suite",
       label: "Luxury Suite",
-      body: "Expansive suites blend modern elegance with timeless Egyptian charm aboard our luxury Dahabiya.",
+      body: "Suites blend contemporary comfort with calm Egyptian detail aboard Hathor.",
       image: {
         name: "room-suite",
         alt: "Luxury suite aboard Hathor",
@@ -62,7 +62,7 @@ export const HOMEPAGE_LEGACY_ROOM_STACK = {
     {
       id: "royal-suite",
       label: "Royal Suite",
-      body: "The pinnacle of aboard accommodation — generous space, privacy, and uninterrupted Nile vistas.",
+      body: "Hathor’s most spacious accommodation — generous proportions, privacy and uninterrupted Nile vistas.",
       image: {
         name: "room-royal",
         alt: "Royal suite aboard Hathor Dahabiya",
@@ -71,7 +71,7 @@ export const HOMEPAGE_LEGACY_ROOM_STACK = {
     {
       id: "suite-interior",
       label: "Suite Interiors",
-      body: "Each room is tailored for the Nile journey — bespoke details, panoramic views, and quiet luxury.",
+      body: "Each room is tailored for the Nile journey — considered details, panoramic views and quiet comfort.",
       image: {
         name: "home-cinematic-still",
         alt: "Luxury cabin interior aboard Hathor Dahabiya",

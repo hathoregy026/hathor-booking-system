@@ -8,7 +8,7 @@ import {
   resolveOverviewIntroParagraphs,
 } from "@/lib/website-text-shared";
 
-/** /rooms — Cabins & Suits content from hathorcruise.com/rooms */
+/** /rooms — Cabins & Suites content from hathorcruise.com/rooms */
 export function RoomsPageContent() {
   const { pages } = useWebsiteText();
   const rooms = pages.rooms;
@@ -24,11 +24,11 @@ export function RoomsPageContent() {
       heroSecondTitle={LUXURY_SUITES_PAGE.hero.secondTitle}
       heroSubtitle={LUXURY_SUITES_PAGE.hero.subtitle}
       heroPage="suites"
-      breadcrumb="Cabins & Suits"
+      breadcrumb="Cabins & Suites"
       heroImageName="room-suite"
       heroImageAlt="Cabins and suites aboard Hathor Dahabiya"
       intro={{
-        eyebrow: "Cabins & Suits",
+        eyebrow: "Cabins & Suites",
         title: rooms.overviewTitle,
         copy: introParagraphs,
       }}

@@ -241,7 +241,7 @@ export function AboutPageContent() {
               {/* 03 — Manifesto */}
               <Scene className="ab-manifesto">
                 <div className="ab-manifesto__aside">
-                  <Eyebrow>The dahabiya</Eyebrow>
+                  <Eyebrow>The Dahabiya</Eyebrow>
                   <p className="ab-meta-copy">{lead}</p>
                 </div>
                 <div className="ab-manifesto__headline" data-anima-title>
@@ -388,7 +388,7 @@ export function AboutPageContent() {
                     {about.diningIntro.trim() || ABOUT_PAGE.diningPromo.body}
                   </p>
                   <Link href="/gastronomy" className="ab-btn">
-                    <span>Explore dining</span>
+                    <span>Explore Dining</span>
                   </Link>
                 </div>
               </Scene>

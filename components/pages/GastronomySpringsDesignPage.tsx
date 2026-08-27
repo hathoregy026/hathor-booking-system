@@ -146,10 +146,9 @@ export function GastronomySpringsDesignPage() {
                   <h2><span>TASTE</span><em>EGYPT</em></h2>
                 </div>
                 <p className="nib-intro__copy">
-                  In a world that hurries, Hathor sets another rhythm: market-led Egyptian
-                  cooking, gracious service and time enough to watch the Nile change colour.
-                  Meals, movement and suite rest are composed to last the voyage—not to
-                  chase passing fashion.
+                  Menus draw on Egyptian ingredients and familiar international influences,
+                  with dishes prepared to suit the pace and setting of each day. Dining,
+                  movement and rest are composed as one continuous experience.
                 </p>
                 <span className="nib-intro__index">01</span>
                 <span className="nib-intro__copyright">HATHOR DAHABIYA ©2026</span>
@@ -206,9 +205,9 @@ export function GastronomySpringsDesignPage() {
                   axis="left"
                 />
                 <p>
-                  On Hathor, dining is part of the voyage—not a pause from it. Egyptian produce,
-                  fresh herbs and precise technique meet an atmosphere that remains warm,
-                  unforced and open to the river: more comfort, more flavour, more quiet luxury.
+                  On Hathor, dining is part of the voyage—not a pause from it. Seasonal menus
+                  bring together Egyptian flavours, fresh ingredients and attentive service,
+                  served in settings shaped by the river.
                 </p>
               </Panel>
 
@@ -344,7 +343,7 @@ export function GastronomySpringsDesignPage() {
             <span>THE HATHOR TABLE</span>
             <Image src={media.celebration} alt="A private celebration on Hathor" />
             <h3>PRIVATE DINING</h3>
-            <p>Egyptian flavour, candlelight and the Nile moving beside you.</p>
+            <p>Private dining can be arranged in selected onboard settings for guests seeking a more personal experience.</p>
           </div>
           <div className="nib-epilogue__legal">
             <span>HATHOR DAHABIYA ©2026</span>

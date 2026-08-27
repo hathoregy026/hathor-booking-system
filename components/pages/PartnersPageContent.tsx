@@ -125,7 +125,7 @@ const CIRCLE = [
     short: "Booking",
     role: "Global",
     region: "Reservations",
-    note: "Worldwide discovery that brings travellers to an intimate dahabiya.",
+    note: "Worldwide discovery that brings travellers to an intimate Dahabiya.",
     slot: "room-suite",
   },
   {

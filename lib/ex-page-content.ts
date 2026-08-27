@@ -94,7 +94,7 @@ export const EX_PINNED = {
       alt: "Hathor Dahabiya sailing on the Nile",
       title: "EVERY LANDMARK,\nA PLEASURE.",
       indication: "Sail The Nile On Hathor",
-      body: "A five-star dahabiya on the ancient Nile: history, comfort, and style in one intimate voyage.",
+      body: "A five-star Dahabiya where Nile history, contemporary comfort and intimate sailing come together.",
     },
     {
       imageName: "home-amenities-2" as SiteImageName,
@@ -108,14 +108,14 @@ export const EX_PINNED = {
       alt: "Luxury Dahabiya Nile cruise",
       title: "WHERE HISTORY\nMEETS ELEGANCE",
       indication: "Bar Hathor",
-      body: "Refined evenings aboard Hathor: history, comfort, and style where the Nile meets luxury.",
+      body: "With a limited number of cabins and suites, service remains personal, discreet and responsive throughout the journey.",
     },
     {
       imageName: "home-amenities-4" as SiteImageName,
       alt: "Hathor Dahabiya ship on the Nile at golden hour",
       title: "GOLDEN HOUR\nON THE NILE.",
       indication: "History · Comfort · Style",
-      body: "From ancient shores to quiet decks at dusk. Every moment aboard Hathor is composed for wonder.",
+      body: "As the light softens over the Nile, the decks become a quiet place for sunset drinks, conversation and uninterrupted views.",
     },
   ],
 } as const;

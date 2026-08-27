@@ -541,7 +541,7 @@ export function WellnessEditorialPageContent() {
               </p>
               <div className="we-epilogue__pills">
                 <BookNowTrigger className="we-btn we-btn--solid">
-                  Book Now
+                  <span>Book Now</span>
                 </BookNowTrigger>
                 <Link href="/contact" className="we-btn">
                   <span>Enquire</span>

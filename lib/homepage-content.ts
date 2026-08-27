@@ -12,32 +12,32 @@ export const HOMEPAGE_HERO = {
 export const HOMEPAGE_POST_HERO = {
   headline: "Elegance and Serenity on the Nile",
   paragraphs: [
-    "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you. Experience the finest Luxurious Dahabiya in Egypt, where every moment is crafted to inspire wonder and serenity.",
-    "Experience the magic of Egypt on the luxury Hathor Dahabiya Nile cruise.",
+    "Welcome aboard Hathor, an intimate luxury Dahabiya created for unhurried journeys between Luxor and Aswan. Thoughtful service, refined accommodation and the quiet rhythm of the Nile define every voyage.",
+    "Experience Egypt from the water, with temples, villages and open river light unfolding at a measured pace.",
   ],
-  signOff: "Welcome aboard Hathor Dahabiya Cruise.",
+  signOff: "Welcome aboard Hathor.",
 } as const;
 
 export const HOMEPAGE_ITINERARIES = {
   title: "Private Sailing Luxor to Aswan",
   subtitle: "Explore, Relax, Discover",
   intro:
-    "Experience the magic of Egypt on the luxury Hathor Dahabiya Nile cruise.",
+    "Choose a Hathor voyage between Luxor and Aswan — intimate sailings shaped around the river’s pace.",
   cards: [
     {
-      title: "Aswan / Luxor",
+      title: "Aswan → Luxor",
       duration: "3 Nights / 4 Days",
       schedule: "Every Wednesday",
       href: "/cruises-list",
     },
     {
-      title: "Luxor / Aswan",
+      title: "Luxor → Aswan",
       duration: "4 Nights / 5 Days",
       schedule: "Every Saturday",
       href: "/cruises-list",
     },
     {
-      title: "Luxor / Aswan / Luxor",
+      title: "Luxor → Aswan → Luxor",
       duration: "7 Nights / 8 Days",
       schedule: "Every Saturday",
       href: "/cruises-list",
@@ -48,30 +48,31 @@ export const HOMEPAGE_ITINERARIES = {
 export const HOMEPAGE_ACCOMMODATIONS = {
   title: "Luxury Rooms & Suites",
   intro:
-    "Sail with Hathor Dahabiya, the best Dahabiya Nile Cruise, perfect for lovers of comfort, style, and authenticity. This Luxury Dahabiya Nile Cruise offers an exclusive journey down the legendary river, with every detail reflecting grace and personalized attention. Designed for a select crowd, Hathor Dahabiya Nile Cruise blends traditional charm with contemporary elegance, creating a refined ambiance. Witness the splendor of Egypt aboard our Luxury Nile Cruise Rooms on the Dahabiya, where unforgettable moments await.",
+    "Hathor's cabins and suites combine thoughtful proportions, Nile views and contemporary comfort for a quieter way to sail between Luxor and Aswan.",
   cards: [
     {
       title: "Luxury Rooms",
       description:
-        "Discover Luxury Dahabiya Nile Cruise cabins, the best Dahabiya suitable for a truly elegant Nile cruise. Relish the comfort of refined luxury.",
+        "Hathor's cabins combine thoughtful proportions, Nile views and practical comfort in a calm, contemporary setting.",
       href: "/luxury-cabins-Nile-Cruise",
     },
     {
       title: "Luxury Suites",
       description:
-        "Experience elegant comfort and thoughtful design in our Accessible Hathor Suite aboard Hathor Dahabiya: luxury privilege on the Nile for an unforgettable Luxury Dahabiya Nile Cruise experience.",
+        "The suites provide additional space for guests who value greater privacy, generous proportions and uninterrupted river views.",
       href: "/rooms",
     },
     {
       title: "Luxury Royal Suites",
       description:
-        "Enjoy The Royal Suites on Hathor Dahabiya, with the highest level of comfort and feel the real charm on Luxury Dahabiya Nile Cruise Hathor, with the breathtaking Nile view.",
+        "The Royal Suites offer Hathor's most spacious accommodation, with additional private space and a stronger sense of seclusion.",
       href: "/royal-suites",
     },
     {
       title: "Charter Request",
-      description: "Ready to experience the Nile in unmatched luxury?",
-      cta: "Book Your Cruise",
+      description:
+        "Private charter gives your group exclusive use of Hathor, shaped around your preferred pace and dates.",
+      cta: "Discover Charter",
       href: "/charter",
     },
   ],
@@ -79,14 +80,14 @@ export const HOMEPAGE_ACCOMMODATIONS = {
 
 export const HOMEPAGE_LIFESTYLE = {
   title: "NOT JUST A CRUISE\nA WAY OF LIFE",
-  body: "Aboard a quiet dahabiya, Egypt arrives without hurry: warm company, elegant cabins, and the river unfolding one measured bend at a time.",
+  body: "Aboard a quiet Dahabiya, Egypt arrives without hurry: warm company, refined cabins and the river unfolding one measured bend at a time.",
   href: "/about",
 } as const;
 
 export const HOMEPAGE_HIGHLIGHTS = {
   title: "Dahabiya Cruise Highlights",
   subtitle: "Cruise in True Elegance",
-  body: "The ancient Nile welcomes you aboard the luxurious Hathor Dahabiya Cruise. This private, five-star small boat blends history, comfort, and style.",
+  body: "A five-star Dahabiya where Nile history, contemporary comfort and intimate sailing come together.",
   href: "/highlights",
   pillars: [
     {
@@ -99,20 +100,20 @@ export const HOMEPAGE_HIGHLIGHTS = {
     },
     {
       title: "The Valley of the Kings",
-      body: "A magnificent burial ground of pharaohs: Ramses II, Tutankhamen and Seti I, a UNESCO World Heritage Site since 1979.",
+      body: "A magnificent burial ground of pharaohs: Ramses II, Tutankhamun and Seti I, a UNESCO World Heritage Site since 1979.",
     },
   ],
 } as const;
 
 export const HOMEPAGE_WELCOME = {
   eyebrow: "Why Choose Our Accommodations",
-  title: "Welcome Aboard Hathor Dahabiya Cruise.",
-  body: "Indulge yourself in a timeless luxury on the Hathor Dahabiya Nile Cruise. Enjoy the luxurious cabins that blend modern comfort with timeless Egyptian charm. From panoramic Nile view suites to gourmet fine dining and tranquil spa moments, every detail of your journey is crafted for relaxation, exclusivity, and authentic cultural elegance. Enjoy the ultimate Luxury Dahabiya Nile Cruise and feel the charm of a Private Nile cruise Egypt.",
+  title: "Welcome Aboard Hathor",
+  body: "Welcome aboard Hathor, an intimate luxury Dahabiya created for unhurried journeys between Luxor and Aswan. Thoughtful service, refined accommodation and the quiet rhythm of the Nile define every voyage.",
 } as const;
 
 export const HOMEPAGE_DINING = {
   title: "FINE DINING\nON DAHABIYA",
-  body: "Restaurant craft meets warm hospitality: fresh local ingredients, Egyptian and international flavours, each meal a quiet celebration on the Nile.",
+  body: "Seasonal menus bring together Egyptian flavours, fresh ingredients and attentive service, served in settings shaped by the river.",
   tag: "Gastronomy",
   href: "/gastronomy",
 } as const;
@@ -120,20 +121,20 @@ export const HOMEPAGE_DINING = {
 export const HOMEPAGE_WELLNESS = {
   title: "Wellness",
   subtitle: "Renew Your Soul",
-  body: "Introducing our exclusive Seneb Spa on Hathor Dahabiya. Step into a refreshing journey where every moment is a peaceful oasis, offering a relaxing and unforgettable escape on your Luxury Dahabiya Nile Cruise.",
+  body: "A calm onboard space for restorative treatments designed around rest, recovery and the rhythm of the journey.",
   href: "/wellness",
 } as const;
 
 export const HOMEPAGE_ABOUT = {
   title: "About Hathor",
   subtitle: "Elegance and Serenity on the Nile",
-  body: "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you. Experience the finest Luxurious Dahabiya in Egypt, where every moment is crafted to inspire wonder and serenity.",
+  body: "Hathor is an intimate luxury Dahabiya for travellers who prefer space, privacy and an unhurried pace between Luxor and Aswan.",
   href: "/about",
 } as const;
 
 export const HOMEPAGE_REVIEWS = {
   title: "What Our Guests Say",
-  body: "Discover what our valued guests have to say about their unforgettable experiences with Hathor Dahabiya Cruise. From luxury accommodations to exceptional service, read authentic reviews from travelers who have explored Egypt with us.",
+  body: "Guest reflections on sailing with Hathor — from attentive service and refined suites to the quieter pace of life on the Nile.",
 } as const;
 
 export const HOMEPAGE_PARTNERS = {

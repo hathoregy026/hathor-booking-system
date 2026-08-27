@@ -439,7 +439,7 @@ export function HomePageClient({
                 href: cruise.href,
                 slug: cruise.slug,
                 basePriceCents: cruise.basePriceCents,
-                ctaLabel: "Check Voyages",
+                ctaLabel: "View Voyages",
               }))}
             />
           }
