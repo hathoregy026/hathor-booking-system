@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import "@/app/immersive-voyage.css";
 import "@/app/editorial-chrome.css";
+import "@/app/hathor-editorial-pages.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -98,10 +99,11 @@ export function HighlightsPageContent() {
       breadcrumb="Highlights"
       imageName="highlights-hero"
       heroPage="highlights"
+      editorial
     >
       <div
         ref={rootRef}
-        className="venetian-page lux-page"
+        className="venetian-page lux-page hathor-editorial-page"
         data-highlights-page=""
       >
         {/* First light */}

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import "@/app/charter-private.css";
 import "@/app/editorial-chrome.css";
+import "@/app/hathor-editorial-pages.css";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PageScrollTransition } from "@/components/pages/PageScrollTransition";
 import { CharterRequestForm } from "@/components/pages/charter/CharterRequestForm";
@@ -32,6 +33,7 @@ export function CharterPageContent() {
       breadcrumb="Charter"
       imageName="charter-hero"
       heroPage="charter"
+      editorial
       sheetBelowLanding={
         <div className="cp-hero-cta">
           <a className="btn btn-primary" href="#charter-request">
@@ -43,7 +45,11 @@ export function CharterPageContent() {
         </div>
       }
     >
-      <div ref={rootRef} className="venetian-page lux-page" data-charter-page="">
+      <div
+        ref={rootRef}
+        className="venetian-page lux-page hathor-editorial-page"
+        data-charter-page=""
+      >
         {/* 2 — Inquiry widget */}
         <section className="cp-inquiry" aria-label="Charter inquiry">
           <div className="cp-wrap">

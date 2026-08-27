@@ -4,6 +4,7 @@ import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "../mobile-touch.css";
+import "./rooms-showcase.css";
 
 export default function RoomsLayout({
   children,

@@ -2,103 +2,180 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
 import { resolveCmsText } from "@/lib/website-text-shared";
 
-type RoomCollectionVariant = "cabins" | "royal";
+type RoomCollectionVariant = "cabins" | "suites" | "royal";
 
 type RoomCollectionPageProps = {
   rooms?: readonly RoomShowcase[];
   variant?: RoomCollectionVariant;
   eyebrow?: string;
   title?: string;
+  secondTitle?: string;
   support?: string;
+  heroImage?: string;
 };
+
+const COLLECTION_LINKS = [
+  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
+  { href: "/rooms", label: "Luxury Suites" },
+  { href: "/royal-suites", label: "Royal Suites" },
+] as const;
 
 export function RoomCollectionPage({
   rooms = ROOM_SHOWCASES,
   variant,
   eyebrow = "Hathor accommodation",
-  title = "Rooms, made for the Nile",
+  title = "Rooms",
+  secondTitle = "Made for the Nile",
   support = "Four distinct ways to wake beside the river.",
+  heroImage = "/media/hathor/scraped/suites-hero.webp",
 }: RoomCollectionPageProps) {
   const { pages } = useWebsiteText();
   const cms =
     variant === "cabins"
       ? pages.cabins
-      : variant === "royal"
-        ? pages.royal
-        : null;
+      : variant === "suites"
+        ? pages.rooms
+        : variant === "royal"
+          ? pages.royal
+          : null;
   const resolvedTitle = cms
     ? resolveCmsText(cms.overviewTitle, title)
     : title;
   const resolvedSupport = cms
     ? resolveCmsText(cms.overviewIntro, support)
     : support;
-  const [titleLead, titleTail = ""] = resolvedTitle.split(", ");
 
   return (
     <div className="public-site hathor-site room-showcase-route">
       <PublicNavbar />
-    <main className="room-collection">
-      <section className="room-collection__hero">
-        <Image src="/media/hathor/scraped/suites-hero.webp" alt="Hathor rooms and suites" fill priority sizes="100vw" />
-        <div className="room-collection__wash" aria-hidden="true" />
-        <div className="room-collection__hero-copy">
-          <p className="wt-page-kicker">{eyebrow}</p>
-          <h1 className="wt-page-hero">
-            {titleLead}
-            {titleTail ? (
-              <>
-                ,<br />
-                <em className="wt-page-hero-second">{titleTail}</em>
-              </>
-            ) : null}
-          </h1>
-          <span className="wt-page-body">{resolvedSupport}</span>
-        </div>
-      </section>
+      <main className="room-collection">
+        <section className="room-collection__hero">
+          <Image
+            src={heroImage}
+            alt={`${title} aboard Hathor Dahabiya`}
+            fill
+            priority
+            sizes="100vw"
+          />
+          <div className="room-collection__wash" aria-hidden="true" />
+          <div className="room-collection__hero-copy">
+            <p className="wt-page-kicker">{eyebrow}</p>
+            <h1 className="wt-page-hero">
+              <span>{title}</span>
+              <em className="wt-page-hero-second">{secondTitle}</em>
+            </h1>
+            <p className="room-collection__hero-support wt-page-body">
+              {resolvedSupport}
+            </p>
+          </div>
+          <p className="room-collection__hero-mark" aria-hidden="true">
+            Hathor Cruise <span>®</span> 2026
+          </p>
+          <a className="room-collection__scroll" href="#collection-intro">
+            <i aria-hidden="true" />
+            Discover
+          </a>
+        </section>
 
-      <section className="room-collection__intro" aria-labelledby="rooms-heading">
-        <p className="room-kicker wt-page-kicker">Your private space aboard</p>
-        <h2 id="rooms-heading" className="wt-page-title">
-          Choose the room that<br />fits your voyage
-        </h2>
-        <p className="wt-page-body">
-          Every room carries Hathor&apos;s quiet cream-and-gold character, panoramic river views and attentive service. Explore the photography and details before choosing an itinerary.
-        </p>
-      </section>
+        <section
+          id="collection-intro"
+          className="room-collection__intro"
+          aria-labelledby="rooms-heading"
+        >
+          <p className="room-kicker wt-page-kicker">Your private space aboard</p>
+          <h2 id="rooms-heading" className="wt-page-title">
+            A residence shaped<br />by the river
+          </h2>
+          <p className="room-collection__intro-lead wt-page-body">
+            {resolvedTitle}
+          </p>
+          <p className="wt-page-body">
+            Every room carries Hathor&apos;s quiet cream-and-gold character,
+            panoramic river views and attentive service. Explore the
+            photography and details before choosing an itinerary.
+          </p>
+        </section>
 
-      <ol className="room-collection__list">
-        {rooms.map((room, index) => (
-          <li key={room.slug} className="room-collection__item">
-            <Link href={`/rooms/${room.slug}`} className="room-collection__media">
-              <Image src={room.images[0]} alt={room.name} fill sizes="(max-width: 1024px) 100vw, 62vw" />
-              <span className="room-collection__number">0{index + 1}</span>
-            </Link>
-            <div className="room-collection__copy">
-              <p className="room-kicker wt-page-kicker">{room.eyebrow}</p>
-              <h2 className="wt-page-title">{room.name}</h2>
-              <p className="wt-page-body">{room.description}</p>
-              <dl>
-                <div><dt>Space</dt><dd>{room.sizeSqm} m²</dd></div>
-                <div><dt>Guests</dt><dd>Up to {room.capacity}</dd></div>
-              </dl>
-              <Link href={`/rooms/${room.slug}`} className="room-text-link">View room <span aria-hidden="true">→</span></Link>
-            </div>
-          </li>
-        ))}
-      </ol>
+        <ol className="room-collection__list">
+          {rooms.map((room, index) => (
+            <li key={room.slug} className="room-collection__item">
+              <Link
+                href={`/rooms/${room.slug}`}
+                className="room-collection__media"
+                aria-label={`Explore ${room.name}`}
+              >
+                <Image
+                  src={room.images[0]}
+                  alt={`${room.name} interior aboard Hathor Dahabiya`}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 62vw"
+                />
+                <span className="room-collection__number">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="room-collection__media-caption">
+                  Nile residence · Hathor
+                </span>
+              </Link>
+              <div className="room-collection__copy">
+                <p className="room-kicker wt-page-kicker">{room.eyebrow}</p>
+                <h2 className="wt-page-title">{room.name}</h2>
+                <p className="wt-page-body">{room.description}</p>
+                <dl>
+                  <div>
+                    <dt>Space</dt>
+                    <dd>{room.sizeSqm} m²</dd>
+                  </div>
+                  <div>
+                    <dt>Guests</dt>
+                    <dd>Up to {room.capacity}</dd>
+                  </div>
+                  <div>
+                    <dt>View</dt>
+                    <dd>Nile</dd>
+                  </div>
+                </dl>
+                <Link href={`/rooms/${room.slug}`} className="room-text-link">
+                  View residence <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ol>
 
-      <section className="room-collection__cta">
-        <p className="room-kicker wt-page-kicker">Your Nile story awaits</p>
-        <h2 className="wt-page-title">Find your sailing</h2>
-        <BookNowTrigger className="room-pill">Book now</BookNowTrigger>
-      </section>
-    </main>
+        <nav
+          className="room-collection__crosslinks"
+          aria-label="Accommodation collections"
+        >
+          <p className="room-kicker wt-page-kicker">Explore the collection</p>
+          <ul>
+            {COLLECTION_LINKS.map((link, index) => (
+              <li key={link.href}>
+                <Link href={link.href}>
+                  <span>0{index + 1}</span>
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <section className="room-collection__cta">
+          <p className="room-kicker wt-page-kicker">Your Nile story awaits</p>
+          <h2 className="wt-page-title">Find your sailing</h2>
+          <p className="wt-page-body">
+            Let our reservations team pair your preferred residence with the
+            right journey between Luxor and Aswan.
+          </p>
+          <BookNowTrigger className="room-pill">Check availability</BookNowTrigger>
+        </section>
+      </main>
     </div>
   );
 }

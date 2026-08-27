@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { AccommodationSpringsDesignPage } from "@/components/pages/AccommodationSpringsDesignPage";
+import { RoomCollectionPage } from "@/components/pages/rooms/RoomCollectionPage";
+import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
@@ -10,10 +11,18 @@ import "../site-coming-soon.css";
 const OG_IMAGE = "/media/hathor/scraped/suites-hero.webp";
 
 export const metadata: Metadata = {
-  title: "Luxury suites on Nile cruise",
+  title: "Luxury Nile Cruise Suites in Egypt",
   description: LUXURY_SUITES_PAGE.metaDescription,
+  keywords: [
+    "luxury Nile cruise suites",
+    "Dahabiya suites Egypt",
+    "Hathor Dahabiya suites",
+    "Nile view suite Luxor Aswan",
+    "private luxury Nile cruise accommodation",
+  ],
+  alternates: { canonical: "/rooms" },
   openGraph: {
-    title: "Luxury suites on Nile cruise | Hathor Dahabiya Cruise",
+    title: "Luxury Nile Cruise Suites in Egypt | Hathor Dahabiya",
     description: LUXURY_SUITES_PAGE.metaDescription,
     type: "website",
     images: [
@@ -21,13 +30,13 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1920,
         height: 1280,
-        alt: "Cabins and suites aboard Hathor Dahabiya",
+        alt: "Luxury Nile view suite aboard Hathor Dahabiya in Egypt",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Luxury suites on Nile cruise | Hathor Dahabiya Cruise",
+    title: "Luxury Nile Cruise Suites in Egypt | Hathor Dahabiya",
     description: LUXURY_SUITES_PAGE.metaDescription,
     images: [OG_IMAGE],
   },
@@ -53,9 +62,14 @@ export default async function RoomsPage() {
         typography={cms.typography}
         typographyMobile={cms.typographyMobile}
       >
-        <AccommodationSpringsDesignPage
-          frameSrc="/accommodation-springs/luxury-suites/index.html"
+        <RoomCollectionPage
+          variant="suites"
+          rooms={ROOM_SHOWCASES.filter((room) => room.slug === "luxury-suite")}
+          eyebrow="Luxury suites aboard Hathor"
           title="Luxury Suites"
+          secondTitle="Room to Drift"
+          support="Generous lower-deck residences where panoramic Nile light, quiet privacy and considered comfort meet."
+          heroImage="/media/hathor/scraped/luxsuite-1.webp"
         />
       </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>

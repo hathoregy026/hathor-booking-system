@@ -21,6 +21,8 @@ export type PageScrollTransitionProps = {
   imageName: string;
   imageAlt?: string;
   variant?: "default" | "blog";
+  /** Contact-derived editorial typography and surfaces for selected routes. */
+  editorial?: boolean;
   sheetBelowLanding?: ReactNode;
   children: ReactNode;
 };
@@ -33,6 +35,7 @@ export function PageScrollTransition({
   heroPage,
   subtitle,
   imageName,
+  editorial = false,
   sheetBelowLanding,
   children,
 }: PageScrollTransitionProps) {
@@ -42,8 +45,13 @@ export function PageScrollTransition({
     : splitHeroTitle(displayTitle);
 
   return (
-    <div className="public-page-with-hero">
+    <div
+      className={`public-page-with-hero${
+        editorial ? " public-page-with-hero--editorial" : ""
+      }`}
+    >
       <PublicSiteHero
+        editorial={editorial}
         heroPage={heroPage}
         lineRight={lineRight}
         lineLeft={lineLeft}

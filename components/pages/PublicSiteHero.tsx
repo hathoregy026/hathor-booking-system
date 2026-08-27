@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
@@ -68,6 +68,8 @@ export type PublicSiteHeroProps = {
   logoPartsVariant?: HathorLogoPartsVariant;
   /** Optional phone override; otherwise the global phone Hero Logo Tune applies. */
   mobileLogoPartsVariant?: HathorLogoPartsVariant;
+  /** Contact-derived hero typography for selected editorial routes. */
+  editorial?: boolean;
 };
 
 export function PublicSiteHero({
@@ -84,6 +86,7 @@ export function PublicSiteHero({
   playVideo = false,
   logoPartsVariant,
   mobileLogoPartsVariant,
+  editorial = false,
 }: PublicSiteHeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
@@ -107,6 +110,16 @@ export function PublicSiteHero({
     mobileLogoPartsVariant ?? globalLogo.mobilePartsVariant;
   const heroTitleStyle = useTypographyInlineStyle("hero_title");
   const heroSubtitleStyle = useTypographyInlineStyle("hero_subtitle");
+  const resolvedHeroTitleStyle: CSSProperties = editorial
+    ? {
+        ...heroTitleStyle,
+        fontFamily: '"Italiana", "Gamgote", Georgia, serif',
+        fontWeight: 400,
+        letterSpacing: "-0.035em",
+        textShadow: "0 4px 40px rgba(0, 0, 0, 0.4)",
+        textTransform: "uppercase",
+      }
+    : heroTitleStyle;
   usePublicSiteHeroMotion(heroRef, animate);
 
   const resolved = heroPage
@@ -123,6 +136,14 @@ export function PublicSiteHero({
   const secondTitleStyle = usePlainSecondTitle
     ? {
         ...heroSubtitleStyle,
+        ...(editorial
+          ? {
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: "italic",
+              letterSpacing: "-0.02em",
+              textShadow: "0 4px 40px rgba(0, 0, 0, 0.4)",
+            }
+          : {}),
         color: "#B69F64",
         WebkitTextFillColor: "#B69F64",
       }
@@ -381,8 +402,8 @@ export function PublicSiteHero({
       </div>
 
       <div className="hero-content">
-        <h1 className="hero-heading" style={heroTitleStyle}>
-          <span className="hero-line hero-line--right" style={heroTitleStyle}>
+        <h1 className="hero-heading" style={resolvedHeroTitleStyle}>
+          <span className="hero-line hero-line--right" style={resolvedHeroTitleStyle}>
             {displayRight}
           </span>
           {lineLeftImageSrc ? (

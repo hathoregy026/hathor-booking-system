@@ -11,11 +11,18 @@ import "../site-coming-soon.css";
 const OG_IMAGE = "/media/hathor/r2/cabins-hero.webp";
 
 export const metadata: Metadata = {
-  title: "Small Luxury Nile Cruise Rooms",
+  title: "Luxury Nile Cruise Rooms in Egypt",
   description: LUXURY_CABINS_PAGE.metaDescription,
+  keywords: [
+    "luxury Nile cruise rooms",
+    "Dahabiya cabins Egypt",
+    "Hathor Dahabiya rooms",
+    "boutique Nile cruise cabin",
+    "Nile view cabin Luxor Aswan",
+  ],
+  alternates: { canonical: "/luxury-cabins-Nile-Cruise" },
   openGraph: {
-    title:
-      "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
+    title: "Luxury Nile Cruise Rooms in Egypt | Hathor Dahabiya",
     description: LUXURY_CABINS_PAGE.metaDescription,
     type: "website",
     images: [
@@ -23,14 +30,13 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1920,
         height: 1280,
-        alt: "Luxury cabin with Nile view aboard Hathor Dahabiya",
+        alt: "Luxury Nile view room aboard Hathor Dahabiya in Egypt",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Small Luxury Nile Cruise Rooms | Boutique Nile Cruise Hathor Dahabiya",
+    title: "Luxury Nile Cruise Rooms in Egypt | Hathor Dahabiya",
     description: LUXURY_CABINS_PAGE.metaDescription,
     images: [OG_IMAGE],
   },
@@ -60,8 +66,10 @@ export default async function LuxuryCabinsPage() {
           variant="cabins"
           rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
           eyebrow="Luxury rooms aboard Hathor"
-          title="Cabins, shaped by the Nile"
+          title="Luxury Rooms"
+          secondTitle="Nile by the Window"
           support="Choose a king or twin retreat, each composed for two guests and panoramic river light."
+          heroImage="/media/hathor/scraped/cabin-1.webp"
         />
       </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>

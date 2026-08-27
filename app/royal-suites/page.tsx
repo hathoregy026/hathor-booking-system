@@ -11,13 +11,20 @@ import "../site-coming-soon.css";
 const OG_IMAGE = "/media/hathor/r2/room-royal.webp";
 
 export const metadata: Metadata = {
-  title: "Luxury Dahabiya Royal Suite",
+  title: "Royal Suites on a Luxury Nile Cruise",
   description: ROYAL_SUITES_PAGE.metaDescription,
+  keywords: [
+    "luxury Nile cruise royal suite",
+    "Dahabiya royal suite Egypt",
+    "Hathor Dahabiya royal suites",
+    "panoramic Nile view suite",
+    "private Nile cruise luxury suite",
+  ],
   alternates: {
     canonical: "/royal-suites",
   },
   openGraph: {
-    title: "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
+    title: "Royal Suites on a Luxury Nile Cruise | Hathor Dahabiya",
     description: ROYAL_SUITES_PAGE.metaDescription,
     type: "website",
     images: [
@@ -25,13 +32,13 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1920,
         height: 1280,
-        alt: "Royal suite with panoramic Nile view aboard Hathor Dahabiya",
+        alt: "Royal suite with panoramic Nile views aboard Hathor Dahabiya",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
+    title: "Royal Suites on a Luxury Nile Cruise | Hathor Dahabiya",
     description: ROYAL_SUITES_PAGE.metaDescription,
     images: [OG_IMAGE],
   },
@@ -61,8 +68,10 @@ export default async function RoyalSuitesPage() {
           variant="royal"
           rooms={ROOM_SHOWCASES.filter((room) => room.slug === "royal-suite")}
           eyebrow="Hathor's signature residence"
-          title="Royal, by nature"
+          title="Royal Suites"
+          secondTitle="The Nile, Privately"
           support="The most expansive private residence aboard, framed by Main Deck views and exceptional space."
+          heroImage="/media/hathor/scraped/royal-1.webp"
         />
       </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
