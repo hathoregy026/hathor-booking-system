@@ -123,17 +123,25 @@
   --table-row-alt: #faf8f5;
 }
 
-/* Admin uses normal document scroll (Lenis is forced off on /admin). */
-html.admin-app,
-html.admin-app body {
+/*
+ * Admin uses normal document scroll (Lenis is forced off on /admin).
+ *
+ * Only the root may be a scrollport. `overflow: auto` on BOTH html and body
+ * makes `body` a non-scrolling scroll container (it grows with content), so
+ * `position: sticky` pins to body and slides off the viewport. Keep body
+ * visible; let html own document scrolling.
+ */
+html.admin-app {
   overflow: auto !important;
   overscroll-behavior: auto;
   height: auto !important;
   scroll-behavior: auto;
 }
 
-html.admin-app {
-  scroll-behavior: auto;
+html.admin-app body {
+  overflow: visible !important;
+  height: auto !important;
+  overscroll-behavior: auto;
 }
 
 .admin-shell {
@@ -148,7 +156,9 @@ html.admin-app {
     color 300ms ease;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
+  /* `clip` — not `hidden` — so sticky header/thead keep a viewport scrollport.
+     See admin-shell.css §1 for the full rationale. */
+  overflow-x: clip;
   animation: adminFadeIn 0.3s ease;
 }
 

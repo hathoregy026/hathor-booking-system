@@ -119,8 +119,12 @@ export function getWelcomeSplashCriticalStyle(): string {
     "html.hathor-welcome-lock,html.hathor-welcome-lock body{",
     "overflow:auto!important;overscroll-behavior:auto;",
     "}",
-    "html.admin-app,html.admin-app body{",
+    /* Root scrollport only — body must stay visible or sticky admin chrome dies. */
+    "html.admin-app{",
     "overflow:auto!important;overscroll-behavior:auto;",
+    "}",
+    "html.admin-app body{",
+    "overflow:visible!important;overscroll-behavior:auto;",
     "}",
   ].join("");
 }
