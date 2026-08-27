@@ -20,7 +20,7 @@ export const SITE_VIEW_INDEX: SiteViewSection[] = [
     description: "Marketing pages and main guest-facing site.",
     links: [
       { href: "/", label: "Home" },
-      { href: "/cruises", label: "Cruises & Itineraries" },
+      { href: "/cruises-list", label: "Cruises & Itineraries" },
       { href: "/about", label: "About Hathor" },
       { href: "/highlights", label: "Highlights & Experiences" },
       { href: "/gastronomy", label: "Gastronomy / Dining" },

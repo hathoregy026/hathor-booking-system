@@ -319,7 +319,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Luxury Suite on the 3-night Aswan to Luxor itinerary",
     url: "/media/hathor/scraped/luxsuite-1.webp",
     category: "suite",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 40,
   },
   {
@@ -327,7 +327,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal Suite on the 3-night Aswan to Luxor itinerary",
     url: "/media/hathor/scraped/royal-1.webp",
     category: "suite",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 41,
   },
   {
@@ -335,7 +335,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "King cabin on the 4-night Luxor to Aswan itinerary",
     url: "/media/hathor/scraped/cabin-1.webp",
     category: "room",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 42,
   },
   {
@@ -343,7 +343,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Twin cabin on the 4-night Luxor to Aswan itinerary",
     url: "/media/hathor/scraped/cabin-2.webp",
     category: "room",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 43,
   },
   {
@@ -351,7 +351,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Luxury Suite on the 4-night Luxor to Aswan itinerary",
     url: "/media/hathor/scraped/luxsuite-2.webp",
     category: "suite",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 44,
   },
   {
@@ -359,7 +359,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal Suite on the 4-night Luxor to Aswan itinerary",
     url: "/media/hathor/scraped/royal-2.webp",
     category: "suite",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 45,
   },
   {
@@ -367,7 +367,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "King cabin on the 7-night round-trip itinerary",
     url: "/media/hathor/scraped/cabin-3.webp",
     category: "room",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 46,
   },
   {
@@ -375,7 +375,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Twin cabin on the 7-night round-trip itinerary",
     url: "/media/hathor/scraped/cabin-4.webp",
     category: "room",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 47,
   },
   {
@@ -383,7 +383,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Luxury Suite on the 7-night round-trip itinerary",
     url: "/media/hathor/scraped/luxsuite-3.webp",
     category: "suite",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 48,
   },
   {
@@ -391,7 +391,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal Suite on the 7-night round-trip itinerary",
     url: "/media/hathor/scraped/royal-3.webp",
     category: "suite",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 49,
   },
   // Suites Place panel only — not shared with Luxury Cabins hero
@@ -441,7 +441,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Luxury Dahabiya cruise on the Nile",
     url: HATHOR_MEDIA.heroCruises,
     category: "hero",
-    pagePath: "/cruises",
+    pagePath: "/cruises-list",
     displayOrder: 0,
   },
   {
@@ -722,7 +722,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal suite aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/royal-1.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 10,
   },
   {
@@ -730,7 +730,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal suite bedroom aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/royal-2.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 11,
   },
   {
@@ -738,7 +738,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal suite jacuzzi aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/royal-3.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 12,
   },
   {
@@ -746,7 +746,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Sunset Nile view from a Royal Suite",
     url: "/media/hathor/scraped/royal-4.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 13,
   },
   {
@@ -754,7 +754,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal suite living space aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/royal-5.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 14,
   },
   {
@@ -762,7 +762,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal suite lounge aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/royal-6.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 15,
   },
   {
@@ -770,7 +770,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Royal suite bathroom with Nile view",
     url: "/media/hathor/scraped/royal-7.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 16,
   },
   {
@@ -778,7 +778,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     altText: "Breakfast in a Royal Suite aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/royal-8.webp",
     category: "suite",
-    pagePath: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    pagePath: "/royal-suites",
     displayOrder: 17,
   },
   {

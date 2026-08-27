@@ -91,7 +91,7 @@ export const SUITES_NATIVE_CTAS = {
   compareSuites: { label: "Compare Suites", href: "#suites-collection" },
   viewSuiteDetails: {
     label: "View Suite Details",
-    href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    href: "/royal-suites",
   },
   exploreRooms: {
     label: "Explore rooms",
@@ -100,7 +100,7 @@ export const SUITES_NATIVE_CTAS = {
   viewSuites: { label: "View suites", href: "/rooms" },
   viewRoyal: {
     label: "View suites",
-    href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    href: "/royal-suites",
   },
   requestAvailability: {
     label: "Request Availability",

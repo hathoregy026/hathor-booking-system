@@ -5,8 +5,8 @@ import { PUBLIC_CONTACT } from "@/lib/public-contact";
 const FOOTER_EXPLORE = [
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
-  { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
-  { href: "/cruises", label: "Cruises" },
+  { href: "/royal-suites", label: "Royal Suites" },
+  { href: "/cruises-list", label: "Cruises" },
   { href: "/about", label: "About" },
   { href: "/blogs", label: "Blog" },
 ] as const;
@@ -22,7 +22,7 @@ const FOOTER_LEGAL = [
   { id: "press", href: `mailto:${PUBLIC_CONTACT.email}`, label: "Press" },
   { id: "privacy", href: "/contact", label: "Privacy" },
   { id: "contact", href: "/contact", label: "Contact" },
-  { id: "sitemap", href: "/cruises", label: "Sitemap" },
+  { id: "sitemap", href: "/cruises-list", label: "Sitemap" },
 ] as const;
 
 /** Route-local footer cap so the giant logo can rise behind it. */

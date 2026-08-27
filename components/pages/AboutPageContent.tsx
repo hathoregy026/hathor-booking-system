@@ -147,7 +147,7 @@ const STAYS = [
     place: "Main Deck",
     title: "Royal",
     slot: "room-royal",
-    href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    href: "/royal-suites",
     tone: "gold",
   },
 ] as const;
@@ -449,7 +449,7 @@ export function AboutPageContent() {
                 <BookNowTrigger className="ab-btn ab-btn--solid">
                   Book Now
                 </BookNowTrigger>
-                <Link href="/cruises" className="ab-btn">
+                <Link href="/cruises-list" className="ab-btn">
                   <span>Explore cruises</span>
                 </Link>
               </div>

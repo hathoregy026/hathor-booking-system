@@ -22,7 +22,7 @@ const ROUTES = [
   "/cruises",
   "/rooms",
   "/luxury-cabins-Nile-Cruise",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "/royal-suites",
   "/highlights",
   "/about",
   "/gastronomy",

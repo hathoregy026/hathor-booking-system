@@ -2,7 +2,7 @@
 
 export const HOMEPAGE_HERO = {
   eyebrow: "Hathor",
-  title: "Ultra Luxury Dahabiya Cruise",
+  title: "Luxury Dahabiya Nile Cruise",
   subtitle:
     "Your luxurious Nile escape begins with the Hathor Dahabiya",
   cta: "Book Now",
@@ -19,7 +19,7 @@ export const HOMEPAGE_POST_HERO = {
 } as const;
 
 export const HOMEPAGE_ITINERARIES = {
-  title: "Hathor itineraries",
+  title: "Private Sailing Luxor to Aswan",
   subtitle: "Explore, Relax, Discover",
   intro:
     "Experience the magic of Egypt on the luxury Hathor Dahabiya Nile cruise.",
@@ -28,19 +28,19 @@ export const HOMEPAGE_ITINERARIES = {
       title: "Aswan / Luxor",
       duration: "3 Nights / 4 Days",
       schedule: "Every Wednesday",
-      href: "/cruises",
+      href: "/cruises-list",
     },
     {
       title: "Luxor / Aswan",
       duration: "4 Nights / 5 Days",
       schedule: "Every Saturday",
-      href: "/cruises",
+      href: "/cruises-list",
     },
     {
       title: "Luxor / Aswan / Luxor",
       duration: "7 Nights / 8 Days",
       schedule: "Every Saturday",
-      href: "/cruises",
+      href: "/cruises-list",
     },
   ],
 } as const;
@@ -66,7 +66,7 @@ export const HOMEPAGE_ACCOMMODATIONS = {
       title: "Luxury Royal Suites",
       description:
         "Enjoy The Royal Suites on Hathor Dahabiya, with the highest level of comfort and feel the real charm on Luxury Dahabiya Nile Cruise Hathor, with the breathtaking Nile view.",
-      href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+      href: "/royal-suites",
     },
     {
       title: "Charter Request",

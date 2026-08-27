@@ -431,7 +431,7 @@ html = html.replace(
 html = html.replace(
   /(class="l-wellness__slider__caption-text content-animation col col--md-4"[^>]*>)([\s\S]*?)(<\/div>\s*<\/div>\s*<div class="l-wellness__slider-gradient)/i,
   `$1$2
-                        ${ctaLink("/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", "View Suite Details", "suites-cta-link--ivory")}
+                        ${ctaLink("/royal-suites", "View Suite Details", "suites-cta-link--ivory")}
                     $3`,
 );
 
@@ -821,7 +821,7 @@ html = html.replace(
 );
 html = html.replace(
   /href="\/flats\?types(?:%5B%5D|\[\])=penthouse[^"]*"/gi,
-  'href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore',
+  'href="/royal-suites" target="_top" data-ajax-page-ignore',
 );
 html = html.replace(
   /href="\/flats[^"]*"/gi,

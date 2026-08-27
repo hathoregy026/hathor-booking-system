@@ -7,10 +7,10 @@ import { getSiteImageSlot } from "@/lib/site-image-slots";
 /** Public routes that consume SiteImage slots — call after CMS image saves. */
 const SITE_IMAGE_REVALIDATE_PATHS = [
   "/",
-  "/cruises",
+  "/cruises-list",
   "/rooms",
   "/luxury-cabins-Nile-Cruise",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "/royal-suites",
   "/about",
   "/gastronomy",
   "/wellness",

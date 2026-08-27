@@ -22,12 +22,12 @@ const SUITES_LINKS = [
   { href: "/suites", label: "Suites Overview" },
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
-  { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
+  { href: "/royal-suites", label: "Royal Suites" },
 ] as const;
 
 const VOYAGE_LINKS = [
   { href: "/voyages", label: "Our Voyages" },
-  { href: "/cruises", label: "Scheduled Voyages" },
+  { href: "/cruises-list", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
   { href: "/highlights", label: "Highlights" },
   { href: "/about", label: "Our Story" },
@@ -36,7 +36,7 @@ const VOYAGE_LINKS = [
 const EXPERIENCE_LINKS = [
   { href: "/wellness", label: "Wellness & Spa" },
   { href: "/gastronomy", label: "Dining" },
-  { href: "/blog", label: "Journal" },
+  { href: "/blogs", label: "Journal" },
   { href: "/partners", label: "Partners" },
 ] as const;
 

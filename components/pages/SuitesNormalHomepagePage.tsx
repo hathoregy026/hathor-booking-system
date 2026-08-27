@@ -16,7 +16,7 @@ import {
 const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
   [/normalisboring\.es\/plaza-espana/i, "/rooms"],
-  [/normalisboring\.es\/rua-pexegueiro/i, "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  [/normalisboring\.es\/rua-pexegueiro/i, "/royal-suites"],
   [/normalisboring\.es\/proyectos/i, "/suites"],
   [/normalisboring\.es\/conocenos/i, "/suites"],
   [/normalisboring\.es\/politica/i, "/contact"],

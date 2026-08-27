@@ -36,16 +36,16 @@ export const MANAGED_PUBLIC_PAGES: readonly ManagedPublicPage[] = [
   },
   {
     id: "royal-suites",
-    path: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    path: "/royal-suites",
     label: "Royal Suites",
     group: "Suites",
   },
   {
     id: "cruises",
-    path: "/cruises",
+    path: "/cruises-list",
     label: "Scheduled Voyages",
     group: "Cruises",
-    aliases: ["/cruises-list"],
+    aliases: ["/cruises"],
   },
   {
     id: "voyages",

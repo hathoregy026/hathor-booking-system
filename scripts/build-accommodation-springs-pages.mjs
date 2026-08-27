@@ -345,7 +345,7 @@ const PAGES = [
   {
     id: "royal-suites",
     outDir: "royal-suites",
-    route: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    route: "/royal-suites",
     documentTitle: "Hathor | Luxury Royal Suites",
     mobileTitle: "Royal Suites",
     h1Title: "Royal Suites",
@@ -1083,7 +1083,7 @@ function buildPage(page) {
   );
   html = html.replace(
     /href="\/flats\?types(?:%5B%5D|\[\])=penthouse[^"]*"/gi,
-    'href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore',
+    'href="/royal-suites" target="_top" data-ajax-page-ignore',
   );
   html = html.replace(
     /href="\/flats[^"]*"/gi,

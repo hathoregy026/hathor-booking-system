@@ -194,7 +194,7 @@ export const HOMEPAGE_SKETCH = {
   imageName: "home-story-legacy-large" as const,
   links: [
     { label: "Luxury Rooms & Suites", href: "/rooms" },
-    { label: "Hathor Itineraries", href: "/cruises" },
+    { label: "Hathor Itineraries", href: "/cruises-list" },
   ],
 } as const;
 

@@ -17,7 +17,7 @@ const NAV_HREFS = [
   "/gastronomy",
   "/charter",
   "/luxury-cabins-Nile-Cruise",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "/royal-suites",
   "/book",
 ];
 

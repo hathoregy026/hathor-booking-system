@@ -31,7 +31,10 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
   description:
-    "Experience ultra-luxury on a private Dahabiya Nile cruise. Sail from Luxor to Aswan in exclusive suites with fine dining, spa, and timeless Egyptian elegance.",
+    "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
+  alternates: {
+    canonical: "/",
+  },
   keywords: [
     "Dahabiya Nile Cruise",
     "Luxury Egypt Cruise",
@@ -40,8 +43,9 @@ export const metadata: Metadata = {
     "Ultra Luxury Dahabiya Cruise",
   ],
   openGraph: {
-    title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins with the Hathor Dahabiya",
+    title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
+    description:
+      "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
     locale: "en_US",
     type: "website",
     images: [
@@ -55,8 +59,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins with the Hathor Dahabiya",
+    title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
+    description:
+      "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
     images: [HATHOR_HERO_POSTER_SRC],
   },
   robots: {

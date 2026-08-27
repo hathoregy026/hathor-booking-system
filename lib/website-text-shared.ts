@@ -201,7 +201,7 @@ export type WebsiteTextNavItem = {
 export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
   { id: "home", label: "Homepage", href: "/" },
   { id: "about", label: "About", href: "/about" },
-  { id: "cruises", label: "Cruises", href: "/cruises" },
+  { id: "cruises", label: "Cruises", href: "/cruises-list" },
   { id: "voyages", label: "Voyages", href: "/voyages" },
   { id: "suites", label: "Suites (Native)", href: "/suites-preview" },
   { id: "highlights", label: "Highlights", href: "/highlights" },
@@ -218,7 +218,7 @@ export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
   {
     id: "royal",
     label: "Royal Suites",
-    href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    href: "/royal-suites",
   },
   { id: "blog", label: "Blog", href: "/blogs" },
   { id: "partners", label: "Partners", href: "/partners" },
@@ -227,7 +227,7 @@ export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
 export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
   home: {
     about: {
-      heading: "Elegance is\na way of life.",
+      heading: "Exclusive Suites &\nFine Dining on Dahabiya",
       eyebrow: HOMEPAGE_ABOUT.subtitle,
       body: HOMEPAGE_ABOUT.body,
       cta: "Discover More",

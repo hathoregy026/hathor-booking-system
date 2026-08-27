@@ -9,7 +9,7 @@ const ALLOW_PREFIXES = [
   "/suites",
   "/luxury-cabins-Nile-Cruise",
   "/rooms",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "/royal-suites",
   "/cruises",
   "/cruises-list",
   "/voyages",

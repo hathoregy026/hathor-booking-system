@@ -133,7 +133,7 @@ export function CruisesPageContent() {
                   <Link href="/rooms">Luxury Suites</Link>
                 </li>
                 <li className="cruise-reveal">
-                  <Link href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise">
+                  <Link href="/royal-suites">
                     Royal Suites
                   </Link>
                 </li>

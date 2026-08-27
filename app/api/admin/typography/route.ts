@@ -18,12 +18,12 @@ export const revalidate = 0;
 
 const REVALIDATE_PATHS = [
   "/",
-  "/cruises",
+  "/cruises-list",
   "/admin/typography",
   "/suites",
   "/experiences",
   "/about",
-  "/blog",
+  "/blogs",
   "/contact",
   "/wellness",
   "/gastronomy",

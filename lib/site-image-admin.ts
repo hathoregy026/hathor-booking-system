@@ -449,7 +449,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     pushUniqueItem(
       cruisesItems,
       cruisesSeen,
-      toAdminItem(slot, "/cruises", card.label, index + 1),
+      toAdminItem(slot, "/cruises-list", card.label, index + 1),
     );
   });
 
@@ -506,7 +506,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
         appearPath === "/#floating-ig" ||
         appearPath === "/#burger-nav" ||
         appearPath === "/#our-voyages" ||
-        appearPath === "/cruises" ||
+        appearPath === "/cruises-list" ||
         appearPath === "/suites"
       ) {
         // Handled by dedicated curated groups above.
@@ -523,7 +523,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
   const pageOrder = [
     "/rooms",
     "/luxury-cabins-Nile-Cruise",
-    "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+    "/royal-suites",
     "/about",
     "/gastronomy",
     "/wellness",
@@ -582,7 +582,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       items: burgerNavItems,
     },
     {
-      pagePath: "/cruises",
+      pagePath: "/cruises-list",
       title: "Cruises",
       description:
         "Cruises page hero plus the homepage itinerary carousel cards. Each cruise room card has its own upload — edit here, shown on the homepage itineraries slider.",

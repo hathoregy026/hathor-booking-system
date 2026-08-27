@@ -9,7 +9,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/#floating-ig": "Floating IG",
   "/#burger-nav": "Burger Nav Image",
   "/#our-voyages": "Our Voyages",
-  "/cruises": "Cruises",
+  "/cruises-list": "Cruises",
   "/about": "About Us",
   "/gastronomy": "Dining",
   "/#dining-plates": "Dining Plates",
@@ -21,7 +21,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/suites": "Suites",
   "/rooms": "Luxury Rooms",
   "/luxury-cabins-Nile-Cruise": "Luxury Cabins Gallery",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "Royal Suites Gallery",
+  "/royal-suites": "Royal Suites Gallery",
 };
 
 /**
@@ -30,7 +30,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
  */
 const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
   "room-suite": ["/suites", "/rooms"],
-  "room-royal": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  "room-royal": ["/suites", "/royal-suites"],
   /* room-luxury: Suites Place panel only (cabins hero is cabins-hero). */
 
   "scraped-suites-hero": ["/suites"],
@@ -51,14 +51,14 @@ const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
   "scraped-cabin-6": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-cabin-7": ["/suites", "/luxury-cabins-Nile-Cruise"],
   "scraped-cabin-8": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-royal-1": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-2": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-3": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-4": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-5": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-6": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-7": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
-  "scraped-royal-8": ["/suites", "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"],
+  "scraped-royal-1": ["/suites", "/royal-suites"],
+  "scraped-royal-2": ["/suites", "/royal-suites"],
+  "scraped-royal-3": ["/suites", "/royal-suites"],
+  "scraped-royal-4": ["/suites", "/royal-suites"],
+  "scraped-royal-5": ["/suites", "/royal-suites"],
+  "scraped-royal-6": ["/suites", "/royal-suites"],
+  "scraped-royal-7": ["/suites", "/royal-suites"],
+  "scraped-royal-8": ["/suites", "/royal-suites"],
 };
 
 /** Slot names the Suites iframe reads from the dashboard (shared with Rooms / galleries). */
@@ -127,8 +127,8 @@ export function getSiteImageUsedOnPages(
     "/suites",
     "/rooms",
     "/luxury-cabins-Nile-Cruise",
-    "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-    "/cruises",
+    "/royal-suites",
+    "/cruises-list",
     "/about",
     "/gastronomy",
     "/#dining-plates",

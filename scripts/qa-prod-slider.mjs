@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 
 const urls = [
-  "https://www.easytravegypt.com/?fresh=1",
+  "https://www.hathorcruise.com/?fresh=1",
   "https://hathor-booking-system-h9qw8j11r-hathor1.vercel.app/?fresh=1",
   "https://hathor-booking-system-pg0u44q62-hathor1.vercel.app/?fresh=1",
 ];
@@ -78,7 +78,7 @@ for (const url of urls) {
       }
       await page.evaluate((y) => scrollTo(0, y), sTop + 800);
       await page.waitForTimeout(300);
-      const name = url.includes("easytravel")
+      const name = url.includes("hathorcruise.com")
         ? ".tmp-prod-slider-domain.png"
         : url.includes("h9qw")
           ? ".tmp-prod-slider-h9.png"

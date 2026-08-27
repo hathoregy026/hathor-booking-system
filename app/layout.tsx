@@ -34,6 +34,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.hathorcruise.com"),
   title: `${HATHOR_BRAND_NAME} Cruise Booking`,
   description: "Book your luxury Hathor cruise experience",
   icons: {

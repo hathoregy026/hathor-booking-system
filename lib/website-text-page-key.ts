@@ -21,7 +21,7 @@ export function pathnameToWebsiteTextPage(pathname: string): HeroPageKey | null 
   if (path === "/rooms" || path.startsWith("/rooms/")) return "suites";
   if (path === "/suites" || path === "/suites-preview") return "suites";
   if (path === "/luxury-cabins-Nile-Cruise") return "luxury_cabins";
-  if (path === "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise") return "royal_suites";
+  if (path === "/royal-suites") return "royal_suites";
 
   return null;
 }

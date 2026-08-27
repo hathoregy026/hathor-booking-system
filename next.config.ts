@@ -274,13 +274,28 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/cruises-list",
-        destination: "/cruises",
+        source: "/cruises",
+        destination: "/cruises-list",
         permanent: true,
       },
       {
         source: "/mask-reveal",
-        destination: "/cruises",
+        destination: "/cruises-list",
+        permanent: true,
+      },
+      {
+        source: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+        destination: "/charter",
+        permanent: true,
+      },
+      {
+        source: "/blog",
+        destination: "/blogs",
+        permanent: true,
+      },
+      {
+        source: "/journal",
+        destination: "/blogs",
         permanent: true,
       },
       {

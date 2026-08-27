@@ -95,12 +95,12 @@ export const HIGHLIGHTS_JOURNEY_LINKS = [
   {
     label: "Luxor → Aswan",
     body: "Ancient landmarks and quiet river villages.",
-    href: "/cruises",
+    href: "/cruises-list",
   },
   {
     label: "Aswan → Luxor",
     body: "A south-to-north passage through the Nile’s living history.",
-    href: "/cruises",
+    href: "/cruises-list",
   },
   {
     label: "Private Charter",

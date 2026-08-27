@@ -13,6 +13,9 @@ const OG_IMAGE = "/media/hathor/r2/room-royal.webp";
 export const metadata: Metadata = {
   title: "Luxury Dahabiya Royal Suite",
   description: ROYAL_SUITES_PAGE.metaDescription,
+  alternates: {
+    canonical: "/royal-suites",
+  },
   openGraph: {
     title: "Luxury Dahabiya Royal Suite | Private Dahabiya Nile cruise",
     description: ROYAL_SUITES_PAGE.metaDescription,
@@ -43,7 +46,7 @@ export default async function RoyalSuitesPage() {
 
   return (
     <StandalonePageVisibilityShell
-      path="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"
+      path="/royal-suites"
       pageLabel="Royal Suites"
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}

@@ -150,7 +150,7 @@ function ItineraryCarouselSlide({ slide }: { slide: ExCarouselSlide }) {
   return (
     <article className="carousel-slide">
       <Link
-        href="/cruises"
+        href="/cruises-list"
         className="carousel-slide__hit"
         aria-label={`View cruises — ${slide.title}`}
       >
@@ -387,7 +387,7 @@ export function HomePageClient({
           </div>
 
           <div className="services-cta">
-            <Link className="btn btn-dark general-button" href="/cruises">
+            <Link className="btn btn-dark general-button" href="/cruises-list">
               {websiteText.home.carousel.exploreCta}
             </Link>
           </div>

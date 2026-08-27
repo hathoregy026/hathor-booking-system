@@ -10,5 +10,5 @@ export function revalidatePublicCatalog(): void {
   revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
   revalidatePath("/", "layout");
   revalidatePath("/");
-  revalidatePath("/cruises");
+  revalidatePath("/cruises-list");
 }

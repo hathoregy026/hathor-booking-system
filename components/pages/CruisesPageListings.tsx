@@ -66,7 +66,7 @@ function roomImageName(roomType: string): string {
 
 function roomDetailHref(roomType: string): string {
   if (roomType.includes("Royal")) {
-    return "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise";
+    return "/royal-suites";
   }
   if (roomType.includes("Suite")) {
     return "/rooms#suites";

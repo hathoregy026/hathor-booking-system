@@ -274,7 +274,7 @@ export const ROOMS_PAGE = {
     {
       title: "Luxury Royal Suites",
       body: "Enjoy the Royal Suites on Hathor Dahabiya, with the highest level of comfort and feel the real charm on Luxury Dahabiya Nile Cruise Hathor, with the breathtaking Nile view.",
-      href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+      href: "/royal-suites",
       hrefLabel: "View Suites",
       imageName: "room-royal",
     },
@@ -440,7 +440,7 @@ export const LUXURY_CABINS_PAGE = {
   cruisesCta: {
     title: "LUXURY ROOMS",
     body: "The Hathor Dahabiya Nile cruise experience delivers exceptional comfort and Exclusive experiences which create enduring memories for all visitors to Egypt.",
-    href: "/cruises",
+    href: "/cruises-list",
     hrefLabel: "Explore Now",
   },
 } as const;
@@ -515,7 +515,7 @@ export const LUXURY_SUITES_PAGE = {
       title: "Luxury Royal Suites",
       meta: "LED Satellite Screen · Bathtub or Walk-In Shower · Safe box",
       desc: "Step into the Signature Royal Suite on the Hathor Dahabiya Cruise and lose yourself in the wonders of forever luxury aboard a private Dahabiya Nile cruise, with a fusion of modern elegance and true Egyptian charm, serving as the perfect retreat while drifting along the amazing River Nile. Feel the tranquility in every moment and enjoy an unparalleled luxury experience.",
-      href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+      href: "/royal-suites",
       slides: [
         "room-royal",
         "scraped-royal-1",
@@ -573,7 +573,7 @@ export const LUXURY_SUITES_PAGE = {
   cruisesCta: {
     title: "Luxury Suites",
     body: "The Luxury Suites aboard the Hathor Dahabiya Cruise showcase timeless sophistication combined with modern amenities, offering a unique and private Dahabiya Cruise experience for each suite choice.",
-    href: "/cruises",
+    href: "/cruises-list",
     hrefLabel: "Read More",
   },
 } as const;
@@ -679,7 +679,7 @@ export const ROYAL_SUITES_PAGE = {
   cruisesCta: {
     title: "Luxury Royal Suites",
     body: "On this elegant and authentic Dahabiya experience, traditional craftsmanship blends seamlessly with modern luxury, creating the perfect setting for an unforgettable journey along the Nile.",
-    href: "/cruises",
+    href: "/cruises-list",
     hrefLabel: "Read More",
   },
 } as const;

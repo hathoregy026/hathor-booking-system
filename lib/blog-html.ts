@@ -45,6 +45,15 @@ const BLOCKED_TAGS = new Set([
   "meta",
 ]);
 
+const INTERNAL_HOSTS = new Set(["hathorcruise.com", "www.hathorcruise.com"]);
+
+const CANONICAL_PATH_ALIASES: Readonly<Record<string, string>> = {
+  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "/charter",
+  "/cruises": "/cruises-list",
+  "/blog": "/blogs",
+  "/journal": "/blogs",
+};
+
 function isUnsafeUrl(value: string): boolean {
   const normalized = value.trim().toLowerCase();
   return (
@@ -52,6 +61,21 @@ function isUnsafeUrl(value: string): boolean {
     normalized.startsWith("data:text/html") ||
     normalized.startsWith("vbscript:")
   );
+}
+
+function normalizeInternalHref(value: string): string {
+  try {
+    const url = new URL(value, "https://www.hathorcruise.com");
+    const isRelative = value.startsWith("/") && !value.startsWith("//");
+    if (!isRelative && !INTERNAL_HOSTS.has(url.hostname.toLowerCase())) {
+      return value;
+    }
+
+    const pathname = CANONICAL_PATH_ALIASES[url.pathname] ?? url.pathname;
+    return `${pathname}${url.search}${url.hash}`;
+  } catch {
+    return value;
+  }
 }
 
 export function isBlogHtmlContent(content: string): boolean {
@@ -86,9 +110,17 @@ export function sanitizeBlogHtml(html: string): string {
       const href = element.attribs.href?.trim() ?? "";
       if (!href || isUnsafeUrl(href)) {
         $(element).removeAttr("href");
-      } else if (/^https?:\/\//i.test(href)) {
-        $(element).attr("rel", "noopener noreferrer");
-        $(element).attr("target", "_blank");
+      } else {
+        const normalizedHref = normalizeInternalHref(href);
+        $(element).attr("href", normalizedHref);
+
+        if (!/^https?:\/\//i.test(normalizedHref)) {
+          $(element).removeAttr("target");
+          $(element).removeAttr("rel");
+        } else {
+          $(element).attr("rel", "noopener noreferrer");
+          $(element).attr("target", "_blank");
+        }
       }
     }
 

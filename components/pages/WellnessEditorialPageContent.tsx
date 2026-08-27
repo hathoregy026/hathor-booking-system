@@ -78,7 +78,7 @@ const experiences = [
   { meta: "DAILY", place: "SENEB SPA", number: "01", title: "The Spa", image: MEDIA.spa, href: "#reserve" },
   { meta: "DAILY", place: "HISTORIA", number: "02", title: "Fitness", image: MEDIA.fitness, href: "#reserve" },
   { meta: "SUNRISE", place: "NILE DECK", number: "03", title: "Breathwork", image: MEDIA.deck, href: "#reserve" },
-  { meta: "PRIVATE", place: "ROYAL SUITE", number: "04", title: "Deep Rest", image: MEDIA.royal, href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" },
+  { meta: "PRIVATE", place: "ROYAL SUITE", number: "04", title: "Deep Rest", image: MEDIA.royal, href: "/royal-suites" },
   { meta: "MORNING", place: "LUXURY SUITE", number: "05", title: "Slow Living", image: MEDIA.luxury, href: "/luxury-cabins-Nile-Cruise" },
 ] as const;
 

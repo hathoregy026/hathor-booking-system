@@ -19,7 +19,7 @@ export const revalidate = 0;
 const REVALIDATE_PATHS = [
   "/",
   "/about",
-  "/cruises",
+  "/cruises-list",
   "/highlights",
   "/gastronomy",
   "/wellness",
@@ -29,7 +29,7 @@ const REVALIDATE_PATHS = [
   "/partners",
   "/rooms",
   "/luxury-cabins-Nile-Cruise",
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "/royal-suites",
   "/admin/website-text",
   "/admin/content",
 ] as const;

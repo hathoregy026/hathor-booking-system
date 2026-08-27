@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 
-const url = "https://www.easytravegypt.com/?fresh=1";
+const url = "https://www.hathorcruise.com/?fresh=1";
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90000 });

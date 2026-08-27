@@ -116,11 +116,11 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "moving-tilted-4": "/",
   "moving-tilted-5": "/",
 
-  "cruises-hero": "/cruises",
+  "cruises-hero": "/cruises-list",
   "cabins-hero": "/luxury-cabins-Nile-Cruise",
   "room-luxury": "/suites",
   "room-suite": "/rooms",
-  "room-royal": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "room-royal": "/royal-suites",
   charter: "/charter",
   "charter-hero": "/charter",
   "charter-privacy": "/charter",
@@ -179,14 +179,14 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "scraped-cabin-6": "/luxury-cabins-Nile-Cruise",
   "scraped-cabin-7": "/luxury-cabins-Nile-Cruise",
   "scraped-cabin-8": "/luxury-cabins-Nile-Cruise",
-  "scraped-royal-1": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-2": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-3": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-4": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-5": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-6": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-7": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-  "scraped-royal-8": "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+  "scraped-royal-1": "/royal-suites",
+  "scraped-royal-2": "/royal-suites",
+  "scraped-royal-3": "/royal-suites",
+  "scraped-royal-4": "/royal-suites",
+  "scraped-royal-5": "/royal-suites",
+  "scraped-royal-6": "/royal-suites",
+  "scraped-royal-7": "/royal-suites",
+  "scraped-royal-8": "/royal-suites",
   "suites-nile-still": "/suites",
   "burger-nav-image": "/",
 };
@@ -279,7 +279,7 @@ export function resolveSiteImageLivePath(
   }
 
   /* Cruises-tab itinerary cards still render on the homepage slider. */
-  if (adminGroupPagePath === "/cruises" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
+  if (adminGroupPagePath === "/cruises-list" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
     return buildSiteImageLivePath("/", name);
   }
 

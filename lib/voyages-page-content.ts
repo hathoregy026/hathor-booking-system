@@ -17,7 +17,7 @@ export const VOYAGES_PAGE = {
       "Every Hathor voyage is composed for discovery without hurry — temples at golden hour, evenings lit by river sunset, and shore days shaped around your party.",
       "From intimate three-night passages to the complete seven-night round trip, each itinerary carries the same promise: all-inclusive luxury, private excursions, and crew who know the Nile by heart.",
     ],
-    primaryCta: { label: "View All Itineraries", href: "/cruises" },
+    primaryCta: { label: "View All Itineraries", href: "/cruises-list" },
     secondaryCta: { label: "Enquire Now", href: "/contact" },
   },
   manifesto: [
@@ -105,7 +105,7 @@ export const VOYAGES_PAGE = {
     title: "Reserve your voyage",
     body: "Choose your itinerary, select your suite, and step aboard Hathor.",
     primary: "Book Now",
-    secondary: { label: "Scheduled Voyages", href: "/cruises" },
+    secondary: { label: "Scheduled Voyages", href: "/cruises-list" },
   },
 } as const;
 
@@ -209,7 +209,7 @@ export function buildVoyagesPageItems(
     .filter((item): item is HomepageAccordionCruise => Boolean(item))
     .map((item) => ({
       ...item,
-      href: item.slug === "nile-majesty" ? "/charter" : "/cruises",
+      href: item.slug === "nile-majesty" ? "/charter" : "/cruises-list",
     }));
 
   if (ordered.length > 0) return ordered;
@@ -232,7 +232,7 @@ export function buildVoyagesPageItems(
     slug: cruise.slug,
     romanNumeral: ["I", "II", "III", "IV"][index] ?? String(index + 1),
     meta: `${cruise.rooms.length} CABINS · BASE ${formatUsd(cruise.basePriceCents)}`,
-    href: "/cruises",
+    href: "/cruises-list",
   })).concat([CHARTER_VOYAGE]);
 }
 

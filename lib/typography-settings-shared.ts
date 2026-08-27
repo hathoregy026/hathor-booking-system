@@ -383,8 +383,8 @@ export function parseMarqueePhrases(text: string): string[] {
 }
 
 export const DEFAULT_HERO_COPY: HeroCopy = {
-  main: "Ultra Luxury",
-  second: "Dahabiya Cruise",
+  main: "Luxury",
+  second: "Dahabiya Nile Cruise",
 };
 
 /** Every public page that uses the two-line PublicSiteHero */
@@ -1100,6 +1100,13 @@ export function resolveHeroPageCopy(
   fallback?: Partial<HeroCopy>,
 ): HeroCopy {
   const stored = settings.hero_pages?.[page] ?? DEFAULT_HERO_PAGES[page];
+  const isLegacyHomepageDefault =
+    page === "home" &&
+    stored.main.trim() === "Ultra Luxury" &&
+    stored.second.trim() === "Dahabiya Cruise";
+  if (isLegacyHomepageDefault) {
+    return { ...DEFAULT_HERO_PAGES.home };
+  }
   const main =
     stored.main.trim() ||
     fallback?.main?.trim() ||

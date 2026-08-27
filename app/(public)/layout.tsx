@@ -84,17 +84,13 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.replace(/^https?:\/\//, "")}`
-      : "https://hathor-booking-system.vercel.app",
-  ),
+  metadataBase: new URL("https://www.hathorcruise.com"),
   title: {
     default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
     template: "%s | Hathor Dahabiya",
   },
   description:
-    "Experience ultra-luxury on a private Dahabiya Nile cruise. Sail from Luxor to Aswan in exclusive suites with fine dining, spa, and timeless Egyptian elegance.",
+    "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
   keywords: [
     "Dahabiya Nile Cruise",
     "Luxury Egypt Cruise",

@@ -59,7 +59,7 @@ function roomImageName(roomType: string): string {
 
 function roomDetailHref(roomType: string): string {
   if (roomType.includes("Royal")) {
-    return "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise";
+    return "/royal-suites";
   }
   if (roomType.includes("Suite")) {
     return "/rooms#suites";
@@ -636,7 +636,7 @@ export function MaskRevealPageContent() {
               </li>
               <li>
                 <Link
-                  href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise"
+                  href="/royal-suites"
                   className="mr-explore-card"
                 >
                   <span className="mr-explore-card__index">03</span>

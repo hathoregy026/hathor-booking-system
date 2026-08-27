@@ -34,7 +34,7 @@ export const NAV_SUITES: NavGroup = {
       description: "Spacious quarters on deck",
     },
     {
-      href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
+      href: "/royal-suites",
       label: "Royal Suites",
       description: "Our finest rooms on the Nile",
     },
@@ -51,7 +51,7 @@ export const NAV_CRUISES: NavGroup = {
       description: "Private dahabiya itineraries on the Nile",
     },
     {
-      href: "/cruises",
+      href: "/cruises-list",
       label: "Scheduled Voyages",
       description: "Join a sailing on the Nile",
     },
@@ -100,7 +100,7 @@ export const NAV_ABOUT: NavGroup = {
       description: "Welcome aboard Hathor",
     },
     {
-      href: "/blog",
+      href: "/blogs",
       label: "Journal",
       description: "Notes from the Nile",
     },
@@ -130,9 +130,9 @@ export const EXPLORE_LINKS: NavLink[] = [
   { href: "/suites", label: "Suites" },
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
-  { href: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise", label: "Royal Suites" },
+  { href: "/royal-suites", label: "Royal Suites" },
   { href: "/voyages", label: "Our Voyages" },
-  { href: "/cruises", label: "Scheduled Voyages" },
+  { href: "/cruises-list", label: "Scheduled Voyages" },
   { href: "/charter", label: "Private Charter" },
   { href: "/highlights", label: "Highlights" },
   { href: "/wellness", label: "Wellness & Spa" },
@@ -170,7 +170,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     type: "group",
     id: NAV_CRUISES.id,
     label: NAV_CRUISES.label,
-    href: "/cruises",
+    href: "/cruises-list",
     links: NAV_CRUISES.links,
   },
   {
@@ -192,13 +192,12 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
 
 /** Path aliases so active states match legacy or redirect routes. */
 const NAV_PATH_ALIASES: Record<string, readonly string[]> = {
-  "/cruises": ["/cruises-list"],
   "/cruises-list": ["/cruises"],
   "/suites": ["/rooms", "/Nile-Cruise-Luxury-Suites"],
   "/rooms": ["/Nile-Cruise-Luxury-Suites"],
   "/luxury-cabins-Nile-Cruise": ["/accommodation", "/accommodations"],
   "/gastronomy": ["/dining"],
-  "/blog": ["/blogs"],
+  "/blogs": ["/blog"],
 };
 
 /** Whether the current pathname matches a nav href (including aliases). */

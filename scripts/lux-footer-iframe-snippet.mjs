@@ -52,7 +52,7 @@ export function getLuxFooterHtml() {
               <li><a class="lux-footer__link" href="/suites" target="_top" data-ajax-page-ignore>Suites Overview</a></li>
               <li><a class="lux-footer__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Luxury Rooms</a></li>
               <li><a class="lux-footer__link" href="/rooms" target="_top" data-ajax-page-ignore>Luxury Suites</a></li>
-              <li><a class="lux-footer__link" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
+              <li><a class="lux-footer__link" href="/royal-suites" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
             </ul>
           </div>
           <div class="lux-footer__col">

@@ -12,7 +12,7 @@ export const PUBLIC_CONTACT = {
 
 export const PUBLIC_NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/cruises", label: "Cruises" },
+  { href: "/cruises-list", label: "Cruises" },
   { href: "/wellness", label: "Wellness" },
   { href: "/gastronomy", label: "Gastronomy" },
   { href: "/about", label: "About" },

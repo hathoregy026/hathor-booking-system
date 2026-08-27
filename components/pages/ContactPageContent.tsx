@@ -168,7 +168,7 @@ export function ContactPageContent() {
                   <a href="#write">Write</a>
                   <a href="#channels">Reach</a>
                   <a href="#hours">Hours</a>
-                  <Link href="/cruises">Cruises</Link>
+                  <Link href="/cruises-list">Cruises</Link>
                 </nav>
 
                 <div className="ce-intro__inner">

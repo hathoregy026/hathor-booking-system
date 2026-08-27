@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
     revalidatePath("/", "layout");
-    for (const path of ["/", "/cruises", "/rooms"] as const) {
+    for (const path of ["/", "/cruises-list", "/rooms"] as const) {
       revalidatePath(path);
     }
 
