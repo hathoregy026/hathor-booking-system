@@ -13,38 +13,38 @@ export const suitesTypographySchema = z.object({
 
 export type SuitesTypography = z.infer<typeof suitesTypographySchema>;
 
-/** Defaults match the live Suites clone: Bitho display, Rollgates body, Hathor gold. */
+/** Suites follows the About / Contact editorial hierarchy: Italiana display and Rollgates support copy. */
 export const DEFAULT_SUITES_TYPOGRAPHY: SuitesTypography = {
   display: {
-    fontFamily: "Bitho Luxury",
-    fontSize: 88,
-    color: "#B69F64",
-    lineHeight: 0.95,
-    letterSpacing: -0.4,
+    fontFamily: "Italiana",
+    fontSize: 74,
+    color: "#14120E",
+    lineHeight: 0.88,
+    letterSpacing: -0.25,
     innerShadow: false,
   },
   secondary: {
-    fontFamily: "Bitho Luxury",
-    fontSize: 42,
-    color: "#B69F64",
-    lineHeight: 1,
-    letterSpacing: -0.2,
+    fontFamily: "Italiana",
+    fontSize: 48,
+    color: "#14120E",
+    lineHeight: 0.9,
+    letterSpacing: -0.15,
     innerShadow: false,
   },
   body: {
     fontFamily: "Rollgates Luxury Italic",
     fontSize: 18,
-    color: "#B69F64",
-    lineHeight: 1.45,
+    color: "#4A453C",
+    lineHeight: 1.55,
     letterSpacing: 0,
     innerShadow: false,
   },
 };
 
 export const DEFAULT_SUITES_TYPOGRAPHY_PHONE: SuitesTypography = {
-  display: { ...DEFAULT_SUITES_TYPOGRAPHY.display, fontSize: 52 },
-  secondary: { ...DEFAULT_SUITES_TYPOGRAPHY.secondary, fontSize: 28 },
-  body: { ...DEFAULT_SUITES_TYPOGRAPHY.body, fontSize: 16 },
+  display: { ...DEFAULT_SUITES_TYPOGRAPHY.display, fontSize: 50 },
+  secondary: { ...DEFAULT_SUITES_TYPOGRAPHY.secondary, fontSize: 34 },
+  body: { ...DEFAULT_SUITES_TYPOGRAPHY.body, fontSize: 15 },
 };
 
 const DISPLAY_SELECTORS = [

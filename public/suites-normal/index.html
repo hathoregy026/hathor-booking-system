@@ -68,6 +68,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 <link rel="stylesheet" id="contact-form-7-css" href="styles/contact-form-7.css" media="all">
 <link rel="stylesheet" id="swiper-css" href="styles/swiper-bundle.min.css" media="all">
 <link rel="stylesheet" id="main-css-css" href="styles/main.css?v=terms-white-2" media="all">
+<link rel="stylesheet" id="hathor-font-faces" href="/hathor-fonts.css" media="all">
 <style id="rocket-lazyload-inline-css">
 .rll-youtube-player{position:relative;padding-bottom:56.23%;height:0;overflow:hidden;max-width:100%;}.rll-youtube-player:focus-within{outline: 2px solid currentColor;outline-offset: 5px;}.rll-youtube-player iframe{position:absolute;top:0;left:0;width:100%;height:100%;z-index:100;background:0 0}.rll-youtube-player img{bottom:0;display:block;left:0;margin:auto;max-width:100%;width:100%;position:absolute;right:0;top:0;border:none;height:auto;-webkit-transition:.4s all;-moz-transition:.4s all;transition:.4s all}.rll-youtube-player img:hover{-webkit-filter:brightness(75%)}.rll-youtube-player .play{height:100%;width:100%;left:0;top:0;position:absolute;background:url(https://normalisboring.es/wp-content/plugins/rocket-lazy-load/assets/img/youtube.png) no-repeat center;background-color: transparent !important;cursor:pointer;border:none;}
 /*# sourceURL=rocket-lazyload-inline-css */
@@ -123,8 +124,8 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
       font-display: swap;
     }
     body {
-      color: #B69F64 !important;
-      -webkit-text-fill-color: #B69F64 !important;
+      color: #14120E !important;
+      -webkit-text-fill-color: #14120E !important;
       font-family: "Rollgates Luxury Italic", serif !important;
       font-style: italic !important;
     }
@@ -168,10 +169,12 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
       .logo__boring,
       .mod-footer__content__project__name
     ) * {
-      font-family: "Bitho Luxury", cursive !important;
-      font-style: italic !important;
-      color: #B69F64 !important;
-      -webkit-text-fill-color: #B69F64 !important;
+      font-family: "Italiana", "Gamgote", Georgia, serif !important;
+      font-style: normal !important;
+      font-weight: 400 !important;
+      letter-spacing: -0.025em !important;
+      color: #14120E !important;
+      -webkit-text-fill-color: #14120E !important;
     }
     body .mod-scroll__terms :is(
       .t-supertitulo-l,
@@ -184,8 +187,8 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
       .mod-scroll__terms__term__title,
       .mod-scroll__terms__term__text
     ) * {
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
+      color: #14120E !important;
+      -webkit-text-fill-color: #14120E !important;
       mix-blend-mode: normal !important;
       filter: none !important;
     }
@@ -219,16 +222,19 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
     }
 
     :root {
-      --black: #B69F64;
-      --beige: #F4E4CC;
-      --red: #B69F64;
-      --blue: #CEBBA0;
-      --grey: #CEBBA0;
-      --green: #F4E4CC;
-      --hathor-cream: #F4E4CC;
+      --black: #14120E;
+      --beige: #DED4C6;
+      --red: #CFC7BA;
+      --blue: #B69F64;
+      --grey: #4A453C;
+      --green: #F3EDE4;
+      --hathor-cream: #F3EDE4;
       --hathor-gold: #B69F64;
-      --hathor-sand: #CEBBA0;
-      --hathor-white: #FFFFFF;
+      --hathor-gold-deep: #806B35;
+      --hathor-sand: #DED4C6;
+      --hathor-ink: #14120E;
+      --hathor-soft-ink: #4A453C;
+      --hathor-white: #F3EDE4;
     }
     html,
     body,
@@ -236,27 +242,38 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
       background-color: var(--hathor-cream) !important;
     }
     .bg-white {
-      background: var(--hathor-white) !important;
-      box-shadow: 0 -1px 0 var(--hathor-white) !important;
-    }
-    .bg-beige,
-    .bg-green {
       background: var(--hathor-cream) !important;
       box-shadow: 0 -1px 0 var(--hathor-cream) !important;
     }
-    .bg-blue,
-    .bg-grey,
-    .bg-black,
-    .bg-red {
+    .bg-beige,
+    .bg-green {
+      background: var(--hathor-sand) !important;
+      box-shadow: 0 -1px 0 var(--hathor-sand) !important;
+    }
+    .bg-blue {
       background: var(--hathor-gold) !important;
       box-shadow: 0 -1px 0 var(--hathor-gold) !important;
     }
-    body :is(.bg-blue, .bg-grey, .bg-black, .bg-red),
-    body :is(.bg-blue, .bg-grey, .bg-black, .bg-red) *,
+    .bg-red {
+      background: var(--red) !important;
+      box-shadow: 0 -1px 0 var(--red) !important;
+    }
+    .bg-grey,
+    .bg-black {
+      background: var(--hathor-ink) !important;
+      box-shadow: 0 -1px 0 var(--hathor-ink) !important;
+    }
+    body :is(.bg-grey, .bg-black),
+    body :is(.bg-grey, .bg-black) *,
     body .c-white,
     body .c-white * {
       color: var(--hathor-white) !important;
       -webkit-text-fill-color: var(--hathor-white) !important;
+    }
+    body .bg-blue,
+    body .bg-blue * {
+      color: var(--hathor-ink) !important;
+      -webkit-text-fill-color: var(--hathor-ink) !important;
     }
     input[type="text"],
     input[type="email"],
@@ -413,6 +430,55 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
       bottom: 0 !important;
       text-align: center !important;
     }
+    .mod-scroll__intro__title {
+      font-size: clamp(3.15rem, 4.5vw, 4.6rem) !important;
+      line-height: 0.88 !important;
+    }
+    .mod-scroll__text__title__line {
+      font-size: clamp(3.8rem, 6.4vw, 6.8rem) !important;
+      line-height: 0.88 !important;
+    }
+    .mod-scroll__projects__item__text__title {
+      font-size: clamp(3rem, 4.4vw, 4.8rem) !important;
+      line-height: 0.9 !important;
+    }
+    :is(.anima__title, .last-item__content__title .line) {
+      font-size: clamp(4.3rem, 8.7vw, 8.8rem) !important;
+      line-height: 0.88 !important;
+    }
+    .mod-title--lines .line {
+      font-size: clamp(3.8rem, 7vw, 7.2rem) !important;
+      line-height: 0.88 !important;
+    }
+    .mod-scroll__intro__logo .logo__boring,
+    .mod-scroll__intro__logo .logo__boring .char,
+    .mod-scroll__intro__logo .logo__boring .char > span {
+      font-family: "Italiana", "Gamgote", Georgia, serif !important;
+      font-size: clamp(1rem, 1.3vw, 1.25rem) !important;
+      font-style: normal !important;
+      letter-spacing: 0.08em !important;
+    }
+    .mod-scroll__intro__text,
+    .mod-scroll__intro__text p,
+    .mod-scroll__text__text,
+    .mod-scroll__text__text p {
+      font-size: clamp(0.95rem, 1.05vw, 1.15rem) !important;
+      line-height: 1.55 !important;
+      color: var(--hathor-soft-ink) !important;
+      -webkit-text-fill-color: var(--hathor-soft-ink) !important;
+    }
+    @media (max-width: 480px) {
+      .mod-scroll__intro__title {
+        font-size: clamp(2.4rem, 11.8vw, 3.15rem) !important;
+      }
+      .mod-scroll__text__title__line,
+      .mod-scroll__projects__item__text__title {
+        font-size: clamp(2.65rem, 13vw, 3.6rem) !important;
+      }
+      :is(.anima__title, .last-item__content__title .line, .mod-title--lines .line) {
+        font-size: clamp(3rem, 14.5vw, 4.25rem) !important;
+      }
+    }
   </style>
   <style id="hathor-suites-terms-stage">
     html body main .mod-scroll__terms {
@@ -430,8 +496,8 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
       .t-supertitulo-l,
       .t-supertitulo-l *
     ) {
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
+      color: #14120e !important;
+      -webkit-text-fill-color: #14120e !important;
       mix-blend-mode: normal !important;
       filter: none !important;
     }
@@ -714,12 +780,12 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 
         <div class="mod-scroll__intro__content">
             <div class="mod-scroll__intro__wrap-titles">
-                                    <div class="mod-scroll__intro__title f-izmir t-titulo-xxl line lh-less is_home">Suites<br>of serenity</div>
-                                    <div class="mod-scroll__intro__title f-izmir t-titulo-xxl line lh-less is_home"><br>where<br>the Nile</div>
-                                    <div class="mod-scroll__intro__title f-izmir t-titulo-xxl line lh-less is_home">meets<br><em>luxury</em></div>
+                                    <div class="mod-scroll__intro__title f-izmir t-titulo-xxl line lh-less is_home">Suites<br>at rest</div>
+                                    <div class="mod-scroll__intro__title f-izmir t-titulo-xxl line lh-less is_home"><br>framed<br>by the Nile</div>
+                                    <div class="mod-scroll__intro__title f-izmir t-titulo-xxl line lh-less is_home">made<br><em>for living</em></div>
                             </div>
             <div class="mod-scroll__intro__text">
-                <p>Aboard Hathor, every cabin and suite is shaped around the timeless Nile—private comfort, handcrafted detail, and panoramic river light from Luxor to Aswan.</p>
+                <p>Quiet, crafted comfort; river light; the Nile just beyond the glass.</p>
             </div>
         </div>
 
@@ -787,14 +853,14 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
         <div class="mod-scroll__text__wrap-text">
 
             <div class="mod-scroll__text__title t-supertitulo f-regular">
-                                    <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-left">Suites that invite</div>
-                                    <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-left">you <span></span><span></span><span></span><span></span> to slow down</div>
+                                    <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-left">Rooms composed</div>
+                                    <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-left">for <span></span><span></span><span></span><span></span> quiet</div>
                                     <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-left">with the Nile</div>
-                                    <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-right">beside you</div>
+                                    <div class="mod-scroll__text__title__line line t-title-ls t-upper col-12 align-left t-right">always near</div>
                             </div>
 
                             <div class="mod-scroll__text__text f-izmir t-parrafo">
-                    <p>Each Hathor suite is a private sanctuary afloat. Warm woods, soft textiles, thoughtful amenities, and river-facing windows create an intimate retreat for quiet mornings, unhurried afternoons, and elegant nights on the Nile.</p>
+                    <p>Warm woods, soft textiles, panoramic windows, and thoughtful service turn each residence into a private world between Luxor and Aswan.</p>
                 </div>
 
         </div>
@@ -840,7 +906,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
             </div>
 
         <div class="mod-scroll__images-text__text">
-            <p>Hathor Dahabiya pairs the spirit of traditional Nile sailing with contemporary suite comfort. Every space is composed for privacy, beauty, and effortless living, with the river always present beyond the glass.</p>
+            <p>Traditional dahabiya craft meets contemporary comfort in suites shaped for rest, privacy, and the unhurried rhythm of the river.</p>
         </div>
 
     </div>
@@ -928,7 +994,7 @@ before-bg-blue">
             <div class="mod-scroll__terms__term__wrap-title">
                 <div class="mod-scroll__terms__term__num f-edit t-parrafo">01</div>
                 <div class="mod-scroll__terms__term__title t-supertitulo-l f-edit lh-less2">
-                    <span class="mod-scroll__terms__term__title__color">PANORAMIC VIEWS</span>
+                    <span class="mod-scroll__terms__term__title__color">RIVER LIGHT</span>
                 </div>
             </div>
 
@@ -948,7 +1014,7 @@ before-bg-blue">
             <div class="mod-scroll__terms__term__wrap-title">
                 <div class="mod-scroll__terms__term__num f-edit t-parrafo">02</div>
                 <div class="mod-scroll__terms__term__title t-supertitulo-l f-regular lh-less2">
-                    <span class="mod-scroll__terms__term__title__color">PRIVATE COMFORT</span>
+                    <span class="mod-scroll__terms__term__title__color">PRIVATE CALM</span>
                 </div>
             </div>
 
@@ -963,7 +1029,7 @@ before-bg-blue">
             <div class="mod-scroll__terms__term__wrap-title">
                 <div class="mod-scroll__terms__term__num f-edit t-parrafo">03</div>
                 <div class="mod-scroll__terms__term__title t-supertitulo-l f-izmir lh-less2">
-                    <span class="mod-scroll__terms__term__title__color">TIMELESS CRAFT</span>
+                    <span class="mod-scroll__terms__term__title__color">EGYPTIAN CRAFT</span>
                 </div>
             </div>
 
@@ -984,7 +1050,7 @@ before-bg-blue">
     <div class="mod-scroll__projects">
         <div class="mod-scroll__projects__wrap-text">
             <div class="mod-scroll__projects__section mod-scroll__section t-parrafo-l f-edit">Suite Collection</div>
-            <div class="mod-scroll__projects__text f-izmir t-parrafo">Luxury on the Nile is quiet, intimate, and deeply personal. Hathor offers cabins and suites designed not simply for sleeping, but for living beautifully between Luxor and Aswan.</div>
+            <div class="mod-scroll__projects__text f-izmir t-parrafo">Three expressions of Hathor living—from intimate cabins to our most generous Royal Suites—each composed around privacy, proportion, and uninterrupted Nile views.</div>
         </div>
 
         <!-- projects -->
@@ -1004,14 +1070,14 @@ before-bg-blue">
                         <div class="mod-scroll__projects__item__text">
                             <div class="mod-scroll__projects__item__text__data">
 
-                                <div class="f-edit t-parrafo-l"><span>12 CABINS</span></div>
-                                <div class="f-izmir t-parrafo-l"><span>NILE DECK</span></div>
+                                <div class="f-edit t-parrafo-l"><span>8 CABINS</span></div>
+                                <div class="f-izmir t-parrafo-l"><span>UPPER DECK</span></div>
                                 <div class="f-izmir t-parrafo data-number">01</div>
 
 
                                     <span><a target="_top" href="/luxury-cabins-Nile-Cruise" class="btn btn--bg btn--bg-inv btn--bg-beige c-black f-edit t-parrafo-l
                                      ">
-                                        Explore Suite                                    </a></span>
+                                        View Residence                                   </a></span>
                                                             </div>
                             <div class="mod-scroll__projects__item__text__title t-upper f-regular t-titulo-xxl">Luxury Cabins</div>
                         </div>
@@ -1034,15 +1100,15 @@ before-bg-blue">
                             <div class="mod-scroll__projects__item__text__data">
 
                                 <div class="f-edit t-parrafo-l"><span>2 SUITES</span></div>
-                                <div class="f-izmir t-parrafo-l"><span>PANORAMA DECK</span></div>
+                                <div class="f-izmir t-parrafo-l"><span>LOWER DECK</span></div>
                                 <div class="f-izmir t-parrafo data-number">02</div>
 
 
                                     <span><a target="_top" href="/rooms" class="btn btn--bg btn--bg-inv btn--bg-grey f-edit t-parrafo-l
                                      ">
-                                        Explore Suite                                    </a></span>
+                                        View Residence                                   </a></span>
                                                             </div>
-                            <div class="mod-scroll__projects__item__text__title t-upper f-izmir t-titulo-xxl">Elegant Suites</div>
+                            <div class="mod-scroll__projects__item__text__title t-upper f-izmir t-titulo-xxl">Luxury Suites</div>
                         </div>
                     </div>
 
@@ -1063,13 +1129,13 @@ before-bg-blue">
                             <div class="mod-scroll__projects__item__text__data">
 
                                 <div class="f-edit t-parrafo-l"><span>2 ROYAL</span></div>
-                                <div class="f-izmir t-parrafo-l"><span>PRIVATE BALCONY</span></div>
+                                <div class="f-izmir t-parrafo-l"><span>MAIN DECK</span></div>
                                 <div class="f-izmir t-parrafo data-number">03</div>
 
 
                                     <span><a target="_top" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" class="btn btn--bg btn--bg-inv btn--bg-blue f-edit t-parrafo-l
                                      ">
-                                        Explore Suite                                    </a></span>
+                                        View Residence                                   </a></span>
                                                             </div>
                             <div class="mod-scroll__projects__item__text__title t-upper f-edit t-titulo-xxl">Royal Suites</div>
                         </div>
@@ -1100,7 +1166,7 @@ before-bg-blue">
                                     disabled ">
                                         Discover More                                    </a></span>
                                                             </div>
-                            <div class="mod-scroll__projects__item__text__title t-upper f-regular t-titulo-xxl">Suite Comfort</div>
+                            <div class="mod-scroll__projects__item__text__title t-upper f-regular t-titulo-xxl">Ensuite Calm</div>
                         </div>
                     </div>
 
@@ -1129,7 +1195,7 @@ before-bg-blue">
                                     disabled ">
                                         Discover More                                    </a></span>
                                                             </div>
-                            <div class="mod-scroll__projects__item__text__title t-upper f-izmir t-titulo-xxl">Nile Evenings</div>
+                            <div class="mod-scroll__projects__item__text__title t-upper f-izmir t-titulo-xxl">Nile at Night</div>
                         </div>
                     </div>
 
@@ -1177,11 +1243,11 @@ before-bg-blue">
                             <div class="last-item__content__title">
                                                                     <div class="line f-regular t-titulo-xxl t-upper lh-less col-12 align-left t-left">Where every</div>
                                                                     <div class="line f-regular t-titulo-xxl t-upper lh-less col-12 align-left t-left">Nile <span></span><span></span><span></span><span></span> horizon</div>
-                                                                    <div class="line f-regular t-titulo-xxl t-upper lh-less col-12 align-left t-right">Becomes your</div>
-                                                                    <div class="line f-regular t-titulo-xxl t-upper lh-less col-12 align-left t-right">Private suite</div>
+                                                                    <div class="line f-regular t-titulo-xxl t-upper lh-less col-12 align-left t-right">Belongs to</div>
+                                                                    <div class="line f-regular t-titulo-xxl t-upper lh-less col-12 align-left t-right">Your suite</div>
                                                             </div>
                             <div class="last-item__content__text">
-                                <p>We create suites for the art of river living: spaces for rest, conversation, private dining, and uninterrupted views as Hathor drifts between Egypt’s ancient shores.</p>
+                                <p>Spaces for rest, conversation, private dining, and uninterrupted views as Hathor drifts between Egypt’s ancient shores.</p>
                             </div>
                         </div>
                     </div>
@@ -1235,7 +1301,7 @@ before-bg-blue">
             <span class="mod-title__anchor" id=""></span>
                                                     <div class="f-edit t-titulo">(Reservations)</div>
                     </div>
-        <div class="anima__title f-regular t-supertitulo-xl t-title-ls t-upper t-center">BEGIN YOUR<br>NILE JOURNEY</div>
+        <div class="anima__title f-regular t-supertitulo-xl t-title-ls t-upper t-center">YOUR NILE<br>RESIDENCE AWAITS</div>
 
 
     <!-- pretitle -->
@@ -1269,7 +1335,7 @@ before-bg-blue">
 
     <!-- lineas -->
 
-                    <div class="line f-regular t-supertitulo t-title-ls t-upper col-12 align-left t-left">Luxury Upon</div>
+                    <div class="line f-regular t-supertitulo t-title-ls t-upper col-12 align-left t-left">Life Upon</div>
                     <div class="line f-regular t-supertitulo t-title-ls t-upper col-12 align-left t-left">The Timeless</div>
                     <div class="line f-regular t-supertitulo t-title-ls t-upper col-6 align-right t-left">Nile</div>
 
@@ -1288,7 +1354,7 @@ before-bg-blue">
         <div class="mod-content__col big_text">
                         <div class="mod-content__wrap-text">
 
-                    <div class="mod-content__text big_text"><p>Our team is ready to help you select the perfect Hathor cabin or suite and shape a private Nile journey around your preferred dates, route, and pace.</p><p><strong>reservations@hathorcruise.com</strong></p></div>
+                    <div class="mod-content__text big_text"><p>Let our team pair your preferred residence with a private Nile journey shaped around your dates, route, and pace.</p><p><strong>reservations@hathorcruise.com</strong></p></div>
                             </div>
                     </div>
 

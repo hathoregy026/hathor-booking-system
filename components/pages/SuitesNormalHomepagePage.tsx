@@ -36,6 +36,7 @@ function buildSuitesLiveCss(cmsCss = "") {
     SUITES_TERMS_STAGE_CSS,
     SUITES_COLLECTION_PANEL_CSS,
     SUITES_EDITORIAL_CHROME_CSS,
+    SUITES_DNA_COLOR_CSS,
     EMBEDDED_PUBLIC_THEME_CSS,
   ].join("\n");
 }
@@ -74,6 +75,57 @@ function patchLogoWordmark(doc: Document) {
 }
 
 const SUITES_EDITORIAL_CHROME_CSS = `
+main :is(
+  .mod-scroll__intro__title,
+  .mod-scroll__text__title__line,
+  .mod-scroll__terms__term__title,
+  .mod-scroll__projects__item__text__title,
+  .last-item__content__title .line,
+  .anima__title,
+  .mod-title--lines .line,
+  .logo__normal,
+  .logo__boring
+) {
+  font-family: "Italiana", "Gamgote", Georgia, serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.025em !important;
+  text-shadow: none !important;
+}
+
+main .mod-scroll__intro__title {
+  font-size: clamp(3.15rem, 4.5vw, 4.6rem) !important;
+  line-height: 0.88 !important;
+}
+
+main .mod-scroll__text__title__line {
+  font-size: clamp(3.8rem, 6.4vw, 6.8rem) !important;
+  line-height: 0.88 !important;
+}
+
+main .mod-scroll__projects__item__text__title {
+  font-size: clamp(3rem, 4.4vw, 4.8rem) !important;
+  line-height: 0.9 !important;
+}
+
+main :is(.anima__title, .last-item__content__title .line) {
+  font-size: clamp(4.3rem, 8.7vw, 8.8rem) !important;
+  line-height: 0.88 !important;
+}
+
+main .mod-title--lines .line {
+  font-size: clamp(3.8rem, 7vw, 7.2rem) !important;
+  line-height: 0.88 !important;
+}
+
+main .mod-scroll__intro__logo .logo__boring,
+main .mod-scroll__intro__logo .logo__boring .char,
+main .mod-scroll__intro__logo .logo__boring .char > span {
+  font-family: "Italiana", "Gamgote", Georgia, serif !important;
+  font-size: clamp(1rem, 1.3vw, 1.25rem) !important;
+  letter-spacing: 0.08em !important;
+}
+
 main .mod-scroll__section,
 main .mod-scroll__intro__copyright,
 main .mod-footer__footer__copyright {
@@ -97,7 +149,7 @@ main .mod-scroll__text__text p {
   font-family: "Rollgates Luxury Italic", serif !important;
   font-style: italic !important;
   font-weight: 400 !important;
-  font-size: clamp(0.875rem, 0.95vw, 1.0625rem) !important;
+  font-size: clamp(0.95rem, 1.05vw, 1.15rem) !important;
   line-height: 1.55 !important;
   letter-spacing: 0.02em !important;
   color: rgb(64 55 37 / 0.82) !important;
@@ -127,18 +179,115 @@ main .mod-scroll__intro__text > p {
 }
 
 @media (max-width: 480px) {
+  main .mod-scroll__intro__title {
+    font-size: clamp(2.4rem, 11.8vw, 3.15rem) !important;
+  }
+
+  main .mod-scroll__text__title__line,
+  main .mod-scroll__projects__item__text__title {
+    font-size: clamp(2.65rem, 13vw, 3.6rem) !important;
+  }
+
+  main :is(.anima__title, .last-item__content__title .line, .mod-title--lines .line) {
+    font-size: clamp(3rem, 14.5vw, 4.25rem) !important;
+  }
+
   main .mod-scroll__intro__text,
   main .mod-scroll__intro__text p,
   main .mod-scroll__intro__text > p {
     text-align: left !important;
     max-width: none !important;
-    font-size: 0.875rem !important;
+    font-size: 0.95rem !important;
   }
 }
 
 html:not(.hathor-bitho-ready) .mod-scroll__intro__title {
   opacity: 0 !important;
   visibility: hidden !important;
+}
+`;
+
+const SUITES_DNA_COLOR_CSS = `
+html body main,
+html body main .bg-white {
+  background-color: #f3ede4 !important;
+  color: #14120e !important;
+}
+
+html body main .bg-beige {
+  background-color: #ded4c6 !important;
+  color: #14120e !important;
+}
+
+html body main .bg-red {
+  background-color: #cfc7ba !important;
+  color: #14120e !important;
+}
+
+html body main .bg-black,
+html body main .bg-grey {
+  background-color: #14120e !important;
+  color: #f3ede4 !important;
+}
+
+html body main .bg-blue,
+html body main .before-bg-blue::before {
+  background-color: #b69f64 !important;
+}
+
+html body main .bg-blue,
+html body main .bg-blue :is(div, span, p, a, strong, em),
+html body main .mod-scroll__terms,
+html body main .mod-scroll__terms :is(div, span, p, a, strong, em) {
+  color: #14120e !important;
+  -webkit-text-fill-color: #14120e !important;
+}
+
+html body main :is(.bg-white, .bg-beige, .bg-red) :is(
+  .mod-scroll__intro__title,
+  .mod-scroll__text__title__line,
+  .mod-scroll__projects__item__text__title,
+  .last-item__content__title .line,
+  .anima__title,
+  .mod-title--lines .line
+) {
+  color: #14120e !important;
+  -webkit-text-fill-color: #14120e !important;
+}
+
+html body main :is(.bg-black, .bg-grey) :is(
+  .mod-scroll__images-text__text,
+  .mod-scroll__images-text__text p,
+  .mod-scroll__projects__item__text__title,
+  .last-item__content__title .line
+) {
+  color: #f3ede4 !important;
+  -webkit-text-fill-color: #f3ede4 !important;
+}
+
+html body main :is(.mod-scroll__section, .mod-scroll__intro__copyright, .mod-footer__footer__copyright) {
+  color: #806b35 !important;
+  -webkit-text-fill-color: #806b35 !important;
+}
+
+html body main :is(.bg-black, .bg-grey) :is(.mod-scroll__section, .mod-footer__footer__copyright) {
+  color: #ded4c6 !important;
+  -webkit-text-fill-color: #ded4c6 !important;
+}
+
+html body main :is(.bg-white, .bg-beige, .bg-red) :is(
+  .mod-scroll__intro__text,
+  .mod-scroll__intro__text p,
+  .mod-scroll__text__text,
+  .mod-scroll__text__text p,
+  .mod-scroll__projects__text,
+  .last-item__content__text,
+  .last-item__content__text p,
+  .mod-content__text,
+  .mod-content__text p
+) {
+  color: #4a453c !important;
+  -webkit-text-fill-color: #4a453c !important;
 }
 `;
 
