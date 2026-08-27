@@ -29,7 +29,7 @@ const LOGO_LAND_STAGGER = 0.06;
 const LOGO_LAND_DELAY = 0;
 const LOGO_LAND_EASE = "power3.out";
 /** Homepage land: hold main hero titles, then rise (seconds). Logo / CTA / blinds untouched. */
-const TITLE_LAND_DELAY = 6;
+const TITLE_LAND_DELAY = 4;
 const TITLE_LAND_DURATION = 1.2;
 const TITLE_LAND_STAGGER = 0.22;
 const TITLE_LAND_FROM_Y = 64;
@@ -987,7 +987,7 @@ export function mountHeroScrollStage({
     if (lenis) lenis.off("scroll", onFirstScroll);
   };
 
-  /** If the guest scrolls during the 6s title hold, reveal titles so scrub is never blank. */
+  /** If the guest scrolls during the 4s title hold, reveal titles so scrub is never blank. */
   const onFirstScrollTitles = () => {
     if (!titlesLanded) snapTitlesLanded();
     window.removeEventListener("wheel", onFirstScrollTitles);
