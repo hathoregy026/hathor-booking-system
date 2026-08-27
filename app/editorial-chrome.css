@@ -450,7 +450,6 @@
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
   .highlights-editorial .hl-intro__body,
-  .journal-editorial .jn-folio__body,
   .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
     left: var(--ed-gutter);

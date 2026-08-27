@@ -11,7 +11,6 @@ import {
   type ReactNode,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
@@ -28,13 +27,31 @@ import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { stackedHeroLines } from "@/lib/website-text-shared";
 
 const ARCHIVE_PAGE_SIZE = 10;
-const CONTENTS_COUNT = 6;
+const CONTENTS_COUNT = 4;
+const GALLERY_COUNT = 3;
+const OPENINGS_COUNT = 3;
 
 const JOURNAL_THEMES = [
-  { word: "Temples", note: "Stone & light" },
-  { word: "River", note: "Current & calm" },
-  { word: "Seasons", note: "When to sail" },
-  { word: "Voyage", note: "Dahabiya life" },
+  {
+    word: "Temples",
+    note: "Stone & light",
+    slot: "landmark-hatshepsut",
+  },
+  {
+    word: "River",
+    note: "Current & calm",
+    slot: "home-voyage-nile-majesty",
+  },
+  {
+    word: "Seasons",
+    note: "When to sail",
+    slot: "highlights-lifestyle",
+  },
+  {
+    word: "Voyage",
+    note: "Dahabiya life",
+    slot: "blog-hero",
+  },
 ] as const;
 
 function JournalMedia({
@@ -63,7 +80,7 @@ function JournalMedia({
         alt={alt || image.alt}
         fill
         priority={priority}
-        sizes="(max-width: 950px) 100vw, 70vw"
+        sizes="(max-width: 950px) 100vw, 55vw"
         quality={SITE_IMAGE_QUALITY}
         className="jn-media__image"
       />
@@ -112,12 +129,25 @@ function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="jn-eyebrow">{children}</p>;
 }
 
-/** Pull a short display stem from a long editorial title. */
-function displayStem(title: string): string {
-  const cleaned = title.replace(/[:?].*$/, "").trim();
-  const words = cleaned.split(/\s+/).filter(Boolean);
-  if (words.length <= 2) return cleaned;
-  return words.slice(0, 2).join(" ");
+/** Whole-line title without character splitting (avoids mid-word visual breaks). */
+function TitleLines({
+  lines,
+  as: Tag = "h1",
+  className = "",
+}: {
+  lines: string[];
+  as?: "h1" | "h2";
+  className?: string;
+}) {
+  return (
+    <Tag className={className} data-anima-title>
+      {lines.map((line, index) => (
+        <span key={`${line}-${index}`} className="jn-line">
+          <span className="jn-line__text">{line}</span>
+        </span>
+      ))}
+    </Tag>
+  );
 }
 
 type BlogPageContentProps = {
@@ -133,15 +163,17 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
   const typography = useTypographySettings();
   const blogHero = resolveHeroPageCopy(typography, "blog");
   const blogHeroLines = stackedHeroLines(blogHero.main, blogHero.second);
-  const lineClass = ["jn-line--a", "jn-line--b", "jn-line--c"] as const;
   useJournalEditorialScroll({ rootRef, runRef, trackRef });
 
-  const intro =
-    pages.blog.intro.trim() || BLOG_PAGE.intro;
+  const intro = pages.blog.intro.trim() || BLOG_PAGE.intro;
 
   const featured = posts[0] ?? null;
-  const openings = posts.slice(1, 3);
+  const openings = posts.slice(1, 1 + OPENINGS_COUNT);
   const contents = posts.slice(0, Math.min(CONTENTS_COUNT, posts.length));
+  const gallery = posts.slice(
+    CONTENTS_COUNT,
+    CONTENTS_COUNT + GALLERY_COUNT,
+  );
   const archivePosts = useMemo(
     () => posts.slice(0, archiveCount),
     [posts, archiveCount],
@@ -162,65 +194,81 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
         >
           <div className="jn-stage">
             <div ref={trackRef} className="jn-track">
-              {/* 01 — Masthead folio (typography-led; not a photo hero) */}
+              {/* 01 — Masthead with portrait image */}
               <Scene className="jn-folio">
-                <p className="jn-folio__mast">
-                  <span>Hathor Journal</span>
-                  <i />
-                  <span>Vol. 01</span>
-                  <i />
-                  <span>Egypt 2026</span>
-                </p>
+                <div className="jn-folio__copy">
+                  <p className="jn-folio__mast">
+                    <span>Hathor Journal</span>
+                    <i />
+                    <span>Vol. 01</span>
+                    <i />
+                    <span>Egypt 2026</span>
+                  </p>
 
-                <nav className="jn-folio__nav" aria-label="Journal sections">
-                  <a href="#journal">Journal</a>
-                  <a href="#feature">Feature</a>
-                  <a href="#contents">Index</a>
-                  <a href="#archive">Archive</a>
-                </nav>
+                  <nav className="jn-folio__nav" aria-label="Journal sections">
+                    <a href="#journal">Journal</a>
+                    <a href="#feature">Feature</a>
+                    <a href="#contents">Index</a>
+                    <a href="#archive">Archive</a>
+                  </nav>
 
-                <div className="jn-folio__inner">
                   <Eyebrow>From the river</Eyebrow>
 
-                  <div className="jn-folio__title" id="journal" data-anima-title>
-                    <h1 className="jn-display jn-display--xl wt-page-hero">
-                      {blogHeroLines.map((line, index) => (
-                        <span
-                          key={`${line}-${index}`}
-                          className={`jn-line ${lineClass[index] ?? ""}`}
-                        >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
-                        </span>
-                      ))}
-                    </h1>
+                  <div className="jn-folio__title" id="journal">
+                    <TitleLines
+                      lines={blogHeroLines}
+                      className="jn-display jn-display--xl wt-page-hero"
+                    />
                   </div>
 
+                  <p className="jn-folio__body wt-page-body">{intro}</p>
+
+                  <div className="jn-folio__foot">
+                    <p className="jn-folio__mark">
+                      Hathor Cruise <span className="jn-reg">®</span> Journal
+                    </p>
+                    <p className="jn-folio__scroll">
+                      <i />
+                      Scroll
+                    </p>
+                  </div>
+                </div>
+
+                <div className="jn-folio__visual">
+                  <JournalMedia
+                    slot="blog-hero"
+                    alt="Hathor journal on the Nile"
+                    priority
+                    className="jn-folio__media"
+                    ratio="4 / 5"
+                  />
                   <p className="jn-folio__count jn-edit" aria-hidden="true">
                     {issueCount}
                   </p>
                 </div>
-
-                <p className="jn-folio__body wt-page-body">{intro}</p>
-
-                <p className="jn-folio__mark">
-                  Hathor Cruise <span className="jn-reg">®</span> Journal
-                </p>
-                <p className="jn-folio__scroll">
-                  <i />
-                  Scroll
-                </p>
               </Scene>
 
-              {/* 02 — Featured story as immersive reading plane */}
+              {/* 02 — Featured story */}
               {featured ? (
                 <Scene className="jn-feature" id="feature">
-                  <JournalMedia
-                    slot={getBlogHeroImageName(featured.slug)}
-                    alt={`Editorial view for ${featured.title}`}
-                    priority
-                    className="jn-feature__media"
-                    ratio="1279 / 960"
-                  />
+                  <div className="jn-feature__visual">
+                    <JournalMedia
+                      slot={getBlogHeroImageName(featured.slug)}
+                      alt={`Editorial view for ${featured.title}`}
+                      priority
+                      className="jn-feature__media"
+                      ratio="5 / 4"
+                    />
+                    <FlipImage
+                      className="jn-feature__inset"
+                      axis="left"
+                      ratio="4 / 5"
+                      front="highlights-lifestyle"
+                      back="landmark-valley-kings"
+                      frontAlt="Life along the Nile"
+                      backAlt="Valley of the Kings"
+                    />
+                  </div>
                   <div className="jn-feature__plate">
                     <Eyebrow>Lead story</Eyebrow>
                     <time
@@ -229,9 +277,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                     >
                       {formatBlogPublishedDate(featured.publishedAt)}
                     </time>
-                    <h2 className="jn-display jn-display--l" data-anima-title>
-                      {featured.title}
-                    </h2>
+                    <h2 className="jn-feature__title">{featured.title}</h2>
                     <p className="jn-meta-copy">{featured.excerpt}</p>
                     <Link href={`/blogs/${featured.slug}`} className="jn-btn">
                       <span>Read the story</span>
@@ -242,7 +288,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 <Scene className="jn-feature jn-feature--empty" id="feature">
                   <div className="jn-feature__plate">
                     <Eyebrow>Lead story</Eyebrow>
-                    <h2 className="jn-display jn-display--l">Arriving soon</h2>
+                    <h2 className="jn-feature__title">Arriving soon</h2>
                     <p className="jn-meta-copy">
                       New journal notes from the Nile will appear here.
                     </p>
@@ -250,8 +296,18 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 </Scene>
               )}
 
-              {/* 03 — Issue datum: quiet framed count + lyrical line */}
+              {/* 03 — Issue datum with imagery */}
               <Scene className="jn-issue">
+                <FlipImage
+                  className="jn-issue__media"
+                  axis="up"
+                  ratio="4 / 5"
+                  front="landmark-obelisk"
+                  back="gastronomy-hero"
+                  frontAlt="Egyptian landmark"
+                  backAlt="Dining aboard Hathor"
+                />
+
                 <div className="jn-issue__frame">
                   <span className="jn-issue__corner jn-issue__corner--tl">
                     Issue
@@ -259,10 +315,8 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                   <span className="jn-issue__corner jn-issue__corner--tr">
                     Egypt · Nile
                   </span>
-
                   <p className="jn-issue__num jn-edit">{issueCount}</p>
                   <p className="jn-issue__label">Published notes</p>
-
                   <span className="jn-issue__corner jn-issue__corner--bl">
                     Hathor Journal
                   </span>
@@ -271,28 +325,22 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                   </span>
                 </div>
 
-                <div className="jn-issue__lyric" data-anima-title>
-                  <h2 className="jn-edit jn-edit--xl">
-                    <span className="jn-line">
-                      <AnimaSplitLine line={0}>Stories written</AnimaSplitLine>
-                    </span>
-                    <span className="jn-line">
-                      <AnimaSplitLine line={1}>for the journey</AnimaSplitLine>
-                    </span>
-                    <span className="jn-line jn-line--indent">
-                      <AnimaSplitLine line={2}>ahead</AnimaSplitLine>
-                    </span>
-                  </h2>
+                <div className="jn-issue__lyric">
+                  <TitleLines
+                    as="h2"
+                    lines={["Stories written", "for the journey", "ahead"]}
+                    className="jn-edit jn-edit--xl"
+                  />
                 </div>
               </Scene>
 
-              {/* 04 — Contents index: archive ledger of stories */}
+              {/* 04 — Contents with thumbnails */}
               <Scene className="jn-contents" id="contents">
                 <div className="jn-contents__head">
                   <Eyebrow>Contents</Eyebrow>
                   <p className="jn-meta-copy">
-                    An index of recent notes — temples, river villages, packing
-                    guidance, and the slower pace of Dahabiya travel.
+                    Recent notes — temples, river villages, packing guidance,
+                    and the slower pace of Dahabiya travel.
                   </p>
                 </div>
 
@@ -303,9 +351,18 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                         <span className="jn-entry__num">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <h3 className="jn-entry__word jn-display">
-                          {displayStem(post.title)}
-                        </h3>
+                        <Link
+                          href={`/blogs/${post.slug}`}
+                          className="jn-entry__thumb"
+                          aria-label={`Read ${post.title}`}
+                        >
+                          <JournalMedia
+                            slot={getBlogHeroImageName(post.slug)}
+                            alt=""
+                            className="jn-entry__media"
+                            ratio="5 / 4"
+                          />
+                        </Link>
                         <div className="jn-entry__detail">
                           <time
                             dateTime={post.publishedAt}
@@ -313,13 +370,12 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                           >
                             {formatBlogPublishedDate(post.publishedAt)}
                           </time>
-                          <p className="jn-entry__title">{post.title}</p>
+                          <h3 className="jn-entry__title">
+                            <Link href={`/blogs/${post.slug}`}>{post.title}</Link>
+                          </h3>
                           <p className="jn-entry__excerpt">{post.excerpt}</p>
                         </div>
-                        <Link
-                          href={`/blogs/${post.slug}`}
-                          className="jn-btn"
-                        >
+                        <Link href={`/blogs/${post.slug}`} className="jn-btn">
                           <span>Read</span>
                         </Link>
                       </li>
@@ -330,7 +386,40 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 )}
               </Scene>
 
-              {/* 05 — Openings: asymmetric visual essay of two stories */}
+              {/* 05 — Gallery of story images */}
+              {gallery.length > 0 ? (
+                <Scene className="jn-gallery" aria-label="Journal gallery">
+                  {gallery.map((post, index) => (
+                    <article
+                      key={post.slug}
+                      className={`jn-gallery__card jn-gallery__card--${index + 1}`}
+                    >
+                      <Link
+                        href={`/blogs/${post.slug}`}
+                        className="jn-gallery__frame"
+                        aria-label={`Read ${post.title}`}
+                      >
+                        <JournalMedia
+                          slot={getBlogHeroImageName(post.slug)}
+                          alt={`Editorial view for ${post.title}`}
+                          className="jn-gallery__media"
+                          ratio={index === 1 ? "4 / 5" : "5 / 4"}
+                        />
+                      </Link>
+                      <div className="jn-gallery__copy">
+                        <span className="jn-gallery__meta">
+                          {String(index + 1 + CONTENTS_COUNT).padStart(2, "0")}
+                        </span>
+                        <h3>
+                          <Link href={`/blogs/${post.slug}`}>{post.title}</Link>
+                        </h3>
+                      </div>
+                    </article>
+                  ))}
+                </Scene>
+              ) : null}
+
+              {/* 06 — Openings essay */}
               {openings.length > 0 ? (
                 <Scene className="jn-openings" aria-label="Story openings">
                   {openings.map((post, index) => (
@@ -347,15 +436,16 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                           slot={getBlogHeroImageName(post.slug)}
                           alt={`Editorial view for ${post.title}`}
                           className="jn-opening__media"
-                          ratio={index === 0 ? "4 / 5" : "5 / 6"}
+                          ratio="4 / 5"
                         />
                       </Link>
                       <div className="jn-opening__copy">
                         <span className="jn-opening__meta">
-                          {String(index + 2).padStart(2, "0")} ·{" "}
                           {formatBlogPublishedDate(post.publishedAt)}
                         </span>
-                        <h3 className="jn-display">{displayStem(post.title)}</h3>
+                        <h3>
+                          <Link href={`/blogs/${post.slug}`}>{post.title}</Link>
+                        </h3>
                         <p className="jn-meta-copy">{post.excerpt}</p>
                         <Link href={`/blogs/${post.slug}`} className="jn-link">
                           Open the note
@@ -366,27 +456,35 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 </Scene>
               ) : null}
 
-              {/* 06 — Themes pause on olive wash */}
+              {/* 07 — Themes with images */}
               <Scene className="jn-themes">
                 <Eyebrow>Reading paths</Eyebrow>
                 <ul className="jn-themes__list">
                   {JOURNAL_THEMES.map((theme) => (
                     <li key={theme.word} className="jn-theme">
-                      <span className="jn-theme__word jn-display">
-                        {theme.word}
-                      </span>
-                      <span className="jn-theme__note">{theme.note}</span>
+                      <JournalMedia
+                        slot={theme.slot}
+                        alt={theme.word}
+                        className="jn-theme__media"
+                        ratio="1 / 1"
+                      />
+                      <div className="jn-theme__copy">
+                        <span className="jn-theme__word jn-display">
+                          {theme.word}
+                        </span>
+                        <span className="jn-theme__note">{theme.note}</span>
+                      </div>
                     </li>
                   ))}
                 </ul>
               </Scene>
 
-              {/* 07 — Closing cue before vertical archive */}
+              {/* 08 — Closing */}
               <Scene className="jn-closing">
                 <FlipImage
                   className="jn-closing__media"
                   axis="up"
-                  ratio="1483 / 960"
+                  ratio="16 / 10"
                   front="blog-hero"
                   back="home-voyage-nile-majesty"
                   frontAlt="Hathor journal on the Nile"
@@ -394,25 +492,25 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 />
                 <div className="jn-closing__copy">
                   <Eyebrow>Next</Eyebrow>
-                  <p className="jn-display jn-display--l">Continue reading</p>
+                  <TitleLines
+                    as="h2"
+                    lines={["Continue", "reading"]}
+                    className="jn-display jn-display--l"
+                  />
                 </div>
               </Scene>
             </div>
           </div>
         </section>
 
-        {/* Epilogue — vertical archive + conversion */}
         <section className="jn-epilogue" id="archive">
           <header className="jn-epilogue__head">
             <Eyebrow>Archive</Eyebrow>
-            <h2 className="jn-display jn-display--l" data-anima-title>
-              <span className="jn-line">
-                <AnimaSplitLine line={0}>The full</AnimaSplitLine>
-              </span>
-              <span className="jn-line jn-line--indent">
-                <AnimaSplitLine line={1}>journal</AnimaSplitLine>
-              </span>
-            </h2>
+            <TitleLines
+              as="h2"
+              lines={["The full", "journal"]}
+              className="jn-display jn-display--l"
+            />
             <p className="jn-meta-copy">
               Browse every published note. Each piece is written to inform your
               next journey aboard Hathor.
@@ -426,6 +524,18 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                   <span className="jn-archive__num">
                     {String(index + 1).padStart(2, "0")}
                   </span>
+                  <Link
+                    href={`/blogs/${post.slug}`}
+                    className="jn-archive__thumb"
+                    aria-label={`Read ${post.title}`}
+                  >
+                    <JournalMedia
+                      slot={getBlogHeroImageName(post.slug)}
+                      alt=""
+                      className="jn-archive__media"
+                      ratio="5 / 4"
+                    />
+                  </Link>
                   <div className="jn-archive__body">
                     <time dateTime={post.publishedAt}>
                       {formatBlogPublishedDate(post.publishedAt)}
