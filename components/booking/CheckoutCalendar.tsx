@@ -77,7 +77,6 @@ type CheckoutCalendarProps = {
   onGoBack: () => void;
   onUpdateDates: () => void;
   isUpdating?: boolean;
-  canUpdate?: boolean;
   preferredRoomId?: string | null;
   actionLabel?: string;
 };
@@ -184,7 +183,6 @@ export function CheckoutCalendar({
   onGoBack,
   onUpdateDates,
   isUpdating = false,
-  canUpdate = false,
   preferredRoomId = null,
   actionLabel = "Update Dates of Stay",
 }: CheckoutCalendarProps) {
@@ -192,6 +190,7 @@ export function CheckoutCalendar({
   const [days, setDays] = useState<CruiseCalendarDay[]>([]);
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dateReminder, setDateReminder] = useState<string | null>(null);
   const fetchGenerationRef = useRef(0);
 
   const visibleYear = visibleMonth.getFullYear();
@@ -215,6 +214,10 @@ export function CheckoutCalendar({
     () => buildSailingPeriodKeys(selectedDateKey, checkOutDateKey),
     [selectedDateKey, checkOutDateKey],
   );
+
+  useEffect(() => {
+    if (selectedDateKey) setDateReminder(null);
+  }, [selectedDateKey]);
 
   const rangeLabel = useMemo(() => {
     if (!selectedDateKey) return "Select your check-in date";
@@ -388,6 +391,15 @@ export function CheckoutCalendar({
         </span>
       </div>
 
+      {dateReminder ? (
+        <p
+          className="historia-checkout-calendar__error historia-checkout-calendar__error--banner"
+          role="alert"
+        >
+          {dateReminder}
+        </p>
+      ) : null}
+
       <div className="historia-checkout-calendar__actions">
         <button
           type="button"
@@ -400,8 +412,14 @@ export function CheckoutCalendar({
         <button
           type="button"
           className="public-btn-gold"
-          onClick={onUpdateDates}
-          disabled={!canUpdate || isUpdating}
+          onClick={() => {
+            if (!selectedDateKey) {
+              setDateReminder("Please pick a sailing date to continue.");
+              return;
+            }
+            onUpdateDates();
+          }}
+          disabled={isUpdating}
         >
           {isUpdating ? "Updating…" : actionLabel}
         </button>

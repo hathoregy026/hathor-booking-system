@@ -6,7 +6,7 @@ import {
   lockBodyScroll,
   unlockBodyScroll,
 } from "@/lib/body-scroll-lock";
-import { BedDouble, CalendarDays, MapPin, Minus, Plus, X } from "lucide-react";
+import { BedDouble, MapPin, Minus, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
@@ -294,76 +294,53 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                 </div>
               </div>
 
-              <div className="hathor-modal-dates-grid">
+              <div className="hathor-modal-party">
                 <div className="hathor-modal-field">
-                  <span className="hathor-modal-label">Check-in</span>
-                  <p className="hathor-modal-readonly">
-                    <CalendarDays
+                  <label htmlFor="hathor-rooms" className="hathor-modal-label">
+                    Rooms
+                  </label>
+                  <div className="hathor-modal-control">
+                    <BedDouble
                       className="hathor-modal-control__icon"
                       aria-hidden
                       strokeWidth={1.5}
                     />
-                    <span>Choose your check-in date</span>
-                  </p>
+                    <select
+                      id="hathor-rooms"
+                      className="hathor-modal-select"
+                      value={roomCount}
+                      onChange={(event) =>
+                        handleRoomCountChange(Number(event.target.value))
+                      }
+                    >
+                      {[1, 2, 3, 4].map((count) => (
+                        <option key={count} value={count}>
+                          {count} {count === 1 ? "Room" : "Rooms"}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div className="hathor-modal-field">
-                  <span className="hathor-modal-label">Check-out</span>
-                  <p className="hathor-modal-readonly">
-                    <CalendarDays
-                      className="hathor-modal-control__icon"
-                      aria-hidden
-                      strokeWidth={1.5}
+
+                {primaryRoom ? (
+                  <div className="hathor-modal-guests">
+                    <CounterField
+                      label="Adults"
+                      value={primaryRoom.adults}
+                      min={1}
+                      max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
+                      onChange={(adults) => updatePrimaryRoomGuests({ adults })}
                     />
-                    <span>Choose your check-out date</span>
-                  </p>
-                </div>
+                    <CounterField
+                      label="Children"
+                      value={primaryRoom.children}
+                      min={0}
+                      max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
+                      onChange={(children) => updatePrimaryRoomGuests({ children })}
+                    />
+                  </div>
+                ) : null}
               </div>
-
-              <div className="hathor-modal-field">
-                <label htmlFor="hathor-rooms" className="hathor-modal-label">
-                  Rooms
-                </label>
-                <div className="hathor-modal-control">
-                  <BedDouble
-                    className="hathor-modal-control__icon"
-                    aria-hidden
-                    strokeWidth={1.5}
-                  />
-                  <select
-                    id="hathor-rooms"
-                    className="hathor-modal-select"
-                    value={roomCount}
-                    onChange={(event) =>
-                      handleRoomCountChange(Number(event.target.value))
-                    }
-                  >
-                    {[1, 2, 3, 4].map((count) => (
-                      <option key={count} value={count}>
-                        {count} {count === 1 ? "Room" : "Rooms"}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {primaryRoom ? (
-                <div className="hathor-modal-guests">
-                  <CounterField
-                    label="Adults"
-                    value={primaryRoom.adults}
-                    min={1}
-                    max={Math.max(1, maxGuestsRoom1 - primaryRoom.children)}
-                    onChange={(adults) => updatePrimaryRoomGuests({ adults })}
-                  />
-                  <CounterField
-                    label="Children"
-                    value={primaryRoom.children}
-                    min={0}
-                    max={Math.max(0, maxGuestsRoom1 - primaryRoom.adults)}
-                    onChange={(children) => updatePrimaryRoomGuests({ children })}
-                  />
-                </div>
-              ) : null}
 
               {roomCount > 1 ? (
                 <p className="hathor-modal-hint">

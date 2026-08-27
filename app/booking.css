@@ -2797,6 +2797,15 @@
   color: #b42318;
 }
 
+.historia-checkout-calendar__error--banner {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgb(180 35 24 / 0.08);
+  border: 1px solid rgb(180 35 24 / 0.22);
+  font-weight: 600;
+}
+
 .historia-checkout-calendar__legend {
   display: flex;
   justify-content: center;

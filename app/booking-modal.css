@@ -427,6 +427,9 @@ html[data-public-theme="day"] .hathor-booking-modal__close:hover {
 }
 
 .hathor-booking-modal__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   flex: 1;
   overflow-y: auto;
   padding: 0.85rem 2rem 0.5rem;
@@ -593,6 +596,13 @@ html[data-public-theme="day"] .hathor-modal-select:focus {
   gap: 0.9rem;
 }
 
+.hathor-modal-party {
+  display: grid;
+  grid-template-columns: minmax(8.5rem, 0.95fr) minmax(0, 1.25fr);
+  gap: 0.9rem 1rem;
+  align-items: end;
+}
+
 .hathor-modal-readonly {
   display: flex;
   align-items: center;
@@ -628,6 +638,7 @@ html[data-public-theme="day"] .hathor-modal-readonly {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.9rem;
+  min-width: 0;
 }
 
 .hathor-modal-hint {
@@ -980,10 +991,14 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
   .hathor-booking-modal__main::before {
     opacity: 0.2;
   }
+
+  .hathor-modal-party {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 380px) {
-  .hathor-modal-dates-grid,
   .hathor-modal-guests {
     grid-template-columns: 1fr;
   }
