@@ -128,6 +128,12 @@ export default function RootLayout({
             __html: getTouchDeviceBlockingScript(),
           }}
         />
+        {/* Disable GA on /admin before gtag loads — staff traffic must not inflate reports. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(location.pathname.indexOf("/admin")===0){window["ga-disable-G-3QKFST6VXE"]=true;}}catch(e){}})();`,
+          }}
+        />
         {/* Google tag (gtag.js) — site-wide, after first-paint boot scripts. */}
         <script
           async

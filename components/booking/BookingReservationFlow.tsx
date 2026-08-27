@@ -110,11 +110,14 @@ export function BookingReservationFlow({
     return () => cancelAnimationFrame(frame);
   }, [initialRoomBooking]);
 
-  const checkoutTracked = useRef(false);
+  const trackedFunnelSteps = useRef(new Set<number>());
   useEffect(() => {
-    if (checkoutStep !== 4 || isSuccess || checkoutTracked.current) return;
-    checkoutTracked.current = true;
-    trackGaEvent("begin_checkout");
+    if (isSuccess || trackedFunnelSteps.current.has(checkoutStep)) return;
+    trackedFunnelSteps.current.add(checkoutStep);
+    if (checkoutStep === 1) trackGaEvent("booking_itinerary");
+    else if (checkoutStep === 2) trackGaEvent("booking_dates");
+    else if (checkoutStep === 3) trackGaEvent("booking_suite");
+    else if (checkoutStep === 4) trackGaEvent("begin_checkout");
   }, [checkoutStep, isSuccess]);
 
   const stepTitles = useMemo(
@@ -211,7 +214,7 @@ export function BookingReservationFlow({
 
   const handleUpdateDates = async () => {
     if (!duration || !selectedDateKey) {
-      setError("Please select a check-in date.");
+      setError("Please pick a sailing date to continue.");
       return;
     }
 
@@ -346,7 +349,6 @@ export function BookingReservationFlow({
           onGoBack={handleGoBackFromDates}
           onUpdateDates={() => void handleUpdateDates()}
           isUpdating={isUpdatingDates}
-          canUpdate={Boolean(selectedDateKey)}
           preferredRoomId={preferredRoomId}
           actionLabel={preferredRoomId ? "Continue with selected date" : undefined}
         />

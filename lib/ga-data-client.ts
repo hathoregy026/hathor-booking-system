@@ -4,8 +4,14 @@ import { format, parse } from "date-fns";
 import { BookingStatus } from "@/app/generated/prisma/enums";
 import { withDb } from "@/lib/db-safe";
 import {
+  GA_ADMIN_PREVIOUS_RANGES,
   GA_ADMIN_RANGES,
+  GA_TRACKING_START_ISO,
+  type GaAdminAlert,
+  type GaAdminCompare,
+  type GaAdminDelta,
   type GaAdminDeviceSlice,
+  type GaAdminFunnelStep,
   type GaAdminRangeId,
   type GaAdminRankedItem,
   type GaAdminReport,
@@ -19,14 +25,18 @@ const GA_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
 const ANALYTICS_DATA_BASE = "https://analyticsdata.googleapis.com/v1beta";
 const REPORT_TTL_MS = 8 * 60 * 1000;
 const REALTIME_TTL_MS = 30_000;
-const FETCH_TIMEOUT_MS = 18_000;
+const FETCH_TIMEOUT_MS = 22_000;
 const PROPERTY_ID_PATTERN = /^\d{6,20}$/;
 const CONVERSION_EVENTS = [
   "purchase",
   "begin_checkout",
   "generate_lead",
   "booking_confirmed",
+  "booking_itinerary",
+  "booking_dates",
+  "booking_suite",
 ] as const;
+const GA_TRACKING_START = new Date(`${GA_TRACKING_START_ISO}T00:00:00.000Z`);
 
 const serviceAccountSchema = z.object({
   type: z.literal("service_account"),
@@ -364,31 +374,78 @@ async function runGaRequest(
   return parsed.data;
 }
 
-async function countConfirmedBookings(rangeId: GaAdminRangeId): Promise<number> {
+function previousBookingBounds(rangeId: GaAdminRangeId): { gte: Date; lt: Date } {
+  const current = bookingBoundsForRange(rangeId);
+  const durationMs = current.lt.getTime() - current.gte.getTime();
+  return {
+    gte: new Date(current.gte.getTime() - durationMs),
+    lt: current.gte,
+  };
+}
+
+function clipToTrackingStart(bounds: { gte: Date; lt: Date }): {
+  gte: Date;
+  lt: Date;
+  clipped: boolean;
+} {
+  const clipped = bounds.gte < GA_TRACKING_START;
+  const gte = clipped ? GA_TRACKING_START : bounds.gte;
+  return { gte, lt: bounds.lt, clipped };
+}
+
+type BookingWindowStats = {
+  count: number;
+  revenueCents: number;
+  clipped: boolean;
+};
+
+async function getBookingStats(
+  bounds: { gte: Date; lt: Date },
+): Promise<BookingWindowStats> {
+  const window = clipToTrackingStart(bounds);
+  if (window.gte >= window.lt) {
+    return { count: 0, revenueCents: 0, clipped: window.clipped };
+  }
+
   try {
-    const bounds = bookingBoundsForRange(rangeId);
-    return await withDb(() =>
-      prisma.booking.count({
+    const aggregate = await withDb(() =>
+      prisma.booking.aggregate({
         where: {
           deletedAt: null,
           status: BookingStatus.CONFIRMED,
-          createdAt: { gte: bounds.gte, lt: bounds.lt },
+          createdAt: { gte: window.gte, lt: window.lt },
         },
+        _count: { _all: true },
+        _sum: { totalPriceCents: true },
       }),
     );
+    return {
+      count: aggregate._count?._all ?? 0,
+      revenueCents: aggregate._sum.totalPriceCents ?? 0,
+      clipped: window.clipped,
+    };
   } catch {
-    return 0;
+    return { count: 0, revenueCents: 0, clipped: window.clipped };
   }
 }
 
-function parseEventCounts(
-  rows: z.infer<typeof gaReportSchema>["rows"],
-): { checkoutStarts: number; purchases: number; leads: number; bookingEvents: number } {
+function parseEventCounts(rows: z.infer<typeof gaReportSchema>["rows"]): {
+  checkoutStarts: number;
+  purchases: number;
+  leads: number;
+  bookingEvents: number;
+  itinerary: number;
+  dates: number;
+  suite: number;
+} {
   const counts = {
     checkoutStarts: 0,
     purchases: 0,
     leads: 0,
     bookingEvents: 0,
+    itinerary: 0,
+    dates: 0,
+    suite: 0,
   };
   for (const row of rows ?? []) {
     const name = (row.dimensionValues?.[0]?.value ?? "").trim();
@@ -397,8 +454,93 @@ function parseEventCounts(
     else if (name === "purchase") counts.purchases = count;
     else if (name === "generate_lead") counts.leads = count;
     else if (name === "booking_confirmed") counts.bookingEvents = count;
+    else if (name === "booking_itinerary") counts.itinerary = count;
+    else if (name === "booking_dates") counts.dates = count;
+    else if (name === "booking_suite") counts.suite = count;
   }
   return counts;
+}
+
+function toDelta(current: number, previous: number): GaAdminDelta {
+  if (previous <= 0) {
+    return { current, previous, changePct: current === 0 ? 0 : null };
+  }
+  return {
+    current,
+    previous,
+    changePct: ((current - previous) / previous) * 100,
+  };
+}
+
+function buildCompare(
+  rangeId: GaAdminRangeId,
+  current: {
+    visitors: number;
+    pageViews: number;
+    bounceRate: number;
+    bookings: number;
+    revenueCents: number;
+  },
+  previous: {
+    visitors: number;
+    pageViews: number;
+    bounceRate: number;
+    bookings: number;
+    revenueCents: number;
+  },
+): GaAdminCompare {
+  return {
+    label: GA_ADMIN_PREVIOUS_RANGES[rangeId].label,
+    visitors: toDelta(current.visitors, previous.visitors),
+    pageViews: toDelta(current.pageViews, previous.pageViews),
+    bounceRate: toDelta(current.bounceRate, previous.bounceRate),
+    bookings: toDelta(current.bookings, previous.bookings),
+    revenueCents: toDelta(current.revenueCents, previous.revenueCents),
+  };
+}
+
+function buildAlerts(compare: GaAdminCompare): GaAdminAlert[] {
+  const alerts: GaAdminAlert[] = [];
+  const visitors = compare.visitors;
+  if (
+    visitors.previous > 5 &&
+    visitors.current < visitors.previous * 0.6
+  ) {
+    alerts.push({
+      id: "traffic_drop",
+      message: `Visitors dropped ${Math.abs(visitors.changePct ?? 0).toFixed(0)}% versus the previous period.`,
+    });
+  }
+  const bounce = compare.bounceRate;
+  if (bounce.current - bounce.previous > 15) {
+    alerts.push({
+      id: "bounce_up",
+      message: `Bounce rate rose ${Math.round(bounce.current - bounce.previous)} points versus the previous period.`,
+    });
+  }
+  const bookings = compare.bookings;
+  if (bookings.previous > 0 && bookings.current < bookings.previous * 0.5) {
+    alerts.push({
+      id: "bookings_drop",
+      message: `Confirmed bookings dropped ${Math.abs(bookings.changePct ?? 0).toFixed(0)}% versus the previous period.`,
+    });
+  }
+  return alerts;
+}
+
+function rankedRows(
+  rows: z.infer<typeof gaReportSchema>["rows"],
+  labelFor: (row: z.infer<typeof gaRowSchema>) => string,
+): GaAdminRankedItem[] {
+  const merged = new Map<string, number>();
+  for (const row of rows ?? []) {
+    const label = labelFor(row);
+    merged.set(label, (merged.get(label) ?? 0) + parseCount(row.metricValues?.[0]?.value));
+  }
+  return [...merged.entries()]
+    .map(([label, value]) => ({ label, value }))
+    .filter((item) => item.value > 0)
+    .sort((left, right) => right.value - left.value);
 }
 
 async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport> {
@@ -406,11 +548,26 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
   const account = readServiceAccount();
   const token = await getAccessToken(account);
   const range = GA_ADMIN_RANGES[rangeId];
+  const previous = GA_ADMIN_PREVIOUS_RANGES[rangeId];
   const dateRanges = [{ startDate: range.startDate, endDate: range.endDate }];
+  const prevDateRanges = [{ startDate: previous.startDate, endDate: previous.endDate }];
   const days = seriesDaysForRange(rangeId);
+  const purchaseFilter = {
+    filter: {
+      fieldName: "eventName",
+      stringFilter: { value: "purchase", matchType: "EXACT" as const },
+    },
+  };
 
-  const [daily, totals, pages, sources, countries, devices, events, bookings] =
-    await Promise.all([
+  const [
+    daily,
+    totals,
+    prevTotals,
+    pages,
+    events,
+    currentBookings,
+    previousBookings,
+  ] = await Promise.all([
     runGaRequest(
       token,
       propertyId,
@@ -440,6 +597,19 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
       },
       account.client_email,
     ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges: prevDateRanges,
+        metrics: [
+          { name: "activeUsers" },
+          { name: "screenPageViews" },
+          { name: "bounceRate" },
+        ],
+      },
+      account.client_email,
+    ),
     runGaRequest(
       token,
       propertyId,
@@ -453,6 +623,28 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
       },
       account.client_email,
     ),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges,
+        dimensions: [{ name: "eventName" }],
+        metrics: [{ name: "eventCount" }],
+        dimensionFilter: {
+          filter: {
+            fieldName: "eventName",
+            inListFilter: { values: [...CONVERSION_EVENTS] },
+          },
+        },
+        limit: 16,
+      },
+      account.client_email,
+    ),
+    getBookingStats(bookingBoundsForRange(rangeId)),
+    getBookingStats(previousBookingBounds(rangeId)),
+  ]);
+
+  const [sources, countries, devices, landing, campaigns] = await Promise.all([
     runOptionalReport(
       token,
       propertyId,
@@ -494,20 +686,94 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
       propertyId,
       {
         dateRanges,
-        dimensions: [{ name: "eventName" }],
-        metrics: [{ name: "eventCount" }],
-        dimensionFilter: {
-          filter: {
-            fieldName: "eventName",
-            inListFilter: { values: [...CONVERSION_EVENTS] },
-          },
-        },
-        limit: 12,
+        dimensions: [{ name: "landingPage" }],
+        metrics: [{ name: "sessions" }],
+        orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+        limit: 8,
       },
       account.client_email,
     ),
-    countConfirmedBookings(rangeId),
+    runOptionalReport(
+      token,
+      propertyId,
+      {
+        dateRanges,
+        dimensions: [
+          { name: "sessionCampaignName" },
+          { name: "sessionSource" },
+          { name: "sessionMedium" },
+        ],
+        metrics: [{ name: "sessions" }],
+        orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+        limit: 8,
+      },
+      account.client_email,
+    ),
   ]);
+
+  const [cities, audience, hours, purchaseSources, devicePurchases] =
+    await Promise.all([
+      runOptionalReport(
+        token,
+        propertyId,
+        {
+          dateRanges,
+          dimensions: [{ name: "city" }],
+          metrics: [{ name: "sessions" }],
+          orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+          limit: 8,
+        },
+        account.client_email,
+      ),
+      runOptionalReport(
+        token,
+        propertyId,
+        {
+          dateRanges,
+          dimensions: [{ name: "newVsReturning" }],
+          metrics: [{ name: "activeUsers" }],
+          limit: 4,
+        },
+        account.client_email,
+      ),
+      runOptionalReport(
+        token,
+        propertyId,
+        {
+          dateRanges,
+          dimensions: [{ name: "hour" }],
+          metrics: [{ name: "sessions" }],
+          orderBys: [{ dimension: { dimensionName: "hour" } }],
+          limit: 24,
+        },
+        account.client_email,
+      ),
+      runOptionalReport(
+        token,
+        propertyId,
+        {
+          dateRanges,
+          dimensions: [{ name: "sessionSource" }, { name: "sessionMedium" }],
+          metrics: [{ name: "eventCount" }],
+          dimensionFilter: purchaseFilter,
+          orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
+          limit: 8,
+        },
+        account.client_email,
+      ),
+      runOptionalReport(
+        token,
+        propertyId,
+        {
+          dateRanges,
+          dimensions: [{ name: "deviceCategory" }],
+          metrics: [{ name: "eventCount" }],
+          dimensionFilter: purchaseFilter,
+          limit: 6,
+        },
+        account.client_email,
+      ),
+    ]);
 
   const byDate = new Map<string, { visitors: number; pageViews: number }>();
   for (const row of daily.rows ?? []) {
@@ -538,18 +804,44 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
     };
   });
 
-  const sourceRows: GaAdminRankedItem[] = (sources?.rows ?? []).map((row) => ({
-    label: formatSource(
-      row.dimensionValues?.[0]?.value,
-      row.dimensionValues?.[1]?.value,
-    ),
-    value: parseCount(row.metricValues?.[0]?.value),
-  }));
+  const sourceRows = rankedRows(sources?.rows, (row) =>
+    formatSource(row.dimensionValues?.[0]?.value, row.dimensionValues?.[1]?.value),
+  ).slice(0, 8);
 
-  const countryRows: GaAdminRankedItem[] = (countries?.rows ?? []).map((row) => ({
-    label: sanitizeLabel(row.dimensionValues?.[0]?.value, "Unknown"),
-    value: parseCount(row.metricValues?.[0]?.value),
-  }));
+  const countryRows = rankedRows(countries?.rows, (row) =>
+    sanitizeLabel(row.dimensionValues?.[0]?.value, "Unknown"),
+  ).slice(0, 8);
+
+  const cityRows = rankedRows(cities?.rows, (row) =>
+    sanitizeLabel(row.dimensionValues?.[0]?.value, "Unknown"),
+  ).slice(0, 8);
+
+  const landingRows = rankedRows(landing?.rows, (row) =>
+    sanitizePath(row.dimensionValues?.[0]?.value),
+  ).slice(0, 8);
+
+  const campaignRows = rankedRows(campaigns?.rows, (row) => {
+    const campaign = (row.dimensionValues?.[0]?.value ?? "").trim();
+    const source = formatSource(
+      row.dimensionValues?.[1]?.value,
+      row.dimensionValues?.[2]?.value,
+    );
+    if (!campaign || campaign === "(not set)") return source;
+    return `${sanitizeLabel(campaign)} · ${source}`;
+  }).slice(0, 8);
+
+  const bookingSourceRows = rankedRows(purchaseSources?.rows, (row) =>
+    formatSource(row.dimensionValues?.[0]?.value, row.dimensionValues?.[1]?.value),
+  ).slice(0, 8);
+
+  const purchaseByDevice = new Map<string, number>();
+  for (const row of devicePurchases?.rows ?? []) {
+    const key = parseDevice(row.dimensionValues?.[0]?.value);
+    purchaseByDevice.set(
+      key,
+      (purchaseByDevice.get(key) ?? 0) + parseCount(row.metricValues?.[0]?.value),
+    );
+  }
 
   const deviceTotals = new Map<string, number>();
   for (const row of devices?.rows ?? []) {
@@ -564,16 +856,76 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
       key,
       label: DEVICE_LABELS[key] ?? "Other",
       value,
+      conversions: purchaseByDevice.get(key) ?? 0,
     }))
     .filter((slice) => slice.value > 0)
     .sort((left, right) => right.value - left.value);
 
+  const hourMap = new Map<number, number>();
+  for (const row of hours?.rows ?? []) {
+    const hour = parseCount(row.dimensionValues?.[0]?.value);
+    if (hour > 23) continue;
+    hourMap.set(hour, parseCount(row.metricValues?.[0]?.value));
+  }
+  const hourRows: GaAdminRankedItem[] = Array.from({ length: 24 }, (_, hour) => ({
+    label: `${String(hour).padStart(2, "0")}:00`,
+    value: hourMap.get(hour) ?? 0,
+  }));
+
+  let newUsers = 0;
+  let returningUsers = 0;
+  for (const row of audience?.rows ?? []) {
+    const kind = (row.dimensionValues?.[0]?.value ?? "").toLowerCase();
+    const count = parseCount(row.metricValues?.[0]?.value);
+    if (kind.includes("new")) newUsers += count;
+    else if (kind.includes("return")) returningUsers += count;
+  }
+
   const totalsRow =
     totals.rows?.[0]?.metricValues ?? totals.totals?.[0]?.metricValues;
+  const prevTotalsRow =
+    prevTotals?.rows?.[0]?.metricValues ?? prevTotals?.totals?.[0]?.metricValues;
   const visitors = parseCount(totalsRow?.[0]?.value);
+  const pageViews = parseCount(totalsRow?.[1]?.value);
+  const bounceRate = parseBounceRate(totalsRow?.[3]?.value);
   const eventCounts = parseEventCounts(events?.rows);
-  const bookingCount = Math.max(bookings, eventCounts.purchases, eventCounts.bookingEvents);
+  const bookingCount = currentBookings.count;
+  const revenueCents = currentBookings.revenueCents;
   const rate = visitors > 0 ? Math.min(100, (bookingCount / visitors) * 100) : 0;
+  const abandonedCheckouts = Math.max(
+    0,
+    eventCounts.checkoutStarts - bookingCount,
+  );
+  const averageBookingCents =
+    bookingCount > 0 ? Math.round(revenueCents / bookingCount) : 0;
+  const revenuePerVisitorCents =
+    visitors > 0 ? Math.round(revenueCents / visitors) : 0;
+
+  const funnel: GaAdminFunnelStep[] = [
+    { id: "itinerary", label: "Itinerary", count: eventCounts.itinerary },
+    { id: "dates", label: "Dates", count: eventCounts.dates },
+    { id: "suite", label: "Suite", count: eventCounts.suite },
+    { id: "checkout", label: "Checkout", count: eventCounts.checkoutStarts },
+    { id: "confirmed", label: "Confirmed", count: bookingCount },
+  ];
+
+  const compare = buildCompare(
+    rangeId,
+    {
+      visitors,
+      pageViews,
+      bounceRate,
+      bookings: bookingCount,
+      revenueCents,
+    },
+    {
+      visitors: parseCount(prevTotalsRow?.[0]?.value),
+      pageViews: parseCount(prevTotalsRow?.[1]?.value),
+      bounceRate: parseBounceRate(prevTotalsRow?.[2]?.value),
+      bookings: previousBookings.count,
+      revenueCents: previousBookings.revenueCents,
+    },
+  );
 
   return {
     range: {
@@ -585,24 +937,39 @@ async function loadGaAdminReport(rangeId: GaAdminRangeId): Promise<GaAdminReport
       endIso: days[days.length - 1]?.iso ?? "",
     },
     generatedAt: new Date().toISOString(),
+    conversionClipped: currentBookings.clipped,
     totals: {
       visitors,
-      pageViews: parseCount(totalsRow?.[1]?.value),
+      pageViews,
       sessions: parseCount(totalsRow?.[2]?.value),
-      bounceRate: parseBounceRate(totalsRow?.[3]?.value),
+      bounceRate,
       averageSessionDurationSeconds: parseDecimal(totalsRow?.[4]?.value),
+      newUsers,
+      returningUsers,
     },
     conversions: {
       bookings: bookingCount,
       checkoutStarts: eventCounts.checkoutStarts,
       purchases: eventCounts.purchases,
       leads: eventCounts.leads,
+      abandonedCheckouts,
       rate,
+      revenueCents,
+      averageBookingCents,
+      revenuePerVisitorCents,
     },
+    compare,
+    alerts: buildAlerts(compare),
+    funnel,
     series,
+    hours: hourRows,
     topPages,
+    landingPages: landingRows,
     sources: sourceRows,
+    campaigns: campaignRows,
+    bookingSources: bookingSourceRows,
     countries: countryRows,
+    cities: cityRows,
     devices: deviceRows,
   };
 }

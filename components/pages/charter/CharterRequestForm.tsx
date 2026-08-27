@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { trackGaEvent } from "@/lib/ga-browser";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -112,6 +113,7 @@ export function CharterRequestForm({
       }
 
       setState("success");
+      trackGaEvent("generate_lead", { lead_type: "charter" });
       form.reset();
     } catch (error) {
       setState("error");

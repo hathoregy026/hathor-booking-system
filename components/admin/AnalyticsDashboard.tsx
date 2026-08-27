@@ -6,15 +6,22 @@ import {
   AlertTriangle,
   BarChart3,
   Clock3,
+  Download,
   Eye,
+  Filter,
   Globe2,
+  Landmark,
+  MapPin,
+  Megaphone,
   MonitorSmartphone,
   MousePointerClick,
   Percent,
   RefreshCw,
   Share2,
   Ticket,
+  UserPlus,
   Users,
+  Wallet,
 } from "lucide-react";
 import {
   Area,
@@ -34,8 +41,12 @@ import { ActionButton } from "@/components/admin/ActionButton";
 import { DataTable } from "@/components/admin/DataTable";
 import { StatCard } from "@/components/admin/StatCard";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import { formatPrice } from "@/lib/client-dates";
+import { buildAnalyticsCsv } from "@/lib/ga-admin-csv";
 import type {
+  GaAdminDelta,
   GaAdminDeviceSlice,
+  GaAdminFunnelStep,
   GaAdminRangeId,
   GaAdminRankedItem,
   GaAdminReport,
@@ -43,7 +54,11 @@ import type {
   GaRealtimeReport,
   GaRealtimeResponse,
 } from "@/lib/ga-admin-report";
-import { GA_ADMIN_RANGE_IDS, GA_ADMIN_RANGES } from "@/lib/ga-admin-report";
+import {
+  GA_ADMIN_RANGE_IDS,
+  GA_ADMIN_RANGES,
+  GA_TRACKING_START_ISO,
+} from "@/lib/ga-admin-report";
 
 type Cubic = [number, number, number, number];
 const EASE_SMOOTH: Cubic = [0.32, 0.72, 0, 1];
@@ -76,6 +91,110 @@ function formatDuration(seconds: number): string {
   const rest = total % 60;
   if (minutes === 0) return `${rest}s`;
   return `${minutes}m ${String(rest).padStart(2, "0")}s`;
+}
+
+function deltaProps(
+  delta: GaAdminDelta | undefined,
+  invert = false,
+): { change?: string; changeType?: "positive" | "negative" | "neutral" } {
+  if (!delta) return {};
+  if (delta.changePct === null) {
+    if (delta.current > 0) {
+      return { change: "New", changeType: invert ? "negative" : "positive" };
+    }
+    return {};
+  }
+  const rounded = Math.round(delta.changePct);
+  const change = `${rounded > 0 ? "+" : ""}${rounded}%`;
+  const effective = invert ? -delta.changePct : delta.changePct;
+  const changeType =
+    effective > 1 ? "positive" : effective < -1 ? "negative" : "neutral";
+  return { change, changeType };
+}
+
+function downloadCsv(report: GaAdminReport) {
+  const blob = new Blob([buildAnalyticsCsv(report)], {
+    type: "text/csv;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `hathor-analytics-${report.range.id}-${report.range.endIso}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function FunnelSteps({ steps }: { steps: GaAdminFunnelStep[] }) {
+  const peak = Math.max(1, ...steps.map((step) => step.count));
+  if (steps.every((step) => step.count === 0)) {
+    return (
+      <p className="mt-5 text-sm" style={{ color: "var(--text-muted)" }}>
+        Funnel events will appear after guests move through itinerary, dates,
+        suite, checkout, and confirmation.
+      </p>
+    );
+  }
+
+  return (
+    <ol className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {steps.map((step, index) => {
+        const previous = index === 0 ? step.count : steps[index - 1]?.count ?? 0;
+        const retained = previous > 0 ? Math.round((step.count / previous) * 100) : 0;
+        const width = Math.max(8, Math.round((step.count / peak) * 100));
+        return (
+          <li
+            key={step.id}
+            className="rounded-2xl p-3"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <p
+              className="text-[11px] font-semibold uppercase tracking-[0.16em]"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {step.label}
+            </p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums tracking-tight">
+              {formatCount(step.count)}
+            </p>
+            {index > 0 && (
+              <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                {retained}% of previous
+              </p>
+            )}
+            <div
+              className="mt-2 h-1 overflow-hidden rounded-full"
+              style={{ background: "var(--border)" }}
+            >
+              <div
+                className="h-full rounded-full"
+                style={{ width: `${width}%`, background: "var(--accent)" }}
+              />
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function HourHeat({ hours }: { hours: GaAdminRankedItem[] }) {
+  const peak = Math.max(1, ...hours.map((item) => item.value));
+  return (
+    <div className="mt-5 flex h-24 items-end gap-px" aria-hidden>
+      {hours.map((item) => (
+        <span
+          key={item.label}
+          title={`${item.label} · ${formatCount(item.value)} sessions`}
+          className="min-w-0 flex-1 rounded-sm"
+          style={{
+            height: `${Math.max(6, Math.round((item.value / peak) * 100))}%`,
+            background: item.value > 0 ? "var(--accent)" : "var(--border)",
+            opacity: item.value > 0 ? 0.9 : 0.4,
+          }}
+        />
+      ))}
+    </div>
+  );
 }
 
 function deviceFill(key: string): string {
@@ -179,42 +298,55 @@ function DevicePie({
   }
 
   return (
-    <div className="mt-2 h-[220px] w-full min-w-0 sm:h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="label"
-            innerRadius="52%"
-            outerRadius="78%"
-            paddingAngle={2}
-            stroke="none"
-            isAnimationActive={!reduceMotion}
-          >
-            {data.map((slice) => (
-              <Cell key={slice.key} fill={slice.fill} />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(value) => formatCount(Number(value ?? 0))}
-            contentStyle={{
-              background: "var(--bg-glass)",
-              border: "1px solid var(--border)",
-              borderRadius: 12,
-              color: "var(--text-primary)",
-            }}
-          />
-          <Legend
-            verticalAlign="bottom"
-            formatter={(value) => (
-              <span style={{ color: "var(--text-secondary)", fontSize: 12 }}>
-                {value}
-              </span>
-            )}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="mt-2">
+      <div className="h-[220px] w-full min-w-0 sm:h-[260px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="label"
+              innerRadius="52%"
+              outerRadius="78%"
+              paddingAngle={2}
+              stroke="none"
+              isAnimationActive={!reduceMotion}
+            >
+              {data.map((slice) => (
+                <Cell key={slice.key} fill={slice.fill} />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value) => formatCount(Number(value ?? 0))}
+              contentStyle={{
+                background: "var(--bg-glass)",
+                border: "1px solid var(--border)",
+                borderRadius: 12,
+                color: "var(--text-primary)",
+              }}
+            />
+            <Legend
+              verticalAlign="bottom"
+              formatter={(value) => (
+                <span style={{ color: "var(--text-secondary)", fontSize: 12 }}>
+                  {value}
+                </span>
+              )}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      {data.some((slice) => slice.conversions > 0) && (
+        <ul className="mt-3 space-y-1 text-xs" style={{ color: "var(--text-muted)" }}>
+          {data.map((slice) => (
+            <li key={`${slice.key}-conv`}>
+              {slice.label}: {formatCount(slice.value)} sessions
+              {" · "}
+              {formatCount(slice.conversions)} purchases
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -406,6 +538,17 @@ export function AnalyticsDashboard() {
           </select>
           <ActionButton
             variant="outline"
+            icon={Download}
+            onClick={() => {
+              if (report) downloadCsv(report);
+            }}
+            disabled={!report}
+            className="shrink-0 px-4 py-2"
+          >
+            CSV
+          </ActionButton>
+          <ActionButton
+            variant="outline"
             icon={RefreshCw}
             onClick={() => void load(rangeId)}
             disabled={isLoading}
@@ -436,6 +579,28 @@ export function AnalyticsDashboard() {
         </div>
       )}
 
+      {report?.conversionClipped && (
+        <div
+          className="card p-4 text-sm"
+          style={{ borderColor: "color-mix(in srgb, var(--accent) 45%, var(--border))" }}
+        >
+          Bookings in this conversion rate only count from {GA_TRACKING_START_ISO},
+          when site tracking went live — earlier reservations are excluded so the
+          rate stays honest.
+        </div>
+      )}
+
+      {(report?.alerts.length ?? 0) > 0 && (
+        <div className="space-y-3">
+          {report?.alerts.map((alert) => (
+            <div key={alert.id} className="admin-alert admin-alert--danger" role="status">
+              <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden />
+              <p className="text-sm">{alert.message}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
       <LiveMonitor live={live} isLoading={liveLoading} />
 
       <motion.section className="admin-bento" aria-label="Traffic summary" {...gridMotion}>
@@ -457,9 +622,9 @@ export function AnalyticsDashboard() {
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 Checkouts {formatCount(report.conversions.checkoutStarts)}
                 {" · "}
-                Purchases {formatCount(report.conversions.purchases)}
+                Abandoned {formatCount(report.conversions.abandonedCheckouts)}
                 {" · "}
-                Leads {formatCount(report.conversions.leads)}
+                Purchases {formatCount(report.conversions.purchases)}
               </p>
             )}
           </StatCard>
@@ -469,10 +634,11 @@ export function AnalyticsDashboard() {
             label="Bookings"
             value={formatCount(report?.conversions.bookings ?? 0)}
             icon={Ticket}
-            hint="Confirmed reservations in this range"
+            hint={report?.compare.label ?? "Confirmed reservations in this range"}
             isLoading={isLoading}
             href="/admin/bookings"
             className="h-full"
+            {...deltaProps(report?.compare.bookings)}
           />
         </motion.div>
         <motion.div {...tileMotion}>
@@ -480,9 +646,10 @@ export function AnalyticsDashboard() {
             label="Visitors"
             value={formatCount(report?.totals.visitors ?? 0)}
             icon={Users}
-            hint={report?.range.label ?? "Selected range"}
+            hint={report?.compare.label ?? report?.range.label ?? "Selected range"}
             isLoading={isLoading}
             className="h-full"
+            {...deltaProps(report?.compare.visitors)}
           />
         </motion.div>
         <motion.div {...tileMotion}>
@@ -493,6 +660,7 @@ export function AnalyticsDashboard() {
             hint="Sessions that were not engaged"
             isLoading={isLoading}
             className="h-full"
+            {...deltaProps(report?.compare.bounceRate, true)}
           />
         </motion.div>
         <motion.div {...tileMotion}>
@@ -515,6 +683,71 @@ export function AnalyticsDashboard() {
                 ? `Peak day ${formatCount(peakViews)} views`
                 : report?.range.label ?? "Selected range"
             }
+            isLoading={isLoading}
+            className="h-full"
+            {...deltaProps(report?.compare.pageViews)}
+          />
+        </motion.div>
+      </motion.section>
+
+      <motion.section className="admin-bento" aria-label="Revenue and audience" {...gridMotion}>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Revenue"
+            value={formatPrice(report?.conversions.revenueCents ?? 0)}
+            icon={Wallet}
+            hint={report?.compare.label ?? "Confirmed booking value"}
+            isLoading={isLoading}
+            className="h-full"
+            {...deltaProps(report?.compare.revenueCents)}
+          />
+        </motion.div>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Avg. booking"
+            value={formatPrice(report?.conversions.averageBookingCents ?? 0)}
+            icon={Ticket}
+            hint="Mean confirmed booking value"
+            isLoading={isLoading}
+            className="h-full"
+          />
+        </motion.div>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Per visitor"
+            value={formatPrice(report?.conversions.revenuePerVisitorCents ?? 0)}
+            icon={Wallet}
+            hint="Revenue divided by visitors"
+            isLoading={isLoading}
+            className="h-full"
+          />
+        </motion.div>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Leads"
+            value={formatCount(report?.conversions.leads ?? 0)}
+            icon={Filter}
+            hint="Contact and charter form submissions"
+            isLoading={isLoading}
+            className="h-full"
+          />
+        </motion.div>
+        <motion.div {...tileMotion}>
+          <StatCard
+            label="Abandoned checkouts"
+            value={formatCount(report?.conversions.abandonedCheckouts ?? 0)}
+            icon={AlertTriangle}
+            hint="Checkout starts minus confirmed bookings"
+            isLoading={isLoading}
+            className="h-full"
+          />
+        </motion.div>
+        <motion.div className="col-span-2" {...tileMotion}>
+          <StatCard
+            label="New vs returning"
+            value={`${formatCount(report?.totals.newUsers ?? 0)} / ${formatCount(report?.totals.returningUsers ?? 0)}`}
+            icon={UserPlus}
+            hint="New users / returning users"
             isLoading={isLoading}
             className="h-full"
           />
@@ -619,7 +852,12 @@ export function AnalyticsDashboard() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="admin-heading text-base sm:text-lg">Device breakdown</h2>
-              <p className="admin-subheading mt-1">Desktop, mobile, and tablet sessions</p>
+              <p className="admin-subheading mt-1">
+                Sessions by device
+                {report?.devices.some((device) => device.conversions > 0)
+                  ? " · purchases shown in the legend"
+                  : ""}
+              </p>
             </div>
             <MonitorSmartphone
               className="h-5 w-5 shrink-0"
@@ -685,11 +923,170 @@ export function AnalyticsDashboard() {
             />
           )}
         </section>
+
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Cities</h2>
+              <p className="admin-subheading mt-1">Top cities by sessions</p>
+            </div>
+            <MapPin
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
+          </div>
+          {isLoading ? (
+            <div className="mt-5 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="admin-skeleton h-8 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <RankedBars items={report?.cities ?? []} empty="No city data yet." />
+          )}
+        </section>
+
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Campaigns</h2>
+              <p className="admin-subheading mt-1">UTM campaign · source / medium</p>
+            </div>
+            <Megaphone
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
+          </div>
+          {isLoading ? (
+            <div className="mt-5 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="admin-skeleton h-8 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <RankedBars
+              items={report?.campaigns ?? []}
+              empty="No campaign tags yet. Add utm_campaign to ads and emails."
+            />
+          )}
+        </section>
+
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Landing pages</h2>
+              <p className="admin-subheading mt-1">First page of the session</p>
+            </div>
+            <Landmark
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
+          </div>
+          {isLoading ? (
+            <div className="mt-5 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="admin-skeleton h-8 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <RankedBars
+              items={report?.landingPages ?? []}
+              empty="Landing pages will appear after sessions land."
+            />
+          )}
+        </section>
+
+        <section className="card p-4 sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="admin-heading text-base sm:text-lg">Paid-trip sources</h2>
+              <p className="admin-subheading mt-1">
+                Source of purchase events (not stored on the booking itself)
+              </p>
+            </div>
+            <Share2
+              className="h-5 w-5 shrink-0"
+              style={{ color: "var(--accent)" }}
+              aria-hidden
+            />
+          </div>
+          {isLoading ? (
+            <div className="mt-5 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <div key={index} className="admin-skeleton h-8 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : (
+            <RankedBars
+              items={report?.bookingSources ?? []}
+              empty="Purchase-by-source appears after confirmed checkout events."
+            />
+          )}
+        </section>
       </div>
+
+      <section className="card p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="admin-heading text-base sm:text-lg">Booking funnel</h2>
+            <p className="admin-subheading mt-1">
+              Itinerary → dates → suite → checkout → confirmed
+            </p>
+          </div>
+          <Filter
+            className="h-5 w-5 shrink-0"
+            style={{ color: "var(--accent)" }}
+            aria-hidden
+          />
+        </div>
+        {isLoading ? (
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="admin-skeleton h-24 rounded-2xl" />
+            ))}
+          </div>
+        ) : (
+          <FunnelSteps steps={report?.funnel ?? []} />
+        )}
+      </section>
+
+      <section className="card p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="admin-heading text-base sm:text-lg">Hour of day</h2>
+            <p className="admin-subheading mt-1">Sessions by hour (00:00–23:00)</p>
+          </div>
+          <Clock3
+            className="h-5 w-5 shrink-0"
+            style={{ color: "var(--accent)" }}
+            aria-hidden
+          />
+        </div>
+        {isLoading ? (
+          <div className="admin-skeleton mt-5 h-24 w-full rounded-2xl" />
+        ) : (
+          <>
+            <HourHeat hours={report?.hours ?? []} />
+            <div
+              className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.14em]"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <span>00</span>
+              <span>06</span>
+              <span>12</span>
+              <span>18</span>
+              <span>23</span>
+            </div>
+          </>
+        )}
+      </section>
 
       <DataTable
         title="Top performing pages"
-        description="Most visited paths this week, ranked by page views"
+        description="Most visited paths in this range, ranked by page views"
         isLoading={isLoading}
         isEmpty={!isLoading && !(report?.topPages.length)}
         emptyTitle="No page views yet"
@@ -737,6 +1134,31 @@ export function AnalyticsDashboard() {
           </table>
         </div>
       </DataTable>
+
+      <section className="card p-4 sm:p-6 text-sm" style={{ color: "var(--text-secondary)" }}>
+        <h2 className="admin-heading text-base sm:text-lg">Google-side setup</h2>
+        <p className="admin-subheading mt-1">These cannot be switched from this dashboard.</p>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          <li>
+            In GA4 Admin → Events, mark as key events:{" "}
+            <span className="font-mono text-xs">purchase</span>,{" "}
+            <span className="font-mono text-xs">begin_checkout</span>,{" "}
+            <span className="font-mono text-xs">generate_lead</span>,{" "}
+            <span className="font-mono text-xs">booking_confirmed</span>,{" "}
+            <span className="font-mono text-xs">booking_itinerary</span>,{" "}
+            <span className="font-mono text-xs">booking_dates</span>,{" "}
+            <span className="font-mono text-xs">booking_suite</span>.
+          </li>
+          <li>
+            Link Search Console under GA4 Admin → Product links to see Google
+            search queries in the Google UI (not in this page).
+          </li>
+          <li>
+            Filter staff office traffic in GA4 Admin → Data streams → Configure
+            tag settings → Define internal traffic.
+          </li>
+        </ul>
+      </section>
     </div>
   );
 }

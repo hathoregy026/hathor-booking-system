@@ -3,6 +3,7 @@
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
+import { trackGaEvent } from "@/lib/ga-browser";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 
 type InquiryFormProps = {
@@ -102,6 +103,7 @@ export function InquiryForm({
       }
 
       setState("success");
+      trackGaEvent("generate_lead", { lead_type: type });
       form.reset();
     } catch (error) {
       setState("error");
