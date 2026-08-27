@@ -421,10 +421,13 @@ function refreshSuitesHorizontalScroll(doc: Document) {
   const win = doc.defaultView;
   if (!win || win.innerWidth <= 950) return;
 
+  const host = doc.body ?? doc.documentElement;
+  if (!host) return;
+
   const script = doc.createElement("script");
   script.textContent =
     'try{if(typeof setScrollH==="function")setScrollH();if(window.ScrollTrigger)ScrollTrigger.refresh();}catch(e){console.warn("suites scroll refresh",e)}';
-  doc.body.appendChild(script);
+  host.appendChild(script);
   script.remove();
 }
 
