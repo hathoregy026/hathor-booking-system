@@ -196,16 +196,16 @@
 }
 
 /* ==========================================================================
-   3. AMENITIES SEQUENCE — extend the author's phone layout to 481-767px
+   3. AMENITIES SEQUENCE — stacked full-width chapters at ≤767px
    --------------------------------------------------------------------------
-   These declarations are lifted from the existing
-   `@media (max-width: 480px)` block in home-dining-slider.css so the
-   narrative reads identically on a large phone or small tablet. The values
-   are the author's, not new art direction. The <=480px band is deliberately
-   NOT included, so the original block continues to own true phone widths.
+   Lifted from the author's single-column phone layout so the narrative
+   reads as full-width photo + caption (not a 50/50 desktop split) on true
+   phones and small tablets. `home-dining-slider.css` still carries a ≤480px
+   50/50 leftover; !important + sequence-scoped selectors here beat it.
+   Desktop (>1024) and tablet landscape two-column layout are untouched.
    ========================================================================== */
 
-@media (min-width: 481px) and (max-width: 767.98px) {
+@media (max-width: 767.98px) {
   html[data-ex-experience] .home-am-sequence {
     --sticky-under-previous-distance: 80svh;
     --sticky-under-next-distance: 80svh;
@@ -215,18 +215,23 @@
     height: 150svh;
   }
 
-  html[data-ex-experience] .home-am-intro__caption {
-    max-width: 88vw;
+  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
+    max-width: 88vw !important;
+    width: auto !important;
     text-align: left;
-    left: 1.6rem;
-    right: 1.6rem;
+    left: 1.6rem !important;
+    right: 1.6rem !important;
+    top: auto !important;
+    bottom: auto !important;
   }
 
-  html[data-ex-experience] .home-am-intro__cream {
-    width: 100%;
-    height: 42%;
-    top: auto;
-    bottom: 0;
+  html[data-ex-experience] .home-am-intro__cream,
+  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    width: 100% !important;
+    height: 42% !important;
+    top: auto !important;
+    right: 0;
+    bottom: 0 !important;
     align-items: center;
   }
 
@@ -238,16 +243,16 @@
 
   html[data-ex-experience] .home-am-video__hero,
   html[data-ex-experience] .home-am-video__hero-wrap {
-    transform-origin: bottom center;
-    top: auto;
-    bottom: 0;
-    height: 42%;
+    transform-origin: bottom center !important;
+    top: auto !important;
+    bottom: 0 !important;
+    height: 42% !important;
   }
 
   html[data-ex-experience] .home-am-video__copy {
-    top: 6rem;
-    left: 1.6rem;
-    width: calc(100% - 3.2rem);
+    top: 6rem !important;
+    left: 1.6rem !important;
+    width: calc(100% - 3.2rem) !important;
   }
 
   html[data-ex-experience] .home-am-video__title {
@@ -266,11 +271,20 @@
     z-index: 2;
   }
 
+  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
+    top: auto !important;
+    right: 1.6rem !important;
+    left: 1.6rem !important;
+    bottom: 40vh !important;
+    width: auto !important;
+    max-width: calc(100vw - 3.2rem) !important;
+  }
+
   /* Was collapsing to 49% of the viewport — the headline defect at 701px. */
   html[data-ex-experience] .home-am-video__caption {
     flex: none;
-    width: 100%;
-    max-width: none;
+    width: 100% !important;
+    max-width: none !important;
   }
 
   /* ---- slider chapter ---- */
@@ -280,27 +294,31 @@
   }
 
   html[data-ex-experience] .home-am-slider__row {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   html[data-ex-experience] .home-am-slider__caption-col,
-  html[data-ex-experience] .home-am-slider__images-col {
-    flex: 0 0 auto;
-    width: 100%;
-    max-width: 100%;
+  html[data-ex-experience] .home-am-slider__images-col,
+  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin-right: 0;
     margin-left: 0;
+    height: auto !important;
   }
 
-  html[data-ex-experience] .home-am-slider__caption-col {
-    height: 42%;
+  html[data-ex-experience] .home-am-slider__caption-col,
+  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
+    height: 42% !important;
     justify-content: flex-end;
     padding: 1.6rem;
   }
 
   html[data-ex-experience] .home-am-slider__images-col {
-    flex: 1 1 auto;
+    flex: 1 1 auto !important;
     min-height: 0;
+    height: auto !important;
   }
 
   html[data-ex-experience] .home-am-slider__images-col::before {
@@ -322,36 +340,42 @@
   }
 
   html[data-ex-experience] .home-am-opening__content {
-    flex-direction: column;
-    height: auto;
-    min-height: 100svh;
+    flex-direction: column !important;
+    flex-wrap: wrap;
+    height: auto !important;
+    min-height: 100svh !important;
   }
 
   html[data-ex-experience] .home-am-opening__images {
-    flex: 0 1 auto;
-    width: 100%;
-    height: 70svh;
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    height: 70svh !important;
+    max-width: none !important;
   }
 
   html[data-ex-experience] .home-am-opening__caption {
-    flex: none;
-    width: 100%;
-    height: auto;
+    flex: none !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: none !important;
     margin-left: 0;
-    position: absolute;
-    bottom: 0;
+    position: absolute !important;
+    bottom: 0 !important;
     padding: 1.6rem;
     background: transparent;
+    align-items: flex-start;
+    justify-content: flex-end;
   }
 
   html[data-ex-experience] .home-am-opening__caption-title {
     width: 60%;
     flex: none;
-    text-align: left;
+    text-align: left !important;
   }
 
-  html[data-ex-experience] .home-am-opening__title {
-    text-align: left;
+  html[data-ex-experience] .home-am-opening__title,
+  html[data-ex-experience] .home-am-opening__title .home-am-title-line {
+    text-align: left !important;
   }
 
   html[data-ex-experience] .home-am-opening__right-column {
@@ -360,42 +384,42 @@
   }
 
   html[data-ex-experience] .home-am-opening__right-inner {
-    margin-left: 0;
-    width: 100%;
+    margin-left: 0 !important;
+    width: 100% !important;
     padding: 1.6rem;
     min-height: 0;
     background: var(--am-gold);
   }
 
   html[data-ex-experience] .home-am-opening__cards-band {
-    flex-direction: column;
+    flex-direction: column !important;
     gap: 1rem;
   }
 
   html[data-ex-experience] .home-am-opening__list-wrap {
-    flex: none;
-    width: 100%;
+    flex: none !important;
+    width: 100% !important;
   }
 
   /* Was 143px wide (20% of viewport) holding 90px type. */
   html[data-ex-experience] .home-am-opening__rail-copy {
-    position: relative;
-    top: auto;
+    position: relative !important;
+    top: auto !important;
     order: -1;
-    max-width: none;
+    max-width: none !important;
     padding: 0;
   }
 
   /* Card rail keeps its horizontal swipe — just re-proportioned. */
   html[data-ex-experience] .home-am-opening__list {
-    display: flex;
+    display: flex !important;
     flex-direction: row;
     flex-wrap: nowrap;
     gap: 12px;
     overflow-x: auto;
     margin-top: 0;
     padding-left: 0;
-    width: calc(100% + 1.6rem);
+    width: calc(100% + 1.6rem) !important;
     margin-right: -1.6rem;
     padding-right: 1.6rem;
     -webkit-overflow-scrolling: touch;
@@ -403,10 +427,10 @@
   }
 
   html[data-ex-experience] .home-am-opening__list-item {
-    flex: 0 0 42%;
-    width: 42%;
-    min-width: 42%;
-    margin-top: 0;
+    flex: 0 0 42% !important;
+    width: 42% !important;
+    min-width: 42% !important;
+    margin-top: 0 !important;
     scroll-snap-align: start;
   }
 
@@ -508,13 +532,20 @@
 
 @media (max-width: 480px) {
   /*
-   * Phone amenities keep the desktop two-column composition.
-   * Do not reintroduce the old stacked 42%/48% caption bands here —
-   * size scaling lives in section 19 at the end of this file.
+   * Caption stack height only — layout is the full-width stack from section 3.
+   * Do not reintroduce a 50/50 desktop split at phone width.
    */
   html[data-ex-experience] .home-am-slider__caption-stack {
     min-height: 0;
     max-height: 100%;
+  }
+
+  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold,
+  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
+    min-height: 44px;
+    font-size: 12px !important;
+    letter-spacing: 0.12em;
+    padding-inline: 0.85rem;
   }
 }
 
@@ -835,6 +866,87 @@
     :is(.typo-on-images-body, .home-am-nature__body, .home-am-intro__body) {
     font-size: 17px !important;
     line-height: 1.48 !important;
+  }
+}
+
+/* ==========================================================================
+   9b. AMENITIES ON-IMAGE TEXT — hard legibility floor
+   --------------------------------------------------------------------------
+   CMS Amenities Typography injects !important px sizes. Combined with leftover
+   ≤480px clamps in home-dining-slider.css, live phone type measured at
+   eyebrow 7.4px / body 9.4px / titles 18px. This block is more specific than
+   those injectors and only RAISES undersized values (max() with the stored
+   size) — a deliberately larger dashboard value still wins, subject to the
+   existing 10.5vw overflow cap from section 4.
+   Homepage-only (`html[data-ex-experience]`) and ≤767px only.
+   ========================================================================== */
+
+@media (max-width: 767.98px) {
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .typo-on-images-title,
+      .typo-on-images-title .home-am-title-line,
+      .home-am-on-cream-title,
+      .home-am-intro__title,
+      .home-am-intro__title .home-am-title-line,
+      .home-am-video__title .typo-on-images-title,
+      .home-am-video__title .home-am-title-line,
+      .home-am-slider__caption .typo-on-images-title,
+      .home-am-slider__caption .typo-on-images-title .home-am-title-line,
+      .home-am-opening__title,
+      .home-am-opening__title .home-am-title-line,
+      .home-am-opening__caption-title,
+      .home-am-opening__rail-copy .typo-on-images-title,
+      .home-am-opening__rail-copy .typo-on-images-title .home-am-title-line,
+      .home-am-nature__title,
+      .home-am-nature__title .home-am-title-line,
+      .home-am-title-line
+    ) {
+    font-size: max(28px, min(var(--am-typo-title-size, 84px), 10.5vw)) !important;
+    line-height: 0.96 !important;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .typo-on-images-indication,
+      .home-am-intro__indication,
+      .home-am-video__copy .typo-on-images-indication,
+      .home-am-slider__caption .typo-on-images-indication,
+      .home-am-opening__rail-copy .typo-on-images-indication,
+      .home-am-nature__indication
+    ) {
+    font-size: max(13px, var(--am-typo-indication-size, 13px)) !important;
+    line-height: 1.25 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .typo-on-images-body,
+      .home-am-intro__body,
+      .home-am-video__copy .typo-on-images-body,
+      .home-am-video__title-body,
+      .home-am-slider__caption .typo-on-images-body,
+      .home-am-opening__rail-copy .typo-on-images-body,
+      .home-am-nature__body
+    ) {
+    font-size: max(16px, var(--am-typo-body-size, 16px)) !important;
+    line-height: 1.48 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__list-item-text {
+    font-size: max(12px, 2.8vw) !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.04em;
   }
 }
 
@@ -1334,331 +1446,5 @@
     bottom: 40vh;
     max-width: none;
     text-align: left;
-  }
-}
-
-/* ==========================================================================
-   19. AMENITIES PHONE (≤480) — desktop layout, minimized sizes only
-   --------------------------------------------------------------------------
-   Same split composition as desktop (50vw columns, cream half-panel, gold
-   caption bands, opening rail). Only padding / type / gaps are reduced so
-   the story fits a phone width. Does not alter tablet (481+) or desktop.
-   Loaded last so it wins over any earlier stacked phone leftovers.
-   ========================================================================== */
-
-@media (max-width: 480px) {
-  html[data-ex-experience] .home-am-sequence {
-    --am-typo-gap-title-sub: 6px;
-    --am-typo-gap-sub-body: 6px;
-    --am-typo-gap-body-cta: 10px;
-  }
-
-  /* ---- intro: keep desktop left caption + right cream half ---- */
-  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone) {
-    display: flex !important;
-    align-items: flex-start;
-    justify-content: flex-start;
-    top: 0;
-    right: 0;
-    bottom: auto;
-    width: 50% !important;
-    height: 100% !important;
-    padding: clamp(4.5rem, 14vh, 6rem) 0.75rem 0.85rem;
-  }
-
-  html[data-ex-experience] .home-am-intro__cream--phone {
-    display: none !important;
-  }
-
-  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone)
-    .home-am-intro__cream-text {
-    display: none;
-  }
-
-  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
-    left: 0.7rem;
-    right: auto;
-    top: max(5rem, 22vh);
-    bottom: auto;
-    width: calc(50vw - 1.4rem) !important;
-    max-width: calc(50vw - 1.4rem) !important;
-    text-align: left;
-  }
-
-  html[data-ex-experience] .home-am-intro__body {
-    max-width: 100%;
-  }
-
-  /* ---- video: desktop copy left / title right / gold caption 50vw ---- */
-  html[data-ex-experience] .home-am-video__hero,
-  html[data-ex-experience] .home-am-video__hero-wrap {
-    transform-origin: bottom right;
-    top: 0;
-    bottom: auto;
-    height: 100%;
-  }
-
-  html[data-ex-experience] .home-am-video__copy {
-    top: max(5rem, 12vh);
-    left: 0.7rem;
-    width: calc(38vw - 0.7rem);
-  }
-
-  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
-    top: max(5rem, 12vh);
-    right: 0.7rem;
-    bottom: auto;
-    left: auto;
-    width: calc(50vw - 1.4rem) !important;
-    max-width: calc(50vw - 1.4rem) !important;
-  }
-
-  html[data-ex-experience] .home-am-video__title-body {
-    display: block;
-  }
-
-  html[data-ex-experience] .home-am-video__caption {
-    flex: none;
-    width: 50vw !important;
-    max-width: 50vw !important;
-    padding: 0.75rem;
-  }
-
-  /* ---- slider: force desktop row split ---- */
-  html[data-ex-experience] .home-am-slider__row {
-    flex-direction: row !important;
-  }
-
-  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
-    flex: 0 0 calc(50vw + 2px) !important;
-    width: calc(50vw + 2px) !important;
-    height: 100% !important;
-    max-width: none !important;
-    justify-content: center;
-    padding: 0.75rem;
-  }
-
-  html[data-ex-experience] .home-am-slider__images-col {
-    flex: 0 0 50vw !important;
-    width: 50vw !important;
-    height: 100% !important;
-    max-width: none !important;
-    min-height: 0;
-    margin-left: -2px;
-  }
-
-  html[data-ex-experience] .home-am-slider__images-col::before {
-    display: block;
-    width: 3px;
-  }
-
-  html[data-ex-experience] .home-am-slider__scrollbar {
-    right: 0.5rem;
-    bottom: 0.9rem;
-    height: 72px;
-  }
-
-  /* ---- opening: desktop side-by-side + right rail ---- */
-  html[data-ex-experience] .home-am-opening__content {
-    flex-direction: row !important;
-    flex-wrap: nowrap;
-    height: 100% !important;
-    min-height: 0 !important;
-  }
-
-  html[data-ex-experience] .home-am-opening__images {
-    flex: 0 0 calc(50vw + 2px) !important;
-    width: calc(50vw + 2px) !important;
-    height: 100% !important;
-    max-width: none !important;
-  }
-
-  html[data-ex-experience] .home-am-opening__caption {
-    position: relative !important;
-    flex: 0 0 50vw !important;
-    width: 50vw !important;
-    height: 100% !important;
-    max-width: none !important;
-    margin-left: -2px;
-    bottom: auto !important;
-    padding: 0.75rem 0.75rem max(5.5rem, env(safe-area-inset-bottom));
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
-  }
-
-  html[data-ex-experience] .home-am-opening__caption-title {
-    width: 100%;
-    flex: none;
-    text-align: right;
-  }
-
-  html[data-ex-experience] .home-am-opening__title,
-  html[data-ex-experience] .home-am-opening__title .home-am-title-line {
-    text-align: right;
-  }
-
-  html[data-ex-experience] .home-am-opening__right-column {
-    min-height: 350vh;
-    padding-top: 100svh;
-    background: var(--am-gold);
-  }
-
-  html[data-ex-experience] .home-am-opening__right-inner {
-    margin-left: 50vw !important;
-    width: 50vw !important;
-    padding: 0.9rem 0.4rem 1.75rem;
-    min-height: 0;
-    background: transparent;
-  }
-
-  html[data-ex-experience] .home-am-opening__cards-band {
-    flex-direction: row !important;
-    align-items: flex-start;
-    gap: 0.35rem;
-  }
-
-  html[data-ex-experience] .home-am-opening__list-wrap {
-    flex: 0 0 20vw !important;
-    width: 20vw !important;
-  }
-
-  html[data-ex-experience] .home-am-opening__list {
-    display: block;
-    overflow: visible;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  html[data-ex-experience] .home-am-opening__list-item {
-    width: 100%;
-    min-width: 0;
-    margin-top: 10px;
-  }
-
-  html[data-ex-experience] .home-am-opening__list-item:first-child {
-    margin-top: 0;
-  }
-
-  html[data-ex-experience] .home-am-opening__rail-copy {
-    position: sticky;
-    top: 22vh;
-    max-width: calc(30vw - 1.2rem);
-    padding: 0;
-  }
-
-  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold {
-    width: 100%;
-    min-width: 0;
-    min-height: 28px;
-    padding-inline: 0.35rem;
-    font-size: 7px !important;
-    letter-spacing: 0.12em;
-  }
-
-  /* ---- nature: same gold-band copy, tighter ---- */
-  html[data-ex-experience] .home-am-nature__gold-band {
-    padding: 0 0.85rem clamp(1.1rem, 3vh, 1.6rem);
-  }
-
-  html[data-ex-experience] .home-am-nature__copy {
-    max-width: min(44rem, 94%);
-    padding-top: 0.3rem;
-  }
-
-  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
-    min-height: 30px;
-    padding-inline: 0.7rem;
-    font-size: 8px !important;
-    letter-spacing: 0.14em;
-  }
-
-  /* ---- type scale: desktop hierarchy, fit ~50vw columns ----
-     Triple [data-ex-experience] + doubled ancestors beat section 4’s
-     (0,5,1) 10.5vw cap and the CMS body <style> injector. Phone only. */
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-sequence.home-am-sequence
-    :is(
-      .home-am-intro__title,
-      .home-am-intro__title .home-am-title-line,
-      .home-am-video__title .typo-on-images-title,
-      .home-am-video__title .home-am-title-line,
-      .home-am-slider__caption .typo-on-images-title,
-      .home-am-slider__caption .typo-on-images-title .home-am-title-line,
-      .home-am-opening__caption .home-am-opening__title,
-      .home-am-opening__caption .home-am-opening__title .home-am-title-line,
-      .home-am-nature__title,
-      .home-am-nature__title .home-am-title-line
-    ) {
-    font-size: clamp(16px, 4.6vw, 20px) !important;
-    line-height: 0.92 !important;
-    white-space: nowrap !important;
-  }
-
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-sequence.home-am-sequence
-    :is(
-      .home-am-intro__indication,
-      .home-am-video__copy .typo-on-images-indication,
-      .home-am-slider__caption .typo-on-images-indication,
-      .home-am-nature__indication
-    ) {
-    font-size: clamp(7px, 1.9vw, 9px) !important;
-    line-height: 1.2 !important;
-  }
-
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-sequence.home-am-sequence
-    :is(
-      .home-am-intro__body,
-      .home-am-video__copy .typo-on-images-body,
-      .home-am-video__title-body,
-      .home-am-slider__caption .typo-on-images-body,
-      .home-am-nature__body
-    ) {
-    font-size: clamp(9px, 2.4vw, 11px) !important;
-    line-height: 1.38 !important;
-  }
-
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-opening__rail-copy
-    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
-    font-size: clamp(11px, 3vw, 13px) !important;
-    line-height: 0.94 !important;
-    white-space: nowrap !important;
-  }
-
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-opening__rail-copy
-    .typo-on-images-indication {
-    font-size: clamp(6px, 1.7vw, 7.5px) !important;
-    line-height: 1.2 !important;
-  }
-
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-opening__rail-copy
-    .typo-on-images-body {
-    font-size: clamp(8px, 2.15vw, 9.5px) !important;
-    line-height: 1.35 !important;
-  }
-
-  html[data-ex-experience][data-ex-experience][data-ex-experience]
-    .ex-root.ex-root
-    .home-am-opening__list-item-text {
-    left: 6px !important;
-    bottom: 6px !important;
-    width: calc(100% - 12px) !important;
-    font-size: 6px !important;
-    line-height: 1.2 !important;
-    letter-spacing: 0.04em !important;
   }
 }
