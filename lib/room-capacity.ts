@@ -1,5 +1,5 @@
 import {
-  LUXURY_TO_DB_ROOM_TYPES,
+  classifyDbRoomType,
   type LuxuryRoomTypeValue,
   type RoomSearchConfig,
 } from "@/lib/booking-search-config";
@@ -24,29 +24,14 @@ export function getMaxCapacityForLuxuryType(
   return RAW_DATA_ROOM_CAPACITY[roomType];
 }
 
+/**
+ * Delegates to the single shared classifier. Keeps its historical contract of
+ * returning null (rather than a fallback category) when nothing matches.
+ */
 export function resolveLuxuryTypeFromDbRoomType(
   dbRoomType: string | null | undefined,
 ): LuxuryRoomTypeValue | null {
-  if (!dbRoomType?.trim()) return null;
-
-  const normalized = dbRoomType.trim().toLowerCase();
-
-  for (const [luxuryType, dbTypes] of Object.entries(LUXURY_TO_DB_ROOM_TYPES) as [
-    LuxuryRoomTypeValue,
-    string[],
-  ][]) {
-    if (
-      dbTypes.some(
-        (dbType) =>
-          normalized === dbType.toLowerCase() ||
-          normalized.includes(dbType.toLowerCase()),
-      )
-    ) {
-      return luxuryType;
-    }
-  }
-
-  return null;
+  return classifyDbRoomType(dbRoomType);
 }
 
 export function getMaxCapacityForDbRoomType(

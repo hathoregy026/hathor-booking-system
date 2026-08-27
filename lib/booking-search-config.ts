@@ -80,6 +80,55 @@ export const LUXURY_TO_DB_ROOM_TYPES: Record<LuxuryRoomTypeValue, string[]> = {
   "luxury-royal-suites": ["Luxury Royal Suite", "Royal Suite", "Presidential"],
 };
 
+/**
+ * Categories in MOST-SPECIFIC-FIRST order.
+ *
+ * The alias table above is matched by substring, and `luxury-suites` lists the
+ * generic alias "Suite". A scan in object order therefore classifies
+ * "Luxury Royal Suite" as `luxury-suites` — `"luxury royal suite".includes("suite")`
+ * is true — and the `luxury-royal-suites` branch becomes unreachable for any
+ * label containing "suite". Walking royal suites first makes the match
+ * deterministic and the most specific category always win.
+ */
+const LUXURY_TYPES_MOST_SPECIFIC_FIRST: readonly LuxuryRoomTypeValue[] = [
+  "luxury-royal-suites",
+  "luxury-suites",
+  "luxury-rooms",
+];
+
+/**
+ * THE single room-type classifier. Every caller — classifiers, predicates and
+ * search filters alike — must go through this so one label can never resolve to
+ * two different categories in two different files.
+ *
+ * Returns null when no alias matches; each caller applies its own documented
+ * fallback so existing contracts are preserved.
+ */
+export function classifyDbRoomType(
+  dbRoomType: string | null | undefined,
+): LuxuryRoomTypeValue | null {
+  const normalized = dbRoomType?.trim().toLowerCase() ?? "";
+  if (!normalized) return null;
+
+  for (const luxuryType of LUXURY_TYPES_MOST_SPECIFIC_FIRST) {
+    const matched = LUXURY_TO_DB_ROOM_TYPES[luxuryType].some((alias) => {
+      const candidate = alias.trim().toLowerCase();
+      return normalized === candidate || normalized.includes(candidate);
+    });
+    if (matched) return luxuryType;
+  }
+
+  return null;
+}
+
+/** Shared predicate — "does this label belong to exactly this category?" */
+export function dbRoomTypeMatchesLuxuryType(
+  dbRoomType: string | null | undefined,
+  luxuryType: LuxuryRoomTypeValue,
+): boolean {
+  return classifyDbRoomType(dbRoomType) === luxuryType;
+}
+
 export const DEFAULT_ROOM_SEARCH_CONFIG: RoomSearchConfig = {
   roomType: "luxury-rooms",
   adults: 1,
@@ -139,38 +188,18 @@ export function durationSupportsRoomType(
   );
 }
 
+/** Unmatched labels keep their historical `luxury-rooms` fallback. */
 export function luxuryRoomTypeForDbRoomType(
   dbRoomType: string | null,
 ): LuxuryRoomTypeValue {
-  const normalized = dbRoomType?.trim().toLowerCase() ?? "";
-
-  for (const [luxuryType, dbTypes] of Object.entries(
-    LUXURY_TO_DB_ROOM_TYPES,
-  ) as [LuxuryRoomTypeValue, string[]][]) {
-    if (
-      dbTypes.some((dbType) => {
-        const allowed = dbType.toLowerCase();
-        return normalized === allowed || normalized.includes(allowed);
-      })
-    ) {
-      return luxuryType;
-    }
-  }
-
-  return "luxury-rooms";
+  return classifyDbRoomType(dbRoomType) ?? "luxury-rooms";
 }
 
 function roomMatchesLuxuryTypeFromCatalog(
   dbRoomType: string,
   luxuryType: LuxuryRoomTypeValue,
 ): boolean {
-  const allowedTypes = LUXURY_TO_DB_ROOM_TYPES[luxuryType].map((value) =>
-    value.toLowerCase(),
-  );
-  const normalized = dbRoomType.trim().toLowerCase();
-  return allowedTypes.some(
-    (allowed) => normalized === allowed || normalized.includes(allowed),
-  );
+  return dbRoomTypeMatchesLuxuryType(dbRoomType, luxuryType);
 }
 
 export function normalizeRoomConfigsForDuration(
@@ -195,21 +224,13 @@ export function describeRoomTypesOnCruise(duration: StayDurationValue): string {
 
   const labels = new Set<string>();
   for (const room of cruise.rooms) {
-    for (const [luxuryType, dbTypes] of Object.entries(LUXURY_TO_DB_ROOM_TYPES)) {
-      const normalized = room.roomType.trim().toLowerCase();
-      if (
-        dbTypes.some(
-          (dbType) =>
-            normalized === dbType.toLowerCase() ||
-            normalized.includes(dbType.toLowerCase()),
-        )
-      ) {
-        const option = LUXURY_ROOM_TYPE_OPTIONS.find(
-          (entry) => entry.value === luxuryType,
-        );
-        if (option) labels.add(option.label);
-      }
-    }
+    const luxuryType = classifyDbRoomType(room.roomType);
+    if (!luxuryType) continue;
+
+    const option = LUXURY_ROOM_TYPE_OPTIONS.find(
+      (entry) => entry.value === luxuryType,
+    );
+    if (option) labels.add(option.label);
   }
 
   return [...labels].join(", ") || "a different room type";

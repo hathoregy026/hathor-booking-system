@@ -26,10 +26,30 @@ import {
 import type { PrismaClient } from "@/app/generated/prisma/client";
 import { BookingStatus, type Prisma } from "@/app/generated/prisma/client";
 
-/** Editable placeholder — RAW_DATA 4-night Royal Suite list price (USD). */
-export const RAW_DATA_FOUR_NIGHT_ROYAL_SUITE_USD = 6500;
+/**
+ * Published 4-night Royal Suite list price (USD).
+ *
+ * PINNED to the published $7,200 — the same figure as
+ * `HATHOR_FOUR_NIGHT_CABIN_PRICES_USD.luxuryRoyalSuite`, which the marketing
+ * pages render.
+ *
+ * History: this was a `6500` placeholder that was dead code. The override below
+ * only fires when a room classifies as `luxury-royal-suites`, and the room-type
+ * classifier could never produce that value (the generic "Suite" alias matched
+ * first). Repairing the classifier switched this override on, so the value is
+ * pinned to the published price to keep the classifier fix price-neutral.
+ * Changing this number changes what guests are charged — treat as money.
+ */
+export const RAW_DATA_FOUR_NIGHT_ROYAL_SUITE_USD = 7200;
 
-/** Total physical inventory per category aboard Hathor (RAW_DATA.md). */
+/**
+ * Total physical inventory per category aboard Hathor (RAW_DATA.md):
+ * 8 Luxury Cabins, 2 Luxury Suites, 2 Royal Suites.
+ *
+ * These values were already correct. Before the classifier fix the Royal Suite
+ * bucket was unreachable — royal suites were counted against `luxury-suites`,
+ * so the two categories shared one cap of 2 and 2 royal berths were unsellable.
+ */
 export const RAW_DATA_CATEGORY_INVENTORY: Record<LuxuryRoomTypeValue, number> = {
   "luxury-rooms": 8,
   "luxury-suites": 2,

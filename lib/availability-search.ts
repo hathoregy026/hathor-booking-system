@@ -1,7 +1,7 @@
 import { addDays } from "date-fns";
 import {
+  dbRoomTypeMatchesLuxuryType,
   findStayDurationOption,
-  LUXURY_TO_DB_ROOM_TYPES,
   matchCruiseByDuration,
   type LuxuryRoomTypeValue,
   type RoomSearchConfig,
@@ -68,23 +68,18 @@ export async function resolveCruiseByDuration(duration: StayDurationValue) {
   });
 }
 
+/**
+ * Search filter — delegates to the single shared classifier so a Royal Suite is
+ * never returned as an ordinary Luxury Suite.
+ *
+ * A null/blank roomType stays unmatched, exactly as before: the previous
+ * implementation looked for a "standard" alias, and no category lists one.
+ */
 export function roomMatchesLuxuryType(
   roomType: string | null,
   luxuryType: LuxuryRoomTypeValue,
 ): boolean {
-  const allowedTypes = LUXURY_TO_DB_ROOM_TYPES[luxuryType].map((value) =>
-    value.toLowerCase(),
-  );
-
-  if (!roomType) {
-    return allowedTypes.includes("standard");
-  }
-
-  const normalized = roomType.trim().toLowerCase();
-  return allowedTypes.some(
-    (allowed) =>
-      normalized === allowed || normalized.includes(allowed),
-  );
+  return dbRoomTypeMatchesLuxuryType(roomType, luxuryType);
 }
 
 export function roomMatchesConfig(

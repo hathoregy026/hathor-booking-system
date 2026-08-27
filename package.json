@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "verify:website-text": "npx tsx scripts/verify-website-text-mapping.ts",
+    "verify:room-types": "npx tsx scripts/verify-room-type-classification.ts",
     "postinstall": "prisma generate",
     "seed:hathor": "node scripts/seed-hathor-data.mjs",
     "seed:content": "node scripts/seed-raw-content.mjs",
