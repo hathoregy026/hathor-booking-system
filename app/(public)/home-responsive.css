@@ -106,15 +106,16 @@
 
 @media (min-width: 900px) and (max-width: 1024.98px) {
   /*
-   * At exactly 1024px both the burger and the word nav were rendering.
-   * The word nav is live from 768px up, so the burger is redundant here.
+   * CORRECTION: the Header component always renders in "chrome" mode
+   * (burger left / centered logo / mode toggle right) — the flanking
+   * word-nav columns (`.hathor-header__col--nav-left/right`) never mount on
+   * this route, at any width. A previous version of this file hid the
+   * burger here on the assumption that the word nav took over at 768px;
+   * it does not, so that rule left this band with NO way to open the menu
+   * at all (confirmed live: burger absent, mode toggle collapsed to the
+   * left edge). The burger must stay visible through the whole
+   * ≤1024px band — see the visibility rule further up (min-width: 481px).
    */
-  html[data-ex-experience]
-    .public-site
-    .hathor-header:not(.hathor-header--editorial-nav)
-    .hathor-header__menu-btn {
-    display: none !important;
-  }
 
   /*
    * DAY / NIGHT SWITCH WAS OFF-SCREEN AND UNCLICKABLE ACROSS THIS WHOLE BAND.
@@ -506,31 +507,14 @@
 }
 
 @media (max-width: 480px) {
-  /* Keep the first amenities story clear of the persistent phone actions. */
-  html[data-ex-experience] .home-am-intro__caption {
-    bottom: max(6.5rem, calc(env(safe-area-inset-bottom) + 5.5rem));
-  }
-
   /*
-   * The 42% desktop-derived caption band was shorter than its phone copy,
-   * placing the first title line underneath the fixed header. Give text and
-   * media balanced halves while keeping the same vertical wipe choreography.
+   * Phone amenities keep the desktop two-column composition.
+   * Do not reintroduce the old stacked 42%/48% caption bands here —
+   * size scaling lives in section 19 at the end of this file.
    */
-  html[data-ex-experience] .home-am-slider__caption-col {
-    height: 48%;
-    padding: calc(var(--site-nav-bar-height, 3.25rem) + 1rem) 1.15rem 1rem;
-  }
-
   html[data-ex-experience] .home-am-slider__caption-stack {
     min-height: 0;
     max-height: 100%;
-  }
-
-  html[data-ex-experience][data-ex-experience]
-    .ex-root
-    .home-am-slider
-    .typo-on-images-title {
-    font-size: min(var(--am-typo-title-size, 84px), 9.6vw) !important;
   }
 }
 
@@ -1350,5 +1334,329 @@
     bottom: 40vh;
     max-width: none;
     text-align: left;
+  }
+}
+
+/* ==========================================================================
+   19. AMENITIES PHONE (≤480) — desktop layout, minimized sizes only
+   --------------------------------------------------------------------------
+   Same split composition as desktop (50vw columns, cream half-panel, gold
+   caption bands, opening rail). Only padding / type / gaps are reduced so
+   the story fits a phone width. Does not alter tablet (481+) or desktop.
+   Loaded last so it wins over any earlier stacked phone leftovers.
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  html[data-ex-experience] .home-am-sequence {
+    --am-typo-gap-title-sub: 6px;
+    --am-typo-gap-sub-body: 6px;
+    --am-typo-gap-body-cta: 10px;
+  }
+
+  /* ---- intro: keep desktop left caption + right cream half ---- */
+  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    width: 50% !important;
+    height: 100% !important;
+    padding: clamp(4.5rem, 14vh, 6rem) 0.75rem 0.85rem;
+  }
+
+  html[data-ex-experience] .home-am-intro__cream--phone {
+    display: none !important;
+  }
+
+  html[data-ex-experience] .home-am-intro__cream:not(.home-am-intro__cream--phone)
+    .home-am-intro__cream-text {
+    display: none;
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
+    left: 0.7rem;
+    right: auto;
+    top: max(5rem, 22vh);
+    bottom: auto;
+    width: calc(50vw - 1.4rem);
+    max-width: calc(50vw - 1.4rem);
+    text-align: left;
+  }
+
+  html[data-ex-experience] .home-am-intro__body {
+    max-width: 100%;
+  }
+
+  /* ---- video: desktop copy left / title right / gold caption 50vw ---- */
+  html[data-ex-experience] .home-am-video__hero,
+  html[data-ex-experience] .home-am-video__hero-wrap {
+    transform-origin: bottom right;
+    top: 0;
+    bottom: auto;
+    height: 100%;
+  }
+
+  html[data-ex-experience] .home-am-video__copy {
+    top: max(5rem, 12vh);
+    left: 0.7rem;
+    width: calc(38vw - 0.7rem);
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-video__title-stack {
+    top: max(5rem, 12vh);
+    right: 0.7rem;
+    bottom: auto;
+    left: auto;
+    width: calc(50vw - 1.4rem);
+    max-width: calc(50vw - 1.4rem);
+  }
+
+  html[data-ex-experience] .home-am-video__title-body {
+    display: block;
+  }
+
+  html[data-ex-experience] .home-am-video__caption {
+    flex: none;
+    width: 50vw !important;
+    max-width: 50vw !important;
+    padding: 0.75rem;
+  }
+
+  /* ---- slider: force desktop row split ---- */
+  html[data-ex-experience] .home-am-slider__row {
+    flex-direction: row !important;
+  }
+
+  html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
+    flex: 0 0 calc(50vw + 2px) !important;
+    width: calc(50vw + 2px) !important;
+    height: 100% !important;
+    max-width: none !important;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col {
+    flex: 0 0 50vw !important;
+    width: 50vw !important;
+    height: 100% !important;
+    max-width: none !important;
+    min-height: 0;
+    margin-left: -2px;
+  }
+
+  html[data-ex-experience] .home-am-slider__images-col::before {
+    display: block;
+    width: 3px;
+  }
+
+  html[data-ex-experience] .home-am-slider__scrollbar {
+    right: 0.5rem;
+    bottom: 0.9rem;
+    height: 72px;
+  }
+
+  /* ---- opening: desktop side-by-side + right rail ---- */
+  html[data-ex-experience] .home-am-opening__content {
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  html[data-ex-experience] .home-am-opening__images {
+    flex: 0 0 calc(50vw + 2px) !important;
+    width: calc(50vw + 2px) !important;
+    height: 100% !important;
+    max-width: none !important;
+  }
+
+  html[data-ex-experience] .home-am-opening__caption {
+    position: relative !important;
+    flex: 0 0 50vw !important;
+    width: 50vw !important;
+    height: 100% !important;
+    max-width: none !important;
+    margin-left: -2px;
+    bottom: auto !important;
+    padding: 0.75rem 0.75rem max(5.5rem, env(safe-area-inset-bottom));
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+
+  html[data-ex-experience] .home-am-opening__caption-title {
+    width: 100%;
+    flex: none;
+    text-align: right;
+  }
+
+  html[data-ex-experience] .home-am-opening__title,
+  html[data-ex-experience] .home-am-opening__title .home-am-title-line {
+    text-align: right;
+  }
+
+  html[data-ex-experience] .home-am-opening__right-column {
+    min-height: 350vh;
+    padding-top: 100svh;
+    background: var(--am-gold);
+  }
+
+  html[data-ex-experience] .home-am-opening__right-inner {
+    margin-left: 50vw !important;
+    width: 50vw !important;
+    padding: 0.9rem 0.4rem 1.75rem;
+    min-height: 0;
+    background: transparent;
+  }
+
+  html[data-ex-experience] .home-am-opening__cards-band {
+    flex-direction: row !important;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-wrap {
+    flex: 0 0 20vw !important;
+    width: 20vw !important;
+  }
+
+  html[data-ex-experience] .home-am-opening__list {
+    display: block;
+    overflow: visible;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-item {
+    width: 100%;
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  html[data-ex-experience] .home-am-opening__list-item:first-child {
+    margin-top: 0;
+  }
+
+  html[data-ex-experience] .home-am-opening__rail-copy {
+    position: sticky;
+    top: 22vh;
+    max-width: calc(30vw - 1.2rem);
+    padding: 0;
+  }
+
+  html[data-ex-experience] .home-am-opening__cta.public-btn-outline-gold {
+    width: 100%;
+    min-width: 0;
+    min-height: 28px;
+    padding-inline: 0.35rem;
+    font-size: 7px !important;
+    letter-spacing: 0.12em;
+  }
+
+  /* ---- nature: same gold-band copy, tighter ---- */
+  html[data-ex-experience] .home-am-nature__gold-band {
+    padding: 0 0.85rem clamp(1.1rem, 3vh, 1.6rem);
+  }
+
+  html[data-ex-experience] .home-am-nature__copy {
+    max-width: min(44rem, 94%);
+    padding-top: 0.3rem;
+  }
+
+  html[data-ex-experience] .home-am-nature__cta.public-btn-outline-gold {
+    min-height: 30px;
+    padding-inline: 0.7rem;
+    font-size: 8px !important;
+    letter-spacing: 0.14em;
+  }
+
+  /* ---- type scale: desktop hierarchy, fit ~50vw columns ---- */
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__title,
+      .home-am-intro__title .home-am-title-line,
+      .home-am-video__title .typo-on-images-title,
+      .home-am-video__title .home-am-title-line,
+      .home-am-slider__caption .typo-on-images-title,
+      .home-am-slider__caption .typo-on-images-title .home-am-title-line,
+      .home-am-opening__caption .home-am-opening__title,
+      .home-am-opening__caption .home-am-opening__title .home-am-title-line,
+      .home-am-nature__title,
+      .home-am-nature__title .home-am-title-line
+    ) {
+    font-size: clamp(16px, 4.6vw, 20px) !important;
+    line-height: 0.92 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__indication,
+      .home-am-video__copy .typo-on-images-indication,
+      .home-am-slider__caption .typo-on-images-indication,
+      .home-am-nature__indication
+    ) {
+    font-size: clamp(7px, 1.9vw, 9px) !important;
+    line-height: 1.2 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-sequence
+    :is(
+      .home-am-intro__body,
+      .home-am-video__copy .typo-on-images-body,
+      .home-am-video__title-body,
+      .home-am-slider__caption .typo-on-images-body,
+      .home-am-nature__body
+    ) {
+    font-size: clamp(9px, 2.4vw, 11px) !important;
+    line-height: 1.38 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    :is(.typo-on-images-title, .typo-on-images-title .home-am-title-line) {
+    font-size: clamp(11px, 3vw, 13px) !important;
+    line-height: 0.94 !important;
+    white-space: nowrap !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-indication {
+    font-size: clamp(6px, 1.7vw, 7.5px) !important;
+    line-height: 1.2 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__rail-copy
+    .typo-on-images-body {
+    font-size: clamp(8px, 2.15vw, 9.5px) !important;
+    line-height: 1.35 !important;
+  }
+
+  html[data-ex-experience][data-ex-experience]
+    .ex-root
+    .home-am-opening__list-item-text {
+    left: 6px !important;
+    bottom: 6px !important;
+    width: calc(100% - 12px) !important;
+    font-size: 6px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.04em !important;
   }
 }

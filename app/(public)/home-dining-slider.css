@@ -1805,6 +1805,26 @@ html[data-ex-experience]
     --am-typo-gap-body-cta: 10px;
   }
 
+  /* Desktop cream half-panel on phone (not the stacked sheet). */
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    padding: clamp(4.5rem, 14vh, 6rem) 0.8rem 0.9rem;
+  }
+
+  .home-am-intro__cream--phone {
+    display: none !important;
+  }
+
+  .home-am-intro__cream:not(.home-am-intro__cream--phone) .home-am-intro__cream-text {
+    display: none;
+  }
+
   html[data-ex-experience] .home-am-sequence .home-am-intro__caption {
     top: max(5.25rem, 24vh);
     left: 0.8rem;
@@ -1849,7 +1869,7 @@ html[data-ex-experience]
   }
 
   .home-am-slider__row {
-    flex-direction: row;
+    flex-direction: row !important;
   }
 
   html[data-ex-experience] .home-am-sequence .home-am-slider__caption-col {
@@ -1887,7 +1907,7 @@ html[data-ex-experience]
   }
 
   .home-am-opening__content {
-    flex-direction: row;
+    flex-direction: row !important;
     flex-wrap: nowrap;
     height: 100%;
     min-height: 0;

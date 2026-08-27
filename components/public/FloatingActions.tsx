@@ -17,6 +17,7 @@ export function FloatingActions() {
   const pathname = usePathname();
   const [chatOpen, setChatOpen] = useState(false);
   const [showBook, setShowBook] = useState(false);
+  const [nearFooter, setNearFooter] = useState(false);
   const visible = shouldShowFloatingActions(pathname);
 
   useEffect(() => {
@@ -61,6 +62,53 @@ export function FloatingActions() {
     };
   }, [pathname, visible]);
 
+  /*
+   * The dock is `position: fixed`, so once a page scrolls past its hero it
+   * sits over whatever is at the bottom of the viewport for the rest of the
+   * page — including the shared footer, where it visually covers the
+   * "Crafted with precision in Egypt" line (confirmed live on /partners and
+   * every other page that mounts <Footer/>). Fade the dock out once the
+   * footer is actually on screen so it never overlaps footer content.
+   */
+  useEffect(() => {
+    if (!visible) return;
+
+    setNearFooter(false);
+
+    let observer: IntersectionObserver | null = null;
+    let cancelled = false;
+
+    const attach = () => {
+      if (cancelled) return;
+      observer?.disconnect();
+      observer = null;
+
+      const footer = document.querySelector(".lux-footer");
+      if (!footer) return;
+
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const isNearFooter = Boolean(entry?.isIntersecting);
+          setNearFooter(isNearFooter);
+          if (isNearFooter) setChatOpen(false);
+        },
+        { threshold: 0, rootMargin: "0px" },
+      );
+      observer.observe(footer);
+    };
+
+    attach();
+    const t1 = window.setTimeout(attach, 120);
+    const t2 = window.setTimeout(attach, 400);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      observer?.disconnect();
+    };
+  }, [pathname, visible]);
+
   useEffect(() => {
     if (!chatOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -73,7 +121,10 @@ export function FloatingActions() {
   if (!visible) return null;
 
   return (
-    <div className="public-fab public-fab--right">
+    <div
+      className={`public-fab public-fab--right${nearFooter ? " public-fab--hidden" : ""}`}
+      aria-hidden={nearFooter}
+    >
       {chatOpen ? (
         <button
           type="button"

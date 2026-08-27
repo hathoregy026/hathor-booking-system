@@ -316,3 +316,43 @@
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/*
+ * Disabled submit buttons (e.g. the "Sending…" state on the contact/charter
+ * forms) were pixel-identical to the enabled state — same full-strength
+ * gold, same `cursor: pointer` — so there was no visual cue the button
+ * couldn't be clicked again. Dim + flatten instead of the hover lift/shine.
+ */
+.public-site a.btn:disabled,
+.public-site button.btn:disabled,
+.public-site .btn:disabled,
+.public-site .btn-primary:disabled,
+.public-site .btn-secondary:disabled,
+.public-site .public-btn-gold:disabled,
+.public-site .public-btn-outline-gold:disabled,
+.public-site .public-btn-dark:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.public-site a.btn:disabled:hover,
+.public-site button.btn:disabled:hover,
+.public-site .btn:disabled:hover,
+.public-site .btn-primary:disabled:hover,
+.public-site .btn-secondary:disabled:hover,
+.public-site .public-btn-gold:disabled:hover,
+.public-site .public-btn-outline-gold:disabled:hover,
+.public-site .public-btn-dark:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.public-site a.btn:disabled::before,
+.public-site button.btn:disabled::before,
+.public-site .btn:disabled::before,
+.public-site .public-btn-gold:disabled::before,
+.public-site .public-btn-outline-gold:disabled::before,
+.public-site .public-btn-dark:disabled::before {
+  opacity: 0 !important;
+  animation: none !important;
+}

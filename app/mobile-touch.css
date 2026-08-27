@@ -204,7 +204,9 @@ body.is-touch-device .lux-cursor {
   .public-site .hathor-explore a,
   .public-site .carousel-nav button,
   .public-site [data-carousel-prev],
-  .public-site [data-carousel-next] {
+  .public-site [data-carousel-next],
+  .public-site .ce-btn,
+  .public-site .contact-success-popup__again {
     min-height: 44px;
     min-width: 44px;
     touch-action: manipulation;

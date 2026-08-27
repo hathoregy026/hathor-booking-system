@@ -240,6 +240,7 @@
 }
 
 .eno-close {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -395,6 +396,14 @@
   padding: 0.28rem 0;
   transition: color 0.25s ease;
 }
+/*
+ * NOTE: sub-links sit ~26px apart (row height + gap) by design — a 44px
+ * invisible hit-slop here would overlap the neighboring row and risk
+ * mis-taps, so it is intentionally left alone rather than "fixed" into a
+ * worse bug. Flagged in the QA report as a genuine remaining touch-target
+ * shortfall; the real fix needs more vertical rhythm in the accordion,
+ * which is a design decision, not a CSS-only one.
+ */
 
 .eno-sublink:hover,
 .eno-sublink:focus-visible {
@@ -535,6 +544,21 @@
     width: 2.25rem;
     height: 2.25rem;
     font-size: 1.25rem;
+  }
+
+  /*
+   * Visual circle stays 36px (2.25rem) so it doesn't crowd the kicker text,
+   * but the tap target is grown to the 44px accessibility floor via an
+   * invisible overlay — same pattern as the other touch-target fixes.
+   */
+  .eno-close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
   }
 
   .eno-kicker {

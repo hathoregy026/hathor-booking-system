@@ -5,6 +5,20 @@
   z-index: 60;
   bottom: max(clamp(1.25rem, 3.5vh, 2.5rem), env(safe-area-inset-bottom));
   pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/*
+ * Fixed-position dock would otherwise sit on top of the footer for the rest
+ * of the page (it visibly covered "Crafted with precision in Egypt" —
+ * confirmed on /partners and every other route that mounts <Footer/>).
+ * Faded out instead of unmounted so it reappears instantly if the visitor
+ * scrolls back up past the footer.
+ */
+.public-fab--hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .public-fab--right {
