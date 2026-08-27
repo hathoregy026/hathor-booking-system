@@ -117,6 +117,7 @@ const CIRCLE = [
     role: "Trade",
     region: "Egypt",
     note: "Destination craft and Nile itineraries shaped with local precision.",
+    slot: "home-story-way-of-life",
   },
   {
     number: "02",
@@ -125,6 +126,7 @@ const CIRCLE = [
     role: "Global",
     region: "Reservations",
     note: "Worldwide discovery that brings travellers to an intimate dahabiya.",
+    slot: "room-suite",
   },
   {
     number: "03",
@@ -133,6 +135,7 @@ const CIRCLE = [
     role: "Worldwide",
     region: "Discovery",
     note: "A considered path from first search to a voyage on the river.",
+    slot: "home-voyage-nile-majesty",
   },
   {
     number: "04",
@@ -141,6 +144,7 @@ const CIRCLE = [
     role: "Luxury",
     region: "Concierge",
     note: "Hospitality standards aligned with Hathor's quiet, personal care.",
+    slot: "room-royal",
   },
 ] as const;
 
@@ -166,7 +170,7 @@ export function PartnersPageContent() {
           ...item,
           name: HOMEPAGE_PARTNERS.partners[index] ?? item.name,
         }))
-      : CIRCLE;
+      : [...CIRCLE];
 
   return (
     <div ref={rootRef} className="partners-editorial">
@@ -182,76 +186,123 @@ export function PartnersPageContent() {
         >
           <div className="pn-stage">
             <div ref={trackRef} className="pn-track">
-              {/* 01 — Index opening: spine + split title (not About/Contact intro) */}
+              {/* 01 — Opening: title + edge portrait, footer strip in flow */}
               <Scene className="pn-open">
-                <ol className="pn-open__spine" aria-label="Partner index">
-                  {circleNames.map((item) => (
-                    <li key={item.number}>
-                      <span>{item.number}</span>
-                      <em>{item.short}</em>
-                    </li>
-                  ))}
-                </ol>
+                <div className="pn-open__grid">
+                  <ol className="pn-open__spine" aria-label="Partner index">
+                    {circleNames.map((item) => (
+                      <li key={item.number}>
+                        <span>{item.number}</span>
+                        <em>{item.short}</em>
+                      </li>
+                    ))}
+                  </ol>
 
-                <div className="pn-open__inner">
-                  <Eyebrow>The circle</Eyebrow>
+                  <div className="pn-open__inner">
+                    <Eyebrow>The circle</Eyebrow>
 
-                  <div className="pn-open__title" id="partners" data-anima-title>
-                    <h1 className="pn-display pn-display--xl wt-page-hero">
-                      {heroLines.map((line, index) => (
-                        <span
-                          key={`${line}-${index}`}
-                          className={`pn-line ${lineClass[index] ?? ""}`}
-                        >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
-                        </span>
-                      ))}
-                    </h1>
+                    <div className="pn-open__title" id="partners" data-anima-title>
+                      <h1 className="pn-display pn-display--xl wt-page-hero">
+                        {heroLines.map((line, index) => (
+                          <span
+                            key={`${line}-${index}`}
+                            className={`pn-line ${lineClass[index] ?? ""}`}
+                          >
+                            <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                          </span>
+                        ))}
+                      </h1>
+                    </div>
+
+                    <p className="pn-open__count pn-edit">
+                      <span>0{circleNames.length}</span>
+                      <i aria-hidden="true" />
+                      <span>names</span>
+                    </p>
                   </div>
 
-                  <p className="pn-open__count pn-edit">
-                    <span>0{circleNames.length}</span>
-                    <i aria-hidden="true" />
-                    <span>names</span>
+                  <PartnersMedia
+                    slot="about-hero"
+                    alt="Hathor Dahabiya on the Nile"
+                    priority
+                    className="pn-open__portrait"
+                    ratio="4 / 5"
+                  />
+                </div>
+
+                <footer className="pn-open__bar">
+                  <p className="pn-open__mark">
+                    Hathor Cruise <span className="pn-reg">®</span> 2026
                   </p>
-                </div>
-
-                <p className="pn-open__mark">
-                  Hathor Cruise <span className="pn-reg">®</span> 2026
-                </p>
-                <p className="pn-open__scroll">
-                  Scroll
-                  <i />
-                </p>
-
-                <nav className="pn-open__nav" aria-label="Partners page sections">
-                  <a href="#circle">Circle</a>
-                  <a href="#craft">Craft</a>
-                  <a href="#converse">Converse</a>
-                  <Link href="/contact">Contact</Link>
-                </nav>
+                  <p className="pn-open__scroll">
+                    Scroll
+                    <i />
+                  </p>
+                  <nav className="pn-open__nav" aria-label="Partners page sections">
+                    <a href="#circle">Circle</a>
+                    <a href="#craft">Craft</a>
+                    <a href="#converse">Converse</a>
+                    <Link href="/contact">Contact</Link>
+                  </nav>
+                </footer>
               </Scene>
 
-              {/* 02 — Covenant: olive wash, single lyrical plane */}
+              {/* 02 — Image field: layered Nile imagery */}
+              <Scene className="pn-gallery">
+                <FlipImage
+                  className="pn-gallery__main"
+                  axis="left"
+                  ratio="1279 / 860"
+                  front="home-cinematic-still"
+                  back="home-story-legacy-large"
+                  frontAlt="Hathor on the river"
+                  backAlt="Legacy on the Nile"
+                />
+                <FlipImage
+                  className="pn-gallery__inset"
+                  axis="up"
+                  ratio="668 / 554"
+                  front="room-luxury"
+                  back="about-dining"
+                  frontAlt="Cabin aboard Hathor"
+                  backAlt="Dining aboard Hathor"
+                />
+                <p className="pn-gallery__caption">
+                  <span>Aboard</span> Luxor — Aswan
+                </p>
+              </Scene>
+
+              {/* 03 — Covenant with supporting photograph */}
               <Scene className="pn-covenant">
-                <Eyebrow>Shared standards</Eyebrow>
-                <div className="pn-covenant__statement" data-anima-title>
-                  <h2 className="pn-edit pn-edit--xl">
-                    <span className="pn-line">
-                      <AnimaSplitLine line={0}>A private circle</AnimaSplitLine>
-                    </span>
-                    <span className="pn-line">
-                      <AnimaSplitLine line={1}>of trusted names</AnimaSplitLine>
-                    </span>
-                    <span className="pn-line pn-line--indent">
-                      <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
-                    </span>
-                  </h2>
+                <div className="pn-covenant__copy">
+                  <Eyebrow>Shared standards</Eyebrow>
+                  <div className="pn-covenant__statement" data-anima-title>
+                    <h2 className="pn-edit pn-edit--xl">
+                      <span className="pn-line">
+                        <AnimaSplitLine line={0}>A private circle</AnimaSplitLine>
+                      </span>
+                      <span className="pn-line">
+                        <AnimaSplitLine line={1}>of trusted names</AnimaSplitLine>
+                      </span>
+                      <span className="pn-line">
+                        <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
+                      </span>
+                    </h2>
+                  </div>
+                  <p className="pn-covenant__lead wt-page-body">{lead}</p>
                 </div>
-                <p className="pn-covenant__lead wt-page-body">{lead}</p>
+                <FlipImage
+                  className="pn-covenant__media"
+                  axis="right"
+                  ratio="835 / 1100"
+                  front="home-split-courtyard"
+                  back="home-collage-living"
+                  frontAlt="Life on deck aboard Hathor"
+                  backAlt="Living spaces aboard Hathor"
+                />
               </Scene>
 
-              {/* 03 — Constellation registry: diagonal staircase of names */}
+              {/* 04 — Partner constellation with portrait peeks */}
               <Scene className="pn-orbit" id="circle">
                 <header className="pn-orbit__head">
                   <Eyebrow>Trusted worldwide</Eyebrow>
@@ -261,11 +312,8 @@ export function PartnersPageContent() {
                 </header>
 
                 <ol className="pn-orbit__list">
-                  {circleNames.map((item, index) => (
-                    <li
-                      key={item.number}
-                      className={`pn-star pn-star--${index + 1}`}
-                    >
+                  {circleNames.map((item) => (
+                    <li key={item.number} className="pn-star">
                       <span className="pn-star__num">{item.number}</span>
                       <div className="pn-star__body">
                         <h3 className="pn-star__name pn-display">{item.name}</h3>
@@ -274,12 +322,18 @@ export function PartnersPageContent() {
                         </p>
                         <p className="pn-star__note">{item.note}</p>
                       </div>
+                      <PartnersMedia
+                        slot={item.slot}
+                        alt={`${item.name} — Hathor partnership`}
+                        className="pn-star__peek"
+                        ratio="4 / 5"
+                      />
                     </li>
                   ))}
                 </ol>
               </Scene>
 
-              {/* 04 — Craft essay: asymmetric dual imagery */}
+              {/* 05 — Craft essay: three images + copy, no absolute overlap */}
               <Scene className="pn-craft" id="craft">
                 <div className="pn-craft__visual">
                   <FlipImage
@@ -295,10 +349,16 @@ export function PartnersPageContent() {
                     className="pn-craft__wide"
                     axis="left"
                     ratio="1090 / 720"
-                    front="about-hero"
-                    back="room-royal"
-                    frontAlt="Hathor Dahabiya on the Nile"
-                    backAlt="Royal suite aboard Hathor"
+                    front="home-story-dining"
+                    back="gastronomy-wine"
+                    frontAlt="Dining atmosphere aboard Hathor"
+                    backAlt="Wine service aboard Hathor"
+                  />
+                  <PartnersMedia
+                    slot="home-amenities-1"
+                    alt="Amenity detail aboard Hathor"
+                    className="pn-craft__accent"
+                    ratio="1 / 1"
                   />
                 </div>
                 <div className="pn-craft__copy">
@@ -307,7 +367,7 @@ export function PartnersPageContent() {
                     <span className="pn-line">
                       <AnimaSplitLine line={0}>Care that travels</AnimaSplitLine>
                     </span>
-                    <span className="pn-line pn-line--indent">
+                    <span className="pn-line">
                       <AnimaSplitLine line={1}>with every booking</AnimaSplitLine>
                     </span>
                   </p>
@@ -318,8 +378,14 @@ export function PartnersPageContent() {
                 </div>
               </Scene>
 
-              {/* 05 — Framed datum: museum wall specification */}
+              {/* 06 — Datum with photographic wash */}
               <Scene className="pn-datum">
+                <PartnersMedia
+                  slot="home-call-to-action"
+                  alt=""
+                  className="pn-datum__wash"
+                  ratio="16 / 10"
+                />
                 <div className="pn-datum__frame">
                   <span className="pn-datum__corner pn-datum__corner--tl">
                     Partners
@@ -343,14 +409,25 @@ export function PartnersPageContent() {
                 </div>
               </Scene>
 
-              {/* 06 — Quiet bridge before the epilogue */}
+              {/* 07 — Bridge: dual imagery + phrase */}
               <Scene className="pn-bridge">
-                <PartnersMedia
-                  slot="home-story-craft-large"
-                  alt="Craft and care aboard Hathor"
-                  className="pn-bridge__media"
-                  ratio="1483 / 720"
-                />
+                <div className="pn-bridge__pair">
+                  <PartnersMedia
+                    slot="home-story-craft-large"
+                    alt="Craft and care aboard Hathor"
+                    className="pn-bridge__media"
+                    ratio="16 / 10"
+                  />
+                  <FlipImage
+                    className="pn-bridge__side"
+                    axis="up"
+                    ratio="4 / 5"
+                    front="home-alt-highlights"
+                    back="home-wheel-image"
+                    frontAlt="Nile highlights from Hathor"
+                    backAlt="Wheel and river aboard Hathor"
+                  />
+                </div>
                 <p className="pn-bridge__phrase pn-display pn-display--l">
                   Travel, thoughtfully
                   <br />
@@ -361,7 +438,6 @@ export function PartnersPageContent() {
           </div>
         </section>
 
-        {/* Epilogue — always vertical; partnership conversion */}
         <section className="pn-epilogue" id="converse">
           <header className="pn-epilogue__head">
             <Eyebrow>Begin a conversation</Eyebrow>
@@ -369,11 +445,24 @@ export function PartnersPageContent() {
               <span className="pn-line">
                 <AnimaSplitLine line={0}>Collaborate with</AnimaSplitLine>
               </span>
-              <span className="pn-line pn-line--indent">
+              <span className="pn-line">
                 <AnimaSplitLine line={1}>Hathor</AnimaSplitLine>
               </span>
             </h2>
           </header>
+
+          <div className="pn-epilogue__pair">
+            <PartnersMedia
+              slot="room-royal"
+              alt="Royal Suite aboard Hathor"
+              ratio="668 / 554"
+            />
+            <PartnersMedia
+              slot="about-dining"
+              alt="Dining aboard Hathor"
+              ratio="668 / 720"
+            />
+          </div>
 
           <div className="pn-epilogue__board">
             <div className="pn-epilogue__statement">
@@ -397,7 +486,7 @@ export function PartnersPageContent() {
             <aside className="pn-epilogue__card">
               <span className="pn-card__tag">(Circle)</span>
               <PartnersMedia
-                slot="about-hero"
+                slot="contact-hero"
                 alt="Hathor Dahabiya on the Nile"
                 className="pn-epilogue__card-media"
                 ratio="356 / 460"
