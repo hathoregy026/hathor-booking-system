@@ -14,6 +14,23 @@ export type NavGroup = {
   links: NavLink[];
 };
 
+export const NAV_HOME: NavGroup = {
+  id: "home",
+  label: "Home",
+  links: [
+    {
+      href: "/",
+      label: "Main Home",
+      description: "The current Hathor homepage",
+    },
+    {
+      href: "/home-2",
+      label: "Home 2",
+      description: "Horizontal editorial homepage study",
+    },
+  ],
+};
+
 export const NAV_SUITES: NavGroup = {
   id: "suites",
   label: "Suites",
@@ -122,6 +139,7 @@ export const NAV_GROUPS = [
 
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Home" },
+  { href: "/home-2", label: "Home 2" },
   { href: "/suites", label: "Suites" },
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
@@ -151,9 +169,15 @@ export type HeaderNavGroup = {
 
 export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 
-/** Desktop + mobile primary nav — Home link plus four editorial dropdown groups. */
+/** Desktop + mobile primary nav — Home plus four editorial dropdown groups. */
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
-  { type: "link", href: "/", label: "Home" },
+  {
+    type: "group",
+    id: NAV_HOME.id,
+    label: NAV_HOME.label,
+    href: "/",
+    links: NAV_HOME.links,
+  },
   {
     type: "group",
     id: NAV_SUITES.id,
@@ -213,7 +237,14 @@ export function navHrefMatches(pathname: string, href: string): boolean {
  * and their dropdown destinations only. Homepage keeps the current header.
  */
 export function usesEditorialOverlayNav(pathname: string): boolean {
-  if (!pathname || pathname === "/" || pathname === "/preview") return false;
+  if (
+    !pathname ||
+    pathname === "/" ||
+    pathname === "/home-2" ||
+    pathname === "/preview"
+  ) {
+    return false;
+  }
 
   return HEADER_NAV_ITEMS.some((item) => {
     if (item.type === "link") {

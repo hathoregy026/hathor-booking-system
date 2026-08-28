@@ -8,12 +8,21 @@ export type ManagedPublicPage = {
   path: string;
   label: string;
   group: string;
+  /** New or experimental pages can ship hidden until explicitly enabled. */
+  defaultLive?: boolean;
   /** Legacy or alternate paths that resolve to this page. */
   aliases?: readonly string[];
 };
 
 export const MANAGED_PUBLIC_PAGES: readonly ManagedPublicPage[] = [
   { id: "home", path: "/", label: "Home", group: "Main" },
+  {
+    id: "home-2",
+    path: "/home-2",
+    label: "Home 2",
+    group: "Main",
+    defaultLive: false,
+  },
   {
     id: "suites",
     path: "/suites",
@@ -97,7 +106,7 @@ export const pageVisibilitySettingsSchema = z.object({
 
 export function defaultPageVisibilityMap(): PageVisibilityMap {
   return Object.fromEntries(
-    MANAGED_PUBLIC_PAGES.map((page) => [page.id, true]),
+    MANAGED_PUBLIC_PAGES.map((page) => [page.id, page.defaultLive ?? true]),
   ) as PageVisibilityMap;
 }
 
