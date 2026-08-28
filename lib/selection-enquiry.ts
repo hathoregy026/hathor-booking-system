@@ -2,6 +2,7 @@ import type { LuxuryRoomTypeValue } from "@/lib/booking-search-config";
 import {
   findResidence,
   findVoyage,
+  parseCabinSlug,
   isVoyageResidenceCompatible,
   luxuryTypeForResidence,
   luxuryTypeForResidenceSlug,
@@ -185,6 +186,16 @@ function resolveFavoriteLabels(
     if (favorite.type === "voyage") {
       const voyage = findVoyage(favorite.slug);
       if (voyage) labels.push(voyage.ports);
+      continue;
+    }
+    if (favorite.type === "cabin") {
+      const pair = parseCabinSlug(favorite.slug);
+      if (!pair) continue;
+      const voyage = findVoyage(pair.voyageSlug);
+      const residence = findResidence(pair.residenceSlug);
+      if (voyage && residence) {
+        labels.push(`${residence.name} (${voyage.nights}N ${voyage.ports})`);
+      }
       continue;
     }
     const residence = findResidence(favorite.slug);

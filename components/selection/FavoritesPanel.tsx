@@ -14,7 +14,7 @@ import {
   type StayDurationValue,
 } from "@/lib/booking-search-config";
 import { useBookingStore } from "@/store/bookingStore";
-import { lockBodyScroll, unlockBodyScroll, type BodyLockOwner } from "@/lib/body-scroll-lock";
+import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { formatPrice } from "@/lib/client-dates";
 import {
   findResidence,
@@ -48,7 +48,7 @@ import "./FavoritesPanel.css";
  * now the combined SelectionPanel, with FavoritesPanel exported as an alias.
  */
 
-const SCROLL_LOCK_OWNER = "selection-panel" as BodyLockOwner;
+const SCROLL_LOCK_OWNER = "selection-panel";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -122,7 +122,9 @@ function FavoritesView({ onClose }: { onClose: () => void }) {
                 Selecting from Favorites never removes the item — a guest may
                 well want something both saved and selected.
               */}
-              {item.ref.type === "voyage" || item.ref.type === "residence" ? (
+              {item.ref.type === "voyage" ||
+              item.ref.type === "residence" ||
+              item.ref.type === "cabin" ? (
                 <AddToVoyageButton
                   kind={item.ref.type}
                   slug={item.ref.slug}
@@ -238,12 +240,10 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       return;
     }
 
-    const selectedResidence = selection.residenceSlug
+    const residence = selection.residenceSlug
       ? findResidence(selection.residenceSlug)
       : null;
-    const residenceType = selectedResidence
-      ? luxuryTypeForResidence(selectedResidence)
-      : null;
+    const residenceType = residence ? luxuryTypeForResidence(residence) : null;
 
     if (residenceType && !isVoyageResidenceCompatible(duration, residenceType)) {
       setHandoffNotice(

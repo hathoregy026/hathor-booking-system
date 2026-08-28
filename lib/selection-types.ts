@@ -18,20 +18,28 @@ import type {
  *    storage keys together whenever this shape changes.
  */
 
-export const SELECTION_SCHEMA_VERSION = 1;
+export const SELECTION_SCHEMA_VERSION = 2;
 
-export const FAVORITES_STORAGE_KEY = "hathor:favorites:v1";
-export const VOYAGE_STORAGE_KEY = "hathor:voyage:v1";
+export const FAVORITES_STORAGE_KEY = "hathor:favorites:v2";
+export const VOYAGE_STORAGE_KEY = "hathor:voyage:v2";
 
 /** Private Charter has no catalog record — this is its synthetic stable slug. */
 export const CHARTER_SLUG = "private-charter";
 
-export type FavoriteType = "voyage" | "residence" | "charter";
+/**
+ * `cabin` is a CRUISE + CABIN PAIR — one of the twelve sellable listings on
+ * /cruises-list (3 itineraries x 4 cabins). Its slug is a composite,
+ * `"<voyageSlug>::<residenceSlug>"`, so the same cabin on two itineraries is two
+ * distinct saved products with two distinct prices. Composite rather than a
+ * second field so FavoriteRef, storage validation and set semantics are unchanged.
+ */
+export type FavoriteType = "voyage" | "residence" | "charter" | "cabin";
 
 export const FAVORITE_TYPES: readonly FavoriteType[] = [
   "voyage",
   "residence",
   "charter",
+  "cabin",
 ];
 
 export function isFavoriteType(value: unknown): value is FavoriteType {
@@ -43,7 +51,10 @@ export function isFavoriteType(value: unknown): value is FavoriteType {
 
 export interface FavoriteRef {
   type: FavoriteType;
-  /** `HATHOR_CRUISES[].slug`, `ROOM_SHOWCASES[].slug`, or `CHARTER_SLUG`. */
+  /**
+   * `HATHOR_CRUISES[].slug`, `ROOM_SHOWCASES[].slug`, `CHARTER_SLUG`, or — for
+   * `cabin` — `"<voyageSlug>::<residenceSlug>"`.
+   */
   slug: string;
   /** Epoch ms. Used for ordering only — never rendered as a date. */
   addedAt: number;

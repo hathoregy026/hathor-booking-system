@@ -107,7 +107,7 @@ const inquirySchema = z.object({
         .array(
           z
             .object({
-              type: z.enum(["voyage", "residence", "charter"]),
+              type: z.enum(["voyage", "residence", "charter", "cabin"]),
               slug: z
                 .string()
                 .trim()

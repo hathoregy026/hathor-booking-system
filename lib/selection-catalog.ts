@@ -90,6 +90,69 @@ export function luxuryTypeForResidenceSlug(
 }
 
 /* ------------------------------------------------------------------ */
+/* Cabin pairs — the twelve sellable listings on /cruises-list          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A "cabin" is one itinerary paired with one cabin: 3 voyages x 4 cabins = the
+ * twelve products a guest actually books. The pair is carried as a single
+ * composite slug so FavoriteRef stays {type, slug, addedAt}.
+ */
+export const CABIN_SLUG_SEPARATOR = "::";
+
+export function buildCabinSlug(
+  voyageSlug: string,
+  residenceSlug: string,
+): string {
+  return `${voyageSlug}${CABIN_SLUG_SEPARATOR}${residenceSlug}`;
+}
+
+export function parseCabinSlug(
+  slug: string,
+): { voyageSlug: string; residenceSlug: string } | null {
+  const parts = slug.split(CABIN_SLUG_SEPARATOR);
+  if (parts.length !== 2) return null;
+  const [voyageSlug, residenceSlug] = parts;
+  if (!voyageSlug || !residenceSlug) return null;
+  if (!isKnownVoyageSlug(voyageSlug)) return null;
+  if (!isKnownResidenceSlug(residenceSlug)) return null;
+  return { voyageSlug, residenceSlug };
+}
+
+/**
+ * Catalog cabin NAME to marketing residence slug — a genuine 1:1 map.
+ *
+ * Note this keys on `room.name` ("Luxury King Bed"), not `room.roomType`
+ * ("Luxury Room"). The name distinguishes king from twin; the type does not.
+ * Built by matching the catalog against ROOM_SHOWCASES rather than hand-listing
+ * pairs, so a renamed showcase surfaces as an unresolved cabin instead of a
+ * silently wrong one.
+ */
+const RESIDENCE_SLUG_BY_CABIN_NAME: Record<string, string> = {
+  "luxury king bed": "luxury-king-room",
+  "luxury twin bed": "luxury-twin-room",
+  "luxury suite": "luxury-suite",
+  "luxury royal suite": "royal-suite",
+};
+
+export function residenceSlugForCabinName(cabinName: string): string | null {
+  const slug = RESIDENCE_SLUG_BY_CABIN_NAME[cabinName.trim().toLowerCase()];
+  if (!slug) return null;
+  return isKnownResidenceSlug(slug) ? slug : null;
+}
+
+/** Composite slug for a /cruises-list card, or null if it cannot be resolved. */
+export function cabinSlugForListing(
+  voyageSlug: string,
+  cabinName: string,
+): string | null {
+  if (!isKnownVoyageSlug(voyageSlug)) return null;
+  const residenceSlug = residenceSlugForCabinName(cabinName);
+  if (!residenceSlug) return null;
+  return buildCabinSlug(voyageSlug, residenceSlug);
+}
+
+/* ------------------------------------------------------------------ */
 /* Compatibility — reuses the existing predicate, never re-implements it */
 /* ------------------------------------------------------------------ */
 
@@ -138,6 +201,8 @@ export function isFavoriteResolvable(ref: FavoriteRef): boolean {
       return isKnownResidenceSlug(ref.slug);
     case "charter":
       return ref.slug === CHARTER_SLUG;
+    case "cabin":
+      return parseCabinSlug(ref.slug) !== null;
     default:
       return false;
   }
@@ -312,6 +377,25 @@ export function resolveFavorite(ref: FavoriteRef): ResolvedFavorite | null {
       meta: "The Dahabiya, yours alone",
       href: "/charter",
       image: { kind: "slot", name: CHARTER_IMAGE_SLOT },
+    };
+  }
+
+  if (ref.type === "cabin") {
+    const pair = parseCabinSlug(ref.slug);
+    if (!pair) return null;
+
+    const voyage = findVoyage(pair.voyageSlug);
+    const residence = findResidence(pair.residenceSlug);
+    if (!voyage || !residence) return null;
+
+    return {
+      key,
+      ref,
+      title: residence.name,
+      typeLabel: "Cabin · Voyage",
+      meta: `${voyage.nights} Nights / ${voyage.days} Days · ${voyage.ports} · Up to ${residence.capacity} guests`,
+      href: "/cruises-list",
+      image: { kind: "static", src: residence.images[0] ?? "" },
     };
   }
 

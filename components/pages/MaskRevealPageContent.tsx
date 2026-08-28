@@ -2,6 +2,13 @@
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
+import { HathorHeartIcon } from "@/components/selection/SelectionIcons";
+import {
+  useIsFavorite,
+  useSelectionStore,
+} from "@/components/selection/SelectionProvider";
+import { cabinSlugForListing } from "@/lib/selection-catalog";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { CruisesIntroHero } from "@/components/pages/CruisesIntroHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -20,6 +27,7 @@ type SortKey = "price-asc" | "price-desc" | "nights-asc" | "nights-desc";
 
 type ListingItem = {
   key: string;
+  cruiseSlug: string;
   cruiseName: string;
   departureDay: string;
   nights: number;
@@ -71,6 +79,7 @@ function flattenCruises(cruises: HathorCruiseSeed[]): ListingItem[] {
   return cruises.flatMap((cruise) =>
     cruise.rooms.map((room) => ({
       key: `${cruise.slug}-${room.roomNumber}`,
+      cruiseSlug: cruise.slug,
       cruiseName: cruise.name,
       departureDay: cruise.departureDay,
       nights: cruise.nights,
@@ -154,23 +163,55 @@ function DualRange({
   );
 }
 
-function HeartIcon({ filled }: { filled: boolean }) {
+/**
+ * The card heart, now backed by the shared selection store instead of ephemeral
+ * component state — so a saved cabin survives a refresh and appears in the
+ * Favorites sheet. Markup and classes are unchanged.
+ *
+ * A listing is a cruise + cabin PAIR, so the same cabin on two itineraries is
+ * two distinct saved products at two distinct prices.
+ */
+function ListingFavouriteButton({ item }: { item: ListingItem }) {
+  const cabinSlug = cabinSlugForListing(item.cruiseSlug, item.roomName);
+  const toggleFavorite = useSelectionStore((state) => state.toggleFavorite);
+  const favoured = useIsFavorite("cabin", cabinSlug ?? "");
+
+  if (!cabinSlug) return null;
+
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className="mr-card__fav-icon"
+    <button
+      type="button"
+      className={`mr-card__fav${favoured ? " is-active" : ""}`}
+      aria-label={
+        favoured
+          ? `Remove ${item.roomName} on ${item.cruiseName} from favourites`
+          : `Save ${item.roomName} on ${item.cruiseName} to favourites`
+      }
+      aria-pressed={favoured}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFavorite("cabin", cabinSlug);
+      }}
     >
-      <path
-        d="M12.001 20.727s-7.35-4.52-9.55-8.52C.65 9.05 2.05 5.4 5.55 4.85c1.95-.3 3.75.6 4.7 2.05.95-1.45 2.75-2.35 4.7-2.05 3.5.55 4.9 4.2 3.1 7.35-2.2 4-9.12 8.52-9.12 8.52Z"
-        fill={filled ? "currentColor" : "none"}
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
+      <HathorHeartIcon className="mr-card__fav-icon" filled={favoured} />
+    </button>
+  );
+}
+
+/** Matching action: one click selects both the itinerary and the cabin. */
+function ListingAddButton({ item }: { item: ListingItem }) {
+  const cabinSlug = cabinSlugForListing(item.cruiseSlug, item.roomName);
+  if (!cabinSlug) return null;
+
+  return (
+    <AddToVoyageButton
+      kind="cabin"
+      slug={cabinSlug}
+      name={`${item.roomName} on ${item.cruiseName}`}
+      variant="inline"
+      className="mr-btn mr-btn--outline mr-card__voyage"
+    />
   );
 }
 
@@ -215,7 +256,6 @@ export function MaskRevealPageContent() {
     priceBounds.max,
   ]);
   const [features, setFeatures] = useState<string[]>([]);
-  const [favourites, setFavourites] = useState<Set<string>>(() => new Set());
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const pinRowRef = useRef<HTMLDivElement>(null);
@@ -281,15 +321,6 @@ export function MaskRevealPageContent() {
     setFeatures((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
-  };
-
-  const toggleFavourite = (key: string) => {
-    setFavourites((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
   };
 
   const resetFilters = () => {
@@ -512,7 +543,6 @@ export function MaskRevealPageContent() {
               <ul className="mr-grid">
                 {filtered.map((item) => {
                   const cardFeatures = item.amenities.slice(0, 3);
-                  const favoured = favourites.has(item.key);
                   const unit = displayUnitCode(item.roomNumber);
 
                   return (
@@ -530,19 +560,7 @@ export function MaskRevealPageContent() {
                               </span>
                             ))}
                           </div>
-                          <button
-                            type="button"
-                            className={`mr-card__fav${favoured ? " is-active" : ""}`}
-                            aria-label={
-                              favoured
-                                ? `Remove ${item.roomName} from favourites`
-                                : `Save ${item.roomName}`
-                            }
-                            aria-pressed={favoured}
-                            onClick={() => toggleFavourite(item.key)}
-                          >
-                            <HeartIcon filled={favoured} />
-                          </button>
+                          <ListingFavouriteButton item={item} />
                         </div>
 
                         <Link
@@ -589,6 +607,7 @@ export function MaskRevealPageContent() {
                           <Link href={item.detailHref} className="mr-btn mr-btn--outline">
                             View Details
                           </Link>
+                          <ListingAddButton item={item} />
                           <BookNowTrigger className="mr-btn mr-btn--solid">
                             Book Now
                           </BookNowTrigger>

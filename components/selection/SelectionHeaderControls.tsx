@@ -1,6 +1,9 @@
 "use client";
 
-import { Compass, Heart } from "lucide-react";
+import {
+  HathorAddIcon,
+  HathorHeartIcon,
+} from "@/components/selection/SelectionIcons";
 import {
   useFavoritesCount,
   useSelectionStore,
@@ -44,7 +47,7 @@ export function SelectionHeaderControls() {
         aria-haspopup="dialog"
         title="My Favorites"
       >
-        <Heart className="hsc__icon" strokeWidth={1.5} aria-hidden="true" focusable="false" />
+        <HathorHeartIcon className="hsc__icon" filled={favoritesCount > 0} />
         {favoritesCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {favoritesCount > 99 ? "99+" : favoritesCount}
@@ -64,7 +67,7 @@ export function SelectionHeaderControls() {
         aria-haspopup="dialog"
         title="My Voyage"
       >
-        <Compass className="hsc__icon" strokeWidth={1.5} aria-hidden="true" focusable="false" />
+        <HathorAddIcon className="hsc__icon" />
         {voyageCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {voyageCount}

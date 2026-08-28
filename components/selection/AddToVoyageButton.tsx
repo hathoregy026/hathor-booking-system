@@ -2,7 +2,6 @@
 
 import { useCallback, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
-import { Compass } from "lucide-react";
 import {
   describeRoomTypesOnCruise,
   type StayDurationValue,
@@ -11,7 +10,12 @@ import {
   findVoyage,
   isVoyageResidenceCompatible,
   luxuryTypeForResidenceSlug,
+  parseCabinSlug,
 } from "@/lib/selection-catalog";
+import {
+  HathorAddIcon,
+  HathorSelectedIcon,
+} from "@/components/selection/SelectionIcons";
 import { trackSelectionEvent } from "@/lib/selection-analytics";
 import { useSelectionStore, useVoyageSelection } from "@/components/selection/SelectionProvider";
 import "./AddToVoyageButton.css";
@@ -29,7 +33,7 @@ import "./AddToVoyageButton.css";
  * would invalidate the chosen accommodation raises a confirmation first.
  */
 
-export type AddToVoyageKind = "voyage" | "residence";
+export type AddToVoyageKind = "voyage" | "residence" | "cabin";
 export type AddToVoyageVariant = "card" | "inline" | "panel";
 
 type PendingChange = {
@@ -61,10 +65,16 @@ export function AddToVoyageButton({
   const [pending, setPending] = useState<PendingChange | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
+  const cabinPair = kind === "cabin" ? parseCabinSlug(slug) : null;
+
   const selected =
     kind === "voyage"
       ? selection.voyageSlug === slug
-      : selection.residenceSlug === slug;
+      : kind === "cabin"
+        ? Boolean(cabinPair) &&
+          selection.voyageSlug === cabinPair?.voyageSlug &&
+          selection.residenceSlug === cabinPair?.residenceSlug
+        : selection.residenceSlug === slug;
 
   const applyVoyage = useCallback(
     (voyageSlug: StayDurationValue, dropResidence: boolean) => {
@@ -81,6 +91,37 @@ export function AddToVoyageButton({
       event.preventDefault();
       event.stopPropagation();
       setNotice(null);
+
+      /*
+       * A cabin listing is a cruise + cabin PAIR — one click sets both halves of
+       * My Voyage. The pair comes from the catalog, so it is compatible by
+       * construction; the guard stays as a safety net.
+       */
+      if (kind === "cabin") {
+        if (!cabinPair) return;
+
+        const pairType = luxuryTypeForResidenceSlug(cabinPair.residenceSlug);
+        if (
+          !isVoyageResidenceCompatible(
+            cabinPair.voyageSlug as StayDurationValue,
+            pairType,
+          )
+        ) {
+          setNotice(
+            `This journey offers ${describeRoomTypesOnCruise(cabinPair.voyageSlug as StayDurationValue)}.`,
+          );
+          return;
+        }
+
+        setVoyage(cabinPair.voyageSlug as StayDurationValue);
+        setResidence(cabinPair.residenceSlug);
+        trackSelectionEvent("voyage_add", { voyage_slug: cabinPair.voyageSlug });
+        trackSelectionEvent("accommodation_add", {
+          residence_slug: cabinPair.residenceSlug,
+        });
+        openVoyage();
+        return;
+      }
 
       if (kind === "voyage") {
         const voyage = findVoyage(slug);
@@ -135,11 +176,13 @@ export function AddToVoyageButton({
     },
     [
       applyVoyage,
+      cabinPair,
       kind,
       openVoyage,
       selection.residenceSlug,
       selection.voyageSlug,
       setResidence,
+      setVoyage,
       slug,
     ],
   );
@@ -222,12 +265,11 @@ export function AddToVoyageButton({
         data-voyage-kind={kind}
         data-voyage-slug={slug}
       >
-        <Compass
-          className="hathor-atv__icon"
-          strokeWidth={1.5}
-          aria-hidden="true"
-          focusable="false"
-        />
+        {selected ? (
+          <HathorSelectedIcon className="hathor-atv__icon" />
+        ) : (
+          <HathorAddIcon className="hathor-atv__icon" />
+        )}
         {showText ? (
           <span className="hathor-atv__label" aria-hidden="true">
             {selected ? "In My Voyage" : "Add to My Voyage"}

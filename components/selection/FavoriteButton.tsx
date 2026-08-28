@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
-import { Heart } from "lucide-react";
+import { HathorHeartIcon } from "@/components/selection/SelectionIcons";
 import { trackSelectionEvent } from "@/lib/selection-analytics";
 import {
   useIsFavorite,
@@ -129,12 +129,7 @@ export function FavoriteButton({
       data-favorite-type={type}
       data-favorite-slug={slug}
     >
-      <Heart
-        className="hathor-fav__icon"
-        strokeWidth={1.5}
-        aria-hidden="true"
-        focusable="false"
-      />
+      <HathorHeartIcon className="hathor-fav__icon" filled={saved} />
       {withLabel ? (
         /* Decorative: the accessible name comes from aria-label above. */
         <span className="hathor-fav__label" aria-hidden="true">
