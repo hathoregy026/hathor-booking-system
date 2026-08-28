@@ -463,7 +463,13 @@ export function SuitesNormalHomepagePage() {
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
     const doc = iframe?.contentDocument;
-    if (!iframe || !doc?.head) return;
+    if (
+      !iframe ||
+      !doc?.head ||
+      !doc.location.pathname.endsWith("/suites-normal/index.html")
+    ) {
+      return;
+    }
 
     doc.documentElement.dataset.publicTheme = theme;
 
