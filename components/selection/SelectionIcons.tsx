@@ -1,11 +1,10 @@
 /**
- * Hathor selection marks.
+ * Hathor selection marks — drawn to the supplied reference: a solid gold heart
+ * and a gold shopping cart, both taking colour from the surrounding text
+ * (currentColor) so they inherit the header's gold.
  *
- * Purpose-drawn rather than borrowed from a generic icon set: the heart is
- * softer and slightly asymmetric so it sits with the editorial script faces,
- * and the add mark is an engraved ring-and-cross rather than a compass or a
- * shopping glyph. Both share one geometry (24 box, 1.4 stroke, round caps) so
- * Save and Add always read as a matching pair wherever they appear together.
+ * Count badges are NOT part of these marks — the consuming component's CSS
+ * draws them, so a badge can overlap the icon box without changing it.
  *
  * Server-safe: pure SVG, no hooks, no "use client" needed.
  */
@@ -14,53 +13,72 @@ type IconProps = {
   className?: string;
   /** Intrinsic size in px. CSS width/height still wins where a class sets it. */
   size?: number;
-  /** Solid fill for the active state. Stroke is unchanged, so nothing reflows. */
+  /** Solid (active) vs outline (inactive). */
   filled?: boolean;
 };
 
 const BASE = {
   viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.4,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
   "aria-hidden": "true" as const,
   focusable: "false" as const,
 };
 
-/** Save to Favorites. */
-export function HathorHeartIcon({ className, size = 18, filled = false }: IconProps) {
+/**
+ * Favorites. Solid by default — the reference heart is a filled gold
+ * silhouette. The outline variant is used on cards, where saved vs not-saved
+ * must read at a glance; the silhouette is identical in both states, so
+ * toggling never shifts layout.
+ */
+export function HathorHeartIcon({
+  className,
+  size = 20,
+  filled = true,
+}: IconProps) {
   return (
     <svg {...BASE} className={className} width={size} height={size}>
       <path
-        d="M12 20.3c-.35 0-6.2-3.6-8.05-7.35C2.4 9.9 3.65 6.1 6.9 5.3c2-.5 3.9.4 5.1 2.05 1.2-1.65 3.1-2.55 5.1-2.05 3.25.8 4.5 4.6 2.95 7.65C18.2 16.7 12.35 20.3 12 20.3Z"
+        d="M12 21.1 10.6 19.8C5.5 15.2 2.2 12.2 2.2 8.5 2.2 5.5 4.6 3.1 7.6 3.1c1.7 0 3.3.8 4.4 2.05C13.1 3.9 14.7 3.1 16.4 3.1c3 0 5.4 2.4 5.4 5.4 0 3.7-3.3 6.7-8.4 11.31L12 21.1Z"
         fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={filled ? 0 : 1.6}
+        strokeLinejoin="round"
       />
     </svg>
   );
 }
 
-/** Add to My Voyage. */
-export function HathorAddIcon({ className, size = 18, filled = false }: IconProps) {
+/**
+ * My Voyage. A classic cart, as supplied in the reference: sloping handle,
+ * trapezoid basket, two solid wheels.
+ */
+export function HathorCartIcon({
+  className,
+  size = 20,
+  filled = false,
+}: IconProps) {
   return (
     <svg {...BASE} className={className} width={size} height={size}>
-      <circle cx="12" cy="12" r="8.4" fill={filled ? "currentColor" : "none"} />
-      <path d="M12 8.1v7.8" stroke={filled ? "var(--hathor-mark-inset, #ece8df)" : "currentColor"} />
-      <path d="M8.1 12h7.8" stroke={filled ? "var(--hathor-mark-inset, #ece8df)" : "currentColor"} />
-    </svg>
-  );
-}
-
-/** Selected state for My Voyage — the ring keeps its weight, the cross becomes a tick. */
-export function HathorSelectedIcon({ className, size = 18 }: IconProps) {
-  return (
-    <svg {...BASE} className={className} width={size} height={size}>
-      <circle cx="12" cy="12" r="8.4" fill="currentColor" />
       <path
-        d="m8.4 12.2 2.5 2.5 4.7-4.9"
-        stroke="var(--hathor-mark-inset, #ece8df)"
+        d="M1.9 3.1h2.35a.9.9 0 0 1 .88.71l.42 2.03"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.9}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
+      <path
+        d="M5.55 5.84h16.05l-2.02 8.2a.9.9 0 0 1-.87.68H8.2a.9.9 0 0 1-.88-.7L5.55 5.84Z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={1.9}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="9.4" cy="19.4" r="1.75" fill="currentColor" />
+      <circle cx="17.6" cy="19.4" r="1.75" fill="currentColor" />
     </svg>
   );
 }
+
+/** @deprecated Kept so earlier imports resolve. Use HathorCartIcon. */
+export const HathorAddIcon = HathorCartIcon;

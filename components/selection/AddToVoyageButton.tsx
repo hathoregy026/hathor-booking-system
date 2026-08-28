@@ -12,10 +12,7 @@ import {
   luxuryTypeForResidenceSlug,
   parseCabinSlug,
 } from "@/lib/selection-catalog";
-import {
-  HathorAddIcon,
-  HathorSelectedIcon,
-} from "@/components/selection/SelectionIcons";
+import { HathorCartIcon } from "@/components/selection/SelectionIcons";
 import { trackSelectionEvent } from "@/lib/selection-analytics";
 import { useSelectionStore, useVoyageSelection } from "@/components/selection/SelectionProvider";
 import "./AddToVoyageButton.css";
@@ -265,11 +262,7 @@ export function AddToVoyageButton({
         data-voyage-kind={kind}
         data-voyage-slug={slug}
       >
-        {selected ? (
-          <HathorSelectedIcon className="hathor-atv__icon" />
-        ) : (
-          <HathorAddIcon className="hathor-atv__icon" />
-        )}
+        <HathorCartIcon className="hathor-atv__icon" filled={selected} />
         {showText ? (
           <span className="hathor-atv__label" aria-hidden="true">
             {selected ? "In My Voyage" : "Add to My Voyage"}

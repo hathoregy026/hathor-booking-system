@@ -78,9 +78,11 @@ const CASES: [string | null, LuxuryRoomTypeValue | null][] = [
   ["Cabin", null],
 
   /*
-   * Marketing ROOM_SHOWCASES display names — deliberately NOT aliases. Adding
-   * them would change getMaxCapacityForDbRoomType from 4 to 2 for these labels,
-   * which is a capacity change and a separate decision.
+   * Legacy marketing wording, deliberately NOT aliases. ROOM_SHOWCASES now uses
+   * the catalog names ("Luxury King Bed"), so these strings should never reach
+   * the classifier; adding them as aliases would change
+   * getMaxCapacityForDbRoomType from 4 to 2, which is a capacity change and a
+   * separate decision.
    */
   ["Luxury King Room", null],
   ["Luxury Twin Room", null],

@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  HathorAddIcon,
+  HathorCartIcon,
   HathorHeartIcon,
 } from "@/components/selection/SelectionIcons";
 import {
@@ -47,7 +47,7 @@ export function SelectionHeaderControls() {
         aria-haspopup="dialog"
         title="My Favorites"
       >
-        <HathorHeartIcon className="hsc__icon" filled={favoritesCount > 0} />
+        <HathorHeartIcon className="hsc__icon" filled />
         {favoritesCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {favoritesCount > 99 ? "99+" : favoritesCount}
@@ -55,10 +55,7 @@ export function SelectionHeaderControls() {
         ) : null}
       </button>
 
-      {/*
-        Desktop/tablet only. On phones the heart opens the same sheet and the
-        in-sheet tabs reach My Voyage, so no third icon crowds the header.
-      */}
+      {/* Two marks only, at every width — matches the supplied reference. */}
       <button
         type="button"
         className={`hsc hsc--voyage${voyageCount > 0 ? " has-items" : ""}`}
@@ -67,7 +64,7 @@ export function SelectionHeaderControls() {
         aria-haspopup="dialog"
         title="My Voyage"
       >
-        <HathorAddIcon className="hsc__icon" />
+        <HathorCartIcon className="hsc__icon" />
         {voyageCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {voyageCount}

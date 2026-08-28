@@ -34,35 +34,54 @@
 }
 
 .hsc__icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  fill: none;
-  stroke: currentColor;
-  transition: fill 220ms ease, color 220ms ease;
+  width: 1.4rem;
+  height: 1.4rem;
+  color: var(--hathor-mark-gold, #c9a96e);
+  transition: opacity 220ms ease;
 }
 
-.hsc.has-items .hsc__icon {
-  fill: currentColor;
-  color: #c9a96e;
+.hsc:hover .hsc__icon {
+  opacity: 0.82;
 }
 
 /*
- * The count is a plain gold numeral, not a filled pill. It is absolutely
- * positioned so appearing or disappearing cannot change the header's metrics.
+ * Count badge — deep claret disc with a white numeral, per the reference.
+ * Absolutely positioned so appearing or disappearing cannot change the
+ * header's metrics.
  */
 .hsc__count {
   position: absolute;
-  top: 0.28rem;
-  right: 0.18rem;
-  min-width: 0.9rem;
+  top: 0.3rem;
+  right: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--hathor-badge, #7b1f24);
+  color: #fff;
   font-family: var(--font-hathor-body, inherit);
-  font-size: 0.58rem;
+  font-size: 0.6rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   line-height: 1;
-  color: #c9a96e;
   pointer-events: none;
+}
+
+/*
+ * Rhythm: the two marks read as one pair, then a clear gap before the
+ * day/night pill so the header is [mark][mark]  [control] rather than three
+ * evenly spaced unrelated objects.
+ */
+.hsc + .hsc {
+  margin-left: 0.125rem;
+}
+
+.hsc:last-of-type {
+  margin-right: 0.5rem;
 }
 
 @media (pointer: coarse) {
@@ -79,21 +98,24 @@
 }
 
 /*
- * My Voyage is a desktop/tablet convenience only. Phones keep a single control
- * (the heart) which opens the same sheet, where the tabs reach My Voyage —
- * so the header never gains a third icon at small widths.
+ * Both marks show at every width, matching the reference. Only two icons plus
+ * the pill, so the header stays uncrowded; they tighten slightly on phones.
  */
-.hsc--voyage .hsc__icon {
-  fill: none;
-}
+@media (max-width: 600px) {
+  .hsc {
+    width: 2.5rem;
+  }
 
-.hsc--voyage.has-items .hsc__icon {
-  fill: none;
-  color: #c9a96e;
-}
+  .hsc__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 
-@media (max-width: 768px) {
-  .hsc--voyage {
-    display: none;
+  .hsc__count {
+    top: 0.2rem;
+    right: 0.1rem;
+    min-width: 0.95rem;
+    height: 0.95rem;
+    font-size: 0.55rem;
   }
 }
