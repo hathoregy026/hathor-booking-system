@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RoomCollectionPage } from "@/components/pages/rooms/RoomCollectionPage";
+import { RoomCollectionEditorialPage } from "@/components/pages/rooms/RoomCollectionEditorialPage";
 import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { ROYAL_SUITES_PAGE } from "@/lib/page-content";
@@ -44,10 +44,6 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Deliberately outside (public): Springs Design document in an isolated frame.
- * Must not inherit PublicLayout scroll infrastructure.
- */
 export default async function RoyalSuitesPage() {
   const cms = await loadPublicCmsBundle();
 
@@ -64,14 +60,9 @@ export default async function RoyalSuitesPage() {
         typography={cms.typography}
         typographyMobile={cms.typographyMobile}
       >
-        <RoomCollectionPage
+        <RoomCollectionEditorialPage
           variant="royal"
           rooms={ROOM_SHOWCASES.filter((room) => room.slug === "royal-suite")}
-          eyebrow="Hathor's signature residence"
-          title="Royal Suites"
-          secondTitle="The Nile, Privately"
-          support="The most expansive private residence aboard, framed by Main Deck views and exceptional space."
-          heroImage="/media/hathor/scraped/royal-1.webp"
         />
       </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>

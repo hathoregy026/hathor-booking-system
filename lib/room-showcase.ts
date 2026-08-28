@@ -15,7 +15,7 @@ export type RoomShowcase = {
 export const ROOM_SHOWCASES: readonly RoomShowcase[] = [
   {
     slug: "luxury-king-room",
-    name: "Luxury King Room",
+    name: "Luxury King Bed",
     eyebrow: "A quiet Nile-facing retreat",
     sizeSqm: 22,
     capacity: 2,
@@ -27,12 +27,13 @@ export const ROOM_SHOWCASES: readonly RoomShowcase[] = [
       "/media/hathor/scraped/cabin-3.webp",
       "/media/hathor/scraped/cabin-7.webp",
       "/media/hathor/scraped/cabin-8.webp",
+      "/media/hathor/scraped/cabin-2.webp",
     ],
     amenities: HATHOR_AMENITIES.luxuryRooms,
   },
   {
     slug: "luxury-twin-room",
-    name: "Luxury Twin Room",
+    name: "Luxury Twin Bed",
     eyebrow: "Refined comfort, shared beautifully",
     sizeSqm: 22,
     capacity: 2,
@@ -44,6 +45,7 @@ export const ROOM_SHOWCASES: readonly RoomShowcase[] = [
       "/media/hathor/scraped/cabin-6.webp",
       "/media/hathor/scraped/cabin-4.webp",
       "/media/hathor/scraped/cabin-8.webp",
+      "/media/hathor/scraped/cabin-1.webp",
     ],
     amenities: HATHOR_AMENITIES.luxuryRooms,
   },
@@ -68,7 +70,7 @@ export const ROOM_SHOWCASES: readonly RoomShowcase[] = [
   },
   {
     slug: "royal-suite",
-    name: "Royal Suite",
+    name: "Luxury Royal Suite",
     eyebrow: "The crown of Hathor",
     sizeSqm: 56,
     capacity: 4,

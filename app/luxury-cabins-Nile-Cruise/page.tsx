@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RoomCollectionPage } from "@/components/pages/rooms/RoomCollectionPage";
+import { RoomCollectionEditorialPage } from "@/components/pages/rooms/RoomCollectionEditorialPage";
 import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { LUXURY_CABINS_PAGE } from "@/lib/page-content";
@@ -42,10 +42,6 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Deliberately outside (public): Springs Design document in an isolated frame.
- * Must not inherit PublicLayout scroll infrastructure.
- */
 export default async function LuxuryCabinsPage() {
   const cms = await loadPublicCmsBundle();
 
@@ -62,14 +58,9 @@ export default async function LuxuryCabinsPage() {
         typography={cms.typography}
         typographyMobile={cms.typographyMobile}
       >
-        <RoomCollectionPage
+        <RoomCollectionEditorialPage
           variant="cabins"
           rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
-          eyebrow="Luxury rooms aboard Hathor"
-          title="Luxury Rooms"
-          secondTitle="Nile by the Window"
-          support="Choose a king or twin retreat, each composed for two guests and panoramic river light."
-          heroImage="/media/hathor/scraped/cabin-1.webp"
         />
       </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
