@@ -2,6 +2,10 @@ export type RoomCollectionVariant = "cabins" | "suites" | "royal";
 
 export type RoomCollectionEditorialConfig = {
   variant: RoomCollectionVariant;
+  collectionLabel: string;
+  tierSubtitle: string;
+  tierKicker: string;
+  tierStatement: string;
   eyebrow: string;
   titleLines: [string, string];
   support: string;
@@ -42,6 +46,11 @@ export const ROOM_COLLECTION_CONFIG: Record<
 > = {
   cabins: {
     variant: "cabins",
+    collectionLabel: "Residence folio · Cabins",
+    tierSubtitle: "River quarters",
+    tierKicker: "Lower deck cabins",
+    tierStatement:
+      "Twenty-two square metres of calm — king or twin, composed for two guests and wide Nile glass.",
     eyebrow: "Lower deck · Nile cabins",
     titleLines: ["Luxury", "Rooms"],
     support:
@@ -74,6 +83,11 @@ export const ROOM_COLLECTION_CONFIG: Record<
   },
   suites: {
     variant: "suites",
+    collectionLabel: "Residence folio · Suites",
+    tierSubtitle: "Lower deck suite",
+    tierKicker: "Suite residence",
+    tierStatement:
+      "Forty-six square metres with panoramic Nile views, expressive interiors and a private Jacuzzi.",
     eyebrow: "Lower deck · Suite residence",
     titleLines: ["Luxury", "Suites"],
     support:
@@ -106,6 +120,11 @@ export const ROOM_COLLECTION_CONFIG: Record<
   },
   royal: {
     variant: "royal",
+    collectionLabel: "Residence folio · Royal",
+    tierSubtitle: "Main deck signature",
+    tierKicker: "Royal residence",
+    tierStatement:
+      "Fifty-six square metres on the Main Deck — Hathor's most private, expansive Nile address.",
     eyebrow: "Main deck · Signature residence",
     titleLines: ["Royal", "Suites"],
     support:

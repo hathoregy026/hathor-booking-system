@@ -24,9 +24,9 @@ export function useRoomCollectionEditorialScroll({
     if (!root || !run || !track) return;
 
     const html = document.documentElement;
-    const progressBar = root.querySelector<HTMLElement>("[data-rm-progress]");
-    const scenes = [...root.querySelectorAll<HTMLElement>(".rm-scene")];
-    const flips = [...root.querySelectorAll<HTMLElement>("[data-rm-flip]")];
+    const progressBar = root.querySelector<HTMLElement>("[data-ac-progress]");
+    const scenes = [...root.querySelectorAll<HTMLElement>(".ac-scene")];
+    const wipes = [...root.querySelectorAll<HTMLElement>("[data-ac-wipe]")];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktop = false;
     let travel = 0;
@@ -35,16 +35,17 @@ export function useRoomCollectionEditorialScroll({
     let target = 0;
     let current = 0;
     let lastWidth = window.innerWidth;
-    html.setAttribute("data-rooms-editorial", "");
 
-    const applyFlips = (mode: "horizontal" | "vertical") => {
-      flips.forEach((el) => {
+    html.setAttribute("data-accom-catalog", "");
+
+    const applyWipes = (mode: "horizontal" | "vertical") => {
+      wipes.forEach((el) => {
         if (reduced.matches) {
-          el.style.setProperty("--rm-flip", "1");
+          el.style.setProperty("--ac-wipe", "1");
           return;
         }
         el.style.setProperty(
-          "--rm-flip",
+          "--ac-wipe",
           editorialFlipProgress(el.getBoundingClientRect(), mode).toFixed(4),
         );
       });
@@ -65,7 +66,7 @@ export function useRoomCollectionEditorialScroll({
         scene.style.setProperty("--scene-progress", parallax.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
-      applyFlips("horizontal");
+      applyWipes("horizontal");
     };
 
     const applyVerticalVars = () => {
@@ -81,7 +82,7 @@ export function useRoomCollectionEditorialScroll({
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
-      applyFlips("vertical");
+      applyWipes("vertical");
     };
 
     const measure = () => {
@@ -126,6 +127,11 @@ export function useRoomCollectionEditorialScroll({
       if (!frame) frame = requestAnimationFrame(tick);
     };
 
+    const remeasure = () => {
+      measure();
+      updateTarget();
+    };
+
     const onResize = () => {
       const width = window.innerWidth;
       const widthChanged = Math.abs(width - lastWidth) > 24;
@@ -134,13 +140,7 @@ export function useRoomCollectionEditorialScroll({
         applyVerticalVars();
         return;
       }
-      measure();
-      updateTarget();
-    };
-
-    const remeasure = () => {
-      measure();
-      updateTarget();
+      remeasure();
     };
 
     window.addEventListener("scroll", updateTarget, { passive: true });
@@ -159,7 +159,7 @@ export function useRoomCollectionEditorialScroll({
       reduced.removeEventListener("change", onResize);
       detachRemeasure();
       if (frame) cancelAnimationFrame(frame);
-      html.removeAttribute("data-rooms-editorial");
+      html.removeAttribute("data-accom-catalog");
       run.style.height = "";
       track.style.transform = "";
     };

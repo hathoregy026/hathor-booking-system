@@ -37,4 +37,18 @@ html:has(.suites-normal-clone) body {
   height: 100%;
   border: 0;
   background: #f4e4cc;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 360ms ease-out;
+}
+
+.suites-normal-clone__frame[data-suites-ready="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suites-normal-clone__frame {
+    transition: none;
+  }
 }

@@ -32,7 +32,7 @@ function buildSuitesLiveCss(cmsCss = "") {
     SUITES_CLIP_FIX_CSS,
     CLONE_MENU_HIDE_CSS,
     SUITES_LOADER_HIDE_CSS,
-    SUITES_HORIZONTAL_SCROLL_CSS,
+    SUITES_SCROLL_RESTORE_CSS,
     cmsCss,
     SUITES_SPLITTEXT_TYPE_GUARD_CSS,
     SUITES_TERMS_STAGE_CSS,
@@ -305,20 +305,22 @@ const SUITES_LOADER_HIDE_CSS = `
 }
 `;
 
-const SUITES_HORIZONTAL_SCROLL_CSS = `
+const SUITES_SCROLL_RESTORE_CSS = `
 @media (min-width: 951px) {
   html:not(.mobile),
   html:not(.mobile) body {
-    overflow: hidden !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
   }
 
   html:not(.mobile) #smooth-wrapper,
   html:not(.mobile) #smooth-content,
   html:not(.mobile) main {
-    overflow: hidden !important;
-    max-height: 100vh !important;
+    overflow: visible !important;
+    max-height: none !important;
   }
 }
 `;
@@ -461,7 +463,7 @@ export function SuitesNormalHomepagePage() {
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
     const doc = iframe?.contentDocument;
-    if (!doc?.head) return;
+    if (!iframe || !doc?.head) return;
 
     doc.documentElement.dataset.publicTheme = theme;
 
@@ -533,6 +535,15 @@ export function SuitesNormalHomepagePage() {
       if (data.images) applyImages(doc, data.images);
     } catch {
       /* Clip-fix still applies if CMS is unreachable. */
+    } finally {
+      const reveal = () => {
+        iframe.dataset.suitesReady = "true";
+      };
+      if (doc.fonts?.ready) {
+        void doc.fonts.ready.then(() => requestAnimationFrame(reveal)).catch(reveal);
+      } else {
+        requestAnimationFrame(reveal);
+      }
     }
   }, [theme]);
 
@@ -548,9 +559,17 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-no-loader-scroll-20260828"
+        src="/suites-normal/index.html?v=hathor-scroll-ready-20260829"
         title="Hathor Suites"
-        onLoad={() => void apply()}
+        onLoad={() => {
+          const iframe = iframeRef.current;
+          window.setTimeout(() => {
+            if (iframe && !iframe.dataset.suitesReady) {
+              iframe.dataset.suitesReady = "true";
+            }
+          }, 1800);
+          void apply();
+        }}
       />
     </main>
   );

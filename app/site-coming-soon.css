@@ -1,5 +1,14 @@
 /* Full-site Coming Soon gate — shown when Live Site is turned off in admin. */
 
+.site-coming-soon-shell {
+  min-height: 100svh;
+  background: #ece8df;
+}
+
+.site-coming-soon-shell .site-coming-soon {
+  min-height: calc(100svh - 5.5rem);
+}
+
 .site-coming-soon {
   position: relative;
   isolation: isolate;

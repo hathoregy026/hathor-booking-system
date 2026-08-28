@@ -5,13 +5,13 @@ import Link from "next/link";
 import {
   useRef,
   type ComponentPropsWithoutRef,
-  type CSSProperties,
   type ReactNode,
 } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { RoomAmenityIcon } from "@/components/pages/rooms/RoomAmenityIcon";
 import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
@@ -24,7 +24,7 @@ import {
 } from "@/lib/room-collection-editorial";
 import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
-import { resolveCmsText, stackedHeroLines } from "@/lib/website-text-shared";
+import { resolveCmsText } from "@/lib/website-text-shared";
 
 type RoomCollectionEditorialPageProps = {
   variant: RoomCollectionVariant;
@@ -37,99 +37,87 @@ function Scene({
   ...props
 }: ComponentPropsWithoutRef<"section">) {
   return (
-    <section className={`rm-scene ${className}`} {...props}>
+    <section className={`ac-scene ${className}`} {...props}>
       {children}
     </section>
   );
 }
 
-function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="rm-eyebrow">({children})</p>;
+function Kicker({ children }: { children: ReactNode }) {
+  return <p className="ac-kicker">{children}</p>;
 }
 
-function RoomMedia({
+function Frame({
   src,
   alt,
   priority = false,
   className = "",
-  ratio,
 }: {
   src: string;
   alt: string;
   priority?: boolean;
   className?: string;
-  ratio?: string;
 }) {
   return (
-    <figure
-      className={`rm-media ${className}`}
-      style={
-        ratio ? ({ ["--rm-ratio" as string]: ratio } as CSSProperties) : undefined
-      }
-    >
+    <figure className={`ac-frame ${className}`}>
       <Image
         src={src}
         alt={alt}
         fill
         priority={priority}
-        sizes="(max-width: 950px) 100vw, 70vw"
-        className="rm-media__image"
+        sizes="(max-width: 950px) 100vw, 62vw"
+        className="ac-frame__img"
       />
     </figure>
   );
 }
 
-function FlipImage({
-  front,
-  back,
-  frontAlt,
-  backAlt = "",
+function WipePair({
+  base,
+  overlay,
+  baseAlt,
+  overlayAlt,
   className = "",
-  axis = "left",
-  ratio,
 }: {
-  front: string;
-  back: string;
-  frontAlt: string;
-  backAlt?: string;
+  base: string;
+  overlay: string;
+  baseAlt: string;
+  overlayAlt: string;
   className?: string;
-  axis?: "up" | "left" | "right";
-  ratio?: string;
 }) {
   return (
-    <div className={`rm-flip rm-flip--${axis} ${className}`} data-rm-flip>
-      <RoomMedia
-        src={front}
-        alt={frontAlt}
-        className="rm-flip__base"
-        ratio={ratio}
-      />
-      <RoomMedia
-        src={back}
-        alt={backAlt}
-        className="rm-flip__overlay"
-        ratio={ratio}
-      />
+    <div className={`ac-wipe ${className}`} data-ac-wipe>
+      <Frame src={base} alt={baseAlt} className="ac-wipe__base" />
+      <Frame src={overlay} alt={overlayAlt} className="ac-wipe__over" />
     </div>
   );
 }
 
-function splitNameLines(name: string): string[] {
-  const words = name.trim().split(/\s+/);
-  if (words.length <= 2) return words;
-  if (words.length === 3) return [words.slice(0, 2).join(" "), words[2]!];
-  const mid = Math.ceil(words.length / 2);
-  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-}
+function BentoFive({ room }: { room: RoomShowcase }) {
+  const shots = room.images.slice(0, 5);
+  const labels = ["Primary", "Detail", "Light", "Bath", "View"];
 
-function amenityWord(label: string): string {
-  const token = label.split(/\s+/).find((part) => part.length > 2);
-  return (token ?? label).replace(/[^a-zA-Z]/g, "").slice(0, 12) || "Included";
-}
-
-function RoomSelectionPills({ room }: { room: RoomShowcase }) {
   return (
-    <div className="rm-card__pills">
+    <div className="ac-bento" aria-label={`${room.name} — five preview frames`}>
+      {shots.map((src, index) => (
+        <Frame
+          key={`${room.slug}-${index}`}
+          src={src}
+          alt={`${room.name} — ${labels[index] ?? "interior"} aboard Hathor`}
+          className={`ac-bento__cell ac-bento__cell--${index + 1}`}
+          priority={index === 0}
+        />
+      ))}
+      <p className="ac-bento__stamp" aria-hidden="true">
+        <span>{String(shots.length).padStart(2, "0")}</span> frames
+      </p>
+    </div>
+  );
+}
+
+function SelectionPills({ room }: { room: RoomShowcase }) {
+  return (
+    <div className="ac-pills">
       <FavoriteButton
         type="residence"
         slug={room.slug}
@@ -143,28 +131,26 @@ function RoomSelectionPills({ room }: { room: RoomShowcase }) {
         name={room.name}
         variant="inline"
       />
-      <Link href={`/rooms/${room.slug}`} className="rm-btn">
-        <span>Details</span>
+      <Link href={`/rooms/${room.slug}`} className="ac-pill">
+        <span>Residence notes</span>
       </Link>
     </div>
   );
 }
 
-function RoomAmenityLedger({ room }: { room: RoomShowcase }) {
+function CharterGrid({ room }: { room: RoomShowcase }) {
   return (
-    <ol className="rm-ledger__list">
+    <ul className="ac-charter">
       {room.amenities.map((item, index) => (
-        <li key={`${room.slug}-${item}`} className="rm-row">
-          <span className="rm-row__num">{String(index + 1).padStart(2, "0")}</span>
-          <h3 className="rm-row__word rm-display">{amenityWord(item)}</h3>
-          <div className="rm-row__detail">
-            <p className="rm-row__label">Included · Guest provision</p>
-            <p className="rm-row__value">{item}</p>
-          </div>
-          <span className="rm-row__spacer" aria-hidden="true" />
+        <li key={`${room.slug}-${item}`} className="ac-charter__cell">
+          <span className="ac-charter__index">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <RoomAmenityIcon label={item} />
+          <p className="ac-charter__label">{item}</p>
         </li>
       ))}
-    </ol>
+    </ul>
   );
 }
 
@@ -196,23 +182,20 @@ export function RoomCollectionEditorialPage({
     variant === "cabins" ? "cabins" : variant === "suites" ? "rooms" : "royal";
   const cms = pages[cmsKey];
   const heroCopy = resolveHeroPageCopy(typography, heroPageKey);
-  const heroLines = stackedHeroLines(
-    heroCopy.main || config.titleLines[0],
-    heroCopy.second || config.titleLines[1],
-  );
   const support = cms
     ? resolveCmsText(cms.overviewIntro, config.support)
     : config.support;
 
   useRoomCollectionEditorialScroll({ rootRef, runRef, trackRef });
 
-  const lineClass = ["rm-line--a", "rm-line--b", "rm-line--c"] as const;
-  const primaryRoom = rooms[0];
+  const titlePrimary = heroCopy.main || config.titleLines.join(" ");
+  const titleSecondary = heroCopy.second || config.tierSubtitle;
 
   return (
-    <div ref={rootRef} className="rooms-editorial">
-      <div className="rm-progress" aria-hidden="true">
-        <i data-rm-progress />
+    <div className="public-site hathor-site">
+      <div ref={rootRef} className="accom-catalog">
+      <div className="ac-progress" aria-hidden="true">
+        <i data-ac-progress />
       </div>
 
       <PublicNavbar />
@@ -220,344 +203,233 @@ export function RoomCollectionEditorialPage({
       <main>
         <section
           ref={runRef}
-          className="rm-run"
-          aria-label={`${config.titleLines.join(" ")} aboard Hathor`}
+          className="ac-run"
+          aria-label={`${config.collectionLabel} aboard Hathor`}
         >
-          <div className="rm-stage">
-            <div ref={trackRef} className="rm-track">
-              {/* 01 — Typography-led introduction (Contact cadence) */}
-              <Scene className="rm-intro">
-                <nav className="rm-intro__nav" aria-label="Accommodation sections">
-                  <a href="#residences">Residences</a>
-                  <a href="#provisions">Provisions</a>
-                  <a href="#collection">Collection</a>
-                  <a href="#reserve">Reserve</a>
-                </nav>
+          <div className="ac-stage">
+            <div ref={trackRef} className="ac-track">
+              {/* 01 · Folio spine — original entry (not Contact intro) */}
+              <Scene className="ac-spine">
+                <ol className="ac-spine__index" aria-label="Residence chapters">
+                  {rooms.map((room, index) => (
+                    <li key={room.slug}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      {room.name}
+                    </li>
+                  ))}
+                  <li>
+                    <span>·</span>
+                    Reserve
+                  </li>
+                </ol>
 
-                <div className="rm-intro__inner">
-                  <Eyebrow>{config.eyebrow}</Eyebrow>
-                  <div className="rm-intro__title" id="residences" data-anima-title>
-                    <h1 className="rm-display rm-display--xl wt-page-hero">
-                      {heroLines.map((line, index) => (
-                        <span
-                          key={`${line}-${index}`}
-                          className={`rm-line ${lineClass[index] ?? ""}`}
-                        >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
-                        </span>
-                      ))}
-                    </h1>
-                  </div>
-                  <p className="rm-intro__body wt-page-body">{support}</p>
+                <div className="ac-spine__folio" id="folio">
+                  <Kicker>{config.collectionLabel}</Kicker>
+                  <h1 className="ac-title ac-title--folio" data-anima-title>
+                    <span className="ac-rise">
+                      <AnimaSplitLine line={0}>{titlePrimary}</AnimaSplitLine>
+                    </span>
+                    <span className="ac-rise ac-rise--shift">
+                      <AnimaSplitLine line={1}>{titleSecondary}</AnimaSplitLine>
+                    </span>
+                  </h1>
+                  <p className="ac-support">{support}</p>
                 </div>
 
-                <p className="rm-intro__mark">
-                  Hathor Cruise <span className="rm-reg">®</span> 2026
+                <p className="ac-spine__mark">
+                  Hathor <span className="ac-reg">®</span> folio
                 </p>
-                <p className="rm-intro__scroll">
-                  <i />
-                  Scroll
+                <p className="ac-spine__drift">
+                  <i aria-hidden="true" />
+                  Drift right
                 </p>
               </Scene>
 
-              {/* 02 — Collection manifesto: text before any room imagery */}
-              <Scene className="rm-manifesto">
-                <div className="rm-manifesto__aside">
-                  <Eyebrow>{config.manifesto.label}</Eyebrow>
-                  <p className="rm-meta-copy">{config.manifesto.body}</p>
+              {/* 02 · Tier triptych — collection facts (not manifesto / hours) */}
+              <Scene className="ac-tier">
+                <div className="ac-tier__copy">
+                  <Kicker>{config.tierKicker}</Kicker>
+                  <p className="ac-edit">{config.tierStatement}</p>
                 </div>
-                <div className="rm-manifesto__headline" data-anima-title>
-                  <h2 className="rm-edit rm-edit--xl">
-                    <span className="rm-line">
-                      <AnimaSplitLine line={0}>
-                        {config.manifesto.headline[0]}
-                      </AnimaSplitLine>
-                    </span>
-                    <span className="rm-line">
-                      <AnimaSplitLine line={1}>
-                        {config.manifesto.headline[1]}
-                      </AnimaSplitLine>
-                    </span>
-                    <span className="rm-line rm-line--indent">
-                      <AnimaSplitLine line={2}>
-                        {config.manifesto.headline[2]}
-                      </AnimaSplitLine>
-                    </span>
-                  </h2>
-                </div>
-              </Scene>
-
-              {/* 03 — Tier specification frame */}
-              <Scene className="rm-spec">
-                <div className="rm-spec__frame">
-                  <span className="rm-spec__corner rm-spec__corner--tl">
-                    {config.titleLines.join(" ")}
-                  </span>
-                  <span className="rm-spec__corner rm-spec__corner--tr">
-                    Hathor Dahabiya
-                  </span>
-                  <p className="rm-spec__times">
-                    <span>{config.ledger[0]?.value}</span>
-                    <i />
-                    <span>{config.ledger[1]?.value}</span>
-                  </p>
-                  <span className="rm-spec__corner rm-spec__corner--bl">
-                    {config.ledger[0]?.label} · {config.ledger[0]?.note}
-                  </span>
-                  <span className="rm-spec__corner rm-spec__corner--br">
-                    {config.ledger[1]?.label} · up to {config.ledger[1]?.value}{" "}
-                    guests
-                  </span>
-                </div>
+                <ul className="ac-tier__triptych">
+                  {config.ledger.map((item) => (
+                    <li key={item.label} className="ac-tier__cell">
+                      <span className="ac-tier__value">{item.value}</span>
+                      <span className="ac-tier__label">{item.label}</span>
+                      <span className="ac-tier__note">{item.note}</span>
+                    </li>
+                  ))}
+                </ul>
               </Scene>
 
               {rooms.map((room, roomIndex) => {
                 const images = room.images.slice(0, 5);
-                const nameLines = splitNameLines(room.name);
-                const collageCopy =
-                  room.description.length > 120
-                    ? `${room.description.slice(0, 118)}…`
-                    : room.description;
+                const nameParts = room.name.split(/\s+/);
+                const lineA = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(" ");
+                const lineB = nameParts.slice(Math.ceil(nameParts.length / 2)).join(" ");
 
                 return (
-                  <div key={room.slug} className="rm-residence-act">
-                    {/* A — Text first (Contact manifesto grammar) */}
+                  <div key={room.slug} className="ac-residence">
+                    {/* A · Chapter text — always before imagery */}
                     <Scene
-                      className="rm-manifesto rm-room-manifesto"
-                      id={roomIndex === 0 ? "provisions" : undefined}
+                      className="ac-chapter"
+                      id={roomIndex === 0 ? "chapters" : undefined}
                     >
-                      <div className="rm-manifesto__aside">
-                        <span className="rm-room__index">
-                          {String(roomIndex + 1).padStart(2, "0")}
-                        </span>
-                        <Eyebrow>{room.eyebrow}</Eyebrow>
-                        <p className="rm-meta-copy">{room.description}</p>
-                        <dl className="rm-room__specs">
-                          <div>
-                            <dt>Space</dt>
-                            <dd>{room.sizeSqm} m²</dd>
-                          </div>
-                          <div>
-                            <dt>Guests</dt>
-                            <dd>Up to {room.capacity}</dd>
-                          </div>
-                          <div>
-                            <dt>View</dt>
-                            <dd>Panoramic Nile</dd>
-                          </div>
-                        </dl>
-                        <RoomSelectionPills room={room} />
-                      </div>
-                      <div className="rm-manifesto__headline" data-anima-title>
-                        <h2 className="rm-edit rm-edit--xl">
-                          {nameLines.map((line, index) => (
-                            <span
-                              key={`${room.slug}-${line}`}
-                              className={`rm-line ${index === 1 ? "rm-line--indent" : ""}`}
-                            >
-                              <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                      <span className="ac-chapter__glyph" aria-hidden="true">
+                        {String(roomIndex + 1).padStart(2, "0")}
+                      </span>
+                      <div className="ac-chapter__body">
+                        <Kicker>{room.eyebrow}</Kicker>
+                        <h2 className="ac-title ac-title--chapter" data-anima-title>
+                          <span className="ac-rise">
+                            <AnimaSplitLine line={0}>{lineA}</AnimaSplitLine>
+                          </span>
+                          {lineB ? (
+                            <span className="ac-rise ac-rise--shift">
+                              <AnimaSplitLine line={1}>{lineB}</AnimaSplitLine>
                             </span>
-                          ))}
+                          ) : null}
                         </h2>
+                        <p className="ac-support">{room.description}</p>
+                        <ul className="ac-spec-rail">
+                          <li>
+                            <span>Space</span>
+                            <strong>{room.sizeSqm} m²</strong>
+                          </li>
+                          <li>
+                            <span>Guests</span>
+                            <strong>Up to {room.capacity}</strong>
+                          </li>
+                          <li>
+                            <span>Outlook</span>
+                            <strong>Panoramic Nile</strong>
+                          </li>
+                        </ul>
+                        <SelectionPills room={room} />
                       </div>
                     </Scene>
 
-                    {/* B — Image lead (Contact ce-lead) */}
-                    <Scene className="rm-lead rm-room-lead">
-                      <RoomMedia
-                        src={images[0] ?? config.aperture.image}
-                        alt={`${room.name} aboard Hathor Dahabiya`}
-                        priority={roomIndex === 0}
-                        className="rm-lead__main"
-                        ratio="1279 / 960"
-                      />
+                    {/* B · Five-frame bento — imagery after text */}
+                    <Scene className="ac-bento-scene">
+                      <div className="ac-bento-scene__head">
+                        <Kicker>Preview sequence</Kicker>
+                        <p className="ac-meta">
+                          Five composed views of {room.name} — light, proportion and
+                          river beyond the glass.
+                        </p>
+                      </div>
+                      <BentoFive room={room} />
                       {images[1] && images[2] ? (
-                        <FlipImage
-                          className="rm-lead__inset"
-                          axis="left"
-                          ratio="835 / 557"
-                          front={images[1]}
-                          back={images[2]}
-                          frontAlt={`${room.name} interior detail`}
-                          backAlt={`${room.name} Nile view`}
+                        <WipePair
+                          className="ac-bento-scene__wipe"
+                          base={images[1]}
+                          overlay={images[2]}
+                          baseAlt={`${room.name} interior`}
+                          overlayAlt={`${room.name} detail`}
                         />
                       ) : null}
-                      <p className="rm-lead__caption">
-                        <span>(Residence)</span> {room.sizeSqm} m² · Nile
-                      </p>
                     </Scene>
 
-                    {/* C — Five-image collage (remaining frames) */}
-                    {images[2] && images[3] && images[4] ? (
-                      <Scene className="rm-collage">
-                        <FlipImage
-                          className="rm-collage__tile rm-collage__tile--one"
-                          axis="up"
-                          ratio="668 / 554"
-                          front={images[2]}
-                          back={images[3]}
-                          frontAlt={`${room.name} lounge`}
-                          backAlt={`${room.name} bath`}
-                        />
-                        <FlipImage
-                          className="rm-collage__tile rm-collage__tile--two"
-                          axis="right"
-                          ratio="1090 / 960"
-                          front={images[4]}
-                          back={images[0]}
-                          frontAlt={`${room.name} suite view`}
-                          backAlt={`${room.name} overview`}
-                        />
-                        <p className="rm-collage__copy rm-meta-copy">{collageCopy}</p>
-                      </Scene>
-                    ) : null}
-
-                    {/* D — Guest provisions ledger */}
-                    <Scene className="rm-ledger rm-room-ledger">
-                      <div className="rm-ledger__head">
-                        <Eyebrow>Guest provisions</Eyebrow>
-                        <p className="rm-meta-copy">{config.amenitiesLead}</p>
+                    {/* C · Guest charter — provisions grid */}
+                    <Scene className="ac-charter-scene">
+                      <div className="ac-charter-scene__head">
+                        <Kicker>Included for your stay</Kicker>
+                        <h3 className="ac-edit ac-edit--sm">{room.name}</h3>
+                        <p className="ac-meta">{config.amenitiesLead}</p>
                       </div>
-                      <RoomAmenityLedger room={room} />
+                      <CharterGrid room={room} />
+                      <SelectionPills room={room} />
                     </Scene>
                   </div>
                 );
               })}
 
-              {/* Collection compass */}
-              <Scene className="rm-ledger rm-compass" id="collection">
-                <div className="rm-ledger__head">
-                  <Eyebrow>{config.crosslinksEyebrow}</Eyebrow>
-                  <p className="rm-meta-copy">
-                    Three residences aboard Hathor — each composed for a different
-                    rhythm on the Nile.
-                  </p>
-                </div>
-                <ol className="rm-ledger__list">
+              {/* Deck bridge — other collections */}
+              <Scene className="ac-bridge">
+                <Kicker>Elsewhere on board</Kicker>
+                <ul className="ac-bridge__list">
                   {ROOM_COLLECTION_LINKS.map((link, index) => (
-                    <li key={link.href} className="rm-row">
-                      <span className="rm-row__num">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <h3 className="rm-row__word rm-display">{link.label}</h3>
-                      <div className="rm-row__detail">
-                        <p className="rm-row__label">Collection · Hathor</p>
-                        <Link href={link.href} className="rm-row__value rm-link">
-                          Explore {link.label.toLowerCase()}
-                        </Link>
-                      </div>
+                    <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="rm-btn"
+                        className={
+                          link.key === variant
+                            ? "ac-bridge__link is-here"
+                            : "ac-bridge__link"
+                        }
                         aria-current={link.key === variant ? "page" : undefined}
                       >
-                        <span>View</span>
+                        <span className="ac-bridge__num">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="ac-bridge__name">{link.label}</span>
                       </Link>
                     </li>
                   ))}
-                </ol>
+                </ul>
               </Scene>
 
-              {/* Closing frame */}
-              <Scene className="rm-closing">
-                <FlipImage
-                  className="rm-closing__media"
-                  axis="up"
-                  ratio="1483 / 960"
-                  front={primaryRoom?.images[0] ?? config.aperture.image}
-                  back={primaryRoom?.images[1] ?? config.aperture.image}
-                  frontAlt="Hathor residence on the Nile"
-                  backAlt="Interior aboard Hathor Dahabiya"
-                />
-                <div className="rm-closing__copy">
-                  <Eyebrow>Reserve</Eyebrow>
-                  <p className="rm-display rm-display--l">Your Nile quarters</p>
-                </div>
+              {/* Quiet hold before vertical close */}
+              <Scene className="ac-hold">
+                <p className="ac-hold__line ac-edit">
+                  Your quarters await between Luxor and Aswan.
+                </p>
+                <a className="ac-text-link" href="#reserve">
+                  Continue to reserve
+                </a>
               </Scene>
             </div>
           </div>
         </section>
 
-        {/* Epilogue — Contact grammar + site footer */}
-        <section className="rm-epilogue" id="reserve">
-          <header className="rm-epilogue__head">
-            <Eyebrow>{config.epilogue.eyebrow}</Eyebrow>
-            <h2 className="rm-display rm-display--l" data-anima-title>
-              {config.epilogue.title}
-            </h2>
-            <p className="rm-meta-copy">{config.epilogue.body}</p>
-          </header>
-
-          <div className="rm-epilogue__board">
-            <div className="rm-epilogue__compose">
-              <p className="rm-epilogue__lead">
-                Save your preferred residence to Favorites or add it to My Voyage.
-                Our reservations team will pair your cabin with the right sailing
-                between Luxor and Aswan.
-              </p>
-              {primaryRoom ? (
-                <div className="rm-card__pills rm-epilogue__pills">
+        <section className="ac-landing" id="reserve">
+          <div className="ac-landing__grid">
+            <div className="ac-landing__copy">
+              <Kicker>{config.epilogue.eyebrow}</Kicker>
+              <h2 className="ac-title ac-title--landing">{config.epilogue.title}</h2>
+              <p className="ac-support">{config.epilogue.body}</p>
+              {rooms[0] ? (
+                <div className="ac-pills ac-landing__pills">
                   <FavoriteButton
                     type="residence"
-                    slug={primaryRoom.slug}
-                    name={primaryRoom.name}
+                    slug={rooms[0].slug}
+                    name={rooms[0].name}
                     variant="inline"
                     showLabel
                   />
                   <AddToVoyageButton
                     kind="residence"
-                    slug={primaryRoom.slug}
-                    name={primaryRoom.name}
+                    slug={rooms[0].slug}
+                    name={rooms[0].name}
                     variant="inline"
                   />
-                  <BookNowTrigger className="rm-btn rm-btn--solid">
+                  <BookNowTrigger className="ac-pill ac-pill--fill">
                     <span>Book Now</span>
                   </BookNowTrigger>
-                  <Link href="/voyages" className="rm-btn">
-                    <span>Explore voyages</span>
+                  <Link href="/voyages" className="ac-pill">
+                    <span>View voyages</span>
                   </Link>
                 </div>
               ) : null}
             </div>
-
-            {primaryRoom ? (
-              <aside className="rm-epilogue__card">
-                <span className="rm-card__tag">Residence</span>
-                <RoomMedia
-                  src={primaryRoom.images[0] ?? config.aperture.image}
-                  alt={primaryRoom.name}
-                  className="rm-card__media"
-                  ratio="356 / 460"
+            {rooms[0] ? (
+              <aside className="ac-landing__panel">
+                <Frame
+                  src={rooms[0].images[0] ?? config.aperture.image}
+                  alt={rooms[0].name}
+                  className="ac-landing__frame"
                 />
-                <h3 className="rm-display">{primaryRoom.name}</h3>
-                <p className="rm-card__body">
-                  {primaryRoom.sizeSqm} m² · up to {primaryRoom.capacity} guests
-                  <br />
-                  Panoramic Nile views aboard Hathor
+                <p className="ac-meta">
+                  {rooms[0].name} · {rooms[0].sizeSqm} m² · Nile
                 </p>
-                <div className="rm-card__pills">
-                  <Link href={`/rooms/${primaryRoom.slug}`} className="rm-btn">
-                    <span>Full details</span>
-                  </Link>
-                </div>
               </aside>
             ) : null}
-          </div>
-
-          <div className="rm-epilogue__legal">
-            <span>
-              Hathor Cruise <span className="rm-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Privacy</Link>
-              <Link href="/contact">Cookies</Link>
-              <Link href="/contact">Legal</Link>
-            </nav>
           </div>
         </section>
       </main>
 
       <Footer />
+      </div>
     </div>
   );
 }

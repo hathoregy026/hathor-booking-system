@@ -1,4 +1,5 @@
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { DEFAULT_LIVE_SITE_BG_SRC } from "@/lib/live-site-settings-shared";
 
 type SiteComingSoonProps = {
@@ -6,13 +7,15 @@ type SiteComingSoonProps = {
 };
 
 /**
- * Full-viewport Coming Soon gate. Does not mount public nav, footer, or page content.
+ * Full-viewport Coming Soon gate — navbar always visible; no page content.
  */
 export function SiteComingSoon({
   backgroundImageUrl = DEFAULT_LIVE_SITE_BG_SRC,
 }: SiteComingSoonProps) {
   return (
-    <div className="site-coming-soon" role="status" aria-live="polite">
+    <div className="public-site hathor-site site-coming-soon-shell">
+      <PublicNavbar />
+      <div className="site-coming-soon" role="status" aria-live="polite">
       <div
         className="site-coming-soon__bg"
         style={{ backgroundImage: `url(${backgroundImageUrl})` }}
@@ -30,6 +33,7 @@ export function SiteComingSoon({
         />
         <p className="site-coming-soon__label">Coming Soon</p>
       </div>
+    </div>
     </div>
   );
 }

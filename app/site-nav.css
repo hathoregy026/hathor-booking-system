@@ -1,5 +1,10 @@
 /* Site-wide unified navbar — PublicNavbar (EX style on all public routes) */
 
+/* Above editorial scroll stages even when a route omits .public-site */
+.hathor-header {
+  z-index: 1200;
+}
+
 .public-site {
   --nav-edge: 137.5px;
   --nav-word-gap: 116px;
