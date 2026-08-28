@@ -34,6 +34,7 @@ export function useRoomCollectionEditorialScroll({
     let frame = 0;
     let target = 0;
     let current = 0;
+    let lastWidth = window.innerWidth;
     html.setAttribute("data-rooms-editorial", "");
 
     const applyFlips = (mode: "horizontal" | "vertical") => {
@@ -126,6 +127,13 @@ export function useRoomCollectionEditorialScroll({
     };
 
     const onResize = () => {
+      const width = window.innerWidth;
+      const widthChanged = Math.abs(width - lastWidth) > 24;
+      lastWidth = width;
+      if (!widthChanged && window.innerWidth <= 950) {
+        applyVerticalVars();
+        return;
+      }
       measure();
       updateTarget();
     };
