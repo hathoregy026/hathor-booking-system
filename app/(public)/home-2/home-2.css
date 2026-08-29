@@ -71,11 +71,6 @@ html:has(.home2-editorial) .lux-footer {
 .home2-editorial ol { list-style: none; }
 .home2-editorial a { color: inherit; text-decoration: none; }
 
-.h2-hero {
-  position: relative;
-  background: var(--h2-black);
-}
-
 .h2-progress {
   position: fixed;
   z-index: 120;
@@ -229,6 +224,8 @@ html:has(.home2-editorial) .lux-footer {
   min-width: 0;
   overflow: hidden;
   background: var(--h2-sand);
+  clip-path: inset(calc((1 - var(--reveal, 1)) * 7%) 0 0 0);
+  transition: clip-path 0.9s var(--h2-ease);
 }
 
 .h2-media__image {
@@ -251,6 +248,26 @@ html:has(.home2-editorial) .lux-footer {
   padding: var(--h2-band) var(--h2-pad);
   overflow: hidden;
   background: var(--h2-paper);
+}
+
+.h2-scene::after {
+  position: absolute;
+  z-index: 4;
+  top: var(--h2-pad);
+  right: 0;
+  bottom: var(--h2-pad);
+  width: 1px;
+  background: var(--h2-hair);
+  content: "";
+  pointer-events: none;
+  transform: scaleY(var(--reveal, 1));
+  transform-origin: center top;
+}
+
+.h2-scene :is(.h2-eyebrow, .h2-copy, .h2-index, .h2-meta, .h2-btn, .h2-link) {
+  opacity: calc(0.18 + var(--reveal, 1) * 0.82);
+  transform: translateY(calc((1 - var(--reveal, 1)) * 1.4rem));
+  transition: opacity 0.75s var(--h2-ease), transform 0.85s var(--h2-ease);
 }
 
 .h2-welcome {
@@ -288,7 +305,7 @@ html:has(.home2-editorial) .lux-footer {
   font-family: var(--h2-display);
   font-size: clamp(7rem, 20vw, 23rem);
   font-weight: 400;
-  letter-spacing: -0.075em;
+  letter-spacing: calc(-0.075em + (1 - var(--focus, 1)) * 0.025em);
   line-height: 0.72;
   white-space: nowrap;
   transform: translateX(calc((var(--scene-progress, 0.5) - 0.5) * -4vw));
@@ -382,12 +399,26 @@ html:has(.home2-editorial) .lux-footer {
 .h2-voyages__list li > div { display: flex; min-width: 0; flex-direction: column; gap: 0.45rem; }
 .h2-voyages__list .h2-copy { max-inline-size: 54ch; }
 
-.h2-helm { width: min(100vw, 92rem); padding: 0; background: var(--h2-sand); }
-.h2-helm__stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.h2-helm {
+  width: calc(100vw + clamp(18rem, 34vw, 34rem));
+  padding: 0;
+  background: var(--h2-sand);
+}
+.h2-helm__stage {
+  position: relative;
+  width: 100vw;
+  height: 100%;
+  overflow: hidden;
+  transform: translate3d(var(--h2-hold-x, 0px), 0, 0);
+  will-change: transform;
+}
 .h2-helm__paper,
 .h2-helm__destination { position: absolute; inset: 0; width: 100%; height: 100%; }
 .h2-helm__paper { opacity: var(--h2-wheel-opacity, 1); }
-.h2-helm__destination { clip-path: circle(calc(var(--scene-progress, 0) * 72%) at 50% 50%); }
+.h2-helm__destination {
+  clip-path: circle(calc(var(--wheel-open, 0) * 72%) at 50% 50%);
+  filter: saturate(calc(0.72 + var(--wheel-open, 0) * 0.28));
+}
 .h2-helm__wheel {
   position: absolute;
   z-index: 3;
@@ -395,7 +426,7 @@ html:has(.home2-editorial) .lux-footer {
   left: 50%;
   width: min(48vw, 68vh);
   height: auto;
-  transform: translate(-50%, -50%) rotate(calc(var(--scene-progress, 0) * 160deg));
+  transform: translate(-50%, -50%) rotate(calc(var(--wheel-open, 0) * 220deg)) scale(calc(0.88 + var(--wheel-open, 0) * 0.12));
   filter: drop-shadow(0 1.5rem 2.5rem rgb(20 18 14 / 28%));
 }
 .h2-helm__copy { position: absolute; z-index: 4; right: var(--h2-pad); bottom: var(--h2-pad); align-items: flex-end; color: var(--h2-paper); text-align: right; }
@@ -411,10 +442,14 @@ html:has(.home2-editorial) .lux-footer {
 .h2-gallery__grid a:nth-child(4) { grid-column: 3 / 5; grid-row: 2; }
 .h2-gallery__grid a:nth-child(5) { grid-column: 5 / 7; grid-row: 2; }
 .h2-gallery__grid .h2-media { width: 100%; height: 100%; min-height: 12rem; }
+.h2-gallery__grid a:nth-child(2n) { transform: translateY(calc((1 - var(--reveal, 1)) * 2rem)); }
+.h2-gallery__grid a:nth-child(2n + 1) { transform: translateY(calc((1 - var(--reveal, 1)) * -1.4rem)); }
+.h2-gallery__grid a { transition: transform 0.9s var(--h2-ease); }
 
 .h2-reviews { display: flex; width: min(100vw, 94rem); flex-direction: column; justify-content: center; gap: clamp(2rem, 5vw, 5rem); background: var(--h2-olive); }
 .h2-reviews__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid rgb(20 18 14 / 34%); }
 .h2-reviews article { display: flex; min-width: 0; flex-direction: column; gap: 0.9rem; padding: clamp(1rem, 2vw, 2rem); border-right: 1px solid rgb(20 18 14 / 34%); border-bottom: 1px solid rgb(20 18 14 / 34%); }
+.h2-reviews article { opacity: calc(0.24 + var(--reveal, 1) * 0.76); transform: translateY(calc((1 - var(--reveal, 1)) * 2rem)); transition: opacity 0.8s var(--h2-ease), transform 0.9s var(--h2-ease); }
 .h2-stars { color: var(--h2-gold-deep); }
 
 .h2-epilogue { position: relative; min-height: 120svh; padding: var(--h2-band) var(--h2-pad) 2rem; overflow: hidden; background: var(--h2-black); color: var(--h2-paper); }
@@ -439,7 +474,8 @@ html:has(.home2-editorial) .lux-footer {
   .h2-run { height: auto !important; }
   .h2-stage { position: relative; top: auto; height: auto; overflow: visible; }
   .h2-track { display: block; width: 100%; height: auto; transform: none !important; }
-  .h2-line { overflow: visible; }
+  .h2-display { line-height: 0.94; }
+  .h2-line { overflow: visible; margin: 0; padding: 0.06em 0 0.1em; }
   .h2-line > span { transform: none; opacity: 1; }
   .h2-scene { display: flex; width: 100% !important; height: auto; min-height: 0; flex-direction: column; padding: var(--h2-band) var(--h2-pad); gap: clamp(2rem, 6vw, 4rem); overflow: visible; }
   .h2-welcome__copy { order: 1; }
@@ -462,13 +498,23 @@ html:has(.home2-editorial) .lux-footer {
   .h2-voyages__list { width: 100%; }
   .h2-voyages__list li { grid-template-columns: 2.75rem minmax(0, 1fr); align-items: start; }
   .h2-voyages__list .h2-btn { grid-column: 2; justify-self: start; }
-  .h2-helm { padding: 0; min-height: 86svh; }
-  .h2-helm__stage { min-height: 86svh; }
+  .h2-helm { display: block; min-height: 155svh; padding: 0; }
+  .h2-helm__stage { position: sticky; top: 0; width: 100%; height: 100svh; min-height: 100svh; }
   .h2-helm__wheel { width: min(72vw, 34rem); }
+  .h2-helm__copy { bottom: calc(var(--h2-pad) + 2.5rem); }
   .h2-gallery header { width: min(40rem, 100%); }
   .h2-gallery__grid { width: 100%; min-height: 70svh; }
   .h2-reviews__grid { width: 100%; }
   .h2-epilogue { min-height: 100svh; }
+
+  .h2-scene :is(.h2-eyebrow, .h2-copy, .h2-index, .h2-meta, .h2-btn, .h2-link) {
+    transform: translateY(calc((1 - var(--reveal, 1)) * 1rem));
+  }
+  .h2-scene .h2-display {
+    opacity: calc(0.22 + var(--reveal, 1) * 0.78);
+    transform: translateY(calc((1 - var(--reveal, 1)) * 1.15rem));
+    transition: opacity 0.75s var(--h2-ease), transform 0.85s var(--h2-ease);
+  }
 }
 
 @media (max-width: 620px) {
@@ -502,4 +548,9 @@ html:has(.home2-editorial) .lux-footer {
   .h2-monument__word,
   .h2-helm__wheel { transform: none !important; transition: none !important; opacity: 1 !important; }
   .h2-helm__destination { clip-path: none !important; }
+  .h2-media,
+  .h2-scene .h2-display,
+  .h2-scene :is(.h2-eyebrow, .h2-copy, .h2-index, .h2-meta, .h2-btn, .h2-link),
+  .h2-gallery__grid a,
+  .h2-reviews article { opacity: 1 !important; transform: none !important; transition: none !important; clip-path: none !important; }
 }

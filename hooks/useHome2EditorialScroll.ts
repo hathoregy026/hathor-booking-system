@@ -25,6 +25,7 @@ export function useHome2EditorialScroll({
     const html = document.documentElement;
     const progressBar = root.querySelector<HTMLElement>("[data-h2-progress]");
     const scenes = [...root.querySelectorAll<HTMLElement>(".h2-scene")];
+    const helm = root.querySelector<HTMLElement>(".h2-helm");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktop = false;
     let travel = 0;
@@ -50,6 +51,14 @@ export function useHome2EditorialScroll({
         scene.style.setProperty("--parallax", progress.toFixed(4));
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", focus.toFixed(4));
+
+        if (scene === helm) {
+          const wheelOpen = clamp((viewport - left) / viewport);
+          const holdDistance = Math.max(0, width - viewport);
+          const holdX = Math.max(0, Math.min(holdDistance, -left));
+          scene.style.setProperty("--wheel-open", wheelOpen.toFixed(4));
+          scene.style.setProperty("--h2-hold-x", `${holdX.toFixed(2)}px`);
+        }
       });
     };
 
@@ -65,6 +74,12 @@ export function useHome2EditorialScroll({
         scene.style.setProperty("--parallax", progress.toFixed(4));
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", focus.toFixed(4));
+
+        if (scene === helm) {
+          const wheelOpen = clamp((viewport * 0.92 - rect.top) / (viewport * 0.72));
+          scene.style.setProperty("--wheel-open", wheelOpen.toFixed(4));
+          scene.style.setProperty("--h2-hold-x", "0px");
+        }
       });
     };
 

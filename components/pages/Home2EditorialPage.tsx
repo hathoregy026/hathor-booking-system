@@ -6,8 +6,10 @@ import { useRef, type CSSProperties, type ReactNode } from "react";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
 import { LuxuryMarquee } from "@/components/home/LuxuryMarquee";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import { useHome2EditorialScroll } from "@/hooks/useHome2EditorialScroll";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import { amenitiesCopy, amenitiesTitleLines } from "@/lib/amenities-copy";
@@ -103,6 +105,7 @@ export function Home2EditorialPage({
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const { home } = useWebsiteText();
+  useExScrollMotion();
   useHome2EditorialScroll({ rootRef, runRef, trackRef });
 
   const aboutLines = home.about.heading
@@ -120,30 +123,36 @@ export function Home2EditorialPage({
   });
 
   return (
-    <div ref={rootRef} className="home2-editorial">
-      <div className="h2-progress" aria-hidden="true">
-        <i data-h2-progress />
-      </div>
-
-      <div className="h2-hero" id="top">
-        <div className="home-hero-runway">
-          <PublicSiteHero
-            animate={false}
-            splitLetterLogo
-            playVideo
-            lineRight={EX_HERO.lineRight}
-            lineLeft={EX_HERO.lineLeft}
-            heroPage="home"
-            posterImageName={EX_HERO.imageName}
-            logoPartsVariant={heroLogoTune.partsVariant}
-            mobileLogoPartsVariant={heroLogoTuneMobile.partsVariant}
-          />
+    <>
+      {/* Keep this opening structure identical to the main homepage so every
+          homepage-only hero, logo and mobile-video rule resolves unchanged. */}
+      <div className="ex-root" data-hathor-logo-tuned="">
+        <HathorLogoTuner />
+        <div id="top">
+          <div className="home-hero-runway">
+            <PublicSiteHero
+              animate={false}
+              splitLetterLogo
+              playVideo
+              lineRight={EX_HERO.lineRight}
+              lineLeft={EX_HERO.lineLeft}
+              heroPage="home"
+              posterImageName={EX_HERO.imageName}
+              logoPartsVariant={heroLogoTune.partsVariant}
+              mobileLogoPartsVariant={heroLogoTuneMobile.partsVariant}
+            />
+          </div>
+          <LuxuryMarquee />
         </div>
-        <LuxuryMarquee />
       </div>
 
-      <main>
-        <section ref={runRef} className="h2-run" aria-label="The Hathor home story">
+      <div ref={rootRef} className="home2-editorial">
+        <div className="h2-progress" aria-hidden="true">
+          <i data-h2-progress />
+        </div>
+
+        <main>
+          <section ref={runRef} className="h2-run" aria-label="The Hathor home story">
           <div className="h2-stage">
             <div ref={trackRef} className="h2-track">
               <Scene className="h2-welcome" id="about">
@@ -347,9 +356,9 @@ export function Home2EditorialPage({
               </Scene>
             </div>
           </div>
-        </section>
+          </section>
 
-        <section className="h2-epilogue">
+          <section className="h2-epilogue">
           <Home2Media name={EX_CAMPAIGN.imageName} alt={EX_CAMPAIGN.imageAlt} className="h2-epilogue__media" />
           <div className="h2-epilogue__copy">
             <Eyebrow>Welcome aboard</Eyebrow>
@@ -363,8 +372,9 @@ export function Home2EditorialPage({
             <span>Hathor Cruise ® 2026</span>
             <nav aria-label="Legal"><Link href="/contact">Privacy</Link><Link href="/contact">Cookies</Link><Link href="/contact">Legal</Link></nav>
           </footer>
-        </section>
-      </main>
-    </div>
+          </section>
+        </main>
+      </div>
+    </>
   );
 }
