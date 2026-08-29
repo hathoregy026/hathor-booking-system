@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { AmenitiesTypographyLiveStyle } from "@/components/home/AmenitiesTypographyLiveStyle";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
-import { HomePageClient } from "@/components/pages/HomePageClient";
+import { Home2EditorialPage } from "@/components/pages/Home2EditorialPage";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
-import {
-  combineDesktopAndNarrowCss,
-  combineDesktopAndPhoneCss,
-} from "@/lib/admin-device-preview";
-import {
-  amenitiesTypographyToCss,
-  getAmenitiesTypography,
-} from "@/lib/amenities-typography";
+import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
 import {
   heroLogoTuneToImportantCss,
@@ -25,14 +17,14 @@ import "./home-2.css";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Home 2 Suites Study | Hathor Dahabiya",
+  title: "Home 2 Editorial Voyage | Hathor Dahabiya",
   description:
-    "A private Suites-inspired study of the Hathor Dahabiya homepage and luxury Nile journey.",
+    "A private editorial journey through Hathor Dahabiya itineraries, life aboard, Nile landmarks, fine dining and luxury sailing.",
   alternates: { canonical: "/home-2" },
   openGraph: {
-    title: "Home 2 Suites Study | Hathor Dahabiya",
+    title: "Home 2 Editorial Voyage | Hathor Dahabiya",
     description:
-      "A private Suites-inspired study of the Hathor Dahabiya homepage and luxury Nile journey.",
+      "An editorial journey through the complete Hathor Dahabiya experience on the Nile.",
     type: "website",
     images: [
       {
@@ -49,15 +41,9 @@ export const metadata: Metadata = {
 export default async function Home2Page() {
   const cms = await loadPublicCmsBundle();
   const accordionCruises = await getHomepageAccordionCruisesSafe();
-  const amenitiesTypo = await getAmenitiesTypography();
-  const amenitiesTypoMobile = await getAmenitiesTypography(true);
   const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(cms.heroLogoTune),
     heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
-  );
-  const amenitiesTypoCss = combineDesktopAndPhoneCss(
-    amenitiesTypographyToCss(amenitiesTypo),
-    amenitiesTypographyToCss(amenitiesTypoMobile),
   );
   const heroPosterSrc = cms.siteImages["home-hero-poster"]?.src?.trim();
 
@@ -70,18 +56,12 @@ export default async function Home2Page() {
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}
       />
-      <AmenitiesTypographyLiveStyle css={amenitiesTypoCss} />
-      <div className="home2-suites-study">
-        <HomePageClient
-          heroLogoTune={cms.heroLogoTune}
-          heroLogoTuneMobile={cms.heroLogoTuneMobile}
-          accordionCruises={accordionCruises}
-          wheelStage={cms.wheelStage}
-          amenitiesTypography={amenitiesTypo}
-          amenitiesTypographyMobile={amenitiesTypoMobile}
-          showHome2WordStage
-        />
-      </div>
+      <Home2EditorialPage
+        heroLogoTune={cms.heroLogoTune}
+        heroLogoTuneMobile={cms.heroLogoTuneMobile}
+        accordionCruises={accordionCruises}
+        wheelStage={cms.wheelStage}
+      />
     </HomeExperienceShell>
   );
 }
