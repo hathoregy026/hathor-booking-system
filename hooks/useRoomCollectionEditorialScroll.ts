@@ -103,6 +103,9 @@ export function useRoomCollectionEditorialScroll({
       const x = current * travel;
       track.style.transform = `translate3d(${-x}px,0,0)`;
       applySceneVars(x);
+      if (scenes[0] && x <= 1) {
+        scenes[0].style.setProperty("--reveal", "1");
+      }
     };
 
     const tick = () => {

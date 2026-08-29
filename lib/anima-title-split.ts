@@ -48,6 +48,7 @@ const TITLE_SELECTORS = [
 ] as const;
 
 const SKIP_CLOSEST = [
+  ".ac-spine",
   ".nav-bar",
   ".site-nav",
   ".public-navbar",

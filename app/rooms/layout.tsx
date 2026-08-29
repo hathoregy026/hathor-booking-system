@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
+import "../hathor-fonts.css";
 import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";

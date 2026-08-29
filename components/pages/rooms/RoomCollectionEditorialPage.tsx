@@ -239,12 +239,10 @@ export function RoomCollectionEditorialPage({
 
                 <div className="ac-spine__folio" id="folio">
                   <Kicker className="wt-page-kicker">{config.collectionLabel}</Kicker>
-                  <h1 className="ac-title ac-title--folio wt-page-hero" data-anima-title>
-                    <span className="ac-rise wt-page-hero">
-                      <AnimaSplitLine line={0}>{titlePrimary}</AnimaSplitLine>
-                    </span>
+                  <h1 className="ac-title ac-title--folio wt-page-hero">
+                    <span className="ac-rise wt-page-hero">{titlePrimary}</span>
                     <span className="ac-rise ac-rise--shift wt-page-hero-second">
-                      <AnimaSplitLine line={1}>{titleSecondary}</AnimaSplitLine>
+                      {titleSecondary}
                     </span>
                   </h1>
                   <p className="ac-support wt-page-body">{support}</p>
