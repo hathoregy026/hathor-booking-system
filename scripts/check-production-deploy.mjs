@@ -59,10 +59,7 @@ for (const path of paths) {
   }
 }
 
-console.log("\n--- DNS note ---");
+console.log("\n--- Host note ---");
 console.log(
-  "hathorcruise.com is NOT on this Vercel project. It resolves to Bluehost (66.235.200.147), not Vercel.",
-);
-console.log(
-  "Live Vercel production alias: www.easytravegypt.com (see `npx vercel project ls`).",
+  "easytravegypt.com and *.vercel.app bypass CMS page gates (team preview hosts).",
 );
