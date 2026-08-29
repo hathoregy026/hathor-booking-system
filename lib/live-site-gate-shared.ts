@@ -4,15 +4,12 @@ import {
 } from "@/lib/page-visibility-shared";
 import type { LiveSiteSettings } from "@/lib/live-site-settings-shared";
 
-/** Production/staging hosts where the team previews — gates do not apply. */
-const LIVE_SITE_WORK_HOSTS = new Set([
-  "easytravegypt.com",
-  "www.easytravegypt.com",
-]);
-
 /**
  * Hosts where the team keeps working — visitor gates never apply here,
  * even when Live Site / Pages toggles hide content on the main domain.
+ *
+ * Custom domains (e.g. easytravegypt.com) enforce admin page gates.
+ * Only Vercel deployment aliases and localhost bypass them for preview.
  */
 export function isLiveSiteWorkHost(hostname: string): boolean {
   const host = hostname.trim().toLowerCase().replace(/:\d+$/, "");
@@ -20,7 +17,6 @@ export function isLiveSiteWorkHost(hostname: string): boolean {
   if (host === "localhost" || host === "127.0.0.1" || host === "::1") {
     return true;
   }
-  if (LIVE_SITE_WORK_HOSTS.has(host)) return true;
   /* All Vercel deployment / production aliases */
   if (host.endsWith(".vercel.app")) return true;
   return false;

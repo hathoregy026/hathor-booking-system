@@ -61,5 +61,5 @@ for (const path of paths) {
 
 console.log("\n--- Host note ---");
 console.log(
-  "easytravegypt.com and *.vercel.app bypass CMS page gates (team preview hosts).",
+  "easytravegypt.com enforces CMS page gates; *.vercel.app bypasses them for team preview.",
 );
