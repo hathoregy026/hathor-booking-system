@@ -59,15 +59,23 @@ function Home2Media({
   name,
   alt,
   className = "",
+  wipe = "up",
   priority = false,
 }: {
   name: SiteImageName;
   alt: string;
   className?: string;
+  wipe?: "up" | "left" | "right";
   priority?: boolean;
 }) {
+  const wipeClass =
+    wipe === "left"
+      ? "h2-media--wipe-left"
+      : wipe === "right"
+        ? "h2-media--wipe-right"
+        : "";
   return (
-    <figure className={`h2-media ${className}`}>
+    <figure className={`h2-media ${wipeClass} ${className}`.trim()}>
       <ManagedImage
         name={name}
         alt={alt}
@@ -81,9 +89,44 @@ function Home2Media({
   );
 }
 
-function RevealTitle({ children }: { children: ReactNode }) {
+function Home2FlipMedia({
+  base,
+  overlay,
+  direction = "up",
+  className = "",
+}: {
+  base: { name: SiteImageName; alt: string };
+  overlay: { name: SiteImageName; alt: string };
+  direction?: "up" | "left" | "right";
+  className?: string;
+}) {
   return (
-    <span className="h2-line">
+    <div
+      className={`h2-flip h2-flip--${direction} ${className}`.trim()}
+      data-h2-flip
+    >
+      <Home2Media name={base.name} alt={base.alt} className="h2-flip__base" wipe="up" />
+      <Home2Media
+        name={overlay.name}
+        alt={overlay.alt}
+        className="h2-flip__overlay"
+        wipe="up"
+      />
+    </div>
+  );
+}
+
+function RevealTitle({
+  children,
+  delay = 0,
+}: {
+  children: ReactNode;
+  delay?: 0 | 1 | 2;
+}) {
+  const delayClass =
+    delay === 1 ? "h2-line--delay" : delay === 2 ? "h2-line--delay-2" : "";
+  return (
+    <span className={`h2-line ${delayClass}`.trim()}>
       <span>{children}</span>
     </span>
   );
@@ -161,7 +204,12 @@ export function Home2EditorialPage({
                   <h1 className="h2-display h2-display--xl" data-anima-title>
                     {(aboutLines.length ? aboutLines : [EX_ABOUT.heading]).map(
                       (line, index) => (
-                        <RevealTitle key={`${line}-${index}`}>{line}</RevealTitle>
+                        <RevealTitle
+                          key={`${line}-${index}`}
+                          delay={index === 0 ? 0 : index === 1 ? 1 : 2}
+                        >
+                          {line}
+                        </RevealTitle>
                       ),
                     )}
                   </h1>
@@ -174,6 +222,7 @@ export function Home2EditorialPage({
                   name={EX_ABOUT.imageName}
                   alt={EX_ABOUT.imageAlt}
                   className="h2-welcome__media"
+                  wipe="left"
                   priority
                 />
                 <p className="h2-corner h2-corner--bottom">Hathor Cruise ® 2026</p>
@@ -208,12 +257,15 @@ export function Home2EditorialPage({
                     name={slide.imageName}
                     alt={slide.alt}
                     className="h2-itinerary__media"
+                    wipe={index % 2 === 0 ? "up" : "right"}
                   />
                   <div className="h2-itinerary__copy">
                     <span className="h2-index">
                       {String(index + 1).padStart(2, "0")} / {EX_CAROUSEL.slides.length}
                     </span>
-                    <h3 className="h2-display h2-display--m">{slide.title}</h3>
+                    <h3 className="h2-display h2-display--m">
+                      <RevealTitle>{slide.title}</RevealTitle>
+                    </h3>
                     <Link href="/cruises-list" className="h2-link">
                       View voyage
                     </Link>
@@ -221,24 +273,43 @@ export function Home2EditorialPage({
                 </Scene>
               ))}
 
-              {landmarkSlides.map((slide, index) => (
+              {landmarkSlides.map((slide, index) => {
+                const next = landmarkSlides[(index + 1) % landmarkSlides.length];
+                const useFlip = index % 2 === 0 && next;
+                return (
                 <Scene className={`h2-landmark h2-landmark--${(index % 3) + 1}`} key={slide.imageName}>
-                  <Home2Media
-                    name={slide.imageName}
-                    alt={slide.alt}
-                    className="h2-landmark__media"
-                  />
+                  {useFlip ? (
+                    <Home2FlipMedia
+                      className="h2-landmark__media"
+                      direction={index % 4 === 0 ? "up" : "left"}
+                      base={{ name: slide.imageName, alt: slide.alt }}
+                      overlay={{ name: next.imageName, alt: next.alt }}
+                    />
+                  ) : (
+                    <Home2Media
+                      name={slide.imageName}
+                      alt={slide.alt}
+                      className="h2-landmark__media"
+                      wipe={index % 3 === 1 ? "left" : "up"}
+                    />
+                  )}
                   <div className="h2-landmark__copy">
                     <Eyebrow>{slide.indication}</Eyebrow>
                     <h2 className="h2-display h2-display--l">
                       {slide.titleLines.map((line, lineIndex) => (
-                        <RevealTitle key={`${line}-${lineIndex}`}>{line}</RevealTitle>
+                        <RevealTitle
+                          key={`${line}-${lineIndex}`}
+                          delay={lineIndex === 0 ? 0 : lineIndex === 1 ? 1 : 2}
+                        >
+                          {line}
+                        </RevealTitle>
                       ))}
                     </h2>
                     <p className="h2-copy">{slide.body}</p>
                   </div>
                 </Scene>
-              ))}
+                );
+              })}
 
               {EX_TEXT_BLOCKS.map((block, index) => {
                 const cms = home.textBlocks[index];
@@ -248,7 +319,12 @@ export function Home2EditorialPage({
                       <Eyebrow>{amenitiesCopy(cms?.indication, index === 0 ? "A Way of Life" : "Gastronomy")}</Eyebrow>
                       <h2 className="h2-display h2-display--l">
                         {amenitiesTitleLines(cms?.title, [block.title]).map((line, lineIndex) => (
-                          <RevealTitle key={`${line}-${lineIndex}`}>{line}</RevealTitle>
+                          <RevealTitle
+                            key={`${line}-${lineIndex}`}
+                            delay={lineIndex === 0 ? 0 : 1}
+                          >
+                            {line}
+                          </RevealTitle>
                         ))}
                       </h2>
                       <p className="h2-copy">{amenitiesCopy(cms?.body, block.body)}</p>
@@ -256,7 +332,12 @@ export function Home2EditorialPage({
                         <span>{amenitiesCopy(cms?.cta, block.cta)}</span>
                       </Link>
                     </div>
-                    <Home2Media name={block.imageName} alt={block.alt} className="h2-life__media" />
+                    <Home2Media
+                      name={block.imageName}
+                      alt={block.alt}
+                      className="h2-life__media"
+                      wipe={index % 2 === 0 ? "right" : "left"}
+                    />
                   </Scene>
                 );
               })}
@@ -265,7 +346,7 @@ export function Home2EditorialPage({
                 <Eyebrow>Aboard Hathor</Eyebrow>
                 <h2 className="h2-display h2-display--xl">
                   <RevealTitle>Eleven details</RevealTitle>
-                  <RevealTitle>of the journey</RevealTitle>
+                  <RevealTitle delay={1}>of the journey</RevealTitle>
                 </h2>
                 <p className="h2-copy">
                   The complete amenities image sequence from the main homepage.
@@ -279,6 +360,7 @@ export function Home2EditorialPage({
                     name={slot.name as SiteImageName}
                     alt={slot.alt}
                     className="h2-amenity__media"
+                    wipe={index % 2 === 0 ? "up" : "left"}
                   />
                   <p className="h2-amenity__label">Hathor · Aboard</p>
                 </Scene>
@@ -287,14 +369,18 @@ export function Home2EditorialPage({
               <Scene className="h2-voyages" id="voyages">
                 <header className="h2-voyages__head">
                   <Eyebrow>Hathor itineraries</Eyebrow>
-                  <h2 className="h2-display h2-display--l">Choose your passage</h2>
+                  <h2 className="h2-display h2-display--l">
+                    <RevealTitle>Choose your passage</RevealTitle>
+                  </h2>
                 </header>
                 <ol className="h2-voyages__list">
                   {accordionCruises.map((cruise, index) => (
                     <li key={cruise.id}>
                       <span className="h2-index">{cruise.romanNumeral || String(index + 1).padStart(2, "0")}</span>
                       <div>
-                        <h3 className="h2-display h2-display--s">{cruise.name}</h3>
+                        <h3 className="h2-display h2-display--s">
+                          <RevealTitle>{cruise.name}</RevealTitle>
+                        </h3>
                         <p className="h2-copy">{cruise.description}</p>
                         <p className="h2-meta">{cruise.meta}</p>
                       </div>
@@ -320,7 +406,9 @@ export function Home2EditorialPage({
                   <Image src={rotatingWheel} alt="" className="h2-helm__wheel" sizes="(max-width: 950px) 76vw, 58vh" />
                   <div className="h2-helm__copy">
                     <Eyebrow>Set your course</Eyebrow>
-                    <h2 className="h2-display h2-display--l">The Nile awaits</h2>
+                    <h2 className="h2-display h2-display--l">
+                      <RevealTitle>The Nile awaits</RevealTitle>
+                    </h2>
                   </div>
                 </div>
               </Scene>
@@ -328,27 +416,37 @@ export function Home2EditorialPage({
               <Scene className="h2-gallery" id="gallery">
                 <header>
                   <Eyebrow>Follow our journey</Eyebrow>
-                  <h2 className="h2-display h2-display--l">{home.gallery.title}</h2>
+                  <h2 className="h2-display h2-display--l">
+                    <RevealTitle>{home.gallery.title}</RevealTitle>
+                  </h2>
                   <a className="h2-link" href={EX_GALLERY.indicationHref} target="_blank" rel="noopener noreferrer">
                     {EX_GALLERY.indication}
                   </a>
                 </header>
                 <div className="h2-gallery__grid">
-                  {EX_GALLERY.images.map((item) => (
+                  {EX_GALLERY.images.map((item, index) => (
                     <Link href={item.href} key={item.imageName} aria-label={item.alt}>
-                      <Home2Media name={item.imageName} alt={item.alt} />
+                      <Home2Media
+                        name={item.imageName}
+                        alt={item.alt}
+                        wipe={index % 3 === 0 ? "up" : index % 3 === 1 ? "left" : "right"}
+                      />
                     </Link>
                   ))}
                 </div>
               </Scene>
 
               <Scene className="h2-reviews" id="reviews">
-                <h2 className="h2-display h2-display--l">{home.testimonials.title}</h2>
+                <h2 className="h2-display h2-display--l">
+                  <RevealTitle>{home.testimonials.title}</RevealTitle>
+                </h2>
                 <div className="h2-reviews__grid">
                   {home.testimonials.cards.map((card, index) => (
                     <article key={`${card.name}-${index}`}>
                       <p className="h2-stars" aria-label="5 stars">★★★★★</p>
-                      <h3 className="h2-display h2-display--s">{card.name}</h3>
+                      <h3 className="h2-display h2-display--s">
+                        <RevealTitle delay={1}>{card.name}</RevealTitle>
+                      </h3>
                       <blockquote>“{card.quote}”</blockquote>
                     </article>
                   ))}
@@ -359,10 +457,12 @@ export function Home2EditorialPage({
           </section>
 
           <section className="h2-epilogue">
-          <Home2Media name={EX_CAMPAIGN.imageName} alt={EX_CAMPAIGN.imageAlt} className="h2-epilogue__media" />
+          <Home2Media name={EX_CAMPAIGN.imageName} alt={EX_CAMPAIGN.imageAlt} className="h2-epilogue__media" wipe="up" />
           <div className="h2-epilogue__copy">
             <Eyebrow>Welcome aboard</Eyebrow>
-            <h2 className="h2-display h2-display--xl">{home.campaign.title}</h2>
+            <h2 className="h2-display h2-display--xl">
+              <RevealTitle>{home.campaign.title}</RevealTitle>
+            </h2>
             <div className="h2-epilogue__actions">
               <BookNowTrigger className="h2-btn h2-btn--solid"><span>Book now</span></BookNowTrigger>
               <Link href="/contact" className="h2-btn"><span>Contact us</span></Link>
