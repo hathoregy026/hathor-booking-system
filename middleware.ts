@@ -2,6 +2,7 @@ import {
   getProductionOrigin,
   isStaleVercelDeploymentHost,
 } from "@/lib/public-url";
+import { resolveDeployId } from "@/lib/deploy-id";
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
@@ -51,6 +52,10 @@ function withHtmlMustRevalidate(response: NextResponse): NextResponse {
   );
   response.headers.set("Pragma", "no-cache");
   response.headers.set("Expires", "0");
+  const deployId = resolveDeployId();
+  if (deployId !== "dev") {
+    response.headers.set("X-Hathor-Deploy", deployId);
+  }
   return response;
 }
 
