@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useSyncExternalStore, type ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { PageUnderConstruction } from "@/components/public/PageUnderConstruction";
-import { usePageVisibilitySettings } from "@/components/public/PageVisibilityProvider";
+import { usePageVisibilitySettings, usePageVisibilityWorkHost } from "@/components/public/PageVisibilityProvider";
 import { isLiveSiteWorkHost } from "@/lib/live-site-gate-shared";
 import {
   isPageLive,
@@ -18,13 +18,16 @@ type PageVisibilityChromeProps = {
 const subscribeNoop = () => () => {};
 
 function useIsWorkHost(): boolean {
-  return useSyncExternalStore(
+  const fromServer = usePageVisibilityWorkHost();
+  const fromClient = useSyncExternalStore(
     subscribeNoop,
     () =>
       typeof window !== "undefined" &&
       isLiveSiteWorkHost(window.location.hostname),
-    () => false,
+    () => fromServer ?? false,
   );
+  if (fromServer !== undefined) return fromServer;
+  return fromClient;
 }
 
 /**

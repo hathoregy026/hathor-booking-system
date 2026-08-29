@@ -11,9 +11,11 @@ import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { WebsiteTextPageScope } from "@/components/public/WebsiteTextPageScope";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
+  getRequestHostname,
   resolveComingSoonForRequest,
   resolvePageVisibilityForRequest,
 } from "@/lib/live-site-gate";
+import { isLiveSiteWorkHost } from "@/lib/live-site-gate-shared";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
@@ -129,6 +131,8 @@ export default async function PublicSiteLayout({
   const pageVisibility = await resolvePageVisibilityForRequest(
     cms.pageVisibility,
   );
+  const hostname = await getRequestHostname();
+  const workHost = isLiveSiteWorkHost(hostname);
   const comingSoonActive = await resolveComingSoonForRequest(liveSite);
   const siteIsLive = !comingSoonActive;
 
@@ -189,7 +193,7 @@ export default async function PublicSiteLayout({
               initialMobile={cms.websiteTextMobile}
             >
               <WebsiteTextPageScope />
-              <PageVisibilityProvider settings={pageVisibility}>
+              <PageVisibilityProvider settings={pageVisibility} workHost={workHost}>
                 <PublicLayout
                   welcomeSplash={welcomeSplash}
                   liveSite={liveSite}
