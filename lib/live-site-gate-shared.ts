@@ -1,6 +1,6 @@
 import {
-  DEFAULT_PAGE_VISIBILITY_SETTINGS,
   type PageVisibilitySettings,
+  WORK_HOST_PAGE_VISIBILITY_SETTINGS,
 } from "@/lib/page-visibility-shared";
 import type { LiveSiteSettings } from "@/lib/live-site-settings-shared";
 
@@ -54,7 +54,7 @@ export function resolvePageVisibilityForHost(
   hostname: string | null | undefined,
 ): PageVisibilitySettings {
   if (!shouldEnforceVisitorGates(hostname)) {
-    return DEFAULT_PAGE_VISIBILITY_SETTINGS;
+    return WORK_HOST_PAGE_VISIBILITY_SETTINGS;
   }
   return settings;
 }

@@ -114,6 +114,13 @@ export const DEFAULT_PAGE_VISIBILITY_SETTINGS: PageVisibilitySettings = {
   pages: defaultPageVisibilityMap(),
 };
 
+/** Team preview hosts bypass CMS gates — every managed page renders live. */
+export const WORK_HOST_PAGE_VISIBILITY_SETTINGS: PageVisibilitySettings = {
+  pages: Object.fromEntries(
+    MANAGED_PUBLIC_PAGES.map((page) => [page.id, true]),
+  ) as PageVisibilityMap,
+};
+
 const PATH_TO_PAGE = buildPathLookup();
 
 function buildPathLookup(): Map<string, ManagedPublicPage> {

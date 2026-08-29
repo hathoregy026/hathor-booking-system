@@ -5,6 +5,8 @@ import { PageVisibilityProvider } from "@/components/public/PageVisibilityProvid
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import {
+  getRequestHostname,
+  isLiveSiteWorkHost,
   resolveComingSoonForRequest,
   resolvePageVisibilityForRequest,
 } from "@/lib/live-site-gate";
@@ -39,10 +41,12 @@ export async function StandalonePageVisibilityShell({
     );
   }
 
+  const hostname = await getRequestHostname();
+  const workHost = isLiveSiteWorkHost(hostname);
   const effectiveVisibility = await resolvePageVisibilityForRequest(settings);
   const gated = (
-    <PageVisibilityProvider settings={effectiveVisibility}>
-      {!isPageLive(path, effectiveVisibility) ? (
+    <PageVisibilityProvider settings={effectiveVisibility} workHost={workHost}>
+      {!workHost && !isPageLive(path, effectiveVisibility) ? (
         <PublicThemeProvider>
           <div className="public-site hathor-site hathor-page-construction--shell">
             <PublicNavbar />
