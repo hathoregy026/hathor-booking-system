@@ -48,11 +48,7 @@ const INFO_LINKS = [
     label: "Privacy Policy",
     external: true,
   },
-  {
-    href: `mailto:${PUBLIC_CONTACT.email}?subject=${encodeURIComponent("Terms of Voyage Inquiry")}`,
-    label: "Terms of Voyage",
-    external: true,
-  },
+  { href: "/terms-and-conditions", label: "Terms & Conditions" },
 ] as const;
 
 type SocialKey = "instagram" | "linkedin" | "facebook";

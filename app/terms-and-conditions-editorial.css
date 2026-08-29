@@ -1,0 +1,372 @@
+/* Terms & Conditions — LuxuryHathor vertical editorial folio (no horizontal scroll story) */
+
+.terms-editorial {
+  --tc-paper: #ece4da;
+  --tc-paper-warm: #f3ede4;
+  --tc-ink: #14120e;
+  --tc-ink-soft: #4a453c;
+  --tc-gold: #b69f64;
+  --tc-gold-deep: #806b35;
+  --tc-hairline: rgb(20 18 14 / 16%);
+  --tc-pad: clamp(1.25rem, 3vw, 3rem);
+  --tc-measure: min(42rem, 100%);
+  --tc-sidebar: min(16rem, 100%);
+  --tc-nav-offset: calc(var(--site-nav-bar-height, 2.85rem) + 1.25rem);
+
+  background: var(--tc-paper);
+  color: var(--tc-ink-soft);
+  font-family: "Rollgates Luxury Italic", var(--font-hathor-body), "Plus Jakarta Sans",
+    sans-serif;
+  font-size: clamp(0.9375rem, 0.98vw, 1.0625rem);
+  line-height: 1.62;
+}
+
+.terms-editorial [id] {
+  scroll-margin-top: var(--tc-nav-offset);
+}
+
+/* ---------- Hero ---------- */
+
+.tc-hero {
+  padding: calc(var(--tc-nav-offset) + clamp(1.5rem, 4vw, 3rem)) var(--tc-pad)
+    clamp(2rem, 5vw, 3.5rem);
+  background: linear-gradient(
+    180deg,
+    var(--tc-paper-warm) 0%,
+    var(--tc-paper) 72%
+  );
+}
+
+.tc-hero__inner {
+  max-width: min(72rem, 100%);
+  margin: 0 auto;
+}
+
+.tc-hero__reveal {
+  animation: tc-hero-enter 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tc-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tc-eyebrow {
+  margin: 0 0 0.85rem;
+  font-family: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(0.66rem, 0.72vw, 0.8rem);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tc-gold-deep);
+}
+
+.tc-title {
+  margin: 0 0 clamp(1.25rem, 2.5vw, 2rem);
+  max-width: 14ch;
+  font-family: var(--font-hathor-display, "Gamgote", Georgia, serif);
+  font-size: clamp(2.6rem, 7vw, 5.4rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--tc-ink);
+}
+
+.tc-intro {
+  max-width: var(--tc-measure);
+}
+
+.tc-intro__p {
+  margin: 0 0 1rem;
+}
+
+.tc-intro__p:last-child {
+  margin-bottom: 0;
+}
+
+.tc-updated {
+  margin: clamp(1.25rem, 2.5vw, 1.75rem) 0 0;
+  font-family: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  font-size: 0.72rem;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(20 18 14 / 58%);
+}
+
+.tc-rule {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  height: 1px;
+  max-width: min(28rem, 100%);
+  background: linear-gradient(
+    90deg,
+    var(--tc-gold) 0%,
+    rgb(182 159 100 / 28%) 100%
+  );
+}
+
+/* ---------- Body layout ---------- */
+
+.tc-body {
+  padding: 0 var(--tc-pad) clamp(4rem, 10vw, 7rem);
+}
+
+.tc-body__layout {
+  display: grid;
+  grid-template-columns: var(--tc-sidebar) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  max-width: min(72rem, 100%);
+  margin: 0 auto;
+  align-items: start;
+}
+
+.tc-body__aside {
+  position: sticky;
+  top: var(--tc-nav-offset);
+}
+
+.tc-body__toc-mobile {
+  display: none;
+  max-width: min(72rem, 100%);
+  margin: 0 auto clamp(1.5rem, 3vw, 2rem);
+}
+
+/* ---------- TOC ---------- */
+
+.tc-toc__label {
+  margin: 0 0 0.85rem;
+  font-family: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  font-size: 0.68rem;
+  font-style: normal;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tc-gold-deep);
+}
+
+.tc-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tc-toc__link {
+  display: block;
+  padding: 0.35rem 0;
+  font-family: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  font-size: 0.72rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgb(20 18 14 / 62%);
+  border-left: 1px solid transparent;
+  padding-left: 0.65rem;
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.tc-toc__link:hover,
+.tc-toc__link:focus-visible {
+  color: var(--tc-gold-deep);
+  outline: none;
+}
+
+.tc-toc__link.is-active {
+  color: var(--tc-ink);
+  border-left-color: var(--tc-gold);
+}
+
+.tc-toc__toggle {
+  width: 100%;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--tc-hairline);
+  background: var(--tc-paper-warm);
+  color: var(--tc-gold-deep);
+  font-family: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tc-toc__toggle:focus-visible {
+  outline: 2px solid var(--tc-gold);
+  outline-offset: 2px;
+}
+
+.tc-toc__panel {
+  margin-top: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--tc-hairline);
+  background: rgb(243 237 228 / 72%);
+}
+
+.tc-toc__panel[hidden] {
+  display: none;
+}
+
+/* ---------- Sections ---------- */
+
+.tc-section {
+  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
+  border-top: 1px solid var(--tc-hairline);
+}
+
+.tc-section:first-child {
+  border-top: none;
+  padding-top: 0.5rem;
+}
+
+.tc-section__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem 1rem;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
+.tc-section__num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--tc-gold);
+  line-height: 1;
+}
+
+.tc-section__title {
+  margin: 0;
+  font-family: var(--font-hathor-display, "Gamgote", Georgia, serif);
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--tc-ink);
+}
+
+.tc-section__p {
+  margin: 0 0 1rem;
+  max-width: var(--tc-measure);
+}
+
+.tc-section__p:last-child {
+  margin-bottom: 0;
+}
+
+.tc-list {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+  max-width: var(--tc-measure);
+}
+
+.tc-list__item {
+  margin-bottom: 0.55rem;
+}
+
+.tc-list__item strong {
+  font-weight: 600;
+  color: var(--tc-ink);
+}
+
+/* ---------- Contact block ---------- */
+
+.tc-contact {
+  margin-top: 0.5rem;
+  max-width: var(--tc-measure);
+  font-style: normal;
+}
+
+.tc-contact__label {
+  margin: 0 0 0.65rem;
+  font-family: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tc-gold-deep);
+}
+
+.tc-contact__line {
+  margin: 0 0 0.55rem;
+}
+
+.tc-contact__key {
+  color: var(--tc-ink);
+}
+
+.tc-contact a {
+  color: var(--tc-gold-deep);
+  text-decoration: underline;
+  text-decoration-color: rgb(128 107 53 / 35%);
+  text-underline-offset: 0.18em;
+}
+
+.tc-contact a:hover,
+.tc-contact a:focus-visible {
+  color: var(--tc-ink);
+  outline: none;
+}
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 1024px) {
+  .tc-body__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tc-body__aside {
+    display: none;
+  }
+
+  .tc-body__toc-mobile {
+    display: block;
+  }
+}
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 480px) {
+  .terms-editorial {
+    --tc-pad: 1.15rem;
+    font-size: 0.9375rem;
+    line-height: 1.58;
+  }
+
+  .tc-title {
+    max-width: none;
+    font-size: clamp(2.15rem, 11vw, 2.85rem);
+  }
+
+  .tc-section__head {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .tc-toc__link {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-hero__reveal {
+    animation: none;
+  }
+
+  .tc-toc__link {
+    transition: none;
+  }
+}

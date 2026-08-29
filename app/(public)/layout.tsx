@@ -16,6 +16,7 @@ import {
   resolvePageVisibilityForRequest,
 } from "@/lib/live-site-gate";
 import { isLiveSiteWorkHost } from "@/lib/live-site-gate-shared";
+import { robotsForHost } from "@/lib/temporary-deployment-seo";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
@@ -85,36 +86,36 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://www.hathorcruise.com"),
-  title: {
-    default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
-    template: "%s | Hathor Dahabiya",
-  },
-  description:
-    "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
-  keywords: [
-    "Dahabiya Nile Cruise",
-    "Luxury Egypt Cruise",
-    "Private Nile Sailing",
-    "Hathor Dahabiya",
-  ],
-  openGraph: {
-    title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins here",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins here",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const hostname = await getRequestHostname();
+  return {
+    metadataBase: new URL("https://www.hathorcruise.com"),
+    title: {
+      default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
+      template: "%s | Hathor Dahabiya",
+    },
+    description:
+      "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
+    keywords: [
+      "Dahabiya Nile Cruise",
+      "Luxury Egypt Cruise",
+      "Private Nile Sailing",
+      "Hathor Dahabiya",
+    ],
+    openGraph: {
+      title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
+      description: "Your luxurious Nile escape begins here",
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
+      description: "Your luxurious Nile escape begins here",
+    },
+    robots: robotsForHost(hostname),
+  };
+}
 
 export default async function PublicSiteLayout({
   children,

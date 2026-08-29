@@ -64,10 +64,6 @@ export const metadata: Metadata = {
       "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
     images: [HATHOR_HERO_POSTER_SRC],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 
 export default async function HomePage() {

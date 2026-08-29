@@ -2,6 +2,10 @@ import {
   getProductionOrigin,
   isStaleVercelDeploymentHost,
 } from "@/lib/public-url";
+import {
+  isTemporaryDeploymentHost,
+  TEMPORARY_DEPLOYMENT_ROBOTS_HEADER,
+} from "@/lib/temporary-deployment-seo";
 import { resolveDeployId } from "@/lib/deploy-id";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -30,6 +34,16 @@ function redirectStaleDeploymentHost(request: NextRequest): NextResponse | null 
  * a sticky disk cache. CDN no-store is intentional for private / preview /
  * booking shells; marketing ISR pages intentionally skip this helper.
  */
+function withTemporaryNoIndex(
+  request: NextRequest,
+  response: NextResponse,
+): NextResponse {
+  if (isTemporaryDeploymentHost(request.nextUrl.hostname)) {
+    response.headers.set("X-Robots-Tag", TEMPORARY_DEPLOYMENT_ROBOTS_HEADER);
+  }
+  return response;
+}
+
 function withHtmlNoStore(response: NextResponse): NextResponse {
   response.headers.set(
     "Cache-Control",
@@ -190,7 +204,7 @@ export async function middleware(request: NextRequest) {
       }
 
       if (requiresPrivateHtml(pathname)) {
-        return withHtmlNoStore(NextResponse.next());
+        return withTemporaryNoIndex(request, withHtmlNoStore(NextResponse.next()));
       }
 
       /*
@@ -199,7 +213,7 @@ export async function middleware(request: NextRequest) {
        * caching. DeployFreshness + /api/deploy-id heal already-open tabs.
        * Do not Clear-Site-Data on every visit.
        */
-      return withHtmlMustRevalidate(NextResponse.next());
+      return withTemporaryNoIndex(request, withHtmlMustRevalidate(NextResponse.next()));
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;

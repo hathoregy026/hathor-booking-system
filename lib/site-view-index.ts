@@ -27,6 +27,7 @@ export const SITE_VIEW_INDEX: SiteViewSection[] = [
       { href: "/wellness", label: "Wellness & Seneb Spa" },
       { href: "/charter", label: "Charter" },
       { href: "/contact", label: "Contact" },
+      { href: "/terms-and-conditions", label: "Terms & Conditions" },
       { href: "/blogs", label: "Blog" },
       { href: "/preview", label: "Homepage preview (partial)" },
     ],

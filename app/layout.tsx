@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { HATHOR_BRAND_NAME, HATHOR_FAVICON_SRC } from "@/lib/branding";
+import { getRequestHostname } from "@/lib/live-site-gate";
+import { robotsForHost } from "@/lib/temporary-deployment-seo";
 import {
   PUBLIC_THEME_DEFAULT,
   getPublicThemeBlockingScript,
@@ -35,15 +37,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://www.easytravegypt.com"),
-  title: `${HATHOR_BRAND_NAME} Cruise Booking`,
-  description: "Book your luxury Hathor cruise experience",
-  icons: {
-    icon: HATHOR_FAVICON_SRC,
-    apple: HATHOR_FAVICON_SRC,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const hostname = await getRequestHostname();
+  return {
+    metadataBase: new URL("https://www.easytravegypt.com"),
+    title: `${HATHOR_BRAND_NAME} Cruise Booking`,
+    description: "Book your luxury Hathor cruise experience",
+    icons: {
+      icon: HATHOR_FAVICON_SRC,
+      apple: HATHOR_FAVICON_SRC,
+    },
+    robots: robotsForHost(hostname),
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
