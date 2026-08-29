@@ -7,6 +7,30 @@
    Motion: hooks/useRoomCollectionEditorialScroll.ts
    ========================================================================== */
 
+.accom-editorial-shell {
+  --font-hathor-display: "Gamgote", Georgia, serif;
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  background: #ece4da;
+}
+
+.accom-nav-shell {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1300;
+  width: 100%;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.accom-nav-shell .hathor-header,
+.accom-nav-shell .hathor-header * {
+  pointer-events: auto;
+}
+
 .accom-catalog {
   --ac-paper: #ece4da;
   --ac-paper-warm: #f3ede4;
@@ -38,6 +62,9 @@
   --ac-gap: clamp(0.75rem, 1.5vw, 1.5rem);
   --ac-col: calc((100vw - (var(--ac-pad) * 2) - (var(--ac-gap) * 11)) / 12);
   --ac-band: clamp(3.5rem, 9vw, 11rem);
+  --ac-nav-clear: calc(
+    clamp(3.15rem, 7vh, 4.5rem) + 1.1rem + env(safe-area-inset-top, 0px)
+  );
   --ac-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   position: relative;
@@ -52,27 +79,42 @@
 
 html[data-accom-catalog],
 html:has(.accom-catalog),
-html:has(.accom-catalog) body {
+html:has(.accom-editorial-shell),
+html:has(.accom-catalog) body,
+html:has(.accom-editorial-shell) body {
   overflow-x: clip;
   background: #ece4da;
 }
 
-html:has(.accom-catalog) .hathor-header,
-html[data-accom-catalog] .hathor-header {
-  z-index: 1200;
-  background: rgb(236 228 218 / 82%) !important;
-  box-shadow: 0 1px 0 rgb(20 18 14 / 10%);
-  backdrop-filter: blur(14px) saturate(0.92);
+html:has(.accom-catalog) .public-fab {
+  display: none !important;
 }
 
-html:has(.accom-catalog) .hathor-header a,
-html:has(.accom-catalog) .hathor-header button {
-  color: #14120e !important;
-  text-shadow: none !important;
+.accom-catalog .ac-title,
+.accom-catalog .wt-page-hero,
+.accom-catalog .wt-page-hero-second {
+  font-family: var(--typo-hero-title-font, var(--ac-display)) !important;
 }
 
-html:has(.accom-catalog) .hathor-header__logo--icon {
-  filter: brightness(0.16) saturate(0.4) !important;
+.accom-catalog .wt-page-hero-second {
+  font-family: var(--typo-hero-subtitle-font, var(--ac-display)) !important;
+}
+
+.accom-catalog .wt-page-title {
+  font-family: var(--typo-page-title-font, var(--ac-display)) !important;
+}
+
+.accom-catalog .wt-page-body,
+.accom-catalog .wt-page-kicker {
+  font-family: var(--typo-body-text-font, var(--ac-meta)) !important;
+}
+
+.accom-catalog .ac-kicker.wt-page-kicker {
+  font-family: var(--typo-page-subtitle-font, var(--ac-meta)) !important;
+}
+
+.ac-scene {
+  --reveal: 1;
 }
 
 .accom-catalog *,
@@ -302,6 +344,7 @@ html:has(.accom-catalog) .hathor-header__logo--icon {
 .ac-stage {
   position: sticky;
   top: 0;
+  z-index: 1;
   height: 100svh;
   overflow: hidden;
   display: flex;
@@ -320,7 +363,7 @@ html:has(.accom-catalog) .hathor-header__logo--icon {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
-  padding: calc(var(--ac-band) * 0.88) var(--ac-pad);
+  padding: calc(var(--ac-band) * 0.72) var(--ac-pad);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -569,6 +612,7 @@ html:has(.accom-catalog) .hathor-header__logo--icon {
 
 .ac-bento__cell--1 {
   grid-row: 1 / span 3;
+  min-height: clamp(12rem, 28vw, 20rem);
 }
 
 .ac-bento__cell--2 {
@@ -592,6 +636,7 @@ html:has(.accom-catalog) .hathor-header__logo--icon {
 }
 
 .ac-bento__cell {
+  min-height: clamp(6.5rem, 12vw, 10rem);
   transform: translateY(calc((1 - var(--reveal, 1)) * 0.9rem));
   opacity: calc(0.4 + var(--reveal, 1) * 0.6);
   transition:

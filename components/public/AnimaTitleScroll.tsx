@@ -15,6 +15,7 @@ export function AnimaTitleScroll() {
   useEffect(() => {
     if (!shouldApplyAnimaTitle(pathname)) return;
     const root =
+      document.querySelector(".accom-editorial-shell") ||
       document.querySelector(".gastronomy-dining-shell") ||
       document.querySelector(".mask-reveal-page") ||
       document.querySelector(".public-site") ||

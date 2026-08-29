@@ -5,8 +5,10 @@ import Link from "next/link";
 import {
   useRef,
   type ComponentPropsWithoutRef,
+  type CSSProperties,
   type ReactNode,
 } from "react";
+import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
@@ -43,8 +45,14 @@ function Scene({
   );
 }
 
-function Kicker({ children }: { children: ReactNode }) {
-  return <p className="ac-kicker">{children}</p>;
+function Kicker({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <p className={`ac-kicker ${className}`.trim()}>{children}</p>;
 }
 
 function Frame({
@@ -190,17 +198,23 @@ export function RoomCollectionEditorialPage({
 
   const titlePrimary = heroCopy.main || config.titleLines.join(" ");
   const titleSecondary = heroCopy.second || config.tierSubtitle;
+  const shellStyle = {
+    "--font-hathor-display": '"Gamgote", Georgia, serif',
+  } as CSSProperties;
 
   return (
-    <div className="public-site hathor-site">
-      <div ref={rootRef} className="accom-catalog">
-      <div className="ac-progress" aria-hidden="true">
-        <i data-ac-progress />
+    <div className="accom-editorial-shell" style={shellStyle}>
+      <AnimaTitleScroll />
+      <div className="public-site hathor-site accom-nav-shell">
+        <PublicNavbar />
       </div>
 
-      <PublicNavbar />
+      <div ref={rootRef} className="accom-catalog">
+        <div className="ac-progress" aria-hidden="true">
+          <i data-ac-progress />
+        </div>
 
-      <main>
+        <main className="ac-main">
         <section
           ref={runRef}
           className="ac-run"
@@ -224,16 +238,16 @@ export function RoomCollectionEditorialPage({
                 </ol>
 
                 <div className="ac-spine__folio" id="folio">
-                  <Kicker>{config.collectionLabel}</Kicker>
-                  <h1 className="ac-title ac-title--folio" data-anima-title>
-                    <span className="ac-rise">
+                  <Kicker className="wt-page-kicker">{config.collectionLabel}</Kicker>
+                  <h1 className="ac-title ac-title--folio wt-page-hero" data-anima-title>
+                    <span className="ac-rise wt-page-hero">
                       <AnimaSplitLine line={0}>{titlePrimary}</AnimaSplitLine>
                     </span>
-                    <span className="ac-rise ac-rise--shift">
+                    <span className="ac-rise ac-rise--shift wt-page-hero-second">
                       <AnimaSplitLine line={1}>{titleSecondary}</AnimaSplitLine>
                     </span>
                   </h1>
-                  <p className="ac-support">{support}</p>
+                  <p className="ac-support wt-page-body">{support}</p>
                 </div>
 
                 <p className="ac-spine__mark">
@@ -280,17 +294,20 @@ export function RoomCollectionEditorialPage({
                       </span>
                       <div className="ac-chapter__body">
                         <Kicker>{room.eyebrow}</Kicker>
-                        <h2 className="ac-title ac-title--chapter" data-anima-title>
-                          <span className="ac-rise">
+                        <h2
+                          className="ac-title ac-title--chapter wt-page-title"
+                          data-anima-title
+                        >
+                          <span className="ac-rise wt-page-hero">
                             <AnimaSplitLine line={0}>{lineA}</AnimaSplitLine>
                           </span>
                           {lineB ? (
-                            <span className="ac-rise ac-rise--shift">
+                            <span className="ac-rise ac-rise--shift wt-page-hero-second">
                               <AnimaSplitLine line={1}>{lineB}</AnimaSplitLine>
                             </span>
                           ) : null}
                         </h2>
-                        <p className="ac-support">{room.description}</p>
+                        <p className="ac-support wt-page-body">{room.description}</p>
                         <ul className="ac-spec-rail">
                           <li>
                             <span>Space</span>
@@ -426,9 +443,9 @@ export function RoomCollectionEditorialPage({
             ) : null}
           </div>
         </section>
-      </main>
+        </main>
 
-      <Footer />
+        <Footer />
       </div>
     </div>
   );

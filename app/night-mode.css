@@ -603,6 +603,23 @@ html[data-public-theme="night"] .contact-editorial {
   color: var(--night-text) !important;
 }
 
+html[data-public-theme="night"] .accom-catalog,
+html[data-public-theme="night"] .accom-editorial-shell {
+  --ac-paper: var(--night-canvas);
+  --ac-paper-warm: var(--night-surface);
+  --ac-ink: var(--night-text);
+  --ac-ink-soft: var(--night-text-soft);
+  --ac-gold: var(--night-gold);
+  --ac-gold-deep: var(--night-gold-strong);
+  --ac-wash-sand: var(--night-surface-raised);
+  --ac-wash-stone: var(--night-surface-soft);
+  --ac-wash-olive: #30291c;
+  --ac-night: #080705;
+  --ac-hair: var(--night-line);
+  background-color: var(--night-canvas) !important;
+  color: var(--night-text) !important;
+}
+
 html[data-public-theme="night"] .wellness-editorial {
   --we-paper: var(--night-canvas);
   --we-paper-warm: var(--night-surface);
@@ -703,6 +720,7 @@ html[data-public-theme="night"] :is(
   .voyages-boring,
   .about-boring,
   .contact-editorial,
+  .accom-catalog,
   .wellness-editorial,
   .highlights-editorial,
   .partners-editorial,
@@ -776,6 +794,10 @@ html[data-public-theme="night"]:has(.about-boring) :is(.public-site, .public-mai
 html[data-public-theme="night"]:has(.contact-editorial),
 html[data-public-theme="night"]:has(.contact-editorial) body,
 html[data-public-theme="night"]:has(.contact-editorial) :is(.public-site, .public-main),
+html[data-public-theme="night"]:has(.accom-editorial-shell),
+html[data-public-theme="night"]:has(.accom-editorial-shell) body,
+html[data-public-theme="night"]:has(.accom-catalog),
+html[data-public-theme="night"]:has(.accom-catalog) body,
 html[data-public-theme="night"]:has(.wellness-editorial),
 html[data-public-theme="night"]:has(.wellness-editorial) body,
 html[data-public-theme="night"]:has(.wellness-editorial) :is(.public-site, .public-main),
@@ -800,6 +822,7 @@ html[data-public-theme="night"] .hathor-header,
 html[data-public-theme="night"]:has(.voyages-boring) .hathor-header,
 html[data-public-theme="night"]:has(.about-boring) .hathor-header,
 html[data-public-theme="night"]:has(.contact-editorial) .hathor-header,
+html[data-public-theme="night"]:has(.accom-catalog) .hathor-header,
 html[data-public-theme="night"]:has(.wellness-editorial) .hathor-header,
 html[data-public-theme="night"]:has(.highlights-editorial) .hathor-header,
 html[data-public-theme="night"]:has(.partners-editorial) .hathor-header,
@@ -816,6 +839,7 @@ html[data-public-theme="night"] .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.voyages-boring) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.about-boring) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.contact-editorial) .hathor-header :is(a, button),
+html[data-public-theme="night"]:has(.accom-catalog) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.wellness-editorial) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.highlights-editorial) .hathor-header :is(a, button),
 html[data-public-theme="night"]:has(.partners-editorial) .hathor-header :is(a, button),

@@ -78,8 +78,6 @@ export function getBithoTitleReadyCriticalStyle(): string {
     "html:not(.hathor-bitho-ready) .contact-editorial .ce-intro__title-part,",
     "html:not(.hathor-bitho-ready) .highlights-editorial .hl-intro__title,",
     "html:not(.hathor-bitho-ready) .highlights-editorial .hl-intro__title .hl-line,",
-    "html:not(.hathor-bitho-ready) .accom-catalog .ac-title,",
-    "html:not(.hathor-bitho-ready) .accom-catalog .ac-title .ac-rise,",
     "html:not(.hathor-bitho-ready) .wellness-editorial .we-threshold__title,",
     "html:not(.hathor-bitho-ready) .wellness-editorial .we-threshold__title .we-line,",
     "html:not(.hathor-bitho-ready) .cr-intro .cr-intro__title,",
