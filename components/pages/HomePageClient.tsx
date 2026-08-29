@@ -128,6 +128,7 @@ type HomePageClientProps = {
   wheelStage?: WheelStageSettings;
   amenitiesTypography?: AmenitiesTypography;
   amenitiesTypographyMobile?: AmenitiesTypography;
+  showHome2WordStage?: boolean;
 };
 
 function paintLogoTune(desktop: HeroLogoTune, phone: HeroLogoTune) {
@@ -182,6 +183,7 @@ export function HomePageClient({
   wheelStage = DEFAULT_WHEEL_STAGE_SETTINGS,
   amenitiesTypography = DEFAULT_AMENITIES_TYPOGRAPHY,
   amenitiesTypographyMobile = amenitiesTypography,
+  showHome2WordStage = false,
 }: HomePageClientProps) {
   useExScrollMotion();
   const isPhone = useIsPhoneViewport();
@@ -292,6 +294,14 @@ export function HomePageClient({
         </div>
 
         <LuxuryMarquee />
+
+        {showHome2WordStage ? (
+          <section className="home2-word-stage" aria-label="Hathor">
+            <span className="home2-word-stage__word" aria-hidden="true">
+              HATHOR
+            </span>
+          </section>
+        ) : null}
 
         <div className="ex-content-dust" style={{ position: "relative" }}>
           <GoldDustParticles />

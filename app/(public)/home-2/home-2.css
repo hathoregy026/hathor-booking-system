@@ -11,15 +11,58 @@
 }
 
 .home2-suites-study .ex-content-dust {
-  overflow: clip;
   background:
     radial-gradient(circle at 12% 18%, rgb(182 159 100 / 0.14), transparent 28rem),
     var(--h2-cream);
 }
 
+.home2-suites-study .home2-word-stage {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  overflow: clip;
+  background:
+    radial-gradient(circle at 50% 48%, rgb(182 159 100 / 0.17), transparent 34%),
+    var(--h2-cream);
+}
+
+.home2-suites-study .home2-word-stage::before,
+.home2-suites-study .home2-word-stage::after {
+  position: absolute;
+  width: min(34vw, 31rem);
+  aspect-ratio: 1;
+  border: 1px solid rgb(128 107 53 / 0.22);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.home2-suites-study .home2-word-stage::before {
+  top: -18%;
+  left: -9%;
+}
+
+.home2-suites-study .home2-word-stage::after {
+  right: -8%;
+  bottom: -20%;
+}
+
+.home2-suites-study .home2-word-stage__word {
+  position: relative;
+  z-index: 1;
+  display: block;
+  color: var(--h2-ink);
+  font-family: "Italiana", "Gamgote", Georgia, serif;
+  font-size: clamp(7rem, 20vw, 22rem);
+  font-weight: 400;
+  letter-spacing: -0.08em;
+  line-height: 0.72;
+  white-space: nowrap;
+}
+
 .home2-suites-study :is(
   .radius-heading h2,
-  .home-carousel-h2 h2,
   .testimonial-h2 h2,
   .testimonials-section h3
 ) {
@@ -31,7 +74,6 @@
 
 .home2-suites-study :is(
   .radius-sub-heading h3,
-  .home-carousel-h3 h3,
   .testimonial-stars
 ) {
   font-family: "Piloner Thin", "Plus Jakarta Sans", sans-serif !important;
@@ -49,7 +91,7 @@
   line-height: 1.55;
 }
 
-.home2-suites-study .ex-content-section .btn {
+.home2-suites-study .ex-content-section:not(.services-section) .btn {
   display: inline-flex;
   min-width: 12.5rem;
   min-height: 3.25rem;
@@ -70,7 +112,7 @@
     border-color 280ms ease;
 }
 
-.home2-suites-study .ex-content-section .btn:hover {
+.home2-suites-study .ex-content-section:not(.services-section) .btn:hover {
   border-color: var(--h2-gold);
   background: var(--h2-gold);
   color: var(--h2-ink);
@@ -85,25 +127,6 @@
   padding: clamp(7rem, 12vh, 10rem) clamp(2rem, 5vw, 6rem);
   overflow: clip;
   background: var(--h2-cream);
-}
-
-.home2-suites-study .about-section::before {
-  position: absolute;
-  z-index: -1;
-  top: 50%;
-  left: -0.035em;
-  width: max-content;
-  content: "HATHOR";
-  color: var(--h2-gold-deep);
-  font-family: "Italiana", "Gamgote", Georgia, serif;
-  font-size: clamp(11rem, 25vw, 30rem);
-  font-weight: 400;
-  letter-spacing: -0.08em;
-  line-height: 0.68;
-  opacity: 0.055;
-  pointer-events: none;
-  transform: translateY(-48%);
-  white-space: nowrap;
 }
 
 .home2-suites-study .about-section .section-inner {
@@ -169,105 +192,6 @@
   margin-top: 2rem;
   background: transparent !important;
   color: var(--h2-ink) !important;
-}
-
-/* The Suites collection panels become the itinerary collection. */
-.home2-suites-study .services-section {
-  min-height: 100svh;
-  padding: clamp(6.5rem, 12vh, 10rem) 0 clamp(5rem, 9vh, 8rem);
-  overflow: clip;
-  background:
-    radial-gradient(circle at 78% 22%, rgb(182 159 100 / 0.14), transparent 28rem),
-    var(--h2-ink);
-  color: var(--h2-cream);
-}
-
-.home2-suites-study .services-intro {
-  display: grid;
-  width: min(100% - clamp(3rem, 10vw, 10rem), 92rem);
-  margin: 0 auto clamp(3.5rem, 7vh, 6rem);
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2rem;
-  align-items: end;
-}
-
-.home2-suites-study .home-carousel-h2 {
-  max-width: 62rem;
-}
-
-.home2-suites-study .home-carousel-h2 h2 {
-  color: var(--h2-cream) !important;
-  font-size: clamp(4.5rem, 9vw, 10rem) !important;
-  line-height: 0.8 !important;
-  text-shadow: 0 4px 40px rgb(0 0 0 / 0.4);
-}
-
-.home2-suites-study .home-carousel-h3 h3 {
-  color: var(--h2-gold) !important;
-  font-size: 0.68rem !important;
-}
-
-.home2-suites-study .home-carousel {
-  padding-inline: clamp(1.5rem, 5vw, 5rem);
-}
-
-.home2-suites-study .carousel-track {
-  gap: clamp(1rem, 2vw, 2.5rem);
-}
-
-.home2-suites-study .carousel-slide {
-  flex: 0 0 min(72vw, 60rem);
-}
-
-.home2-suites-study :is(.carousel-container-parent, .carousel-container) {
-  border-radius: 0 !important;
-}
-
-.home2-suites-study .carousel-container {
-  min-height: min(66svh, 44rem);
-  overflow: hidden;
-  background: var(--h2-soft-ink);
-}
-
-.home2-suites-study .carousel-container::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  background: linear-gradient(180deg, transparent 45%, rgb(0 0 0 / 0.62));
-  pointer-events: none;
-}
-
-.home2-suites-study .carousel-heading {
-  z-index: 2;
-}
-
-.home2-suites-study .carousel-heading h2 {
-  color: #f7f1e6 !important;
-  font-family: "Italiana", "Gamgote", Georgia, serif !important;
-  font-size: clamp(3.4rem, 6vw, 7rem) !important;
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.85 !important;
-  text-shadow: 0 4px 40px rgb(0 0 0 / 0.4);
-}
-
-.home2-suites-study .carousel-nav button {
-  width: 3.25rem;
-  height: 3.25rem;
-  border: 1px solid var(--h2-gold);
-  border-radius: 50%;
-  color: var(--h2-cream);
-}
-
-.home2-suites-study .services-cta {
-  margin-top: clamp(2.5rem, 5vh, 4rem);
-  text-align: center;
-}
-
-.home2-suites-study .services-cta .btn {
-  border-color: var(--h2-gold);
-  background: transparent !important;
-  color: var(--h2-cream) !important;
 }
 
 /* Existing landmark mosaic and wheel choreography remain structurally intact. */
@@ -400,11 +324,12 @@
     padding: 6.5rem 1.25rem 5.5rem;
   }
 
-  .home2-suites-study .about-section::before {
-    top: 37%;
-    left: -0.08em;
-    font-size: 34vw;
-    opacity: 0.065;
+  .home2-suites-study .home2-word-stage {
+    min-height: 72svh;
+  }
+
+  .home2-suites-study .home2-word-stage__word {
+    font-size: 24vw;
   }
 
   .home2-suites-study .about-layout {
@@ -435,52 +360,8 @@
   }
 
   .home2-suites-study .radius-p,
-  .home2-suites-study .ex-content-section .btn {
+  .home2-suites-study .ex-content-section:not(.services-section) .btn {
     width: 100%;
-  }
-
-  .home2-suites-study .services-section {
-    min-height: auto;
-    padding: 6rem 0 5rem;
-  }
-
-  .home2-suites-study .services-intro {
-    display: flex;
-    width: calc(100% - 2.5rem);
-    margin-bottom: 3rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .home2-suites-study .home-carousel-h2 h2 {
-    font-size: clamp(3.6rem, 18vw, 5.8rem) !important;
-    line-height: 0.82 !important;
-    overflow-wrap: anywhere;
-  }
-
-  .home2-suites-study .home-carousel {
-    padding-inline: 1.25rem;
-  }
-
-  .home2-suites-study .carousel-track {
-    gap: 0.85rem;
-  }
-
-  .home2-suites-study .carousel-slide {
-    flex-basis: calc(100vw - 2.5rem);
-  }
-
-  .home2-suites-study .carousel-container {
-    min-height: 66svh;
-  }
-
-  .home2-suites-study .carousel-heading h2 {
-    font-size: clamp(3rem, 15vw, 4.6rem) !important;
-    overflow-wrap: anywhere;
-  }
-
-  .home2-suites-study .services-cta {
-    padding-inline: 1.25rem;
   }
 
   .home2-suites-study .gallery-section {
@@ -506,18 +387,13 @@
 }
 
 @media (max-width: 480px) {
-  .home2-suites-study .ex-content-section .btn {
+  .home2-suites-study .ex-content-section:not(.services-section) .btn {
     min-height: 3.5rem;
-  }
-
-  .home2-suites-study .carousel-nav button {
-    width: 3.5rem;
-    height: 3.5rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home2-suites-study .ex-content-section .btn {
+  .home2-suites-study .ex-content-section:not(.services-section) .btn {
     transition: none;
   }
 }

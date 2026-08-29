@@ -79,6 +79,7 @@ export default async function Home2Page() {
           wheelStage={cms.wheelStage}
           amenitiesTypography={amenitiesTypo}
           amenitiesTypographyMobile={amenitiesTypoMobile}
+          showHome2WordStage
         />
       </div>
     </HomeExperienceShell>
