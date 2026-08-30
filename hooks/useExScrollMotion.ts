@@ -2404,7 +2404,8 @@ export function useExScrollMotion() {
       document.documentElement.classList.remove("ex-scroll-ready");
       document.documentElement.classList.remove("ex-pending");
       document.documentElement.classList.remove("ex-pending-deep");
-      document.documentElement.classList.remove("ex-home");
+      /* ex-home is owned by HomeExperienceBoot — do not strip it here or soft
+       remounts briefly re-hide hero titles via the public-hero boot CSS. */
     };
   }, []);
 }

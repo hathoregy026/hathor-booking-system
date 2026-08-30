@@ -928,7 +928,7 @@ h1, h2, h3, h4, p {
 .btn:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
@@ -946,7 +946,7 @@ h1, h2, h3, h4, p {
 .btn-filled:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label, #2c2824);
 }
 
 /* Hero Book Now — same outer size as site CTAs; glass style kept for hero.
@@ -1368,6 +1368,11 @@ html.ex-home.hathor-hero-type-ready .ex-root .home-hero-container .hero-heading 
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
+}
+
+/* Lines stay GSAP-owned after land; never leave them CSS-hidden once fonts are ready. */
+html.ex-home.hathor-hero-type-ready .ex-root .home-hero-container .hero-heading .hero-line {
+  visibility: visible;
 }
 
 html.ex-home.hathor-hero-type-ready .ex-root .home-hero-container .hero-button {
@@ -1839,7 +1844,7 @@ html[data-ex-experience] .ex-root .hero-heading .hero-line--left::after {
 
 .carousel-nav button:hover {
   background: var(--gold);
-  color: var(--white);
+  color: var(--hathor-btn-hover-label, #2c2824);
 }
 
 .services-cta {

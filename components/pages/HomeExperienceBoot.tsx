@@ -17,6 +17,13 @@ export function HomeExperienceBoot({ children }: { children: ReactNode }) {
     /* Soft nav lands at top — never full-page veil. */
     root.classList.remove("ex-pending");
     root.classList.remove("ex-pending-deep");
+    /*
+     * Blocking font script only runs on hard loads. Soft nav to Home/Home2 must
+     * still clear the title FOUC gate or both hero titles stay visibility:hidden.
+     */
+    if (!root.classList.contains("hathor-hero-type-ready")) {
+      root.classList.add("hathor-hero-type-ready");
+    }
     try {
       if ("scrollRestoration" in history) {
         history.scrollRestoration = "manual";

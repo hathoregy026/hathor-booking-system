@@ -166,23 +166,79 @@ export function mountHeroScrollStage({
 
   let landingTween: gsap.core.Tween | null = null;
   let titleLandTween: gsap.core.Tween | null = null;
+  let titleFailsafeId = 0;
   let logoReadyForScroll = false;
   let titlesLanded = skipLanding || prefersReduced;
+  let disposed = false;
+  let titleExitAttached = false;
 
   const getTitleLines = () =>
     [lineRight, lineLeft].filter(Boolean) as Element[];
 
+  const clearTitleFailsafe = () => {
+    if (titleFailsafeId) {
+      window.clearTimeout(titleFailsafeId);
+      titleFailsafeId = 0;
+    }
+  };
+
+  /** Scrub must start from fully visible titles — never capture the pre-land opacity:0. */
+  const appendTitleExitTweens = (
+    tl: gsap.core.Timeline,
+    opts: { travel: number; duration: number; at?: number },
+  ) => {
+    if (!titlesLanded) return;
+    const at = opts.at ?? 0;
+    if (lineRight) {
+      tl.fromTo(
+        lineRight,
+        { x: 0, y: 0, opacity: 1 },
+        {
+          x: opts.travel,
+          opacity: 0,
+          ease: "none",
+          duration: opts.duration,
+          immediateRender: false,
+        },
+        at,
+      );
+    }
+    if (lineLeft) {
+      tl.fromTo(
+        lineLeft,
+        { x: 0, y: 0, opacity: 1 },
+        {
+          x: -opts.travel,
+          opacity: 0,
+          ease: "none",
+          duration: opts.duration,
+          immediateRender: false,
+        },
+        at,
+      );
+    }
+    titleExitAttached = true;
+  };
+
   const snapTitlesLanded = () => {
+    if (disposed) return;
     titleLandTween?.kill();
     titleLandTween = null;
+    clearTitleFailsafe();
     const lines = getTitleLines();
     if (lines.length) {
       gsap.set(lines, { y: 0, opacity: 1, clearProps: "transform" });
     }
+    const wasLanded = titlesLanded;
     titlesLanded = true;
+    /* Attach title fade-out scrub only after land — avoids opacity:0 fight. */
+    if (!wasLanded || !titleExitAttached) {
+      build();
+    }
   };
 
   const playTitleLanding = () => {
+    if (disposed) return;
     if (titlesLanded || prefersReduced) {
       snapTitlesLanded();
       return;
@@ -201,10 +257,21 @@ export function mountHeroScrollStage({
       ease: TITLE_LAND_EASE,
       delay: TITLE_LAND_DELAY,
       onComplete: () => {
-        titlesLanded = true;
+        if (disposed) return;
         titleLandTween = null;
+        snapTitlesLanded();
       },
     });
+    clearTitleFailsafe();
+    titleFailsafeId = window.setTimeout(
+      () => {
+        if (!disposed && !titlesLanded) snapTitlesLanded();
+      },
+      Math.ceil(
+        (TITLE_LAND_DELAY + TITLE_LAND_DURATION + TITLE_LAND_STAGGER + 0.75) *
+          1000,
+      ),
+    );
   };
 
   const markLogoReady = () => {
@@ -378,6 +445,7 @@ export function mountHeroScrollStage({
 
   const build = () => {
     killByPrefix("hero-stage");
+    titleExitAttached = false;
 
     if (titlesLanded) {
       if (lineRight) gsap.set(lineRight, { x: 0, opacity: 1, clearProps: "transform" });
@@ -599,19 +667,12 @@ export function mountHeroScrollStage({
         0.08,
       );
 
-      if (lineRight) {
-        tl.to(
-          lineRight,
-          { x: titleTravel, opacity: 0, ease: "none", duration: 0.52 },
-          0,
-        );
-      }
-      if (lineLeft) {
-        tl.to(
-          lineLeft,
-          { x: -titleTravel, opacity: 0, ease: "none", duration: 0.52 },
-          0,
-        );
+      if (lineRight || lineLeft) {
+        appendTitleExitTweens(tl, {
+          travel: titleTravel,
+          duration: 0.52,
+          at: 0,
+        });
       }
       if (kicker) {
         tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.42 }, 0.04);
@@ -717,19 +778,12 @@ export function mountHeroScrollStage({
         },
         0.1,
       );
-      if (lineRight) {
-        tl.to(
-          lineRight,
-          { x: titleTravel, opacity: 0, ease: "none", duration: 0.5 },
-          0.04,
-        );
-      }
-      if (lineLeft) {
-        tl.to(
-          lineLeft,
-          { x: -titleTravel, opacity: 0, ease: "none", duration: 0.5 },
-          0.04,
-        );
+      if (lineRight || lineLeft) {
+        appendTitleExitTweens(tl, {
+          travel: titleTravel,
+          duration: 0.5,
+          at: 0.04,
+        });
       }
       if (kicker) {
         tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.42 }, 0.06);
@@ -817,11 +871,12 @@ export function mountHeroScrollStage({
         0,
       );
 
-      if (lineRight) {
-        tl.to(lineRight, { x: titleTravel, opacity: 0, ease: "none", duration: 1 }, 0);
-      }
-      if (lineLeft) {
-        tl.to(lineLeft, { x: -titleTravel, opacity: 0, ease: "none", duration: 1 }, 0);
+      if (lineRight || lineLeft) {
+        appendTitleExitTweens(tl, {
+          travel: titleTravel,
+          duration: 1,
+          at: 0,
+        });
       }
       if (kicker) tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.65 }, 0);
       if (sub) tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.65 }, 0);
@@ -943,6 +998,7 @@ export function mountHeroScrollStage({
    * (those fight the scrubbed timeline and jump strips).
    */
   let rafId = 0;
+  let rafIdInner = 0;
   if (isPhoneHero) {
     logoReadyForScroll = true;
     markHeroMotionReady();
@@ -957,7 +1013,8 @@ export function mountHeroScrollStage({
     });
   } else {
     rafId = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+      rafIdInner = requestAnimationFrame(() => {
+        if (disposed) return;
         if (skipLanding) {
           snapLogoLanded();
           snapTitlesLanded();
@@ -976,7 +1033,7 @@ export function mountHeroScrollStage({
   }
 
   const onFirstScroll = () => {
-    if (isPhoneHero) return;
+    if (disposed || isPhoneHero) return;
     if (landingTween && landingTween.isActive()) {
       landingTween.progress(1).kill();
     }
@@ -984,26 +1041,31 @@ export function mountHeroScrollStage({
     if (!titlesLanded) snapTitlesLanded();
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
+    window.removeEventListener("scroll", onFirstScroll);
     if (lenis) lenis.off("scroll", onFirstScroll);
   };
 
   /** If the guest scrolls during the 4s title hold, reveal titles so scrub is never blank. */
   const onFirstScrollTitles = () => {
+    if (disposed) return;
     if (!titlesLanded) snapTitlesLanded();
     window.removeEventListener("wheel", onFirstScrollTitles);
     window.removeEventListener("touchstart", onFirstScrollTitles);
+    window.removeEventListener("scroll", onFirstScrollTitles);
     if (lenis) lenis.off("scroll", onFirstScrollTitles);
   };
 
   if (logoMark && !isPhoneHero) {
     window.addEventListener("wheel", onFirstScroll, { passive: true });
     window.addEventListener("touchstart", onFirstScroll, { passive: true });
+    window.addEventListener("scroll", onFirstScroll, { passive: true });
     if (lenis) lenis.on("scroll", onFirstScroll);
   }
 
   if (!titlesLanded) {
     window.addEventListener("wheel", onFirstScrollTitles, { passive: true });
     window.addEventListener("touchstart", onFirstScrollTitles, { passive: true });
+    window.addEventListener("scroll", onFirstScrollTitles, { passive: true });
     if (lenis) lenis.on("scroll", onFirstScrollTitles);
   }
 
@@ -1064,20 +1126,30 @@ export function mountHeroScrollStage({
   }
 
   return () => {
+    disposed = true;
     if (rafId) cancelAnimationFrame(rafId);
+    if (rafIdInner) cancelAnimationFrame(rafIdInner);
     clearTimeout(resizeTimer);
+    clearTitleFailsafe();
     window.removeEventListener("resize", onResize);
     window.removeEventListener("orientationchange", onResize);
     window.removeEventListener("wheel", onFirstScroll);
     window.removeEventListener("touchstart", onFirstScroll);
+    window.removeEventListener("scroll", onFirstScroll);
     window.removeEventListener("wheel", onFirstScrollTitles);
     window.removeEventListener("touchstart", onFirstScrollTitles);
+    window.removeEventListener("scroll", onFirstScrollTitles);
     if (lenis) {
       lenis.off("scroll", onFirstScroll);
       lenis.off("scroll", onFirstScrollTitles);
     }
     landingTween?.kill();
     titleLandTween?.kill();
+    /* Never leave hero lines stuck at opacity:0 after a remount/cleanup race. */
+    const lines = getTitleLines();
+    if (lines.length) {
+      gsap.set(lines, { y: 0, opacity: 1, clearProps: "transform" });
+    }
     killByPrefix("hero-stage");
     root.classList.remove("hero-motion-ready");
   };
