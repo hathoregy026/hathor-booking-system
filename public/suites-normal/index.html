@@ -1477,6 +1477,23 @@ before-bg-blue">
             </g>
             </svg>
 
+        <script id="hathor-footer-wordmark">
+(function () {
+  var script = document.currentScript;
+  var legacyWordmark = script && script.previousElementSibling;
+  if (!legacyWordmark || !legacyWordmark.classList.contains("mod-footer__bg")) return;
+  legacyWordmark.outerHTML = `<svg class="mod-footer__bg hathor-footer-wordmark" viewBox="0 0 1854 1563.5" role="img" aria-label="HATHOR" style="color:inherit">
+    <g id="HATHOR_H1" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(0 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
+    <g id="HATHOR_A" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(337.185 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-A" fill="currentColor"></use></g></g>
+    <g id="HATHOR_T" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(567.093 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-T" fill="currentColor"></use></g></g>
+    <g id="HATHOR_H2"><g transform="translate(843.245 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
+    <g id="HATHOR_O"><g transform="translate(1180.43 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-O" fill="currentColor"></use></g></g>
+    <g id="HATHOR_R"><g transform="translate(1530.056 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-R" fill="currentColor"></use></g></g>
+  </svg>`;
+  script.remove();
+})();
+        </script>
+
 
         <div class="mod-footer__content__project">
             <div class="mod-footer__content__project__year f-edit t-parrafo-l">(2026)</div>
@@ -1620,7 +1637,7 @@ var wpcf7 = {
 <script id="contact-form-7-js" src="scripts/vendor/contact-form.js"></script>
 <script id="root-js-js" src="scripts/root.js"></script>
 <script id="rollovers-js-js" src="scripts/rollovers.js"></script>
-<script id="animations-js-js" src="scripts/animations.js"></script>
+<script id="animations-js-js" src="scripts/animations.js?v=hathor-footer-wordmark-20260831"></script>
 <script id="clicks-js-js" src="scripts/clicks.js"></script>
 <script id="scroll-js-js" src="scripts/scroll.js"></script>
 <script id="main-js-js" src="scripts/main.js?v=hathor-flip-complete-20260820"></script>

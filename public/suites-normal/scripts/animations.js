@@ -620,15 +620,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 ///footer__bg
                 const footer_logo_tl = gsap.timeline({paused:true})
-                footer_logo_tl.to("#B_inicial_top", { duration: 1, morphSVG: "#B_final_top" },0);
-                footer_logo_tl.to("#B_inicial_bottom", { duration: 1, morphSVG: "#B_final_bottom" },0);
-                footer_logo_tl.to("#B_inicial_left", { duration: 1, morphSVG: "#B_final_left" },0);
-                footer_logo_tl.to("#B_inicial_right", { duration: 1, morphSVG: "#B_final_right" },0);
-                footer_logo_tl.to("#O_inicial_top", { duration: 1, morphSVG: "#O_final_top" },0);
-                footer_logo_tl.to("#O_inicial_bottom", { duration: 1, morphSVG: "#O_final_bottom" },0);
-                footer_logo_tl.to("#O_inicial_left", { duration: 1, morphSVG: "#O_final_left" },0);
-                footer_logo_tl.to("#O_inicial_right", { duration: 1, morphSVG: "#O_final_right" },0);
-                footer_logo_tl.to("#R_inicial", { duration: 1, morphSVG: "#R_final" },0);
+                const hathorStretchLetters = [
+                    [elem.querySelector("#HATHOR_H1"), 3.05],
+                    [elem.querySelector("#HATHOR_A"), 4.45],
+                    [elem.querySelector("#HATHOR_T"), 2.2],
+                ];
+                if (hathorStretchLetters.every(([letter]) => letter)) {
+                    hathorStretchLetters.forEach(([letter, scaleY]) => {
+                        footer_logo_tl.to(letter, { duration: 1, scaleY }, 0);
+                    });
+                } else {
+                    footer_logo_tl.to("#B_inicial_top", { duration: 1, morphSVG: "#B_final_top" },0);
+                    footer_logo_tl.to("#B_inicial_bottom", { duration: 1, morphSVG: "#B_final_bottom" },0);
+                    footer_logo_tl.to("#B_inicial_left", { duration: 1, morphSVG: "#B_final_left" },0);
+                    footer_logo_tl.to("#B_inicial_right", { duration: 1, morphSVG: "#B_final_right" },0);
+                    footer_logo_tl.to("#O_inicial_top", { duration: 1, morphSVG: "#O_final_top" },0);
+                    footer_logo_tl.to("#O_inicial_bottom", { duration: 1, morphSVG: "#O_final_bottom" },0);
+                    footer_logo_tl.to("#O_inicial_left", { duration: 1, morphSVG: "#O_final_left" },0);
+                    footer_logo_tl.to("#O_inicial_right", { duration: 1, morphSVG: "#O_final_right" },0);
+                    footer_logo_tl.to("#R_inicial", { duration: 1, morphSVG: "#R_final" },0);
+                }
                 
                 ScrollTrigger.create({
                     animation: footer_logo_tl,
@@ -677,6 +688,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
-
 
 

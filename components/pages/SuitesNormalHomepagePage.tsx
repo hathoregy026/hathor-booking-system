@@ -565,7 +565,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-wordmark-20260831"
+        src="/suites-normal/index.html?v=hathor-footer-wordmark-20260831"
         title="Hathor Suites"
         onLoad={() => {
           const iframe = iframeRef.current;

@@ -124,6 +124,15 @@ await Promise.all([
 const html = await readFile(sourceIndex, "utf8");
 const $ = cheerio.load(html, { decodeEntities: false });
 
+const HATHOR_FOOTER_WORDMARK_SVG = `<svg class="mod-footer__bg hathor-footer-wordmark" viewBox="0 0 1854 1563.5" role="img" aria-label="HATHOR" style="color:inherit">
+  <g id="HATHOR_H1" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(0 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
+  <g id="HATHOR_A" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(337.185 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-A" fill="currentColor"></use></g></g>
+  <g id="HATHOR_T" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(567.093 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-T" fill="currentColor"></use></g></g>
+  <g id="HATHOR_H2"><g transform="translate(843.245 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
+  <g id="HATHOR_O"><g transform="translate(1180.43 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-O" fill="currentColor"></use></g></g>
+  <g id="HATHOR_R"><g transform="translate(1530.056 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-R" fill="currentColor"></use></g></g>
+</svg>`;
+
 $("head").prepend('<base href="/suites-normal/">');
 
 const localizeResource = (value) => {
@@ -381,6 +390,10 @@ if (!$("#hathor-intro-logo-wordmark").length) {
 </script>`);
 }
 $("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-wordmark-20260831");
+$("#animations-js-js").attr(
+  "src",
+  "scripts/animations.js?v=hathor-footer-wordmark-20260831",
+);
 if (!$("#hathor-logo-wordmark").length) {
   $("#preloader-js-js").before(`<script id="hathor-logo-wordmark">
 (function () {
@@ -510,6 +523,7 @@ $(".mod-footer__buttons-header__btn").eq(0).text("INSTAGRAM");
 $(".mod-footer__buttons-header__btn")
   .eq(1)
   .text("reservations@hathorcruise.com");
+$(".mod-footer__bg").replaceWith(HATHOR_FOOTER_WORDMARK_SVG);
 $(".mod-footer__content__project__year").text("(2026)");
 $(".mod-footer__content__project__name").text("ROYAL SUITES");
 $(".mod-footer__content__project__text").html(
