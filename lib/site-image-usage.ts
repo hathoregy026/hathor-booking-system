@@ -4,6 +4,7 @@ import type { SiteImageSlot } from "@/lib/site-image-slots";
 /** Human titles for page paths shown on admin image cards. */
 export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/": "Homepage",
+  "/home-2": "Home 2",
   "/#amenities-sequence": "Amenities Sequence",
   "/#moving-tilted-cards": "Moving Tilted Cards",
   "/#floating-ig": "Floating IG",
@@ -18,6 +19,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/charter": "Charter",
   "/contact": "Contact",
   "/blogs": "Blog",
+  "/partners": "Partners",
   "/suites": "Suites",
   "/rooms": "Luxury Rooms",
   "/luxury-cabins-Nile-Cruise": "Luxury Cabins Gallery",
@@ -29,6 +31,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
  * Keep linked images shared — do not duplicate slots.
  */
 const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
+  "home-wheel-image": ["/home-2", "/partners"],
   "room-suite": ["/suites", "/rooms"],
   "room-royal": ["/suites", "/royal-suites"],
   /* room-luxury: Suites Place panel only (cabins hero is cabins-hero). */
@@ -119,6 +122,7 @@ export function getSiteImageUsedOnPages(
 
   const preferredOrder = [
     "/",
+    "/home-2",
     "/#amenities-sequence",
     "/#our-voyages",
     "/#moving-tilted-cards",
@@ -137,6 +141,7 @@ export function getSiteImageUsedOnPages(
     "/charter",
     "/contact",
     "/blogs",
+    "/partners",
   ];
 
   const ordered = [

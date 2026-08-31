@@ -11,6 +11,9 @@ import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
  */
 export const CMS_CANONICAL_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
   "home-hero-poster",
+  /* Dashboard replacements must reach both homepage wheel experiences
+     immediately; the bundled mirror is only a deployment-time fallback. */
+  "home-wheel-image",
 ]);
 
 export const LOCAL_OPTIMIZED_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
