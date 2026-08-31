@@ -3,7 +3,7 @@
 let first_charge = true;
 (!localStorage.getItem('first_charge')) ? localStorage.setItem('first_charge', 1) : first_charge = false ;
 
-const HATHOR_LOGO_WORDMARK = "Hathor";
+const HATHOR_LOGO_WORDMARK = "HATHOR";
 const isHathorEmbed = window.parent !== window;
 
 function hideLoaderUi() {
@@ -190,5 +190,4 @@ document.addEventListener('DOMContentLoaded', () => {
         
     
 })
-
 

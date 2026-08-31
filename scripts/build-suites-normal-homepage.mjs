@@ -82,6 +82,17 @@ await cp(path.join(resolvedSource, "scripts"), path.join(outputRoot, "scripts"),
   recursive: true,
 });
 
+const preloaderPath = path.join(outputRoot, "scripts", "preloader.js");
+const preloaderSource = await readFile(preloaderPath, "utf8");
+await writeFile(
+  preloaderPath,
+  preloaderSource.replace(
+    'const HATHOR_LOGO_WORDMARK = "Hathor";',
+    'const HATHOR_LOGO_WORDMARK = "HATHOR";',
+  ),
+  "utf8",
+);
+
 await Promise.all(
   decorativeImages.map((file) =>
     cp(
@@ -352,10 +363,10 @@ $(".logo__boring").each((_, element) => {
     .contents()
     .filter((__, node) => node.type === "text")
     .remove();
-  $(element).prepend("Hathor");
+  $(element).prepend("HATHOR");
 });
 $(".mod-scroll__intro__logo").html(
-  '<div class="logo__boring">Hathor<div class="reg">®</div></div>',
+  '<div class="logo__boring">HATHOR<div class="reg">®</div></div>',
 );
 if (!$("#hathor-intro-logo-wordmark").length) {
   $(".mod-scroll__intro__logo").after(`<script id="hathor-intro-logo-wordmark">
@@ -364,12 +375,12 @@ if (!$("#hathor-intro-logo-wordmark").length) {
   if (!el) return;
   var reg = el.querySelector(".reg");
   while (el.firstChild) el.removeChild(el.firstChild);
-  el.appendChild(document.createTextNode("Hathor"));
+  el.appendChild(document.createTextNode("HATHOR"));
   if (reg) el.appendChild(reg);
 })();
 </script>`);
 }
-$("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-restore-motion-20260820");
+$("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-wordmark-20260831");
 if (!$("#hathor-logo-wordmark").length) {
   $("#preloader-js-js").before(`<script id="hathor-logo-wordmark">
 (function () {
@@ -377,7 +388,7 @@ if (!$("#hathor-logo-wordmark").length) {
     document.querySelectorAll(".logo__boring").forEach(function (el) {
       var reg = el.querySelector(".reg");
       while (el.firstChild) el.removeChild(el.firstChild);
-      el.appendChild(document.createTextNode("Hathor"));
+      el.appendChild(document.createTextNode("HATHOR"));
       if (reg) el.appendChild(reg);
     });
   }

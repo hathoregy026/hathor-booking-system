@@ -43,7 +43,7 @@ function buildSuitesLiveCss(cmsCss = "") {
   ].join("\n");
 }
 
-const LOGO_BORING_WORDMARK = "Hathor";
+const LOGO_BORING_WORDMARK = "HATHOR";
 
 function patchLogoWordmark(doc: Document) {
   doc.querySelectorAll(".logo__boring").forEach((node) => {
@@ -565,7 +565,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-scroll-ready-20260829"
+        src="/suites-normal/index.html?v=hathor-wordmark-20260831"
         title="Hathor Suites"
         onLoad={() => {
           const iframe = iframeRef.current;
