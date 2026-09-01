@@ -296,6 +296,480 @@ export const SUITES_CLIP_FIX_CSS = `
 }
 `;
 
+/**
+ * Phone and tablet art direction for the embedded Suites experience.
+ * The original desktop horizontal choreography remains untouched above 1024px;
+ * these rules only give its existing SplitText, flip, parallax, and marquee
+ * animations a more deliberate vertical stage on touch-sized viewports.
+ */
+export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
+@media (max-width: 1024px) {
+  main :is(.btn, .btn--bg, .btn--circle) {
+    min-height: 44px !important;
+  }
+}
+
+@media (max-width: 950px) {
+  html,
+  body,
+  main,
+  .mod-scroll {
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+}
+
+@media (min-width: 951px) and (max-width: 1024px) {
+  main .mod-scroll__intro .wrapper {
+    width: 88vw !important;
+  }
+
+  main .mod-scroll__intro__content {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: clamp(4rem, 8vw, 6.5rem) !important;
+  }
+
+  main .mod-scroll__intro__text,
+  main .mod-scroll__intro__text p {
+    width: 28vw !important;
+    max-width: 18rem !important;
+    margin-right: 44px !important;
+    text-align: right !important;
+  }
+
+  main .mod-scroll__projects__item__text__title {
+    font-size: clamp(2.65rem, 4.25vw, 3.6rem) !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 950px) {
+  html {
+    --wrapper-padd: clamp(1.5rem, 4vw, 2.5rem);
+    --grid-gap: clamp(0.8rem, 2vw, 1.25rem);
+  }
+
+  main .mod-scroll__intro,
+  main .mod-scroll__intro .wrapper {
+    min-height: 100svh !important;
+  }
+
+  main .mod-scroll__intro .wrapper {
+    padding: clamp(6.5rem, 12svh, 9rem) var(--wrapper-padd) 5rem !important;
+  }
+
+  main .mod-scroll__intro__content {
+    width: min(100%, 48rem) !important;
+    gap: clamp(1.5rem, 3vw, 2.5rem) !important;
+  }
+
+  main .mod-scroll__intro__wrap-titles {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr) !important;
+    column-gap: clamp(1rem, 3vw, 2.25rem) !important;
+  }
+
+  main .mod-scroll__intro__text,
+  main .mod-scroll__intro__text p {
+    width: min(100%, 30rem) !important;
+    max-width: 30rem !important;
+  }
+
+  main .mod-scroll__images.principal {
+    min-height: 78svh !important;
+    padding-bottom: 5.5rem !important;
+  }
+
+  main .mod-scroll__images__image-single,
+  main .mod-scroll__images.principal .flipMedia:nth-of-type(1),
+  main .mod-scroll__images__image-single :is(.media__wrap-source, .media__source) {
+    width: 100% !important;
+    height: 72svh !important;
+    min-height: 34rem !important;
+    aspect-ratio: auto !important;
+  }
+
+  main .mod-scroll__images.principal .flipMedia:nth-of-type(2) {
+    left: auto !important;
+    right: var(--wrapper-padd) !important;
+    bottom: 1.75rem !important;
+    width: min(48vw, 23rem) !important;
+    transform: none !important;
+    border: 4px solid #f3ede4 !important;
+    box-shadow: 0 1.5rem 4rem rgba(20, 18, 14, 0.22) !important;
+  }
+
+  main .mod-scroll__text {
+    padding: clamp(5rem, 9svh, 7.5rem) var(--wrapper-padd) !important;
+  }
+
+  main .mod-scroll__text__title {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem) !important;
+  }
+
+  main .mod-scroll__images-text {
+    padding-block: clamp(5rem, 9svh, 7rem) !important;
+  }
+
+  main .mod-scroll__images-text .flipMedia:nth-of-type(1) {
+    width: min(78vw, 39rem) !important;
+  }
+
+  main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
+    width: min(48vw, 23rem) !important;
+    margin: -5rem 0 0 auto !important;
+  }
+
+  main .mod-scroll__images-text__text {
+    width: min(92%, 44rem) !important;
+    padding: clamp(3rem, 6vw, 5rem) 0 0 !important;
+  }
+
+  main .mod-scroll__terms {
+    min-height: 100svh !important;
+    padding: clamp(5.5rem, 9svh, 8rem) var(--wrapper-padd) !important;
+    gap: 0 !important;
+  }
+
+  main .mod-scroll__terms__term {
+    flex: 1 1 0 !important;
+    min-height: 12rem !important;
+    padding: clamp(1.5rem, 3vw, 2.25rem) 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.34) !important;
+  }
+
+  main .mod-scroll__terms__term:last-of-type {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34) !important;
+  }
+
+  main .mod-scroll__terms__term__text {
+    width: min(100%, 31rem) !important;
+    margin-left: clamp(1.5rem, 6vw, 4.5rem) !important;
+  }
+
+  main .mod-scroll__projects__item__content {
+    min-height: 100svh !important;
+  }
+
+  main .mod-scroll__projects__item__image,
+  main .mod-scroll__projects__item__image .media__wrap-source,
+  main .mod-scroll__projects__item__image .media__source {
+    height: 62svh;
+  }
+
+  main .mod-scroll__projects__item__text {
+    min-height: 38svh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    --wrapper-padd: max(1rem, env(safe-area-inset-left));
+    --grid-gap: 0.75rem;
+  }
+
+  main .mod-scroll__intro {
+    isolation: isolate !important;
+    min-height: max(100svh, 42rem) !important;
+    background:
+      radial-gradient(circle at 86% 18%, rgba(182, 159, 100, 0.16), transparent 34%),
+      #f3ede4 !important;
+  }
+
+  main .mod-scroll__intro::after {
+    content: "";
+    position: absolute;
+    top: 6.5rem;
+    right: -19vw;
+    z-index: 0;
+    width: 58vw;
+    aspect-ratio: 1;
+    border: 1px solid rgba(182, 159, 100, 0.36);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  main .mod-scroll__intro .wrapper {
+    z-index: 1 !important;
+    min-height: max(100svh, 42rem) !important;
+    padding: 7.75rem var(--wrapper-padd) 4.5rem !important;
+  }
+
+  main .mod-scroll__intro__content {
+    width: 100% !important;
+    transform: translateY(-1.5svh) !important;
+    gap: clamp(1.4rem, 5vw, 2rem) !important;
+  }
+
+  main .mod-scroll__intro__wrap-titles {
+    grid-template-columns: minmax(0, 1.13fr) minmax(0, 0.87fr) !important;
+    column-gap: 0.45rem !important;
+    row-gap: 0.2rem !important;
+  }
+
+  main .mod-scroll__intro__title {
+    font-size: clamp(2.65rem, 11.8vw, 3.25rem) !important;
+    line-height: 0.9 !important;
+  }
+
+  main .mod-scroll__intro__title:nth-child(2) {
+    text-align: right !important;
+  }
+
+  main .mod-scroll__intro__title:nth-child(3) {
+    grid-column: 1 / -1 !important;
+    width: 78% !important;
+  }
+
+  main .mod-scroll__intro__text,
+  main .mod-scroll__intro__text p {
+    width: min(78vw, 19rem) !important;
+    max-width: min(78vw, 19rem) !important;
+    margin-left: auto !important;
+    text-align: left !important;
+    font-size: 0.97rem !important;
+    line-height: 1.48 !important;
+  }
+
+  main .mod-scroll__intro__copyright {
+    bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+  }
+
+  main .mod-scroll__images.principal {
+    min-height: 86svh !important;
+    padding-bottom: 6.5rem !important;
+  }
+
+  main .mod-scroll__images__image-single,
+  main .mod-scroll__images.principal .flipMedia:nth-of-type(1),
+  main .mod-scroll__images__image-single :is(.media__wrap-source, .media__source) {
+    width: 100% !important;
+    height: 76svh !important;
+    min-height: 32rem !important;
+    aspect-ratio: auto !important;
+  }
+
+  main .mod-scroll__images.principal .flipMedia:nth-of-type(2) {
+    inset: auto var(--wrapper-padd) 1.6rem auto !important;
+    width: min(68vw, 18rem) !important;
+    height: 38svh !important;
+    transform: none !important;
+    border: 3px solid #f3ede4 !important;
+    box-shadow: 0 1.25rem 3.5rem rgba(20, 18, 14, 0.28) !important;
+  }
+
+  main .mod-scroll__images.principal .flipMedia:nth-of-type(2) :is(.media, .media__wrap-source, .media__source) {
+    height: 100% !important;
+  }
+
+  main .mod-scroll__text {
+    padding: 6rem var(--wrapper-padd) 5.25rem !important;
+  }
+
+  main .mod-scroll__text__section {
+    margin-bottom: 2rem !important;
+    text-align: left !important;
+  }
+
+  main .mod-scroll__text__title {
+    margin-bottom: 2.75rem !important;
+  }
+
+  main .mod-scroll__text__title__line {
+    font-size: clamp(2.7rem, 13vw, 3.55rem) !important;
+    line-height: 0.9 !important;
+  }
+
+  main .mod-scroll__images-text {
+    padding-block: 5rem 5.5rem !important;
+  }
+
+  main .mod-scroll__images-text .wrapper {
+    padding-inline: var(--wrapper-padd) !important;
+  }
+
+  main .mod-scroll__images-text .flipMedia:nth-of-type(1) {
+    width: 88vw !important;
+  }
+
+  main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
+    width: 58vw !important;
+    margin: -4.5rem 0 0 auto !important;
+  }
+
+  main .mod-scroll__images-text__text {
+    width: 100% !important;
+    padding: 3.75rem 0 0 !important;
+  }
+
+  main .mod-scroll__carousel,
+  main .mod-scroll__carousel__content {
+    height: 5.25rem !important;
+  }
+
+  main .mod-scroll__carousel__content {
+    font-size: 3.15rem !important;
+  }
+
+  main .mod-scroll__images.secundario {
+    min-height: 82svh !important;
+    padding-bottom: 6rem !important;
+  }
+
+  main .mod-scroll__images.secundario .flipMedia:nth-of-type(1) {
+    height: 70svh !important;
+    aspect-ratio: auto !important;
+  }
+
+  main .mod-scroll__images.secundario .flipMedia:nth-of-type(1) :is(.media, .media__wrap-source, .media__source) {
+    height: 100% !important;
+  }
+
+  main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
+    inset: auto auto 1.5rem var(--wrapper-padd) !important;
+    width: 62vw !important;
+    height: 34svh !important;
+    transform: none !important;
+    border: 3px solid #ded4c6 !important;
+    box-shadow: 0 1.25rem 3.5rem rgba(20, 18, 14, 0.24) !important;
+  }
+
+  main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) :is(.media, .media__wrap-source, .media__source) {
+    height: 100% !important;
+  }
+
+  main .mod-scroll__terms {
+    min-height: auto !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  main .mod-scroll__terms__term {
+    min-height: 68svh !important;
+    padding: 6rem var(--wrapper-padd) 3.5rem !important;
+    justify-content: flex-end !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.34) !important;
+  }
+
+  main .mod-scroll__terms__term:last-of-type {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.34) !important;
+  }
+
+  main .mod-scroll__terms__term__wrap-title {
+    gap: 0.65rem !important;
+  }
+
+  main .mod-scroll__terms__term__title,
+  main .mod-scroll__terms .t-supertitulo-l {
+    width: auto !important;
+    font-size: clamp(2.55rem, 12.6vw, 3.35rem) !important;
+    line-height: 0.88 !important;
+  }
+
+  main .mod-scroll__terms__term__text.d-none.d-md-block {
+    display: block !important;
+  }
+
+  main .mod-scroll__terms__term__text-group {
+    display: none !important;
+  }
+
+  main .mod-scroll__terms__term__text {
+    width: min(100%, 19rem) !important;
+    margin: 1.5rem 0 0 1.7rem !important;
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+  }
+
+  main .mod-scroll__terms .follow__mouse {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 1.16fr 0.84fr !important;
+    width: 100% !important;
+    aspect-ratio: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    overflow: hidden !important;
+  }
+
+  main .mod-scroll__terms .follow__mouse > img {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: 44svh !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    object-fit: cover !important;
+  }
+
+  main .mod-scroll__terms .follow__mouse > img:first-child {
+    grid-row: span 2 !important;
+    height: 88svh !important;
+  }
+
+  main .mod-scroll__projects__item__content {
+    min-height: 100svh !important;
+  }
+
+  main .mod-scroll__projects__item__image,
+  main .mod-scroll__projects__item__image .media__wrap-source,
+  main .mod-scroll__projects__item__image .media__source {
+    height: 64svh;
+  }
+
+  main .mod-scroll__projects__item__text {
+    min-height: 36svh !important;
+    --margin: 1rem !important;
+  }
+
+  main .mod-scroll__projects__item__text__title {
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    font-size: clamp(2.45rem, 10.8vw, 3.05rem) !important;
+    line-height: 0.88 !important;
+    letter-spacing: -0.035em !important;
+  }
+
+  main .mod-scroll__projects__item__text__title .line {
+    display: block !important;
+    white-space: nowrap !important;
+  }
+
+  main .mod-scroll__projects .last-item__carousel__item {
+    height: 44svh !important;
+  }
+
+  main .mod-scroll__projects .last-item__carousel__item__image .media__source {
+    height: 44svh !important;
+  }
+
+  main .mod-scroll__projects .last-item__content__wrap {
+    padding: 5.5rem var(--wrapper-padd) 4rem !important;
+  }
+
+  main .mod-scroll__projects .last-item__content__title {
+    margin-bottom: 2rem !important;
+  }
+
+  main .mod-scroll__cierre__content {
+    padding: 5rem 0 !important;
+  }
+
+  main .mod-scroll__cierre__content__image {
+    width: calc(100% - var(--wrapper-padd) * 2) !important;
+  }
+}
+
+@media (max-width: 950px) and (prefers-reduced-motion: reduce) {
+  main .mod-scroll__carousel__content span {
+    animation-play-state: paused !important;
+  }
+}
+`;
+
 export function suitesTypographyToCss(
   settings: SuitesTypography,
   defaults: SuitesTypography = DEFAULT_SUITES_TYPOGRAPHY,
