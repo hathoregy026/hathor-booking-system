@@ -621,12 +621,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ///footer__bg
                 const footer_logo_tl = gsap.timeline({paused:true})
                 const hathorStretchLetters = [
-                    [elem.querySelector("#HATHOR_H1"), 3.05],
-                    [elem.querySelector("#HATHOR_A"), 4.45],
-                    [elem.querySelector("#HATHOR_T"), 2.2],
+                    [elem.querySelector("#HATHOR_H1_STRETCH"), 5.35, "0 185"],
+                    [elem.querySelector("#HATHOR_A_STRETCH"), 13.71, "0 255"],
+                    [elem.querySelector("#HATHOR_T_STRETCH"), 2.91, "0 130"],
                 ];
                 if (hathorStretchLetters.every(([letter]) => letter)) {
-                    hathorStretchLetters.forEach(([letter, scaleY]) => {
+                    hathorStretchLetters.forEach(([letter, scaleY, svgOrigin]) => {
+                        gsap.set(letter, { svgOrigin });
                         footer_logo_tl.to(letter, { duration: 1, scaleY }, 0);
                     });
                 } else {
@@ -688,5 +689,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
-
 

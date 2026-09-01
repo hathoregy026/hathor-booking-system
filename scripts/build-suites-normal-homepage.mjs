@@ -125,9 +125,20 @@ const html = await readFile(sourceIndex, "utf8");
 const $ = cheerio.load(html, { decodeEntities: false });
 
 const HATHOR_FOOTER_WORDMARK_SVG = `<svg class="mod-footer__bg hathor-footer-wordmark" viewBox="0 0 1854 1563.5" role="img" aria-label="HATHOR" style="color:inherit">
-  <g id="HATHOR_H1" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(0 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
-  <g id="HATHOR_A" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(337.185 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-A" fill="currentColor"></use></g></g>
-  <g id="HATHOR_T" style="transform-box:fill-box;transform-origin:50% 0%"><g transform="translate(567.093 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-T" fill="currentColor"></use></g></g>
+  <defs>
+    <clipPath id="HATHOR_H1_TOP_CLIP" clipPathUnits="userSpaceOnUse"><rect x="-10" y="-2" width="1874" height="187"></rect></clipPath>
+    <clipPath id="HATHOR_H1_BOTTOM_CLIP" clipPathUnits="userSpaceOnUse"><rect x="-10" y="185" width="1874" height="167"></rect></clipPath>
+    <clipPath id="HATHOR_A_TOP_CLIP" clipPathUnits="userSpaceOnUse"><rect x="-10" y="-2" width="1874" height="257"></rect></clipPath>
+    <clipPath id="HATHOR_A_BOTTOM_CLIP" clipPathUnits="userSpaceOnUse"><rect x="-10" y="255" width="1874" height="97"></rect></clipPath>
+    <clipPath id="HATHOR_T_TOP_CLIP" clipPathUnits="userSpaceOnUse"><rect x="-10" y="-2" width="1874" height="132"></rect></clipPath>
+    <clipPath id="HATHOR_T_BOTTOM_CLIP" clipPathUnits="userSpaceOnUse"><rect x="-10" y="130" width="1874" height="222"></rect></clipPath>
+  </defs>
+  <g clip-path="url(#HATHOR_H1_TOP_CLIP)"><g transform="translate(0 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
+  <g id="HATHOR_H1_STRETCH" clip-path="url(#HATHOR_H1_BOTTOM_CLIP)"><g transform="translate(0 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
+  <g clip-path="url(#HATHOR_A_TOP_CLIP)"><g transform="translate(337.185 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-A" fill="currentColor"></use></g></g>
+  <g id="HATHOR_A_STRETCH" clip-path="url(#HATHOR_A_BOTTOM_CLIP)"><g transform="translate(337.185 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-A" fill="currentColor"></use></g></g>
+  <g clip-path="url(#HATHOR_T_TOP_CLIP)"><g transform="translate(567.093 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-T" fill="currentColor"></use></g></g>
+  <g id="HATHOR_T_STRETCH" clip-path="url(#HATHOR_T_BOTTOM_CLIP)"><g transform="translate(567.093 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-T" fill="currentColor"></use></g></g>
   <g id="HATHOR_H2"><g transform="translate(843.245 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-H" fill="currentColor"></use></g></g>
   <g id="HATHOR_O"><g transform="translate(1180.43 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-O" fill="currentColor"></use></g></g>
   <g id="HATHOR_R"><g transform="translate(1530.056 350) scale(0.234741784 -0.234741784)"><use href="/media/hathor/hathor-footer-glyphs.svg#glyph-R" fill="currentColor"></use></g></g>
@@ -392,7 +403,7 @@ if (!$("#hathor-intro-logo-wordmark").length) {
 $("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-wordmark-20260831");
 $("#animations-js-js").attr(
   "src",
-  "scripts/animations.js?v=hathor-footer-wordmark-20260831",
+  "scripts/animations.js?v=hathor-footer-segments-20260901",
 );
 if (!$("#hathor-logo-wordmark").length) {
   $("#preloader-js-js").before(`<script id="hathor-logo-wordmark">
