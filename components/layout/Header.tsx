@@ -167,8 +167,7 @@ export function Header() {
     [navItems],
   );
   const editorialNav = usesEditorialOverlayNav(pathname);
-  const isHome =
-    pathname === "/" || pathname === "/home-2" || pathname === "/ex";
+  const isHome = pathname === "/" || pathname === "/ex";
   const [exploreOpen, setExploreOpen] = useState(false);
   const chromeNav = true;
   const phoneViewportRef = useRef(false);

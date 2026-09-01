@@ -17,13 +17,6 @@ export type ManagedPublicPage = {
 export const MANAGED_PUBLIC_PAGES: readonly ManagedPublicPage[] = [
   { id: "home", path: "/", label: "Home", group: "Main" },
   {
-    id: "home-2",
-    path: "/home-2",
-    label: "Home 2",
-    group: "Main",
-    defaultLive: false,
-  },
-  {
     id: "suites",
     path: "/suites",
     label: "Suites",

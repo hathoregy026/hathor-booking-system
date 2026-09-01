@@ -7,7 +7,6 @@ import { getSiteImageSlot } from "@/lib/site-image-slots";
 /** Public routes that consume SiteImage slots — call after CMS image saves. */
 const SITE_IMAGE_REVALIDATE_PATHS = [
   "/",
-  "/home-2",
   "/cruises-list",
   "/rooms",
   "/luxury-cabins-Nile-Cruise",
@@ -59,7 +58,7 @@ export async function revalidateSiteImagePages(
     if (slot?.pagePath) paths.add(slot.pagePath);
     if (HOMEPAGE_LIVE_SLOT_NAMES.has(name)) paths.add("/");
     if (name === "home-wheel-image") {
-      paths.add("/home-2");
+      paths.add("/");
       paths.add("/partners");
     }
   }

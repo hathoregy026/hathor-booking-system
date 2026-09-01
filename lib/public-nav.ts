@@ -14,22 +14,7 @@ export type NavGroup = {
   links: NavLink[];
 };
 
-export const NAV_HOME: NavGroup = {
-  id: "home",
-  label: "Home",
-  links: [
-    {
-      href: "/",
-      label: "Main Home",
-      description: "The current Hathor homepage",
-    },
-    {
-      href: "/home-2",
-      label: "Home 2",
-      description: "Horizontal editorial homepage study",
-    },
-  ],
-};
+export const NAV_HOME: NavLink = { href: "/", label: "Home" };
 
 export const NAV_SUITES: NavGroup = {
   id: "suites",
@@ -139,7 +124,6 @@ export const NAV_GROUPS = [
 
 export const EXPLORE_LINKS: NavLink[] = [
   { href: "/", label: "Home" },
-  { href: "/home-2", label: "Home 2" },
   { href: "/suites", label: "Suites" },
   { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
   { href: "/rooms", label: "Luxury Suites" },
@@ -172,11 +156,9 @@ export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 /** Desktop + mobile primary nav — Home plus four editorial dropdown groups. */
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
   {
-    type: "group",
-    id: NAV_HOME.id,
+    type: "link",
+    href: NAV_HOME.href,
     label: NAV_HOME.label,
-    href: "/",
-    links: NAV_HOME.links,
   },
   {
     type: "group",
@@ -240,7 +222,6 @@ export function usesEditorialOverlayNav(pathname: string): boolean {
   if (
     !pathname ||
     pathname === "/" ||
-    pathname === "/home-2" ||
     pathname === "/preview"
   ) {
     return false;

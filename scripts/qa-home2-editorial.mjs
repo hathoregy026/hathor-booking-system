@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 
-const base = process.argv[2] || "http://localhost:3000/home-2";
+const base = process.argv[2] || "http://localhost:3000/";
 const allViewports = [
   { name: "wide-desktop", width: 1920, height: 1080 },
   { name: "desktop", width: 1440, height: 900 },
