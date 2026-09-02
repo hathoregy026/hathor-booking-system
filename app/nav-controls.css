@@ -1,0 +1,518 @@
+/*
+ * Public navbar control geometry, matched to the supplied desktop and phone
+ * references. This file is intentionally loaded after the legacy navbar CSS.
+ */
+
+.public-site,
+.hathor-header,
+.preview-header {
+  --nav-control-ink: #141210;
+  --nav-control-paper: #ffffff;
+  --nav-control-muted: #e9e9e9;
+  --nav-control-night: #111111;
+  --nav-control-danger: #e01b22;
+  --nav-mark-box: 2.25rem;
+  --nav-mark-icon: 1.55rem;
+  --nav-badge-size: 0.875rem;
+  --nav-mark-gap: 0.25rem;
+  --nav-control-gap: 0.5rem;
+  --nav-switch-h: 2rem;
+  --nav-switch-w: 4.75rem;
+  --nav-lang-w: 4.5rem;
+  --nav-switch-pad: 0.125rem;
+  --nav-control-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Favourites and voyage marks. */
+.hsc:not(#_) {
+  appearance: none !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: var(--nav-mark-box) !important;
+  min-width: var(--nav-mark-box) !important;
+  height: var(--nav-mark-box) !important;
+  min-height: var(--nav-mark-box) !important;
+  flex: 0 0 var(--nav-mark-box) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--nav-control-ink) !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.hsc:not(#_) + .hsc:not(#_) {
+  margin-left: var(--nav-mark-gap) !important;
+}
+
+.hsc:not(#_)::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 50% auto auto 50% !important;
+  z-index: 0 !important;
+  box-sizing: border-box !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  border: 1px solid currentColor !important;
+  border-radius: 50% !important;
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: none !important;
+}
+
+/* At desktop land the reference drops the rings over media, then restores
+   them when the cream chrome appears. */
+@media (min-width: 481px) {
+  .hathor-header--home:not(.hathor-header--nav-compact) .hsc:not(#_)::before {
+    opacity: 0 !important;
+  }
+}
+
+.hsc__icon:not(#_) {
+  position: relative !important;
+  z-index: 1 !important;
+  display: block !important;
+  width: var(--nav-mark-icon) !important;
+  height: var(--nav-mark-icon) !important;
+  color: inherit !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.55 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  transition: opacity 220ms var(--nav-control-ease) !important;
+}
+
+.hsc__icon:not(#_) circle {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
+.hsc__count:not(#_) {
+  position: absolute !important;
+  top: 0.0625rem !important;
+  right: -0.0625rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  min-width: var(--nav-badge-size) !important;
+  height: var(--nav-badge-size) !important;
+  padding: 0 0.2rem !important;
+  border-radius: 999px !important;
+  background: var(--nav-control-danger) !important;
+  color: #fff !important;
+  font-family: var(--public-sans, var(--font-hathor-body, inherit)) !important;
+  font-size: 0.5rem !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+  pointer-events: none !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hsc:not(#_):hover .hsc__icon:not(#_) {
+    opacity: 0.58 !important;
+  }
+}
+
+.hsc:not(#_):focus-visible,
+.public-theme-toggle:not(#_):focus-visible,
+.hathor-header__menu-btn--left:not(#_):focus-visible {
+  outline: 2px solid var(--nav-control-danger) !important;
+  outline-offset: 3px !important;
+  border-radius: 999px !important;
+}
+
+/* Desktop language and day/night pills. */
+.public-theme-toggle:not(#_) {
+  appearance: none !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  flex: 0 0 var(--nav-switch-w) !important;
+  width: var(--nav-switch-w) !important;
+  min-width: var(--nav-switch-w) !important;
+  max-width: var(--nav-switch-w) !important;
+  height: var(--nav-switch-h) !important;
+  min-height: var(--nav-switch-h) !important;
+  margin: 0 0 0 var(--nav-control-gap) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.public-lang-toggle:not(#_) {
+  flex-basis: var(--nav-lang-w) !important;
+  width: var(--nav-lang-w) !important;
+  min-width: var(--nav-lang-w) !important;
+  max-width: var(--nav-lang-w) !important;
+  cursor: default !important;
+}
+
+.public-theme-toggle__track:not(#_) {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: var(--nav-switch-pad) !important;
+  gap: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background: var(--nav-control-muted) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition:
+    background-color 0.35s var(--nav-control-ease),
+    border-color 0.35s var(--nav-control-ease) !important;
+}
+
+.public-theme-toggle.is-day:not(#_) .public-theme-toggle__track:not(#_) {
+  flex-direction: row-reverse !important;
+  background: var(--nav-control-muted) !important;
+  border-color: var(--nav-control-muted) !important;
+}
+
+.public-theme-toggle.is-night:not(#_) .public-theme-toggle__track:not(#_) {
+  flex-direction: row !important;
+  background: var(--nav-control-night) !important;
+  border-color: var(--nav-control-night) !important;
+}
+
+.public-theme-toggle__thumb:not(#_) {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  place-items: center !important;
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  width: calc(var(--nav-switch-h) - (var(--nav-switch-pad) * 2) - 2px) !important;
+  height: calc(var(--nav-switch-h) - (var(--nav-switch-pad) * 2) - 2px) !important;
+  border-radius: 999px !important;
+  background: var(--nav-control-paper) !important;
+  color: var(--nav-control-ink) !important;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12) !important;
+  transform: none !important;
+}
+
+.public-theme-toggle__icon:not(#_) {
+  display: block !important;
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+  color: inherit !important;
+}
+
+.public-theme-toggle__label:not(#_) {
+  position: relative !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 0.15rem !important;
+  color: var(--nav-control-ink) !important;
+  font-family: var(--public-sans, var(--font-hathor-body, inherit)) !important;
+  font-size: 0.46rem !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+.public-theme-toggle.is-night:not(#_) .public-theme-toggle__label:not(#_) {
+  color: #fff !important;
+}
+
+.public-theme-toggle__glyph:not(#_) {
+  display: none !important;
+}
+
+.public-lang-toggle__phone-label {
+  display: none;
+}
+
+/* Keep the reference cluster compact and evenly centred. */
+.hathor-header__col--right:not(#_) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0 !important;
+}
+
+.public-site .hathor-header--chrome,
+.public-site {
+  --theme-toggle-w: var(--nav-switch-w);
+  --theme-toggle-h: var(--nav-switch-h);
+}
+
+/* Cream chrome always uses the ink state shown in the reference. */
+.hathor-header--chrome:not(#_) .hsc:not(#_) {
+  color: var(--chrome-ink, var(--nav-control-ink)) !important;
+}
+
+/* Phone: logo left, then the four controls, then the menu at far right. */
+@media (max-width: 480px) {
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --nav-mark-box: 2.75rem;
+    --nav-mark-icon: 1.75rem;
+    --nav-badge-size: 0.875rem;
+    --nav-mark-gap: 0.25rem;
+    --nav-control-gap: 0.25rem;
+    --nav-switch-h: 2.75rem;
+    --nav-switch-w: 2.75rem;
+    --nav-lang-w: 2.75rem;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) {
+    --chrome-pad: 1rem;
+    --chrome-icon: 2.75rem;
+    --theme-toggle-w: 2.75rem;
+    --theme-toggle-h: 2.75rem;
+    background: #dedede !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)
+    .hathor-header__menu-btn--left,
+  .public-site
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)
+    .hathor-header__menu-btn--left:not(#_)
+    svg:not(#_) {
+    color: var(--nav-control-ink) !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)
+    .hathor-header__logo--icon {
+    filter: none !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
+    .hathor-header__inner--owo,
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__inner--owo {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
+    min-height: 4.75rem !important;
+    padding: max(0.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.75rem
+      max(1rem, env(safe-area-inset-left)) !important;
+    gap: 0 !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-zone {
+    position: static !important;
+    inset: auto !important;
+    order: 1 !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    height: 2.75rem !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
+    .hathor-header__logo--icon,
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__logo--icon {
+    width: auto !important;
+    height: 2.75rem !important;
+    margin: 0 !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__col--right {
+    order: 2 !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+    margin: 0 0 0 auto !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left {
+    position: static !important;
+    inset: auto !important;
+    order: 3 !important;
+    display: inline-flex !important;
+    flex: 0 0 2.75rem !important;
+    width: 2.75rem !important;
+    min-width: 2.75rem !important;
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+    margin: 0 0 0 var(--nav-control-gap) !important;
+    transform: none !important;
+    color: var(--nav-control-ink) !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left svg {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    stroke-width: 1.4 !important;
+  }
+
+  .hsc__count:not(#_) {
+    top: 0.1rem !important;
+    right: 0.05rem !important;
+  }
+
+  .hsc:not(#_)::before {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+  }
+
+  .public-theme-toggle:not(#_),
+  .public-lang-toggle:not(#_) {
+    flex-basis: 2.75rem !important;
+    width: 2.75rem !important;
+    min-width: 2.75rem !important;
+    max-width: 2.75rem !important;
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+  }
+
+  .public-theme-toggle__track:not(#_) {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    padding: 0 !important;
+    border: 1px solid var(--nav-control-ink) !important;
+    background: var(--nav-control-paper) !important;
+    overflow: visible !important;
+  }
+
+  .public-theme-toggle.is-night:not(#_) .public-theme-toggle__track:not(#_) {
+    flex-direction: row !important;
+    border-color: var(--nav-control-ink) !important;
+    background: var(--nav-control-paper) !important;
+  }
+
+  .public-theme-toggle.is-night:not(#_) .public-theme-toggle__thumb:not(#_) {
+    color: var(--nav-control-ink) !important;
+  }
+
+  .public-theme-toggle__thumb:not(#_) {
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .public-theme-toggle__icon:not(#_) {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+
+  .public-theme-toggle__label:not(#_) {
+    display: none !important;
+  }
+
+  .public-lang-toggle:not(#_) .public-theme-toggle__track:not(#_) {
+    border-color: transparent !important;
+    background: transparent !important;
+  }
+
+  .public-lang-toggle:not(#_) .public-theme-toggle__thumb:not(#_) {
+    color: var(--nav-control-ink) !important;
+  }
+
+  .public-lang-toggle:not(#_) .public-theme-toggle__icon:not(#_) {
+    width: 2.15rem !important;
+    height: 2.15rem !important;
+  }
+
+  .public-lang-toggle__phone-label {
+    position: absolute;
+    top: 0.35rem;
+    right: -0.05rem;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.1rem;
+    height: 0.75rem;
+    padding: 0 0.2rem;
+    border-radius: 999px;
+    background: var(--nav-control-ink);
+    color: #fff;
+    font-family: var(--public-sans, var(--font-hathor-body, inherit));
+    font-size: 0.43rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --nav-mark-box: 2.5rem;
+    --nav-mark-icon: 1.6rem;
+    --nav-control-gap: 0.125rem;
+    --nav-switch-h: 2.5rem;
+    --nav-switch-w: 2.5rem;
+    --nav-lang-w: 2.5rem;
+  }
+
+  .public-theme-toggle:not(#_),
+  .public-lang-toggle:not(#_) {
+    flex-basis: 2.5rem !important;
+    width: 2.5rem !important;
+    min-width: 2.5rem !important;
+    max-width: 2.5rem !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left {
+    flex-basis: 2.5rem !important;
+    width: 2.5rem !important;
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hsc__icon:not(#_),
+  .public-theme-toggle__track:not(#_) {
+    transition: none !important;
+  }
+}

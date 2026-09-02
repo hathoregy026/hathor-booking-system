@@ -2,7 +2,7 @@
 
 import { usePublicTheme } from "./PublicThemeProvider";
 
-/** Ref sun: eight rays, left half of the disk filled. */
+/** Ref sun: solid core, eight even rays. */
 function RefSunIcon() {
   return (
     <svg
@@ -11,35 +11,27 @@ function RefSunIcon() {
       aria-hidden
       focusable="false"
     >
+      <circle cx="12" cy="12" r="3.9" fill="currentColor" />
       <g
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.35"
+        strokeWidth="1.7"
         strokeLinecap="round"
       >
-        <path d="M12 2.15v1.65" />
-        <path d="M12 20.2v1.65" />
-        <path d="M2.15 12h1.65" />
-        <path d="M20.2 12h1.65" />
-        <path d="M5.02 5.02l1.18 1.18" />
-        <path d="M17.8 17.8l1.18 1.18" />
-        <path d="M5.02 18.98l1.18-1.18" />
-        <path d="M17.8 6.2l1.18-1.18" />
+        <path d="M12 1.9v2.4" />
+        <path d="M12 19.7v2.4" />
+        <path d="M1.9 12h2.4" />
+        <path d="M19.7 12h2.4" />
+        <path d="M4.86 4.86 6.56 6.56" />
+        <path d="M17.44 17.44l1.7 1.7" />
+        <path d="M4.86 19.14l1.7-1.7" />
+        <path d="M17.44 6.56l1.7-1.7" />
       </g>
-      <circle
-        cx="12"
-        cy="12"
-        r="4.2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.35"
-      />
-      <path fill="currentColor" d="M12 7.8A4.2 4.2 0 0 0 12 16.2V7.8Z" />
     </svg>
   );
 }
 
-/** Ref moon: left-facing gold crescent. */
+/** Ref moon: solid crescent opening up-right, with a small sparkle. */
 function RefMoonIcon() {
   return (
     <svg
@@ -49,12 +41,12 @@ function RefMoonIcon() {
       focusable="false"
     >
       <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15.1 5.1A7.05 7.05 0 1 1 8.4 18.7 5.55 5.55 0 1 0 15.1 5.1Z"
+        fill="currentColor"
+        d="M13.9 3.4a8.7 8.7 0 1 0 7.35 12.28A7.05 7.05 0 0 1 13.9 3.4Z"
+      />
+      <path
+        fill="currentColor"
+        d="M18.55 2.5c.24 1.42.78 1.96 2.2 2.2-1.42.24-1.96.78-2.2 2.2-.24-1.42-.78-1.96-2.2-2.2 1.42-.24 1.96-.78 2.2-2.2Z"
       />
     </svg>
   );
@@ -84,7 +76,7 @@ export function PublicThemeToggle() {
           {isDay ? <RefSunIcon /> : <RefMoonIcon />}
         </span>
         <span className="public-theme-toggle__label" aria-hidden="true">
-          {isDay ? "day mode" : "night mode"}
+          {isDay ? "daymode" : "nightmode"}
         </span>
       </span>
       <span className="sr-only">

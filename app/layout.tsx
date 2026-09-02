@@ -26,6 +26,7 @@ import "./globals.css";
 import "./mobile-touch.css";
 import "./floating-actions.css";
 import "./booking-modal.css";
+import "./nav-controls.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

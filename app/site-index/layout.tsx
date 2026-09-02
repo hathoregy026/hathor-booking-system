@@ -4,6 +4,7 @@ import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
+import "../nav-controls.css";
 
 export default function SiteIndexLayout({
   children,

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
+import { PublicLanguageToggle } from "@/components/public/PublicLanguageToggle";
 import { SelectionHeaderControls } from "@/components/selection/SelectionHeaderControls";
 
 const EditorialNavOverlay = dynamic(
@@ -568,6 +569,7 @@ export function Header() {
               </button>
             )}
             <SelectionHeaderControls />
+            <PublicLanguageToggle />
             <PublicThemeToggle />
           </div>
         </div>

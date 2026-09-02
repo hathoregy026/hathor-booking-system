@@ -47,7 +47,9 @@ export function SelectionHeaderControls() {
         aria-haspopup="dialog"
         title="My Favorites"
       >
-        <HathorHeartIcon className="hsc__icon" filled />
+        {/* Outline heart, per the navbar reference — the filled silhouette
+            is the card/saved state, not the header mark. */}
+        <HathorHeartIcon className="hsc__icon" filled={false} />
         {favoritesCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {favoritesCount > 99 ? "99+" : favoritesCount}
