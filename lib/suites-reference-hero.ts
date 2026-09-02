@@ -295,6 +295,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 
 .srh-actions a {
+  box-sizing: border-box;
   display: flex;
   width: 12.5rem;
   min-width: 12.5rem;
