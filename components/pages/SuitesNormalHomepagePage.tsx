@@ -463,30 +463,52 @@ function applyImages(doc: Document, images: Record<string, string>) {
   });
 }
 
+function prepareSuitesReferenceHero(
+  iframe: HTMLIFrameElement,
+  theme: string,
+): { doc: Document; live: HTMLStyleElement } | null {
+  const doc = iframe.contentDocument;
+  if (
+    !doc?.head ||
+    !doc.location.pathname.endsWith("/suites-normal/index.html") ||
+    !doc.querySelector(".mod-scroll__intro > .wrapper")
+  ) {
+    return null;
+  }
+
+  doc.documentElement.dataset.publicTheme = theme;
+
+  if (!doc.getElementById("hathor-font-faces")) {
+    const fonts = doc.createElement("link");
+    fonts.id = "hathor-font-faces";
+    fonts.rel = "stylesheet";
+    fonts.href = "/hathor-fonts.css";
+    doc.head.appendChild(fonts);
+  }
+
+  let live = doc.getElementById("hathor-suites-live") as HTMLStyleElement | null;
+  if (!live) {
+    live = doc.createElement("style");
+    live.id = "hathor-suites-live";
+    doc.head.appendChild(live);
+  }
+  live.textContent = buildSuitesLiveCss();
+
+  if (!mountSuitesReferenceHero(doc)) return null;
+  iframe.dataset.suitesReady = "true";
+  return { doc, live };
+}
+
 export function SuitesNormalHomepagePage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { theme } = usePublicTheme();
 
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
-    const doc = iframe?.contentDocument;
-    if (
-      !iframe ||
-      !doc?.head ||
-      !doc.location.pathname.endsWith("/suites-normal/index.html")
-    ) {
-      return;
-    }
-
-    doc.documentElement.dataset.publicTheme = theme;
-
-    if (!doc.getElementById("hathor-font-faces")) {
-      const fonts = doc.createElement("link");
-      fonts.id = "hathor-font-faces";
-      fonts.rel = "stylesheet";
-      fonts.href = "/hathor-fonts.css";
-      doc.head.appendChild(fonts);
-    }
+    if (!iframe) return;
+    const prepared = prepareSuitesReferenceHero(iframe, theme);
+    if (!prepared) return;
+    const { doc, live } = prepared;
 
     if (!doc.getElementById("hathor-bitho-ready-boot")) {
       const boot = doc.createElement("script");
@@ -495,15 +517,6 @@ export function SuitesNormalHomepagePage() {
       doc.head.appendChild(boot);
     }
 
-    let live = doc.getElementById("hathor-suites-live") as HTMLStyleElement | null;
-    if (!live) {
-      live = doc.createElement("style");
-      live.id = "hathor-suites-live";
-      doc.head.appendChild(live);
-    }
-    live.textContent = buildSuitesLiveCss();
-    mountSuitesReferenceHero(doc);
-    iframe.dataset.suitesReady = "true";
     patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
@@ -566,6 +579,25 @@ export function SuitesNormalHomepagePage() {
   useEffect(() => {
     void apply();
   }, [apply]);
+
+  useEffect(() => {
+    let frame = 0;
+    let active = true;
+    let attempts = 0;
+
+    const mountAtParseTime = () => {
+      const iframe = iframeRef.current;
+      if (iframe && prepareSuitesReferenceHero(iframe, theme)) return;
+      attempts += 1;
+      if (active && attempts < 600) frame = requestAnimationFrame(mountAtParseTime);
+    };
+
+    frame = requestAnimationFrame(mountAtParseTime);
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+    };
+  }, [theme]);
 
   return (
     <main className="suites-normal-clone" aria-label="Hathor Suites">
