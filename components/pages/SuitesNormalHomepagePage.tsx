@@ -6,9 +6,14 @@ import { usePublicTheme } from "@/components/public/PublicThemeProvider";
 import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import {
+  mountSuitesReferenceHero,
+  SUITES_REFERENCE_HERO_CSS,
+} from "@/lib/suites-reference-hero";
+import {
   SUITES_CLIP_FIX_CSS,
   SUITES_COLLECTION_PANEL_CSS,
   SUITES_COLLECTION_PANEL_TONES,
+  SUITES_RESPONSIVE_CHOREOGRAPHY_CSS,
   SUITES_SPLITTEXT_TYPE_GUARD_CSS,
   SUITES_TERMS_STAGE_CSS,
 } from "@/lib/suites-typography-shared";
@@ -40,6 +45,8 @@ function buildSuitesLiveCss(cmsCss = "") {
     SUITES_EDITORIAL_CHROME_CSS,
     SUITES_DNA_COLOR_CSS,
     EMBEDDED_PUBLIC_THEME_CSS,
+    SUITES_RESPONSIVE_CHOREOGRAPHY_CSS,
+    SUITES_REFERENCE_HERO_CSS,
   ].join("\n");
 }
 
@@ -495,6 +502,8 @@ export function SuitesNormalHomepagePage() {
       doc.head.appendChild(live);
     }
     live.textContent = buildSuitesLiveCss();
+    mountSuitesReferenceHero(doc);
+    iframe.dataset.suitesReady = "true";
     patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
@@ -533,6 +542,7 @@ export function SuitesNormalHomepagePage() {
         images?: Record<string, string>;
       };
       live.textContent = buildSuitesLiveCss(data.css ?? "");
+      mountSuitesReferenceHero(doc);
       patchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
       retargetCloneLinks(doc);
@@ -565,15 +575,9 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-footer-segments-20260901"
+        src="/suites-normal/index.html?v=hathor-reference-hero-connectors-20260902"
         title="Hathor Suites"
         onLoad={() => {
-          const iframe = iframeRef.current;
-          window.setTimeout(() => {
-            if (iframe && !iframe.dataset.suitesReady) {
-              iframe.dataset.suitesReady = "true";
-            }
-          }, 1800);
           void apply();
         }}
       />
