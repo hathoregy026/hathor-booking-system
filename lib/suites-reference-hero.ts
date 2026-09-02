@@ -255,8 +255,8 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
   animation: srh-draw-connector 1.25s .58s cubic-bezier(.65,0,.2,1) forwards;
 }
 
