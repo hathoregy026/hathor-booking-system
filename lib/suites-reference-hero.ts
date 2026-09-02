@@ -12,7 +12,6 @@ const HERO_MARKUP = `
         decoding="async"
         fetchpriority="high"
       >
-      <span class="srh-frame__pin" aria-hidden="true"></span>
     </figure>
 
     <figure class="srh-frame srh-frame--main">
@@ -34,7 +33,23 @@ const HERO_MARKUP = `
       <p class="srh-copy__body">Quiet, crafted comfort; river light;<br>the Nile just beyond the glass.</p>
     </div>
 
-    <span class="srh-gold-line" aria-hidden="true"></span>
+    <svg class="srh-connectors" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <g class="srh-connectors__set srh-connectors__set--desktop">
+        <path class="srh-connector srh-connector--portrait" pathLength="1" d="M 26.2 42.9 V 61.7 Q 26.2 65.7 30.2 65.7 H 35.4"></path>
+        <circle class="srh-connector__dot" cx="26.2" cy="42.9" r="0.34"></circle>
+        <path class="srh-connector srh-connector--copy" pathLength="1" d="M 42.4 70.55 H 63.8 Q 66.1 70.55 66.1 72.85 V 76.45 Q 66.1 78.75 68.4 78.75 H 70.1"></path>
+      </g>
+      <g class="srh-connectors__set srh-connectors__set--tablet">
+        <path class="srh-connector srh-connector--portrait" pathLength="1" d="M 33 59.2 V 77 Q 33 80 36 80 H 39"></path>
+        <circle class="srh-connector__dot" cx="33" cy="59.2" r="0.38"></circle>
+        <path class="srh-connector srh-connector--copy" pathLength="1" d="M 49 69.5 H 55.5 Q 58 69.5 58 72 V 74 Q 58 76.5 60.5 76.5 H 62"></path>
+      </g>
+      <g class="srh-connectors__set srh-connectors__set--phone">
+        <path class="srh-connector srh-connector--portrait" pathLength="1" d="M 38.2 56 V 70.5 Q 38.2 73.5 41.2 73.5 H 43"></path>
+        <circle class="srh-connector__dot" cx="38.2" cy="56" r="0.5"></circle>
+        <path class="srh-connector srh-connector--copy" pathLength="1" d="M 39 79.2 H 62 Q 65 79.2 65 82.2 V 83.2 Q 65 85.2 67 85.2 H 70"></path>
+      </g>
+    </svg>
 
     <figure class="srh-frame srh-frame--detail">
       <img
@@ -141,17 +156,6 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   animation-delay: .12s;
 }
 
-.srh-frame__pin {
-  position: absolute;
-  top: 25.5%;
-  right: -5px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #c4a35e;
-  box-shadow: 0 0 0 5px rgba(243,237,228,.7);
-}
-
 .srh-frame--main {
   top: 10.55%;
   right: 0;
@@ -226,33 +230,63 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   animation-delay: .28s;
 }
 
-.srh-gold-line {
+.srh-connectors {
   position: absolute;
   z-index: 2;
-  top: 70.55%;
-  left: 42.4%;
-  width: 26.1%;
-  height: 9.1%;
-  border-top: 1px solid #c3a158;
-  border-right: 1px solid #c3a158;
-  border-bottom: 1px solid #c3a158;
-  border-radius: 0 1.25rem 1.25rem 0;
-  clip-path: inset(0 100% 0 0);
-  animation: srh-draw-line 1.4s .68s cubic-bezier(.65,0,.2,1) forwards;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.srh-connectors__set {
+  display: none;
+}
+
+.srh-connectors__set--desktop {
+  display: block;
+}
+
+.srh-connector {
+  fill: none;
+  stroke: #c3a158;
+  stroke-width: 1.15;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: srh-draw-connector 1.25s .58s cubic-bezier(.65,0,.2,1) forwards;
+}
+
+.srh-connector--copy {
+  animation-delay: .78s;
+}
+
+.srh-connector__dot {
+  fill: #c3a158;
+  opacity: 0;
+  transform: scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: srh-pin-arrive .42s .5s cubic-bezier(.22,.78,.19,1) forwards;
 }
 
 .srh-actions {
   position: absolute;
   z-index: 8;
-  right: 11.9%;
+  right: auto;
   bottom: 2.05%;
-  left: 11.9%;
+  left: 50%;
+  width: max-content;
+  translate: -50% 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: .75rem;
-  padding: .72rem 1rem;
-  border: 1px solid rgba(255,255,255,.42);
-  border-radius: 1.25rem;
+  grid-template-columns: repeat(4, 12.5rem);
+  gap: .5rem;
+  padding: .5rem;
+  border: 1px solid rgba(255,255,255,.48);
+  border-radius: 1rem;
   background: rgba(239,234,225,.82);
   box-shadow: 0 16px 46px rgba(76,57,27,.08), inset 0 1px 0 rgba(255,255,255,.72);
   backdrop-filter: blur(16px);
@@ -262,7 +296,10 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
 .srh-actions a {
   display: flex;
-  min-height: 3.55rem;
+  width: 12.5rem;
+  min-width: 12.5rem;
+  height: 2.85rem;
+  min-height: 2.85rem;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(25,22,17,.48);
@@ -271,8 +308,9 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   -webkit-text-fill-color: #17140f !important;
   font-family: "Piloner Semibold", "Plus Jakarta Sans", sans-serif !important;
   font-size: .72rem;
+  font-style: normal !important;
   font-weight: 600;
-  letter-spacing: .2em;
+  letter-spacing: .18em;
   text-decoration: none;
   text-transform: uppercase;
   transition: color .3s ease, background .3s ease, border-color .3s ease, transform .3s ease;
@@ -315,8 +353,44 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes srh-draw-line {
-  to { clip-path: inset(0 0 0 0); }
+@keyframes srh-draw-connector {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes srh-pin-arrive {
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (min-width: 951px) {
+  main .mod-scroll__images.principal {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(34rem, 42vw));
+    align-items: start;
+    gap: clamp(1.5rem, 3vw, 3.25rem);
+    width: max-content;
+    padding: 0 clamp(1rem, 2vw, 2.5rem);
+    overflow: clip;
+  }
+
+  main .mod-scroll__images.principal > .mod-scroll__images__image-single,
+  main .mod-scroll__images.principal > .mod-scroll__images__flip {
+    position: relative;
+    inset: auto;
+    width: 42vw;
+    min-width: 34rem;
+    height: var(--100vh);
+    aspect-ratio: auto;
+    transform: none;
+  }
+
+  main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media__wrap-source, .media__source),
+  main .mod-scroll__images.principal > .mod-scroll__images__flip :is(.media__wrap-source, .media__source) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -373,30 +447,47 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     border-radius: 1.7rem;
   }
 
-  .srh-gold-line {
-    top: 70%;
-    left: 50%;
-    width: 18%;
-    height: 6.5%;
+  .srh-connectors__set--desktop {
+    display: none;
+  }
+
+  .srh-connectors__set--tablet {
+    display: block;
   }
 
   .srh-actions {
-    right: 4%;
-    left: 4%;
     gap: .5rem;
-    padding: .55rem;
+    padding: .5rem;
   }
 
   .srh-actions a {
-    min-height: 3.15rem;
-    font-size: .64rem;
-    letter-spacing: .14em;
+    min-height: 2.85rem;
+    font-size: .7rem;
+    letter-spacing: .16em;
+  }
+}
+
+@media (max-width: 880px) and (min-width: 481px) {
+  html body main .mod-scroll__intro.suites-reference-hero {
+    min-height: 45rem !important;
+  }
+
+  .srh-frame--portrait {
+    bottom: 19%;
+  }
+
+  .srh-frame--detail {
+    height: 25%;
+  }
+
+  .srh-actions {
+    grid-template-columns: repeat(2, 12.5rem);
   }
 }
 
 @media (max-width: 480px) {
   html body main .mod-scroll__intro.suites-reference-hero {
-    min-height: 38rem !important;
+    min-height: 44rem !important;
   }
 
   .srh-kicker {
@@ -459,18 +550,20 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     line-height: .86;
   }
 
-  .srh-gold-line {
-    top: 78.2%;
-    left: 40%;
-    width: 28%;
-    height: 4.5%;
-    border-radius: 0 .75rem .75rem 0;
+  .srh-connectors__set--tablet {
+    display: none;
+  }
+
+  .srh-connectors__set--phone {
+    display: block;
   }
 
   .srh-actions {
     right: .7rem;
     bottom: .65rem;
     left: .7rem;
+    width: auto;
+    translate: 0 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: .4rem;
     padding: .45rem;
@@ -478,7 +571,10 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-actions a {
-    min-height: 2.55rem;
+    width: 100%;
+    min-width: 0;
+    height: 2.85rem;
+    min-height: 2.85rem;
     padding: .25rem .4rem;
     font-size: .58rem;
     letter-spacing: .12em;
@@ -498,9 +594,12 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   .srh-copy__title,
   .srh-copy__body,
   .srh-actions,
-  .srh-gold-line {
+  .srh-connector,
+  .srh-connector__dot {
     animation: none !important;
-    clip-path: none !important;
+    opacity: 1 !important;
+    stroke-dashoffset: 0 !important;
+    transform: none !important;
   }
 }
 `;
