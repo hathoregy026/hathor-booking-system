@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+/**
+ * Language switch — same pill geometry, knob and label treatment as
+ * PublicThemeToggle, so the header reads as one control family.
+ *
+ * English only for now: the control announces the active language and is
+ * marked as the current selection rather than pretending to toggle.
+ */
 
 function GlobeIcon() {
   return (
@@ -25,91 +31,27 @@ function GlobeIcon() {
   );
 }
 
-/** English is active; German and Russian translations are coming soon. */
 export function PublicLanguageToggle() {
-  const [open, setOpen] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      const target = event.target;
-      if (target instanceof Node && !rootRef.current?.contains(target)) {
-        setOpen(false);
-      }
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-
-    document.addEventListener("pointerdown", closeOnOutsidePointer);
-    document.addEventListener("keydown", closeOnEscape);
-    return () => {
-      document.removeEventListener("pointerdown", closeOnOutsidePointer);
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!notice) return;
-    const timer = window.setTimeout(() => setNotice(null), 2400);
-    return () => window.clearTimeout(timer);
-  }, [notice]);
-
-  const chooseLanguage = (language: "English" | "German" | "Russian") => {
-    setOpen(false);
-    setNotice(language === "English" ? null : `${language} is coming soon`);
-  };
-
   return (
-    <div ref={rootRef} className="public-lang-selector">
-      <button
-        type="button"
-        className="public-lang-toggle cursor-hover"
-        aria-label="Choose language. English selected"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-controls="public-language-menu"
-        title="Language: English"
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          setOpen((current) => !current);
-        }}
-      >
-        <span className="public-lang-toggle__globe" aria-hidden="true">
+    <button
+      type="button"
+      className="public-theme-toggle public-lang-toggle cursor-hover is-day"
+      aria-label="Language: English"
+      aria-disabled="true"
+      title="English"
+    >
+      <span className="public-theme-toggle__track">
+        <span className="public-theme-toggle__thumb">
           <GlobeIcon />
         </span>
-        <span className="public-lang-toggle__code" aria-hidden="true">
+        <span className="public-theme-toggle__label" aria-hidden="true">
+          english
+        </span>
+        <span className="public-lang-toggle__phone-label" aria-hidden="true">
           EN
         </span>
-      </button>
-
-      {open ? (
-        <ul id="public-language-menu" className="public-lang-menu" role="menu">
-          {(["English", "German", "Russian"] as const).map((language) => (
-            <li key={language} role="none">
-              <button
-                type="button"
-                role="menuitem"
-                className="public-lang-menu__option"
-                aria-current={language === "English" ? "true" : undefined}
-                onClick={() => chooseLanguage(language)}
-              >
-                {language}
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-
-      {notice ? (
-        <div className="public-lang-notice" role="status" aria-live="polite">
-          {notice}
-        </div>
-      ) : null}
-    </div>
+      </span>
+      <span className="sr-only">Site language: English</span>
+    </button>
   );
 }
