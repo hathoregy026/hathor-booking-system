@@ -22,7 +22,7 @@ export const NAV_SUITES: NavGroup = {
   links: [
     {
       href: "/suites",
-      label: "Suites Overview",
+      label: "Suites",
       description: "Luxury sanctuaries aboard Hathor",
     },
     {
@@ -49,7 +49,7 @@ export const NAV_CRUISES: NavGroup = {
   links: [
     {
       href: "/voyages",
-      label: "Our Voyages",
+      label: "Cruises",
       description: "Private Dahabiya itineraries on the Nile",
     },
     {
@@ -95,11 +95,6 @@ export const NAV_ABOUT: NavGroup = {
       href: "/about",
       label: "Our Story",
       description: "Welcome aboard Hathor",
-    },
-    {
-      href: "/blogs",
-      label: "Journal",
-      description: "Notes from the Nile",
     },
     {
       href: "/partners",
@@ -188,6 +183,7 @@ export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
     href: "/about",
     links: NAV_ABOUT.links,
   },
+  { type: "link", href: "/blogs", label: "Journal" },
   { type: "link", href: "/contact", label: "Contact" },
 ];
 

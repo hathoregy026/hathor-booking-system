@@ -224,9 +224,10 @@
 .eno.is-open .eno-row:nth-child(4) { transition-delay: 0.92s; }
 .eno.is-open .eno-row:nth-child(5) { transition-delay: 1s; }
 .eno.is-open .eno-row:nth-child(6) { transition-delay: 1.08s; }
+.eno.is-open .eno-row:nth-child(7) { transition-delay: 1.16s; }
 
 .eno.is-open .eno-foot {
-  transition-delay: 1.12s;
+  transition-delay: 1.2s;
 }
 
 .eno-top {
