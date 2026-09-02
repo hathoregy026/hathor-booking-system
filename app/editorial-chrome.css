@@ -27,6 +27,34 @@
   --ed-copy-on-dark: #f6efdf;
 }
 
+/* Night mode re-grounds the same three chrome roles for a dark page.
+   Kept in this file because this file owns the tokens: resolving them from
+   another stylesheet left the day values painted on the pinned horizontal
+   stages, whose composited layers do not re-resolve an inherited custom
+   property that changes in a later chunk.
+
+     meta  #cbb079 on canvas = 8.99:1  (day #806b35 would be 1.9:1 here)
+     copy  rgb(233 225 211 / 82%)      = 9.9:1 effective
+     on-dark copy stays light — those surfaces are dark in both themes. */
+html[data-public-theme="night"] .voyages-boring,
+html[data-public-theme="night"] .about-boring,
+html[data-public-theme="night"] .contact-editorial,
+html[data-public-theme="night"] .charter-editorial,
+html[data-public-theme="night"] .wellness-editorial,
+html[data-public-theme="night"] .highlights-editorial,
+html[data-public-theme="night"] .accom-catalog,
+html[data-public-theme="night"] .partners-editorial,
+html[data-public-theme="night"] .journal-editorial,
+html[data-public-theme="night"] .article-editorial,
+html[data-public-theme="night"] .terms-editorial,
+html[data-public-theme="night"] .cr-intro,
+html[data-public-theme="night"] .nib-dining,
+html[data-public-theme="night"] [data-charter-page] {
+  --ed-meta-color: #cbb079;
+  --ed-copy-color: rgb(233 225 211 / 0.82);
+  --ed-copy-on-dark: #f1ead9;
+}
+
 /* Black left-edge sliding stripe — hidden on every editorial page.
    Voyages markup is left untouched; this chrome rule is the only Voyages hook. */
 .voyages-boring .vb-rail,

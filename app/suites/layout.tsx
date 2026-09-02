@@ -4,6 +4,7 @@ import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "../mobile-touch.css";
+import "../button-system.css";
 import "../nav-controls.css";
 
 export default function SuitesLayout({

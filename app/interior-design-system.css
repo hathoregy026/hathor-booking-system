@@ -36,7 +36,7 @@
   border-radius: 999px;
   border: 1px solid #b69f64;
   background: #faf8f5;
-  color: #b69f64;
+  color: var(--hathor-btn-label, #746235);
   font-weight: 500;
   text-transform: uppercase;
   text-decoration: none;
@@ -58,7 +58,7 @@
 .public-site button.btn-secondary:hover {
   background: #b69f64;
   border-color: #b69f64;
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }

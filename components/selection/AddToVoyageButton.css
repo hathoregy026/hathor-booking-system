@@ -205,14 +205,24 @@
   border: 1px solid #c9a96e;
   border-radius: 999px;
   background: #c9a96e;
-  color: #fff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   cursor: pointer;
-  min-height: 2.75rem;
-  padding: 0 1.5rem;
-  font-size: 0.65rem;
+  min-width: min(100%, var(--hathor-btn-width, 12.5rem));
+  min-height: var(--hathor-btn-height, 2.85rem);
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
+  font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  line-height: 1;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
+  transition:
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hathor-atv-confirm__primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgb(139 105 20 / 0.22);
 }
 
 .hathor-atv-confirm__secondary {
@@ -223,9 +233,9 @@
   cursor: pointer;
   min-height: 2.75rem;
   padding: 0;
-  font-size: 0.62rem;
+  font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
   opacity: 0.7;
 }
@@ -254,6 +264,14 @@
   }
 
   .hathor-atv.is-selected .hathor-atv__icon {
+    transform: none;
+  }
+
+  .hathor-atv-confirm__primary {
+    transition: none;
+  }
+
+  .hathor-atv-confirm__primary:hover {
     transform: none;
   }
 }

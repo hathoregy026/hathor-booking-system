@@ -9,6 +9,7 @@ import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "./preview.css";
+import "../button-system.css";
 import "../nav-controls.css";
 
 const playfair = Playfair_Display({

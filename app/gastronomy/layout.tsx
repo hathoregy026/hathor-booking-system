@@ -8,6 +8,7 @@ import "../lux-footer.css";
 import "../gastronomy-dining.css";
 import "../editorial-chrome.css";
 import "../anima-title-split.css";
+import "../button-system.css";
 import "../nav-controls.css";
 
 export default function GastronomyLayout({

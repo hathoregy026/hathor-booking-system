@@ -423,7 +423,7 @@ html[data-public-theme="day"] .hathor-booking-modal__close {
 html[data-public-theme="day"] .hathor-booking-modal__close:hover {
   background: #b69f64;
   border-color: #b69f64;
-  color: #ffffff;
+  color: #2c2824;
 }
 
 .hathor-booking-modal__body {
@@ -711,7 +711,7 @@ html[data-public-theme="day"] .hathor-modal-counter__controls {
 html[data-public-theme="day"] .hathor-modal-counter__btn:hover:not(:disabled) {
   background: #b69f64;
   border-color: #b69f64;
-  color: #ffffff;
+  color: #2c2824;
 }
 
 .hathor-modal-counter__btn:disabled {
@@ -772,7 +772,7 @@ html[data-public-theme="night"] .hathor-modal-btn--primary {
 .hathor-modal-btn--primary:hover:not(:disabled) {
   background: #b69f64;
   border-color: #b69f64;
-  color: #ffffff;
+  color: #2c2824;
   transform: translateY(-2px);
   box-shadow: 0 10px 26px rgb(182 159 100 / 0.35);
 }

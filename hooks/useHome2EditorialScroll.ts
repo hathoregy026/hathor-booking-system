@@ -5,6 +5,29 @@ import { editorialFlipProgress } from "@/lib/editorial-flip-progress";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
+/**
+ * Structural switch between the pinned horizontal desktop story and natural
+ * vertical flow. Matches `isPhoneOrTabletViewport()` in lib/touch-device.ts:
+ * desktop begins strictly above 1024px.
+ */
+const DESKTOP_MIN_WIDTH = 1024;
+
+/**
+ * A coarse pointer up to this width is a tablet in landscape (iPad Pro 12.9"
+ * reports 1366), never a desktop — a mouse-driven machine reports
+ * `pointer: fine`. Keeps the sticky stage off every iPad, where iOS toolbar
+ * collapse and touch scrolling make a pinned scrub unstable.
+ */
+const COARSE_POINTER_MAX_WIDTH = 1366;
+
+/** Must stay in lockstep with the media conditions in home-2.css. */
+function isDesktopStage(coarse: MediaQueryList): boolean {
+  const width = window.innerWidth;
+  if (width <= DESKTOP_MIN_WIDTH) return false;
+  if (coarse.matches && width <= COARSE_POINTER_MAX_WIDTH) return false;
+  return true;
+}
+
 /** Ease matching main-home helm GSAP `sine.inOut` / `power2` feel. */
 const sineInOut = (t: number) => 0.5 - 0.5 * Math.cos(clamp(t) * Math.PI);
 const power2In = (t: number) => {
@@ -95,13 +118,15 @@ export function useHome2EditorialScroll({
     let target = 0;
     let current = 0;
     let frame = 0;
+    /* Separate rAF handle for the vertical (touch) path — never share with `tick`. */
+    let verticalFrame = 0;
     let lastWidth = window.innerWidth;
 
     html.setAttribute("data-home2-editorial", "");
 
     const applySceneVars = (x: number) => {
       const viewport = window.innerWidth;
-      const touch = coarse.matches || viewport <= 950;
+      const touch = coarse.matches || viewport <= DESKTOP_MIN_WIDTH;
       scenes.forEach((scene) => {
         const left = scene.offsetLeft - x;
         const width = scene.offsetWidth;
@@ -139,11 +164,27 @@ export function useHome2EditorialScroll({
       });
     };
 
+    /*
+     * Touch path. Same maths as before, but every layout read happens first and
+     * every style write second, so a finger scroll costs one layout pass rather
+     * than one per scene. Scenes far outside the viewport are skipped — their
+     * vars are already at their settled value.
+     */
     const applyVerticalVars = () => {
       const viewport = window.innerHeight;
-      const touch = true;
-      scenes.forEach((scene) => {
-        const rect = scene.getBoundingClientRect();
+      const margin = viewport;
+
+      /* --- read phase (no writes, so no forced reflow between rects) --- */
+      const sceneRects = scenes.map((scene) => scene.getBoundingClientRect());
+      const flipRects = flips.map((el) => el.getBoundingClientRect());
+      const helmHeight = helm ? helm.offsetHeight : 0;
+      const runRect = run.getBoundingClientRect();
+      const runScrollable = Math.max(1, run.offsetHeight - viewport);
+
+      /* --- write phase --- */
+      scenes.forEach((scene, index) => {
+        const rect = sceneRects[index];
+        if (rect.bottom < -margin || rect.top > viewport + margin) return;
         const progress = clamp(
           (viewport - rect.top) / Math.max(1, viewport + rect.height),
         );
@@ -155,27 +196,43 @@ export function useHome2EditorialScroll({
 
         if (scene === helm) {
           /* Sticky stage + tall runway — progress across the sticky pin scroll. */
-          const scrollable = Math.max(1, scene.offsetHeight - viewport);
+          const scrollable = Math.max(1, helmHeight - viewport);
           const wheelProgress = clamp(-rect.top / scrollable);
-          applyHome2WheelVars(scene, wheelProgress, 0, touch);
+          applyHome2WheelVars(scene, wheelProgress, 0, true);
         }
       });
 
-      flips.forEach((el) => {
-        const rect = el.getBoundingClientRect();
+      flips.forEach((el, index) => {
         el.style.setProperty(
           "--h2-flip",
-          editorialFlipProgress(rect, "vertical").toFixed(4),
+          editorialFlipProgress(flipRects[index], "vertical").toFixed(4),
         );
+      });
+
+      /*
+       * The gold top rule is part of the design, so it survives on touch — it
+       * simply reads vertical progress through the story instead of horizontal
+       * travel.
+       */
+      progressBar?.style.setProperty(
+        "transform",
+        `scaleX(${clamp(-runRect.top / runScrollable).toFixed(4)})`,
+      );
+    };
+
+    const scheduleVertical = () => {
+      if (verticalFrame) return;
+      verticalFrame = requestAnimationFrame(() => {
+        verticalFrame = 0;
+        applyVerticalVars();
       });
     };
 
     const measure = () => {
-      desktop = window.innerWidth > 950 && !reduced.matches;
+      desktop = isDesktopStage(coarse) && !reduced.matches;
       if (!desktop) {
         run.style.height = "auto";
         track.style.transform = "none";
-        progressBar?.style.setProperty("transform", "scaleX(0)");
         applyVerticalVars();
         return;
       }
@@ -204,7 +261,7 @@ export function useHome2EditorialScroll({
 
     const update = () => {
       if (!desktop) {
-        applyVerticalVars();
+        scheduleVertical();
         return;
       }
       target = clamp(-run.getBoundingClientRect().top / scrollDistance);
@@ -215,19 +272,39 @@ export function useHome2EditorialScroll({
       const width = window.innerWidth;
       const meaningfulWidthChange = Math.abs(width - lastWidth) > 24;
       lastWidth = width;
-      if (!meaningfulWidthChange && width <= 950) {
-        applyVerticalVars();
+      /*
+       * Mobile browser chrome collapsing fires resize with an unchanged width.
+       * Re-measuring there would relayout mid-scroll, so only refresh the vars.
+       */
+      if (!meaningfulWidthChange && !isDesktopStage(coarse)) {
+        scheduleVertical();
         return;
       }
       measure();
       update();
     };
 
+    /*
+     * Rotation reports its new size a frame or two after the event on iOS and
+     * Android, so re-measure on the next frame as well — this is what keeps
+     * portrait → landscape → portrait from leaving stale scene geometry.
+     */
+    const onOrientationChange = () => {
+      lastWidth = -1;
+      onResize();
+      requestAnimationFrame(onResize);
+      window.setTimeout(onResize, 350);
+    };
+
     const observer = new ResizeObserver(onResize);
     observer.observe(track);
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("orientationchange", onOrientationChange, {
+      passive: true,
+    });
     reduced.addEventListener("change", onResize);
+    coarse.addEventListener("change", onResize);
     document.fonts?.ready.then(onResize).catch(() => undefined);
     measure();
     requestAnimationFrame(measure);
@@ -236,8 +313,11 @@ export function useHome2EditorialScroll({
       observer.disconnect();
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onOrientationChange);
       reduced.removeEventListener("change", onResize);
+      coarse.removeEventListener("change", onResize);
       if (frame) cancelAnimationFrame(frame);
+      if (verticalFrame) cancelAnimationFrame(verticalFrame);
       html.removeAttribute("data-home2-editorial");
       run.style.height = "";
       track.style.transform = "";

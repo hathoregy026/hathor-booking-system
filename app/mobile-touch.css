@@ -73,6 +73,15 @@ body.is-touch-device .lux-cursor {
  * NARROW ≤1024 — hero, typography, gutters, touch targets
  * -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
+  /* Header and floating rails can render beside, rather than inside, .public-site. */
+  .hathor-header__menu-btn,
+  .public-theme-toggle,
+  .public-fab__icon-btn {
+    touch-action: manipulation;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
   body {
     overflow-x: clip;
     max-width: 100%;
@@ -196,6 +205,12 @@ body.is-touch-device .lux-cursor {
   }
 
   /* Touch targets */
+  .public-site button:not([class*="backdrop"]) {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
   .public-site a.btn,
   .public-site button.btn,
   .public-site .btn,
@@ -205,7 +220,20 @@ body.is-touch-device .lux-cursor {
   .public-site .carousel-nav button,
   .public-site [data-carousel-prev],
   .public-site [data-carousel-next],
+  .public-site .ab-btn,
+  .public-site .ac-pill,
+  .public-site .ar-btn,
   .public-site .ce-btn,
+  .public-site .chr-btn,
+  .public-site .h2-btn,
+  .public-site .hep-button,
+  .public-site .hl-btn,
+  .public-site .jn-btn,
+  .public-site .mr-btn,
+  .public-site .pn-btn,
+  .public-site .room-pill,
+  .public-site .sn-btn,
+  .public-site .we-btn,
   .public-site .contact-success-popup__again {
     min-height: 44px;
     min-width: 44px;
@@ -511,6 +539,26 @@ body.is-touch-device .lux-cursor {
   .public-site .public-fab:hover,
   .public-site [class*="fab"]:hover {
     transform: none !important;
+  }
+
+  .public-site :is(
+      .ab-btn,
+      .ac-pill,
+      .ar-btn,
+      .ce-btn,
+      .chr-btn,
+      .h2-btn,
+      .hep-button,
+      .hl-btn,
+      .jn-btn,
+      .mr-btn,
+      .pn-btn,
+      .room-pill,
+      .sn-btn,
+      .we-btn
+    ):hover {
+    transform: none !important;
+    box-shadow: none !important;
   }
 }
 

@@ -271,7 +271,10 @@
 .public-site .public-btn-outline-gold,
 .public-site .public-btn-dark,
 .public-site .public-fab__book,
-.public-site .public-fab__book-text,
+.public-site .public-fab__book-text {
+  color: var(--hathor-btn-label, #746235);
+}
+
 .public-site .public-fab__chat-main,
 .public-site .public-fab__icon-btn,
 .public-site .public-fab__chat-icon,
@@ -301,14 +304,14 @@
 .public-site .public-fab__book:hover .public-fab__book-text,
 .public-site .public-fab__chat-main:hover,
 .public-site .public-fab__icon-btn:hover {
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label, #2c2824);
 }
 
 .public-site .public-fab__chat-main:hover .public-fab__chat-icon,
 .public-site .public-fab__icon-btn:hover .public-fab__lucide,
 .public-site .public-fab__chat-main:hover .public-fab__lucide {
-  stroke: #ffffff;
-  color: #ffffff;
+  stroke: var(--hathor-btn-hover-label, #2c2824);
+  color: var(--hathor-btn-hover-label, #2c2824);
 }
 
 .public-site .hero-cta:hover,

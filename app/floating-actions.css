@@ -137,7 +137,7 @@
   transform: translateY(-4px) scale(1.05);
   border-color: #b69f64;
   background: #b69f64;
-  color: #fff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   box-shadow: 0 10px 24px rgba(182, 159, 100, 0.35);
 }
 
@@ -208,7 +208,7 @@
 .public-fab__book:hover {
   background: #b69f64;
   border-color: #b69f64;
-  color: #fff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   box-shadow: 0 10px 24px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }

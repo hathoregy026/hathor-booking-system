@@ -10,6 +10,12 @@
   --hathor-btn-pad-x: 1.75rem;
   --hathor-btn-font-size: 0.72rem;
   --hathor-btn-tracking: 0.18em;
+  --hathor-btn-radius: 999px;
+  --hathor-btn-gap: 0.5rem;
+  --hathor-btn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Darkened label only; the core gold remains #b69f64. AA on warm sand: 5.43:1. */
+  --hathor-btn-label: #5f4f2a;
+  --hathor-btn-hover-label: #2c2824;
 }
 
 /*
@@ -36,9 +42,9 @@
 .venetian-page .btn:not(.hero-cta),
 .venetian-page .cruise-filter--cta {
   box-sizing: border-box !important;
-  width: var(--hathor-btn-width) !important;
+  width: max-content !important;
   min-width: var(--hathor-btn-width) !important;
-  max-width: var(--hathor-btn-width) !important;
+  max-width: none !important;
   height: var(--hathor-btn-height) !important;
   min-height: var(--hathor-btn-height) !important;
   max-height: var(--hathor-btn-height) !important;
@@ -53,6 +59,364 @@
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+/*
+  Editorial routes historically copied the Hathor pill into page-local class
+  names, then drifted to different heights, widths, type scales and easing.
+  Keep their contextual fills and borders, but give every text CTA one shared
+  geometry. Short labels retain the established 12.5rem footprint; longer
+  labels grow naturally instead of overflowing or shrinking their type.
+*/
+.public-site :is(
+    .ab-btn,
+    .ac-pill,
+    .ar-btn,
+    .ce-btn,
+    .chr-btn,
+    .h2-btn,
+    .hep-button,
+    .hl-btn,
+    .jn-btn,
+    .mr-btn,
+    .pn-btn,
+    .room-pill,
+    .sn-btn,
+    .we-btn
+  ) {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--hathor-btn-gap) !important;
+  width: max-content !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: none !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  padding: 3px var(--hathor-btn-pad-x) 1px !important;
+  border-radius: var(--hathor-btn-radius) !important;
+  font-family: var(--public-sans) !important;
+  font-size: var(--hathor-btn-font-size) !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  transition:
+    color 0.35s var(--hathor-btn-ease),
+    background-color 0.35s var(--hathor-btn-ease),
+    border-color 0.35s var(--hathor-btn-ease),
+    box-shadow 0.35s var(--hathor-btn-ease),
+    transform 0.35s var(--hathor-btn-ease) !important;
+}
+
+/*
+  Keep the gold borders/fills intact while darkening only labels on light
+  surfaces. Context overrides retain the established cream-on-ink treatment.
+*/
+.public-site :is(
+    .ab-btn,
+    .ar-btn,
+    .ce-btn,
+    .chr-btn,
+    .h2-btn,
+    .hep-button,
+    .hl-btn,
+    .jn-btn,
+    .pn-btn,
+    .room-pill,
+    .sn-btn,
+    .we-btn
+  ):not([class*="--solid"], [class*="--fill"]) {
+  color: var(--hathor-btn-label) !important;
+}
+
+.public-site :is(
+    .ab-card--ink .ab-btn,
+    .h2-epilogue .h2-btn:not(.h2-btn--solid),
+    .hl-card--ink .hl-btn,
+    .mr-card .mr-btn--outline,
+    .mr-cta .mr-btn--outline,
+    .mr-filters .mr-btn--ghost
+  ) {
+  color: #d2c7b5 !important;
+}
+
+.public-site :is(
+    .ab-card--gold .ab-btn,
+    .ab-epilogue .ab-btn:not(.ab-btn--solid),
+    .ce-epilogue .ce-btn:not(.ce-btn--solid),
+    .hl-card--gold .hl-btn,
+    .hl-epilogue .hl-btn:not(.hl-btn--solid),
+    .pn-epilogue .pn-btn,
+    .pn-btn--solid,
+    .we-epilogue .we-btn:not(.we-btn--solid)
+  ) {
+  color: var(--hathor-btn-hover-label) !important;
+}
+
+.public-site :is(
+    .ab-btn,
+    .ar-btn,
+    .ce-btn,
+    .chr-btn,
+    .h2-btn,
+    .hep-button,
+    .hl-btn,
+    .jn-btn,
+    .pn-btn,
+    .room-pill,
+    .sn-btn,
+    .we-btn
+  ):not([class*="--solid"], [class*="--fill"]):hover:not(:disabled, [aria-disabled="true"]) {
+  color: #f4eddf !important;
+}
+
+.public-site :is(
+    .ab-btn,
+    .ac-pill,
+    .ar-btn,
+    .ce-btn,
+    .chr-btn,
+    .h2-btn,
+    .hep-button,
+    .hl-btn,
+    .jn-btn,
+    .mr-btn,
+    .pn-btn,
+    .room-pill,
+    .sn-btn,
+    .we-btn
+  ):hover:not(:disabled, [aria-disabled="true"]) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 26px rgb(182 159 100 / 0.25) !important;
+}
+
+.public-site :is(
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .public-btn-gold,
+    .public-btn-outline-gold,
+    .public-btn-dark,
+    .ab-btn,
+    .ac-pill,
+    .ar-btn,
+    .ce-btn,
+    .chr-btn,
+    .h2-btn,
+    .hep-button,
+    .hl-btn,
+    .jn-btn,
+    .mr-btn,
+    .pn-btn,
+    .room-pill,
+    .sn-btn,
+    .we-btn
+  ):focus-visible {
+  outline: 2px solid #f7f1e6 !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 5px #746235,
+    0 10px 26px rgb(182 159 100 / 0.25) !important;
+}
+
+.public-site :is(
+    .ab-btn,
+    .ac-pill,
+    .ar-btn,
+    .ce-btn,
+    .chr-btn,
+    .h2-btn,
+    .hep-button,
+    .hl-btn,
+    .jn-btn,
+    .mr-btn,
+    .pn-btn,
+    .room-pill,
+    .sn-btn,
+    .we-btn
+  ):is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Shared rhythm without changing each page's intentional left/center alignment. */
+.public-site :is(
+    .ab-epilogue__pills,
+    .ce-card__pills,
+    .chr-claim__actions,
+    .chr-epilogue__pills,
+    .hathor-checkout-actions,
+    .hl-epilogue__pills,
+    .jn-epilogue__pills,
+    .mr-cta__actions,
+    .pn-epilogue__pills,
+    .sn-cta__actions,
+    .voy-cta-row,
+    .we-epilogue__pills
+  ) {
+  align-items: center !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* The accommodation editorial shell intentionally sits outside .public-site. */
+.accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline) {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--hathor-btn-gap) !important;
+  width: max-content !important;
+  min-width: var(--hathor-btn-width) !important;
+  max-width: none !important;
+  height: var(--hathor-btn-height) !important;
+  min-height: var(--hathor-btn-height) !important;
+  max-height: var(--hathor-btn-height) !important;
+  padding: 3px var(--hathor-btn-pad-x) 1px !important;
+  border-radius: var(--hathor-btn-radius) !important;
+  font-family: var(--public-sans) !important;
+  font-size: var(--hathor-btn-font-size) !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: var(--hathor-btn-tracking) !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  transition:
+    color 0.35s var(--hathor-btn-ease),
+    background-color 0.35s var(--hathor-btn-ease),
+    border-color 0.35s var(--hathor-btn-ease),
+    box-shadow 0.35s var(--hathor-btn-ease),
+    transform 0.35s var(--hathor-btn-ease) !important;
+}
+
+.accom-editorial-shell :is(.ac-pill:not(.ac-pill--fill), .hathor-fav--inline, .hathor-atv--inline) {
+  color: var(--hathor-btn-label) !important;
+}
+
+.accom-editorial-shell .ac-pill--fill {
+  color: #f4eddf !important;
+}
+
+.accom-editorial-shell :is(.ac-charter-scene, .ac-landing)
+  :is(.ac-pill:not(.ac-pill--fill), .hathor-fav--inline, .hathor-atv--inline) {
+  color: var(--hathor-btn-hover-label) !important;
+}
+
+.accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline):hover:not(:disabled, [aria-disabled="true"]) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 26px rgb(182 159 100 / 0.25) !important;
+}
+
+.accom-editorial-shell .ac-pill:not(.ac-pill--fill):hover:not(:disabled, [aria-disabled="true"]) {
+  color: #f4eddf !important;
+}
+
+.accom-editorial-shell .ac-pill--fill:hover:not(:disabled, [aria-disabled="true"]) {
+  color: var(--hathor-btn-hover-label) !important;
+}
+
+.accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline):focus-visible {
+  outline: 2px solid #f7f1e6 !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 5px #746235,
+    0 10px 26px rgb(182 159 100 / 0.25) !important;
+}
+
+.accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline):is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.accom-editorial-shell .ac-pills {
+  align-items: center !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+@media (max-width: 620px) {
+  .public-site :is(
+      .ab-btn,
+      .ar-btn,
+      .ce-btn,
+      .chr-btn,
+      .h2-btn,
+      .hep-button,
+      .hl-btn,
+      .jn-btn,
+      .mr-btn,
+      .pn-btn,
+      .room-pill,
+      .sn-btn,
+      .we-btn
+    ),
+  .accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-site :is(
+      .ab-btn,
+      .ac-pill,
+      .ar-btn,
+      .ce-btn,
+      .chr-btn,
+      .h2-btn,
+      .hep-button,
+      .hl-btn,
+      .jn-btn,
+      .mr-btn,
+      .pn-btn,
+      .room-pill,
+      .sn-btn,
+      .we-btn
+    ) {
+    transition: none !important;
+  }
+
+  .public-site :is(
+      .ab-btn,
+      .ac-pill,
+      .ar-btn,
+      .ce-btn,
+      .chr-btn,
+      .h2-btn,
+      .hep-button,
+      .hl-btn,
+      .jn-btn,
+      .mr-btn,
+      .pn-btn,
+      .room-pill,
+      .sn-btn,
+      .we-btn
+    ):hover {
+    transform: none !important;
+  }
+
+  .accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline) {
+    transition: none !important;
+  }
+
+  .accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline):hover {
+    transform: none !important;
+  }
 }
 
 /* Hero CTA ? height locked; width free so GSAP can stretch the whole pill.
@@ -263,7 +627,7 @@
   font-family: var(--public-serif);
 }
 
-/* ??? Buttons: white + gold stroke idle / gold + white text hover ??? */
+/* Buttons: cream + gold stroke idle / gold fill hover, with readable labels. */
 .public-btn-gold,
 .public-btn-outline-gold,
 .public-btn-dark {
@@ -282,7 +646,7 @@
   border-radius: 999px;
   border: 1px solid #b69f64;
   background: #faf8f5;
-  color: #b69f64;
+  color: var(--hathor-btn-label);
   font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 500;
   letter-spacing: var(--hathor-btn-tracking, 0.18em);
@@ -316,7 +680,7 @@
 .public-btn-dark:hover {
   background: #b69f64;
   border-color: #b69f64;
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label);
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }

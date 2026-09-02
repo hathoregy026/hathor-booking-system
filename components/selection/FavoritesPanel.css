@@ -209,6 +209,9 @@
 }
 
 .hfp__action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   color: inherit;
   text-decoration: none;
   font-size: 0.62rem;
@@ -223,6 +226,9 @@
   appearance: none;
   border: 0;
   background: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: 0.3rem 0;
   color: inherit;
   cursor: pointer;
@@ -277,18 +283,31 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.75rem;
+  min-width: min(100%, var(--hathor-btn-width, 12.5rem));
+  min-height: var(--hathor-btn-height, 2.85rem);
   margin-top: 0.6rem;
-  padding: 0 1.6rem;
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
   border: 1px solid var(--hfp-gold);
   border-radius: 999px;
   background: var(--hfp-gold);
-  color: #fff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   text-decoration: none;
-  font-size: 0.65rem;
+  font-size: var(--hathor-btn-font-size, 0.72rem);
   font-weight: 600;
-  letter-spacing: 0.16em;
+  line-height: 1;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
+  transition:
+    color 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    background-color 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.hfp__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgb(139 105 20 / 0.22);
 }
 
 /* ---------------------------------------------------------------- */
@@ -336,8 +355,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hfp__backdrop,
-  .hfp__sheet {
+  .hfp__sheet,
+  .hfp__cta,
+  .hfp__counter-controls button {
     transition: none;
+  }
+
+  .hfp__cta:hover {
+    transform: none;
   }
 }
 
@@ -357,6 +382,9 @@
   appearance: none;
   border: 0;
   background: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: 0.35rem 0;
   color: inherit;
   cursor: pointer;
@@ -465,13 +493,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.85rem;
-  height: 1.85rem;
-  transition: border-color 200ms ease, opacity 200ms ease;
+  width: 2.75rem;
+  height: 2.75rem;
+  transition:
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .hfp__counter-controls button:hover:not(:disabled) {
   border-color: var(--hfp-gold);
+  background: rgb(201 169 110 / 0.1);
 }
 
 .hfp__counter-controls button:disabled {

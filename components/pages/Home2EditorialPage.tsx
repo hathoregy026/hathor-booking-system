@@ -80,7 +80,7 @@ function Home2Media({
         name={name}
         alt={alt}
         fill
-        sizes="(max-width: 950px) 100vw, 68vw"
+        sizes="(max-width: 620px) 100vw, (max-width: 1024px) 92vw, 68vw"
         className="h2-media__image"
         priority={priority}
         previewAnchor
@@ -403,7 +403,7 @@ export function Home2EditorialPage({
                     alt="Hathor Dahabiya voyage on the Nile"
                     className="h2-helm__destination"
                   />
-                  <Image src={rotatingWheel} alt="" className="h2-helm__wheel" sizes="(max-width: 950px) 76vw, 58vh" />
+                  <Image src={rotatingWheel} alt="" className="h2-helm__wheel" sizes="(max-width: 1024px) 76vw, 58vh" />
                   <div className="h2-helm__copy">
                     <Eyebrow>Set your course</Eyebrow>
                     <h2 className="h2-display h2-display--l">

@@ -1,0 +1,525 @@
+/*
+ * Hathor master button system — the single authoritative skin for every public
+ * pill control, on every device.
+ *
+ * Loaded LAST in each layout so it settles the drift between the page-local
+ * button families (.ab-btn, .ac-pill, .mr-btn, .booking-btn-*, …) without any
+ * of them having to be rewritten in place. Geometry tokens still live in
+ * app/public.css; this file owns skin, state and interaction.
+ *
+ * Locked contract:
+ *   outline idle  → transparent fill, thin ink hairline, ink label
+ *   primary idle  → deep warm black fill, gold label
+ *   hover / press → #B69F64 fill, #B69F64 border, #FFFFFF label + icon
+ *   hover never moves, resizes, glows or shadows the button
+ *   hover is pointer-gated, so touch never gets a stuck gold state
+ *
+ * `:not(#_)` is a specificity lift, not a filter: it raises these rules to
+ * (1,1,0) so they settle above the existing `.public-site :is(…)` and
+ * `.accom-editorial-shell :is(…)` !important rules regardless of bundle order.
+ * `#_` matches nothing, so the roster itself is unchanged.
+ */
+
+:root {
+  /* The one authoritative hover gold. Nothing else may define it. */
+  --hathor-btn-hover-bg: #b69f64;
+  --hathor-btn-hover-border: #b69f64;
+  --hathor-btn-hover-text: #ffffff;
+
+  /* Outline (default) skin — inverted on ink surfaces below. */
+  --hathor-btn-outline-bg: transparent;
+  --hathor-btn-outline-line: rgba(36, 29, 20, 0.58);
+  --hathor-btn-outline-ink: #241d14;
+
+  /* Primary (Book Now) skin. */
+  --hathor-btn-primary-bg: #12100c;
+  --hathor-btn-primary-line: #12100c;
+  --hathor-btn-primary-ink: #cdb684;
+
+  --hathor-btn-duration: 320ms;
+}
+
+/*
+ * Night mode — same button design, re-grounded for a dark canvas.
+ *
+ * The day skins assume a cream page: the primary fill is a deep warm black
+ * (#12100c) and the hover label is white. Neither survives an inverted ground.
+ * On the night canvas (#14110d) the primary fill sits at 1.05:1 — the button
+ * silhouette simply vanishes — and white-on-#b69f64 is only 2.47:1.
+ *
+ * So night carries emphasis with the brand gold instead of with darkness:
+ *   primary fill  #cbb079 on canvas   = 8.99:1  (silhouette returns)
+ *   primary label #14110d on gold     = 8.99:1
+ *   hover fill    #dfc894 on canvas   = 11.50:1 (clear state change from idle)
+ *   hover label   #14110d on gold     = 11.50:1
+ *   outline label #ece5d7 on canvas   = 14.90:1
+ *
+ * Overriding the tokens rather than the selectors keeps this file's single
+ * authoritative roster intact: geometry, states and interaction are unchanged.
+ */
+html[data-public-theme="night"],
+html[data-public-theme="dark"] {
+  --hathor-btn-hover-bg: #dfc894;
+  --hathor-btn-hover-border: #dfc894;
+  --hathor-btn-hover-text: #14110d;
+
+  --hathor-btn-outline-bg: transparent;
+  --hathor-btn-outline-line: rgba(240, 233, 220, 0.55);
+  --hathor-btn-outline-ink: #ece5d7;
+
+  --hathor-btn-primary-bg: #cbb079;
+  --hathor-btn-primary-line: #cbb079;
+  --hathor-btn-primary-ink: #14110d;
+}
+
+/* Ink surfaces keep the identical design — only the hairline and label invert.
+   Applied as a descendant rule rather than a custom-property override: a token
+   swap on an ancestor resolved inconsistently across the pinned horizontal
+   stages, which left cream labels sitting on cream cards. */
+
+/* ------------------------------------------------------------------ */
+/* 1. Shared geometry + typography                                     */
+/* ------------------------------------------------------------------ */
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):not(.hero-cta):not(#_) {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--hathor-btn-gap, 0.5rem) !important;
+
+  width: max-content !important;
+  min-width: var(--hathor-btn-width, 12.5rem) !important;
+  max-width: 100% !important;
+  height: var(--hathor-btn-height, 2.85rem) !important;
+  min-height: var(--hathor-btn-height, 2.85rem) !important;
+  max-height: var(--hathor-btn-height, 2.85rem) !important;
+
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: var(--hathor-btn-radius, 999px) !important;
+
+  font-family: var(--public-sans, inherit) !important;
+  font-size: var(--hathor-btn-font-size, 0.72rem) !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+
+  opacity: 1 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  transition:
+    background-color var(--hathor-btn-duration)
+      var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--hathor-btn-duration)
+      var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    color var(--hathor-btn-duration)
+      var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+}
+
+@supports (text-box-trim: trim-both) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .public-fab__book, .cruise-filter--cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):not(.hero-cta):not(#_) {
+    padding: 0 var(--hathor-btn-pad-x, 1.75rem) !important;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+}
+
+/* Icons: one stroke language, always the label colour, never a jumping size. */
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):not(.hero-cta):not(#_)
+  :is(svg, .hathor-fav__icon, .hathor-atv__icon) {
+  flex: 0 0 auto !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  color: inherit !important;
+  stroke-width: 1.5 !important;
+  transition: color var(--hathor-btn-duration)
+    var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Idle skins — outline is the default, filled is opt-in            */
+/* ------------------------------------------------------------------ */
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-primary, .btn-secondary,
+    .public-btn-outline-gold, .public-btn-dark,
+    .cruise-filter--cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline,
+    .booking-btn-outline, .historia-btn
+  ):not(.hero-cta):not(
+    [data-hathor-btn="primary"],
+    .btn-filled,
+    [class*="--fill"],
+    [class*="--solid"]
+  ):not(#_) {
+  background-color: var(--hathor-btn-outline-bg) !important;
+  background-image: none !important;
+  border-color: var(--hathor-btn-outline-line) !important;
+  color: var(--hathor-btn-outline-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Same outline design, inverted for ink surfaces. */
+:is(
+    html[data-public-theme="night"],
+    html[data-public-theme="dark"],
+    [data-public-theme="night"],
+    [data-public-theme="dark"],
+    .cta-section,
+    .ab-card--ink,
+    .hl-card--ink,
+    .h2-epilogue,
+    .mr-card,
+    .mr-cta,
+    .mr-filters,
+    .lux-hero,
+    .hero-button,
+    [data-hathor-surface="ink"]
+  )
+  :is(
+    .btn, .btn-light, .btn-dark, .btn-primary, .btn-secondary,
+    .public-btn-outline-gold, .public-btn-dark,
+    .cruise-filter--cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline,
+    .booking-btn-outline, .historia-btn
+  ):not(.hero-cta):not(
+    [data-hathor-btn="primary"],
+    .btn-filled,
+    [class*="--fill"],
+    [class*="--solid"]
+  ):not(#_) {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: rgba(240, 233, 220, 0.55) !important;
+  color: #ece5d7 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):not(.hero-cta):is(
+    [data-hathor-btn="primary"],
+    .btn-filled,
+    .public-btn-gold,
+    .public-fab__book,
+    .hfp__cta,
+    .booking-btn-primary,
+    .hathor-atv-confirm__primary,
+    [class*="--fill"],
+    [class*="--solid"]
+  ):not(#_) {
+  background-color: var(--hathor-btn-primary-bg) !important;
+  background-image: none !important;
+  border-color: var(--hathor-btn-primary-line) !important;
+  color: var(--hathor-btn-primary-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* The floating Book Now is fixed-position over content — it keeps its full
+   pill width at every viewport rather than shrinking to its container. */
+.public-fab__book:not(#_):not(#_) {
+  width: var(--hathor-btn-width, 12.5rem) !important;
+  max-width: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Locked hover — pointer devices only, so touch never sticks gold  */
+/* ------------------------------------------------------------------ */
+
+@media (hover: hover) and (pointer: fine) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .public-fab__book, .cruise-filter--cta, .hero-cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):hover:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_) {
+    background-color: var(--hathor-btn-hover-bg) !important;
+    background-image: none !important;
+    border-color: var(--hathor-btn-hover-border) !important;
+    color: var(--hathor-btn-hover-text) !important;
+    -webkit-text-fill-color: var(--hathor-btn-hover-text) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .public-fab__book, .cruise-filter--cta, .hero-cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):hover:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_)
+    :is(span, svg, .hathor-fav__icon, .hathor-atv__icon, .hero-cta-text) {
+    color: var(--hathor-btn-hover-text) !important;
+    -webkit-text-fill-color: var(--hathor-btn-hover-text) !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. Press — the touch equivalent of hover, transient by definition   */
+/* ------------------------------------------------------------------ */
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta, .hero-cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):active:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_) {
+  background-color: var(--hathor-btn-hover-bg) !important;
+  background-image: none !important;
+  border-color: var(--hathor-btn-hover-border) !important;
+  color: var(--hathor-btn-hover-text) !important;
+  -webkit-text-fill-color: var(--hathor-btn-hover-text) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta, .hero-cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):active:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_)
+  :is(span, svg, .hathor-fav__icon, .hathor-atv__icon, .hero-cta-text) {
+  color: var(--hathor-btn-hover-text) !important;
+  -webkit-text-fill-color: var(--hathor-btn-hover-text) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 5. Focus, disabled, loading                                         */
+/* ------------------------------------------------------------------ */
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta, .hero-cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):focus-visible:not(#_) {
+  outline: 2px solid var(--hathor-btn-hover-bg) !important;
+  outline-offset: 3px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):is(:disabled, [aria-disabled="true"]):not(#_) {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Loading must not resize the pill or shift the row — geometry is already
+   locked above, so only the affordance changes. */
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  )[data-loading="true"]:not(#_) {
+  cursor: progress !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 6. Neutralise competing hover mechanisms                            */
+/*    The editorial families paint hover with a ::before wipe and the  */
+/*    specular layer adds a travelling stroke shine. Both fight the    */
+/*    locked flat-gold transition, so they are stood down here.        */
+/* ------------------------------------------------------------------ */
+
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta, .hero-cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):not(#_)::before,
+:is(
+    .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+    .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+    .public-fab__book, .cruise-filter--cta, .hero-cta,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+    .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+  ):not(#_)::after {
+  opacity: 0 !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 7. Button groups — one baseline, one rhythm                         */
+/* ------------------------------------------------------------------ */
+
+:is(
+    .ab-epilogue__pills,
+    .ac-pills,
+    .ce-card__pills,
+    .chr-claim__actions,
+    .chr-epilogue__pills,
+    .hathor-atv-confirm__actions,
+    .hathor-checkout-actions,
+    .hl-epilogue__pills,
+    .jn-epilogue__pills,
+    .mr-card__actions,
+    .mr-cta__actions,
+    .pn-epilogue__pills,
+    .sn-cta__actions,
+    .voy-cta-row,
+    .we-epilogue__pills
+  ):not(#_) {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 8. Responsive arrangement — the design never changes, only the fit  */
+/* ------------------------------------------------------------------ */
+
+/* Tablet and down: long labels breathe instead of clipping. */
+@media (max-width: 1024px) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .cruise-filter--cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):not(.hero-cta):not(#_) {
+    min-width: min(var(--hathor-btn-width, 12.5rem), 100%) !important;
+  }
+}
+
+/* Phones: stack full width — same pill, same type, same hairline. */
+@media (max-width: 620px) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .cruise-filter--cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):not(.hero-cta):not(#_) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Narrowest phones: tighten padding only — never the height or the type. */
+@media (max-width: 380px) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .cruise-filter--cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):not(.hero-cta):not(#_) {
+    padding-left: 1.15rem !important;
+    padding-right: 1.15rem !important;
+    letter-spacing: 0.14em !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 9. Reduced motion                                                   */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .public-fab__book, .cruise-filter--cta, .hero-cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):not(#_),
+  :is(
+      .btn, .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn,
+      .hep-button, .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill,
+      .sn-btn, .we-btn, .hathor-fav--inline, .hathor-atv--inline
+    ):not(#_)
+    :is(svg, .hathor-fav__icon, .hathor-atv__icon) {
+    transition: none !important;
+  }
+}

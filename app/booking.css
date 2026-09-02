@@ -2733,7 +2733,7 @@
 .historia-cal-day--available {
   background: var(--booking-gold);
   border-color: var(--booking-gold);
-  color: #fff;
+  color: var(--booking-text, #2c2824);
   font-weight: 700;
   cursor: pointer;
 }
@@ -2912,7 +2912,7 @@
   background: var(--booking-gold);
   border-color: var(--booking-gold);
   border-radius: 999px;
-  color: #fff;
+  color: var(--booking-text, #2c2824);
 }
 
 .historia-btn--primary:hover:not(:disabled) {
@@ -3170,7 +3170,7 @@
 
 .booking-page .public-btn-gold {
   background: var(--booking-gold);
-  color: #fff;
+  color: var(--booking-text, #2c2824);
 }
 
 .booking-page .public-btn-outline-gold {
@@ -3182,6 +3182,101 @@
   background: #fff;
   color: var(--booking-gold-dark);
   transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+ * Unified booking action controls
+ * --------------------------------------------------------------------------
+ * Presentation only: no availability, price, status or submission logic is
+ * changed. Full-width actions remain full width; compact actions share the
+ * public site's height, type rhythm, pill radius and state feedback.
+ */
+.booking-page :is(
+    .booking-btn-primary,
+    .booking-btn-outline,
+    .hathor-checkout-book-btn,
+    .historia-btn,
+    .public-btn-gold,
+    .public-btn-outline-gold
+  ),
+.booking-modal .hathor-modal-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hathor-btn-gap, 0.5rem);
+  min-width: min(100%, var(--hathor-btn-width, 12.5rem));
+  min-height: var(--hathor-btn-height, 2.85rem);
+  padding: 3px var(--hathor-btn-pad-x, 1.75rem) 1px;
+  border-radius: var(--hathor-btn-radius, 999px);
+  font-family: var(--font-hathor-body, var(--booking-sans));
+  font-size: var(--hathor-btn-font-size, 0.72rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  transition:
+    color 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    background-color 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 0.35s var(--hathor-btn-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.booking-page :is(
+    .booking-btn-primary,
+    .booking-btn-outline,
+    .hathor-checkout-book-btn,
+    .historia-btn,
+    .public-btn-gold,
+    .public-btn-outline-gold
+  ):hover:not(:disabled, [aria-disabled="true"]),
+.booking-modal .hathor-modal-btn:hover:not(:disabled, [aria-disabled="true"]) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgb(139 105 20 / 0.22);
+}
+
+.booking-page :is(
+    .booking-btn-primary,
+    .booking-btn-outline,
+    .hathor-checkout-book-btn,
+    .historia-btn,
+    .public-btn-gold,
+    .public-btn-outline-gold
+  ):focus-visible,
+.booking-modal .hathor-modal-btn:focus-visible {
+  outline: 2px solid #fffaf1;
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 5px var(--booking-gold-dark),
+    0 10px 26px rgb(139 105 20 / 0.22);
+}
+
+.booking-page :is(
+    .booking-btn-primary,
+    .booking-btn-outline,
+    .hathor-checkout-book-btn,
+    .historia-btn,
+    .public-btn-gold,
+    .public-btn-outline-gold
+  ):is(:disabled, [aria-disabled="true"]),
+.booking-modal .hathor-modal-btn:is(:disabled, [aria-disabled="true"]) {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.booking-page :is(
+    .hathor-checkout-actions,
+    .historia-checkout-calendar__actions,
+    .historia-room-selection__toolbar,
+    .booking-room-editorial__actions
+  ) {
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .historia-room-selection {

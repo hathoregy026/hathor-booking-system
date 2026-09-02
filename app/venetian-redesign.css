@@ -80,7 +80,7 @@
 .btn-filled:not(.hero-cta):hover {
   background: var(--gold, #b69f64);
   border-color: var(--gold, #b69f64);
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
@@ -1046,7 +1046,7 @@
 .cruise-filter:hover,
 .cruise-filter.is-active {
   background: #b69f64;
-  color: #ffffff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   border-color: #b69f64;
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
@@ -2458,7 +2458,7 @@
 .venetian-page .cruise-filter--cta.is-active {
   background: #b69f64;
   border-color: #b69f64;
-  color: #fff;
+  color: var(--hathor-btn-hover-label, #2c2824);
   box-shadow: 0 10px 26px rgba(182, 159, 100, 0.35);
   transform: translateY(-2px);
 }
@@ -2831,5 +2831,4 @@ html[data-public-theme="day"] .venetian-page {
   background: #ece8df;
   color: #3e3026;
 }
-
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveDeployId } from "@/lib/deploy-id";
-import { getProductionOrigin, VERCEL_PRODUCTION_ORIGIN } from "@/lib/public-url";
+import { getProductionOrigin } from "@/lib/public-url";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

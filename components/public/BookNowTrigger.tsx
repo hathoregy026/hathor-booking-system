@@ -11,7 +11,14 @@ export function BookNowTrigger({ className, children }: BookNowTriggerProps) {
   const { openBooking } = useBookNowModal();
 
   return (
-    <button type="button" className={className} onClick={openBooking}>
+    <button
+      type="button"
+      className={className}
+      /* Book Now is the primary action everywhere it appears, so the shared
+         button system paints it filled. The hero glass CTA opts out itself. */
+      data-hathor-btn="primary"
+      onClick={openBooking}
+    >
       {children}
     </button>
   );

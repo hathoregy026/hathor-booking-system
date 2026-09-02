@@ -114,11 +114,19 @@ const nextConfig: NextConfig = {
         headers: SECURITY_HEADERS,
       },
       {
+        /*
+         * Production only. In dev this header makes the browser hold on to
+         * chunks that Turbopack has already rebuilt, so CSS and JS edits stop
+         * reaching the page — Next warns about exactly this at startup.
+         */
         source: "/_next/static/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value:
+              process.env.NODE_ENV === "production"
+                ? "public, max-age=31536000, immutable"
+                : "no-store, must-revalidate",
           },
         ],
       },
