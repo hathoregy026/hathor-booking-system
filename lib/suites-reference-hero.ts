@@ -365,24 +365,25 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 @media (min-width: 951px) {
   main .mod-scroll__images.principal {
     box-sizing: border-box;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(34rem, 42vw));
-    align-items: start;
-    gap: clamp(1.5rem, 3vw, 3.25rem);
-    width: max-content;
-    padding: 0 clamp(1rem, 2vw, 2.5rem);
-    overflow: clip;
+    display: flex !important;
+    align-items: stretch !important;
+    gap: clamp(1.5rem, 3vw, 3.25rem) !important;
+    width: max-content !important;
+    height: var(--100vh) !important;
+    padding: 0 clamp(1rem, 2vw, 2.5rem) !important;
+    overflow: clip !important;
   }
 
   main .mod-scroll__images.principal > .mod-scroll__images__image-single,
   main .mod-scroll__images.principal > .mod-scroll__images__flip {
-    position: relative;
-    inset: auto;
-    width: 42vw;
-    min-width: 34rem;
-    height: var(--100vh);
-    aspect-ratio: auto;
-    transform: none;
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 42vw !important;
+    width: 42vw !important;
+    min-width: 34rem !important;
+    height: var(--100vh) !important;
+    aspect-ratio: auto !important;
+    transform: none !important;
   }
 
   main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media__wrap-source, .media__source),
