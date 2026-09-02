@@ -249,8 +249,8 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 
 .srh-connector {
-  fill: none;
-  stroke: #c3a158;
+  fill: none !important;
+  stroke: #c3a158 !important;
   stroke-width: 1.15;
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
@@ -265,7 +265,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 
 .srh-connector__dot {
-  fill: #c3a158;
+  fill: #c3a158 !important;
   opacity: 0;
   transform: scale(0);
   transform-box: fill-box;
