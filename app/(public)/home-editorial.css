@@ -790,7 +790,8 @@ html:has(.home-editorial) .lux-footer {
     --h2-t-copy: clamp(0.95rem, 4vw, 1.0625rem);
     --h2-pad: 1.25rem;
   }
-  .h2-btn { width: 100%; min-width: 0; height: 3.25rem; }
+  /* Tablet-narrow only — phones (≤480) use content-width pills */
+  .h2-btn { width: min(100%, 18rem); min-width: 0; height: 3.25rem; }
   .h2-monument__word { font-size: 21vw; }
   .h2-itinerary__media,
   .h2-landmark__media,
@@ -1324,46 +1325,102 @@ html:has(.home-editorial) .lux-footer {
     object-position: 50% 50%;
   }
 
+  /*
+   * PHONE COMPOSITION RULES (≤480)
+   * - Copy left-aligned (monument note included — no left/right mix)
+   * - Images edge-to-edge (full phone view)
+   * - Buttons hug their label (ref: Discover More), never stretch full width
+   * - Amenity plates: photo + tight caption — no tall empty cream bands
+   */
+
+  /* --- Shared: content-width pills (beats button-system ≤620 width:100% !important) --- */
+  .public-site .home-editorial .h2-btn,
+  .public-site .home-editorial a.h2-btn,
+  .public-site .home-editorial button.h2-btn {
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2.2rem) !important;
+    height: 2.85rem !important;
+    min-height: 2.85rem !important;
+    padding-inline: 1.55rem !important;
+    align-self: center;
+    flex: 0 0 auto !important;
+  }
+  .h2-btn:active {
+    transform: scale(0.985);
+  }
+
   /* --- Welcome editorial --- */
   .h2-welcome {
     min-height: 0;
     padding-top: calc(var(--h2-band) + 0.5rem);
+    align-items: stretch;
   }
   .h2-welcome__copy {
     display: flex;
     flex-direction: column;
-    gap: 1.15rem;
-    width: min(34rem, 100%);
+    align-items: flex-start;
+    gap: 1.05rem;
+    width: 100%;
+    text-align: left;
   }
   .h2-welcome__media {
-    width: 100%;
     max-width: none;
     align-self: stretch;
     aspect-ratio: 4 / 5;
     margin-inline: calc(-1 * var(--h2-pad-left)) calc(-1 * var(--h2-pad-right));
     width: calc(100% + var(--h2-pad-left) + var(--h2-pad-right));
+    min-height: min(58svh, 28rem);
   }
-  .h2-welcome .h2-btn {
-    width: min(100%, 18rem);
+  .h2-welcome .h2-btn,
+  .h2-welcome__copy .h2-btn {
+    align-self: center;
+    margin-top: 0.15rem;
+  }
+  .h2-corner--bottom {
+    position: static;
     align-self: flex-start;
+    text-align: left;
+    margin-top: 0.35rem;
   }
 
-  /* --- Monument pause --- */
+  /* --- Monument pause — one left column, no right-anchored note --- */
   .h2-monument {
-    min-height: 42svh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: center;
-    padding-block: clamp(3rem, 12vw, 5rem);
+    place-items: unset;
+    padding-block: clamp(2.75rem, 11vw, 4.25rem);
+    gap: 1.15rem;
   }
   .h2-monument__word {
-    font-size: clamp(4.5rem, 24vw, 7.5rem);
+    font-size: clamp(3.6rem, 18vw, 5.75rem);
     letter-spacing: -0.04em;
+    white-space: normal;
+    transform: none;
+    line-height: 0.88;
+    text-align: left;
+  }
+  .h2-monument__note {
+    position: static;
+    align-self: flex-start;
+    text-align: left;
+    max-width: 100%;
   }
 
   /* --- Itinerary intro --- */
   .h2-itinerary-intro {
     min-height: 0;
-    padding-block: calc(var(--h2-band) * 1.2);
-    gap: 1.1rem;
+    padding-block: calc(var(--h2-band) * 1.1);
+    gap: 1rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .h2-itinerary-intro .h2-btn {
+    align-self: center;
+    margin-top: 0.25rem;
   }
 
   /* Phone card width override — rail chrome lives in the ≤1024 proportion pass. */
@@ -1372,11 +1429,12 @@ html:has(.home-editorial) .lux-footer {
     width: min(78vw, 21rem);
   }
 
-  /* --- Landmark / life cinematic chapters --- */
+  /* --- Landmark / life — full-bleed media, left copy, centered CTA --- */
   .h2-landmark,
   .h2-life {
     min-height: 0;
-    gap: 1.35rem;
+    gap: 1.15rem;
+    align-items: stretch;
   }
   .h2-landmark__media,
   .h2-life__media,
@@ -1385,7 +1443,7 @@ html:has(.home-editorial) .lux-footer {
     margin-inline: calc(-1 * var(--h2-pad-left)) calc(-1 * var(--h2-pad-right));
     aspect-ratio: 3 / 4;
     max-height: none;
-    min-height: min(52svh, 26rem);
+    min-height: min(56svh, 28rem);
   }
   .h2-flip.h2-landmark__media {
     position: relative;
@@ -1394,147 +1452,138 @@ html:has(.home-editorial) .lux-footer {
   .h2-landmark--2 .h2-landmark__media,
   .h2-life:nth-of-type(even) .h2-life__media {
     aspect-ratio: 4 / 5;
-    min-height: min(52svh, 28rem);
+    min-height: min(58svh, 30rem);
   }
   .h2-landmark__copy,
   .h2-life__copy {
     width: 100%;
-    gap: 0.95rem;
+    gap: 0.85rem;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
   }
   .h2-life .h2-btn,
   .h2-landmark .h2-btn {
-    width: min(100%, 18rem);
+    align-self: center;
   }
 
   .h2-amenities-intro {
     min-height: 0;
-    padding-block: calc(var(--h2-band) * 1.35);
-    gap: 1rem;
+    padding-block: calc(var(--h2-band) * 1.2);
+    gap: 0.95rem;
+    align-items: flex-start;
+    text-align: left;
   }
 
   /*
-   * Aboard Hathor — continuous photographic story, not a uniform card grid.
-   * Alternating bleed / rise / folio / split / portrait compositions.
+   * Aboard Hathor — every plate is full-bleed photo + compact caption.
+   * Desktop/tablet keep the alternating compositions; phone does not.
    */
   .h2-amenity-sequence {
     display: flex;
     flex-direction: column;
     gap: 0;
+    width: 100%;
   }
-  .h2-amenity-sequence .h2-amenity {
+  .h2-amenity-sequence .h2-amenity,
+  .h2-amenity-sequence .h2-amenity--bleed,
+  .h2-amenity-sequence .h2-amenity--rise,
+  .h2-amenity-sequence .h2-amenity--folio,
+  .h2-amenity-sequence .h2-amenity--split,
+  .h2-amenity-sequence .h2-amenity--portrait {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100% !important;
     min-height: 0;
-    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    background: var(--h2-paper-warm);
   }
   .h2-amenity-sequence .h2-amenity::before {
-    height: 1rem;
-    opacity: 0.4;
+    display: none;
   }
-
-  .h2-amenity--bleed {
-    padding-inline: 0;
-    padding-block: 0;
-    gap: 0;
-  }
-  .h2-amenity--bleed .h2-index,
-  .h2-amenity--bleed .h2-amenity__label {
-    position: absolute;
-    z-index: 2;
-    margin: 0;
-    padding: 0.65rem 1.1rem;
-    color: #f3ede4;
-    text-shadow: 0 1px 8px rgb(8 5 4 / 45%);
-  }
-  .h2-amenity--bleed .h2-index {
-    top: max(0.75rem, env(safe-area-inset-top, 0px));
-    left: 0;
-  }
-  .h2-amenity--bleed .h2-amenity__label {
-    right: 0;
-    bottom: 0.85rem;
-  }
-  .h2-amenity--bleed .h2-amenity__media {
-    width: 100%;
-    min-height: min(78svh, 34rem);
+  .h2-amenity-sequence .h2-amenity__media,
+  .h2-amenity-sequence .h2-amenity--bleed .h2-amenity__media,
+  .h2-amenity-sequence .h2-amenity--rise .h2-amenity__media,
+  .h2-amenity-sequence .h2-amenity--folio .h2-amenity__media,
+  .h2-amenity-sequence .h2-amenity--split .h2-amenity__media,
+  .h2-amenity-sequence .h2-amenity--portrait .h2-amenity__media {
+    position: relative;
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    align-self: stretch !important;
+    min-height: min(72svh, 32rem);
     max-height: none;
-    aspect-ratio: auto;
+    aspect-ratio: 3 / 4;
     border-radius: 0;
   }
-
-  .h2-amenity--rise {
-    padding-block: 0.5rem var(--h2-band);
-  }
-  .h2-amenity--rise .h2-amenity__media {
-    width: calc(100% + var(--h2-pad-left) + var(--h2-pad-right));
-    margin-inline: calc(-1 * var(--h2-pad-left)) calc(-1 * var(--h2-pad-right));
-    min-height: min(64svh, 30rem);
-    aspect-ratio: 3 / 4;
-  }
-
-  .h2-amenity--folio {
-    padding-block: var(--h2-band);
-  }
-  .h2-amenity--folio .h2-amenity__media {
-    width: min(92%, 26rem);
-    align-self: flex-end;
-    min-height: min(52svh, 24rem);
+  .h2-amenity-sequence .h2-amenity:nth-child(even) .h2-amenity__media {
     aspect-ratio: 4 / 5;
+    min-height: min(68svh, 30rem);
   }
-  .h2-amenity--folio .h2-index {
-    order: -1;
+  .h2-amenity-sequence .h2-index,
+  .h2-amenity-sequence .h2-amenity--bleed .h2-index,
+  .h2-amenity-sequence .h2-amenity--folio .h2-index,
+  .h2-amenity-sequence .h2-amenity--split .h2-index {
+    position: absolute;
+    z-index: 2;
+    top: 0.85rem;
+    left: max(0.85rem, env(safe-area-inset-left, 0px));
+    margin: 0;
+    padding: 0;
+    order: 0;
+    color: #f3ede4;
+    text-shadow: 0 1px 8px rgb(8 5 4 / 50%);
+    letter-spacing: 0.22em;
   }
-
-  .h2-amenity--split {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    padding-block: 1.5rem var(--h2-band);
-  }
-  .h2-amenity--split .h2-amenity__media {
+  .h2-amenity-sequence .h2-amenity__label,
+  .h2-amenity-sequence .h2-amenity--bleed .h2-amenity__label,
+  .h2-amenity-sequence .h2-amenity--portrait .h2-amenity__label {
+    position: static;
+    z-index: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     width: 100%;
-    min-height: min(48svh, 22rem);
-    aspect-ratio: 5 / 4;
-  }
-  .h2-amenity--split .h2-index {
-    letter-spacing: 0.28em;
-  }
-
-  .h2-amenity--portrait {
-    padding-block: 1rem var(--h2-band);
-  }
-  .h2-amenity--portrait .h2-amenity__media {
-    width: min(78%, 20rem);
-    align-self: center;
-    min-height: min(56svh, 26rem);
-    aspect-ratio: 3 / 4;
-  }
-  .h2-amenity--portrait .h2-amenity__label {
-    text-align: center;
-    align-self: center;
-  }
-
-  /* Soft seam so plates read as one film, not separate cards */
-  .h2-amenity-sequence .h2-amenity + .h2-amenity {
-    margin-top: -0.35rem;
+    min-height: 0;
+    margin: 0;
+    padding: 0.95rem var(--h2-pad-right) 1.1rem var(--h2-pad-left);
+    color: var(--h2-gold-deep);
+    text-align: left;
+    text-shadow: none;
+    align-self: stretch;
   }
 
   /* --- Choose your passage --- */
   .h2-voyages {
-    padding-block: calc(var(--h2-band) * 1.15);
-    gap: 1.5rem;
+    padding-block: calc(var(--h2-band) * 1.1);
+    gap: 1.35rem;
+    align-items: stretch;
+  }
+  .h2-voyages__head {
+    align-items: flex-start;
+    text-align: left;
   }
   .h2-voyages__list li {
-    padding-block: 1.55rem;
-    row-gap: 0.95rem;
+    padding-block: 1.45rem;
+    row-gap: 0.85rem;
     border-color: var(--h2-hair);
+    justify-items: start;
   }
   .h2-voyages__list .h2-btn {
-    width: 100%;
-    margin-top: 0.15rem;
+    width: auto !important;
+    justify-self: center;
+    margin-top: 0.2rem;
+    grid-column: 1 / -1;
   }
   .h2-voyages__list .h2-copy {
     max-inline-size: none;
+    text-align: left;
   }
 
   /* Helm — keep sticky wheel, trim dead runway slightly */
@@ -1542,41 +1591,63 @@ html:has(.home-editorial) .lux-footer {
     min-height: 135svh;
   }
   .h2-helm__copy {
+    left: var(--h2-pad-left);
+    right: auto;
     bottom: calc(var(--h2-pad) + 1.75rem + env(safe-area-inset-bottom, 0px));
     max-width: min(18rem, 78vw);
+    text-align: left;
   }
 
-  /* Gallery — curated stack, immersive frames */
+  /* Gallery — full-bleed stack */
   .h2-gallery {
-    gap: 1.35rem;
-    padding-block: var(--h2-band);
+    gap: 0;
+    padding-block: var(--h2-band) 0;
+    padding-inline: 0;
   }
   .h2-gallery header {
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.85rem;
+    padding-inline: var(--h2-pad-left) var(--h2-pad-right);
+    padding-bottom: 1.15rem;
+    text-align: left;
   }
   .h2-gallery__grid {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0;
+    width: 100%;
   }
-  .h2-gallery__grid a:nth-child(odd) .h2-media {
-    min-height: min(58svh, 26rem);
+  .h2-gallery__grid a {
+    display: block;
+    width: 100%;
+  }
+  .h2-gallery__grid a .h2-media,
+  .h2-gallery__grid a:nth-child(odd) .h2-media,
+  .h2-gallery__grid a:nth-child(even) .h2-media {
+    width: 100%;
+    min-height: min(62svh, 28rem);
     aspect-ratio: 4 / 5;
+    border-radius: 0;
   }
   .h2-gallery__grid a:nth-child(even) .h2-media {
-    min-height: min(42svh, 20rem);
     aspect-ratio: 16 / 11;
+    min-height: min(42svh, 20rem);
   }
 
   /*
    * Testimonials — one clear reading plate at a time, native snap.
    */
   .h2-reviews {
-    gap: 1.35rem;
+    gap: 1.25rem;
     padding-block: var(--h2-band);
+  }
+  .h2-reviews > .h2-display,
+  .h2-reviews header {
+    text-align: left;
+    align-self: flex-start;
   }
   .h2-reviews__grid {
     display: flex;
@@ -1607,6 +1678,7 @@ html:has(.home-editorial) .lux-footer {
     border: 1px solid var(--h2-hair);
     border-right: 1px solid var(--h2-hair);
     background: color-mix(in srgb, var(--h2-paper-warm) 70%, transparent);
+    text-align: left;
   }
   .h2-reviews blockquote {
     max-inline-size: none;
@@ -1618,32 +1690,29 @@ html:has(.home-editorial) .lux-footer {
     color: var(--h2-gold-deep);
   }
 
-  /* Epilogue CTA — stack intentionally, stay tappable */
+  /* Epilogue — compact CTAs, not full-bleed bars */
   .h2-epilogue {
     min-height: 0;
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  .h2-epilogue__copy {
+    align-items: flex-start;
+    text-align: left;
   }
   .h2-epilogue__actions {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    align-items: center;
+    gap: 0.7rem;
   }
   .h2-epilogue__actions .h2-btn {
-    width: 100%;
+    width: auto !important;
   }
   .h2-legal {
     gap: 1rem;
     padding-top: 1.25rem;
-  }
-
-  /* Buttons — touch targets without redesigning DNA */
-  .h2-btn {
-    min-height: 3.25rem;
-    height: 3.25rem;
-  }
-  .h2-btn:active {
-    transform: scale(0.985);
+    justify-content: flex-start;
   }
 
   /* Prevent horizontal page overflow from peek rails */

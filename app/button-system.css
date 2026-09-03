@@ -466,17 +466,19 @@ html[data-public-theme="dark"] {
   }
 }
 
-/* Phones: stack full width — same pill, same type, same hairline. */
+/* Phones: stack full width — same pill, same type, same hairline.
+ * Homepage editorial (.h2-btn) stays content-width — full-bleed pills looked
+ * unprofessional on the phone story (see Discover More / Explore More). */
 @media (max-width: 620px) {
   :is(
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .cruise-filter--cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
-    ):not(.hero-cta):not(#_) {
+    ):not(.hero-cta):not(.h2-btn):not(#_) {
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
