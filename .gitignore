@@ -79,6 +79,12 @@ next-env.d.ts
 /OLD DASHBOARD BACK UP/
 
 # local scratch / QA dumps (never commit)
+/.vercel-sync/
+/.vercel-deploy.json
+/.contact.html
+/.room-detail.html
+/.booking-contact.css
+/tmp-accom-check.png
 # Root .tmp-* matches both files (.tmp-foo.json) and dirs (.tmp-foo/)
 /.tmp-*
 /_tmp_*
