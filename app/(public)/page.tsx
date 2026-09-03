@@ -9,6 +9,7 @@ import {
   heroLogoTuneToNarrowImportantCss,
 } from "@/lib/hero-logo-tune-shared";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
 import "./home-dining-slider.css";
 import "./home-experience.css";
 import "./home-responsive.css";
@@ -60,11 +61,18 @@ export default async function HomePage() {
     heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
   );
   const heroPosterSrc = cms.siteImages["home-hero-poster"]?.src?.trim();
+  const heroPoster = heroPosterSrc ? heroPosterDelivery(heroPosterSrc) : null;
 
   return (
     <HomeExperienceShell>
-      {heroPosterSrc ? (
-        <link rel="preload" as="image" href={heroPosterSrc} fetchPriority="high" />
+      {heroPoster ? (
+        <link
+          rel="preload"
+          as="image"
+          imageSrcSet={heroPoster.srcSet}
+          imageSizes={heroPoster.sizes}
+          fetchPriority="high"
+        />
       ) : null}
       <style
         data-hathor-logo-tune-ssr

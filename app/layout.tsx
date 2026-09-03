@@ -102,13 +102,7 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        <link
-          rel="preload"
-          href="/fonts/Gabigaile.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {/* Gabigaile is already preloaded by next/font in the public layout — do not duplicate. */}
         <style
           dangerouslySetInnerHTML={{
             __html:

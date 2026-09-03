@@ -18,7 +18,7 @@ import {
   resolveHeroPageCopy,
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
-import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
+import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
 
 /** No compressed mobile MP4 yet — phones keep poster until an asset is added. */
 const HATHOR_HERO_VIDEO_MOBILE_SRC: string | null = null;
@@ -96,9 +96,7 @@ export function PublicSiteHero({
    */
   const [useLiveVideo, setUseLiveVideo] = useState(false);
   const heroImage = useSiteImage(posterImageName ?? "home-hero-poster");
-  const videoPoster = playVideo
-    ? toVercelOptimizedSrc(heroImage.src)
-    : heroImage.src;
+  const heroPoster = heroPosterDelivery(heroImage.src);
   /** Video hero: no dark wash / gold tint — keep gold dust only. */
   const showMediaWash = !playVideo;
   const applyGoldTint = showMediaWash && goldTint;
@@ -355,7 +353,9 @@ export function PublicSiteHero({
       <div className="hero-media">
         {/* eslint-disable-next-line @next/next/no-img-element -- CMS hero still / video poster */}
         <img
-          src={playVideo ? videoPoster : heroImage.src}
+          src={heroPoster.src}
+          srcSet={heroPoster.srcSet}
+          sizes={heroPoster.sizes}
           alt={heroImage.alt}
           decoding="async"
           fetchPriority="high"
@@ -363,7 +363,7 @@ export function PublicSiteHero({
         {playVideo && useLiveVideo ? (
           <video
             ref={heroVideoRef}
-            poster={videoPoster}
+            poster={heroPoster.src}
             autoPlay
             loop
             muted

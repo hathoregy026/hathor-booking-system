@@ -57,7 +57,7 @@ export function getHomeBootCriticalStyle(): string {
  * Marks html.hathor-hero-type-ready as soon as faces load (failsafe 400ms).
  */
 export function getHeroTypeReadyBlockingScript(): string {
-  return `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-hero-type-ready"))return;function done(){d.classList.add("hathor-hero-type-ready");}var faces=["Bitho Luxury","Carista","Gabigaile","Quiet Luxury","Agraham"];var fail=setTimeout(done,400);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}Promise.all(faces.map(function(f){return document.fonts.load('400 64px "'+f+'"');})).then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-hero-type-ready");}catch(x){}}})();`;
+  return `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-hero-type-ready"))return;function done(){d.classList.add("hathor-hero-type-ready");}var fail=setTimeout(done,220);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}Promise.all(["Bitho Luxury","Carista"].map(function(f){return document.fonts.load('400 64px "'+f+'"');})).then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-hero-type-ready");}catch(x){}}})();`;
 }
 
 /**

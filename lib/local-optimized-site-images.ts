@@ -173,6 +173,33 @@ export function originSrcForNextImage(src: string): string {
   }
 }
 
+/** Phone / tablet / desktop widths for full-bleed hero posters (deviceSizes). */
+export const HERO_POSTER_WIDTHS = {
+  phone: 828,
+  tablet: 1080,
+  desktop: SITE_IMAGE_OPTIMIZER_WIDTH,
+} as const;
+
+/**
+ * Responsive optimized poster for LCP — phones must not download a 1920px frame.
+ * Use for `<img srcSet>` and `<link rel="preload" imageSrcSet>`.
+ */
+export function heroPosterDelivery(src: string): {
+  src: string;
+  srcSet: string;
+  sizes: string;
+} {
+  const origin = originSrcForNextImage(src);
+  const phone = toVercelOptimizedSrc(origin, HERO_POSTER_WIDTHS.phone);
+  const tablet = toVercelOptimizedSrc(origin, HERO_POSTER_WIDTHS.tablet);
+  const desktop = toVercelOptimizedSrc(origin, HERO_POSTER_WIDTHS.desktop);
+  return {
+    src: tablet,
+    srcSet: `${phone} ${HERO_POSTER_WIDTHS.phone}w, ${tablet} ${HERO_POSTER_WIDTHS.tablet}w, ${desktop} ${HERO_POSTER_WIDTHS.desktop}w`,
+    sizes: "100vw",
+  };
+}
+
 export function cssImageUrl(src: string): string {
   const safe = src.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
   return `url("${safe}")`;

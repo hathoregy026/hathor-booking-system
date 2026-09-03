@@ -261,7 +261,6 @@ export function HomeEditorialPage({
                   alt={EX_ABOUT.imageAlt}
                   className="h2-welcome__media"
                   wipe="left"
-                  priority
                   focus="interior"
                 />
                 <p className="h2-corner h2-corner--bottom">Hathor Cruise ® 2026</p>
