@@ -9,6 +9,12 @@ export type RoomCollectionEditorialConfig = {
   eyebrow: string;
   titleLines: [string, string];
   support: string;
+  /** Engraved hero: the caption sits on the image band, the tagline anchors the foot. */
+  hero: {
+    caption: string;
+    tagline: [string, string];
+    copy: readonly string[];
+  };
   manifesto: {
     label: string;
     headline: [string, string, string];
@@ -55,6 +61,15 @@ export const ROOM_COLLECTION_CONFIG: Record<
     titleLines: ["Luxury", "Rooms"],
     support:
       "King and twin retreats composed for two guests — panoramic river light, calm proportions and Hathor's quiet cream-and-gold character.",
+    hero: {
+      caption: "Framed by the Nile",
+      tagline: ["Made", "for rest"],
+      copy: [
+        "Quiet, considered comfort;",
+        "river light;",
+        "the Nile just beyond the glass.",
+      ],
+    },
     manifesto: {
       label: "Cabins",
       headline: ["Twenty-two", "square metres", "of stillness"],
@@ -92,6 +107,15 @@ export const ROOM_COLLECTION_CONFIG: Record<
     titleLines: ["Luxury", "Suites"],
     support:
       "A generous lower-deck residence with panoramic Nile views, expressive interiors and a private Jacuzzi for unhurried evenings.",
+    hero: {
+      caption: "Room to let the river in",
+      tagline: ["Space", "to linger"],
+      copy: [
+        "Panoramic glass, unhurried hours;",
+        "a private Jacuzzi;",
+        "the Nile held wide open.",
+      ],
+    },
     manifesto: {
       label: "Suites",
       headline: ["Forty-six", "square metres", "to drift"],
@@ -129,6 +153,15 @@ export const ROOM_COLLECTION_CONFIG: Record<
     titleLines: ["Royal", "Suites"],
     support:
       "Hathor's most expansive private residence — prime Main Deck views, signature furnishings and two luxurious bathrooms.",
+    hero: {
+      caption: "The Nile, privately held",
+      tagline: ["The crown", "of Hathor"],
+      copy: [
+        "Main deck privilege, two bathrooms;",
+        "signature furnishing;",
+        "the river at its most generous.",
+      ],
+    },
     manifesto: {
       label: "Royal",
       headline: ["Fifty-six", "square metres", "of privilege"],

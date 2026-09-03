@@ -6,7 +6,9 @@ import { usePublicTheme } from "@/components/public/PublicThemeProvider";
 import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import {
+  layoutSuitesConnectors,
   mountSuitesReferenceHero,
+  observeSuitesConnectors,
   SUITES_REFERENCE_HERO_CSS,
 } from "@/lib/suites-reference-hero";
 import {
@@ -32,13 +34,25 @@ const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/^https?:\/\/www\.awwwards\.com/i, "/"],
 ];
 
-function buildSuitesLiveCss(cmsCss = "") {
+/*
+ * The stylesheet is split into three <style> elements kept in this DOM order so
+ * the cascade is byte-for-byte what a single concatenated sheet produced. Only
+ * the middle one carries CMS css and is ever rewritten; the hero's own rules
+ * live in the tail and are written once. Replacing a <style> restarts every CSS
+ * animation under it, and /api/suites-config can take its full 8s timeout to
+ * answer, which is what made the hero replay its arrival long after landing.
+ */
+function suitesCssHead() {
   return [
     SUITES_CLIP_FIX_CSS,
     CLONE_MENU_HIDE_CSS,
     SUITES_LOADER_HIDE_CSS,
     SUITES_SCROLL_RESTORE_CSS,
-    cmsCss,
+  ].join("\n");
+}
+
+function suitesCssTail() {
+  return [
     SUITES_SPLITTEXT_TYPE_GUARD_CSS,
     SUITES_TERMS_STAGE_CSS,
     SUITES_COLLECTION_PANEL_CSS,
@@ -48,6 +62,17 @@ function buildSuitesLiveCss(cmsCss = "") {
     SUITES_RESPONSIVE_CHOREOGRAPHY_CSS,
     SUITES_REFERENCE_HERO_CSS,
   ].join("\n");
+}
+
+function ensureStyle(doc: Document, id: string, css: string) {
+  let el = doc.getElementById(id) as HTMLStyleElement | null;
+  if (!el) {
+    el = doc.createElement("style");
+    el.id = id;
+    doc.head.appendChild(el);
+  }
+  if (el.textContent !== css) el.textContent = css;
+  return el;
 }
 
 const LOGO_BORING_WORDMARK = "HATHOR";
@@ -469,7 +494,7 @@ function applyImages(doc: Document, images: Record<string, string>) {
 function prepareSuitesReferenceHero(
   iframe: HTMLIFrameElement,
   theme: string,
-): { doc: Document; live: HTMLStyleElement } | null {
+): { doc: Document; cms: HTMLStyleElement } | null {
   const doc = iframe.contentDocument;
   if (
     !doc?.head ||
@@ -489,17 +514,36 @@ function prepareSuitesReferenceHero(
     doc.head.appendChild(fonts);
   }
 
-  let live = doc.getElementById("hathor-suites-live") as HTMLStyleElement | null;
-  if (!live) {
-    live = doc.createElement("style");
-    live.id = "hathor-suites-live";
-    doc.head.appendChild(live);
-  }
-  live.textContent = buildSuitesLiveCss();
+  // Appended in cascade order: head, CMS overrides, tail.
+  ensureStyle(doc, "hathor-suites-live", suitesCssHead());
+  const cms = ensureStyle(doc, "hathor-suites-cms", "");
+  ensureStyle(doc, "hathor-suites-tail", suitesCssTail());
 
   if (!mountSuitesReferenceHero(doc)) return null;
-  iframe.dataset.suitesReady = "true";
-  return { doc, live };
+  // Reveal is deferred to waitForHeroFonts() below. Flipping suitesReady here
+  // showed the clone's own typeface for a frame before Italiana/Piloner landed,
+  // which is what read as the hero "jumping" between fonts on arrival.
+  return { doc, cms };
+}
+
+/** The faces the hero composition is set in; the reveal waits on these. */
+const HERO_FONT_SPECS = [
+  '400 80px "Italiana"',
+  '100 16px "Piloner Thin"',
+  '600 12px "Piloner Semibold"',
+];
+
+function waitForHeroFonts(doc: Document, timeoutMs = 1200) {
+  const fonts = doc.fonts;
+  if (!fonts?.load) return Promise.resolve();
+  return Promise.race([
+    Promise.all(HERO_FONT_SPECS.map((spec) => fonts.load(spec).catch(() => undefined))).then(
+      () => undefined,
+    ),
+    new Promise<void>((resolve) => {
+      doc.defaultView?.setTimeout(resolve, timeoutMs);
+    }),
+  ]);
 }
 
 export function SuitesNormalHomepagePage() {
@@ -511,7 +555,7 @@ export function SuitesNormalHomepagePage() {
     if (!iframe) return;
     const prepared = prepareSuitesReferenceHero(iframe, theme);
     if (!prepared) return;
-    const { doc, live } = prepared;
+    const { doc, cms } = prepared;
 
     if (!doc.getElementById("hathor-bitho-ready-boot")) {
       const boot = doc.createElement("script");
@@ -551,13 +595,27 @@ export function SuitesNormalHomepagePage() {
       );
     }
 
+    // Reveal as soon as the hero itself is ready. This deliberately does NOT
+    // wait on /api/suites-config: that request can sit for its full 8s CMS
+    // timeout, and gating the reveal on it left the page blank until then.
+    void waitForHeroFonts(doc).then(() => {
+      layoutSuitesConnectors(doc);
+      requestAnimationFrame(() => {
+        layoutSuitesConnectors(doc);
+        iframe.dataset.suitesReady = "true";
+      });
+    });
+
     try {
       const response = await fetch("/api/suites-config", { cache: "no-store" });
       const data = (await response.json()) as {
         css?: string;
         images?: Record<string, string>;
       };
-      live.textContent = buildSuitesLiveCss(data.css ?? "");
+      // Only the CMS sheet is rewritten, so the hero's own rules - and the
+      // arrival animations under them - are never restarted by this update.
+      const nextCss = data.css ?? "";
+      if (cms.textContent !== nextCss) cms.textContent = nextCss;
       mountSuitesReferenceHero(doc);
       patchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
@@ -565,19 +623,33 @@ export function SuitesNormalHomepagePage() {
       runTermsFit();
       void doc.fonts?.ready.then(runTermsFit);
       if (data.images) applyImages(doc, data.images);
+      layoutSuitesConnectors(doc);
     } catch {
       /* Clip-fix still applies if CMS is unreachable. */
-    } finally {
-      const reveal = () => {
-        iframe.dataset.suitesReady = "true";
-      };
-      if (doc.fonts?.ready) {
-        void doc.fonts.ready.then(() => requestAnimationFrame(reveal)).catch(reveal);
-      } else {
-        requestAnimationFrame(reveal);
-      }
     }
   }, [theme]);
+
+  useEffect(() => {
+    let dispose: (() => void) | undefined;
+    let frame = 0;
+    let active = true;
+
+    const bind = () => {
+      const doc = iframeRef.current?.contentDocument;
+      if (doc?.querySelector(".srh-canvas")) {
+        dispose = observeSuitesConnectors(doc);
+        return;
+      }
+      if (active) frame = requestAnimationFrame(bind);
+    };
+
+    frame = requestAnimationFrame(bind);
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+      dispose?.();
+    };
+  }, []);
 
   useEffect(() => {
     void apply();

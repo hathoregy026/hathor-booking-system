@@ -31,14 +31,24 @@ html:has(.suites-normal-clone) body {
   overflow: visible;
 }
 
+/*
+ * The frame stays hidden over the cream ground until the hero has mounted and
+ * its display faces have loaded, so arrival never shows the clone's own
+ * typeface first and then swaps. data-suites-ready is set by
+ * SuitesNormalHomepagePage once fonts resolve (with a timeout fallback).
+ */
 .suites-normal-clone__frame {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
   background: #f4e4cc;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.suites-normal-clone__frame[data-suites-ready="true"] {
   opacity: 1;
-  visibility: visible;
 }
 
 @media (max-width: 1024px) {
@@ -50,4 +60,20 @@ html:has(.suites-normal-clone) body {
 
 @media (prefers-reduced-motion: reduce) {
   .suites-normal-clone__frame { transition: none; }
+}
+
+/*
+ * Failsafe: if the ready flag never arrives (script error, blocked iframe), the
+ * hero still reveals rather than staying blank behind the cream ground.
+ */
+.suites-normal-clone__frame {
+  animation: suites-clone-failsafe-reveal 0s linear 2.5s forwards;
+}
+
+.suites-normal-clone__frame[data-suites-ready="true"] {
+  animation: none;
+}
+
+@keyframes suites-clone-failsafe-reveal {
+  to { opacity: 1; }
 }

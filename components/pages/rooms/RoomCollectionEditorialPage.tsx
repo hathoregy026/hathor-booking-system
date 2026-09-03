@@ -196,8 +196,43 @@ export function RoomCollectionEditorialPage({
 
   useRoomCollectionEditorialScroll({ rootRef, runRef, trackRef });
 
-  const titlePrimary = heroCopy.main || config.titleLines.join(" ");
-  const titleSecondary = heroCopy.second || config.tierSubtitle;
+  /*
+   * Hero facts come from the variant ledger, so each collection engraves its
+   * own numbers: 22/2 for the cabins, 46/4 for the suite, 56/4 for the royal.
+   */
+  const sqm = config.ledger[0];
+  const guests = config.ledger[1];
+  const primaryRoom = rooms[0] ?? ROOM_SHOWCASES[0];
+
+  /*
+   * The engraving is two stacked words, which the dashboard's title/subtitle
+   * pair does not model — `second` holds a subtitle ("Nile Cabins"), not the
+   * back half of the name. So the dashboard's main title is split on its last
+   * word instead: "Luxury Rooms" engraves as LUXURY / ROOMS. Editors keep
+   * control of the wording; the config supplies the split when unset.
+   */
+  const cmsTitleWords = (heroCopy.main || "").trim().split(/\s+/).filter(Boolean);
+  /*
+   * Exactly two words, or the config wins. The engraving is set nowrap at a
+   * viewport-derived size, so a three-word dashboard title would run past the
+   * gutters rather than wrap.
+   */
+  const [titlePrimary, titleSecondary] =
+    cmsTitleWords.length === 2
+      ? [
+          cmsTitleWords.slice(0, -1).join(" "),
+          cmsTitleWords[cmsTitleWords.length - 1],
+        ]
+      : config.titleLines;
+  const heroTitle = `${titlePrimary} ${titleSecondary}`;
+
+  /*
+   * `support` is the dashboard's overview intro. When an editor has actually
+   * customised it, it replaces the designed three-line stanza rather than
+   * being dropped along with the old spine layout.
+   */
+  const heroLines =
+    support && support !== config.support ? [support] : config.hero.copy;
   const shellStyle = {
     "--font-hathor-display": '"Gamgote", Georgia, serif',
   } as CSSProperties;
@@ -222,39 +257,114 @@ export function RoomCollectionEditorialPage({
         >
           <div className="ac-stage">
             <div ref={trackRef} className="ac-track">
-              {/* 01 · Folio spine — original entry (not Contact intro) */}
+              {/* 01 · Engraved hero — the collection name cut out of the room */}
               <Scene className="ac-spine">
-                <ol className="ac-spine__index" aria-label="Residence chapters">
-                  {rooms.map((room, index) => (
-                    <li key={room.slug}>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
-                      {room.name}
-                    </li>
-                  ))}
-                  <li>
-                    <span>·</span>
-                    Reserve
-                  </li>
-                </ol>
+                <div
+                  className="rh"
+                  id="folio"
+                  style={
+                    {
+                      "--rh-img": `url("${config.aperture.image}")`,
+                    } as CSSProperties
+                  }
+                >
+                  {/*
+                   * The cut-out is one image read through two apertures: the
+                   * glyphs of the title, and the open band between its lines.
+                   * Both are driven from the same box, so the picture stays
+                   * continuous across the seam — the title reads as engraved
+                   * into the photograph rather than laid over it.
+                   */}
+                  <div className="rh__cut">
+                    <h1 className="rh__type wt-page-hero" aria-label={heroTitle}>
+                      <span className="rh__line" aria-hidden="true">
+                        {titlePrimary}
+                      </span>
+                      <span className="rh__line rh__line--b" aria-hidden="true">
+                        {titleSecondary}
+                      </span>
+                    </h1>
 
-                <div className="ac-spine__folio" id="folio">
-                  <Kicker className="wt-page-kicker">{config.collectionLabel}</Kicker>
-                  <h1 className="ac-title ac-title--folio wt-page-hero">
-                    <span className="ac-rise wt-page-hero">{titlePrimary}</span>
-                    <span className="ac-rise ac-rise--shift wt-page-hero-second">
-                      {titleSecondary}
-                    </span>
-                  </h1>
-                  <p className="ac-support wt-page-body">{support}</p>
+                    <div className="rh__band" aria-hidden="true">
+                      <Image
+                        src={config.aperture.image}
+                        alt=""
+                        fill
+                        priority
+                        sizes="100vw"
+                        className="rh__band-img"
+                      />
+                    </div>
+
+                    <p className="rh__caption" aria-hidden="true">
+                      {config.hero.caption}
+                    </p>
+                  </div>
+
+                  {/*
+                   * `display: contents` on desktop so each fact still positions
+                   * against .rh; a flex rail once the corners close on tablet.
+                   */}
+                  <div className="rh__stats">
+                    <p className="rh__stat rh__stat--a">
+                      <span className="rh__stat-value">{sqm.value}</span>
+                      <span className="rh__stat-label">{sqm.label}</span>
+                      <i className="rh__lead" aria-hidden="true" />
+                    </p>
+
+                    <p className="rh__stat rh__stat--b">
+                      <span className="rh__stat-value">{guests.value}</span>
+                      <span className="rh__stat-label">{guests.label}</span>
+                      <i className="rh__lead" aria-hidden="true" />
+                    </p>
+                  </div>
+
+                  <div className="rh__foot">
+                    <p className="rh__tagline" aria-hidden="true">
+                      <span>{config.hero.tagline[0]}</span>
+                      <span>{config.hero.tagline[1]}</span>
+                    </p>
+
+                    <p className="rh__copy wt-page-body">
+                      {heroLines.map((line) => (
+                        <span key={line}>{line}</span>
+                      ))}
+                    </p>
+
+                    <ul className="rh__beds" aria-label="Configurations">
+                      {rooms.map((room) => (
+                        <li key={room.slug}>
+                          <i className="rh__tick" aria-hidden="true" />
+                          <Link href={`/rooms/${room.slug}`}>{room.name}</Link>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="rh__actions">
+                      <FavoriteButton
+                        type="residence"
+                        slug={primaryRoom.slug}
+                        name={primaryRoom.name}
+                        variant="inline"
+                        showLabel
+                        className="rh__act"
+                      />
+                      <AddToVoyageButton
+                        kind="residence"
+                        slug={primaryRoom.slug}
+                        name={primaryRoom.name}
+                        variant="inline"
+                        className="rh__act"
+                      />
+                      <BookNowTrigger className="rh__act rh__act--solid">
+                        <span>Book now</span>
+                      </BookNowTrigger>
+                      <Link href="/voyages" className="rh__act">
+                        <span>View voyages</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-
-                <p className="ac-spine__mark">
-                  Hathor <span className="ac-reg">®</span> folio
-                </p>
-                <p className="ac-spine__drift">
-                  <i aria-hidden="true" />
-                  Drift right
-                </p>
               </Scene>
 
               {/* 02 · Tier triptych — collection facts (not manifesto / hours) */}

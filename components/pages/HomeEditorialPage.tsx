@@ -61,12 +61,15 @@ function Home2Media({
   className = "",
   wipe = "up",
   priority = false,
+  focus,
 }: {
   name: SiteImageName;
   alt: string;
   className?: string;
   wipe?: "up" | "left" | "right";
   priority?: boolean;
+  /** Phone crop hint — ignored on desktop. */
+  focus?: "vessel" | "interior" | "dining" | "horizon" | "people" | "center";
 }) {
   const wipeClass =
     wipe === "left"
@@ -75,18 +78,53 @@ function Home2Media({
         ? "h2-media--wipe-right"
         : "";
   return (
-    <figure className={`h2-media ${wipeClass} ${className}`.trim()}>
+    <figure
+      className={`h2-media ${wipeClass} ${className}`.trim()}
+      {...(focus ? { "data-h2-focus": focus } : {})}
+    >
       <ManagedImage
         name={name}
         alt={alt}
         fill
-        sizes="(max-width: 620px) 100vw, (max-width: 1024px) 92vw, 68vw"
+        sizes="(max-width: 480px) 100vw, (max-width: 620px) 100vw, (max-width: 1024px) 92vw, 68vw"
         className="h2-media__image"
         priority={priority}
         previewAnchor
       />
     </figure>
   );
+}
+
+/** Phone amenity plate rhythm — desktop ignores these modifiers. */
+function amenityPlateClass(index: number): string {
+  const rhythm = index % 5;
+  if (rhythm === 0) return "h2-amenity--bleed";
+  if (rhythm === 1) return "h2-amenity--rise";
+  if (rhythm === 2) return "h2-amenity--folio";
+  if (rhythm === 3) return "h2-amenity--split";
+  return "h2-amenity--portrait";
+}
+
+function amenityFocus(
+  index: number,
+): "vessel" | "interior" | "dining" | "horizon" | "people" | "center" {
+  const foci = [
+    "horizon",
+    "vessel",
+    "interior",
+    "dining",
+    "people",
+    "interior",
+    "horizon",
+    "vessel",
+    "people",
+    "dining",
+    "interior",
+    "horizon",
+    "vessel",
+    "dining",
+  ] as const;
+  return foci[index % foci.length] ?? "center";
 }
 
 function Home2FlipMedia({
@@ -224,6 +262,7 @@ export function HomeEditorialPage({
                   className="h2-welcome__media"
                   wipe="left"
                   priority
+                  focus="interior"
                 />
                 <p className="h2-corner h2-corner--bottom">Hathor Cruise ® 2026</p>
               </Scene>
@@ -251,27 +290,42 @@ export function HomeEditorialPage({
                 </Link>
               </Scene>
 
-              {EX_CAROUSEL.slides.map((slide, index) => (
-                <Scene className="h2-itinerary" key={slide.key}>
-                  <Home2Media
-                    name={slide.imageName}
-                    alt={slide.alt}
-                    className="h2-itinerary__media"
-                    wipe={index % 2 === 0 ? "up" : "right"}
-                  />
-                  <div className="h2-itinerary__copy">
-                    <span className="h2-index">
-                      {String(index + 1).padStart(2, "0")} / {EX_CAROUSEL.slides.length}
-                    </span>
-                    <h3 className="h2-display h2-display--m">
-                      <RevealTitle>{slide.title}</RevealTitle>
-                    </h3>
-                    <Link href="/cruises-list" className="h2-link">
-                      View voyage
-                    </Link>
-                  </div>
-                </Scene>
-              ))}
+              {/*
+                display:contents on desktop/tablet so scenes stay in the horizontal
+                track. Phone (≤480) turns this into a native snap rail.
+              */}
+              <div className="h2-itinerary-rail" aria-label="Hathor itinerary collection">
+                {EX_CAROUSEL.slides.map((slide, index) => (
+                  <Scene className="h2-itinerary" key={slide.key}>
+                    <Home2Media
+                      name={slide.imageName}
+                      alt={slide.alt}
+                      className="h2-itinerary__media"
+                      wipe={index % 2 === 0 ? "up" : "right"}
+                      focus={
+                        index % 4 === 0
+                          ? "interior"
+                          : index % 4 === 1
+                            ? "vessel"
+                            : index % 4 === 2
+                              ? "people"
+                              : "horizon"
+                      }
+                    />
+                    <div className="h2-itinerary__copy">
+                      <span className="h2-index">
+                        {String(index + 1).padStart(2, "0")} / {EX_CAROUSEL.slides.length}
+                      </span>
+                      <h3 className="h2-display h2-display--m">
+                        <RevealTitle>{slide.title}</RevealTitle>
+                      </h3>
+                      <Link href="/cruises-list" className="h2-link">
+                        View voyage
+                      </Link>
+                    </div>
+                  </Scene>
+                ))}
+              </div>
 
               {landmarkSlides.map((slide, index) => {
                 const next = landmarkSlides[(index + 1) % landmarkSlides.length];
@@ -291,6 +345,13 @@ export function HomeEditorialPage({
                       alt={slide.alt}
                       className="h2-landmark__media"
                       wipe={index % 3 === 1 ? "left" : "up"}
+                      focus={
+                        index % 3 === 0
+                          ? "vessel"
+                          : index % 3 === 1
+                            ? "horizon"
+                            : "people"
+                      }
                     />
                   )}
                   <div className="h2-landmark__copy">
@@ -337,6 +398,7 @@ export function HomeEditorialPage({
                       alt={block.alt}
                       className="h2-life__media"
                       wipe={index % 2 === 0 ? "right" : "left"}
+                      focus={index === 0 ? "horizon" : "dining"}
                     />
                   </Scene>
                 );
@@ -353,18 +415,26 @@ export function HomeEditorialPage({
                 </p>
               </Scene>
 
-              {AMENITIES_SEQUENCE_IMAGE_SLOTS.map((slot, index) => (
-                <Scene className="h2-amenity" key={slot.name}>
-                  <span className="h2-index">{String(index + 1).padStart(2, "0")}</span>
-                  <Home2Media
-                    name={slot.name as SiteImageName}
-                    alt={slot.alt}
-                    className="h2-amenity__media"
-                    wipe={index % 2 === 0 ? "up" : "left"}
-                  />
-                  <p className="h2-amenity__label">Hathor · Aboard</p>
-                </Scene>
-              ))}
+              <div className="h2-amenity-sequence" aria-label="Aboard Hathor image sequence">
+                {AMENITIES_SEQUENCE_IMAGE_SLOTS.map((slot, index) => (
+                  <Scene
+                    className={`h2-amenity ${amenityPlateClass(index)}`}
+                    key={slot.name}
+                  >
+                    <span className="h2-index">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <Home2Media
+                      name={slot.name as SiteImageName}
+                      alt={slot.alt}
+                      className="h2-amenity__media"
+                      wipe={index % 2 === 0 ? "up" : "left"}
+                      focus={amenityFocus(index)}
+                    />
+                    <p className="h2-amenity__label">Hathor · Aboard</p>
+                  </Scene>
+                ))}
+              </div>
 
               <Scene className="h2-voyages" id="voyages">
                 <header className="h2-voyages__head">
@@ -457,7 +527,13 @@ export function HomeEditorialPage({
           </section>
 
           <section className="h2-epilogue">
-          <Home2Media name={EX_CAMPAIGN.imageName} alt={EX_CAMPAIGN.imageAlt} className="h2-epilogue__media" wipe="up" />
+          <Home2Media
+            name={EX_CAMPAIGN.imageName}
+            alt={EX_CAMPAIGN.imageAlt}
+            className="h2-epilogue__media"
+            wipe="up"
+            focus="vessel"
+          />
           <div className="h2-epilogue__copy">
             <Eyebrow>Welcome aboard</Eyebrow>
             <h2 className="h2-display h2-display--xl">

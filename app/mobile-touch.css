@@ -120,7 +120,7 @@ body.is-touch-device .lux-cursor {
     max-width: none !important;
     max-height: none !important;
     object-fit: cover !important;
-    object-position: center center !important;
+    object-position: center 32% !important;
     display: block !important;
   }
 
@@ -173,7 +173,7 @@ body.is-touch-device .lux-cursor {
     box-sizing: border-box;
   }
 
-  /* Hide scroll hint — competes with logo/CTA on phones */
+  /* Hide scroll hint on tablet only — phones restore a refined cue below */
   .public-site .hero-scroll-hint,
   .public-site .scroll-hint,
   .public-site [data-hero-scroll-hint] {
@@ -425,12 +425,12 @@ body.is-touch-device .lux-cursor {
 
   /*
    * Phone hero — sticky stage inside tall runway (no GSAP pin spacer).
-   * ~390svh ≈ 100svh viewport + ~290% scrub runway.
+   * ~330svh keeps strip → logo → CTA choreography without excess dead scroll.
    */
   .home-hero-runway {
     position: relative;
     width: 100%;
-    height: 390svh;
+    height: 330svh;
     overflow: visible;
   }
 
@@ -439,8 +439,27 @@ body.is-touch-device .lux-cursor {
     position: sticky;
     top: 0;
     height: 100svh !important;
+    height: 100dvh !important;
     min-height: 100svh !important;
+    min-height: 100dvh !important;
     max-height: 100svh !important;
+    max-height: 100dvh !important;
+  }
+
+  .home-hero-container .hero-button {
+    padding-inline: max(16px, env(safe-area-inset-left, 0px))
+      max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+    bottom: calc(
+      var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
+        var(--hathor-cta-y-nudge, 0px) + env(safe-area-inset-bottom, 0px)
+    ) !important;
+  }
+
+  .home-hero-container:not(:has(.hero-logo-mark--split)) .hero-button {
+    bottom: calc(clamp(48px, 8vh, 72px) + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   .home-hero-container .hero-button .hero-cta {
@@ -449,14 +468,43 @@ body.is-touch-device .lux-cursor {
     justify-content: center;
     min-height: 44px;
     min-width: 44px;
-    /* width driven by GSAP scaleX — do not lock with !important */
-    will-change: transform;
+    /* width driven by GSAP --hero-cta-w — do not lock with !important */
+    will-change: transform, width;
+  }
+
+  /* Restore scroll cue — sits above the stretching Book Now, never fights it */
+  .public-site .home-hero-container .hero-scroll-hint,
+  .public-site .home-hero-container [data-hero-scroll-hint],
+  .home-hero-container .hero-scroll-hint {
+    display: flex !important;
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+    font-size: 0.52rem;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.62);
+    text-shadow: 0 1px 6px rgb(8 5 4 / 45%);
+  }
+
+  .home-hero-container .hero-scroll-hint::after {
+    height: 20px;
   }
 
   .home-hero-container .blind-strip-v {
     backface-visibility: hidden;
     will-change: transform, opacity;
     transition: none !important;
+  }
+
+  .home-hero-container .hero-heading {
+    padding-inline: max(1rem, env(safe-area-inset-left, 0px))
+      max(1rem, env(safe-area-inset-right, 0px));
+    max-width: 100%;
+  }
+
+  .home-hero-container .hero-heading .hero-line {
+    white-space: normal;
+    text-wrap: balance;
+    max-width: 16ch;
   }
 
   /*
@@ -507,8 +555,13 @@ body.is-touch-device .lux-cursor {
   }
 
   .luxury-marquee__track {
-    will-change: auto;
-    animation-duration: 90s;
+    will-change: transform;
+    animation-duration: 72s;
+  }
+
+  .luxury-marquee {
+    --lm-edge: min(3.25rem, 14vw);
+    padding-block: 0.5rem;
   }
 
   .gold-dust-particles [data-gold-dust-index]:nth-child(n + 9) {

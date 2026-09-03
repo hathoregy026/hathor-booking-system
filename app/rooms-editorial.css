@@ -966,3 +966,580 @@ html:has(.accom-catalog) .public-fab {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   ENGRAVED HERO (.rh) — Luxury Rooms / Luxury Suites / Royal Suites
+   --------------------------------------------------------------------------
+   One photograph read through two apertures: the glyphs of the title, and the
+   open band between its two lines. Both the knocked-out type and the band are
+   painted from a box of the SAME width and height, so the picture is
+   continuous across the seam and the words read as cut into the image rather
+   than sitting on top of it.
+
+   The geometry is derived, not hand-placed. With a line-height of --rh-lh and
+   a font-size of --rh-size, the first line box is exactly (size x lh) tall, so
+   the band's offset and the counter-offset applied to its image are the same
+   expression. Change the type scale and the seam still lands correctly.
+   ========================================================================== */
+
+.rh {
+  /*
+   * Sized against the widest engraved word rather than a nominal scale:
+   * Gamgote is a narrow face: a six-letter word measures ~2.9x its font-size,
+   * so the nominal scale has to run large for the word to hold the frame the
+   * way the reference does. 15.3vw sets LUXURY at ~48% of the content width
+   * while the two lines plus the band still clear a 900px stage.
+   */
+  --rh-size: clamp(3rem, 15.3vw, 17rem);
+  /* Hugs the caps, so the band meets the letterforms instead of floating. */
+  --rh-lh: 0.74;
+  /*
+   * Bounded on both axes: the width term sets the proportion, the height term
+   * stops the strip from pushing the composition out of a short stage.
+   */
+  --rh-band: clamp(4rem, min(15vw, 22svh), 22rem);
+  --rh-line: calc(var(--rh-size) * var(--rh-lh));
+  --rh-total: calc(var(--rh-line) * 2 + var(--rh-band));
+  /*
+   * Gamgote's em box is 1.153em against a 0.74 line-height, so half-leading is
+   * -0.206em: the caps sit ABOVE the line box and the descenders below it.
+   * background-clip: text only paints inside the background box, so without
+   * this the tops of the letters were being cut off. The padding grows the
+   * paint area, the matching negative margin keeps the layout identical.
+   */
+  --rh-pad: calc(var(--rh-size) * 0.26);
+  --rh-ink: #1c1917;
+  --rh-gold: #a08a52;
+  --rh-hair: rgb(28 25 23 / 22%);
+
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(1.25rem, 2.6vw, 2.4rem);
+}
+
+/* --- the cut-out ---------------------------------------------------------- */
+
+.rh__cut {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.rh__type {
+  display: block;
+  margin: 0;
+  font-family: "Italiana", var(--font-hathor-display), Georgia, serif;
+  font-size: var(--rh-size);
+  font-weight: 400;
+  line-height: var(--rh-lh);
+  letter-spacing: 0.005em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  /* The aperture. Same box, same sizing rule as the band image below. */
+  background-image: var(--rh-img);
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/*
+ * Applied here rather than in the .rh__type block: `.accom-catalog h1` zeroes
+ * padding at a higher specificity, which silently swallowed the ink room and
+ * left the caps clipped.
+ */
+.accom-catalog .rh__type {
+  padding-block: var(--rh-pad);
+  margin-block: calc(var(--rh-pad) * -1);
+}
+
+.rh__line {
+  display: block;
+}
+
+/* Opens the seam the band sits in. */
+.rh__line--b {
+  margin-top: var(--rh-band);
+}
+
+.rh__band {
+  position: absolute;
+  top: var(--rh-line);
+  right: 0;
+  left: 0;
+  height: var(--rh-band);
+  overflow: hidden;
+}
+
+/*
+ * Counter-offset by exactly one line box and stretched to the full type block,
+ * so this image and the one clipped into the glyphs are the same picture at
+ * the same scale. `cover` on both sides keeps them locked when the box
+ * reflows.
+ */
+.rh__band-img {
+  position: absolute;
+  top: calc((var(--rh-line) + var(--rh-pad)) * -1);
+  left: 0;
+  width: 100%;
+  height: calc(var(--rh-total) + var(--rh-pad) * 2);
+  object-fit: cover;
+  object-position: center center;
+}
+
+.rh__caption {
+  position: absolute;
+  top: calc(var(--rh-line) + var(--rh-band) / 2);
+  right: 0;
+  left: 0;
+  margin: 0;
+  color: #fff;
+  font-family: "Italiana", var(--font-hathor-display), Georgia, serif;
+  font-size: clamp(0.95rem, 2.5vw, 2.5rem);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 2px 14px rgb(8 5 4 / 45%);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* --- leader-lined facts --------------------------------------------------- */
+
+.rh__stats {
+  display: contents;
+}
+
+.rh__stat {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  gap: 0.15rem;
+}
+
+/*
+ * Figures use the editorial serif, not the display face: Gamgote's numerals
+ * are so condensed that "22" reads as a pair of brackets at annotation size.
+ */
+.rh__stat-value {
+  color: var(--rh-gold);
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(1.6rem, 2.7vw, 2.7rem);
+  font-variant-numeric: lining-nums;
+  line-height: 1;
+}
+
+.rh__stat-label {
+  color: var(--rh-ink);
+  font-family: var(--font-hathor-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+/* Hairline running from the figure toward the letterform it annotates. */
+.rh__lead {
+  position: absolute;
+  top: calc(clamp(1.5rem, 2.6vw, 2.6rem) / 2);
+  width: clamp(2.5rem, 9vw, 9rem);
+  height: 1px;
+  background: var(--rh-hair);
+}
+
+.rh__lead::after {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--rh-gold);
+  content: "";
+}
+
+.rh__stat--a {
+  top: 16%;
+  left: 0;
+  text-align: left;
+}
+
+.rh__stat--a .rh__lead {
+  left: calc(100% + clamp(0.75rem, 1.6vw, 1.5rem));
+}
+
+.rh__stat--a .rh__lead::after {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.rh__stat--b {
+  right: 0;
+  bottom: 22%;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.rh__stat--b .rh__lead {
+  right: calc(100% + clamp(0.75rem, 1.6vw, 1.5rem));
+}
+
+.rh__stat--b .rh__lead::after {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+/* --- foot: tagline, stanza, configurations, actions ----------------------- */
+
+.rh__foot {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  /*
+   * Four columns on one baseline, as in the reference. The stanza gets a real
+   * floor (11rem) so it can never be squeezed to a word per line by the
+   * intrinsic columns either side of it.
+   */
+  grid-template-columns: auto minmax(11rem, 1fr) auto auto;
+  align-items: end;
+  gap: clamp(0.75rem, 1.7vw, 1.85rem);
+}
+
+.rh__tagline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  color: var(--rh-ink);
+  font-family: "Italiana", var(--font-hathor-display), Georgia, serif;
+  font-size: clamp(1.35rem, 2.4vw, 2.4rem);
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+.rh__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  margin: 0;
+  color: #4a453c;
+  font-family: "Rollgates Luxury Italic", "Playfair Display", Georgia, serif;
+  font-size: clamp(0.9rem, 1vw, 1.05rem);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.rh__beds {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+  list-style: none;
+}
+
+.rh__beds li {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.rh__beds a {
+  color: var(--rh-gold);
+  font-family: var(--font-hathor-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.68rem, 0.85vw, 0.85rem);
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Riser tying each configuration up to the engraved word above it. */
+.rh__tick {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+  width: 1px;
+  height: clamp(1.25rem, 3.5vw, 3rem);
+  background: var(--rh-hair);
+}
+
+.rh__tick::before {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--rh-gold);
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+/* Divider between configurations, matching the hairline language. */
+.rh__beds li + li::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(clamp(1rem, 2.4vw, 2.4rem) / -2);
+  width: 1px;
+  background: var(--rh-hair);
+  content: "";
+}
+
+/* --- actions -------------------------------------------------------------- */
+
+.rh__actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 0.9vw, 0.75rem);
+}
+
+/*
+ * One pill geometry for all four, whatever element each control renders as —
+ * FavoriteButton and AddToVoyageButton bring their own markup, so the shared
+ * box is applied by class rather than by tag.
+ */
+.rh .rh__act,
+.rh .rh__act.hathor-fav,
+.rh .rh__act.hathor-atv {
+  display: inline-flex;
+  height: 2.875rem;
+  min-width: 0;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding-inline: clamp(0.75rem, 1.05vw, 1.15rem);
+  border: 1px solid var(--rh-hair);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--rh-ink);
+  font-family: var(--font-hathor-body), "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.6rem, 0.68vw, 0.68rem);
+  font-weight: 400;
+  letter-spacing: 0.11em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rh .rh__act svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.rh .rh__act--solid {
+  border-color: var(--rh-ink);
+  background: var(--rh-ink);
+  color: #f5f1e8;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rh .rh__act:hover {
+    border-color: var(--rh-ink);
+  }
+
+  .rh .rh__act--solid:hover {
+    border-color: var(--rh-gold);
+    background: var(--rh-gold);
+    color: var(--rh-ink);
+  }
+}
+
+.rh .rh__act:focus-visible {
+  outline: 2px solid var(--rh-gold);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   TABLET + PHONE
+   The engraving survives; only its proportions change. The title keeps both
+   lines and the band keeps its seam, because that relationship is what makes
+   the hero read — so the band is what gives ground, not the type.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 950px) {
+  .rh {
+    --rh-size: clamp(2.75rem, 15.5vw, 7.5rem);
+    --rh-band: clamp(3.5rem, min(26vw, 24svh), 15rem);
+    gap: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .rh__caption {
+    font-size: clamp(0.8rem, 3vw, 1.4rem);
+    letter-spacing: 0.05em;
+  }
+
+  /*
+   * The two open corners disappear once the composition narrows, so the facts
+   * come back into flow as a paired rail beneath the cut-out. Leader lines
+   * would have nothing to point at, so they are retired here rather than left
+   * dangling.
+   */
+  .rh__stat {
+    position: static;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .rh__lead {
+    display: none;
+  }
+
+  .rh__stats {
+    display: flex;
+    gap: clamp(1.25rem, 5vw, 2.5rem);
+  }
+
+  .rh__foot {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1.1rem, 3.5vw, 1.75rem);
+  }
+
+  .rh__tagline {
+    font-size: clamp(1.5rem, 6vw, 2.6rem);
+  }
+
+  .rh__copy {
+    font-size: clamp(0.95rem, 3.6vw, 1.05rem);
+  }
+
+  .rh__beds {
+    flex-wrap: wrap;
+    gap: 0.75rem clamp(1rem, 4vw, 2rem);
+  }
+
+  /* The risers pointed at letterforms that are no longer above them. */
+  .rh__tick {
+    display: none;
+  }
+
+  .rh__beds li + li::after {
+    left: calc(clamp(1rem, 4vw, 2rem) / -2);
+  }
+
+  .rh__actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .rh .rh__act,
+  .rh .rh__act.hathor-fav,
+  .rh .rh__act.hathor-atv {
+    width: 100%;
+    height: 3rem;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .rh {
+    --rh-size: clamp(2.5rem, 17vw, 4.75rem);
+    --rh-band: clamp(3rem, min(30vw, 26svh), 11rem);
+  }
+
+  .rh__stat-value {
+    font-size: 1.35rem;
+  }
+
+  .rh__stat-label {
+    font-size: 0.6rem;
+  }
+
+  /*
+   * Book Now leads, the two selection actions pair beneath it, and the voyage
+   * link closes the stack — three tidy rows rather than a stranded fourth.
+   */
+  .rh__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rh .rh__act--solid {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .rh__actions > a:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 380px) {
+  .rh__actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rh * {
+    transition: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The spine scene now carries the engraved hero, so it drops the old
+   two-column folio grid and takes the full stage width the composition needs.
+   -------------------------------------------------------------------------- */
+
+.ac-scene.ac-spine {
+  display: block;
+  width: min(100vw, 120rem);
+  padding-inline: clamp(1rem, 3.5vw, 3.5rem);
+}
+
+.ac-spine > .rh {
+  height: 100%;
+}
+
+@media (max-width: 950px) {
+  .ac-scene.ac-spine {
+    width: 100% !important;
+    padding-inline: var(--ac-pad);
+  }
+}
+
+/*
+ * The configuration links are 16px of set text — right for a mouse, far under
+ * the touch floor. The drawn label is left exactly as designed and only the
+ * hit area grows, the same way the rest of the site handles its quiet links.
+ * Gated on width OR a coarse pointer so a large tablet is covered too.
+ */
+@media (max-width: 1024px), (pointer: coarse) {
+  .rh__beds a {
+    position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .rh__beds a::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    min-height: 44px;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+}

@@ -30,24 +30,14 @@ const HERO_MARKUP = `
 
     <div class="srh-copy">
       <p class="srh-copy__title">Made<br>for living</p>
-      <p class="srh-copy__body">Quiet, crafted comfort; river light;<br>the Nile just beyond the glass.</p>
+      <p class="srh-copy__body"><span class="srh-copy__line">Quiet, crafted comfort; river light;</span> <span class="srh-copy__line">the Nile just beyond the glass.</span></p>
     </div>
 
-    <svg class="srh-connectors" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <g class="srh-connectors__set srh-connectors__set--desktop">
-        <path class="srh-connector srh-connector--portrait" pathLength="1" d="M 26.2 42.9 V 61.7 Q 26.2 65.7 30.2 65.7 H 35.4"></path>
-        <circle class="srh-connector__dot" cx="26.2" cy="42.9" r="0.34"></circle>
-        <path class="srh-connector srh-connector--copy" pathLength="1" d="M 42.4 70.55 H 63.8 Q 66.1 70.55 66.1 72.85 V 76.45 Q 66.1 78.75 68.4 78.75 H 70.1"></path>
-      </g>
-      <g class="srh-connectors__set srh-connectors__set--tablet">
-        <path class="srh-connector srh-connector--portrait" pathLength="1" d="M 33 59.2 V 77 Q 33 80 36 80 H 39"></path>
-        <circle class="srh-connector__dot" cx="33" cy="59.2" r="0.38"></circle>
-        <path class="srh-connector srh-connector--copy" pathLength="1" d="M 49 69.5 H 55.5 Q 58 69.5 58 72 V 74 Q 58 76.5 60.5 76.5 H 62"></path>
-      </g>
-      <g class="srh-connectors__set srh-connectors__set--phone">
-        <path class="srh-connector srh-connector--portrait" pathLength="1" d="M 38.2 56 V 70.5 Q 38.2 73.5 41.2 73.5 H 43"></path>
-        <circle class="srh-connector__dot" cx="38.2" cy="56" r="0.5"></circle>
-        <path class="srh-connector srh-connector--copy" pathLength="1" d="M 39 79.2 H 62 Q 65 79.2 65 82.2 V 83.2 Q 65 85.2 67 85.2 H 70"></path>
+    <svg class="srh-connectors" aria-hidden="true" focusable="false">
+      <g class="srh-connectors__set">
+        <path class="srh-connector srh-connector--portrait"></path>
+        <circle class="srh-connector__dot" r="4"></circle>
+        <path class="srh-connector srh-connector--copy"></path>
       </g>
     </svg>
 
@@ -214,6 +204,10 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   animation: srh-copy-arrive .8s .5s cubic-bezier(.22,.78,.19,1) both;
 }
 
+.srh-copy__line {
+  display: block;
+}
+
 .srh-frame--detail {
   z-index: 3;
   top: 55.7%;
@@ -241,13 +235,15 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 
 .srh-connectors__set {
-  display: none;
-}
-
-.srh-connectors__set--desktop {
   display: block;
 }
 
+/*
+ * The SVG viewBox is written by layoutSuitesConnectors() as a 1:1 pixel space,
+ * so strokes, corner radii and the pin stay circular at every viewport. Each
+ * path also carries its own measured length in --srh-len, which is what makes
+ * the draw animation cover exactly the path instead of overshooting it.
+ */
 .srh-connector {
   fill: none !important;
   stroke: #c3a158 !important;
@@ -255,13 +251,18 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   vector-effect: non-scaling-stroke;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 200;
-  stroke-dashoffset: 200;
+  stroke-dasharray: var(--srh-len, 0);
+  stroke-dashoffset: var(--srh-len, 0);
   animation: srh-draw-connector 1.25s .58s cubic-bezier(.65,0,.2,1) forwards;
 }
 
 .srh-connector--copy {
   animation-delay: .78s;
+}
+
+.srh-connectors:not([data-srh-measured]) .srh-connector,
+.srh-connectors:not([data-srh-measured]) .srh-connector__dot {
+  visibility: hidden;
 }
 
 .srh-connector__dot {
@@ -430,32 +431,30 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   .srh-copy {
     top: 62.5%;
-    left: 35.5%;
+    left: 38.5%;
+    max-width: 21.5%;
   }
 
   .srh-copy__title {
-    font-size: clamp(2.55rem, 6.2vw, 4.25rem);
+    font-size: clamp(1.95rem, 4.7vw, 3.1rem);
   }
 
   .srh-copy__body {
     display: block;
-    max-width: 22rem;
+    max-width: 100%;
   }
 
+  /*
+   * The copy column is bounded to the channel between the portrait and detail
+   * frames (detail's left edge sits at 62%), so the title and body can no
+   * longer run underneath the detail image as they did at 768-1024.
+   */
   .srh-frame--detail {
     top: 53.5%;
-    right: 3.5%;
-    width: 37%;
+    right: 2.5%;
+    width: 33%;
     height: 28%;
     border-radius: 1.7rem;
-  }
-
-  .srh-connectors__set--desktop {
-    display: none;
-  }
-
-  .srh-connectors__set--tablet {
-    display: block;
   }
 
   .srh-actions {
@@ -478,81 +477,54 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 }
 
-@media (max-width: 880px) and (min-width: 481px) {
+/*
+ * Phones and tablets share one stacked composition. At and below 1024px
+ * the three-column editorial layout cannot hold the portrait frame, the copy
+ * column and the detail frame plus two connector channels without either
+ * colliding or shrinking the display type past the point where it still reads
+ * as Hathor, so the hero recomposes rather than compresses.
+ */
+/*
+ * Portrait phones and tablets keep the desktop composition rather than stacking
+ * it: the same overlapping collage - kicker in the cream, the main plate held to
+ * the right edge with the title set over it, the arch portrait running down the
+ * left and crossing the plate's lower corner, the bordered detail card riding
+ * the opposite corner, and a connector channel held open between the two lower
+ * frames. Only the proportions are transposed for a tall canvas; every element
+ * keeps its role, its z-order and its geometry language.
+ */
+@media (max-width: 1024px) and (orientation: portrait) {
   html body main .mod-scroll__intro.suites-reference-hero {
-    min-height: 45rem !important;
-  }
-
-  .srh-frame--portrait {
-    bottom: 19%;
-  }
-
-  .srh-frame--detail {
-    height: 25%;
-  }
-
-  .srh-copy {
-    top: 64%;
-    left: 36%;
-  }
-}
-
-@media (max-width: 480px) {
-  html body main .mod-scroll__intro.suites-reference-hero {
-    height: auto !important;
+    height: 100svh !important;
     min-height: 100svh !important;
-    overflow: visible !important;
+    overflow: hidden !important;
   }
 
   html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
-    height: auto !important;
+    height: 100% !important;
     min-height: 100% !important;
   }
 
   .srh-canvas {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
-    grid-template-areas:
-      "kicker kicker"
-      "main main"
-      "portrait detail"
-      "copy copy"
-      "actions actions";
-    align-items: end;
-    column-gap: .7rem;
-    row-gap: .55rem;
-    height: auto;
-    min-height: 100svh;
-    overflow: visible;
-    padding: 4.85rem .9rem max(.85rem, env(safe-area-inset-bottom));
-  }
-
-  .srh-kicker,
-  .srh-frame,
-  .srh-copy,
-  .srh-actions {
-    position: relative;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    width: auto;
-    height: auto;
-    translate: none;
+    height: 100%;
+    overflow: hidden;
   }
 
   .srh-kicker {
-    grid-area: kicker;
-    font-size: clamp(1.85rem, 9vw, 2.4rem);
+    top: 8%;
+    left: 6%;
+    font-size: clamp(1.85rem, 8vw, 3.4rem);
     line-height: .86;
   }
 
+  /* Plate holds the right edge exactly as on desktop; title sits over it. */
   .srh-frame--main {
-    grid-area: main;
-    width: 100%;
-    height: min(32svh, 14.5rem);
-    min-height: 12.5rem;
-    border-radius: 0 0 0 1.9rem;
+    top: 19%;
+    right: 0;
+    left: auto;
+    width: 92%;
+    height: 30%;
+    border-radius: 0 0 0 2rem;
   }
 
   .srh-frame--main img {
@@ -560,20 +532,23 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-title {
-    right: .7rem;
-    bottom: .7rem;
-    left: .75rem;
-    font-size: clamp(2.45rem, 12vw, 3.4rem);
+    top: auto;
+    right: 5%;
+    bottom: 5%;
+    left: 5%;
+    font-size: clamp(2.2rem, 10.4vw, 4.6rem);
     line-height: .86;
   }
 
+  /* Arch crosses the plate's lower-left corner, as the desktop portrait does. */
   .srh-frame--portrait {
-    grid-area: portrait;
-    width: 100%;
-    height: 23svh;
-    min-height: 8.75rem;
-    margin-top: -1.6rem;
-    border-radius: 7rem 7rem 0 0;
+    top: 42%;
+    right: auto;
+    bottom: auto;
+    left: 5%;
+    width: 40%;
+    height: 27%;
+    border-radius: 5rem 5rem 0 0;
   }
 
   .srh-frame--portrait img {
@@ -581,64 +556,105 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--detail {
-    grid-area: detail;
-    width: 100%;
-    height: 19svh;
-    min-height: 7.25rem;
+    top: 48%;
+    right: 4%;
+    left: auto;
+    width: 44%;
+    height: 19%;
     border-width: 2px;
-    border-radius: 1.25rem;
+    border-radius: 1.35rem;
   }
 
   .srh-copy {
-    grid-area: copy;
-    z-index: 4;
+    top: 73%;
+    left: 6%;
+    max-width: 88%;
   }
 
   .srh-copy__title {
-    font-size: clamp(1.85rem, 8.6vw, 2.45rem);
+    font-size: clamp(1.8rem, 7.6vw, 3.2rem);
     line-height: .88;
   }
 
   .srh-copy__body {
     display: block;
-    max-width: none;
-    margin: .45rem 0 0;
-    font-size: .78rem;
+    max-width: 100%;
+    margin: .5rem 0 0;
+    font-size: clamp(.72rem, 2.9vw, .92rem);
   }
 
-  .srh-copy__body br {
-    display: none;
-  }
-
-  .srh-connectors__set--tablet {
-    display: none;
-  }
-
-  .srh-connectors__set--phone {
-    display: block;
+  .srh-copy__line {
+    display: inline;
   }
 
   .srh-actions {
-    grid-area: actions;
-    width: 100%;
+    right: auto;
+    bottom: 1.8%;
+    left: 50%;
+    width: 88%;
+    translate: -50% 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: .4rem;
     padding: .45rem;
     border-radius: 1rem;
   }
 
+  /*
+   * nowrap keeps every action one line tall. Two-line labels pushed the bar to
+   * 142px and, on short phones, past the bottom of the clipped stage.
+   */
   .srh-actions a {
     width: 100%;
     min-width: 0;
     height: 2.85rem;
     min-height: 44px;
     padding: .25rem .4rem;
-    font-size: .58rem;
+    font-size: clamp(.54rem, 2.2vw, .72rem);
     letter-spacing: .12em;
+    white-space: nowrap;
   }
 }
 
-@media (min-width: 481px) and (max-width: 1024px) and (max-height: 820px) {
+/*
+ * Short portrait phones: tighten the vertical rhythm and trade the body line for
+ * a reachable actions bar. The collage itself is unchanged.
+ */
+@media (max-width: 1024px) and (orientation: portrait) and (max-height: 720px) {
+  .srh-kicker {
+    top: 6.5%;
+  }
+
+  .srh-frame--main {
+    top: 17%;
+    height: 29%;
+  }
+
+  .srh-frame--portrait {
+    top: 39%;
+    height: 27%;
+  }
+
+  .srh-frame--detail {
+    top: 45%;
+    height: 19%;
+  }
+
+  .srh-copy {
+    top: 70%;
+  }
+
+  .srh-copy__body {
+    display: none;
+  }
+
+  .srh-actions a {
+    height: 44px;
+    min-height: 44px;
+    letter-spacing: .08em;
+  }
+}
+
+@media (min-width: 1025px) and (max-height: 820px) {
   html body main .mod-scroll__intro.suites-reference-hero {
     min-height: 100svh !important;
   }
@@ -695,7 +711,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 }
 
-@media (max-height: 700px) and (min-width: 481px) {
+@media (max-height: 700px) and (min-width: 1025px) {
   .srh-kicker { top: 9%; }
   .srh-actions { bottom: 1%; }
   .srh-actions a { min-height: 2.8rem; }
@@ -718,6 +734,215 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 `;
 
+type Box = { left: number; top: number; right: number; bottom: number; cx: number; cy: number };
+
+function boxOf(canvas: DOMRect, el: Element | null): Box | null {
+  if (!el) return null;
+  const b = el.getBoundingClientRect();
+  if (b.width <= 0 || b.height <= 0) return null;
+  const left = b.left - canvas.left;
+  const top = b.top - canvas.top;
+  return {
+    left,
+    top,
+    right: left + b.width,
+    bottom: top + b.height,
+    cx: left + b.width / 2,
+    cy: top + b.height / 2,
+  };
+}
+
+/**
+ * Picks the x for a connector's vertical run so the stroke travels down an empty
+ * channel. Starts from the midpoint and, for any frame the run would cross over
+ * its y-span, slides to the nearer side of that frame plus a clearance gap. This
+ * is what keeps the hairline off the photography instead of drawing across it.
+ */
+function channelX(
+  preferred: number,
+  y1: number,
+  y2: number,
+  obstacles: Box[],
+  clearance = 7,
+) {
+  const top = Math.min(y1, y2);
+  const bottom = Math.max(y1, y2);
+  let x = preferred;
+
+  for (const o of obstacles) {
+    if (o.bottom <= top || o.top >= bottom) continue; // no shared y-span
+    if (x <= o.left - clearance || x >= o.right + clearance) continue;
+    const toLeft = o.left - clearance;
+    const toRight = o.right + clearance;
+    x = Math.abs(x - toLeft) <= Math.abs(x - toRight) ? toLeft : toRight;
+  }
+  return x;
+}
+
+/**
+ * Orthogonal elbow from (x1,y1) to (x2,y2): run horizontally, turn once, then
+ * run vertically into the target. Corners are quadratic so they read as the
+ * same drawn hairline the rest of the hero uses. `runX` overrides where the
+ * vertical leg sits, so it can be routed down a known-empty channel.
+ */
+function elbow(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  radius: number,
+  runX?: number,
+) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  if (Math.abs(dy) < 1) return `M ${x1} ${y1} H ${x2}`;
+  if (Math.abs(dx) < 1) return `M ${x1} ${y1} V ${y2}`;
+
+  const midX = runX ?? x1 + dx / 2;
+  const legIn = midX - x1;
+  const legOut = x2 - midX;
+  const r = Math.min(
+    radius,
+    Math.abs(legIn) / 2 || radius,
+    Math.abs(legOut) / 2 || radius,
+    Math.abs(dy) / 2,
+  );
+  const sx = Math.sign(legIn) || Math.sign(dx);
+  const sxOut = Math.sign(legOut) || sx;
+  const sy = Math.sign(dy);
+  // Horizontal run, rounded turn, vertical run, rounded turn, short horizontal tail.
+  return [
+    `M ${x1} ${y1}`,
+    `H ${midX - r * sx}`,
+    `Q ${midX} ${y1} ${midX} ${y1 + r * sy}`,
+    `V ${y2 - r * sy}`,
+    `Q ${midX} ${y2} ${midX + r * sxOut} ${y2}`,
+    `H ${x2}`,
+  ].join(" ");
+}
+
+/**
+ * Positions the two connectors from the elements they actually join, in a 1:1
+ * pixel viewBox. Replaces the previous per-breakpoint hardcoded coordinates in
+ * a `preserveAspectRatio="none"` box, which stretched the pin into an ellipse
+ * and drifted off its anchors whenever the composition reflowed.
+ */
+export function layoutSuitesConnectors(doc: Document) {
+  const canvasEl = doc.querySelector<HTMLElement>(".srh-canvas");
+  const svg = doc.querySelector<SVGSVGElement>(".srh-connectors");
+  if (!canvasEl || !svg) return false;
+
+  const canvas = canvasEl.getBoundingClientRect();
+  if (canvas.width <= 0 || canvas.height <= 0) return false;
+
+  const portrait = boxOf(canvas, doc.querySelector(".srh-frame--portrait"));
+  const copy = boxOf(canvas, doc.querySelector(".srh-copy"));
+  const copyTitle = boxOf(canvas, doc.querySelector(".srh-copy__title"));
+  const detail = boxOf(canvas, doc.querySelector(".srh-frame--detail"));
+  if (!portrait || !copy || !copyTitle || !detail) return false;
+
+  svg.setAttribute("viewBox", `0 0 ${canvas.width} ${canvas.height}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+  // Matches the 1024px stacked-composition breakpoint in the stylesheet.
+  const narrow = canvas.width <= 1024;
+  const dotR = narrow ? 3.5 : 4;
+
+  const apply = (selector: string, d: string | null) => {
+    const path = svg.querySelector<SVGPathElement>(selector);
+    if (!path) return;
+    if (!d) {
+      path.removeAttribute("d");
+      path.style.setProperty("--srh-len", "0");
+      return;
+    }
+    path.setAttribute("d", d);
+    path.style.setProperty("--srh-len", `${path.getTotalLength()}`);
+  };
+
+  const main = boxOf(canvas, doc.querySelector(".srh-frame--main"));
+  const frames = [portrait, detail, ...(main ? [main] : [])];
+
+  const dot = svg.querySelector<SVGCircleElement>(".srh-connector__dot");
+  const placePin = (x: number, y: number) => {
+    if (!dot) return;
+    dot.setAttribute("cx", String(x));
+    dot.setAttribute("cy", String(y));
+    dot.setAttribute("r", String(dotR));
+  };
+
+  // A leader is only drawn where its channel is wide enough to read as a
+  // deliberate rule rather than a stub against the neighbouring element.
+  const MIN_CHANNEL = 22;
+
+  if (narrow) {
+    // Portrait collage: one leader crossing the channel held open between the
+    // arch and the detail card. Pin and stroke both sit inside that channel -
+    // neither touches the photography.
+    const gap = detail.left - portrait.right;
+    if (gap < MIN_CHANNEL) {
+      apply(".srh-connector--portrait", null);
+      apply(".srh-connector--copy", null);
+      placePin(portrait.right + gap / 2, portrait.top - 12);
+      svg.setAttribute("data-srh-measured", "true");
+      return true;
+    }
+
+    const runX = portrait.right + gap / 2;
+    const pinY = Math.max(portrait.top + 14, detail.top - 18);
+    placePin(runX, pinY);
+    apply(
+      ".srh-connector--portrait",
+      elbow(
+        runX,
+        pinY + dotR + 4,
+        runX,
+        detail.top + (detail.bottom - detail.top) * 0.62,
+        6,
+        runX,
+      ),
+    );
+    apply(".srh-connector--copy", null);
+    svg.setAttribute("data-srh-measured", "true");
+    return true;
+  }
+
+  const titleMid = copyTitle.top + (copyTitle.bottom - copyTitle.top) * 0.5;
+
+  // Desktop leader 1: down the channel between the arch and the main plate. The
+  // run is pushed clear of both frames, and the pin rides the channel rather
+  // than sitting half-on the portrait's edge.
+  if (copyTitle.left - portrait.right >= MIN_CHANNEL) {
+    const runX = channelX(
+      portrait.right + (copyTitle.left - portrait.right) / 2,
+      portrait.cy,
+      titleMid,
+      frames,
+    );
+    placePin(runX, portrait.cy);
+    apply(
+      ".srh-connector--portrait",
+      elbow(runX, portrait.cy + dotR + 4, copyTitle.left - 10, titleMid, 16, runX),
+    );
+  } else {
+    placePin(portrait.right + 10, portrait.cy);
+    apply(".srh-connector--portrait", null);
+  }
+
+  // Desktop leader 2: out of the copy column and into the detail card's edge.
+  if (detail.left - copy.right >= MIN_CHANNEL) {
+    const y1 = copyTitle.top + (copyTitle.bottom - copyTitle.top) * 0.62;
+    const y2 = detail.top + (detail.bottom - detail.top) * 0.55;
+    const runX = channelX(copy.right + (detail.left - copy.right) / 2, y1, y2, frames);
+    apply(".srh-connector--copy", elbow(copy.right + 10, y1, detail.left - 6, y2, 16, runX));
+  } else {
+    apply(".srh-connector--copy", null);
+  }
+
+  svg.setAttribute("data-srh-measured", "true");
+  return true;
+}
+
 export function mountSuitesReferenceHero(doc: Document) {
   const intro = doc.querySelector<HTMLElement>(".mod-scroll__intro");
   const wrapper = intro?.querySelector<HTMLElement>(":scope > .wrapper");
@@ -727,5 +952,33 @@ export function mountSuitesReferenceHero(doc: Document) {
   if (!wrapper.querySelector(".srh-canvas")) {
     wrapper.innerHTML = HERO_MARKUP;
   }
+  layoutSuitesConnectors(doc);
   return true;
+}
+
+/**
+ * Keeps the connectors pinned to their anchors as the hero reflows (viewport
+ * resize, font swap, orientation change). Returns a disposer.
+ */
+export function observeSuitesConnectors(doc: Document) {
+  const canvas = doc.querySelector<HTMLElement>(".srh-canvas");
+  const view = doc.defaultView;
+  if (!canvas || !view) return () => {};
+
+  let frame = 0;
+  const schedule = () => {
+    view.cancelAnimationFrame(frame);
+    frame = view.requestAnimationFrame(() => layoutSuitesConnectors(doc));
+  };
+
+  const observer = new view.ResizeObserver(schedule);
+  observer.observe(canvas);
+  view.addEventListener("orientationchange", schedule);
+  void doc.fonts?.ready.then(schedule).catch(() => {});
+
+  return () => {
+    view.cancelAnimationFrame(frame);
+    observer.disconnect();
+    view.removeEventListener("orientationchange", schedule);
+  };
 }
