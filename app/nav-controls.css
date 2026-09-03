@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Public navbar control geometry, matched to the supplied desktop and phone
  * references. This file is intentionally loaded after the legacy navbar CSS.
  */
@@ -88,7 +88,7 @@
   transition: opacity 220ms var(--nav-control-ease) !important;
 }
 
-/* Transparent on desktop/tablet — phone dock gives it the shared ring shell. */
+/* Transparent on desktop/tablet вЂ” phone dock gives it the shared ring shell. */
 .hsc__mark {
   position: relative;
   z-index: 1;
@@ -303,7 +303,7 @@
     --chrome-icon: 2.75rem;
     --theme-toggle-w: 2.75rem;
     --theme-toggle-h: 2.75rem;
-    /* Do not force a grey bar — keep desktop transparent-on-hero / cream-on-scroll. */
+    /* Do not force a grey bar вЂ” keep desktop transparent-on-hero / cream-on-scroll. */
   }
 
   .public-site
@@ -366,7 +366,7 @@
     min-height: 2.75rem !important;
     margin: 0 0 0 var(--nav-control-gap) !important;
     transform: none !important;
-    /* Color follows shared white/ink tone — do not lock to ink here. */
+    /* Color follows shared white/ink tone вЂ” do not lock to ink here. */
   }
 
   .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left svg {
@@ -614,7 +614,7 @@
 /* Wishlist + cart marks                                                 */
 /* -------------------------------------------------------------------- */
 
-/* Hairline ring — the shared container language for every mark. */
+/* Hairline ring вЂ” the shared container language for every mark. */
 .hsc:not(#_):not(#_)::before {
   border-color: color-mix(in srgb, currentColor 26%, transparent) !important;
   transition:
@@ -729,7 +729,7 @@
   color: var(--nav-lux-ink) !important;
 }
 
-/* A slight turn as the mode changes — motion, not a swap. */
+/* A slight turn as the mode changes вЂ” motion, not a swap. */
 .public-theme-toggle__icon:not(#_):not(#_) {
   width: 0.8125rem !important;
   height: 0.8125rem !important;
@@ -775,7 +775,7 @@
   color: var(--nav-lux-ink) !important;
 }
 
-/* On phones the control collapses to a disc — knob only, no label. */
+/* On phones the control collapses to a disc вЂ” knob only, no label. */
 @media (max-width: 480px) {
   .public-theme-toggle__label:not(#_):not(#_) {
     display: none !important;
@@ -981,7 +981,7 @@
     padding-left 320ms var(--nav-lux-ease);
 }
 
-/* A gold hairline draws in from the edge on hover — the only movement. */
+/* A gold hairline draws in from the edge on hover вЂ” the only movement. */
 .public-lang-menu__option::before {
   content: "";
   position: absolute;
@@ -1072,7 +1072,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   color: var(--nav-lux-cream);
 }
 
-/* Focus rings join the same family — gold, never the browser default. */
+/* Focus rings join the same family вЂ” gold, never the browser default. */
 .hsc:not(#_):not(#_):focus-visible,
 .public-theme-toggle:not(#_):not(#_):focus-visible,
 .public-lang-toggle:not(#_):not(#_):focus-visible {
@@ -1113,7 +1113,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 }
 
-/* The globe is a mark, not a labelled control — drop the caption chip so it
+/* The globe is a mark, not a labelled control вЂ” drop the caption chip so it
    is the same circle as the wishlist and cart. */
 .public-lang-toggle__code {
   display: none !important;
@@ -1177,21 +1177,21 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 }
 
 /* ==========================================================================
-   PHONE + TABLET NAV BAR — menu / brand / actions, mark dead centre
+   PHONE + TABLET NAV BAR вЂ” menu / brand / actions, mark dead centre
    --------------------------------------------------------------------------
    Replaces the "logo left, then the four controls, then the menu at far
    right" arrangement above, which left the mark stranded against the left
    edge with a dead ~90px gap and five equal-weight controls jammed against
    the right.
 
-       [ ☰ ]            ( mark )            [ ♡ ] [ cart ] [ 文 ] [ ☀ ]
+       [ в° ]            ( mark )            [ в™Ў ] [ cart ] [ ж–‡ ] [ вЂ ]
 
    All five controls stay in the bar. The mark is taken out of flow so it
    centres on the viewport rather than on whatever gap the side clusters
    leave, and every control is sized off one fluid token so the row always
    resolves without the two sides ever reaching the mark.
 
-   The horizontal axis is the tight one — four right-hand controls plus a
+   The horizontal axis is the tight one вЂ” four right-hand controls plus a
    centred mark cannot all hold 44px at 320px. Vertical space is not tight, so
    the controls keep a full 44px height and only narrow horizontally: a
    29 x 44 target rather than a 29 x 29 one. At 430px and wider they are 44
@@ -1232,7 +1232,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     padding-inline: clamp(0.5rem, 3vw, 1.5rem) !important;
   }
 
-  /* Menu affordance on the left — the easiest reach for a thumb. */
+  /* Menu affordance on the left вЂ” the easiest reach for a thumb. */
   .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left {
     order: 1 !important;
     flex: 0 0 auto !important;
@@ -1307,14 +1307,14 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   /*
    * The switch renders as a filled cream disc with a 38px thumb rattling
-   * around inside a 31px track — next to three outlined marks on a
+   * around inside a 31px track вЂ” next to three outlined marks on a
    * transparent bar it read as a stray blob. Here it becomes the same
    * outlined circle as its neighbours, with the sun/moon glyph inside; the
    * control and its behaviour are unchanged.
    */
   /*
    * The day/night states are painted by `.public-theme-toggle.is-day:not(#_)
-   * :not(#_) ...:not(#_):not(#_)` — ID specificity 4. These have to carry more
+   * :not(#_) ...:not(#_):not(#_)` вЂ” ID specificity 4. These have to carry more
    * weight than that to reach the track and thumb at all, which is why the
    * :not(#_) chains are this long. Matching the convention already used
    * throughout this file.
@@ -1339,7 +1339,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   /*
    * The glyph is painted ink by the switch's own day/night styling, which is
-   * correct on a cream pill and wrong on a transparent bar — it has to follow
+   * correct on a cream pill and wrong on a transparent bar вЂ” it has to follow
    * the same white/ink tone as the marks beside it.
    */
   .public-theme-toggle:not(#_):not(#_):not(#_) svg:not(#_):not(#_),
@@ -1357,7 +1357,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     box-sizing: border-box !important;
     width: var(--nav-ctl) !important;
     height: var(--nav-ctl) !important;
-    /* Same weight as the .hsc rings — currentColor at 26%, not solid. */
+    /* Same weight as the .hsc rings вЂ” currentColor at 26%, not solid. */
     border: 1px solid color-mix(in srgb, currentColor 26%, transparent) !important;
     border-radius: 50% !important;
     transform: translate(-50%, -50%) !important;
@@ -1389,15 +1389,15 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 }
 
 /* ==========================================================================
-   PHONE-ONLY — icon tone sync with desktop scroll / mode behaviour
+   PHONE-ONLY вЂ” icon tone sync with desktop scroll / mode behaviour
    --------------------------------------------------------------------------
-   ≤480px only. Desktop and tablet geometry above stay untouched.
+   в‰¤480px only. Desktop and tablet geometry above stay untouched.
 
    Phone used to force the burger SVG and day/night thumb to ink while the
    favourites / voyage / language marks went white over the hero. That left
    two dark glyphs beside three white ones. Every chrome control must share
    one currentColor: white over the hero (and night light ink), ink once the
-   cream / paper bar is behind them — same story as desktop.
+   cream / paper bar is behind them вЂ” same story as desktop.
    ========================================================================== */
 
 @media (max-width: 480px) {
@@ -1417,7 +1417,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   /*
    * Day sun: solid core + stroked rays. Night moon: leave filled paths alone.
-   * Never fill ray paths — that collapsed the sun into a plain disc.
+   * Never fill ray paths вЂ” that collapsed the sun into a plain disc.
    */
   .public-theme-toggle.is-day:not(#_):not(#_):not(#_)
     .public-theme-toggle__icon:not(#_):not(#_) {
@@ -1448,7 +1448,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     stroke: none !important;
   }
 
-  /* Burger glyph rides the same color as the button (white ↔ ink). */
+  /* Burger glyph rides the same color as the button (white в†” ink). */
   .public-site
     .hathor-header--chrome:not(#_):not(#_)
     .hathor-header__menu-btn--left:not(#_)
@@ -1531,11 +1531,11 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 }
 
 /* ==========================================================================
-   PHONE BOTTOM DOCK — favourites, voyage cart, language (≤480px only)
+   PHONE BOTTOM DOCK тАФ favourites, voyage cart, language (тЙд480px only)
    --------------------------------------------------------------------------
    Same components and handlers as the header marks. Markup lives outside
    <header> (portaled to body) so position:fixed pins to the viewport bottom
-   — header backdrop-filter / isolation must not trap it.
+   тАФ header backdrop-filter / isolation must not trap it.
    ========================================================================== */
 
 @media (max-width: 480px) {
@@ -1543,28 +1543,17 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   .public-site,
   .hathor-header,
   .preview-header {
-    /* Compact dock: mark + label + tight pad (~3.15rem content band). */
-    --hathor-phone-dock-h: calc(3.15rem + env(safe-area-inset-bottom, 0px));
-    --dock-mark: 1.875rem;
-    --dock-icon: 1rem;
-    --dock-label: 0.4rem;
-    --dock-gap: 0.16rem;
-  }
-
-  /*
-    Reserve bottom space wherever the phone dock is mounted — not only
-    .public-site — so standalone shells (rooms, dining, suites host) clear it.
-    :has(.hathor-phone-dock) keeps admin / non-public routes unpadded.
-  */
-  body:has(.hathor-phone-dock) {
-    padding-bottom: var(--hathor-phone-dock-h);
+    --hathor-phone-dock-h: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    --dock-mark: 2.4rem;
+    --dock-icon: 1.25rem;
+    --dock-label: 0.4375rem;
   }
 
   .public-site {
-    padding-bottom: 0;
+    padding-bottom: var(--hathor-phone-dock-h);
   }
 
-  /* Hide the top-bar copies — only day/night stays up top. */
+  /* Hide the top-bar copies тАФ only day/night stays up top. */
   .hathor-header-chrome-tools {
     display: none !important;
   }
@@ -1575,10 +1564,8 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 
   /*
-    True viewport dock — body portal + !important so no header ancestor
+    True viewport dock тАФ body portal + !important so no header ancestor
     can re-contain or override the stripe.
-    z-index above editorial overlay (1300) so Saved/Voyage/Language stay
-    pinned on every route, including while the phone menu is open.
   */
   .hathor-phone-dock {
     display: flex !important;
@@ -1590,33 +1577,32 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     width: 100% !important;
     max-width: 100vw !important;
     margin: 0 !important;
-    z-index: 1350 !important;
-    align-items: center;
+    z-index: 1280 !important;
+    align-items: stretch;
     justify-content: space-evenly;
     gap: 0;
     box-sizing: border-box;
-    min-height: 0;
-    height: auto;
+    min-height: var(--hathor-phone-dock-h);
     padding:
-      0.28rem max(0.65rem, env(safe-area-inset-left))
-      calc(0.22rem + env(safe-area-inset-bottom, 0px))
-      max(0.65rem, env(safe-area-inset-right));
-    border-top: 1px solid color-mix(in srgb, var(--nav-lux-ink) 10%, transparent);
+      0.45rem max(0.75rem, env(safe-area-inset-left))
+      calc(0.4rem + env(safe-area-inset-bottom, 0px))
+      max(0.75rem, env(safe-area-inset-right));
+    border-top: 1px solid color-mix(in srgb, var(--nav-lux-ink) 12%, transparent);
     background: #ece8df;
     box-shadow:
-      0 -1px 0 rgb(255 255 255 / 0.55) inset,
-      0 -4px 14px rgb(20 18 16 / 0.08);
+      0 -1px 0 rgb(255 255 255 / 0.65) inset,
+      0 -12px 32px rgb(20 18 16 / 0.14);
     pointer-events: auto;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
 
   html[data-public-theme="night"] .hathor-phone-dock {
-    border-top-color: color-mix(in srgb, var(--nav-lux-cream) 14%, transparent);
+    border-top-color: color-mix(in srgb, var(--nav-lux-cream) 16%, transparent);
     background: #16130f;
     box-shadow:
-      0 -1px 0 rgb(255 255 255 / 0.05) inset,
-      0 -4px 14px rgb(0 0 0 / 0.32);
+      0 -1px 0 rgb(255 255 255 / 0.06) inset,
+      0 -12px 32px rgb(0 0 0 / 0.4);
   }
 
   .hathor-phone-dock > .hsc:not(#_):not(#_),
@@ -1637,14 +1623,14 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: var(--dock-gap) !important;
+    gap: 0.28rem !important;
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
     height: auto !important;
-    min-height: 0 !important;
+    min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0.15rem 0.1rem 0 !important;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -1653,7 +1639,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 
   /*
-    Kill absolute ::before rings — they center on the whole tall tab
+    Kill absolute ::before rings тАФ they center on the whole tall tab
     (icon + label), which shoved the Language globe into the top of its circle.
     Rings are drawn on the mark box itself so icon and circle share one center.
   */
@@ -1663,7 +1649,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     display: none !important;
   }
 
-  /* Shared mark shell — identical size, ring, and icon centering for all three. */
+  /* Shared mark shell тАФ identical size, ring, and icon centering for all three. */
   .hathor-phone-dock > .hsc .hsc__mark,
   .hathor-phone-dock .public-lang-toggle__globe {
     position: relative !important;
@@ -1698,7 +1684,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     flex-basis: 0 !important;
     width: auto !important;
     height: auto !important;
-    min-height: 0 !important;
+    min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
   }
 
   .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
@@ -1708,7 +1694,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: var(--dock-gap) !important;
+    gap: 0.28rem !important;
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
@@ -1722,7 +1708,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     display: none !important;
   }
 
-  /* App-style captions — presentation only; handlers unchanged. */
+  /* App-style captions тАФ presentation only; handlers unchanged. */
   .hathor-phone-dock > .hsc:not(#_):first-of-type::after {
     content: "Saved";
   }
@@ -1759,7 +1745,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     right: calc(50% - var(--dock-mark) * 0.5) !important;
   }
 
-  /* Language card — solid opaque popover above the Language tab only. */
+  /* Language card тАФ solid opaque popover above the Language tab only. */
   .hathor-phone-dock {
     overflow: visible !important;
   }
@@ -1775,8 +1761,8 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   .hathor-phone-dock .public-lang-menu {
     top: auto !important;
-    /* Keep the full card on-screen — Language is the right third, so
-       pin to the dock’s right inset instead of centering a wide card
+    /* Keep the full card on-screen тАФ Language is the right third, so
+       pin to the dockтАЩs right inset instead of centering a wide card
        that spills past the viewport edge. */
     left: auto !important;
     right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
@@ -1789,7 +1775,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     padding: 0.9rem 0 0.45rem !important;
     border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 16%, transparent) !important;
     border-radius: 0.85rem !important;
-    /* Fully opaque dock cream — no glass, no alpha over hero video. */
+    /* Fully opaque dock cream тАФ no glass, no alpha over hero video. */
     background: #ece8df !important;
     background-color: #ece8df !important;
     background-image: none !important;
@@ -1820,7 +1806,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     backface-visibility: hidden !important;
   }
 
-  /* Opaque fill behind list content — belt-and-suspenders vs video punch-through. */
+  /* Opaque fill behind list content тАФ belt-and-suspenders vs video punch-through. */
   .hathor-phone-dock .public-lang-menu::after {
     content: "" !important;
     position: absolute !important;
@@ -1908,5 +1894,14 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     color: var(--nav-lux-cream) !important;
   }
 
-  /* Dock stays visible while the editorial menu is open (z-index 1350). */
+  /* Hide dock while the full-screen editorial menu is open. */
+  html:has(.eno.is-open) .hathor-phone-dock,
+  html:has(.hathor-header--editorial-open) .hathor-phone-dock {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.28s var(--nav-lux-ease),
+      visibility 0s linear 0.28s;
+  }
 }
