@@ -511,7 +511,8 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-kicker {
-    top: 8%;
+    /* rem floor clears the overlaid public navbar on short canvases. */
+    top: max(9%, 5.2rem);
     left: 6%;
     font-size: clamp(1.85rem, 8vw, 3.4rem);
     line-height: .86;
@@ -621,12 +622,12 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
  */
 @media (max-width: 1024px) and (orientation: portrait) and (max-height: 720px) {
   .srh-kicker {
-    top: 6.5%;
+    top: max(6.5%, 4.6rem);
   }
 
   .srh-frame--main {
-    top: 17%;
-    height: 29%;
+    top: 19%;
+    height: 27%;
   }
 
   .srh-frame--portrait {
@@ -889,7 +890,9 @@ export function layoutSuitesConnectors(doc: Document) {
     }
 
     const runX = portrait.right + gap / 2;
-    const pinY = Math.max(portrait.top + 14, detail.top - 18);
+    // Start below the main plate's lower edge: the collage overlaps the frames
+    // there, and a leader starting higher would be drawn across the photograph.
+    const pinY = Math.max(portrait.top + 14, (main ? main.bottom : 0) + 12);
     placePin(runX, pinY);
     apply(
       ".srh-connector--portrait",
