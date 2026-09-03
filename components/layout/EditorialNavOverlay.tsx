@@ -148,7 +148,7 @@ export function EditorialNavOverlay({
           <p className="eno-kicker">Luxury voyages on the Nile</p>
           <button
             type="button"
-            className="btn eno-book"
+            className="btn eno-book eno-book--header"
             onClick={handleBookNow}
             tabIndex={open ? 0 : -1}
           >
@@ -226,6 +226,14 @@ export function EditorialNavOverlay({
               Terms &amp; Conditions
             </Link>
           </p>
+          <button
+            type="button"
+            className="eno-book eno-book--footer"
+            onClick={handleBookNow}
+            tabIndex={open ? 0 : -1}
+          >
+            Book Now
+          </button>
         </footer>
       </aside>
     </div>

@@ -1383,31 +1383,34 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 
   /*
-   * Narrow block forced fill:none on every theme SVG child, which killed the
-   * sun core / moon crescent. Restore filled marks; keep ray strokes.
+   * Day sun: solid core + stroked rays. Night moon: leave filled paths alone.
+   * Never fill ray paths — that collapsed the sun into a plain disc.
    */
-  .public-theme-toggle:not(#_):not(#_):not(#_)
+  .public-theme-toggle.is-day:not(#_):not(#_):not(#_)
     .public-theme-toggle__icon:not(#_):not(#_) {
     color: inherit !important;
+  }
+
+  .public-theme-toggle.is-day:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    circle {
     fill: currentColor !important;
+    stroke: none !important;
+  }
+
+  .public-theme-toggle.is-day:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    g,
+  .public-theme-toggle.is-day:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    [fill="none"] {
+    fill: none !important;
     stroke: currentColor !important;
   }
 
-  .public-theme-toggle:not(#_):not(#_):not(#_)
+  .public-theme-toggle.is-night:not(#_):not(#_):not(#_)
     .public-theme-toggle__icon:not(#_):not(#_)
-    [fill="none"],
-  .public-theme-toggle:not(#_):not(#_):not(#_)
-    .public-theme-toggle__icon:not(#_):not(#_)
-    g {
-    fill: none !important;
-  }
-
-  .public-theme-toggle:not(#_):not(#_):not(#_)
-    .public-theme-toggle__icon:not(#_):not(#_)
-    circle,
-  .public-theme-toggle:not(#_):not(#_):not(#_)
-    .public-theme-toggle__icon:not(#_):not(#_)
-    path:not([fill="none"]) {
+    path {
     fill: currentColor !important;
     stroke: none !important;
   }

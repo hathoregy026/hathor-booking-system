@@ -18,14 +18,15 @@ function RefSunIcon() {
         strokeWidth="1.7"
         strokeLinecap="round"
       >
-        <path d="M12 1.9v2.4" />
-        <path d="M12 19.7v2.4" />
-        <path d="M1.9 12h2.4" />
-        <path d="M19.7 12h2.4" />
-        <path d="M4.86 4.86 6.56 6.56" />
-        <path d="M17.44 17.44l1.7 1.7" />
-        <path d="M4.86 19.14l1.7-1.7" />
-        <path d="M17.44 6.56l1.7-1.7" />
+        {/* fill="none" on each ray so phone CSS cannot paint them solid. */}
+        <path fill="none" d="M12 1.9v2.4" />
+        <path fill="none" d="M12 19.7v2.4" />
+        <path fill="none" d="M1.9 12h2.4" />
+        <path fill="none" d="M19.7 12h2.4" />
+        <path fill="none" d="M4.86 4.86 6.56 6.56" />
+        <path fill="none" d="M17.44 17.44l1.7 1.7" />
+        <path fill="none" d="M4.86 19.14l1.7-1.7" />
+        <path fill="none" d="M17.44 6.56l1.7-1.7" />
       </g>
     </svg>
   );

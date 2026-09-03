@@ -291,6 +291,11 @@
   margin: 0;
 }
 
+/* Phone-only Book Now sits in the footer; hide it above 480px. */
+.eno-book--footer {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .eno-kicker {
     display: none;
@@ -494,57 +499,62 @@
 }
 
 @media (max-width: 480px) {
+  /* Half the phone — cream ledger left, image/backdrop right. */
   .eno {
-    --eno-panel-w: 100%;
+    --eno-panel-w: 50%;
   }
 
   .eno-photo {
-    display: none;
+    display: block;
+    width: calc(100% - var(--eno-panel-w));
   }
 
   .eno-prelayers,
   .eno-panel {
-    width: 100%;
+    width: var(--eno-panel-w);
   }
 
   .eno-prelayer--1 {
-    width: 100%;
+    width: calc(var(--eno-panel-w) + 5.5%);
   }
 
   .eno-prelayer--2 {
-    width: 100%;
+    width: calc(var(--eno-panel-w) + 3.25%);
   }
 
   .eno-prelayer--3 {
-    width: 100%;
+    width: calc(var(--eno-panel-w) + 1.35%);
   }
 
   .eno-panel {
-    grid-template-columns: 2.15rem minmax(0, 1fr);
+    grid-template-columns: 1.65rem minmax(0, 1fr);
     padding:
       max(0.85rem, env(safe-area-inset-top))
-      0.85rem
+      0.65rem
       max(0.9rem, env(safe-area-inset-bottom))
-      max(0.7rem, env(safe-area-inset-left));
+      max(0.45rem, env(safe-area-inset-left));
   }
 
   .eno-rail {
-    gap: 0.7rem;
+    gap: 0.55rem;
   }
 
   .eno-rail__mark {
-    width: 1.15rem;
+    width: 1rem;
   }
 
   .eno-top {
-    gap: 0.55rem;
-    padding: 0.1rem 0.15rem 0.55rem;
+    gap: 0.4rem;
+    justify-content: flex-start;
+    padding: 0.1rem 0.1rem 0.45rem;
   }
 
   .eno-close {
     width: 2.25rem;
     height: 2.25rem;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
+    color: var(--eno-ink);
+    border-color: var(--eno-gold-deep);
   }
 
   /*
@@ -566,42 +576,104 @@
     display: none;
   }
 
-  .eno-nav {
-    padding: 0.15rem 0.2rem 0.15rem 0;
+  /* Book Now: header on desktop, full-width footer CTA on phone.
+     Footer control intentionally omits `.btn` so public pill width locks
+     cannot force max-content inside the half-panel. */
+  .eno .btn.eno-book.eno-book--header:not(#_) {
+    display: none !important;
   }
 
-  .eno-link {
-    grid-template-columns: 2.2rem minmax(0, 1fr) 1.2rem;
-    padding: 0.62rem 0.05rem;
-  }
-
-  .eno-num {
+  .eno-book--footer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.75rem;
+    margin: 0.55rem 0 0;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--eno-gold-deep);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--eno-gold-deep);
+    font-family: var(--eno-body);
     font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    order: 3;
+  }
+
+  .eno-book--footer:hover,
+  .eno-book--footer:focus-visible {
+    background: rgba(139, 105, 20, 0.1);
+    outline: none;
+  }
+
+  .eno-foot .eno-copy {
+    order: 1;
+  }
+
+  .eno-foot .eno-legal {
+    order: 2;
   }
 
   .eno-label {
-    font-size: clamp(1.45rem, 7.2vw, 2.05rem);
+    font-size: clamp(0.95rem, 4.8vw, 1.28rem);
+    color: var(--eno-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .eno-nav {
+    padding: 0.15rem 0.1rem 0.15rem 0;
+    align-self: stretch;
+  }
+
+  .eno-link {
+    grid-template-columns: 1.85rem minmax(0, 1fr) 1.35rem;
+    padding: 0.55rem 0.05rem;
+    min-height: 44px;
+  }
+
+  .eno-num {
+    font-size: 0.62rem;
+    color: var(--eno-muted);
+  }
+
+  /* Clear expandable chevrons — readable gold marks, not faint strokes. */
+  .eno-chevron {
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--eno-gold-deep);
+    opacity: 1;
+    stroke-width: 2.25;
   }
 
   .eno-sub {
-    padding: 0 0 0.65rem 2.3rem;
+    padding: 0 0 0.55rem 1.95rem;
   }
 
   .eno-sublink {
-    font-size: 0.68rem;
-    padding: 0.2rem 0;
+    font-size: 0.62rem;
+    padding: 0.22rem 0;
+    color: var(--eno-muted);
   }
 
   .eno-foot {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 0.35rem;
-    padding: 0.55rem 0.15rem 0.1rem;
+    /* Beat `.public-site footer { padding-inline: max(20px, …) }` from mobile-touch. */
+    padding: 0.45rem 0.1rem 0.1rem !important;
   }
 
   .eno-copy,
   .eno-legal {
-    font-size: 0.58rem;
+    font-size: 0.52rem;
   }
 }
 
