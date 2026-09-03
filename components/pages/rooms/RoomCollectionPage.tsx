@@ -7,7 +7,10 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
+import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { resolveCmsText } from "@/lib/website-text-shared";
 
 type RoomCollectionVariant = "cabins" | "suites" | "royal";
@@ -27,6 +30,33 @@ const COLLECTION_LINKS = [
   { href: "/rooms", label: "Luxury Suites" },
   { href: "/royal-suites", label: "Royal Suites" },
 ] as const;
+
+function CmsFillImage({
+  path,
+  alt,
+  priority = false,
+  sizes,
+}: {
+  path: string;
+  alt: string;
+  priority?: boolean;
+  sizes: string;
+}) {
+  const cms = useCmsPathImage(path);
+  return (
+    <Image
+      key={cms.src}
+      src={cms.src}
+      alt={cms.alt || alt}
+      fill
+      priority={priority}
+      quality={SITE_IMAGE_QUALITY}
+      sizes={sizes}
+      id={cms.slot ? siteImageAnchorId(cms.slot) : undefined}
+      data-site-image={cms.slot ?? undefined}
+    />
+  );
+}
 
 export function RoomCollectionPage({
   rooms = ROOM_SHOWCASES,
@@ -58,10 +88,9 @@ export function RoomCollectionPage({
       <PublicNavbar />
       <main className="room-collection">
         <section className="room-collection__hero">
-          <Image
-            src={heroImage}
+          <CmsFillImage
+            path={heroImage}
             alt={`${title} aboard Hathor Dahabiya`}
-            fill
             priority
             sizes="100vw"
           />
@@ -115,10 +144,9 @@ export function RoomCollectionPage({
                 by a transparent stretched link covering the same area.
               */}
               <div className="room-collection__media">
-                <Image
-                  src={room.images[0]}
+                <CmsFillImage
+                  path={room.images[0]}
                   alt={`${room.name} interior aboard Hathor Dahabiya`}
-                  fill
                   sizes="(max-width: 1024px) 100vw, 62vw"
                 />
                 <Link

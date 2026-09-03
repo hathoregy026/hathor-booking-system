@@ -6,16 +6,16 @@
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 /**
- * Dashboard/CMS is the live source. Never swap these for a stale
- * `/public/media/hathor/optimized/{name}.webp` mirror.
+ * @deprecated Kept for scripts/mirrors that still enumerate known optimized
+ * files. Live delivery never prefers these over CMS Supabase URLs — that
+ * previously masked dashboard uploads on the public site.
  */
 export const CMS_CANONICAL_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
   "home-hero-poster",
-  /* Dashboard replacements must reach both homepage wheel experiences
-     immediately; the bundled mirror is only a deployment-time fallback. */
   "home-wheel-image",
 ]);
 
+/** Slots that have (or had) a `/media/hathor/optimized/{name}.webp` mirror. */
 export const LOCAL_OPTIMIZED_SITE_IMAGE_SLOTS: ReadonlySet<string> = new Set([
   "about-hero",
   "cruises-hero",
@@ -119,16 +119,20 @@ export function localOptimizedSiteImagePath(name: string): string {
 }
 
 /**
- * Serve CMS uploads from Vercel (/public) when a mirrored copy exists.
- * Leaves upload/storage backend unchanged — only the URL the browser requests.
+ * CMS / SiteSetting overrides are the live source of truth.
+ * Never replace a Supabase (or other remote) CMS URL with a stale
+ * `/media/hathor/optimized/{name}.webp` mirror — that made dashboard
+ * uploads appear broken on the public site.
+ *
+ * Local mirrors remain valid fallbacks only when the resolved src is
+ * already a `/media/...` path (seed defaults). Remote URLs pass through
+ * and are optimized via `toVercelOptimizedSrc` / `next/image`.
  */
-export function preferLocalOptimizedSiteImage(name: string, src: string): string {
-  const trimmed = src.trim();
-  if (!trimmed) return trimmed;
-  if (CMS_CANONICAL_SITE_IMAGE_SLOTS.has(name)) return trimmed;
-  if (!isSupabaseStorageUrl(trimmed)) return trimmed;
-  if (!LOCAL_OPTIMIZED_SITE_IMAGE_SLOTS.has(name)) return trimmed;
-  return localOptimizedSiteImagePath(name);
+export function preferLocalOptimizedSiteImage(
+  _name: string,
+  src: string,
+): string {
+  return src.trim();
 }
 
 /**

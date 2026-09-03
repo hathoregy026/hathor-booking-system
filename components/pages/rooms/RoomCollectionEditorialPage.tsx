@@ -19,6 +19,7 @@ import { useTypographySettings } from "@/components/public/TypographySettingsPro
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
+import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import { useRoomCollectionEditorialScroll } from "@/hooks/useRoomCollectionEditorialScroll";
 import {
   ROOM_COLLECTION_CONFIG,
@@ -26,6 +27,8 @@ import {
   type RoomCollectionVariant,
 } from "@/lib/room-collection-editorial";
 import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { resolveCmsText } from "@/lib/website-text-shared";
 
@@ -67,17 +70,69 @@ function Frame({
   priority?: boolean;
   className?: string;
 }) {
+  const cms = useCmsPathImage(src);
   return (
     <figure className={`ac-frame ${className}`}>
       <Image
-        src={src}
-        alt={alt}
+        key={cms.src}
+        src={cms.src}
+        alt={cms.alt || alt}
         fill
         priority={priority}
+        quality={SITE_IMAGE_QUALITY}
         sizes="(max-width: 950px) 100vw, 62vw"
         className="ac-frame__img"
+        id={cms.slot ? siteImageAnchorId(cms.slot) : undefined}
+        data-site-image={cms.slot ?? undefined}
       />
     </figure>
+  );
+}
+
+function ApertureHeroImage({
+  fallbackSrc,
+  className = "",
+}: {
+  fallbackSrc: string;
+  className?: string;
+}) {
+  const cms = useCmsPathImage(fallbackSrc);
+  return (
+    <Image
+      key={cms.src}
+      src={cms.src}
+      alt=""
+      fill
+      priority
+      quality={SITE_IMAGE_QUALITY}
+      sizes="100vw"
+      className={className}
+      id={cms.slot ? siteImageAnchorId(cms.slot) : undefined}
+      data-site-image={cms.slot ?? undefined}
+    />
+  );
+}
+
+function ApertureHeroShell({
+  fallbackSrc,
+  children,
+}: {
+  fallbackSrc: string;
+  children: ReactNode;
+}) {
+  const cms = useCmsPathImage(fallbackSrc);
+  return (
+    <div
+      className="rh"
+      id="folio"
+      style={
+        {
+          "--rh-img": `url("${cms.src}")`,
+        } as CSSProperties
+      }
+    >
+      {children}
+    </div>
   );
 }
 
@@ -265,15 +320,7 @@ export function RoomCollectionEditorialPage({
             <div ref={trackRef} className="ac-track">
               {/* 01 · Engraved hero — the collection name cut out of the room */}
               <Scene className="ac-spine">
-                <div
-                  className="rh"
-                  id="folio"
-                  style={
-                    {
-                      "--rh-img": `url("${config.aperture.image}")`,
-                    } as CSSProperties
-                  }
-                >
+                <ApertureHeroShell fallbackSrc={config.aperture.image}>
                   {/*
                    * The cut-out is one image read through two apertures: the
                    * glyphs of the title, and the open band between its lines.
@@ -292,12 +339,8 @@ export function RoomCollectionEditorialPage({
                     </h1>
 
                     <div className="rh__band" aria-hidden="true">
-                      <Image
-                        src={config.aperture.image}
-                        alt=""
-                        fill
-                        priority
-                        sizes="100vw"
+                      <ApertureHeroImage
+                        fallbackSrc={config.aperture.image}
                         className="rh__band-img"
                       />
                     </div>
@@ -375,7 +418,7 @@ export function RoomCollectionEditorialPage({
                       </Link>
                     </div>
                   </div>
-                </div>
+                </ApertureHeroShell>
               </Scene>
 
               {/* 02 · Tier triptych — collection facts (not manifesto / hours) */}

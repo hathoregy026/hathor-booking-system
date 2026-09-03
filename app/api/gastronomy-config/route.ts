@@ -7,6 +7,7 @@ import {
   withSiteTypographyFonts,
   type GastronomyTypography,
 } from "@/lib/gastronomy-typography";
+import { deliverPublicSiteImage } from "@/lib/local-optimized-site-images";
 import { SITE_IMAGE_SLOTS } from "@/lib/site-image-slots";
 import { publicSiteImageSrc } from "@/lib/site-image-url";
 import {
@@ -63,7 +64,13 @@ export async function GET() {
         ...Object.fromEntries(
           images
             .filter((image) => !image.name.startsWith("gastronomy-"))
-            .map((image) => [image.name, publicSiteImageSrc(image.name, image.url)]),
+            .map((image) => {
+              const raw = publicSiteImageSrc(image.name, image.url);
+              return [
+                image.name,
+                raw ? deliverPublicSiteImage(image.name, raw) : raw,
+              ];
+            }),
         ),
       },
       css: gastronomyTypographyToCss(desktop),

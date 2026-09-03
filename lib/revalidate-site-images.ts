@@ -3,6 +3,7 @@ import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import { rebuildSiteImagePublicMap } from "@/lib/site-image-public-map";
 import { HOMEPAGE_LIVE_SLOT_NAMES } from "@/lib/site-image-preview";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
+import { getSiteImageUsedOnPages } from "@/lib/site-image-usage";
 
 /** Public routes that consume SiteImage slots — call after CMS image saves. */
 const SITE_IMAGE_REVALIDATE_PATHS = [
@@ -60,6 +61,11 @@ export async function revalidateSiteImagePages(
     if (name === "home-wheel-image") {
       paths.add("/");
       paths.add("/partners");
+    }
+    /* Shared slots (Suites ↔ Rooms/Cabins/Royal, Dining cross-links, etc.) */
+    for (const page of getSiteImageUsedOnPages(name, slot?.pagePath ?? "/")) {
+      if (page.path.startsWith("/#")) continue;
+      paths.add(page.path === "/" ? "/" : page.path);
     }
   }
 

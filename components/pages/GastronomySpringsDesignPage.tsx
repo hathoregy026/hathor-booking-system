@@ -7,12 +7,30 @@ import { Footer } from "@/components/layout/Footer";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import { GASTRONOMY_DINING_MEDIA as media, diningPlateSlotName } from "@/lib/gastronomy-dining-media";
+import { diningPlateSlotName } from "@/lib/gastronomy-dining-media";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 const typeStyle = {
   "--nib-display": '"Bitho Luxury", cursive',
   "--nib-copy": '"Rollgates Luxury Italic", serif',
 } as CSSProperties;
+
+/**
+ * Live Dining Springs Design → dashboard Site Image slots.
+ * Keep labels aligned with Admin → Site Images → Dining.
+ */
+const DINING_LIVE_SLOTS = {
+  introHero: "dining-intro-hero",
+  courses: "dining-course-layers",
+  chef: "dining-first-light",
+  service: "dining-lounge",
+  table: "dining-closing",
+  restaurant: "dining-private-menu",
+  wine: "dining-wine-pairing",
+  celebration: "dining-celebration",
+  fitness: "wellness-fitness",
+  suite: "room-suite",
+} as const;
 
 const stories = [
   {
@@ -20,7 +38,7 @@ const stories = [
     time: "SUNRISE",
     place: "UPPER DECK",
     title: "BREAKFAST",
-    image: media.hero,
+    slot: DINING_LIVE_SLOTS.introHero,
     alt: "Breakfast served aboard Hathor in the Nile morning light",
   },
   {
@@ -28,7 +46,7 @@ const stories = [
     time: "EVENING",
     place: "DINING SALON",
     title: "CHEF'S TABLE",
-    image: media.chef,
+    slot: DINING_LIVE_SLOTS.chef,
     alt: "Hathor's chef composing an evening course",
   },
   {
@@ -36,7 +54,7 @@ const stories = [
     time: "GOLDEN HOUR",
     place: "RIVER DECK",
     title: "NILE SUPPER",
-    image: media.table,
+    slot: DINING_LIVE_SLOTS.table,
     alt: "An intimate supper overlooking the Nile",
   },
   {
@@ -44,7 +62,7 @@ const stories = [
     time: "DAILY",
     place: "FITNESS DECK",
     title: "MOVE",
-    image: "/media/hathor/r2/wellness-fitness.webp",
+    slot: DINING_LIVE_SLOTS.fitness,
     alt: "Guests training in Hathor's onboard fitness space",
   },
   {
@@ -52,36 +70,58 @@ const stories = [
     time: "ANY HOUR",
     place: "YOUR SUITE",
     title: "SUITE SERVICE",
-    image: "/media/hathor/optimized/room-royal.webp",
+    slot: DINING_LIVE_SLOTS.suite,
     alt: "Private service in a Hathor Nile suite",
   },
 ] as const;
 
-function Image({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+function SlotImage({
+  slot,
+  alt,
+  className = "",
+  previewAnchor = true,
+}: {
+  slot: string;
+  alt?: string;
+  className?: string;
+  previewAnchor?: boolean;
+}) {
+  const image = useSiteImage(slot);
   return (
-    <figure className={className}>
-      <img src={src} alt={alt} />
+    <figure
+      className={className}
+      id={previewAnchor ? siteImageAnchorId(slot) : undefined}
+      data-site-image={slot}
+    >
+      <img src={image.src} alt={alt ?? image.alt} />
     </figure>
   );
 }
 
-function FlipImage({
-  front,
-  back,
+function SlotFlipImage({
+  frontSlot,
+  backSlot,
   alt,
   className = "",
   axis = "up",
 }: {
-  front: string;
-  back: string;
+  frontSlot: string;
+  backSlot: string;
   alt: string;
   className?: string;
   axis?: "up" | "left" | "right";
 }) {
+  const front = useSiteImage(frontSlot);
+  const back = useSiteImage(backSlot);
   return (
-    <figure className={`nib-flip nib-flip--${axis} ${className}`} data-nib-flip>
-      <img src={front} alt={alt} />
-      <img src={back} alt="" aria-hidden />
+    <figure
+      className={`nib-flip nib-flip--${axis} ${className}`}
+      data-nib-flip
+      data-site-image={frontSlot}
+      id={siteImageAnchorId(frontSlot)}
+    >
+      <img src={front.src} alt={alt || front.alt} />
+      <img src={back.src} alt="" aria-hidden />
     </figure>
   );
 }
@@ -103,6 +143,7 @@ function Plate({
       className={`nib-plate nib-plate--${number} ${className}`}
       data-nib-plate
       data-site-image={slotName}
+      id={siteImageAnchorId(slotName)}
       style={style}
     >
       <img src={image.src} alt={image.alt} />
@@ -115,6 +156,30 @@ function Panel({ className, children }: { className: string; children: ReactNode
     <article className={`nib-panel ${className}`} data-nib-panel>
       {children}
     </article>
+  );
+}
+
+function StoryPanel({
+  story,
+}: {
+  story: (typeof stories)[number];
+}) {
+  const image = useSiteImage(story.slot);
+  return (
+    <Panel className="nib-story nib-surface--cream">
+      <SlotImage
+        slot={story.slot}
+        alt={story.alt || image.alt}
+        className="nib-story__image"
+      />
+      <div className="nib-story__meta">
+        <span>{story.time}</span>
+        <span>{story.place}</span>
+        <span>{story.number}</span>
+        <a href="/contact">Open Story</a>
+      </div>
+      <h2 data-anima-title>{story.title}</h2>
+    </Panel>
   );
 }
 
@@ -155,18 +220,22 @@ export function GastronomySpringsDesignPage() {
               </Panel>
 
               <Panel className="nib-principal nib-surface--cream">
-                <Image src={media.hero} alt="Dining beside the Nile aboard Hathor" className="nib-principal__main" />
-                <FlipImage
+                <SlotImage
+                  slot={DINING_LIVE_SLOTS.introHero}
+                  alt="Dining beside the Nile aboard Hathor"
+                  className="nib-principal__main"
+                />
+                <SlotFlipImage
                   className="nib-principal__top"
-                  front={media.courses}
-                  back={media.chef}
+                  frontSlot={DINING_LIVE_SLOTS.courses}
+                  backSlot={DINING_LIVE_SLOTS.chef}
                   alt="A sequence of Hathor tasting courses"
                   axis="up"
                 />
-                <FlipImage
+                <SlotFlipImage
                   className="nib-principal__bottom"
-                  front={media.service}
-                  back={media.table}
+                  frontSlot={DINING_LIVE_SLOTS.service}
+                  backSlot={DINING_LIVE_SLOTS.table}
                   alt="Warm attentive service aboard Hathor"
                   axis="up"
                 />
@@ -190,17 +259,17 @@ export function GastronomySpringsDesignPage() {
               </Panel>
 
               <Panel className="nib-image-text nib-surface--gold">
-                <FlipImage
+                <SlotFlipImage
                   className="nib-image-text__wide"
-                  front={media.restaurant}
-                  back={media.wine}
+                  frontSlot={DINING_LIVE_SLOTS.restaurant}
+                  backSlot={DINING_LIVE_SLOTS.wine}
                   alt="Hathor's intimate dining salon"
                   axis="right"
                 />
-                <FlipImage
+                <SlotFlipImage
                   className="nib-image-text__small"
-                  front={media.celebration}
-                  back="/media/hathor/optimized/room-suite.webp"
+                  frontSlot={DINING_LIVE_SLOTS.celebration}
+                  backSlot={DINING_LIVE_SLOTS.suite}
                   alt="A candlelit celebration on Hathor"
                   axis="left"
                 />
@@ -248,13 +317,22 @@ export function GastronomySpringsDesignPage() {
                   <p>The onboard gym keeps movement close—an unhurried morning session while
                     palms and villages pass beyond the deck.</p>
                   <span>02</span><h2 data-anima-title>MOVEMENT</h2>
-                  <Image src="/media/hathor/r2/wellness-fitness.webp" alt="Hathor onboard fitness" className="nib-value__image" />
+                  <SlotImage
+                    slot={DINING_LIVE_SLOTS.fitness}
+                    alt="Hathor onboard fitness"
+                    className="nib-value__image"
+                  />
                 </div>
                 <div className="nib-value">
                   <p>Your suite is the quiet counterpoint: generous river views, thoughtful
                     details and private service whenever you prefer to stay in.</p>
                   <span>03</span><h2 data-anima-title>REST</h2>
-                  <Image src="/media/hathor/optimized/room-suite.webp" alt="A calm Hathor suite" className="nib-value__image" />
+                  <SlotImage
+                    slot={DINING_LIVE_SLOTS.suite}
+                    alt="A calm Hathor suite"
+                    className="nib-value__image"
+                    previewAnchor={false}
+                  />
                 </div>
               </Panel>
 
@@ -267,14 +345,7 @@ export function GastronomySpringsDesignPage() {
               </Panel>
 
               {stories.map((story) => (
-                <Panel className="nib-story nib-surface--cream" key={story.number}>
-                  <Image src={story.image} alt={story.alt} className="nib-story__image" />
-                  <div className="nib-story__meta">
-                    <span>{story.time}</span><span>{story.place}</span>
-                    <span>{story.number}</span><a href="/contact">Open Story</a>
-                  </div>
-                  <h2 data-anima-title>{story.title}</h2>
-                </Panel>
+                <StoryPanel key={story.number} story={story} />
               ))}
 
               <Panel className="nib-story-end nib-surface--cream">
@@ -288,9 +359,9 @@ export function GastronomySpringsDesignPage() {
               </Panel>
 
               <Panel className="nib-close nib-surface--gold">
-                <FlipImage
-                  front={media.wine}
-                  back={media.hero}
+                <SlotFlipImage
+                  frontSlot={DINING_LIVE_SLOTS.wine}
+                  backSlot={DINING_LIVE_SLOTS.introHero}
                   alt="The last golden hour at the Hathor table"
                   axis="up"
                 />
@@ -307,8 +378,16 @@ export function GastronomySpringsDesignPage() {
         </section>
 
         <section className="nib-double nib-surface--cream" data-nib-reveal>
-          <Image src={media.table} alt="A Hathor table prepared beside the river" />
-          <Image src="/media/hathor/r2/wellness-fitness.webp" alt="Hathor's onboard gym" />
+          <SlotImage
+            slot={DINING_LIVE_SLOTS.table}
+            alt="A Hathor table prepared beside the river"
+            previewAnchor={false}
+          />
+          <SlotImage
+            slot={DINING_LIVE_SLOTS.fitness}
+            alt="Hathor's onboard gym"
+            previewAnchor={false}
+          />
         </section>
 
         <section className="nib-lines nib-surface--cream" data-nib-reveal data-anima-title>
@@ -341,7 +420,11 @@ export function GastronomySpringsDesignPage() {
           </div>
           <div className="nib-epilogue__feature">
             <span>THE HATHOR TABLE</span>
-            <Image src={media.celebration} alt="A private celebration on Hathor" />
+            <SlotImage
+              slot={DINING_LIVE_SLOTS.celebration}
+              alt="A private celebration on Hathor"
+              previewAnchor={false}
+            />
             <h3>PRIVATE DINING</h3>
             <p>Private dining can be arranged in selected onboard settings for guests seeking a more personal experience.</p>
           </div>

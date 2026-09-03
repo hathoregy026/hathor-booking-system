@@ -1,10 +1,45 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
+import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import type { RoomShowcase } from "@/lib/room-showcase";
+import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
+
+function RoomCmsImage({
+  path,
+  alt,
+  priority = false,
+  sizes,
+  className,
+}: {
+  path: string;
+  alt: string;
+  priority?: boolean;
+  sizes: string;
+  className?: string;
+}) {
+  const cms = useCmsPathImage(path);
+  return (
+    <Image
+      key={cms.src}
+      src={cms.src}
+      alt={cms.alt || alt}
+      fill
+      priority={priority}
+      quality={SITE_IMAGE_QUALITY}
+      sizes={sizes}
+      className={className}
+      id={cms.slot ? siteImageAnchorId(cms.slot) : undefined}
+      data-site-image={cms.slot ?? undefined}
+    />
+  );
+}
 
 export function RoomDetailPage({ room }: { room: RoomShowcase }) {
   return (
@@ -12,7 +47,12 @@ export function RoomDetailPage({ room }: { room: RoomShowcase }) {
       <PublicNavbar />
     <main className="room-detail">
       <section className="room-detail__hero">
-        <Image src={room.images[0]} alt={room.name} fill priority sizes="100vw" />
+        <RoomCmsImage
+          path={room.images[0]}
+          alt={room.name}
+          priority
+          sizes="100vw"
+        />
         <div className="room-detail__shade" aria-hidden="true" />
         <Link href="/rooms" className="room-detail__back">← All rooms</Link>
         <div className="room-detail__hero-copy">
@@ -32,7 +72,11 @@ export function RoomDetailPage({ room }: { room: RoomShowcase }) {
       <section className="room-detail__gallery" aria-label={`${room.name} gallery`}>
         {room.images.slice(1).map((src, index) => (
           <figure key={src} className={index % 3 === 0 ? "room-detail__photo room-detail__photo--wide" : "room-detail__photo"}>
-            <Image src={src} alt={`${room.name}, view ${index + 2}`} fill sizes="(max-width: 700px) 100vw, 50vw" />
+            <RoomCmsImage
+              path={src}
+              alt={`${room.name}, view ${index + 2}`}
+              sizes="(max-width: 700px) 100vw, 50vw"
+            />
           </figure>
         ))}
       </section>

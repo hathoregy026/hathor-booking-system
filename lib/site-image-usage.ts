@@ -31,8 +31,9 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
  */
 const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
   "home-wheel-image": ["/", "/partners"],
-  "room-suite": ["/suites", "/rooms"],
+  "room-suite": ["/suites", "/rooms", "/gastronomy"],
   "room-royal": ["/suites", "/royal-suites"],
+  "wellness-fitness": ["/wellness", "/gastronomy"],
   /* room-luxury: Suites Place panel only (cabins hero is cabins-hero). */
 
   "scraped-suites-hero": ["/suites"],
