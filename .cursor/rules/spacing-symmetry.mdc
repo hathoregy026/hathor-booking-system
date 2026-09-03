@@ -1,0 +1,59 @@
+---
+description: Always enforce equal spacing, optical centering, and visual symmetry in UI work
+alwaysApply: true
+---
+
+# Spacing & Symmetry (always)
+
+Read this before shipping any layout, dock, toolbar, icon row, card grid, or control group.
+
+Spacing and alignment are not polish — they are part of the deliverable. Do not wait for the user to notice bad gaps, uneven columns, or off-center icons.
+
+## Hard rules
+
+1. **Equal siblings** — Items in a row or dock get equal flex/grid tracks unless the design explicitly asks for asymmetry.
+2. **One shared centerline** — Icons in a group share the same horizontal and vertical optical center. Labels share one baseline.
+3. **Ring / mark boxes** — If an icon sits in a circle, square, or mark shell, the glyph is centered *inside that shell* (flex center or equal padding). Never center a ring on a parent that also includes the label.
+4. **Same gap everywhere** — Icon→label gap, column gaps, and outer padding use one shared token per component. No one-off `0.22rem` vs `0.28rem` per sibling.
+5. **Same mark size** — All marks in a group use the same outer size, border weight, and icon size.
+6. **No “almost”** — If Saved and Voyage look right and Language does not, it is not done.
+7. **Check after CSS** — Absolute `::before` / `::after` rings that use `top: 50%` on a tall tab (icon + label) will mis-center. Prefer a dedicated mark box that wraps only the icon.
+
+## Before calling UI work done
+
+- [ ] Three (or N) dock/tab items are equal width
+- [ ] Each icon is optically centered in its mark
+- [ ] Icon-to-label gaps match across items
+- [ ] Labels align on one baseline
+- [ ] No sibling has a unique ring, size, or gap unless intentional
+- [ ] Phone / tablet / desktop each checked when the change can affect them
+
+## Anti-patterns
+
+```css
+/* BAD — ring centers on icon + label, glyph looks stuck to top of circle */
+.tab::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* GOOD — mark box wraps only the icon; label is a sibling below */
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dock-gap);
+}
+.tab__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--dock-mark);
+  height: var(--dock-mark);
+  border-radius: 50%;
+}
+```
+
+If unsure, compare siblings side by side at phone width before committing.

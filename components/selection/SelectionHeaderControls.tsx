@@ -49,7 +49,9 @@ export function SelectionHeaderControls() {
       >
         {/* Outline heart, per the navbar reference — the filled silhouette
             is the card/saved state, not the header mark. */}
-        <HathorHeartIcon className="hsc__icon" filled={false} />
+        <span className="hsc__mark" aria-hidden="true">
+          <HathorHeartIcon className="hsc__icon" filled={false} />
+        </span>
         {favoritesCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {favoritesCount > 99 ? "99+" : favoritesCount}
@@ -66,7 +68,9 @@ export function SelectionHeaderControls() {
         aria-haspopup="dialog"
         title="My Voyage"
       >
-        <HathorCartIcon className="hsc__icon" />
+        <span className="hsc__mark" aria-hidden="true">
+          <HathorCartIcon className="hsc__icon" />
+        </span>
         {voyageCount > 0 ? (
           <span className="hsc__count" aria-hidden="true">
             {voyageCount}

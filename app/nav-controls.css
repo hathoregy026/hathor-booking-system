@@ -88,6 +88,16 @@
   transition: opacity 220ms var(--nav-control-ease) !important;
 }
 
+/* Transparent on desktop/tablet — phone dock gives it the shared ring shell. */
+.hsc__mark {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
 .hsc__icon:not(#_) circle {
   fill: currentColor !important;
   stroke: none !important;
@@ -1590,14 +1600,14 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0.22rem !important;
+    gap: 0.28rem !important;
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
     height: auto !important;
     min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
     margin: 0 !important;
-    padding: 0.2rem 0.1rem 0 !important;
+    padding: 0.15rem 0.1rem 0 !important;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -1605,16 +1615,45 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     margin-left: 0 !important;
   }
 
-  .hathor-phone-dock > .hsc:not(#_)::before,
+  /*
+    Kill absolute ::before rings — they center on the whole tall tab
+    (icon + label), which shoved the Language globe into the top of its circle.
+    Rings are drawn on the mark box itself so icon and circle share one center.
+  */
+  .hathor-phone-dock > .hsc:not(#_):not(#_)::before,
   .hathor-phone-dock .public-lang-toggle:not(#_):not(#_)::before {
-    width: var(--dock-mark) !important;
-    height: var(--dock-mark) !important;
-    border-color: color-mix(in srgb, currentColor 22%, transparent) !important;
+    content: none !important;
+    display: none !important;
   }
 
-  .hathor-phone-dock .hsc__icon:not(#_):not(#_) {
+  /* Shared mark shell — identical size, ring, and icon centering for all three. */
+  .hathor-phone-dock > .hsc .hsc__mark,
+  .hathor-phone-dock .public-lang-toggle__globe {
+    position: relative !important;
+    z-index: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: var(--dock-mark) !important;
+    height: var(--dock-mark) !important;
+    flex: 0 0 var(--dock-mark) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid color-mix(in srgb, currentColor 22%, transparent) !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+  }
+
+  .hathor-phone-dock > .hsc .hsc__icon:not(#_):not(#_),
+  .hathor-phone-dock .public-lang-toggle__globe .public-theme-toggle__icon:not(#_):not(#_) {
+    display: block !important;
     width: var(--dock-icon) !important;
     height: var(--dock-icon) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    flex: 0 0 auto !important;
   }
 
   .hathor-phone-dock .public-lang-selector {
@@ -1622,29 +1661,24 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     flex-basis: 0 !important;
     width: auto !important;
     height: auto !important;
-    min-height: 0 !important;
+    min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
   }
 
   .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
-    flex: 1 1 auto !important;
-    width: 100% !important;
+    position: relative !important;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.28rem !important;
+    width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
-    flex-direction: column;
-    gap: 0.22rem;
-  }
-
-  .hathor-phone-dock .public-lang-toggle__globe {
-    width: var(--dock-mark) !important;
-    height: var(--dock-mark) !important;
-  }
-
-  .hathor-phone-dock .public-lang-toggle__globe .public-theme-toggle__icon:not(#_):not(#_) {
-    width: var(--dock-icon) !important;
-    height: var(--dock-icon) !important;
+    padding: 0 !important;
   }
 
   .hathor-phone-dock .public-lang-toggle__code {
@@ -1669,19 +1703,23 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   .hathor-phone-dock .public-lang-toggle:not(#_)::after {
     position: relative;
     z-index: 1;
+    display: block;
+    margin: 0;
+    padding: 0;
     font-family: var(--public-sans, var(--font-hathor-body, inherit));
     font-size: var(--dock-label);
     font-weight: 600;
     letter-spacing: 0.14em;
     line-height: 1;
     text-transform: uppercase;
+    text-align: center;
     color: color-mix(in srgb, currentColor 72%, transparent);
     pointer-events: none;
   }
 
   .hathor-phone-dock .hsc__count:not(#_):not(#_) {
-    top: 0.05rem !important;
-    right: calc(50% - var(--dock-mark) * 0.5 + 0.1rem) !important;
+    top: 0 !important;
+    right: calc(50% - var(--dock-mark) * 0.5) !important;
   }
 
   /* Language card opens upward from the dock. */
