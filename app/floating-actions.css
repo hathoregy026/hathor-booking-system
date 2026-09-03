@@ -246,7 +246,7 @@
     --hathor-btn-pad-x: 0.9rem;
     --hathor-btn-font-size: 0.66rem;
     --hathor-btn-tracking: 0.13em;
-    bottom: calc(var(--hathor-phone-dock-h, 4.35rem) + 0.55rem);
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.55rem);
   }
 
   .public-fab--right {

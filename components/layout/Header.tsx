@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
@@ -171,6 +172,7 @@ export function Header() {
   const [exploreOpen, setExploreOpen] = useState(false);
   const chromeNav = true;
   const phoneViewportRef = useRef(false);
+  const [phoneDockHost, setPhoneDockHost] = useState<HTMLElement | null>(null);
   const [menuHovered, setMenuHovered] = useState(false);
   const [navCompact, setNavCompact] = useState(false);
   const [suitesNavTone, setSuitesNavTone] = useState<"ivory" | "ink" | null>(
@@ -243,6 +245,11 @@ export function Header() {
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
+  }, []);
+
+  /* Phone dock portals to <body> so header backdrop-filter cannot trap fixed. */
+  useEffect(() => {
+    setPhoneDockHost(document.body);
   }, []);
 
   useEffect(() => {
@@ -567,11 +574,8 @@ export function Header() {
                 <Menu className="h-5 w-5" aria-hidden />
               </button>
             )}
-            <div
-              className="hathor-phone-dock"
-              role="toolbar"
-              aria-label="Selections and language"
-            >
+            {/* Tablet/desktop only — phone uses the bottom dock below. */}
+            <div className="hathor-header-chrome-tools">
               <SelectionHeaderControls />
               <PublicLanguageToggle />
             </div>
@@ -579,6 +583,26 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      {/*
+        Phone bottom dock — MUST live outside <header>. The header uses
+        backdrop-filter / isolation, which trap position:fixed to the
+        header box (so "bottom: 0" stuck at the top of the screen).
+        Portal to body so the stripe pins to the real viewport bottom.
+      */}
+      {phoneDockHost
+        ? createPortal(
+            <div
+              className="hathor-phone-dock"
+              role="toolbar"
+              aria-label="Selections and language"
+            >
+              <SelectionHeaderControls />
+              <PublicLanguageToggle />
+            </div>,
+            phoneDockHost,
+          )
+        : null}
 
       {chromeNav ? (
         <EditorialNavOverlay
