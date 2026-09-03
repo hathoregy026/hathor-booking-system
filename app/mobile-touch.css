@@ -425,13 +425,13 @@ body.is-touch-device .lux-cursor {
 
   /*
    * Phone hero — sticky stage inside tall runway (no GSAP pin spacer).
-   * Fill the full visual viewport. The cream dock overlays the bottom edge;
-   * never leave a short stage (e.g. 80svh) that paints page cream above the dock.
+   * Video-only: no Venetian strips. Shorter runway = less sticky-scrub lag;
+   * Book Now stretch still has ~70svh of scrub room.
    */
   .home-hero-runway {
     position: relative;
     width: 100%;
-    height: 280svh;
+    height: 170svh;
     overflow: visible;
     background: #1a1410;
   }
@@ -445,6 +445,19 @@ body.is-touch-device .lux-cursor {
     min-height: 100svh !important;
     min-height: 100dvh !important;
     max-height: none !important;
+    /* No 3D strip compositing on phone */
+    perspective: none !important;
+  }
+
+  /* Fully remove gold blinds layer — video shows immediately */
+  .home-hero-container .home-hero-cover,
+  .home-hero-container .blind-strip-v,
+  .home-hero-container .blind-strip-v--mobile {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    will-change: auto !important;
+    transform: none !important;
   }
 
   .home-hero-container .hero-button {
@@ -508,12 +521,6 @@ body.is-touch-device .lux-cursor {
 
   .home-hero-container .hero-scroll-hint::after {
     height: 20px;
-  }
-
-  .home-hero-container .blind-strip-v {
-    backface-visibility: hidden;
-    will-change: transform, opacity;
-    transition: none !important;
   }
 
   .home-hero-container .hero-content {

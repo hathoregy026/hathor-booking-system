@@ -460,35 +460,47 @@ export function mountHeroScrollStage({
     if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
 
     const w = window.innerWidth;
-    let blindsCount = 48;
-    if (w <= 480) blindsCount = 14;
-    else if (w <= 767) blindsCount = 26;
-    else if (w <= 1024) blindsCount = 36;
+    const isTouch = window.matchMedia("(max-width: 1024px)").matches;
+    const isPhoneTouch = window.matchMedia("(max-width: 480px)").matches;
 
-    const heroWidth = hero.clientWidth || w;
-    const stripWidth = heroWidth / blindsCount;
+    /*
+     * Phone ≤480: no gold Venetian strips — video-only hero.
+     * Strips (rotationY + preserve-3d) were the main scroll lag source.
+     * Book Now stretch still scrubs; logo lands on load (not mid-scrub).
+     */
     cover.innerHTML = "";
-    for (let i = 0; i < blindsCount; i++) {
-      const strip = document.createElement("div");
-      strip.classList.add("blind-strip-v");
-      strip.style.left = i * stripWidth - 0.5 + "px";
-      strip.style.width = stripWidth + 1 + "px";
-      strip.style.top = "0";
-      strip.style.height = "100%";
-      strip.style.position = "absolute";
-      strip.style.transformOrigin = "left center";
-      strip.style.transformStyle = "preserve-3d";
-      gsap.set(strip, {
-        rotationY: -90,
-        opacity: 0,
-        visibility: "hidden",
-        force3D: true,
-      });
-      cover.appendChild(strip);
+    const strips: Element[] = [];
+    if (!isPhoneTouch) {
+      let blindsCount = 48;
+      if (w <= 767) blindsCount = 26;
+      else if (w <= 1024) blindsCount = 36;
+
+      const heroWidth = hero.clientWidth || w;
+      const stripWidth = heroWidth / blindsCount;
+      for (let i = 0; i < blindsCount; i++) {
+        const strip = document.createElement("div");
+        strip.classList.add("blind-strip-v");
+        strip.style.left = i * stripWidth - 0.5 + "px";
+        strip.style.width = stripWidth + 1 + "px";
+        strip.style.top = "0";
+        strip.style.height = "100%";
+        strip.style.position = "absolute";
+        strip.style.transformOrigin = "left center";
+        strip.style.transformStyle = "preserve-3d";
+        gsap.set(strip, {
+          rotationY: -90,
+          opacity: 0,
+          visibility: "hidden",
+          force3D: true,
+        });
+        cover.appendChild(strip);
+      }
+      strips.push(
+        ...(gsap.utils.toArray(
+          cover.querySelectorAll(".blind-strip-v"),
+        ) as Element[]),
+      );
     }
-    const strips = gsap.utils.toArray(
-      cover.querySelectorAll(".blind-strip-v"),
-    ) as Element[];
 
     const baseW = cta ? cta.offsetWidth || 168 : 168;
     const targetW = baseW * 4;
@@ -529,11 +541,9 @@ export function mountHeroScrollStage({
     if (ctaText) gsap.set(ctaText, { letterSpacing: "0.22em" });
 
     const titleTravel = Math.min(w * 0.38, 420);
-    const isTouch = window.matchMedia("(max-width: 1024px)").matches;
-    const isPhoneTouch = window.matchMedia("(max-width: 480px)").matches;
     /*
      * Phone: sticky runway (`.home-hero-runway`) + direct scrub.
-     * Avoid GSAP pin — pin-spacer + mobile browser chrome = jumpy strips.
+     * Avoid GSAP pin — pin-spacer + mobile browser chrome = jumpy scroll.
      */
     const phoneRunway = isPhoneTouch
       ? (hero.closest(".home-hero-runway") as HTMLElement | null)
@@ -556,7 +566,7 @@ export function mountHeroScrollStage({
               : isTabletHero
                 ? "+=260%" /* fallback only if .home-hero-runway missing */
               : isPhoneTouch
-              ? "+=290%"
+              ? "+=90%" /* fallback — video hero + Book Now only */
               : "+=175%", /* desktop — restored cinematic pin runway */
         // Direct scrub on touch — laggy scrub (1.7) feels like scroll jumping
         scrub: isTouch ? true : 0.25,
@@ -607,81 +617,32 @@ export function mountHeroScrollStage({
         pin: false,
         stickyRunway: Boolean(phoneRunway),
         scrub: true,
-        strips: strips.length,
+        strips: 0,
+        videoOnly: true,
       });
     }
 
     if (isPhoneTouch) {
-      const phoneStripStagger = strips.length > 1 ? 0.02 : 0;
-
-      gsap.set(strips, {
-        rotationY: -90,
-        opacity: 0,
-        visibility: "visible",
-        force3D: true,
-      });
-
-      if (logoMark) {
-        const landedY = getLogoLandedY();
-        if (isSplitLetterLogo()) {
-          gsap.set(logoMark, {
-            xPercent: -50,
-            yPercent: 0,
-            x: 0,
-            y: 0,
-            scale: 1,
-            autoAlpha: 1,
-          });
-          gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
-            y: getLogoHiddenY(),
-            opacity: 0,
-            force3D: true,
-          });
-        } else {
-          gsap.set(logoMark, {
-            xPercent: -50,
-            yPercent: 0,
-            x: 0,
-            y: getLogoHiddenY(),
-            scale: 1,
-            autoAlpha: 0,
-            force3D: true,
-          });
-          const letters = logoMark.querySelectorAll(".logo-letter");
-          if (letters.length) {
-            gsap.set(letters, { y: 48, opacity: 0, force3D: true });
-          }
-          void landedY;
-        }
-      }
-
-      tl.to(
-        strips,
-        {
-          rotationY: 0,
-          opacity: 1,
-          ease: "none",
-          stagger: { each: phoneStripStagger, from: "start" },
-          duration: 0.82,
-        },
-        0.08,
-      );
-
+      /*
+       * Video-only phone hero: no strip layers.
+       * Logo land runs after build (playLanding) — do not force visible here
+       * or letters flash before the rise. Scrub = title exit + Book Now stretch.
+       */
       if (lineRight || lineLeft) {
         appendTitleExitTweens(tl, {
           travel: titleTravel,
-          duration: 0.52,
+          duration: 0.55,
           at: 0,
         });
       }
       if (kicker) {
-        tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.42 }, 0.04);
+        tl.to(kicker, { opacity: 0, y: -10, ease: "none", duration: 0.4 }, 0.02);
       }
       if (sub) {
-        tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.42 }, 0.06);
+        tl.to(sub, { opacity: 0, y: 8, ease: "none", duration: 0.4 }, 0.04);
       }
       if (scrollHint) {
-        tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.26 }, 0.1);
+        tl.to(scrollHint, { opacity: 0, ease: "none", duration: 0.22 }, 0.06);
       }
 
       /*
@@ -694,58 +655,17 @@ export function mountHeroScrollStage({
           {
             "--hero-cta-w": `${narrowCtaTargetW}px`,
             ease: "none",
-            duration: 0.42,
+            duration: 0.85,
           },
-          0.48,
+          0.08,
         );
       }
       if (ctaText) {
         tl.to(
           ctaText,
-          { letterSpacing: "1.15em", ease: "none", duration: 0.42 },
-          0.48,
+          { letterSpacing: "1.15em", ease: "none", duration: 0.85 },
+          0.08,
         );
-      }
-
-      if (logoMark) {
-        if (isSplitLetterLogo()) {
-          tl.to(
-            logoMark.querySelectorAll(".logo-letter-wrap"),
-            {
-              y: 0,
-              opacity: 1,
-              ease: "power2.out",
-              duration: 0.34,
-              stagger: 0.085,
-            },
-            0.38,
-          );
-        } else {
-          tl.to(
-            logoMark,
-            {
-              y: getLogoLandedY(),
-              autoAlpha: 1,
-              ease: "power2.out",
-              duration: 0.34,
-            },
-            0.38,
-          );
-          const letters = logoMark.querySelectorAll(".logo-letter");
-          if (letters.length) {
-            tl.to(
-              letters,
-              {
-                y: 0,
-                opacity: 1,
-                ease: "power2.out",
-                duration: 0.26,
-                stagger: 0.09,
-              },
-              0.42,
-            );
-          }
-        }
       }
     } else if (isTabletHero) {
       const tabletStripStagger = strips.length > 1 ? 0.018 : 0;
@@ -994,21 +914,33 @@ export function mountHeroScrollStage({
   };
 
   /*
-   * Phone scrub owns logo rise — never run free-landing / touchstart snap
-   * (those fight the scrubbed timeline and jump strips).
+   * Phone: video-only hero (no strips). Land logo on load like desktop —
+   * scrub only drives Book Now + soft title exit (not a second logo rise).
    */
   let rafId = 0;
   let rafIdInner = 0;
   if (isPhoneHero) {
-    logoReadyForScroll = true;
     markHeroMotionReady();
     document.documentElement.classList.add("ex-scroll-ready");
     document.documentElement.classList.remove("ex-pending", "ex-pending-deep");
-    playTitleLanding();
+    if (skipLanding) {
+      snapLogoLanded();
+      snapTitlesLanded();
+    } else {
+      const img = logoMark?.querySelector("img");
+      if (img && !img.complete) {
+        img.addEventListener("load", playLanding, { once: true });
+        setTimeout(playLanding, 500);
+      } else {
+        playLanding();
+      }
+      playTitleLanding();
+    }
     logPhonePerfDev({
       surface: "hero-stage",
       phoneSticky: true,
-      landingSkipped: true,
+      videoOnly: true,
+      strips: 0,
       rebuildDebounceMs: 250,
     });
   } else {
@@ -1033,7 +965,7 @@ export function mountHeroScrollStage({
   }
 
   const onFirstScroll = () => {
-    if (disposed || isPhoneHero) return;
+    if (disposed) return;
     if (landingTween && landingTween.isActive()) {
       landingTween.progress(1).kill();
     }
@@ -1055,7 +987,7 @@ export function mountHeroScrollStage({
     if (lenis) lenis.off("scroll", onFirstScrollTitles);
   };
 
-  if (logoMark && !isPhoneHero) {
+  if (logoMark) {
     window.addEventListener("wheel", onFirstScroll, { passive: true });
     window.addEventListener("touchstart", onFirstScroll, { passive: true });
     window.addEventListener("scroll", onFirstScroll, { passive: true });
