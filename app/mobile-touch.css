@@ -638,7 +638,8 @@ body.is-touch-device .lux-cursor {
   /*
    * Phone outlined pill CTAs — reinforce Discover More geometry site-wide.
    * Colours / hover skins stay in button-system.css; this only locks shape.
-   * Excludes hero Book Now, icon circles, menu chrome, and carousel arrows.
+   * Includes link-styled CTAs (Scheduled Voyages, underline text buttons).
+   * Excludes: home hero Book Now, dock icons, menu/theme chrome, squares.
    */
   .public-site :is(
       a.btn,
@@ -649,6 +650,7 @@ body.is-touch-device .lux-cursor {
       .public-btn-gold,
       .public-btn-outline-gold,
       .public-btn-dark,
+      .public-fab__book,
       .ab-btn,
       .ac-pill,
       .ar-btn,
@@ -666,9 +668,31 @@ body.is-touch-device .lux-cursor {
       .we-btn,
       .hathor-fav--inline,
       .hathor-atv--inline,
+      .hathor-atv-confirm__primary,
+      .hathor-atv-confirm__secondary,
       .hfp__cta,
-      .cruise-filter--cta
-    ):not(.hero-cta):not(.btn--square):not(.btn--menu):not(.public-header-menu-btn) {
+      .cruise-filter--cta,
+      .booking-btn-primary,
+      .booking-btn-outline,
+      .historia-btn,
+      .vb-reserve__secondary,
+      .vb-reserve__button,
+      .vb-project__link,
+      .vb-charter__link,
+      .ac-text-link,
+      .room-text-link,
+      .rh__act,
+      .lux-footer__cta,
+      .preview-hero__cta,
+      .cp-hero-cta,
+      .nib-button,
+      .home-story__cta,
+      .home-amenities-slider__cta
+    ):not(.hero-cta):not(.btn--square):not(.btn--menu):not(.l-gallery-next):not(
+      .public-header-menu-btn
+    ):not(.hathor-header__menu-btn):not(.hsc):not(.public-lang-toggle):not(
+      .public-theme-toggle
+    ) {
     border-radius: 999px !important;
     border-width: 1px !important;
     border-style: solid !important;
@@ -676,21 +700,50 @@ body.is-touch-device .lux-cursor {
     padding-right: 1.55rem !important;
     text-transform: uppercase !important;
     text-align: center !important;
+    text-decoration: none !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     font-family: var(--public-sans, "Plus Jakarta Sans", system-ui, sans-serif) !important;
     letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+    aspect-ratio: auto !important;
   }
 
-  .accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline) {
+  .public-site :is(
+      .vb-reserve__secondary,
+      .vb-project__link,
+      .vb-charter__link,
+      .ac-text-link,
+      .room-text-link,
+      .hathor-atv-confirm__secondary,
+      .home-story__cta,
+      .home-amenities-slider__cta
+    ) {
+    border-color: currentColor !important;
+    background: transparent !important;
+  }
+
+  .public-site :is(.vb-project__link, .vb-charter__link, .room-text-link)::after,
+  .public-site :is(.vb-project__link, .vb-charter__link, .room-text-link)::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  .accom-editorial-shell :is(
+      .ac-pill,
+      .ac-text-link,
+      .hathor-fav--inline,
+      .hathor-atv--inline
+    ) {
     border-radius: 999px !important;
     border-width: 1px !important;
     border-style: solid !important;
+    border-color: currentColor !important;
     padding-left: 1.55rem !important;
     padding-right: 1.55rem !important;
     text-transform: uppercase !important;
     text-align: center !important;
+    text-decoration: none !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;

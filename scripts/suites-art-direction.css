@@ -969,6 +969,7 @@ footer.footer,
   /*
    * Phone CTA chrome — Discover More pill geometry.
    * Keep existing gold / glass / ivory fills and hover colours.
+   * Includes Springs link-styled .btn--link CTAs (not square/menu chrome).
    */
   .suites-cta-primary,
   .suites-cta-secondary,
@@ -982,8 +983,10 @@ footer.footer,
   .hathor-suites-footer-host .lux-footer__cta,
   .hathor-lux-footer-host .lux-footer__cta,
   a.btn.btn--outline:not(.btn--square):not(.l-gallery-next),
-  a.btn.btn--clone:not(.btn--square):not(.btn--link),
-  button.btn.btn--outline:not(.btn--square) {
+  a.btn.btn--clone:not(.btn--square):not(.btn--menu),
+  a.btn.btn--link:not(.btn--square):not(.btn--menu):not(.l-gallery-next),
+  button.btn.btn--outline:not(.btn--square),
+  button.btn.btn--link:not(.btn--square):not(.btn--menu) {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1003,8 +1006,17 @@ footer.footer,
     letter-spacing: 0.18em !important;
     text-transform: uppercase !important;
     text-align: center !important;
+    text-decoration: none !important;
     line-height: 1 !important;
     white-space: nowrap !important;
+  }
+
+  /* Kill Springs underline treatment on link buttons once pill chrome applies. */
+  a.btn.btn--link:not(.btn--square):not(.btn--menu)::after,
+  a.btn.btn--underline:not(.btn--square)::after,
+  button.btn.btn--link:not(.btn--square)::after {
+    content: none !important;
+    display: none !important;
   }
 }
 

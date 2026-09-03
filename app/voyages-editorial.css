@@ -677,6 +677,52 @@ html:has(.voyages-boring) .lux-footer { display: none !important; }
   .vb-reserve { min-height: 86svh; padding-block: 7rem; }
 }
 
+/* Phone ≤480 — underline CTAs become Discover More pills (geometry only). */
+@media (max-width: 480px) {
+  .vb-reserve__button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2.2rem) !important;
+    height: 2.85rem !important;
+    min-height: 2.85rem !important;
+    aspect-ratio: auto !important;
+    padding: 0 1.55rem !important;
+    border-radius: 999px !important;
+    /* Keep existing fill / label colours — only leave the circle. */
+  }
+
+  .vb-reserve__secondary,
+  .vb-project__link,
+  .vb-charter__link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: max-content !important;
+    max-width: calc(100vw - 2.2rem) !important;
+    height: 2.85rem !important;
+    min-height: 2.85rem !important;
+    padding: 0 1.55rem !important;
+    border: 1px solid currentColor !important;
+    border-radius: 999px !important;
+    border-bottom-width: 1px !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.18em !important;
+    gap: 0.45rem !important;
+  }
+
+  .vb-project__link span,
+  .vb-charter__link span {
+    transform: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .voyages-boring .anima-split-char,
   .vb-project__media-wrap,
