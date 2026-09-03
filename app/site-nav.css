@@ -479,8 +479,9 @@
 }
 
 /*
- * Homepage only: no bar at land. Cream returns after a short scroll
- * (hathor-header--nav-compact). Inner pages keep the solid cream bar.
+ * Homepage only (tablet + desktop): no bar at land. Cream returns after a short
+ * scroll (hathor-header--nav-compact). Inner pages keep the solid cream bar.
+ * Phone ≤480 uses the all-pages land/scroll rule further below.
  */
 .public-site .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact) {
   background: transparent !important;
@@ -1416,5 +1417,66 @@
   .public-site .public-theme-toggle__icon {
     width: 0.72rem;
     height: 0.72rem;
+  }
+
+  /*
+   * Phone — every public page: clear bar on land, cream chrome after scroll
+   * (nav-compact). Matches the scrolled inner-page bar. Menu-open keeps cream.
+   */
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open) {
+    background: transparent !important;
+    border-bottom-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)::before {
+    opacity: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-bottom-color: transparent !important;
+  }
+
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)
+    .hathor-header__menu-btn--left,
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)
+    .hathor-header__menu-btn--left
+    svg {
+    color: #ffffff !important;
+  }
+
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open)
+    .hathor-header__logo--icon {
+    filter: brightness(0) invert(1);
+  }
+
+  /* Scrolled / menu open — restore the shared cream chrome bar */
+  .public-site
+    .hathor-header--chrome.hathor-header--nav-compact,
+  .public-site
+    .hathor-header--chrome.hathor-header--explore-open,
+  .public-site
+    .hathor-header--chrome.hathor-header--editorial-open {
+    background: var(--chrome-cream, #f3efe6) !important;
+    border-bottom: 1px solid rgb(28 25 23 / 0.06) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }

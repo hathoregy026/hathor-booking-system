@@ -1183,7 +1183,11 @@ html:has(.home-editorial) .lux-footer {
    ========================================================================== */
 
 @media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
-  html:has(.home-editorial) .hathor-header:not(#_) {
+  /*
+   * Tablet / coarse: clear bar so the hero runs edge-to-edge. Phone ≤480
+   * restores cream chrome once scrolled (see phone block below + site-nav).
+   */
+  html:has(.home-editorial) .hathor-header:not(#_):not(.hathor-header--nav-compact) {
     background: transparent !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
@@ -1199,19 +1203,24 @@ html:has(.home-editorial) .lux-footer {
    * Matched with :not([data-h2-nav="over-paper"]) rather than on "over-hero",
    * so the white state also covers first paint — the attribute does not exist
    * until the hook's first pass, and the header is over the hero until then.
+   * Once nav-compact (cream bar) is on, ink wins — see phone override.
    */
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_) :is(button, a):not(#_) {
+    .hathor-header:not(#_):not(.hathor-header--nav-compact)
+    :is(button, a):not(#_) {
     color: #fff !important;
   }
 
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_) :is(button, a) svg:not(#_) {
+    .hathor-header:not(#_):not(.hathor-header--nav-compact)
+    :is(button, a)
+    svg:not(#_) {
     filter: drop-shadow(0 1px 2px rgb(8 5 4 / 55%))
       drop-shadow(0 4px 12px rgb(8 5 4 / 35%)) !important;
   }
 
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
+    .hathor-header:not(#_):not(.hathor-header--nav-compact)
     .hathor-header__logo--icon:not(#_) {
     filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgb(8 5 4 / 45%)) !important;
   }
@@ -1239,6 +1248,59 @@ html:has(.home-editorial) .lux-footer {
   }
 }
 
+/* Phone homepage: cream chrome once scrolled (beats the clear-bar rule above). */
+@media (max-width: 480px) {
+  html:has(.home-editorial)
+    .hathor-header.hathor-header--nav-compact:not(#_),
+  html:has(.home-editorial)
+    .hathor-header.hathor-header--explore-open:not(#_),
+  html:has(.home-editorial)
+    .hathor-header.hathor-header--editorial-open:not(#_) {
+    background: var(--chrome-cream, #f3efe6) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 1px solid rgb(28 25 23 / 0.06) !important;
+    border-color: rgb(28 25 23 / 0.06) !important;
+  }
+
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--nav-compact:not(#_)
+    :is(button, a):not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--explore-open:not(#_)
+    :is(button, a):not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--editorial-open:not(#_)
+    :is(button, a):not(#_) {
+    color: var(--chrome-ink, #1c1917) !important;
+  }
+
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--nav-compact:not(#_)
+    :is(button, a)
+    svg:not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--nav-compact:not(#_)
+    .hathor-header__logo--icon:not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--explore-open:not(#_)
+    :is(button, a)
+    svg:not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--explore-open:not(#_)
+    .hathor-header__logo--icon:not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--editorial-open:not(#_)
+    :is(button, a)
+    svg:not(#_),
+  html[data-public-theme="day"]:has(.home-editorial)
+    .hathor-header.hathor-header--editorial-open:not(#_)
+    .hathor-header__logo--icon:not(#_) {
+    filter: none !important;
+  }
+}
+
 /*
  * Night keeps the transparent bar too. night-mode.css paints the chrome header
  * with `:not(#_):not(#_)` (ID specificity 2) and lays a second wash over it via
@@ -1248,7 +1310,7 @@ html:has(.home-editorial) .lux-footer {
  */
 @media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
   html[data-public-theme="night"]:has(.home-editorial)
-    .hathor-header:not(#_):not(#_) {
+    .hathor-header:not(#_):not(#_):not(.hathor-header--nav-compact) {
     background: transparent !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
@@ -1257,16 +1319,41 @@ html:has(.home-editorial) .lux-footer {
   }
 
   html[data-public-theme="night"]:has(.home-editorial)
-    .hathor-header:not(#_):not(#_)::before {
+    .hathor-header:not(#_):not(#_):not(.hathor-header--nav-compact)::before {
     background: transparent !important;
     opacity: 0 !important;
   }
 
   /* Same halo as day so a light mark survives the brightest hero frames. */
   html[data-public-theme="night"][data-h2-nav="over-hero"]:has(.home-editorial)
-    .hathor-header:not(#_) :is(button, a) svg:not(#_) {
+    .hathor-header:not(#_):not(.hathor-header--nav-compact)
+    :is(button, a)
+    svg:not(#_) {
     filter: drop-shadow(0 1px 2px rgb(8 5 4 / 55%))
       drop-shadow(0 4px 12px rgb(8 5 4 / 35%)) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header.hathor-header--nav-compact:not(#_):not(#_),
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header.hathor-header--explore-open:not(#_):not(#_),
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header.hathor-header--editorial-open:not(#_):not(#_) {
+    background: rgb(20 17 13 / 92%) !important;
+    background-color: rgb(20 17 13 / 92%) !important;
+    border-color: var(--night-line-faint, rgb(201 168 108 / 0.18)) !important;
+    box-shadow: none !important;
+  }
+
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header.hathor-header--nav-compact:not(#_):not(#_)::before,
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header.hathor-header--explore-open:not(#_):not(#_)::before,
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header.hathor-header--editorial-open:not(#_):not(#_)::before {
+    opacity: 0 !important;
   }
 }
 

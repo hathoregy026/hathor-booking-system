@@ -1138,10 +1138,29 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   color: var(--nav-control-ink) !important;
 }
 
+/* Homepage land (all breakpoints): white marks over the hero. */
 .hathor-header--home:not(.hathor-header--nav-compact):not(#_) .hsc:not(#_):not(#_),
 .hathor-header--home:not(.hathor-header--nav-compact):not(#_)
   .public-lang-toggle:not(#_):not(#_) {
   color: #ffffff !important;
+}
+
+/* Phone — every page: white marks on clear land bar. */
+@media (max-width: 480px) {
+  .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open):not(#_)
+    .hsc:not(#_):not(#_),
+  .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open):not(#_)
+    .public-lang-toggle:not(#_):not(#_),
+  .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open):not(#_)
+    .public-theme-toggle:not(#_):not(#_) {
+    color: #ffffff !important;
+  }
 }
 
 /* The homepage hides the rings at land; keep them drawn so the three marks

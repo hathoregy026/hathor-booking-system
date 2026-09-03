@@ -1413,6 +1413,29 @@ html[data-public-theme="night"] .public-site .hathor-header--chrome:not(#_):not(
   color: var(--night-text) !important;
 }
 
+/* Phone land — clear bar on every page (cream/dark returns with nav-compact). */
+@media (max-width: 480px) {
+  html[data-public-theme="night"]
+    .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open):not(#_):not(#_) {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html[data-public-theme="night"]
+    .public-site
+    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+      .hathor-header--explore-open
+    ):not(.hathor-header--editorial-open):not(#_):not(#_)::before {
+    opacity: 0 !important;
+    background: transparent !important;
+  }
+}
+
 html[data-public-theme="night"] .public-site .hathor-header--chrome:not(#_):not(#_) :is(a, button) {
   color: var(--night-text) !important;
 }
