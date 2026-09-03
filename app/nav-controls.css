@@ -1145,21 +1145,25 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   color: #ffffff !important;
 }
 
-/* Phone — every page: white marks on clear land bar. */
+/* Phone homepage land: theme toggle matches white marks. */
 @media (max-width: 480px) {
-  .hathor-header--chrome:not(.hathor-header--nav-compact):not(
-      .hathor-header--explore-open
-    ):not(.hathor-header--editorial-open):not(#_)
-    .hsc:not(#_):not(#_),
-  .hathor-header--chrome:not(.hathor-header--nav-compact):not(
-      .hathor-header--explore-open
-    ):not(.hathor-header--editorial-open):not(#_)
-    .public-lang-toggle:not(#_):not(#_),
-  .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+  .hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open):not(#_)
     .public-theme-toggle:not(#_):not(#_) {
     color: #ffffff !important;
+  }
+
+  /* Cream bar (home scrolled or any non-home page): black marks */
+  .hathor-header--chrome.hathor-header--home.hathor-header--nav-compact:not(#_)
+    :is(.hsc, .public-lang-toggle, .public-theme-toggle):not(#_):not(#_),
+  .hathor-header--chrome.hathor-header--home.hathor-header--explore-open:not(#_)
+    :is(.hsc, .public-lang-toggle, .public-theme-toggle):not(#_):not(#_),
+  .hathor-header--chrome.hathor-header--home.hathor-header--editorial-open:not(#_)
+    :is(.hsc, .public-lang-toggle, .public-theme-toggle):not(#_):not(#_),
+  .hathor-header--chrome:not(.hathor-header--home):not(#_)
+    :is(.hsc, .public-lang-toggle, .public-theme-toggle):not(#_):not(#_) {
+    color: var(--nav-control-ink, #141210) !important;
   }
 }
 
@@ -1476,10 +1480,10 @@ html[data-public-theme="night"] .public-lang-toggle__code {
    * theme thumb and burger SVG on that same cascade after the luxury layer.
    */
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_):not(#_)
+    .hathor-header:not(#_):not(#_):not(.hathor-header--nav-compact)
     .public-theme-toggle:not(#_):not(#_),
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_):not(#_)
+    .hathor-header:not(#_):not(#_):not(.hathor-header--nav-compact)
     .hathor-header__menu-btn--left:not(#_) {
     color: #fff !important;
   }

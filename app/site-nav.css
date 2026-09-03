@@ -1420,11 +1420,11 @@
   }
 
   /*
-   * Phone — every public page: clear bar on land, cream chrome after scroll
-   * (nav-compact). Matches the scrolled inner-page bar. Menu-open keeps cream.
+   * Phone — homepage only: clear bar on land, cream after scroll.
+   * All other pages keep the solid cream chrome at every scroll position.
    */
   .public-site
-    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open) {
     background: transparent !important;
@@ -1435,7 +1435,7 @@
   }
 
   .public-site
-    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open)::before {
     opacity: 0 !important;
@@ -1445,12 +1445,12 @@
   }
 
   .public-site
-    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open)
     .hathor-header__menu-btn--left,
   .public-site
-    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open)
     .hathor-header__menu-btn--left
@@ -1459,24 +1459,62 @@
   }
 
   .public-site
-    .hathor-header--chrome:not(.hathor-header--nav-compact):not(
+    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open)
     .hathor-header__logo--icon {
     filter: brightness(0) invert(1);
   }
 
-  /* Scrolled / menu open — restore the shared cream chrome bar */
+  /* Homepage scrolled / menu open — cream bar + black icons */
   .public-site
-    .hathor-header--chrome.hathor-header--nav-compact,
+    .hathor-header--chrome.hathor-header--home.hathor-header--nav-compact,
   .public-site
-    .hathor-header--chrome.hathor-header--explore-open,
+    .hathor-header--chrome.hathor-header--home.hathor-header--explore-open,
   .public-site
-    .hathor-header--chrome.hathor-header--editorial-open {
+    .hathor-header--chrome.hathor-header--home.hathor-header--editorial-open {
     background: var(--chrome-cream, #f3efe6) !important;
     border-bottom: 1px solid rgb(28 25 23 / 0.06) !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--nav-compact
+    .hathor-header__logo--icon,
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--explore-open
+    .hathor-header__logo--icon,
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--editorial-open
+    .hathor-header__logo--icon,
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--home)
+    .hathor-header__logo--icon {
+    filter: none !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--nav-compact
+    :is(.hathor-header__menu-btn--left, .hsc, .public-lang-toggle, .public-theme-toggle),
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--nav-compact
+    .hathor-header__menu-btn--left
+    svg,
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--explore-open
+    :is(.hathor-header__menu-btn--left, .hsc, .public-lang-toggle, .public-theme-toggle),
+  .public-site
+    .hathor-header--chrome.hathor-header--home.hathor-header--editorial-open
+    :is(.hathor-header__menu-btn--left, .hsc, .public-lang-toggle, .public-theme-toggle),
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--home)
+    :is(.hathor-header__menu-btn--left, .hsc, .public-lang-toggle, .public-theme-toggle),
+  .public-site
+    .hathor-header--chrome:not(.hathor-header--home)
+    .hathor-header__menu-btn--left
+    svg {
+    color: var(--chrome-ink, #1c1917) !important;
   }
 }
