@@ -438,12 +438,12 @@ body.is-touch-device .lux-cursor {
   .home-hero-container {
     position: sticky;
     top: 0;
-    height: 100svh !important;
-    height: 100dvh !important;
-    min-height: 100svh !important;
-    min-height: 100dvh !important;
-    max-height: 100svh !important;
-    max-height: 100dvh !important;
+    height: 80svh !important;
+    height: 80dvh !important;
+    min-height: 80svh !important;
+    min-height: 80dvh !important;
+    max-height: 80svh !important;
+    max-height: 80dvh !important;
   }
 
   .home-hero-container .hero-button {

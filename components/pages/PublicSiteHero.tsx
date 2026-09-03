@@ -5,7 +5,7 @@ import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import { HATHOR_HERO_VIDEO_SRC } from "@/lib/branding";
+import { HATHOR_HERO_VIDEO_SRC, HATHOR_HERO_VIDEO_PHONE_SRC } from "@/lib/branding";
 import { isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
@@ -19,9 +19,6 @@ import {
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
 import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
-
-/** No compressed mobile MP4 yet — phones keep poster until an asset is added. */
-const HATHOR_HERO_VIDEO_MOBILE_SRC: string | null = null;
 
 export type PublicSiteHeroProps = {
   lineRight: string;
@@ -172,13 +169,13 @@ export function PublicSiteHero({
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const narrowTablet = window.matchMedia("(max-width: 1024px)").matches;
 
-    if (phone && !HATHOR_HERO_VIDEO_MOBILE_SRC) {
+    if (phone && !HATHOR_HERO_VIDEO_PHONE_SRC) {
       setUseLiveVideo(false);
       logPhonePerfDev({
         surface: "public-site-hero",
         phone: true,
         videoSource: "poster-only",
-        reason: "no-mobile-mp4-yet",
+        reason: "no-mobile-mp4",
       });
       return;
     }
@@ -207,8 +204,8 @@ export function PublicSiteHero({
     let delayId = 0;
     const cleanups: Array<() => void> = [];
     const source =
-      phone && HATHOR_HERO_VIDEO_MOBILE_SRC
-        ? HATHOR_HERO_VIDEO_MOBILE_SRC
+      phone && HATHOR_HERO_VIDEO_PHONE_SRC
+        ? HATHOR_HERO_VIDEO_PHONE_SRC
         : HATHOR_HERO_VIDEO_SRC;
 
     const pauseVideo = () => {
@@ -371,9 +368,9 @@ export function PublicSiteHero({
             preload="none"
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
           >
-            {HATHOR_HERO_VIDEO_MOBILE_SRC ? (
+            {HATHOR_HERO_VIDEO_PHONE_SRC ? (
               <source
-                src={HATHOR_HERO_VIDEO_MOBILE_SRC}
+                src={HATHOR_HERO_VIDEO_PHONE_SRC}
                 type="video/mp4"
                 media="(max-width: 480px)"
               />
