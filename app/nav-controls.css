@@ -293,29 +293,7 @@
     --chrome-icon: 2.75rem;
     --theme-toggle-w: 2.75rem;
     --theme-toggle-h: 2.75rem;
-    background: #dedede !important;
-  }
-
-  .public-site
-    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
-      .hathor-header--explore-open
-    ):not(.hathor-header--editorial-open)
-    .hathor-header__menu-btn--left,
-  .public-site
-    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
-      .hathor-header--explore-open
-    ):not(.hathor-header--editorial-open)
-    .hathor-header__menu-btn--left:not(#_)
-    svg:not(#_) {
-    color: var(--nav-control-ink) !important;
-  }
-
-  .public-site
-    .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
-      .hathor-header--explore-open
-    ):not(.hathor-header--editorial-open)
-    .hathor-header__logo--icon {
-    filter: none !important;
+    /* Do not force a grey bar — keep desktop transparent-on-hero / cream-on-scroll. */
   }
 
   .public-site
@@ -378,7 +356,7 @@
     min-height: 2.75rem !important;
     margin: 0 0 0 var(--nav-control-gap) !important;
     transform: none !important;
-    color: var(--nav-control-ink) !important;
+    /* Color follows shared white/ink tone — do not lock to ink here. */
   }
 
   .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left svg {
@@ -411,19 +389,20 @@
     width: 2.25rem !important;
     height: 2.25rem !important;
     padding: 0 !important;
-    border: 1px solid var(--nav-control-ink) !important;
-    background: var(--nav-control-paper) !important;
+    border: 1px solid currentColor !important;
+    background: transparent !important;
     overflow: visible !important;
   }
 
   .public-theme-toggle.is-night:not(#_) .public-theme-toggle__track:not(#_) {
     flex-direction: row !important;
-    border-color: var(--nav-control-ink) !important;
-    background: var(--nav-control-paper) !important;
+    border-color: currentColor !important;
+    background: transparent !important;
   }
 
+  .public-theme-toggle.is-day:not(#_) .public-theme-toggle__thumb:not(#_),
   .public-theme-toggle.is-night:not(#_) .public-theme-toggle__thumb:not(#_) {
-    color: var(--nav-control-ink) !important;
+    color: inherit !important;
   }
 
   .public-theme-toggle__thumb:not(#_) {
@@ -431,6 +410,7 @@
     height: 100% !important;
     background: transparent !important;
     box-shadow: none !important;
+    color: inherit !important;
   }
 
   .public-theme-toggle__icon:not(#_) {
@@ -1372,5 +1352,134 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   .public-theme-toggle__label:not(#_) {
     display: none !important;
+  }
+}
+
+/* ==========================================================================
+   PHONE-ONLY — icon tone sync with desktop scroll / mode behaviour
+   --------------------------------------------------------------------------
+   ≤480px only. Desktop and tablet geometry above stay untouched.
+
+   Phone used to force the burger SVG and day/night thumb to ink while the
+   favourites / voyage / language marks went white over the hero. That left
+   two dark glyphs beside three white ones. Every chrome control must share
+   one currentColor: white over the hero (and night light ink), ink once the
+   cream / paper bar is behind them — same story as desktop.
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  /*
+   * Thumb + day/night states were locked to --nav-lux-ink (desktop pill DNA).
+   * On the phone disc they must inherit the button's white/ink tone instead.
+   */
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__thumb:not(#_):not(#_),
+  .public-theme-toggle.is-day:not(#_):not(#_):not(#_)
+    .public-theme-toggle__thumb:not(#_):not(#_),
+  .public-theme-toggle.is-night:not(#_):not(#_):not(#_)
+    .public-theme-toggle__thumb:not(#_):not(#_) {
+    color: inherit !important;
+    background: transparent !important;
+  }
+
+  /*
+   * Narrow block forced fill:none on every theme SVG child, which killed the
+   * sun core / moon crescent. Restore filled marks; keep ray strokes.
+   */
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_) {
+    color: inherit !important;
+    fill: currentColor !important;
+    stroke: currentColor !important;
+  }
+
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    [fill="none"],
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    g {
+    fill: none !important;
+  }
+
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    circle,
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_)
+    path:not([fill="none"]) {
+    fill: currentColor !important;
+    stroke: none !important;
+  }
+
+  /* Burger glyph rides the same color as the button (white ↔ ink). */
+  .public-site
+    .hathor-header--chrome:not(#_):not(#_)
+    .hathor-header__menu-btn--left:not(#_)
+    svg:not(#_),
+  .public-site
+    .hathor-header--chrome:not(#_):not(#_)
+    .hathor-header__menu-btn--left:not(#_)
+    svg:not(#_)
+    * {
+    color: inherit !important;
+    stroke: currentColor !important;
+  }
+
+  /*
+   * Theme control joins the mark system: white over home hero, ink on cream.
+   * Matches .hsc / language rules from the MARK INK section.
+   */
+  .hathor-header--chrome:not(#_):not(#_) .public-theme-toggle:not(#_):not(#_) {
+    color: var(--nav-control-ink, #141210) !important;
+  }
+
+  .hathor-header--home:not(.hathor-header--nav-compact):not(#_):not(#_)
+    .public-theme-toggle:not(#_):not(#_) {
+    color: #ffffff !important;
+  }
+
+  /*
+   * Homepage editorial (data-h2-nav) already paints buttons white/ink. Keep the
+   * theme thumb and burger SVG on that same cascade after the luxury layer.
+   */
+  html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
+    .hathor-header:not(#_):not(#_)
+    .public-theme-toggle:not(#_):not(#_),
+  html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
+    .hathor-header:not(#_):not(#_)
+    .hathor-header__menu-btn--left:not(#_) {
+    color: #fff !important;
+  }
+
+  html[data-public-theme="day"][data-h2-nav="over-paper"]:has(.home-editorial)
+    .hathor-header:not(#_):not(#_)
+    .public-theme-toggle:not(#_):not(#_),
+  html[data-public-theme="day"][data-h2-nav="over-paper"]:has(.home-editorial)
+    .hathor-header:not(#_):not(#_)
+    .hathor-header__menu-btn--left:not(#_) {
+    color: var(--h2-ink, #14120e) !important;
+  }
+
+  /*
+   * Night: one shared light ink for every chrome control. White-on-home mark
+   * rules otherwise leave the burger on night-text while marks stay pure white.
+   */
+  html[data-public-theme="night"]
+    .hathor-header--chrome:not(#_):not(#_):not(#_)
+    :is(
+      .hsc,
+      .public-lang-toggle,
+      .public-theme-toggle,
+      .hathor-header__menu-btn--left
+    ):not(#_):not(#_) {
+    color: var(--night-text, #e9e1d3) !important;
+  }
+
+  html[data-public-theme="night"]
+    .hathor-header--chrome:not(#_):not(#_):not(#_)
+    .public-theme-toggle:not(#_):not(#_)
+    .public-theme-toggle__thumb:not(#_):not(#_) {
+    color: inherit !important;
   }
 }
