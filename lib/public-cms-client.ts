@@ -9,14 +9,20 @@ try {
   /* Node < 17 — ignore */
 }
 
-export const CMS_CONNECT_TIMEOUT_MS = 8_000;
-export const CMS_STATEMENT_TIMEOUT_MS = 6_000;
-export const CMS_QUERY_TIMEOUT_MS = 8_000;
+/*
+ * Fail fast to stale/defaults. Prior 8s connect + 8s query stacked behind
+ * ensureCmsWarmup on the same single-client chain, so one flaky pooler round
+ * could burn 16–24s before HTML left the server (felt like multi-minute
+ * loads once phones then downloaded CSS/fonts/video).
+ */
+export const CMS_CONNECT_TIMEOUT_MS = 2_500;
+export const CMS_STATEMENT_TIMEOUT_MS = 3_000;
+export const CMS_QUERY_TIMEOUT_MS = 3_500;
 /** No application-level retries — fail once and use stale/defaults. */
 export const CMS_RETRY_COUNT = 0;
 /** Hard cap: one CMS Client in flight per process (no connection stampede). */
 export const CMS_MAX_SIMULTANEOUS_CONNECTIONS = 1;
-const CMS_CLIENT_END_TIMEOUT_MS = 1_500;
+const CMS_CLIENT_END_TIMEOUT_MS = 1_000;
 
 type CmsGlobal = {
   cmsInflight?: Promise<unknown>;
@@ -152,16 +158,20 @@ export function setCmsLastGood<T>(value: T): void {
   cmsGlobal.cmsLastGood = value;
 }
 
-/** Best-effort wake via dedicated Client (serialized with other CMS ops). */
+/**
+ * Best-effort wake AFTER a successful CMS read.
+ * Must never run ahead of the request-path query: it shares the single-client
+ * chain and previously burned a full connect timeout before settings loaded.
+ */
 export function ensureCmsWarmup(): void {
-  if (cmsGlobal.cmsWarmPromise) return;
+  if (cmsGlobal.cmsWarmPromise || !cmsGlobal.cmsLastGood) return;
   cmsGlobal.cmsWarmPromise = (async () => {
     try {
       await withPublicCmsClient(async (client) => {
         await client.query("SELECT 1");
       });
     } catch {
-      /* optional */
+      /* optional — leave promise settled so we do not retry-spam the chain */
     }
   })();
 }

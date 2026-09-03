@@ -71,11 +71,8 @@ gsap.config({ nullTargetWarn: false, force3D: true });
 ///set if is safari
 if(is_safari) htmlEl.classList.add('is_safari')
 
-//recharge page on history browser
-let pageShow = false
-window.addEventListener( "pageshow", function (e) {  
-    if(pageShow)
-        window.location.reload();
-    pageShow = true;
+//recharge page on history browser (bfcache only — never on every pageshow)
+window.addEventListener("pageshow", function (e) {
+    if (e.persisted) window.location.reload();
 });
 

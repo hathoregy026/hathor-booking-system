@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ///ON_RESIZE
     ///ON_RESIZE
     ///ON_RESIZE
-    let lastWindowWidth; 
+    let lastWindowWidth = window.innerWidth;
     const onResize = () => {
        
         // if(control) console.log('resize');
@@ -402,13 +402,18 @@ document.addEventListener('DOMContentLoaded', () => {
         is_mobile = (window.innerWidth<=1024);
         // if(control) console.log('is_lg: ',is_lg);
 
-        //reInit when change desktop to mobile or inverse
-        if( lastWindowWidth<=768 && window.innerWidth>768 || lastWindowWidth>=768 && window.innerWidth<768 ){
-
-            //reLoad
-             window.location.reload()
-
-        }else{
+        /*
+         * Never hard-reload inside the Hathor iframe shell — parent React owns
+         * navigation, and mobile toolbar / orientation flicker across 768 used
+         * to reload in a loop for minutes.
+         */
+        const crossedDesktopMobile =
+            (lastWindowWidth <= 768 && window.innerWidth > 768) ||
+            (lastWindowWidth >= 768 && window.innerWidth < 768);
+        const inIframe = window !== window.top;
+        if (crossedDesktopMobile && !inIframe && Math.abs(window.innerWidth - lastWindowWidth) > 40) {
+            window.location.reload();
+        } else {
 
             //setResize
             // processResize = true;
@@ -460,8 +465,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gsap.set(main,{opacity:1})
         gsap.set('body',{opacity:1})
 
-        ///set window height
-        htmlEl.style = '--vh:'+window.innerHeight;
+        ///set window height (preserve other html inline vars; always use px)
+        htmlEl.style.setProperty("--vh", `${window.innerHeight}px`);
 
          //only once time
         if(!onlyOnce){

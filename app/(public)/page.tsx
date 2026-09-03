@@ -54,8 +54,14 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const cms = await loadPublicCmsBundle();
-  const accordionCruises = await getHomepageAccordionCruisesSafe();
+  /*
+   * Overlap cache lookups. Both share the single CMS client chain on a miss,
+   * but ISR hits must not wait on each other serially.
+   */
+  const [cms, accordionCruises] = await Promise.all([
+    loadPublicCmsBundle(),
+    getHomepageAccordionCruisesSafe(),
+  ]);
   const logoTuneCss = combineDesktopAndNarrowCss(
     heroLogoTuneToImportantCss(cms.heroLogoTune),
     heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),

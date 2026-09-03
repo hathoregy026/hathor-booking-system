@@ -271,7 +271,7 @@ function countImageOverrides(bundle: PublicCmsBundle): number {
 }
 
 /**
- * One short-lived pooler checkout, chunked read for large image map.
+ * One short-lived pooler checkout for small settings + image map.
  * SiteImage table is not scanned on the public request path.
  */
 export async function fetchPublicCmsBundleFromDb(): Promise<{
@@ -283,7 +283,7 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
   let settingsMs = 0;
   let settingsCount = 0;
 
-  const smallRows = await withPublicCmsClient(async (client) => {
+  const collected = await withPublicCmsClient(async (client) => {
     connectMs = Date.now() - t0;
     const tSettings = Date.now();
     const smallKeys = PUBLIC_CMS_KEYS.filter(
@@ -297,19 +297,20 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
       "settings-small",
       CMS_QUERY_TIMEOUT_MS,
     );
+    const rows: SettingRow[] = [...smallResult.rows];
+
+    /*
+     * Same session for the image map. A second pooler checkout used to add
+     * another full connect timeout on flaky networks (stacking to 8–16s+).
+     * statement_timeout still caps a hung query.
+     */
+    for (const key of CHUNKED_SETTING_KEYS) {
+      const value = await readSettingValue(client, key);
+      if (value != null) rows.push({ key, value });
+    }
     settingsMs = Date.now() - tSettings;
-    return smallResult.rows;
+    return rows;
   });
-
-  const collected: SettingRow[] = [...smallRows];
-
-  /* Fresh client for the image map — second query on the same pooler session was stalling. */
-  for (const key of CHUNKED_SETTING_KEYS) {
-    const value = await withPublicCmsClient((client) =>
-      readSettingValue(client, key),
-    );
-    if (value != null) collected.push({ key, value });
-  }
 
   settingsCount = collected.length;
   const rows = collected;
@@ -344,8 +345,6 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
  * persists slot defaults / empty override maps as authoritative.
  */
 async function loadPublicCmsBundleUncached(): Promise<PublicCmsBundle> {
-  ensureCmsWarmup();
-
   /*
    * Prefer a real DB read at build so ISR shells ship with live CMS data.
    * Opt out with CMS_SKIP_BUILD_RESOLUTION=1 when the build has no DB access.
@@ -360,6 +359,8 @@ async function loadPublicCmsBundleUncached(): Promise<PublicCmsBundle> {
   return singleFlightCms(async () => {
     const { bundle, timing } = await fetchPublicCmsBundleFromDb();
     setCmsLastGood(bundle);
+    /* Warm the pooler only after a real hit — never ahead of first paint. */
+    ensureCmsWarmup();
     if (process.env.NODE_ENV === "development") {
       console.log(
         `[public-cms-bundle] ok ${timing.totalMs}ms (settings=${timing.settingsCount}, imageOverrides=${timing.imagesCount}, connect=${timing.connectMs}ms)`,

@@ -166,6 +166,7 @@
 @font-face {
   font-family: "Gamgote";
   src:
+    url("/fonts/Gamgote.woff2") format("woff2"),
     url("/fonts/Gamgote.otf") format("opentype"),
     url("/fonts/Gamgote-Regular.otf") format("opentype");
   font-weight: 400;
@@ -216,6 +217,7 @@
 @font-face {
   font-family: "Rollgates Luxury";
   src:
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury.woff2") format("woff2"),
     url("/fonts/rollgates-luxury/Rollgates%20Luxury.otf") format("opentype"),
     url("/fonts/rollgates-luxury/Rollgates%20Luxury.ttf") format("truetype");
   font-weight: 400;
@@ -226,6 +228,7 @@
 @font-face {
   font-family: "Rollgates Luxury Italic";
   src:
+    url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.woff2") format("woff2"),
     url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.otf") format("opentype"),
     url("/fonts/rollgates-luxury/Rollgates%20Luxury%20Italic.ttf") format("truetype");
   font-weight: 400;
@@ -236,6 +239,7 @@
 @font-face {
   font-family: "Rolling Fonte";
   src:
+    url("/fonts/rollingfonte.woff2") format("woff2"),
     url("/fonts/rollingfonte.otf") format("opentype"),
     url("/fonts/rollingfonte.ttf") format("truetype");
   font-weight: 400;
@@ -288,6 +292,7 @@
 @font-face {
   font-family: "Carista";
   src:
+    url("/fonts/more-fonts/carista-calligraphy.woff2") format("woff2"),
     url("/fonts/more-fonts/carista-calligraphy.otf") format("opentype"),
     url("/fonts/more-fonts/carista-calligraphy.ttf") format("truetype");
   font-weight: 400;
