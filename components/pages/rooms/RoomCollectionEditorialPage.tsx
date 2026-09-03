@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { FileText, Ship } from "lucide-react";
 import {
   useRef,
   type ComponentPropsWithoutRef,
@@ -139,8 +140,13 @@ function SelectionPills({ room }: { room: RoomShowcase }) {
         name={room.name}
         variant="inline"
       />
-      <Link href={`/rooms/${room.slug}`} className="ac-pill">
-        <span>Residence notes</span>
+      <Link
+        href={`/rooms/${room.slug}`}
+        className="ac-pill ac-pill--icon"
+        aria-label={`Residence notes for ${room.name}`}
+      >
+        <FileText className="ac-pill__glyph" aria-hidden="true" />
+        <span className="ac-pill__label">Residence notes</span>
       </Link>
     </div>
   );
@@ -359,8 +365,13 @@ export function RoomCollectionEditorialPage({
                       <BookNowTrigger className="rh__act rh__act--solid">
                         <span>Book now</span>
                       </BookNowTrigger>
-                      <Link href="/voyages" className="rh__act">
-                        <span>View voyages</span>
+                      <Link
+                        href="/voyages"
+                        className="rh__act rh__act--icon"
+                        aria-label="View voyages"
+                      >
+                        <Ship className="rh__act-glyph" aria-hidden="true" />
+                        <span className="rh__act-label">View voyages</span>
                       </Link>
                     </div>
                   </div>
@@ -531,8 +542,13 @@ export function RoomCollectionEditorialPage({
                   <BookNowTrigger className="ac-pill ac-pill--fill">
                     <span>Book Now</span>
                   </BookNowTrigger>
-                  <Link href="/voyages" className="ac-pill">
-                    <span>View voyages</span>
+                  <Link
+                    href="/voyages"
+                    className="ac-pill ac-pill--icon"
+                    aria-label="View voyages"
+                  >
+                    <Ship className="ac-pill__glyph" aria-hidden="true" />
+                    <span className="ac-pill__label">View voyages</span>
                   </Link>
                 </div>
               ) : null}

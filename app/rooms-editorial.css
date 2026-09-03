@@ -337,6 +337,15 @@ html:has(.accom-catalog) .public-fab {
   text-transform: uppercase;
 }
 
+/* Glyphs stay hidden on desktop so secondary pills keep their text-only look. */
+.accom-catalog .ac-pill__glyph,
+.rh .rh__act-glyph {
+  display: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+}
+
 /* progress */
 .ac-progress {
   position: fixed;
@@ -893,6 +902,12 @@ html:has(.accom-catalog) .public-fab {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .ac-tier__cell {
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0.75rem;
+  }
+
   .ac-chapter {
     grid-template-columns: 1fr;
   }
@@ -900,6 +915,18 @@ html:has(.accom-catalog) .public-fab {
   .ac-chapter__glyph {
     writing-mode: horizontal-tb;
     transform: none;
+  }
+
+  .ac-spec-rail {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    text-align: center;
+  }
+
+  .ac-spec-rail li {
+    align-items: center;
+    min-width: 0;
   }
 
   .ac-bento {
@@ -927,6 +954,19 @@ html:has(.accom-catalog) .public-fab {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .ac-charter__cell {
+    grid-template-columns: auto auto;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+    padding: 0.85rem 0.7rem;
+  }
+
+  .ac-charter__label {
+    padding-left: 0;
+    text-align: center;
+  }
+
   .ac-landing__grid {
     grid-template-columns: 1fr;
   }
@@ -938,9 +978,19 @@ html:has(.accom-catalog) .public-fab {
     --ac-t-chapter: clamp(2rem, 9vw, 2.8rem);
   }
 
+  /* Keep cubes side-by-side on phone — do not collapse to a single stack. */
   .ac-tier__triptych,
   .ac-charter {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .ac-tier__cell {
+    min-height: 100%;
+  }
+
+  .ac-spec-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .ac-pill,
@@ -948,6 +998,71 @@ html:has(.accom-catalog) .public-fab {
   .ac-pills .hathor-atv--inline {
     flex: 1 1 auto;
     min-width: min(13.5rem, 100%);
+  }
+}
+
+/*
+ * Phone-only actions: secondary controls become equal icon tiles;
+ * Book Now stays the only full-width labelled button.
+ */
+@media (max-width: 480px) {
+  .accom-catalog .ac-pills,
+  .accom-catalog .ac-landing__pills {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    justify-items: stretch;
+    width: 100%;
+  }
+
+  .accom-catalog .ac-pills .hathor-fav--inline,
+  .accom-catalog .ac-pills .hathor-atv--inline,
+  .accom-catalog .ac-pills .ac-pill--icon {
+    position: relative;
+    min-width: 0;
+    width: 100%;
+    height: 3rem;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+
+  .accom-catalog .ac-pills .hathor-fav__label,
+  .accom-catalog .ac-pills .hathor-atv__label,
+  .accom-catalog .ac-pills .ac-pill__label {
+    display: none;
+  }
+
+  .accom-catalog .ac-pill__glyph {
+    display: block;
+  }
+
+  .accom-catalog .ac-landing__pills .ac-pill--fill {
+    grid-column: 1 / -1;
+    order: -1;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .accom-catalog .ac-pills:not(.ac-landing__pills) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ac-chapter__body,
+  .ac-charter-scene__head,
+  .ac-landing__copy {
+    text-align: center;
+  }
+
+  .ac-charter-scene .ac-pills,
+  .ac-chapter .ac-pills {
+    justify-content: center;
+  }
+
+  .ac-landing__copy .ac-kicker,
+  .ac-landing__copy .ac-title,
+  .ac-landing__copy .ac-support {
+    text-align: center;
   }
 }
 
@@ -1467,9 +1582,14 @@ html:has(.accom-catalog) .public-fab {
     font-size: 0.6rem;
   }
 
+  .rh__stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   /*
-   * Book Now leads, the two selection actions pair beneath it, and the voyage
-   * link closes the stack — three tidy rows rather than a stranded fourth.
+   * Book Now leads full-width; Save + Add sit as a pair; voyages closes the
+   * stack on tablet widths that still show labels.
    */
   .rh__actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1485,9 +1605,68 @@ html:has(.accom-catalog) .public-fab {
   }
 }
 
+/* Phone: icon tiles for secondary actions; Book Now remains the only text button. */
+@media (max-width: 480px) {
+  .rh__foot {
+    text-align: center;
+  }
+
+  .rh__tagline,
+  .rh__copy,
+  .rh__beds {
+    justify-content: center;
+  }
+
+  .rh__copy span {
+    display: block;
+  }
+
+  .rh__beds {
+    width: 100%;
+  }
+
+  .rh__actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+
+  .rh .rh__act--solid {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .rh__actions > a:last-child {
+    grid-column: auto;
+  }
+
+  .rh .rh__act.hathor-fav,
+  .rh .rh__act.hathor-atv,
+  .rh .rh__act--icon {
+    position: relative;
+    min-width: 0;
+    width: 100%;
+    height: 3rem;
+    padding-inline: 0;
+    gap: 0;
+  }
+
+  .rh .rh__act .hathor-fav__label,
+  .rh .rh__act .hathor-atv__label,
+  .rh .rh__act-label {
+    display: none;
+  }
+
+  .rh .rh__act-glyph {
+    display: block;
+  }
+}
+
 @media (max-width: 380px) {
   .rh__actions {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 100%;
   }
 }
 
