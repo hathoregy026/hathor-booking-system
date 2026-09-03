@@ -567,8 +567,14 @@ export function Header() {
                 <Menu className="h-5 w-5" aria-hidden />
               </button>
             )}
-            <SelectionHeaderControls />
-            <PublicLanguageToggle />
+            <div
+              className="hathor-phone-dock"
+              role="toolbar"
+              aria-label="Selections and language"
+            >
+              <SelectionHeaderControls />
+              <PublicLanguageToggle />
+            </div>
             <PublicThemeToggle />
           </div>
         </div>

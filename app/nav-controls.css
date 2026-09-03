@@ -1486,3 +1486,228 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     color: inherit !important;
   }
 }
+
+/* Wrapper groups phone-dock targets; transparent on tablet/desktop. */
+.hathor-phone-dock {
+  display: contents;
+}
+
+/* ==========================================================================
+   PHONE BOTTOM DOCK — favourites, voyage cart, language (≤480px only)
+   --------------------------------------------------------------------------
+   Same components and handlers as the header marks; only layout moves to a
+   fixed app-style stripe so the top bar keeps menu · logo · day/night.
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --hathor-phone-dock-h: calc(4.35rem + env(safe-area-inset-bottom, 0px));
+    --dock-mark: 2.35rem;
+    --dock-icon: 1.2rem;
+    --dock-label: 0.4375rem;
+  }
+
+  .public-site {
+    padding-bottom: var(--hathor-phone-dock-h);
+  }
+
+  .hathor-phone-dock {
+    display: flex;
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 1100;
+    align-items: stretch;
+    justify-content: space-evenly;
+    gap: 0;
+    box-sizing: border-box;
+    min-height: var(--hathor-phone-dock-h);
+    padding:
+      0.42rem max(0.65rem, env(safe-area-inset-left))
+      calc(0.35rem + env(safe-area-inset-bottom, 0px))
+      max(0.65rem, env(safe-area-inset-right));
+    border-top: 1px solid color-mix(in srgb, var(--nav-lux-ink) 10%, transparent);
+    background: color-mix(in srgb, var(--nav-lux-cream) 94%, transparent);
+    box-shadow:
+      0 -1px 0 rgb(255 255 255 / 0.55) inset,
+      0 -10px 28px rgb(20 18 16 / 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    pointer-events: auto;
+  }
+
+  html[data-public-theme="night"] .hathor-phone-dock {
+    border-top-color: color-mix(in srgb, var(--nav-lux-cream) 14%, transparent);
+    background: color-mix(in srgb, #16130f 92%, transparent);
+    box-shadow:
+      0 -1px 0 rgb(255 255 255 / 0.06) inset,
+      0 -10px 28px rgb(0 0 0 / 0.35);
+  }
+
+  /* Lifted out of the header row — only the theme toggle stays up top. */
+  .hathor-header__col--right .hathor-phone-dock {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  .hathor-header__col--right:not(#_) {
+    justify-content: flex-end !important;
+    gap: 0 !important;
+  }
+
+  .hathor-phone-dock > .hsc:not(#_):not(#_),
+  .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
+    color: var(--nav-lux-ink) !important;
+  }
+
+  html[data-public-theme="night"] .hathor-phone-dock > .hsc:not(#_):not(#_),
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
+    color: var(--nav-lux-cream) !important;
+  }
+
+  .hathor-phone-dock > .hsc:not(#_):not(#_),
+  .hathor-phone-dock > .public-lang-selector {
+    position: relative;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    min-width: 0;
+    min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem);
+    margin: 0 !important;
+    padding: 0.15rem 0.1rem 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hathor-phone-dock > .hsc:not(#_) + .hsc:not(#_) {
+    margin-left: 0 !important;
+  }
+
+  .hathor-phone-dock > .hsc:not(#_)::before,
+  .hathor-phone-dock .public-lang-toggle:not(#_):not(#_)::before {
+    width: var(--dock-mark) !important;
+    height: var(--dock-mark) !important;
+    border-color: color-mix(in srgb, currentColor 22%, transparent) !important;
+  }
+
+  .hathor-phone-dock .hsc__icon:not(#_):not(#_) {
+    width: var(--dock-icon) !important;
+    height: var(--dock-icon) !important;
+  }
+
+  .hathor-phone-dock .public-lang-selector {
+    flex-basis: auto !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .hathor-phone-dock .public-lang-toggle__globe {
+    width: var(--dock-mark) !important;
+    height: var(--dock-mark) !important;
+  }
+
+  .hathor-phone-dock .public-lang-toggle__globe .public-theme-toggle__icon:not(#_):not(#_) {
+    width: var(--dock-icon) !important;
+    height: var(--dock-icon) !important;
+  }
+
+  .hathor-phone-dock .public-lang-toggle__code {
+    display: none !important;
+  }
+
+  /* App-style captions — presentation only; handlers unchanged. */
+  .hathor-phone-dock > .hsc:not(#_):first-of-type::after {
+    content: "Saved";
+  }
+
+  .hathor-phone-dock > .hsc--voyage:not(#_)::after,
+  .hathor-phone-dock > .hsc.hsc--voyage:not(#_)::after {
+    content: "Voyage";
+  }
+
+  .hathor-phone-dock .public-lang-toggle:not(#_)::after {
+    content: "Language";
+  }
+
+  .hathor-phone-dock > .hsc:not(#_)::after,
+  .hathor-phone-dock .public-lang-toggle:not(#_)::after {
+    position: relative;
+    z-index: 1;
+    font-family: var(--public-sans, var(--font-hathor-body, inherit));
+    font-size: var(--dock-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: color-mix(in srgb, currentColor 72%, transparent);
+    pointer-events: none;
+  }
+
+  .hathor-phone-dock .hsc__count:not(#_):not(#_) {
+    top: 0.05rem !important;
+    right: calc(50% - var(--dock-mark) * 0.5 + 0.1rem) !important;
+  }
+
+  /* Language card opens upward from the dock. */
+  .hathor-phone-dock .public-lang-menu {
+    top: auto;
+    right: auto;
+    left: 50%;
+    bottom: calc(100% + 0.55rem);
+    transform: translateX(-50%) translateY(0.35rem) scale(0.985);
+    transform-origin: bottom center;
+  }
+
+  .hathor-phone-dock .public-lang-menu.is-open {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  .hathor-phone-dock .public-lang-menu::before {
+    top: auto;
+    bottom: -0.3125rem;
+    right: auto;
+    left: 50%;
+    margin-left: -0.25rem;
+    border-top: 0;
+    border-bottom: 1px solid var(--nav-lux-gold-soft);
+    border-left: 1px solid var(--nav-lux-gold-soft);
+    transform: rotate(225deg);
+  }
+
+  .hathor-phone-dock .public-lang-notice {
+    top: auto;
+    bottom: calc(100% + 0.55rem);
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+
+  /* Hide dock while the full-screen editorial menu is open. */
+  .hathor-header--editorial-open .hathor-phone-dock,
+  html:has(.eno.is-open) .hathor-phone-dock {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.28s var(--nav-lux-ease),
+      visibility 0s linear 0.28s;
+  }
+}
