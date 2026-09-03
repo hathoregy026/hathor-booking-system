@@ -472,12 +472,12 @@ body.is-touch-device .lux-cursor {
     will-change: transform, width;
   }
 
-  /* Restore scroll cue — sits above the stretching Book Now, never fights it */
+  /* Restore scroll cue — clear of the Book Now stretch zone */
   .public-site .home-hero-container .hero-scroll-hint,
   .public-site .home-hero-container [data-hero-scroll-hint],
   .home-hero-container .hero-scroll-hint {
     display: flex !important;
-    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+    bottom: calc(7.25rem + env(safe-area-inset-bottom, 0px));
     gap: 6px;
     font-size: 0.52rem;
     letter-spacing: 0.28em;
