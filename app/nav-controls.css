@@ -1908,14 +1908,5 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     color: var(--nav-lux-cream) !important;
   }
 
-  /* Hide dock while the full-screen editorial menu is open. */
-  html:has(.eno.is-open) .hathor-phone-dock,
-  html:has(.hathor-header--editorial-open) .hathor-phone-dock {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition:
-      opacity 0.28s var(--nav-lux-ease),
-      visibility 0s linear 0.28s;
-  }
+  /* Dock stays visible while the editorial menu is open (z-index 1350). */
 }
