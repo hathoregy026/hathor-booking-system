@@ -1554,7 +1554,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     width: 100% !important;
     max-width: 100vw !important;
     margin: 0 !important;
-    z-index: 1200 !important;
+    z-index: 1280 !important;
     align-items: stretch;
     justify-content: space-evenly;
     gap: 0;
@@ -1722,38 +1722,131 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     right: calc(50% - var(--dock-mark) * 0.5) !important;
   }
 
-  /* Language card opens upward from the dock. */
+  /* Language card — solid opaque popover above the Language tab only. */
+  .hathor-phone-dock {
+    overflow: visible !important;
+  }
+
+  .hathor-phone-dock > .public-lang-selector {
+    overflow: visible !important;
+    z-index: 6 !important;
+  }
+
+  .hathor-phone-dock > .public-lang-selector.is-open {
+    z-index: 8 !important;
+  }
+
   .hathor-phone-dock .public-lang-menu {
-    top: auto;
-    right: auto;
-    left: 50%;
-    bottom: calc(100% + 0.55rem);
-    transform: translateX(-50%) translateY(0.35rem) scale(0.985);
-    transform-origin: bottom center;
+    top: auto !important;
+    right: auto !important;
+    left: 50% !important;
+    bottom: calc(100% + 0.7rem) !important;
+    z-index: 40 !important;
+    box-sizing: border-box !important;
+    width: 11rem !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    margin: 0 !important;
+    padding: 0.9rem 0 0.45rem !important;
+    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 14%, transparent) !important;
+    border-radius: 0.85rem !important;
+    /* Solid dock cream — never glass / never alpha over hero video. */
+    background: #ece8df !important;
+    background-color: #ece8df !important;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.75) inset,
+      0 16px 40px rgb(20 18 16 / 0.28) !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(-50%, 0.4rem, 0) scale(0.985) !important;
+    transform-origin: bottom center !important;
+    pointer-events: none;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+    isolation: isolate !important;
   }
 
   .hathor-phone-dock .public-lang-menu.is-open {
-    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translate3d(-50%, 0, 0) scale(1) !important;
+    background: #ece8df !important;
+    background-color: #ece8df !important;
   }
 
+  /* Caret under the card, pointing at the Language mark — never through the eyebrow. */
   .hathor-phone-dock .public-lang-menu::before {
-    top: auto;
-    bottom: -0.3125rem;
-    right: auto;
-    left: 50%;
-    margin-left: -0.25rem;
-    border-top: 0;
-    border-bottom: 1px solid var(--nav-lux-gold-soft);
-    border-left: 1px solid var(--nav-lux-gold-soft);
-    transform: rotate(225deg);
+    content: "" !important;
+    position: absolute !important;
+    top: auto !important;
+    right: auto !important;
+    left: 50% !important;
+    bottom: -6px !important;
+    z-index: 0 !important;
+    width: 12px !important;
+    height: 12px !important;
+    margin: 0 !important;
+    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 14%, transparent) !important;
+    border-top-color: transparent !important;
+    border-left-color: transparent !important;
+    border-radius: 0 !important;
+    background: #ece8df !important;
+    background-color: #ece8df !important;
+    box-shadow: none !important;
+    transform: translateX(-50%) rotate(45deg) !important;
+    pointer-events: none !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__eyebrow {
+    position: relative !important;
+    z-index: 1 !important;
+    margin: 0 0 0.7rem !important;
+    padding: 0 1.15rem !important;
+    color: color-mix(in srgb, var(--nav-lux-ink) 55%, transparent) !important;
+    letter-spacing: 0.22em !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__list {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__option {
+    padding: 0.7rem 1.15rem !important;
+    background: transparent !important;
+    color: var(--nav-lux-ink) !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__option.is-active {
+    color: var(--nav-lux-gold) !important;
   }
 
   .hathor-phone-dock .public-lang-notice {
-    top: auto;
-    bottom: calc(100% + 0.55rem);
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
+    top: auto !important;
+    right: auto !important;
+    left: 50% !important;
+    bottom: calc(100% + 0.7rem) !important;
+    z-index: 40 !important;
+    background: #ece8df !important;
+    background-color: #ece8df !important;
+    opacity: 1 !important;
+    transform: translateX(-50%) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu,
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu.is-open,
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu::before,
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-notice {
+    background: #16130f !important;
+    background-color: #16130f !important;
+    border-color: color-mix(in srgb, var(--nav-lux-cream) 18%, transparent) !important;
+  }
+
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu__option {
+    color: var(--nav-lux-cream) !important;
   }
 
   /* Hide dock while the full-screen editorial menu is open. */
