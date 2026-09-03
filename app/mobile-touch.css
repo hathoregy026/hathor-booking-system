@@ -353,7 +353,7 @@ body.is-touch-device .lux-cursor {
   .home-hero-runway {
     position: relative;
     width: 100%;
-    height: 360svh;
+    height: 280svh;
     overflow: visible;
   }
 
@@ -425,12 +425,12 @@ body.is-touch-device .lux-cursor {
 
   /*
    * Phone hero — sticky stage inside tall runway (no GSAP pin spacer).
-   * ~330svh keeps strip → logo → CTA choreography without excess dead scroll.
+   * ~280svh keeps strip → logo → CTA choreography without excess dead scroll.
    */
   .home-hero-runway {
     position: relative;
     width: 100%;
-    height: 330svh;
+    height: 280svh;
     overflow: visible;
   }
 

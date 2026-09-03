@@ -204,7 +204,7 @@ export function useHomeEditorialScroll({
           (viewport - rect.top) / Math.max(1, viewport + rect.height),
         );
         const focus = Math.max(0, Math.sin(progress * Math.PI));
-        scene.style.setProperty("--reveal", clamp(progress * 1.8).toFixed(4));
+        scene.style.setProperty("--reveal", clamp(progress * 2.65).toFixed(4));
         scene.style.setProperty("--parallax", progress.toFixed(4));
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", focus.toFixed(4));
