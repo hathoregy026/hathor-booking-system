@@ -8,7 +8,7 @@ import {
 } from "react";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import type { ResolvedSiteImage, SiteImageMap } from "@/lib/resolve-site-images";
-import { deliverPublicSiteImage } from "@/lib/local-optimized-site-images";
+import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";
 
 type SiteImagesContextValue = {
   getImage: (name: string) => ResolvedSiteImage;
@@ -21,13 +21,19 @@ type SiteImagesProviderProps = {
   children: ReactNode;
 };
 
+/**
+ * Keep origin URLs (https://… or /media/…) in context.
+ * Do NOT pre-wrap with `/_next/image?…` — that breaks `next/image` during
+ * static prerender (localPatterns) and double-optimizes ManagedImage.
+ * Native `<img>` / CSS callers should use `toVercelOptimizedSrc` themselves.
+ */
 export function SiteImagesProvider({ images, children }: SiteImagesProviderProps) {
   const getImage = useCallback(
     (name: string): ResolvedSiteImage => {
       const image = images[name] ?? getDefaultSiteImage(name);
       return {
         ...image,
-        src: deliverPublicSiteImage(name, image.src),
+        src: preferLocalOptimizedSiteImage(name, image.src),
       };
     },
     [images],
@@ -46,7 +52,7 @@ export function useSiteImage(name: string): ResolvedSiteImage {
     const image = getDefaultSiteImage(name);
     return {
       ...image,
-      src: deliverPublicSiteImage(name, image.src),
+      src: preferLocalOptimizedSiteImage(name, image.src),
     };
   }
   return context.getImage(name);

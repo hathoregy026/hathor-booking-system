@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
-import { cssImageUrl } from "@/lib/local-optimized-site-images";
+import { cssImageUrl, toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
 
 const TESTIMONIALS = [
   {
@@ -39,7 +39,7 @@ export function TestimonialsCarousel({
   backgroundImageName = "home-hero-poster",
 }: TestimonialsCarouselProps) {
   const managedBackground = useSiteImage(backgroundImageName);
-  const background = managedBackground.src;
+  const background = toVercelOptimizedSrc(managedBackground.src);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {

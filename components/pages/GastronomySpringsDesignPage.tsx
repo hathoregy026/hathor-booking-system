@@ -9,6 +9,7 @@ import { AnimaTitleScroll } from "@/components/public/AnimaTitleScroll";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
 
 const typeStyle = {
   "--nib-display": '"Bitho Luxury", cursive',
@@ -93,7 +94,7 @@ function SlotImage({
       id={previewAnchor ? siteImageAnchorId(slot) : undefined}
       data-site-image={slot}
     >
-      <img src={image.src} alt={alt ?? image.alt} />
+      <img src={toVercelOptimizedSrc(image.src)} alt={alt ?? image.alt} />
     </figure>
   );
 }
@@ -120,8 +121,8 @@ function SlotFlipImage({
       data-site-image={frontSlot}
       id={siteImageAnchorId(frontSlot)}
     >
-      <img src={front.src} alt={alt || front.alt} />
-      <img src={back.src} alt="" aria-hidden />
+      <img src={toVercelOptimizedSrc(front.src)} alt={alt || front.alt} />
+      <img src={toVercelOptimizedSrc(back.src)} alt="" aria-hidden />
     </figure>
   );
 }
@@ -146,7 +147,7 @@ function Plate({
       id={siteImageAnchorId(slotName)}
       style={style}
     >
-      <img src={image.src} alt={image.alt} />
+      <img src={toVercelOptimizedSrc(image.src)} alt={image.alt} />
     </figure>
   );
 }

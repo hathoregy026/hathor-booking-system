@@ -18,6 +18,7 @@ import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
+import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import {
@@ -58,7 +59,7 @@ function VoyageMedia({
       style={{ "--vb-fit": fit } as CSSProperties}
     >
       <Image
-        src={image.src}
+        src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}
         fill
         priority={priority}
