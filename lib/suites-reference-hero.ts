@@ -520,11 +520,11 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   /* Plate holds the right edge exactly as on desktop; title sits over it. */
   .srh-frame--main {
-    top: 19%;
+    top: 22%;
     right: 0;
     left: auto;
     width: 92%;
-    height: 30%;
+    height: 29%;
     border-radius: 0 0 0 2rem;
   }
 
@@ -548,7 +548,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     bottom: auto;
     left: 5%;
     width: 40%;
-    height: 27%;
+    height: 25%;
     border-radius: 5rem 5rem 0 0;
   }
 
@@ -557,7 +557,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--detail {
-    top: 48%;
+    top: 47%;
     right: 4%;
     left: auto;
     width: 44%;
@@ -567,7 +567,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-copy {
-    top: 73%;
+    top: 69%;
     left: 6%;
     max-width: 88%;
   }
@@ -621,27 +621,32 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
  * a reachable actions bar. The collage itself is unchanged.
  */
 @media (max-width: 1024px) and (orientation: portrait) and (max-height: 720px) {
+  /*
+   * line-height .86 lets the caps overflow their box, so the kicker needs more
+   * clearance here than its measured rect suggests.
+   */
   .srh-kicker {
-    top: max(6.5%, 4.6rem);
+    top: max(6.5%, 4.4rem);
+    font-size: clamp(1.55rem, 6.8vw, 2.4rem);
   }
 
   .srh-frame--main {
-    top: 19%;
-    height: 27%;
+    top: 23%;
+    height: 25%;
   }
 
   .srh-frame--portrait {
-    top: 39%;
-    height: 27%;
+    top: 41%;
+    height: 24%;
   }
 
   .srh-frame--detail {
-    top: 45%;
-    height: 19%;
+    top: 46%;
+    height: 18%;
   }
 
   .srh-copy {
-    top: 70%;
+    top: 68%;
   }
 
   .srh-copy__body {

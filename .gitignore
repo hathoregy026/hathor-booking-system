@@ -66,6 +66,9 @@ yarn-error.log*
 # frozen local scroll reveal reference (never commit)
 /_local/scroll-reveal-effect/
 
+# local show-off scratch only (never commit / never deploy)
+/_local/hathor-phone/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -468,7 +468,9 @@ function refreshSuitesHorizontalScroll(doc: Document) {
   script.remove();
 }
 
+/** Returns true when at least one image source actually changed. */
 function applyImages(doc: Document, images: Record<string, string>) {
+  let changed = false;
   doc.querySelectorAll("img").forEach((node) => {
     const img = node as HTMLImageElement;
     const current =
@@ -482,13 +484,17 @@ function applyImages(doc: Document, images: Record<string, string>) {
     if (img.getAttribute("data-hathor-slot") !== current) {
       img.setAttribute("data-hathor-slot", current);
     }
-    if (img.getAttribute("src") !== url) img.setAttribute("src", url);
+    if (img.getAttribute("src") !== url) {
+      img.setAttribute("src", url);
+      changed = true;
+    }
     img.removeAttribute("data-lazy-src");
     img.removeAttribute("data-lazy-srcset");
     img.removeAttribute("srcset");
     img.classList.remove("lazyload", "lazyloading");
     img.classList.add("lazyloaded");
   });
+  return changed;
 }
 
 function prepareSuitesReferenceHero(
@@ -546,14 +552,44 @@ function waitForHeroFonts(doc: Document, timeoutMs = 1200) {
   ]);
 }
 
+type SuitesConfig = { css?: string; images?: Record<string, string> };
+
+function syncCloneTheme(iframe: HTMLIFrameElement | null, theme: string) {
+  const root = iframe?.contentDocument?.documentElement;
+  if (root) root.dataset.publicTheme = theme;
+}
+
 export function SuitesNormalHomepagePage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { theme } = usePublicTheme();
 
+  // Theme is read through a ref so it never re-creates apply(). It used to be a
+  // dependency, which made the whole pipeline run again the moment the provider
+  // resolved the stored theme after mount.
+  const themeRef = useRef(theme);
+
+  // apply() legitimately runs more than once (an early pass mounts the hero
+  // before the clone finishes parsing, then the load pass corrects whatever the
+  // clone's own scripts changed). The config request must not: three separate
+  // passes each fired their own /api/suites-config, each sat for the full 8s CMS
+  // timeout, and each then re-ran the DOM work - which is what read as the page
+  // loading twice and lurching on arrival.
+  const configRef = useRef<Promise<SuitesConfig> | null>(null);
+  const revealedRef = useRef(false);
+
+  const loadSuitesConfig = useCallback(() => {
+    if (!configRef.current) {
+      configRef.current = fetch("/api/suites-config", { cache: "no-store" })
+        .then((response) => response.json() as Promise<SuitesConfig>)
+        .catch(() => ({}) as SuitesConfig);
+    }
+    return configRef.current;
+  }, []);
+
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
     if (!iframe) return;
-    const prepared = prepareSuitesReferenceHero(iframe, theme);
+    const prepared = prepareSuitesReferenceHero(iframe, themeRef.current);
     if (!prepared) return;
     const { doc, cms } = prepared;
 
@@ -567,9 +603,19 @@ export function SuitesNormalHomepagePage() {
     patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
+    // Coalesced to one frame: refreshSuitesHorizontalScroll() calls
+    // ScrollTrigger.refresh(), which visibly re-seats the stage. It was being
+    // fired up to a dozen times per arrival from the stacked passes.
     const runTermsFit = () => {
-      fitTermsToViewport(doc);
-      refreshSuitesHorizontalScroll(doc);
+      const view = doc.defaultView;
+      if (!view) return;
+      const state = doc.documentElement as HTMLElement & { __srhFitFrame?: number };
+      if (state.__srhFitFrame) view.cancelAnimationFrame(state.__srhFitFrame);
+      state.__srhFitFrame = view.requestAnimationFrame(() => {
+        state.__srhFitFrame = 0;
+        fitTermsToViewport(doc);
+        refreshSuitesHorizontalScroll(doc);
+      });
     };
     runTermsFit();
     void doc.fonts?.ready.then(runTermsFit);
@@ -598,36 +644,57 @@ export function SuitesNormalHomepagePage() {
     // Reveal as soon as the hero itself is ready. This deliberately does NOT
     // wait on /api/suites-config: that request can sit for its full 8s CMS
     // timeout, and gating the reveal on it left the page blank until then.
-    void waitForHeroFonts(doc).then(() => {
-      layoutSuitesConnectors(doc);
-      requestAnimationFrame(() => {
+    if (!revealedRef.current) {
+      revealedRef.current = true;
+      void (async () => {
+        await waitForHeroFonts(doc);
+
+        // Give a responsive CMS a brief window to land so its css is in place
+        // before the first painted frame. A slow one (the read has an 8s
+        // timeout) must never hold the reveal - it just applies later.
+        const early = await Promise.race([
+          loadSuitesConfig().catch(() => null),
+          new Promise<null>((resolve) => {
+            window.setTimeout(() => resolve(null), 600);
+          }),
+        ]);
+        if (early?.css && cms.textContent !== early.css) cms.textContent = early.css;
+
         layoutSuitesConnectors(doc);
+        // Reveal without waiting on a frame: requestAnimationFrame is frozen
+        // while the tab is backgrounded, so gating the reveal on it left the
+        // hero blank for anyone who opened the page in a background tab until
+        // they focused it. The extra measure below is only a refinement.
         iframe.dataset.suitesReady = "true";
-      });
-    });
+        requestAnimationFrame(() => layoutSuitesConnectors(doc));
+      })();
+    }
 
     try {
-      const response = await fetch("/api/suites-config", { cache: "no-store" });
-      const data = (await response.json()) as {
-        css?: string;
-        images?: Record<string, string>;
-      };
+      const data = await loadSuitesConfig();
       // Only the CMS sheet is rewritten, so the hero's own rules - and the
       // arrival animations under them - are never restarted by this update.
       const nextCss = data.css ?? "";
-      if (cms.textContent !== nextCss) cms.textContent = nextCss;
-      mountSuitesReferenceHero(doc);
-      patchLogoWordmark(doc);
-      tagSuiteCollectionPanels(doc);
-      retargetCloneLinks(doc);
-      runTermsFit();
-      void doc.fonts?.ready.then(runTermsFit);
-      if (data.images) applyImages(doc, data.images);
-      layoutSuitesConnectors(doc);
+      const cssChanged = cms.textContent !== nextCss;
+      if (cssChanged) cms.textContent = nextCss;
+      const imagesChanged = data.images ? applyImages(doc, data.images) : false;
+
+      // This response can arrive many seconds after the hero has settled (the
+      // CMS read has an 8s timeout). Re-running the patches and re-seating
+      // ScrollTrigger when nothing actually changed is what made the page lurch
+      // long after it looked finished, so the pass is gated on real change.
+      if (cssChanged || imagesChanged) {
+        mountSuitesReferenceHero(doc);
+        patchLogoWordmark(doc);
+        tagSuiteCollectionPanels(doc);
+        retargetCloneLinks(doc);
+        runTermsFit();
+        layoutSuitesConnectors(doc);
+      }
     } catch {
       /* Clip-fix still applies if CMS is unreachable. */
     }
-  }, [theme]);
+  }, [loadSuitesConfig]);
 
   useEffect(() => {
     let dispose: (() => void) | undefined;
@@ -662,7 +729,7 @@ export function SuitesNormalHomepagePage() {
 
     const mountAtParseTime = () => {
       const iframe = iframeRef.current;
-      if (iframe && prepareSuitesReferenceHero(iframe, theme)) return;
+      if (iframe && prepareSuitesReferenceHero(iframe, themeRef.current)) return;
       attempts += 1;
       if (active && attempts < 600) frame = requestAnimationFrame(mountAtParseTime);
     };
@@ -672,6 +739,13 @@ export function SuitesNormalHomepagePage() {
       active = false;
       cancelAnimationFrame(frame);
     };
+  }, []);
+
+  // Theme is a cheap attribute swap on the clone document; it must not drag the
+  // whole mount/config pipeline along with it.
+  useEffect(() => {
+    themeRef.current = theme;
+    syncCloneTheme(iframeRef.current, theme);
   }, [theme]);
 
   return (
