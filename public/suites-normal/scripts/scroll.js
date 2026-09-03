@@ -252,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lastProject_carouselContent = lastProject.querySelector('.last-item__content');
 
                 ScrollTrigger.create({
-                    containerAnimation: scroll_tl,
                     // animation: lastProject_content_tl,
                     trigger: lastProject_carouselContent,
                     start: "15% bottom",
@@ -525,30 +524,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else{
 
                     const media_wrap = elem.querySelector('.media__wrap-source');
+                    const textBlock = elem.querySelector('.mod-scroll__projects__item__text');
 
-                     ///project_single_tl to anim in desktop
+                    /// Phone/tablet: scrub image rise, then reveal title as the text panel enters
                     project_single_tl = gsap.timeline({paused:true});
                     project_single_tl.from(image, { height:'0svh', ease: 'power1.inOut(1)'} ,0)
                     project_single_tl.from(media_wrap, { height:'0svh', ease: 'power1.inOut(1)'} ,0)
                     project_single_tl.from(media, { scale:1.5, y:'-15%', ease: 'power1.inOut(1)' },0)
 
                     ScrollTrigger.create({
-                        containerAnimation: scroll_tl,
                         animation: project_single_tl,
                         trigger: content,
-                        start: "0% 90%",
-                        end: "0% 25%",
+                        start: "top 88%",
+                        end: "top 28%",
                         scrub: .25,
-                        onLeave: () => {
-                            textProject_tl.pause(); textProject_tl.play()
-                            if(triggerCierre) triggerCierre.refresh();
-                            if(triggerFlipCierreImage) triggerFlipCierreImage.refresh();
+                    })
+
+                    ScrollTrigger.create({
+                        trigger: textBlock || content,
+                        start: "top 84%",
+                        onEnter: () => {
+                            textProject_tl.pause();
+                            textProject_tl.timeScale(1).play();
                         },
-                        onEnterBack: () => {
-                            textProject_tl.pause(); textProject_tl.timeScale(-2); 
-                            textProject_tl.reverse() 
+                        onLeaveBack: () => {
+                            textProject_tl.pause();
+                            textProject_tl.timeScale(2).reverse();
                         },
-                        // markers: true,
                     })
                 }
                 
@@ -664,7 +666,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     lastProject_carousel_item_tl.from(elem.querySelector('.image'),{ y:'-50%', scale:'1.1', duration: 1, ease: 'power1.out(.1)'})
 
                     ScrollTrigger.create({
-                        containerAnimation: scroll_tl,
                         animation: lastProject_carousel_item_tl,
                         trigger: elem,
                         start: "0% bottom",

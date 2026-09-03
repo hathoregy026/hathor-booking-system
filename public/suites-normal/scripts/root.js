@@ -45,7 +45,7 @@ const timescale = 1.15;//1.15;
 const lenisStop = true;
 
 let swup, smoother, smoothWrapper, smoothContent, main, lenis, cursor, cursorSpan, openMenu, mousechanges,
-triggersChapter = [], triggerNext, triggerHeaderLogo, triggerParallaxCierre, init_animations, last_animations, 
+triggersChapter = [], triggerNext, triggerHeaderLogo, triggerParallaxCierre, triggerFlipCierreImage, init_animations, last_animations, 
 changeButtonAnchors, setScrollH, setSmooth, setClicks, setLink, setRollovers, setRolloverBtnBg, setRolloversMenu, 
 removeRolloversMenu, menu_tl, anclas_tl, alert_tl, header_logo_tl, header_btn_tl, header_anchors_tl, scroll_tl, 
 scroll_intro_tl, contacto_tl, chaptersAll, onlyOnce, onScroll, terms, setFlips, processResize = false;;

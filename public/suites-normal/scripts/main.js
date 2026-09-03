@@ -238,20 +238,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         endTl = '+=100%'
                     } 
 
-                    triggerFlipCierreImage = ScrollTrigger.create({
-                        containerAnimation: scroll_tl,
+                    const cierreTriggerConfig = {
                         animation: flipMedia_tl,
                         trigger: triggerTl,
                         start: startTl,
                         end: endTl,
                         scrub: scrubTl,
-                        // toggleActions: 'play none none reverse',
-                        // markers: true,
                         onRefresh: () => {
                             if(control) console.log('resize triggerFlipCierreImage');
-                            
                         }
-                    })
+                    };
+                    if (!is_mobile && scroll_tl) cierreTriggerConfig.containerAnimation = scroll_tl;
+
+                    triggerFlipCierreImage = ScrollTrigger.create(cierreTriggerConfig)
 
                 }else{
 
@@ -275,16 +274,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         scrubTl = .35;   
                     }
 
-                     ScrollTrigger.create({
-                        containerAnimation: scroll_tl,
+                    const flipTriggerConfig = {
                         animation: flipMedia_tl,
                         trigger: triggerTl,
                         start: startTl,
                         end: endTl,
                         scrub: scrubTl,
-                        // toggleActions: 'play none none reverse',
-                        // markers: true,
-                    })
+                    };
+                    if (!is_mobile && scroll_tl) flipTriggerConfig.containerAnimation = scroll_tl;
+
+                     ScrollTrigger.create(flipTriggerConfig)
 
                 }
 

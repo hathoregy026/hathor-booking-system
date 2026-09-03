@@ -456,17 +456,61 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   }
 
   main .mod-scroll__projects__item__content {
-    min-height: 100svh !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  main .mod-scroll__projects__item:not(.last-item) .mod-scroll__projects__item__content {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
   }
 
   main .mod-scroll__projects__item__image,
   main .mod-scroll__projects__item__image .media__wrap-source,
   main .mod-scroll__projects__item__image .media__source {
-    height: 62svh;
+    height: min(56svh, 28rem);
   }
 
   main .mod-scroll__projects__item__text {
-    min-height: 38svh !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    padding: 1.75rem var(--wrapper-padd) 2.75rem !important;
+  }
+
+  main .mod-scroll__projects__item__text__data {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    width: 100% !important;
+    height: auto !important;
+    gap: 0.5rem 1rem !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > * {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(1) {
+    justify-self: start !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(2) {
+    justify-self: end !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(4),
+  main .mod-scroll__projects__item__text__data > span {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
   }
 
   main .mod-scroll__projects__item__text__title {
@@ -489,6 +533,7 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   main .mod-scroll__projects .last-item__content__title .line {
     max-width: 100% !important;
     white-space: normal !important;
+    overflow: visible !important;
     font-size: clamp(3.1rem, 6.6vw, 5rem) !important;
     line-height: 0.9 !important;
   }
@@ -771,22 +816,83 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   }
 
   main .mod-scroll__projects__item__content {
-    min-height: 100svh !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  main .mod-scroll__projects__item:not(.last-item) .mod-scroll__projects__item__content {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
   }
 
   main .mod-scroll__projects__item__image,
   main .mod-scroll__projects__item__image .media__wrap-source,
   main .mod-scroll__projects__item__image .media__source {
-    height: 64svh;
+    height: min(52svh, 22rem);
   }
 
   main .mod-scroll__projects__item__text {
-    min-height: 36svh !important;
-    --margin: 1rem !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.65rem !important;
+    padding: 1.15rem var(--wrapper-padd) 1.85rem !important;
+    --margin: 0.85rem !important;
+  }
+
+  main .mod-scroll__projects__item__text__data {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: auto !important;
+    gap: 0.35rem 0.75rem !important;
+    order: 1 !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > * {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    inset: auto !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(1) {
+    justify-self: start !important;
+    text-align: left !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(2) {
+    justify-self: end !important;
+    text-align: right !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(3) {
+    display: none !important;
+  }
+
+  main .mod-scroll__projects__item__text__data > *:nth-child(4),
+  main .mod-scroll__projects__item__text__data > span {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    order: 3 !important;
+    width: auto !important;
+    margin-top: 0.15rem !important;
   }
 
   main .mod-scroll__projects__item__text__title {
+    order: 2 !important;
+    position: relative !important;
+    z-index: 2 !important;
     max-width: calc(100% - 1.5rem) !important;
+    margin: 0.15rem 0 0.35rem !important;
     white-space: normal !important;
     text-align: center !important;
     font-size: clamp(2.2rem, 10.2vw, 2.85rem) !important;
@@ -807,34 +913,75 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
     height: 44svh !important;
   }
 
+  main .mod-scroll__projects .last-item__content {
+    overflow: visible !important;
+  }
+
   main .mod-scroll__projects .last-item__content__wrap {
-    padding: 5.5rem var(--wrapper-padd) 4rem !important;
+    padding: 4.5rem var(--wrapper-padd) 3.25rem !important;
+    overflow: visible !important;
   }
 
   main .mod-scroll__projects .last-item__content__title {
-    margin-bottom: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    overflow: visible !important;
+  }
+
+  main .mod-scroll__cierre {
+    overflow: visible !important;
   }
 
   main .mod-scroll__cierre__content {
-    padding: 3.5rem 0 4.25rem !important;
+    padding: 2.75rem 0 3.25rem !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
   }
 
   main .mod-scroll__cierre__content__image {
-    width: calc(100% - 1.6rem) !important;
+    width: calc(100% - 1.2rem) !important;
     max-width: none !important;
+    order: 1 !important;
   }
 
-  main .anima__title,
-  main .anima__title .line,
+  main .mod-scroll__cierre .anima__title,
+  main .mod-scroll__cierre .anima__title .line,
   main .mod-scroll__projects .last-item__content__title,
   main .mod-scroll__projects .last-item__content__title .line {
     max-width: 100% !important;
     overflow: visible !important;
     white-space: normal !important;
     text-align: center !important;
-    font-size: clamp(2.15rem, 10.4vw, 3.05rem) !important;
-    line-height: 0.92 !important;
-    padding-bottom: 0.12em !important;
+    font-size: clamp(1.95rem, 9vw, 2.7rem) !important;
+    line-height: 0.96 !important;
+    padding-block: 0.15em !important;
+  }
+
+  main .mod-scroll__cierre .anima__title {
+    order: 2 !important;
+    position: relative !important;
+    width: min(100%, 20rem) !important;
+    margin: 0 auto !important;
+  }
+
+  main .mod-title--chapter,
+  main .mod-title--lines {
+    padding-inline: var(--wrapper-padd) !important;
+    overflow: visible !important;
+  }
+
+  main .mod-title .anima__title,
+  main .mod-title .anima__title .line,
+  main .mod-title--lines .line {
+    max-width: 100% !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-align: center !important;
+    font-size: clamp(1.95rem, 9vw, 2.7rem) !important;
+    line-height: 0.96 !important;
+    padding-block: 0.12em !important;
   }
 }
 

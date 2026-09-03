@@ -644,35 +644,54 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-kicker {
-    top: 7.4%;
-    font-size: clamp(2.05rem, 4.4vw, 3rem);
+    top: 6.5%;
+    font-size: clamp(1.9rem, 4vw, 2.75rem);
   }
 
   .srh-frame--main {
-    top: 12.5%;
-    height: 41%;
+    top: 11%;
+    height: 38%;
   }
 
   .srh-title {
-    font-size: clamp(3.1rem, 6.8vw, 4.8rem);
+    font-size: clamp(2.8rem, 6.2vw, 4.3rem);
   }
 
   .srh-copy {
-    top: 57.5%;
+    top: 54%;
+  }
+
+  .srh-copy__title {
+    font-size: clamp(2.1rem, 4.8vw, 3.2rem);
+  }
+
+  .srh-copy__body {
+    display: none;
   }
 
   .srh-frame--portrait {
-    top: 49%;
-    bottom: 12%;
+    top: 48%;
+    bottom: 14%;
+    width: 26%;
   }
 
   .srh-frame--detail {
-    top: 51%;
-    height: 24%;
+    top: 50%;
+    height: 22%;
+    width: 34%;
   }
 
   .srh-actions {
-    bottom: 1%;
+    bottom: 0.7%;
+    gap: 0.4rem;
+    padding: 0.4rem;
+  }
+
+  .srh-actions a {
+    min-height: 2.55rem;
+    height: 2.55rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
   }
 }
 
