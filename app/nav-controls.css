@@ -1738,27 +1738,31 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   .hathor-phone-dock .public-lang-menu {
     top: auto !important;
-    right: auto !important;
-    left: 50% !important;
+    /* Keep the full card on-screen — Language is the right third, so
+       pin to the dock’s right inset instead of centering a wide card
+       that spills past the viewport edge. */
+    left: auto !important;
+    right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
     bottom: calc(100% + 0.7rem) !important;
     z-index: 40 !important;
     box-sizing: border-box !important;
-    width: 11rem !important;
+    width: min(11.5rem, calc(100vw - 1.5rem)) !important;
     max-width: calc(100vw - 1.5rem) !important;
     margin: 0 !important;
     padding: 0.9rem 0 0.45rem !important;
-    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 14%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 16%, transparent) !important;
     border-radius: 0.85rem !important;
-    /* Solid dock cream — never glass / never alpha over hero video. */
+    /* Fully opaque dock cream — no glass, no alpha over hero video. */
     background: #ece8df !important;
     background-color: #ece8df !important;
+    background-image: none !important;
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.75) inset,
-      0 16px 40px rgb(20 18 16 / 0.28) !important;
+      0 1px 0 rgb(255 255 255 / 0.8) inset,
+      0 18px 44px rgb(20 18 16 / 0.32) !important;
     opacity: 0;
     visibility: hidden;
-    transform: translate3d(-50%, 0.4rem, 0) scale(0.985) !important;
-    transform-origin: bottom center !important;
+    transform: translate3d(0, 0.4rem, 0) scale(0.985) !important;
+    transform-origin: bottom right !important;
     pointer-events: none;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
@@ -1770,31 +1774,48 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    transform: translate3d(-50%, 0, 0) scale(1) !important;
+    transform: translate3d(0, 0, 0) scale(1) !important;
     background: #ece8df !important;
     background-color: #ece8df !important;
+    background-image: none !important;
+    /* Own compositor layer so hero <video> cannot punch through on iOS. */
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
   }
 
-  /* Caret under the card, pointing at the Language mark — never through the eyebrow. */
+  /* Opaque fill behind list content — belt-and-suspenders vs video punch-through. */
+  .hathor-phone-dock .public-lang-menu::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 0 !important;
+    border-radius: inherit !important;
+    background: #ece8df !important;
+    background-color: #ece8df !important;
+    pointer-events: none !important;
+  }
+
+  /* Caret under the card, aimed at the Language mark (right third). */
   .hathor-phone-dock .public-lang-menu::before {
     content: "" !important;
     position: absolute !important;
     top: auto !important;
-    right: auto !important;
-    left: 50% !important;
+    left: auto !important;
+    /* Align under the Language mark center within the right column. */
+    right: calc(var(--dock-mark) * 0.5 - 6px) !important;
     bottom: -6px !important;
     z-index: 0 !important;
     width: 12px !important;
     height: 12px !important;
     margin: 0 !important;
-    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 14%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 16%, transparent) !important;
     border-top-color: transparent !important;
     border-left-color: transparent !important;
     border-radius: 0 !important;
     background: #ece8df !important;
     background-color: #ece8df !important;
     box-shadow: none !important;
-    transform: translateX(-50%) rotate(45deg) !important;
+    transform: rotate(45deg) !important;
     pointer-events: none !important;
   }
 
@@ -1839,6 +1860,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu,
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu.is-open,
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu::before,
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu::after,
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-notice {
     background: #16130f !important;
     background-color: #16130f !important;
