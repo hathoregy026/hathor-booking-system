@@ -531,7 +531,8 @@
     padding:
       max(0.85rem, env(safe-area-inset-top))
       0.65rem
-      max(0.9rem, env(safe-area-inset-bottom))
+      /* Clear the compact phone dock that sits above the menu (z 1350). */
+      calc(var(--hathor-phone-dock-h, 3.15rem) + 0.35rem)
       max(0.45rem, env(safe-area-inset-left));
   }
 

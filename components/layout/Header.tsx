@@ -247,8 +247,9 @@ export function Header() {
     return () => media.removeEventListener("change", sync);
   }, []);
 
-  /* Phone dock portals to <body> so header backdrop-filter cannot trap fixed. */
-  useEffect(() => {
+  /* Phone dock portals to <body> so header backdrop-filter cannot trap fixed.
+     useLayoutEffect so the stripe is present before first paint on soft nav. */
+  useLayoutEffect(() => {
     setPhoneDockHost(document.body);
   }, []);
 
