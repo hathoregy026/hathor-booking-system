@@ -1184,10 +1184,10 @@ html:has(.home-editorial) .lux-footer {
 
 @media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
   /*
-   * Tablet / coarse: clear bar so the hero runs edge-to-edge. Phone ≤480
-   * restores cream chrome once scrolled (see phone block below + site-nav).
+   * Tablet / coarse: clear bar so the hero runs edge-to-edge.
+   * Phone ≤480 restores cream chrome once scrolled (phone block below).
    */
-  html:has(.home-editorial) .hathor-header:not(#_):not(.hathor-header--nav-compact) {
+  html:has(.home-editorial) .hathor-header:not(#_) {
     background: transparent !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
@@ -1203,24 +1203,19 @@ html:has(.home-editorial) .lux-footer {
    * Matched with :not([data-h2-nav="over-paper"]) rather than on "over-hero",
    * so the white state also covers first paint — the attribute does not exist
    * until the hook's first pass, and the header is over the hero until then.
-   * Once nav-compact (cream bar) is on, ink wins — see phone override.
    */
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_):not(.hathor-header--nav-compact)
-    :is(button, a):not(#_) {
+    .hathor-header:not(#_) :is(button, a):not(#_) {
     color: #fff !important;
   }
 
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_):not(.hathor-header--nav-compact)
-    :is(button, a)
-    svg:not(#_) {
+    .hathor-header:not(#_) :is(button, a) svg:not(#_) {
     filter: drop-shadow(0 1px 2px rgb(8 5 4 / 55%))
       drop-shadow(0 4px 12px rgb(8 5 4 / 35%)) !important;
   }
 
   html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
-    .hathor-header:not(#_):not(.hathor-header--nav-compact)
     .hathor-header__logo--icon:not(#_) {
     filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgb(8 5 4 / 45%)) !important;
   }
@@ -1310,7 +1305,7 @@ html:has(.home-editorial) .lux-footer {
  */
 @media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
   html[data-public-theme="night"]:has(.home-editorial)
-    .hathor-header:not(#_):not(#_):not(.hathor-header--nav-compact) {
+    .hathor-header:not(#_):not(#_) {
     background: transparent !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
@@ -1319,16 +1314,14 @@ html:has(.home-editorial) .lux-footer {
   }
 
   html[data-public-theme="night"]:has(.home-editorial)
-    .hathor-header:not(#_):not(#_):not(.hathor-header--nav-compact)::before {
+    .hathor-header:not(#_):not(#_)::before {
     background: transparent !important;
     opacity: 0 !important;
   }
 
   /* Same halo as day so a light mark survives the brightest hero frames. */
   html[data-public-theme="night"][data-h2-nav="over-hero"]:has(.home-editorial)
-    .hathor-header:not(#_):not(.hathor-header--nav-compact)
-    :is(button, a)
-    svg:not(#_) {
+    .hathor-header:not(#_) :is(button, a) svg:not(#_) {
     filter: drop-shadow(0 1px 2px rgb(8 5 4 / 55%))
       drop-shadow(0 4px 12px rgb(8 5 4 / 35%)) !important;
   }
