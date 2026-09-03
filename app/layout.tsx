@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { HATHOR_BRAND_NAME, HATHOR_FAVICON_SRC } from "@/lib/branding";
-import { getRequestHostname } from "@/lib/live-site-gate";
-import { robotsForHost } from "@/lib/temporary-deployment-seo";
+import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
 import {
   PUBLIC_THEME_DEFAULT,
   getPublicThemeBlockingScript,
@@ -38,19 +37,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const hostname = await getRequestHostname();
-  return {
-    metadataBase: new URL("https://www.easytravegypt.com"),
-    title: `${HATHOR_BRAND_NAME} Cruise Booking`,
-    description: "Book your luxury Hathor cruise experience",
-    icons: {
-      icon: HATHOR_FAVICON_SRC,
-      apple: HATHOR_FAVICON_SRC,
-    },
-    robots: robotsForHost(hostname),
-  };
-}
+/*
+ * Static metadata — never call headers()/cookies() here or the whole tree
+ * becomes dynamic and CDN ISR dies. Host-specific noindex stays in middleware.
+ */
+export const metadata: Metadata = {
+  metadataBase: new URL("https://www.easytravegypt.com"),
+  title: `${HATHOR_BRAND_NAME} Cruise Booking`,
+  description: "Book your luxury Hathor cruise experience",
+  icons: {
+    icon: HATHOR_FAVICON_SRC,
+    apple: HATHOR_FAVICON_SRC,
+  },
+  robots: TEMPORARY_DEPLOYMENT_ROBOTS,
+};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -90,23 +90,23 @@ export default function RootLayout({
         />
         <link
           rel="preload"
-          href="/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.otf"
+          href="/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.woff2"
           as="font"
-          type="font/otf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
-          href="/fonts/more-fonts/carista-calligraphy.otf"
+          href="/fonts/more-fonts/carista-calligraphy.woff2"
           as="font"
-          type="font/otf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
-          href="/fonts/Gabigaile.otf"
+          href="/fonts/Gabigaile.woff2"
           as="font"
-          type="font/otf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <style

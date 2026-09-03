@@ -1,6 +1,5 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { connection } from "next/server";
 import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_HERO_LOGO_TUNE,
@@ -347,7 +346,14 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
 async function loadPublicCmsBundleUncached(): Promise<PublicCmsBundle> {
   ensureCmsWarmup();
 
-  if (process.env.NEXT_PHASE === "phase-production-build") {
+  /*
+   * Prefer a real DB read at build so ISR shells ship with live CMS data.
+   * Opt out with CMS_SKIP_BUILD_RESOLUTION=1 when the build has no DB access.
+   */
+  if (
+    process.env.NEXT_PHASE === "phase-production-build" &&
+    process.env.CMS_SKIP_BUILD_RESOLUTION === "1"
+  ) {
     throw new Error(CMS_BUILD_SKIP);
   }
 
@@ -379,22 +385,25 @@ function isBuildSkipError(error: unknown): boolean {
 /**
  * Request-scoped CMS bundle.
  *
- * - `connection()` defers resolution to request time so build never bakes
- *   slot defaults into route HTML / Data Cache.
- * - `unstable_cache` stores ONLY successful DB bundles.
- * - Failures use in-process lastGood or one-shot defaults for that request;
- *   they are never written into unstable_cache.
+ * - No `connection()` / `headers()` here — those force every public page
+ *   dynamic (`Cache-Control: private, no-store`) and kill CDN ISR.
+ * - `unstable_cache` stores ONLY successful DB bundles (revalidate 300s).
+ * - Explicit build skip / build failures never write defaults into the cache.
+ * - Runtime failures use in-process lastGood or one-shot defaults.
  */
 export const loadPublicCmsBundle = cache(async (): Promise<PublicCmsBundle> => {
-  /* Defer until an actual request — prevents ISR shells with defaults. */
-  await connection();
-
   try {
     return await loadPublicCmsBundleCached();
   } catch (error) {
-    if (!isBuildSkipError(error)) {
-      logDbError("public-cms-bundle.cache", error);
+    if (isBuildSkipError(error)) {
+      throw error;
     }
+    if (process.env.NEXT_PHASE === "phase-production-build") {
+      throw error instanceof Error
+        ? error
+        : new Error("[public-cms-bundle] build fetch failed");
+    }
+    logDbError("public-cms-bundle.cache", error);
     const stale = getCmsLastGood<PublicCmsBundle>();
     if (stale) return stale;
     return defaultPublicCmsBundle();

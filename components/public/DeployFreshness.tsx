@@ -38,8 +38,8 @@ async function fetchLiveDeployId(pageDeployId: string): Promise<string | null> {
 
 /**
  * Keeps regular (non-Incognito) browsers on the current production build.
- * Stale HTML/JS tabs detect a deploy-id mismatch and hard-navigate after
- * the API clears the origin HTTP cache via Clear-Site-Data.
+ * Only wipes Cache Storage / IndexedDB when a deploy mismatch is confirmed —
+ * never on every page view (that made repeat visits feel stuck reloading).
  */
 export function DeployFreshness({ deployId }: { deployId: string }) {
   useEffect(() => {
@@ -47,9 +47,6 @@ export function DeployFreshness({ deployId }: { deployId: string }) {
     let cancelled = false;
 
     const sync = async () => {
-      await resetBrowserAppCaches();
-      if (cancelled) return;
-
       const liveId = await fetchLiveDeployId(deployId);
       if (cancelled || !liveId || liveId === "dev") return;
 
@@ -58,10 +55,15 @@ export function DeployFreshness({ deployId }: { deployId: string }) {
         window.sessionStorage.setItem(STORAGE_KEY, liveId);
 
         if (liveId !== deployId || (prev && prev !== liveId)) {
+          await resetBrowserAppCaches();
+          if (cancelled) return;
           hardNavigateToFresh(liveId);
         }
       } catch {
-        if (liveId !== deployId) hardNavigateToFresh(liveId);
+        if (liveId !== deployId) {
+          await resetBrowserAppCaches();
+          if (!cancelled) hardNavigateToFresh(liveId);
+        }
       }
     };
 

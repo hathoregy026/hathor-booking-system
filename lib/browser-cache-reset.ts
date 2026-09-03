@@ -64,9 +64,11 @@ export async function resetBrowserAppCaches(): Promise<void> {
 }
 
 /**
- * Inline boot snippet for PublicLayout (runs before React hydrate).
+ * Inline boot snippet (runs before React hydrate).
+ * Only unregister Service Workers here — do NOT wipe Cache Storage / IndexedDB
+ * on every land (that forced cold loads). Full reset runs only on deploy mismatch.
  * Keep this string free of newlines that would break the script tag.
  */
 export function getServiceWorkerKillBootScript(): string {
-  return `(function(){try{if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister();}));}).catch(function(){});}if("caches"in window){caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k);}));}).catch(function(){});}if(indexedDB&&indexedDB.databases){indexedDB.databases().then(function(dbs){dbs.forEach(function(db){if(db&&db.name)try{indexedDB.deleteDatabase(db.name);}catch(e){}});}).catch(function(){});}}catch(e){}})();`;
+  return `(function(){try{if("serviceWorker"in navigator){navigator.serviceWorker.getRegistrations().then(function(r){return Promise.all(r.map(function(x){return x.unregister();}));}).catch(function(){});}}catch(e){}})();`;
 }

@@ -6,7 +6,6 @@ import { PublicScrollGuardian } from "@/components/public/PublicScrollGuardian";
 import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
-import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { PageTransition } from "@/components/ui/PageTransition";
 import {
@@ -23,25 +22,17 @@ type PublicLayoutProps = {
   children: ReactNode;
   welcomeSplash?: WelcomeSplashSettings;
   liveSite?: LiveSiteSettings;
-  /** True only on custom-domain requests when Live Site is off. */
-  comingSoonActive?: boolean;
 };
 
 export function PublicLayout({
   children,
   welcomeSplash: _welcomeSplash = DEFAULT_WELCOME_SPLASH_SETTINGS,
-  liveSite = DEFAULT_LIVE_SITE_SETTINGS,
-  comingSoonActive = false,
+  liveSite: _liveSite = DEFAULT_LIVE_SITE_SETTINGS,
 }: PublicLayoutProps) {
-  /* Custom domain only — Vercel / localhost keep the real site. */
-  if (comingSoonActive) {
-    return (
-      <PublicThemeProvider>
-        <SiteComingSoon backgroundImageUrl={liveSite.backgroundImageUrl} />
-      </PublicThemeProvider>
-    );
-  }
-
+  /*
+   * Coming Soon is owned by ComingSoonGate (client, host-aware) so this
+   * layout stays cacheable — no headers()-gated early return.
+   */
   return (
     <PublicThemeProvider>
       {/*
