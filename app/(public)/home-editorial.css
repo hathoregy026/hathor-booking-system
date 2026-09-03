@@ -1304,8 +1304,8 @@ html:has(.home-editorial) .lux-footer {
     display: none;
   }
   .h2-itinerary-rail .h2-itinerary {
-    flex: 0 0 min(84vw, 22.5rem);
-    width: min(84vw, 22.5rem);
+    flex: 0 0 min(78vw, 21rem);
+    width: min(78vw, 21rem);
     min-height: 0;
     height: auto;
     scroll-snap-align: center;
