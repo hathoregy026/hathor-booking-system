@@ -634,6 +634,67 @@ body.is-touch-device .lux-cursor {
   .public-site * {
     background-attachment: scroll !important;
   }
+
+  /*
+   * Phone outlined pill CTAs — reinforce Discover More geometry site-wide.
+   * Colours / hover skins stay in button-system.css; this only locks shape.
+   * Excludes hero Book Now, icon circles, menu chrome, and carousel arrows.
+   */
+  .public-site :is(
+      a.btn,
+      button.btn,
+      .btn,
+      .btn-primary,
+      .btn-secondary,
+      .public-btn-gold,
+      .public-btn-outline-gold,
+      .public-btn-dark,
+      .ab-btn,
+      .ac-pill,
+      .ar-btn,
+      .ce-btn,
+      .chr-btn,
+      .h2-btn,
+      .hep-button,
+      .hl-btn,
+      .jn-btn,
+      .lx-btn,
+      .mr-btn,
+      .pn-btn,
+      .room-pill,
+      .sn-btn,
+      .we-btn,
+      .hathor-fav--inline,
+      .hathor-atv--inline,
+      .hfp__cta,
+      .cruise-filter--cta
+    ):not(.hero-cta):not(.btn--square):not(.btn--menu):not(.public-header-menu-btn) {
+    border-radius: 999px !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    padding-left: 1.55rem !important;
+    padding-right: 1.55rem !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-family: var(--public-sans, "Plus Jakarta Sans", system-ui, sans-serif) !important;
+    letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+  }
+
+  .accom-editorial-shell :is(.ac-pill, .hathor-fav--inline, .hathor-atv--inline) {
+    border-radius: 999px !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    padding-left: 1.55rem !important;
+    padding-right: 1.55rem !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
 }
 
 @media (max-width: 480px) and (hover: none) {

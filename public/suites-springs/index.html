@@ -72,11 +72,22 @@
 /**
  * Hathor custom luxury fonts — local files only (no Google Fonts).
  * Files live under /public/fonts/ (including subfolders).
+ *
+ * WOFF2 FIRST, original as fallback.
+ * The originals were raw .ttf/.otf, which ship uncompressed: 4.29 MB across
+ * the 20 faces referenced here. The admin font picker renders every option in
+ * its own family, so opening that menu pulled the whole set at once — which is
+ * what made choosing a font feel like the panel had frozen.
+ * Re-encoded to WOFF2: 1.55 MB, a 2.74 MB (64%) saving, glyph-for-glyph
+ * identical. The original file is kept as a second src so any browser without
+ * WOFF2 support still resolves, and nothing breaks if a .woff2 goes missing.
  */
 
 @font-face {
   font-family: "Agraham";
-  src: url("/fonts/agraham-regular.ttf") format("truetype");
+  src:
+    url("/fonts/agraham-regular.woff2") format("woff2"),
+    url("/fonts/agraham-regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -84,7 +95,9 @@
 
 @font-face {
   font-family: "Baginda";
-  src: url("/fonts/baginda-font/baginda.otf") format("opentype");
+  src:
+    url("/fonts/baginda-font/baginda.woff2") format("woff2"),
+    url("/fonts/baginda-font/baginda.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -92,7 +105,9 @@
 
 @font-face {
   font-family: "Bastliga One";
-  src: url("/fonts/bastilga/Bastliga%20One%20Regular.otf") format("opentype");
+  src:
+    url("/fonts/bastilga/Bastliga%20One%20Regular.woff2") format("woff2"),
+    url("/fonts/bastilga/Bastliga%20One%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -100,7 +115,9 @@
 
 @font-face {
   font-family: "Bastliga Two";
-  src: url("/fonts/bastilga/Bastliga%20Two%20Regular.otf") format("opentype");
+  src:
+    url("/fonts/bastilga/Bastliga%20Two%20Regular.woff2") format("woff2"),
+    url("/fonts/bastilga/Bastliga%20Two%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -108,7 +125,9 @@
 
 @font-face {
   font-family: "Bastliga Three";
-  src: url("/fonts/bastilga/Bastliga%20Three%20Regular.otf") format("opentype");
+  src:
+    url("/fonts/bastilga/Bastliga%20Three%20Regular.woff2") format("woff2"),
+    url("/fonts/bastilga/Bastliga%20Three%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -116,7 +135,9 @@
 
 @font-face {
   font-family: "Bastliga Four";
-  src: url("/fonts/bastilga/Bastliga%20Four%20Regular.otf") format("opentype");
+  src:
+    url("/fonts/bastilga/Bastliga%20Four%20Regular.woff2") format("woff2"),
+    url("/fonts/bastilga/Bastliga%20Four%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -124,7 +145,9 @@
 
 @font-face {
   font-family: "Bastliga Five";
-  src: url("/fonts/bastilga/Bastliga%20Five%20Regular.otf") format("opentype");
+  src:
+    url("/fonts/bastilga/Bastliga%20Five%20Regular.woff2") format("woff2"),
+    url("/fonts/bastilga/Bastliga%20Five%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -132,7 +155,9 @@
 
 @font-face {
   font-family: "Bastliga Tail";
-  src: url("/fonts/bastilga/Bastliga%20Tail%20Regular.otf") format("opentype");
+  src:
+    url("/fonts/bastilga/Bastliga%20Tail%20Regular.woff2") format("woff2"),
+    url("/fonts/bastilga/Bastliga%20Tail%20Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -140,10 +165,21 @@
 
 @font-face {
   font-family: "Bitho Luxury";
-  src: url("/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.otf")
-    format("opentype");
+  src:
+    url("/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.woff2") format("woff2"),
+    url("/fonts/bitho-luxury-italic-1784552304-0/BithoLuxury-Italic-Exfont89bb.otf") format("opentype");
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Brittany Signature";
+  src:
+    url("/fonts/BrittanySignature.woff2") format("woff2"),
+    url("/fonts/BrittanySignature.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -160,8 +196,9 @@
 
 @font-face {
   font-family: "Dynalight";
-  src: url("/fonts/Dynalight%2CPlayfair_Display/Dynalight-Regular.ttf")
-    format("truetype");
+  src:
+    url("/fonts/Dynalight%2CPlayfair_Display/Dynalight-Regular.woff2") format("woff2"),
+    url("/fonts/Dynalight%2CPlayfair_Display/Dynalight-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -169,8 +206,9 @@
 
 @font-face {
   font-family: "Playfair Display";
-  src: url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-VariableFont_wght.ttf")
-    format("truetype");
+  src:
+    url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-VariableFont_wght.woff2") format("woff2"),
+    url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-VariableFont_wght.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -178,8 +216,9 @@
 
 @font-face {
   font-family: "Playfair Display Italic";
-  src: url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf")
-    format("truetype");
+  src:
+    url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-Italic-VariableFont_wght.woff2") format("woff2"),
+    url("/fonts/Dynalight%2CPlayfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -187,7 +226,9 @@
 
 @font-face {
   font-family: "Gabigaile";
-  src: url("/fonts/Gabigaile.otf") format("opentype");
+  src:
+    url("/fonts/Gabigaile.woff2") format("woff2"),
+    url("/fonts/Gabigaile.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -215,8 +256,9 @@
 
 @font-face {
   font-family: "Michiko";
-  src: url("/fonts/michiko-personal-use-only-italic-ttf-1784545869-0/MichikoPersonalUseOnlyItalic-yYvze-Exfonted8a.ttf")
-    format("truetype");
+  src:
+    url("/fonts/michiko-personal-use-only-italic-ttf-1784545869-0/MichikoPersonalUseOnlyItalic-yYvze-Exfonted8a.woff2") format("woff2"),
+    url("/fonts/michiko-personal-use-only-italic-ttf-1784545869-0/MichikoPersonalUseOnlyItalic-yYvze-Exfonted8a.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -224,7 +266,9 @@
 
 @font-face {
   font-family: "Quiet Luxury";
-  src: url("/fonts/quietluxury-script.otf") format("opentype");
+  src:
+    url("/fonts/quietluxury-script.woff2") format("woff2"),
+    url("/fonts/quietluxury-script.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -232,8 +276,9 @@
 
 @font-face {
   font-family: "Quiet Luxury Serif";
-  src: url("/fonts/quiet-luxury-serif-1784545771-0/QuietLuxury-Serif-Exfontc332.otf")
-    format("opentype");
+  src:
+    url("/fonts/quiet-luxury-serif-1784545771-0/QuietLuxury-Serif-Exfontc332.woff2") format("woff2"),
+    url("/fonts/quiet-luxury-serif-1784545771-0/QuietLuxury-Serif-Exfontc332.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -273,7 +318,9 @@
 
 @font-face {
   font-family: "Adobe Bloom";
-  src: url("/fonts/more-fonts/adobe-bloom-script.otf") format("opentype");
+  src:
+    url("/fonts/more-fonts/adobe-bloom-script.woff2") format("woff2"),
+    url("/fonts/more-fonts/adobe-bloom-script.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -281,7 +328,9 @@
 
 @font-face {
   font-family: "Adorebloom";
-  src: url("/fonts/more-fonts/adorebloom.otf") format("opentype");
+  src:
+    url("/fonts/more-fonts/adorebloom.woff2") format("woff2"),
+    url("/fonts/more-fonts/adorebloom.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -289,7 +338,9 @@
 
 @font-face {
   font-family: "Besty Script";
-  src: url("/fonts/more-fonts/Besty-Script-Exfont208d.otf") format("opentype");
+  src:
+    url("/fonts/more-fonts/Besty-Script-Exfont208d.woff2") format("woff2"),
+    url("/fonts/more-fonts/Besty-Script-Exfont208d.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -297,7 +348,9 @@
 
 @font-face {
   font-family: "Canthira";
-  src: url("/fonts/more-fonts/canthira.otf") format("opentype");
+  src:
+    url("/fonts/more-fonts/canthira.woff2") format("woff2"),
+    url("/fonts/more-fonts/canthira.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -315,7 +368,9 @@
 
 @font-face {
   font-family: "Italiana";
-  src: url("/fonts/more-fonts/Italiana-Regular.ttf") format("truetype");
+  src:
+    url("/fonts/more-fonts/Italiana-Regular.woff2") format("woff2"),
+    url("/fonts/more-fonts/Italiana-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -323,8 +378,9 @@
 
 @font-face {
   font-family: "Piloner Thin";
-  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.otf")
-    format("opentype");
+  src:
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.woff2") format("woff2"),
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.otf") format("opentype");
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -332,8 +388,9 @@
 
 @font-face {
   font-family: "Piloner Thin Italic";
-  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.otf")
-    format("opentype");
+  src:
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.woff2") format("woff2"),
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.otf") format("opentype");
   font-weight: 100;
   font-style: italic;
   font-display: swap;
@@ -341,8 +398,9 @@
 
 @font-face {
   font-family: "Piloner Semibold";
-  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.otf")
-    format("opentype");
+  src:
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.woff2") format("woff2"),
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -350,8 +408,9 @@
 
 @font-face {
   font-family: "Piloner Semibold Italic";
-  src: url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.otf")
-    format("opentype");
+  src:
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.woff2") format("woff2"),
+    url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.otf") format("opentype");
   font-weight: 600;
   font-style: italic;
   font-display: swap;
@@ -1222,7 +1281,7 @@ footer.footer,
   display: none !important;
 }
 
-/* Phone — type scale only */
+/* Phone — type scale + lockup gutters + pill CTAs (alignment only; DNA preserved) */
 @media (max-width: 480px) {
   :root {
     --type-hero: 52px;
@@ -1233,6 +1292,137 @@ footer.footer,
     --type-amenity: 30px;
     --type-body: 16px;
     --btn-h: 44px;
+    --btn-w: 200px;
+    --phone-gutter: 20px;
+  }
+
+  /* Hero caption is Springs `pr-layout` (right pad only) — restore equal gutters */
+  .l-gallery__caption .suites-hero-lockup {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: var(--phone-gutter) !important;
+    padding-right: var(--phone-gutter) !important;
+    text-align: left !important;
+  }
+  .l-gallery__caption .suites-hero-lockup .h0,
+  .l-gallery__caption .suites-hero-lockup .suites-hero-support,
+  .l-gallery__caption .suites-hero-lockup .suites-eyebrow {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+  .l-gallery__caption .suites-hero-lockup .suites-cta-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin: 24px 0 0 !important;
+  }
+  .l-gallery__caption .suites-hero-lockup .suites-cta-row .suites-cta-link + .suites-cta-link,
+  .l-gallery__caption .suites-hero-lockup .suites-cta-row a + a {
+    margin-top: 0 !important;
+  }
+
+  /* Intro / Step Aboard — drop absolute desktop coords; one left gutter axis */
+  .l-intro.is-hidden--md-down .l-intro__opening,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: var(--phone-gutter) !important;
+    padding-right: var(--phone-gutter) !important;
+    margin: 0 0 1.25rem !important;
+    text-align: left !important;
+  }
+  .l-intro.is-hidden--md-down .l-intro__opening .h1,
+  .l-intro.is-hidden--md-down .l-intro__opening-subtitle,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-title .h2,
+  .l-intro.is-hidden--md-down .l-intro__content .l-intro__content-text p {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+
+  /* Comfort / amenity titles were right-aligned on phone */
+  #wellness .l-wellness__webgl-title,
+  .l-wellness__webgl-title {
+    text-align: left !important;
+    padding-left: var(--phone-gutter) !important;
+    padding-right: var(--phone-gutter) !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+  #wellness .l-wellness__webgl-caption > p.text-t1 {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    text-align: left !important;
+    padding-left: var(--phone-gutter) !important;
+    padding-right: var(--phone-gutter) !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+  .l-wellness__slider__caption-titles,
+  .l-wellness__slider__caption-text {
+    left: var(--phone-gutter) !important;
+    right: var(--phone-gutter) !important;
+    max-width: calc(100% - (2 * var(--phone-gutter))) !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Residences / cards — readable full-width caption column */
+  .l-residences__caption {
+    padding-left: var(--phone-gutter) !important;
+    padding-right: var(--phone-gutter) !important;
+    box-sizing: border-box !important;
+    text-align: left !important;
+  }
+
+  /*
+   * Phone CTA chrome — Discover More pill geometry.
+   * Keep existing gold / glass / ivory fills and hover colours.
+   */
+  .suites-cta-primary,
+  .suites-cta-secondary,
+  .suites-cta-link,
+  .suites-cta-link--ink,
+  .suites-cta-link--ivory,
+  .suites-cta-primary--on-dark,
+  .l-residences__caption__button .btn,
+  .l-residences__caption__button a,
+  .l-residences__caption__card .btn,
+  .hathor-suites-footer-host .lux-footer__cta,
+  .hathor-lux-footer-host .lux-footer__cta,
+  a.btn.btn--outline:not(.btn--square):not(.l-gallery-next),
+  a.btn.btn--clone:not(.btn--square):not(.btn--link),
+  button.btn.btn--outline:not(.btn--square) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: max-content !important;
+    min-width: min(var(--btn-w), calc(100vw - 2.5rem)) !important;
+    max-width: calc(100vw - 2.5rem) !important;
+    height: var(--btn-h) !important;
+    min-height: var(--btn-h) !important;
+    padding: 0 28px !important;
+    border-radius: 999px !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    font-family: var(--font-body) !important;
+    font-size: var(--type-btn) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
   }
 }
 
@@ -1620,6 +1810,22 @@ footer.footer,
   width: fit-content;
 }
 
+/*
+ * The visible link text is only ~20px tall with a 1rem gap to the next
+ * one — well under the 44px tap-target floor. Grow the hit area into half
+ * of that gap on each side (8px) so neighboring links' hit areas meet
+ * without overlapping (they'd mis-tap each other otherwise); text and the
+ * hover underline (the .lux-footer__link-line span) are untouched.
+ */
+.lux-footer__link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -8px;
+  bottom: -8px;
+}
+
 .lux-footer__link-line {
   position: absolute;
   left: 0;
@@ -1642,12 +1848,28 @@ footer.footer,
 }
 
 .lux-footer__social-link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--lux-muted);
   text-decoration: none;
   will-change: transform;
+}
+
+/*
+ * Icon stays 24px (the row's visual rhythm is unchanged); an invisible
+ * overlay grows the tap target to the 44px floor. The 1.25rem row gap
+ * keeps neighboring overlays from touching.
+ */
+.lux-footer__social-link::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
 }
 
 .lux-footer__social-link svg {
@@ -4832,7 +5054,7 @@ Views
                                                             </div>
 
                                             
-                        <a class="suites-cta-link suites-cta-link--ivory" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>View Suite Details</a>
+                        <a class="suites-cta-link suites-cta-link--ivory" href="/royal-suites" target="_top" data-ajax-page-ignore>View Suite Details</a>
                     </div>
                 </div>
 
@@ -9354,7 +9576,7 @@ to&nbsp;the&nbsp;MIBC
               <li><a class="lux-footer__link" href="/suites" target="_top" data-ajax-page-ignore>Suites Overview</a></li>
               <li><a class="lux-footer__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Luxury Rooms</a></li>
               <li><a class="lux-footer__link" href="/rooms" target="_top" data-ajax-page-ignore>Luxury Suites</a></li>
-              <li><a class="lux-footer__link" href="/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
+              <li><a class="lux-footer__link" href="/royal-suites" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
             </ul>
           </div>
           <div class="lux-footer__col">

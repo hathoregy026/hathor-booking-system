@@ -466,10 +466,45 @@ html[data-public-theme="dark"] {
   }
 }
 
-/* Phones: stack full width — same pill, same type, same hairline.
- * Homepage editorial (.h2-btn) stays content-width — full-bleed pills looked
- * unprofessional on the phone story (see Discover More / Explore More). */
-@media (max-width: 620px) {
+/* Phones ≤480: Discover More outlined pill — content-width, never full-bleed.
+ * Shape / padding / type only; idle + hover colours stay on the skins above.
+ * Hero Book Now (.hero-cta) stays out — scroll stage owns its width. */
+@media (max-width: 480px) {
+  :is(
+      .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
+      .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
+      .cruise-filter--cta,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
+      .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
+      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    ):not(.hero-cta):not(#_) {
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2.2rem) !important;
+    height: var(--hathor-btn-height, 2.85rem) !important;
+    min-height: var(--hathor-btn-height, 2.85rem) !important;
+    max-height: var(--hathor-btn-height, 2.85rem) !important;
+    padding-left: 1.55rem !important;
+    padding-right: 1.55rem !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 999px !important;
+    font-family: var(--public-sans, inherit) !important;
+    font-size: var(--hathor-btn-font-size, 0.72rem) !important;
+    font-weight: 500 !important;
+    letter-spacing: var(--hathor-btn-tracking, 0.18em) !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Narrow tablet band (481–620): stack full width — same pill, same hairline.
+ * Homepage editorial (.h2-btn) stays content-width. */
+@media (min-width: 481px) and (max-width: 620px) {
   :is(
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
@@ -496,8 +531,8 @@ html[data-public-theme="dark"] {
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):not(.hero-cta):not(#_) {
-    padding-left: 1.15rem !important;
-    padding-right: 1.15rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
     letter-spacing: 0.14em !important;
   }
 }
