@@ -1490,7 +1490,7 @@ html[data-public-theme="night"] :is(
    ========================================================================== */
 
 /* Homepage (editorial) */
-html[data-public-theme="night"] .home2-editorial {
+html[data-public-theme="night"] .home-editorial {
   --h2-paper: var(--night-canvas);
   --h2-paper-warm: var(--night-surface);
   --h2-ink: var(--night-text);
@@ -1506,14 +1506,14 @@ html[data-public-theme="night"] .home2-editorial {
   color: var(--night-text-soft) !important;
 }
 
-html[data-public-theme="night"]:has(.home2-editorial),
-html[data-public-theme="night"]:has(.home2-editorial) body {
+html[data-public-theme="night"]:has(.home-editorial),
+html[data-public-theme="night"]:has(.home-editorial) body {
   background-color: var(--night-canvas) !important;
   background-image: var(--night-atmosphere) !important;
   color: var(--night-text-soft) !important;
 }
 
-html[data-public-theme="night"]:has(.home2-editorial) :is(.public-site, .public-main) {
+html[data-public-theme="night"]:has(.home-editorial) :is(.public-site, .public-main) {
   background-color: transparent !important;
   color: var(--night-text-soft) !important;
 }
@@ -1605,7 +1605,7 @@ html[data-public-theme="night"] :is(.cr-intro__still, .cr-intro__flip figure) {
 /* ---- One dark header across every remaining route ----
    Each editorial stylesheet paints the header with its own cream literal via
    `html:has(...)`, at a specificity night has to match route by route. */
-html[data-public-theme="night"]:has(.home2-editorial) .hathor-header,
+html[data-public-theme="night"]:has(.home-editorial) .hathor-header,
 html[data-public-theme="night"]:has(.about-boring) .hathor-header,
 html[data-public-theme="night"]:has(.voyages-boring) .hathor-header,
 html[data-public-theme="night"]:has(.contact-editorial) .hathor-header,

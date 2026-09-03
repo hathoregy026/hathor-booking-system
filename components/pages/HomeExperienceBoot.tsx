@@ -18,7 +18,7 @@ export function HomeExperienceBoot({ children }: { children: ReactNode }) {
     root.classList.remove("ex-pending");
     root.classList.remove("ex-pending-deep");
     /*
-     * Blocking font script only runs on hard loads. Soft nav to Home/Home2 must
+     * Blocking font script only runs on hard loads. Soft nav to Home must
      * still clear the title FOUC gate or both hero titles stay visibility:hidden.
      */
     if (!root.classList.contains("hathor-hero-type-ready")) {

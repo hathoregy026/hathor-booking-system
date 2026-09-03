@@ -10,7 +10,7 @@ import { HathorLogoTuner } from "@/components/public/HathorLogoTuner";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
-import { useHome2EditorialScroll } from "@/hooks/useHome2EditorialScroll";
+import { useHomeEditorialScroll } from "@/hooks/useHomeEditorialScroll";
 import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images";
 import { amenitiesCopy, amenitiesTitleLines } from "@/lib/amenities-copy";
 import {
@@ -28,7 +28,7 @@ import type { SiteImageName } from "@/lib/site-image-slots";
 import type { WheelStageSettings } from "@/lib/wheel-stage-settings-shared";
 import { PublicSiteHero } from "@/components/pages/PublicSiteHero";
 
-type Home2EditorialPageProps = {
+type HomeEditorialPageProps = {
   heroLogoTune: HeroLogoTune;
   heroLogoTuneMobile: HeroLogoTune;
   accordionCruises: HomepageAccordionCruise[];
@@ -138,18 +138,18 @@ function RevealTitle({
  * itinerary folios; landmark sequence; lifestyle + dining; amenities archive;
  * Hathor itineraries ledger; helm; gallery; guest ledger; booking epilogue.
  */
-export function Home2EditorialPage({
+export function HomeEditorialPage({
   heroLogoTune,
   heroLogoTuneMobile,
   accordionCruises,
   wheelStage,
-}: Home2EditorialPageProps) {
+}: HomeEditorialPageProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const { home } = useWebsiteText();
   useExScrollMotion();
-  useHome2EditorialScroll({ rootRef, runRef, trackRef });
+  useHomeEditorialScroll({ rootRef, runRef, trackRef });
 
   const aboutLines = home.about.heading
     .split("\n")
@@ -189,7 +189,7 @@ export function Home2EditorialPage({
         </div>
       </div>
 
-      <div ref={rootRef} className="home2-editorial">
+      <div ref={rootRef} className="home-editorial">
         <div className="h2-progress" aria-hidden="true">
           <i data-h2-progress />
         </div>
@@ -375,7 +375,7 @@ export function Home2EditorialPage({
                 </header>
                 <ol className="h2-voyages__list">
                   {accordionCruises.map((cruise, index) => (
-                    <li key={cruise.id}>
+                    <li key={cruise.id} data-h2-item>
                       <span className="h2-index">{cruise.romanNumeral || String(index + 1).padStart(2, "0")}</span>
                       <div>
                         <h3 className="h2-display h2-display--s">
@@ -425,7 +425,7 @@ export function Home2EditorialPage({
                 </header>
                 <div className="h2-gallery__grid">
                   {EX_GALLERY.images.map((item, index) => (
-                    <Link href={item.href} key={item.imageName} aria-label={item.alt}>
+                    <Link href={item.href} key={item.imageName} aria-label={item.alt} data-h2-item>
                       <Home2Media
                         name={item.imageName}
                         alt={item.alt}
@@ -442,7 +442,7 @@ export function Home2EditorialPage({
                 </h2>
                 <div className="h2-reviews__grid">
                   {home.testimonials.cards.map((card, index) => (
-                    <article key={`${card.name}-${index}`}>
+                    <article key={`${card.name}-${index}`} data-h2-item>
                       <p className="h2-stars" aria-label="5 stars">★★★★★</p>
                       <h3 className="h2-display h2-display--s">
                         <RevealTitle delay={1}>{card.name}</RevealTitle>

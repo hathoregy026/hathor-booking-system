@@ -1,4 +1,4 @@
-.home2-editorial {
+.home-editorial {
   --h2-paper: #ece4da;
   --h2-paper-warm: #f3ede4;
   --h2-ink: #14120e;
@@ -34,42 +34,42 @@
   -webkit-font-smoothing: antialiased;
 }
 
-html[data-home2-editorial],
-html[data-home2-editorial] body,
-html[data-home2-editorial] .public-site,
-html[data-home2-editorial] .public-main,
-html:has(.home2-editorial),
-html:has(.home2-editorial) body,
-html:has(.home2-editorial) .public-site,
-html:has(.home2-editorial) .public-main {
+html[data-home-editorial],
+html[data-home-editorial] body,
+html[data-home-editorial] .public-site,
+html[data-home-editorial] .public-main,
+html:has(.home-editorial),
+html:has(.home-editorial) body,
+html:has(.home-editorial) .public-site,
+html:has(.home-editorial) .public-main {
   overflow-x: clip;
   background: var(--h2-paper, #ece4da);
 }
 
-html:has(.home2-editorial) .hathor-header {
+html:has(.home-editorial) .hathor-header {
   background: rgb(236 228 218 / 82%) !important;
   box-shadow: 0 1px 0 rgb(20 18 14 / 10%);
   backdrop-filter: blur(14px) saturate(0.92);
 }
 
-html:has(.home2-editorial) .public-fab,
-html:has(.home2-editorial) .lux-footer {
+html:has(.home-editorial) .public-fab,
+html:has(.home-editorial) .lux-footer {
   display: none !important;
 }
 
-.home2-editorial *,
-.home2-editorial *::before,
-.home2-editorial *::after {
+.home-editorial *,
+.home-editorial *::before,
+.home-editorial *::after {
   box-sizing: border-box;
 }
 
-.home2-editorial :is(h1, h2, h3, p, figure, blockquote, ol) {
+.home-editorial :is(h1, h2, h3, p, figure, blockquote, ol) {
   margin: 0;
   padding: 0;
 }
 
-.home2-editorial ol { list-style: none; }
-.home2-editorial a { color: inherit; text-decoration: none; }
+.home-editorial ol { list-style: none; }
+.home-editorial a { color: inherit; text-decoration: none; }
 
 .h2-progress {
   position: fixed;
@@ -593,7 +593,7 @@ html:has(.home2-editorial) .lux-footer {
    Every rule from here down is inside a `max-width` query, so nothing in this
    section can reach the desktop rendering. 1024 is the same desktop threshold
    `isPhoneOrTabletViewport()` uses in lib/touch-device.ts and the same one
-   hooks/useHome2EditorialScroll.ts switches on — the CSS and the engine must
+   hooks/useHomeEditorialScroll.ts switches on — the CSS and the engine must
    flip together, or the sticky stage would survive without its transform.
    ========================================================================== */
 
@@ -607,7 +607,7 @@ html:has(.home2-editorial) .lux-footer {
    ========================================================================== */
 
 @media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
-  .home2-editorial {
+  .home-editorial {
     --h2-band: clamp(4.5rem, 12vw, 7rem);
     /*
      * Metadata, indices, button labels and the legal row all read from
@@ -748,8 +748,8 @@ html:has(.home2-editorial) .lux-footer {
   .h2-legal nav { gap: clamp(1.5rem, 5vw, 2.25rem); row-gap: 1rem; }
 
   .h2-btn,
-  .home2-editorial a,
-  .home2-editorial button {
+  .home-editorial a,
+  .home-editorial button {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -772,7 +772,7 @@ html:has(.home2-editorial) .lux-footer {
    ========================================================================== */
 
 @media (max-width: 620px) {
-  .home2-editorial {
+  .home-editorial {
     --h2-t-xl: clamp(2.6rem, 13vw, 4.2rem);
     --h2-t-l: clamp(2rem, 9.5vw, 3.1rem);
     --h2-t-m: clamp(1.6rem, 7vw, 2.3rem);
@@ -807,7 +807,7 @@ html:has(.home2-editorial) .lux-footer {
    ========================================================================== */
 
 @media (max-width: 1024px) and (max-height: 560px) and (orientation: landscape) {
-  .home2-editorial {
+  .home-editorial {
     --h2-band: clamp(2.25rem, 7vh, 3.5rem);
     --h2-t-xl: clamp(2.4rem, 13vh, 4rem);
     --h2-t-l: clamp(2rem, 10vh, 3.2rem);
@@ -858,4 +858,330 @@ html:has(.home2-editorial) .lux-footer {
   (prefers-reduced-motion: reduce) and (pointer: coarse) and (max-width: 1366px) {
   .h2-helm { min-height: 100svh; }
   .h2-helm__stage { position: relative; }
+}
+
+/* ==========================================================================
+   TOUCH MOTION LAYER
+   --------------------------------------------------------------------------
+   The desktop story is driven by horizontal travel: scenes cross the screen,
+   so a scene-level progress value is the right clock for everything in them.
+   On a phone the same scenes become a tall vertical document, and that clock
+   stops fitting — so the same effects are re-timed here rather than replaced.
+   Nothing is removed: every wipe, rise, settle and stagger that exists on
+   desktop still plays, with shorter travel and quicker settles so it resolves
+   inside a fast thumb-scroll instead of trailing behind it.
+
+   Still inside max-width / coarse-pointer conditions — desktop cannot see any
+   of it.
+   ========================================================================== */
+
+@media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
+  /*
+   * Durations come down across the board. A 1.05s clip-path reads as elegant
+   * when a scene glides past on desktop; on a handset the section is already
+   * gone before it finishes, which reads as lag rather than luxury.
+   */
+  .h2-media { transition-duration: 0.72s; }
+  .h2-media__image { transition-duration: 0.8s; }
+  .h2-line > span { transition-duration: 0.66s; }
+
+  /*
+   * Image movement. Desktop gets its drift from horizontal travel; here the
+   * frame breathes vertically against the scroll. `--drift` runs -1 → +1 as a
+   * scene crosses the viewport, so the picture rises gently through its own
+   * crop. 1.06 scale gives the travel somewhere to go without exposing an
+   * edge, and the whole thing is a compositor-only transform.
+   */
+  .h2-media__image {
+    transform: translateY(
+        calc(
+          (1 - var(--reveal, 1)) * 6% + var(--drift, 0) * var(--h2-drift, 2.2%)
+        )
+      )
+      scale(calc(1.06 + (1 - var(--reveal, 1)) * 0.1));
+  }
+
+  /* Role-weighted depth: hero and full-bleed frames drift more than tiles. */
+  .h2-welcome__media,
+  .h2-epilogue__media { --h2-drift: 3.4%; }
+  .h2-landmark__media,
+  .h2-life__media,
+  .h2-amenity__media { --h2-drift: 2.6%; }
+  .h2-gallery__grid .h2-media { --h2-drift: 1.6%; }
+
+  /* The helm is its own choreography — never let parallax touch it. */
+  .h2-helm .h2-media__image { transform: scale(var(--wheel-media-scale, 1.34)); }
+  .h2-helm__paper .h2-media__image { transform: none; }
+
+  /*
+   * Staggered text entrance. Desktop moves a copy cluster as one block because
+   * the whole scene arrives at once. Vertically the eye travels top-to-bottom,
+   * so the cluster resolves in reading order: eyebrow, heading, copy, action.
+   */
+  .h2-scene .h2-eyebrow { transition-delay: 0s; }
+  .h2-scene .h2-copy { transition-delay: 0.09s; }
+  .h2-scene :is(.h2-index, .h2-meta) { transition-delay: 0.05s; }
+  .h2-scene :is(.h2-btn, .h2-link) { transition-delay: 0.16s; }
+
+  /*
+   * Per-element entrance for the tall stacks (gallery, voyages, reviews).
+   * These scenes run 1 400–3 000px on a phone, so a scene-level reveal fires
+   * while their lower items are still screens away. The observer in
+   * useHomeEditorialScroll gives each item its own trigger; the attribute
+   * gate means the closed state only exists once that observer is live.
+   */
+  html[data-h2-touch-motion] [data-h2-item] {
+    opacity: 0;
+    transform: translateY(2.25rem);
+    transition:
+      opacity 0.72s var(--h2-ease),
+      transform 0.86s var(--h2-ease);
+  }
+
+  html[data-h2-touch-motion] [data-h2-item].is-h2-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /*
+   * Neighbour stagger. Items arriving together settle in sequence instead of
+   * as a slab — the same cadence the delayed title lines already use.
+   */
+  html[data-h2-touch-motion] [data-h2-item]:nth-child(2) { transition-delay: 0.07s; }
+  html[data-h2-touch-motion] [data-h2-item]:nth-child(3) { transition-delay: 0.14s; }
+  html[data-h2-touch-motion] [data-h2-item]:nth-child(4) { transition-delay: 0.19s; }
+  html[data-h2-touch-motion] [data-h2-item]:nth-child(n + 5) { transition-delay: 0.23s; }
+
+  /*
+   * Gallery tiles and review cards carry scene-level offsets whose selectors
+   * outrank the generic entrance rule above, so they are restated here at a
+   * specificity that wins. Qualifying with [data-h2-item] rather than adding
+   * a blanket opacity reset keeps the closed state intact — an earlier version
+   * of this block reset opacity and silently cancelled the entrance.
+   */
+  html[data-h2-touch-motion] .h2-gallery__grid a[data-h2-item],
+  html[data-h2-touch-motion] .h2-reviews article[data-h2-item] {
+    opacity: 0;
+    transform: translateY(2.25rem);
+  }
+
+  html[data-h2-touch-motion] .h2-gallery__grid a[data-h2-item].is-h2-in,
+  html[data-h2-touch-motion] .h2-reviews article[data-h2-item].is-h2-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Once an item has arrived, its frame must not stay clipped by scene reveal. */
+  html[data-h2-touch-motion] [data-h2-item].is-h2-in .h2-media {
+    clip-path: none;
+  }
+
+  /*
+   * Soft seam between scenes. Each scene keeps its own paper colour, so the
+   * joins are hard edges in a vertical read where they were off-screen wipes
+   * on desktop. A hairline wash carries one section into the next without
+   * introducing a new colour.
+   */
+  .h2-scene::before {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: clamp(1.5rem, 5vw, 2.75rem);
+    background: linear-gradient(
+      to bottom,
+      rgb(20 18 14 / 5%),
+      rgb(20 18 14 / 0%)
+    );
+    content: "";
+    pointer-events: none;
+    opacity: calc(0.35 + var(--reveal, 1) * 0.65);
+  }
+
+  .h2-landmark--2::before {
+    background: linear-gradient(
+      to bottom,
+      rgb(243 237 228 / 8%),
+      rgb(243 237 228 / 0%)
+    );
+  }
+
+  /* The vertical rule between scenes is a horizontal-travel device. */
+  .h2-scene::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-h2-touch-motion] [data-h2-item],
+  html[data-h2-touch-motion] [data-h2-item].is-h2-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .h2-scene::before { display: none; }
+}
+
+/* ==========================================================================
+   TOUCH PROPORTION PASS — section heights, crops, stacked rhythm
+   --------------------------------------------------------------------------
+   Every scene was composed to fill one desktop viewport. Stacked vertically
+   that becomes 40 consecutive full-screen takeovers, which is what makes a
+   phone read as a compressed desktop page rather than a designed one. These
+   rules give each section a considered height for its role — plates breathe,
+   connective scenes tighten — without dropping a single scene or image.
+   ========================================================================== */
+
+@media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
+  /*
+   * The wheel's rotate → open → fade choreography is mapped across whatever
+   * runway it is given, so a shorter runway plays the identical sequence in
+   * less scroll. 280svh of pinned stage is a long hold to sit through on a
+   * phone; 190svh keeps the full sequence while releasing the scroll sooner.
+   */
+  .h2-helm { min-height: 190svh; }
+
+  /* Plates read as editorial images, not screen takeovers. */
+  .h2-amenity { min-height: 0; }
+  .h2-amenity__media { min-height: min(58svh, 32rem); }
+  .h2-gallery__grid { min-height: 0; }
+
+  /* Connective scenes only need enough room to land their type. */
+  .h2-monument { min-height: 60svh; }
+  .h2-itinerary-intro,
+  .h2-amenities-intro { min-height: 0; padding-block: calc(var(--h2-band) * 1.15); }
+
+  /*
+   * Stacked list rhythm. Rows sat tight enough to read as one block; the
+   * index column and the action need their own air in a vertical read.
+   */
+  .h2-voyages__list li { padding-block: clamp(1.35rem, 4vw, 1.9rem); row-gap: 0.85rem; }
+  .h2-voyages__list li > div { gap: 0.6rem; }
+
+  /* Review cards keep the ledger rules but gain reading space. */
+  .h2-reviews article { gap: 1.05rem; }
+
+  /* Long unbroken words (place names, URLs) must never push a scene wide. */
+  .h2-copy,
+  .h2-meta,
+  .h2-reviews blockquote { overflow-wrap: anywhere; }
+}
+
+@media (max-width: 620px) {
+  /*
+   * Crop discipline on the narrowest screens. A 4/5 portrait frame is the
+   * editorial default, but a full-bleed plate at 4/5 plus 68svh of minimum
+   * height overshoots the screen and forces the caption off it.
+   */
+  .h2-amenity__media { min-height: min(56svh, 26rem); }
+  .h2-gallery__grid .h2-media { min-height: min(54svh, 25rem); }
+  .h2-welcome__media { width: min(88%, 28rem); }
+
+  /* Index, title, copy and action stack — give the action the full measure. */
+  .h2-voyages__list li { grid-template-columns: 2.25rem minmax(0, 1fr); }
+  .h2-voyages__list .h2-btn { margin-top: 0.35rem; }
+
+  /* Keep the corner mark from colliding with the media above it. */
+  .h2-corner--bottom { margin-top: 0.25rem; }
+}
+
+/* ==========================================================================
+   HOMEPAGE HEADER — transparent bar, tone follows the backdrop
+   --------------------------------------------------------------------------
+   The bar carries no fill at these widths, so the hero reel runs edge to edge
+   under it. Because it never fills, the icons have to carry legibility
+   themselves: white while the hero is behind them, ink once the cream
+   editorial body is. `data-h2-nav` is set by useHomeEditorialScroll from the
+   hero's own bottom edge.
+
+   Night mode is deliberately left alone. Its page is near-black, so the light
+   icon colour night-mode.css already applies is the readable one; forcing dark
+   icons there would hide them.
+   ========================================================================== */
+
+@media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
+  html:has(.home-editorial) .hathor-header:not(#_) {
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: transparent !important;
+  }
+
+  /*
+   * Day, over the hero: white marks with a soft halo. The halo is the same
+   * device the hero titles use, and it is what keeps a 1.15px stroke readable
+   * against a moving reel that is bright in some frames and dark in others.
+   *
+   * Matched with :not([data-h2-nav="over-paper"]) rather than on "over-hero",
+   * so the white state also covers first paint — the attribute does not exist
+   * until the hook's first pass, and the header is over the hero until then.
+   */
+  html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
+    .hathor-header:not(#_) :is(button, a):not(#_) {
+    color: #fff !important;
+  }
+
+  html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
+    .hathor-header:not(#_) :is(button, a) svg:not(#_) {
+    filter: drop-shadow(0 1px 2px rgb(8 5 4 / 55%))
+      drop-shadow(0 4px 12px rgb(8 5 4 / 35%)) !important;
+  }
+
+  html[data-public-theme="day"]:not([data-h2-nav="over-paper"]):has(.home-editorial)
+    .hathor-header__logo--icon:not(#_) {
+    filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgb(8 5 4 / 45%)) !important;
+  }
+
+  /* Day, over the cream body: ink marks, no halo needed. */
+  html[data-public-theme="day"][data-h2-nav="over-paper"]:has(.home-editorial)
+    .hathor-header:not(#_) :is(button, a):not(#_) {
+    color: var(--h2-ink, #14120e) !important;
+  }
+
+  html[data-public-theme="day"][data-h2-nav="over-paper"]:has(.home-editorial)
+    .hathor-header:not(#_) :is(button, a) svg:not(#_),
+  html[data-public-theme="day"][data-h2-nav="over-paper"]:has(.home-editorial)
+    .hathor-header__logo--icon:not(#_) {
+    filter: none !important;
+  }
+
+  /* Cross the two states rather than snapping between them. */
+  html:has(.home-editorial) .hathor-header :is(button, a),
+  html:has(.home-editorial) .hathor-header :is(button, a) svg,
+  html:has(.home-editorial) .hathor-header__logo--icon {
+    transition:
+      color 0.35s var(--h2-ease, ease),
+      filter 0.35s var(--h2-ease, ease);
+  }
+}
+
+/*
+ * Night keeps the transparent bar too. night-mode.css paints the chrome header
+ * with `:not(#_):not(#_)` (ID specificity 2) and lays a second wash over it via
+ * ::before, so both have to be answered to let the reel through. The icons are
+ * deliberately left to night-mode.css, which already renders them in light
+ * cream — the readable colour on a near-black page.
+ */
+@media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header:not(#_):not(#_) {
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: transparent !important;
+  }
+
+  html[data-public-theme="night"]:has(.home-editorial)
+    .hathor-header:not(#_):not(#_)::before {
+    background: transparent !important;
+    opacity: 0 !important;
+  }
+
+  /* Same halo as day so a light mark survives the brightest hero frames. */
+  html[data-public-theme="night"][data-h2-nav="over-hero"]:has(.home-editorial)
+    .hathor-header:not(#_) :is(button, a) svg:not(#_) {
+    filter: drop-shadow(0 1px 2px rgb(8 5 4 / 55%))
+      drop-shadow(0 4px 12px rgb(8 5 4 / 35%)) !important;
+  }
 }

@@ -617,3 +617,127 @@
     transition-delay: 0s;
   }
 }
+
+/* ==========================================================================
+   MOBILE MENU — reachability, spacing, short viewports
+   --------------------------------------------------------------------------
+   All inside max-width queries; the desktop overlay is untouched.
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  /*
+   * The nav row was a bare `1fr`, whose automatic minimum is its content
+   * height, so a list taller than the panel grew the row instead of scrolling
+   * inside it. On a landscape phone that pushed the last links and the whole
+   * footer past the bottom of the screen with no way to reach them.
+   * `minmax(0, 1fr)` lets the row shrink; the list then scrolls in place.
+   */
+  .eno-panel {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .eno-nav {
+    min-height: 0;
+    overflow-y: auto;
+    /* Keep menu flings out of the page behind it. */
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .eno-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+   * Adjacent full-width rows with no separation invite mis-taps on the row
+   * boundary. A hairline plus a little padding keeps the ledger look and
+   * makes each row legible as its own target.
+   */
+  .eno-link {
+    border-bottom: 1px solid rgb(20 18 14 / 8%);
+  }
+
+  .eno-nav > :last-child .eno-link {
+    border-bottom: 0;
+  }
+}
+
+/*
+ * The 481–767 band previously inherited desktop row heights and skipped every
+ * refinement written for ≤480 — safe areas, the 44px close target, tightened
+ * rows. Large phones and every landscape phone live in that band.
+ */
+@media (min-width: 481px) and (max-width: 767px) {
+  .eno-panel {
+    padding:
+      max(0.95rem, env(safe-area-inset-top))
+      1rem
+      max(1rem, env(safe-area-inset-bottom))
+      max(0.9rem, env(safe-area-inset-left));
+  }
+
+  .eno-close {
+    position: relative;
+  }
+
+  .eno-close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/*
+ * Short viewports — a phone held sideways. Seven links, a header and a footer
+ * have to resolve inside roughly 390px, so the ledger tightens rather than
+ * losing rows. The list still scrolls if a language or sub-menu grows it.
+ */
+@media (max-height: 560px) and (orientation: landscape) and (max-width: 1024px) {
+  .eno-panel {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    padding:
+      max(0.6rem, env(safe-area-inset-top))
+      max(0.9rem, env(safe-area-inset-right))
+      max(0.6rem, env(safe-area-inset-bottom))
+      max(0.9rem, env(safe-area-inset-left));
+  }
+
+  .eno-top {
+    padding-bottom: 0.35rem;
+  }
+
+  .eno-link {
+    /* 44px stays the floor — the row loses padding, never target size. */
+    grid-template-columns: 2rem minmax(0, 1fr) 1.1rem;
+    min-height: 44px;
+    padding: 0.28rem 0.05rem;
+  }
+
+  .eno-label {
+    font-size: clamp(1.3rem, 5.2vh, 1.9rem);
+  }
+
+  .eno-num {
+    font-size: 0.62rem;
+  }
+
+  .eno-sub {
+    padding-bottom: 0.35rem;
+  }
+
+  .eno-foot {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.15rem 0.1rem;
+  }
+
+  .eno-photo {
+    display: none;
+  }
+}

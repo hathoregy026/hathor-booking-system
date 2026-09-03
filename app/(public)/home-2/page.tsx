@@ -1,5 +1,5 @@
 import { permanentRedirect } from "next/navigation";
 
-export default function LegacyHome2Page() {
+export default function LegacyHomeRedirect() {
   permanentRedirect("/");
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
-import { Home2EditorialPage } from "@/components/pages/Home2EditorialPage";
+import { HomeEditorialPage } from "@/components/pages/HomeEditorialPage";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
@@ -12,7 +12,7 @@ import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "./home-dining-slider.css";
 import "./home-experience.css";
 import "./home-responsive.css";
-import "./home-2/home-2.css";
+import "./home-editorial.css";
 
 export const revalidate = 300;
 
@@ -70,7 +70,7 @@ export default async function HomePage() {
         data-hathor-logo-tune-ssr
         dangerouslySetInnerHTML={{ __html: logoTuneCss }}
       />
-      <Home2EditorialPage
+      <HomeEditorialPage
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}
         accordionCruises={accordionCruises}

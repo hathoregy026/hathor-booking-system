@@ -62,7 +62,7 @@ for (const viewport of viewports) {
   }
 
   const audit = await page.evaluate(() => {
-    const root = document.querySelector(".home2-editorial");
+    const root = document.querySelector(".home-editorial");
     const scenes = [...document.querySelectorAll(".h2-scene")];
     const buttons = [...document.querySelectorAll(".h2-btn")].map((element) => {
       const rect = element.getBoundingClientRect();

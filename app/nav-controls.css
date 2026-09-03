@@ -516,3 +516,861 @@
     transition: none !important;
   }
 }
+
+/* ==================================================================== */
+/* LUXURY REFINEMENT LAYER                                              */
+/* Visual treatment only; the geometry above is untouched.              */
+/* ==================================================================== */
+
+.public-site,
+.hathor-header,
+.preview-header {
+  --nav-mark-ring: 2rem;
+  --nav-paired-gap: 0.5rem;
+}
+
+/* The ring is drawn at a fixed 2rem above; bind it to the token so the
+   language globe can share exactly the same circle. */
+.hsc:not(#_):not(#_)::before {
+  width: var(--nav-mark-ring) !important;
+  height: var(--nav-mark-ring) !important;
+}
+
+/* Structural shell for the language selector (this baseline has none). */
+.public-lang-selector {
+  position: relative;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--nav-mark-box);
+  width: var(--nav-mark-box);
+  height: var(--nav-mark-box);
+  margin-left: var(--nav-control-gap);
+}
+
+.public-lang-toggle:not(#_):not(#_) {
+  appearance: none !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  flex: 0 0 var(--nav-mark-box) !important;
+  width: var(--nav-mark-box) !important;
+  min-width: var(--nav-mark-box) !important;
+  max-width: var(--nav-mark-box) !important;
+  height: var(--nav-mark-box) !important;
+  min-height: var(--nav-mark-box) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* The day/night pill sits a touch apart from the three ringed marks. */
+.public-theme-toggle:not(#_):not(#_) {
+  margin: 0 0 0 var(--nav-paired-gap) !important;
+}
+
+/* ==================================================================== */
+/* LUXURY REFINEMENT LAYER                                              */
+/* -------------------------------------------------------------------- */
+/* Visual treatment only. The geometry and the phone layout above are    */
+/* untouched; this layer restyles surface, stroke, motion and states so  */
+/* the four controls read as one restrained system.                      */
+/* Double `:not(#_)` keeps it above the layer above regardless of the     */
+/* media-block ordering there.                                           */
+/* ==================================================================== */
+
+.public-site,
+.hathor-header,
+.preview-header {
+  --nav-lux-ink: #141210;
+  --nav-lux-cream: #f4efe6;
+  --nav-lux-gold: #b69f64;
+  --nav-lux-gold-soft: rgb(182 159 100 / 0.42);
+  --nav-lux-hairline: rgb(20 18 16 / 0.22);
+  --nav-lux-claret: #8f2226;
+  --nav-lux-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-lux-dur: 420ms;
+}
+
+/* Desktop proportions: the pill had been tuned so small its label fell to 5px.
+   Phones keep their own tokens from the block above. */
+@media (min-width: 481px) {
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --nav-mark-box: 2.25rem;
+    --nav-mark-ring: 2rem;
+    --nav-mark-icon: 1.0625rem;
+    --nav-badge-size: 0.9375rem;
+    --nav-mark-gap: 0.375rem;
+    --nav-control-gap: 0.8125rem;
+    --nav-paired-gap: 0.5rem;
+    --nav-switch-h: 2.125rem;
+    --nav-switch-w: 6.75rem;
+    --nav-switch-pad: 0.1875rem;
+    --nav-lang-w: 2.25rem;
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* Wishlist + cart marks                                                 */
+/* -------------------------------------------------------------------- */
+
+/* Hairline ring — the shared container language for every mark. */
+.hsc:not(#_):not(#_)::before {
+  border-color: color-mix(in srgb, currentColor 26%, transparent) !important;
+  transition:
+    border-color var(--nav-lux-dur) var(--nav-lux-ease),
+    transform var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+.hsc__icon:not(#_):not(#_) {
+  stroke-width: 1.3 !important;
+  transition:
+    color var(--nav-lux-dur) var(--nav-lux-ease),
+    transform var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hsc:not(#_):not(#_):hover::before {
+    border-color: var(--nav-lux-gold) !important;
+    transform: translate(-50%, -50%) scale(1.055) !important;
+  }
+
+  /* The earlier layer faded the whole glyph on hover; colour carries it now. */
+  .hsc:not(#_):not(#_):hover .hsc__icon:not(#_):not(#_) {
+    opacity: 1 !important;
+    color: var(--nav-lux-gold) !important;
+  }
+}
+
+.hsc:not(#_):not(#_):active::before {
+  transform: translate(-50%, -50%) scale(0.985) !important;
+}
+
+/* Badge: deep claret disc rather than signal red, with tabular figures and a
+   soft seat so it sits on the ring instead of floating over it. */
+.hsc__count:not(#_):not(#_) {
+  background: var(--nav-lux-claret) !important;
+  color: var(--nav-lux-cream) !important;
+  font-size: 0.5rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  padding: 0 0.1875rem !important;
+  box-shadow: 0 1px 3px rgb(20 18 16 / 0.3) !important;
+  transition: transform var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+@media (min-width: 481px) {
+  .hsc__count:not(#_):not(#_) {
+    top: 0 !important;
+    right: 0 !important;
+  }
+}
+
+.hsc:not(#_):not(#_):hover .hsc__count:not(#_):not(#_) {
+  transform: scale(1.06) !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* Day / night switch                                                    */
+/* -------------------------------------------------------------------- */
+
+/* The knob travels instead of the track reversing direction, so the change of
+   state reads as one movement rather than a jump. */
+.public-theme-toggle__track:not(#_):not(#_) {
+  display: block !important;
+  padding: 0 !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  transition:
+    background-color var(--nav-lux-dur) var(--nav-lux-ease),
+    border-color var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+.public-theme-toggle.is-day:not(#_):not(#_) .public-theme-toggle__track:not(#_):not(#_) {
+  background: #efeae0 !important;
+  border-color: var(--nav-lux-hairline) !important;
+}
+
+.public-theme-toggle.is-night:not(#_):not(#_) .public-theme-toggle__track:not(#_):not(#_) {
+  background: #16130f !important;
+  border-color: var(--nav-lux-gold-soft) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .public-theme-toggle:not(#_):not(#_):hover .public-theme-toggle__track:not(#_):not(#_) {
+    border-color: var(--nav-lux-gold) !important;
+  }
+}
+
+.public-theme-toggle__thumb:not(#_):not(#_) {
+  position: absolute !important;
+  top: 50% !important;
+  left: var(--nav-switch-pad) !important;
+  right: auto !important;
+  width: calc(var(--nav-switch-h) - (var(--nav-switch-pad) * 2) - 2px) !important;
+  height: calc(var(--nav-switch-h) - (var(--nav-switch-pad) * 2) - 2px) !important;
+  box-shadow: 0 1px 3px rgb(20 18 16 / 0.22) !important;
+  transform: translateY(-50%) translateX(var(--nav-switch-travel, 0px)) !important;
+  transition:
+    transform var(--nav-lux-dur) var(--nav-lux-ease),
+    background-color var(--nav-lux-dur) var(--nav-lux-ease),
+    color var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+.public-theme-toggle.is-night:not(#_):not(#_) .public-theme-toggle__thumb:not(#_):not(#_) {
+  --nav-switch-travel: 0px;
+  background: var(--nav-lux-cream) !important;
+  color: var(--nav-lux-ink) !important;
+}
+
+.public-theme-toggle.is-day:not(#_):not(#_) .public-theme-toggle__thumb:not(#_):not(#_) {
+  --nav-switch-travel: calc(var(--nav-switch-w) - var(--nav-switch-h));
+  background: #fffdf9 !important;
+  color: var(--nav-lux-ink) !important;
+}
+
+/* A slight turn as the mode changes — motion, not a swap. */
+.public-theme-toggle__icon:not(#_):not(#_) {
+  width: 0.8125rem !important;
+  height: 0.8125rem !important;
+  transition: transform var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+.public-theme-toggle.is-night:not(#_):not(#_) .public-theme-toggle__icon:not(#_):not(#_) {
+  transform: rotate(-14deg) !important;
+}
+
+.public-theme-toggle.is-day:not(#_):not(#_) .public-theme-toggle__icon:not(#_):not(#_) {
+  transform: rotate(0deg) !important;
+}
+
+/* The label occupies the side the knob is not on, and slides with it. */
+.public-theme-toggle__label:not(#_):not(#_) {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  font-size: 0.5rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.16em !important;
+  text-indent: 0.16em !important;
+  transition:
+    left var(--nav-lux-dur) var(--nav-lux-ease),
+    right var(--nav-lux-dur) var(--nav-lux-ease),
+    color var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+.public-theme-toggle.is-night:not(#_):not(#_) .public-theme-toggle__label:not(#_):not(#_) {
+  left: var(--nav-switch-h) !important;
+  right: 0.4375rem !important;
+  color: var(--nav-lux-cream) !important;
+}
+
+.public-theme-toggle.is-day:not(#_):not(#_) .public-theme-toggle__label:not(#_):not(#_) {
+  left: 0.4375rem !important;
+  right: var(--nav-switch-h) !important;
+  color: var(--nav-lux-ink) !important;
+}
+
+/* On phones the control collapses to a disc — knob only, no label. */
+@media (max-width: 480px) {
+  .public-theme-toggle__label:not(#_):not(#_) {
+    display: none !important;
+  }
+
+  .public-theme-toggle.is-day:not(#_):not(#_) .public-theme-toggle__thumb:not(#_):not(#_),
+  .public-theme-toggle.is-night:not(#_):not(#_) .public-theme-toggle__thumb:not(#_):not(#_) {
+    --nav-switch-travel: 0px;
+  }
+
+  .public-theme-toggle__icon:not(#_):not(#_) {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* Language selector                                                     */
+/* -------------------------------------------------------------------- */
+
+/* Closed state: the globe inside the same hairline ring as the marks. */
+.public-lang-toggle:not(#_):not(#_) {
+  cursor: pointer !important;
+  color: var(--nav-control-ink) !important;
+}
+
+.public-lang-toggle:not(#_):not(#_)::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  z-index: 0 !important;
+  box-sizing: border-box !important;
+  width: var(--nav-mark-ring) !important;
+  height: var(--nav-mark-ring) !important;
+  border: 1px solid color-mix(in srgb, currentColor 26%, transparent) !important;
+  border-radius: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: none !important;
+  transition:
+    border-color var(--nav-lux-dur) var(--nav-lux-ease),
+    transform var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+.public-lang-toggle__globe {
+  position: relative;
+  z-index: 1;
+  width: var(--nav-mark-ring);
+  height: var(--nav-mark-ring);
+}
+
+.public-lang-toggle__globe .public-theme-toggle__icon:not(#_):not(#_) {
+  width: var(--nav-mark-icon) !important;
+  height: var(--nav-mark-icon) !important;
+  color: inherit !important;
+  transform: none !important;
+  transition: color var(--nav-lux-dur) var(--nav-lux-ease) !important;
+}
+
+/* The active code reads as a quiet caption, not a filled chip. */
+.public-lang-toggle__code {
+  top: auto;
+  bottom: -0.0625rem;
+  right: -0.125rem;
+  min-width: 0;
+  height: auto;
+  padding: 0.0625rem 0.1875rem;
+  border-radius: 999px;
+  background: var(--nav-lux-cream);
+  color: var(--nav-lux-ink);
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 20%, transparent);
+  font-size: 0.4375rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color var(--nav-lux-dur) var(--nav-lux-ease),
+    color var(--nav-lux-dur) var(--nav-lux-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .public-lang-toggle:not(#_):not(#_):hover::before {
+    border-color: var(--nav-lux-gold) !important;
+    transform: translate(-50%, -50%) scale(1.055) !important;
+  }
+
+  .public-lang-toggle:not(#_):not(#_):hover
+    .public-lang-toggle__globe
+    .public-theme-toggle__icon:not(#_):not(#_) {
+    color: var(--nav-lux-gold) !important;
+  }
+}
+
+.public-lang-selector.is-open .public-lang-toggle:not(#_):not(#_)::before {
+  border-color: var(--nav-lux-gold) !important;
+}
+
+.public-lang-selector.is-open
+  .public-lang-toggle__globe
+  .public-theme-toggle__icon:not(#_):not(#_) {
+  color: var(--nav-lux-gold) !important;
+}
+
+/* Open state: an editorial card, right-anchored under the globe. */
+.public-lang-menu {
+  position: absolute;
+  top: calc(100% + 0.625rem);
+  right: -0.375rem;
+  left: auto;
+  z-index: 60;
+  display: block;
+  width: 9.25rem;
+  margin: 0;
+  padding: 0.75rem 0 0.3125rem;
+  border: 1px solid var(--nav-lux-gold-soft);
+  border-radius: 2px;
+  background: var(--nav-lux-cream);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.6) inset,
+    0 14px 34px rgb(20 18 16 / 0.16);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.375rem) scale(0.985);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity 260ms var(--nav-lux-ease),
+    transform 320ms var(--nav-lux-ease),
+    visibility 0s linear 320ms;
+}
+
+.public-lang-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition:
+    opacity 260ms var(--nav-lux-ease),
+    transform 320ms var(--nav-lux-ease),
+    visibility 0s linear 0s;
+}
+
+/* A small notch ties the card to the globe rather than letting it float. */
+.public-lang-menu::before {
+  content: "";
+  position: absolute;
+  top: -0.3125rem;
+  right: 0.875rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 1px solid var(--nav-lux-gold-soft);
+  border-left: 1px solid var(--nav-lux-gold-soft);
+  background: var(--nav-lux-cream);
+  transform: rotate(45deg);
+}
+
+.public-lang-menu__eyebrow {
+  margin: 0 0 0.5rem;
+  padding: 0 1rem;
+  color: color-mix(in srgb, var(--nav-lux-ink) 52%, transparent);
+  font-family: var(--public-sans, var(--font-hathor-body, inherit));
+  font-size: 0.4375rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.public-lang-menu__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Hairline separators between rows, never above the first or below the last. */
+.public-lang-menu__row + .public-lang-menu__row {
+  border-top: 1px solid color-mix(in srgb, var(--nav-lux-ink) 9%, transparent);
+}
+
+.public-lang-menu__option {
+  appearance: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--nav-lux-ink);
+  cursor: pointer;
+  font-family: var(--public-sans, var(--font-hathor-body, inherit));
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  line-height: 1;
+  text-align: left;
+  text-transform: uppercase;
+  transition:
+    color 260ms var(--nav-lux-ease),
+    padding-left 320ms var(--nav-lux-ease);
+}
+
+/* A gold hairline draws in from the edge on hover — the only movement. */
+.public-lang-menu__option::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  width: 0;
+  height: 1px;
+  background: var(--nav-lux-gold);
+  transform: translateY(-50%);
+  transition: width 320ms var(--nav-lux-ease);
+}
+
+.public-lang-menu__option:hover,
+.public-lang-menu__option:focus-visible {
+  color: var(--nav-lux-gold);
+  outline: none;
+  padding-left: 1.625rem;
+}
+
+.public-lang-menu__option:hover::before,
+.public-lang-menu__option:focus-visible::before {
+  width: 0.4375rem;
+}
+
+/* Selected language: gold ink and a small filled mark on the right. */
+.public-lang-menu__option.is-active {
+  color: var(--nav-lux-gold);
+}
+
+.public-lang-menu__mark {
+  flex: 0 0 auto;
+  width: 0.25rem;
+  height: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 22%, transparent);
+  border-radius: 50%;
+  transition:
+    background-color 260ms var(--nav-lux-ease),
+    border-color 260ms var(--nav-lux-ease);
+}
+
+.public-lang-menu__option.is-active .public-lang-menu__mark {
+  border-color: var(--nav-lux-gold);
+  background: var(--nav-lux-gold);
+}
+
+/* Notice: same card language as the menu. */
+.public-lang-notice {
+  top: 4.25rem;
+  border: 1px solid var(--nav-lux-gold-soft);
+  border-radius: 2px;
+  background: var(--nav-lux-cream);
+  color: var(--nav-lux-ink);
+  box-shadow: 0 14px 34px rgb(20 18 16 / 0.16);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+}
+
+/* Night canvas: the card inverts, the gold stays. */
+html[data-public-theme="night"] .public-lang-menu,
+html[data-public-theme="night"] .public-lang-menu::before,
+html[data-public-theme="night"] .public-lang-notice {
+  background: #16130f;
+  border-color: var(--nav-lux-gold-soft);
+}
+
+html[data-public-theme="night"] .public-lang-menu__eyebrow {
+  color: color-mix(in srgb, var(--nav-lux-cream) 52%, transparent);
+}
+
+html[data-public-theme="night"] .public-lang-menu__option,
+html[data-public-theme="night"] .public-lang-notice {
+  color: var(--nav-lux-cream);
+}
+
+html[data-public-theme="night"] .public-lang-menu__row + .public-lang-menu__row {
+  border-top-color: color-mix(in srgb, var(--nav-lux-cream) 14%, transparent);
+}
+
+html[data-public-theme="night"] .public-lang-menu__option.is-active,
+html[data-public-theme="night"] .public-lang-menu__option:hover,
+html[data-public-theme="night"] .public-lang-menu__option:focus-visible {
+  color: var(--nav-lux-gold);
+}
+
+html[data-public-theme="night"] .public-lang-toggle__code {
+  background: rgb(244 239 230 / 0.12);
+  color: var(--nav-lux-cream);
+}
+
+/* Focus rings join the same family — gold, never the browser default. */
+.hsc:not(#_):not(#_):focus-visible,
+.public-theme-toggle:not(#_):not(#_):focus-visible,
+.public-lang-toggle:not(#_):not(#_):focus-visible {
+  outline: 1px solid var(--nav-lux-gold) !important;
+  outline-offset: 3px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hsc:not(#_):not(#_)::before,
+  .hsc__icon:not(#_):not(#_),
+  .hsc__count:not(#_):not(#_),
+  .public-theme-toggle__track:not(#_):not(#_),
+  .public-theme-toggle__thumb:not(#_):not(#_),
+  .public-theme-toggle__icon:not(#_):not(#_),
+  .public-theme-toggle__label:not(#_):not(#_),
+  .public-lang-toggle:not(#_):not(#_)::before,
+  .public-lang-menu,
+  .public-lang-menu__option,
+  .public-lang-menu__option::before,
+  .public-lang-menu__mark {
+    transition: none !important;
+  }
+}
+
+/* ==================================================================== */
+/* SPACING + LANGUAGE MARK CORRECTION                                   */
+/* ==================================================================== */
+
+/* Even, generous rhythm: the three ringed marks share one gap, and the
+   day/night pill sits slightly further out so it reads as its own object. */
+@media (min-width: 481px) {
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --nav-mark-gap: 0.75rem;
+    --nav-control-gap: 0.75rem;
+    --nav-paired-gap: 1.125rem;
+  }
+}
+
+/* The globe is a mark, not a labelled control — drop the caption chip so it
+   is the same circle as the wishlist and cart. */
+.public-lang-toggle__code {
+  display: none !important;
+}
+
+.public-lang-toggle__globe {
+  display: grid !important;
+  place-items: center !important;
+}
+
+/* ==================================================================== */
+/* MARK INK: black everywhere, white on the homepage                    */
+/* -------------------------------------------------------------------- */
+/* The rings and badges take currentColor, so setting `color` carries    */
+/* the glyph, its ring and the language globe together.                  */
+/* Exception: once the homepage scrolls into its cream chrome bar the    */
+/* marks return to ink, because white on cream is invisible.             */
+/* ==================================================================== */
+
+.hsc:not(#_):not(#_),
+.public-lang-toggle:not(#_):not(#_) {
+  color: var(--nav-control-ink) !important;
+}
+
+.hathor-header--home:not(.hathor-header--nav-compact):not(#_) .hsc:not(#_):not(#_),
+.hathor-header--home:not(.hathor-header--nav-compact):not(#_)
+  .public-lang-toggle:not(#_):not(#_) {
+  color: #ffffff !important;
+}
+
+/* The homepage hides the rings at land; keep them drawn so the three marks
+   stay one system. */
+@media (min-width: 481px) {
+  .hathor-header--home:not(.hathor-header--nav-compact):not(#_)
+    .hsc:not(#_):not(#_)::before {
+    opacity: 1 !important;
+  }
+}
+
+/* ==========================================================================
+   PHONE + TABLET NAV BAR — menu / brand / actions, mark dead centre
+   --------------------------------------------------------------------------
+   Replaces the "logo left, then the four controls, then the menu at far
+   right" arrangement above, which left the mark stranded against the left
+   edge with a dead ~90px gap and five equal-weight controls jammed against
+   the right.
+
+       [ ☰ ]            ( mark )            [ ♡ ] [ cart ] [ 文 ] [ ☀ ]
+
+   All five controls stay in the bar. The mark is taken out of flow so it
+   centres on the viewport rather than on whatever gap the side clusters
+   leave, and every control is sized off one fluid token so the row always
+   resolves without the two sides ever reaching the mark.
+
+   The horizontal axis is the tight one — four right-hand controls plus a
+   centred mark cannot all hold 44px at 320px. Vertical space is not tight, so
+   the controls keep a full 44px height and only narrow horizontally: a
+   29 x 44 target rather than a 29 x 29 one. At 430px and wider they are 44
+   square again.
+
+   Bounded at 1024px. The desktop header is untouched.
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .public-site,
+  .hathor-header {
+    /* One token drives every control in the bar. */
+    /*
+     * 9vw left only 5px between the mark and the first action at 390. 8vw
+     * gives ~35px there, ~27px at 320, and still reaches a full 44px from
+     * about 550 up.
+     */
+    --nav-ctl: clamp(1.5625rem, 8vw, 2.75rem);
+    --nav-ctl-h: 2.75rem;
+    --nav-control-gap: clamp(0.0625rem, 0.7vw, 0.375rem);
+    --nav-mark-box: var(--nav-ctl);
+    --nav-mark-icon: clamp(1.125rem, 5.2vw, 1.5rem);
+    --nav-switch-w: var(--nav-ctl);
+    --nav-switch-h: var(--nav-ctl-h);
+    --nav-lang-w: var(--nav-ctl);
+    --theme-toggle-w: var(--nav-ctl);
+    --theme-toggle-h: var(--nav-ctl-h);
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
+    .hathor-header__inner--owo,
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__inner--owo {
+    position: relative !important;
+    justify-content: space-between !important;
+    padding-inline: clamp(0.5rem, 3vw, 1.5rem) !important;
+  }
+
+  /* Menu affordance on the left — the easiest reach for a thumb. */
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left {
+    order: 1 !important;
+    flex: 0 0 auto !important;
+    width: var(--nav-ctl) !important;
+    min-width: var(--nav-ctl) !important;
+    height: var(--nav-ctl-h) !important;
+    min-height: var(--nav-ctl-h) !important;
+    margin: 0 !important;
+  }
+
+  /*
+   * Out of flow so the mark centres on the viewport, not on the space the two
+   * clusters happen to leave between them.
+   */
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-zone {
+    position: absolute !important;
+    left: 50% !important;
+    order: 2 !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__brand {
+    pointer-events: auto !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
+    .hathor-header__logo--icon,
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__logo--icon {
+    width: auto !important;
+    height: clamp(1.6875rem, 7.5vw, 2.75rem) !important;
+    margin: 0 !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__col--right {
+    order: 3 !important;
+    gap: var(--nav-control-gap) !important;
+    height: var(--nav-ctl-h) !important;
+    margin: 0 0 0 auto !important;
+  }
+
+  /* Every control: one width token, full height, one glyph scale. */
+  .public-site .hathor-header--chrome:not(#_) .public-lang-selector {
+    height: var(--nav-ctl-h) !important;
+    min-height: var(--nav-ctl-h) !important;
+  }
+
+  .hathor-header--chrome:not(#_) .hsc:not(#_),
+  .public-theme-toggle:not(#_),
+  .public-lang-toggle:not(#_) {
+    flex: 0 0 auto !important;
+    flex-basis: var(--nav-ctl) !important;
+    width: var(--nav-ctl) !important;
+    min-width: var(--nav-ctl) !important;
+    max-width: var(--nav-ctl) !important;
+    height: var(--nav-ctl-h) !important;
+    min-height: var(--nav-ctl-h) !important;
+  }
+
+  /*
+   * The ring is a circle, so both axes take the width token. Feeding it the
+   * 44px height token stretched it into an ellipse.
+   */
+  .hathor-header--chrome:not(#_) .hsc:not(#_)::before {
+    width: var(--nav-ctl) !important;
+    height: var(--nav-ctl) !important;
+  }
+
+  /*
+   * The switch renders as a filled cream disc with a 38px thumb rattling
+   * around inside a 31px track — next to three outlined marks on a
+   * transparent bar it read as a stray blob. Here it becomes the same
+   * outlined circle as its neighbours, with the sun/moon glyph inside; the
+   * control and its behaviour are unchanged.
+   */
+  /*
+   * The day/night states are painted by `.public-theme-toggle.is-day:not(#_)
+   * :not(#_) ...:not(#_):not(#_)` — ID specificity 4. These have to carry more
+   * weight than that to reach the track and thumb at all, which is why the
+   * :not(#_) chains are this long. Matching the convention already used
+   * throughout this file.
+   */
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__track:not(#_):not(#_) {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__thumb:not(#_):not(#_) {
+    position: absolute !important;
+    inset: 50% auto auto 50% !important;
+    width: var(--nav-ctl) !important;
+    height: var(--nav-ctl) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  /*
+   * The glyph is painted ink by the switch's own day/night styling, which is
+   * correct on a cream pill and wrong on a transparent bar — it has to follow
+   * the same white/ink tone as the marks beside it.
+   */
+  .public-theme-toggle:not(#_):not(#_):not(#_) svg:not(#_):not(#_),
+  .public-theme-toggle:not(#_):not(#_):not(#_) svg:not(#_):not(#_) * {
+    color: inherit !important;
+    stroke: currentColor !important;
+    fill: none !important;
+  }
+
+  .public-theme-toggle:not(#_)::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 50% auto auto 50% !important;
+    z-index: 0 !important;
+    box-sizing: border-box !important;
+    width: var(--nav-ctl) !important;
+    height: var(--nav-ctl) !important;
+    /* Same weight as the .hsc rings — currentColor at 26%, not solid. */
+    border: 1px solid color-mix(in srgb, currentColor 26%, transparent) !important;
+    border-radius: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    pointer-events: none !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left svg,
+  .hathor-header--chrome:not(#_) .hsc:not(#_) svg,
+  .public-theme-toggle:not(#_) .public-theme-toggle__icon,
+  .public-lang-toggle:not(#_) svg {
+    width: var(--nav-mark-icon) !important;
+    height: var(--nav-mark-icon) !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-btn--left svg {
+    stroke-width: 1.5 !important;
+  }
+
+  /* The switch is a square mark here, not the labelled desktop pill. */
+  .public-theme-toggle__track:not(#_) {
+    width: var(--nav-ctl) !important;
+    min-width: var(--nav-ctl) !important;
+    height: var(--nav-ctl) !important;
+  }
+
+  .public-theme-toggle__label:not(#_) {
+    display: none !important;
+  }
+}
