@@ -362,7 +362,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   to { opacity: 1; transform: scale(1); }
 }
 
-@media (min-width: 951px) {
+@media (min-width: 1025px) {
   main .mod-scroll__images.principal {
     box-sizing: border-box;
     display: flex !important;
@@ -438,7 +438,8 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-copy__body {
-    display: none;
+    display: block;
+    max-width: 22rem;
   }
 
   .srh-frame--detail {
@@ -458,11 +459,19 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-actions {
+    right: auto;
+    bottom: 1.4%;
+    left: 50%;
+    width: auto;
+    translate: -50% 0;
+    grid-template-columns: repeat(2, minmax(11.5rem, 13.5rem));
     gap: .5rem;
     padding: .5rem;
   }
 
   .srh-actions a {
+    width: 100%;
+    min-width: 0;
     min-height: 2.85rem;
     font-size: .7rem;
     letter-spacing: .16em;
@@ -482,29 +491,67 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     height: 25%;
   }
 
-  .srh-actions {
-    grid-template-columns: repeat(2, 12.5rem);
+  .srh-copy {
+    top: 64%;
+    left: 36%;
   }
 }
 
 @media (max-width: 480px) {
   html body main .mod-scroll__intro.suites-reference-hero {
-    min-height: 44rem !important;
+    height: auto !important;
+    min-height: 100svh !important;
+    overflow: visible !important;
+  }
+
+  html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  .srh-canvas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    grid-template-areas:
+      "kicker kicker"
+      "main main"
+      "portrait detail"
+      "copy copy"
+      "actions actions";
+    align-items: end;
+    column-gap: .7rem;
+    row-gap: .55rem;
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    padding: 4.85rem .9rem max(.85rem, env(safe-area-inset-bottom));
+  }
+
+  .srh-kicker,
+  .srh-frame,
+  .srh-copy,
+  .srh-actions {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    translate: none;
   }
 
   .srh-kicker {
-    top: 5.25rem;
-    left: 1rem;
-    font-size: clamp(1.9rem, 9.4vw, 2.55rem);
+    grid-area: kicker;
+    font-size: clamp(1.85rem, 9vw, 2.4rem);
     line-height: .86;
   }
 
   .srh-frame--main {
-    top: 8.65rem;
-    right: 1rem;
-    left: 1rem;
-    width: auto;
-    height: 36.5%;
+    grid-area: main;
+    width: 100%;
+    height: min(32svh, 14.5rem);
+    min-height: 12.5rem;
     border-radius: 0 0 0 1.9rem;
   }
 
@@ -513,19 +560,19 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-title {
-    right: .75rem;
-    bottom: 1rem;
-    left: .9rem;
-    font-size: clamp(2.8rem, 13vw, 4rem);
+    right: .7rem;
+    bottom: .7rem;
+    left: .75rem;
+    font-size: clamp(2.45rem, 12vw, 3.4rem);
     line-height: .86;
   }
 
   .srh-frame--portrait {
-    top: 48.5%;
-    bottom: auto;
-    left: 1rem;
-    width: 34%;
-    height: 25%;
+    grid-area: portrait;
+    width: 100%;
+    height: 23svh;
+    min-height: 8.75rem;
+    margin-top: -1.6rem;
     border-radius: 7rem 7rem 0 0;
   }
 
@@ -534,22 +581,33 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--detail {
-    top: 51.5%;
-    right: 1rem;
-    width: 57%;
-    height: 22.5%;
+    grid-area: detail;
+    width: 100%;
+    height: 19svh;
+    min-height: 7.25rem;
     border-width: 2px;
     border-radius: 1.25rem;
   }
 
   .srh-copy {
-    top: 75.5%;
-    left: 1rem;
+    grid-area: copy;
+    z-index: 4;
   }
 
   .srh-copy__title {
-    font-size: clamp(2rem, 9.2vw, 2.75rem);
-    line-height: .86;
+    font-size: clamp(1.85rem, 8.6vw, 2.45rem);
+    line-height: .88;
+  }
+
+  .srh-copy__body {
+    display: block;
+    max-width: none;
+    margin: .45rem 0 0;
+    font-size: .78rem;
+  }
+
+  .srh-copy__body br {
+    display: none;
   }
 
   .srh-connectors__set--tablet {
@@ -561,11 +619,8 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-actions {
-    right: .7rem;
-    bottom: .65rem;
-    left: .7rem;
-    width: auto;
-    translate: 0 0;
+    grid-area: actions;
+    width: 100%;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: .4rem;
     padding: .45rem;
@@ -576,10 +631,48 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     width: 100%;
     min-width: 0;
     height: 2.85rem;
-    min-height: 2.85rem;
+    min-height: 44px;
     padding: .25rem .4rem;
     font-size: .58rem;
     letter-spacing: .12em;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) and (max-height: 820px) {
+  html body main .mod-scroll__intro.suites-reference-hero {
+    min-height: 100svh !important;
+  }
+
+  .srh-kicker {
+    top: 7.4%;
+    font-size: clamp(2.05rem, 4.4vw, 3rem);
+  }
+
+  .srh-frame--main {
+    top: 12.5%;
+    height: 41%;
+  }
+
+  .srh-title {
+    font-size: clamp(3.1rem, 6.8vw, 4.8rem);
+  }
+
+  .srh-copy {
+    top: 57.5%;
+  }
+
+  .srh-frame--portrait {
+    top: 49%;
+    bottom: 12%;
+  }
+
+  .srh-frame--detail {
+    top: 51%;
+    height: 24%;
+  }
+
+  .srh-actions {
+    bottom: 1%;
   }
 }
 

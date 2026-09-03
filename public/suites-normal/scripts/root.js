@@ -1,7 +1,7 @@
 let control = false;
 ///is_mobile
 let is_mobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-if(window.innerWidth<=950) is_mobile = true;
+if(window.innerWidth<=1024) is_mobile = true;
 // is_mobile = false;
 
 //get browser

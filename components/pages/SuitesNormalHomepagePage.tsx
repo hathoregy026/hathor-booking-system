@@ -198,7 +198,10 @@ main .mod-scroll__intro__text > p {
   }
 
   main :is(.anima__title, .last-item__content__title .line, .mod-title--lines .line) {
-    font-size: clamp(3rem, 14.5vw, 4.25rem) !important;
+    max-width: 100% !important;
+    font-size: clamp(2.15rem, 10.4vw, 3.05rem) !important;
+    line-height: 0.92 !important;
+    white-space: normal !important;
   }
 
   main .mod-scroll__intro__text,
@@ -313,7 +316,7 @@ const SUITES_LOADER_HIDE_CSS = `
 `;
 
 const SUITES_SCROLL_RESTORE_CSS = `
-@media (min-width: 951px) {
+@media (min-width: 1025px) {
   html:not(.mobile),
   html:not(.mobile) body {
     overflow-x: clip !important;
@@ -397,7 +400,7 @@ function retargetCloneLinks(doc: Document) {
 function fitTermsToViewport(doc: Document) {
   const win = doc.defaultView;
   const terms = doc.querySelector<HTMLElement>(".mod-scroll__terms");
-  if (!win || !terms || win.innerWidth < 951) return;
+  if (!win || !terms || win.innerWidth < 1025) return;
 
   const titles = Array.from(
     terms.querySelectorAll<HTMLElement>(".mod-scroll__terms__term__title"),
@@ -428,7 +431,7 @@ function fitTermsToViewport(doc: Document) {
 
 function refreshSuitesHorizontalScroll(doc: Document) {
   const win = doc.defaultView;
-  if (!win || win.innerWidth <= 950) return;
+  if (!win || win.innerWidth <= 1024) return;
 
   const host = doc.body ?? doc.documentElement;
   if (!host) return;
@@ -607,7 +610,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-reference-hero-connectors-20260902"
+        src="/suites-normal/index.html?v=hathor-suites-phone-tablet-20260903"
         title="Hathor Suites"
         onLoad={() => {
           void apply();

@@ -41,6 +41,13 @@ html:has(.suites-normal-clone) body {
   visibility: visible;
 }
 
+@media (max-width: 1024px) {
+  .suites-normal-clone {
+    height: 100svh;
+    height: 100dvh;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .suites-normal-clone__frame { transition: none; }
 }

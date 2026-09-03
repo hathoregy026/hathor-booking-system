@@ -163,7 +163,7 @@ html body main .mod-scroll__terms :is(
   mix-blend-mode: normal !important;
   filter: none !important;
 }
-@media (min-width: 951px) {
+@media (min-width: 1025px) {
   html body main .mod-scroll > .mod-scroll__terms,
   html body main .mod-scroll__terms {
     height: 100svh !important;
@@ -184,7 +184,7 @@ html body main .mod-scroll__terms :is(
     line-height: 0.8 !important;
   }
 }
-@media (min-width: 481px) and (max-width: 950px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   html body main .mod-scroll__terms .mod-scroll__terms__term__title,
   html body main .mod-scroll__terms .t-supertitulo-l {
     font-size: min(7.2svh, 8vw) !important;
@@ -304,12 +304,6 @@ export const SUITES_CLIP_FIX_CSS = `
  */
 export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
 @media (max-width: 1024px) {
-  main :is(.btn, .btn--bg, .btn--circle) {
-    min-height: 44px !important;
-  }
-}
-
-@media (max-width: 950px) {
   html,
   body,
   main,
@@ -317,34 +311,48 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
     max-width: 100% !important;
     overflow-x: clip !important;
   }
-}
 
-@media (min-width: 951px) and (max-width: 1024px) {
-  main .mod-scroll__intro .wrapper {
-    width: 88vw !important;
+  main :is(.btn, .btn--bg, .btn--circle) {
+    min-height: 44px !important;
   }
 
-  main .mod-scroll__intro__content {
+  html body main :is(.bg-black, .bg-grey) :is(
+    .mod-scroll__images-text__text,
+    .mod-scroll__images-text__text p,
+    .mod-scroll__images-text__text .line,
+    .mod-scroll__images-text__text span
+  ) {
+    color: #f3ede4 !important;
+    -webkit-text-fill-color: #f3ede4 !important;
+  }
+
+  main .mod-scroll__carousel,
+  main .mod-scroll__carousel__content {
+    overflow: hidden !important;
+  }
+
+  main .mod-scroll__cierre {
     width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    padding-left: clamp(4rem, 8vw, 6.5rem) !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
   }
 
-  main .mod-scroll__intro__text,
-  main .mod-scroll__intro__text p {
-    width: 28vw !important;
-    max-width: 18rem !important;
-    margin-right: 44px !important;
-    text-align: right !important;
+  main .mod-scroll__cierre__content {
+    height: auto !important;
+    width: 100% !important;
+    padding: clamp(3.5rem, 7svh, 5.5rem) 0 !important;
   }
 
-  main .mod-scroll__projects__item__text__title {
-    font-size: clamp(2.65rem, 4.25vw, 3.6rem) !important;
+  main .mod-scroll__cierre__content__image,
+  main .mod-scroll__cierre__content__image :is(.media, .media__wrap-source, .media__source) {
+    width: min(92vw, 46rem) !important;
+    max-width: 92vw !important;
+    transform: none !important;
+    clip-path: none !important;
   }
 }
 
-@media (min-width: 481px) and (max-width: 950px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   html {
     --wrapper-padd: clamp(1.5rem, 4vw, 2.5rem);
     --grid-gap: clamp(0.8rem, 2vw, 1.25rem);
@@ -460,6 +468,59 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   main .mod-scroll__projects__item__text {
     min-height: 38svh !important;
   }
+
+  main .mod-scroll__projects__item__text__title {
+    max-width: calc(100% - 2rem) !important;
+    white-space: normal !important;
+    text-align: center !important;
+    font-size: clamp(2.7rem, 5.4vw, 3.8rem) !important;
+    line-height: 0.9 !important;
+  }
+
+  main .mod-scroll__projects__item__text__title .line {
+    white-space: normal !important;
+  }
+
+  main .mod-scroll__cierre__content__image {
+    width: min(86vw, 42rem) !important;
+  }
+
+  main .anima__title,
+  main .mod-scroll__projects .last-item__content__title .line {
+    max-width: 100% !important;
+    white-space: normal !important;
+    font-size: clamp(3.1rem, 6.6vw, 5rem) !important;
+    line-height: 0.9 !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) and (max-height: 820px) {
+  main .mod-scroll__images.principal {
+    min-height: 68svh !important;
+    padding-bottom: 4rem !important;
+  }
+
+  main .mod-scroll__images__image-single,
+  main .mod-scroll__images.principal .flipMedia:nth-of-type(1),
+  main .mod-scroll__images__image-single :is(.media__wrap-source, .media__source) {
+    height: 62svh !important;
+    min-height: 24rem !important;
+  }
+
+  main .mod-scroll__terms {
+    min-height: auto !important;
+    padding: clamp(3.5rem, 6svh, 5.5rem) var(--wrapper-padd) !important;
+  }
+
+  main .mod-scroll__terms__term {
+    min-height: 0 !important;
+    padding: 1.25rem 0 !important;
+  }
+
+  main .mod-scroll__text,
+  main .mod-scroll__images-text {
+    padding-block: clamp(3.5rem, 6svh, 5.5rem) !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -468,7 +529,7 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
     --grid-gap: 0.75rem;
   }
 
-  main .mod-scroll__intro {
+  main .mod-scroll__intro:not(.suites-reference-hero) {
     isolation: isolate !important;
     min-height: max(100svh, 42rem) !important;
     background:
@@ -476,7 +537,7 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
       #f3ede4 !important;
   }
 
-  main .mod-scroll__intro::after {
+  main .mod-scroll__intro:not(.suites-reference-hero)::after {
     content: "";
     position: absolute;
     top: 6.5rem;
@@ -489,13 +550,13 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
     pointer-events: none;
   }
 
-  main .mod-scroll__intro .wrapper {
+  main .mod-scroll__intro:not(.suites-reference-hero) .wrapper {
     z-index: 1 !important;
     min-height: max(100svh, 42rem) !important;
     padding: 7.75rem var(--wrapper-padd) 4.5rem !important;
   }
 
-  main .mod-scroll__intro__content {
+  main .mod-scroll__intro:not(.suites-reference-hero) .mod-scroll__intro__content {
     width: 100% !important;
     transform: translateY(-1.5svh) !important;
     gap: clamp(1.4rem, 5vw, 2rem) !important;
@@ -645,8 +706,8 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   }
 
   main .mod-scroll__terms__term {
-    min-height: 68svh !important;
-    padding: 6rem var(--wrapper-padd) 3.5rem !important;
+    min-height: 0 !important;
+    padding: 4.25rem var(--wrapper-padd) 3rem !important;
     justify-content: flex-end !important;
     border-top: 1px solid rgba(255, 255, 255, 0.34) !important;
   }
@@ -725,17 +786,17 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   }
 
   main .mod-scroll__projects__item__text__title {
-    max-width: 100% !important;
-    white-space: nowrap !important;
+    max-width: calc(100% - 1.5rem) !important;
+    white-space: normal !important;
     text-align: center !important;
-    font-size: clamp(2.45rem, 10.8vw, 3.05rem) !important;
-    line-height: 0.88 !important;
+    font-size: clamp(2.2rem, 10.2vw, 2.85rem) !important;
+    line-height: 0.9 !important;
     letter-spacing: -0.035em !important;
   }
 
   main .mod-scroll__projects__item__text__title .line {
     display: block !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
   }
 
   main .mod-scroll__projects .last-item__carousel__item {
@@ -755,15 +816,29 @@ export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
   }
 
   main .mod-scroll__cierre__content {
-    padding: 5rem 0 !important;
+    padding: 3.5rem 0 4.25rem !important;
   }
 
   main .mod-scroll__cierre__content__image {
-    width: calc(100% - var(--wrapper-padd) * 2) !important;
+    width: calc(100% - 1.6rem) !important;
+    max-width: none !important;
+  }
+
+  main .anima__title,
+  main .anima__title .line,
+  main .mod-scroll__projects .last-item__content__title,
+  main .mod-scroll__projects .last-item__content__title .line {
+    max-width: 100% !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-align: center !important;
+    font-size: clamp(2.15rem, 10.4vw, 3.05rem) !important;
+    line-height: 0.92 !important;
+    padding-bottom: 0.12em !important;
   }
 }
 
-@media (max-width: 950px) and (prefers-reduced-motion: reduce) {
+@media (max-width: 1024px) and (prefers-reduced-motion: reduce) {
   main .mod-scroll__carousel__content span {
     animation-play-state: paused !important;
   }

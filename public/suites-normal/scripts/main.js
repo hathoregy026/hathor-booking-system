@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
        
         // if(control) console.log('resize');
         is_lg = (window.innerWidth<=1024);
-        is_mobile = (window.innerWidth<=950);
+        is_mobile = (window.innerWidth<=1024);
         // if(control) console.log('is_lg: ',is_lg);
 
         //reInit when change desktop to mobile or inverse
