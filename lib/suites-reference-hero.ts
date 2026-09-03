@@ -802,24 +802,31 @@ function elbow(
   const midX = runX ?? x1 + dx / 2;
   const legIn = midX - x1;
   const legOut = x2 - midX;
-  const r = Math.min(
-    radius,
-    Math.abs(legIn) / 2 || radius,
-    Math.abs(legOut) / 2 || radius,
-    Math.abs(dy) / 2,
-  );
-  const sx = Math.sign(legIn) || Math.sign(dx);
-  const sxOut = Math.sign(legOut) || sx;
   const sy = Math.sign(dy);
-  // Horizontal run, rounded turn, vertical run, rounded turn, short horizontal tail.
-  return [
-    `M ${x1} ${y1}`,
-    `H ${midX - r * sx}`,
-    `Q ${midX} ${y1} ${midX} ${y1 + r * sy}`,
-    `V ${y2 - r * sy}`,
-    `Q ${midX} ${y2} ${midX + r * sxOut} ${y2}`,
-    `H ${x2}`,
-  ].join(" ");
+  const parts: string[] = [];
+
+  // Each leg is emitted only when it has real length. Rounding a zero-length
+  // leg used to back the stroke up by the corner radius, which is how the
+  // desktop leader ended up nicking the portrait frame it starts beside.
+  if (Math.abs(legIn) >= 1) {
+    const rIn = Math.min(radius, Math.abs(legIn) / 2, Math.abs(dy) / 2);
+    parts.push(`M ${x1} ${y1}`);
+    parts.push(`H ${midX - rIn * Math.sign(legIn)}`);
+    parts.push(`Q ${midX} ${y1} ${midX} ${y1 + rIn * sy}`);
+  } else {
+    parts.push(`M ${midX} ${y1}`);
+  }
+
+  if (Math.abs(legOut) >= 1) {
+    const rOut = Math.min(radius, Math.abs(legOut) / 2, Math.abs(dy) / 2);
+    parts.push(`V ${y2 - rOut * sy}`);
+    parts.push(`Q ${midX} ${y2} ${midX + rOut * Math.sign(legOut)} ${y2}`);
+    parts.push(`H ${x2}`);
+  } else {
+    parts.push(`V ${y2}`);
+  }
+
+  return parts.join(" ");
 }
 
 /**
