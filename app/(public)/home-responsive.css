@@ -785,6 +785,15 @@
   }
 }
 
+/* Phone ≤480 — keep the 1.45 ratio but fit “Dahabiya Nile Cruise” in-frame */
+@media (max-width: 480px) {
+  html[data-ex-experience] .public-site,
+  html[data-ex-experience] .public-site .home-hero-container {
+    --typo-hero-title-size: clamp(1.55rem, 8.2vw, 2.25rem) !important;
+    --typo-hero-subtitle-size: clamp(1.85rem, 11.8vw, 2.75rem) !important;
+  }
+}
+
 /* ==========================================================================
    9. AMENITIES COPY — alignment and measure on phone
    --------------------------------------------------------------------------

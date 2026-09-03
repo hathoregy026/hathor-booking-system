@@ -342,6 +342,14 @@
   z-index: 8;
 }
 
+@media (max-width: 480px) {
+  .home-hero-container .hero-button,
+  .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.85rem) !important;
+  }
+}
+
 @media (max-width: 768px) {
   .home-hero-container:has(.hero-logo-mark--split) {
     --hathor-logo-gap: clamp(7.25rem, 28vw, 9.5rem);

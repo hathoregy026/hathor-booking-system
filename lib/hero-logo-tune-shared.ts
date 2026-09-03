@@ -336,7 +336,10 @@ export function heroLogoTuneToNarrowImportantCss(tune: HeroLogoTune): string {
   const sizeFactor = safe.size / 0.8;
   const logoHeight = `clamp(52px, calc(13vw * ${sizeFactor}), 120px)`;
   const centerSlot = "clamp(156px, 22vw, 220px)";
-  const bottom = "max(20px, env(safe-area-inset-bottom))";
+  const bottom = "max(20px, env(safe-area-inset-bottom, 0px))";
+  /** Phone dock overlays the hero — lift logo + CTA clear of Saved/Voyage. */
+  const phoneBottom = "calc(var(--hathor-phone-dock-h, 4.5rem) + 0.35rem)";
+  const phoneCtaBottom = "calc(var(--hathor-phone-dock-h, 4.5rem) + 0.85rem)";
   const vars: Record<string, string> = {
     ...heroLogoTuneToCssVars(safe),
     "--hathor-logo-h": logoHeight,
@@ -381,6 +384,24 @@ html[data-ex-experience] .ex-root .hathor-logo-split__side--right,
 html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
 .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
   bottom: calc(${bottom} + (var(--hathor-logo-h) / 2) - 26px + ${safe.ctaNudge}px) !important;
+}
+
+/* ≤480: injected narrow CSS previously parked Book Now under the cream dock */
+@media (max-width: 480px) {
+  html[data-ex-experience] .ex-root .home-hero-container,
+  .public-site .home-hero-container,
+  .public-site .home-hero-container:has(.hero-logo-mark--split) {
+    --hathor-logo-y: ${phoneBottom} !important;
+    --hathor-logo-bottom: ${phoneBottom} !important;
+  }
+  html[data-ex-experience] .ex-root .hero-logo-mark--split,
+  .public-site .home-hero-container .hero-logo-mark--split {
+    bottom: ${phoneBottom} !important;
+  }
+  html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+    bottom: ${phoneCtaBottom} !important;
+  }
 }
 `.trim();
 }

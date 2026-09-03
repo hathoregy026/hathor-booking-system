@@ -425,25 +425,26 @@ body.is-touch-device .lux-cursor {
 
   /*
    * Phone hero — sticky stage inside tall runway (no GSAP pin spacer).
-   * ~280svh keeps strip → logo → CTA choreography without excess dead scroll.
+   * Fill the full visual viewport. The cream dock overlays the bottom edge;
+   * never leave a short stage (e.g. 80svh) that paints page cream above the dock.
    */
   .home-hero-runway {
     position: relative;
     width: 100%;
     height: 280svh;
     overflow: visible;
+    background: #1a1410;
   }
 
   .home-hero-runway .home-hero-container,
   .home-hero-container {
     position: sticky;
     top: 0;
-    height: 80svh !important;
-    height: 80dvh !important;
-    min-height: 80svh !important;
-    min-height: 80dvh !important;
-    max-height: 80svh !important;
-    max-height: 80dvh !important;
+    height: 100svh !important;
+    height: 100dvh !important;
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
   }
 
   .home-hero-container .hero-button {
@@ -451,15 +452,36 @@ body.is-touch-device .lux-cursor {
       max(16px, env(safe-area-inset-right, 0px));
   }
 
-  .home-hero-container:has(.hero-logo-mark--split) .hero-button {
-    bottom: calc(
-      var(--hathor-logo-bottom) + (var(--hathor-logo-h) / 2) - var(--hathor-cta-half-h) +
-        var(--hathor-cta-y-nudge, 0px) + env(safe-area-inset-bottom, 0px)
-    ) !important;
+  /*
+   * Beat home-experience / public-site-hero logo-anchored !important bottoms.
+   * On phone the logo starts below the fold, so that formula parks Book Now
+   * under the cream dock (~28px). Always clear the dock first.
+   */
+  html[data-ex-experience] .ex-root .home-hero-container .hero-button,
+  html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  html.ex-home .home-hero-container .hero-button,
+  html.ex-home .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .public-site .home-hero-container .hero-button,
+  .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .home-hero-container .hero-button,
+  .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .home-hero-container:not(:has(.hero-logo-mark--split)) .hero-button {
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.85rem) !important;
+    top: auto !important;
   }
 
-  .home-hero-container:not(:has(.hero-logo-mark--split)) .hero-button {
-    bottom: calc(clamp(48px, 8vh, 72px) + env(safe-area-inset-bottom, 0px)) !important;
+  html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-scroll-hint,
+  .public-site .home-hero-container .hero-scroll-hint,
+  .public-site .home-hero-container [data-hero-scroll-hint],
+  .home-hero-container .hero-scroll-hint {
+    display: flex !important;
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 4.5rem) !important;
+    gap: 6px;
+    font-size: 0.52rem;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.62);
+    text-shadow: 0 1px 6px rgb(8 5 4 / 45%);
+    z-index: 9;
   }
 
   .home-hero-container .hero-button .hero-cta {
@@ -468,21 +490,20 @@ body.is-touch-device .lux-cursor {
     justify-content: center;
     min-height: 44px;
     min-width: 44px;
-    /* width driven by GSAP --hero-cta-w — do not lock with !important */
-    will-change: transform, width;
+    /* Match home-responsive: GSAP tweens --hero-cta-w under !important */
+    width: var(--hero-cta-w, var(--hathor-logo-gap, clamp(156px, 22vw, 220px)))
+      !important;
+    max-width: none !important;
+    overflow: visible !important;
+    box-sizing: border-box;
+    will-change: width;
   }
 
-  /* Restore scroll cue — clear of the Book Now stretch zone */
-  .public-site .home-hero-container .hero-scroll-hint,
-  .public-site .home-hero-container [data-hero-scroll-hint],
-  .home-hero-container .hero-scroll-hint {
-    display: flex !important;
-    bottom: calc(7.25rem + env(safe-area-inset-bottom, 0px));
-    gap: 6px;
-    font-size: 0.52rem;
-    letter-spacing: 0.28em;
-    color: rgba(255, 255, 255, 0.62);
-    text-shadow: 0 1px 6px rgb(8 5 4 / 45%);
+  .home-hero-container .hero-button .hero-cta .hero-cta-text {
+    overflow: visible !important;
+    white-space: nowrap;
+    transform: none !important;
+    /* letter-spacing animated by hero-scroll-stage — do not force */
   }
 
   .home-hero-container .hero-scroll-hint::after {
@@ -495,16 +516,41 @@ body.is-touch-device .lux-cursor {
     transition: none !important;
   }
 
-  .home-hero-container .hero-heading {
-    padding-inline: max(1rem, env(safe-area-inset-left, 0px))
-      max(1rem, env(safe-area-inset-right, 0px));
+  .home-hero-container .hero-content {
+    transform: translateY(0);
+    padding-inline: max(1.15rem, env(safe-area-inset-left, 0px))
+      max(1.15rem, env(safe-area-inset-right, 0px));
+    width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .home-hero-container .hero-heading {
+    padding-inline: 0;
+    max-width: 100%;
+    width: 100%;
+    align-items: center;
+    gap: 0.15em;
   }
 
   .home-hero-container .hero-heading .hero-line {
     white-space: normal;
     text-wrap: balance;
-    max-width: 16ch;
+    max-width: 100%;
+    overflow: visible;
+    overflow-wrap: break-word;
+    hyphens: manual;
+  }
+
+  .home-hero-container .hero-heading .hero-line--right {
+    font-size: clamp(1.65rem, 8.4vw, 2.35rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .home-hero-container .hero-heading .hero-line--left {
+    font-size: clamp(1.85rem, 9.6vw, 2.85rem) !important;
+    line-height: 1.08 !important;
   }
 
   /*
