@@ -624,6 +624,11 @@ html:has(.accom-catalog) .public-fab {
   width: min(98vw, 90rem);
   background: var(--ac-wash-olive);
   color: var(--ac-paper-warm);
+  /* Keep mosaic + head inside the sticky 100svh stage (no clipped footers). */
+  justify-content: flex-start;
+  padding-top: calc(var(--ac-band) * 0.55);
+  padding-bottom: calc(var(--ac-band) * 0.45);
+  gap: clamp(0.75rem, 1.4vw, 1.25rem);
 }
 
 .ac-bento-scene .ac-kicker,
@@ -637,7 +642,11 @@ html:has(.accom-catalog) .public-fab {
   grid-template-columns: 1.35fr 0.65fr 0.65fr;
   grid-template-rows: 1.1fr 0.9fr 0.75fr;
   gap: var(--ac-gap);
-  min-height: min(58svh, 32rem);
+  /* Fit the sticky stage with head + stamp — was overflowing with the wipe. */
+  flex: 1 1 auto;
+  min-height: 0;
+  height: min(62svh, 30rem);
+  max-height: calc(100% - 5.5rem);
 }
 
 .ac-bento__cell--1 {
@@ -677,10 +686,12 @@ html:has(.accom-catalog) .public-fab {
 .ac-bento__stamp {
   position: absolute;
   right: 0;
-  bottom: -1.6rem;
+  /* Stay inside the stage — negative offset was clipped by overflow:hidden. */
+  bottom: 0.35rem;
   font-size: var(--ac-t-meta);
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  text-shadow: 0 1px 10px rgb(20 18 14 / 45%);
 }
 
 .ac-bento__stamp span {
@@ -689,11 +700,26 @@ html:has(.accom-catalog) .public-fab {
   margin-right: 0.35em;
 }
 
-.ac-bento-scene__wipe {
-  margin-top: 1.2rem;
-  aspect-ratio: 21 / 9;
-  max-height: 12rem;
-  opacity: calc(0.5 + var(--reveal, 1) * 0.5);
+/*
+ * Continuity wipe — dedicated sticky panel after the mosaic.
+ * Must fill the stage so horizontal scrub brings the plate fully on-screen
+ * before the next chapter; never nest under .ac-bento-scene again.
+ */
+.ac-wipe-scene {
+  width: min(94vw, 82rem);
+  background: var(--ac-wash-olive);
+  color: var(--ac-paper-warm);
+  justify-content: center;
+  padding-block: calc(var(--ac-band) * 0.4);
+}
+
+.ac-wipe-scene__pair {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: min(78svh, 42rem);
+  max-height: calc(100% - 0.5rem);
+  aspect-ratio: 16 / 9;
+  opacity: calc(0.55 + var(--reveal, 1) * 0.45);
 }
 
 /* charter grid */
@@ -933,6 +959,8 @@ html:has(.accom-catalog) .public-fab {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
     min-height: 0;
+    height: auto;
+    max-height: none;
   }
 
   .ac-bento__cell--1 {
@@ -948,6 +976,18 @@ html:has(.accom-catalog) .public-fab {
     grid-column: auto;
     grid-row: auto;
     aspect-ratio: 1;
+  }
+
+  .ac-wipe-scene {
+    width: 100% !important;
+    min-height: min(72svh, 34rem);
+    padding-block: var(--ac-band);
+  }
+
+  .ac-wipe-scene__pair {
+    min-height: min(58svh, 28rem);
+    max-height: none;
+    aspect-ratio: 16 / 10;
   }
 
   .ac-charter {

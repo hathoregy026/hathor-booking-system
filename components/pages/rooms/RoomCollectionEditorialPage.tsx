@@ -498,16 +498,29 @@ export function RoomCollectionEditorialPage({
                         </p>
                       </div>
                       <BentoFive room={room} />
-                      {images[1] && images[2] ? (
+                    </Scene>
+
+                    {/*
+                     * B2 · Continuity wipe — own sticky panel.
+                     * Nesting this under the bento scene clipped it under the
+                     * 100svh stage (overflow:hidden), so it only ever peeks as
+                     * a bottom sliver. As its own scene it must fully enter
+                     * the sticky viewport before the track continues.
+                     */}
+                    {images[1] && images[2] ? (
+                      <Scene
+                        className="ac-wipe-scene"
+                        aria-label={`${room.name} — detail sequence`}
+                      >
                         <WipePair
-                          className="ac-bento-scene__wipe"
+                          className="ac-wipe-scene__pair"
                           base={images[1]}
                           overlay={images[2]}
                           baseAlt={`${room.name} interior`}
                           overlayAlt={`${room.name} detail`}
                         />
-                      ) : null}
-                    </Scene>
+                      </Scene>
+                    ) : null}
 
                     {/* C · Guest charter — provisions grid */}
                     <Scene className="ac-charter-scene">
