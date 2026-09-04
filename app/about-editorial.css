@@ -94,9 +94,12 @@ html:has(.about-boring) .public-fab {
   display: none !important;
 }
 
-html:has(.about-boring) .lux-footer,
-html:has(.about-boring) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.about-boring) .lux-footer,
+  html:has(.about-boring) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------- reset */

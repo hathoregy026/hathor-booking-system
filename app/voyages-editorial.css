@@ -71,8 +71,12 @@ html:has(.voyages-boring) .hathor-header {
 html:has(.voyages-boring) .hathor-header a,
 html:has(.voyages-boring) .hathor-header button { color: #14120e !important; text-shadow: none !important; }
 html:has(.voyages-boring) .hathor-header__logo--icon { filter: brightness(0.16) saturate(0.4) !important; }
-html:has(.voyages-boring) .public-fab,
-html:has(.voyages-boring) .lux-footer { display: none !important; }
+html:has(.voyages-boring) .public-fab { display: none !important; }
+
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.voyages-boring) .lux-footer { display: none !important; }
+}
 
 .voyages-boring *,
 .voyages-boring *::before,

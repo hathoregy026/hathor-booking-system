@@ -578,6 +578,13 @@
     Vessel block centered + smaller type; Suites/Cruises removed from
     markup (burger menu only). Does not touch the phone dock or home-3.
   */
+
+  /* Editorial pages hide the shared footer on desktop; force it on phone. */
+  html:not(:has(.home-three)) .lux-footer,
+  html:not(:has(.home-three)) footer.lux-footer {
+    display: block !important;
+  }
+
   .lux-footer {
     /* Clear the fixed phone dock so the last footer lines stay readable. */
     padding-bottom: var(--hathor-phone-dock-h, 4.5rem);

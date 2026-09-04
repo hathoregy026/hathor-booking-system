@@ -98,9 +98,12 @@ html:has(.contact-editorial) .public-fab {
   display: none !important;
 }
 
-html:has(.contact-editorial) .lux-footer,
-html:has(.contact-editorial) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.contact-editorial) .lux-footer,
+  html:has(.contact-editorial) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------- reset */

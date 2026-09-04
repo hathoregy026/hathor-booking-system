@@ -84,9 +84,12 @@ html:has(.partners-editorial) .public-fab {
   display: none !important;
 }
 
-html:has(.partners-editorial) .lux-footer,
-html:has(.partners-editorial) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.partners-editorial) .lux-footer,
+  html:has(.partners-editorial) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------- reset */

@@ -111,9 +111,12 @@ html:has(.article-editorial) .public-fab {
   display: none !important;
 }
 
-html:has(.article-editorial) .lux-footer,
-html:has(.article-editorial) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.article-editorial) .lux-footer,
+  html:has(.article-editorial) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------ reset */

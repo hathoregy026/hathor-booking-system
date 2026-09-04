@@ -52,9 +52,15 @@ html:has(.home-editorial) .hathor-header {
   backdrop-filter: blur(14px) saturate(0.92);
 }
 
-html:has(.home-editorial) .public-fab,
-html:has(.home-editorial) .lux-footer {
+html:has(.home-editorial) .public-fab {
   display: none !important;
+}
+
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.home-editorial) .lux-footer {
+    display: none !important;
+  }
 }
 
 .home-editorial *,

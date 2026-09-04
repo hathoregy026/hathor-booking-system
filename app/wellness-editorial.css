@@ -83,9 +83,12 @@ html:has(.wellness-editorial) .public-fab {
   display: none !important;
 }
 
-html:has(.wellness-editorial) .lux-footer,
-html:has(.wellness-editorial) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.wellness-editorial) .lux-footer,
+  html:has(.wellness-editorial) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 .wellness-editorial main {

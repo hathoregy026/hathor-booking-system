@@ -84,9 +84,12 @@ html:has(.highlights-editorial) .public-fab {
   display: none !important;
 }
 
-html:has(.highlights-editorial) .lux-footer,
-html:has(.highlights-editorial) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.highlights-editorial) .lux-footer,
+  html:has(.highlights-editorial) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------- reset */

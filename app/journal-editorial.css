@@ -92,9 +92,12 @@ html:has(.journal-editorial) .public-fab {
   display: none !important;
 }
 
-html:has(.journal-editorial) .lux-footer,
-html:has(.journal-editorial) footer.lux-footer {
-  display: none !important;
+/* Desktop keeps a custom close; phone uses the shared site footer. */
+@media (min-width: 481px) {
+  html:has(.journal-editorial) .lux-footer,
+  html:has(.journal-editorial) footer.lux-footer {
+    display: none !important;
+  }
 }
 
 /* ------------------------------------------------------------------- reset */
