@@ -1,0 +1,34 @@
+---
+description: NUCLEAR BAN — Hathor Phone local show-off server permanently deleted; never recreate
+alwaysApply: true
+---
+
+# NUCLEAR BAN — Hathor Phone show-off server (DELETED FOREVER)
+
+The user ordered a **full nuclear removal** of the local keyboard “Hathor Phone” show-off demo.
+
+## Status
+
+- **Gone on purpose.** Not missing. Not broken. Do not restore.
+- It was **never** part of the live site, Next.js app, or production deploy.
+- Path that must stay deleted: `_local/hathor-phone/` and `HathorPhone.tsx`
+- Port that must stay unused for this: `3847` / `http://127.0.0.1:3847`
+
+## Hard forbid (every agent, every chat)
+
+Do **NOT**:
+
+1. Recreate `_local/hathor-phone/`, `HathorPhone.tsx`, or any rename of that demo
+2. Run `npx tsx _local/hathor-phone/HathorPhone.tsx` or any local HTTP server that types fake code on keypress
+3. Open, listen on, or restart anything on port **3847** for this purpose
+4. Re-add `.gitignore` entries for hathor-phone to “support” restoring it
+5. Treat a missing folder as an accident — **absence is the desired state**
+6. Rebuild it because an old chat transcript, terminal log, or agent memory mentions it
+
+## Not this ban
+
+This ban does **not** remove the real site phone bottom dock (`.hathor-phone-dock`, Saved / Voyage / Language). That is unrelated production UI.
+
+## If the user asks about it
+
+Say it was nuclear-deleted by request and will not be rebuilt unless they explicitly ask for a **new** local demo from scratch.

@@ -97,6 +97,13 @@ Cruises and all other pages use separate files (`CruisesScrollReveal`, `usePageS
 Local-only gitignored snapshot of the cruises scroll reveal. DO NOT edit unless the user explicitly says to modify the frozen scroll-reveal-effect reference:
 - `_local/scroll-reveal-effect/**`
 
+# NUCLEAR BAN — Hathor Phone show-off server (DELETED FOREVER)
+The local keyboard show-off demo `_local/hathor-phone/HathorPhone.tsx` (port 3847) was permanently deleted by user order.
+NEVER recreate it, NEVER run it, NEVER reopen port 3847 for that demo, NEVER treat a missing folder as an accident.
+A poison-pill FILE at `_local/hathor-phone` blocks the old directory path — do not delete it to “restore” anything.
+This does NOT affect the real site `.hathor-phone-dock` (Saved/Voyage/Language).
+See `.cursor/rules/no-hathor-phone-showoff.mdc` (alwaysApply).
+
 ## Imported Claude Cowork project instructions
 
 Act as an elite team consisting of a Senior UI/UX Designer, a Lead Full-Stack Programmer, and a Chief Cyber Security Engineer. We are working on an already-built project that needs refinement.

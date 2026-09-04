@@ -1,0 +1,8 @@
+﻿DELETED FOREVER — Hathor Phone local show-off server
+
+This path intentionally occupies the old folder name so agents cannot recreate
+_local/hathor-phone/HathorPhone.tsx without deleting this file first.
+
+Do not delete this file to "restore" the demo.
+Do not run anything on port 3847 for a keyboard typing show-off.
+See .cursor/rules/no-hathor-phone-showoff.mdc
