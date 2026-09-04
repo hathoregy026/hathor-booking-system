@@ -273,7 +273,8 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(14rem, 1.35fr) repeat(5, minmax(0, 1fr));
+  /* Brand + Experiences + Concierge + Follow (Suites/Cruises live in the menu). */
+  grid-template-columns: minmax(14rem, 1.45fr) repeat(3, minmax(0, 1fr));
   gap: 3rem clamp(1.75rem, 2.8vw, 3.5rem);
   align-items: start;
   justify-content: space-between;
@@ -574,9 +575,8 @@
 @media (max-width: 480px) {
   /*
     Compact site footer — phone only.
-    Same columns and links; less vertical runway so Suites / Cruises
-    read elegant instead of a long stacked list. Does not touch the
-    Saved / Voyage / Language phone dock.
+    Vessel block centered + smaller type; Suites/Cruises removed from
+    markup (burger menu only). Does not touch the phone dock or home-3.
   */
   .lux-footer {
     /* Clear the fixed phone dock so the last footer lines stay readable. */
@@ -622,10 +622,35 @@
 
   .lux-footer__col--brand {
     grid-column: 1 / -1;
-    align-items: flex-start;
-    padding-bottom: 0.45rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-bottom: 0.55rem;
     margin-bottom: 0.15rem;
     border-bottom: 1px solid rgb(182 159 100 / 0.18);
+  }
+
+  .lux-footer__col--brand .lux-footer__col-title {
+    margin-bottom: 0.5rem;
+    font-size: 0.62rem;
+  }
+
+  .lux-footer__col--brand .lux-footer__tagline {
+    max-width: 18.5rem;
+    margin-inline: auto;
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .lux-footer__col--brand .lux-footer__brand-meta {
+    margin-top: 0.45rem;
+    font-size: 0.68rem;
+  }
+
+  .lux-footer__col--brand .lux-footer__brand-meta + .lux-footer__brand-meta {
+    margin-top: 0.2rem;
   }
 
   /* Social / follow column spans full width under the link pairs. */
@@ -635,20 +660,8 @@
     border-top: 1px solid rgb(182 159 100 / 0.14);
   }
 
-  .lux-footer__tagline,
-  .lux-footer__brand-meta,
   .lux-footer__social-note {
     max-width: none;
-  }
-
-  .lux-footer__tagline {
-    font-size: 0.8rem;
-    line-height: 1.55;
-  }
-
-  .lux-footer__brand-meta {
-    margin-top: 0.65rem;
-    font-size: 0.75rem;
   }
 
   .lux-footer__social-note {

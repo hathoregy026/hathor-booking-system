@@ -18,21 +18,6 @@ function footerTheme(el: Element) {
   };
 }
 
-const SUITES_LINKS = [
-  { href: "/suites", label: "Suites Overview" },
-  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
-  { href: "/rooms", label: "Luxury Suites" },
-  { href: "/royal-suites", label: "Royal Suites" },
-] as const;
-
-const VOYAGE_LINKS = [
-  { href: "/voyages", label: "Our Voyages" },
-  { href: "/cruises-list", label: "Scheduled Voyages" },
-  { href: "/charter", label: "Private Charter" },
-  { href: "/highlights", label: "Highlights" },
-  { href: "/about", label: "Our Story" },
-] as const;
-
 const EXPERIENCE_LINKS = [
   { href: "/wellness", label: "Wellness & Spa" },
   { href: "/gastronomy", label: "Dining" },
@@ -228,8 +213,6 @@ function FooterNavLink({
 }
 
 export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
-  const suitesLinks = SUITES_LINKS;
-  const voyageLinks = VOYAGE_LINKS;
   const experienceLinks = EXPERIENCE_LINKS;
   const infoLinks = INFO_LINKS;
   const rootRef = useRef<HTMLElement>(null);
@@ -386,7 +369,7 @@ export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
             <div className="lux-footer__col lux-footer__col--brand">
               <p className="lux-footer__col-title">The Vessel</p>
               <p className="lux-footer__tagline">
-                Navigating the eternal Nile with unparalleled elegance since 2024.
+                Navigating the eternal Nile with unparalleled elegance.
                 A private dahabiya for travellers who prefer stillness, craft, and
                 rare itineraries.
               </p>
@@ -407,32 +390,6 @@ export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
                 </a>
               </p>
             </div>
-
-            {suitesLinks.length > 0 ? (
-            <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Suites</p>
-              <ul className="lux-footer__links">
-                {suitesLinks.map((link) => (
-                  <li key={link.label}>
-                    <FooterNavLink href={link.href} label={link.label} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-            ) : null}
-
-            {voyageLinks.length > 0 ? (
-            <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Cruises</p>
-              <ul className="lux-footer__links">
-                {voyageLinks.map((link) => (
-                  <li key={link.label}>
-                    <FooterNavLink href={link.href} label={link.label} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-            ) : null}
 
             {experienceLinks.length > 0 ? (
             <div className="lux-footer__col">
