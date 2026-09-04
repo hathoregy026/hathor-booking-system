@@ -572,8 +572,135 @@
 }
 
 @media (max-width: 480px) {
+  /*
+    Compact site footer — phone only.
+    Same columns and links; less vertical runway so Suites / Cruises
+    read elegant instead of a long stacked list. Does not touch the
+    Saved / Voyage / Language phone dock.
+  */
+  .lux-footer {
+    /* Clear the fixed phone dock so the last footer lines stay readable. */
+    padding-bottom: var(--hathor-phone-dock-h, 4.5rem);
+  }
+
+  .lux-footer__top {
+    padding: 2.25rem 1.15rem 1.35rem;
+  }
+
+  .lux-footer__subhead {
+    margin-top: 0.85rem;
+  }
+
+  .lux-footer__subscribe {
+    margin-top: 1.1rem;
+  }
+
+  .lux-footer__submit {
+    padding: 0.7rem 1rem;
+    min-height: 2.65rem;
+  }
+
+  .lux-footer__main {
+    padding: 1.5rem 1.15rem 1.75rem;
+    min-height: 0;
+    align-items: flex-start;
+  }
+
   .lux-footer__bg-logo-img {
-    width: min(135vw, 880px);
+    width: min(120vw, 720px);
+    opacity: 0.04;
+  }
+
+  .lux-footer__grid {
+    /* Brand full-width, then link columns in two tracks to cut height. */
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15rem 1.35rem;
+    max-width: 100%;
+    justify-items: stretch;
+    text-align: left;
+  }
+
+  .lux-footer__col--brand {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    padding-bottom: 0.45rem;
+    margin-bottom: 0.15rem;
+    border-bottom: 1px solid rgb(182 159 100 / 0.18);
+  }
+
+  /* Social / follow column spans full width under the link pairs. */
+  .lux-footer__grid > .lux-footer__col:last-child {
+    grid-column: 1 / -1;
+    padding-top: 0.15rem;
+    border-top: 1px solid rgb(182 159 100 / 0.14);
+  }
+
+  .lux-footer__tagline,
+  .lux-footer__brand-meta,
+  .lux-footer__social-note {
+    max-width: none;
+  }
+
+  .lux-footer__tagline {
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  .lux-footer__brand-meta {
+    margin-top: 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .lux-footer__social-note {
+    margin-top: 0.85rem;
+    font-size: 0.72rem;
+  }
+
+  .lux-footer__col-title {
+    margin: 0 0 0.65rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+
+  .lux-footer__links {
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .lux-footer__link {
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .lux-footer__link:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Keep 44px tap floor without the old 1rem visual gap. */
+  .lux-footer__link::before {
+    top: -6px;
+    bottom: -6px;
+  }
+
+  .lux-footer__social {
+    justify-content: flex-start;
+    margin-top: 0.35rem;
+  }
+
+  .lux-footer__bottom {
+    padding: 1.15rem 1.15rem;
+    padding-bottom: max(1.15rem, calc(env(safe-area-inset-bottom, 0px) + 0.85rem));
+  }
+
+  .lux-footer__bottom-row {
+    gap: 0.55rem;
+  }
+
+  .lux-footer__legal,
+  .lux-footer__crafted {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
   }
 }
 
