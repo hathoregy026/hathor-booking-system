@@ -12,12 +12,6 @@ import {
   SUITES_REFERENCE_HERO_CSS,
 } from "@/lib/suites-reference-hero";
 import {
-  injectSuitesLuxFooter,
-  neutralizeSuitesCircleButtons,
-  stripParenthesesFromSuitesCopy,
-  SUITES_CLONE_LAYOUT_FIX_CSS,
-} from "@/lib/suites-clone-layout-fix";
-import {
   SUITES_CLIP_FIX_CSS,
   SUITES_COLLECTION_PANEL_CSS,
   SUITES_COLLECTION_PANEL_TONES,
@@ -34,8 +28,7 @@ const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/normalisboring\.es\/conocenos/i, "/suites"],
   [/normalisboring\.es\/politica/i, "/contact"],
   [/normalisboring\.es\/aviso-legal/i, "/contact"],
-  [/^https?:\/\/contacto\/?$/i, "/suites?book=1"],
-  [/^contacto\/?$/i, "/suites?book=1"],
+  [/^https?:\/\/contacto\/?$/i, "/contact"],
   [/^https?:\/\/disponibilidad\/?$/i, "/suites?book=1"],
   [/^https?:\/\/(www\.)?normalisboring\.es\/?$/i, "/"],
   [/^https?:\/\/www\.awwwards\.com/i, "/"],
@@ -68,7 +61,6 @@ function suitesCssTail() {
     EMBEDDED_PUBLIC_THEME_CSS,
     SUITES_RESPONSIVE_CHOREOGRAPHY_CSS,
     SUITES_REFERENCE_HERO_CSS,
-    SUITES_CLONE_LAYOUT_FIX_CSS,
   ].join("\n");
 }
 
@@ -611,9 +603,6 @@ export function SuitesNormalHomepagePage() {
     patchLogoWordmark(doc);
     tagSuiteCollectionPanels(doc);
     retargetCloneLinks(doc);
-    stripParenthesesFromSuitesCopy(doc);
-    neutralizeSuitesCircleButtons(doc);
-    injectSuitesLuxFooter(doc);
     // Coalesced to one frame: refreshSuitesHorizontalScroll() calls
     // ScrollTrigger.refresh(), which visibly re-seats the stage. It was being
     // fired up to a dozen times per arrival from the stacked passes.
@@ -699,9 +688,6 @@ export function SuitesNormalHomepagePage() {
         patchLogoWordmark(doc);
         tagSuiteCollectionPanels(doc);
         retargetCloneLinks(doc);
-        stripParenthesesFromSuitesCopy(doc);
-        neutralizeSuitesCircleButtons(doc);
-        injectSuitesLuxFooter(doc);
         runTermsFit();
         layoutSuitesConnectors(doc);
       }
@@ -770,7 +756,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-suites-phone-layout-20260905a"
+        src="/suites-normal/index.html?v=hathor-suites-phone-perf-20260904a"
         title="Hathor Suites"
         onLoad={() => {
           void apply();
