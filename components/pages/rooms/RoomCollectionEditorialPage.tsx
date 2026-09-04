@@ -501,11 +501,11 @@ export function RoomCollectionEditorialPage({
                     </Scene>
 
                     {/*
-                     * B2 · Continuity wipe — own sticky panel.
-                     * Nesting this under the bento scene clipped it under the
-                     * 100svh stage (overflow:hidden), so it only ever peeks as
-                     * a bottom sliver. As its own scene it must fully enter
-                     * the sticky viewport before the track continues.
+                     * B2 · Continuity wipe — own sticky panel at full stage
+                     * width (see .ac-wipe-scene + pinFullBleedSizes). Nesting
+                     * under the bento clipped it; a rem-capped width let it
+                     * peek beside the mosaic. Full occupancy so scrub covers
+                     * the stage before the track continues.
                      */}
                     {images[1] && images[2] ? (
                       <Scene

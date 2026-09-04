@@ -621,7 +621,15 @@ html:has(.accom-catalog) .public-fab {
 
 /* bento five */
 .ac-bento-scene {
-  width: min(98vw, 90rem);
+  /*
+   * Full sticky-stage occupancy. Rem-capped widths (90rem) left ~6–25% of the
+   * viewport empty on desktop, so the wipe / next plate peeks as a vertical
+   * sliver while still on PREVIEW SEQUENCE. JS also pins flex-basis to the
+   * stage clientWidth so 100vw ≠ scrollbar mismatch cannot reintroduce peeks.
+   */
+  width: 100vw;
+  flex: 0 0 100vw;
+  max-width: none;
   background: var(--ac-wash-olive);
   color: var(--ac-paper-warm);
   /* Keep mosaic + head inside the sticky 100svh stage (no clipped footers). */
@@ -702,11 +710,14 @@ html:has(.accom-catalog) .public-fab {
 
 /*
  * Continuity wipe — dedicated sticky panel after the mosaic.
- * Must fill the stage so horizontal scrub brings the plate fully on-screen
- * before the next chapter; never nest under .ac-bento-scene again.
+ * Full viewport width (same as bento) so scrubbing in covers the stage
+ * completely — no residual mosaic strip, no early peek of this plate.
+ * Never nest under .ac-bento-scene again.
  */
 .ac-wipe-scene {
-  width: min(94vw, 82rem);
+  width: 100vw;
+  flex: 0 0 100vw;
+  max-width: none;
   background: var(--ac-wash-olive);
   color: var(--ac-paper-warm);
   justify-content: center;
@@ -716,7 +727,8 @@ html:has(.accom-catalog) .public-fab {
 .ac-wipe-scene__pair {
   width: 100%;
   flex: 1 1 auto;
-  min-height: min(78svh, 42rem);
+  min-height: 0;
+  height: min(78svh, 42rem);
   max-height: calc(100% - 0.5rem);
   aspect-ratio: 16 / 9;
   opacity: calc(0.55 + var(--reveal, 1) * 0.45);
@@ -980,8 +992,14 @@ html:has(.accom-catalog) .public-fab {
 
   .ac-wipe-scene {
     width: 100% !important;
+    flex: none;
     min-height: min(72svh, 34rem);
     padding-block: var(--ac-band);
+  }
+
+  .ac-bento-scene {
+    width: 100% !important;
+    flex: none;
   }
 
   .ac-wipe-scene__pair {

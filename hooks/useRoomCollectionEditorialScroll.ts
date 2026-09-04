@@ -25,10 +25,15 @@ export function useRoomCollectionEditorialScroll({
 
     const html = document.documentElement;
     const progressBar = root.querySelector<HTMLElement>("[data-ac-progress]");
+    const stage = track.parentElement;
     const scenes = [...root.querySelectorAll<HTMLElement>(".ac-scene")];
+    const fullBleedScenes = [
+      ...root.querySelectorAll<HTMLElement>(".ac-bento-scene, .ac-wipe-scene"),
+    ];
     const wipes = [...root.querySelectorAll<HTMLElement>("[data-ac-wipe]")];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktop = false;
+    let stageWidth = window.innerWidth;
     let travel = 0;
     let scrollDistance = 0;
     let frame = 0;
@@ -37,6 +42,25 @@ export function useRoomCollectionEditorialScroll({
     let lastWidth = window.innerWidth;
 
     html.setAttribute("data-accom-catalog", "");
+
+    const clearFullBleedSizes = () => {
+      fullBleedScenes.forEach((el) => {
+        el.style.width = "";
+        el.style.flex = "";
+        el.style.maxWidth = "";
+      });
+    };
+
+    /** Pin mosaic + wipe to the sticky stage width so neighbors never peek. */
+    const pinFullBleedSizes = (width: number) => {
+      const px = `${Math.max(1, Math.round(width))}px`;
+      const flex = `0 0 ${px}`;
+      fullBleedScenes.forEach((el) => {
+        if (el.style.width !== px) el.style.width = px;
+        if (el.style.flex !== flex) el.style.flex = flex;
+        if (el.style.maxWidth !== "none") el.style.maxWidth = "none";
+      });
+    };
 
     const applyWipes = (mode: "horizontal" | "vertical") => {
       wipes.forEach((el) => {
@@ -52,7 +76,7 @@ export function useRoomCollectionEditorialScroll({
     };
 
     const applySceneVars = (x: number) => {
-      const viewport = window.innerWidth;
+      const viewport = stageWidth;
       scenes.forEach((scene) => {
         const left = scene.offsetLeft - x;
         const width = scene.offsetWidth;
@@ -88,13 +112,19 @@ export function useRoomCollectionEditorialScroll({
     const measure = () => {
       desktop = window.innerWidth > 950 && !reduced.matches;
       if (!desktop) {
+        clearFullBleedSizes();
         run.style.height = "auto";
         track.style.transform = "none";
         applyVerticalVars();
         if (progressBar) progressBar.style.transform = "scaleX(0)";
         return;
       }
-      travel = Math.max(1, track.scrollWidth - window.innerWidth);
+      stageWidth = Math.max(
+        1,
+        stage?.clientWidth || track.clientWidth || window.innerWidth,
+      );
+      pinFullBleedSizes(stageWidth);
+      travel = Math.max(1, track.scrollWidth - stageWidth);
       scrollDistance = Math.max(1, travel * 0.74);
       run.style.height = `${scrollDistance + window.innerHeight}px`;
       const rect = run.getBoundingClientRect();
@@ -162,6 +192,7 @@ export function useRoomCollectionEditorialScroll({
       reduced.removeEventListener("change", onResize);
       detachRemeasure();
       if (frame) cancelAnimationFrame(frame);
+      clearFullBleedSizes();
       html.removeAttribute("data-accom-catalog");
       run.style.height = "";
       track.style.transform = "";
