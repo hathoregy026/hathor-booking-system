@@ -67,7 +67,7 @@ export function RoomAmenityIcon({ label }: { label: string }) {
   const kind = resolveAmenityIcon(label);
   return (
     <span className="ac-charter__icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1">
         <path d={PATHS[kind]} strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </span>

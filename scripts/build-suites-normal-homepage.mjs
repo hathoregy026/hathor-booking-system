@@ -319,7 +319,8 @@ const cloneHrefMap = [
   [/normalisboring\.es\/conocenos/i, "/suites"],
   [/normalisboring\.es\/politica/i, "/contact"],
   [/normalisboring\.es\/aviso-legal/i, "/contact"],
-  [/^https?:\/\/contacto\/?$/i, "/contact"],
+  [/^https?:\/\/contacto\/?$/i, "/suites?book=1"],
+  [/^contacto\/?$/i, "/suites?book=1"],
   [/^https?:\/\/disponibilidad\/?$/i, "/suites?book=1"],
   [/^https?:\/\/(www\.)?normalisboring\.es\/?$/i, "/"],
 ];
@@ -355,7 +356,7 @@ replaceExactText("AUTENTICIDAD", "PRIVATE COMFORT");
 replaceExactText("FUNCIONALIDAD", "TIMELESS CRAFT");
 replaceExactText("El proyecto", "Explore Suite");
 replaceExactText("Próximamente", "Discover More");
-replaceExactText("(Contacta)", "(Reservations)");
+replaceExactText("(Contacta)", "Reservations");
 replaceExactText("Solicitar información", "Request Suite Availability");
 replaceExactText("Explorar", "Explore");
 $('[data-text="Explorar"]').attr("data-text", "Explore");
@@ -519,7 +520,7 @@ $(".last-item__content__text p").text(
   "We create suites for the art of river living: spaces for rest, conversation, private dining, and uninterrupted views as Hathor drifts between Egypt’s ancient shores.",
 );
 
-$(".mod-title--chapter .mod-title__intro > div").text("(Reservations)");
+$(".mod-title--chapter .mod-title__intro > div").text("Reservations");
 $(".mod-title--chapter .anima__title").html("BEGIN YOUR<br>NILE JOURNEY");
 const finalTitleLines = $(".mod-title--lines .line");
 finalTitleLines.eq(0).text("Luxury Upon");
@@ -528,23 +529,56 @@ finalTitleLines.eq(2).text("Nile");
 $(".mod-content--cols .mod-content__text").html(
   "<p>Our team is ready to help you select the perfect Hathor cabin or suite and shape a private Nile journey around your preferred dates, route, and pace.</p><p><strong>reservations@hathorcruise.com</strong></p>",
 );
-$(".mod-content--center .mod-content__btn").text("Request Suite Availability");
+$(".mod-content--center .mod-content__btn")
+  .text("Request Suite Availability")
+  .attr("href", "/suites?book=1")
+  .attr("target", "_top");
 
-$(".mod-footer__buttons-header__btn").eq(0).text("INSTAGRAM");
+const $mosaic = $(".mod-media--double");
+$mosaic.addClass("mod-media--mosaic");
+$mosaic.find(".mod-media__item").removeClass("col-6 col-4 col-8");
+if ($mosaic.find(".mod-media__item").length < 4) {
+  const extra = [
+    ["/media/hathor/scraped/royal-3.webp", "scraped-royal-3"],
+    ["/media/hathor/scraped/royal-4.webp", "scraped-royal-4"],
+  ];
+  extra.forEach(([src, slot], index) => {
+    $mosaic.append(`<div class="media mod-media__item" data-delay="${0.2 + index * 0.1}">
+            <div class="media__wrap-source image">
+            <img class="media__source w-100" src="${src}" data-lazy-src="${src}" data-hathor-slot="${slot}" alt="Hathor luxury suite aboard the Nile dahabiya">
+        </div>
+    </div>`);
+  });
+}
+
+$(".mod-footer__content__project__wrap-image")
+  .removeClass("expand_mouse follow__wrap")
+  .removeAttr("data-text");
+$(".mod-footer__content__project__wrap-image .btn--circle")
+  .removeClass("btn--circle follow__mouse--md d-none d-md-flex")
+  .addClass("btn--bg")
+  .text("Explore");
+
+$(".mod-footer__buttons-header__btn").eq(0).text("INSTAGRAM").attr({
+  href: "https://www.instagram.com/hathorcruise/",
+  target: "_blank",
+  rel: "noopener noreferrer",
+});
 $(".mod-footer__buttons-header__btn")
   .eq(1)
-  .text("reservations@hathorcruise.com");
+  .text("reservations@hathorcruise.com")
+  .attr("href", "mailto:reservations@hathorcruise.com");
 $(".mod-footer__bg").replaceWith(HATHOR_FOOTER_WORDMARK_SVG);
-$(".mod-footer__content__project__year").text("(2026)");
+$(".mod-footer__content__project__year").text("2026");
 $(".mod-footer__content__project__name").text("ROYAL SUITES");
 $(".mod-footer__content__project__text").html(
   "Privacy, panoramic light, and refined comfort<br>on the timeless Nile",
 );
 $(".mod-footer__footer__copyright").text("HATHOR DAHABIYA ©2026");
 $(".anchors__title").text("Suites");
-$(".anchors__nav__link .t-italic").text("(Reservations)");
+$(".anchors__nav__link .t-italic").text("Reservations");
 
-$(".modal--contact .modal__content__pretitle").text("(RESERVATIONS)");
+$(".modal--contact .modal__content__pretitle").text("RESERVATIONS");
 $(".modal--contact .modal__content__title").html("CHOOSE YOUR<br>NILE SUITE");
 const formLabels = ["Name", "Phone", "Email", "Suite Request"];
 $(".modal--contact .modal__content__form__label").each((index, element) => {

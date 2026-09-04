@@ -294,12 +294,9 @@ export function RoomCollectionEditorialPage({
    */
   const heroLines =
     support && support !== config.support ? [support] : config.hero.copy;
-  const shellStyle = {
-    "--font-hathor-display": '"Gamgote", Georgia, serif',
-  } as CSSProperties;
 
   return (
-    <div className="accom-editorial-shell" style={shellStyle}>
+    <div className="accom-editorial-shell">
       <AnimaTitleScroll />
       <div className="public-site hathor-site accom-nav-shell">
         <PublicNavbar />
