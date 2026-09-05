@@ -396,267 +396,287 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 }
 
+/*
+ * Phone + tablet (≤1024): leave the desktop absolute collage alone.
+ * Recompose into a tall vertical story — images stacked, titles divided
+ * between plates — so nothing overlaps and type stays legible.
+ *
+ * Order:
+ *   SUITES AT REST
+ *   [main plate]
+ *   FRAMED BY THE NILE
+ *   [portrait]
+ *   [detail]
+ *   MADE FOR LIVING + body
+ *   actions
+ */
 @media (max-width: 1024px) {
   html body main .mod-scroll__intro.suites-reference-hero {
-    min-height: 40rem !important;
-  }
-
-  .srh-kicker {
-    top: 8.6%;
-    left: 5%;
-    font-size: clamp(2.65rem, 6.4vw, 4rem);
-  }
-
-  .srh-frame--main {
-    top: 14.5%;
-    right: 4%;
-    width: 82%;
-    height: 45%;
-    border-radius: 0 0 0 2.5rem;
-  }
-
-  .srh-title {
-    top: auto;
-    bottom: 7%;
-    left: 5%;
-    font-size: clamp(4rem, 9.6vw, 6.4rem);
-  }
-
-  .srh-frame--portrait {
-    top: 51.5%;
-    bottom: 10.5%;
-    left: 4%;
-    width: 29%;
-  }
-
-  .srh-copy {
-    top: 62.5%;
-    left: 38.5%;
-    max-width: 21.5%;
-  }
-
-  .srh-copy__title {
-    font-size: clamp(1.95rem, 4.7vw, 3.1rem);
-  }
-
-  .srh-copy__body {
-    display: block;
-    max-width: 100%;
-  }
-
-  /*
-   * The copy column is bounded to the channel between the portrait and detail
-   * frames (detail's left edge sits at 62%), so the title and body can no
-   * longer run underneath the detail image as they did at 768-1024.
-   */
-  .srh-frame--detail {
-    top: 53.5%;
-    right: 2.5%;
-    width: 33%;
-    height: 28%;
-    border-radius: 1.7rem;
-  }
-
-  .srh-actions {
-    right: auto;
-    bottom: 1.4%;
-    left: 50%;
-    width: auto;
-    translate: -50% 0;
-    grid-template-columns: repeat(2, minmax(11.5rem, 13.5rem));
-    gap: .5rem;
-    padding: .5rem;
-  }
-
-  .srh-actions a {
-    width: 100%;
-    min-width: 0;
-    min-height: 2.85rem;
-    font-size: .7rem;
-    letter-spacing: .16em;
-  }
-}
-
-/*
- * Phones and tablets share one stacked composition. At and below 1024px
- * the three-column editorial layout cannot hold the portrait frame, the copy
- * column and the detail frame plus two connector channels without either
- * colliding or shrinking the display type past the point where it still reads
- * as Hathor, so the hero recomposes rather than compresses.
- */
-/*
- * Portrait phones and tablets keep the desktop composition rather than stacking
- * it: the same overlapping collage - kicker in the cream, the main plate held to
- * the right edge with the title set over it, the arch portrait running down the
- * left and crossing the plate's lower corner, the bordered detail card riding
- * the opposite corner, and a connector channel held open between the two lower
- * frames. Only the proportions are transposed for a tall canvas; every element
- * keeps its role, its z-order and its geometry language.
- */
-@media (max-width: 1024px) and (orientation: portrait) {
-  html body main .mod-scroll__intro.suites-reference-hero {
-    height: 100svh !important;
-    min-height: 100svh !important;
-    overflow: hidden !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
 
   html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
-    height: 100% !important;
-    min-height: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
   }
 
   .srh-canvas {
-    height: 100%;
-    overflow: hidden;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding:
+      max(5.75rem, calc(env(safe-area-inset-top, 0px) + 4.75rem))
+      clamp(1rem, 4.2vw, 1.75rem)
+      max(1.5rem, env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+  }
+
+  .srh-connectors {
+    display: none !important;
+  }
+
+  .srh-kicker,
+  .srh-title,
+  .srh-copy,
+  .srh-frame,
+  .srh-actions {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    translate: none !important;
+    transform: none !important;
   }
 
   .srh-kicker {
-    /* rem floor clears the overlaid public navbar on short canvases. */
-    top: max(9%, 5.2rem);
-    left: 6%;
-    font-size: clamp(1.85rem, 8vw, 3.4rem);
-    line-height: .86;
+    order: 1;
+    z-index: 2;
+    margin: 0 0 1.15rem !important;
+    font-size: clamp(2.35rem, 11vw, 3.55rem) !important;
+    line-height: 0.88 !important;
+    letter-spacing: -0.04em !important;
+    color: #17140f !important;
+    -webkit-text-fill-color: #17140f !important;
+    text-shadow: none !important;
   }
 
-  /* Plate holds the right edge exactly as on desktop; title sits over it. */
   .srh-frame--main {
-    top: 22%;
-    right: 0;
-    left: auto;
-    width: 92%;
-    height: 29%;
-    border-radius: 0 0 0 2rem;
+    order: 2;
+    z-index: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: auto !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
   }
 
-  .srh-frame--main img {
-    object-position: 55% center;
+  .srh-frame--main > img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 5 / 4 !important;
+    object-fit: cover !important;
+    object-position: center 48% !important;
+    border-radius: 0 0 1.65rem 1.65rem !important;
+    transform: none !important;
+    animation: none !important;
   }
 
+  .srh-frame__wash {
+    display: none !important;
+  }
+
+  /* Title leaves the photo and sits between the main plate and the lower images. */
   .srh-title {
-    top: auto;
-    right: 5%;
-    bottom: 5%;
-    left: 5%;
-    font-size: clamp(2.2rem, 10.4vw, 4.6rem);
-    line-height: .86;
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 2;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 1.35rem 0 1.25rem !important;
+    padding: 0 !important;
+    font-size: clamp(2.55rem, 12.2vw, 3.85rem) !important;
+    line-height: 0.86 !important;
+    letter-spacing: -0.045em !important;
+    color: #17140f !important;
+    -webkit-text-fill-color: #17140f !important;
+    text-shadow: none !important;
   }
 
-  /* Arch crosses the plate's lower-left corner, as the desktop portrait does. */
   .srh-frame--portrait {
-    top: 42%;
-    right: auto;
-    bottom: auto;
-    left: 5%;
-    width: 40%;
-    height: 25%;
-    border-radius: 5rem 5rem 0 0;
+    order: 3;
+    z-index: 1;
+    width: 78% !important;
+    max-width: 22rem !important;
+    aspect-ratio: 3 / 4 !important;
+    margin: 0 auto 0.9rem 0 !important;
+    border-radius: 7rem 7rem 0.35rem 0.35rem !important;
+    overflow: hidden !important;
   }
 
   .srh-frame--portrait img {
-    object-position: 45% center;
+    object-position: 45% center !important;
+    transform: none !important;
+    animation: none !important;
   }
 
   .srh-frame--detail {
-    top: 47%;
-    right: 4%;
-    left: auto;
-    width: 44%;
-    height: 19%;
-    border-width: 2px;
-    border-radius: 1.35rem;
+    order: 4;
+    z-index: 1;
+    width: 86% !important;
+    max-width: 26rem !important;
+    aspect-ratio: 16 / 11 !important;
+    margin: 0 0 1.45rem auto !important;
+    border: 2px solid #f3ede4 !important;
+    border-radius: 1.35rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 1rem 2.5rem rgba(20, 18, 14, 0.14) !important;
+  }
+
+  .srh-frame--detail img {
+    transform: none !important;
+    animation: none !important;
   }
 
   .srh-copy {
-    top: 69%;
-    left: 6%;
-    max-width: 88%;
+    order: 5;
+    z-index: 2;
+    margin: 0 0 1.5rem !important;
+    max-width: 100% !important;
   }
 
   .srh-copy__title {
-    font-size: clamp(1.8rem, 7.6vw, 3.2rem);
-    line-height: .88;
+    font-size: clamp(2.15rem, 10vw, 3.25rem) !important;
+    line-height: 0.88 !important;
+    letter-spacing: -0.04em !important;
+    color: #17140f !important;
+    -webkit-text-fill-color: #17140f !important;
   }
 
   .srh-copy__body {
-    display: block;
-    max-width: 100%;
-    margin: .5rem 0 0;
-    font-size: clamp(.72rem, 2.9vw, .92rem);
+    display: block !important;
+    max-width: 22rem !important;
+    margin: 0.65rem 0 0 !important;
+    font-size: clamp(0.82rem, 3.4vw, 0.98rem) !important;
+    line-height: 1.5 !important;
+    color: rgb(64 55 37 / 0.82) !important;
+    -webkit-text-fill-color: rgb(64 55 37 / 0.82) !important;
   }
 
   .srh-copy__line {
-    display: inline;
+    display: block !important;
   }
 
   .srh-actions {
-    right: auto;
-    bottom: 1.8%;
-    left: 50%;
-    width: 88%;
-    translate: -50% 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .4rem;
-    padding: .45rem;
-    border-radius: 1rem;
+    order: 6;
+    z-index: 2;
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.55rem !important;
+    width: 100% !important;
+    margin: 0 0 0.5rem !important;
+    padding: 0.55rem !important;
+    border-radius: 1.1rem !important;
+    translate: none !important;
   }
 
-  /*
-   * nowrap keeps every action one line tall. Two-line labels pushed the bar to
-   * 142px and, on short phones, past the bottom of the clipped stage.
-   */
   .srh-actions a {
-    width: 100%;
-    min-width: 0;
-    height: 2.85rem;
-    min-height: 44px;
-    padding: .25rem .4rem;
-    font-size: clamp(.54rem, 2.2vw, .72rem);
-    letter-spacing: .12em;
-    white-space: nowrap;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 2.85rem !important;
+    min-height: 44px !important;
+    padding: 0.25rem 0.55rem !important;
+    font-size: clamp(0.58rem, 2.4vw, 0.72rem) !important;
+    letter-spacing: 0.14em !important;
+    white-space: nowrap !important;
   }
 }
 
-/*
- * Short portrait phones: tighten the vertical rhythm and trade the body line for
- * a reachable actions bar. The collage itself is unchanged.
- */
-@media (max-width: 1024px) and (orientation: portrait) and (max-height: 720px) {
-  /*
-   * line-height .86 lets the caps overflow their box, so the kicker needs more
-   * clearance here than its measured rect suggests.
-   */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .srh-canvas {
+    padding-inline: clamp(1.5rem, 4vw, 2.5rem) !important;
+    padding-bottom: 2rem !important;
+  }
+
   .srh-kicker {
-    top: max(6.5%, 4.4rem);
-    font-size: clamp(1.55rem, 6.8vw, 2.4rem);
+    font-size: clamp(2.85rem, 6.5vw, 4rem) !important;
+    margin-bottom: 1.45rem !important;
   }
 
   .srh-frame--main {
-    top: 23%;
-    height: 25%;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+  }
+
+  .srh-frame--main > img {
+    aspect-ratio: 16 / 10 !important;
+    border-radius: 0 0 2rem 2rem !important;
+  }
+
+  .srh-title {
+    margin: 1.65rem 0 1.45rem !important;
+    font-size: clamp(3.1rem, 7.2vw, 4.6rem) !important;
   }
 
   .srh-frame--portrait {
-    top: 41%;
-    height: 24%;
+    width: min(48%, 18rem) !important;
+    margin-bottom: 1.1rem !important;
   }
 
   .srh-frame--detail {
-    top: 46%;
-    height: 18%;
+    width: min(62%, 28rem) !important;
+    margin-bottom: 1.75rem !important;
   }
 
-  .srh-copy {
-    top: 68%;
+  .srh-copy__title {
+    font-size: clamp(2.55rem, 5.4vw, 3.6rem) !important;
   }
 
   .srh-copy__body {
-    display: none;
+    max-width: 28rem !important;
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem) !important;
   }
 
-  .srh-actions a {
-    height: 44px;
-    min-height: 44px;
-    letter-spacing: .08em;
+  .srh-actions {
+    max-width: 32rem !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .srh-frame--main > img {
+    aspect-ratio: 4 / 3 !important;
+  }
+
+  .srh-title {
+    max-width: 12.5ch;
+  }
+
+  .srh-copy__title {
+    max-width: 10ch;
   }
 }
 
@@ -844,6 +864,13 @@ export function layoutSuitesConnectors(doc: Document) {
   const canvasEl = doc.querySelector<HTMLElement>(".srh-canvas");
   const svg = doc.querySelector<SVGSVGElement>(".srh-connectors");
   if (!canvasEl || !svg) return false;
+
+  // Phone/tablet stacked hero hides connectors; skip measuring.
+  const win = doc.defaultView;
+  if (win && win.innerWidth <= 1024) {
+    svg.removeAttribute("data-srh-measured");
+    return true;
+  }
 
   const canvas = canvasEl.getBoundingClientRect();
   if (canvas.width <= 0 || canvas.height <= 0) return false;
