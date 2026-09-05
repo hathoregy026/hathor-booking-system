@@ -235,44 +235,53 @@
   grid-row: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   padding: 0.15rem 0.5rem 0.85rem;
 }
 
+/* Square close cube — matches booking popup close hover (90° spin + gold fill). */
 .eno-close {
   position: relative;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.85rem;
-  height: 2.85rem;
+  flex-shrink: 0;
+  width: 2.15rem;
+  height: 2.15rem;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--eno-gold);
-  border-radius: 50%;
+  border: 1px solid rgb(182 159 100 / 0.55);
+  border-radius: 2px;
   background: transparent;
-  color: var(--eno-ink);
-  font-family: var(--eno-serif);
-  font-size: 1.55rem;
-  line-height: 1;
+  color: var(--eno-gold-deep);
   cursor: pointer;
   transition:
-    color 0.3s ease,
     border-color 0.3s ease,
-    background-color 0.3s ease;
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.eno-close__icon {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
 }
 
 .eno-close:hover,
 .eno-close:focus-visible {
-  color: var(--eno-gold-deep);
-  border-color: var(--eno-gold-deep);
-  background: rgba(201, 169, 110, 0.12);
+  border-color: #b69f64;
+  background: #b69f64;
+  color: #2c2824;
+  transform: rotate(90deg);
   outline: none;
 }
 
 .eno-kicker {
-  margin: 0 auto 0 0.7rem;
+  margin: 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -285,13 +294,12 @@
   color: var(--eno-ink);
 }
 
-/* Homepage pill (.btn) — cream fill, gold stroke, shine on hover. */
+/* Phone-only Book Now sits in the footer; hide it above 480px. */
 .eno-book {
   flex-shrink: 0;
   margin: 0;
 }
 
-/* Phone-only Book Now sits in the footer; hide it above 480px. */
 .eno-book--footer {
   display: none;
 }
@@ -550,17 +558,15 @@
   }
 
   .eno-close {
-    width: 2.25rem;
-    height: 2.25rem;
-    font-size: 1.35rem;
-    color: var(--eno-ink);
-    border-color: var(--eno-gold-deep);
+    width: 2.15rem;
+    height: 2.15rem;
+    color: var(--eno-gold-deep);
+    border-color: rgb(139 105 20 / 0.55);
   }
 
   /*
-   * Visual circle stays 36px (2.25rem) so it doesn't crowd the kicker text,
-   * but the tap target is grown to the 44px accessibility floor via an
-   * invisible overlay — same pattern as the other touch-target fixes.
+   * Visual cube stays 34.4px (2.15rem); tap target grows to the 44px floor
+   * via an invisible overlay — same pattern as other touch-target fixes.
    */
   .eno-close::after {
     content: "";
@@ -576,13 +582,7 @@
     display: none;
   }
 
-  /* Book Now: header on desktop, full-width footer CTA on phone.
-     Footer control intentionally omits `.btn` so public pill width locks
-     cannot force max-content inside the half-panel. */
-  .eno .btn.eno-book.eno-book--header:not(#_) {
-    display: none !important;
-  }
-
+  /* Phone Book Now lives in the footer only (header CTA removed site-wide). */
   .eno-book--footer {
     display: inline-flex;
     align-items: center;
@@ -687,6 +687,11 @@
   .eno-backdrop {
     transition-duration: 0.4s;
     transition-delay: 0s;
+  }
+
+  .eno-close:hover,
+  .eno-close:focus-visible {
+    transform: none;
   }
 }
 

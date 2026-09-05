@@ -16,7 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { BURGER_NAV_IMAGE_SLOT_NAME } from "@/lib/site-image-slots";
 import type { HeaderNavItem } from "@/lib/public-nav";
@@ -143,17 +143,9 @@ export function EditorialNavOverlay({
             aria-label="Close menu"
             tabIndex={open ? 0 : -1}
           >
-            <span aria-hidden="true">×</span>
+            <X className="eno-close__icon" aria-hidden strokeWidth={1.5} />
           </button>
           <p className="eno-kicker">Luxury voyages on the Nile</p>
-          <button
-            type="button"
-            className="btn eno-book eno-book--header"
-            onClick={handleBookNow}
-            tabIndex={open ? 0 : -1}
-          >
-            Book Now
-          </button>
         </header>
 
         <nav className="eno-nav" aria-label="Primary">
