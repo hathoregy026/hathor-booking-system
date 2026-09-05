@@ -397,14 +397,14 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 
 /*
- * Phone + tablet (<=1024): keep a compact collage like desktop, but with no
- * overlaps. Main plate on top, title in the clear band under it, then the two
- * lower frames side-by-side with a shared gap. Copy and actions stay below.
+ * Phone + tablet (<=1024): compact collage, no overlaps, even gutters.
+ * Main image full width; portrait spans the right stack so title sits in the
+ * top-right cube beside the portrait (not on a full-width band).
  *
  *   SUITES AT REST
  *   [======== main ========]
- *   [        ] [FRAMED…]
- *   [portrait] [detail]
+ *   [portrait] [FRAMED…]
+ *   [        ] [detail]
  *   MADE FOR LIVING + body
  *   actions
  */
@@ -421,17 +421,19 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-canvas {
+    --srh-gap: 0.65rem;
     display: grid !important;
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
     grid-template-areas:
       "kicker kicker"
-      "main main"
+      "hero hero"
+      "portrait title"
       "portrait detail"
       "copy copy"
       "actions actions" !important;
-    align-items: start !important;
-    column-gap: 0.7rem !important;
-    row-gap: 0.7rem !important;
+    align-items: stretch !important;
+    column-gap: var(--srh-gap) !important;
+    row-gap: var(--srh-gap) !important;
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
@@ -477,31 +479,20 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     text-shadow: none !important;
   }
 
+  /* Flatten main so img + title join the parent collage grid. */
   .srh-frame--main {
-    grid-area: main;
-    z-index: 1;
-    display: grid !important;
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
-    column-gap: 0.7rem !important;
-    row-gap: 0.65rem !important;
-    align-items: start !important;
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: auto !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-    overflow: visible !important;
+    display: contents !important;
   }
 
   .srh-frame--main > img {
-    grid-column: 1 / -1;
+    grid-area: hero;
     display: block !important;
     width: 100% !important;
     height: auto !important;
     aspect-ratio: 16 / 11 !important;
     object-fit: cover !important;
     object-position: center 48% !important;
-    border-radius: 0 0 1.25rem 1.25rem !important;
+    border-radius: 0 0 1.15rem 1.15rem !important;
     transform: none !important;
     animation: none !important;
   }
@@ -510,18 +501,20 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     display: none !important;
   }
 
-  /* Title lives in the right cube under the main plate (above the detail frame). */
   .srh-title {
-    grid-column: 2;
-    position: relative !important;
-    inset: auto !important;
+    grid-area: title;
     z-index: 2;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
     width: 100% !important;
     max-width: none !important;
+    min-height: 0 !important;
     margin: 0 !important;
-    padding: 0.1rem 0 0 !important;
-    font-size: clamp(1.55rem, 7.4vw, 2.35rem) !important;
-    line-height: 0.86 !important;
+    padding: 0.15rem 0.1rem 0.2rem !important;
+    font-size: clamp(1.35rem, 6.4vw, 1.95rem) !important;
+    line-height: 0.88 !important;
     letter-spacing: -0.045em !important;
     text-align: left !important;
     color: #17140f !important;
@@ -533,13 +526,19 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     grid-area: portrait;
     z-index: 1;
     width: 100% !important;
-    aspect-ratio: 3 / 4 !important;
+    height: 100% !important;
+    min-height: 0 !important;
     margin: 0 !important;
+    aspect-ratio: auto !important;
     border-radius: 5.5rem 5.5rem 0.25rem 0.25rem !important;
     overflow: hidden !important;
+    align-self: stretch !important;
   }
 
   .srh-frame--portrait img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
     object-position: 45% center !important;
     transform: none !important;
     animation: none !important;
@@ -549,16 +548,21 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     grid-area: detail;
     z-index: 1;
     width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
     aspect-ratio: 5 / 4 !important;
-    margin: 0.85rem 0 0 !important;
     border: 2px solid #f3ede4 !important;
-    border-radius: 1.15rem !important;
+    border-radius: 1.05rem !important;
     overflow: hidden !important;
-    box-shadow: 0 0.75rem 1.75rem rgba(20, 18, 14, 0.12) !important;
-    align-self: end !important;
+    box-shadow: 0 0.65rem 1.5rem rgba(20, 18, 14, 0.11) !important;
+    align-self: stretch !important;
   }
 
   .srh-frame--detail img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
     transform: none !important;
     animation: none !important;
   }
@@ -566,7 +570,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   .srh-copy {
     grid-area: copy;
     z-index: 2;
-    margin: 0.15rem 0 0 !important;
+    margin: 0.1rem 0 0 !important;
     max-width: 100% !important;
   }
 
@@ -598,7 +602,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     position: relative !important;
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.45rem !important;
+    gap: var(--srh-gap) !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0.45rem !important;
@@ -620,9 +624,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
 @media (min-width: 481px) and (max-width: 1024px) {
   .srh-canvas {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) !important;
-    column-gap: 1rem !important;
-    row-gap: 0.85rem !important;
+    --srh-gap: 0.85rem;
     padding-inline: clamp(1.5rem, 4vw, 2.5rem) !important;
     padding-bottom: 1.5rem !important;
   }
@@ -631,19 +633,14 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     font-size: clamp(2.35rem, 5.4vw, 3.25rem) !important;
   }
 
-  .srh-frame--main {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) !important;
-    column-gap: 1rem !important;
-    row-gap: 0.8rem !important;
-  }
-
   .srh-frame--main > img {
     aspect-ratio: 16 / 9 !important;
-    border-radius: 0 0 1.65rem 1.65rem !important;
+    border-radius: 0 0 1.45rem 1.45rem !important;
   }
 
   .srh-title {
-    font-size: clamp(2.05rem, 4.6vw, 2.85rem) !important;
+    font-size: clamp(1.85rem, 4.2vw, 2.55rem) !important;
+    padding: 0.25rem 0.15rem 0.3rem !important;
   }
 
   .srh-frame--portrait {
@@ -651,8 +648,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--detail {
-    margin-top: 1.15rem !important;
-    border-radius: 1.35rem !important;
+    border-radius: 1.25rem !important;
   }
 
   .srh-copy__title {
@@ -666,21 +662,24 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   .srh-actions {
     max-width: 34rem !important;
-    gap: 0.55rem !important;
   }
 }
 
 @media (max-width: 480px) {
+  .srh-canvas {
+    --srh-gap: 0.55rem;
+  }
+
   .srh-frame--main > img {
     aspect-ratio: 5 / 4 !important;
   }
 
-  .srh-copy__title {
-    max-width: 11ch;
+  .srh-title {
+    font-size: clamp(1.25rem, 6vw, 1.7rem) !important;
   }
 
-  .srh-frame--detail {
-    margin-top: 0.55rem !important;
+  .srh-copy__title {
+    max-width: 11ch;
   }
 }
 
