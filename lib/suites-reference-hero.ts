@@ -403,7 +403,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
  *
  *   SUITES AT REST
  *   [======== main ========]
- *   FRAMED BY THE NILE
+ *   [        ] [FRAMED…]
  *   [portrait] [detail]
  *   MADE FOR LIVING + body
  *   actions
@@ -480,10 +480,11 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   .srh-frame--main {
     grid-area: main;
     z-index: 1;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0.65rem !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
+    column-gap: 0.7rem !important;
+    row-gap: 0.65rem !important;
+    align-items: start !important;
     width: 100% !important;
     height: auto !important;
     aspect-ratio: auto !important;
@@ -493,6 +494,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--main > img {
+    grid-column: 1 / -1;
     display: block !important;
     width: 100% !important;
     height: auto !important;
@@ -508,17 +510,20 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     display: none !important;
   }
 
-  /* Title sits in the clear band under the main plate — not on the photo. */
+  /* Title lives in the right cube under the main plate (above the detail frame). */
   .srh-title {
+    grid-column: 2;
     position: relative !important;
     inset: auto !important;
     z-index: 2;
     width: 100% !important;
+    max-width: none !important;
     margin: 0 !important;
     padding: 0.1rem 0 0 !important;
-    font-size: clamp(1.95rem, 9.2vw, 2.85rem) !important;
+    font-size: clamp(1.55rem, 7.4vw, 2.35rem) !important;
     line-height: 0.86 !important;
     letter-spacing: -0.045em !important;
+    text-align: left !important;
     color: #17140f !important;
     -webkit-text-fill-color: #17140f !important;
     text-shadow: none !important;
@@ -627,7 +632,9 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--main {
-    gap: 0.8rem !important;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) !important;
+    column-gap: 1rem !important;
+    row-gap: 0.8rem !important;
   }
 
   .srh-frame--main > img {
@@ -636,7 +643,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-title {
-    font-size: clamp(2.55rem, 5.8vw, 3.6rem) !important;
+    font-size: clamp(2.05rem, 4.6vw, 2.85rem) !important;
   }
 
   .srh-frame--portrait {
@@ -666,10 +673,6 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 @media (max-width: 480px) {
   .srh-frame--main > img {
     aspect-ratio: 5 / 4 !important;
-  }
-
-  .srh-title {
-    max-width: 13ch;
   }
 
   .srh-copy__title {
