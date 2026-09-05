@@ -397,16 +397,14 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 }
 
 /*
- * Phone + tablet (≤1024): leave the desktop absolute collage alone.
- * Recompose into a tall vertical story — images stacked, titles divided
- * between plates — so nothing overlaps and type stays legible.
+ * Phone + tablet (<=1024): keep a compact collage like desktop, but with no
+ * overlaps. Main plate on top, title in the clear band under it, then the two
+ * lower frames side-by-side with a shared gap. Copy and actions stay below.
  *
- * Order:
  *   SUITES AT REST
- *   [main plate]
+ *   [======== main ========]
  *   FRAMED BY THE NILE
- *   [portrait]
- *   [detail]
+ *   [portrait] [detail]
  *   MADE FOR LIVING + body
  *   actions
  */
@@ -423,18 +421,25 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-canvas {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
+    grid-template-areas:
+      "kicker kicker"
+      "main main"
+      "portrait detail"
+      "copy copy"
+      "actions actions" !important;
+    align-items: start !important;
+    column-gap: 0.7rem !important;
+    row-gap: 0.7rem !important;
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     overflow: visible !important;
     padding:
-      max(5.75rem, calc(env(safe-area-inset-top, 0px) + 4.75rem))
-      clamp(1rem, 4.2vw, 1.75rem)
-      max(1.5rem, env(safe-area-inset-bottom, 0px)) !important;
+      max(5.5rem, calc(env(safe-area-inset-top, 0px) + 4.5rem))
+      clamp(0.95rem, 4vw, 1.5rem)
+      max(1.15rem, env(safe-area-inset-bottom, 0px)) !important;
     box-sizing: border-box !important;
   }
 
@@ -453,18 +458,18 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     right: auto !important;
     bottom: auto !important;
     left: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: auto !important;
+    max-width: none !important;
     height: auto !important;
     translate: none !important;
     transform: none !important;
   }
 
   .srh-kicker {
-    order: 1;
+    grid-area: kicker;
     z-index: 2;
-    margin: 0 0 1.15rem !important;
-    font-size: clamp(2.35rem, 11vw, 3.55rem) !important;
+    margin: 0 !important;
+    font-size: clamp(1.85rem, 8.4vw, 2.75rem) !important;
     line-height: 0.88 !important;
     letter-spacing: -0.04em !important;
     color: #17140f !important;
@@ -473,12 +478,12 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--main {
-    order: 2;
+    grid-area: main;
     z-index: 1;
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 0 !important;
+    gap: 0.65rem !important;
     width: 100% !important;
     height: auto !important;
     aspect-ratio: auto !important;
@@ -491,10 +496,10 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     display: block !important;
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 5 / 4 !important;
+    aspect-ratio: 16 / 11 !important;
     object-fit: cover !important;
     object-position: center 48% !important;
-    border-radius: 0 0 1.65rem 1.65rem !important;
+    border-radius: 0 0 1.25rem 1.25rem !important;
     transform: none !important;
     animation: none !important;
   }
@@ -503,20 +508,15 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     display: none !important;
   }
 
-  /* Title leaves the photo and sits between the main plate and the lower images. */
+  /* Title sits in the clear band under the main plate — not on the photo. */
   .srh-title {
     position: relative !important;
     inset: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
     z-index: 2;
     width: 100% !important;
-    max-width: 100% !important;
-    margin: 1.35rem 0 1.25rem !important;
-    padding: 0 !important;
-    font-size: clamp(2.55rem, 12.2vw, 3.85rem) !important;
+    margin: 0 !important;
+    padding: 0.1rem 0 0 !important;
+    font-size: clamp(1.95rem, 9.2vw, 2.85rem) !important;
     line-height: 0.86 !important;
     letter-spacing: -0.045em !important;
     color: #17140f !important;
@@ -525,13 +525,12 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--portrait {
-    order: 3;
+    grid-area: portrait;
     z-index: 1;
-    width: 78% !important;
-    max-width: 22rem !important;
+    width: 100% !important;
     aspect-ratio: 3 / 4 !important;
-    margin: 0 auto 0.9rem 0 !important;
-    border-radius: 7rem 7rem 0.35rem 0.35rem !important;
+    margin: 0 !important;
+    border-radius: 5.5rem 5.5rem 0.25rem 0.25rem !important;
     overflow: hidden !important;
   }
 
@@ -542,16 +541,16 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--detail {
-    order: 4;
+    grid-area: detail;
     z-index: 1;
-    width: 86% !important;
-    max-width: 26rem !important;
-    aspect-ratio: 16 / 11 !important;
-    margin: 0 0 1.45rem auto !important;
+    width: 100% !important;
+    aspect-ratio: 5 / 4 !important;
+    margin: 0.85rem 0 0 !important;
     border: 2px solid #f3ede4 !important;
-    border-radius: 1.35rem !important;
+    border-radius: 1.15rem !important;
     overflow: hidden !important;
-    box-shadow: 0 1rem 2.5rem rgba(20, 18, 14, 0.14) !important;
+    box-shadow: 0 0.75rem 1.75rem rgba(20, 18, 14, 0.12) !important;
+    align-self: end !important;
   }
 
   .srh-frame--detail img {
@@ -560,14 +559,14 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-copy {
-    order: 5;
+    grid-area: copy;
     z-index: 2;
-    margin: 0 0 1.5rem !important;
+    margin: 0.15rem 0 0 !important;
     max-width: 100% !important;
   }
 
   .srh-copy__title {
-    font-size: clamp(2.15rem, 10vw, 3.25rem) !important;
+    font-size: clamp(1.7rem, 8vw, 2.45rem) !important;
     line-height: 0.88 !important;
     letter-spacing: -0.04em !important;
     color: #17140f !important;
@@ -576,107 +575,109 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   .srh-copy__body {
     display: block !important;
-    max-width: 22rem !important;
-    margin: 0.65rem 0 0 !important;
-    font-size: clamp(0.82rem, 3.4vw, 0.98rem) !important;
-    line-height: 1.5 !important;
+    max-width: 28rem !important;
+    margin: 0.4rem 0 0 !important;
+    font-size: clamp(0.78rem, 3.2vw, 0.92rem) !important;
+    line-height: 1.45 !important;
     color: rgb(64 55 37 / 0.82) !important;
     -webkit-text-fill-color: rgb(64 55 37 / 0.82) !important;
   }
 
   .srh-copy__line {
-    display: block !important;
+    display: inline !important;
   }
 
   .srh-actions {
-    order: 6;
+    grid-area: actions;
     z-index: 2;
     position: relative !important;
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.55rem !important;
+    gap: 0.45rem !important;
     width: 100% !important;
-    margin: 0 0 0.5rem !important;
-    padding: 0.55rem !important;
-    border-radius: 1.1rem !important;
+    margin: 0 !important;
+    padding: 0.45rem !important;
+    border-radius: 1rem !important;
     translate: none !important;
   }
 
   .srh-actions a {
     width: 100% !important;
     min-width: 0 !important;
-    height: 2.85rem !important;
+    height: 2.65rem !important;
     min-height: 44px !important;
-    padding: 0.25rem 0.55rem !important;
-    font-size: clamp(0.58rem, 2.4vw, 0.72rem) !important;
-    letter-spacing: 0.14em !important;
+    padding: 0.2rem 0.45rem !important;
+    font-size: clamp(0.54rem, 2.2vw, 0.68rem) !important;
+    letter-spacing: 0.12em !important;
     white-space: nowrap !important;
   }
 }
 
 @media (min-width: 481px) and (max-width: 1024px) {
   .srh-canvas {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) !important;
+    column-gap: 1rem !important;
+    row-gap: 0.85rem !important;
     padding-inline: clamp(1.5rem, 4vw, 2.5rem) !important;
-    padding-bottom: 2rem !important;
+    padding-bottom: 1.5rem !important;
   }
 
   .srh-kicker {
-    font-size: clamp(2.85rem, 6.5vw, 4rem) !important;
-    margin-bottom: 1.45rem !important;
+    font-size: clamp(2.35rem, 5.4vw, 3.25rem) !important;
   }
 
   .srh-frame--main {
-    aspect-ratio: auto !important;
-    border-radius: 0 !important;
+    gap: 0.8rem !important;
   }
 
   .srh-frame--main > img {
-    aspect-ratio: 16 / 10 !important;
-    border-radius: 0 0 2rem 2rem !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 0 0 1.65rem 1.65rem !important;
   }
 
   .srh-title {
-    margin: 1.65rem 0 1.45rem !important;
-    font-size: clamp(3.1rem, 7.2vw, 4.6rem) !important;
+    font-size: clamp(2.55rem, 5.8vw, 3.6rem) !important;
   }
 
   .srh-frame--portrait {
-    width: min(48%, 18rem) !important;
-    margin-bottom: 1.1rem !important;
+    border-radius: 7rem 7rem 0.35rem 0.35rem !important;
   }
 
   .srh-frame--detail {
-    width: min(62%, 28rem) !important;
-    margin-bottom: 1.75rem !important;
+    margin-top: 1.15rem !important;
+    border-radius: 1.35rem !important;
   }
 
   .srh-copy__title {
-    font-size: clamp(2.55rem, 5.4vw, 3.6rem) !important;
+    font-size: clamp(2.15rem, 4.6vw, 3rem) !important;
   }
 
   .srh-copy__body {
-    max-width: 28rem !important;
-    font-size: clamp(0.9rem, 1.8vw, 1.05rem) !important;
+    max-width: 32rem !important;
+    font-size: clamp(0.88rem, 1.7vw, 1.02rem) !important;
   }
 
   .srh-actions {
-    max-width: 32rem !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 0.65rem !important;
+    max-width: 34rem !important;
+    gap: 0.55rem !important;
   }
 }
 
 @media (max-width: 480px) {
   .srh-frame--main > img {
-    aspect-ratio: 4 / 3 !important;
+    aspect-ratio: 5 / 4 !important;
   }
 
   .srh-title {
-    max-width: 12.5ch;
+    max-width: 13ch;
   }
 
   .srh-copy__title {
-    max-width: 10ch;
+    max-width: 11ch;
+  }
+
+  .srh-frame--detail {
+    margin-top: 0.55rem !important;
   }
 }
 
