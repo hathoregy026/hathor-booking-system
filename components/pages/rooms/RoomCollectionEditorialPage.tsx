@@ -14,7 +14,10 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { RoomAmenityIcon } from "@/components/pages/rooms/RoomAmenityIcon";
+import {
+  RoomAmenityIcon,
+  resolveAmenityCaption,
+} from "@/components/pages/rooms/RoomAmenityIcon";
 import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
@@ -136,33 +139,12 @@ function ApertureHeroShell({
   );
 }
 
-function WipePair({
-  base,
-  overlay,
-  baseAlt,
-  overlayAlt,
-  className = "",
-}: {
-  base: string;
-  overlay: string;
-  baseAlt: string;
-  overlayAlt: string;
-  className?: string;
-}) {
-  return (
-    <div className={`ac-wipe ${className}`} data-ac-wipe>
-      <Frame src={base} alt={baseAlt} className="ac-wipe__base" />
-      <Frame src={overlay} alt={overlayAlt} className="ac-wipe__over" />
-    </div>
-  );
-}
-
 function BentoFive({ room }: { room: RoomShowcase }) {
   const shots = room.images.slice(0, 5);
   const labels = ["Primary", "Detail", "Light", "Bath", "View"];
 
   return (
-    <div className="ac-bento" aria-label={`${room.name} — five preview frames`}>
+    <div className="ac-bento" aria-label={`${room.name} — five preview views`}>
       {shots.map((src, index) => (
         <Frame
           key={`${room.slug}-${index}`}
@@ -172,11 +154,21 @@ function BentoFive({ room }: { room: RoomShowcase }) {
           priority={index === 0}
         />
       ))}
-      <p className="ac-bento__stamp" aria-hidden="true">
-        <span>{String(shots.length).padStart(2, "0")}</span> frames
-      </p>
     </div>
   );
+}
+
+/** "Luxury King Bed" → Luxury / King Bed; "Luxury Royal Suite" → Luxury / Royal Suite */
+function splitResidenceTitle(name: string): { lineA: string; lineB: string } {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length <= 1) return { lineA: name.trim(), lineB: "" };
+  if (parts[0]?.toLowerCase() === "luxury") {
+    return { lineA: "Luxury", lineB: parts.slice(1).join(" ") };
+  }
+  return {
+    lineA: parts[0] ?? name,
+    lineB: parts.slice(1).join(" "),
+  };
 }
 
 function SelectionPills({ room }: { room: RoomShowcase }) {
@@ -207,18 +199,73 @@ function SelectionPills({ room }: { room: RoomShowcase }) {
   );
 }
 
+/*
+ * Balanced column count for a provision list: fill the fewest rows the cap
+ * allows, then spread the items evenly across them. Sixteen cabin provisions
+ * resolve to 8 × 2 on desktop and 4 × 4 on phone; the nine-item suite lists
+ * resolve to 5 + 4 and 3 × 3 instead of leaving a lone orphan cell.
+ */
+function charterColumns(count: number, cap: number) {
+  if (count < 1) return cap;
+  return Math.max(2, Math.ceil(count / Math.ceil(count / cap)));
+}
+
 function CharterGrid({ room }: { room: RoomShowcase }) {
+  const count = room.amenities.length;
+  const columns = {
+    lg: charterColumns(count, 8),
+    md: charterColumns(count, 6),
+    sm: charterColumns(count, 4),
+  };
+
   return (
-    <ul className="ac-charter">
-      {room.amenities.map((item, index) => (
-        <li key={`${room.slug}-${item}`} className="ac-charter__cell">
-          <span className="ac-charter__index">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <RoomAmenityIcon label={item} />
-          <p className="ac-charter__label">{item}</p>
-        </li>
-      ))}
+    <ul
+      className="ac-charter"
+      style={
+        {
+          "--ac-charter-lg": columns.lg,
+          "--ac-charter-md": columns.md,
+          "--ac-charter-sm": columns.sm,
+        } as CSSProperties
+      }
+    >
+      {room.amenities.map((item, index) => {
+        const caption = resolveAmenityCaption(item);
+        /* A cell that opens a row drops its column hairline at that width. */
+        const opens = [
+          index % columns.md === 0 ? "is-row-open-md" : "",
+          index % columns.lg === 0 ? "is-row-open-lg" : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        return (
+          <li
+            key={`${room.slug}-${item}`}
+            className={`ac-charter__cell${opens ? ` ${opens}` : ""}`}
+            title={item}
+          >
+            <span className="ac-charter__cube" aria-hidden="true">
+              <RoomAmenityIcon label={item} />
+            </span>
+            <p className="ac-charter__label">
+              <span
+                className="ac-charter__caption ac-charter__caption--wide"
+                aria-hidden="true"
+              >
+                {caption.wide}
+              </span>
+              <span
+                className="ac-charter__caption ac-charter__caption--tight"
+                aria-hidden="true"
+              >
+                {caption.tight}
+              </span>
+              <span className="ac-charter__full">{item}</span>
+            </p>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -418,12 +465,8 @@ export function RoomCollectionEditorialPage({
                 </ApertureHeroShell>
               </Scene>
 
-              {/* 02 · Tier triptych — collection facts (not manifesto / hours) */}
+              {/* 02 · Tier facts — 2×2 specs above statement, compact height */}
               <Scene className="ac-tier">
-                <div className="ac-tier__copy">
-                  <Kicker>{config.tierKicker}</Kicker>
-                  <p className="ac-edit">{config.tierStatement}</p>
-                </div>
                 <ul className="ac-tier__triptych">
                   {config.ledger.map((item) => (
                     <li key={item.label} className="ac-tier__cell">
@@ -433,13 +476,14 @@ export function RoomCollectionEditorialPage({
                     </li>
                   ))}
                 </ul>
+                <div className="ac-tier__copy">
+                  <Kicker>{config.tierKicker}</Kicker>
+                  <p className="ac-edit">{config.tierStatement}</p>
+                </div>
               </Scene>
 
               {rooms.map((room, roomIndex) => {
-                const images = room.images.slice(0, 5);
-                const nameParts = room.name.split(/\s+/);
-                const lineA = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(" ");
-                const lineB = nameParts.slice(Math.ceil(nameParts.length / 2)).join(" ");
+                const { lineA, lineB } = splitResidenceTitle(room.name);
 
                 return (
                   <div key={room.slug} className="ac-residence">
@@ -461,12 +505,11 @@ export function RoomCollectionEditorialPage({
                             <AnimaSplitLine line={0}>{lineA}</AnimaSplitLine>
                           </span>
                           {lineB ? (
-                            <span className="ac-rise ac-rise--shift wt-page-hero-second">
+                            <span className="ac-rise wt-page-hero-second">
                               <AnimaSplitLine line={1}>{lineB}</AnimaSplitLine>
                             </span>
                           ) : null}
                         </h2>
-                        <p className="ac-support wt-page-body">{room.description}</p>
                         <ul className="ac-spec-rail">
                           <li>
                             <span>Space</span>
@@ -481,11 +524,12 @@ export function RoomCollectionEditorialPage({
                             <strong>Panoramic Nile</strong>
                           </li>
                         </ul>
+                        <p className="ac-support wt-page-body">{room.description}</p>
                         <SelectionPills room={room} />
                       </div>
                     </Scene>
 
-                    {/* B · Five-frame bento — imagery after text */}
+                    {/* B · Five preview images only — no wipe / no frame numbers */}
                     <Scene className="ac-bento-scene">
                       <div className="ac-bento-scene__head">
                         <Kicker>Preview sequence</Kicker>
@@ -496,28 +540,6 @@ export function RoomCollectionEditorialPage({
                       </div>
                       <BentoFive room={room} />
                     </Scene>
-
-                    {/*
-                     * B2 · Continuity wipe — own sticky panel at full stage
-                     * width (see .ac-wipe-scene + pinFullBleedSizes). Nesting
-                     * under the bento clipped it; a rem-capped width let it
-                     * peek beside the mosaic. Full occupancy so scrub covers
-                     * the stage before the track continues.
-                     */}
-                    {images[1] && images[2] ? (
-                      <Scene
-                        className="ac-wipe-scene"
-                        aria-label={`${room.name} — detail sequence`}
-                      >
-                        <WipePair
-                          className="ac-wipe-scene__pair"
-                          base={images[1]}
-                          overlay={images[2]}
-                          baseAlt={`${room.name} interior`}
-                          overlayAlt={`${room.name} detail`}
-                        />
-                      </Scene>
-                    ) : null}
 
                     {/* C · Guest charter — provisions grid */}
                     <Scene className="ac-charter-scene">

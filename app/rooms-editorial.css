@@ -8,7 +8,7 @@
    ========================================================================== */
 
 .accom-editorial-shell {
-  --font-hathor-display: "Gamgote", Georgia, serif;
+  --font-hathor-display: "Italiana", Georgia, serif;
   position: relative;
   min-height: 100vh;
   overflow-x: clip;
@@ -42,21 +42,22 @@
   --ac-gold-deep: #806b35;
   --ac-wash-sand: #ded4c6;
   --ac-wash-stone: #cfc7ba;
-  --ac-wash-olive: #adaa8a;
+  /* Deep warm ink — pops bright cabin photos vs the old mid olive #adaa8a */
+  --ac-wash-olive: #1c1a16;
   --ac-night: #0b0a08;
   --ac-hair: rgb(20 18 14 / 16%);
 
-  /* Gamgote-led display — same Hathor family, not Contact's Italiana stack */
-  --ac-display: var(--font-hathor-display), "Gamgote", Georgia, serif;
-  --ac-edit: "Playfair Display", Georgia, "Times New Roman", serif;
+  /* Match Contact display stack + fluid scale (ce-t-xl / l / m / s) */
+  --ac-display: "Italiana", var(--font-hathor-display), "Gamgote", Georgia, serif;
+  --ac-edit: "Italiana", var(--font-hathor-display), Georgia, serif;
   --ac-meta: var(--font-hathor-body), "Piloner Thin", "Helvetica Neue", Arial,
     sans-serif;
   --ac-support-face: "Rollgates Luxury Italic", "Playfair Display", Georgia, serif;
 
-  --ac-t-folio: clamp(3.4rem, 10vw, 9.5rem);
-  --ac-t-chapter: clamp(2.4rem, 6.8vw, 6.2rem);
-  --ac-t-landing: clamp(2.2rem, 5.5vw, 4.8rem);
-  --ac-t-edit: clamp(1.35rem, 2.4vw, 2.35rem);
+  --ac-t-folio: clamp(3.1rem, 9.4vw, 11rem);
+  --ac-t-chapter: clamp(2.5rem, 6.6vw, 7.6rem);
+  --ac-t-landing: clamp(1.9rem, 4vw, 4.4rem);
+  --ac-t-edit: clamp(1.35rem, 2.2vw, 2.5rem);
   --ac-t-body: clamp(0.95rem, 1.05vw, 1.12rem);
   --ac-t-meta: clamp(0.66rem, 0.72vw, 0.8rem);
 
@@ -102,17 +103,18 @@ html:has(.accom-catalog) .public-fab {
 }
 
 .accom-catalog .ac-title,
+.accom-catalog .ac-edit,
 .accom-catalog .wt-page-hero,
 .accom-catalog .wt-page-hero-second {
-  font-family: var(--typo-hero-title-font, var(--ac-display)) !important;
+  font-family: "Italiana", Georgia, serif !important;
 }
 
 .accom-catalog .wt-page-hero-second {
-  font-family: var(--typo-hero-subtitle-font, var(--ac-display)) !important;
+  font-family: "Italiana", Georgia, serif !important;
 }
 
 .accom-catalog .wt-page-title {
-  font-family: var(--typo-page-title-font, var(--ac-display)) !important;
+  font-family: "Italiana", Georgia, serif !important;
 }
 
 .accom-catalog .wt-page-body,
@@ -195,11 +197,12 @@ html:has(.accom-catalog) .public-fab {
 }
 
 .accom-catalog .ac-edit {
-  font-family: var(--ac-edit);
-  font-weight: 300;
+  font-family: var(--ac-display);
+  font-weight: 400;
   font-size: var(--ac-t-edit);
-  line-height: 1.12;
-  font-style: italic;
+  line-height: 1.06;
+  font-style: normal;
+  letter-spacing: -0.01em;
 }
 
 .accom-catalog .ac-edit--sm {
@@ -518,35 +521,39 @@ html:has(.accom-catalog) .public-fab {
   }
 }
 
-/* 02 tier triptych */
+/* 02 tier — compact 2×2 specs above statement (kills empty top band) */
 .ac-tier {
-  width: min(92vw, 76rem);
+  width: min(72vw, 42rem);
   background: var(--ac-wash-sand);
-  display: grid;
-  grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 3vw, 3rem);
-  align-items: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.85rem, 1.6vw, 1.35rem);
+  align-items: stretch;
+  padding-block: clamp(1.25rem, 2.5vw, 2rem);
 }
 
 .ac-tier__copy {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.45rem;
+  max-width: 38rem;
 }
 
 .ac-tier__triptych {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--ac-gap);
+  width: 100%;
 }
 
 .ac-tier__cell {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.85rem 0.65rem;
+  gap: 0.25rem;
+  padding: 0.85rem 0.7rem;
   border: 1px solid var(--ac-hair);
-  background: rgb(236 228 218 / 55%);
+  background: rgb(247 243 236 / 88%);
   transform: translateY(calc((1 - var(--reveal, 1)) * 1rem));
   opacity: calc(0.35 + var(--reveal, 1) * 0.65);
   transition:
@@ -556,15 +563,19 @@ html:has(.accom-catalog) .public-fab {
 
 .ac-tier__value {
   font-family: var(--ac-display);
-  font-size: clamp(1.6rem, 3vw, 2.8rem);
-  line-height: 0.95;
+  font-size: clamp(1.85rem, 3.6vw, 2.85rem);
+  line-height: 0.92;
+  font-weight: 400;
+  color: var(--ac-ink);
+  letter-spacing: -0.02em;
 }
 
 .ac-tier__label {
   font-size: var(--ac-t-meta);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ac-gold-deep);
+  color: var(--ac-ink);
+  font-weight: 500;
 }
 
 .ac-tier__note {
@@ -583,36 +594,46 @@ html:has(.accom-catalog) .public-fab {
 }
 
 .ac-chapter__glyph {
-  font-family: var(--ac-edit);
+  font-family: var(--ac-display);
   font-size: var(--ac-t-edit);
-  font-style: italic;
-  color: var(--ac-gold);
+  font-style: normal;
+  color: var(--ac-ink);
+  opacity: 0.72;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   justify-self: center;
+  letter-spacing: 0.04em;
 }
 
 .ac-chapter__body {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.55rem;
   min-width: 0;
 }
 
 .ac-spec-rail {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem 1.2rem;
-  margin-top: 0.35rem;
-  padding-top: 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 1rem;
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
   border-top: 1px solid var(--ac-hair);
+  border-bottom: 1px solid var(--ac-hair);
+  order: 0;
 }
 
 .ac-spec-rail li {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  min-width: 6.5rem;
+  min-width: 0;
+}
+
+.ac-spec-rail li:last-child {
+  grid-column: 1 / -1;
 }
 
 .ac-spec-rail span {
@@ -623,7 +644,7 @@ html:has(.accom-catalog) .public-fab {
 }
 
 .ac-spec-rail strong {
-  font-family: var(--ac-edit);
+  font-family: var(--ac-display);
   font-weight: 400;
   font-size: var(--ac-t-body);
 }
@@ -650,49 +671,55 @@ html:has(.accom-catalog) .public-fab {
 
 .ac-bento-scene .ac-kicker,
 .ac-bento-scene .ac-meta {
-  color: rgb(243 237 228 / 0.82);
+  color: rgb(243 237 228 / 0.9);
 }
 
 .ac-bento {
   position: relative;
   display: grid;
-  grid-template-columns: 1.35fr 0.65fr 0.65fr;
-  grid-template-rows: 1.1fr 0.9fr 0.75fr;
+  /*
+   * 2×2 stack + one tall frame on the right. Equal 1fr rows so the tall
+   * image matches the combined height of the two raw images.
+   */
+  grid-template-columns: 1fr 1fr 1.15fr;
+  grid-template-rows: 1fr 1fr;
   gap: var(--ac-gap);
-  /* Fit the sticky stage with head + stamp — was overflowing with the wipe. */
   flex: 1 1 auto;
   min-height: 0;
-  height: min(62svh, 30rem);
-  max-height: calc(100% - 5.5rem);
+  height: min(68svh, 34rem);
+  max-height: calc(100% - 4.25rem);
+  align-items: stretch;
 }
 
 .ac-bento__cell--1 {
-  grid-row: 1 / span 3;
-  min-height: clamp(12rem, 28vw, 20rem);
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  min-height: 0;
 }
 
 .ac-bento__cell--2 {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
 }
 
 .ac-bento__cell--3 {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
 }
 
 .ac-bento__cell--4 {
-  grid-column: 2;
-  grid-row: 2 / span 2;
+  grid-column: 1;
+  grid-row: 2;
 }
 
 .ac-bento__cell--5 {
-  grid-column: 3;
-  grid-row: 2 / span 2;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .ac-bento__cell {
-  min-height: clamp(6.5rem, 12vw, 10rem);
+  min-height: 0;
+  height: 100%;
   transform: translateY(calc((1 - var(--reveal, 1)) * 0.9rem));
   opacity: calc(0.4 + var(--reveal, 1) * 0.6);
   transition:
@@ -701,20 +728,7 @@ html:has(.accom-catalog) .public-fab {
 }
 
 .ac-bento__stamp {
-  position: absolute;
-  right: 0;
-  /* Stay inside the stage — negative offset was clipped by overflow:hidden. */
-  bottom: 0.35rem;
-  font-size: var(--ac-t-meta);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-shadow: 0 1px 10px rgb(20 18 14 / 45%);
-}
-
-.ac-bento__stamp span {
-  font-family: var(--ac-display);
-  font-size: var(--ac-t-edit);
-  margin-right: 0.35em;
+  display: none;
 }
 
 /*
@@ -743,62 +757,175 @@ html:has(.accom-catalog) .public-fab {
   opacity: calc(0.55 + var(--reveal, 1) * 0.45);
 }
 
-/* charter grid */
+/*
+ * Charter grid — the cabin edit. One outlined square per provision, a hairline
+ * column rule between them on desktop, caption engraved beneath. The component
+ * publishes the column count for each width as --ac-charter-lg / -md / -sm, so
+ * a sixteen-item cabin list and a nine-item suite list both resolve to a
+ * balanced block instead of an orphan row.
+ */
 .ac-charter-scene {
   width: min(90vw, 74rem);
   background: var(--ac-wash-stone);
 }
 
 .ac-charter {
+  --ac-charter-cols: var(--ac-charter-sm, 4);
+  --ac-charter-box: clamp(3rem, 7.4vw, 3.55rem);
+  --ac-charter-rule: color-mix(in srgb, var(--ac-gold-deep) 32%, transparent);
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: repeat(var(--ac-charter-cols), minmax(0, 1fr));
+  width: min(100%, calc(var(--ac-charter-cols) * 8.4rem));
+  margin-inline: auto;
+  row-gap: clamp(1.05rem, 2.6vw, 1.7rem);
+  column-gap: clamp(0.35rem, 1.6vw, 0.9rem);
 }
 
 .ac-charter__cell {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  align-items: start;
-  gap: 0.55rem 0.65rem;
-  padding: 0.75rem 0.8rem;
-  border: 1px solid var(--ac-hair);
-  background: rgb(236 228 218 / 70%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding-inline: clamp(0.2rem, 0.8vw, 0.55rem);
+  border: none;
+  background: transparent;
   transform: translateY(calc((1 - var(--reveal, 1)) * 0.6rem));
   opacity: calc(0.45 + var(--reveal, 1) * 0.55);
   transition:
     transform 0.7s var(--ac-ease-soft),
-    opacity 0.7s var(--ac-ease-soft),
-    border-color 0.25s ease;
+    opacity 0.7s var(--ac-ease-soft);
 }
 
-.ac-charter__cell:hover {
-  border-color: var(--ac-gold);
+/*
+ * Column hairline, drawn on the boundary a cell shares with the one before it.
+ * Off below 951px, where the grid breathes on gaps instead.
+ */
+.ac-charter__cell::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: none;
+  width: 1px;
+  height: var(--ac-charter-box);
+  background: var(--ac-charter-rule);
 }
 
-.ac-charter__index {
-  font-family: var(--ac-edit);
-  font-style: italic;
-  font-size: var(--ac-t-meta);
+.ac-charter__cube {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ac-charter-box);
+  height: var(--ac-charter-box);
+  border: 1px solid var(--ac-gold-deep);
+  background: transparent;
   color: var(--ac-gold-deep);
-}
-
-.ac-charter__label {
-  grid-column: 1 / -1;
-  font-size: clamp(0.78rem, 0.88vw, 0.92rem);
-  line-height: 1.35;
-  padding-left: 1.6rem;
+  transition:
+    border-color 0.5s var(--ac-ease-soft),
+    background-color 0.5s var(--ac-ease-soft);
 }
 
 .ac-charter__icon {
   display: inline-flex;
-  width: 1.85rem;
-  height: 1.85rem;
-  color: var(--ac-gold-deep);
+  width: 58%;
+  height: 58%;
+  color: inherit;
 }
 
 .ac-charter__icon svg {
   width: 100%;
   height: 100%;
+}
+
+.ac-charter__label {
+  margin: 0;
+  color: var(--ac-ink);
+  text-align: center;
+}
+
+.ac-charter__caption {
+  display: block;
+  max-width: 13ch;
+  margin-inline: auto;
+}
+
+.ac-charter__caption--wide {
+  display: none;
+  font-size: clamp(0.6rem, 0.66vw, 0.7rem);
+  line-height: 1.5;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.ac-charter__caption--tight {
+  font-size: clamp(0.68rem, 2.5vw, 0.8rem);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+/* The full provision sentence stays in the document for assistive tech. */
+.ac-charter__full {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ac-charter__cell:hover .ac-charter__cube {
+    border-color: var(--ac-ink);
+    background: color-mix(in srgb, var(--ac-gold) 16%, transparent);
+  }
+}
+
+@media (min-width: 951px) {
+  .ac-charter {
+    --ac-charter-cols: var(--ac-charter-md, 6);
+    column-gap: 0;
+  }
+
+  .ac-charter__cell {
+    padding-inline: clamp(0.5rem, 1.2vw, 0.95rem);
+  }
+
+  .ac-charter__cell::before {
+    display: block;
+  }
+
+  .ac-charter__cell.is-row-open-md::before {
+    display: none;
+  }
+
+  .ac-charter__caption--wide {
+    display: block;
+  }
+
+  .ac-charter__caption--tight {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .ac-charter {
+    --ac-charter-cols: var(--ac-charter-lg, 8);
+    --ac-charter-box: clamp(3.3rem, 3.6vw, 4.1rem);
+    row-gap: clamp(1.3rem, 2vw, 2rem);
+  }
+
+  .ac-charter__cell.is-row-open-md::before {
+    display: block;
+  }
+
+  .ac-charter__cell.is-row-open-lg::before {
+    display: none;
+  }
 }
 
 /* Catalog action glyphs — beat the shared 1rem button-system icon cap. */
@@ -847,9 +974,9 @@ html:has(.accom-catalog) .public-fab {
 }
 
 .ac-bridge__name {
-  font-family: var(--ac-edit);
+  font-family: var(--ac-display);
   font-size: var(--ac-t-edit);
-  font-style: italic;
+  font-style: normal;
 }
 
 /* hold */
@@ -953,7 +1080,8 @@ html:has(.accom-catalog) .public-fab {
   }
 
   .ac-tier {
-    grid-template-columns: 1fr;
+    width: min(92vw, 36rem);
+    padding-block: clamp(1rem, 2vw, 1.5rem);
   }
 
   .ac-tier__triptych {
@@ -963,7 +1091,11 @@ html:has(.accom-catalog) .public-fab {
   .ac-tier__cell {
     align-items: center;
     text-align: center;
-    padding: 1rem 0.75rem;
+    padding: 0.9rem 0.65rem;
+  }
+
+  .ac-tier__value {
+    font-size: clamp(1.85rem, 5.5vw, 2.5rem);
   }
 
   .ac-chapter {
@@ -976,15 +1108,18 @@ html:has(.accom-catalog) .public-fab {
   }
 
   .ac-spec-rail {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.65rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem 0.85rem;
     text-align: center;
   }
 
   .ac-spec-rail li {
     align-items: center;
     min-width: 0;
+  }
+
+  .ac-spec-rail li:last-child {
+    grid-column: 1 / -1;
   }
 
   .ac-bento {
@@ -1028,23 +1163,6 @@ html:has(.accom-catalog) .public-fab {
     aspect-ratio: 16 / 10;
   }
 
-  .ac-charter {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .ac-charter__cell {
-    grid-template-columns: auto auto;
-    justify-content: center;
-    justify-items: center;
-    text-align: center;
-    padding: 0.85rem 0.7rem;
-  }
-
-  .ac-charter__label {
-    padding-left: 0;
-    text-align: center;
-  }
-
   .ac-landing__grid {
     grid-template-columns: 1fr;
   }
@@ -1056,9 +1174,8 @@ html:has(.accom-catalog) .public-fab {
     --ac-t-chapter: clamp(2rem, 9vw, 2.8rem);
   }
 
-  /* Keep cubes side-by-side on phone — do not collapse to a single stack. */
-  .ac-tier__triptych,
-  .ac-charter {
+  /* Keep the ledger cubes side-by-side on phone — never a single stack. */
+  .ac-tier__triptych {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.55rem;
   }
@@ -1068,7 +1185,11 @@ html:has(.accom-catalog) .public-fab {
   }
 
   .ac-spec-rail {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ac-spec-rail li:last-child {
+    grid-column: 1 / -1;
   }
 
   .ac-pill,
@@ -1284,45 +1405,24 @@ html:has(.accom-catalog) .public-fab {
     justify-content: center;
   }
 
-  .ac-tier__triptych,
-  .ac-charter {
-    gap: 0.4rem;
+  .ac-tier__triptych {
+    gap: 0.55rem;
   }
 
   .ac-tier__cell {
-    padding: 0.5rem 0.4rem;
-    gap: 0.08rem;
+    padding: 0.75rem 0.45rem;
+    gap: 0.2rem;
+    background: rgb(247 243 236 / 92%);
   }
 
   .ac-tier__value {
-    font-size: 1.25rem;
+    font-size: clamp(1.85rem, 9vw, 2.35rem);
+    color: var(--ac-ink);
   }
 
-  .ac-charter__cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.22rem;
-    padding: 0.45rem 0.35rem 0.5rem;
-    min-height: 0;
-  }
-
-  .ac-charter__index {
-    align-self: flex-start;
-    font-size: 0.58rem;
-    line-height: 1;
-  }
-
-  .ac-charter__icon {
-    width: 1.95rem;
-    height: 1.95rem;
-  }
-
-  .ac-charter__label {
-    font-size: 0.7rem;
-    line-height: 1.25;
-    padding-left: 0;
+  .ac-tier__label {
+    color: var(--ac-ink);
+    font-size: 0.62rem;
   }
 
   .accom-editorial-shell .lux-footer {

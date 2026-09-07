@@ -101,6 +101,9 @@
 
 /* ——— Top: Invitation ——— */
 .lux-footer__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 8rem 5vw 4rem;
   text-align: center;
 }
@@ -111,11 +114,16 @@
   /* Font / size / tracking from dashboard · Page title */
   /* Keep a readable cream-footer fallback if typography vars lag */
   color: var(--lux-text, #2c2824);
+  text-align: center;
+  width: 100%;
 }
 
 .lux-footer__subhead {
-  margin: 2rem auto 0;
-  max-width: 500px;
+  display: block;
+  margin: 1.25rem auto 0;
+  max-width: 34rem;
+  width: 100%;
+  text-align: center;
   /* Font / size / leading from dashboard · Body text */
   color: var(--lux-muted, #6b6560);
 }
@@ -129,7 +137,7 @@
 }
 
 .lux-footer__subscribe {
-  margin: 3rem auto 0;
+  margin: 2.25rem auto 0;
   max-width: 28rem;
   width: 100%;
 }
@@ -507,6 +515,10 @@
 @media (max-width: 768px) {
   .lux-footer__top {
     padding: 4rem 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .lux-footer__main {
@@ -592,10 +604,16 @@
 
   .lux-footer__top {
     padding: 2.25rem 1.15rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .lux-footer__subhead {
     margin-top: 0.85rem;
+    text-align: center;
+    max-width: 22rem;
   }
 
   .lux-footer__subscribe {

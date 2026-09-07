@@ -1245,7 +1245,6 @@ html[data-public-theme="night"] ::-webkit-scrollbar-track {
 /* ---- Raised editorial cards and panels ---- */
 html[data-public-theme="night"] :is(
     .ac-tier__cell,
-    .ac-charter__cell,
     .chr-datum,
     .pn-datum__frame,
     .cp-inquiry__card,
@@ -1267,7 +1266,6 @@ html[data-public-theme="night"] :is(.chr-passage:hover, .chr-passage.is-active) 
 
 html[data-public-theme="night"] :is(
     .ac-tier__cell,
-    .ac-charter__cell,
     .chr-datum,
     .pn-datum__frame,
     .cp-inquiry__card,
