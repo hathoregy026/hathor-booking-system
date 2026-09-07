@@ -348,10 +348,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ///anima scroll-intro && show header logo
         if(document.querySelector('.mod-scroll__intro')){
-
+            // Hathor Suites always mounts the reference collage over this
+            // intro. The legacy 100vw→80vw shrink + neighbour-image pull was
+            // the jump/flashback of old local stills across the hero — keep a
+            // near-instant stub so restInit/restScroll still boot.
             scroll_intro_tl = gsap.timeline({paused:true, 
                 onStart: ()=>{
-                    if(control) console.log('--start scroll_intro_tl');
+                    if(control) console.log('--start scroll_intro_tl (suites reference stub)');
                     
                 },
                 onComplete: ()=>{
@@ -363,107 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
-
-            // scroll_intro_tl.set('.logo__normal',{ opacity:1 },0)
-
-            if (header_logo && header_logo_normal) {
-            scroll_intro_tl.to(header_logo,{ width:'100%', duration: 1, ease: 'power2.in(2)' },.25)
-            scroll_intro_tl.to('.header__percent',{ opacity:0, duration: .5,  ease: 'linear' },.25)
-            scroll_intro_tl.to('.header__progress',{opacity:0, duration: .33, ease: 'linear'},.25)
-            scroll_intro_tl.to(header_logo,{ height:'100%', duration: 1, ease: 'power2.out(2)',onComplete: ()=>{
-                if(!is_mobile){
-                    //change header logo
-                    if(document.querySelector('.mod-scroll__intro.bg-black'))
-                        document.querySelector('.mod-scroll__intro__logo')?.classList.remove('c-black')
-                    gsap.set(header_logo_normal,{opacity:0})
-                    gsap.set(header_logo_group,{opacity:0,onComplete:()=>{ 
-                        header_logo_normal?.classList.add('d-none') 
-                    }})
-                    gsap.set(document.querySelector('.mod-scroll__intro__logo'),{opacity:1})
-                }
-                header_logo_normal?.classList.remove('disabled')
-            }},'<+=1.75')
-            scroll_intro_tl.to(header_logo_normal,{ top:posLogoMobile, duration: 1.75, ease: 'power2.out'},'<')
-            } else {
-                gsap.set(document.querySelector('.mod-scroll__intro__logo'),{opacity:1})
-            }
-
-            //anim titles intro
-            document.querySelectorAll('.mod-scroll__intro__title').forEach( (elem,index) => {
-                try {
-                const split = SplitText.create(elem, {type: "lines,chars", linesClass:'splitline clip-y', charsClass:'char'})
-                elem.querySelectorAll('.splitline').forEach( (el,ind) => {
-                    const posInit = (ind%2!=0) ? '-110%' : '110%';
-                    const delayTime = (ind==0) ? "<+=.05" : "<+=.05" ;
-                    scroll_intro_tl.from(el.querySelectorAll('.char'),{y:posInit, duration: .65, stagger: 0.03, ease: 'power3.out', immediateRender:false},delayTime)
-                } )
-                } catch (err) { console.warn('intro title split', err) }
-                
-            })
-
-            //anim paragraph intro
-            document.querySelectorAll('.mod-scroll__intro__text p').forEach( elem => {
-                try {
-                const split = SplitText.create(elem, {type: "lines",linesClass:'splitline clip-y'})
-                split.lines.forEach(elem => {
-                    const content = elem.innerHTML;
-                    elem.innerHTML = '<span>'+content+'</span>';
-                })
-                scroll_intro_tl.from(elem.querySelectorAll('span'),{y:'100%', duration: .5, stagger: 0.09, ease: 'power3.easeOut', immediateRender:false},"<+=.05")
-                } catch (err) { console.warn('intro text split', err) }
-            })
-
-            //anim width & image 
-            if(!is_mobile){
-                const introWrapper = document.querySelector('.mod-scroll__intro > .wrapper');
-                if (introWrapper) {
-                scroll_intro_tl.fromTo(introWrapper,
-                    {width:'100vw'},{width:'80vw', duration: 1.25,  ease: 'power3.out', onStart: () => {
-
-                        //if next module is .mod-scroll__images move image and set trigger
-                        const elems_scroll = document.querySelectorAll('.mod-scroll > *')
-                        if(elems_scroll[1]?.classList.contains('mod-scroll__images')){
-
-                            //move image
-                            const image = elems_scroll[1].querySelector('.mod-scroll__images__image-single')
-                            if (!image) return;
-                            gsap.fromTo(image,{x:'-5vw'},{x:'-15vw', duration: 1.25,  ease: 'power2.out', 
-                                onComplete: ()=>{
-
-                                    //set trigger
-                                    scroll_images_tl = gsap.timeline({paused:true});
-                                    scroll_images_tl.fromTo(image,{x:'-15vw'},{x:'0vw'})
-
-                                    ScrollTrigger.create({
-                                        containerAnimation: scroll_tl,
-                                        animation: scroll_images_tl,
-                                        trigger: image.closest('.mod-scroll__images'),
-                                        start: "0% 78%",
-                                        end: "90% 100%",
-                                        scrub: .5,
-                                        // toggleActions: 'play none none reverse',
-                                        // markers: true,
-                                    })
-
-                                } 
-                            })
-
-                        }
-                    } },'-=.5')
-                }
-            }
-
-            //anim rest elements
-            scroll_intro_tl.from(document.querySelectorAll('.mod-scroll__intro__menu .menu-item'),
-                {y:'2.5rem', duration: 1,  ease: 'power3.out', stagger: -.15, onStart: () => {
-                    //set links before
-                    setLink('.mod-scroll__intro__menu .menu-item')
-                } },'-=1')
-            scroll_intro_tl.from(document.querySelector('.mod-scroll__intro__section'),
-                {opacity:0, duration: .5,  ease: 'linear' },'-=.5')
-            scroll_intro_tl.from(document.querySelector('.mod-scroll__intro__copyright'),
-                {opacity:0, duration: .5,  ease: 'linear' },'-=.5')
-
+            scroll_intro_tl.set({}, {}, 0.01);
 
         }
 

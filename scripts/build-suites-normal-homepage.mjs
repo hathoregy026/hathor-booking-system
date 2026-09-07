@@ -19,32 +19,32 @@ const resolvedSource = await realpath(sourceRoot);
 const sourceIndex = path.join(resolvedSource, "source", "homepage.html");
 
 const hathorImages = [
-  "/media/hathor/scraped/suites-hero.webp",
-  "/media/hathor/scraped/suites-luxury-rooms.webp",
-  "/media/hathor/scraped/suites-luxury-suites.webp",
-  "/media/hathor/scraped/suites-royal.webp",
-  "/media/hathor/scraped/luxsuite-1.webp",
-  "/media/hathor/scraped/luxsuite-2.webp",
-  "/media/hathor/scraped/luxsuite-3.webp",
-  "/media/hathor/scraped/luxsuite-4.webp",
-  "/media/hathor/scraped/luxsuite-5.webp",
-  "/media/hathor/scraped/luxsuite-6.webp",
-  "/media/hathor/scraped/royal-1.webp",
-  "/media/hathor/scraped/royal-2.webp",
-  "/media/hathor/scraped/royal-3.webp",
-  "/media/hathor/scraped/royal-4.webp",
-  "/media/hathor/scraped/royal-5.webp",
-  "/media/hathor/scraped/royal-6.webp",
-  "/media/hathor/scraped/royal-7.webp",
-  "/media/hathor/scraped/royal-8.webp",
-  "/media/hathor/scraped/cabin-1.webp",
-  "/media/hathor/scraped/cabin-2.webp",
-  "/media/hathor/scraped/cabin-3.webp",
-  "/media/hathor/scraped/cabin-4.webp",
-  "/media/hathor/scraped/cabin-5.webp",
-  "/media/hathor/scraped/cabin-6.webp",
-  "/media/hathor/scraped/cabin-7.webp",
-  "/media/hathor/scraped/cabin-8.webp",
+  "/media/hathor/optimized/scraped-suites-hero.webp",
+  "/media/hathor/optimized/scraped-suites-luxury-rooms.webp",
+  "/media/hathor/optimized/scraped-suites-luxury-suites.webp",
+  "/media/hathor/optimized/scraped-suites-royal.webp",
+  "/media/hathor/optimized/scraped-luxsuite-1.webp",
+  "/media/hathor/optimized/scraped-luxsuite-2.webp",
+  "/media/hathor/optimized/scraped-luxsuite-3.webp",
+  "/media/hathor/optimized/scraped-luxsuite-4.webp",
+  "/media/hathor/optimized/scraped-luxsuite-5.webp",
+  "/media/hathor/optimized/scraped-luxsuite-6.webp",
+  "/media/hathor/optimized/scraped-royal-1.webp",
+  "/media/hathor/optimized/scraped-royal-2.webp",
+  "/media/hathor/optimized/scraped-royal-3.webp",
+  "/media/hathor/optimized/scraped-royal-4.webp",
+  "/media/hathor/optimized/scraped-royal-5.webp",
+  "/media/hathor/optimized/scraped-royal-6.webp",
+  "/media/hathor/optimized/scraped-royal-7.webp",
+  "/media/hathor/optimized/scraped-royal-8.webp",
+  "/media/hathor/optimized/scraped-cabin-1.webp",
+  "/media/hathor/optimized/scraped-cabin-2.webp",
+  "/media/hathor/optimized/scraped-cabin-3.webp",
+  "/media/hathor/optimized/scraped-cabin-4.webp",
+  "/media/hathor/optimized/scraped-cabin-5.webp",
+  "/media/hathor/optimized/scraped-cabin-6.webp",
+  "/media/hathor/optimized/scraped-cabin-7.webp",
+  "/media/hathor/optimized/scraped-cabin-8.webp",
   "/media/hathor/optimized/room-luxury.webp",
   "/media/hathor/optimized/room-royal.webp",
   "/media/hathor/optimized/room-suite.webp",
@@ -371,12 +371,45 @@ replaceContainedText("contacto@normalisboring.es", "reservations@hathorcruise.co
 
 $(".mod-scroll__carousel__text").text("HATHOR");
 
-$(".mod-scroll__intro__title").eq(0).html("Suites<br>of serenity");
-$(".mod-scroll__intro__title").eq(1).html("<br>where<br>the Nile");
-$(".mod-scroll__intro__title").eq(2).html("meets<br><em>luxury</em>");
-$(".mod-scroll__intro__text p").text(
-  "Aboard Hathor, every cabin and suite is shaped around the timeless Nile—private comfort, handcrafted detail, and panoramic river light from Luxor to Aswan.",
-);
+// Live reference collage replaces the clone's original SplitText intro.
+// Do not regenerate the old title/logo markup — it caused hero flashbacks.
+const referenceHeroMarkup = `
+  <div class="srh-canvas">
+    <p class="srh-kicker" aria-hidden="true">Suites<br>at rest</p>
+    <figure class="srh-frame srh-frame--portrait">
+      <img src="/media/hathor/optimized/scraped-suites-hero.webp" data-hathor-slot="scraped-suites-hero" alt="Guest enjoying panoramic Nile views from a Hathor suite" width="1280" height="853" decoding="async" fetchpriority="high">
+    </figure>
+    <figure class="srh-frame srh-frame--main">
+      <img src="/media/hathor/optimized/scraped-luxsuite-1.webp" data-hathor-slot="scraped-luxsuite-1" alt="Hathor suite bedroom with warm timber, soft seating, and private bath" width="1456" height="1088" decoding="async" fetchpriority="high">
+      <span class="srh-frame__wash" aria-hidden="true"></span>
+      <h1 class="srh-title">Framed<br>by the Nile</h1>
+    </figure>
+    <div class="srh-copy">
+      <p class="srh-copy__title">Made<br>for living</p>
+      <p class="srh-copy__body"><span class="srh-copy__line">Quiet, crafted comfort; river light;</span> <span class="srh-copy__line">the Nile just beyond the glass.</span></p>
+    </div>
+    <svg class="srh-connectors" aria-hidden="true" focusable="false">
+      <g class="srh-connectors__set">
+        <path class="srh-connector srh-connector--portrait"></path>
+        <circle class="srh-connector__dot" r="4"></circle>
+        <path class="srh-connector srh-connector--copy"></path>
+      </g>
+    </svg>
+    <figure class="srh-frame srh-frame--detail">
+      <img src="/media/hathor/optimized/scraped-luxsuite-5.webp" data-hathor-slot="scraped-luxsuite-5" alt="Hathor suite bed prepared for a restful night on the Nile" width="1456" height="1088" decoding="async" fetchpriority="high">
+    </figure>
+    <nav class="srh-actions" aria-label="Suites actions">
+      <a href="/luxury-cabins-Nile-Cruise" target="_top">View cabins</a>
+      <a href="/rooms" target="_top">View suites</a>
+      <a class="srh-actions__primary" href="/suites?book=1" target="_top">Book now</a>
+      <a href="/voyages" target="_top">View voyages</a>
+    </nav>
+  </div>
+`;
+const $intro = $(".mod-scroll__intro");
+$intro.addClass("suites-reference-hero");
+$intro.children(".wrapper").html(referenceHeroMarkup);
+
 $(".logo__normal").text("Hathor");
 $(".logo__is").text("Nile");
 $(".logo__boring").each((_, element) => {
@@ -386,21 +419,7 @@ $(".logo__boring").each((_, element) => {
     .remove();
   $(element).prepend("HATHOR");
 });
-$(".mod-scroll__intro__logo").html(
-  '<div class="logo__boring">HATHOR<div class="reg">®</div></div>',
-);
-if (!$("#hathor-intro-logo-wordmark").length) {
-  $(".mod-scroll__intro__logo").after(`<script id="hathor-intro-logo-wordmark">
-(function () {
-  var el = document.querySelector(".mod-scroll__intro__logo .logo__boring");
-  if (!el) return;
-  var reg = el.querySelector(".reg");
-  while (el.firstChild) el.removeChild(el.firstChild);
-  el.appendChild(document.createTextNode("HATHOR"));
-  if (reg) el.appendChild(reg);
-})();
-</script>`);
-}
+
 $("#preloader-js-js").attr("src", "scripts/preloader.js?v=hathor-wordmark-20260831");
 $("#animations-js-js").attr(
   "src",
@@ -539,8 +558,8 @@ $mosaic.addClass("mod-media--mosaic");
 $mosaic.find(".mod-media__item").removeClass("col-6 col-4 col-8");
 if ($mosaic.find(".mod-media__item").length < 4) {
   const extra = [
-    ["/media/hathor/scraped/royal-3.webp", "scraped-royal-3"],
-    ["/media/hathor/scraped/royal-4.webp", "scraped-royal-4"],
+    ["/media/hathor/optimized/scraped-royal-3.webp", "scraped-royal-3"],
+    ["/media/hathor/optimized/scraped-royal-4.webp", "scraped-royal-4"],
   ];
   extra.forEach(([src, slot], index) => {
     $mosaic.append(`<div class="media mod-media__item" data-delay="${0.2 + index * 0.1}">

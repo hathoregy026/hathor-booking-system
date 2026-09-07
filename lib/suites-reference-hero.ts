@@ -1,10 +1,44 @@
-const HERO_MARKUP = `
+/**
+ * Live CMS URLs for the reference hero collage. Never seed the old
+ * `/media/hathor/scraped/*` paths here — those are the pre-dashboard
+ * originals and cause a visible flash when `/api/suites-config` later
+ * swaps them for the live Supabase / optimized assets.
+ */
+export const SUITES_REFERENCE_HERO_IMAGE_DEFAULTS = {
+  "scraped-suites-hero":
+    "/media/hathor/optimized/scraped-suites-hero.webp",
+  "scraped-luxsuite-1":
+    "/media/hathor/optimized/scraped-luxsuite-1.webp",
+  "scraped-luxsuite-5":
+    "/media/hathor/optimized/scraped-luxsuite-5.webp",
+} as const;
+
+export type SuitesReferenceHeroSlot =
+  keyof typeof SUITES_REFERENCE_HERO_IMAGE_DEFAULTS;
+
+function heroImageSrc(
+  slot: SuitesReferenceHeroSlot,
+  images?: Record<string, string> | null,
+): string {
+  const live = images?.[slot]?.trim();
+  if (live) return live;
+  return SUITES_REFERENCE_HERO_IMAGE_DEFAULTS[slot];
+}
+
+export function buildSuitesReferenceHeroMarkup(
+  images?: Record<string, string> | null,
+): string {
+  const portrait = heroImageSrc("scraped-suites-hero", images);
+  const main = heroImageSrc("scraped-luxsuite-1", images);
+  const detail = heroImageSrc("scraped-luxsuite-5", images);
+
+  return `
   <div class="srh-canvas">
     <p class="srh-kicker" aria-hidden="true">Suites<br>at rest</p>
 
     <figure class="srh-frame srh-frame--portrait">
       <img
-        src="/media/hathor/scraped/suites-hero.webp"
+        src="${portrait}"
         data-hathor-slot="scraped-suites-hero"
         alt="Guest enjoying panoramic Nile views from a Hathor suite"
         width="1280"
@@ -16,7 +50,7 @@ const HERO_MARKUP = `
 
     <figure class="srh-frame srh-frame--main">
       <img
-        src="/media/hathor/scraped/luxsuite-1.webp"
+        src="${main}"
         data-hathor-slot="scraped-luxsuite-1"
         alt="Hathor suite bedroom with warm timber, soft seating, and private bath"
         width="1456"
@@ -43,7 +77,7 @@ const HERO_MARKUP = `
 
     <figure class="srh-frame srh-frame--detail">
       <img
-        src="/media/hathor/scraped/luxsuite-5.webp"
+        src="${detail}"
         data-hathor-slot="scraped-luxsuite-5"
         alt="Hathor suite bed prepared for a restful night on the Nile"
         width="1456"
@@ -61,6 +95,7 @@ const HERO_MARKUP = `
     </nav>
   </div>
 `;
+}
 
 export const SUITES_REFERENCE_HERO_CSS = `
 html body main .mod-scroll__intro.suites-reference-hero {
@@ -79,10 +114,13 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   display: block !important;
   width: 100% !important;
   max-width: none !important;
+  min-width: 100% !important;
   height: 100% !important;
   min-height: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  /* Clone scroll_intro_tl used to tween this to 80vw — keep full-bleed. */
+  transform: none !important;
 }
 
 .srh-canvas {
@@ -348,6 +386,37 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 @keyframes srh-copy-arrive {
   from { opacity: 0; transform: translateY(1.25rem); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/*
+ * After first settle the parent stamps data-srh-settled. Arrival keyframes must
+ * never replay when a late CMS sheet, font swap, or ScrollTrigger.refresh
+ * reflows the collage — that is the "lands, holds, loads again" jump.
+ */
+.srh-canvas[data-srh-settled] .srh-frame img {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: scale(1.035) !important;
+  filter: none !important;
+}
+
+.srh-canvas[data-srh-settled] :is(.srh-kicker, .srh-title, .srh-copy__title, .srh-copy__body, .srh-actions) {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.srh-canvas[data-srh-settled] .srh-connector {
+  animation: none !important;
+  stroke-dashoffset: 0 !important;
+  visibility: visible !important;
+}
+
+.srh-canvas[data-srh-settled] .srh-connector__dot {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  visibility: visible !important;
 }
 
 @keyframes srh-actions-arrive {
@@ -988,15 +1057,118 @@ export function layoutSuitesConnectors(doc: Document) {
   return true;
 }
 
-export function mountSuitesReferenceHero(doc: Document) {
+/**
+ * Soft-apply CMS URLs onto the reference hero collage only. Prefetches each
+ * new source so the painted frame never blanks to the previous (scraped)
+ * decode while the live asset loads.
+ */
+export function applySuitesReferenceHeroImages(
+  doc: Document,
+  images: Record<string, string>,
+): Promise<boolean> {
+  const canvas = doc.querySelector(".srh-canvas");
+  if (!canvas) return Promise.resolve(false);
+
+  const tasks: Promise<boolean>[] = [];
+  canvas.querySelectorAll("img[data-hathor-slot]").forEach((node) => {
+    const img = node as HTMLImageElement;
+    const slot = img.getAttribute("data-hathor-slot") || "";
+    const url = images[slot]?.trim();
+    if (!url || img.getAttribute("src") === url) return;
+
+    tasks.push(
+      new Promise<boolean>((resolve) => {
+        const probe = new Image();
+        const finish = () => {
+          if (img.getAttribute("src") !== url) {
+            img.setAttribute("src", url);
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        };
+        probe.onload = finish;
+        probe.onerror = finish;
+        probe.src = url;
+      }),
+    );
+  });
+
+  if (tasks.length === 0) return Promise.resolve(false);
+  return Promise.all(tasks).then((flags) => flags.some(Boolean));
+}
+
+/**
+ * Stops the clone's legacy intro timeline from shrinking the hero and
+ * sliding neighbouring local gallery stills into view. Safe to call
+ * repeatedly; no-ops when GSAP is not yet present.
+ */
+export function neutralizeSuitesCloneIntroMotion(doc: Document) {
+  const win = doc.defaultView as
+    | (Window & {
+        scroll_intro_tl?: { kill?: () => void; progress?: (n: number) => unknown };
+        gsap?: {
+          set: (target: unknown, vars: Record<string, unknown>) => void;
+          killTweensOf?: (target: unknown) => void;
+        };
+      })
+    | null;
+  if (!win) return;
+
+  const intro = doc.querySelector<HTMLElement>(".mod-scroll__intro.suites-reference-hero");
+  const wrapper = intro?.querySelector<HTMLElement>(":scope > .wrapper");
+  const neighbour = doc.querySelector<HTMLElement>(
+    ".mod-scroll__intro.suites-reference-hero ~ .mod-scroll__images.principal > .mod-scroll__images__image-single",
+  );
+
+  try {
+    win.scroll_intro_tl?.kill?.();
+  } catch {
+    /* Timeline may not exist yet. */
+  }
+
+  try {
+    if (wrapper) {
+      win.gsap?.killTweensOf?.(wrapper);
+      win.gsap?.set(wrapper, { clearProps: "width,transform,x,y" });
+      wrapper.style.removeProperty("width");
+      wrapper.style.removeProperty("transform");
+      wrapper.style.removeProperty("max-width");
+    }
+    if (neighbour) {
+      win.gsap?.killTweensOf?.(neighbour);
+      win.gsap?.set(neighbour, { clearProps: "transform,x,y" });
+      neighbour.style.removeProperty("transform");
+    }
+  } catch {
+    /* GSAP optional during early parse-time mount. */
+  }
+}
+
+export function mountSuitesReferenceHero(
+  doc: Document,
+  images?: Record<string, string> | null,
+) {
   const intro = doc.querySelector<HTMLElement>(".mod-scroll__intro");
   const wrapper = intro?.querySelector<HTMLElement>(":scope > .wrapper");
   if (!intro || !wrapper) return false;
 
   intro.classList.add("suites-reference-hero");
   if (!wrapper.querySelector(".srh-canvas")) {
-    wrapper.innerHTML = HERO_MARKUP;
+    wrapper.innerHTML = buildSuitesReferenceHeroMarkup(images);
+  } else if (images) {
+    // Canvas already baked into the clone — still stamp live URLs so the
+    // first painted frame matches CMS rather than any stale scraped src.
+    for (const [slot, url] of Object.entries(images)) {
+      if (!url?.trim()) continue;
+      wrapper
+        .querySelectorAll<HTMLImageElement>(`img[data-hathor-slot="${slot}"]`)
+        .forEach((img) => {
+          if (img.getAttribute("src") !== url) img.setAttribute("src", url);
+        });
+    }
   }
+  neutralizeSuitesCloneIntroMotion(doc);
   layoutSuitesConnectors(doc);
   return true;
 }

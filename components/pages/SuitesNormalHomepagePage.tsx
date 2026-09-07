@@ -6,10 +6,13 @@ import { usePublicTheme } from "@/components/public/PublicThemeProvider";
 import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import {
+  applySuitesReferenceHeroImages,
   layoutSuitesConnectors,
   mountSuitesReferenceHero,
+  neutralizeSuitesCloneIntroMotion,
   observeSuitesConnectors,
   SUITES_REFERENCE_HERO_CSS,
+  SUITES_REFERENCE_HERO_IMAGE_DEFAULTS,
 } from "@/lib/suites-reference-hero";
 import {
   injectSuitesLuxFooter,
@@ -476,11 +479,14 @@ function refreshSuitesHorizontalScroll(doc: Document) {
   script.remove();
 }
 
-/** Returns true when at least one image source actually changed. */
+/** Returns true when at least one non-hero image source actually changed. */
 function applyImages(doc: Document, images: Record<string, string>) {
   let changed = false;
   doc.querySelectorAll("img").forEach((node) => {
     const img = node as HTMLImageElement;
+    // Hero collage is soft-swapped separately so a late CMS response never
+    // blanks a painted frame back to the old scraped decode.
+    if (img.closest(".srh-canvas")) return;
     const current =
       img.getAttribute("data-hathor-slot") ||
       slotNameFromSuitesImageUrl(
@@ -508,6 +514,8 @@ function applyImages(doc: Document, images: Record<string, string>) {
 function prepareSuitesReferenceHero(
   iframe: HTMLIFrameElement,
   theme: string,
+  images?: Record<string, string> | null,
+  css?: string | null,
 ): { doc: Document; cms: HTMLStyleElement } | null {
   const doc = iframe.contentDocument;
   if (
@@ -530,13 +538,14 @@ function prepareSuitesReferenceHero(
 
   // Appended in cascade order: head, CMS overrides, tail.
   ensureStyle(doc, "hathor-suites-live", suitesCssHead());
-  const cms = ensureStyle(doc, "hathor-suites-cms", "");
+  // Seed CMS typography from the server so a late /api/suites-config answer
+  // does not rewrite the sheet after the first paint (that rewrite + refresh
+  // is the "lands, holds, loads again" jump).
+  const cms = ensureStyle(doc, "hathor-suites-cms", css ?? "");
   ensureStyle(doc, "hathor-suites-tail", suitesCssTail());
 
-  if (!mountSuitesReferenceHero(doc)) return null;
-  // Reveal is deferred to waitForHeroFonts() below. Flipping suitesReady here
-  // showed the clone's own typeface for a frame before Italiana/Piloner landed,
-  // which is what read as the hero "jumping" between fonts on arrival.
+  if (!mountSuitesReferenceHero(doc, images)) return null;
+  neutralizeSuitesCloneIntroMotion(doc);
   return { doc, cms };
 }
 
@@ -560,6 +569,41 @@ function waitForHeroFonts(doc: Document, timeoutMs = 1200) {
   ]);
 }
 
+function waitForCloneBoot(doc: Document, timeoutMs = 1800) {
+  if (doc.documentElement.dataset.suitesCloneBooted === "1") {
+    return Promise.resolve();
+  }
+  const win = doc.defaultView;
+  if (!win) return Promise.resolve();
+
+  return new Promise<void>((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      win.clearInterval(poll);
+      win.clearTimeout(fail);
+      win.removeEventListener("message", onMessage);
+      resolve();
+    };
+    const onMessage = (event: MessageEvent) => {
+      if (event.source !== win) return;
+      const data = event.data as { type?: string } | null;
+      if (data?.type === "hathor-suites-clone-booted") finish();
+    };
+    // The clone posts to parent; listen on the parent window.
+    window.addEventListener("message", onMessage);
+    const poll = win.setInterval(() => {
+      if (doc.documentElement.dataset.suitesCloneBooted === "1") finish();
+    }, 50);
+    const fail = win.setTimeout(finish, timeoutMs);
+  });
+}
+
+function markHeroSettled(doc: Document) {
+  doc.querySelector(".srh-canvas")?.setAttribute("data-srh-settled", "true");
+}
+
 type SuitesConfig = { css?: string; images?: Record<string, string> };
 
 function syncCloneTheme(iframe: HTMLIFrameElement | null, theme: string) {
@@ -567,23 +611,26 @@ function syncCloneTheme(iframe: HTMLIFrameElement | null, theme: string) {
   if (root) root.dataset.publicTheme = theme;
 }
 
-export function SuitesNormalHomepagePage() {
+export function SuitesNormalHomepagePage({
+  images: serverImages,
+  css: serverCss = "",
+}: {
+  images?: Record<string, string>;
+  css?: string;
+} = {}) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { theme } = usePublicTheme();
 
-  // Theme is read through a ref so it never re-creates apply(). It used to be a
-  // dependency, which made the whole pipeline run again the moment the provider
-  // resolved the stored theme after mount.
   const themeRef = useRef(theme);
-
-  // apply() legitimately runs more than once (an early pass mounts the hero
-  // before the clone finishes parsing, then the load pass corrects whatever the
-  // clone's own scripts changed). The config request must not: three separate
-  // passes each fired their own /api/suites-config, each sat for the full 8s CMS
-  // timeout, and each then re-ran the DOM work - which is what read as the page
-  // loading twice and lurching on arrival.
+  const imagesRef = useRef<Record<string, string>>({
+    ...SUITES_REFERENCE_HERO_IMAGE_DEFAULTS,
+    ...(serverImages ?? {}),
+  });
+  const cssRef = useRef(serverCss);
   const configRef = useRef<Promise<SuitesConfig> | null>(null);
   const revealedRef = useRef(false);
+  const settledRef = useRef(false);
+  const applyLockRef = useRef(false);
 
   const loadSuitesConfig = useCallback(() => {
     if (!configRef.current) {
@@ -594,121 +641,126 @@ export function SuitesNormalHomepagePage() {
     return configRef.current;
   }, []);
 
+  const softApplyConfig = useCallback(
+    async (doc: Document, cms: HTMLStyleElement, data: SuitesConfig) => {
+      const nextCss = data.css ?? "";
+      if (nextCss && cms.textContent !== nextCss) {
+        // Typography-only sheet; never touch the hero tail sheet that owns
+        // arrival keyframes.
+        cms.textContent = nextCss;
+        cssRef.current = nextCss;
+      }
+      if (data.images) {
+        imagesRef.current = { ...imagesRef.current, ...data.images };
+        await applySuitesReferenceHeroImages(doc, imagesRef.current);
+        applyImages(doc, data.images);
+      }
+    },
+    [],
+  );
+
   const apply = useCallback(async () => {
     const iframe = iframeRef.current;
-    if (!iframe) return;
-    const prepared = prepareSuitesReferenceHero(iframe, themeRef.current);
-    if (!prepared) return;
-    const { doc, cms } = prepared;
-
-    if (!doc.getElementById("hathor-bitho-ready-boot")) {
-      const boot = doc.createElement("script");
-      boot.id = "hathor-bitho-ready-boot";
-      boot.textContent = `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-bitho-ready"))return;function done(){d.classList.add("hathor-bitho-ready");}var fail=setTimeout(done,1000);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}document.fonts.load('italic 80px "Bitho Luxury"').then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-bitho-ready");}catch(x){}}})();`;
-      doc.head.appendChild(boot);
-    }
-
-    patchLogoWordmark(doc);
-    tagSuiteCollectionPanels(doc);
-    retargetCloneLinks(doc);
-    stripParenthesesFromSuitesCopy(doc);
-    neutralizeSuitesCircleButtons(doc);
-    injectSuitesLuxFooter(doc);
-    // Coalesced to one frame: refreshSuitesHorizontalScroll() calls
-    // ScrollTrigger.refresh(), which visibly re-seats the stage. It was being
-    // fired up to a dozen times per arrival from the stacked passes.
-    const runTermsFit = () => {
-      const view = doc.defaultView;
-      if (!view) return;
-      const state = doc.documentElement as HTMLElement & { __srhFitFrame?: number };
-      if (state.__srhFitFrame) view.cancelAnimationFrame(state.__srhFitFrame);
-      state.__srhFitFrame = view.requestAnimationFrame(() => {
-        state.__srhFitFrame = 0;
-        fitTermsToViewport(doc);
-        refreshSuitesHorizontalScroll(doc);
-      });
-    };
-    runTermsFit();
-    void doc.fonts?.ready.then(runTermsFit);
-
-    if (!doc.documentElement.dataset.hathorNavBound) {
-      doc.documentElement.dataset.hathorNavBound = "1";
-      doc.addEventListener(
-        "click",
-        (event) => {
-          const target = event.target;
-          if (!(target instanceof Element)) return;
-          const tagged = target.closest<HTMLElement>("[data-url]");
-          const url = tagged?.getAttribute("data-url") || "";
-          const next =
-            (url && hathorHrefFromClone(url)) ||
-            (url.startsWith("/") ? url : null);
-          if (!next) return;
-          event.preventDefault();
-          event.stopPropagation();
-          window.top?.location.assign(next);
-        },
-        true,
+    if (!iframe || applyLockRef.current) return;
+    applyLockRef.current = true;
+    try {
+      const prepared = prepareSuitesReferenceHero(
+        iframe,
+        themeRef.current,
+        imagesRef.current,
+        cssRef.current,
       );
-    }
+      if (!prepared) return;
+      const { doc, cms } = prepared;
 
-    // Reveal as soon as the hero itself is ready. This deliberately does NOT
-    // wait on /api/suites-config: that request can sit for its full 8s CMS
-    // timeout, and gating the reveal on it left the page blank until then.
-    if (!revealedRef.current) {
+      if (!doc.getElementById("hathor-bitho-ready-boot")) {
+        const boot = doc.createElement("script");
+        boot.id = "hathor-bitho-ready-boot";
+        boot.textContent = `(function(){try{var d=document.documentElement;if(d.classList.contains("hathor-bitho-ready"))return;function done(){d.classList.add("hathor-bitho-ready");}var fail=setTimeout(done,1000);if(!document.fonts||!document.fonts.load){clearTimeout(fail);done();return;}document.fonts.load('italic 80px "Bitho Luxury"').then(function(){clearTimeout(fail);done();}).catch(function(){clearTimeout(fail);done();});}catch(e){try{document.documentElement.classList.add("hathor-bitho-ready");}catch(x){}}})();`;
+        doc.head.appendChild(boot);
+      }
+
+      // After the first settle, only soft-apply CMS updates. Re-running
+      // ScrollTrigger.refresh / footer reinject / terms fit is what made the
+      // page look like it loaded a second time.
+      if (settledRef.current) {
+        try {
+          const data = await loadSuitesConfig();
+          await softApplyConfig(doc, cms, data);
+        } catch {
+          /* ignore */
+        }
+        return;
+      }
+
+      patchLogoWordmark(doc);
+      tagSuiteCollectionPanels(doc);
+      retargetCloneLinks(doc);
+      stripParenthesesFromSuitesCopy(doc);
+      neutralizeSuitesCircleButtons(doc);
+      injectSuitesLuxFooter(doc);
+      neutralizeSuitesCloneIntroMotion(doc);
+
+      if (!doc.documentElement.dataset.hathorNavBound) {
+        doc.documentElement.dataset.hathorNavBound = "1";
+        doc.addEventListener(
+          "click",
+          (event) => {
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+            const tagged = target.closest<HTMLElement>("[data-url]");
+            const url = tagged?.getAttribute("data-url") || "";
+            const next =
+              (url && hathorHrefFromClone(url)) ||
+              (url.startsWith("/") ? url : null);
+            if (!next) return;
+            event.preventDefault();
+            event.stopPropagation();
+            window.top?.location.assign(next);
+          },
+          true,
+        );
+      }
+
+      if (revealedRef.current) return;
       revealedRef.current = true;
-      void (async () => {
-        await waitForHeroFonts(doc);
 
-        // Give a responsive CMS a brief window to land so its css is in place
-        // before the first painted frame. A slow one (the read has an 8s
-        // timeout) must never hold the reveal - it just applies later.
-        const early = await Promise.race([
-          loadSuitesConfig().catch(() => null),
-          new Promise<null>((resolve) => {
-            window.setTimeout(() => resolve(null), 600);
+      await waitForHeroFonts(doc);
+      // Wait for the clone's own boot (restInit → ScrollTrigger.refresh) so
+      // that refresh happens while the iframe is still opacity:0.
+      await waitForCloneBoot(doc);
+
+      try {
+        const data = await Promise.race([
+          loadSuitesConfig(),
+          new Promise<SuitesConfig>((resolve) => {
+            window.setTimeout(() => resolve({}), 400);
           }),
         ]);
-        if (early?.css && cms.textContent !== early.css) cms.textContent = early.css;
-
-        layoutSuitesConnectors(doc);
-        // Reveal without waiting on a frame: requestAnimationFrame is frozen
-        // while the tab is backgrounded, so gating the reveal on it left the
-        // hero blank for anyone who opened the page in a background tab until
-        // they focused it. The extra measure below is only a refinement.
-        iframe.dataset.suitesReady = "true";
-        requestAnimationFrame(() => layoutSuitesConnectors(doc));
-      })();
-    }
-
-    try {
-      const data = await loadSuitesConfig();
-      // Only the CMS sheet is rewritten, so the hero's own rules - and the
-      // arrival animations under them - are never restarted by this update.
-      const nextCss = data.css ?? "";
-      const cssChanged = cms.textContent !== nextCss;
-      if (cssChanged) cms.textContent = nextCss;
-      const imagesChanged = data.images ? applyImages(doc, data.images) : false;
-
-      // This response can arrive many seconds after the hero has settled (the
-      // CMS read has an 8s timeout). Re-running the patches and re-seating
-      // ScrollTrigger when nothing actually changed is what made the page lurch
-      // long after it looked finished, so the pass is gated on real change.
-      if (cssChanged || imagesChanged) {
-        mountSuitesReferenceHero(doc);
-        patchLogoWordmark(doc);
-        tagSuiteCollectionPanels(doc);
-        retargetCloneLinks(doc);
-        stripParenthesesFromSuitesCopy(doc);
-        neutralizeSuitesCircleButtons(doc);
-        injectSuitesLuxFooter(doc);
-        runTermsFit();
-        layoutSuitesConnectors(doc);
+        await softApplyConfig(doc, cms, data);
+      } catch {
+        /* Clip-fix still applies if CMS is unreachable. */
       }
-    } catch {
-      /* Clip-fix still applies if CMS is unreachable. */
+
+      fitTermsToViewport(doc);
+      // One ScrollTrigger refresh while still hidden — never again on arrival.
+      refreshSuitesHorizontalScroll(doc);
+      layoutSuitesConnectors(doc);
+      neutralizeSuitesCloneIntroMotion(doc);
+      // Freeze arrival keyframes to their end state while still opacity:0, then
+      // reveal once. Prevents a mid-animation land that later "finishes again".
+      markHeroSettled(doc);
+      settledRef.current = true;
+      iframe.dataset.suitesReady = "true";
+
+      // Late config may still arrive; soft-apply only, no layout re-seat.
+      void loadSuitesConfig()
+        .then((data) => softApplyConfig(doc, cms, data))
+        .catch(() => undefined);
+    } finally {
+      applyLockRef.current = false;
     }
-  }, [loadSuitesConfig]);
+  }, [loadSuitesConfig, softApplyConfig]);
 
   useEffect(() => {
     let dispose: (() => void) | undefined;
@@ -743,7 +795,17 @@ export function SuitesNormalHomepagePage() {
 
     const mountAtParseTime = () => {
       const iframe = iframeRef.current;
-      if (iframe && prepareSuitesReferenceHero(iframe, themeRef.current)) return;
+      if (
+        iframe &&
+        prepareSuitesReferenceHero(
+          iframe,
+          themeRef.current,
+          imagesRef.current,
+          cssRef.current,
+        )
+      ) {
+        return;
+      }
       attempts += 1;
       if (active && attempts < 600) frame = requestAnimationFrame(mountAtParseTime);
     };
@@ -755,8 +817,6 @@ export function SuitesNormalHomepagePage() {
     };
   }, []);
 
-  // Theme is a cheap attribute swap on the clone document; it must not drag the
-  // whole mount/config pipeline along with it.
   useEffect(() => {
     themeRef.current = theme;
     syncCloneTheme(iframeRef.current, theme);
@@ -770,7 +830,7 @@ export function SuitesNormalHomepagePage() {
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-suites-hero-sym-20260905e"
+        src="/suites-normal/index.html?v=hathor-suites-hero-live-20260907b"
         title="Hathor Suites"
         onLoad={() => {
           void apply();
@@ -779,3 +839,4 @@ export function SuitesNormalHomepagePage() {
     </main>
   );
 }
+

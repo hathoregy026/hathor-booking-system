@@ -32,10 +32,9 @@ html:has(.suites-normal-clone) body {
 }
 
 /*
- * The frame stays hidden over the cream ground until the hero has mounted and
- * its display faces have loaded, so arrival never shows the clone's own
- * typeface first and then swaps. data-suites-ready is set by
- * SuitesNormalHomepagePage once fonts resolve (with a timeout fallback).
+ * The frame stays hidden over the cream ground until the hero has mounted,
+ * fonts are ready, and the clone has finished its own ScrollTrigger boot —
+ * so arrival never paints once and then jumps when that refresh lands.
  */
 .suites-normal-clone__frame {
   display: block;
@@ -44,7 +43,9 @@ html:has(.suites-normal-clone) body {
   border: 0;
   background: #f4e4cc;
   opacity: 0;
-  transition: opacity 0.45s ease;
+  /* Instant reveal once settled — a 0.45s fade made the second layout pass
+     feel like a second load. */
+  transition: none;
 }
 
 .suites-normal-clone__frame[data-suites-ready="true"] {

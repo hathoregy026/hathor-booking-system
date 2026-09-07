@@ -559,6 +559,16 @@ document.addEventListener('DOMContentLoaded', () => {
         //onlyOnce
         onlyOnce = true;
 
+        // Signal the parent iframe host that the clone boot (incl. the
+        // ScrollTrigger.refresh above) has finished, so it can reveal once
+        // instead of landing and then jumping when this refresh lands.
+        try {
+            document.documentElement.dataset.suitesCloneBooted = "1";
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: "hathor-suites-clone-booted" }, "*");
+            }
+        } catch (err) {}
+
     }
 
     ///INIT SWUP
