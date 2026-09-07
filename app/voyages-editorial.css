@@ -266,49 +266,104 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
 .vb-image-story__script {
   position: absolute;
   z-index: 4;
-  left: 39vw;
-  bottom: 7vh;
-  width: min(47rem, 52vw);
+  /* Stay inside the wide frame only — never cross the portrait or bleed off. */
+  left: 7vw;
+  bottom: 9vh;
+  width: min(34rem, 42vw);
+  max-width: calc(69vw - 8vw);
   color: var(--vb-cream-1);
   font-family: var(--vb-script);
-  font-size: var(--vb-t-l) !important;
-  line-height: 0.96;
+  font-size: clamp(1.55rem, 3.4vw, 3.6rem) !important;
+  line-height: 1.05;
   text-shadow: 0 4px 40px rgb(20 18 14 / 40%);
+  pointer-events: none;
   transform: translateY(calc((1 - var(--reveal, 1)) * 2.5rem));
   opacity: var(--reveal, 1);
 }
 .public-site p.vb-image-story__script {
   font-family: var(--vb-script);
-  font-size: var(--vb-t-l);
+  font-size: clamp(1.55rem, 3.4vw, 3.6rem);
   font-style: italic;
-  line-height: 0.96;
+  line-height: 1.05;
   letter-spacing: -0.005em;
 }
 
-/* 05 — the source's vertical carousel, recoloured in gold and cream. */
-.vb-ribbon { width: clamp(7rem, 9vw, 10rem); overflow: visible; background: var(--vb-gold-1); z-index: 8; }
-.vb-ribbon__track {
+/*
+ * 05 — Suites-style fixed stripe (mod-scroll__carousel / h3-carousel).
+ * The rail is a narrow clipped column. Rotation lives on the content shell.
+ * Only the inner marquee translates — the stripe never drifts.
+ */
+.vb-ribbon {
+  position: relative;
+  width: 1.5em;
+  padding: 0;
+  overflow: clip;
+  background: var(--vb-gold-3);
+  font-family: var(--vb-display);
+  font-size: clamp(2.6rem, 6.2vw, 6.4rem);
+  line-height: 1;
+  z-index: 8;
+  box-shadow: 0 -1px 0 var(--vb-gold-3);
+  flex-shrink: 0;
+}
+.vb-ribbon__content {
   position: absolute;
+  top: 0;
   left: 0;
-  top: 100%;
+  height: 1.5em;
   display: flex;
   align-items: center;
-  gap: 2rem;
-  height: clamp(7rem, 9vw, 10rem);
-  padding-inline: 2rem;
-  color: var(--vb-gold-3);
+  flex-wrap: nowrap;
+  /*
+   * Must be viewport height — NOT 100%. The shell is only 1.5em tall, so
+   * percentage translate barely moves it and leaves the black rail empty
+   * (broken cream blob + floating star). Suites / home-three use 100vh/svh.
+   */
+  transform: translateY(100svh) rotate(-90deg);
+  transform-origin: top left;
   background: var(--vb-cream-1);
-  font-family: var(--vb-display);
-  font-size: var(--vb-t-l);
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  line-height: 1;
-  white-space: nowrap;
-  transform: rotate(-90deg);
-  transform-origin: left top;
-  animation: vb-ribbon 16s linear infinite;
+  color: var(--vb-ink);
 }
-.vb-ribbon__track i { color: var(--vb-gold-2); font-family: var(--vb-body); font-size: 0.38em; font-style: normal; }
+.vb-ribbon__marquee {
+  position: relative;
+  display: flex;
+  width: max-content;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 2.5rem;
+  padding: 0.2em 2.5rem 0.2em 0;
+  will-change: transform;
+  animation: vb-ribbon 22s linear infinite;
+}
+.vb-ribbon__text {
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.vb-ribbon__mark {
+  display: block;
+  width: 0.38em;
+  height: 0.38em;
+  flex: 0 0 auto;
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  background: var(--vb-gold);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
 
 /* 06 — second image chapter. */
 .vb-secondary { width: 112vw; background: var(--vb-gold-1); }
@@ -398,8 +453,14 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
 .vb-project--2 { background: var(--vb-cream-2); }
 .vb-project--3 { background: var(--vb-gold-2); color: var(--vb-cream-1); }
 .vb-project--4 { background: var(--vb-cream-1); }
+.vb-project__media-frame {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+}
 .vb-project__media-wrap {
   min-height: 0;
+  height: 100%;
   overflow: hidden;
   clip-path: inset(0 calc((1 - var(--reveal, 1)) * 34%) 0 0);
   transform: translateX(calc((1 - var(--reveal, 1)) * 4vw));
@@ -457,21 +518,39 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   grid-column: 3;
   grid-row: 1 / 4;
   align-self: center;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid currentColor;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: var(--hathor-btn-width, 12.5rem);
+  height: var(--hathor-btn-height, 2.85rem);
+  padding: 0 1.55rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
   font-family: var(--vb-body);
-  font-size: var(--vb-t-meta);
-  font-weight: 300;
-  letter-spacing: 0.12em;
+  font-size: var(--hathor-btn-font-size, 0.72rem);
+  font-weight: 500;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
   text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background var(--hathor-btn-duration, 320ms) ease,
+    border-color var(--hathor-btn-duration, 320ms) ease,
+    color var(--hathor-btn-duration, 320ms) ease;
 }
 .vb-project__link span,
-.vb-charter__link span { display: inline-block; transition: transform 0.35s var(--vb-ease); }
-.vb-project__link:hover span,
-.vb-charter__link:hover span { transform: translate(0.35rem, -0.16rem); }
+.vb-charter__link span {
+  display: inline-block;
+}
+@media (hover: hover) and (pointer: fine) {
+  .vb-project__link:hover,
+  .vb-charter__link:hover {
+    background: var(--hathor-btn-hover-bg, #b69f64);
+    border-color: var(--hathor-btn-hover-border, #b69f64);
+    color: var(--hathor-btn-hover-text, #ffffff);
+  }
+}
 
 /* 10 — charter close with one final image wipe. */
 .vb-charter { display: grid; grid-template-columns: 49vw 45vw; width: 94vw; background: var(--vb-gold-3); color: var(--vb-cream-1); }
@@ -495,7 +574,30 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   line-height: 1.6;
   color: rgb(236 228 218 / 78%);
 }
-.vb-charter__link { align-self: flex-start; display: flex; gap: 1rem; margin-top: 7vh; padding-bottom: 0.65rem; border-bottom: 1px solid currentColor; font-family: var(--vb-body); font-size: var(--vb-t-meta); font-weight: 300; letter-spacing: 0.14em; text-transform: uppercase; }
+.vb-charter__link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 7vh;
+  min-width: var(--hathor-btn-width, 12.5rem);
+  height: var(--hathor-btn-height, 2.85rem);
+  padding: 0 1.55rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--vb-body);
+  font-size: var(--hathor-btn-font-size, 0.72rem);
+  font-weight: 500;
+  letter-spacing: var(--hathor-btn-tracking, 0.18em);
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background var(--hathor-btn-duration, 320ms) ease,
+    border-color var(--hathor-btn-duration, 320ms) ease,
+    color var(--hathor-btn-duration, 320ms) ease;
+}
 .vb-charter__media { width: 100%; height: 100%; background: var(--vb-gold-1); }
 
 .vb-reserve {
@@ -525,39 +627,36 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.4rem;
+  justify-content: center;
+  gap: 1rem;
   margin-top: 3.5rem;
+  width: min(18.75rem, calc(100% - 2rem));
+  margin-inline: auto;
+}
+/* Same exact pill size — overrides button-system max-content width. */
+.voyages-boring .vb-reserve__actions :is(.vb-reserve__button, .vb-reserve__secondary):not(#_) {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: var(--hathor-btn-height, 2.85rem) !important;
+  min-height: var(--hathor-btn-height, 2.85rem) !important;
+  max-height: var(--hathor-btn-height, 2.85rem) !important;
+  margin-inline: 0 !important;
+  justify-content: center !important;
 }
 .vb-reserve__button {
-  display: grid;
-  place-items: center;
-  width: clamp(9rem, 11vw, 11rem);
-  aspect-ratio: 1;
   margin-top: 0;
-  border: 1px solid var(--vb-ink);
-  border-radius: 50%;
-  background: var(--vb-ink);
-  color: var(--vb-paper);
-  font: 300 var(--vb-t-meta)/1 var(--vb-body);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   cursor: pointer;
-  transition: transform 0.45s var(--vb-ease), background 0.45s var(--vb-ease), color 0.45s var(--vb-ease);
 }
-.vb-reserve__button:hover { transform: rotate(-5deg) scale(1.04); background: var(--vb-gold); color: var(--vb-ink); }
 .vb-reserve__secondary {
-  padding-bottom: 0.35rem;
-  border-bottom: 1px solid currentColor;
   color: var(--vb-ink);
-  font-family: var(--vb-body);
-  font-size: var(--vb-t-meta);
-  font-weight: 300;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
 }
 
 @keyframes vb-ribbon {
-  to { translate: -50% 0; }
+  to {
+    transform: translateX(-50%);
+  }
 }
 @keyframes vb-cue {
   0%, 100% { transform: translateX(0); }
@@ -591,8 +690,24 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   .vb-image-story__wide { left: 3vw; width: 70vw; }
   .vb-image-story__portrait { right: 3vw; width: 38vw; }
 
-  .vb-ribbon { min-height: 9rem; overflow: hidden; }
-  .vb-ribbon__track { top: 0; width: max-content; height: 9rem; transform: none; animation-duration: 20s; }
+  .vb-ribbon {
+    width: 100%;
+    min-height: 0;
+    height: 1.5em;
+    font-size: clamp(2.2rem, 9vw, 3.6rem);
+    overflow: clip;
+  }
+  .vb-ribbon__content {
+    position: absolute;
+    inset: 0;
+    height: 1.5em;
+    width: 100%;
+    transform: none;
+    transform-origin: unset;
+  }
+  .vb-ribbon__marquee {
+    animation-duration: 20s;
+  }
 
   .vb-secondary { min-height: 88svh; }
   .vb-secondary__portrait { left: 4vw; width: 42vw; }
@@ -644,10 +759,18 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   .vb-image-story { min-height: 84svh; }
   .vb-image-story__wide { left: var(--vb-pad); top: 7%; width: 76%; height: 54%; }
   .vb-image-story__portrait { right: var(--vb-pad); top: 34%; width: 55%; height: 44%; border-width: 0.5rem; }
-  .vb-image-story__script { left: var(--vb-pad); bottom: 5%; width: 88%; }
+  .vb-image-story__script {
+    left: var(--vb-pad);
+    right: var(--vb-pad);
+    bottom: 5%;
+    width: auto;
+    max-width: none;
+    font-size: clamp(1.45rem, 7.2vw, 2.35rem) !important;
+  }
 
-  .vb-ribbon { min-height: 7rem; }
-  .vb-ribbon__track { height: 7rem; }
+  .vb-ribbon {
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
 
   .vb-secondary { min-height: 80svh; }
   .vb-secondary__portrait { left: var(--vb-pad); top: 6%; width: 52%; height: 58%; }
@@ -681,49 +804,17 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   .vb-reserve { min-height: 86svh; padding-block: 7rem; }
 }
 
-/* Phone ≤480 — underline CTAs become Discover More pills (geometry only). */
+/* Phone ≤480 — CTAs already DNA pills on all breakpoints; keep stacking room. */
 @media (max-width: 480px) {
-  .vb-reserve__button {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: max-content !important;
-    min-width: 0 !important;
-    max-width: calc(100vw - 2.2rem) !important;
-    height: 2.85rem !important;
-    min-height: 2.85rem !important;
-    aspect-ratio: auto !important;
-    padding: 0 1.55rem !important;
-    border-radius: 999px !important;
-    /* Keep existing fill / label colours — only leave the circle. */
-  }
-
-  .vb-reserve__secondary,
   .vb-project__link,
-  .vb-charter__link {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-sizing: border-box !important;
-    width: max-content !important;
-    max-width: calc(100vw - 2.2rem) !important;
-    height: 2.85rem !important;
-    min-height: 2.85rem !important;
-    padding: 0 1.55rem !important;
-    border: 1px solid currentColor !important;
-    border-radius: 999px !important;
-    border-bottom-width: 1px !important;
-    background: transparent !important;
-    text-decoration: none !important;
-    text-align: center !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.18em !important;
-    gap: 0.45rem !important;
+  .vb-charter__link,
+  .vb-reserve__secondary {
+    max-width: calc(100vw - 2.2rem);
   }
 
-  .vb-project__link span,
-  .vb-charter__link span {
-    transform: none !important;
+  /* Soften the footer wordmark so link columns stay readable. */
+  html:has(.voyages-boring) .lux-footer__bg-logo-img {
+    opacity: 0.028;
   }
 }
 
@@ -732,55 +823,24 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
   .vb-project__media-wrap,
   .vb-project__title,
   .vb-media__image { transition: none !important; transform: none !important; opacity: 1 !important; }
-  .vb-ribbon__track,
+  .vb-ribbon__marquee,
   .vb-intro__scroll i { animation: none !important; }
 }
 
-/* ------------------------------------------------------------------ */
-/* Favorites — additive only. No existing rule above is modified.       */
-/*                                                                      */
-/* .vb-project__content is already position: relative, so this reuses   */
-/* that context and adds none. The control is absolutely positioned and */
-/* therefore contributes no height: grid rows, the pinned track, the    */
-/* clip-path reveal and every ScrollTrigger measurement are unchanged.  */
-/* It is deliberately NOT placed inside .vb-project__media-wrap, which  */
-/* is overflow:hidden and carries the animated clip-path and transform. */
-/*                                                                      */
-/* Desktop/tablet: the empty lower half of the 4rem number column.      */
-/* ≤660px the content switches to display:block and the Details link    */
-/* moves into flow at the bottom, so the control moves to the top-right */
-/* of the number line instead.                                          */
-/* ------------------------------------------------------------------ */
-
-.vb-project__content .vb-project__fav {
-  position: absolute;
-  left: 0;
-  bottom: 3.2vh;
-  z-index: 2;
-}
-
-@media (max-width: 660px) {
-  .vb-project__content .vb-project__fav {
-    left: auto;
-    right: 0;
-    top: 1.2rem;
-    bottom: auto;
-  }
-}
-
 /*
- * Selection stack on voyage panels. Absolutely positioned inside the existing
- * position: relative .vb-project__content — no grid row, no height, no change
- * to any ScrollTrigger measurement, clip-path or transform.
+ * Selection discs sit on the photograph frame (top-right), outside the
+ * clipped media wrap so they stay visible during reveal and never cover copy.
  */
-.vb-project__content .vb-project__select {
+.vb-project__media-frame .vb-project__select {
   position: absolute;
-  left: 0;
-  bottom: 2.4vh;
-  z-index: 2;
+  top: 1rem;
+  right: 1rem;
+  z-index: 4;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 0.4rem;
+  pointer-events: auto;
 }
 
 .hathor-select-stack .hathor-fav--card,
@@ -791,12 +851,9 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
 }
 
 @media (max-width: 660px) {
-  .vb-project__content .vb-project__select {
-    left: auto;
-    right: 0;
-    top: 1rem;
-    bottom: auto;
-    flex-direction: row;
-    gap: 0.25rem;
+  .vb-project__media-frame .vb-project__select {
+    top: 0.75rem;
+    right: 0.75rem;
+    gap: 0.3rem;
   }
 }

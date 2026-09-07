@@ -311,12 +311,24 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                 </div>
               </Scene>
 
-              <Scene className="vb-ribbon">
-                <div className="vb-ribbon__track">
-                  {[...ribbonPhrases, ...ribbonPhrases].flatMap((phrase, index) => [
-                    <span key={`phrase-${index}`}>{phrase}</span>,
-                    <i key={`mark-${index}`}>✦</i>,
-                  ])}
+              {/*
+                Suites-style fixed stripe: the rail stays put; only the inner
+                marquee loops. Do not animate the column shell itself.
+              */}
+              <Scene className="vb-ribbon" aria-hidden="true">
+                <div className="vb-ribbon__content">
+                  <span className="vb-ribbon__marquee">
+                    {[...ribbonPhrases, ...ribbonPhrases].flatMap(
+                      (phrase, index) => [
+                        <b className="vb-ribbon__text" key={`phrase-${index}`}>
+                          {phrase}
+                        </b>,
+                        <i className="vb-ribbon__mark" key={`mark-${index}`}>
+                          ✦
+                        </i>,
+                      ],
+                    )}
+                  </span>
                 </div>
               </Scene>
 
@@ -409,13 +421,34 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
 
                 return (
                   <Scene className={`vb-project vb-project--${index + 1}`} key={voyage.id}>
-                    <div className="vb-project__media-wrap">
-                      <VoyageMedia
-                        slot={voyage.imageName}
-                        alt={voyage.name}
-                        className="vb-project__media"
-                        fit="contain"
-                      />
+                    <div className="vb-project__media-frame">
+                      <div className="vb-project__media-wrap">
+                        <VoyageMedia
+                          slot={voyage.imageName}
+                          alt={voyage.name}
+                          className="vb-project__media"
+                          fit="contain"
+                        />
+                      </div>
+                      {/*
+                        Outside the clipped wrap so discs stay visible during
+                        reveal and never sit on meta/body copy.
+                      */}
+                      <div className="hathor-select-stack vb-project__select">
+                        <FavoriteButton
+                          type="voyage"
+                          slug={voyage.slug}
+                          name={title}
+                          variant="card"
+                          showLabel={false}
+                        />
+                        <AddToVoyageButton
+                          kind="voyage"
+                          slug={voyage.slug}
+                          name={title}
+                          variant="card"
+                        />
+                      </div>
                     </div>
                     <div className="vb-project__content">
                       <span className="vb-project__number">0{index + 1}</span>
@@ -433,26 +466,6 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                       <Link className="vb-project__link" href={panel.detailsHref}>
                         {detailsLabel}<span>↗</span>
                       </Link>
-                      {/*
-                        Absolutely positioned inside the existing
-                        position: relative .vb-project__content — adds no grid
-                        row, no height, and no ScrollTrigger measurement change.
-                      */}
-                      <div className="hathor-select-stack vb-project__select">
-                        <FavoriteButton
-                          type="voyage"
-                          slug={voyage.slug}
-                          name={title}
-                          variant="inline"
-                          showLabel={false}
-                        />
-                        <AddToVoyageButton
-                          kind="voyage"
-                          slug={voyage.slug}
-                          name={title}
-                          variant="card"
-                        />
-                      </div>
                     </div>
                   </Scene>
                 );
@@ -514,10 +527,13 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
             {resolveCmsText(copy.ctaBody, VOYAGES_PAGE.cta.body)}
           </p>
           <div className="vb-reserve__actions">
-            <BookNowTrigger className="vb-reserve__button">
+            <BookNowTrigger className="vb-reserve__button btn btn-primary">
               {resolveCmsText(copy.ctaPrimary, VOYAGES_PAGE.cta.primary)}
             </BookNowTrigger>
-            <Link className="vb-reserve__secondary" href={VOYAGES_PAGE.cta.secondary.href}>
+            <Link
+              className="vb-reserve__secondary public-btn-outline-gold"
+              href={VOYAGES_PAGE.cta.secondary.href}
+            >
               {resolveCmsText(
                 copy.ctaSecondary,
                 VOYAGES_PAGE.cta.secondary.label,
