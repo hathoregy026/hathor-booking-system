@@ -19,6 +19,7 @@ import {
   type BlogPostDetailClient,
   type BlogPostSummaryClient,
 } from "@/lib/blog-display";
+import { blogCommercialLink } from "@/lib/seo/blog-commercial";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 
@@ -167,6 +168,7 @@ export function BlogPostPageContent({
 
   const publishedLabel = formatBlogPublishedDate(post.publishedAt);
   const supportSlot = getBlogSupportImageName(post.slug);
+  const commercial = blogCommercialLink(post.slug, post.title);
 
   return (
     <div ref={rootRef} className="article-editorial">
@@ -408,8 +410,8 @@ export function BlogPostPageContent({
               <BookNowTrigger className="ar-btn ar-btn--solid">
                 Book Now
               </BookNowTrigger>
-              <Link href="/cruises-list" className="ar-btn">
-                <span>Explore cruises</span>
+              <Link href={commercial.href} className="ar-btn">
+                <span>{commercial.label}</span>
               </Link>
               <Link href="/blogs" className="ar-btn">
                 <span>Full journal</span>
@@ -423,7 +425,7 @@ export function BlogPostPageContent({
             </span>
             <nav aria-label="Legal">
               <Link href="/contact">Contact</Link>
-              <Link href="/cruises-list">Cruises</Link>
+              <Link href="/voyages">Voyages</Link>
               <Link href="/blogs">Journal</Link>
             </nav>
           </div>

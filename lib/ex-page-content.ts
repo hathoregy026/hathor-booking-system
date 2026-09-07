@@ -167,7 +167,7 @@ export const EX_GALLERY = {
     {
       imageName: "moving-tilted-5" as SiteImageName,
       alt: "Suite interior aboard Hathor",
-      href: "/rooms",
+      href: "/suites",
     },
   ],
   /** Small indication under the gallery title — Instagram handle */

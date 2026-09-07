@@ -7,41 +7,45 @@ import {
   boatTripNode,
 } from "@/components/seo/PageStructuredData";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
+import { LUXOR_TO_ASWAN_SEO } from "@/lib/seo/page-metadata";
 import { buildVoyagesPageItems } from "@/lib/voyages-page-content";
-import { VOYAGES_SEO } from "@/lib/seo/page-metadata";
 
-export const metadata: Metadata = VOYAGES_SEO;
+export const metadata: Metadata = LUXOR_TO_ASWAN_SEO;
 
-export default async function VoyagesPage() {
+export default async function LuxorToAswanVoyagePage() {
   const cruises = await getHomepageAccordionCruisesSafe();
   const voyages = buildVoyagesPageItems(cruises);
+  const description =
+    typeof LUXOR_TO_ASWAN_SEO.description === "string"
+      ? LUXOR_TO_ASWAN_SEO.description
+      : "";
 
   return (
     <>
       <PageStructuredData
-        path="/voyages"
-        name="Nile Cruise Voyages from Luxor and Aswan | Hathor Dahabiya"
-        description={
-          typeof VOYAGES_SEO.description === "string"
-            ? VOYAGES_SEO.description
-            : ""
-        }
+        path="/voyages/luxor-to-aswan"
+        name="Luxor to Aswan Nile Cruise | Hathor Dahabiya"
+        description={description}
         breadcrumbs={[
           { name: "Home", path: "/" },
           { name: "Voyages", path: "/voyages" },
+          { name: "Luxor to Aswan", path: "/voyages/luxor-to-aswan" },
         ]}
         extra={[
           boatTripNode({
-            path: "/voyages",
-            name: "Hathor Dahabiya Nile itineraries",
-            description:
-              "Three, four and seven-night Hathor voyages between Luxor and Aswan.",
+            path: "/voyages/luxor-to-aswan",
+            name: "Luxor to Aswan Nile Cruise aboard Hathor Dahabiya",
+            description,
             departure: "Luxor",
             arrival: "Aswan",
           }),
         ]}
       />
-      <VoyagesPageContent voyages={voyages} />
+      <VoyagesPageContent
+        voyages={voyages}
+        heroTitleLinesOverride={["Luxor to", "Aswan", "Nile Cruise"]}
+        nonCharterDetailsHref="/cruises-list"
+      />
     </>
   );
 }

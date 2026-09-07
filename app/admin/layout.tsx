@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { AdminScrollUnlock } from "@/components/admin/AdminScrollUnlock";
 
 /* Admin design system, scoped to /admin (login + panel) instead of being
@@ -7,6 +8,10 @@ import { AdminScrollUnlock } from "@/components/admin/AdminScrollUnlock";
    without !important. */
 import "../admin.css";
 import "../admin-shell.css";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function AdminRootLayout({
   children,

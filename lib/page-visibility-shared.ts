@@ -146,6 +146,10 @@ export function resolveManagedPublicPage(
     return PATH_TO_PAGE.get("/blogs") ?? null;
   }
 
+  if (normalized.startsWith("/voyages/")) {
+    return PATH_TO_PAGE.get("/voyages") ?? null;
+  }
+
   return null;
 }
 

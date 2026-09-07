@@ -8,6 +8,7 @@ import {
   withPublicCmsClient,
   withTimeout,
 } from "@/lib/public-cms-client";
+import { voyageCommercialHref } from "@/lib/seo/keyword-map";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 export type HomepageAccordionCruise = {
@@ -106,7 +107,7 @@ function toAccordionCruise(
       cruise.basePriceCents,
       cruise.slug,
     ),
-    href: "/voyages",
+    href: voyageCommercialHref(cruise.slug),
   };
 }
 

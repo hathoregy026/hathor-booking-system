@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomeEditorialPage } from "@/components/pages/HomeEditorialPage";
+import {
+  PageStructuredData,
+  boatTripNode,
+} from "@/components/seo/PageStructuredData";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import { getHomepageAccordionCruisesSafe } from "@/lib/homepage-accordion-cruises";
@@ -10,6 +14,7 @@ import {
 } from "@/lib/hero-logo-tune-shared";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
+import { HOME_SEO } from "@/lib/seo/page-metadata";
 import "./home-dining-slider.css";
 import "./home-experience.css";
 import "./home-responsive.css";
@@ -17,41 +22,7 @@ import "./home-editorial.css";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
-  description:
-    "A private editorial journey through Hathor Dahabiya itineraries, life aboard, Nile landmarks, fine dining and luxury sailing.",
-  alternates: { canonical: "/" },
-  keywords: [
-    "Dahabiya Nile Cruise",
-    "Luxury Egypt Cruise",
-    "Private Nile Sailing",
-    "Hathor Dahabiya",
-    "Ultra Luxury Dahabiya Cruise",
-  ],
-  openGraph: {
-    title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
-    description:
-      "An editorial journey through the complete Hathor Dahabiya experience on the Nile.",
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: HATHOR_HERO_POSTER_SRC,
-        width: 1920,
-        height: 1080,
-        alt: "Hathor Dahabiya sailing the Nile",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
-    description:
-      "An editorial journey through the complete Hathor Dahabiya experience on the Nile.",
-    images: [HATHOR_HERO_POSTER_SRC],
-  },
-};
+export const metadata: Metadata = HOME_SEO;
 
 export default async function HomePage() {
   /*
@@ -71,6 +42,25 @@ export default async function HomePage() {
 
   return (
     <HomeExperienceShell>
+      <PageStructuredData
+        path="/"
+        name="Luxury Dahabiya Nile Cruise | Hathor Dahabiya"
+        description={
+          typeof HOME_SEO.description === "string" ? HOME_SEO.description : ""
+        }
+        breadcrumbs={[{ name: "Home", path: "/" }]}
+        image={HATHOR_HERO_POSTER_SRC}
+        extra={[
+          boatTripNode({
+            path: "/",
+            name: "Hathor Dahabiya — luxury Nile cruise, Luxor to Aswan",
+            description:
+              "A private twelve-guest Dahabiya sailing between Luxor and Aswan, with cabins, suites and Royal Suites.",
+            departure: "Luxor",
+            arrival: "Aswan",
+          }),
+        ]}
+      />
       {heroPoster ? (
         <link
           rel="preload"

@@ -182,9 +182,15 @@ const VALUE_IMAGES = [
 
 export type VoyagesPageContentProps = {
   voyages: HomepageAccordionCruise[];
+  heroTitleLinesOverride?: readonly string[];
+  nonCharterDetailsHref?: string;
 };
 
-export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
+export function VoyagesPageContent({
+  voyages,
+  heroTitleLinesOverride,
+  nonCharterDetailsHref,
+}: VoyagesPageContentProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -194,7 +200,10 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
   const copy = pages.voyages;
   const typography = useTypographySettings();
   const hero = resolveHeroPageCopy(typography, "voyages");
-  const heroTitleLines = stackedHeroLines(hero.main, hero.second);
+  const heroTitleLines =
+    heroTitleLinesOverride && heroTitleLinesOverride.length > 0
+      ? [...heroTitleLinesOverride]
+      : stackedHeroLines(hero.main, hero.second);
   const statementTitleLines = splitTitleLines(copy.statementTitle, [
     "Sail slowly",
     "Discover deeply",
@@ -420,7 +429,11 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                 const body = resolveCmsText(cms.body, panel.summary);
 
                 return (
-                  <Scene className={`vb-project vb-project--${index + 1}`} key={voyage.id}>
+                  <Scene
+                    className={`vb-project vb-project--${index + 1}`}
+                    id={voyage.slug}
+                    key={voyage.id}
+                  >
                     <div className="vb-project__media-frame">
                       <div className="vb-project__media-wrap">
                         <VoyageMedia
@@ -463,7 +476,14 @@ export function VoyagesPageContent({ voyages }: VoyagesPageContentProps) {
                         ) : null}
                       </p>
                       {body ? <p className="vb-project__body wt-page-body">{body}</p> : null}
-                      <Link className="vb-project__link" href={panel.detailsHref}>
+                      <Link
+                        className="vb-project__link"
+                        href={
+                          voyage.slug === "nile-majesty"
+                            ? panel.detailsHref
+                            : (nonCharterDetailsHref ?? panel.detailsHref)
+                        }
+                      >
                         {detailsLabel}<span>↗</span>
                       </Link>
                     </div>

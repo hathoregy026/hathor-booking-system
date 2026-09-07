@@ -293,7 +293,22 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise",
-        destination: "/charter",
+        destination: "/royal-suites",
+        permanent: true,
+      },
+      {
+        source: "/luxury-suites",
+        destination: "/rooms",
+        permanent: true,
+      },
+      {
+        source: "/rooms/dahabiya-nile-cruise-aswan-to-luxor",
+        destination: "/voyages/aswan-to-luxor",
+        permanent: true,
+      },
+      {
+        source: "/rooms/dahabiya-nile-cruise-luxor-to-aswan",
+        destination: "/voyages/luxor-to-aswan",
         permanent: true,
       },
       {

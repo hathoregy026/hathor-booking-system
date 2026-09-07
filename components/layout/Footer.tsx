@@ -19,20 +19,16 @@ function footerTheme(el: Element) {
 }
 
 const EXPERIENCE_LINKS = [
-  { href: "/wellness", label: "Wellness & Spa" },
-  { href: "/gastronomy", label: "Dining" },
-  { href: "/blogs", label: "Journal" },
-  { href: "/partners", label: "Partners" },
+  { href: "/voyages", label: "Our Voyages" },
+  { href: "/charter", label: "Private Charter" },
+  { href: "/suites", label: "Suites" },
+  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
 ] as const;
 
 const INFO_LINKS = [
+  { href: "/royal-suites", label: "Royal Suites" },
+  { href: "/blogs", label: "Journal" },
   { href: "/contact", label: "Contact Concierge" },
-  { href: "/contact", label: "FAQ" },
-  {
-    href: `mailto:${PUBLIC_CONTACT.email}?subject=${encodeURIComponent("Privacy Policy Inquiry")}`,
-    label: "Privacy Policy",
-    external: true,
-  },
   { href: "/terms-and-conditions", label: "Terms & Conditions" },
 ] as const;
 
@@ -410,11 +406,7 @@ export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
               <ul className="lux-footer__links">
                 {infoLinks.map((link) => (
                   <li key={link.label}>
-                    <FooterNavLink
-                      href={link.href}
-                      label={link.label}
-                      external={"external" in link && link.external}
-                    />
+                    <FooterNavLink href={link.href} label={link.label} />
                   </li>
                 ))}
               </ul>

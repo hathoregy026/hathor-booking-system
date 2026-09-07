@@ -45,13 +45,21 @@ const BLOCKED_TAGS = new Set([
   "meta",
 ]);
 
-const INTERNAL_HOSTS = new Set(["hathorcruise.com", "www.hathorcruise.com"]);
+const INTERNAL_HOSTS = new Set([
+  "hathorcruise.com",
+  "www.hathorcruise.com",
+  "easytravegypt.com",
+  "www.easytravegypt.com",
+]);
 
 const CANONICAL_PATH_ALIASES: Readonly<Record<string, string>> = {
-  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "/charter",
+  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "/royal-suites",
+  "/luxury-suites": "/rooms",
   "/cruises": "/cruises-list",
   "/blog": "/blogs",
   "/journal": "/blogs",
+  "/rooms/dahabiya-nile-cruise-aswan-to-luxor": "/voyages/aswan-to-luxor",
+  "/rooms/dahabiya-nile-cruise-luxor-to-aswan": "/voyages/luxor-to-aswan",
 };
 
 function isUnsafeUrl(value: string): boolean {

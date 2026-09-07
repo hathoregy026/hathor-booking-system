@@ -3,7 +3,11 @@ import type { Metadata } from "next";
 import { SuitesNormalHomepagePage } from "@/components/pages/SuitesNormalHomepagePage";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
-import { LUXURY_SUITES_PAGE } from "@/lib/page-content";
+import { SUITES_SEO } from "@/lib/seo/page-metadata";
+import {
+  PageStructuredData,
+  hotelRoomNode,
+} from "@/components/seo/PageStructuredData";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { SUITES_DASHBOARD_SLOT_NAMES } from "@/lib/site-image-usage";
 import { SUITES_REFERENCE_HERO_IMAGE_DEFAULTS } from "@/lib/suites-reference-hero";
@@ -18,31 +22,7 @@ import "../page-visibility.css";
 import "../site-coming-soon.css";
 import "../suites-normal-clone.css";
 
-const OG_IMAGE = SUITES_REFERENCE_HERO_IMAGE_DEFAULTS["scraped-suites-hero"];
-
-export const metadata: Metadata = {
-  title: "Luxury Suites on the Nile",
-  description: LUXURY_SUITES_PAGE.metaDescription,
-  openGraph: {
-    title: "Luxury Suites on the Nile | Hathor Dahabiya Cruise",
-    description: LUXURY_SUITES_PAGE.metaDescription,
-    type: "website",
-    images: [
-      {
-        url: OG_IMAGE,
-        width: 1920,
-        height: 1280,
-        alt: "Luxury suites aboard Hathor Dahabiya",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Luxury Suites on the Nile | Hathor Dahabiya Cruise",
-    description: LUXURY_SUITES_PAGE.metaDescription,
-    images: [OG_IMAGE],
-  },
-};
+export const metadata: Metadata = SUITES_SEO;
 
 /**
  * Outside (public): Suites owns its own layout. Still must honor dashboard
@@ -75,6 +55,28 @@ export default async function SuitesPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
+      <PageStructuredData
+        path="/suites"
+        name="Luxury Nile Cruise Suites | Hathor Dahabiya"
+        description={
+          typeof SUITES_SEO.description === "string" ? SUITES_SEO.description : ""
+        }
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Suites", path: "/suites" },
+        ]}
+        image="/media/hathor/optimized/scraped-suites-hero.webp"
+        extra={[
+          hotelRoomNode({
+            path: "/suites",
+            name: "Hathor luxury Nile cruise suites",
+            description:
+              "Nile-view suites aboard Hathor Dahabiya, a twelve-guest luxury sailing between Luxor and Aswan.",
+            occupancy: 4,
+            floorSizeSqm: 46,
+          }),
+        ]}
+      />
       <SuitesNormalHomepagePage images={images} css={css} />
     </StandalonePageVisibilityShell>
   );

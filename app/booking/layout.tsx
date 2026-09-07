@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
 import { Inter, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
@@ -43,6 +44,10 @@ const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-hathor-body",
   weight: ["300", "400", "500", "600", "700"],
 });
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function BookingFlowLayout({
   children,

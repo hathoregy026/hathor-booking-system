@@ -1,19 +1,29 @@
 import type { Metadata } from "next";
 import { WellnessEditorialPageContent } from "@/components/pages/WellnessEditorialPageContent";
+import { PageStructuredData } from "@/components/seo/PageStructuredData";
+import { WELLNESS_SEO } from "@/lib/seo/page-metadata";
 import "../../wellness-editorial.css";
 import "../../editorial-chrome.css";
 
-export const metadata: Metadata = {
-  title: "Wellness Hathor Dahabiya Cruise | Spa Experience on the Nile",
-  description:
-    "Seneb Spa and Historia Fitness Center aboard Hathor Dahabiya: Egyptian wellness traditions on a floating oasis.",
-  openGraph: {
-    title: "Seneb Spa | Hathor Wellness",
-    description:
-      "Renew your soul on the Nile with signature spa therapies and a fitness center with panoramic river views.",
-  },
-};
+export const metadata: Metadata = WELLNESS_SEO;
 
 export default function WellnessPage() {
-  return <WellnessEditorialPageContent />;
+  return (
+    <>
+      <PageStructuredData
+        path="/wellness"
+        name="Seneb Spa on the Nile | Hathor Dahabiya Wellness"
+        description={
+          typeof WELLNESS_SEO.description === "string"
+            ? WELLNESS_SEO.description
+            : ""
+        }
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Wellness", path: "/wellness" },
+        ]}
+      />
+      <WellnessEditorialPageContent />
+    </>
+  );
 }

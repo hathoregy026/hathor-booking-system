@@ -284,7 +284,7 @@ export function HomeEditorialPage({
                 <p className="h2-copy">
                   Every route, room and suite from the Hathor homepage itinerary collection.
                 </p>
-                <Link href="/cruises-list" className="h2-btn">
+                <Link href="/voyages" className="h2-btn">
                   <span>{home.carousel.exploreCta}</span>
                 </Link>
               </Scene>
@@ -318,7 +318,7 @@ export function HomeEditorialPage({
                       <h3 className="h2-display h2-display--m">
                         <RevealTitle>{slide.title}</RevealTitle>
                       </h3>
-                      <Link href="/cruises-list" className="h2-link">
+                      <Link href="/voyages" className="h2-link">
                         View voyage
                       </Link>
                     </div>

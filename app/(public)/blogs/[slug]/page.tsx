@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogArticleBody } from "@/components/pages/BlogArticleBody";
 import { BlogPostPageContent } from "@/components/pages/BlogPostPageContent";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbList } from "@/components/seo/PageStructuredData";
 import {
   getBlogArticleImageNames,
   getBlogHeroImageName,
@@ -16,6 +18,8 @@ import {
   getPublishedBlogPostBySlug,
   getPublishedBlogPosts,
 } from "@/lib/blog-posts";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { clipMetaDescription, seoAbsoluteUrl } from "@/lib/seo/site";
 import "../../../article-editorial.css";
 import "../../../editorial-chrome.css";
 
@@ -38,24 +42,21 @@ export async function generateMetadata({
     };
   }
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-    alternates: {
-      canonical: `/blogs/${post.slug}`,
+  const imageUrl = "/media/hathor/r2/blog-hero.webp";
+
+  return buildPageMetadata({
+    title: `${post.title} | Hathor Journal`,
+    description: clipMetaDescription(post.excerpt),
+    path: `/blogs/${post.slug}`,
+    ogType: "article",
+    publishedTime: post.publishedAt.toISOString(),
+    image: {
+      url: imageUrl,
+      width: 1920,
+      height: 1280,
+      alt: post.title,
     },
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: "article",
-      publishedTime: post.publishedAt.toISOString(),
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-    },
-  };
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
@@ -87,15 +88,46 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       .slice(0, 3),
   );
 
+  const pageUrl = seoAbsoluteUrl(`/blogs/${post.slug}`);
+  const origin = seoAbsoluteUrl("/");
+  const description = clipMetaDescription(post.excerpt);
+
   return (
-    <BlogPostPageContent
-      post={serializeBlogPostDetail(post)}
-      heroImageName={getBlogHeroImageName(post.slug)}
-      related={related}
-      interludeSlots={interludeSlots}
-      articleBlocks={articleBlocks.map((block, index) => (
-        <BlogArticleBody key={index} html={block} />
-      ))}
-    />
+    <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BlogPosting",
+              "@id": `${pageUrl}#article`,
+              headline: post.title,
+              description,
+              datePublished: post.publishedAt.toISOString(),
+              dateModified: post.publishedAt.toISOString(),
+              inLanguage: "en",
+              mainEntityOfPage: pageUrl,
+              image: seoAbsoluteUrl("/media/hathor/r2/blog-hero.webp"),
+              author: { "@type": "Organization", name: "Hathor Dahabiya" },
+              publisher: { "@id": `${origin}#organization` },
+            },
+            breadcrumbList(`/blogs/${post.slug}`, [
+              { name: "Home", path: "/" },
+              { name: "Journal", path: "/blogs" },
+              { name: post.title, path: `/blogs/${post.slug}` },
+            ]),
+          ],
+        }}
+      />
+      <BlogPostPageContent
+        post={serializeBlogPostDetail(post)}
+        heroImageName={getBlogHeroImageName(post.slug)}
+        related={related}
+        interludeSlots={interludeSlots}
+        articleBlocks={articleBlocks.map((block, index) => (
+          <BlogArticleBody key={index} html={block} />
+        ))}
+      />
+    </>
   );
 }

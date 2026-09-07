@@ -10,7 +10,7 @@ export const TERMS_LAST_UPDATED_ISO = "2026-08-29";
 export const TERMS_CANONICAL_PATH = "/terms-and-conditions";
 
 export const TERMS_PRODUCTION_URL =
-  "https://www.hathorcruise.com/terms-and-conditions";
+  "https://www.easytravegypt.com/terms-and-conditions";
 
 export type TermsTocItem = {
   id: string;

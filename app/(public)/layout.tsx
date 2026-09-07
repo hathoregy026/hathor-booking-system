@@ -12,6 +12,7 @@ import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { WebsiteTextPageScope } from "@/components/public/WebsiteTextPageScope";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
+import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
@@ -84,34 +85,34 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 /*
- * Soft-launch: keep metadata conservative. Host-specific noindex for
- * *.vercel.app / easytravegypt is reinforced by middleware X-Robots-Tag —
+ * Host-specific noindex for *.vercel.app stays in middleware X-Robots-Tag —
  * do not call headers() here or every public route becomes dynamic.
  */
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.hathorcruise.com"),
+  metadataBase: new URL(SEO_SITE_ORIGIN),
   title: {
     default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
     template: "%s | Hathor Dahabiya",
   },
   description:
-    "Step into an aura of elegance and tranquility aboard the Hathor Dahabiya, where luxury glides gracefully along the Nile and the timeless beauty of Egypt surrounds you.",
+    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. Twelve guests, Nile-view suites and unhurried temple days aboard Hathor.",
   keywords: [
-    "Dahabiya Nile Cruise",
-    "Luxury Egypt Cruise",
-    "Private Nile Sailing",
+    "Luxury Dahabiya Nile Cruise",
     "Hathor Dahabiya",
+    "Private Nile Sailing Egypt",
   ],
   openGraph: {
-    title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins here",
+    title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
+    description:
+      "A private twelve-guest Dahabiya sailing between Luxor and Aswan.",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hathor Dahabiya | Ultra Luxury Nile Cruise",
-    description: "Your luxurious Nile escape begins here",
+    title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
+    description:
+      "A private twelve-guest Dahabiya sailing between Luxor and Aswan.",
   },
   robots: TEMPORARY_DEPLOYMENT_ROBOTS,
 };

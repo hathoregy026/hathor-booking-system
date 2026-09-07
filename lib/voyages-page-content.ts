@@ -1,5 +1,6 @@
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
+import { voyageCommercialHref } from "@/lib/seo/keyword-map";
 import type { SiteImageName } from "@/lib/site-image-slots";
 
 export const VOYAGES_PAGE = {
@@ -209,7 +210,7 @@ export function buildVoyagesPageItems(
     .filter((item): item is HomepageAccordionCruise => Boolean(item))
     .map((item) => ({
       ...item,
-      href: item.slug === "nile-majesty" ? "/charter" : "/cruises-list",
+      href: voyageCommercialHref(item.slug),
     }));
 
   if (ordered.length > 0) return ordered;
@@ -232,7 +233,7 @@ export function buildVoyagesPageItems(
     slug: cruise.slug,
     romanNumeral: ["I", "II", "III", "IV"][index] ?? String(index + 1),
     meta: `${cruise.rooms.length} CABINS · BASE ${formatUsd(cruise.basePriceCents)}`,
-    href: "/cruises-list",
+    href: voyageCommercialHref(cruise.slug),
   })).concat([CHARTER_VOYAGE]);
 }
 

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EasyTravEgypt SEO Audit Report — 7 September 2026</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm 20mm; }
+    :root {
+      --ink: #2c2824;
+      --muted: #6b6560;
+      --gold: #8b6914;
+      --gold-soft: #b69f64;
+      --cream: #f7f3ec;
+      --line: #e4dccb;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      color: var(--ink);
+      font: 11.5px/1.55 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    }
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    h2 {
+      font-size: 16px;
+      color: var(--gold);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+      margin: 28px 0 12px;
+      page-break-after: avoid;
+    }
+    h3 { font-size: 13px; margin: 16px 0 6px; page-break-after: avoid; }
+    p { margin: 0 0 10px; }
+    .kicker {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 10px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .lede { font-size: 14px; color: var(--muted); max-width: 38em; }
+    .meta { color: var(--muted); font-size: 11px; margin-top: 18px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      margin: 8px 0 16px;
+      page-break-inside: auto;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th { background: var(--cream); color: var(--ink); font-weight: 600; }
+    .p0 { background: #f8e6e4; }
+    .p1 { background: #f8efe0; }
+    .p2 { background: #eef4ea; }
+    ul { margin: 0 0 12px; padding-left: 1.2em; }
+    li { margin: 0 0 4px; }
+    .cover {
+      min-height: 240px;
+      padding: 8px 0 4px;
+    }
+    .score {
+      display: flex;
+      gap: 12px;
+      margin: 18px 0 8px;
+    }
+    .score div {
+      flex: 1;
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      background: var(--cream);
+    }
+    .score strong { display: block; font-size: 20px; color: var(--gold); }
+    .small { font-size: 10.5px; color: var(--muted); }
+    code { font-family: Consolas, "Courier New", monospace; font-size: 10px; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <p class="kicker">EasyTravEgypt · Hathor Dahabiya</p>
+    <h1>Technical SEO Audit Report</h1>
+    <p class="lede">
+      Audit of the live Hathor marketing site on www.easytravegypt.com.
+      Visual design, layout, motion, colour and typography were left unchanged.
+      Only indexability, metadata, structured data, redirects, internal linking
+      and documentation were in scope.
+    </p>
+    <p class="meta">7 September 2026 · Senior technical SEO · Confidential</p>
+    <div class="score">
+      <div><strong>Critical → Fixed</strong>Site was noindexed on the production domain</div>
+      <div><strong>Critical → Fixed</strong>Royal Suite URL redirected to Charter</div>
+      <div><strong>Health now</strong>Foundation in place; rankings still need GSC time</div>
+    </div>
+  </section>
+
+  <h2>1. Current SEO health</h2>
+  <p>
+    Before this pass the redesigned site could not rank. Static metadata and
+    middleware both issued <code>noindex, follow</code> for www.easytravegypt.com
+    as well as Vercel preview hosts. There was no <code>sitemap.xml</code> or
+    <code>robots.txt</code> route. Canonical hosts disagreed
+    (easytravegypt.com vs hathorcruise.com). Structured data existed only on
+    Home 3 and Terms. The highest-authority Royal Suite URL transferred to Charter.
+  </p>
+  <p>
+    After this pass, production is indexable, preview hosts remain noindex,
+    a keyword map is enforced in metadata, Organisation / WebSite / Breadcrumb /
+    BoatTrip / Service / HotelRoom schema is in place, and internal links follow
+    Homepage → Voyages → routes, plus Charter and Suites/Cabins.
+  </p>
+  <p class="small">
+    Rankings will not move until Google recrawls. Submit the sitemap in Search Console
+    and request indexing for the Royal Suite and voyage URLs.
+  </p>
+
+  <h2>2. Technical issues found</h2>
+  <table>
+    <thead>
+      <tr><th>Issue</th><th>Priority</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr class="p0">
+        <td>Production domain listed as a temporary host and noindexed (meta + X-Robots-Tag)</td>
+        <td>P0 Critical</td>
+        <td>Fixed — easytravegypt.com indexes; *.vercel.app stays noindex</td>
+      </tr>
+      <tr class="p0">
+        <td><code>/Luxury-Royal-Suites-Nile-Dahabiya-Cruise</code> → <code>/charter</code></td>
+        <td>P0 Critical</td>
+        <td>Fixed — now 308 to <code>/royal-suites</code></td>
+      </tr>
+      <tr class="p0">
+        <td>No sitemap or robots.txt App Router files</td>
+        <td>P0 Critical</td>
+        <td>Fixed — <code>app/sitemap.ts</code>, <code>app/robots.ts</code></td>
+      </tr>
+      <tr class="p1">
+        <td>Split metadataBase / schema origin (hathorcruise.com vs easytravegypt.com)</td>
+        <td>P1 High</td>
+        <td>Fixed — canonical origin https://www.easytravegypt.com</td>
+      </tr>
+      <tr class="p1">
+        <td>About, Home 3, rooms, suites, cabins cannibalising the same head terms</td>
+        <td>P1 High</td>
+        <td>Fixed in titles; Home 3 noindexed</td>
+      </tr>
+      <tr class="p1">
+        <td>Missing Organisation, WebSite, Breadcrumb, Service, HotelRoom schema on commercial pages</td>
+        <td>P1 High</td>
+        <td>Fixed</td>
+      </tr>
+      <tr class="p1">
+        <td>No indexable URLs for “Luxor to Aswan Nile Cruise” / “Aswan to Luxor Nile Cruise”</td>
+        <td>P1 High</td>
+        <td>Fixed — <code>/voyages/luxor-to-aswan</code> and <code>/voyages/aswan-to-luxor</code></td>
+      </tr>
+      <tr class="p2">
+        <td>Blog articles used full excerpts as descriptions; OG images missing; linked cruises-list not voyages</td>
+        <td>P2 Medium</td>
+        <td>Fixed — clipped descriptions, article schema, commercial CTAs</td>
+      </tr>
+      <tr class="p2">
+        <td>Booking/admin could inherit production index:true once noindex was lifted</td>
+        <td>P1 High</td>
+        <td>Fixed — layouts noindex; robots.txt disallow</td>
+      </tr>
+      <tr class="p2">
+        <td>Title template doubling brand on some pages; weak CTR copy</td>
+        <td>P2 Medium</td>
+        <td>Fixed — absolute titles, natural luxury language</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Keyword mapping</h2>
+  <table>
+    <thead>
+      <tr><th>Page</th><th>Primary intent</th><th>Must not target</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>/</td><td>Luxury Dahabiya Nile Cruise</td><td>Route-specific or Royal Suite terms</td></tr>
+      <tr><td>/voyages</td><td>Nile itineraries hub</td><td>Exact “Luxor to Aswan Nile Cruise”</td></tr>
+      <tr><td>/voyages/luxor-to-aswan</td><td>Luxor to Aswan Nile Cruise</td><td>Aswan to Luxor; charter</td></tr>
+      <tr><td>/voyages/aswan-to-luxor</td><td>Aswan to Luxor Nile Cruise</td><td>Luxor to Aswan; charter</td></tr>
+      <tr><td>/charter</td><td>Private Nile Cruise Egypt / Private Dahabiya Charter</td><td>Royal Suite</td></tr>
+      <tr><td>/luxury-cabins-Nile-Cruise</td><td>Luxury Nile Cruise Cabins / Rooms</td><td>Suites</td></tr>
+      <tr><td>/suites</td><td>Luxury Nile Cruise Suites (collection)</td><td>Cabins; Royal Suite</td></tr>
+      <tr><td>/rooms</td><td>Hathor Luxury Suite (46 m² product)</td><td>Collection head term</td></tr>
+      <tr><td>/royal-suites</td><td>Royal Suite Nile Cruise</td><td>Charter</td></tr>
+      <tr><td>/blogs/*</td><td>Informational long-tail</td><td>Any commercial primary as the title</td></tr>
+      <tr><td>/cruises-list</td><td>Book / scheduled sailings</td><td>Editorial voyage story</td></tr>
+      <tr><td>/home-3</td><td>noindex</td><td>Homepage keywords</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Full map: docs/seo/keyword-map.md</p>
+
+  <h2>4. Competitor gaps</h2>
+  <table>
+    <thead>
+      <tr><th>Competitor</th><th>They win on</th><th>Hathor gap to exploit</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Nour El Nil</td><td>Fleet pages, “authentic dahabiya”, Esna–Aswan 5-night</td><td>Directional Luxor/Aswan URLs; Royal Suite URL; charter service page</td></tr>
+      <tr><td>Ashranda</td><td>Vessel + hotel group; on-page FAQs</td><td>Pure-play dahabiya; do not dilute with hotels</td></tr>
+      <tr><td>Dahabiya.net</td><td>Exact-match “dahabiya” listings</td><td>Luxury trust, original content, no stuffing</td></tr>
+      <tr><td>Sonesta Amirat</td><td>Chain domain, inclusions FAQ, 4-night both ways on one URL</td><td>Split direction pages; 12-guest intimacy</td></tr>
+      <tr><td>Merit Dahabiyas</td><td>Day-by-day itineraries; charter mention</td><td>Single canonical domain; do not mix charter into suite titles</td></tr>
+      <tr><td>Oberoi</td><td>“Luxury Nile cruise” (motor ships), HotelRoom schema</td><td>Dahabiya modifier only — do not fight the head term</td></tr>
+      <tr><td>Sanctuary / A&amp;K</td><td>Package / tour authority</td><td>Direct private charter; independent travellers</td></tr>
+      <tr><td>Viking</td><td>Generic “Nile cruise” head terms</td><td>Differentiation journal → /voyages and /charter</td></tr>
+    </tbody>
+  </table>
+  <p class="small">Living tracker: docs/seo/competitor-tracking.md — attach GSC/Ahrefs ranks monthly.</p>
+
+  <h2>5. Recommended fixes (this pass vs later)</h2>
+  <h3>Implemented now (no visual redesign)</h3>
+  <ul>
+    <li>Index production; keep Vercel previews noindex.</li>
+    <li>Rewrite titles and meta descriptions for CTR and one intent per URL.</li>
+    <li>Add Organisation, WebSite, Breadcrumb, BoatTrip, Service, HotelRoom, BlogPosting schema.</li>
+    <li>Add sitemap.xml and robots.txt.</li>
+    <li>Repair Royal Suite redirect; add voyage and luxury-suites aliases.</li>
+    <li>Internal links: homepage itineraries → /voyages; gallery suites → /suites; footer commercial column; blog CTAs mapped by topic.</li>
+    <li>Create /voyages/luxor-to-aswan and /voyages/aswan-to-luxor using the existing voyages editorial system.</li>
+    <li>Noindex Home 3, booking, admin.</li>
+  </ul>
+  <h3>Next (content, not design system)</h3>
+  <ul>
+    <li>P1 — Unique itinerary body on the two route URLs so they are not near-duplicates of /voyages.</li>
+    <li>P1 — Search Console property + sitemap submit + URL inspection for Royal Suite and both voyage routes.</li>
+    <li>P2 — Real FAQ blocks only where copy already answers questions, then FAQPage schema.</li>
+    <li>P2 — Replace remaining empty decorative alts only when the image is informative.</li>
+    <li>P2 — Monthly rank fill-in on the competitor tracker.</li>
+    <li>P3 — Retire /home-3 from the nav, then 308 it to /.</li>
+  </ul>
+
+  <h2>6. Priority legend</h2>
+  <p><strong>P0</strong> blocks all organic growth (noindex, wrong 308, missing sitemap).</p>
+  <p><strong>P1</strong> decides which URL can rank (cannibalisation, schema, directional pages).</p>
+  <p><strong>P2</strong> improves CTR and supporting content.</p>
+  <p><strong>P3</strong> housekeeping once the foundation is crawled.</p>
+
+  <h2>7. Files</h2>
+  <p>
+    Implementation lives under <code>lib/seo/</code>, <code>components/seo/</code>,
+    <code>app/sitemap.ts</code>, <code>app/robots.ts</code>, page metadata, and
+    <code>next.config.ts</code> redirects. Documentation:
+    <code>docs/seo/keyword-map.md</code>,
+    <code>docs/seo/redirects-audit.md</code>,
+    <code>docs/seo/competitor-tracking.md</code>.
+  </p>
+  <p class="meta">End of report.</p>
+</body>
+</html>

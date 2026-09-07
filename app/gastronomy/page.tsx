@@ -9,11 +9,10 @@ import { StandalonePageVisibilityShell } from "@/components/public/StandalonePag
 import "../page-visibility.css";
 import "../site-coming-soon.css";
 
-export const metadata: Metadata = {
-  title: "Dining on the Nile | Hathor Dahabiya",
-  description:
-    "Discover private dining aboard Hathor Dahabiya, where Egyptian flavours, thoughtful service and the Nile shape every course.",
-};
+import { GASTRONOMY_SEO } from "@/lib/seo/page-metadata";
+import { PageStructuredData } from "@/components/seo/PageStructuredData";
+
+export const metadata: Metadata = GASTRONOMY_SEO;
 
 /**
  * Deliberately outside (public): Dining owns a full-viewport editorial scroll
@@ -29,6 +28,19 @@ export default async function GastronomyPage() {
       settings={cms.pageVisibility}
       liveSite={cms.liveSite}
     >
+      <PageStructuredData
+        path="/gastronomy"
+        name="Dining on the Nile | Hathor Dahabiya Gastronomy"
+        description={
+          typeof GASTRONOMY_SEO.description === "string"
+            ? GASTRONOMY_SEO.description
+            : ""
+        }
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Dining", path: "/gastronomy" },
+        ]}
+      />
       <PublicCmsTextRuntime
         websiteText={cms.websiteText}
         websiteTextMobile={cms.websiteTextMobile}

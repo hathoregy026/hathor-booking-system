@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
@@ -22,6 +23,10 @@ const inter = Inter({
   variable: "--font-booking-sans",
   weight: ["300", "400", "500", "600", "700"],
 });
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function BookRouteLayout({
   children,

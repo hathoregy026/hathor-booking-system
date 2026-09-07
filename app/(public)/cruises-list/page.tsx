@@ -1,20 +1,28 @@
 import type { Metadata } from "next";
 import { MaskRevealPageContent } from "@/components/pages/MaskRevealPageContent";
+import { PageStructuredData } from "@/components/seo/PageStructuredData";
+import { CRUISES_LIST_SEO } from "@/lib/seo/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Dahabiya Cruises List | Hathor Nile Cruise",
-  description:
-    "Browse Hathor Dahabiya cruise itineraries from $4,500 — luxury cabins, suites, and royal suites on 3, 4, and 7-night Nile sailings.",
-  alternates: {
-    canonical: "/cruises-list",
-  },
-  openGraph: {
-    title: "Dahabiya Cruises List | Hathor",
-    description:
-      "Explore exclusive Hathor itineraries — Aswan to Luxor, Luxor to Aswan, and round-trip sailings.",
-  },
-};
+export const metadata: Metadata = CRUISES_LIST_SEO;
 
 export default function CruisesListPage() {
-  return <MaskRevealPageContent />;
+  return (
+    <>
+      <PageStructuredData
+        path="/cruises-list"
+        name="Scheduled Hathor Sailings | Book a Dahabiya Nile Cruise"
+        description={
+          typeof CRUISES_LIST_SEO.description === "string"
+            ? CRUISES_LIST_SEO.description
+            : ""
+        }
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Voyages", path: "/voyages" },
+          { name: "Scheduled sailings", path: "/cruises-list" },
+        ]}
+      />
+      <MaskRevealPageContent />
+    </>
+  );
 }

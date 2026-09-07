@@ -18,8 +18,8 @@ export function TermsStructuredData() {
     inLanguage: "en",
     isPartOf: {
       "@type": "WebSite",
-      "@id": "https://www.hathorcruise.com/#website",
-      url: "https://www.hathorcruise.com/",
+      "@id": "https://www.easytravegypt.com/#website",
+      url: "https://www.easytravegypt.com/",
       name: "Hathor Dahabiya",
     },
   };
@@ -32,7 +32,7 @@ export function TermsStructuredData() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://www.hathorcruise.com/",
+        item: "https://www.easytravegypt.com/",
       },
       {
         "@type": "ListItem",

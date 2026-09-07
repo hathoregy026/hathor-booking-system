@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import { HATHOR_BRAND_NAME, HATHOR_FAVICON_SRC } from "@/lib/branding";
+import { HATHOR_FAVICON_SRC } from "@/lib/branding";
+import { SiteStructuredData } from "@/components/seo/SiteStructuredData";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
+import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
   PUBLIC_THEME_DEFAULT,
   getPublicThemeBlockingScript,
@@ -42,9 +44,13 @@ const geistMono = Geist_Mono({
  * becomes dynamic and CDN ISR dies. Host-specific noindex stays in middleware.
  */
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.easytravegypt.com"),
-  title: `${HATHOR_BRAND_NAME} Cruise Booking`,
-  description: "Book your luxury Hathor cruise experience",
+  metadataBase: new URL(SEO_SITE_ORIGIN),
+  title: {
+    default: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
+    template: "%s | Hathor Dahabiya",
+  },
+  description:
+    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. Twelve guests, Nile-view suites and unhurried temple days aboard Hathor.",
   icons: {
     icon: HATHOR_FAVICON_SRC,
     apple: HATHOR_FAVICON_SRC,
@@ -162,7 +168,10 @@ gtag('config', 'G-3QKFST6VXE');`,
           SiteBookingChrome so booking chrome can read selections later.
         */}
         <SelectionProvider>
-          <SiteBookingChrome>{children}</SiteBookingChrome>
+          <SiteBookingChrome>
+            <SiteStructuredData />
+            {children}
+          </SiteBookingChrome>
         </SelectionProvider>
         <Analytics />
       </body>
