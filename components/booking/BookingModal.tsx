@@ -22,9 +22,11 @@ import {
 } from "@/lib/booking-search-config";
 import { clampRoomSearchConfig } from "@/lib/room-capacity";
 import { useBookingStore } from "@/store/bookingStore";
+import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
 
-/** Real site photo — Nile dahabiya (homepage legacy / landmarks). */
-const BOOKING_MODAL_PANEL_IMAGE = "home-story-legacy-large";
+/** Landscape Nile sun-deck — shared by desktop side panel and phone/tablet banner. */
+const BOOKING_MODAL_PANEL_IMAGE = "home-voyage-nile-majesty";
+const BOOKING_MODAL_PANEL_FALLBACK = "/media/hathor/optimized/home-voyage-nile-majesty.webp";
 
 /** Modal-only embarkation choice — routes to the charter page. */
 const PRIVATE_CHARTER_OPTION = "private-charter" as const;
@@ -81,6 +83,11 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const panelImage = useSiteImage(BOOKING_MODAL_PANEL_IMAGE);
+  const panelSrc = toVercelOptimizedSrc(
+    /collage-living|home-story-legacy-large/i.test(panelImage.src)
+      ? BOOKING_MODAL_PANEL_FALLBACK
+      : panelImage.src || BOOKING_MODAL_PANEL_FALLBACK,
+  );
   const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
   const storeDuration = useBookingStore((state) => state.duration);
   const storeRoomConfigs = useBookingStore((state) => state.roomConfigs);
@@ -220,7 +227,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={panelImage.src}
+            src={panelSrc}
             alt=""
             className="hathor-booking-modal__art-img"
             draggable={false}

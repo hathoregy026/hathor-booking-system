@@ -604,12 +604,12 @@ export function Header() {
             >
               <SelectionHeaderControls />
               {shouldShowFloatingActions(pathname) ? (
-                <>
-                  <PhoneDockBookNow />
-                  <PhoneDockContact />
-                </>
+                <PhoneDockBookNow />
               ) : null}
               <PublicLanguageToggle />
+              {shouldShowFloatingActions(pathname) ? (
+                <PhoneDockContact />
+              ) : null}
             </div>,
             phoneDockHost,
           )

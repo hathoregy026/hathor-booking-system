@@ -240,6 +240,30 @@
  * pill's footprint so it does not sit across the reading column. This changes
  * presentation only; the existing booking trigger and modal remain untouched.
  */
+@media (max-width: 1024px) {
+  .public-fab__chat-main,
+  .public-fab__icon-btn {
+    background: #faf8f5 !important;
+    background-color: #faf8f5 !important;
+    border: 1px solid var(--lux-gold, #b69f64) !important;
+    color: #b69f64 !important;
+    box-shadow: none !important;
+  }
+
+  .public-fab__brand-icon,
+  .public-fab__lucide,
+  .public-fab__chat-icon {
+    color: #b69f64 !important;
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  .public-fab__lucide,
+  .public-fab__chat-icon {
+    fill: none;
+  }
+}
+
 @media (max-width: 480px) {
   .public-fab {
     display: none !important;

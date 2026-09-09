@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -94,16 +95,23 @@ export function PhoneDockBookNow() {
 
 export function PhoneDockContact() {
   const [open, setOpen] = useState(false);
+  const [layerHost, setLayerHost] = useState<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setLayerHost(document.body);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
 
     const closeOnOutsidePointer = (event: PointerEvent) => {
       const target = event.target;
-      if (target instanceof Node && !rootRef.current?.contains(target)) {
-        setOpen(false);
-      }
+      if (!(target instanceof Node)) return;
+      if (rootRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
@@ -117,10 +125,9 @@ export function PhoneDockContact() {
     };
   }, [open]);
 
-  return (
+  const menu = (
     <div
-      ref={rootRef}
-      className={`hpd-contact${open ? " is-open" : ""}`}
+      className={`hpd-contact-layer${open ? " is-open" : ""}`}
     >
       {open ? (
         <button
@@ -132,6 +139,7 @@ export function PhoneDockContact() {
       ) : null}
 
       <div
+        ref={menuRef}
         className="hpd-contact__menu"
         role="menu"
         aria-hidden={!open}
@@ -202,7 +210,14 @@ export function PhoneDockContact() {
           </svg>
         </a>
       </div>
+    </div>
+  );
 
+  return (
+    <div
+      ref={rootRef}
+      className={`hpd-contact${open ? " is-open" : ""}`}
+    >
       <button
         type="button"
         className="hpd-contact__toggle"
@@ -216,6 +231,7 @@ export function PhoneDockContact() {
           {open ? <DockCloseIcon /> : <DockChatIcon />}
         </span>
       </button>
+      {layerHost ? createPortal(menu, layerHost) : null}
     </div>
   );
 }

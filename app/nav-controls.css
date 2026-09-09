@@ -1546,8 +1546,12 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   display: none;
 }
 
+.hpd-contact-layer {
+  display: none;
+}
+
 /* ==========================================================================
-   PHONE BOTTOM DOCK — Saved, Voyage, Book Now, Contact, Language (≤480px)
+   PHONE BOTTOM DOCK — Saved, Voyage, Book Now, Language, Contact (≤480px)
    --------------------------------------------------------------------------
    Same components and handlers as the header marks. Markup lives outside
    <header> (portaled to body) so position:fixed pins to the viewport bottom
@@ -1675,11 +1679,10 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     display: none !important;
   }
 
-  /* Shared mark shell — identical size, ring, and icon centering for every tab. */
+  /* Shared mark shell — identical size, gold ring, cream fill. */
   .hathor-phone-dock > .hsc .hsc__mark,
   .hathor-phone-dock .hpd-book .hsc__mark,
   .hathor-phone-dock .hpd-contact__toggle .hsc__mark,
-  .hathor-phone-dock .hpd-contact__link,
   .hathor-phone-dock .public-lang-toggle__globe {
     position: relative !important;
     z-index: 1 !important;
@@ -1692,11 +1695,19 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     flex: 0 0 var(--dock-mark) !important;
     margin: 0 !important;
     padding: 0 !important;
-    border: 1px solid color-mix(in srgb, currentColor 22%, transparent) !important;
+    border: 1px solid var(--nav-lux-gold, #b69f64) !important;
     border-radius: 50% !important;
     line-height: 0 !important;
-    background: transparent !important;
+    background: #faf8f5 !important;
     box-shadow: none !important;
+  }
+
+  html[data-public-theme="night"] .hathor-phone-dock > .hsc .hsc__mark,
+  html[data-public-theme="night"] .hathor-phone-dock .hpd-book .hsc__mark,
+  html[data-public-theme="night"] .hathor-phone-dock .hpd-contact__toggle .hsc__mark,
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-toggle__globe {
+    background: #16130f !important;
+    border-color: var(--nav-lux-gold, #b69f64) !important;
   }
 
   .hathor-phone-dock > .hsc .hsc__icon:not(#_):not(#_),
@@ -1834,10 +1845,15 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     z-index: 8 !important;
   }
 
-  .hathor-phone-dock .hpd-contact__backdrop {
+  .hpd-contact-layer {
+    display: block;
+    position: static;
+  }
+
+  .hpd-contact__backdrop {
     position: fixed;
     inset: 0;
-    z-index: 0;
+    z-index: 1390;
     border: 0;
     padding: 0;
     margin: 0;
@@ -1845,33 +1861,60 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     cursor: default;
   }
 
-  .hathor-phone-dock .hpd-contact__menu {
-    position: absolute;
-    left: 50%;
-    right: auto;
-    bottom: calc(100% + 0.7rem);
-    z-index: 40;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .hpd-contact__menu {
+    position: fixed;
+    right: max(0.45rem, env(safe-area-inset-right, 0px));
+    left: auto;
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.55rem);
+    z-index: 1400;
+    display: grid;
+    grid-template-columns: repeat(2, var(--dock-mark, 2.4rem));
     gap: 0.45rem;
+    box-sizing: border-box;
     width: auto;
     margin: 0;
-    padding: 0;
-    transform: translateX(-50%);
-    pointer-events: none;
-  }
-
-  .hathor-phone-dock > .hpd-contact.is-open .hpd-contact__menu {
-    pointer-events: auto;
-  }
-
-  .hathor-phone-dock .hpd-contact__link {
-    color: inherit;
-    text-decoration: none;
+    padding: 0.7rem;
+    border: 1px solid var(--nav-lux-gold, #b69f64);
+    border-radius: 0.85rem;
+    background: #ece8df;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.8) inset,
+      0 18px 44px rgb(20 18 16 / 0.32);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px) scale(0.92);
+    pointer-events: none;
+    transform: translate3d(0, 0.4rem, 0) scale(0.985);
+    transform-origin: bottom right;
+  }
+
+  .hpd-contact-layer.is-open .hpd-contact__menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  .hpd-contact__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: var(--dock-mark, 2.4rem);
+    height: var(--dock-mark, 2.4rem);
+    flex: 0 0 var(--dock-mark, 2.4rem);
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--nav-lux-gold, #b69f64);
+    border-radius: 50%;
+    background: #faf8f5;
+    background-color: #faf8f5;
+    background-image: none;
+    color: var(--nav-lux-gold, #b69f64);
+    text-decoration: none;
+    box-shadow: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px) scale(0.94);
     pointer-events: none;
     transition:
       opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -1879,27 +1922,56 @@ html[data-public-theme="night"] .public-lang-toggle__code {
       visibility 0.32s;
   }
 
-  .hathor-phone-dock > .hpd-contact.is-open .hpd-contact__link {
+  .hpd-contact-layer.is-open .hpd-contact__link {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
     pointer-events: auto;
   }
 
+  .hpd-contact__link .hsc__icon,
+  .hpd-contact__brand {
+    display: block;
+    width: var(--dock-icon, 1.25rem);
+    height: var(--dock-icon, 1.25rem);
+    color: var(--nav-lux-gold, #b69f64);
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  .hpd-contact__link .hsc__icon {
+    fill: none;
+  }
+
+  html[data-public-theme="night"] .hpd-contact__menu {
+    background: #16130f;
+    border-color: var(--nav-lux-gold, #b69f64);
+  }
+
+  html[data-public-theme="night"] .hpd-contact__link {
+    background: #16130f;
+    border-color: var(--nav-lux-gold, #b69f64);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .hathor-phone-dock .hpd-contact__link {
+    .hpd-contact__menu,
+    .hpd-contact__link {
       transition: none;
       transform: none;
     }
   }
 
+  html:has(.eno.is-open) .hpd-contact-layer,
+  html:has(.hathor-header--editorial-open) .hpd-contact-layer {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .hathor-phone-dock .public-lang-menu {
     top: auto !important;
-    /* Keep the full card on-screen тАФ Language is the right third, so
-       pin to the dockтАЩs right inset instead of centering a wide card
-       that spills past the viewport edge. */
-    left: auto !important;
-    right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
+    left: 50% !important;
+    right: auto !important;
     bottom: calc(100% + 0.7rem) !important;
     z-index: 40 !important;
     box-sizing: border-box !important;
@@ -1918,8 +1990,8 @@ html[data-public-theme="night"] .public-lang-toggle__code {
       0 18px 44px rgb(20 18 16 / 0.32) !important;
     opacity: 0;
     visibility: hidden;
-    transform: translate3d(0, 0.4rem, 0) scale(0.985) !important;
-    transform-origin: bottom right !important;
+    transform: translate3d(-50%, 0.4rem, 0) scale(0.985) !important;
+    transform-origin: bottom center !important;
     pointer-events: none;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
@@ -1931,7 +2003,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    transform: translate3d(0, 0, 0) scale(1) !important;
+    transform: translate3d(-50%, 0, 0) scale(1) !important;
     background: #ece8df !important;
     background-color: #ece8df !important;
     background-image: none !important;
@@ -1952,19 +2024,18 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     pointer-events: none !important;
   }
 
-  /* Caret under the card, aimed at the Language mark (right third). */
+  /* Caret under the card, aimed at the Language mark. */
   .hathor-phone-dock .public-lang-menu::before {
     content: "" !important;
     position: absolute !important;
     top: auto !important;
-    left: auto !important;
-    /* Align under the Language mark center within the right column. */
-    right: calc(var(--dock-mark) * 0.5 - 6px) !important;
+    left: 50% !important;
+    right: auto !important;
     bottom: -6px !important;
     z-index: 0 !important;
     width: 12px !important;
     height: 12px !important;
-    margin: 0 !important;
+    margin: 0 0 0 -6px !important;
     border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 16%, transparent) !important;
     border-top-color: transparent !important;
     border-left-color: transparent !important;

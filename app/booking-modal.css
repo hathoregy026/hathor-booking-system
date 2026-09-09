@@ -191,7 +191,7 @@ html[data-public-theme="day"] .hathor-booking-modal__art::after {
 }
 
 .hathor-booking-modal__art--photo .hathor-booking-modal__art-img {
-  object-position: 42% 45%;
+  object-position: 50% 42%;
 }
 
 .hathor-booking-modal__dialog:hover .hathor-booking-modal__art-img {
@@ -870,7 +870,7 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
 
   .hathor-booking-modal__dialog {
     grid-template-columns: 1fr;
-    grid-template-rows: 7.5rem minmax(0, 1fr);
+    grid-template-rows: 11rem minmax(0, 1fr);
     width: 100%;
     max-width: none;
     max-height: min(92dvh, calc(var(--vh, 1vh) * 92));
@@ -895,7 +895,7 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
   .hathor-booking-modal__art {
     border-right: none;
     border-bottom: 1px solid rgb(197 160 89 / 0.4);
-    min-height: 7.5rem;
+    min-height: 11rem;
   }
 
   html[data-public-theme="day"] .hathor-booking-modal__art {
@@ -908,7 +908,24 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
 
   .hathor-booking-modal__art-img,
   .hathor-booking-modal__art--photo .hathor-booking-modal__art-img {
-    object-position: center 40%;
+    object-position: 50% 40%;
+  }
+
+  .hathor-booking-modal__art-veil,
+  html[data-public-theme="day"] .hathor-booking-modal__art-veil {
+    background: linear-gradient(
+      180deg,
+      transparent 42%,
+      rgb(250 248 245 / 0.55) 100%
+    );
+  }
+
+  html[data-public-theme="night"] .hathor-booking-modal__art-veil {
+    background: linear-gradient(
+      180deg,
+      transparent 45%,
+      rgb(13 13 13 / 0.55) 100%
+    );
   }
 
   .hathor-booking-modal__dialog:hover .hathor-booking-modal__art-img {
@@ -968,11 +985,11 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
 
 @media (max-width: 480px) {
   .hathor-booking-modal__dialog {
-    grid-template-rows: 5.75rem minmax(0, 1fr);
+    grid-template-rows: 9.25rem minmax(0, 1fr);
   }
 
   .hathor-booking-modal__art {
-    min-height: 5.75rem;
+    min-height: 9.25rem;
   }
 
   .hathor-booking-modal__logo-wrap,
