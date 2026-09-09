@@ -1794,3 +1794,578 @@ html[data-public-theme="night"] .sn-comfort__fog {
     linear-gradient(90deg, transparent 40%, rgb(20 17 13 / 92%) 100%),
     linear-gradient(180deg, transparent 45%, rgb(20 17 13 / 92%) 100%) !important;
 }
+
+/* ==========================================================================
+   10. SEMANTIC FEEDBACK, CONTROLS AND SURFACES A TOKEN FLIP CANNOT REACH
+   --------------------------------------------------------------------------
+   Added after a full-route night audit. Three kinds of gap are closed here:
+
+   a) roles the palette never named — success / warning / danger / info, focus
+      and scrim — which components had been improvising per file;
+   b) page-local token blocks declared BELOW a remapped page root, so the
+      section-4 remap cannot reach them (the room hero is the whole family);
+   c) tokens that are a foreground on one route and a whole scene on another
+      (gastronomy gold), the section-5 trap in a new place.
+
+   `html[data-public-theme="night"]:not(:has(.home-four))` guards the rules
+   that reach shared chrome. The Home 4 preview route is owned by another
+   workstream, so nothing here may repaint the header, controls or overlays it
+   inherits; page-scoped rules below need no guard because their classes never
+   appear on that route.
+   ========================================================================== */
+
+/* ---- 10a. Feedback, control and overlay roles ----
+   Contrast is stated against the night canvas (#14110d, L 0.0053). The hues
+   stay inside the warm brand family: terracotta rather than fire-engine red,
+   olive rather than emerald, so feedback reads as part of the same house.
+   Warning sits close to brand gold by necessity — every component using it
+   also carries a text label, so state never rests on colour alone. */
+html[data-public-theme="night"] {
+  --night-danger: #e0806e;          /* 6.74:1 */
+  --night-danger-surface: rgb(224 128 110 / 12%);
+  --night-danger-line: rgb(224 128 110 / 42%);
+
+  --night-success: #8fb37c;         /* 8.04:1 */
+  --night-success-surface: rgb(143 179 124 / 12%);
+  --night-success-line: rgb(143 179 124 / 40%);
+
+  --night-warning: #e5a94f;         /* 8.86:1 */
+  --night-warning-surface: rgb(229 169 79 / 12%);
+  --night-warning-line: rgb(229 169 79 / 40%);
+
+  --night-info: #b9b2a2;            /* 8.99:1 */
+  --night-info-surface: rgb(185 178 162 / 10%);
+  --night-info-line: rgb(185 178 162 / 34%);
+
+  /* Focus is the one place the palette is allowed to shout. */
+  --night-focus: var(--night-gold-strong);
+
+  /* Form control boundaries must clear 3:1 (WCAG 1.4.11); the decorative
+     hairlines above deliberately do not, and are not controls. */
+  --night-control-line: #7a6f5c;    /* 3.6:1 on the field fill */
+  --night-control-fill: var(--night-surface-raised);
+  --night-control-disabled: #2a241c;
+
+  --night-scrim: rgb(9 7 5 / 78%);
+}
+
+/* ---- 10b. Theme toggle: a known, deliberately unfixed artifact ----
+   The switch's sun/moon face, its label text and its knob position are all
+   React state, so the server always ships the `is-day` skin. On a night page
+   the first painted frame is therefore a cream pill with a sun in it, until
+   hydration corrects it (and permanently if the bundle fails to load).
+
+   A CSS-only correction can repaint the track but cannot swap the glyph or
+   the label text, which would leave a night track carrying a sun and the word
+   "daymode" — a worse control than the one it replaced. The real fix is to
+   render both faces in PublicThemeToggle and select between them from
+   `html[data-public-theme]`, so presentation stops depending on hydration.
+   That is a change to shared header chrome, which the Home 4 preview route
+   also renders, so it is left out of this pass. Settled state is correct in
+   both themes; only the pre-hydration frame is affected. */
+
+/* ---- 10c. Form controls ----
+   Fields, native widgets, autofill and every interaction state. Guarded away
+   from Home 4 because the booking modal's fields are shared chrome. */
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+    textarea,
+    select
+  ):not(#_) {
+  background-color: var(--night-control-fill) !important;
+  border-color: var(--night-control-line) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"]:not(:has(.home-four)) :is(input, textarea):not(#_):not(#_)::placeholder {
+  color: var(--night-muted) !important;
+  opacity: 1;
+}
+
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    input,
+    textarea,
+    select
+  ):hover:not(:disabled):not([readonly]):not(#_):not(#_) {
+  border-color: var(--night-gold-dim) !important;
+}
+
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    input,
+    textarea,
+    select
+  ):focus-visible:not(#_):not(#_) {
+  border-color: var(--night-gold) !important;
+  outline: 2px solid var(--night-focus);
+  outline-offset: 2px;
+}
+
+/* Disabled fields stay recognisable as fields — dimmed, not erased. Buttons
+   are deliberately excluded: app/button-system.css owns the pill roster and
+   expresses disabled as opacity 0.45, and a competing fill here would both
+   override that affordance and split one design across two files. */
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    input:not([type="submit"]):not([type="button"]):not([type="reset"]),
+    textarea,
+    select
+  ):disabled:not(#_):not(#_) {
+  background-color: var(--night-control-disabled) !important;
+  border-color: rgb(233 225 211 / 18%) !important;
+  color: var(--night-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Native widgets: checkbox, radio, range and the picker glyphs. */
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    input[type="checkbox"],
+    input[type="radio"],
+    input[type="range"],
+    progress
+  ) {
+  accent-color: var(--night-gold);
+}
+
+html[data-public-theme="night"]:not(:has(.home-four)) select option {
+  background-color: var(--night-panel);
+  color: var(--night-text);
+}
+
+html[data-public-theme="night"]:not(:has(.home-four))
+  ::-webkit-calendar-picker-indicator {
+  filter: invert(0.82) sepia(0.32) saturate(1.4) hue-rotate(2deg);
+}
+
+/* Chrome paints autofilled fields a hard blue-white and ignores background;
+   an inset shadow is the only way to reclaim the fill. */
+html[data-public-theme="night"]:not(:has(.home-four)) :is(input, textarea, select):is(
+    :-webkit-autofill,
+    :-webkit-autofill:hover,
+    :-webkit-autofill:focus,
+    :-webkit-autofill:active
+  ):not(#_):not(#_) {
+  -webkit-text-fill-color: var(--night-text) !important;
+  -webkit-box-shadow: 0 0 0 100px var(--night-control-fill) inset !important;
+  box-shadow: 0 0 0 100px var(--night-control-fill) inset !important;
+  caret-color: var(--night-text);
+  border-color: var(--night-control-line) !important;
+}
+
+html[data-public-theme="night"]:not(:has(.home-four)) :is(input, textarea) {
+  caret-color: var(--night-gold-strong);
+}
+
+/* ---- 10d. Validation and status messages ----
+   Every one of these was a day-tuned red on a cream card: #b42318 lands at
+   2.9:1 on the night canvas. */
+html[data-public-theme="night"] :is(
+    .hathor-voyage-card__error,
+    .hathor-checkout-form__error,
+    .historia-checkout-calendar__error,
+    .historia-checkout-calendar__stay-label--active,
+    .hathor-checkout-alert,
+    .hathor-booking-modal__error,
+    .ch-form__status.is-error,
+    .booking-success--error .booking-success__title
+  ):not(#_) {
+  color: var(--night-danger) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .historia-checkout-calendar__error--banner,
+    .hathor-checkout-alert,
+    .hathor-booking-modal__error
+  ):not(#_) {
+  background-color: var(--night-danger-surface) !important;
+  border-color: var(--night-danger-line) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .ch-form__status.is-success,
+    .contact-success-popup__title
+  ):not(#_) {
+  color: var(--night-success) !important;
+}
+
+html[data-public-theme="night"] .historia-checkout-calendar__status:not(#_) {
+  color: var(--night-text-soft) !important;
+}
+
+/* Field-level invalid state: on a dark ground the outline carries it. */
+html[data-public-theme="night"]:not(:has(.home-four)) :is(input, textarea, select):is(
+    [aria-invalid="true"],
+    .is-error,
+    .has-error
+  ):not(#_):not(#_) {
+  border-color: var(--night-danger) !important;
+  background-color: var(--night-danger-surface) !important;
+}
+
+/* ---- 10e. Room hero — /rooms, /rooms/[slug], /royal-suites, /luxury-cabins --
+   `.rh` declares its own ink/gold/hairline INSIDE `.accom-catalog`, so the
+   section-4 remap of `--ac-*` never reached it: the stat block, the strapline
+   and the action labels painted #1c1917 and #4a453c straight onto the night
+   canvas at 1.08:1 and 1.98:1 — invisible on all four routes.
+
+   `--rh-ink` is dual-purpose (label colour AND the solid pill's fill), so the
+   solid pill is re-stated explicitly rather than left to the flip. */
+html[data-public-theme="night"] .rh {
+  --rh-ink: var(--night-text);
+  --rh-gold: var(--night-gold);
+  --rh-hair: var(--night-line);
+}
+
+html[data-public-theme="night"] .rh .rh__copy:not(#_) {
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] .rh .rh__act--solid:not(#_) {
+  border-color: var(--night-gold) !important;
+  background: var(--night-gold) !important;
+  color: var(--night-canvas) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-public-theme="night"] .rh .rh__act--solid:hover:not(#_) {
+    border-color: var(--night-gold-strong) !important;
+    background: var(--night-gold-strong) !important;
+    color: var(--night-canvas) !important;
+  }
+}
+
+/* ---- 10f. Gastronomy gold scenes ----
+   Day runs three full-viewport panels in brand gold with cream type — 2.4:1,
+   a pre-existing day choice. Night made it worse, not better: `--nib-gold` is
+   remapped to the lighter night gold, so the same panels became a 1.13:1
+   glare wall in the middle of a dark document.
+
+   The scene keeps its role — the one warm, lit interruption in the sequence —
+   as a deep bronze rather than a lit gold field. */
+html[data-public-theme="night"] .nib-surface--gold:not(#_) {
+  background:
+    radial-gradient(circle at 72% 36%, rgb(203 176 121 / 12%), transparent 34%),
+    #2a2116 !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .nib-surface--gold :is(h1, h2, h3, p, span, em, a):not(#_) {
+  color: var(--night-text) !important;
+}
+
+/* ---- 10g. CMS typography colours ----
+   Admin typography settings inject `--typo-*-color` on `.public-site` with
+   !important. They are tuned for cream; body text ships #705000, which is
+   2.54:1 on the night canvas. Only the role that fails AA is re-pointed — the
+   gold heading roles clear 7.3:1 as they are and keep the admin's value. */
+html[data-public-theme="night"]:not(:has(.home-four)) .public-site,
+html[data-public-theme="night"]:not(:has(.home-four)) .hathor-site,
+html[data-public-theme="night"]:not(:has(.home-four)) .preview-site {
+  --typo-body-text-color: var(--night-text-soft) !important;
+}
+
+/* ---- 10h. Booking surfaces the token sets miss ----
+   Money-facing, so these are held above AA rather than at it. */
+html[data-public-theme="night"] :is(
+    .hathor-voyage-counter,
+    .hathor-voyage-counter__controls,
+    .hathor-voyage-counter__btn
+  ):not(#_) {
+  background-color: var(--night-surface-raised) !important;
+  border-color: var(--night-control-line) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .hathor-voyage-counter__btn:not(:disabled):hover:not(#_) {
+  background-color: var(--night-gold) !important;
+  border-color: var(--night-gold) !important;
+  color: var(--night-canvas) !important;
+}
+
+html[data-public-theme="night"] .hathor-checkout-column--summary:not(#_) {
+  background-color: var(--night-panel) !important;
+  border-color: var(--night-line) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .hathor-checkout-payment-note:not(#_) {
+  border-left-color: var(--night-gold) !important;
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .hathor-checkout-room-dropdown__name,
+    .hathor-checkout-room-dropdown__view,
+    .hathor-voyage-stage__title
+  ):not(#_) {
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .hathor-checkout-room-dropdown__meta,
+    .hathor-voyage-stage__subtitle
+  ):not(#_) {
+  color: var(--night-text-soft) !important;
+}
+
+/* Checkout chrome declares its own four literals below .booking-page, so the
+   token set in section 9 cannot reach them: the step bar stayed day gold and
+   the notch under it was a 10px band of #faf8f5 across a dark page. */
+html[data-public-theme="night"] .hathor-checkout-chrome {
+  --hathor-checkout-dark: var(--night-gold);
+  --hathor-checkout-bar: var(--night-gold);
+  --hathor-checkout-surface: var(--night-canvas);
+  --hathor-checkout-footer: var(--night-surface);
+}
+
+/* react-day-picker's own accent, one level below the calendar wrapper. */
+html[data-public-theme="night"] .booking-page .rdp-root {
+  --rdp-accent-color: var(--night-gold);
+  --rdp-accent-background-color: var(--night-gold);
+  --rdp-range_middle-background-color: rgb(203 176 121 / 18%);
+}
+
+/* Availability calendar: the day cell is the one control a guest reads as a
+   number, so it keeps a real surface rather than an outline. */
+html[data-public-theme="night"] .hathor-calendar-day[data-status="available"]:not(#_),
+html[data-public-theme="night"] .hathor-calendar-day[data-status="available"]
+  .hathor-calendar-day__number:not(#_) {
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .hathor-calendar-day[data-status="available"]
+  .hathor-calendar-day__price:not(#_) {
+  color: var(--night-gold) !important;
+}
+
+html[data-public-theme="night"] .hathor-calendar-day[data-status="unavailable"]:not(#_) {
+  background-color: #262019 !important;
+  color: var(--night-muted) !important;
+}
+
+html[data-public-theme="night"] .hathor-calendar .rdp-day_selected
+  .hathor-calendar-day[data-status="available"]:not(#_) {
+  background-color: var(--night-gold) !important;
+  color: var(--night-canvas) !important;
+}
+
+html[data-public-theme="night"] .hathor-calendar-legend--available:not(#_) {
+  background-color: var(--night-gold) !important;
+}
+
+/* ---- 10i. Chrome and shells still painting a day literal ---- */
+
+/* CMS-hidden pages render a bare white sheet with #111 text. */
+html[data-public-theme="night"] :is(
+    .hathor-page-construction,
+    .hathor-page-construction--shell
+  ):not(#_) {
+  background: var(--night-canvas) !important;
+  color: var(--night-text-soft) !important;
+}
+
+/* Phone dock and the language menu it carries — nav-controls.css paints them
+   #ece8df behind a `:not(#_)` lift, so night needs the lift twice. */
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    .hathor-phone-dock,
+    .hathor-phone-dock .public-lang-menu,
+    .hathor-phone-dock .public-lang-notice
+  ):not(#_):not(#_) {
+  background-color: var(--night-panel) !important;
+  border-color: var(--night-line-soft) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"]:not(:has(.home-four)) :is(
+    .hathor-phone-dock .public-lang-menu::before,
+    .hathor-phone-dock .public-lang-menu::after
+  ):not(#_):not(#_) {
+  background-color: var(--night-panel) !important;
+}
+
+/* /suites is a same-origin iframe: the host paints the ground behind it and
+   held a cream literal, so night arrived as a cream flash before the frame
+   revealed. The document inside is themed by lib/embedded-public-theme.ts. */
+html[data-public-theme="night"]:has(.suites-normal-clone),
+html[data-public-theme="night"]:has(.suites-normal-clone) body,
+html[data-public-theme="night"] .suites-normal-clone__frame {
+  background: var(--night-canvas) !important;
+}
+
+/* Charter inquiry fields declare #fff directly. */
+html[data-public-theme="night"] [data-charter-page] .ch-form__input:not(#_) {
+  background: var(--night-control-fill) !important;
+  border-color: var(--night-control-line) !important;
+  color: var(--night-text) !important;
+}
+
+/* ---- 10j. Focus visibility ----
+   Only the default ring is re-pointed. app/button-system.css and
+   app/nav-controls.css each own an explicit focus outline for the controls in
+   their rosters, and both already resolve to a gold that clears 7:1 on this
+   canvas; overriding them here would add a glow the button contract
+   explicitly forbids and split one treatment across three files. This covers
+   everything else — links, summaries, custom widgets — which otherwise fall
+   back to the UA ring. */
+html[data-public-theme="night"] :focus-visible {
+  outline-color: var(--night-focus);
+}
+
+/* ---- 10k. Skeletons, spinners and empty states ---- */
+html[data-public-theme="night"] :is(
+    .skeleton,
+    [data-skeleton],
+    .is-loading-placeholder
+  ):not(#_) {
+  background-color: var(--night-surface-raised) !important;
+  border-color: var(--night-line-faint) !important;
+}
+
+html[data-public-theme="night"] :is(.empty-state, [data-empty-state]):not(#_) {
+  background-color: var(--night-surface) !important;
+  border-color: var(--night-line-soft) !important;
+  color: var(--night-text-soft) !important;
+}
+
+/* ==========================================================================
+   11. ROUTES AND SHELLS WHOSE COLOUR LIVES IN TS, NOT CSS
+   --------------------------------------------------------------------------
+   Everything above was found by scanning .css files. Three surfaces are
+   painted from template literals inside .ts/.tsx instead, so no CSS scan ever
+   saw them, and one whole route (/home-3) had no night entry at all. Both
+   gaps showed as fully cream pages with the toggle reading NIGHTMODE.
+
+   /home-3 is another workstream's live route. It is themed from here, by its
+   own token names, so not one file under app/(public)/home-3 or
+   components/pages/home-three is touched and nothing of theirs can be
+   overwritten.
+   ========================================================================== */
+
+/* ---- 11a. /home-3 ----
+   The palette is the Suites one: paper/beige/stone as the three light grounds,
+   black and deep-olive as the two dark walls, gold as the accent. Two tokens
+   are dual-purpose and are the whole reason a plain flip fails here:
+   `--h3-paper` is the page ground AND the text colour on every black wall,
+   and `--h3-ink` is the body ink AND a rule fill. Mapping the grounds without
+   restating the walls turns four scenes into paper-on-paper. */
+html[data-public-theme="night"] .home-three {
+  --h3-paper: var(--night-canvas);
+  --h3-beige: var(--night-surface);
+  --h3-stone: var(--night-surface-raised);
+  --h3-olive: var(--night-olive);
+  --h3-olive-deep: var(--night-panel);
+  /* Day's darkest wall becomes an elevated panel, so the act still steps
+     down into it instead of dissolving into the canvas. */
+  --h3-black: var(--night-panel);
+  --h3-ink: var(--night-text);
+  --h3-ink-soft: var(--night-text-soft);
+  --h3-gold: var(--night-gold);
+  --h3-gold-deep: var(--night-gold-strong);
+  --h3-hair: var(--night-line-soft);
+}
+
+/* The walls that were already dark in day and carry `--h3-paper` as their
+   FOREGROUND. Enumerated explicitly — this is the section-5 trap again. The
+   list is exactly the rules that read `color: var(--h3-paper)` in
+   home-three.css, so a wall cannot be missed by eye. */
+html[data-public-theme="night"] .home-three :is(
+    .h3-scene--dark,
+    .h3-imgtext,
+    .h3-carousel,
+    .h3-cierre,
+    .h3-terms,
+    .h3-terms__title,
+    .h3-projects__item--c
+  ):not(#_),
+html[data-public-theme="night"] .home-three .h3-sail--royal .h3-sail__body:not(#_) {
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .home-three :is(
+    .h3-scene--dark,
+    .h3-imgtext,
+    .h3-carousel,
+    .h3-cierre,
+    .h3-terms,
+    .h3-projects__item--c
+  ) :is(p, span, li, a, strong, em):not(#_),
+html[data-public-theme="night"] .home-three .h3-sail--royal .h3-sail__body
+  :is(p, span, h3, li, a, strong, em):not(#_) {
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] .home-three :is(
+    .h3-scene--dark,
+    .h3-imgtext,
+    .h3-cierre,
+    .h3-terms
+  ) :is(h1, h2, h3):not(#_) {
+  color: var(--night-text) !important;
+}
+
+/* Gold stays the accent it is in day on these walls. */
+html[data-public-theme="night"] .home-three .h3-sail--royal :is(
+    .h3-sail__tier,
+    .h3-sail__price
+  ):not(#_) {
+  color: var(--night-gold) !important;
+}
+
+/* Media placeholder: a sand literal that shows through until each frame
+   decodes, and behind any image with transparency. */
+html[data-public-theme="night"] .home-three .h3-frame:not(#_) {
+  background: var(--night-surface-raised) !important;
+}
+
+/* ---- 11c. Voyages marquee rail ----
+   `--vb-gold-3` is `--vb-ink`, so night resolves it to ivory. The two panels
+   that use it as a background are already re-stated in section 5; the rail was
+   not, and sat as a 134px ivory column under its own rotated content. The
+   content covers it at desktop, but the rail turns into a full-width bar below
+   950px, where the cover is no longer guaranteed. */
+html[data-public-theme="night"] .voyages-boring .vb-ribbon:not(#_) {
+  background: var(--night-panel) !important;
+  box-shadow: 0 -1px 0 var(--night-panel) !important;
+  color: var(--night-text) !important;
+}
+
+/* ---- 11b. Booking error boundary ----
+   app/booking/error.tsx ships its own <style>: cream ground, white card, dark
+   ink. It is what a guest sees if checkout throws — often AFTER the
+   reservation is written — so it must not arrive as a white flash in the
+   middle of a dark session. */
+html[data-public-theme="night"] .hathor-booking-error:not(#_) {
+  background: var(--night-canvas) !important;
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] .hathor-booking-error__card:not(#_) {
+  background: var(--night-panel) !important;
+  border-color: var(--night-line-soft) !important;
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] .hathor-booking-error__title:not(#_) {
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .hathor-booking-error__body:not(#_) {
+  color: var(--night-text-soft) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .hathor-booking-error__eyebrow,
+    .hathor-booking-error__help a,
+    .hathor-booking-error__ref
+  ):not(#_) {
+  color: var(--night-gold) !important;
+}
+
+html[data-public-theme="night"] .hathor-booking-error__btn--primary:not(#_) {
+  background: var(--night-gold) !important;
+  border-color: var(--night-gold) !important;
+  color: var(--night-canvas) !important;
+}
+
+html[data-public-theme="night"] .hathor-booking-error__btn--ghost:not(#_) {
+  border-color: var(--night-line) !important;
+  color: var(--night-text) !important;
+}

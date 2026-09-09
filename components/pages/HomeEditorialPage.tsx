@@ -51,8 +51,14 @@ function Scene({
   );
 }
 
-function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="h2-eyebrow">({children})</p>;
+function integratePhrase(phrase: string, text: string) {
+  const lead = phrase.trim();
+  const body = text.trim();
+  if (!lead) return body;
+  if (!body) return lead;
+  if (body.toLowerCase().startsWith(lead.toLowerCase())) return body;
+  const join = /[.!?…]$/.test(lead) ? " " : ". ";
+  return `${lead}${join}${body}`;
 }
 
 function Home2Media({
@@ -238,7 +244,6 @@ export function HomeEditorialPage({
             <div ref={trackRef} className="h2-track">
               <Scene className="h2-welcome" id="about">
                 <div className="h2-welcome__copy">
-                  <Eyebrow>{home.about.eyebrow}</Eyebrow>
                   <h1 className="h2-display h2-display--xl" data-anima-title>
                     {(aboutLines.length ? aboutLines : [EX_ABOUT.heading]).map(
                       (line, index) => (
@@ -251,7 +256,9 @@ export function HomeEditorialPage({
                       ),
                     )}
                   </h1>
-                  <p className="h2-copy">{home.about.body}</p>
+                  <p className="h2-copy">
+                    {integratePhrase(home.about.eyebrow, home.about.body)}
+                  </p>
                   <Link href="/about" className="h2-btn">
                     <span>{home.about.cta}</span>
                   </Link>
@@ -271,18 +278,22 @@ export function HomeEditorialPage({
                   VOYAGE
                 </span>
                 <div className="h2-monument__note">
-                  <Eyebrow>Between Luxor and Aswan</Eyebrow>
-                  <p>The Nile, composed as a private passage.</p>
+                  <p>
+                    Between Luxor and Aswan, the Nile is composed as a private
+                    passage.
+                  </p>
                 </div>
               </Scene>
 
               <Scene className="h2-itinerary-intro" id="itineraries">
-                <Eyebrow>{home.carousel.subtitle}</Eyebrow>
                 <h2 className="h2-display h2-display--l">
                   <RevealTitle>{home.carousel.title}</RevealTitle>
                 </h2>
                 <p className="h2-copy">
-                  Every route, room and suite from the Hathor homepage itinerary collection.
+                  {integratePhrase(
+                    home.carousel.subtitle,
+                    "Every route, room and suite from the Hathor homepage itinerary collection.",
+                  )}
                 </p>
                 <Link href="/voyages" className="h2-btn">
                   <span>{home.carousel.exploreCta}</span>
@@ -354,7 +365,6 @@ export function HomeEditorialPage({
                     />
                   )}
                   <div className="h2-landmark__copy">
-                    <Eyebrow>{slide.indication}</Eyebrow>
                     <h2 className="h2-display h2-display--l">
                       {slide.titleLines.map((line, lineIndex) => (
                         <RevealTitle
@@ -365,7 +375,9 @@ export function HomeEditorialPage({
                         </RevealTitle>
                       ))}
                     </h2>
-                    <p className="h2-copy">{slide.body}</p>
+                    <p className="h2-copy">
+                      {integratePhrase(slide.indication, slide.body)}
+                    </p>
                   </div>
                 </Scene>
                 );
@@ -376,7 +388,6 @@ export function HomeEditorialPage({
                 return (
                   <Scene className="h2-life" key={block.title}>
                     <div className="h2-life__copy">
-                      <Eyebrow>{amenitiesCopy(cms?.indication, index === 0 ? "A Way of Life" : "Gastronomy")}</Eyebrow>
                       <h2 className="h2-display h2-display--l">
                         {amenitiesTitleLines(cms?.title, [block.title]).map((line, lineIndex) => (
                           <RevealTitle
@@ -387,7 +398,12 @@ export function HomeEditorialPage({
                           </RevealTitle>
                         ))}
                       </h2>
-                      <p className="h2-copy">{amenitiesCopy(cms?.body, block.body)}</p>
+                      <p className="h2-copy">
+                        {integratePhrase(
+                          amenitiesCopy(cms?.indication, index === 0 ? "A Way of Life" : "Gastronomy"),
+                          amenitiesCopy(cms?.body, block.body),
+                        )}
+                      </p>
                       <Link href={block.href} className="h2-btn">
                         <span>{amenitiesCopy(cms?.cta, block.cta)}</span>
                       </Link>
@@ -404,10 +420,9 @@ export function HomeEditorialPage({
               })}
 
               <Scene className="h2-amenities-intro" id="amenities">
-                <Eyebrow>Aboard Hathor</Eyebrow>
                 <h2 className="h2-display h2-display--xl">
-                  <RevealTitle>Eleven details</RevealTitle>
-                  <RevealTitle delay={1}>of the journey</RevealTitle>
+                  <RevealTitle>Aboard Hathor</RevealTitle>
+                  <RevealTitle delay={1}>Eleven details of the journey</RevealTitle>
                 </h2>
                 <p className="h2-copy">
                   The complete amenities image sequence from the main homepage.
@@ -437,9 +452,9 @@ export function HomeEditorialPage({
 
               <Scene className="h2-voyages" id="voyages">
                 <header className="h2-voyages__head">
-                  <Eyebrow>Hathor itineraries</Eyebrow>
                   <h2 className="h2-display h2-display--l">
-                    <RevealTitle>Choose your passage</RevealTitle>
+                    <RevealTitle>Hathor itineraries</RevealTitle>
+                    <RevealTitle delay={1}>Choose your passage</RevealTitle>
                   </h2>
                 </header>
                 <ol className="h2-voyages__list">
@@ -474,9 +489,9 @@ export function HomeEditorialPage({
                   />
                   <Image src={rotatingWheel} alt="" className="h2-helm__wheel" sizes="(max-width: 1024px) 76vw, 58vh" />
                   <div className="h2-helm__copy">
-                    <Eyebrow>Set your course</Eyebrow>
                     <h2 className="h2-display h2-display--l">
-                      <RevealTitle>The Nile awaits</RevealTitle>
+                      <RevealTitle>Set your course</RevealTitle>
+                      <RevealTitle delay={1}>The Nile awaits</RevealTitle>
                     </h2>
                   </div>
                 </div>
@@ -484,9 +499,9 @@ export function HomeEditorialPage({
 
               <Scene className="h2-gallery" id="gallery">
                 <header>
-                  <Eyebrow>Follow our journey</Eyebrow>
                   <h2 className="h2-display h2-display--l">
-                    <RevealTitle>{home.gallery.title}</RevealTitle>
+                    <RevealTitle>Follow our journey</RevealTitle>
+                    <RevealTitle delay={1}>{home.gallery.title}</RevealTitle>
                   </h2>
                   <a className="h2-link" href={EX_GALLERY.indicationHref} target="_blank" rel="noopener noreferrer">
                     {EX_GALLERY.indication}
@@ -534,9 +549,9 @@ export function HomeEditorialPage({
             focus="vessel"
           />
           <div className="h2-epilogue__copy">
-            <Eyebrow>Welcome aboard</Eyebrow>
             <h2 className="h2-display h2-display--xl">
-              <RevealTitle>{home.campaign.title}</RevealTitle>
+              <RevealTitle>Welcome aboard</RevealTitle>
+              <RevealTitle delay={1}>{home.campaign.title}</RevealTitle>
             </h2>
             <div className="h2-epilogue__actions">
               <BookNowTrigger className="h2-btn h2-btn--solid"><span>Book now</span></BookNowTrigger>

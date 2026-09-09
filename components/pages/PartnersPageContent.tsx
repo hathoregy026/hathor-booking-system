@@ -6,7 +6,6 @@ import {
   useRef,
   type ComponentPropsWithoutRef,
   type CSSProperties,
-  type ReactNode,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
@@ -104,10 +103,6 @@ function Scene({
   );
 }
 
-function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="pn-eyebrow">({children})</p>;
-}
-
 /** Partner circle — roles describe how each name meets Hathor guests. */
 const CIRCLE = [
   {
@@ -199,8 +194,6 @@ export function PartnersPageContent() {
                   </ol>
 
                   <div className="pn-open__inner">
-                    <Eyebrow>The circle</Eyebrow>
-
                     <div className="pn-open__title" id="partners" data-anima-title>
                       <h1 className="pn-display pn-display--xl wt-page-hero">
                         {heroLines.map((line, index) => (
@@ -275,17 +268,19 @@ export function PartnersPageContent() {
               {/* 03 — Covenant with supporting photograph */}
               <Scene className="pn-covenant">
                 <div className="pn-covenant__copy">
-                  <Eyebrow>Shared standards</Eyebrow>
                   <div className="pn-covenant__statement" data-anima-title>
                     <h2 className="pn-edit pn-edit--xl">
                       <span className="pn-line">
-                        <AnimaSplitLine line={0}>A private circle</AnimaSplitLine>
+                        <AnimaSplitLine line={0}>Shared standards</AnimaSplitLine>
                       </span>
                       <span className="pn-line">
-                        <AnimaSplitLine line={1}>of trusted names</AnimaSplitLine>
+                        <AnimaSplitLine line={1}>A private circle</AnimaSplitLine>
                       </span>
                       <span className="pn-line">
-                        <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
+                        <AnimaSplitLine line={2}>of trusted names</AnimaSplitLine>
+                      </span>
+                      <span className="pn-line">
+                        <AnimaSplitLine line={3}>on the Nile</AnimaSplitLine>
                       </span>
                     </h2>
                   </div>
@@ -305,7 +300,7 @@ export function PartnersPageContent() {
               {/* 04 — Partner constellation with portrait peeks */}
               <Scene className="pn-orbit" id="circle">
                 <header className="pn-orbit__head">
-                  <Eyebrow>Trusted worldwide</Eyebrow>
+                  <p className="pn-display pn-display--l">Trusted worldwide</p>
                   <p className="pn-meta-copy">
                     Four partners. One standard of care for every Hathor guest.
                   </p>
@@ -362,13 +357,15 @@ export function PartnersPageContent() {
                   />
                 </div>
                 <div className="pn-craft__copy">
-                  <Eyebrow>Hospitality craft</Eyebrow>
                   <p className="pn-edit pn-edit--l" data-anima-title>
                     <span className="pn-line">
-                      <AnimaSplitLine line={0}>Care that travels</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>Hospitality craft</AnimaSplitLine>
                     </span>
                     <span className="pn-line">
-                      <AnimaSplitLine line={1}>with every booking</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>Care that travels</AnimaSplitLine>
+                    </span>
+                    <span className="pn-line">
+                      <AnimaSplitLine line={2}>with every booking</AnimaSplitLine>
                     </span>
                   </p>
                   <p className="pn-meta-copy">
@@ -440,13 +437,15 @@ export function PartnersPageContent() {
 
         <section className="pn-epilogue" id="converse">
           <header className="pn-epilogue__head">
-            <Eyebrow>Begin a conversation</Eyebrow>
             <h2 className="pn-display pn-display--l" data-anima-title>
               <span className="pn-line">
-                <AnimaSplitLine line={0}>Collaborate with</AnimaSplitLine>
+                <AnimaSplitLine line={0}>Begin a conversation</AnimaSplitLine>
               </span>
               <span className="pn-line">
-                <AnimaSplitLine line={1}>Hathor</AnimaSplitLine>
+                <AnimaSplitLine line={1}>Collaborate with</AnimaSplitLine>
+              </span>
+              <span className="pn-line">
+                <AnimaSplitLine line={2}>Hathor</AnimaSplitLine>
               </span>
             </h2>
           </header>
@@ -484,14 +483,13 @@ export function PartnersPageContent() {
             </div>
 
             <aside className="pn-epilogue__card">
-              <span className="pn-card__tag">(Circle)</span>
               <PartnersMedia
                 slot="contact-hero"
                 alt="Hathor Dahabiya on the Nile"
                 className="pn-epilogue__card-media"
                 ratio="356 / 460"
               />
-              <h3 className="pn-display">Partners</h3>
+              <h3 className="pn-display">Partner circle</h3>
               <p className="pn-epilogue__card-body">
                 Trusted names who share
                 <br />

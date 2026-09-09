@@ -359,7 +359,6 @@ html[data-public-theme="night"] [data-charter-page] {
 .voyages-boring .vb-intro__body,
 .about-boring .ab-intro__body,
 .contact-editorial .ce-intro__body,
-.highlights-editorial .hl-intro__body,
 .cr-intro .cr-intro__body {
   position: absolute;
   right: var(--ed-gutter);
@@ -509,7 +508,6 @@ html[data-public-theme="night"] [data-charter-page] {
   .voyages-boring .vb-intro__body,
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
-  .highlights-editorial .hl-intro__body,
   .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
     left: var(--ed-gutter);

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { HighlightsPageContent } from "@/components/pages/highlights/HighlightsPageContent";
 import { PageStructuredData } from "@/components/seo/PageStructuredData";
 import { HIGHLIGHTS_SEO } from "@/lib/seo/page-metadata";
-import "../../highlights-editorial.css";
 import "../../editorial-chrome.css";
+import "../../highlights-editorial.css";
 
 export const metadata: Metadata = HIGHLIGHTS_SEO;
 

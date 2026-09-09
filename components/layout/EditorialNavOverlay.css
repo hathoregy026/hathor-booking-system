@@ -507,14 +507,13 @@
 }
 
 @media (max-width: 480px) {
-  /* Half the phone — cream ledger left, image/backdrop right. */
+  /* Full cream ledger — no adjacent photo on phone. */
   .eno {
-    --eno-panel-w: 50%;
+    --eno-panel-w: 100%;
   }
 
   .eno-photo {
-    display: block;
-    width: calc(100% - var(--eno-panel-w));
+    display: none;
   }
 
   .eno-prelayers,
@@ -523,15 +522,15 @@
   }
 
   .eno-prelayer--1 {
-    width: calc(var(--eno-panel-w) + 5.5%);
+    width: 100%;
   }
 
   .eno-prelayer--2 {
-    width: calc(var(--eno-panel-w) + 3.25%);
+    width: 100%;
   }
 
   .eno-prelayer--3 {
-    width: calc(var(--eno-panel-w) + 1.35%);
+    width: 100%;
   }
 
   .eno-panel {
@@ -587,20 +586,22 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    align-self: stretch;
+    align-self: center;
     box-sizing: border-box;
-    width: 100%;
-    min-height: 2.75rem;
-    margin: 0.55rem 0 0;
-    padding: 0.65rem 0.85rem;
+    width: auto;
+    min-width: 8.75rem;
+    max-width: 11.5rem;
+    min-height: 44px;
+    margin: 0.4rem auto 0;
+    padding: 0.38rem 1.05rem;
     border: 1px solid var(--eno-gold-deep);
     border-radius: 999px;
     background: transparent;
     color: var(--eno-gold-deep);
     font-family: var(--eno-body);
-    font-size: 0.68rem;
+    font-size: 0.58rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     cursor: pointer;
     order: 3;

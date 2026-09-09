@@ -6,7 +6,6 @@ import {
   useRef,
   type ComponentPropsWithoutRef,
   type CSSProperties,
-  type ReactNode,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
@@ -89,11 +88,6 @@ function Scene({
       {children}
     </section>
   );
-}
-
-/** Parenthesised eyebrow — the reference's signature label form. */
-function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="ab-eyebrow">({children})</p>;
 }
 
 /** The numbered manifesto rows: a giant word, a number, a narrow column of copy. */
@@ -187,8 +181,6 @@ export function AboutPageContent() {
                 </nav>
 
                 <div className="ab-intro__inner">
-                  <Eyebrow>About</Eyebrow>
-
                   <div className="ab-intro__title" id="about" data-anima-title>
                     <h1 className="ab-display ab-display--xl wt-page-hero">
                       {aboutHeroLines.map((line, index) => (
@@ -234,26 +226,28 @@ export function AboutPageContent() {
                   backAlt="Dining aboard Hathor"
                 />
                 <p className="ab-lead__caption">
-                  <span>(Aboard)</span> Three decks · Twelve guests
+                  Aboard · Three decks · Twelve guests
                 </p>
               </Scene>
 
               {/* 03 — Manifesto */}
               <Scene className="ab-manifesto">
                 <div className="ab-manifesto__aside">
-                  <Eyebrow>The Dahabiya</Eyebrow>
                   <p className="ab-meta-copy">{lead}</p>
                 </div>
                 <div className="ab-manifesto__headline" data-anima-title>
                   <h2 className="ab-edit ab-edit--xl">
                     <span className="ab-line">
-                      <AnimaSplitLine line={0}>Experience Egypt</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>The Dahabiya</AnimaSplitLine>
                     </span>
                     <span className="ab-line">
-                      <AnimaSplitLine line={1}>in a whole</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>Experience Egypt</AnimaSplitLine>
+                    </span>
+                    <span className="ab-line">
+                      <AnimaSplitLine line={2}>in a whole</AnimaSplitLine>
                     </span>
                     <span className="ab-line ab-line--indent">
-                      <AnimaSplitLine line={2}>new light</AnimaSplitLine>
+                      <AnimaSplitLine line={3}>new light</AnimaSplitLine>
                     </span>
                   </h2>
                 </div>
@@ -285,7 +279,7 @@ export function AboutPageContent() {
               {/* 05 — Numbered manifesto: giant word, number, narrow copy */}
               <Scene className="ab-principles" id="stay">
                 <div className="ab-principles__head">
-                  <Eyebrow>Accommodation</Eyebrow>
+                  <p className="ab-display ab-display--l">Accommodation</p>
                   <p className="ab-meta-copy">{about.accommodationsIntro}</p>
                 </div>
 
@@ -370,17 +364,19 @@ export function AboutPageContent() {
                 </div>
 
                 <div className="ab-dining__copy">
-                  <Eyebrow>{about.diningTitle}</Eyebrow>
                   <div data-anima-title>
                     <h2 className="ab-edit ab-edit--l">
                       <span className="ab-line">
-                        <AnimaSplitLine line={0}>Luxury dining</AnimaSplitLine>
+                        <AnimaSplitLine line={0}>{about.diningTitle}</AnimaSplitLine>
                       </span>
                       <span className="ab-line">
-                        <AnimaSplitLine line={1}>on Egypt&rsquo;s finest</AnimaSplitLine>
+                        <AnimaSplitLine line={1}>Luxury dining</AnimaSplitLine>
+                      </span>
+                      <span className="ab-line">
+                        <AnimaSplitLine line={2}>on Egypt&rsquo;s finest</AnimaSplitLine>
                       </span>
                       <span className="ab-line ab-line--indent">
-                        <AnimaSplitLine line={2}>dahabiya</AnimaSplitLine>
+                        <AnimaSplitLine line={3}>dahabiya</AnimaSplitLine>
                       </span>
                     </h2>
                   </div>
@@ -405,7 +401,6 @@ export function AboutPageContent() {
                   backAlt="Hathor deck living"
                 />
                 <div className="ab-closing__copy">
-                  <Eyebrow>Next</Eyebrow>
                   <p className="ab-display ab-display--l wt-page-title">
                     {about.welcomeTitle.trim() || "Welcome aboard"}
                   </p>
@@ -418,7 +413,6 @@ export function AboutPageContent() {
         {/* Epilogue — always vertical, on the deepest wash */}
         <section className="ab-epilogue" id="reserve">
           <header className="ab-epilogue__head">
-            <Eyebrow>Reserve</Eyebrow>
             <h2 className="ab-display ab-display--xl" data-anima-title>
               <span className="ab-line">
                 <AnimaSplitLine line={0}>Timeless luxury</AnimaSplitLine>
@@ -457,14 +451,13 @@ export function AboutPageContent() {
             </div>
 
             <aside className="ab-epilogue__card">
-              <span className="ab-card__tag">(Vessel)</span>
               <AboutMedia
                 slot="about-hero"
                 alt="Hathor Dahabiya"
                 className="ab-epilogue__card-media"
                 ratio="356 / 460"
               />
-              <h3 className="ab-display">Dahabiya</h3>
+              <h3 className="ab-display">Dahabiya vessel</h3>
               <p className="ab-epilogue__card-body">
                 Three decks of stillness
                 <br />

@@ -12,6 +12,18 @@ type HighlightsEditorialScrollRefs = {
   trackRef: RefObject<HTMLDivElement | null>;
 };
 
+const centreProgress = (
+  rect: DOMRect,
+  mode: "horizontal" | "vertical",
+) => {
+  const viewport =
+    mode === "horizontal" ? window.innerWidth : window.innerHeight;
+  const start = mode === "horizontal" ? rect.left : rect.top;
+  const size = mode === "horizontal" ? rect.width : rect.height;
+  const centre = start + size / 2;
+  return clamp(0.5 + (viewport / 2 - centre) / viewport);
+};
+
 export function useHighlightsEditorialScroll({
   rootRef,
   runRef,
@@ -44,7 +56,29 @@ export function useHighlightsEditorialScroll({
         }
         el.style.setProperty(
           "--hl-flip",
-          editorialFlipProgress(el.getBoundingClientRect(), mode).toFixed(4),
+          Math.max(
+            0,
+            (Number(
+              editorialFlipProgress(
+                el.getBoundingClientRect(),
+                mode,
+                "centre",
+              ),
+            ) -
+              0.42) /
+              0.58,
+          ).toFixed(4),
+        );
+      });
+    };
+
+    const applySlideProgress = (mode: "horizontal" | "vertical") => {
+      root.querySelectorAll<HTMLElement>(".hl-slides").forEach((scene) => {
+        const stage =
+          scene.querySelector<HTMLElement>(".hl-slides__stage") ?? scene;
+        scene.style.setProperty(
+          "--slide-progress",
+          centreProgress(stage.getBoundingClientRect(), mode).toFixed(4),
         );
       });
     };
@@ -64,6 +98,7 @@ export function useHighlightsEditorialScroll({
         scene.style.setProperty("--scene-progress", parallax.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
+      applySlideProgress("horizontal");
       applyFlips("horizontal");
     };
 
@@ -80,6 +115,7 @@ export function useHighlightsEditorialScroll({
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
       });
+      applySlideProgress("vertical");
       applyFlips("vertical");
     };
 

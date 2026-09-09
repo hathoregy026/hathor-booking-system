@@ -135,10 +135,6 @@ function Scene({
   );
 }
 
-function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="ar-eyebrow">({children})</p>;
-}
-
 /**
  * Interlude shapes cycled between prose runs. Each breaks out of the reading
  * measure by a named grid line, never by absolute positioning — so a figure
@@ -200,7 +196,6 @@ export function BlogPostPageContent({
                 </div>
 
                 <div className="ar-masthead__mid">
-                  <Eyebrow>Dispatch</Eyebrow>
                   <h1 className="ar-display ar-display--xl">{post.title}</h1>
                 </div>
 
@@ -232,7 +227,6 @@ export function BlogPostPageContent({
               {/* 03 — standfirst + framed datum, both in flow */}
               <Scene className="ar-standfirst">
                 <div className="ar-standfirst__statement">
-                  <Eyebrow>Standfirst</Eyebrow>
                   <p className="ar-edit ar-standfirst__quote">{post.excerpt}</p>
                 </div>
 
@@ -284,8 +278,7 @@ export function BlogPostPageContent({
 
               {/* 05 — quiet bridge into the document */}
               <Scene className="ar-turn">
-                <Eyebrow>Continue</Eyebrow>
-                <p className="ar-display ar-display--l">The note</p>
+                <p className="ar-display ar-display--l">Continue the note</p>
                 <i className="ar-turn__rule" aria-hidden="true" />
                 <a className="ar-link" href="#article">
                   Read below
@@ -363,8 +356,7 @@ export function BlogPostPageContent({
         {related.length > 0 ? (
           <section className="ar-further" aria-label="Further dispatches">
             <header className="ar-further__head">
-              <Eyebrow>Further notes</Eyebrow>
-              <h2 className="ar-display ar-display--l">Continue reading</h2>
+              <h2 className="ar-display ar-display--l">Further notes</h2>
             </header>
             <ul className="ar-further__list">
               {related.map((item, index) => (

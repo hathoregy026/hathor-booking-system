@@ -468,6 +468,8 @@
   --chrome-ink: #1c1917;
   --chrome-pad: 2.35rem;
   --chrome-icon: 2.15rem;
+  --chrome-logo: clamp(3.15rem, 7vh, 4.5rem);
+  --chrome-logo-compact: 2.35rem;
   --theme-toggle-w: 6.35rem;
   --theme-toggle-h: var(--chrome-icon);
   --theme-toggle-pad: 0.14rem;
@@ -530,8 +532,7 @@
   display: none !important;
 }
 
-.public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__inner--owo,
-.public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__inner--owo {
+.public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__inner--owo {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -539,11 +540,20 @@
   position: relative;
   width: 100%;
   max-width: none;
-  min-height: calc(clamp(3.15rem, 7vh, 4.5rem) + 1.1rem);
+  min-height: calc(var(--chrome-logo) + 1.1rem);
   padding-top: max(0.7rem, env(safe-area-inset-top));
   padding-bottom: 0.7rem;
   padding-left: max(var(--chrome-pad), env(safe-area-inset-left));
   padding-right: max(var(--chrome-pad), env(safe-area-inset-right));
+  transition:
+    min-height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__inner--owo {
+  min-height: calc(var(--chrome-logo-compact) + 0.7rem);
+  padding-top: max(0.4rem, env(safe-area-inset-top));
+  padding-bottom: 0.4rem;
 }
 
 .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__inner--owo::before {
@@ -604,13 +614,14 @@
 }
 
 .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__logo--icon {
-  height: clamp(3.15rem, 7vh, 4.5rem);
+  height: var(--chrome-logo);
   width: auto;
   margin-bottom: 0;
+  transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__logo--icon {
-  height: clamp(3.15rem, 7vh, 4.5rem);
+  height: var(--chrome-logo-compact);
   margin-bottom: 0;
 }
 
@@ -680,20 +691,22 @@
   .public-site .hathor-header--chrome {
     --chrome-pad: 1rem;
     --chrome-icon: 1.85rem;
+    --chrome-logo: 2.35rem;
+    --chrome-logo-compact: 1.85rem;
     --theme-toggle-w: 5.45rem;
     --theme-toggle-h: 1.85rem;
   }
 
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__logo--icon,
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__logo--icon {
-    height: 2.35rem;
-  }
-
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__inner--owo,
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__inner--owo {
-    min-height: calc(2.35rem + 1.1rem);
+  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__inner--owo {
+    min-height: calc(var(--chrome-logo) + 1.1rem);
     padding-top: max(0.55rem, env(safe-area-inset-top));
     padding-bottom: 0.55rem;
+  }
+
+  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__inner--owo {
+    min-height: calc(var(--chrome-logo-compact) + 0.7rem);
+    padding-top: max(0.35rem, env(safe-area-inset-top));
+    padding-bottom: 0.35rem;
   }
 
   .public-site .hathor-header--explore-open {
@@ -704,16 +717,8 @@
 @media (min-width: 481px) and (max-width: 1024px) {
   .public-site .hathor-header--chrome {
     --chrome-pad: 1.5rem;
-  }
-
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__logo--icon,
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__logo--icon {
-    height: clamp(2.75rem, 5vh, 3.5rem);
-  }
-
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout .hathor-header__inner--owo,
-  .public-site .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact .hathor-header__inner--owo {
-    min-height: calc(clamp(2.75rem, 5vh, 3.5rem) + 1.1rem);
+    --chrome-logo: clamp(2.75rem, 5vh, 3.5rem);
+    --chrome-logo-compact: 2.15rem;
   }
 }
 

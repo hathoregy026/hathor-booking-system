@@ -6,7 +6,6 @@ import {
   useRef,
   type ComponentPropsWithoutRef,
   type CSSProperties,
-  type ReactNode,
 } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
@@ -35,6 +34,7 @@ function HighlightsMedia({
   className = "",
   ratio,
   objectPosition,
+  sizes = "(max-width: 950px) 100vw, 70vw",
 }: {
   slot: string;
   alt: string;
@@ -42,6 +42,7 @@ function HighlightsMedia({
   className?: string;
   ratio?: string;
   objectPosition?: string;
+  sizes?: string;
 }) {
   const image = useSiteImage(slot);
   return (
@@ -58,7 +59,7 @@ function HighlightsMedia({
         alt={alt || image.alt}
         fill
         priority={priority}
-        sizes="(max-width: 950px) 100vw, 70vw"
+        sizes={sizes}
         quality={SITE_IMAGE_QUALITY}
         className="hl-media__image"
         style={objectPosition ? { objectPosition } : undefined}
@@ -75,6 +76,8 @@ function FlipImage({
   className = "",
   axis = "left",
   ratio,
+  priority = false,
+  objectPosition,
 }: {
   front: string;
   back: string;
@@ -83,6 +86,8 @@ function FlipImage({
   className?: string;
   axis?: "up" | "left" | "right";
   ratio?: string;
+  priority?: boolean;
+  objectPosition?: string;
 }) {
   return (
     <div className={`hl-flip hl-flip--${axis} ${className}`} data-hl-flip>
@@ -91,12 +96,15 @@ function FlipImage({
         alt={frontAlt}
         className="hl-flip__base"
         ratio={ratio}
+        priority={priority}
+        objectPosition={objectPosition}
       />
       <HighlightsMedia
         slot={back}
         alt={backAlt}
         className="hl-flip__overlay"
         ratio={ratio}
+        objectPosition={objectPosition}
       />
     </div>
   );
@@ -112,10 +120,6 @@ function Scene({
       {children}
     </section>
   );
-}
-
-function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="hl-eyebrow">({children})</p>;
 }
 
 const LIFE_ABOARD = [
@@ -231,24 +235,24 @@ export function HighlightsPageContent() {
                   <a href="#reserve">Reserve</a>
                 </nav>
 
-                <div className="hl-intro__inner">
-                  <Eyebrow>Highlights</Eyebrow>
-
-                  <div
-                    className="hl-intro__title"
-                    id="highlights"
-                    data-anima-title
-                  >
-                    <h1 className="hl-display hl-display--xl wt-page-hero">
-                      {highlightsHeroLines.map((line, index) => (
-                        <span
-                          key={`${line}-${index}`}
-                          className={`hl-line ${lineClass[index] ?? ""}`}
-                        >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
-                        </span>
-                      ))}
-                    </h1>
+                <div className="hl-intro__text">
+                  <div className="hl-intro__copy">
+                    <div
+                      className="hl-intro__title"
+                      id="highlights"
+                      data-anima-title
+                    >
+                      <h1 className="hl-display hl-display--xl wt-page-hero">
+                        {highlightsHeroLines.map((line, index) => (
+                          <span
+                            key={`${line}-${index}`}
+                            className={`hl-line ${lineClass[index] ?? ""}`}
+                          >
+                            <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                          </span>
+                        ))}
+                      </h1>
+                    </div>
                   </div>
 
                   <p className="hl-intro__body wt-page-body">
@@ -256,13 +260,27 @@ export function HighlightsPageContent() {
                   </p>
                 </div>
 
-                <p className="hl-intro__mark">
-                  Hathor Cruise <span className="hl-reg">®</span> 2026
-                </p>
-                <p className="hl-intro__scroll">
-                  <i />
-                  Scroll
-                </p>
+                <div className="hl-intro__hero">
+                  <HighlightsMedia
+                    slot="highlights-lifestyle"
+                    alt="Guests aboard the Hathor Dahabiya"
+                    priority
+                    className="hl-intro__portrait"
+                    ratio="3 / 4"
+                    objectPosition="50% 18%"
+                    sizes="(max-width: 950px) 92vw, 42vw"
+                  />
+                </div>
+
+                <div className="hl-intro__bar">
+                  <p className="hl-intro__mark">
+                    Hathor Cruise <span className="hl-reg">®</span> 2026
+                  </p>
+                  <p className="hl-intro__scroll">
+                    <i />
+                    Scroll
+                  </p>
+                </div>
               </Scene>
 
               {/* 02 — Image lead */}
@@ -270,36 +288,34 @@ export function HighlightsPageContent() {
                 <HighlightsMedia
                   slot="highlights-hero"
                   alt="Hathor Dahabiya highlights on the Nile"
-                  priority
                   className="hl-lead__main"
+                  ratio="16 / 10"
+                  objectPosition="50% 42%"
                 />
                 <FlipImage
                   className="hl-lead__inset"
                   axis="left"
                   ratio="835 / 557"
-                  front="highlights-lifestyle"
-                  back="landmark-hatshepsut"
-                  frontAlt="Morning light aboard Hathor"
-                  backAlt="Temple of Hatshepsut"
+                  front="landmark-hatshepsut"
+                  back="landmark-obelisk"
+                  frontAlt="Temple of Hatshepsut"
+                  backAlt="Unfinished Obelisk, Aswan"
                 />
-                <p className="hl-lead__caption">
-                  <span>(Nile)</span> Luxor — Aswan
-                </p>
+                <p className="hl-lead__caption">Nile · Luxor — Aswan</p>
               </Scene>
 
               {/* 03 — Manifesto */}
               <Scene className="hl-manifesto">
                 <div className="hl-manifesto__aside">
-                  <Eyebrow>First light</Eyebrow>
                   <p className="hl-meta-copy">{pullQuote}</p>
                 </div>
                 <div className="hl-manifesto__headline" data-anima-title>
                   <h2 className="hl-edit hl-edit--xl">
                     <span className="hl-line">
-                      <AnimaSplitLine line={0}>Cruise in</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>First light</AnimaSplitLine>
                     </span>
                     <span className="hl-line">
-                      <AnimaSplitLine line={1}>true elegance</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>Cruise in true elegance</AnimaSplitLine>
                     </span>
                     <span className="hl-line hl-line--indent">
                       <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
@@ -331,10 +347,49 @@ export function HighlightsPageContent() {
                 <p className="hl-collage__copy hl-meta-copy">{collageCopy}</p>
               </Scene>
 
-              {/* 05 — Numbered principles (manifesto pillars) */}
+              {/* 05 — Shore slides: three landmark frames wipe as the scene travels */}
+              <Scene className="hl-slides" aria-label="Shore landmarks">
+                <div className="hl-slides__copy">
+                  <p className="hl-display hl-display--l">Ashore</p>
+                  <p className="hl-meta-copy">
+                    Three shores — the voyage is paced by stone: quarry, terrace,
+                    and valley — each revealed as the river gives it up.
+                  </p>
+                </div>
+                <div className="hl-slides__stage">
+                  <HighlightsMedia
+                    slot="landmark-obelisk"
+                    alt="Unfinished Obelisk quarry, Aswan"
+                    className="hl-slides__layer hl-slides__layer--0"
+                    ratio="4 / 5"
+                    objectPosition="50% 45%"
+                  />
+                  <HighlightsMedia
+                    slot="landmark-hatshepsut"
+                    alt="Mortuary Temple of Hatshepsut"
+                    className="hl-slides__layer hl-slides__layer--1"
+                    ratio="4 / 5"
+                    objectPosition="50% 40%"
+                  />
+                  <HighlightsMedia
+                    slot="landmark-valley-kings"
+                    alt="Valley of the Kings, Luxor"
+                    className="hl-slides__layer hl-slides__layer--2"
+                    ratio="4 / 5"
+                    objectPosition="50% 50%"
+                  />
+                </div>
+                <ol className="hl-slides__index">
+                  <li>Obelisk</li>
+                  <li>Hatshepsut</li>
+                  <li>Valley</li>
+                </ol>
+              </Scene>
+
+              {/* 06 — Numbered principles (manifesto pillars) */}
               <Scene className="hl-principles" id="pillars">
                 <div className="hl-principles__head">
-                  <Eyebrow>Three notes</Eyebrow>
+                  <p className="hl-display hl-display--l">Three notes</p>
                   <p className="hl-meta-copy">
                     The river, the landmarks, and the return — the grammar of a
                     Hathor voyage.
@@ -432,45 +487,49 @@ export function HighlightsPageContent() {
                 </Scene>
               ))}
 
-              {/* 07 — Life aboard editorial split */}
-              <Scene className="hl-dining" id="aboard">
-                <div className="hl-dining__media">
-                  <HighlightsMedia
-                    slot="gastronomy-restaurant"
-                    alt="Dining aboard Hathor"
-                    className="hl-dining__main"
-                    ratio="1090 / 960"
-                  />
+              {/* 08 — Life aboard: three staggered beats */}
+              <Scene className="hl-aboard" id="aboard">
+                <div className="hl-aboard__head">
+                  <h2 className="hl-edit hl-edit--l">Life aboard</h2>
+                  <p className="hl-meta-copy">The return each day</p>
                 </div>
-
-                <div className="hl-dining__copy">
-                  <Eyebrow>Life aboard</Eyebrow>
-                  <div data-anima-title>
-                    <h2 className="hl-edit hl-edit--l">
-                      <span className="hl-line">
-                        <AnimaSplitLine line={0}>Dining · Suite</AnimaSplitLine>
-                      </span>
-                      <span className="hl-line">
-                        <AnimaSplitLine line={1}>· Deck — the</AnimaSplitLine>
-                      </span>
-                      <span className="hl-line hl-line--indent">
-                        <AnimaSplitLine line={2}>return each day</AnimaSplitLine>
-                      </span>
-                    </h2>
-                  </div>
-                  <p className="hl-meta-copy wt-page-body">
-                    {LIFE_ABOARD.map((item) => item.text).join(" ")}
-                  </p>
-                  <Link href="/gastronomy" className="hl-btn">
-                    <span>Explore dining</span>
-                  </Link>
+                <div className="hl-aboard__row">
+                  {LIFE_ABOARD.map((item, index) => {
+                    const backs = [
+                      "charter-privacy",
+                      "room-suite",
+                      "home-voyage-nile-majesty",
+                    ] as const;
+                    const axes = ["left", "up", "right"] as const;
+                    const axis = axes[index] ?? "left";
+                    return (
+                      <article className="hl-aboard__item" key={item.number}>
+                        <FlipImage
+                          className="hl-aboard__media"
+                          axis={axis}
+                          ratio="4 / 5"
+                          front={item.slot}
+                          back={backs[index] ?? "charter-privacy"}
+                          frontAlt={`${item.title} aboard Hathor`}
+                        />
+                        <span className="hl-aboard__num">{item.number}</span>
+                        <h3 className="hl-aboard__title hl-display">
+                          {item.title}
+                        </h3>
+                        <p className="hl-aboard__copy">{item.text}</p>
+                      </article>
+                    );
+                  })}
                 </div>
+                <Link href="/gastronomy" className="hl-btn">
+                  <span>Explore dining</span>
+                </Link>
               </Scene>
 
               {/* 08 — River rhythm ledger */}
               <Scene className="hl-principles" id="rhythm">
                 <div className="hl-principles__head">
-                  <Eyebrow>River rhythm</Eyebrow>
+                  <p className="hl-display hl-display--l">River rhythm</p>
                   <p className="hl-meta-copy">
                     Light changes. The day answers — dawn to night aboard
                     Hathor.
@@ -505,7 +564,6 @@ export function HighlightsPageContent() {
                   backAlt="Sunset aboard Hathor"
                 />
                 <div className="hl-closing__copy">
-                  <Eyebrow>Next</Eyebrow>
                   <p className="hl-display hl-display--l wt-page-title">
                     Sail with Hathor
                   </p>
@@ -518,7 +576,6 @@ export function HighlightsPageContent() {
         {/* Epilogue */}
         <section className="hl-epilogue" id="reserve">
           <header className="hl-epilogue__head">
-            <Eyebrow>Reserve</Eyebrow>
             <h2 className="hl-display hl-display--xl" data-anima-title>
               <span className="hl-line">
                 <AnimaSplitLine line={0}>Continue the</AnimaSplitLine>
@@ -570,14 +627,13 @@ export function HighlightsPageContent() {
             </div>
 
             <aside className="hl-epilogue__card">
-              <span className="hl-card__tag">(Voyage)</span>
               <HighlightsMedia
                 slot="highlights-hero"
                 alt="Hathor Dahabiya on the Nile"
                 className="hl-epilogue__card-media"
                 ratio="356 / 460"
               />
-              <h3 className="hl-display">Nile</h3>
+              <h3 className="hl-display">Nile voyage</h3>
               <p className="hl-epilogue__card-body">
                 Ancient landmarks
                 <br />

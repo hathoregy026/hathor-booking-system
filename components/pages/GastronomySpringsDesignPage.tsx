@@ -373,9 +373,12 @@ export function GastronomySpringsDesignPage() {
           </div>
         </section>
 
-        <section className="nib-contact nib-surface--cream" data-nib-reveal>
-          <span className="nib-contact__eyebrow">(Concierge)</span>
-          <h2 data-anima-title>SHAPE YOUR<br />VOYAGE</h2>
+          <section className="nib-contact nib-surface--cream" data-nib-reveal>
+          <h2 data-anima-title>
+            SHAPE YOUR
+            <br />
+            CONCIERGE VOYAGE
+          </h2>
         </section>
 
         <section className="nib-double nib-surface--cream" data-nib-reveal>

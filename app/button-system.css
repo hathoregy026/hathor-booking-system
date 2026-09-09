@@ -85,7 +85,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -140,7 +140,7 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .public-fab__book, .cruise-filter--cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -156,7 +156,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -179,7 +179,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-primary, .btn-secondary,
     .public-btn-outline-gold, .public-btn-dark,
     .cruise-filter--cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline,
     .booking-btn-outline, .historia-btn
@@ -217,7 +217,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-primary, .btn-secondary,
     .public-btn-outline-gold, .public-btn-dark,
     .cruise-filter--cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline,
     .booking-btn-outline, .historia-btn
@@ -238,7 +238,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -276,7 +276,7 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .public-fab__book, .cruise-filter--cta, .hero-cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -295,7 +295,7 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .public-fab__book, .cruise-filter--cta, .hero-cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -314,7 +314,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta, .hero-cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -332,7 +332,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta, .hero-cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -350,7 +350,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta, .hero-cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -365,7 +365,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -381,7 +381,7 @@ html[data-public-theme="dark"] {
 :is(
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   )[data-loading="true"]:not(#_) {
@@ -401,7 +401,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta, .hero-cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -410,7 +410,7 @@ html[data-public-theme="dark"] {
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .public-fab__book, .cruise-filter--cta, .hero-cta,
-    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+    .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
     .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -457,7 +457,7 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .cruise-filter--cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
@@ -475,7 +475,7 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .public-fab__book, .cruise-filter--cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hathor-atv-confirm__secondary, .hfp__cta,
@@ -563,7 +563,7 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .public-fab__book, .cruise-filter--cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hathor-atv-confirm__secondary, .hfp__cta,
@@ -593,13 +593,13 @@ html[data-public-theme="dark"] {
       .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
       .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
       .public-fab__book, .cruise-filter--cta, .hero-cta,
-      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .hep-button,
+      .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
       .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):not(#_),
   :is(
-      .btn, .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn,
+      .btn, .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn,
       .hep-button, .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill,
       .sn-btn, .we-btn, .hathor-fav--inline, .hathor-atv--inline
     ):not(#_)

@@ -3461,8 +3461,9 @@ figure) {
 @media (max-width: 480px) {
   html[data-ex-experience] .ex-root:has(.home-three-hero) {
     --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
-    --h3-phone-logo-bar: 8.15rem;
-    --h3-phone-scrub: calc(var(--h3-phone-logo-bar) + var(--h3-phone-dock));
+    --h3-phone-letter-h: 7.95rem;
+    --h3-phone-logo-bar: calc(var(--h3-phone-letter-h) + var(--h3-phone-dock));
+    --h3-phone-scrub: var(--h3-phone-logo-bar);
   }
 
   html[data-ex-experience] .ex-root .home-three-hero.home-hero-runway {
@@ -3472,9 +3473,9 @@ figure) {
      * before Cruises / Twelve guests.
      */
     --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
-    --h3-phone-shift: 0px;
-    --h3-phone-logo-bar: 8.15rem;
-    --h3-phone-scrub: calc(var(--h3-phone-logo-bar) + var(--h3-phone-dock));
+    --h3-phone-letter-h: 7.95rem;
+    --h3-phone-logo-bar: calc(var(--h3-phone-letter-h) + var(--h3-phone-dock));
+    --h3-phone-scrub: var(--h3-phone-logo-bar);
     background: #ece8df !important;
     height: calc(100svh + var(--h3-phone-scrub)) !important;
     min-height: 0 !important;
@@ -3496,19 +3497,20 @@ figure) {
 
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container {
     /*
-     * Ref 2 stack: video, cream HATHOR, dock as the literal phone bottom.
-     * Letters stay fully above the dock; they drop behind it only on scroll.
+     * Ref: video, then HATHOR, then the dock as the only clip edge.
+     * Cream runs behind the dock so letter feet tuck under the menu —
+     * nothing else may overflow-clip them above it.
      */
     --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
-    --h3-phone-shift: 0px;
-    --h3-phone-logo-bar: 8.15rem;
+    /* Feet reach the icon row (marks start ~16px below the dock top). */
+    --h3-phone-under: 68px;
     --h3-phone-letter-h: 7.95rem;
     --h3-phone-letter-w: 3.6rem;
-    --h3-phone-letter-lift: 0.1rem;
-    --h3-phone-logo-bottom: var(--h3-phone-dock);
+    --h3-phone-logo-bar: calc(var(--h3-phone-letter-h) + var(--h3-phone-dock));
+    --h3-phone-logo-bottom: 0px;
     --hathor-logo-h: var(--h3-phone-logo-bar) !important;
-    --hathor-logo-y: var(--h3-phone-logo-bottom) !important;
-    --hathor-logo-bottom: var(--h3-phone-logo-bottom) !important;
+    --hathor-logo-y: 0px !important;
+    --hathor-logo-bottom: 0px !important;
     --hathor-logo-gap: 0px !important;
     --hathor-y-h1: 0px;
     --hathor-y-a: 0px;
@@ -3517,7 +3519,7 @@ figure) {
     --hathor-y-o: 0px;
     --hathor-y-r: 0px;
     background: #ece8df;
-    overflow: hidden !important;
+    overflow: visible !important;
     height: 100svh !important;
     max-height: 100svh !important;
     z-index: 2;
@@ -3535,10 +3537,10 @@ figure) {
     top: 0 !important;
     right: 0 !important;
     left: 0 !important;
-    bottom: calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar)) !important;
-    inset: 0 0 calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar)) 0 !important;
+    bottom: var(--h3-phone-logo-bar) !important;
+    inset: 0 0 var(--h3-phone-logo-bar) 0 !important;
     width: 100% !important;
-    height: calc(100% - var(--h3-phone-dock) - var(--h3-phone-logo-bar)) !important;
+    height: calc(100% - var(--h3-phone-logo-bar)) !important;
     max-height: none !important;
     overflow: hidden !important;
   }
@@ -3549,13 +3551,13 @@ figure) {
   }
 
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .gold-dust-particles {
-    bottom: calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar)) !important;
+    bottom: var(--h3-phone-logo-bar) !important;
     height: auto !important;
     overflow: hidden;
   }
 
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-content {
-    padding-bottom: calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar));
+    padding-bottom: var(--h3-phone-logo-bar);
     transform: translateY(0);
   }
 
@@ -3583,13 +3585,15 @@ figure) {
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-logo-mark--split {
     left: 50%;
     right: auto;
-    bottom: var(--h3-phone-dock) !important;
+    bottom: 0 !important;
     top: auto !important;
     width: 100vw;
     height: var(--h3-phone-logo-bar) !important;
     background: #ece8df;
     overflow: visible !important;
+    /* Under the dock (1280) so stems tuck behind the icon row. */
     z-index: 4;
+    pointer-events: none;
     box-shadow: none;
   }
 
@@ -3608,7 +3612,7 @@ figure) {
     width: 100% !important;
     max-width: none !important;
     height: 100% !important;
-    padding: 0.08rem 0.42rem var(--h3-phone-letter-lift) !important;
+    padding: 0.08rem 0.42rem calc(var(--h3-phone-dock) - var(--h3-phone-under, 68px)) !important;
     box-sizing: border-box;
     overflow: visible !important;
   }
@@ -3628,6 +3632,8 @@ figure) {
     height: auto !important;
     padding: 0 !important;
     overflow: visible !important;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
   }
 
   html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .logo-letter-wrap,
@@ -3660,6 +3666,7 @@ figure) {
     width: 100%;
     height: 100%;
     max-width: none;
+    overflow: visible !important;
   }
 
   html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .logo-letter,
@@ -3673,6 +3680,7 @@ figure) {
     height: 100% !important;
     max-width: 100% !important;
     max-height: 100% !important;
+    overflow: visible !important;
     object-fit: contain !important;
     object-position: center bottom !important;
     transform: none !important;
@@ -3725,6 +3733,24 @@ figure) {
     height: clamp(1.42rem, 7vw, 1.85rem);
     width: auto;
     max-width: 86vw;
+  }
+
+  /*
+   * The dock's opaque cream was the fake clip: letter boxes already
+   * crossed the dock top, but the bar painted over the stems and left
+   * the padding strip the refs mark in red. Same cream lives on the
+   * wordmark (it runs to the screen bottom). Icons stay on top.
+   */
+  html:has(.home-three-hero) .hathor-phone-dock {
+    background: transparent !important;
+    border-top-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html[data-public-theme="night"]:has(.home-three-hero) .hathor-phone-dock {
+    background: transparent !important;
+    border-top-color: transparent !important;
+    box-shadow: none !important;
   }
 }
 
