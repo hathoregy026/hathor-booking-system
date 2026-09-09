@@ -38,20 +38,24 @@ const PILL = `
 
 export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 /* ------------------------------------------------------------------ */
-/* Image slides — restore prior phone/tablet layout (full-bleed stack, */
-/* not rounded card rails). Keep gutters so frames are not glued.      */
+/* Image slides — mosaic like hero (gold gutters + caption slabs).     */
+/* Kill choreography min-heights that left huge empty beige voids.     */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main .mod-scroll__images.principal,
   html body main .mod-scroll__images.secundario {
-    display: flex !important;
-    flex-direction: column !important;
+    display: grid !important;
+    grid-template-columns: 1.12fr 0.88fr !important;
+    grid-auto-flow: dense !important;
     align-items: stretch !important;
-    gap: 0.85rem !important;
+    gap: 0.55rem !important;
     min-height: 0 !important;
     height: auto !important;
-    padding: 1.25rem var(--wrapper-padd) 2rem !important;
+    max-height: none !important;
+    padding: 0.55rem !important;
     overflow: visible !important;
+    background: #a3945e !important;
+    box-sizing: border-box !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
@@ -67,11 +71,11 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     right: auto !important;
     bottom: auto !important;
     left: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: auto !important;
+    max-width: none !important;
     height: auto !important;
     min-height: 0 !important;
-    aspect-ratio: 4 / 3 !important;
+    max-height: none !important;
     margin: 0 !important;
     transform: none !important;
     border: 0 !important;
@@ -81,25 +85,17 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     overflow: hidden !important;
   }
 
+  /* Faces become mosaic cells; wrappers dissolve into the grid. */
   html body main .mod-scroll__images.principal .flipMedia,
-  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(2),
-  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
-    width: 100% !important;
-    align-self: stretch !important;
-    aspect-ratio: 4 / 3 !important;
+  html body main .mod-scroll__images.secundario .flipMedia,
+  html body main .mod-scroll__images-text .flipMedia {
+    display: contents !important;
   }
 
-  html body main .mod-scroll__images.secundario > .flipMedia:nth-of-type(1) {
-    align-self: stretch !important;
-    width: 100% !important;
-  }
-
-  /* Unstack flip faces vertically with a real gutter (not card peek rails). */
-  html body main .mod-scroll__images .flipMedia {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.85rem !important;
-    aspect-ratio: auto !important;
+  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single {
+    grid-row: span 2 !important;
+    aspect-ratio: 3 / 4 !important;
+    min-height: 0 !important;
     height: auto !important;
   }
 
@@ -110,29 +106,79 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     inset: auto !important;
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 4 / 3 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 3 / 4 !important;
     margin: 0 !important;
     transform: none !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     overflow: hidden !important;
+    border-radius: 0 !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media, .media__wrap-source, .media__source),
   html body main .mod-scroll__images.principal > .flipMedia :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images.secundario > .flipMedia :is(.media, .media__wrap-source, .media__source) {
-    position: relative !important;
+  html body main .mod-scroll__images.secundario > .flipMedia :is(.media, .media__wrap-source, .media__source),
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media :is(.media__wrap-source, .media__source) {
+    position: absolute !important;
+    inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
     min-height: 0 !important;
+    max-height: none !important;
     object-fit: cover !important;
     border-radius: 0 !important;
+  }
+
+  /* Elegant caption slabs — same cell size as images when gaps would be empty. */
+  html body main .suites-slide-caption {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: flex-start !important;
+    gap: 0.45rem !important;
+    box-sizing: border-box !important;
+    aspect-ratio: 3 / 4 !important;
+    min-height: 0 !important;
+    padding: 1rem 0.9rem 1.15rem !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background: #8b6914 !important;
+    color: #f3ede4 !important;
+    -webkit-text-fill-color: #f3ede4 !important;
+  }
+
+  html body main .suites-slide-caption--ink {
+    background: #1c1917 !important;
+  }
+
+  html body main .suites-slide-caption--sand {
+    background: #cfc7ba !important;
+    color: #241d14 !important;
+    -webkit-text-fill-color: #241d14 !important;
+  }
+
+  html body main .suites-slide-caption__kicker {
+    font-family: "Plus Jakarta Sans", "Piloner Semibold", sans-serif !important;
+    font-size: 0.62rem !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    opacity: 0.78 !important;
+  }
+
+  html body main .suites-slide-caption__title {
+    font-family: "Rolling Fonte", "Instrument Serif", Georgia, serif !important;
+    font-size: clamp(1.35rem, 5.4vw, 1.85rem) !important;
+    line-height: 0.95 !important;
+    letter-spacing: -0.02em !important;
+    text-transform: uppercase !important;
   }
 
   html body main .mod-scroll__text {
     position: relative !important;
     z-index: 1 !important;
-    padding: 2.75rem var(--wrapper-padd) 2.5rem !important;
+    padding: 1.75rem var(--wrapper-padd) 1.5rem !important;
   }
 
   html body main .mod-scroll__text__title__line {
@@ -144,15 +190,17 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   }
 
   html body main .mod-scroll__images-text {
-    padding-block: 2.75rem 3rem !important;
+    padding-block: 0.55rem 1.25rem !important;
+    background: #a3945e !important;
   }
 
   html body main .mod-scroll__images-text .wrapper {
-    display: flex !important;
-    flex-direction: column !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
     align-items: stretch !important;
-    gap: 0.85rem !important;
-    padding-inline: var(--wrapper-padd) !important;
+    gap: 0.55rem !important;
+    padding: 0.55rem !important;
+    box-sizing: border-box !important;
   }
 
   html body main .mod-scroll__images-text .flipMedia,
@@ -165,16 +213,24 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     margin: 0 !important;
     transform: none !important;
     z-index: auto !important;
-    aspect-ratio: 4 / 3 !important;
+    aspect-ratio: 3 / 4 !important;
     border-radius: 0 !important;
     overflow: hidden !important;
+    min-height: 0 !important;
   }
 
-  html body main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media,
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--down,
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--up {
+    position: relative !important;
+    inset: auto !important;
     width: 100% !important;
-    align-self: stretch !important;
-    aspect-ratio: 4 / 3 !important;
-    margin-top: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 3 / 4 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    overflow: hidden !important;
   }
 
   html body main .mod-scroll__images-text__text,
@@ -182,30 +238,36 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   html body main .mod-scroll__images-text__text .line {
     position: relative !important;
     z-index: 1 !important;
+    grid-column: 1 / -1 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding: 0.85rem 0 0 !important;
+    padding: 0.95rem 0.85rem 1.05rem !important;
     white-space: normal !important;
     overflow: visible !important;
-    font-size: clamp(1.55rem, 6.4vw, 2.35rem) !important;
-    line-height: 1.05 !important;
-    color: #241d14 !important;
-    -webkit-text-fill-color: #241d14 !important;
+    font-size: clamp(1.25rem, 5.2vw, 1.85rem) !important;
+    line-height: 1.08 !important;
+    color: #f3ede4 !important;
+    -webkit-text-fill-color: #f3ede4 !important;
+    background: #1c1917 !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
   }
 
-  /* Terms collage — prior 2-col layout with gutters, not card rails. */
+  /* Terms collage — mosaic gutters + square frames. */
   html body main .mod-scroll__terms .follow__mouse {
     position: relative !important;
     display: grid !important;
     grid-template-columns: 1.16fr 0.84fr !important;
-    gap: 0.65rem !important;
+    gap: 0.55rem !important;
     width: 100% !important;
     aspect-ratio: auto !important;
     opacity: 1 !important;
     transform: none !important;
     overflow: hidden !important;
-    padding: 0 !important;
+    padding: 0.55rem !important;
+    background: #a3945e !important;
+    box-sizing: border-box !important;
   }
 
   html body main .mod-scroll__terms .follow__mouse > img {
@@ -213,7 +275,9 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     inset: auto !important;
     display: block !important;
     width: 100% !important;
-    height: 44svh !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 3 / 4 !important;
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
@@ -223,21 +287,18 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 
   html body main .mod-scroll__terms .follow__mouse > img:first-child {
     grid-row: span 2 !important;
-    height: 88svh !important;
+    aspect-ratio: 3 / 4.35 !important;
+    height: auto !important;
   }
 }
 
 @media (max-width: 480px) {
+  html body main .mod-scroll__images.principal,
+  html body main .mod-scroll__images.secundario,
+  html body main .mod-scroll__images-text .wrapper,
   html body main .mod-scroll__terms .follow__mouse {
-    gap: 0.55rem !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img {
-    height: 38svh !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img:first-child {
-    height: calc(76svh + 0.55rem) !important;
+    gap: 0.45rem !important;
+    padding: 0.45rem !important;
   }
 }
 
@@ -265,10 +326,11 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 0.75rem !important;
+    gap: 0.7rem !important;
     width: 100% !important;
     padding-inline: var(--wrapper-padd, 1.15rem) !important;
-    padding-right: 28vw !important;
+    padding-right: 38vw !important;
+    scroll-padding-inline: var(--wrapper-padd, 1.15rem) !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
@@ -282,13 +344,13 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   }
 
   html body main .suites-collection-rail > .mod-scroll__projects__item {
-    flex: 0 0 min(78vw, 20rem) !important;
-    width: min(78vw, 20rem) !important;
-    max-width: min(78vw, 20rem) !important;
+    flex: 0 0 clamp(10.5rem, 58vw, 15rem) !important;
+    width: clamp(10.5rem, 58vw, 15rem) !important;
+    max-width: clamp(10.5rem, 58vw, 15rem) !important;
     min-height: 0 !important;
     height: auto !important;
     scroll-snap-align: start !important;
-    border-radius: 0.65rem !important;
+    border-radius: 0 !important;
     overflow: hidden !important;
   }
 
@@ -353,23 +415,39 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   html body main .suites-collection-rail .mod-scroll__projects__item__text__data > span,
   html body main .suites-collection-rail .mod-scroll__projects__item__text a.btn {
     order: 3 !important;
-    align-self: flex-start !important;
-    justify-self: start !important;
+    align-self: stretch !important;
+    justify-self: stretch !important;
     grid-column: auto !important;
-    margin-top: 0.15rem !important;
+    margin-top: 0.35rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
   html body main .mod-scroll__projects > .last-item {
     width: 100% !important;
     max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item > .media,
+  html body main .mod-scroll__projects > .last-item > .mod-scroll__projects__item__image,
+  html body main .mod-scroll__projects > .last-item .mod-scroll__projects__item__image {
+    border-radius: 0 !important;
+    overflow: hidden !important;
   }
 }
 
 @media (max-width: 480px) {
   html body main .suites-collection-rail > .mod-scroll__projects__item {
-    flex-basis: 82vw !important;
-    width: 82vw !important;
-    max-width: 82vw !important;
+    flex-basis: clamp(10.5rem, 58vw, 15rem) !important;
+    width: clamp(10.5rem, 58vw, 15rem) !important;
+    max-width: clamp(10.5rem, 58vw, 15rem) !important;
   }
 }
 
@@ -554,20 +632,33 @@ html body main .mod-content__btn.t-titulo {
 @media (max-width: 1024px) {
   html body main .last-item__carousel {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0.75rem !important;
-    padding: 1.15rem var(--wrapper-padd) 1.35rem !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 0.7rem !important;
+    padding: 0.85rem var(--wrapper-padd) 1rem !important;
+    padding-right: 28vw !important;
     background: #f3ede4 !important;
     box-sizing: border-box !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+
+  html body main .last-item__carousel::-webkit-scrollbar {
+    display: none !important;
   }
 
   html body main .last-item__carousel__item:not(.last-item__carousel__item--link) {
-    width: 100% !important;
+    flex: 0 0 min(78vw, 22rem) !important;
+    width: min(78vw, 22rem) !important;
     height: auto !important;
     aspect-ratio: 16 / 10 !important;
-    border-radius: 0.55rem !important;
+    border-radius: 0 !important;
     overflow: hidden !important;
+    scroll-snap-align: start !important;
   }
 
   html body main .last-item__carousel__item__image,
@@ -575,24 +666,28 @@ html body main .mod-content__btn.t-titulo {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    border-radius: 0 !important;
   }
 
   html body main a.last-item__carousel__item--link {
     ${PILL}
-    align-self: flex-start !important;
+    flex: 0 0 auto !important;
+    align-self: center !important;
     width: max-content !important;
     min-width: 12.5rem !important;
     height: 2.85rem !important;
-    margin: 0.15rem 0 0 !important;
+    margin: 0 !important;
     background: #12100c !important;
     border-color: #12100c !important;
     color: #cdb684 !important;
     -webkit-text-fill-color: #cdb684 !important;
-    gap: 0.55rem !important;
+    gap: 0 !important;
+    scroll-snap-align: start !important;
   }
 
   html body main a.last-item__carousel__item--link .last-item__carousel__item__text,
   html body main a.last-item__carousel__item--link span {
+    display: inline !important;
     color: inherit !important;
     -webkit-text-fill-color: inherit !important;
     font-size: 0.72rem !important;
@@ -600,29 +695,28 @@ html body main .mod-content__btn.t-titulo {
     text-transform: uppercase !important;
   }
 
+  /* Usual site pill — hide the clone arrow glyph entirely. */
   html body main a.last-item__carousel__item--link .last-item__carousel__item__arrow,
   html body main a.last-item__carousel__item--link svg {
-    width: 0.85rem !important;
-    height: auto !important;
-    flex: 0 0 auto !important;
-  }
-
-  html body main a.last-item__carousel__item--link svg path {
-    fill: currentColor !important;
-    stroke: currentColor !important;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
   }
 
   html body main .last-item__content {
     background: #f3ede4 !important;
+    min-height: 0 !important;
   }
 
   html body main .last-item__content__wrap {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 1.15rem !important;
-    padding: 3.25rem var(--wrapper-padd) 3rem !important;
+    gap: 0.65rem !important;
+    padding: 1.35rem var(--wrapper-padd) 1.75rem !important;
     text-align: center !important;
+    min-height: 0 !important;
   }
 
   html body main .last-item__content__section {
@@ -710,7 +804,7 @@ html body main .mod-footer__content__project__wrap-image a.btn {
 html body main .mod-footer__content__project__image {
   order: 1 !important;
   width: 100% !important;
-  border-radius: 0.55rem !important;
+  border-radius: 0 !important;
   overflow: hidden !important;
 }
 
@@ -750,12 +844,13 @@ html body main .mod-media--double,
 html body main .mod-media--mosaic {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: clamp(0.75rem, 2.2vw, 1.25rem) !important;
+  gap: 0.55rem !important;
   align-items: stretch !important;
   justify-content: stretch !important;
   width: 100% !important;
   max-width: 100% !important;
-  padding: 1.25rem var(--wrapper-padd, 1.25rem) 2rem !important;
+  padding: 0.55rem !important;
+  background: #a3945e !important;
   box-sizing: border-box !important;
 }
 
@@ -768,7 +863,7 @@ html body main .mod-media--double .col-4 {
   flex: none !important;
   aspect-ratio: 4 / 5 !important;
   overflow: hidden !important;
-  border-radius: 0.45rem !important;
+  border-radius: 0 !important;
 }
 
 html body main .mod-media--double .mod-media__item :is(.media__wrap-source, .media__source),
@@ -1058,6 +1153,113 @@ export function layoutSuitesCollectionRail(doc: Document) {
   rail.setAttribute("data-hathor-suites-rail", "1");
   items[0].before(rail);
   items.forEach((item) => rail.appendChild(item));
+}
+
+type SuitesCaptionTone = "gold" | "ink" | "sand";
+
+function makeSuitesCaption(
+  doc: Document,
+  id: string,
+  kicker: string,
+  title: string,
+  tone: SuitesCaptionTone = "gold",
+) {
+  const el = doc.createElement("div");
+  el.className =
+    tone === "ink"
+      ? "suites-slide-caption suites-slide-caption--ink"
+      : tone === "sand"
+        ? "suites-slide-caption suites-slide-caption--sand"
+        : "suites-slide-caption";
+  el.setAttribute("data-hathor-suites-caption", id);
+  el.innerHTML = `<span class="suites-slide-caption__kicker"></span><span class="suites-slide-caption__title"></span>`;
+  const kickerEl = el.querySelector(".suites-slide-caption__kicker");
+  const titleEl = el.querySelector(".suites-slide-caption__title");
+  if (kickerEl) kickerEl.textContent = kicker;
+  if (titleEl) titleEl.textContent = title;
+  return el;
+}
+
+/**
+ * Fill mosaic gaps with elegant colour + text slabs (same cell size as
+ * neighbouring image tiles) so phone slides never read as empty beige.
+ */
+export function layoutSuitesSlideCaptionPanels(doc: Document) {
+  const principal = doc.querySelector<HTMLElement>(
+    ".mod-scroll__images.principal",
+  );
+  if (principal && !principal.querySelector("[data-hathor-suites-caption]")) {
+    const caption = makeSuitesCaption(
+      doc,
+      "principal-aboard",
+      "Aboard Hathor",
+      "Rooms composed",
+      "ink",
+    );
+    principal.appendChild(caption);
+  }
+
+  const secundario = doc.querySelector<HTMLElement>(
+    ".mod-scroll__images.secundario",
+  );
+  if (secundario && !secundario.querySelector("[data-hathor-suites-caption]")) {
+    const firstFlip = secundario.querySelector(".flipMedia");
+    const river = makeSuitesCaption(
+      doc,
+      "secundario-river",
+      "01",
+      "River Light",
+      "gold",
+    );
+    const calm = makeSuitesCaption(
+      doc,
+      "secundario-calm",
+      "02",
+      "Private Calm",
+      "sand",
+    );
+    if (firstFlip?.nextSibling) {
+      firstFlip.after(river);
+    } else {
+      secundario.appendChild(river);
+    }
+    secundario.appendChild(calm);
+  }
+
+  const imagesText = doc.querySelector<HTMLElement>(
+    ".mod-scroll__images-text .wrapper",
+  );
+  if (
+    imagesText &&
+    !imagesText.querySelector("[data-hathor-suites-caption]")
+  ) {
+    const craft = makeSuitesCaption(
+      doc,
+      "images-text-craft",
+      "Craft",
+      "Nile living",
+      "ink",
+    );
+    const firstFlip = imagesText.querySelector(".flipMedia");
+    if (firstFlip?.nextSibling) {
+      firstFlip.after(craft);
+    } else {
+      imagesText.appendChild(craft);
+    }
+  }
+
+  const link = doc.querySelector<HTMLElement>(
+    "a.last-item__carousel__item--link",
+  );
+  if (link) {
+    link.querySelectorAll("svg, .last-item__carousel__item__arrow").forEach((n) => {
+      n.remove();
+    });
+    const label = link.querySelector(".last-item__carousel__item__text");
+    if (label && !label.textContent?.trim()) {
+      label.textContent = "View All Suites";
+    }
+  }
 }
 
 export function neutralizeSuitesCircleButtons(doc: Document) {

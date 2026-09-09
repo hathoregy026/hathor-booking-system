@@ -17,6 +17,7 @@ import {
 import {
   injectSuitesLuxFooter,
   layoutSuitesCollectionRail,
+  layoutSuitesSlideCaptionPanels,
   neutralizeSuitesCircleButtons,
   stripParenthesesFromSuitesCopy,
   SUITES_CLONE_LAYOUT_FIX_CSS,
@@ -697,6 +698,7 @@ export function SuitesNormalHomepagePage({
       patchLogoWordmark(doc);
       tagSuiteCollectionPanels(doc);
       layoutSuitesCollectionRail(doc);
+      layoutSuitesSlideCaptionPanels(doc);
       retargetCloneLinks(doc);
       stripParenthesesFromSuitesCopy(doc);
       neutralizeSuitesCircleButtons(doc);
@@ -832,7 +834,7 @@ export function SuitesNormalHomepagePage({
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-suites-undo-image-cards-20260909b"
+        src="/suites-normal/index.html?v=hathor-suites-mosaic-captions-20260909c"
         title="Hathor Suites"
         onLoad={() => {
           void apply();

@@ -561,7 +561,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     aspect-ratio: 16 / 11 !important;
     object-fit: cover !important;
     object-position: center 48% !important;
-    border-radius: 0 0 1.15rem 1.15rem !important;
+    border-radius: 0 !important;
     transform: none !important;
     animation: none !important;
   }
@@ -599,7 +599,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     min-height: 0 !important;
     margin: 0 !important;
     aspect-ratio: auto !important;
-    border-radius: 5.5rem 5.5rem 0.25rem 0.25rem !important;
+    border-radius: 0 !important;
     overflow: hidden !important;
     align-self: stretch !important;
   }
@@ -622,9 +622,9 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     margin: 0 !important;
     aspect-ratio: 5 / 4 !important;
     border: 2px solid #f3ede4 !important;
-    border-radius: 1.05rem !important;
+    border-radius: 0 !important;
     overflow: hidden !important;
-    box-shadow: 0 0.65rem 1.5rem rgba(20, 18, 14, 0.11) !important;
+    box-shadow: none !important;
     align-self: stretch !important;
   }
 
@@ -704,7 +704,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   .srh-frame--main > img {
     aspect-ratio: 16 / 9 !important;
-    border-radius: 0 0 1.45rem 1.45rem !important;
+    border-radius: 0 !important;
   }
 
   .srh-title {
@@ -713,11 +713,11 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--portrait {
-    border-radius: 7rem 7rem 0.35rem 0.35rem !important;
+    border-radius: 0 !important;
   }
 
   .srh-frame--detail {
-    border-radius: 1.25rem !important;
+    border-radius: 0 !important;
   }
 
   .srh-copy__title {
