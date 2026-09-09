@@ -859,43 +859,28 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
 }
 
 /* --------------------------------------------------------------------------
- * Tablet / phone — form-first sheet; art becomes a slim top banner
+ * Tablet / phone — same floating popup as desktop, stacked (art on top)
  * -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .hathor-booking-modal {
-    align-items: flex-end;
-    justify-content: stretch;
-    padding: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 1.15rem 1rem;
   }
 
   .hathor-booking-modal__dialog {
     grid-template-columns: 1fr;
-    grid-template-rows: 11rem minmax(0, 1fr);
-    width: 100%;
-    max-width: none;
-    max-height: min(92dvh, calc(var(--vh, 1vh) * 92));
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    border-radius: 24px 24px 0 0;
-    animation: hathorModalSheetUp 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  @keyframes hathorModalSheetUp {
-    from {
-      opacity: 0;
-      transform: translateY(100%);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    grid-template-rows: 10.5rem minmax(0, 1fr);
+    width: min(100%, 26.5rem);
+    max-width: 26.5rem;
+    max-height: min(86dvh, 40rem);
+    border-radius: 24px;
   }
 
   .hathor-booking-modal__art {
     border-right: none;
     border-bottom: 1px solid rgb(197 160 89 / 0.4);
-    min-height: 11rem;
+    min-height: 10.5rem;
   }
 
   html[data-public-theme="day"] .hathor-booking-modal__art {
@@ -933,16 +918,12 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
   }
 
   .hathor-booking-modal__header {
-    padding:
-      calc(1.1rem + env(safe-area-inset-top, 0px))
-      3rem
-      0.65rem
-      1.25rem;
+    padding: 1.1rem 3rem 0.65rem 1.25rem;
   }
 
   .hathor-booking-modal__close {
-    top: calc(0.75rem + env(safe-area-inset-top, 0px));
-    right: calc(0.75rem + env(safe-area-inset-right, 0px));
+    top: 0.75rem;
+    right: 0.75rem;
     width: 2.75rem;
     height: 2.75rem;
     min-height: 44px;
@@ -950,19 +931,11 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
   }
 
   .hathor-booking-modal__body {
-    padding:
-      0.85rem
-      calc(1.15rem + env(safe-area-inset-right, 0px))
-      0.5rem
-      calc(1.15rem + env(safe-area-inset-left, 0px));
+    padding: 0.85rem 1.15rem 0.5rem;
   }
 
   .hathor-booking-modal__footer {
-    padding:
-      0.75rem
-      calc(1.15rem + env(safe-area-inset-right, 0px))
-      calc(1.1rem + env(safe-area-inset-bottom, 0px))
-      calc(1.15rem + env(safe-area-inset-left, 0px));
+    padding: 0.75rem 1.15rem 1.1rem;
   }
 
   .hathor-modal-select,
@@ -984,12 +957,23 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
 }
 
 @media (max-width: 480px) {
+  .hathor-booking-modal {
+    padding:
+      max(0.85rem, env(safe-area-inset-top, 0px))
+      0.75rem
+      calc(var(--hathor-phone-dock-h, 4.5rem) + 0.55rem);
+  }
+
   .hathor-booking-modal__dialog {
-    grid-template-rows: 9.25rem minmax(0, 1fr);
+    width: min(100%, 22.25rem);
+    max-width: 22.25rem;
+    max-height: min(74dvh, 36rem);
+    grid-template-rows: 7.5rem minmax(0, 1fr);
+    border-radius: 24px;
   }
 
   .hathor-booking-modal__art {
-    min-height: 9.25rem;
+    min-height: 7.5rem;
   }
 
   .hathor-booking-modal__logo-wrap,
