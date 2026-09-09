@@ -136,7 +136,23 @@ export function mountHeroScrollStage({
     return Boolean(logoMark?.querySelector(".hathor-logo-split"));
   }
 
+  /** Home-3 phone only — letters sit in the cream bar and hide behind the dock. */
+  function isHomeThreePhoneHero() {
+    return (
+      window.matchMedia("(max-width: 480px)").matches &&
+      Boolean(hero.closest(".home-three-hero"))
+    );
+  }
+
   function getLogoHiddenY() {
+    if (isHomeThreePhoneHero()) {
+      const dockH =
+        document.querySelector(".hathor-phone-dock")?.getBoundingClientRect()
+          .height || 72;
+      const barH = logoMark?.offsetHeight || 58;
+      /* Dock is the clip edge — send letters fully behind it. */
+      return barH + dockH;
+    }
     const logoHeight = logoMark?.offsetHeight || window.innerHeight * 0.42;
     return logoHeight * 0.78 + window.innerHeight * 0.12;
   }
@@ -239,7 +255,7 @@ export function mountHeroScrollStage({
 
   const playTitleLanding = () => {
     if (disposed) return;
-    if (titlesLanded || prefersReduced) {
+    if (titlesLanded || prefersReduced || isHomeThreePhoneHero()) {
       snapTitlesLanded();
       return;
     }
@@ -575,7 +591,16 @@ export function mountHeroScrollStage({
         anticipatePin: isPhoneTouch || isTabletHero ? 0 : 1,
         invalidateOnRefresh: !(isPhoneTouch || isTabletHero),
         onLeave: () => {
-          if (isPhoneTouch || !logoMark) return;
+          if (!logoMark) return;
+          if (isHomeThreePhoneHero() && isSplitLetterLogo()) {
+            gsap.set(logoMark.querySelectorAll(".logo-letter-wrap"), {
+              y: getLogoHiddenY(),
+              opacity: 1,
+              force3D: true,
+            });
+            return;
+          }
+          if (isPhoneTouch) return;
           if (isSplitLetterLogo()) {
             // Park the mark; letters stay at scrub end so reverse can rebuild.
             gsap.set(logoMark, {
@@ -596,7 +621,19 @@ export function mountHeroScrollStage({
           gsap.set(logoMark, { autoAlpha: 0, y: getLogoHiddenY() });
         },
         onEnterBack: () => {
-          if (isPhoneTouch || !logoMark) return;
+          if (!logoMark) return;
+          if (isHomeThreePhoneHero()) {
+            gsap.set(logoMark, {
+              autoAlpha: 1,
+              y: getLogoLandedY(),
+              xPercent: -50,
+              x: 0,
+              yPercent: 0,
+              scale: 1,
+            });
+            return;
+          }
+          if (isPhoneTouch) return;
           // Re-show the container so scrubbed letter rise (reverse) is visible.
           gsap.set(logoMark, {
             autoAlpha: 1,
@@ -648,8 +685,9 @@ export function mountHeroScrollStage({
       /*
        * Phone CTA: grow the real width via --hero-cta-w. Tweening scaleX here
        * stretched every glyph and the border (see narrowCtaTargetW above).
+       * Home-3 phone hides Book Now — skip the stretch; letters hide instead.
        */
-      if (cta) {
+      if (cta && !isHomeThreePhoneHero()) {
         tl.to(
           cta,
           {
@@ -660,11 +698,37 @@ export function mountHeroScrollStage({
           0.08,
         );
       }
-      if (ctaText) {
+      if (ctaText && !isHomeThreePhoneHero()) {
         tl.to(
           ctaText,
           { letterSpacing: "1.15em", ease: "none", duration: 0.85 },
           0.08,
+        );
+      }
+
+      if (isHomeThreePhoneHero() && logoMark && isSplitLetterLogo()) {
+        const letterWraps = logoMark.querySelectorAll(".logo-letter-wrap");
+        const landedY = getLogoLandedY();
+        gsap.set(logoMark, {
+          xPercent: -50,
+          yPercent: 0,
+          x: 0,
+          y: landedY,
+          scale: 1,
+          autoAlpha: 1,
+        });
+        tl.fromTo(
+          letterWraps,
+          { y: 0, opacity: 1, force3D: true },
+          {
+            y: getLogoHiddenY(),
+            opacity: 1,
+            ease: LOGO_SCROLL_LETTER_EASE,
+            duration: LOGO_SCROLL_LETTER_DURATION,
+            stagger: LOGO_SCROLL_LETTER_STAGGER,
+            immediateRender: false,
+          },
+          LOGO_SCROLL_LETTER_AT,
         );
       }
     } else if (isTabletHero) {

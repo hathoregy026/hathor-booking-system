@@ -173,7 +173,8 @@ export function Header() {
     [navItems],
   );
   const editorialNav = usesEditorialOverlayNav(pathname);
-  const isHome = pathname === "/" || pathname === "/ex";
+  const isHome =
+    pathname === "/" || pathname === "/ex" || pathname === "/home-2";
   const [exploreOpen, setExploreOpen] = useState(false);
   const chromeNav = true;
   const phoneViewportRef = useRef(false);

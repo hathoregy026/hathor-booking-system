@@ -112,6 +112,14 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 21,
   },
   {
+    name: "home-3-animated-map-bg",
+    altText: "Nile chart wallpaper aboard Hathor Dahabiya",
+    url: HATHOR_MEDIA.cinematicStill,
+    category: "landmark",
+    pagePath: "/home-3#animated-map-bg",
+    displayOrder: 1,
+  },
+  {
     name: "home-split-courtyard",
     altText: HATHOR_MEDIA.splitCourtyardAlt,
     url: HATHOR_MEDIA.splitCourtyard,

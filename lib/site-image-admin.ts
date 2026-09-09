@@ -206,6 +206,7 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "scraped-cabin-8": "Luxury Cabin Gallery — Photo 8",
   "suites-nile-still": "Suites — Nile still",
   "burger-nav-image": "Burger menu — right panel photo",
+  "home-3-animated-map-bg": "Animated map bg — Home 3 chart wallpaper",
 };
 
 export type SiteImageLayoutKind = "hero" | "gallery" | "standard";
@@ -214,6 +215,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
   {
     "home-hero-poster": "hero",
     "home-cinematic-still": "hero",
+    "home-3-animated-map-bg": "hero",
     "home-call-to-action": "hero",
     "home-wheel-stage": "hero",
     "home-wheel-image": "hero",
@@ -304,6 +306,7 @@ export function getSiteImageGroupHeading(pageTitle: string): string {
     return "Floating IG Bubble Images";
   }
   if (pageTitle === "Burger Nav Image") return "Burger Nav Image";
+  if (pageTitle === "Animated map bg") return "Animated map bg";
   if (pageTitle === "Moving Tilted Cards") return "Moving Tilted Cards Images";
   if (pageTitle === "Suites") return "Suites Images";
   if (pageTitle === "Dining") return "Dining Images";
@@ -417,6 +420,22 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     );
   }
 
+  const animatedMapBgItems: SiteImageAdminItem[] = [];
+  const animatedMapBgSeen = new Set<string>();
+  const animatedMapBgSlot = byName.get("home-3-animated-map-bg");
+  if (animatedMapBgSlot) {
+    pushUniqueItem(
+      animatedMapBgItems,
+      animatedMapBgSeen,
+      toAdminItem(
+        animatedMapBgSlot,
+        "/home-3#animated-map-bg",
+        "Animated map bg — Home 3 chart wallpaper",
+        1,
+      ),
+    );
+  }
+
   const ourVoyagesItems: SiteImageAdminItem[] = [];
   const ourVoyagesSeen = new Set<string>();
   OUR_VOYAGES_ADMIN_CARDS.forEach((card, index) => {
@@ -493,7 +512,8 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       slot.pagePath === "/#moving-tilted-cards" ||
       slot.pagePath === "/#floating-ig" ||
       slot.pagePath === "/#burger-nav" ||
-      slot.pagePath === "/#our-voyages"
+      slot.pagePath === "/#our-voyages" ||
+      slot.pagePath === "/home-3#animated-map-bg"
     ) {
       continue;
     }
@@ -506,6 +526,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
         appearPath === "/#floating-ig" ||
         appearPath === "/#burger-nav" ||
         appearPath === "/#our-voyages" ||
+        appearPath === "/home-3#animated-map-bg" ||
         appearPath === "/cruises-list" ||
         appearPath === "/suites"
       ) {
@@ -580,6 +601,13 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       description:
         "Right-panel photo in the open burger menu on Suites, Cruises, and other inner pages. Filter this tab to replace it without touching any other page photos.",
       items: burgerNavItems,
+    },
+    {
+      pagePath: "/home-3#animated-map-bg",
+      title: "Animated map bg",
+      description:
+        "Wallpaper behind the Home 3 Nile chart. Upload here to cover the phone map stage; independent from the homepage cinematic still.",
+      items: animatedMapBgItems,
     },
     {
       pagePath: "/cruises-list",

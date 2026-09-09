@@ -1,0 +1,3872 @@
+/* ==========================================================================
+   HOME 3
+   The Suites page, module for module, carrying the homepage's own content.
+
+   /suites serves its composition inside an iframe: none of its words reach a
+   crawler and its GSAP / ScrollSmoother / Lenis / Swiper stack loads a second
+   time inside the frame. Everything here is server-rendered in this document
+   and driven by the site's one scroll engine.
+
+   The act, in the order the story wants — cruises, voyages, suites,
+   experiences, about, contact — on the Suites modules, in Suites' own order
+   of walls (white, beige, white, beige, black, beige, blue, red):
+
+     01  mod-scroll__intro          white   the mark
+     02  the sailing chart          beige   (the one panel Suites has not)
+     03  mod-scroll__images         white   the cruise
+     04  mod-scroll__text           white   the claim
+     05  mod-scroll__projects       beige   the three voyages
+     06  mod-scroll__images-text    black   the suites
+     07  mod-scroll__carousel       rail    the experiences
+     08  mod-scroll__images         beige   the experiences
+     09  mod-scroll__terms          blue    about
+     10  mod-scroll__cierre         red     the close
+
+   then the vertical document Suites runs after its horizontal story:
+   mod-title--chapter, mod-media--mosaic, mod-title--lines,
+   mod-content--cols, mod-content--center, mod-footer — carrying contact.
+
+   Type roles follow lib/suites-typography-shared.ts, which is what the live
+   Suites page is set to:
+     display    Italiana 74 / 0.88 / -0.25px    the big lines
+     secondary  Italiana 48 / 0.9  / -0.15px    card and module titles
+     body       Rollgates Luxury Italic 18      running copy
+     kicker     Piloner Thin, tracked           labels
+
+   Motion arrives as custom properties written per scene by
+   hooks/useHomeThreeFlow.ts:
+     --reveal  --parallax  --focus  --h3-flip  --transY  --item
+   ========================================================================== */
+.home-three {
+  /* ---- palette, taken from the Suites page ---------------------------- */
+  --h3-paper: #f3ede4;
+  --h3-beige: #ded4c6;
+  --h3-stone: #cfc7ba;
+  --h3-black: #0b0a08;
+  --h3-ink: #14120e;
+  --h3-ink-soft: rgb(74 69 60 / 92%);
+  --h3-gold: #b69f64;
+  --h3-gold-deep: #806b35;
+  --h3-hair: rgb(20 18 14 / 16%);
+
+  /*
+   * The walls. Suites is painted on its template's own palette — a cornflower
+   * blue and a coral red that belong to nothing else here — so this act takes
+   * Hathor's instead, the six washes About and Contact already run on. The
+   * sequence still escalates the way the Suites one does; it just does it in
+   * this brand's colours.
+   */
+  --h3-olive: #adaa8a;
+  /* ref 8 — paper type on #adaa8a sat at about 1.7:1 and was barely legible.
+     The About wall takes the deep olive instead, which reads at ~9:1 and
+     gives the act a second dark room between the black suite wall and the
+     close. */
+  --h3-olive-deep: #3c3d31;
+
+  /* ---- type stacks ---------------------------------------------------- */
+  --h3-display: "Italiana", var(--font-hathor-display), "Gamgote", Georgia,
+    serif;
+  --h3-script: "Bitho Luxury", "Rollgates Luxury Italic", "Playfair Display",
+    Georgia, serif;
+  --h3-figure: "Gamgote", var(--font-hathor-display), Georgia, serif;
+  --h3-edit: "Playfair Display", Georgia, "Times New Roman", serif;
+  --h3-support: "Rollgates Luxury Italic", "Playfair Display", Georgia, serif;
+  --h3-meta: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans",
+    Arial, sans-serif;
+  /*
+   * Piloner Thin's "4" and "+" glyphs are broken — both render as "±" and
+   * measure identically (23.9px at 40px), so "46 km" came out as "±6 km" and
+   * "+44 km" as "±±± km". Anything that shows a digit takes this stack
+   * instead; Piloner keeps the tracked lettering it is actually good at.
+   */
+  --h3-num: var(--font-hathor-body), "Plus Jakarta Sans", Arial, sans-serif;
+
+  /* ---- scale, measured off Suites at 1440 ----------------------------- */
+  --h3-t-kicker: clamp(0.6rem, 0.716vw, 0.76rem); /* 10.31 */
+  --h3-t-script: clamp(1.6rem, 2.92vw, 3.1rem); /* 42 */
+  --h3-t-display: clamp(2.5rem, 7vw, 7.6rem); /* 100.8 */
+  /* the opener's own step — Contact sets its first line larger than anything
+     that follows it, and that scale is most of why the panel reads as it does */
+  /* Contact's measure, with a height term Contact does not need: this ladder
+     is pinned inside a 100svh stage, so a size taken from width alone puts a
+     fourth line past the foot on any short viewport. */
+  --h3-t-hero: clamp(2.6rem, min(9.4vw, 15.5svh), 11rem);
+  --h3-t-stmt: clamp(2.2rem, 6.4vw, 6.9rem); /* 92.16 */
+  --h3-t-big: clamp(1.15rem, 1.72vw, 1.85rem); /* 24.75 */
+  --h3-t-support: clamp(0.92rem, 1.05vw, 1.12rem); /* 15.12 */
+  --h3-t-meta: clamp(0.88rem, 0.98vw, 1.05rem);
+
+  /* ---- grid + rhythm --------------------------------------------------- */
+  --h3-pad: clamp(1.1rem, 1.74vw, 1.6rem); /* Suites wrapper inset: 25px */
+  --h3-gap: 1.5rem; /* Suites --grid-gap */
+  /* one column of the Suites twelve, so col(n) reads as
+     calc(var(--h3-u) * n + var(--h3-gap) * (n - 1)) */
+  --h3-u: calc((99.9vw - var(--h3-pad) * 2 - var(--h3-gap) * 11) / 12);
+  --h3-pad-md: clamp(4rem, 9vw, 9rem); /* Suites --padding-md */
+  --h3-pad-sm: clamp(3rem, 6vw, 6rem); /* Suites --padding-sm */
+  --h3-pad-xs: 1.6rem; /* Suites --padding-xs */
+  --h3-band: clamp(2.6rem, 5.6vw, 6.2rem);
+  /* the pinned stage sits under the fixed site header */
+  --h3-top: 4.4rem;
+
+  --h3-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --h3-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  background: var(--h3-beige);
+  color: var(--h3-ink);
+  font-family: var(--h3-meta);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------- host chrome
+   The page owns the viewport while the horizontal act is pinned. */
+html:has(.home-three),
+html:has(.home-three) body,
+html:has(.home-three) .public-site,
+html:has(.home-three) .public-main {
+  overflow-x: clip;
+}
+
+/* home-3 lands on its own close; the shared footer would only repeat it */
+html:has(.home-three) .lux-footer,
+html:has(.home-three) footer.lux-footer {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------------- reset */
+.home-three *,
+.home-three *::before,
+.home-three *::after {
+  box-sizing: border-box;
+}
+
+/* `:where()` keeps the reset at zero specificity, so a later class rule can
+   still set padding or margin on these elements. */
+.home-three :where(h1,
+h2,
+h3,
+p,
+ol,
+ul,
+figure) {
+  margin: 0;
+  padding: 0;
+}.home-three ol,
+.home-three ul {
+  list-style: none;
+}.home-three a {
+  color: inherit;
+  text-decoration: none;
+}.home-three main {
+  width: 100%;
+}
+
+/* ------------------------------------------------------------ type classes */
+.home-three .h3-script {
+  font-family: var(--h3-script);
+  font-size: var(--h3-t-script);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  color: var(--h3-gold);
+}.home-three .h3-kicker {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--h3-gold-deep);
+}.home-three .h3-display {
+  font-family: var(--h3-display);
+  font-size: var(--h3-t-stmt);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}.home-three .h3-display--xl {
+  font-size: var(--h3-t-display);
+}.home-three .h3-display--sm {
+  font-size: clamp(1.9rem, 4.2vw, 4.6rem);
+}.home-three .h3-big {
+  font-family: var(--h3-support);
+  font-size: var(--h3-t-big);
+  font-style: italic;
+  line-height: 1.34;
+  color: var(--h3-ink-soft);
+  /* the address is one unbreakable token and runs past a 390px column */
+  overflow-wrap: anywhere;
+}.home-three .h3-big strong {
+  font-weight: 400;
+  border-bottom: 1px solid rgb(74 69 60 / 40%);
+}.home-three .h3-support {
+  font-family: var(--h3-support);
+  font-size: var(--h3-t-support);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--h3-ink-soft);
+  max-width: 26rem;
+}.home-three .h3-meta {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-meta);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--h3-ink-soft);
+  max-width: 25rem;
+}.home-three .h3-reg {
+  font-size: 0.55em;
+  vertical-align: super;
+  margin: 0 0.1em;
+}
+
+/* the small gold link — used where a pill would be too loud */
+.home-three .h3-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--h3-gold);
+}.home-three .h3-text-link::after {
+  content: "";
+  width: 2.4rem;
+  height: 1px;
+  background: currentcolor;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--h3-lw, 0.55));
+  transition: transform 0.4s var(--h3-ease-soft);
+}.home-three .h3-text-link:hover {
+  --h3-lw: 1;
+}.home-three .h3-text-link:focus-visible {
+  outline: 2px solid var(--h3-gold);
+  outline-offset: 4px;
+}
+
+/* Everything that is not a display line arrives on its scene reveal. The
+   default of 1 keeps the document readable before the hook first measures. */
+.home-three .h3-kicker,
+.home-three .h3-support,
+.home-three .h3-meta,
+.home-three .h3-big,
+.home-three .h3-script,
+.home-three .h3-course__run,
+.home-three .h3-statement__tag {
+  /* 10px, not 18: these elements translate while their neighbours do not, so
+     the travel has to stay inside the smallest gap on the page or arriving
+     copy crosses the control beneath it */
+  transform: translateY(calc((1 - var(--reveal, 1)) * 10px));
+  opacity: calc(0.08 + var(--reveal, 1) * 0.92);
+  transition:
+    transform 0.85s var(--h3-ease-soft),
+    opacity 0.85s var(--h3-ease-soft);
+}
+
+/* ------------------------------------------------------------------ buttons
+   `.h3-btn` is on the master roster in app/button-system.css, so skin, state
+   and geometry come from the one authoritative pill the whole site shares. */
+.home-three .h3-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}.home-three .h3-btn {
+  flex: 0 0 auto;
+}.home-three .h3-btn:focus-visible,
+.home-three .h3-cta__btn:focus-visible {
+  outline: 2px solid var(--h3-gold-deep);
+  outline-offset: 3px;
+}
+
+/* dark scenes flip ink and paper; `data-hathor-surface="ink"` on the section
+   tells the master button system to invert the outline pill with them */
+.home-three .h3-scene--dark {
+  color: var(--h3-paper);
+  --h3-hair: rgb(243 237 228 / 22%);
+}.home-three .h3-scene--dark .h3-support,
+.home-three .h3-scene--dark .h3-meta {
+  color: rgb(243 237 228 / 82%);
+}.home-three .h3-scene--dark .h3-kicker {
+  color: var(--h3-gold);
+}
+
+/* ---------------------------------------------------------------- progress */
+.home-three .h3-progress {
+  position: fixed;
+  z-index: 100;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+}.home-three .h3-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--h3-gold, #b69f64);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ============================================================ HORIZONTAL ACT
+   Above 950px the run is a tall runway, the stage is pinned and the track is
+   translated on X — the Suites `mod-scroll` behaviour. Below it, everything
+   collapses to a vertical document. */
+.home-three .h3-run {
+  position: relative;
+  width: 100%;
+}.home-three .h3-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}.home-three .h3-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  height: 100%;
+}.home-three .h3-scene {
+  position: relative;
+  flex: 0 0 auto;
+  height: 100%;
+  padding: calc(var(--h3-top) + var(--h3-band) * 0.55) var(--h3-pad)
+    calc(var(--h3-band) * 0.55);
+  display: flex;
+  flex-direction: column;
+  background: var(--h3-paper);
+}
+
+/* ------------------------------------------------------------ media system */
+.home-three .h3-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--h3-ratio, 4 / 3);
+  background: #d9c8ae;
+}.home-three .h3-frame__img {
+  object-fit: cover;
+  transform: translateY(calc((var(--parallax, 0.5) - 0.5) * -4%))
+    scale(calc(1.04 + var(--focus, 0) * 0.02));
+  transition: transform 0.8s var(--h3-ease-soft);
+}
+
+/* ====================================================== THE SUITES FLIP PAIR
+   `main.js :: setFlips()` on the Suites page, as CSS. Two stacked plates in a
+   clipped box; the cover leaves along the travel axis while the plate beneath
+   it settles out of its own overscale. `--h3-flip` (0 to 1) is written per
+   element by the flow hook, scrubbed exactly as Suites scrubs it.
+
+     upDown     cover translates -105%   ·  under rises from -10%
+     rightLeft  cover insets from left   ·  under settles from scale 1.2
+     leftRight  cover insets from right  ·  under settles from scale 1.2 */
+.home-three .h3-flip {
+  position: relative;
+  display: block;
+  overflow: clip;
+}
+.home-three .h3-flip__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.home-three .h3-flip__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+.home-three .h3-flip__media--down {
+  z-index: 1;
+}
+.home-three .h3-flip__media--up {
+  z-index: 2;
+}
+
+/* --- up/down: the cover lifts off, the plate beneath rides up behind it */
+.home-three .h3-flip--upDown .h3-flip__media--up {
+  transform: translateY(calc(var(--h3-flip, 0) * -105%));
+}
+.home-three .h3-flip--upDown .h3-flip__media--down {
+  height: 110%;
+}
+.home-three .h3-flip--upDown .h3-flip__media--down img {
+  transform: translateY(calc((1 - var(--h3-flip, 0)) * -10%));
+}
+
+/* --- right/left: the cover insets away from the left edge */
+.home-three .h3-flip--rightLeft .h3-flip__media--up {
+  clip-path: inset(0 0 0 calc(var(--h3-flip, 0) * 100%));
+}
+
+/* --- left/right: the cover insets away from the right edge */
+.home-three .h3-flip--leftRight .h3-flip__media--up {
+  clip-path: inset(0 calc(var(--h3-flip, 0) * 100%) 0 0);
+}
+
+.home-three .h3-flip--rightLeft .h3-flip__media--down img,
+.home-three .h3-flip--leftRight .h3-flip__media--down img {
+  transform: scale(calc(1.2 - var(--h3-flip, 0) * 0.2));
+}
+
+/* ------------------------------------------------------------ media system
+   Suites' `.media`: the source is oversized inside its wrap and slid by
+   `--transY`, which the hook scrubs 100% to 0% while the frame crosses. */
+.home-three .h3-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  --transY: 50%;
+}
+/*
+ * The slide lives on the wrap, not on the <img>. next/image's `fill` writes
+ * `position/inset/height/width` as INLINE style, which outranks any rule here
+ * — put the oversize and the offset on the element above it and the image
+ * simply fills whatever that element is.
+ *
+ * Suites nets out at `-0.15 * --transY` of the frame: 115% tall, bottom-
+ * aligned at 100%, top-aligned at 0%. Same numbers.
+ */
+.home-three .h3-media__wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--transY, 50%) * -0.15);
+  display: block;
+  height: 115%;
+  overflow: hidden;
+}
+.home-three .h3-media img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* ==================================================== 02 · COURSE — THE CHART
+   A reading column, the upright plate, and one berth card that changes as the
+   vessel reaches each mooring. */
+.home-three .h3-course {
+  width: min(94vw, 96rem);
+  /* no plate under the chart: the map reads on the panel's own wall, one
+     colour edge to edge, the way every other module here does */
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.85fr) auto minmax(22rem, 1.28fr);
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "head chart berths"
+    "run chart berths"
+    "helm chart berths";
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+}.home-three .h3-course__head {
+  grid-area: head;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.6rem, 1.3vw, 1.1rem);
+}.home-three .h3-course__run {
+  grid-area: run;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  border-top: 1px solid var(--h3-hair);
+  padding-top: 0.7rem;
+}.home-three .h3-course__run span {
+  font-family: var(--h3-figure);
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--h3-gold-deep);
+  min-width: 2.6ch;
+}.home-three .h3-course__run em {
+  font-family: var(--h3-num);
+  font-style: normal;
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+}.home-three .h3-title {
+  font-family: var(--h3-display);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+}.home-three .h3-title--sm {
+  font-size: clamp(2rem, 4.6vw, 5.2rem);
+}
+
+/* ---- the hold: the map is pinned until Hathor ties up at Aswan ---------
+   Above 950px the horizontal track itself freezes — the flow hook inserts a
+   plateau in its scroll-to-x mapping at the point where this panel is centred,
+   so the page holds while the vessel sails and then travels on. Below 950px
+   the same beat is a sticky sub-stage with its own runway. Either way the
+   wrappers are invisible to the desktop grid. */
+.home-three .h3-chart-hold,
+.home-three .h3-chart-sticky {
+  display: contents;
+}
+
+/* ---- the plate: Home 4's geographic atlas ----------------------------- */
+.home-three .h3-chart {
+  position: relative;
+  grid-area: chart;
+  width: min(450px, calc((100svh - 220px) * 420 / 565));
+  max-width: 100%;
+  justify-self: center;
+  color: #806b35;
+}.home-three .h3-chart__plate {
+  position: relative;
+  margin: 0;
+}.home-three .h3-chart__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}.home-three .h3-chart__banks {
+  fill: none;
+  stroke: #adaa8a;
+  stroke-width: 15;
+  opacity: 0.26;
+  stroke-linejoin: round;
+}.home-three .h3-chart__ghost {
+  fill: none;
+  stroke: #806b35;
+  stroke-width: 1;
+  opacity: 0.36;
+}.home-three .h3-chart__course {
+  fill: none;
+  stroke: #806b35;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}.home-three .h3-stop__dot {
+  fill: #ece4da;
+  stroke: #806b35;
+  stroke-width: 1.5;
+}.home-three .h3-stop.is-on .h3-stop__dot {
+  fill: #806b35;
+}.home-three .h3-stop__tick {
+  fill: none;
+  stroke: #806b35;
+  stroke-width: 0.8;
+  stroke-dasharray: 2 2;
+}.home-three .h3-stop__name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 16px;
+  fill: #29271f;
+}.home-three .h3-map-region {
+  font-family: var(--h3-meta);
+  font-size: 8px;
+  letter-spacing: 2px;
+  fill: #806b35;
+}.home-three .h3-map-north {
+  font-family: var(--h3-meta);
+  font-size: 12px;
+}.home-three .h3-chart__caption {
+  font-family: var(--h3-meta);
+  font-size: 0.63rem;
+  line-height: 1.6;
+  text-align: center;
+  color: #4a453c;
+  padding-top: 12px;
+}.home-three .h3-chart__caption a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+}.home-three .h3-ship {
+  opacity: 0;
+}.home-three .h3-ship__hull {
+  fill: #f7f1e6;
+  stroke: #806b35;
+  stroke-width: 1.4;
+}.home-three .h3-ship__sail {
+  fill: #b69f64;
+  stroke: #806b35;
+  stroke-width: 0.7;
+}
+
+/* ---- the helm: an instrument in the reading column, not a map marking --- */
+.home-three .h3-helm {
+  display: flex;
+  grid-area: helm;
+  align-items: center;
+  align-self: start;
+  gap: clamp(0.7rem, 1.3vw, 1.1rem);
+  margin-top: 0.2rem;
+  /* 10px, not 18: these elements translate while their neighbours do not, so
+     the travel has to stay inside the smallest gap on the page or arriving
+     copy crosses the control beneath it */
+  transform: translateY(calc((1 - var(--reveal, 1)) * 10px));
+  opacity: calc(0.08 + var(--reveal, 1) * 0.92);
+  transition:
+    transform 0.85s var(--h3-ease-soft),
+    opacity 0.85s var(--h3-ease-soft);
+}.home-three .h3-helm__dial {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(3.4rem, 4.4vw, 4.6rem);
+}.home-three .h3-helm__wheel {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: rotate(var(--h3-wheel, 0deg));
+  transition: transform 0.9s var(--h3-ease-soft);
+}
+
+/* the lubber line the wheel is read against */
+.home-three .h3-helm__index {
+  position: absolute;
+  top: -0.45rem;
+  left: 50%;
+  width: 1px;
+  height: 0.7rem;
+  background: var(--h3-gold-deep);
+  transform: translateX(-50%);
+}.home-three .h3-helm__read {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}.home-three .h3-helm__read span {
+  font-family: var(--h3-figure);
+  font-size: calc(var(--h3-t-value) * 0.62);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--h3-ink);
+  font-variant-numeric: tabular-nums;
+}.home-three .h3-helm__read span::after {
+  content: "°";
+  color: var(--h3-gold-deep);
+}.home-three .h3-helm__read em {
+  font-family: var(--h3-meta);
+  font-style: normal;
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+}
+
+/* ---- what stands at the mooring the vessel has reached ---------------- */
+.home-three .h3-course__berths {
+  display: flex;
+  grid-area: berths;
+  flex-direction: column;
+  align-self: center;
+  justify-self: stretch;
+  gap: 14px;
+  width: 100%;
+  max-width: none;
+}.home-three .h3-atlas-eyebrow {
+  font-family: var(--h3-meta);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--h3-ink);
+  margin: 0;
+}.home-three .h3-stop-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #806b3540;
+  gap: 0 8px;
+}.home-three .h3-stop-buttons button {
+  min-height: 44px;
+  padding: 8px 6px;
+  border: 0;
+  background: transparent;
+  font-family: var(--h3-meta);
+  font-size: 0.69rem;
+  font-weight: 500;
+  color: #4a453c;
+  cursor: pointer;
+}.home-three .h3-stop-buttons button[aria-pressed="true"] {
+  color: #14120e;
+  box-shadow: inset 0 -2px #806b35;
+}.home-three .h3-berth-stack {
+  display: grid;
+  width: 100%;
+}.home-three .h3-berth {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition:
+    opacity 0.7s var(--h3-ease-soft),
+    transform 0.7s var(--h3-ease-soft);
+}.home-three .h3-berth.is-on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}.home-three .h3-berth__media {
+  width: 100%;
+  margin-bottom: 0.9rem;
+}.home-three .h3-berth__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--h3-num);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+  border-bottom: 1px solid var(--h3-hair);
+  padding-bottom: 0.4rem;
+}.home-three .h3-berth__meta em {
+  font-style: normal;
+  color: var(--h3-gold-deep);
+  font-variant-numeric: tabular-nums;
+}.home-three .h3-berth__name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-family: var(--h3-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.6vw, 2.8rem);
+  line-height: 0.94;
+  text-transform: uppercase;
+  letter-spacing: -0.008em;
+}.home-three .h3-berth__name b {
+  font-family: var(--h3-edit);
+  font-weight: 400;
+  font-style: italic;
+  font-size: var(--h3-t-meta);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--h3-ink-soft);
+}.home-three .h3-berth__note {
+  font-family: var(--h3-support);
+  font-style: italic;
+  font-size: var(--h3-t-support);
+  line-height: 1.5;
+  color: var(--h3-ink-soft);
+  margin: 0.5rem 0 0.9rem;
+}
+.home-three .h3-berth__sites li {
+  padding: 0.38rem 0;
+  border-bottom: 1px solid var(--h3-hair);
+}
+.home-three .h3-berth__site {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+/* the one line that says what actually stands there */
+.home-three .h3-berth__blurb {
+  font-family: var(--h3-support);
+  font-style: italic;
+  font-size: calc(var(--h3-t-support) * 0.94);
+  line-height: 1.45;
+  color: var(--h3-ink-soft);
+  opacity: 0.86;
+  margin-top: 0.2rem;
+  max-width: none;
+}.home-three .h3-berth__more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+  min-height: 44px;
+  padding: 0 1.15rem;
+  border: 1px solid var(--h3-gold-deep);
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--h3-ink);
+  transition:
+    background 0.35s var(--h3-ease-soft),
+    color 0.35s var(--h3-ease-soft),
+    border-color 0.35s var(--h3-ease-soft);
+}.home-three .h3-berth__more::after {
+  content: "";
+  width: 0.7rem;
+  height: 1px;
+  background: currentcolor;
+}.home-three .h3-berth__more:hover {
+  background: var(--h3-ink);
+  border-color: var(--h3-ink);
+  color: var(--h3-paper);
+}.home-three .h3-berth__more:focus-visible {
+  outline: 2px solid var(--h3-gold-deep);
+  outline-offset: 3px;
+}.home-three .h3-berth__site a {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  font-size: var(--h3-t-meta);
+  color: var(--h3-ink);
+  text-decoration: none;
+}.home-three .h3-berth__site a:hover {
+  color: var(--h3-gold-deep);
+}.home-three .h3-berth__site a:focus-visible {
+  outline: 2px solid var(--h3-gold);
+  outline-offset: 3px;
+}.home-three .h3-berth__site em {
+  font-family: var(--h3-num);
+  font-style: normal;
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+  white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   THE SUITES MODULES
+   Every panel below is the Suites page's own module, rebuilt as real markup
+   in this document: same box, same proportions, same motion, homepage words.
+   Geometry is the Suites twelve-column measure —
+
+     u = (99.9vw - pad*2 - gap*11) / 12
+     col(n) = u*n + gap*(n-1)
+
+   — kept as `--h3-u` / `--h3-gap` so the widths read the way they do in
+   `public/suites-normal/styles/main.css`.
+   ========================================================================== */
+
+/* ======================================================= 01 · THE OPENER
+   The Contact page's own opening scene, carrying the homepage's identity:
+   a rotated rail of section names on the top-right corner, an italic eyebrow,
+   the display lines walking in on a fractional-column ladder, a short note
+   held off the left margin, and the mark and the scroll hint pinned to the
+   foot. Measured off `app/contact-editorial.css :: .ce-intro`.
+   ========================================================================== */
+.home-three .h3-open {
+  /* one shared left inset: `3.4em` would resolve against each element's own
+     font-size, which drifts the foot line out of alignment with the title */
+  --h3-inset: calc(var(--h3-pad) + 3.4rem);
+
+  width: min(92vw, 74rem);
+  /* the right pad reserves the rail's own strip — without it the eyebrow
+     runs under the rotated nav on a narrow panel */
+  padding: calc(var(--h3-top) + var(--h3-band) * 0.55)
+    calc(var(--h3-pad) + 4rem) calc(var(--h3-band) * 0.55) var(--h3-inset);
+  justify-content: center;
+  background: var(--h3-paper);
+  box-shadow: 0 -1px 0 var(--h3-paper);
+}
+.home-three .h3-open__inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 3vw, 2.8rem);
+}
+
+/* the rail, stood on its end in the top-right corner */
+.home-three .h3-open__nav {
+  position: absolute;
+  z-index: 4;
+  top: calc(var(--h3-top) + var(--h3-band) * 0.5);
+  right: var(--h3-pad);
+  display: flex;
+  gap: 1.6rem;
+  transform-origin: bottom right;
+  transform: rotate(-90deg) translateY(-100%);
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.home-three .h3-open__nav a {
+  position: relative;
+  padding-bottom: 0.3em;
+  color: var(--h3-ink-soft);
+  transition: color 0.3s var(--h3-ease-soft);
+}
+.home-three .h3-open__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--h3-gold-deep);
+  transition: width 0.4s var(--h3-ease-soft);
+}
+.home-three .h3-open__nav a:hover {
+  color: var(--h3-ink);
+}
+.home-three .h3-open__nav a:hover::after {
+  width: 100%;
+}
+
+.home-three .h3-open__eyebrow {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  font-size: var(--h3-t-support);
+  letter-spacing: 0.01em;
+  color: var(--h3-gold-deep);
+}
+
+.home-three .h3-open__title {
+  display: block;
+  font-family: var(--h3-display);
+  font-weight: 400;
+  font-size: var(--h3-t-hero);
+  line-height: 0.86;
+  letter-spacing: -0.022em;
+  text-transform: uppercase;
+  color: var(--h3-ink);
+}
+/* the ladder: each line steps in by its own fraction of a column */
+.home-three .h3-open__line {
+  display: block;
+  overflow: clip;
+  padding-bottom: 0.06em;
+}
+.home-three .h3-open__line--b {
+  padding-left: calc(var(--h3-u) * 1.4 + var(--h3-gap));
+}
+.home-three .h3-open__line--c {
+  padding-left: calc(var(--h3-u) * 0.6);
+}
+/* The ladder is one face at one size, the way Contact's is. `em` here marks
+   the middle rung of the ladder, nothing more — it must not change the
+   typeface, the size or the case, or the three lines stop reading as one
+   mark. */
+.home-three .h3-open__line em {
+  font-family: inherit;
+  font-style: normal;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+.home-three .h3-open__body {
+  font-family: var(--h3-support);
+  font-style: italic;
+  font-size: var(--h3-t-support);
+  line-height: 1.6;
+  color: var(--h3-ink-soft);
+  max-width: 30ch;
+  margin-left: calc(var(--h3-u) * 0.6);
+}
+
+.home-three .h3-open__mark,
+.home-three .h3-open__scroll {
+  position: absolute;
+  bottom: calc(var(--h3-band) * 0.55);
+  font-family: var(--h3-num);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+}
+.home-three .h3-open__mark {
+  left: var(--h3-inset);
+}
+.home-three .h3-open__scroll {
+  right: var(--h3-pad);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.home-three .h3-open__scroll i {
+  display: block;
+  width: 3.2rem;
+  height: 1px;
+  background: var(--h3-ink);
+  transform-origin: 0 50%;
+  animation: h3-scroll-hint 2.4s var(--h3-ease-soft) infinite;
+}
+@keyframes h3-scroll-hint {
+  0%,
+  100% {
+    transform: scaleX(0.35);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+}
+
+/* ======================================================== 02 · THE CHART
+   The one panel Suites does not have. It keeps the module manners — a beige
+   wall, a label at the left margin — and carries the sailing plate. */
+/* ref 3 — the wall carries the vessel herself at a whisper, so the chart is
+   drawn over the thing it is charting rather than over bare paper. */
+.home-three .h3-chart-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--h3-chart-ghost, none);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: min(120vh, 74vw) auto;
+  opacity: 0.06;
+  /* the photograph is a colour image; on this wall it has to read as a mark */
+  filter: grayscale(1) contrast(1.15);
+}
+.home-three .h3-chart-panel > * {
+  position: relative;
+  z-index: 1;
+}
+.home-three .h3-chart-panel {
+  /* the one full-bleed wall in the act: the chart earns the whole screen, and
+     the extra width is what buys the berth card its plate and its detail */
+  width: 100vw;
+  background: var(--h3-beige);
+  box-shadow: 0 -1px 0 var(--h3-beige);
+  justify-content: center;
+  padding-inline: calc(var(--h3-pad) * 2.5);
+}
+
+/* ================================== 03 · THE LEAD · THE CRUISE (paper)
+   The Contact page's image lead, carrying the cruise: one tall plate held to
+   74svh with a second frame overlapping its right edge and lifted off the
+   centre line, and the reading matter set quietly at the foot. Measured off
+   `app/contact-editorial.css :: .ce-lead`.
+   ========================================================================== */
+.home-three .h3-images {
+  position: relative;
+  display: block;
+  padding: 0;
+  padding-right: calc(var(--h3-u) * 1 + var(--h3-gap));
+  overflow: clip;
+}
+
+.home-three .h3-lead {
+  width: min(96vw, 82rem);
+  /* the foot carries one caption line, so it gets one line's band */
+  padding: calc(var(--h3-top) + var(--h3-band) * 0.55) var(--h3-pad)
+    calc(var(--h3-band) * 0.55 + 3.2rem);
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--h3-paper);
+  box-shadow: 0 -1px 0 var(--h3-paper);
+}
+.home-three .h3-lead__main {
+  /* 8.6 columns is the Contact measure, but the panel is capped at 82rem —
+     past about 1800px the column grid outgrows it and the plate would spill
+     onto the next wall, so the panel's own width is the ceiling */
+  width: min(calc(var(--h3-u) * 8.6 + var(--h3-gap) * 7), 100%);
+  /* 74svh is the Contact measure; the second term is what the panel can
+     actually spare once the header inset and the caption band are paid for,
+     so the plate can never grow down into the reading matter */
+  height: min(
+    74svh,
+    calc(100svh - var(--h3-top) - var(--h3-band) * 1.1 - 3.2rem)
+  );
+}
+.home-three .h3-lead__inset {
+  position: absolute;
+  z-index: 3;
+  right: var(--h3-pad);
+  top: 50%;
+  width: calc(var(--h3-u) * 4.2 + var(--h3-gap) * 3);
+  aspect-ratio: 835 / 557;
+  transform: translateY(-42%);
+  box-shadow: 0 2rem 4rem rgb(20 18 14 / 14%);
+}
+.home-three .h3-lead__aboard {
+  position: absolute;
+  left: calc(var(--h3-pad) + 3.4rem);
+  bottom: calc(var(--h3-band) * 0.55);
+  z-index: 4;
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+}
+.home-three .h3-lead__aboard span {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--h3-gold-deep);
+  margin-right: 0.5em;
+}
+
+/* =================================================== 03 · THE SAILINGS
+   The cruise list, read as a rail. Eight cabin sailings pass under the eye
+   on desktop as the act travels; on a phone the same rail keeps its own
+   horizontal scroll with snap points, because a list of eight read as a
+   vertical stack is a page, not a passage.
+
+   The wall behind each card is its tier — paper for a room, sand for a
+   suite, ink and gold for a Royal Suite — so the ladder of value is legible
+   before a price is read.
+   ========================================================================== */
+.home-three .h3-sailings {
+  background: var(--h3-beige);
+  box-shadow: 0 -1px 0 var(--h3-beige);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: clamp(1.4rem, 2.6vw, 2.6rem);
+  padding: calc(var(--h3-top) + var(--h3-band) * 0.5) var(--h3-pad)
+    calc(var(--h3-band) * 0.5);
+}
+.home-three .h3-sailings__head {
+  flex: 0 0 auto;
+  align-self: center;
+  width: calc(var(--h3-u) * 3 + var(--h3-gap) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.7rem, 1.4vw, 1.2rem);
+}
+.home-three .h3-sailings__rail {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(0.7rem, 1.1vw, 1.1rem);
+  height: 100%;
+}
+.home-three .h3-sail {
+  position: relative;
+  flex: 0 0 auto;
+  /* wider than the first pass: the card now carries a price, a pill and two
+     controls, and 15.5vw crowded them */
+  width: clamp(15rem, 19vw, 21.5rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* they land in sequence as the panel crosses, one card behind the next */
+  transform: translateY(calc((1 - var(--reveal, 1)) * (14px + var(--i, 0) * 6px)));
+  opacity: calc(0.1 + var(--reveal, 1) * 0.9);
+  transition:
+    transform 0.85s var(--h3-ease-soft),
+    opacity 0.85s var(--h3-ease-soft);
+}
+.home-three .h3-sail__link {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: inherit;
+  overflow: hidden;
+}
+.home-three .h3-sail__plate {
+  /* a fixed 4:5 rather than "whatever height is left": the sources are 4:3
+     landscape, and a 5:8 box crops so hard that what survives has to be
+     upscaled to fill it */
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 5;
+}
+
+/* ---- the controls, held on the plate ----------------------------------- */
+.home-three .h3-sail__name {
+  display: block;
+  font-family: var(--h3-display);
+  font-weight: 400;
+  font-size: clamp(1.2rem, 1.8vw, 1.85rem);
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: inherit;
+  transition: color 0.3s var(--h3-ease-soft);
+}
+.home-three .h3-sail__name:hover {
+  color: var(--h3-gold-deep);
+}
+.home-three .h3-sail--royal .h3-sail__name:hover {
+  color: var(--h3-gold);
+}
+/* the royal card is an ink wall — the roster inverts its outline pill when the
+   surface says so, the same way the dark scenes do */
+.home-three .h3-sail--royal .h3-sail__acts {
+  --hathor-btn-outline-line: rgb(243 237 228 / 52%);
+  --hathor-btn-outline-ink: var(--h3-paper);
+}
+
+/* the pill, at the foot of every card */
+/* The card actions are the site's one pill, retuned — not a second design.
+   The roster in app/button-system.css owns skin, state and geometry and reads
+   these tokens, so a narrow card asks it for a narrower pill rather than
+   declaring rules that would fight it. */
+.home-three .h3-sail__acts,
+.home-three .h3-projects__acts {
+  --hathor-btn-width: 100%;
+  --hathor-btn-height: 2.5rem;
+  --hathor-btn-pad-x: 1rem;
+
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.85rem;
+}
+/* the label sets its own min-width so "Save"/"Saved" cannot nudge the row;
+   inside a full-width pill that leaves the pair looking off-centre */
+.home-three .h3-sail__acts .hathor-fav__label,
+.home-three .h3-projects__acts .hathor-fav__label {
+  min-width: 0;
+  text-align: center;
+}
+.home-three .h3-projects__acts {
+  --hathor-btn-width: 11.5rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: auto;
+  opacity: var(--item, 1);
+  transform: translateY(calc((1 - var(--item, 1)) * 10px));
+  transition:
+    opacity 0.45s var(--h3-ease-soft),
+    transform 0.45s var(--h3-ease-soft);
+}
+
+.home-three .h3-sail__body {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: clamp(0.7rem, 1vw, 1rem) clamp(0.7rem, 1vw, 1rem)
+    clamp(0.9rem, 1.2vw, 1.15rem);
+}
+.home-three .h3-sail__tier {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+.home-three .h3-sail__route {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-family: var(--h3-num);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.78;
+  border-top: 1px solid currentcolor;
+  border-color: rgb(20 18 14 / 18%);
+  margin-top: 0.25rem;
+  padding-top: 0.45rem;
+}
+.home-three .h3-sail__route b {
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0.72;
+}
+.home-three .h3-sail__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--h3-num);
+  font-size: clamp(0.95rem, 1.15vw, 1.2rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.home-three .h3-sail__price em {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+/* ---- the three tiers ---------------------------------------------------- */
+.home-three .h3-sail--room .h3-sail__body {
+  background: var(--h3-paper);
+  color: var(--h3-ink);
+}
+.home-three .h3-sail--suite .h3-sail__body {
+  background: var(--h3-stone);
+  color: var(--h3-ink);
+}
+.home-three .h3-sail--suite .h3-sail__route {
+  border-color: rgb(20 18 14 / 26%);
+}
+.home-three .h3-sail--royal .h3-sail__body {
+  background: var(--h3-black);
+  color: var(--h3-paper);
+}
+.home-three .h3-sail--royal .h3-sail__tier,
+.home-three .h3-sail--royal .h3-sail__price {
+  color: var(--h3-gold);
+}
+.home-three .h3-sail--royal .h3-sail__route {
+  border-color: rgb(243 237 228 / 26%);
+}
+
+/* ---- the door through to the full list ---------------------------------- */
+.home-three .h3-sail--more .h3-sail__link {
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
+  border: 1px solid rgb(20 18 14 / 22%);
+  transition: border-color 0.4s var(--h3-ease-soft);
+}
+.home-three .h3-sail--more .h3-sail__link:hover {
+  border-color: var(--h3-gold-deep);
+}
+.home-three .h3-sail--more .h3-sail__body {
+  background: var(--h3-paper);
+  color: var(--h3-ink);
+}
+.home-three .h3-sail__body--more {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+.home-three .h3-sail--more .h3-sail__name {
+  font-size: clamp(1.5rem, 2.4vw, 2.4rem);
+}
+
+/* ============================================ 04 · TEXT · THE CLAIM (white)
+   `mod-scroll__text`: four uppercase display lines, the fourth set right and
+   sliding left across the panel, with a narrow column of copy beneath. */
+.home-three .h3-text {
+  background: var(--h3-paper);
+  box-shadow: 0 -1px 0 var(--h3-paper);
+  padding: 0;
+  display: block;
+}
+.home-three .h3-text__wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  width: calc(var(--h3-u) * 10 + var(--h3-gap) * 9 + var(--h3-pad) * 2);
+  height: 100%;
+  padding-block: calc(var(--h3-top) + var(--h3-pad)) var(--h3-pad);
+}
+.home-three .h3-text__inner {
+  width: 100%;
+  padding: var(--h3-pad);
+  padding-left: calc(var(--h3-u) * 1 + var(--h3-pad));
+  padding-right: 0;
+}
+.home-three .h3-text__title {
+  width: 100%;
+  margin-bottom: 4.9rem;
+  font-family: var(--h3-display);
+  font-size: var(--h3-t-stmt);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  color: var(--h3-ink);
+}
+.home-three .h3-text__line {
+  display: block;
+  width: 100%;
+  overflow: clip;
+}
+.home-three .h3-text__line--slide > span {
+  display: inline-block;
+  transform: translateX(calc((1 - var(--parallax, 1)) * var(--h3-slide, 34vw)));
+}
+.home-three .h3-text__copy {
+  width: calc(var(--h3-u) * 2.9 + var(--h3-gap) * 1.9);
+}
+
+/* ============================================== 05 · PROJECTS · THE VOYAGES
+   `mod-scroll__projects`: a reading column, then a strip of cards where the
+   one under attention opens and its neighbours stay slivers. Suites animates
+   each card 15vw to 60vw in turn; here the same opening is a flex ratio, so
+   the strip's own width never changes and the runway cannot jitter. */
+.home-three .h3-projects {
+  /* `.h3-scene` sets column; the strip has to say row itself */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  padding: 0;
+  width: calc(var(--h3-u) * 3 + var(--h3-gap) * 4 + 150vw);
+  background: var(--h3-beige);
+  box-shadow: 0 -1px 0 var(--h3-beige);
+}
+.home-three .h3-projects__aside {
+  position: relative;
+  flex: 0 0 auto;
+  width: calc(var(--h3-u) * 3 + var(--h3-gap) * 4);
+  height: 100%;
+  padding: var(--h3-gap);
+  padding-top: calc(var(--h3-top) + var(--h3-gap));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1.1rem;
+}
+.home-three .h3-projects__item {
+  position: relative;
+  /* an explicit height so the card's own percentages resolve: a stretched
+     flex item has an auto specified height, and `height: 100%` under it
+     would not compute at all */
+  height: 100%;
+  flex: calc(1 + var(--item, 0) * 2.6) 1 0;
+  min-width: 0;
+  overflow: hidden;
+  transition: flex-grow 0.55s var(--h3-ease-soft);
+}
+.home-three .h3-projects__content {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  color: inherit;
+}
+.home-three .h3-projects__image {
+  position: relative;
+  z-index: 2;
+  /* the foot now carries three pills, and on a narrow (unopened) card that
+     row wraps to two lines — the plate gives back the height for it so the
+     last pill cannot fall past the stage */
+  height: calc(78% - var(--item, 0) * 14%);
+  transition: height 0.55s var(--h3-ease-soft);
+}
+.home-three .h3-projects__text {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  --margin: 1.25rem;
+  z-index: 1;
+}
+.home-three .h3-projects__name {
+  display: block;
+  color: inherit;
+  white-space: nowrap;
+  padding: var(--margin);
+  font-family: var(--h3-display);
+  font-size: clamp(1.5rem, 3.1vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  opacity: calc(0.14 + var(--item, 0) * 0.86);
+  transition: opacity 0.45s var(--h3-ease-soft);
+}
+.home-three .h3-projects__data {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: var(--item, 0);
+  transition: opacity 0.45s var(--h3-ease-soft);
+}
+.home-three .h3-projects__data > * {
+  position: absolute;
+  overflow: hidden;
+  font-family: var(--h3-num);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.home-three .h3-projects__data > *:nth-child(1) {
+  top: var(--margin);
+  left: var(--margin);
+}
+.home-three .h3-projects__data > *:nth-child(2) {
+  top: var(--margin);
+  right: var(--margin);
+}
+.home-three .h3-projects__data > *:nth-child(3) {
+  bottom: var(--margin);
+  left: var(--margin);
+}
+.home-three .h3-projects__data > * > span {
+  position: relative;
+  display: block;
+  transform: translateY(calc((1 - var(--item, 0)) * 110%));
+  transition: transform 0.5s var(--h3-ease-soft);
+}
+/* the three feet deepen across the strip: sand, stone, olive */
+.home-three .h3-projects__item--a {
+  background: var(--h3-beige);
+  color: var(--h3-ink);
+}
+.home-three .h3-projects__item--b {
+  background: var(--h3-stone);
+  color: var(--h3-ink);
+}
+.home-three .h3-projects__item--c {
+  background: var(--h3-olive);
+  color: var(--h3-paper);
+}
+
+/* ================================== 06 · IMAGES + TEXT · THE SUITES (black)
+   `mod-scroll__images-text`: two flipping plates at 944/756 and 441/451, the
+   second dropped to the foot, and the module's one large sentence between. */
+.home-three .h3-imgtext {
+  background: var(--h3-black);
+  box-shadow: 0 -1px 0 var(--h3-black);
+  color: var(--h3-paper);
+  --h3-hair: rgb(243 237 228 / 22%);
+  padding: 0;
+  display: block;
+}
+.home-three .h3-imgtext__wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  height: 100%;
+  padding-left: calc(var(--h3-pad) - 2px);
+  padding-right: var(--h3-pad);
+  padding-block: calc(var(--h3-top) + var(--h3-pad)) var(--h3-pad);
+}
+.home-three .h3-imgtext__wrap > .h3-flip--a {
+  width: calc(var(--h3-u) * 7 + var(--h3-gap) * 6);
+  aspect-ratio: 944 / 756;
+  margin-left: calc(var(--h3-gap) * -1);
+  margin-right: var(--h3-gap);
+}
+.home-three .h3-imgtext__wrap > .h3-flip--b {
+  width: calc(var(--h3-u) * 4 + var(--h3-gap) * 3);
+  aspect-ratio: 441 / 451;
+  margin-right: calc(var(--h3-u) * 1 + var(--h3-gap));
+  align-self: flex-end;
+}
+.home-three .h3-imgtext__text {
+  width: calc(var(--h3-u) * 8 + var(--h3-gap) * 7);
+  padding: 0 var(--h3-pad);
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.home-three .h3-imgtext__text p {
+  font-family: var(--h3-display);
+  font-size: clamp(1.7rem, 3vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--h3-paper);
+}
+.home-three .h3-imgtext .h3-kicker {
+  color: var(--h3-gold);
+}
+/* ---- ref 5 · the reveal ------------------------------------------------
+   Painting a gradient across the glyphs was too quiet to read as motion at
+   all. The line is built instead: each character climbs out of a clipped row
+   in turn (the same `.anima-split-char` machinery the rest of the act uses,
+   driven off this panel's own `--reveal`), and the two-column note lifts in
+   behind it a beat later.
+   ------------------------------------------------------------------------ */
+.home-three .h3-imgtext__line {
+  overflow: clip;
+  padding-bottom: 0.08em;
+}
+/* a longer, more deliberate cascade than the track default — this is the one
+   sentence on the wall, and it should be watched rather than glimpsed */
+.home-three .h3-imgtext__line .anima-split-char {
+  --cp: clamp(
+    0,
+    calc((var(--reveal, 1) - 0.06 - var(--char-index, 0) * 0.03) / 0.34),
+    1
+  );
+  transform: translate3d(0, calc((1 - var(--cp)) * 118%), 0);
+  opacity: calc(0.25 + var(--cp) * 0.75);
+}
+.home-three .h3-imgtext__copy {
+  /* the note follows the line: clipped, lifted, and released a beat later */
+  --cp: clamp(0, calc((var(--reveal, 1) - 0.24) * 2.1), 1);
+  clip-path: inset(0 0 calc((1 - var(--cp)) * 100%) 0);
+  transform: translateY(calc((1 - var(--cp)) * 26px));
+  opacity: calc(0.1 + var(--cp) * 0.9);
+  transition:
+    clip-path 0.9s var(--h3-ease-soft),
+    transform 0.9s var(--h3-ease-soft),
+    opacity 0.9s var(--h3-ease-soft);
+}
+
+.home-three .h3-imgtext .h3-support {
+  color: rgb(243 237 228 / 82%);
+  /* the module's column is col(8) wide; the 26rem note measure would set this
+     as a narrow, very tall stack against the plates */
+  max-width: none;
+  columns: 2;
+  column-gap: var(--h3-gap);
+}
+
+/* ============================== 07 · CAROUSEL · THE EXPERIENCES (marquee)
+   `mod-scroll__carousel`: a 1.5em-wide rail whose content is rotated -90deg
+   and marches forever. It is the act's spine, read on its side. */
+.home-three .h3-carousel {
+  position: relative;
+  width: 1.5em;
+  padding: 0;
+  background: var(--h3-black);
+  box-shadow: 0 -1px 0 var(--h3-black);
+  z-index: 10;
+  font-family: var(--h3-display);
+  font-size: clamp(3rem, 7vw, 7.2rem);
+  overflow: clip;
+}
+.home-three .h3-carousel__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.5em;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  transform: translateY(calc(100svh + (1 - var(--parallax, 1)) * 90svh))
+    rotate(-90deg);
+  transform-origin: top left;
+  background: var(--h3-beige);
+  color: var(--h3-ink);
+}
+.home-three .h3-carousel__content > span {
+  position: relative;
+  display: flex;
+  width: max-content;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 2.5rem;
+  padding: 0.2em 2.5rem 0.2em 0;
+  animation: h3-carousel 26s linear infinite;
+}
+.home-three .h3-carousel__text {
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+.home-three .h3-carousel__star {
+  display: block;
+  width: 0.4em;
+  height: 0.4em;
+  flex: 0 0 auto;
+  background: var(--h3-gold);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+@keyframes h3-carousel {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ========================== 08 · IMAGES · SECUNDARIO · EXPERIENCES (beige)
+   `mod-scroll__images.secundario`: a tall flipping plate at 1090/960 with a
+   second at 668/554 held over the right margin. */
+.home-three .h3-images--secundario {
+  background: var(--h3-stone);
+  box-shadow: 0 -1px 0 var(--h3-stone);
+  /* wider right margin so the floated frame has a wall of its own to sit on
+     rather than lying almost entirely over the tall plate */
+  padding-right: calc(var(--h3-u) * 4 + var(--h3-gap) * 4);
+}
+.home-three .h3-images--secundario .h3-flip--a {
+  height: 100%;
+  aspect-ratio: 1090 / 960;
+}
+/* ref 7 — it sat over the tall plate's middle with only a sliver of itself
+   showing past it, which read as one image tucked behind another. It now
+   clears the plate's right edge, sits off the centre line, and carries a
+   shadow so it is plainly a second frame laid on the first. */
+.home-three .h3-images--secundario .h3-flip--b {
+  position: absolute;
+  top: 50%;
+  right: var(--h3-pad);
+  transform: translateY(-56%);
+  width: calc(var(--h3-u) * 4.4 + var(--h3-gap) * 3.4);
+  aspect-ratio: 668 / 554;
+  box-shadow: 0 2rem 4rem rgb(20 18 14 / 22%);
+}
+.home-three .h3-images__list {
+  position: absolute;
+  left: var(--h3-pad);
+  bottom: var(--h3-pad);
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  max-width: calc(var(--h3-u) * 4 + var(--h3-gap) * 3);
+}
+.home-three .h3-images__list a {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--h3-ink);
+  border-bottom: 1px solid var(--h3-hair);
+  padding-bottom: 0.2rem;
+  transition: border-color 0.35s var(--h3-ease-soft);
+}
+.home-three .h3-images__list a:hover {
+  border-color: var(--h3-gold);
+}
+
+/* ================================================ 09 · TERMS · ABOUT (blue)
+   `mod-scroll__terms`: three numbered principles stacked down a blue wall,
+   each drifting sideways by its own amount as the panel crosses — 12vw, 3vw
+   and 20vw, the Suites values, scrubbed by `--terms`. */
+.home-three .h3-terms {
+  width: 96vw;
+  background: var(--h3-olive-deep);
+  box-shadow: 0 -1px 0 var(--h3-olive-deep);
+  color: var(--h3-paper);
+  --h3-hair: rgb(243 237 228 / 22%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: calc(var(--h3-top) + 9svh) var(--h3-pad) 3.5svh;
+  overflow: hidden;
+}
+.home-three .h3-terms__term {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.home-three .h3-terms__term--a {
+  padding-left: calc(var(--parallax, 0) * 12vw);
+}
+.home-three .h3-terms__term--b {
+  padding-right: calc(var(--parallax, 0) * 3vw);
+}
+.home-three .h3-terms__term--b .h3-terms__copy {
+  margin-right: calc(
+    var(--h3-u) * 1.4 + var(--h3-gap) * 1.4 + var(--parallax, 0) * 3vw
+  );
+}
+.home-three .h3-terms__term--c {
+  padding-left: calc(var(--parallax, 0) * 20vw);
+  margin-left: calc(var(--h3-u) * 1 + var(--h3-gap));
+  padding-bottom: calc(var(--h3-pad) / 2);
+}
+.home-three .h3-terms__copy {
+  position: relative;
+  width: calc(var(--h3-u) * 2.03 + var(--h3-gap) * 2.03);
+  min-width: calc(var(--h3-u) * 2.03 + var(--h3-gap) * 2.03);
+  margin: 0 calc(var(--h3-u) * 1.4 + var(--h3-gap) * 1.4) 0
+    calc(var(--h3-u) * 1 + var(--h3-gap));
+}
+.home-three .h3-terms__wrap-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  position: relative;
+  width: 100%;
+}
+.home-three .h3-terms .h3-support {
+  color: rgb(243 237 228 / 78%);
+}
+.home-three .h3-terms__num {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  font-size: var(--h3-t-support);
+  color: var(--h3-gold);
+  padding-top: 0.6em;
+}
+.home-three .h3-terms__title {
+  position: relative;
+  z-index: 20;
+  font-family: var(--h3-display);
+  font-size: min(8.6svh, 6.4vw);
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--h3-paper);
+  -webkit-text-fill-color: var(--h3-paper);
+}
+.home-three .h3-terms__term--b .h3-terms__title {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+/* ---- ref 8 · the frame that rides the cursor ---------------------------
+   Suites' `follow__mouse`. One box tracks the pointer across the wall and
+   cross-fades to the plate belonging to whichever principle is under it, each
+   drawn from a different part of the site. `--fx/--fy` and the active index
+   are written by the page's own loop — no second engine, no timeline. */
+.home-three .h3-terms__stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+}
+.home-three .h3-terms__follow {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  width: clamp(13rem, 19vw, 21rem);
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  transform: translate3d(
+    calc(var(--fx, 50%) - 50%),
+    calc(var(--fy, 50%) - 50%),
+    0
+  );
+  /* it trails the cursor rather than sticking to it, which is what makes the
+     frame feel carried rather than dragged */
+  transition: transform 0.55s cubic-bezier(0.16, 0.84, 0.32, 1);
+  opacity: calc(var(--focus, 0) * 1);
+}
+.home-three .h3-terms__plate {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(1.06);
+  transition:
+    opacity 0.5s var(--h3-ease-soft),
+    transform 0.9s var(--h3-ease-soft);
+}
+.home-three .h3-terms__plate img {
+  object-fit: cover;
+}
+.home-three .h3-terms__plate.is-on {
+  opacity: 1;
+  transform: scale(1);
+}
+/* with no pointer on the wall the first plate still stands, so the panel is
+   never a bare colour field */
+.home-three .h3-terms__follow:not(.is-live) .h3-terms__plate[data-h3-term-plate="0"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ================================================ 10 · CIERRE · THE CLOSE
+   `mod-scroll__cierre`: a 150vw red wall whose single flipping plate is
+   centred in the first 100vw, so the act ends on one held image. */
+/* ================================================ 10 · CIERRE · THE CLOSE
+   ref 9 + 10 — the act used to end on a plate floating in half a wall of
+   empty gold. It ends on the photograph now: one screen wide, full bleed,
+   the invitation cut out of it, and the pill drawing itself open along its
+   own rule as the wall arrives.
+   ========================================================================== */
+.home-three .h3-cierre {
+  position: relative;
+  /* exactly one screen — the extra 50vw was dead space, nothing more */
+  width: 100vw;
+  padding: 0;
+  background: var(--h3-black);
+  box-shadow: 0 -1px 0 var(--h3-black);
+  color: var(--h3-paper);
+  z-index: 15;
+  display: block;
+  overflow: hidden;
+}
+.home-three .h3-cierre__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+.home-three .h3-cierre__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(11 10 8 / 46%) 0%,
+      rgb(11 10 8 / 18%) 38%,
+      rgb(11 10 8 / 72%) 100%
+    );
+}
+.home-three .h3-cierre__note {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.3rem;
+  padding: calc(var(--h3-top) + var(--h3-band) * 0.5) var(--h3-pad)
+    calc(var(--h3-band) * 0.6);
+  text-align: center;
+}
+.home-three .h3-cierre__title {
+  font-family: var(--h3-display);
+  font-weight: 400;
+  font-size: var(--h3-t-stmt);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  overflow: clip;
+  padding-bottom: 0.06em;
+}
+.home-three .h3-cierre .h3-support {
+  color: rgb(243 237 228 / 86%);
+  text-align: center;
+  max-width: 34ch;
+}
+.home-three .h3-cierre .h3-kicker {
+  color: var(--h3-gold);
+}
+
+/* the reveal: a rule opens from the centre and the pill rises through it */
+.home-three .h3-cierre__reveal {
+  --cp: clamp(0, calc((var(--reveal, 1) - 0.3) * 2.4), 1);
+  position: relative;
+  margin-top: 0.6rem;
+  padding-top: 1.5rem;
+}
+.home-three .h3-cierre__reveal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: calc(var(--cp) * 18rem);
+  max-width: 80vw;
+  height: 1px;
+  background: var(--h3-gold);
+  transform: translateX(-50%);
+  transition: width 0.9s var(--h3-ease-soft);
+}
+
+/* ==========================================================================
+   THE VERTICAL DOCUMENT
+   Everything after the pinned act, on one beige ground — exactly the run
+   the Suites page makes once its horizontal story finishes:
+
+     mod-title--chapter · mod-media--mosaic · mod-title--lines ·
+     mod-content--cols  · mod-content--center · mod-footer
+
+   Here it carries the contact chapter, which is where a homepage has to end.
+   ========================================================================== */
+.home-three .h3-doc {
+  position: relative;
+  background: var(--h3-beige);
+  color: var(--h3-ink);
+  /* the fixed phone dock sits over the foot of the page on every size */
+  padding-bottom: calc(1.5rem + var(--hathor-phone-dock-h, 3rem));
+}
+.home-three .h3-wrapper {
+  position: relative;
+  width: 100%;
+  padding-inline: var(--h3-pad);
+}
+.home-three .h3-pt-md {
+  padding-top: var(--h3-pad-md);
+}
+.home-three .h3-pb-md {
+  padding-bottom: var(--h3-pad-md);
+}
+.home-three .h3-pb-sm {
+  padding-bottom: var(--h3-pad-sm);
+}
+.home-three .h3-pb-xs {
+  padding-bottom: var(--h3-pad-xs);
+}
+
+/* The mosaic borrows `.h3-scene` so the flow hook writes it a `--reveal`, but
+   it is a section of the vertical document, not a panel of the act — it takes
+   none of the panel's box. */
+.home-three .h3-doc .h3-scene {
+  display: block;
+  height: auto;
+  padding: 0;
+  background: none;
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------- 11 · TITLE · CHAPTER
+   `mod-title--chapter`: a centred stack — kicker, rule, then one very large
+   line that arrives character by character on its own scroll trigger. */
+.home-three .h3-chapter__intro {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 4.5rem;
+}
+.home-three .h3-chapter__rule {
+  display: block;
+  width: 1px;
+  height: 3.4rem;
+  background: var(--h3-hair);
+}
+.home-three .h3-chapter__title {
+  font-family: var(--h3-display);
+  font-size: var(--h3-t-display);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  text-align: center;
+  hyphens: auto;
+  color: var(--h3-ink);
+}
+
+/* --------------------------------------------------- 12 · MEDIA · MOSAIC
+   `mod-media--double mod-media--mosaic`: four plates in one row, each one
+   sliding out of its own clip as the row arrives. */
+.home-three .h3-mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--h3-gap);
+  align-items: stretch;
+}
+.home-three .h3-mosaic__item {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  clip-path: inset(calc((1 - var(--reveal, 1)) * 100%) 0 0 0);
+  transition: clip-path 1.1s var(--h3-ease-soft);
+}
+/* ref 11 — one ratio across all four. The staggered crops read as an
+   accident at this width, not as a composition. */
+.home-three .h3-mosaic__item img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateY(calc((1 - var(--reveal, 1)) * 18%));
+  transition: transform 1.4s var(--h3-ease-soft);
+}
+
+/* --------------------------------------------------- 13 · TITLE · LINES
+   `mod-title--lines`: stacked display lines of different measures, one of
+   them pushed to the right edge, each clipped and rising. */
+.home-three .h3-lines {
+  display: flex;
+  flex-direction: column;
+}
+.home-three .h3-lines__line {
+  display: block;
+  overflow: hidden;
+  font-family: var(--h3-display);
+  font-size: var(--h3-t-stmt);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: var(--h3-ink);
+}
+/* ref 12 — the ladder, not a scatter. The third line used to be flung to the
+   far right edge, which left a hole the width of the page between it and the
+   second; it steps in like the opener's instead. */
+.home-three .h3-lines__line--b {
+  padding-left: calc(var(--h3-u) * 1.4 + var(--h3-gap));
+}
+.home-three .h3-lines__line--c {
+  padding-left: calc(var(--h3-u) * 0.6);
+}
+/* one face, one size — an italic serif in the middle of an Italiana ladder
+   reads as a different mark, which is exactly what it looked like */
+.home-three .h3-lines__line em {
+  font-family: inherit;
+  font-style: normal;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+/* the title and the detail are one block on one rule */
+.home-three .h3-contact .h3-lines {
+  margin-bottom: clamp(2.4rem, 5vw, 4rem);
+}
+.home-three .h3-contact .h3-cols {
+  border-top: 1px solid var(--h3-hair);
+  padding-top: clamp(1.6rem, 3vw, 2.6rem);
+  align-items: start;
+}
+
+/* ---------------------------------------------------- 14 · CONTENT · COLS
+   `mod-content--cols`: a pretitle at the left margin, a wide column of
+   running copy, and a narrower column that holds the actions. */
+.home-three .h3-cols {
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--h3-gap);
+}
+.home-three .h3-cols__col {
+  width: calc(var(--h3-u) * 6 + var(--h3-gap) * 5);
+}
+.home-three .h3-cols__col:nth-of-type(2) {
+  width: calc(var(--h3-u) * 4 + var(--h3-gap) * 3);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.75rem;
+}
+.home-three .h3-cols__pretitle {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--h3-gold-deep);
+  margin-bottom: 1.4rem;
+}
+.home-three .h3-cols__text {
+  font-family: var(--h3-support);
+  font-style: italic;
+  font-size: var(--h3-t-big);
+  line-height: 1.34;
+  color: var(--h3-ink-soft);
+  max-width: 34rem;
+}
+.home-three .h3-cols__text p + p {
+  margin-top: 1.25em;
+}
+.home-three .h3-facts {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.home-three .h3-facts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.62rem 0;
+  border-bottom: 1px solid var(--h3-hair);
+}
+.home-three .h3-facts dt,
+.home-three .h3-facts .h3-facts__k {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+  white-space: nowrap;
+}
+.home-three .h3-facts .h3-facts__v {
+  font-family: var(--h3-edit);
+  font-style: italic;
+  font-size: var(--h3-t-meta);
+  color: var(--h3-ink);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* -------------------------------------------------- 15 · CONTENT · CENTER
+   `mod-content--center`: the request. One centred line and the page's two
+   actions, on the roster geometry the whole site shares. */
+.home-three .h3-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  text-align: center;
+}
+.home-three .h3-center__title {
+  font-family: var(--h3-display);
+  font-size: clamp(2rem, 4.4vw, 4.8rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  max-width: 18ch;
+}
+
+/* --------------------------------------------------------- 16 · FOOTER */
+.home-three .h3-footer {
+  border-top: 1px solid var(--h3-hair);
+  padding-top: 2.2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--h3-gap);
+  align-items: start;
+}
+.home-three .h3-footer__mark {
+  font-family: var(--h3-display);
+  font-size: clamp(1.6rem, 3vw, 3rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.home-three .h3-footer__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.home-three .h3-footer__nav a,
+.home-three .h3-footer__legal a {
+  font-family: var(--h3-meta);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+  transition: color 0.3s var(--h3-ease-soft);
+}
+.home-three .h3-footer__nav a:hover,
+.home-three .h3-footer__legal a:hover {
+  color: var(--h3-gold-deep);
+}
+.home-three .h3-footer__legal {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  border-top: 1px solid var(--h3-hair);
+  margin-top: 2.4rem;
+  padding-top: 1.2rem;
+}
+.home-three .h3-footer__legal p {
+  font-family: var(--h3-num);
+  font-size: var(--h3-t-kicker);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--h3-ink-soft);
+}
+
+/* ==========================================================================
+   THE LINE SPLIT INSIDE THE ACT
+   `AnimaSplitLine` gives every display line the Suites `.char` markup. In the
+   vertical document those lines are played by `mountAnimaTitleSplit`, which
+   is what the rest of the site uses. Inside the pinned act it cannot be: the
+   track is translated on X, so a scene past the first never intersects the
+   viewport and the observer would never fire. There the same rise is taken
+   straight off the scene's own `--reveal`, staggered per character — the
+   Suites easing, no second engine.
+   ========================================================================== */
+.home-three .h3-run .anima-split-char {
+  --cp: clamp(
+    0,
+    calc((var(--reveal, 1) - var(--char-index, 0) * 0.022) / 0.46),
+    1
+  );
+  transform: translate3d(
+    0,
+    calc(var(--char-direction, 1) * (1 - var(--cp)) * 110%),
+    0
+  );
+  transition: none;
+}
+
+
+/* ======================================================= NARROW DESKTOP
+   Still horizontal; the chart and the tall plates give up height first. */
+@media (max-width: 1180px) {
+  .home-three .h3-chart {
+    max-width: 380px;
+  }
+
+  .home-three .h3-terms__title {
+    font-size: min(7.4svh, 6vw);
+  }
+
+  .home-three .h3-projects {
+    width: calc(var(--h3-u) * 3 + var(--h3-gap) * 4 + 168vw);
+  }
+}
+
+/* ================================================== 950 · VERTICAL DOCUMENT
+   The structural switch. Pinning and horizontal translation stop and the act
+   becomes a vertical editorial — the same reflow the Suites page makes.
+   ========================================================================== */
+@media (max-width: 950px) {
+  .home-three {
+    --h3-band: clamp(2.4rem, 9vw, 4rem);
+    --h3-top: 0rem;
+    --h3-pad: 1.15rem;
+    --h3-gap: 0.85rem;
+    --h3-pad-md: clamp(3rem, 12vw, 5rem);
+    --h3-pad-sm: clamp(2.2rem, 9vw, 3.6rem);
+    --h3-pad-xs: 1.4rem;
+  }
+
+  .home-three .h3-run {
+    height: auto !important;
+  }
+
+  .home-three .h3-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
+
+  .home-three .h3-track {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+  }
+
+  .home-three .h3-scene {
+    width: 100% !important;
+    height: auto;
+    min-height: 0;
+    padding: var(--h3-band) var(--h3-pad);
+  }
+
+  .home-three .h3-progress {
+    display: none;
+  }
+
+  /* ---- the opener: the same landing composition, stood up vertically.
+     Phones and tablets get this instead of anything of their own — the rail
+     lies down into a row, the ladder flattens, and the panel keeps enough of
+     the screen to still arrive as a hero rather than as a paragraph. */
+  .home-three .h3-open {
+    width: 100%;
+    min-height: 78svh;
+    justify-content: flex-start;
+    padding: var(--h3-band) var(--h3-pad);
+  }
+
+  .home-three .h3-open__inner {
+    flex: 1;
+    justify-content: center;
+    gap: clamp(1rem, 4vw, 1.8rem);
+  }
+
+  .home-three .h3-open__nav {
+    position: static;
+    transform: none;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
+
+  /* fractional-column indents only work with room to spare */
+  .home-three .h3-open__line--b,
+  .home-three .h3-open__line--c,
+  .home-three .h3-open__body {
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .home-three .h3-open__mark {
+    position: static;
+    margin-top: clamp(1.6rem, 5vw, 2.4rem);
+  }
+
+  .home-three .h3-open__scroll {
+    display: none;
+  }
+
+  /* ---- the sailings: the rail keeps travelling sideways
+     Everything else on this page becomes a vertical document below 950px, but
+     eight cabins read as a stack is a page, not a passage — so this one module
+     keeps its own left-to-right scroll, with snap points and a thumb-sized
+     card, and the head sits above it. */
+  .home-three .h3-sailings {
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(1.1rem, 5vw, 1.8rem);
+    padding: var(--h3-band) 0;
+  }
+
+  .home-three .h3-sailings__head {
+    width: 100%;
+    align-self: stretch;
+    padding-inline: var(--h3-pad);
+  }
+
+  .home-three .h3-sailings__rail {
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-inline: var(--h3-pad);
+    /* the last card can reach the middle of the screen, so the rail never
+       ends with a card jammed against the edge */
+    padding-right: 38vw;
+    gap: 0.7rem;
+  }
+
+  .home-three .h3-sailings__rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-three .h3-sail {
+    width: clamp(10.5rem, 58vw, 15rem);
+    scroll-snap-align: start;
+    /* they are all on screen at once here; the rail's own scroll is the
+       reveal, so the stagger would only make cards arrive already faded */
+    transform: none;
+    opacity: 1;
+  }
+
+  .home-three .h3-sail__plate {
+    aspect-ratio: 3 / 4;
+    flex: 0 0 auto;
+  }
+
+  /* the vw term collapses on a narrow screen and the display line would sit
+     at its floor, no larger than the label above it */
+  .home-three .h3-sail__name {
+    font-size: clamp(1.25rem, 5.6vw, 1.75rem);
+  }
+
+  .home-three .h3-sail--more .h3-sail__link {
+    min-height: 0;
+  }
+
+  /* ---- the chart: the heading reads first, then the map pins and sails
+     The hold is a runway of its own with a sticky 100svh stage inside it, so
+     a phone gets the same beat the desktop plateau gives: you arrive, the
+     page holds, Hathor runs the whole channel, and only then do you go on. */
+  .home-three .h3-course {
+    /* 96vw would run past the panel's own inset by a few pixels and clip the
+       chart's outermost mooring label */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(1.2rem, 5vw, 2rem);
+  }
+
+  .home-three .h3-chart-hold {
+    display: block;
+    position: relative;
+    width: 100%;
+    /* 100svh of stage plus the runway the vessel sails through */
+    height: 250svh;
+  }
+
+  .home-three .h3-chart-sticky {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: clamp(0.9rem, 4vw, 1.4rem);
+    height: 100svh;
+    padding-block: clamp(0.8rem, 4vw, 1.4rem);
+  }
+
+  .home-three .h3-helm {
+    flex: 0 0 auto;
+    align-self: center;
+  }
+
+  .home-three .h3-chart {
+    max-width: 370px;
+    align-self: center;
+    margin-top: 0;
+    flex: 0 0 auto;
+  }
+
+  .home-three .h3-chart__svg {
+    max-height: min(42svh, 22rem);
+  }
+
+  .home-three .h3-course__berths {
+    max-width: none;
+    justify-self: stretch;
+    flex: 0 0 auto;
+  }
+
+  /* the berth card goes to a thumbnail beside its name so the whole thing
+     clears the pinned screen */
+  .home-three .h3-berth {
+    display: grid;
+    grid-template-columns: 4.75rem minmax(0, 1fr);
+    grid-template-areas:
+      "plate name"
+      "plate meta"
+      "sites sites";
+    align-content: start;
+    column-gap: 0.85rem;
+    row-gap: 0.3rem;
+  }
+
+  .home-three .h3-berth__media {
+    grid-area: plate;
+    aspect-ratio: 1 / 1 !important;
+    align-self: start;
+  }
+
+  .home-three .h3-berth__name {
+    grid-area: name;
+    align-self: end;
+    font-size: clamp(1.35rem, 7vw, 1.9rem);
+  }
+
+  .home-three .h3-berth__meta {
+    grid-area: meta;
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .home-three .h3-berth__sites {
+    grid-area: sites;
+    margin-top: 0.35rem;
+    border-top: 1px solid var(--h3-hair);
+  }
+
+  .home-three .h3-berth__sites li {
+    padding: 0.28rem 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* the pinned phone screen holds the plate and the list; the long-form
+     notes belong to the desktop wall, which has the room for them */
+  .home-three .h3-berth__note,
+  .home-three .h3-berth__blurb,
+  .home-three .h3-berth__more {
+    display: none;
+  }
+
+  /* ---- the image panels: the floated frame drops under its plate */
+  .home-three .h3-images {
+    padding: var(--h3-band) 0 !important;
+  }
+
+  .home-three .h3-lead {
+    width: 100%;
+    padding: 0 var(--h3-pad) var(--h3-band);
+    display: block;
+  }
+
+  .home-three .h3-lead__main {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+  }
+
+  .home-three .h3-lead__inset {
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 78%;
+    margin: -14% 0 0 auto;
+    transform: none;
+  }
+
+  .home-three .h3-lead__caption {
+    position: static;
+    max-width: none;
+    margin-top: clamp(1.4rem, 5vw, 2rem);
+  }
+
+  .home-three .h3-images--secundario .h3-flip--a {
+    aspect-ratio: 375 / 281;
+    height: auto;
+    width: 100%;
+  }
+
+  .home-three .h3-images--secundario .h3-flip--b {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 78%;
+    margin: -2.4rem auto 0;
+    z-index: 3;
+  }
+
+  .home-three .h3-images__list {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    max-width: none;
+    margin-top: 1.4rem;
+    padding-inline: var(--h3-pad);
+  }
+
+  /* ---- the claim */
+  .home-three .h3-text {
+    padding: var(--h3-band) var(--h3-pad);
+  }
+
+  .home-three .h3-text__wrap {
+    width: 100%;
+    display: block;
+    padding-block: 0;
+  }
+
+  .home-three .h3-text__inner {
+    padding: 0;
+  }
+
+  .home-three .h3-text__title {
+    margin-bottom: 2.4rem;
+  }
+
+  .home-three .h3-text__line--slide > span {
+    transform: none;
+  }
+
+  .home-three .h3-text__copy {
+    width: 100%;
+  }
+
+  /* ---- the voyages become a stack of full-width cards */
+  .home-three .h3-projects {
+    flex-direction: column;
+    width: 100%;
+    padding: var(--h3-band) 0;
+  }
+
+  .home-three .h3-projects__aside {
+    width: 100%;
+    height: auto;
+    padding: 0 var(--h3-pad) 1.8rem;
+  }
+
+  .home-three .h3-projects__item {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .home-three .h3-projects__content {
+    height: auto;
+  }
+
+  .home-three .h3-projects__image {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .home-three .h3-projects__text {
+    height: auto;
+    min-height: 8.5rem;
+    --margin: 0.85rem;
+  }
+
+  .home-three .h3-projects__name {
+    opacity: 1;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* the corner labels have to leave their corners here: the card is one
+     column wide on a phone and the pill now sits in the middle of it, so
+     absolute corners put the meta straight through the name and the button */
+  .home-three .h3-projects__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.4rem var(--h3-pad) 1.8rem;
+  }
+
+  .home-three .h3-projects__data {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem 1.1rem;
+  }
+
+  /* `static`, not `relative`: the desktop corner rules are `nth-child` and
+     outrank this one, so a relatively-positioned label would still be shifted
+     by their top/left offsets. Static makes those offsets inert. */
+  .home-three .h3-projects__data > * {
+    position: static;
+  }
+
+  .home-three .h3-projects__data > * > span {
+    transform: none;
+  }
+
+  .home-three .h3-projects__name {
+    padding: 0;
+  }
+
+  /* ---- the suites panel stacks, sentence last */
+  .home-three .h3-imgtext {
+    padding: var(--h3-band) 0;
+  }
+
+  .home-three .h3-imgtext__wrap {
+    flex-direction: column;
+    height: auto;
+    padding: 0 var(--h3-pad);
+  }
+
+  .home-three .h3-imgtext__wrap > .h3-flip--a {
+    width: 88%;
+    margin: 0;
+    align-self: flex-start;
+    z-index: 3;
+  }
+
+  .home-three .h3-imgtext__wrap > .h3-flip--b {
+    width: 54%;
+    margin: -3rem 0 0 auto;
+    align-self: flex-end;
+    z-index: 2;
+  }
+
+  .home-three .h3-imgtext__text {
+    width: 100%;
+    padding: 2.2rem 0 0;
+  }
+
+  /* ---- the marquee lies down */
+  .home-three .h3-carousel {
+    width: 100%;
+    height: 1.5em;
+    padding: 0;
+    font-size: clamp(2.4rem, 13vw, 4rem);
+  }
+
+  .home-three .h3-carousel__content {
+    transform: none;
+    transform-origin: unset;
+    width: 100%;
+  }
+
+  /* ---- the three principles */
+  .home-three .h3-terms {
+    width: 100%;
+    padding: var(--h3-band) 0;
+    gap: 2.6rem;
+  }
+
+  .home-three .h3-terms__term,
+  .home-three .h3-terms__term--a,
+  .home-three .h3-terms__term--b,
+  .home-three .h3-terms__term--c {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin: 0;
+    padding: 0 var(--h3-pad);
+  }
+
+  .home-three .h3-terms__copy,
+  .home-three .h3-terms__term--b .h3-terms__copy {
+    width: 100%;
+    min-width: 0;
+    margin: 0.9rem 0 0;
+    order: 2;
+  }
+
+  .home-three .h3-terms__wrap-title {
+    order: 1;
+  }
+
+  .home-three .h3-terms__title {
+    font-size: clamp(2.2rem, 12vw, 3.6rem);
+    line-height: 0.88;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .home-three .h3-terms__follow {
+    display: none;
+  }
+
+  /* ---- the close */
+  .home-three .h3-cierre {
+    width: 100%;
+    padding: var(--h3-band) 0;
+  }
+
+  .home-three .h3-cierre__content {
+    width: 100%;
+    height: auto;
+    padding: 0 var(--h3-pad);
+  }
+
+  .home-three .h3-cierre__image {
+    width: 100%;
+    max-width: none;
+  }
+
+  /* ---- the vertical document */
+  .home-three .h3-chapter__intro {
+    margin-bottom: 2.25rem;
+    gap: 0.35rem;
+  }
+
+  .home-three .h3-mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-three .h3-lines__line--b,
+  .home-three .h3-lines__line--c {
+    padding-left: 0;
+  }
+
+  .home-three .h3-cierre__title {
+    font-size: clamp(2rem, 11vw, 3.2rem);
+  }
+
+  /* the cursor frame has no cursor to follow on a phone; the stack also has
+     to stop distributing height, or the terms are squeezed shorter than their
+     own copy and each one spills into the next */
+  .home-three .h3-terms__stack {
+    height: auto;
+    justify-content: flex-start;
+    gap: 2.4rem;
+  }
+
+  .home-three .h3-terms__term {
+    flex: 0 0 auto;
+  }
+
+  /* every card is on screen at once here, so the actions arrive with the card
+     rather than with the horizontal travel */
+  .home-three .h3-projects__acts {
+    --hathor-btn-width: 100%;
+    opacity: 1;
+    transform: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .home-three .h3-cols {
+    flex-direction: column;
+  }
+
+  .home-three .h3-cols__col,
+  .home-three .h3-cols__col:nth-of-type(2) {
+    width: 100%;
+  }
+
+  .home-three .h3-footer {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 1.8rem;
+  }
+
+  .home-three .h3-footer__mark {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ================================================================ 620 · PHONE
+   One column throughout, a scale that fits the hand, and clearance for the
+   fixed phone dock at the foot of the page. */
+@media (max-width: 620px) {
+  .home-three {
+    --h3-t-kicker: 0.64rem;
+    --h3-t-support: 0.95rem;
+    --h3-t-big: 1.15rem;
+    --h3-t-script: clamp(1.7rem, 9vw, 2.4rem);
+    --h3-t-display: clamp(2.3rem, 13.5vw, 4rem);
+    --h3-t-stmt: clamp(2.2rem, 12.5vw, 3.7rem);
+    --h3-t-meta: 0.95rem;
+  }
+
+  .home-three .h3-chart {
+    max-width: 100%;
+  }
+
+  .home-three .h3-chart__svg {
+    max-height: min(34svh, 16rem);
+  }
+
+  .home-three .h3-stop-buttons {
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .home-three .h3-stop-buttons button {
+    font-size: 0.66rem;
+  }
+
+  .home-three .h3-imgtext__text p {
+    font-size: clamp(1.35rem, 7.4vw, 2rem);
+  }
+
+  .home-three .h3-projects__name {
+    font-size: clamp(1.5rem, 8vw, 2.4rem);
+  }
+
+  .home-three .h3-footer__legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .home-three .h3-doc {
+    padding-bottom: calc(2.5rem + var(--hathor-phone-dock-h, 4.5rem));
+  }
+}
+
+/* ================================================================ 480 · PHONE
+   Packed intro, km | river | wheel, faded View more, short map hold.
+   Animation hooks are untouched. */
+@media (max-width: 480px) {
+  .home-three {
+    --h3-stack-gap: 0.7rem;
+  }
+
+  .home-three .h3-kicker,
+  .home-three .h3-support,
+  .home-three .h3-meta,
+  .home-three .h3-big,
+  .home-three .h3-course__run em,
+  .home-three .h3-helm__read em,
+  .home-three .h3-chart__caption,
+  .home-three .h3-atlas-eyebrow,
+  .home-three .h3-berth__meta,
+  .home-three .h3-berth__name b,
+  .home-three .h3-berth__site em,
+  .home-three .h3-stop-buttons button {
+    color: var(--h3-ink);
+    opacity: 1;
+  }
+
+  .home-three .h3-kicker {
+    font-weight: 500;
+  }
+
+  .home-three .h3-open {
+    min-height: 0;
+    justify-content: flex-start;
+    padding-top: calc(3.75rem + env(safe-area-inset-top, 0px));
+    padding-bottom: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-open__inner {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    gap: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-open__nav {
+    margin-bottom: var(--h3-stack-gap);
+    gap: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-open__body {
+    line-height: 1.45;
+    max-width: none;
+  }
+
+  .home-three .h3-open__mark {
+    margin-top: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-support,
+  .home-three .h3-cols__text,
+  .home-three .h3-imgtext__copy {
+    line-height: 1.45;
+  }
+
+  .home-three .h3-course__head,
+  .home-three .h3-sailings__head,
+  .home-three .h3-imgtext__text,
+  .home-three .h3-contact .h3-cols__col {
+    gap: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-cols__pretitle {
+    margin-bottom: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-course__run span,
+  .home-three .h3-helm__read span,
+  .home-three .h3-helm__read span::after {
+    color: var(--h3-ink);
+  }
+
+  .home-three .h3-stop__name {
+    fill: var(--h3-ink);
+  }
+
+  .home-three .h3-map-region {
+    fill: var(--h3-ink);
+  }
+
+  .home-three .h3-chart__ghost {
+    stroke: var(--h3-gold-deep);
+    opacity: 0.55;
+  }
+
+  .home-three .h3-chart__course {
+    stroke: var(--h3-ink);
+  }
+
+  .home-three .h3-sail__tier,
+  .home-three .h3-sail__route,
+  .home-three .h3-sail__route b,
+  .home-three .h3-sail__price em {
+    opacity: 1;
+    color: inherit;
+  }
+
+  .home-three .h3-sail--room .h3-sail__route,
+  .home-three .h3-sail--suite .h3-sail__route {
+    color: var(--h3-ink);
+  }
+
+  /* ---- sail cards: 90% width, next card peeks, Book Now centred ---------- */
+  .home-three .h3-sailings__rail {
+    padding-inline: 5vw;
+    padding-right: 5vw;
+    gap: 0.7rem;
+    scroll-padding-inline: 5vw;
+    align-items: stretch;
+  }
+
+  .home-three .h3-sail {
+    width: 90vw;
+    max-width: 90vw;
+  }
+
+  .home-three .h3-sail__acts,
+  .home-three .h3-projects__acts {
+    display: grid;
+    grid-template-columns: 2.75rem 2.75rem minmax(0, 1fr);
+    align-items: center;
+    justify-items: stretch;
+    flex-direction: unset;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+    width: 100%;
+    margin-top: 0.7rem;
+    --hathor-btn-width: 100%;
+  }
+
+  .home-three .h3-sail__acts .hathor-fav,
+  .home-three .h3-projects__acts .hathor-fav {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .home-three .h3-sail__acts .hathor-atv,
+  .home-three .h3-projects__acts .hathor-atv {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .home-three .h3-sail__acts .h3-btn:not(#_):not(#_),
+  .home-three .h3-projects__acts .h3-btn:not(#_):not(#_) {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: stretch;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    --hathor-btn-width: 100%;
+  }
+
+  .home-three .h3-sail__acts .hathor-fav__label,
+  .home-three .h3-sail__acts .hathor-atv__label,
+  .home-three .h3-projects__acts .hathor-fav__label,
+  .home-three .h3-projects__acts .hathor-atv__label {
+    display: none;
+  }
+
+  .home-three .h3-sail__acts .hathor-fav:not(#_):not(#_),
+  .home-three .h3-sail__acts .hathor-atv:not(#_):not(#_),
+  .home-three .h3-projects__acts .hathor-fav:not(#_):not(#_),
+  .home-three .h3-projects__acts .hathor-atv:not(#_):not(#_) {
+    width: 2.75rem !important;
+    min-width: 2.75rem !important;
+    max-width: 2.75rem !important;
+    height: 2.75rem !important;
+    min-height: 2.75rem !important;
+    max-height: 2.75rem !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    gap: 0 !important;
+  }
+
+  .home-three .h3-sail__acts .hathor-fav__icon,
+  .home-three .h3-sail__acts .hathor-atv__icon,
+  .home-three .h3-projects__acts .hathor-fav__icon,
+  .home-three .h3-projects__acts .hathor-atv__icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  /* View more matches the cabin cards: faded photo + name on the beige plate */
+  .home-three .h3-sail--more {
+    align-self: stretch;
+    height: auto;
+  }
+
+  .home-three .h3-sail--more .h3-sail__link {
+    position: relative;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .home-three .h3-sail--more .h3-sail__plate {
+    opacity: 0.4;
+    filter: grayscale(0.35);
+  }
+
+  .home-three .h3-sail--more .h3-sail__body--more {
+    position: static;
+    inset: auto;
+    z-index: auto;
+    flex: 1 1 auto;
+    justify-content: center;
+    align-items: center;
+    background: var(--h3-paper);
+    padding: clamp(0.7rem, 1vw, 1rem);
+    text-align: center;
+  }
+
+  .home-three .h3-sail--more .h3-sail__tier,
+  .home-three .h3-sail--more .h3-text-link {
+    display: none;
+  }
+
+  .home-three .h3-sail--more .h3-sail__name {
+    font-size: clamp(1.35rem, 6.5vw, 1.85rem);
+  }
+
+  .home-three .h3-projects__text {
+    align-items: stretch;
+    min-height: 0;
+    gap: var(--h3-stack-gap);
+    padding: 0.85rem var(--h3-pad) 0.95rem;
+  }
+
+  .home-three .h3-projects__acts {
+    align-self: stretch;
+  }
+
+  .home-three .h3-projects {
+    padding-block: var(--h3-stack-gap);
+    gap: 0;
+  }
+
+  /* ---- km left, Nile centre, wheel right; captions then berths ----------- */
+  .home-three .h3-chart-panel::before {
+    display: none;
+  }
+
+  .home-three .h3-chart-hold {
+    height: 250svh;
+  }
+
+  .home-three .h3-chart-hold::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--h3-chart-ghost, none);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.12;
+    filter: grayscale(1) contrast(1.15);
+  }
+
+  .home-three .h3-chart-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 4.4rem minmax(0, 1fr) 4.4rem;
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "run chart helm"
+      "berths berths berths";
+    align-items: stretch;
+    column-gap: 0.3rem;
+    row-gap: var(--h3-stack-gap);
+    justify-content: stretch;
+    height: 100svh;
+    padding-top: calc(3.1rem + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(
+      var(--hathor-phone-dock-h, 4.5rem) + 0.35rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  .home-three .h3-course__run {
+    grid-area: run;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: center;
+    gap: 0.2rem;
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .home-three .h3-course__run span {
+    font-size: 1.55rem;
+    min-width: 0;
+  }
+
+  .home-three .h3-course__run em {
+    max-width: 7.5ch;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+  }
+
+  .home-three .h3-helm {
+    grid-area: helm;
+    flex-direction: column;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    gap: 0.28rem;
+    margin: 0;
+    text-align: center;
+  }
+
+  .home-three .h3-helm__dial {
+    width: 4.4rem;
+  }
+
+  .home-three .h3-helm__read {
+    align-items: center;
+  }
+
+  .home-three .h3-helm__read span {
+    font-size: 1rem;
+  }
+
+  .home-three .h3-chart {
+    grid-area: chart;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    flex: unset;
+    align-self: stretch;
+  }
+
+  .home-three .h3-chart__plate {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  .home-three .h3-chart__svg {
+    flex: 1 1 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: 48svh;
+  }
+
+  .home-three .h3-chart__caption {
+    flex: 0 0 auto;
+    position: relative;
+    transform: none;
+    margin-top: var(--h3-stack-gap);
+    padding-top: 0;
+    font-size: 0.58rem;
+    line-height: 1.45;
+    color: var(--h3-ink);
+  }
+
+  .home-three .h3-chart__caption a {
+    min-height: 0;
+  }
+
+  .home-three .h3-course__berths {
+    grid-area: berths;
+    flex: 0 0 auto;
+    gap: var(--h3-stack-gap);
+    max-height: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .home-three .h3-atlas-eyebrow {
+    position: relative;
+    transform: none;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    line-height: 1.45;
+    color: var(--h3-ink);
+    margin: 0;
+  }
+
+  /* ---- berth card: a readable row, not a cramped thumbnail stack --------- */
+  .home-three .h3-berth {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    row-gap: 0.15rem;
+  }
+
+  .home-three .h3-berth__name {
+    font-size: clamp(1.2rem, 6.2vw, 1.6rem);
+    line-height: 1;
+    gap: 0.4rem;
+  }
+
+  .home-three .h3-berth__name b {
+    font-size: 0.85rem;
+  }
+
+  .home-three .h3-berth__meta {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+
+  .home-three .h3-berth__sites {
+    margin-top: 0.2rem;
+  }
+
+  .home-three .h3-berth__sites li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-items: center;
+    column-gap: 0.45rem;
+    width: 100%;
+    min-height: 0;
+    padding: 0.2rem 0;
+  }
+
+  .home-three .h3-berth__site {
+    grid-column: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.45rem;
+    justify-content: flex-start;
+  }
+
+  .home-three .h3-berth__site a {
+    font-size: 0.95rem;
+  }
+
+  .home-three .h3-berth__more {
+    display: inline-flex;
+    grid-column: 2;
+    justify-self: end;
+    width: max-content;
+    margin-top: 0;
+    min-height: 0;
+    padding: 0.28rem 0.7rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+    border-color: var(--h3-ink);
+    color: var(--h3-ink);
+    background: var(--h3-beige);
+  }
+
+  .home-three .h3-berth__more::after {
+    content: none;
+    display: none;
+  }
+
+  .home-three .h3-berth__more:hover {
+    background: var(--h3-ink);
+    border-color: var(--h3-ink);
+    color: var(--h3-paper);
+  }
+
+  .home-three .h3-course {
+    gap: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-chart-panel {
+    padding-block: var(--h3-stack-gap) 0;
+  }
+  .home-three .h3-text {
+    padding-block: 0.55rem var(--h3-stack-gap);
+  }
+
+  .home-three .h3-text__title {
+    margin-bottom: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-imgtext {
+    padding-block: 1.15rem;
+  }
+
+  .home-three .h3-imgtext__text {
+    padding-top: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-imgtext .h3-support {
+    columns: 1;
+    column-gap: 0;
+  }
+
+  .home-three .h3-contact .h3-kicker,
+  .home-three .h3-contact .h3-cols__pretitle {
+    color: var(--h3-ink);
+  }
+
+  .home-three .h3-contact .h3-lines {
+    margin-bottom: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-contact.h3-pb-md {
+    padding-bottom: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-chapter__intro {
+    margin-bottom: var(--h3-stack-gap);
+  }
+
+  .home-three .h3-cols__text {
+    color: var(--h3-ink);
+  }
+
+  .home-three .h3-facts li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.18rem;
+  }
+
+  .home-three .h3-facts .h3-facts__k,
+  .home-three .h3-facts .h3-facts__v {
+    color: var(--h3-ink);
+    text-align: left;
+    white-space: normal;
+  }
+}
+
+/*
+ * Home-3 phone hero — cream wordmark bar under the video, no Book Now.
+ * Letters land in six equal seats; scroll hides them behind the dock.
+ * Desktop / tablet / other routes are not selected here.
+ */
+@media (max-width: 480px) {
+  html[data-ex-experience] .ex-root:has(.home-three-hero) {
+    --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
+    --h3-phone-logo-bar: 8.15rem;
+    --h3-phone-scrub: calc(var(--h3-phone-logo-bar) + var(--h3-phone-dock));
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero.home-hero-runway {
+    /*
+     * Phone home-3: only enough extra runway for letters to drop behind
+     * the dock. The shared 170svh runway left the red-box gap (ref 3)
+     * before Cruises / Twelve guests.
+     */
+    --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
+    --h3-phone-shift: 0px;
+    --h3-phone-logo-bar: 8.15rem;
+    --h3-phone-scrub: calc(var(--h3-phone-logo-bar) + var(--h3-phone-dock));
+    background: #ece8df !important;
+    height: calc(100svh + var(--h3-phone-scrub)) !important;
+    min-height: 0 !important;
+    overflow: visible;
+    z-index: 3;
+  }
+
+  html[data-public-theme="night"][data-ex-experience] .ex-root .home-three-hero.home-hero-runway {
+    background: #16130f !important;
+  }
+
+  /* Pull first content up through the short scrub so it lands as the
+     letters finish hiding — no empty video/cream band after the hero. */
+  .ex-root:has(.home-three-hero) + .home-three {
+    margin-top: calc(-1 * var(--h3-phone-scrub, 13.5rem));
+    position: relative;
+    z-index: 1;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container {
+    /*
+     * Ref 2 stack: video, cream HATHOR, dock as the literal phone bottom.
+     * Letters stay fully above the dock; they drop behind it only on scroll.
+     */
+    --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
+    --h3-phone-shift: 0px;
+    --h3-phone-logo-bar: 8.15rem;
+    --h3-phone-letter-h: 7.95rem;
+    --h3-phone-letter-w: 3.6rem;
+    --h3-phone-letter-lift: 0.1rem;
+    --h3-phone-logo-bottom: var(--h3-phone-dock);
+    --hathor-logo-h: var(--h3-phone-logo-bar) !important;
+    --hathor-logo-y: var(--h3-phone-logo-bottom) !important;
+    --hathor-logo-bottom: var(--h3-phone-logo-bottom) !important;
+    --hathor-logo-gap: 0px !important;
+    --hathor-y-h1: 0px;
+    --hathor-y-a: 0px;
+    --hathor-y-t: 0px;
+    --hathor-y-h2: 0px;
+    --hathor-y-o: 0px;
+    --hathor-y-r: 0px;
+    background: #ece8df;
+    overflow: hidden !important;
+    height: 100svh !important;
+    max-height: 100svh !important;
+    z-index: 2;
+  }
+
+  html[data-public-theme="night"][data-ex-experience] .ex-root .home-three-hero .home-hero-container {
+    background: #16130f;
+  }
+
+  /*
+   * Beat mobile-touch `.hero-media { inset: 0; height: 100% }` — that kept the
+   * reel full-bleed so the cream wordmark sliced across the picture.
+   */
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-media {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar)) !important;
+    inset: 0 0 calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar)) 0 !important;
+    width: 100% !important;
+    height: calc(100% - var(--h3-phone-dock) - var(--h3-phone-logo-bar)) !important;
+    max-height: none !important;
+    overflow: hidden !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-media video,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-media img {
+    transform: none;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .gold-dust-particles {
+    bottom: calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar)) !important;
+    height: auto !important;
+    overflow: hidden;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-content {
+    padding-bottom: calc(var(--h3-phone-dock) + var(--h3-phone-logo-bar));
+    transform: translateY(0);
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-button,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-button .hero-cta,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container:has(.hero-logo-mark--split) .hero-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-scroll-hint {
+    display: none !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-logo-mark--split {
+    left: 50%;
+    right: auto;
+    bottom: var(--h3-phone-dock) !important;
+    top: auto !important;
+    width: 100vw;
+    height: var(--h3-phone-logo-bar) !important;
+    background: #ece8df;
+    overflow: visible !important;
+    z-index: 4;
+    box-shadow: none;
+  }
+
+  html[data-public-theme="night"][data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-logo-mark--split {
+    background: #16130f;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hathor-logo-split.hero-logo-img,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hathor-logo-split {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-end !important;
+    justify-content: space-evenly !important;
+    gap: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    padding: 0.08rem 0.42rem var(--h3-phone-letter-lift) !important;
+    box-sizing: border-box;
+    overflow: visible !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split__gap {
+    display: none !important;
+    flex: 0 0 0 !important;
+    width: 0 !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split__side,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split__side--left,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split__side--right {
+    display: contents !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .logo-letter-wrap,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-h1,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-a,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-t,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-h2,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-o,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-r {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    top: auto !important;
+    flex: 0 0 var(--h3-phone-letter-w) !important;
+    width: var(--h3-phone-letter-w) !important;
+    min-width: var(--h3-phone-letter-w) !important;
+    max-width: var(--h3-phone-letter-w) !important;
+    height: var(--h3-phone-letter-h) !important;
+    min-height: var(--h3-phone-letter-h) !important;
+    max-height: var(--h3-phone-letter-h) !important;
+    aspect-ratio: auto !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .logo-letter-wrap > picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .logo-letter,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-h1 .logo-letter,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-a .logo-letter,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-t .logo-letter,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-h2 .logo-letter,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-o .logo-letter,
+  html[data-ex-experience] .ex-root .home-three-hero .hathor-logo-split .letter-r .logo-letter {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    transform: none !important;
+    filter:
+      drop-shadow(0 1px 0 rgba(0, 0, 0, 0.18))
+      drop-shadow(0 6px 12px rgba(0, 0, 0, 0.16));
+  }
+
+  /*
+   * Phone titles on the reel — Italiana at a size that fits 390–480px.
+   * Visible immediately (land delay is skipped in hero-scroll-stage).
+   */
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--right,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--left,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--left.hero-line--plain {
+    font-family: "Italiana", Georgia, serif !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    text-wrap: balance;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading {
+    gap: 0.18em;
+    align-items: center;
+    text-align: center;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--right {
+    font-size: clamp(2.05rem, 10.2vw, 2.6rem) !important;
+    line-height: 1.06 !important;
+    letter-spacing: 0.05em !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--left,
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--left.hero-line--plain {
+    font-size: clamp(1.42rem, 7vw, 1.85rem) !important;
+    line-height: 1.12 !important;
+    letter-spacing: 0.06em !important;
+    color: #c4a574 !important;
+    -webkit-text-fill-color: #c4a574 !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line--wordmark img {
+    height: clamp(1.42rem, 7vw, 1.85rem);
+    width: auto;
+    max-width: 86vw;
+  }
+}
+
+/* ---------------------------------------------------------- reduced motion
+   The hook refuses to pin when reduced motion is set, so the layout has to
+   stop being horizontal too — otherwise the track would sit frozen in a
+   sticky stage with most of the act clipped off the right edge. */
+@media (prefers-reduced-motion: reduce) {
+  .home-three {
+    --h3-top: 0rem;
+  }
+
+  .home-three .h3-run {
+    height: auto !important;
+  }
+
+  .home-three .h3-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
+
+  .home-three .h3-track {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+  }
+
+  .home-three .h3-scene {
+    width: 100% !important;
+    height: auto;
+    min-height: 0;
+    padding: var(--h3-band) var(--h3-pad);
+  }
+
+  .home-three .h3-progress,
+  .home-three .h3-terms__follow {
+    display: none;
+  }
+
+  /* the hold exists only to buy scroll for the sail; with motion off the
+     vessel is already at Aswan, so the runway would be dead scrolling */
+  .home-three .h3-chart-hold {
+    height: auto;
+  }
+
+  .home-three .h3-chart-sticky {
+    position: static;
+    height: auto;
+  }
+
+  .home-three .h3-open,
+  .home-three .h3-lead,
+  .home-three .h3-images,
+  .home-three .h3-text,
+  .home-three .h3-projects,
+  .home-three .h3-imgtext,
+  .home-three .h3-terms,
+  .home-three .h3-cierre {
+    width: 100% !important;
+  }
+
+  .home-three .h3-imgtext__wrap,
+  .home-three .h3-projects,
+  .home-three .h3-terms {
+    flex-direction: column;
+  }
+
+  .home-three .h3-flip__media--up {
+    transform: none !important;
+    clip-path: none !important;
+    opacity: 0;
+  }
+
+  .home-three .h3-mosaic__item {
+    clip-path: none !important;
+  }
+
+  .home-three .h3-kicker,
+  .home-three .h3-support,
+  .home-three .h3-meta,
+  .home-three .h3-big,
+  .home-three .h3-script,
+  .home-three .h3-course__run,
+  .home-three .h3-frame__img,
+  .home-three .h3-berth,
+  .home-three .h3-helm,
+  .home-three .h3-mosaic__item img,
+  .home-three .h3-projects__data > * > span,
+  .home-three .h3-text__line--slide > span {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .home-three .anima-split-char {
+    transform: none !important;
+  }
+
+  .home-three .h3-imgtext__copy,
+  .home-three .h3-cierre__reveal,
+  .home-three .h3-cierre__book,
+  .home-three .h3-projects__acts,
+  .home-three .h3-sail__acts {
+    --cp: 1;
+    clip-path: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .home-three .h3-sail {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .home-three .h3-helm__wheel,
+  .home-three .h3-text-link::after {
+    transition: none !important;
+  }
+
+  /* the berth stack cross-fades one card at a time; with motion off every
+     card is visible, so it has to become a real list instead of a stack */
+  .home-three .h3-course__berths {
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .home-three .h3-berth-stack {
+    grid-auto-flow: row;
+    gap: var(--h3-band);
+  }
+
+  .home-three .h3-berth {
+    grid-area: auto;
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  .home-three .h3-ship {
+    opacity: 1 !important;
+  }
+}

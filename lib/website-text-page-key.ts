@@ -7,7 +7,7 @@ import type { HeroPageKey } from "@/lib/typography-settings-shared";
 export function pathnameToWebsiteTextPage(pathname: string): HeroPageKey | null {
   const path = pathname.replace(/\/+$/, "") || "/";
 
-  if (path === "/") return "home";
+  if (path === "/" || path === "/home-2") return "home";
   if (path === "/about") return "about";
   if (path === "/cruises" || path === "/cruises-list") return "cruises";
   if (path === "/voyages") return "voyages";

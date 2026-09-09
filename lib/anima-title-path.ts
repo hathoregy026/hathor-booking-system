@@ -1,9 +1,9 @@
 /**
  * Routes that receive the Suites “BEGIN YOUR NILE JOURNEY” clip-letter
- * scroll animation. Homepage and booking stay on their own motion.
+ * scroll animation. Main Home 2 and booking stay on their own motion.
  */
 
-const DENY_EXACT = new Set(["/", "/ex", "/book"]);
+const DENY_EXACT = new Set(["/ex", "/book", "/home-2"]);
 
 const ALLOW_PREFIXES = [
   "/suites",
@@ -35,6 +35,8 @@ export function shouldApplyAnimaTitle(pathname: string): boolean {
   const path = normalizePath(pathname);
   if (DENY_EXACT.has(path)) return false;
   if (path.startsWith("/booking") || path.startsWith("/admin")) return false;
+  /* Live home is the Home 3 editorial — do not treat `/` as a prefix. */
+  if (path === "/") return true;
   return ALLOW_PREFIXES.some(
     (prefix) => path === prefix || path.startsWith(`${prefix}/`),
   );

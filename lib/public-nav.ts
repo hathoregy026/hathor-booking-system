@@ -1,6 +1,6 @@
 import type { PageVisibilitySettings } from "@/lib/page-visibility-shared";
 
-/** Public navigation structure — editorial labels, four dropdown groups. */
+/** Public navigation structure — Home is a single link; four editorial dropdown groups. */
 
 export type NavLink = {
   href: string;
@@ -148,13 +148,9 @@ export type HeaderNavGroup = {
 
 export type HeaderNavItem = HeaderNavLink | HeaderNavGroup;
 
-/** Desktop + mobile primary nav — Home plus four editorial dropdown groups. */
+/** Desktop + mobile primary nav — Home as a link, then four editorial dropdown groups. */
 export const HEADER_NAV_ITEMS: HeaderNavItem[] = [
-  {
-    type: "link",
-    href: NAV_HOME.href,
-    label: NAV_HOME.label,
-  },
+  { type: "link", href: NAV_HOME.href, label: NAV_HOME.label },
   {
     type: "group",
     id: NAV_SUITES.id,
@@ -218,6 +214,7 @@ export function usesEditorialOverlayNav(pathname: string): boolean {
   if (
     !pathname ||
     pathname === "/" ||
+    pathname === "/home-2" ||
     pathname === "/preview"
   ) {
     return false;

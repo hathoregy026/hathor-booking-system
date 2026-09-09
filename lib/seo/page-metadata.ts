@@ -237,12 +237,3 @@ export const PARTNERS_SEO = buildPageMetadata({
   path: "/partners",
   keywords: ["Hathor Dahabiya partners", "Egypt luxury travel trade"],
 });
-
-export const HOME_THREE_SEO = buildPageMetadata({
-  title: "Hathor Dahabiya Chart | Twelve Guests on the Nile",
-  description:
-    "An editorial chart of Hathor Dahabiya: twelve guests, three itinerary lengths, suites and shore days between Luxor and Aswan.",
-  path: "/home-3",
-  index: false,
-  keywords: ["Hathor Dahabiya chart"],
-});

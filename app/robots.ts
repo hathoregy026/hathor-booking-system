@@ -19,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
           "/dev",
           "/dev/",
           "/site-index",
+          "/home-2",
           "/test-scroll-reveal",
           "/test-slide",
         ],

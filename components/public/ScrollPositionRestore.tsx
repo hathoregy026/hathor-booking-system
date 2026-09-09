@@ -48,8 +48,8 @@ export function ScrollPositionRestore() {
 
     const unbind = bindScrollPositionPersistence(pathname);
 
-    /* `/` — persist only; GSAP owns restore after boot. */
-    if (normalizePath(pathname) === "/") {
+    /* `/` and local Main Home 2 — persist only; GSAP owns restore after boot. */
+    if (normalizePath(pathname) === "/" || normalizePath(pathname) === "/home-2") {
       return () => {
         unbind();
       };
