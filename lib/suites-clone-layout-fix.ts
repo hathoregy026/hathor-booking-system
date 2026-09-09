@@ -38,90 +38,95 @@ const PILL = `
 
 export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 /* ------------------------------------------------------------------ */
-/* Ref 1 + 3 — image slides: desktop slide feel as snap rails + gaps  */
+/* Image slides — restore prior phone/tablet layout (full-bleed stack, */
+/* not rounded card rails). Keep gutters so frames are not glued.      */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main .mod-scroll__images.principal,
   html body main .mod-scroll__images.secundario {
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    flex-direction: column !important;
     align-items: stretch !important;
-    gap: 0.75rem !important;
+    gap: 0.85rem !important;
     min-height: 0 !important;
     height: auto !important;
-    padding: 1.15rem 0 1.75rem !important;
-    padding-inline: var(--wrapper-padd, 1.15rem) !important;
-    padding-right: 22vw !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-  }
-
-  html body main .mod-scroll__images.principal::-webkit-scrollbar,
-  html body main .mod-scroll__images.secundario::-webkit-scrollbar {
-    display: none !important;
+    padding: 1.25rem var(--wrapper-padd) 2rem !important;
+    overflow: visible !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
-  html body main .mod-scroll__images.principal > .flipMedia,
-  html body main .mod-scroll__images.secundario > .flipMedia {
+  html body main .mod-scroll__images.principal .flipMedia,
+  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(1),
+  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(2),
+  html body main .mod-scroll__images.secundario .flipMedia,
+  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(1),
+  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
     position: relative !important;
     inset: auto !important;
-    flex: 0 0 min(78vw, 22rem) !important;
-    width: min(78vw, 22rem) !important;
-    max-width: min(78vw, 22rem) !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
-    aspect-ratio: 3 / 4 !important;
+    aspect-ratio: 4 / 3 !important;
     margin: 0 !important;
     transform: none !important;
     border: 0 !important;
-    border-radius: 0.55rem !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
-    overflow: hidden !important;
-    scroll-snap-align: start !important;
     z-index: auto !important;
+    overflow: hidden !important;
   }
 
+  html body main .mod-scroll__images.principal .flipMedia,
+  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(2),
+  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
+    width: 100% !important;
+    align-self: stretch !important;
+    aspect-ratio: 4 / 3 !important;
+  }
+
+  html body main .mod-scroll__images.secundario > .flipMedia:nth-of-type(1) {
+    align-self: stretch !important;
+    width: 100% !important;
+  }
+
+  /* Unstack flip faces vertically with a real gutter (not card peek rails). */
   html body main .mod-scroll__images .flipMedia {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.85rem !important;
+    aspect-ratio: auto !important;
+    height: auto !important;
   }
 
   html body main .mod-scroll__images .flipMedia > .flipMedia__media,
   html body main .mod-scroll__images .flipMedia > .flipMedia__media--down,
   html body main .mod-scroll__images .flipMedia > .flipMedia__media--up {
-    position: absolute !important;
-    inset: 0 !important;
+    position: relative !important;
+    inset: auto !important;
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3 !important;
     margin: 0 !important;
     transform: none !important;
-  }
-
-  /* Rail is the slide — hide the stacked flip face that looked glued on. */
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media--down {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media--up {
     opacity: 1 !important;
-    z-index: 1 !important;
+    pointer-events: auto !important;
+    overflow: hidden !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media, .media__wrap-source, .media__source),
   html body main .mod-scroll__images.principal > .flipMedia :is(.media, .media__wrap-source, .media__source),
   html body main .mod-scroll__images.secundario > .flipMedia :is(.media, .media__wrap-source, .media__source) {
-    position: absolute !important;
-    inset: 0 !important;
+    position: relative !important;
     width: 100% !important;
     height: 100% !important;
     min-height: 0 !important;
     object-fit: cover !important;
-    border-radius: inherit !important;
+    border-radius: 0 !important;
   }
 
   html body main .mod-scroll__text {
@@ -144,21 +149,10 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 
   html body main .mod-scroll__images-text .wrapper {
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    flex-direction: column !important;
     align-items: stretch !important;
-    gap: 0.75rem !important;
+    gap: 0.85rem !important;
     padding-inline: var(--wrapper-padd) !important;
-    padding-right: 22vw !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-  }
-
-  html body main .mod-scroll__images-text .wrapper::-webkit-scrollbar {
-    display: none !important;
   }
 
   html body main .mod-scroll__images-text .flipMedia,
@@ -166,16 +160,21 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   html body main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
     position: relative !important;
     inset: auto !important;
-    flex: 0 0 min(78vw, 22rem) !important;
-    width: min(78vw, 22rem) !important;
-    max-width: min(78vw, 22rem) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
     transform: none !important;
     z-index: auto !important;
-    aspect-ratio: 3 / 4 !important;
-    border-radius: 0.55rem !important;
+    aspect-ratio: 4 / 3 !important;
+    border-radius: 0 !important;
     overflow: hidden !important;
-    scroll-snap-align: start !important;
+  }
+
+  html body main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
+    width: 100% !important;
+    align-self: stretch !important;
+    aspect-ratio: 4 / 3 !important;
+    margin-top: 0 !important;
   }
 
   html body main .mod-scroll__images-text__text,
@@ -183,84 +182,67 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   html body main .mod-scroll__images-text__text .line {
     position: relative !important;
     z-index: 1 !important;
-    flex: 0 0 min(86vw, 24rem) !important;
-    width: min(86vw, 24rem) !important;
-    max-width: min(86vw, 24rem) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
-    padding: 0.35rem 0.15rem 0 !important;
+    padding: 0.85rem 0 0 !important;
     white-space: normal !important;
     overflow: visible !important;
-    font-size: clamp(1.45rem, 6vw, 2.15rem) !important;
-    line-height: 1.08 !important;
+    font-size: clamp(1.55rem, 6.4vw, 2.35rem) !important;
+    line-height: 1.05 !important;
     color: #241d14 !important;
     -webkit-text-fill-color: #241d14 !important;
-    scroll-snap-align: start !important;
   }
 
-  /* Terms lifestyle collage → LTR snap rail. */
+  /* Terms collage — prior 2-col layout with gutters, not card rails. */
   html body main .mod-scroll__terms .follow__mouse {
     position: relative !important;
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: 0.75rem !important;
+    display: grid !important;
+    grid-template-columns: 1.16fr 0.84fr !important;
+    gap: 0.65rem !important;
     width: 100% !important;
     aspect-ratio: auto !important;
     opacity: 1 !important;
     transform: none !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    padding: 0.85rem var(--wrapper-padd, 1.15rem) 1.25rem !important;
-    padding-right: 28vw !important;
-    box-sizing: border-box !important;
+    overflow: hidden !important;
+    padding: 0 !important;
   }
 
-  html body main .mod-scroll__terms .follow__mouse::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img,
-  html body main .mod-scroll__terms .follow__mouse > img:first-child {
+  html body main .mod-scroll__terms .follow__mouse > img {
     position: relative !important;
     inset: auto !important;
     display: block !important;
-    flex: 0 0 min(72vw, 18.5rem) !important;
-    width: min(72vw, 18.5rem) !important;
-    height: min(58svh, 22rem) !important;
-    grid-row: auto !important;
+    width: 100% !important;
+    height: 44svh !important;
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
     object-fit: cover !important;
-    border-radius: 0.55rem !important;
-    scroll-snap-align: start !important;
+    border-radius: 0 !important;
+  }
+
+  html body main .mod-scroll__terms .follow__mouse > img:first-child {
+    grid-row: span 2 !important;
+    height: 88svh !important;
   }
 }
 
 @media (max-width: 480px) {
-  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
-  html body main .mod-scroll__images.principal > .flipMedia,
-  html body main .mod-scroll__images.secundario > .flipMedia,
-  html body main .mod-scroll__images-text .flipMedia {
-    flex-basis: 78vw !important;
-    width: 78vw !important;
-    max-width: 78vw !important;
+  html body main .mod-scroll__terms .follow__mouse {
+    gap: 0.55rem !important;
   }
 
-  html body main .mod-scroll__terms .follow__mouse > img,
+  html body main .mod-scroll__terms .follow__mouse > img {
+    height: 38svh !important;
+  }
+
   html body main .mod-scroll__terms .follow__mouse > img:first-child {
-    flex-basis: 78vw !important;
-    width: 78vw !important;
-    height: 56svh !important;
+    height: calc(76svh + 0.55rem) !important;
   }
 }
 
 /* ------------------------------------------------------------------ */
-/* Ref 2 — suite collection as home-3 style LTR snap cards             */
+/* Suite collection as home-3 style LTR snap cards                     */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main .mod-scroll__projects {
