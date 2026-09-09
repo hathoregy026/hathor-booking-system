@@ -520,7 +520,6 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   .srh-kicker,
   .srh-title,
-  .srh-copy,
   .srh-frame,
   .srh-actions {
     position: relative !important;
@@ -534,6 +533,20 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     height: auto !important;
     translate: none !important;
     transform: none !important;
+  }
+
+  /* Copy keeps srh-copy-arrive; only re-home into the collage grid. */
+  .srh-copy {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    translate: none !important;
   }
 
   .srh-kicker {
@@ -561,7 +574,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     aspect-ratio: 16 / 11 !important;
     object-fit: cover !important;
     object-position: center 48% !important;
-    border-radius: 0 !important;
+    border-radius: 0 0 1.35rem 1.35rem !important;
     transform: none !important;
     animation: none !important;
   }
@@ -599,7 +612,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     min-height: 0 !important;
     margin: 0 !important;
     aspect-ratio: auto !important;
-    border-radius: 0 !important;
+    border-radius: 6.5rem 6.5rem 0.2rem 0.2rem !important;
     overflow: hidden !important;
     align-self: stretch !important;
   }
@@ -622,9 +635,9 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
     margin: 0 !important;
     aspect-ratio: 5 / 4 !important;
     border: 2px solid #f3ede4 !important;
-    border-radius: 0 !important;
+    border-radius: 1.35rem !important;
     overflow: hidden !important;
-    box-shadow: none !important;
+    box-shadow: 0 0.65rem 1.75rem rgba(20, 18, 14, 0.14) !important;
     align-self: stretch !important;
   }
 
@@ -704,7 +717,7 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
 
   .srh-frame--main > img {
     aspect-ratio: 16 / 9 !important;
-    border-radius: 0 !important;
+    border-radius: 0 0 1.55rem 1.55rem !important;
   }
 
   .srh-title {
@@ -713,11 +726,12 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   }
 
   .srh-frame--portrait {
-    border-radius: 0 !important;
+    border-radius: 7.5rem 7.5rem 0.25rem 0.25rem !important;
   }
 
   .srh-frame--detail {
-    border-radius: 0 !important;
+    border-radius: 1.55rem !important;
+    box-shadow: 0 0.75rem 2rem rgba(20, 18, 14, 0.16) !important;
   }
 
   .srh-copy__title {

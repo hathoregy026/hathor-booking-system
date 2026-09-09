@@ -38,89 +38,86 @@ const PILL = `
 
 export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 /* ------------------------------------------------------------------ */
-/* Image slides — mosaic like hero (gold gutters + caption slabs).     */
-/* Kill choreography min-heights that left huge empty beige voids.     */
+/* Phone + tablet DNA tokens (desktop >1024 unchanged by these rules). */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
+  html body {
+    --suites-m-paper: #f3ede4;
+    --suites-m-ink: #14120e;
+    --suites-m-ink-soft: #4a453c;
+    --suites-m-gold: #b69f64;
+    --suites-m-gold-deep: #806b35;
+    --suites-m-sand: #ded4c6;
+    --suites-m-gap: 0.55rem;
+    --suites-m-slide: min(88vw, 26rem);
+  }
+
+  /* Kill choreography svh voids — horizontal LTR snap slides. */
   html body main .mod-scroll__images.principal,
   html body main .mod-scroll__images.secundario {
-    display: grid !important;
-    grid-template-columns: 1.12fr 0.88fr !important;
-    grid-auto-flow: dense !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 0.55rem !important;
+    gap: var(--suites-m-gap) !important;
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
-    padding: 0.55rem !important;
-    overflow: visible !important;
-    background: #a3945e !important;
+    padding: var(--suites-m-gap) !important;
+    padding-right: calc(var(--suites-m-gap) + 10vw) !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    background: var(--suites-m-gold) !important;
     box-sizing: border-box !important;
   }
 
-  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
-  html body main .mod-scroll__images.principal .flipMedia,
-  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(1),
-  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(2),
-  html body main .mod-scroll__images.secundario .flipMedia,
-  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(1),
-  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
-    position: relative !important;
-    inset: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    width: auto !important;
-    max-width: none !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    margin: 0 !important;
-    transform: none !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    z-index: auto !important;
-    overflow: hidden !important;
+  html body main .mod-scroll__images.principal::-webkit-scrollbar,
+  html body main .mod-scroll__images.secundario::-webkit-scrollbar {
+    display: none !important;
   }
 
-  /* Faces become mosaic cells; wrappers dissolve into the grid. */
   html body main .mod-scroll__images.principal .flipMedia,
   html body main .mod-scroll__images.secundario .flipMedia,
   html body main .mod-scroll__images-text .flipMedia {
     display: contents !important;
   }
 
-  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single {
-    grid-row: span 2 !important;
-    aspect-ratio: 3 / 4 !important;
-    min-height: 0 !important;
-    height: auto !important;
-  }
-
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media,
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media--down,
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media--up {
+  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
+  html body main .mod-scroll__images.principal .flipMedia > .flipMedia__media,
+  html body main .mod-scroll__images.principal .flipMedia > .flipMedia__media--down,
+  html body main .mod-scroll__images.principal .flipMedia > .flipMedia__media--up,
+  html body main .mod-scroll__images.secundario .flipMedia > .flipMedia__media,
+  html body main .mod-scroll__images.secundario .flipMedia > .flipMedia__media--down,
+  html body main .mod-scroll__images.secundario .flipMedia > .flipMedia__media--up,
+  html body main .suites-slide-caption {
     position: relative !important;
     inset: auto !important;
-    width: 100% !important;
+    flex: 0 0 var(--suites-m-slide) !important;
+    width: var(--suites-m-slide) !important;
+    max-width: var(--suites-m-slide) !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
-    aspect-ratio: 3 / 4 !important;
     margin: 0 !important;
+    aspect-ratio: 3 / 4 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     transform: none !important;
     opacity: 1 !important;
-    pointer-events: auto !important;
     overflow: hidden !important;
-    border-radius: 0 !important;
+    scroll-snap-align: start !important;
+    z-index: auto !important;
+    pointer-events: auto !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images.principal > .flipMedia :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images.secundario > .flipMedia :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media :is(.media__wrap-source, .media__source) {
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media :is(.media, .media__wrap-source, .media__source),
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media--down :is(.media, .media__wrap-source, .media__source),
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media--up :is(.media, .media__wrap-source, .media__source) {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
@@ -131,7 +128,6 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     border-radius: 0 !important;
   }
 
-  /* Elegant caption slabs — same cell size as images when gaps would be empty. */
   html body main .suites-slide-caption {
     display: flex !important;
     flex-direction: column !important;
@@ -139,24 +135,20 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     align-items: flex-start !important;
     gap: 0.45rem !important;
     box-sizing: border-box !important;
-    aspect-ratio: 3 / 4 !important;
-    min-height: 0 !important;
     padding: 1rem 0.9rem 1.15rem !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    background: #8b6914 !important;
-    color: #f3ede4 !important;
-    -webkit-text-fill-color: #f3ede4 !important;
+    background: var(--suites-m-gold-deep) !important;
+    color: var(--suites-m-paper) !important;
+    -webkit-text-fill-color: var(--suites-m-paper) !important;
   }
 
   html body main .suites-slide-caption--ink {
-    background: #1c1917 !important;
+    background: var(--suites-m-ink) !important;
   }
 
   html body main .suites-slide-caption--sand {
-    background: #cfc7ba !important;
-    color: #241d14 !important;
-    -webkit-text-fill-color: #241d14 !important;
+    background: var(--suites-m-sand) !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
   }
 
   html body main .suites-slide-caption__kicker {
@@ -175,10 +167,28 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     text-transform: uppercase !important;
   }
 
+  /* Text bands — tight DNA spacing, no svh padding. */
   html body main .mod-scroll__text {
     position: relative !important;
     z-index: 1 !important;
+    min-height: 0 !important;
     padding: 1.75rem var(--wrapper-padd) 1.5rem !important;
+    background: var(--suites-m-paper) !important;
+    color: var(--suites-m-ink) !important;
+    text-align: left !important;
+  }
+
+  html body main .mod-scroll__text__section,
+  html body main .mod-scroll__text__title,
+  html body main .mod-scroll__text__title__line,
+  html body main .mod-scroll__text p {
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
+    text-align: left !important;
+  }
+
+  html body main .mod-scroll__text__title {
+    margin-bottom: 1.15rem !important;
   }
 
   html body main .mod-scroll__text__title__line {
@@ -189,148 +199,21 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     overflow: visible !important;
   }
 
+  /* images-text — same horizontal rail; text as ink slide panel. */
   html body main .mod-scroll__images-text {
-    padding-block: 0.55rem 1.25rem !important;
-    background: #a3945e !important;
+    min-height: 0 !important;
+    padding-block: 0 !important;
+    background: var(--suites-m-gold) !important;
   }
 
   html body main .mod-scroll__images-text .wrapper {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    align-items: stretch !important;
-    gap: 0.55rem !important;
-    padding: 0.55rem !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .mod-scroll__images-text .flipMedia,
-  html body main .mod-scroll__images-text .flipMedia:nth-of-type(1),
-  html body main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    transform: none !important;
-    z-index: auto !important;
-    aspect-ratio: 3 / 4 !important;
-    border-radius: 0 !important;
-    overflow: hidden !important;
-    min-height: 0 !important;
-  }
-
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media,
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--down,
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--up {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    aspect-ratio: 3 / 4 !important;
-    opacity: 1 !important;
-    transform: none !important;
-    overflow: hidden !important;
-  }
-
-  html body main .mod-scroll__images-text__text,
-  html body main .mod-scroll__images-text__text p,
-  html body main .mod-scroll__images-text__text .line {
-    position: relative !important;
-    z-index: 1 !important;
-    grid-column: 1 / -1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0.95rem 0.85rem 1.05rem !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    font-size: clamp(1.25rem, 5.2vw, 1.85rem) !important;
-    line-height: 1.08 !important;
-    color: #f3ede4 !important;
-    -webkit-text-fill-color: #f3ede4 !important;
-    background: #1c1917 !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Terms collage — mosaic gutters + square frames. */
-  html body main .mod-scroll__terms .follow__mouse {
-    position: relative !important;
-    display: grid !important;
-    grid-template-columns: 1.16fr 0.84fr !important;
-    gap: 0.55rem !important;
-    width: 100% !important;
-    aspect-ratio: auto !important;
-    opacity: 1 !important;
-    transform: none !important;
-    overflow: hidden !important;
-    padding: 0.55rem !important;
-    background: #a3945e !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img {
-    position: relative !important;
-    inset: auto !important;
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    aspect-ratio: 3 / 4 !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-    object-fit: cover !important;
-    border-radius: 0 !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img:first-child {
-    grid-row: span 2 !important;
-    aspect-ratio: 3 / 4.35 !important;
-    height: auto !important;
-  }
-}
-
-@media (max-width: 480px) {
-  html body main .mod-scroll__images.principal,
-  html body main .mod-scroll__images.secundario,
-  html body main .mod-scroll__images-text .wrapper,
-  html body main .mod-scroll__terms .follow__mouse {
-    gap: 0.45rem !important;
-    padding: 0.45rem !important;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* Suite collection as home-3 style LTR snap cards                     */
-/* ------------------------------------------------------------------ */
-@media (max-width: 1024px) {
-  html body main .mod-scroll__projects {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 1.25rem !important;
-    width: 100% !important;
-    overflow: visible !important;
-  }
-
-  html body main .mod-scroll__projects > .mod-scroll__projects__wrap-text {
-    width: 100% !important;
-    padding: 1.75rem var(--wrapper-padd) 0.35rem !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .suites-collection-rail {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 0.7rem !important;
-    width: 100% !important;
-    padding-inline: var(--wrapper-padd, 1.15rem) !important;
-    padding-right: 38vw !important;
-    scroll-padding-inline: var(--wrapper-padd, 1.15rem) !important;
+    gap: var(--suites-m-gap) !important;
+    padding: var(--suites-m-gap) !important;
+    padding-right: calc(var(--suites-m-gap) + 10vw) !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
@@ -339,123 +222,79 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     box-sizing: border-box !important;
   }
 
-  html body main .suites-collection-rail::-webkit-scrollbar {
+  html body main .mod-scroll__images-text .wrapper::-webkit-scrollbar {
     display: none !important;
   }
 
-  html body main .suites-collection-rail > .mod-scroll__projects__item {
-    flex: 0 0 clamp(10.5rem, 58vw, 15rem) !important;
-    width: clamp(10.5rem, 58vw, 15rem) !important;
-    max-width: clamp(10.5rem, 58vw, 15rem) !important;
-    min-height: 0 !important;
-    height: auto !important;
-    scroll-snap-align: start !important;
-    border-radius: 0 !important;
-    overflow: hidden !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__content {
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: 0 !important;
-    height: 100% !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__image,
-  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__wrap-source,
-  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__source {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 3 / 4 !important;
-    object-fit: cover !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    gap: 0.7rem !important;
-    padding: 1rem 1rem 1.25rem !important;
-    min-height: 0 !important;
-    height: auto !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: baseline !important;
-    justify-content: space-between !important;
-    gap: 0.65rem !important;
-    width: 100% !important;
-    order: 1 !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > * {
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media,
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--down,
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--up,
+  html body main .mod-scroll__images-text .suites-slide-caption {
     position: relative !important;
     inset: auto !important;
-    width: auto !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(3) {
-    display: none !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__title {
-    order: 2 !important;
-    text-align: left !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    font-size: clamp(1.55rem, 6.4vw, 2.05rem) !important;
-    line-height: 0.92 !important;
-    letter-spacing: -0.03em !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(4),
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > span,
-  html body main .suites-collection-rail .mod-scroll__projects__item__text a.btn {
-    order: 3 !important;
-    align-self: stretch !important;
-    justify-self: stretch !important;
-    grid-column: auto !important;
-    margin-top: 0.35rem !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  html body main .mod-scroll__projects > .last-item {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 0 !important;
+    flex: 0 0 var(--suites-m-slide) !important;
+    width: var(--suites-m-slide) !important;
+    max-width: var(--suites-m-slide) !important;
     height: auto !important;
-  }
-
-  html body main .mod-scroll__projects > .last-item > .media,
-  html body main .mod-scroll__projects > .last-item > .mod-scroll__projects__item__image,
-  html body main .mod-scroll__projects > .last-item .mod-scroll__projects__item__image {
+    min-height: 0 !important;
+    aspect-ratio: 3 / 4 !important;
+    margin: 0 !important;
     border-radius: 0 !important;
     overflow: hidden !important;
+    opacity: 1 !important;
+    transform: none !important;
+    scroll-snap-align: start !important;
   }
-}
 
-@media (max-width: 480px) {
-  html body main .suites-collection-rail > .mod-scroll__projects__item {
-    flex-basis: clamp(10.5rem, 58vw, 15rem) !important;
-    width: clamp(10.5rem, 58vw, 15rem) !important;
-    max-width: clamp(10.5rem, 58vw, 15rem) !important;
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media :is(.media, .media__wrap-source, .media__source),
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--down :is(.media, .media__wrap-source, .media__source),
+  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--up :is(.media, .media__wrap-source, .media__source) {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
   }
-}
 
-/* ------------------------------------------------------------------ */
-/* Terms compact + ink on gold                                         */
-/* ------------------------------------------------------------------ */
-@media (max-width: 1024px) {
-  html body main .mod-scroll__terms,
+  html body main .mod-scroll__images-text__text {
+    position: relative !important;
+    z-index: 1 !important;
+    flex: 0 0 var(--suites-m-slide) !important;
+    width: var(--suites-m-slide) !important;
+    max-width: var(--suites-m-slide) !important;
+    min-height: 0 !important;
+    aspect-ratio: 3 / 4 !important;
+    margin: 0 !important;
+    padding: 1.15rem 1rem 1.25rem !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    font-size: clamp(1.15rem, 4.6vw, 1.65rem) !important;
+    line-height: 1.12 !important;
+    color: var(--suites-m-paper) !important;
+    -webkit-text-fill-color: var(--suites-m-paper) !important;
+    background: var(--suites-m-ink) !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    scroll-snap-align: start !important;
+  }
+
+  html body main .mod-scroll__images-text__text p,
+  html body main .mod-scroll__images-text__text .line,
+  html body main .mod-scroll__images-text__text span {
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+    white-space: normal !important;
+  }
+
+  /* Terms mosaic — gold gutters, square, no huge svh. */
+  html body main .mod-scroll__terms {
+    min-height: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    color: var(--suites-m-ink) !important;
+  }
+
   html body main .mod-scroll__terms :is(
     .mod-scroll__terms__term__title,
     .mod-scroll__terms__term__title *,
@@ -463,19 +302,12 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     .mod-scroll__terms__term__text,
     .mod-scroll__terms__term__text *,
     .t-supertitulo-l,
-    .t-supertitulo-l *,
-    div, span, p, a, strong, em
+    .t-supertitulo-l *
   ) {
-    color: #1c1917 !important;
-    -webkit-text-fill-color: #1c1917 !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
     mix-blend-mode: normal !important;
     filter: none !important;
-  }
-
-  html body main .mod-scroll__terms {
-    min-height: 0 !important;
-    padding: 0 !important;
-    gap: 0 !important;
   }
 
   html body main .mod-scroll__terms__term {
@@ -483,11 +315,11 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     min-height: 0 !important;
     justify-content: flex-start !important;
     padding: 1.35rem var(--wrapper-padd) 1.2rem !important;
-    border-top: 1px solid rgba(28, 25, 23, 0.28) !important;
+    border-top: 1px solid rgba(20, 18, 14, 0.22) !important;
   }
 
   html body main .mod-scroll__terms__term:last-of-type {
-    border-bottom: 1px solid rgba(28, 25, 23, 0.28) !important;
+    border-bottom: 1px solid rgba(20, 18, 14, 0.22) !important;
   }
 
   html body main .mod-scroll__terms__term__wrap-title {
@@ -525,28 +357,194 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     font-size: 0.88rem !important;
     line-height: 1.45 !important;
   }
-}
 
-@media (max-width: 480px) {
-  html body main .mod-scroll__terms__term {
-    padding: 1.05rem var(--wrapper-padd) 0.95rem !important;
+  html body main .mod-scroll__terms .follow__mouse {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--suites-m-gap) !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    overflow: hidden !important;
+    padding: var(--suites-m-gap) !important;
+    background: var(--suites-m-gold) !important;
+    box-sizing: border-box !important;
   }
 
-  html body main .mod-scroll__terms__term__title,
-  html body main .mod-scroll__terms .t-supertitulo-l {
-    font-size: clamp(1.28rem, 6.6vw, 1.7rem) !important;
+  html body main .mod-scroll__terms .follow__mouse > img {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 3 / 4 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
   }
 
-  html body main .mod-scroll__terms__term__text {
-    font-size: 0.8rem !important;
-    line-height: 1.4 !important;
+  html body main .mod-scroll__terms .follow__mouse > img:first-child {
+    grid-row: span 2 !important;
   }
-}
 
-/* ------------------------------------------------------------------ */
-/* Refs 4 + 6 + 7 — pills, last-item CTA, contrast, spacing            */
-/* ------------------------------------------------------------------ */
-@media (max-width: 1024px) {
+  /* Suite collection — near-full-bleed expand panels + restored wrap-text. */
+  html body main .mod-scroll__projects {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__wrap-text {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    padding: 1.75rem var(--wrapper-padd) 0.35rem !important;
+    box-sizing: border-box !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__wrap-text :is(p, span, .line, h2, h3) {
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
+  }
+
+  html body main .suites-collection-rail {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: var(--suites-m-gap) !important;
+    width: 100% !important;
+    padding-inline: var(--wrapper-padd, 1.15rem) !important;
+    padding-right: calc(var(--wrapper-padd, 1.15rem) + 8vw) !important;
+    scroll-padding-inline: var(--wrapper-padd, 1.15rem) !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body main .suites-collection-rail::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html body main .suites-collection-rail > .mod-scroll__projects__item {
+    flex: 0 0 var(--suites-m-slide) !important;
+    width: var(--suites-m-slide) !important;
+    max-width: var(--suites-m-slide) !important;
+    min-height: 0 !important;
+    height: auto !important;
+    scroll-snap-align: start !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    background: var(--suites-m-paper) !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__content {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__image,
+  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__wrap-source,
+  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__source {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 4 !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 0.7rem !important;
+    padding: 1.15rem 1.1rem 1.35rem !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+    order: 1 !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > * {
+    position: relative !important;
+    inset: auto !important;
+    width: auto !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(3) {
+    display: none !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__title {
+    order: 2 !important;
+    text-align: left !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: clamp(1.55rem, 5.8vw, 2.15rem) !important;
+    line-height: 0.92 !important;
+    letter-spacing: -0.03em !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(4),
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > span,
+  html body main .suites-collection-rail .mod-scroll__projects__item__text a.btn {
+    order: 3 !important;
+    align-self: stretch !important;
+    justify-self: stretch !important;
+    grid-column: auto !important;
+    margin-top: 0.35rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item > .media,
+  html body main .mod-scroll__projects > .last-item > .mod-scroll__projects__item__image,
+  html body main .mod-scroll__projects > .last-item .mod-scroll__projects__item__image {
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* DNA pills */
   html body main :is(.btn, .btn--bg, .btn--circle, .mod-content__btn, .last-item__carousel__item--link) {
     ${PILL}
   }
@@ -561,90 +559,36 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 
   html body main :is(.btn--bg, .btn--bg-inv, .mod-content__btn, a.btn):not(.btn--bg-blue):not(.srh-actions__primary) {
     background: transparent !important;
-    border-color: rgba(36, 29, 20, 0.58) !important;
-    color: #241d14 !important;
-    -webkit-text-fill-color: #241d14 !important;
+    border-color: rgba(20, 18, 14, 0.58) !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
   }
 
   html body main [data-suite-panel="ink"] :is(.btn--bg, .btn--bg-inv, a.btn),
   html body main [data-suite-panel="gold"] :is(.btn--bg, .btn--bg-inv, a.btn) {
     border-color: rgba(243, 237, 228, 0.72) !important;
-    color: #f3ede4 !important;
-    -webkit-text-fill-color: #f3ede4 !important;
+    color: var(--suites-m-paper) !important;
+    -webkit-text-fill-color: var(--suites-m-paper) !important;
     background: transparent !important;
   }
-}
 
-html body main .mod-content__btn,
-html body main .btn--circle {
-  ${PILL}
-}
-
-html body main .mod-content--center {
-  overflow: visible !important;
-  padding: 2.25rem var(--wrapper-padd) 2.75rem !important;
-}
-
-html body main .mod-content--center .mod-content__col {
-  display: flex !important;
-  justify-content: center !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  padding-inline: var(--wrapper-padd, 1rem) !important;
-}
-
-html body main .mod-content--cols {
-  padding: 2rem var(--wrapper-padd) 1.25rem !important;
-}
-
-html body main .mod-content--cols .mod-content__text,
-html body main .mod-content--cols .mod-content__text p,
-html body main .mod-content--cols .mod-content__text a {
-  color: #4a453c !important;
-  -webkit-text-fill-color: #4a453c !important;
-  font-size: clamp(0.98rem, 2.8vw, 1.12rem) !important;
-  line-height: 1.55 !important;
-}
-
-html body main .mod-content__btn.btn--bg-xl,
-html body main .mod-content__btn.t-titulo {
-  font-size: 0.72rem !important;
-  font-style: normal !important;
-  background: #12100c !important;
-  border-color: #12100c !important;
-  color: #cdb684 !important;
-  -webkit-text-fill-color: #cdb684 !important;
-}
-
-@media (max-width: 480px) {
-  html body main .mod-content__btn {
-    white-space: normal !important;
-    height: auto !important;
-    min-height: 2.85rem !important;
-    max-height: none !important;
-    padding: 0.7rem 1.2rem !important;
-    max-width: calc(100vw - 2.5rem) !important;
-    letter-spacing: 0.12em !important;
-    font-size: 0.64rem !important;
-  }
-}
-
-@media (max-width: 1024px) {
+  /* last-item — horizontal snap, primary pill, tight copy. */
   html body main .last-item__carousel {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
-    gap: 0.7rem !important;
+    gap: var(--suites-m-gap) !important;
     padding: 0.85rem var(--wrapper-padd) 1rem !important;
-    padding-right: 28vw !important;
-    background: #f3ede4 !important;
+    padding-right: calc(var(--wrapper-padd) + 10vw) !important;
+    background: var(--suites-m-paper) !important;
     box-sizing: border-box !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
     scrollbar-width: none !important;
+    min-height: 0 !important;
   }
 
   html body main .last-item__carousel::-webkit-scrollbar {
@@ -652,10 +596,10 @@ html body main .mod-content__btn.t-titulo {
   }
 
   html body main .last-item__carousel__item:not(.last-item__carousel__item--link) {
-    flex: 0 0 min(78vw, 22rem) !important;
-    width: min(78vw, 22rem) !important;
+    flex: 0 0 var(--suites-m-slide) !important;
+    width: var(--suites-m-slide) !important;
     height: auto !important;
-    aspect-ratio: 16 / 10 !important;
+    aspect-ratio: 3 / 4 !important;
     border-radius: 0 !important;
     overflow: hidden !important;
     scroll-snap-align: start !important;
@@ -695,7 +639,6 @@ html body main .mod-content__btn.t-titulo {
     text-transform: uppercase !important;
   }
 
-  /* Usual site pill — hide the clone arrow glyph entirely. */
   html body main a.last-item__carousel__item--link .last-item__carousel__item__arrow,
   html body main a.last-item__carousel__item--link svg {
     display: none !important;
@@ -705,7 +648,7 @@ html body main .mod-content__btn.t-titulo {
   }
 
   html body main .last-item__content {
-    background: #f3ede4 !important;
+    background: var(--suites-m-paper) !important;
     min-height: 0 !important;
   }
 
@@ -720,15 +663,15 @@ html body main .mod-content__btn.t-titulo {
   }
 
   html body main .last-item__content__section {
-    color: #806b35 !important;
-    -webkit-text-fill-color: #806b35 !important;
+    color: var(--suites-m-gold-deep) !important;
+    -webkit-text-fill-color: var(--suites-m-gold-deep) !important;
     letter-spacing: 0.2em !important;
   }
 
   html body main .last-item__content__title,
   html body main .last-item__content__title .line {
-    color: #14120e !important;
-    -webkit-text-fill-color: #14120e !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
     text-align: center !important;
     max-width: 20rem !important;
     margin-inline: auto !important;
@@ -738,8 +681,8 @@ html body main .mod-content__btn.t-titulo {
 
   html body main .last-item__content__text,
   html body main .last-item__content__text p {
-    color: #4a453c !important;
-    -webkit-text-fill-color: #4a453c !important;
+    color: var(--suites-m-ink-soft) !important;
+    -webkit-text-fill-color: var(--suites-m-ink-soft) !important;
     max-width: 22rem !important;
     margin: 0 auto !important;
     font-size: clamp(0.95rem, 3.4vw, 1.08rem) !important;
@@ -747,31 +690,172 @@ html body main .mod-content__btn.t-titulo {
     opacity: 1 !important;
   }
 
+  /* cierre / chapters / CTA — tighter on phone/tablet only */
   html body main .mod-scroll__cierre__content {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 1.35rem !important;
-    padding: 2.5rem var(--wrapper-padd) 3rem !important;
+    gap: 1.25rem !important;
+    padding: 2rem var(--wrapper-padd) 2.5rem !important;
+    min-height: 0 !important;
   }
 
   html body main .mod-scroll__cierre .anima__title,
   html body main .mod-scroll__cierre .anima__title .line {
-    color: #14120e !important;
-    -webkit-text-fill-color: #14120e !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
     text-align: center !important;
   }
 
   html body main .mod-title--chapter,
   html body main .mod-title--lines {
-    padding: 2rem var(--wrapper-padd) 1.25rem !important;
+    padding: 1.75rem var(--wrapper-padd) 1.15rem !important;
   }
 
   html body main .mod-title .anima__title,
   html body main .mod-title--lines .line {
-    color: #14120e !important;
-    -webkit-text-fill-color: #14120e !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
   }
+
+  html body main .mod-content--center {
+    padding: 1.75rem var(--wrapper-padd) 2.25rem !important;
+  }
+
+  html body main .mod-content--cols {
+    padding: 1.5rem var(--wrapper-padd) 1.15rem !important;
+  }
+
+  /* Clone footer contrast */
+  html body main .mod-footer__buttons-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    gap: 0.35rem !important;
+    margin: 0 0 1.25rem !important;
+    width: 100% !important;
+    padding-inline: var(--wrapper-padd) !important;
+  }
+
+  html body main .mod-footer__buttons-header span {
+    display: none !important;
+  }
+
+  html body main .mod-footer__buttons-header__btn,
+  html body main .mod-footer__buttons-header__btn .line,
+  html body main .mod-footer__buttons-header__btn span,
+  html body main .mod-footer__buttons-header__btn .char {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    display: inline !important;
+    font-size: clamp(1.05rem, 4.6vw, 1.45rem) !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.02em !important;
+    text-align: left !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    color: var(--suites-m-ink) !important;
+    -webkit-text-fill-color: var(--suites-m-ink) !important;
+  }
+
+  html body main .mod-footer__buttons-header__btn .line:nth-of-type(2),
+  html body main .mod-footer__buttons-header__btn.link .line:nth-of-type(2) {
+    display: none !important;
+  }
+
+  html body main .mod-footer__bg {
+    margin-top: 0.35rem !important;
+  }
+
+  html body main .mod-footer__footer__copyright {
+    color: var(--suites-m-gold-deep) !important;
+    -webkit-text-fill-color: var(--suites-m-gold-deep) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html body {
+    --suites-m-gap: 0.45rem;
+    --suites-m-slide: min(90vw, 24rem);
+  }
+
+  html body main .mod-scroll__terms__term {
+    padding: 1.05rem var(--wrapper-padd) 0.95rem !important;
+  }
+
+  html body main .mod-scroll__terms__term__title,
+  html body main .mod-scroll__terms .t-supertitulo-l {
+    font-size: clamp(1.28rem, 6.6vw, 1.7rem) !important;
+  }
+
+  html body main .mod-scroll__terms__term__text {
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+  }
+
+  html body main .mod-content__btn {
+    white-space: normal !important;
+    height: auto !important;
+    min-height: 2.85rem !important;
+    max-height: none !important;
+    padding: 0.7rem 1.2rem !important;
+    max-width: calc(100vw - 2.5rem) !important;
+    letter-spacing: 0.12em !important;
+    font-size: 0.64rem !important;
+  }
+
+  html body main .mod-footer__buttons-header__btn,
+  html body main .mod-footer__buttons-header__btn .line,
+  html body main .mod-footer__buttons-header__btn span {
+    font-size: clamp(0.95rem, 5.2vw, 1.2rem) !important;
+  }
+}
+
+/* DNA pills that also apply when circle→pill neutralization runs. */
+html body main .mod-content__btn,
+html body main .btn--circle {
+  ${PILL}
+}
+
+html body main .mod-content--center {
+  overflow: visible !important;
+  padding: 2.25rem var(--wrapper-padd) 2.75rem !important;
+}
+
+html body main .mod-content--center .mod-content__col {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-inline: var(--wrapper-padd, 1rem) !important;
+}
+
+html body main .mod-content--cols {
+  padding: 2rem var(--wrapper-padd) 1.25rem !important;
+}
+
+html body main .mod-content--cols .mod-content__text,
+html body main .mod-content--cols .mod-content__text p,
+html body main .mod-content--cols .mod-content__text a {
+  color: #4a453c !important;
+  -webkit-text-fill-color: #4a453c !important;
+  font-size: clamp(0.98rem, 2.8vw, 1.12rem) !important;
+  line-height: 1.55 !important;
+}
+
+html body main .mod-content__btn.btn--bg-xl,
+html body main .mod-content__btn.t-titulo {
+  font-size: 0.72rem !important;
+  font-style: normal !important;
+  background: #12100c !important;
+  border-color: #12100c !important;
+  color: #cdb684 !important;
+  -webkit-text-fill-color: #cdb684 !important;
 }
 
 html body main .mod-footer__content__project__wrap-image {
@@ -832,14 +916,12 @@ html body main .d-none.d-md-flex.btn--circle {
     pointer-events: none !important;
   }
   html body .mod-scroll__terms .follow__mouse {
-    display: flex !important;
+    display: grid !important;
     pointer-events: auto !important;
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Mosaic gutters                                                      */
-/* ------------------------------------------------------------------ */
+/* Mosaic gutters — keep desktop gold mosaic; square only ≤1024. */
 html body main .mod-media--double,
 html body main .mod-media--mosaic {
   display: grid !important;
@@ -874,6 +956,23 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   object-fit: cover !important;
 }
 
+@media (max-width: 1024px) {
+  html body main .mod-media--double,
+  html body main .mod-media--mosaic {
+    gap: var(--suites-m-gap, 0.55rem) !important;
+    padding: var(--suites-m-gap, 0.55rem) !important;
+    background: var(--suites-m-gold, #b69f64) !important;
+  }
+
+  html body main .mod-media--double .mod-media__item,
+  html body main .mod-media--mosaic .mod-media__item,
+  html body main .mod-media--double .col-6,
+  html body main .mod-media--double .col-4 {
+    aspect-ratio: 3 / 4 !important;
+    border-radius: 0 !important;
+  }
+}
+
 @media (min-width: 1025px) {
   html body main .mod-media--double .mod-media__item,
   html body main .mod-media--mosaic .mod-media__item,
@@ -883,72 +982,7 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Clone footer type + contrast                                        */
-/* ------------------------------------------------------------------ */
-@media (max-width: 1024px) {
-  html body main .mod-footer__buttons-header {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    text-align: left !important;
-    gap: 0.35rem !important;
-    margin: 0 0 1.25rem !important;
-    width: 100% !important;
-    padding-inline: var(--wrapper-padd) !important;
-  }
-
-  html body main .mod-footer__buttons-header span {
-    display: none !important;
-  }
-
-  html body main .mod-footer__buttons-header__btn,
-  html body main .mod-footer__buttons-header__btn .line,
-  html body main .mod-footer__buttons-header__btn span,
-  html body main .mod-footer__buttons-header__btn .char {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    display: inline !important;
-    font-size: clamp(1.05rem, 4.6vw, 1.45rem) !important;
-    line-height: 1.3 !important;
-    letter-spacing: 0.02em !important;
-    text-align: left !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-    color: #241d14 !important;
-    -webkit-text-fill-color: #241d14 !important;
-  }
-
-  html body main .mod-footer__buttons-header__btn .line:nth-of-type(2),
-  html body main .mod-footer__buttons-header__btn.link .line:nth-of-type(2) {
-    display: none !important;
-  }
-
-  html body main .mod-footer__bg {
-    margin-top: 0.35rem !important;
-  }
-
-  html body main .mod-footer__footer__copyright {
-    color: #806b35 !important;
-    -webkit-text-fill-color: #806b35 !important;
-  }
-}
-
-@media (max-width: 480px) {
-  html body main .mod-footer__buttons-header__btn,
-  html body main .mod-footer__buttons-header__btn .line,
-  html body main .mod-footer__buttons-header__btn span {
-    font-size: clamp(0.95rem, 5.2vw, 1.2rem) !important;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* Lux footer — phone contrast + spacing                               */
-/* ------------------------------------------------------------------ */
+/* Lux footer — phone only */
 @media (min-width: 481px) {
   html body .hathor-lux-footer-host {
     display: none !important;
@@ -1181,8 +1215,9 @@ function makeSuitesCaption(
 }
 
 /**
- * Fill mosaic gaps with elegant colour + text slabs (same cell size as
- * neighbouring image tiles) so phone slides never read as empty beige.
+ * Inject caption panels as same-size flex-rail slides (.suites-slide-caption,
+ * aspect-ratio 3/4 via SUITES_CLONE_LAYOUT_FIX_CSS) for principal / secundario /
+ * images-text horizontal snap carousels.
  */
 export function layoutSuitesSlideCaptionPanels(doc: Document) {
   const principal = doc.querySelector<HTMLElement>(
