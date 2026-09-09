@@ -33,10 +33,10 @@ function DockCalendarIcon() {
 }
 
 /** Thin-stroke chat bubble — matches the dock mark stroke, not the floating gold pill. */
-function DockChatIcon() {
+function DockChatIcon({ className = "hsc__icon" }: { className?: string }) {
   return (
     <svg
-      className="hsc__icon"
+      className={className}
       viewBox="0 0 24 24"
       aria-hidden
       focusable="false"
@@ -177,7 +177,7 @@ export function PhoneDockContact() {
               : "0ms",
           }}
         >
-          <DockChatIcon />
+          <DockChatIcon className="hpd-contact__brand hpd-contact__brand--line" />
         </a>
 
         <a
@@ -193,7 +193,7 @@ export function PhoneDockContact() {
           }}
         >
           <svg
-            className="hsc__icon"
+            className="hpd-contact__brand hpd-contact__brand--line"
             viewBox="0 0 24 24"
             aria-hidden
             focusable="false"
