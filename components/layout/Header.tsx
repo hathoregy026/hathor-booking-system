@@ -9,7 +9,12 @@ import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import { PublicLanguageToggle } from "@/components/public/PublicLanguageToggle";
+import {
+  PhoneDockBookNow,
+  PhoneDockContact,
+} from "@/components/public/PhoneDockActions";
 import { SelectionHeaderControls } from "@/components/selection/SelectionHeaderControls";
+import { shouldShowFloatingActions } from "@/lib/floating-actions-visibility";
 
 const EditorialNavOverlay = dynamic(
   () =>
@@ -595,9 +600,15 @@ export function Header() {
             <div
               className="hathor-phone-dock"
               role="toolbar"
-              aria-label="Selections and language"
+              aria-label="Phone tools"
             >
               <SelectionHeaderControls />
+              {shouldShowFloatingActions(pathname) ? (
+                <>
+                  <PhoneDockBookNow />
+                  <PhoneDockContact />
+                </>
+              ) : null}
               <PublicLanguageToggle />
             </div>,
             phoneDockHost,

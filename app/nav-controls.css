@@ -308,9 +308,6 @@
 
   .public-site
     .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
-    .hathor-header__inner--owo,
-  .public-site
-    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
     .hathor-header__inner--owo {
     display: flex !important;
     align-items: center !important;
@@ -320,6 +317,17 @@
     padding: max(0.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.75rem
       max(1rem, env(safe-area-inset-left)) !important;
     gap: 0 !important;
+    transition:
+      min-height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      padding 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__inner--owo {
+    min-height: 3.45rem !important;
+    padding: max(0.35rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.35rem
+      max(1rem, env(safe-area-inset-left)) !important;
   }
 
   .public-site .hathor-header--chrome:not(#_) .hathor-header__menu-zone {
@@ -335,13 +343,17 @@
 
   .public-site
     .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
-    .hathor-header__logo--icon,
-  .public-site
-    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
     .hathor-header__logo--icon {
     width: auto !important;
     height: 2.75rem !important;
     margin: 0 !important;
+    transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__logo--icon {
+    height: 2.15rem !important;
   }
 
   .public-site .hathor-header--chrome:not(#_) .hathor-header__col--right {
@@ -1262,13 +1274,17 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   .public-site
     .hathor-header--chrome.hathor-header--owo-hero-layout:not(#_)
-    .hathor-header__logo--icon,
-  .public-site
-    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
     .hathor-header__logo--icon {
     width: auto !important;
     height: clamp(1.6875rem, 7.5vw, 2.75rem) !important;
     margin: 0 !important;
+    transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  .public-site
+    .hathor-header--chrome.hathor-header--owo-hero-layout.hathor-header--nav-compact:not(#_)
+    .hathor-header__logo--icon {
+    height: clamp(1.375rem, 6vw, 2.15rem) !important;
   }
 
   .public-site .hathor-header--chrome:not(#_) .hathor-header__col--right {
@@ -1531,11 +1547,12 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 }
 
 /* ==========================================================================
-   PHONE BOTTOM DOCK тАФ favourites, voyage cart, language (тЙд480px only)
+   PHONE BOTTOM DOCK — Saved, Voyage, Book Now, Contact, Language (≤480px)
    --------------------------------------------------------------------------
    Same components and handlers as the header marks. Markup lives outside
    <header> (portaled to body) so position:fixed pins to the viewport bottom
-   тАФ header backdrop-filter / isolation must not trap it.
+   — header backdrop-filter / isolation must not trap it.
+   Five equal flex tracks; Book Now is the center tab.
    ========================================================================== */
 
 @media (max-width: 480px) {
@@ -1584,9 +1601,9 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     box-sizing: border-box;
     min-height: var(--hathor-phone-dock-h);
     padding:
-      0.45rem max(0.75rem, env(safe-area-inset-left))
+      0.45rem max(0.35rem, env(safe-area-inset-left))
       calc(0.4rem + env(safe-area-inset-bottom, 0px))
-      max(0.75rem, env(safe-area-inset-right));
+      max(0.35rem, env(safe-area-inset-right));
     border-top: 1px solid color-mix(in srgb, var(--nav-lux-ink) 12%, transparent);
     background: #ece8df;
     box-shadow:
@@ -1606,19 +1623,26 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 
   .hathor-phone-dock > .hsc:not(#_):not(#_),
+  .hathor-phone-dock > .hpd-book:not(#_):not(#_),
+  .hathor-phone-dock .hpd-contact__toggle:not(#_):not(#_),
   .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
     color: var(--nav-lux-ink) !important;
   }
 
   html[data-public-theme="night"] .hathor-phone-dock > .hsc:not(#_):not(#_),
+  html[data-public-theme="night"] .hathor-phone-dock > .hpd-book:not(#_):not(#_),
+  html[data-public-theme="night"] .hathor-phone-dock .hpd-contact__toggle:not(#_):not(#_),
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
     color: var(--nav-lux-cream) !important;
   }
 
   .hathor-phone-dock > .hsc:not(#_):not(#_),
+  .hathor-phone-dock > .hpd-book:not(#_):not(#_),
+  .hathor-phone-dock > .hpd-contact:not(#_):not(#_),
   .hathor-phone-dock > .public-lang-selector {
     position: relative !important;
     flex: 1 1 0 !important;
+    flex-basis: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -1630,7 +1654,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     height: auto !important;
     min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
     margin: 0 !important;
-    padding: 0.15rem 0.1rem 0 !important;
+    padding: 0.15rem 0.05rem 0 !important;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -1644,13 +1668,18 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     Rings are drawn on the mark box itself so icon and circle share one center.
   */
   .hathor-phone-dock > .hsc:not(#_):not(#_)::before,
+  .hathor-phone-dock > .hpd-book:not(#_):not(#_)::before,
+  .hathor-phone-dock .hpd-contact__toggle:not(#_):not(#_)::before,
   .hathor-phone-dock .public-lang-toggle:not(#_):not(#_)::before {
     content: none !important;
     display: none !important;
   }
 
-  /* Shared mark shell тАФ identical size, ring, and icon centering for all three. */
+  /* Shared mark shell — identical size, ring, and icon centering for every tab. */
   .hathor-phone-dock > .hsc .hsc__mark,
+  .hathor-phone-dock .hpd-book .hsc__mark,
+  .hathor-phone-dock .hpd-contact__toggle .hsc__mark,
+  .hathor-phone-dock .hpd-contact__link,
   .hathor-phone-dock .public-lang-toggle__globe {
     position: relative !important;
     z-index: 1 !important;
@@ -1666,9 +1695,14 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     border: 1px solid color-mix(in srgb, currentColor 22%, transparent) !important;
     border-radius: 50% !important;
     line-height: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
   }
 
   .hathor-phone-dock > .hsc .hsc__icon:not(#_):not(#_),
+  .hathor-phone-dock .hpd-book .hsc__icon:not(#_):not(#_),
+  .hathor-phone-dock .hpd-contact .hsc__icon:not(#_):not(#_),
+  .hathor-phone-dock .hpd-contact__brand:not(#_):not(#_),
   .hathor-phone-dock .public-lang-toggle__globe .public-theme-toggle__icon:not(#_):not(#_) {
     display: block !important;
     width: var(--dock-icon) !important;
@@ -1677,6 +1711,7 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     padding: 0 !important;
     transform: none !important;
     flex: 0 0 auto !important;
+    color: var(--hathor-mark-gold, #c9a96e) !important;
   }
 
   .hathor-phone-dock .public-lang-selector {
@@ -1687,7 +1722,15 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
   }
 
+  .hathor-phone-dock > .hpd-book:not(#_):not(#_),
+  .hathor-phone-dock .hpd-contact__toggle:not(#_):not(#_),
   .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
+    appearance: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
     position: relative !important;
     display: flex !important;
     flex: 0 0 auto !important;
@@ -1702,6 +1745,21 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    color: inherit !important;
+  }
+
+  .hathor-phone-dock > .hpd-book:not(#_):not(#_) {
+    flex: 1 1 0 !important;
+    flex-basis: 0 !important;
+    min-height: calc(var(--hathor-phone-dock-h) - env(safe-area-inset-bottom, 0px) - 0.35rem) !important;
+    padding: 0.15rem 0.05rem 0 !important;
+  }
+
+  .hathor-phone-dock .hpd-contact__toggle:not(#_):not(#_),
+  .hathor-phone-dock .public-lang-toggle:not(#_):not(#_) {
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
   }
 
   .hathor-phone-dock .public-lang-toggle__code {
@@ -1718,11 +1776,21 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     content: "Voyage";
   }
 
+  .hathor-phone-dock > .hpd-book:not(#_)::after {
+    content: "Book Now";
+  }
+
+  .hathor-phone-dock .hpd-contact__toggle:not(#_)::after {
+    content: "Contact";
+  }
+
   .hathor-phone-dock .public-lang-toggle:not(#_)::after {
     content: "Language";
   }
 
   .hathor-phone-dock > .hsc:not(#_)::after,
+  .hathor-phone-dock > .hpd-book:not(#_)::after,
+  .hathor-phone-dock .hpd-contact__toggle:not(#_)::after,
   .hathor-phone-dock .public-lang-toggle:not(#_)::after {
     position: relative;
     z-index: 1;
@@ -1732,10 +1800,11 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     font-family: var(--public-sans, var(--font-hathor-body, inherit));
     font-size: var(--dock-label);
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     line-height: 1;
     text-transform: uppercase;
     text-align: center;
+    white-space: nowrap;
     color: color-mix(in srgb, currentColor 72%, transparent);
     pointer-events: none;
   }
@@ -1755,8 +1824,73 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     z-index: 6 !important;
   }
 
-  .hathor-phone-dock > .public-lang-selector.is-open {
+  .hathor-phone-dock > .hpd-contact {
+    overflow: visible !important;
+    z-index: 6 !important;
+  }
+
+  .hathor-phone-dock > .public-lang-selector.is-open,
+  .hathor-phone-dock > .hpd-contact.is-open {
     z-index: 8 !important;
+  }
+
+  .hathor-phone-dock .hpd-contact__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: default;
+  }
+
+  .hathor-phone-dock .hpd-contact__menu {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    bottom: calc(100% + 0.7rem);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .hathor-phone-dock > .hpd-contact.is-open .hpd-contact__menu {
+    pointer-events: auto;
+  }
+
+  .hathor-phone-dock .hpd-contact__link {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.92);
+    pointer-events: none;
+    transition:
+      opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.32s;
+  }
+
+  .hathor-phone-dock > .hpd-contact.is-open .hpd-contact__link {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hathor-phone-dock .hpd-contact__link {
+      transition: none;
+      transform: none;
+    }
   }
 
   .hathor-phone-dock .public-lang-menu {
