@@ -2,8 +2,8 @@
  * Suites clone layout fixes that must win over the baked clone CSS and
  * SUITES_RESPONSIVE_CHOREOGRAPHY_CSS. Loaded last in the iframe tail.
  *
- * Phone ≤480 + tablet ≤1024 unless a rule is unscoped (ref 5 mosaic,
- * Request Availability pill, circle→pill).
+ * Phone ≤480 + tablet ≤1024 unless a rule is unscoped (mosaic, Request
+ * Availability pill, circle→pill).
  */
 
 const PILL = `
@@ -38,67 +38,90 @@ const PILL = `
 
 export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 /* ------------------------------------------------------------------ */
-/* Ref 1 — unstack overlapping collages (phone + tablet)               */
+/* Ref 1 + 3 — image slides: desktop slide feel as snap rails + gaps  */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main .mod-scroll__images.principal,
   html body main .mod-scroll__images.secundario {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 0.85rem !important;
+    gap: 0.75rem !important;
     min-height: 0 !important;
     height: auto !important;
-    padding: 1.25rem var(--wrapper-padd) 2rem !important;
-    overflow: visible !important;
+    padding: 1.15rem 0 1.75rem !important;
+    padding-inline: var(--wrapper-padd, 1.15rem) !important;
+    padding-right: 22vw !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+
+  html body main .mod-scroll__images.principal::-webkit-scrollbar,
+  html body main .mod-scroll__images.secundario::-webkit-scrollbar {
+    display: none !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
-  html body main .mod-scroll__images.principal .flipMedia,
-  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(1),
-  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(2),
-  html body main .mod-scroll__images.secundario .flipMedia,
-  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(1),
-  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
+  html body main .mod-scroll__images.principal > .flipMedia,
+  html body main .mod-scroll__images.secundario > .flipMedia {
     position: relative !important;
     inset: auto !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    flex: 0 0 min(78vw, 22rem) !important;
+    width: min(78vw, 22rem) !important;
+    max-width: min(78vw, 22rem) !important;
     height: auto !important;
     min-height: 0 !important;
-    aspect-ratio: 4 / 3 !important;
+    aspect-ratio: 3 / 4 !important;
     margin: 0 !important;
     transform: none !important;
     border: 0 !important;
+    border-radius: 0.55rem !important;
     box-shadow: none !important;
+    overflow: hidden !important;
+    scroll-snap-align: start !important;
     z-index: auto !important;
   }
 
-  html body main .mod-scroll__images.principal .flipMedia,
-  html body main .mod-scroll__images.principal .flipMedia:nth-of-type(2),
-  html body main .mod-scroll__images.secundario .flipMedia:nth-of-type(2) {
-    width: 100% !important;
-    align-self: stretch !important;
-    aspect-ratio: 4 / 3 !important;
+  html body main .mod-scroll__images .flipMedia {
+    display: block !important;
   }
 
-  html body main .mod-scroll__images.secundario > .flipMedia:nth-of-type(1) {
-    align-self: stretch !important;
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media,
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media--down,
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media--up {
+    position: absolute !important;
+    inset: 0 !important;
     width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  /* Rail is the slide — hide the stacked flip face that looked glued on. */
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media--down {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  html body main .mod-scroll__images .flipMedia > .flipMedia__media--up {
+    opacity: 1 !important;
+    z-index: 1 !important;
   }
 
   html body main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media, .media__wrap-source, .media__source),
   html body main .mod-scroll__images.principal > .flipMedia :is(.media, .media__wrap-source, .media__source),
   html body main .mod-scroll__images.secundario > .flipMedia :is(.media, .media__wrap-source, .media__source) {
-    position: relative !important;
+    position: absolute !important;
+    inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
     min-height: 0 !important;
     object-fit: cover !important;
+    border-radius: inherit !important;
   }
 
   html body main .mod-scroll__text {
@@ -121,10 +144,21 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 
   html body main .mod-scroll__images-text .wrapper {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     align-items: stretch !important;
-    gap: 0.85rem !important;
+    gap: 0.75rem !important;
     padding-inline: var(--wrapper-padd) !important;
+    padding-right: 22vw !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+
+  html body main .mod-scroll__images-text .wrapper::-webkit-scrollbar {
+    display: none !important;
   }
 
   html body main .mod-scroll__images-text .flipMedia,
@@ -132,19 +166,16 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   html body main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
     position: relative !important;
     inset: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    flex: 0 0 min(78vw, 22rem) !important;
+    width: min(78vw, 22rem) !important;
+    max-width: min(78vw, 22rem) !important;
     margin: 0 !important;
     transform: none !important;
     z-index: auto !important;
-    aspect-ratio: 4 / 3 !important;
-  }
-
-  html body main .mod-scroll__images-text .flipMedia:nth-of-type(2) {
-    width: 100% !important;
-    align-self: stretch !important;
-    aspect-ratio: 4 / 3 !important;
-    margin-top: 0 !important;
+    aspect-ratio: 3 / 4 !important;
+    border-radius: 0.55rem !important;
+    overflow: hidden !important;
+    scroll-snap-align: start !important;
   }
 
   html body main .mod-scroll__images-text__text,
@@ -152,19 +183,216 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
   html body main .mod-scroll__images-text__text .line {
     position: relative !important;
     z-index: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    flex: 0 0 min(86vw, 24rem) !important;
+    width: min(86vw, 24rem) !important;
+    max-width: min(86vw, 24rem) !important;
     margin: 0 !important;
-    padding: 0.85rem 0 0 !important;
+    padding: 0.35rem 0.15rem 0 !important;
     white-space: normal !important;
     overflow: visible !important;
-    font-size: clamp(1.55rem, 6.4vw, 2.35rem) !important;
-    line-height: 1.05 !important;
+    font-size: clamp(1.45rem, 6vw, 2.15rem) !important;
+    line-height: 1.08 !important;
+    color: #241d14 !important;
+    -webkit-text-fill-color: #241d14 !important;
+    scroll-snap-align: start !important;
+  }
+
+  /* Terms lifestyle collage → LTR snap rail. */
+  html body main .mod-scroll__terms .follow__mouse {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    aspect-ratio: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 0.85rem var(--wrapper-padd, 1.15rem) 1.25rem !important;
+    padding-right: 28vw !important;
+    box-sizing: border-box !important;
+  }
+
+  html body main .mod-scroll__terms .follow__mouse::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html body main .mod-scroll__terms .follow__mouse > img,
+  html body main .mod-scroll__terms .follow__mouse > img:first-child {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    flex: 0 0 min(72vw, 18.5rem) !important;
+    width: min(72vw, 18.5rem) !important;
+    height: min(58svh, 22rem) !important;
+    grid-row: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    object-fit: cover !important;
+    border-radius: 0.55rem !important;
+    scroll-snap-align: start !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
+  html body main .mod-scroll__images.principal > .flipMedia,
+  html body main .mod-scroll__images.secundario > .flipMedia,
+  html body main .mod-scroll__images-text .flipMedia {
+    flex-basis: 78vw !important;
+    width: 78vw !important;
+    max-width: 78vw !important;
+  }
+
+  html body main .mod-scroll__terms .follow__mouse > img,
+  html body main .mod-scroll__terms .follow__mouse > img:first-child {
+    flex-basis: 78vw !important;
+    width: 78vw !important;
+    height: 56svh !important;
   }
 }
 
 /* ------------------------------------------------------------------ */
-/* Ref 2 — compact gold trio, ink on gold (phone + milder tablet)      */
+/* Ref 2 — suite collection as home-3 style LTR snap cards             */
+/* ------------------------------------------------------------------ */
+@media (max-width: 1024px) {
+  html body main .mod-scroll__projects {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__wrap-text {
+    width: 100% !important;
+    padding: 1.75rem var(--wrapper-padd) 0.35rem !important;
+    box-sizing: border-box !important;
+  }
+
+  html body main .suites-collection-rail {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    padding-inline: var(--wrapper-padd, 1.15rem) !important;
+    padding-right: 28vw !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html body main .suites-collection-rail::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html body main .suites-collection-rail > .mod-scroll__projects__item {
+    flex: 0 0 min(78vw, 20rem) !important;
+    width: min(78vw, 20rem) !important;
+    max-width: min(78vw, 20rem) !important;
+    min-height: 0 !important;
+    height: auto !important;
+    scroll-snap-align: start !important;
+    border-radius: 0.65rem !important;
+    overflow: hidden !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__content {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__image,
+  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__wrap-source,
+  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__source {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 4 !important;
+    object-fit: cover !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 0.7rem !important;
+    padding: 1rem 1rem 1.25rem !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+    order: 1 !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > * {
+    position: relative !important;
+    inset: auto !important;
+    width: auto !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(3) {
+    display: none !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__title {
+    order: 2 !important;
+    text-align: left !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: clamp(1.55rem, 6.4vw, 2.05rem) !important;
+    line-height: 0.92 !important;
+    letter-spacing: -0.03em !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(4),
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > span,
+  html body main .suites-collection-rail .mod-scroll__projects__item__text a.btn {
+    order: 3 !important;
+    align-self: flex-start !important;
+    justify-self: start !important;
+    grid-column: auto !important;
+    margin-top: 0.15rem !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html body main .suites-collection-rail > .mod-scroll__projects__item {
+    flex-basis: 82vw !important;
+    width: 82vw !important;
+    max-width: 82vw !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Terms compact + ink on gold                                         */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main .mod-scroll__terms,
@@ -256,7 +484,7 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
 }
 
 /* ------------------------------------------------------------------ */
-/* Refs 3 + 6 + 8 — home-pill geometry, no colour restyle              */
+/* Refs 4 + 6 + 7 — pills, last-item CTA, contrast, spacing            */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main :is(.btn, .btn--bg, .btn--circle, .mod-content__btn, .last-item__carousel__item--link) {
@@ -270,6 +498,21 @@ export const SUITES_CLONE_LAYOUT_FIX_CSS = `
     text-transform: inherit !important;
     line-height: 1 !important;
   }
+
+  html body main :is(.btn--bg, .btn--bg-inv, .mod-content__btn, a.btn):not(.btn--bg-blue):not(.srh-actions__primary) {
+    background: transparent !important;
+    border-color: rgba(36, 29, 20, 0.58) !important;
+    color: #241d14 !important;
+    -webkit-text-fill-color: #241d14 !important;
+  }
+
+  html body main [data-suite-panel="ink"] :is(.btn--bg, .btn--bg-inv, a.btn),
+  html body main [data-suite-panel="gold"] :is(.btn--bg, .btn--bg-inv, a.btn) {
+    border-color: rgba(243, 237, 228, 0.72) !important;
+    color: #f3ede4 !important;
+    -webkit-text-fill-color: #f3ede4 !important;
+    background: transparent !important;
+  }
 }
 
 html body main .mod-content__btn,
@@ -279,6 +522,7 @@ html body main .btn--circle {
 
 html body main .mod-content--center {
   overflow: visible !important;
+  padding: 2.25rem var(--wrapper-padd) 2.75rem !important;
 }
 
 html body main .mod-content--center .mod-content__col {
@@ -289,10 +533,27 @@ html body main .mod-content--center .mod-content__col {
   padding-inline: var(--wrapper-padd, 1rem) !important;
 }
 
+html body main .mod-content--cols {
+  padding: 2rem var(--wrapper-padd) 1.25rem !important;
+}
+
+html body main .mod-content--cols .mod-content__text,
+html body main .mod-content--cols .mod-content__text p,
+html body main .mod-content--cols .mod-content__text a {
+  color: #4a453c !important;
+  -webkit-text-fill-color: #4a453c !important;
+  font-size: clamp(0.98rem, 2.8vw, 1.12rem) !important;
+  line-height: 1.55 !important;
+}
+
 html body main .mod-content__btn.btn--bg-xl,
 html body main .mod-content__btn.t-titulo {
   font-size: 0.72rem !important;
   font-style: normal !important;
+  background: #12100c !important;
+  border-color: #12100c !important;
+  color: #cdb684 !important;
+  -webkit-text-fill-color: #cdb684 !important;
 }
 
 @media (max-width: 480px) {
@@ -308,11 +569,142 @@ html body main .mod-content__btn.t-titulo {
   }
 }
 
+@media (max-width: 1024px) {
+  html body main .last-item__carousel {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    padding: 1.15rem var(--wrapper-padd) 1.35rem !important;
+    background: #f3ede4 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body main .last-item__carousel__item:not(.last-item__carousel__item--link) {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 10 !important;
+    border-radius: 0.55rem !important;
+    overflow: hidden !important;
+  }
+
+  html body main .last-item__carousel__item__image,
+  html body main .last-item__carousel__item__image .media__source {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  html body main a.last-item__carousel__item--link {
+    ${PILL}
+    align-self: flex-start !important;
+    width: max-content !important;
+    min-width: 12.5rem !important;
+    height: 2.85rem !important;
+    margin: 0.15rem 0 0 !important;
+    background: #12100c !important;
+    border-color: #12100c !important;
+    color: #cdb684 !important;
+    -webkit-text-fill-color: #cdb684 !important;
+    gap: 0.55rem !important;
+  }
+
+  html body main a.last-item__carousel__item--link .last-item__carousel__item__text,
+  html body main a.last-item__carousel__item--link span {
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+  }
+
+  html body main a.last-item__carousel__item--link .last-item__carousel__item__arrow,
+  html body main a.last-item__carousel__item--link svg {
+    width: 0.85rem !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  html body main a.last-item__carousel__item--link svg path {
+    fill: currentColor !important;
+    stroke: currentColor !important;
+  }
+
+  html body main .last-item__content {
+    background: #f3ede4 !important;
+  }
+
+  html body main .last-item__content__wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.15rem !important;
+    padding: 3.25rem var(--wrapper-padd) 3rem !important;
+    text-align: center !important;
+  }
+
+  html body main .last-item__content__section {
+    color: #806b35 !important;
+    -webkit-text-fill-color: #806b35 !important;
+    letter-spacing: 0.2em !important;
+  }
+
+  html body main .last-item__content__title,
+  html body main .last-item__content__title .line {
+    color: #14120e !important;
+    -webkit-text-fill-color: #14120e !important;
+    text-align: center !important;
+    max-width: 20rem !important;
+    margin-inline: auto !important;
+    font-size: clamp(1.85rem, 8.2vw, 2.55rem) !important;
+    line-height: 0.96 !important;
+  }
+
+  html body main .last-item__content__text,
+  html body main .last-item__content__text p {
+    color: #4a453c !important;
+    -webkit-text-fill-color: #4a453c !important;
+    max-width: 22rem !important;
+    margin: 0 auto !important;
+    font-size: clamp(0.95rem, 3.4vw, 1.08rem) !important;
+    line-height: 1.55 !important;
+    opacity: 1 !important;
+  }
+
+  html body main .mod-scroll__cierre__content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.35rem !important;
+    padding: 2.5rem var(--wrapper-padd) 3rem !important;
+  }
+
+  html body main .mod-scroll__cierre .anima__title,
+  html body main .mod-scroll__cierre .anima__title .line {
+    color: #14120e !important;
+    -webkit-text-fill-color: #14120e !important;
+    text-align: center !important;
+  }
+
+  html body main .mod-title--chapter,
+  html body main .mod-title--lines {
+    padding: 2rem var(--wrapper-padd) 1.25rem !important;
+  }
+
+  html body main .mod-title .anima__title,
+  html body main .mod-title--lines .line {
+    color: #14120e !important;
+    -webkit-text-fill-color: #14120e !important;
+  }
+}
+
 html body main .mod-footer__content__project__wrap-image {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   position: relative !important;
+  gap: 0.85rem !important;
+  padding: 1.25rem var(--wrapper-padd) 1.75rem !important;
 }
 
 html body main .mod-footer__content__project__wrap-image .btn--circle,
@@ -323,14 +715,29 @@ html body main .mod-footer__content__project__wrap-image a.btn {
   left: auto !important;
   right: auto !important;
   order: 2 !important;
-  margin: 0.9rem auto 0 !important;
+  margin: 0 auto !important;
   transform: none !important;
   z-index: 2 !important;
+  ${PILL}
+  background: #12100c !important;
+  border-color: #12100c !important;
+  color: #cdb684 !important;
+  -webkit-text-fill-color: #cdb684 !important;
 }
 
 html body main .mod-footer__content__project__image {
   order: 1 !important;
   width: 100% !important;
+  border-radius: 0.55rem !important;
+  overflow: hidden !important;
+}
+
+html body main .mod-footer__content__project__year,
+html body main .mod-footer__content__project__name,
+html body main .mod-footer__content__project__text,
+html body main .mod-footer__content__project__text * {
+  color: #241d14 !important;
+  -webkit-text-fill-color: #241d14 !important;
 }
 
 html body main .mod-footer__content__project__wrap-image .follow__mouse,
@@ -349,24 +756,24 @@ html body main .d-none.d-md-flex.btn--circle {
     pointer-events: none !important;
   }
   html body .mod-scroll__terms .follow__mouse {
-    display: grid !important;
+    display: flex !important;
     pointer-events: auto !important;
   }
 }
 
 /* ------------------------------------------------------------------ */
-/* Ref 5 — 2×2 residence mosaic (all viewports)                        */
+/* Mosaic gutters                                                      */
 /* ------------------------------------------------------------------ */
 html body main .mod-media--double,
 html body main .mod-media--mosaic {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: clamp(0.65rem, 1.6vw, 1.15rem) !important;
+  gap: clamp(0.75rem, 2.2vw, 1.25rem) !important;
   align-items: stretch !important;
   justify-content: stretch !important;
   width: 100% !important;
   max-width: 100% !important;
-  padding-inline: var(--wrapper-padd, 1.25rem) !important;
+  padding: 1.25rem var(--wrapper-padd, 1.25rem) 2rem !important;
   box-sizing: border-box !important;
 }
 
@@ -379,6 +786,7 @@ html body main .mod-media--double .col-4 {
   flex: none !important;
   aspect-ratio: 4 / 5 !important;
   overflow: hidden !important;
+  border-radius: 0.45rem !important;
 }
 
 html body main .mod-media--double .mod-media__item :is(.media__wrap-source, .media__source),
@@ -399,7 +807,7 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
 }
 
 /* ------------------------------------------------------------------ */
-/* Ref 7 — clone footer type, left stack above HATHOR                  */
+/* Clone footer type + contrast                                        */
 /* ------------------------------------------------------------------ */
 @media (max-width: 1024px) {
   html body main .mod-footer__buttons-header {
@@ -408,9 +816,10 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     align-items: flex-start !important;
     justify-content: flex-start !important;
     text-align: left !important;
-    gap: 0.2rem !important;
-    margin: 0 0 1.1rem !important;
+    gap: 0.35rem !important;
+    margin: 0 0 1.25rem !important;
     width: 100% !important;
+    padding-inline: var(--wrapper-padd) !important;
   }
 
   html body main .mod-footer__buttons-header span {
@@ -426,13 +835,15 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     left: auto !important;
     display: inline !important;
     font-size: clamp(1.05rem, 4.6vw, 1.45rem) !important;
-    line-height: 1.25 !important;
+    line-height: 1.3 !important;
     letter-spacing: 0.02em !important;
     text-align: left !important;
     white-space: normal !important;
     overflow: visible !important;
     word-break: break-word !important;
     overflow-wrap: anywhere !important;
+    color: #241d14 !important;
+    -webkit-text-fill-color: #241d14 !important;
   }
 
   html body main .mod-footer__buttons-header__btn .line:nth-of-type(2),
@@ -442,6 +853,11 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
 
   html body main .mod-footer__bg {
     margin-top: 0.35rem !important;
+  }
+
+  html body main .mod-footer__footer__copyright {
+    color: #806b35 !important;
+    -webkit-text-fill-color: #806b35 !important;
   }
 }
 
@@ -454,7 +870,7 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
 }
 
 /* ------------------------------------------------------------------ */
-/* Ref 8 — real site footer under the clone wordmark, phone only       */
+/* Lux footer — phone contrast + spacing                               */
 /* ------------------------------------------------------------------ */
 @media (min-width: 481px) {
   html body .hathor-lux-footer-host {
@@ -466,6 +882,52 @@ html body .hathor-lux-footer-host {
   position: relative !important;
   z-index: 5 !important;
   background: #ece8df !important;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__top {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0.85rem !important;
+  padding: 2.25rem var(--wrapper-padd, 1.25rem) 1.75rem !important;
+}
+
+html body .hathor-lux-footer-host .suites-eyebrow,
+html body .hathor-lux-footer-host .lux-footer__col-title {
+  color: #806b35 !important;
+  -webkit-text-fill-color: #806b35 !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__headline,
+html body .hathor-lux-footer-host .typo-page-title {
+  color: #14120e !important;
+  -webkit-text-fill-color: #14120e !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__script,
+html body .hathor-lux-footer-host .lux-footer__subhead,
+html body .hathor-lux-footer-host .typo-body-text,
+html body .hathor-lux-footer-host .lux-footer__tagline,
+html body .hathor-lux-footer-host .lux-footer__link,
+html body .hathor-lux-footer-host .lux-footer__meta-link,
+html body .hathor-lux-footer-host .lux-footer__social-link {
+  color: #4a453c !important;
+  -webkit-text-fill-color: #4a453c !important;
+  opacity: 1 !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__subhead,
+html body .hathor-lux-footer-host .typo-body-text {
+  max-width: 28rem !important;
+  font-size: 0.98rem !important;
+  line-height: 1.55 !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__legal,
+html body .hathor-lux-footer-host .lux-footer__crafted {
+  color: #6b5f48 !important;
+  -webkit-text-fill-color: #6b5f48 !important;
 }
 
 html body .hathor-lux-footer-host .suites-cta-primary,
@@ -480,6 +942,7 @@ html body .hathor-lux-footer-host .suites-cta-primary {
   background: #12100c !important;
   border-color: #12100c !important;
   color: #cdb684 !important;
+  -webkit-text-fill-color: #cdb684 !important;
 }
 
 html body .hathor-lux-footer-host .lux-footer__subscribe {
@@ -487,6 +950,19 @@ html body .hathor-lux-footer-host .lux-footer__subscribe {
   flex-wrap: wrap !important;
   gap: 0.65rem !important;
   justify-content: flex-start !important;
+  width: 100% !important;
+  margin-top: 0.35rem !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1.35rem 1rem !important;
+  padding: 0.5rem var(--wrapper-padd, 1.25rem) 1.75rem !important;
+}
+
+html body .hathor-lux-footer-host .lux-footer__col--brand {
+  grid-column: 1 / -1 !important;
 }
 `;
 
@@ -577,6 +1053,30 @@ export const SUITES_LUX_FOOTER_HOST_HTML = `
   </footer>
 </div>
 `;
+
+/**
+ * Wrap suite collection cards (excluding the closing last-item) in a
+ * home-3-style horizontal snap rail for phone/tablet.
+ */
+export function layoutSuitesCollectionRail(doc: Document) {
+  const projects = doc.querySelector(".mod-scroll__projects");
+  if (!projects) return;
+
+  if (projects.querySelector(":scope > .suites-collection-rail")) return;
+
+  const items = Array.from(
+    projects.querySelectorAll<HTMLElement>(
+      ":scope > .mod-scroll__projects__item:not(.last-item)",
+    ),
+  );
+  if (items.length < 2) return;
+
+  const rail = doc.createElement("div");
+  rail.className = "suites-collection-rail";
+  rail.setAttribute("data-hathor-suites-rail", "1");
+  items[0].before(rail);
+  items.forEach((item) => rail.appendChild(item));
+}
 
 export function neutralizeSuitesCircleButtons(doc: Document) {
   doc.querySelectorAll(".btn--circle").forEach((node) => {
