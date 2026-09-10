@@ -3161,7 +3161,11 @@ figure) {
     gap: 0;
   }
 
-  /* ---- km left, Nile centre, wheel right; captions then berths ----------- */
+  /*
+   * Phone map stage: one 100svh instrument.
+   * Km and helm sit on a top rail so the Nile can take the full width.
+   * Tags + the current mooring stay on the same screen. Scroll/JS untouched.
+   */
   .home-three .h3-chart-panel::before {
     display: none;
   }
@@ -3180,8 +3184,8 @@ figure) {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    opacity: 0.12;
-    filter: grayscale(1) contrast(1.15);
+    opacity: 0.07;
+    filter: grayscale(1) contrast(1.1);
   }
 
   .home-three .h3-chart-sticky {
@@ -3189,205 +3193,198 @@ figure) {
     top: 0;
     z-index: 1;
     display: grid;
-    grid-template-columns: 4.4rem minmax(0, 1fr) 4.4rem;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas:
-      "run chart helm"
-      "berths berths berths";
+      "run helm"
+      "chart chart"
+      "berths berths";
     align-items: stretch;
-    column-gap: 0.3rem;
-    row-gap: var(--h3-stack-gap);
+    column-gap: 0.75rem;
+    row-gap: 0.55rem;
     justify-content: stretch;
     height: 100svh;
-    padding-top: calc(3.1rem + env(safe-area-inset-top, 0px));
+    padding-top: calc(3.35rem + env(safe-area-inset-top, 0px));
     padding-bottom: calc(
-      var(--hathor-phone-dock-h, 4.5rem) + 0.35rem + env(safe-area-inset-bottom, 0px)
+      var(--hathor-phone-dock-h, 4.5rem) + 0.45rem + env(safe-area-inset-bottom, 0px)
     );
   }
 
   .home-three .h3-course__run {
     grid-area: run;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
-    align-self: center;
-    gap: 0.2rem;
+    justify-content: center;
+    align-self: stretch;
+    gap: 0.12rem;
     border-top: 0;
     padding-top: 0;
   }
 
   .home-three .h3-course__run span {
-    font-size: 1.55rem;
+    font-size: 1.7rem;
     min-width: 0;
+    line-height: 0.9;
   }
 
   .home-three .h3-course__run em {
-    max-width: 7.5ch;
-    letter-spacing: 0.1em;
-    line-height: 1.3;
+    max-width: none;
+    letter-spacing: 0.14em;
+    line-height: 1.25;
+    font-size: 0.58rem;
   }
 
   .home-three .h3-helm {
     grid-area: helm;
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
     flex: 0 0 auto;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     align-self: center;
-    gap: 0.28rem;
+    gap: 0.55rem;
     margin: 0;
-    text-align: center;
+    text-align: right;
   }
 
   .home-three .h3-helm__dial {
-    width: 4.4rem;
+    width: 2.85rem;
+  }
+
+  .home-three .h3-helm__index {
+    top: -0.28rem;
+    height: 0.5rem;
   }
 
   .home-three .h3-helm__read {
-    align-items: center;
+    align-items: flex-end;
   }
 
   .home-three .h3-helm__read span {
-    font-size: 1rem;
+    font-size: 1.15rem;
   }
 
   .home-three .h3-chart {
     grid-area: chart;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: auto;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
     max-width: none;
     min-width: 0;
     min-height: 0;
-    height: 100%;
+    height: auto;
+    max-height: 100%;
     flex: unset;
-    align-self: stretch;
+    align-self: center;
+    padding: 0.4rem 0.15rem 0.25rem;
+    background: var(--h3-paper);
+    box-shadow: inset 0 0 0 1px rgb(128 107 53 / 22%);
+    color: var(--h3-ink);
   }
 
   .home-three .h3-chart__plate {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    height: 100%;
+    height: auto;
     width: 100%;
   }
 
   .home-three .h3-chart__svg {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     width: 100%;
     height: auto;
     min-height: 0;
-    max-height: 48svh;
+    max-height: none;
+    aspect-ratio: 420 / 565;
+  }
+
+  .home-three .h3-chart__banks {
+    stroke-width: 18;
+    opacity: 0.34;
+  }
+
+  .home-three .h3-chart__ghost {
+    stroke: var(--h3-gold-deep);
+    stroke-width: 1.35;
+    opacity: 0.72;
+  }
+
+  .home-three .h3-chart__course {
+    stroke: var(--h3-ink);
+    stroke-width: 2.35;
+  }
+
+  .home-three .h3-stop__name {
+    font-size: 18px;
+    fill: var(--h3-ink);
   }
 
   .home-three .h3-chart__caption {
-    flex: 0 0 auto;
-    position: relative;
-    transform: none;
-    margin-top: var(--h3-stack-gap);
-    padding-top: 0;
-    font-size: 0.58rem;
-    line-height: 1.45;
-    color: var(--h3-ink);
-  }
-
-  .home-three .h3-chart__caption a {
-    min-height: 0;
+    display: none;
   }
 
   .home-three .h3-course__berths {
     grid-area: berths;
     flex: 0 0 auto;
-    gap: var(--h3-stack-gap);
+    gap: 0.35rem;
     max-height: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
   }
 
   .home-three .h3-atlas-eyebrow {
-    position: relative;
-    transform: none;
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    line-height: 1.45;
-    color: var(--h3-ink);
-    margin: 0;
-  }
-
-  /* ---- berth card: a readable row, not a cramped thumbnail stack --------- */
-  .home-three .h3-berth {
-    grid-template-columns: 4.5rem minmax(0, 1fr);
-    column-gap: 0.75rem;
-    row-gap: 0.15rem;
-  }
-
-  .home-three .h3-berth__name {
-    font-size: clamp(1.2rem, 6.2vw, 1.6rem);
-    line-height: 1;
-    gap: 0.4rem;
-  }
-
-  .home-three .h3-berth__name b {
-    font-size: 0.85rem;
-  }
-
-  .home-three .h3-berth__meta {
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-  }
-
-  .home-three .h3-berth__sites {
-    margin-top: 0.2rem;
-  }
-
-  .home-three .h3-berth__sites li {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
-    align-items: center;
-    column-gap: 0.45rem;
-    width: 100%;
-    min-height: 0;
-    padding: 0.2rem 0;
-  }
-
-  .home-three .h3-berth__site {
-    grid-column: 1;
-    min-width: 0;
-    flex-wrap: wrap;
-    gap: 0.2rem 0.45rem;
-    justify-content: flex-start;
-  }
-
-  .home-three .h3-berth__site a {
-    font-size: 0.95rem;
-  }
-
-  .home-three .h3-berth__more {
-    display: inline-flex;
-    grid-column: 2;
-    justify-self: end;
-    width: max-content;
-    margin-top: 0;
-    min-height: 0;
-    padding: 0.28rem 0.7rem;
-    font-size: 0.52rem;
-    letter-spacing: 0.12em;
-    border-color: var(--h3-ink);
-    color: var(--h3-ink);
-    background: var(--h3-beige);
-  }
-
-  .home-three .h3-berth__more::after {
-    content: none;
     display: none;
   }
 
-  .home-three .h3-berth__more:hover {
-    background: var(--h3-ink);
-    border-color: var(--h3-ink);
-    color: var(--h3-paper);
+  .home-three .h3-stop-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 0;
+    border-bottom: 1px solid rgb(128 107 53 / 28%);
+  }
+
+  .home-three .h3-stop-buttons button {
+    width: 100%;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.05rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .home-three .h3-berth {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    grid-template-areas:
+      "plate name"
+      "plate meta";
+    column-gap: 0.7rem;
+    row-gap: 0.12rem;
+  }
+
+  .home-three .h3-berth__name {
+    font-size: clamp(1.15rem, 6vw, 1.45rem);
+    line-height: 1;
+    gap: 0.35rem;
+  }
+
+  .home-three .h3-berth__name b {
+    font-size: 0.78rem;
+  }
+
+  .home-three .h3-berth__meta {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .home-three .h3-berth__sites,
+  .home-three .h3-berth__note,
+  .home-three .h3-berth__blurb,
+  .home-three .h3-berth__more {
+    display: none;
   }
 
   .home-three .h3-course {
@@ -3542,7 +3539,8 @@ figure) {
     text-align: center;
   }
 
-  .home-three .h3-pills {
+  /* Contact close only — do not restack voyage/sail card actions. */
+  .home-three .h3-center .h3-pills {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -3551,7 +3549,7 @@ figure) {
     gap: 0.75rem;
   }
 
-  .home-three .h3-pills .h3-btn:not(#_):not(#_) {
+  .home-three .h3-center .h3-pills .h3-btn:not(#_):not(#_) {
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
