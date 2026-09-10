@@ -20,7 +20,6 @@ import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { cabinSlugForListing } from "@/lib/selection-catalog";
 import type { HeroLogoTune } from "@/lib/hero-logo-tune-shared";
 import { NILE_MOORINGS, NILE_TOTAL_KM } from "@/lib/nile-route";
-import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 
@@ -966,126 +965,6 @@ export function HomeThreePageContent({
                 ))}
               </div>
             </section>
-
-            {/* -------------------------------- 13 + 14 · the contact block
-                ref 12 — these were two sections with their own margins, and
-                the pieces landed wherever those margins left them: a line
-                stranded at the far right, a paragraph adrift bottom-left, a
-                table on its own. They are one block now, on one ladder and
-                one left edge, with a rule between the title and the detail. */}
-            <section
-              className="h3-wrapper h3-pb-md h3-contact"
-              aria-label="Write to us"
-            >
-              <div className="h3-lines" data-anima-title>
-                <span className="h3-lines__line">
-                  <AnimaSplitLine line={0}>Write to us</AnimaSplitLine>
-                </span>
-                <span className="h3-lines__line h3-lines__line--b">
-                  <AnimaSplitLine line={1}>and we answer</AnimaSplitLine>
-                </span>
-                <span className="h3-lines__line h3-lines__line--c">
-                  <AnimaSplitLine line={2}>within one day</AnimaSplitLine>
-                </span>
-              </div>
-
-              <div className="h3-cols">
-                <div className="h3-cols__col">
-                  <p className="h3-cols__pretitle">Reservations</p>
-                  <div className="h3-cols__text">
-                    <p>
-                      Tell us the month, how many of you there are and which
-                      direction appeals. Downstream with the current, or
-                      upstream under canvas. We will hold the cabins while you
-                      decide.
-                    </p>
-                    <p>
-                      Hathor can also be taken in full: twelve guests, the whole
-                      crew, and an itinerary written around your own days.
-                    </p>
-                  </div>
-                </div>
-                <div className="h3-cols__col">
-                  <ul className="h3-facts">
-                    <li>
-                      <span className="h3-facts__k">Telephone</span>
-                      <a
-                        className="h3-facts__v"
-                        href={`tel:${PUBLIC_CONTACT.phone}`}
-                      >
-                        {PUBLIC_CONTACT.phoneDisplay}
-                      </a>
-                    </li>
-                    <li>
-                      <span className="h3-facts__k">Email</span>
-                      <a
-                        className="h3-facts__v"
-                        href={`mailto:${PUBLIC_CONTACT.email}`}
-                      >
-                        {PUBLIC_CONTACT.email}
-                      </a>
-                    </li>
-                    <li>
-                      <span className="h3-facts__k">Office</span>
-                      <span className="h3-facts__v">
-                        {PUBLIC_CONTACT.address}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="h3-facts__k">Hours</span>
-                      <span className="h3-facts__v">
-                        {PUBLIC_CONTACT.workingHours}
-                      </span>
-                    </li>
-                  </ul>
-                  <Link className="h3-text-link" href="/contact">
-                    Contact page
-                  </Link>
-                </div>
-              </div>
-            </section>
-
-            {/* ------------------------------------ 15 · content · center */}
-            <section className="h3-wrapper h3-pb-md" aria-label="Reserve">
-              <div className="h3-center">
-                <h2 className="h3-center__title">
-                  Sail the Nile aboard Hathor
-                </h2>
-                <div className="h3-pills">
-                  <BookNowTrigger className="h3-btn">Book now</BookNowTrigger>
-                  <Link href="/charter" className="h3-btn">
-                    <span>Charter the boat</span>
-                  </Link>
-                </div>
-              </div>
-            </section>
-
-            {/* ------------------------------------------- 16 · footer */}
-            <footer className="h3-wrapper h3-pb-xs" aria-label="Site footer">
-              <div className="h3-footer">
-                <p className="h3-footer__mark">
-                  Hathor
-                  <br />
-                  Dahabiya
-                </p>
-                <nav className="h3-footer__nav" aria-label="Voyages">
-                  <Link href="/cruises">Cruises</Link>
-                  <Link href="/voyages">Voyages</Link>
-                  <Link href="/suites">Suites</Link>
-                  <Link href="/charter">Private charter</Link>
-                </nav>
-                <nav className="h3-footer__nav" aria-label="Aboard">
-                  <Link href="/gastronomy">Gastronomy</Link>
-                  <Link href="/wellness">Seneb Spa</Link>
-                  <Link href="/highlights">Highlights</Link>
-                  <Link href="/about">About</Link>
-                </nav>
-                <div className="h3-footer__legal">
-                  <p>© 2019–2026 Hathor Dahabiya · Luxor · Aswan · Egypt</p>
-                  <Link href="/terms-and-conditions">Terms</Link>
-                </div>
-              </div>
-            </footer>
           </div>
         </main>
       </div>

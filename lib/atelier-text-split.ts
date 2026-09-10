@@ -87,8 +87,8 @@ const SKIP_CLOSEST = [
   ".luxury-marquee",
   ".ex-stack-scroll",
   ".home-hero-container",
-  /* Footer has its own reveal — atelier char hide made dashboard-linked copy invisible */
-  ".lux-footer",
+  /* Footer owns its own reveal — atelier char hide made its copy invisible */
+  ".hf",
   "footer",
   /* Home text story owns its own scrubbed splits */
   ".home-story",

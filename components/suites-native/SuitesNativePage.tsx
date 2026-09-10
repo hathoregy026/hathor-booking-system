@@ -292,8 +292,8 @@ export function SuitesNativePage({ images }: Props) {
         </div>
       </section>
 
-      {/* Sole conversion CTA — shared Footer marketing band is suppressed on this route */}
-      <footer className="sn-cta" id="suites-closing" aria-label="Begin your journey">
+      {/* Conversion CTA — a section, not a footer: the site footer is the only <footer> */}
+      <section className="sn-cta" id="suites-closing" aria-label="Begin your journey">
         <div className="sn-cta__inner">
           <p className="sn-eyebrow">{c.closing.eyebrow}</p>
           <h2 className="sn-display sn-display--section">{c.closing.title}</h2>
@@ -312,7 +312,7 @@ export function SuitesNativePage({ images }: Props) {
             </Link>
           </div>
         </div>
-      </footer>
+      </section>
     </div>
   );
 }

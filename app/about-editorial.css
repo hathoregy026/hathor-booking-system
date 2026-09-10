@@ -94,14 +94,6 @@ html:has(.about-boring) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.about-boring) .lux-footer,
-  html:has(.about-boring) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 /* ------------------------------------------------------------------- reset */
 .about-boring *,
 .about-boring *::before,
@@ -181,12 +173,6 @@ html:has(.about-boring) .public-fab {
   line-height: 1.55;
   color: var(--ab-ink-soft);
   max-width: 36ch;
-}
-
-.about-boring .ab-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
 }
 
 /* clip-mask reveal */
@@ -987,29 +973,6 @@ html:has(.about-boring) .public-fab {
   text-transform: uppercase;
 }
 
-.ab-epilogue__legal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2.5rem, 6vw, 5rem);
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--ab-hair);
-  font-size: var(--ab-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ab-ink-soft);
-}
-
-.ab-epilogue__legal nav {
-  display: flex;
-  gap: 1.6rem;
-}
-
-.ab-epilogue__legal a:hover {
-  color: var(--ab-ink);
-}
-
 /* ==========================================================================
    RESPONSIVE — 950px is the structural break
    ========================================================================== */
@@ -1208,12 +1171,6 @@ html:has(.about-boring) .public-fab {
 
   .ab-epilogue__pair .ab-media {
     max-height: none;
-  }
-
-  .ab-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.9rem;
   }
 }
 

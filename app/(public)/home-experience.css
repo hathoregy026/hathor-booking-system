@@ -637,7 +637,7 @@ html[data-ex-experience] .ex-root .blind-strip-v {
   background: var(--gold) !important;
 }
 
-/* Site footer is lux-footer (midnight editorial) — no cream overrides */
+/* Site footer owns its own ground (app/site-footer.css) — no cream overrides */
 
 /* =========================================================
    Venetian Spa — Full Scroll-Reveal Motion Clone

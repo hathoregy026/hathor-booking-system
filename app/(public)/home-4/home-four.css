@@ -1,6 +1,6 @@
 /* Home 4: scoped editorial composition; shared logo geometry and CMS tune stay intact. */
 html:has(.home-four),html:has(.home-four) body{overflow-x:clip!important}
-html:has(.home-four) .public-fab,html:has(.home-four) .lux-footer{display:none!important}
+html:has(.home-four) .public-fab{display:none!important}
 .home-four,.h4-run{position:relative}
 .home-four{--h4-paper:#f3ede4;--h4-ink:#14120e;--h4-gold:#b69f64;--h4-deep:#806b35;--h4-pad:clamp(1.25rem,4vw,4.5rem);--h4-gap:clamp(1.3rem,3vw,3rem);--h4-display:"Italiana",var(--font-hathor-display),Georgia,serif;--h4-body:"Rollgates Luxury Italic","Playfair Display",Georgia,serif;--h4-meta:var(--font-hathor-body),sans-serif;background:var(--h4-paper);color:var(--h4-ink);isolation:isolate;font-family:var(--h4-meta)}
 .home-four *,.home-four *::before,.home-four *::after{box-sizing:border-box}
@@ -124,11 +124,6 @@ html:has(.home-four) .public-fab,html:has(.home-four) .lux-footer{display:none!i
 .h4-actions .h4-btn{min-width:210px}
 .h4-practical{border-top:1px solid #806b3550;padding-top:1.5rem;margin-top:1rem;display:flex;flex-direction:column;gap:1rem}
 .h4-practical p{font:.83rem/1.8 var(--h4-meta);max-width:48ch}
-.h4-footer{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:2rem;border-top:1px solid #806b3550;padding-top:3rem;margin-top:7rem}
-.h4-footer-mark{font:400 3rem/1 var(--h4-display)}
-.h4-footer-mark em{font:1.8rem var(--h4-body)}
-.h4-footer a{display:flex;align-items:center;min-height:44px;font:.78rem/1.5 var(--h4-meta);overflow-wrap:anywhere}
-.h4-footer>.h4-caption{grid-column:1/-1}
 /* Enhanced geometry is opted into only after measurements succeed. */
 @media(min-width:951px) and (min-height:600px){
  .home-four[data-h4-horizontal=true] .h4-stage{position:sticky;top:0;height:100svh;overflow:clip}
@@ -177,7 +172,6 @@ html:has(.home-four) .public-fab,html:has(.home-four) .lux-footer{display:none!i
  .h4-charter-image{aspect-ratio:5/4;max-height:none}
  .h4-close-head{display:block}.home-four .h4-close h2{width:100%;margin-top:1.7rem}
  .h4-close-grid{gap:3rem}.h4-actions .h4-btn{width:100%;min-width:0}
- .h4-footer{grid-template-columns:1fr 1fr}.h4-footer-mark{grid-column:1/-1}
  .home-four .h4-hero-copy{top:26%;left:7%;right:7%}
  .home-four .h4-hero-copy h1{font-size:clamp(3.5rem,9.6vw,7rem)}
 }
@@ -205,8 +199,6 @@ html:has(.home-four) .public-fab,html:has(.home-four) .lux-footer{display:none!i
  .h4-close{padding:5rem 1.25rem 8rem}.h4-close-head{margin-bottom:3rem}
  .h4-close-grid{grid-template-columns:1fr}.h4-close-image{aspect-ratio:5/4}
  .h4-close-copy{gap:1.5rem}.h4-actions{width:100%}
- .h4-footer{grid-template-columns:1fr;margin-top:4rem}.h4-footer-mark{grid-column:auto}
- .h4-footer a{font-size:.75rem}
  .home-four[data-h4-motion=true] .h4-hero-run{height:200svh}
  .h4-stripes i:nth-child(even){display:none}
 }

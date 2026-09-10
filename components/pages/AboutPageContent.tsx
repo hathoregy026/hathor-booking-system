@@ -481,17 +481,6 @@ export function AboutPageContent() {
               </div>
             </aside>
           </div>
-
-          <div className="ab-epilogue__legal">
-            <span>
-              Hathor Cruise <span className="ab-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Privacy</Link>
-              <Link href="/contact">Cookies</Link>
-              <Link href="/contact">Legal</Link>
-            </nav>
-          </div>
         </section>
       </main>
     </div>

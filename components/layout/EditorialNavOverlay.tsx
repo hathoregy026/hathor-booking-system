@@ -207,7 +207,8 @@ export function EditorialNavOverlay({
           })}
         </nav>
 
-        <footer className="eno-foot" data-eno-chrome>
+        {/* Menu chrome, not a page footer — the site has exactly one <footer>. */}
+        <div className="eno-foot" data-eno-chrome>
           <p className="eno-copy">Hathor Dahabiya © 2026</p>
           <p className="eno-legal">
             <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
@@ -226,7 +227,7 @@ export function EditorialNavOverlay({
           >
             Book Now
           </button>
-        </footer>
+        </div>
       </aside>
     </div>
   );

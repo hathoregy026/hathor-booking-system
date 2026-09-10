@@ -38,6 +38,26 @@
      --reveal  --parallax  --focus  --h3-flip  --transY  --item
    ========================================================================== */
 .home-three {
+  /*
+   * The chart wall's ghost fade, declared once and used by both breakpoints:
+   * the desktop panel and the phone sticky carry the same photograph, so they
+   * have to dissolve at their edges the same way.
+   */
+  --h3-ghost-fade-y: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 15%,
+    #000 85%,
+    transparent 100%
+  );
+  --h3-ghost-fade-x: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 13%,
+    #000 87%,
+    transparent 100%
+  );
+
   /* ---- palette, taken from the Suites page ---------------------------- */
   --h3-paper: #f3ede4;
   --h3-beige: #ded4c6;
@@ -1016,6 +1036,12 @@ figure) {
   opacity: 0.06;
   /* the photograph is a colour image; on this wall it has to read as a mark */
   filter: grayscale(1) contrast(1.15);
+  /* Soft on all four sides: a fill that stops at a straight edge reads as a
+     pasted rectangle, and the wall it stops against is plain beige. */
+  -webkit-mask-image: var(--h3-ghost-fade-y), var(--h3-ghost-fade-x);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--h3-ghost-fade-y), var(--h3-ghost-fade-x);
+  mask-composite: intersect;
 }
 .home-three .h3-chart-panel > * {
   position: relative;
@@ -2051,118 +2077,15 @@ figure) {
 /* --------------------------------------------------- 13 · TITLE · LINES
    `mod-title--lines`: stacked display lines of different measures, one of
    them pushed to the right edge, each clipped and rising. */
-.home-three .h3-lines {
-  display: flex;
-  flex-direction: column;
-}
-.home-three .h3-lines__line {
-  display: block;
-  overflow: hidden;
-  font-family: var(--h3-display);
-  font-size: var(--h3-t-stmt);
-  font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: -0.05em;
-  text-transform: uppercase;
-  color: var(--h3-ink);
-}
 /* ref 12 — the ladder, not a scatter. The third line used to be flung to the
    far right edge, which left a hole the width of the page between it and the
    second; it steps in like the opener's instead. */
-.home-three .h3-lines__line--b {
-  padding-left: calc(var(--h3-u) * 1.4 + var(--h3-gap));
-}
-.home-three .h3-lines__line--c {
-  padding-left: calc(var(--h3-u) * 0.6);
-}
 /* one face, one size — an italic serif in the middle of an Italiana ladder
    reads as a different mark, which is exactly what it looked like */
-.home-three .h3-lines__line em {
-  font-family: inherit;
-  font-style: normal;
-  font-size: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-}
-
 /* the title and the detail are one block on one rule */
-.home-three .h3-contact .h3-lines {
-  margin-bottom: clamp(2.4rem, 5vw, 4rem);
-}
-.home-three .h3-contact .h3-cols {
-  border-top: 1px solid var(--h3-hair);
-  padding-top: clamp(1.6rem, 3vw, 2.6rem);
-  align-items: start;
-}
-
 /* ---------------------------------------------------- 14 · CONTENT · COLS
    `mod-content--cols`: a pretitle at the left margin, a wide column of
    running copy, and a narrower column that holds the actions. */
-.home-three .h3-cols {
-  display: flex;
-  justify-content: flex-start;
-  gap: var(--h3-gap);
-}
-.home-three .h3-cols__col {
-  width: calc(var(--h3-u) * 6 + var(--h3-gap) * 5);
-}
-.home-three .h3-cols__col:nth-of-type(2) {
-  width: calc(var(--h3-u) * 4 + var(--h3-gap) * 3);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.75rem;
-}
-.home-three .h3-cols__pretitle {
-  font-family: var(--h3-meta);
-  font-size: var(--h3-t-kicker);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--h3-gold-deep);
-  margin-bottom: 1.4rem;
-}
-.home-three .h3-cols__text {
-  font-family: var(--h3-support);
-  font-style: italic;
-  font-size: var(--h3-t-big);
-  line-height: 1.34;
-  color: var(--h3-ink-soft);
-  max-width: 34rem;
-}
-.home-three .h3-cols__text p + p {
-  margin-top: 1.25em;
-}
-.home-three .h3-facts {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-.home-three .h3-facts li {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.62rem 0;
-  border-bottom: 1px solid var(--h3-hair);
-}
-.home-three .h3-facts dt,
-.home-three .h3-facts .h3-facts__k {
-  font-family: var(--h3-meta);
-  font-size: var(--h3-t-kicker);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--h3-ink-soft);
-  white-space: nowrap;
-}
-.home-three .h3-facts .h3-facts__v {
-  font-family: var(--h3-edit);
-  font-style: italic;
-  font-size: var(--h3-t-meta);
-  color: var(--h3-ink);
-  text-align: right;
-  overflow-wrap: anywhere;
-}
-
 /* -------------------------------------------------- 15 · CONTENT · CENTER
    `mod-content--center`: the request. One centred line and the page's two
    actions, on the roster geometry the whole site shares. */
@@ -2461,21 +2384,17 @@ figure) {
     background: var(--h3-beige);
   }
 
-  /* Panel ghost stays on: it is the only full-bleed fill for the map
-     chapter (padding, leftover hold, hanging posts). The sticky layer
-     covers the pinned river to the stage edges. */
+  /*
+   * One ghost, on one box. The panel, the hold and the sticky are three
+   * different heights, so painting the same photograph on all three gave three
+   * different cover crops stacked on top of each other — it read as two or
+   * three overlapping pictures, at three times the intended opacity. The
+   * sticky is the box that is actually on screen for the whole chapter, so it
+   * is the one that carries the fill; the other two are switched off here.
+   */
+  .home-three .h3-chart-panel::before,
   .home-three .h3-chart-hold::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image: var(--h3-chart-ghost, none);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    opacity: 0.06;
-    filter: grayscale(1) contrast(1.15);
+    display: none;
   }
 
   .home-three .h3-chart-sticky::before {
@@ -2488,8 +2407,22 @@ figure) {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    opacity: 0.06;
+    opacity: 0.09;
     filter: grayscale(1) contrast(1.15);
+    /*
+     * The stage sits inside the panel's inline padding, so inset:0 left an
+     * 18px beige gutter down each side with a hard edge on it. Bleed the fill
+     * to the full viewport, then soften all four sides so it has no edge to
+     * show in the first place.
+     */
+    left: 50%;
+    right: auto;
+    width: 100vw;
+    transform: translateX(-50%);
+    -webkit-mask-image: var(--h3-ghost-fade-y), var(--h3-ghost-fade-x);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--h3-ghost-fade-y), var(--h3-ghost-fade-x);
+    mask-composite: intersect;
   }
 
   .home-three .h3-chart-sticky > .h3-course__run,
@@ -2532,7 +2465,9 @@ figure) {
   .home-three .h3-course__berths {
     max-width: none;
     justify-self: stretch;
-    flex: 0 0 auto;
+    /* Shrinkable, so the chart above yields rather than the posts spilling. */
+    flex: 0 1 auto;
+    min-height: 0;
   }
 
   /* the berth card goes to a thumbnail beside its name so the whole thing
@@ -2566,23 +2501,49 @@ figure) {
     padding-bottom: 0;
   }
 
+  /*
+   * These used to hang below the card on , which put them outside
+   * the pinned 100svh stage — so the next scene slid over them mid-item. They
+   * sit in the stage now, as one tappable row each: the mooring name is the
+   * link, the era and the Read more sit on the same line, and the blurb is
+   * left to the page it belongs to. That is what buys the room.
+   */
   .home-three .h3-berth__sites {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    margin-top: 0.55rem;
-    padding-inline: var(--h3-pad);
+    grid-column: 1 / -1;
+    position: static;
+    margin-top: 0.5rem;
+    padding-top: 0.35rem;
     border-top: 1px solid var(--h3-hair);
+    min-height: 0;
   }
 
   .home-three .h3-berth__sites li {
-    padding: 0.28rem 0;
-    min-height: 44px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.2rem 0;
+    min-height: 44px;
+  }
+
+  .home-three .h3-berth__blurb {
+    display: none;
+  }
+
+  .home-three .h3-berth__site {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: block;
+  }
+
+  .home-three .h3-berth__site em {
+    margin-left: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .home-three .h3-berth__more {
+    flex: 0 0 auto;
+    margin-top: 0;
   }
 
   /* ---- the image panels: the floated frame drops under its plate */
@@ -2860,11 +2821,6 @@ figure) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .home-three .h3-lines__line--b,
-  .home-three .h3-lines__line--c {
-    padding-left: 0;
-  }
-
   .home-three .h3-cierre__title {
     font-size: clamp(2rem, 11vw, 3.2rem);
   }
@@ -2890,15 +2846,6 @@ figure) {
     transform: none;
     flex-direction: column;
     align-items: stretch;
-    width: 100%;
-  }
-
-  .home-three .h3-cols {
-    flex-direction: column;
-  }
-
-  .home-three .h3-cols__col,
-  .home-three .h3-cols__col:nth-of-type(2) {
     width: 100%;
   }
 
@@ -3018,20 +2965,14 @@ figure) {
   }
 
   .home-three .h3-support,
-  .home-three .h3-cols__text,
   .home-three .h3-imgtext__copy {
     line-height: 1.45;
   }
 
   .home-three .h3-course__head,
   .home-three .h3-sailings__head,
-  .home-three .h3-imgtext__text,
-  .home-three .h3-contact .h3-cols__col {
+  .home-three .h3-imgtext__text {
     gap: var(--h3-stack-gap);
-  }
-
-  .home-three .h3-cols__pretitle {
-    margin-bottom: var(--h3-stack-gap);
   }
 
   .home-three .h3-course__run span,
@@ -3214,14 +3155,10 @@ figure) {
    */
   .home-three .h3-chart-hold {
     height: 250svh;
-    /* in-flow room for the restored site posts that hang under the card */
-    padding-bottom: 22rem;
   }
 
-  .home-three .h3-chart-panel::before,
-  .home-three .h3-chart-hold::before,
   .home-three .h3-chart-sticky::before {
-    opacity: 0.12;
+    opacity: 0.11;
   }
 
   .home-three .h3-chart-sticky {
@@ -3392,6 +3329,12 @@ figure) {
     text-align: center;
   }
 
+  .home-three .h3-course__berths {
+    grid-area: berths;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .home-three .h3-berth {
     position: static;
     grid-template-columns: 3.5rem minmax(0, 1fr);
@@ -3421,17 +3364,50 @@ figure) {
     display: none;
   }
 
-  /* Park temple posts below the 100svh map stage so they never overlay
-     the river on a short iOS/Android visual viewport. */
+  /*
+   * Parked below the stage on top:100% these sat outside the pinned 100svh,
+   * so the next scene slid over them mid-item. They live in the berths row
+   * now; the chart row is the flexible one, so it yields the height instead.
+   */
   .home-three .h3-berth__sites {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    position: static;
+    margin-top: 0.4rem;
+    padding: 0.3rem 0 0;
+    min-height: 0;
+  }
+
+  .home-three .h3-berth__sites li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.2rem 0;
+    min-height: 44px;
+  }
+
+  /* The name takes the room and wraps; the pill never shrinks into it. */
+  .home-three .h3-berth__site {
+    flex: 1 1 auto;
+    min-width: 0;
     display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    margin-top: 0.55rem;
-    padding-inline: var(--h3-pad);
-    padding-bottom: 1.1rem;
+    font-size: 0.8rem;
+    line-height: 1.25;
+  }
+
+  .home-three .h3-berth__site em {
+    margin-left: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .home-three .h3-berth__more {
+    flex: 0 0 auto;
+    margin-top: 0;
+    min-height: 36px;
+    padding: 0 0.85rem;
+    font-size: 0.53rem;
   }
 
   .home-three .h3-course {
@@ -3462,109 +3438,10 @@ figure) {
     column-gap: 0;
   }
 
-  .home-three .h3-contact .h3-kicker,
-  .home-three .h3-contact .h3-cols__pretitle {
-    color: var(--h3-ink);
-  }
-
-  .home-three .h3-contact {
-    padding-top: 2.2rem;
-  }
-
   /*
    * Contact ledger on phone: one left edge, readable leading, even rules.
    * The intro's 0.7rem stack-gap packed this block too tight.
    */
-  .home-three .h3-contact.h3-pb-md {
-    padding-bottom: 1.35rem;
-  }
-
-  .home-three .h3-contact .h3-lines {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 0.28rem;
-    margin-bottom: 2.2rem;
-  }
-
-  .home-three .h3-contact .h3-lines__line,
-  .home-three .h3-contact .h3-lines__line--b,
-  .home-three .h3-contact .h3-lines__line--c {
-    width: 100%;
-    padding-left: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    font-size: clamp(1.62rem, 7.8vw, 2rem);
-    line-height: 1.18;
-    letter-spacing: -0.02em;
-    text-align: center;
-  }
-
-  .home-three .h3-contact .h3-lines__line .anima-split-line {
-    padding: 0.14em 0.04em 0.18em;
-  }
-
-  .home-three .h3-contact .h3-cols {
-    padding-top: 1.25rem;
-    gap: 1.35rem;
-  }
-
-  .home-three .h3-contact .h3-cols__col,
-  .home-three .h3-contact .h3-cols__col:nth-of-type(2) {
-    width: 100%;
-    gap: 0;
-  }
-
-  .home-three .h3-contact .h3-cols__col:first-child {
-    padding-bottom: 1.2rem;
-    border-bottom: 1px solid var(--h3-hair);
-  }
-
-  .home-three .h3-contact .h3-cols__pretitle {
-    margin-bottom: 0.95rem;
-    letter-spacing: 0.18em;
-  }
-
-  .home-three .h3-contact .h3-cols__text {
-    color: var(--h3-ink);
-    line-height: 2;
-    max-width: none;
-  }
-
-  .home-three .h3-contact .h3-cols__text p + p {
-    margin-top: 1.15em;
-  }
-
-  .home-three .h3-facts li {
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 0.85rem;
-    padding: 1.45rem 0 1.35rem;
-  }
-
-  .home-three .h3-facts .h3-facts__k,
-  .home-three .h3-facts .h3-facts__v {
-    color: var(--h3-ink);
-    text-align: left;
-    white-space: normal;
-  }
-
-  .home-three .h3-facts .h3-facts__v {
-    line-height: 1.7;
-  }
-
-  .home-three .h3-contact .h3-text-link {
-    justify-content: center;
-    width: 100%;
-    margin-top: 0.85rem;
-    color: var(--h3-ink);
-  }
-
-  .home-three .h3-contact .h3-text-link::after {
-    content: none;
-  }
-
   .home-three .h3-chapter__intro {
     margin-bottom: var(--h3-stack-gap);
   }

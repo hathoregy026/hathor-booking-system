@@ -25,7 +25,7 @@ import {
 } from "@/lib/admin-device-preview";
 import "../hathor-fonts.css";
 import "../public.css";
-import "../lux-footer.css";
+import "../site-footer.css";
 import "../interior-design-system.css";
 import "../atelier-text-split.css";
 import "../anima-title-split.css";

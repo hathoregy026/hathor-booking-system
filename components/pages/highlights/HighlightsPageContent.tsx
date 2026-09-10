@@ -652,17 +652,6 @@ export function HighlightsPageContent() {
               </div>
             </aside>
           </div>
-
-          <div className="hl-epilogue__legal">
-            <span>
-              Hathor Cruise <span className="hl-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Privacy</Link>
-              <Link href="/contact">Cookies</Link>
-              <Link href="/contact">Legal</Link>
-            </nav>
-          </div>
         </section>
       </main>
     </div>

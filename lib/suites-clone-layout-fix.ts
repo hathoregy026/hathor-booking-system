@@ -982,7 +982,10 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   }
 }
 
-/* Lux footer — phone only */
+/* Site footer inside the clone — phone only.
+   Skin and layout come from /suites-normal/styles/hathor-lux-footer.css, which
+   is generated from app/lux-footer.css by scripts/sync-suites-footer-css.mjs.
+   Only the host seat lives here. */
 @media (min-width: 481px) {
   html body .hathor-lux-footer-host {
     display: none !important;
@@ -992,179 +995,92 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
 html body .hathor-lux-footer-host {
   position: relative !important;
   z-index: 5 !important;
-  background: #ece8df !important;
-  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__top {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 0.85rem !important;
-  padding: 2.25rem var(--wrapper-padd, 1.25rem) 1.75rem !important;
-}
-
-html body .hathor-lux-footer-host .suites-eyebrow,
-html body .hathor-lux-footer-host .lux-footer__col-title {
-  color: #806b35 !important;
-  -webkit-text-fill-color: #806b35 !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__headline,
-html body .hathor-lux-footer-host .typo-page-title {
-  color: #14120e !important;
-  -webkit-text-fill-color: #14120e !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__script,
-html body .hathor-lux-footer-host .lux-footer__subhead,
-html body .hathor-lux-footer-host .typo-body-text,
-html body .hathor-lux-footer-host .lux-footer__tagline,
-html body .hathor-lux-footer-host .lux-footer__link,
-html body .hathor-lux-footer-host .lux-footer__meta-link,
-html body .hathor-lux-footer-host .lux-footer__social-link {
-  color: #4a453c !important;
-  -webkit-text-fill-color: #4a453c !important;
-  opacity: 1 !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__subhead,
-html body .hathor-lux-footer-host .typo-body-text {
-  max-width: 28rem !important;
-  font-size: 0.98rem !important;
-  line-height: 1.55 !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__legal,
-html body .hathor-lux-footer-host .lux-footer__crafted {
-  color: #6b5f48 !important;
-  -webkit-text-fill-color: #6b5f48 !important;
-}
-
-html body .hathor-lux-footer-host .suites-cta-primary,
-html body .hathor-lux-footer-host .suites-cta-secondary {
-  ${PILL}
-  border-color: #241d14 !important;
-  color: #241d14 !important;
   background: transparent !important;
-}
-
-html body .hathor-lux-footer-host .suites-cta-primary {
-  background: #12100c !important;
-  border-color: #12100c !important;
-  color: #cdb684 !important;
-  -webkit-text-fill-color: #cdb684 !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__subscribe {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 0.65rem !important;
-  justify-content: flex-start !important;
-  width: 100% !important;
-  margin-top: 0.35rem !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__grid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 1.35rem 1rem !important;
-  padding: 0.5rem var(--wrapper-padd, 1.25rem) 1.75rem !important;
-}
-
-html body .hathor-lux-footer-host .lux-footer__col--brand {
-  grid-column: 1 / -1 !important;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
 }
 `;
 
 export const SUITES_LUX_FOOTER_HOST_HTML = `
-<div class="hathor-lux-footer-host public-site" data-hathor-suites-lux-footer="1">
-  <footer class="lux-footer is-copy-ready">
-    <div class="lux-footer__noise" aria-hidden="true"></div>
-    <div class="lux-footer__glow" aria-hidden="true"></div>
-    <div class="lux-footer__inner">
-      <div class="lux-footer__top">
-        <p class="suites-eyebrow">Your Nile Awaits</p>
-        <h2 class="lux-footer__headline typo-page-title">Begin Your Journey</h2>
-        <p class="lux-footer__script">A voyage shaped around you</p>
-        <p class="lux-footer__subhead typo-body-text">
-          Join our exclusive circle for private itineraries and early access to rare voyages.
-        </p>
-        <div class="lux-footer__subscribe suites-cta-row">
-          <a class="suites-cta-primary" href="/suites?book=1" target="_top" data-ajax-page-ignore>Request Availability</a>
-          <a class="suites-cta-secondary suites-cta-secondary--ink" href="/contact" target="_top" data-ajax-page-ignore>Speak With Concierge</a>
+<div class="hathor-lux-footer-host" data-hathor-suites-lux-footer="1">
+  <footer class="hf is-revealed" role="contentinfo">
+    <div class="hf__ghost" aria-hidden="true">
+      <svg viewBox="0 4 250 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M158.42,56.79l-6.04-.02c-.27-.49-.23-1.06-.12-1.62.38-.06.66-.07.99-.28v-17.75s-21.23.02-21.23.02l-.08,16.68,1.47,3.05-7.45-.08,1.74-2.99V21.52s4.29,1.19,4.29,1.19l.02,12.99,21.21.04.05-10.26c0-1.19,1.68-.19,4.05-1.15l.05,30.62,1.17.18c.1.53.13.99-.11,1.65Z"/>
+        <path fill="currentColor" d="M105.6,56.84l-7.74.03,1.9-2.89v-31.12s-10.56-.01-10.56-.01c-.49.62-.74,1.18-1.5,1.69v-4.56s29.47-.01,29.47-.01v4.68s-1.62-1.81-1.62-1.81l-11.45.03-.02,31.14,1.51,2.83Z"/>
+        <path fill="currentColor" d="M201.86,28.83c-2.42-4.17-6.25-6.86-10.69-8.08-.11-.46.32-.76.76-.73,3.33.2,6.35,1.48,8.99,3.44,5.45,4.03,8.22,10.38,7.57,17.12-.7,7.32-5.44,13.35-12.42,15.82-7.75,2.74-16.61.64-22.25-5.39-2.43-2.6-3.81-5.7-4.44-9.13-1.84-10.03,4.23-19.57,14.13-22.04.35-.09.62.12.64.37.02.18-.03.59-.32.71-5.63,2.27-9.72,7.08-10.91,13.12-1.12,5.72.39,11.67,4.25,16.04,2.82,3.19,6.65,4.78,10.84,4.97,5.6.26,10.67-2.36,13.63-7.14,3.58-5.77,3.69-13.11.22-19.08Z"/>
+        <path fill="currentColor" d="M193.87,14.12c-1.91.92-3.82.77-5.49-.32l-2.51-1.63-2.25-.38c-.17-.03-.37-.17-.44-.29-.3-.5,1.86-1.82,3.92-.34,2.64,1.89,5.87,1.82,8.36-.28.3-.25.87-.25,1.19-.15.3.09.78.58.47,1.04-.72,1.11-2.02,1.75-3.26,2.35Z"/>
+        <circle fill="currentColor" cx="190.3" cy="8.8" r="1.92"/>
+        <path fill="currentColor" d="M228.68,40.59c4.67.07,8.49-3.01,9.48-7.58.83-3.82-.57-7.44-3.87-9.62-2.64-1.74-5.89-2.2-8.97-1.45v31.84s1.58,3.07,1.58,3.07h-7.73s2.03-3.01,2.03-3.01v-31.22s-1.8-2.37-1.8-2.37l7.09-.11c6.6-.1,13.44,1.03,15.58,7.88,1.8,5.74-1.52,11.75-7.27,13.59.76,1.53,1.74,2.52,2.67,3.74,3.35,4.37,7.2,7.97,11.85,11.46-2.9.72-5.71-.41-8-2.2-3.82-2.97-6.94-6.58-9.94-10.37l-2.7-3.67Z"/>
+        <path fill="currentColor" d="M34.02,56.81l-7.53.1,1.91-2.88.02-16.9H6.81s-.06,5.44-.06,5.44c-.04,3.85-.2,7.62.09,11.44l1.4,2.85-7.57.03,1.82-2.88.03-31.55-1.71-2.24h6.91c.18-.01.22.68.08.8-.17.14-.55.2-1,.27-.26,4.8-.06,9.59-.01,14.44h21.62s-.05-13.14-.05-13.14c0-.92-1.24-1.36-1.61-2.36l6.69-.02c.27,0,.34.46.27.64-.19.49-1.14.27-1.14,1.14v31.94s1.44,2.88,1.44,2.88Z"/>
+        <path fill="currentColor" d="M60.48,42.7c-1.66,1.17-3.14,2.4-4.45,3.86-2.22,2.49-4.31,4.96-5.83,7.97-.25.49.25,1.46-.39,1.95l-7.33.03c4.46-5.23,9.12-9.95,14.17-14.45,3.13-2.85,6.59-5.08,10.69-6.25l-4.81-11.14-7.62,16.23c-.48,1.12-1.34,1.91-2.54,2.29l11.78-27.51,12.11,26.46,4.05,8.94c.95,2.1,1.98,4,3.5,5.83-1.4.5-2.6.04-3.77-.63-4.1-2.36-6.15-8-7.93-12.44l3.54-.14c.63-.8-.24-2.15-1.26-2.32-4.69-.78-9.96-1.45-13.91,1.33Z"/>
+      </svg>
+    </div>
+
+    <div class="hf__media" aria-hidden="true">
+      <video class="hf__video" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true" data-hathor-footer-reel="/media/hathor/videos/footer-dahabiya-cruise-nile-egypt-tours.mp4"></video>
+    </div>
+
+    <div class="hf__inner">
+      <div class="hf__lede">
+        <div>
+          <h2 class="hf__title">Your Nile Story<br />Begins Here</h2>
+          <p class="hf__script">Adventures the Nile</p>
         </div>
-      </div>
-      <div class="lux-footer__main">
-        <div class="lux-footer__grid">
-          <div class="lux-footer__col lux-footer__col--brand">
-            <p class="lux-footer__col-title">The Vessel</p>
-            <p class="lux-footer__tagline">
-              Navigating the eternal Nile with unparalleled elegance since 2024.
-              A private dahabiya for travellers who prefer stillness, craft, and rare itineraries.
-            </p>
-            <p class="lux-footer__brand-meta">
-              <a href="mailto:reservations@hathorcruise.com" class="lux-footer__meta-link" target="_top" data-ajax-page-ignore>reservations@hathorcruise.com</a>
-            </p>
-            <p class="lux-footer__brand-meta">
-              <a href="tel:+201270496896" class="lux-footer__meta-link" target="_top" data-ajax-page-ignore>+20 127 049 6896</a>
-            </p>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Suites</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/suites" target="_top" data-ajax-page-ignore>Suites Overview</a></li>
-              <li><a class="lux-footer__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Luxury Rooms</a></li>
-              <li><a class="lux-footer__link" href="/rooms" target="_top" data-ajax-page-ignore>Luxury Suites</a></li>
-              <li><a class="lux-footer__link" href="/royal-suites" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Voyages</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/cruises" target="_top" data-ajax-page-ignore>Scheduled Voyages</a></li>
-              <li><a class="lux-footer__link" href="/charter" target="_top" data-ajax-page-ignore>Private Charter</a></li>
-              <li><a class="lux-footer__link" href="/highlights" target="_top" data-ajax-page-ignore>Highlights</a></li>
-              <li><a class="lux-footer__link" href="/about" target="_top" data-ajax-page-ignore>Our Story</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Experiences</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/wellness" target="_top" data-ajax-page-ignore>Wellness &amp; Spa</a></li>
-              <li><a class="lux-footer__link" href="/gastronomy" target="_top" data-ajax-page-ignore>Dining</a></li>
-              <li><a class="lux-footer__link" href="/blogs" target="_top" data-ajax-page-ignore>Journal</a></li>
-              <li><a class="lux-footer__link" href="/partners" target="_top" data-ajax-page-ignore>Partners</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Concierge</p>
-            <ul class="lux-footer__links">
-              <li><a class="lux-footer__link" href="/contact" target="_top" data-ajax-page-ignore>Contact Concierge</a></li>
-              <li><a class="lux-footer__link" href="/contact" target="_top" data-ajax-page-ignore>FAQ</a></li>
-            </ul>
-          </div>
-          <div class="lux-footer__col">
-            <p class="lux-footer__col-title">Follow the Voyage</p>
-            <ul class="lux-footer__social">
-              <li><a class="lux-footer__social-link" href="https://www.instagram.com/hathorcruise/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">IG</a></li>
-              <li><a class="lux-footer__social-link" href="https://www.linkedin.com/company/hathor-dahabiya-cruise" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">IN</a></li>
-              <li><a class="lux-footer__social-link" href="https://www.facebook.com/Hathorcruise" target="_blank" rel="noopener noreferrer" aria-label="Facebook">FB</a></li>
-            </ul>
+        <div class="hf__desk">
+          <p class="hf__eyebrow">Private Reservations</p>
+          <div class="hf__actions">
+            <a class="hf__cta hf__cta--fill" href="/suites?book=1" target="_top" data-ajax-page-ignore>Book Now</a>
+            <a class="hf__cta hf__cta--line" href="/charter" target="_top" data-ajax-page-ignore>Charter the Boat</a>
           </div>
         </div>
       </div>
-      <div class="lux-footer__bottom">
-        <div class="lux-footer__bottom-row">
-          <p class="lux-footer__legal">© 2026 Hathor Cruise. All rights reserved.</p>
-          <p class="lux-footer__crafted">Crafted with precision in Egypt.</p>
-        </div>
+
+      <div class="hf__nav">
+        <nav class="hf__col" aria-labelledby="hf-col-explore">
+          <h3 class="hf__col-title" id="hf-col-explore">Explore</h3>
+          <ul class="hf__links">
+            <li><a class="hf__link" href="/cruises-list" target="_top" data-ajax-page-ignore>Cruises</a></li>
+            <li><a class="hf__link" href="/suites" target="_top" data-ajax-page-ignore>Suites</a></li>
+            <li><a class="hf__link" href="/luxury-cabins-Nile-Cruise" target="_top" data-ajax-page-ignore>Cabins</a></li>
+            <li><a class="hf__link" href="/charter" target="_top" data-ajax-page-ignore>Private Charter</a></li>
+          </ul>
+        </nav>
+        <nav class="hf__col" aria-labelledby="hf-col-aboard">
+          <h3 class="hf__col-title" id="hf-col-aboard">Aboard</h3>
+          <ul class="hf__links">
+            <li><a class="hf__link" href="/gastronomy" target="_top" data-ajax-page-ignore>Gastronomy</a></li>
+            <li><a class="hf__link" href="/wellness" target="_top" data-ajax-page-ignore>Seneb Spa</a></li>
+            <li><a class="hf__link" href="/royal-suites" target="_top" data-ajax-page-ignore>Royal Suites</a></li>
+            <li><a class="hf__link" href="/about" target="_top" data-ajax-page-ignore>About</a></li>
+          </ul>
+        </nav>
+        <nav class="hf__col" aria-labelledby="hf-col-route">
+          <h3 class="hf__col-title" id="hf-col-route">Route</h3>
+          <ul class="hf__links">
+            <li><a class="hf__link" href="/voyages" target="_top" data-ajax-page-ignore>All Voyages</a></li>
+            <li><a class="hf__link" href="/voyages/luxor-to-aswan" target="_top" data-ajax-page-ignore>Luxor to Aswan</a></li>
+            <li><a class="hf__link" href="/voyages/aswan-to-luxor" target="_top" data-ajax-page-ignore>Aswan to Luxor</a></li>
+            <li><a class="hf__link" href="/highlights" target="_top" data-ajax-page-ignore>Highlights</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="hf__base">
+        <p class="hf__legal">© 2019–2026 Hathor Dahabiya · Egypt</p>
+        <nav class="hf__utility" aria-label="Legal and contact">
+          <a class="hf__base-link" href="/contact" target="_top" data-ajax-page-ignore>Contact</a>
+          <a class="hf__base-link" href="/blogs" target="_top" data-ajax-page-ignore>Journal</a>
+          <a class="hf__base-link" href="/partners" target="_top" data-ajax-page-ignore>Partners</a>
+          <a class="hf__base-link" href="/terms-and-conditions" target="_top" data-ajax-page-ignore>Terms</a>
+        </nav>
+        <button type="button" class="hf__top" data-hathor-footer-top aria-label="Back to top of page">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M12 19V5M12 5l-6 6M12 5l6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
   </footer>
 </div>
 `;
-
 /**
  * Wrap suite collection cards (excluding the closing last-item) in a
  * home-3-style horizontal snap rail for phone/tablet.
@@ -1327,12 +1243,76 @@ export function injectSuitesLuxFooter(doc: Document) {
   const host = wrap.firstElementChild;
   if (!host) return;
 
+  /* The clone ships its own footer band; the site footer replaces it. */
   const cloneFooter = doc.querySelector(".mod-footer");
   if (cloneFooter?.parentElement) {
     cloneFooter.parentElement.insertBefore(host, cloneFooter.nextSibling);
-    return;
+    cloneFooter.remove();
+  } else {
+    doc.body?.appendChild(host);
   }
-  doc.body?.appendChild(host);
+
+  bindSuitesFooterBehaviour(doc, host);
+}
+
+/**
+ * The footer inside the clone has no React around it, so the two behaviours the
+ * host component gets for free are wired by hand: the reel loads on approach
+ * (never on data-saver or reduced motion) and the arrow returns the clone's own
+ * scroller to the top.
+ */
+function bindSuitesFooterBehaviour(doc: Document, host: Element) {
+  const view = doc.defaultView;
+
+  const video = host.querySelector<HTMLVideoElement>("[data-hathor-footer-reel]");
+  const src = video?.dataset.hathorFooterReel ?? "";
+  if (video && src && view) {
+    const reduceMotion =
+      view.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const connection = (
+      view.navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
+    const lightweight =
+      connection?.saveData === true ||
+      /2g/.test(connection?.effectiveType ?? "");
+
+    const start = () => {
+      if (lightweight || video.src) return;
+      video.src = src;
+      video.addEventListener(
+        "loadeddata",
+        () => host.querySelector(".hf")?.classList.add("is-on-water"),
+        { once: true },
+      );
+      if (reduceMotion) video.load();
+      else void video.play().catch(() => {});
+    };
+
+    if (typeof view.IntersectionObserver === "undefined") {
+      start();
+    } else {
+      const observer = new view.IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) start();
+            else if (!video.paused) video.pause();
+          }
+        },
+        { rootMargin: "20% 0px 0px", threshold: 0 },
+      );
+      observer.observe(host);
+    }
+  }
+
+  host
+    .querySelector<HTMLButtonElement>("[data-hathor-footer-top]")
+    ?.addEventListener("click", () => {
+      const reduceMotion =
+        view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+      view?.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    });
 }
 
 export function stripParenthesesFromSuitesCopy(doc: Document) {

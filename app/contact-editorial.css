@@ -98,14 +98,6 @@ html:has(.contact-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.contact-editorial) .lux-footer,
-  html:has(.contact-editorial) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 /* ------------------------------------------------------------------- reset */
 .contact-editorial *,
 .contact-editorial *::before,
@@ -182,12 +174,6 @@ html:has(.contact-editorial) .public-fab {
   line-height: 1.55;
   color: var(--ce-ink-soft);
   max-width: 34ch;
-}
-
-.contact-editorial .ce-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
 }
 
 /* Clip-mask used by every reveal: the inner span slides up inside a clipped
@@ -1156,30 +1142,6 @@ html:has(.contact-editorial) .public-fab {
   padding: 0 1.85rem;
 }
 
-/* --- legal bar */
-.ce-epilogue__legal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2.5rem, 6vw, 5rem);
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--ce-hair);
-  font-size: var(--ce-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ce-ink-soft);
-}
-
-.ce-epilogue__legal nav {
-  display: flex;
-  gap: 1.6rem;
-}
-
-.ce-epilogue__legal a:hover {
-  color: var(--ce-ink);
-}
-
 /* ==========================================================================
    RESPONSIVE
    950px is the structural break: the horizontal act becomes a vertical
@@ -1331,12 +1293,6 @@ html:has(.contact-editorial) .public-fab {
 
   .ce-epilogue__board {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .ce-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.9rem;
   }
 }
 

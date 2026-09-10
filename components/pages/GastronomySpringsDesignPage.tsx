@@ -432,10 +432,6 @@ export function GastronomySpringsDesignPage() {
             <h3>PRIVATE DINING</h3>
             <p>Private dining can be arranged in selected onboard settings for guests seeking a more personal experience.</p>
           </div>
-          <div className="nib-epilogue__legal">
-            <span>HATHOR DAHABIYA ©2026</span>
-            <a href="/privacy">PRIVACY</a><a href="/terms">VOYAGE TERMS</a><a href="/contact">CONTACT</a>
-          </div>
         </section>
       </main>
 

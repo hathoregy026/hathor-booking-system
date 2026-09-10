@@ -584,17 +584,6 @@ export function WellnessEditorialPageContent() {
               </div>
             </aside>
           </div>
-
-          <div className="we-epilogue__legal">
-            <span>
-              Hathor Cruise <span className="we-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Privacy</Link>
-              <Link href="/contact">Cookies</Link>
-              <Link href="/contact">Legal</Link>
-            </nav>
-          </div>
         </section>
       </main>
     </div>

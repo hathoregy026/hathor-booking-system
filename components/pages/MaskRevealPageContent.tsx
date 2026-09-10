@@ -675,7 +675,7 @@ export function MaskRevealPageContent() {
             </ul>
           </nav>
 
-          <footer className="mr-cta">
+          <section className="mr-cta" aria-label="Reserve a voyage">
             <div className="mr-cta__inner">
               <p className="mr-cta__eyebrow">Voyages</p>
               {ctaTitle ? (
@@ -696,7 +696,7 @@ export function MaskRevealPageContent() {
                 </Link>
               </div>
             </div>
-          </footer>
+          </section>
         </div>
       </div>
     </div>

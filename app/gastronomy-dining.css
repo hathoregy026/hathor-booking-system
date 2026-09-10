@@ -843,16 +843,6 @@ html[data-gastronomy-dining] body {
 
 .nib-epilogue__feature p { margin-top: 1rem; }
 
-.nib-epilogue__legal {
-  display: flex;
-  gap: 2.5rem;
-  align-items: center;
-  color: var(--nib-gold);
-  font-size: 0.8rem;
-}
-
-.nib-epilogue__legal span { margin-right: auto; }
-
 .gastronomy-dining-footer {
   position: relative;
   z-index: 2;
@@ -1063,8 +1053,6 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
   .nib-epilogue__social span:last-child { width: 100%; margin: 0; }
   .nib-epilogue__feature { width: min(86vw, 32rem); }
   .nib-epilogue__feature figure { height: 65vw; max-height: 25rem; }
-  .nib-epilogue__legal { flex-wrap: wrap; gap: 1rem 1.5rem; }
-  .nib-epilogue__legal span { width: 100%; }
 }
 
 @media (max-width: 480px) {

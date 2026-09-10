@@ -82,14 +82,6 @@ html:has(.charter-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.charter-editorial) .lux-footer,
-  html:has(.charter-editorial) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 .charter-editorial *,
 .charter-editorial *::before,
 .charter-editorial *::after {
@@ -198,12 +190,6 @@ html:has(.charter-editorial) .public-fab {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--chr-ink-soft);
-}
-
-.charter-editorial .chr-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
 }
 
 /* Title lines: each phrase stays on one line; words never split */
@@ -1164,29 +1150,6 @@ html:has(.charter-editorial) .public-fab {
   height: auto;
 }
 
-.chr-epilogue__legal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2.2rem, 5vw, 4rem);
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--chr-hair);
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--chr-ink-soft);
-}
-
-.chr-epilogue__legal nav {
-  display: flex;
-  gap: 1.4rem;
-}
-
-.chr-epilogue__legal a:hover {
-  color: var(--chr-ink);
-}
-
 /* --------------------------------------------------------------- form */
 .charter-editorial .ch-request {
   display: flex;
@@ -1454,12 +1417,6 @@ html:has(.charter-editorial) .public-fab {
 
   .chr-epilogue__board {
     grid-template-columns: 1fr;
-  }
-
-  .chr-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.85rem;
   }
 }
 

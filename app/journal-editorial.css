@@ -92,14 +92,6 @@ html:has(.journal-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.journal-editorial) .lux-footer,
-  html:has(.journal-editorial) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 /* ------------------------------------------------------------------- reset */
 .journal-editorial *,
 .journal-editorial *::before,
@@ -194,12 +186,6 @@ html:has(.journal-editorial) .public-fab {
   overflow-wrap: normal;
   word-break: normal;
   hyphens: none;
-}
-
-.journal-editorial .jn-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
 }
 
 /* Whole-line reveal — never splits a word across lines via character nodes */
@@ -1139,30 +1125,6 @@ html:has(.journal-editorial) .public-fab {
   margin-top: 0.4rem;
 }
 
-.jn-epilogue__legal {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2.5rem, 6vw, 4.5rem);
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--jn-hair);
-  font-size: var(--jn-t-meta);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--jn-ink-soft);
-}
-
-.jn-epilogue__legal nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-}
-
-.jn-epilogue__legal a:hover {
-  color: var(--jn-gold-deep);
-}
-
 /* ==========================================================================
    RESPONSIVE — 950px structural break to vertical document
    ========================================================================== */
@@ -1369,11 +1331,6 @@ html:has(.journal-editorial) .public-fab {
 
   .jn-folio__nav {
     gap: 0.9rem;
-  }
-
-  .jn-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
 

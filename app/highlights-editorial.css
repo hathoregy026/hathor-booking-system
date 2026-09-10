@@ -92,14 +92,6 @@ html:has(.highlights-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.highlights-editorial) .lux-footer,
-  html:has(.highlights-editorial) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 /* ------------------------------------------------------------------- reset */
 .highlights-editorial *,
 .highlights-editorial *::before,
@@ -180,12 +172,6 @@ html:has(.highlights-editorial) .public-fab {
   line-height: 1.55;
   color: var(--hl-ink-soft);
   max-width: 36ch;
-}
-
-.highlights-editorial .hl-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
 }
 
 /* clip-mask reveal */
@@ -1234,29 +1220,6 @@ html:has(.highlights-editorial) .public-fab {
   text-transform: uppercase;
 }
 
-.hl-epilogue__legal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2.5rem, 6vw, 5rem);
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--hl-hair);
-  font-size: var(--hl-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--hl-ink-soft);
-}
-
-.hl-epilogue__legal nav {
-  display: flex;
-  gap: 1.6rem;
-}
-
-.hl-epilogue__legal a:hover {
-  color: var(--hl-ink);
-}
-
 /* ==========================================================================
    RESPONSIVE — 950px is the structural break
    ========================================================================== */
@@ -1529,12 +1492,6 @@ html:has(.highlights-editorial) .public-fab {
 
   .hl-epilogue__pair .hl-media {
     max-height: none;
-  }
-
-  .hl-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.9rem;
   }
 }
 

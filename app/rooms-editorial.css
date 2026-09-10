@@ -232,11 +232,6 @@ html:has(.accom-catalog) .public-fab {
   max-width: 42ch;
 }
 
-.accom-catalog .ac-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-}
-
 .accom-catalog .ac-rise {
   display: block;
   overflow: clip;
@@ -1425,7 +1420,7 @@ html:has(.accom-catalog) .public-fab {
     font-size: 0.62rem;
   }
 
-  .accom-editorial-shell .lux-footer {
+  .accom-editorial-shell .hf {
     padding-bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 5.5rem);
   }
 }

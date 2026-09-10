@@ -1,51 +1,71 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, type CSSProperties } from "react";
+import { BookNowTrigger } from "@/components/public/BookNowTrigger";
+import { HATHOR_FOOTER_VIDEO_SRC } from "@/lib/branding";
+import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { FooterSubscribe } from "@/components/layout/FooterSubscribe";
+import { SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
 
-/** Resolve live theme tokens so hover motion stays on-brand. */
-function footerTheme(el: Element) {
-  const styles = getComputedStyle(el);
-  return {
-    gold: styles.getPropertyValue("--lux-gold").trim() || "#b69f64",
-    text: styles.getPropertyValue("--lux-ink-soft").trim() || "#4a3f32",
-    muted: styles.getPropertyValue("--lux-muted").trim() || "#6b6560",
-  };
-}
+/**
+ * The site footer. One composition, every route, every viewport.
+ *
+ * Editorial order is the read order: the invitation and the reservations desk
+ * first, then the map of the site, then the legal line. Everything is real
+ * markup in flow — the video and the wordmark ghost are the only absolutely
+ * positioned layers, and neither carries meaning.
+ *
+ * The reel is decorative and lazy: nothing is fetched until the footer is
+ * within a viewport of the fold, and reduced-motion holds it on its first
+ * frame rather than hiding the river entirely.
+ */
 
-const EXPERIENCE_LINKS = [
-  { href: "/voyages", label: "Our Voyages" },
-  { href: "/charter", label: "Private Charter" },
+const FOUNDED_YEAR = 2019;
+
+/** Column one — what a guest can book. */
+const EXPLORE_LINKS = [
+  { href: "/cruises-list", label: "Cruises" },
   { href: "/suites", label: "Suites" },
-  { href: "/luxury-cabins-Nile-Cruise", label: "Luxury Rooms" },
+  { href: "/luxury-cabins-Nile-Cruise", label: "Cabins" },
+  { href: "/charter", label: "Private Charter" },
 ] as const;
 
-const INFO_LINKS = [
+/** Column two — what happens on board. */
+const ABOARD_LINKS = [
+  { href: "/gastronomy", label: "Gastronomy" },
+  { href: "/wellness", label: "Seneb Spa" },
   { href: "/royal-suites", label: "Royal Suites" },
-  { href: "/blogs", label: "Journal" },
-  { href: "/contact", label: "Contact Concierge" },
-  { href: "/terms-and-conditions", label: "Terms & Conditions" },
+  { href: "/about", label: "About" },
 ] as const;
 
-type SocialKey = "instagram" | "linkedin" | "facebook";
+/** Column three — where the boat actually goes. */
+const ROUTE_LINKS = [
+  { href: "/voyages", label: "All Voyages" },
+  { href: "/voyages/luxor-to-aswan", label: "Luxor to Aswan" },
+  { href: "/voyages/aswan-to-luxor", label: "Aswan to Luxor" },
+  { href: "/highlights", label: "Highlights" },
+] as const;
 
-const SOCIAL_ORDER: SocialKey[] = ["instagram", "linkedin", "facebook"];
+const UTILITY_LINKS = [
+  { href: "/contact", label: "Contact" },
+  { href: "/blogs", label: "Journal" },
+  { href: "/partners", label: "Partners" },
+  { href: "/terms-and-conditions", label: "Terms" },
+] as const;
 
-function FooterBgWordmark({ className }: { className?: string }) {
-  /* Cropped HATHOR only — subtitle paths omitted; viewBox trims lower band */
+const NAV_COLUMNS = [
+  { id: "explore", title: "Explore", links: EXPLORE_LINKS },
+  { id: "aboard", title: "Aboard", links: ABOARD_LINKS },
+  { id: "route", title: "Route", links: ROUTE_LINKS },
+] as const;
+
+/** HATHOR only — the viewBox trims the subtitle band off the brand mark. */
+function WordmarkGhost() {
   return (
-    <svg
-      className={className}
-      viewBox="0 4 250 56"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-      focusable="false"
-    >
+    <svg viewBox="0 4 250 56" xmlns="http://www.w3.org/2000/svg" aria-hidden focusable="false">
       <path
         fill="currentColor"
         d="M158.42,56.79l-6.04-.02c-.27-.49-.23-1.06-.12-1.62.38-.06.66-.07.99-.28v-17.75s-21.23.02-21.23.02l-.08,16.68,1.47,3.05-7.45-.08,1.74-2.99V21.52s4.29,1.19,4.29,1.19l.02,12.99,21.21.04.05-10.26c0-1.19,1.68-.19,4.05-1.15l.05,30.62,1.17.18c.1.53.13.99-.11,1.65Z"
@@ -79,13 +99,13 @@ function FooterBgWordmark({ className }: { className?: string }) {
   );
 }
 
-function AnkhIcon({ className }: { className?: string }) {
+function ArrowUpIcon() {
   return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden fill="none">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden focusable="false">
       <path
-        d="M12 8.2c-1.7 0-3-1.2-3-2.7S10.3 2.8 12 2.8s3 1.2 3 2.7-1.3 2.7-3 2.7Zm0 0V21M7.5 13.5h9"
+        d="M12 19V5M12 5l-6 6M12 5l6 6"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.4"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -93,361 +113,337 @@ function AnkhIcon({ className }: { className?: string }) {
   );
 }
 
-function SocialGlyph({ platform }: { platform: SocialKey }) {
-  const icons: Record<SocialKey, ReactNode> = {
-    instagram: (
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-        <circle cx="12" cy="12" r="4" />
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-    linkedin: (
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <rect x="3.5" y="3.5" width="17" height="17" rx="2" />
-        <path d="M8 11v6M8 8.2v.1M12 17v-3.8c0-1.2.8-2 2-2s2 .8 2 2V17" />
-      </svg>
-    ),
-    facebook: (
-      <svg viewBox="0 0 24 24" aria-hidden>
-        <path d="M14 8h2.5V5.5H14c-2.2 0-4 1.8-4 4V12H7.5v2.5H10V21h3v-6.5h2.5V12H13v-2c0-.55.45-1 1-1Z" />
-      </svg>
-    ),
+/**
+ * Entity graph for the footer. The @id matches the homepage organisation node,
+ * so a crawler merges the two rather than seeing a second company: this adds
+ * the profiles, logo and reservations channel that every page can assert.
+ */
+function FooterStructuredData() {
+  const graph = {
+    "@context": "https://schema.org",
+    "@type": "TravelAgency",
+    "@id": `${SEO_SITE_ORIGIN}/#organization`,
+    name: "Hathor Dahabiya",
+    url: `${SEO_SITE_ORIGIN}/`,
+    logo: seoAbsoluteUrl("/branding/hathor-logo-nile-cruise-favicon.webp"),
+    email: PUBLIC_CONTACT.email,
+    telephone: PUBLIC_CONTACT.phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "One Kattamiya, Tower 211, Floor 11, Flat 111, Ring Road",
+      addressLocality: "Cairo",
+      addressCountry: "EG",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "reservations",
+      email: PUBLIC_CONTACT.email,
+      telephone: PUBLIC_CONTACT.phone,
+      availableLanguage: ["en", "ar"],
+    },
+    sameAs: PUBLIC_SOCIAL_LINKS.map((link) => link.href),
   };
 
-  return icons[platform];
-}
-
-const FOOTER_SOCIAL = SOCIAL_ORDER.map((key) =>
-  PUBLIC_SOCIAL_LINKS.find((link) => link.key === key),
-).filter((link): link is NonNullable<typeof link> => Boolean(link));
-
-function FooterNavLink({
-  href,
-  label,
-  external,
-}: {
-  href: string;
-  label: string;
-  external?: boolean;
-}) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const lineRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    const line = lineRef.current;
-    if (!el || !line) return;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    gsap.set(line, { scaleX: 0, transformOrigin: "left center" });
-    const theme = footerTheme(el);
-
-    const handleEnter = () => {
-      gsap.to(el, {
-        color: theme.gold,
-        duration: 0.35,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-      gsap.to(line, {
-        scaleX: 1,
-        duration: 0.45,
-        ease: "power3.out",
-        overwrite: "auto",
-      });
-    };
-
-    const handleLeave = () => {
-      gsap.to(el, {
-        color: theme.text,
-        duration: 0.4,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-      gsap.to(line, {
-        scaleX: 0,
-        duration: 0.35,
-        ease: "power2.inOut",
-        overwrite: "auto",
-      });
-    };
-
-    el.addEventListener("mouseenter", handleEnter);
-    el.addEventListener("mouseleave", handleLeave);
-
-    return () => {
-      el.removeEventListener("mouseenter", handleEnter);
-      el.removeEventListener("mouseleave", handleLeave);
-      gsap.killTweensOf([el, line]);
-    };
-  }, []);
-
-  const className = "lux-footer__link cursor-hover";
-  const content = (
-    <>
-      {label}
-      <span ref={lineRef} className="lux-footer__link-line" aria-hidden />
-    </>
-  );
-
-  if (external) {
-    return (
-      <a ref={ref} href={href} className={className}>
-        {content}
-      </a>
-    );
-  }
-
   return (
-    <Link ref={ref} href={href} className={className}>
-      {content}
-    </Link>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(graph).replace(/</g, "\\u003c"),
+      }}
+    />
   );
 }
 
-export function Footer({ showTopCta = true }: { showTopCta?: boolean }) {
-  const experienceLinks = EXPERIENCE_LINKS;
-  const infoLinks = INFO_LINKS;
+export function Footer() {
+  const pathname = usePathname();
   const rootRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const year = new Date().getFullYear();
 
+  /*
+   * The footer is a sibling of <main>, so it stands on the site shell's ground
+   * while the page above it stands on its own — and every route picks its own
+   * paper (#ded4c6 on the homepage, #ece4da on About, …). Left alone that draws
+   * a hard tonal line across the top edge of the footer.
+   *
+   * A stylesheet cannot read the page's colour, so this does: it takes the
+   * ground the route actually painted and hands it to the footer as --hf-seam.
+   * Re-read on navigation and on a theme flip; if the page paints nothing, the
+   * footer stays transparent, which is seamless for a different reason.
+   */
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
-    gsap.registerPlugin(ScrollTrigger);
+    const opaque = (value: string) =>
+      value && value !== "transparent" && !/rgba\(\s*0,\s*0,\s*0,\s*0\s*\)/.test(value);
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
+    /*
+     * Start at the last thing rendered inside <main> — that is what the footer's
+     * top edge actually butts against — and walk back up to <main>, keeping the
+     * OUTERMOST opaque background on the way. Outermost, not innermost: the
+     * innermost is whatever panel the closing scene happens to use, while the
+     * outermost is the route's own paper, which is the colour to match.
+     */
+    const readGround = () => {
+      const main = root.previousElementSibling as HTMLElement | null;
+      if (!main) return;
 
-    const ctx = gsap.context(() => {
-      const headline = root.querySelector(".lux-footer__headline");
-      const subhead = root.querySelector(".lux-footer__subhead");
-      const subscribe = root.querySelector(".lux-footer__subscribe");
-      const columns = root.querySelectorAll(".lux-footer__col");
-      const topEls = [headline, subhead, subscribe].filter(Boolean);
+      const rendered = (el: Element): el is HTMLElement =>
+        el instanceof HTMLElement &&
+        !/^(STYLE|SCRIPT|LINK|TEMPLATE|NOSCRIPT|META)$/.test(el.tagName) &&
+        getComputedStyle(el).display !== "none";
 
-      if (topEls.length) gsap.set(topEls, { y: 50, opacity: 0 });
-      gsap.set(columns, { y: 30, opacity: 0 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "top 85%",
-          once: true,
-          onEnter: () => root.classList.add("is-copy-ready"),
-        },
-      });
-
-      if (headline) {
-        tl.to(headline, {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.out",
-        });
+      let leaf: HTMLElement = main;
+      for (let depth = 0; depth < 12; depth += 1) {
+        const children = Array.from(leaf.children).filter(rendered);
+        if (!children.length) break;
+        leaf = children[children.length - 1];
       }
-      if (subhead) {
-        tl.to(
-          subhead,
-          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" },
-          headline ? "-=0.7" : 0,
-        );
+
+      let ground = "";
+      for (
+        let el: HTMLElement | null = leaf;
+        el && el !== main.parentElement;
+        el = el.parentElement
+      ) {
+        const bg = getComputedStyle(el).backgroundColor;
+        if (opaque(bg)) ground = bg;
       }
-      if (subscribe) {
-        tl.to(
-          subscribe,
-          { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" },
-          "-=0.65",
-        );
-      }
-      tl.to(
-        columns,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out",
-        },
-        topEls.length ? "-=0.45" : 0,
-      );
 
-      /* Refresh mid-page: if footer already intersects, show invitation copy */
-      requestAnimationFrame(() => {
-        const top = root.getBoundingClientRect().top;
-        if (top < window.innerHeight * 0.95) {
-          gsap.set([...topEls, ...columns], {
-            y: 0,
-            opacity: 1,
-          });
-          root.classList.add("is-copy-ready");
-        }
-      });
-    }, root);
+      if (ground) root.style.setProperty("--hf-seam", ground);
+      else root.style.removeProperty("--hf-seam");
+    };
 
-    return () => ctx.revert();
-  }, [showTopCta]);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    const icons = root.querySelectorAll<HTMLElement>(".lux-footer__social-link");
-    const cleanups: Array<() => void> = [];
-    const theme = footerTheme(root);
-
-    icons.forEach((icon) => {
-      const onEnter = () => {
-        gsap.to(icon, {
-          color: theme.gold,
-          scale: 1.1,
-          rotation: 5,
-          duration: 0.4,
-          ease: "elastic.out(1, 0.45)",
-          overwrite: "auto",
-        });
-      };
-      const onLeave = () => {
-        gsap.to(icon, {
-          color: theme.muted,
-          scale: 1,
-          rotation: 0,
-          duration: 0.45,
-          ease: "power3.out",
-          overwrite: "auto",
-        });
-      };
-      icon.addEventListener("mouseenter", onEnter);
-      icon.addEventListener("mouseleave", onLeave);
-      cleanups.push(() => {
-        icon.removeEventListener("mouseenter", onEnter);
-        icon.removeEventListener("mouseleave", onLeave);
-        gsap.killTweensOf(icon);
-      });
+    readGround();
+    /* The page's own stylesheet can land a frame late on a client navigation. */
+    const frame = requestAnimationFrame(readGround);
+    const settle = window.setTimeout(readGround, 400);
+    const themeWatch = new MutationObserver(readGround);
+    themeWatch.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-public-theme"],
     });
 
-    return () => cleanups.forEach((fn) => fn());
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(settle);
+      themeWatch.disconnect();
+    };
+  }, [pathname]);
+
+  /* Reveal + lazy reel share one observer: both fire off the same approach. */
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    /*
+     * Arm the pre-reveal state from here rather than in the stylesheet: the
+     * footer must be readable when this effect never runs, and the observer
+     * itself never delivers in a background tab.
+     */
+    if (!reduceMotion && typeof IntersectionObserver !== "undefined") {
+      root.dataset.hfArmed = "true";
+    }
+
+    const video = videoRef.current;
+    /* Data-saver and 2G visitors get the still ground, never the download. */
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
+    const lightweight =
+      connection?.saveData === true ||
+      /2g/.test(connection?.effectiveType ?? "");
+
+    const startVideo = () => {
+      if (!video || lightweight) return;
+      if (!video.src) video.src = HATHOR_FOOTER_VIDEO_SRC;
+      if (reduceMotion) {
+        /* Hold the first frame: the river is present, nothing moves. */
+        video.load();
+        return;
+      }
+      void video.play().catch(() => {});
+    };
+
+    /*
+     * The legal bar sits on open river, so it is set light — but only once
+     * there is actually a river under it. Until the first frame paints (and
+     * never, on a data-saver connection) it stays ink on the page's ground.
+     */
+    const onFirstFrame = () => root.classList.add("is-on-water");
+    video?.addEventListener("loadeddata", onFirstFrame, { once: true });
+
+    if (typeof IntersectionObserver === "undefined") {
+      startVideo();
+      return () => video?.removeEventListener("loadeddata", onFirstFrame);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            root.classList.add("is-revealed");
+            startVideo();
+          } else if (video && !video.paused) {
+            video.pause();
+          }
+        }
+      },
+      { rootMargin: "20% 0px 0px", threshold: 0 },
+    );
+
+    observer.observe(root);
+    return () => {
+      observer.disconnect();
+      video?.removeEventListener("loadeddata", onFirstFrame);
+      delete root.dataset.hfArmed;
+    };
   }, []);
 
+  /*
+   * The shared controller drives Lenis where it runs and falls back to the
+   * native scroller where it does not — calling window.scrollTo as well would
+   * put two animations on the same axis.
+   */
+  const scrollToTop = () => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    try {
+      ensurePublicScrollController().scrollTo(0, {
+        immediate: reduceMotion,
+        force: true,
+      });
+    } catch {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    }
+  };
+
   return (
-    <footer ref={rootRef} className="lux-footer">
-      <div className="lux-footer__noise" aria-hidden />
-      <div className="lux-footer__glow" aria-hidden />
+    <footer ref={rootRef} className="hf" role="contentinfo">
+      <FooterStructuredData />
 
-      <div className="lux-footer__inner">
-        {showTopCta ? (
-          <div className="lux-footer__top">
-            <h2 className="lux-footer__headline typo-page-title">
-              BEGIN YOUR JOURNEY
+      <div className="hf__ghost" aria-hidden>
+        <WordmarkGhost />
+      </div>
+
+      <div className="hf__media" aria-hidden>
+        <video
+          ref={videoRef}
+          className="hf__video"
+          muted
+          loop
+          playsInline
+          preload="none"
+          tabIndex={-1}
+          disablePictureInPicture
+          aria-hidden
+        />
+      </div>
+
+      <div className="hf__inner">
+        <div className="hf__lede">
+          <div className="hf__reveal">
+            <h2 className="hf__title">
+              Your Nile Story
+              <br />
+              Begins Here
             </h2>
-            <p className="lux-footer__subhead typo-body-text">
-              Join our exclusive circle for private itineraries and early access to rare
-              voyages.
-            </p>
-            <div className="lux-footer__subscribe">
-              <FooterSubscribe />
-            </div>
+            <p className="hf__script">Adventures the Nile</p>
           </div>
-        ) : null}
 
-        <div className="lux-footer__main">
-          <div className="lux-footer__bg-logo" aria-hidden>
-            <FooterBgWordmark className="lux-footer__bg-logo-img" />
-          </div>
-          <div className="lux-footer__grid">
-            <div className="lux-footer__col lux-footer__col--brand">
-              <p className="lux-footer__col-title">The Vessel</p>
-              <p className="lux-footer__tagline">
-                Navigating the eternal Nile with unparalleled elegance.
-                A private dahabiya for travellers who prefer stillness, craft, and
-                rare itineraries.
-              </p>
-              <p className="lux-footer__brand-meta">
-                <a
-                  href={`mailto:${PUBLIC_CONTACT.email}`}
-                  className="lux-footer__meta-link cursor-hover"
-                >
-                  {PUBLIC_CONTACT.email}
-                </a>
-              </p>
-              <p className="lux-footer__brand-meta">
-                <a
-                  href={`tel:${PUBLIC_CONTACT.phone}`}
-                  className="lux-footer__meta-link cursor-hover"
-                >
-                  {PUBLIC_CONTACT.phoneDisplay}
-                </a>
-              </p>
+          {/*
+            The reservations desk: the two actions, then the four facts a guest
+            actually needs to reach a person. This is the only place on the site
+            that carries them outside /contact — the homepage scene that used to
+            repeat them directly above this footer is gone.
+          */}
+          <div
+            className="hf__desk hf__reveal"
+            style={{ "--hf-delay": "120ms" } as CSSProperties}
+          >
+            <p className="hf__eyebrow">Private Reservations</p>
+            <div className="hf__actions">
+              <BookNowTrigger className="hf__cta">Book Now</BookNowTrigger>
+              <Link className="hf__cta hf__cta--line" href="/charter">
+                <span>Charter the Boat</span>
+              </Link>
             </div>
 
-            {experienceLinks.length > 0 ? (
-            <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Experiences</p>
-              <ul className="lux-footer__links">
-                {experienceLinks.map((link) => (
-                  <li key={link.label}>
-                    <FooterNavLink href={link.href} label={link.label} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-            ) : null}
-
-            {infoLinks.length > 0 ? (
-            <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Concierge</p>
-              <ul className="lux-footer__links">
-                {infoLinks.map((link) => (
-                  <li key={link.label}>
-                    <FooterNavLink href={link.href} label={link.label} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-            ) : null}
-
-            <div className="lux-footer__col">
-              <p className="lux-footer__col-title">Follow the Voyage</p>
-              <ul className="lux-footer__social">
-                {FOOTER_SOCIAL.map((link) => (
-                  <li key={link.key}>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="lux-footer__social-link cursor-hover"
-                      aria-label={link.label}
-                    >
-                      <SocialGlyph platform={link.key as SocialKey} />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <p className="lux-footer__social-note">
-                Dispatches from the river — private sailings, seasonal routes, and
-                moments reserved for our circle.
-              </p>
-            </div>
+            <address className="hf__facts">
+              <a className="hf__fact-link" href={`tel:${PUBLIC_CONTACT.phone}`}>
+                {PUBLIC_CONTACT.phoneDisplay}
+              </a>
+              <a
+                className="hf__fact-link"
+                href={`mailto:${PUBLIC_CONTACT.email}`}
+              >
+                {PUBLIC_CONTACT.email}
+              </a>
+              <span className="hf__fact">{PUBLIC_CONTACT.address}</span>
+              <span className="hf__fact">{PUBLIC_CONTACT.workingHours}</span>
+            </address>
           </div>
         </div>
 
-        <div className="lux-footer__bottom">
-          <div className="lux-footer__bottom-row">
-            <p className="lux-footer__legal">
-              © {year} Hathor Cruise. All rights reserved.
-            </p>
-            <p className="lux-footer__crafted">
-              Crafted with precision in Egypt.
-              <AnkhIcon className="lux-footer__crafted-icon" />
-            </p>
-          </div>
+        <div
+          className="hf__nav hf__reveal"
+          style={{ "--hf-delay": "200ms" } as CSSProperties}
+        >
+          {NAV_COLUMNS.map((column) => (
+            <nav
+              key={column.id}
+              className="hf__col"
+              aria-labelledby={`hf-col-${column.id}`}
+            >
+              <h3 className="hf__col-title" id={`hf-col-${column.id}`}>
+                {column.title}
+              </h3>
+              <ul className="hf__links">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link className="hf__link cursor-hover" href={link.href}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+
+        <div className="hf__base">
+          <p className="hf__legal">
+            © {FOUNDED_YEAR}–{year} Hathor Dahabiya · Egypt
+          </p>
+
+          <nav className="hf__utility" aria-label="Legal and contact">
+            {UTILITY_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                className="hf__base-link cursor-hover"
+                href={link.href}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            className="hf__top cursor-hover"
+            onClick={scrollToTop}
+            aria-label="Back to top of page"
+          >
+            <ArrowUpIcon />
+          </button>
         </div>
       </div>
     </footer>

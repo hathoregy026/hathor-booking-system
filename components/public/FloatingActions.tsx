@@ -72,10 +72,9 @@ export function FloatingActions() {
   /*
    * The dock is `position: fixed`, so once a page scrolls past its hero it
    * sits over whatever is at the bottom of the viewport for the rest of the
-   * page — including the shared footer, where it visually covers the
-   * "Crafted with precision in Egypt" line (confirmed live on /partners and
-   * every other page that mounts <Footer/>). Fade the dock out once the
-   * footer is actually on screen so it never overlaps footer content.
+   * page — including the shared footer, where it visually covers the legal
+   * bar and the return-to-top control. Fade the dock out once the footer is
+   * actually on screen so it never overlaps footer content.
    */
   useEffect(() => {
     if (!visible) return;
@@ -90,7 +89,7 @@ export function FloatingActions() {
       observer?.disconnect();
       observer = null;
 
-      const footer = document.querySelector(".lux-footer");
+      const footer = document.querySelector("footer.hf");
       if (!footer) return;
 
       observer = new IntersectionObserver(

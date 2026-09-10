@@ -88,7 +88,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):not(.hero-cta):not(#_) {
   box-sizing: border-box !important;
   display: inline-flex !important;
@@ -143,7 +143,7 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+      .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):not(.hero-cta):not(#_) {
     padding: 0 var(--hathor-btn-pad-x, 1.75rem) !important;
     text-box-trim: trim-both;
@@ -159,7 +159,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):not(.hero-cta):not(#_)
   :is(svg, .hathor-fav__icon, .hathor-atv__icon) {
   flex: 0 0 auto !important;
@@ -182,7 +182,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline,
-    .booking-btn-outline, .historia-btn
+    .booking-btn-outline, .historia-btn, .hf__cta
   ):not(.hero-cta):not(
     [data-hathor-btn="primary"],
     .btn-filled,
@@ -220,7 +220,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline,
-    .booking-btn-outline, .historia-btn
+    .booking-btn-outline, .historia-btn, .hf__cta
   ):not(.hero-cta):not(
     [data-hathor-btn="primary"],
     .btn-filled,
@@ -241,7 +241,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):not(.hero-cta):is(
     [data-hathor-btn="primary"],
     .btn-filled,
@@ -279,7 +279,7 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+      .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):hover:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_) {
     background-color: var(--hathor-btn-hover-bg) !important;
     background-image: none !important;
@@ -298,7 +298,7 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+      .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):hover:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_)
     :is(span, svg, .hathor-fav__icon, .hathor-atv__icon, .hero-cta-text) {
     color: var(--hathor-btn-hover-text) !important;
@@ -317,7 +317,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):active:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_) {
   background-color: var(--hathor-btn-hover-bg) !important;
   background-image: none !important;
@@ -335,7 +335,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):active:not(:disabled, [aria-disabled="true"], [data-loading="true"]):not(#_)
   :is(span, svg, .hathor-fav__icon, .hathor-atv__icon, .hero-cta-text) {
   color: var(--hathor-btn-hover-text) !important;
@@ -353,7 +353,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):focus-visible:not(#_) {
   outline: 2px solid var(--hathor-btn-hover-bg) !important;
   outline-offset: 3px !important;
@@ -368,7 +368,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):is(:disabled, [aria-disabled="true"]):not(#_) {
   opacity: 0.45 !important;
   cursor: not-allowed !important;
@@ -383,7 +383,7 @@ html[data-public-theme="dark"] {
     .public-btn-gold, .public-btn-outline-gold, .public-btn-dark,
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   )[data-loading="true"]:not(#_) {
   cursor: progress !important;
   transform: none !important;
@@ -404,7 +404,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):not(#_)::before,
 :is(
     .btn, .btn-light, .btn-dark, .btn-filled, .btn-primary, .btn-secondary,
@@ -413,7 +413,7 @@ html[data-public-theme="dark"] {
     .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
     .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
     .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-    .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+    .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
   ):not(#_)::after {
   opacity: 0 !important;
   animation: none !important;
@@ -460,7 +460,7 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+      .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):not(.hero-cta):not(#_) {
     min-width: min(var(--hathor-btn-width, 12.5rem), 100%) !important;
   }
@@ -478,11 +478,11 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hathor-atv-confirm__secondary, .hfp__cta,
+      .hathor-atv-confirm__secondary, .hf__cta, .hfp__cta,
       .booking-btn-primary, .booking-btn-outline, .historia-btn,
       .vb-reserve__secondary, .vb-reserve__button,
       .vb-project__link, .vb-charter__link,
-      .ac-text-link, .room-text-link, .rh__act, .lux-footer__cta,
+      .ac-text-link, .room-text-link, .rh__act,
       .preview-hero__cta, .cp-hero-cta, .nib-button,
       .home-story__cta, .home-amenities-slider__cta
     ):not(.hero-cta):not(.btn--square):not(.btn--menu):not(.l-gallery-next):not(
@@ -549,7 +549,7 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+      .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):not(.hero-cta):not(.h2-btn):not(#_) {
     width: 100% !important;
     min-width: 0 !important;
@@ -566,11 +566,11 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hathor-atv-confirm__secondary, .hfp__cta,
+      .hathor-atv-confirm__secondary, .hf__cta, .hfp__cta,
       .booking-btn-primary, .booking-btn-outline, .historia-btn,
       .vb-reserve__secondary, .vb-reserve__button,
       .vb-project__link, .vb-charter__link,
-      .ac-text-link, .room-text-link, .rh__act, .lux-footer__cta,
+      .ac-text-link, .room-text-link, .rh__act,
       .preview-hero__cta, .cp-hero-cta, .nib-button,
       .home-story__cta, .home-amenities-slider__cta
     ):not(.hero-cta):not(.btn--square):not(.btn--menu):not(.l-gallery-next):not(
@@ -596,7 +596,7 @@ html[data-public-theme="dark"] {
       .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn, .hep-button,
       .hl-btn, .jn-btn, .lx-btn, .mr-btn, .pn-btn, .room-pill, .sn-btn, .we-btn,
       .hathor-fav--inline, .hathor-atv--inline, .hathor-atv-confirm__primary,
-      .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
+      .hf__cta, .hfp__cta, .booking-btn-primary, .booking-btn-outline, .historia-btn
     ):not(#_),
   :is(
       .btn, .ab-btn, .ac-pill, .ar-btn, .ce-btn, .chr-btn, .h2-btn, .h3-btn,

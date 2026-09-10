@@ -55,7 +55,7 @@ const SKIP_CLOSEST = [
   "header.public-navbar",
   ".hathor-page-hero",
   ".home-hero-container",
-  ".lux-footer",
+  ".hf",
   "footer",
   ".booking-modal",
   ".admin-shell",

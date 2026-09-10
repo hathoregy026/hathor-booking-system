@@ -46,14 +46,15 @@ export default function SiteIndexPage() {
         ))}
       </main>
 
-      <footer className="site-index__footer">
+      {/* A page note, not a footer — the shared site footer follows in the layout. */}
+      <div className="site-index__footer">
         <p>
           Bookmark this page:{" "}
           <Link href="/site-index" className="site-index__footer-link">
             /site-index
           </Link>
         </p>
-      </footer>
+      </div>
     </div>
   );
 }

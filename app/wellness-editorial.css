@@ -83,14 +83,6 @@ html:has(.wellness-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.wellness-editorial) .lux-footer,
-  html:has(.wellness-editorial) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 .wellness-editorial main {
   width: 100%;
 }
@@ -147,12 +139,6 @@ html:has(.wellness-editorial) .public-fab {
   overflow-wrap: break-word;
   word-break: normal;
   hyphens: none;
-}
-
-.wellness-editorial .we-reg {
-  font-size: 0.55em;
-  vertical-align: super;
-  margin: 0 0.1em;
 }
 
 .wellness-editorial .we-line {
@@ -1084,29 +1070,6 @@ html:has(.wellness-editorial) .public-fab {
   text-transform: uppercase;
 }
 
-.we-epilogue__legal {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: clamp(2.5rem, 6vw, 5rem);
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--we-hair);
-  font-size: var(--we-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--we-ink-soft);
-}
-
-.we-epilogue__legal nav {
-  display: flex;
-  gap: 1.6rem;
-}
-
-.we-epilogue__legal a:hover {
-  color: var(--we-ink);
-}
-
 /* ==========================================================================
    RESPONSIVE — 950px structural switch to vertical document
    ========================================================================== */
@@ -1372,12 +1335,6 @@ html:has(.wellness-editorial) .public-fab {
   .we-epilogue__board {
     grid-template-columns: minmax(0, 1fr);
   }
-
-  .we-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.9rem;
-  }
 }
 
 @media (max-width: 620px) {
@@ -1451,8 +1408,7 @@ html:has(.wellness-editorial) .public-fab {
   }
 
   .we-threshold__index a,
-  .we-epilogue__legal,
-  .we-epilogue__card-links {
+  .we-epilogue__card-links  {
     letter-spacing: 0.14em;
   }
 

@@ -73,6 +73,15 @@ export const HATHOR_HERO_VIDEO_PHONE_SRC =
 /** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
 export const HATHOR_HERO_POSTER_SRC = HATHOR_MEDIA.heroHomepage;
 
+/**
+ * Site footer reel — the Nile arriving from below the fold. Decorative only:
+ * the footer loads it lazily on approach and never on data-saver connections.
+ * Swap it with a NEW filename under `/public/media/hathor/videos/` — never
+ * overwrite an immutable URL in place.
+ */
+export const HATHOR_FOOTER_VIDEO_SRC =
+  "/media/hathor/videos/footer-dahabiya-cruise-nile-egypt-tours.mp4";
+
 export function getHathorLogoSrc(theme: AdminTheme): string {
   return theme === "day" ? HATHOR_LOGO_DAY_SRC : HATHOR_LOGO_SRC;
 }

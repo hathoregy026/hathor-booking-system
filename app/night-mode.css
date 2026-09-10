@@ -1022,40 +1022,51 @@ html[data-public-theme="night"] .eno-prelayer--2 { background: var(--night-panel
 html[data-public-theme="night"] .eno-prelayer--3 { background: var(--night-canvas) !important; }
 html[data-public-theme="night"] .eno-panel { background: var(--night-surface) !important; }
 
-/* ---- Footer ---- */
-html[data-public-theme="night"] :is(.owo-footer, .lux-footer) {
-  background-color: #100d0a !important;
-  background-image: linear-gradient(180deg, #17130e, #100d0a) !important;
-  border-color: var(--night-line-soft) !important;
-  color: var(--night-text-soft) !important;
+/* ---- Site footer ----
+   The footer declares its whole palette as --hf-* tokens, so night is a remap
+   and not a second layout. Its ground is transparent in both themes, so the
+   only thing a flip cannot reach is the reel: day plays it clear against cream,
+   night has to sink it into a near-black canvas or the cream type on top of it
+   stops reading. Brightness, not opacity, does that work — a faded reel goes
+   grey, a darkened one stays a river. */
+html[data-public-theme="night"] .hf {
+  --hf-ink: var(--night-text);
+  --hf-ink-soft: var(--night-text-soft);
+  --hf-meta: var(--night-muted);
+  --hf-gold: var(--night-gold);
+  --hf-gold-deep: var(--night-gold-strong);
+  --hf-line: rgb(203 176 121 / 34%);
+  --hf-line-soft: rgb(203 176 121 / 18%);
+  --hf-ghost: rgb(233 225 211 / 6%);
+  --hf-video-opacity: 0.92;
+  --hf-video-filter: saturate(0.78) contrast(1.08) brightness(0.5);
 }
 
-html[data-public-theme="night"] :is(
-    .owo-footer__wordmark,
-    .owo-footer__contact-title,
-    .lux-footer__col-title
-  ) {
-  color: var(--night-text) !important;
+/* Footer links carry the footer's own ink, not the site-wide gold link colour. */
+html[data-public-theme="night"] .public-site :is(.hf__link, .hf__base-link) {
+  color: var(--hf-ink-soft);
 }
 
-html[data-public-theme="night"] :is(
-    .owo-footer__tag,
-    .owo-footer__blurb,
-    .owo-footer__contact-text
-  ) {
-  color: var(--night-text-soft) !important;
+/*
+ * The footer assigns type roles by class, and section 6's generic heading and
+ * paragraph rules outrank those by one element selector. Restating the three
+ * roles here keeps the column labels gold and the legal line quiet — the same
+ * relationship day has.
+ */
+html[data-public-theme="night"] .public-site .hf__col-title {
+  color: var(--hf-gold-deep);
 }
 
-html[data-public-theme="night"] :is(.owo-footer__link, .owo-footer__legal-link) {
-  color: var(--night-text-soft) !important;
+html[data-public-theme="night"] .public-site .hf__eyebrow {
+  color: var(--hf-ink);
 }
 
-html[data-public-theme="night"] :is(.owo-footer__link, .owo-footer__legal-link):is(:hover, :focus-visible) {
-  color: var(--night-gold-strong) !important;
+html[data-public-theme="night"] .public-site .hf__legal {
+  color: var(--hf-meta);
 }
 
-html[data-public-theme="night"] .owo-footer__contact-bar {
-  border-color: var(--night-line-faint) !important;
+html[data-public-theme="night"] .hf__top:hover {
+  color: var(--night-canvas);
 }
 
 /* ---- Raised cards and hero copy chrome ---- */
@@ -1114,7 +1125,7 @@ html[data-public-theme="night"] .public-site :is(small, .hathor-stat__label, .ey
 /* Inline links read gold; navigation, buttons and pills are excluded because
    they own their own colour states above. */
 html[data-public-theme="night"] .public-site
-  a:not(.btn):not(.hero-cta):not(.public-btn-gold):not(.public-btn-outline-gold):not(.public-btn-dark):not(.hathor-header__nav-link):not(.hathor-header__dropdown-link):not(.hathor-header__menu-btn):not(.owo-footer__link):not(.owo-footer__legal-link) {
+  a:not(.btn):not(.hero-cta):not(.public-btn-gold):not(.public-btn-outline-gold):not(.public-btn-dark):not(.hathor-header__nav-link):not(.hathor-header__dropdown-link):not(.hathor-header__menu-btn):not(.hf__link):not(.hf__base-link) {
   color: var(--night-gold);
 }
 
@@ -1451,28 +1462,6 @@ html[data-public-theme="night"] .public-header--light {
 
 html[data-public-theme="night"] .public-site .hathor-header.hathor-header--suites-ink.hathor-header--chrome {
   background-color: rgb(20 17 13 / 92%) !important;
-}
-
-/* ---- Lux footer ----
-   Most of its palette is derived from --public-*, which night already remaps;
-   these three are literals in lux-footer.css. */
-html[data-public-theme="night"] .lux-footer {
-  --lux-ink-soft: var(--night-text-soft);
-  --lux-gold-soft: var(--night-gold-strong);
-  --lux-border: var(--night-line-soft);
-}
-
-html[data-public-theme="night"] .lux-footer__main {
-  color: var(--night-text-soft) !important;
-}
-
-html[data-public-theme="night"] .lux-footer__submit {
-  background-color: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
-}
-
-html[data-public-theme="night"] .lux-footer__subscribe-status[role="alert"] {
-  color: #e8a08c !important;
 }
 
 /* ---- Generic light-button fallbacks ----

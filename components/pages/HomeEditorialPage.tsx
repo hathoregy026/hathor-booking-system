@@ -558,10 +558,6 @@ export function HomeEditorialPage({
               <Link href="/contact" className="h2-btn"><span>Contact us</span></Link>
             </div>
           </div>
-          <footer className="h2-legal">
-            <span>Hathor Cruise ® 2026</span>
-            <nav aria-label="Legal"><Link href="/contact">Privacy</Link><Link href="/contact">Cookies</Link><Link href="/contact">Legal</Link></nav>
-          </footer>
           </section>
         </main>
       </div>

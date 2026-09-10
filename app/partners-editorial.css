@@ -84,14 +84,6 @@ html:has(.partners-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.partners-editorial) .lux-footer,
-  html:has(.partners-editorial) footer.lux-footer {
-    display: none !important;
-  }
-}
-
 /* ------------------------------------------------------------------- reset */
 .partners-editorial *,
 .partners-editorial *::before,
@@ -184,12 +176,6 @@ html:has(.partners-editorial) .public-fab {
   line-height: 1.55;
   color: var(--pn-ink-soft);
   max-width: 36ch;
-}
-
-.partners-editorial .pn-reg {
-  font-size: 0.65em;
-  vertical-align: super;
-  letter-spacing: 0;
 }
 
 .partners-editorial .pn-line {
@@ -1009,30 +995,6 @@ html:has(.partners-editorial) .public-fab {
   margin-top: 0.35rem;
 }
 
-.pn-epilogue__legal {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding-top: 1.35rem;
-  border-top: 1px solid var(--pn-hair);
-  font-size: var(--pn-t-meta);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--pn-ink-soft);
-}
-
-.pn-epilogue__legal nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-}
-
-.pn-epilogue__legal a:hover {
-  color: var(--pn-gold-deep);
-}
-
 /* ============================================================ RESPONSIVE */
 @media (max-width: 950px) {
   .partners-editorial {
@@ -1239,11 +1201,6 @@ html:has(.partners-editorial) .public-fab {
   .pn-craft__wide,
   .pn-craft__accent {
     grid-column: 1;
-  }
-
-  .pn-epilogue__legal {
-    flex-direction: column;
-    align-items: flex-start;
   }
 
   .pn-covenant__lead,

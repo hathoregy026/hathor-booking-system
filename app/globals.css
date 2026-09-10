@@ -4,7 +4,7 @@
 /* admin.css + admin-shell.css are imported by app/admin/layout.tsx so the
    admin design system (and its unscoped [data-theme] token blocks) no longer
    ship on every public page. */
-@import "./lux-footer.css";
+@import "./site-footer.css";
 
 :root {
   --background: #ece8df;

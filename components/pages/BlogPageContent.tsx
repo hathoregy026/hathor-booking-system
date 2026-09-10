@@ -619,17 +619,6 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
               </div>
             </aside>
           </div>
-
-          <div className="jn-epilogue__legal">
-            <span>
-              Hathor Cruise <span className="jn-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Privacy</Link>
-              <Link href="/contact">Cookies</Link>
-              <Link href="/contact">Legal</Link>
-            </nav>
-          </div>
         </section>
       </main>
     </div>

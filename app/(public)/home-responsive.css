@@ -648,21 +648,6 @@
     margin-bottom: -10px;
   }
 
-  /*
-   * Footer link columns — 30px rows. Growing min-height keeps the type and
-   * the column rhythm identical while making each row tappable.
-   */
-  html[data-ex-experience] .lux-footer__link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
-
-  html[data-ex-experience] .lux-footer__meta-link {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
 }
 
 /* ==========================================================================

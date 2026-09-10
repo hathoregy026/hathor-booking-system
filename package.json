@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/sync-email-assets.mjs && node scripts/sync-hathor-media.mjs && prisma generate && next build",
+    "build": "node scripts/sync-email-assets.mjs && node scripts/sync-hathor-media.mjs && node scripts/sync-suites-footer-css.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

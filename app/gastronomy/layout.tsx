@@ -4,7 +4,7 @@ import "../public.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "../mobile-touch.css";
-import "../lux-footer.css";
+import "../site-footer.css";
 import "../gastronomy-dining.css";
 import "../editorial-chrome.css";
 import "../anima-title-split.css";

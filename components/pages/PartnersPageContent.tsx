@@ -223,7 +223,7 @@ export function PartnersPageContent() {
                   />
                 </div>
 
-                <footer className="pn-open__bar">
+                <div className="pn-open__bar">
                   <p className="pn-open__mark">
                     Hathor Cruise <span className="pn-reg">®</span> 2026
                   </p>
@@ -237,7 +237,7 @@ export function PartnersPageContent() {
                     <a href="#converse">Converse</a>
                     <Link href="/contact">Contact</Link>
                   </nav>
-                </footer>
+                </div>
               </Scene>
 
               {/* 02 — Image field: layered Nile imagery */}
@@ -504,17 +504,6 @@ export function PartnersPageContent() {
                 </Link>
               </div>
             </aside>
-          </div>
-
-          <div className="pn-epilogue__legal">
-            <span>
-              Hathor Cruise <span className="pn-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Privacy</Link>
-              <Link href="/contact">Cookies</Link>
-              <Link href="/contact">Legal</Link>
-            </nav>
           </div>
         </section>
       </main>

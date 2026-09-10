@@ -394,7 +394,8 @@ export function BlogPostPageContent({
         ) : null}
 
         {/* ============ close ============ */}
-        <footer className="ar-close">
+        {/* A closing scene, not a footer: the site footer is the only <footer>. */}
+        <section className="ar-close" aria-label="Continue reading">
           <ArticleMedia
             slot="highlights-hero"
             alt=""
@@ -418,18 +419,7 @@ export function BlogPostPageContent({
               </Link>
             </div>
           </div>
-
-          <div className="ar-close__legal">
-            <span>
-              Hathor Cruise <span className="ar-reg">®</span> 2026
-            </span>
-            <nav aria-label="Legal">
-              <Link href="/contact">Contact</Link>
-              <Link href="/voyages">Voyages</Link>
-              <Link href="/blogs">Journal</Link>
-            </nav>
-          </div>
-        </footer>
+        </section>
       </main>
     </div>
   );

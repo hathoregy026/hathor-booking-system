@@ -56,13 +56,6 @@ html:has(.home-editorial) .public-fab {
   display: none !important;
 }
 
-/* Desktop keeps a custom close; phone uses the shared site footer. */
-@media (min-width: 481px) {
-  html:has(.home-editorial) .lux-footer {
-    display: none !important;
-  }
-}
-
 .home-editorial *,
 .home-editorial *::before,
 .home-editorial *::after {
@@ -135,8 +128,7 @@ html:has(.home-editorial) .public-fab {
 .h2-index,
 .h2-corner,
 .h2-amenity__label,
-.h2-stars,
-.h2-legal {
+.h2-stars {
   font-family: var(--h2-meta);
   font-size: var(--h2-t-meta);
   font-weight: 300;
@@ -224,7 +216,6 @@ html:has(.home-editorial) .public-fab {
   .h2-btn--solid:active { color: var(--h2-ink); border-color: var(--h2-gold); }
 }
 
-
 .h2-link {
   position: relative;
   display: inline-block;
@@ -254,7 +245,6 @@ html:has(.home-editorial) .public-fab {
 @media (hover: none) {
   .h2-link:active::after { transform: scaleX(1); }
 }
-
 
 .h2-media {
   position: relative;
@@ -582,9 +572,6 @@ html:has(.home-editorial) .public-fab {
 .h2-epilogue .h2-btn { border-color: var(--h2-paper); color: var(--h2-paper); }
 .h2-epilogue .h2-btn::before { background: var(--h2-paper); }
 .h2-epilogue .h2-btn:hover { color: var(--h2-ink); }
-.h2-legal { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1.2rem; border-top: 1px solid rgb(243 237 228 / 32%); }
-.h2-legal nav { display: flex; gap: 1.5rem; }
-
 
 /* ==========================================================================
    RESPONSIVE ARCHITECTURE
@@ -743,14 +730,12 @@ html:has(.home-editorial) .public-fab {
    * Both keep their exact drawn geometry; only the hit area grows, through a
    * transparent pseudo-element, so nothing on screen moves.
    */
-  .h2-link,
-  .h2-legal nav a {
+  .h2-link {
     position: relative;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
-  .h2-link::before,
-  .h2-legal nav a::before {
+  .h2-link::before {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -760,7 +745,6 @@ html:has(.home-editorial) .public-fab {
     content: "";
     transform: translate(-50%, -50%);
   }
-  .h2-legal nav { gap: clamp(1.5rem, 5vw, 2.25rem); row-gap: 1rem; }
 
   .h2-btn,
   .home-editorial a,
@@ -778,8 +762,7 @@ html:has(.home-editorial) .public-fab {
    */
   .h2-btn:focus-visible { outline: 2px solid var(--h2-gold-deep); outline-offset: 3px; }
   .h2-link:focus-visible,
-  .h2-gallery__grid a:focus-visible,
-  .h2-legal nav a:focus-visible { outline: 2px solid currentcolor; outline-offset: 4px; }
+  .h2-gallery__grid a:focus-visible { outline: 2px solid currentcolor; outline-offset: 4px; }
 }
 
 /* ==========================================================================
@@ -811,8 +794,6 @@ html:has(.home-editorial) .public-fab {
   .h2-reviews__grid { grid-template-columns: minmax(0, 1fr); }
   .h2-reviews article { padding: 1.5rem 0; border-right: 0; }
   .h2-epilogue__actions { width: 100%; }
-  .h2-legal { flex-direction: column; align-items: flex-start; }
-  .h2-legal nav { flex-wrap: wrap; }
 }
 
 /* ==========================================================================
@@ -1794,11 +1775,6 @@ html:has(.home-editorial) .public-fab {
   }
   .h2-epilogue__actions .h2-btn {
     width: auto !important;
-  }
-  .h2-legal {
-    gap: 1rem;
-    padding-top: 1.25rem;
-    justify-content: flex-start;
   }
 
   /* Prevent horizontal page overflow from peek rails */

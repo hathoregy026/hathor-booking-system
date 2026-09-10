@@ -6,7 +6,6 @@ import { homeFourPreviewEnabled } from "@/lib/home-four-preview";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
-import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { HomeFourExperience } from "@/components/pages/home-four/HomeFourExperience";
@@ -68,7 +67,6 @@ export default async function HomeFourPage() {
           <div className="h4-close-copy"><p className="h4-lead">Start with a month.<br />A few names.<br />A direction that calls to you.</p><p className="h4-copy">Explore scheduled departures, or speak to reservations about the right room and route for your party.</p><div className="h4-actions"><BookNowTrigger className="h4-btn">Check availability</BookNowTrigger><Link className="h4-btn" href="/contact">Speak to reservations</Link></div>
             <div className="h4-practical"><h3>Before you travel</h3><p>Confirm embarkation details, transfers and the inclusions for your chosen sailing. For mobility, dietary or room requirements, contact the team before booking.</p><Link className="h4-link" href="/terms-and-conditions">Booking terms</Link></div>
           </div></div>
-        <footer className="h4-footer"><p className="h4-footer-mark">Hathor<br /><em>Dahabiya</em></p><div><p className="h4-eyebrow">Reservations</p><a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a><a href={`tel:${PUBLIC_CONTACT.phone}`}>{PUBLIC_CONTACT.phoneDisplay}</a></div><nav aria-label="Home 4 footer"><Link href="/voyages">Voyages</Link><Link href="/suites">Rooms & suites</Link><Link href="/charter">Private charter</Link><Link href="/contact">Contact</Link></nav><p className="h4-caption">Hathor Dahabiya · Egypt</p></footer>
       </section>
     </main>
   </HomeFourExperience>;
