@@ -1018,7 +1018,7 @@ figure) {
   background-image: var(--h3-chart-ghost, none);
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
+  background-size: cover;
   opacity: 0.06;
   /* the photograph is a colour image; on this wall it has to read as a mark */
   filter: grayscale(1) contrast(1.15);
@@ -2464,8 +2464,8 @@ figure) {
     padding-block: clamp(0.8rem, 4vw, 1.4rem);
   }
 
-  /* Fit the faded vessel in the visible 100svh stage. The hold is taller
-     than the viewport, so painting on the panel/hold crops the photograph. */
+  /* Fill the visible map stage. The hold is taller than the viewport, so
+     painting on the panel/hold would only show a slice of the photograph. */
   .home-three .h3-chart-panel::before {
     display: none;
   }
@@ -2479,7 +2479,7 @@ figure) {
     background-image: var(--h3-chart-ghost, none);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
+    background-size: cover;
     opacity: 0.06;
     filter: grayscale(1) contrast(1.15);
   }
