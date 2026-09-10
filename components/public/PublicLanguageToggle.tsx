@@ -2,8 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const LANGUAGES = ["Arabic", "English", "German", "Russian"] as const;
-type Language = (typeof LANGUAGES)[number];
+const LANGUAGES = [
+  { name: "Arabic", code: "AR" },
+  { name: "English", code: "EN" },
+  { name: "German", code: "DE" },
+  { name: "Russian", code: "RU" },
+] as const;
+type Language = (typeof LANGUAGES)[number]["name"];
 
 const ACTIVE: Language = "English";
 
@@ -33,16 +38,51 @@ function GlobeIcon() {
   );
 }
 
+function DockCloseIcon() {
+  return (
+    <svg
+      className="public-theme-toggle__icon"
+      viewBox="0 0 24 24"
+      aria-hidden
+      focusable="false"
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.45"
+        strokeLinecap="round"
+      >
+        <path d="M7 7l10 10" />
+        <path d="M17 7 7 17" />
+      </g>
+    </svg>
+  );
+}
+
 /**
  * English is the active language; the others are announced as forthcoming.
  *
  * The menu stays mounted and is driven by an `is-open` class so it can animate
  * both in and out — unmounting it would make the close instant.
  */
-export function PublicLanguageToggle() {
+export function PublicLanguageToggle({
+  variant = "header",
+}: {
+  variant?: "header" | "dock";
+}) {
   const [open, setOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const closingRef = useRef(false);
+  const isDock = variant === "dock";
+
+  const closeMenu = () => {
+    closingRef.current = true;
+    setOpen(false);
+    window.setTimeout(() => {
+      closingRef.current = false;
+    }, 450);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -50,11 +90,11 @@ export function PublicLanguageToggle() {
     const closeOnOutsidePointer = (event: PointerEvent) => {
       const target = event.target;
       if (target instanceof Node && !rootRef.current?.contains(target)) {
-        setOpen(false);
+        closeMenu();
       }
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") closeMenu();
     };
 
     document.addEventListener("pointerdown", closeOnOutsidePointer);
@@ -72,31 +112,52 @@ export function PublicLanguageToggle() {
   }, [notice]);
 
   const chooseLanguage = (language: Language) => {
-    setOpen(false);
+    closeMenu();
     setNotice(language === ACTIVE ? null : `${language} — coming soon`);
   };
 
   return (
     <div
       ref={rootRef}
-      className={`public-lang-selector${open ? " is-open" : ""}`}
+      className={`public-lang-selector${open ? " is-open" : ""}${
+        isDock ? " public-lang-selector--dock" : ""
+      }`}
     >
+      {isDock ? (
+        <button
+          type="button"
+          className="public-lang-backdrop"
+          aria-label="Close language menu"
+          tabIndex={open ? 0 : -1}
+          onPointerDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (open) closeMenu();
+          }}
+        />
+      ) : null}
+
       <button
         type="button"
         className="public-lang-toggle cursor-hover"
-        aria-label={`Language: ${ACTIVE}. Choose a language`}
+        aria-label={
+          open && isDock
+            ? "Close language menu"
+            : `Language: ${ACTIVE}. Choose a language`
+        }
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-controls="public-language-menu"
+        aria-controls={isDock ? "public-language-menu-dock" : "public-language-menu"}
         title={`Language: ${ACTIVE}`}
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
+          if (closingRef.current) return;
           setOpen((current) => !current);
         }}
       >
         <span className="public-lang-toggle__globe" aria-hidden="true">
-          <GlobeIcon />
+          {isDock && open ? <DockCloseIcon /> : <GlobeIcon />}
         </span>
         <span className="public-lang-toggle__code" aria-hidden="true">
           En
@@ -110,11 +171,15 @@ export function PublicLanguageToggle() {
         <p className="public-lang-menu__eyebrow" aria-hidden="true">
           Language
         </p>
-        <ul id="public-language-menu" className="public-lang-menu__list" role="menu">
-          {LANGUAGES.map((language) => {
-            const isActive = language === ACTIVE;
+        <ul
+          id={isDock ? "public-language-menu-dock" : "public-language-menu"}
+          className="public-lang-menu__list"
+          role="menu"
+        >
+          {LANGUAGES.map((language, index) => {
+            const isActive = language.name === ACTIVE;
             return (
-              <li key={language} role="none" className="public-lang-menu__row">
+              <li key={language.name} role="none" className="public-lang-menu__row">
                 <button
                   type="button"
                   role="menuitem"
@@ -123,9 +188,15 @@ export function PublicLanguageToggle() {
                   }`}
                   aria-current={isActive ? "true" : undefined}
                   tabIndex={open ? 0 : -1}
-                  onClick={() => chooseLanguage(language)}
+                  style={
+                    isDock
+                      ? { transitionDelay: open ? `${40 + index * 35}ms` : "0ms" }
+                      : undefined
+                  }
+                  onClick={() => chooseLanguage(language.name)}
                 >
-                  <span className="public-lang-menu__name">{language}</span>
+                  <span className="public-lang-menu__code">{language.code}</span>
+                  <span className="public-lang-menu__name">{language.name}</span>
                   <span className="public-lang-menu__mark" aria-hidden="true" />
                 </button>
               </li>

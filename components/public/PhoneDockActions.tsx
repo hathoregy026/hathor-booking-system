@@ -98,10 +98,19 @@ export function PhoneDockContact() {
   const [layerHost, setLayerHost] = useState<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const closingRef = useRef(false);
 
   useEffect(() => {
     setLayerHost(document.body);
   }, []);
+
+  const closeMenu = () => {
+    closingRef.current = true;
+    setOpen(false);
+    window.setTimeout(() => {
+      closingRef.current = false;
+    }, 450);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -111,10 +120,10 @@ export function PhoneDockContact() {
       if (!(target instanceof Node)) return;
       if (rootRef.current?.contains(target)) return;
       if (menuRef.current?.contains(target)) return;
-      setOpen(false);
+      closeMenu();
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") closeMenu();
     };
 
     document.addEventListener("pointerdown", closeOnOutsidePointer);
@@ -129,14 +138,17 @@ export function PhoneDockContact() {
     <div
       className={`hpd-contact-layer${open ? " is-open" : ""}`}
     >
-      {open ? (
-        <button
-          type="button"
-          className="hpd-contact__backdrop"
-          aria-label="Close contact links"
-          onClick={() => setOpen(false)}
-        />
-      ) : null}
+      <button
+        type="button"
+        className="hpd-contact__backdrop"
+        aria-label="Close contact links"
+        tabIndex={open ? 0 : -1}
+        onPointerDown={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (open) closeMenu();
+        }}
+      />
 
       <div
         ref={menuRef}
@@ -225,7 +237,10 @@ export function PhoneDockContact() {
         aria-haspopup="menu"
         aria-label={open ? "Close contact links" : "Open contact links"}
         title="Contact"
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => {
+          if (closingRef.current) return;
+          setOpen((current) => !current);
+        }}
       >
         <span className="hsc__mark" aria-hidden="true">
           {open ? <DockCloseIcon /> : <DockChatIcon />}

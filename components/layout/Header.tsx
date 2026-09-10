@@ -607,7 +607,7 @@ export function Header() {
               {shouldShowFloatingActions(pathname) ? (
                 <PhoneDockBookNow />
               ) : null}
-              <PublicLanguageToggle />
+              <PublicLanguageToggle variant="dock" />
               {shouldShowFloatingActions(pathname) ? (
                 <PhoneDockContact />
               ) : null}

@@ -891,6 +891,10 @@
   color: var(--nav-lux-gold) !important;
 }
 
+.public-lang-backdrop {
+  display: none;
+}
+
 /* Open state: an editorial card, right-anchored under the globe. */
 .public-lang-menu {
   position: absolute;
@@ -960,6 +964,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.public-lang-menu__code {
+  display: none;
 }
 
 /* Hairline separators between rows, never above the first or below the last. */
@@ -1852,13 +1860,21 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 
   .hpd-contact__backdrop {
     position: fixed;
-    inset: 0;
-    z-index: 1390;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: var(--hathor-phone-dock-h, 4.5rem);
+    z-index: 1275;
     border: 0;
     padding: 0;
     margin: 0;
     background: transparent;
     cursor: default;
+    pointer-events: none;
+  }
+
+  .hpd-contact-layer.is-open .hpd-contact__backdrop {
+    pointer-events: auto;
   }
 
   /* Same vertical stack as desktop FAB — cream fill on each icon only. */
@@ -1975,107 +1991,142 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     pointer-events: none;
   }
 
-  .hathor-phone-dock .public-lang-menu {
-    top: auto !important;
-    left: 50% !important;
-    right: auto !important;
-    bottom: calc(100% + 0.7rem) !important;
-    z-index: 40 !important;
-    box-sizing: border-box !important;
-    width: min(11.5rem, calc(100vw - 1.5rem)) !important;
-    max-width: calc(100vw - 1.5rem) !important;
-    margin: 0 !important;
-    padding: 0.9rem 0 0.45rem !important;
-    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 16%, transparent) !important;
-    border-radius: 0.85rem !important;
-    /* Fully opaque dock cream тАФ no glass, no alpha over hero video. */
-    background: #ece8df !important;
-    background-color: #ece8df !important;
-    background-image: none !important;
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.8) inset,
-      0 18px 44px rgb(20 18 16 / 0.32) !important;
-    opacity: 0;
-    visibility: hidden;
-    transform: translate3d(-50%, 0.4rem, 0) scale(0.985) !important;
-    transform-origin: bottom center !important;
+  /* Language choices — same gold circular stack as Contact. */
+  .hathor-phone-dock .public-lang-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: var(--hathor-phone-dock-h, 4.5rem);
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
     pointer-events: none;
+    cursor: default;
+  }
+
+  .hathor-phone-dock .public-lang-selector.is-open .public-lang-backdrop {
+    pointer-events: auto;
+  }
+
+  .hathor-phone-dock .public-lang-menu {
+    position: fixed !important;
+    top: auto !important;
+    left: 70% !important;
+    right: auto !important;
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.55rem) !important;
+    z-index: 1400 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    transform-origin: bottom center !important;
+    pointer-events: none !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
     mix-blend-mode: normal !important;
-    isolation: isolate !important;
+    isolation: auto !important;
   }
 
   .hathor-phone-dock .public-lang-menu.is-open {
-    opacity: 1 !important;
-    visibility: visible !important;
     pointer-events: auto !important;
-    transform: translate3d(-50%, 0, 0) scale(1) !important;
-    background: #ece8df !important;
-    background-color: #ece8df !important;
-    background-image: none !important;
-    /* Own compositor layer so hero <video> cannot punch through on iOS. */
-    -webkit-backface-visibility: hidden !important;
-    backface-visibility: hidden !important;
   }
 
-  /* Opaque fill behind list content тАФ belt-and-suspenders vs video punch-through. */
+  .hathor-phone-dock .public-lang-menu::before,
   .hathor-phone-dock .public-lang-menu::after {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    z-index: 0 !important;
-    border-radius: inherit !important;
-    background: #ece8df !important;
-    background-color: #ece8df !important;
-    pointer-events: none !important;
-  }
-
-  /* Caret under the card, aimed at the Language mark. */
-  .hathor-phone-dock .public-lang-menu::before {
-    content: "" !important;
-    position: absolute !important;
-    top: auto !important;
-    left: 50% !important;
-    right: auto !important;
-    bottom: -6px !important;
-    z-index: 0 !important;
-    width: 12px !important;
-    height: 12px !important;
-    margin: 0 0 0 -6px !important;
-    border: 1px solid color-mix(in srgb, var(--nav-lux-ink) 16%, transparent) !important;
-    border-top-color: transparent !important;
-    border-left-color: transparent !important;
-    border-radius: 0 !important;
-    background: #ece8df !important;
-    background-color: #ece8df !important;
-    box-shadow: none !important;
-    transform: rotate(45deg) !important;
-    pointer-events: none !important;
+    content: none !important;
+    display: none !important;
   }
 
   .hathor-phone-dock .public-lang-menu__eyebrow {
-    position: relative !important;
-    z-index: 1 !important;
-    margin: 0 0 0.7rem !important;
-    padding: 0 1.15rem !important;
-    color: color-mix(in srgb, var(--nav-lux-ink) 55%, transparent) !important;
-    letter-spacing: 0.22em !important;
+    display: none !important;
   }
 
   .hathor-phone-dock .public-lang-menu__list {
-    position: relative !important;
-    z-index: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__row + .public-lang-menu__row {
+    border-top: 0 !important;
   }
 
   .hathor-phone-dock .public-lang-menu__option {
-    padding: 0.7rem 1.15rem !important;
-    background: transparent !important;
-    color: var(--nav-lux-ink) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: 2.55rem !important;
+    height: 2.55rem !important;
+    min-width: 2.55rem !important;
+    max-width: 2.55rem !important;
+    min-height: 2.55rem !important;
+    max-height: 2.55rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--lux-gold, #b69f64) !important;
+    border-radius: 9999px !important;
+    background: #faf8f5 !important;
+    background-color: #faf8f5 !important;
+    color: #b69f64 !important;
+    box-shadow: 0 6px 18px rgba(44, 36, 25, 0.12) !important;
+    font-size: 0.62rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    line-height: 1 !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(0.88);
+    pointer-events: none;
+    transition:
+      opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.35s;
   }
 
+  .hathor-phone-dock .public-lang-menu.is-open .public-lang-menu__option {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .hathor-phone-dock .public-lang-menu__option:hover,
+  .hathor-phone-dock .public-lang-menu__option:focus-visible,
   .hathor-phone-dock .public-lang-menu__option.is-active {
-    color: var(--nav-lux-gold) !important;
+    color: #b69f64 !important;
+    padding: 0 !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__option::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__name,
+  .hathor-phone-dock .public-lang-menu__mark {
+    display: none !important;
+  }
+
+  .hathor-phone-dock .public-lang-menu__code {
+    display: block !important;
   }
 
   .hathor-phone-dock .public-lang-notice {
@@ -2092,18 +2143,17 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     backdrop-filter: none !important;
   }
 
-  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu,
-  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu.is-open,
-  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu::before,
-  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu::after,
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu__option {
+    background: #16130f !important;
+    background-color: #16130f !important;
+    border-color: var(--nav-lux-gold, #b69f64) !important;
+    color: var(--nav-lux-gold, #b69f64) !important;
+  }
+
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-notice {
     background: #16130f !important;
     background-color: #16130f !important;
     border-color: color-mix(in srgb, var(--nav-lux-cream) 18%, transparent) !important;
-  }
-
-  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu__option {
-    color: var(--nav-lux-cream) !important;
   }
 
   /* Hide dock while the full-screen editorial menu is open. */
