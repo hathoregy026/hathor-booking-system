@@ -3174,12 +3174,14 @@ figure) {
       "berths berths";
     align-items: stretch;
     column-gap: 0.75rem;
-    row-gap: 0.55rem;
+    row-gap: 0.35rem;
     justify-content: stretch;
     height: 100svh;
     max-height: 100dvh;
     padding-top: calc(4.15rem + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.45rem);
+    /* The map is capped at its drawn size, so the row below it has slack to
+       spend: give the post rail air above the dock rather than sitting it flush. */
+    padding-bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 1.1rem);
     background: var(--h3-beige);
   }
 
@@ -3322,10 +3324,10 @@ figure) {
 
   .home-three .h3-stop-buttons button {
     width: 100%;
-    min-height: 2.25rem;
-    padding: 0.3rem 0.05rem;
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
+    min-height: 1.9rem;
+    padding: 0.18rem 0.05rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.09em;
     text-align: center;
   }
 
@@ -3337,18 +3339,23 @@ figure) {
 
   .home-three .h3-berth {
     position: static;
-    grid-template-columns: 3.5rem minmax(0, 1fr);
+    grid-template-columns: 2.6rem minmax(0, 1fr);
     grid-template-areas:
       "plate name"
       "plate meta";
-    column-gap: 0.7rem;
-    row-gap: 0.12rem;
+    align-items: center;
+    column-gap: 0.6rem;
+    row-gap: 0;
+  }
+
+  .home-three .h3-berth__media {
+    align-self: center;
   }
 
   .home-three .h3-berth__name {
-    font-size: clamp(1.15rem, 6vw, 1.45rem);
+    font-size: clamp(1rem, 5.2vw, 1.25rem);
     line-height: 1;
-    gap: 0.35rem;
+    gap: 0.3rem;
   }
 
   .home-three .h3-berth__name b {
@@ -3356,8 +3363,8 @@ figure) {
   }
 
   .home-three .h3-berth__meta {
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
   }
 
   .home-three .h3-berth__note {
@@ -3369,23 +3376,49 @@ figure) {
    * so the next scene slid over them mid-item. They live in the berths row
    * now; the chart row is the flexible one, so it yields the height instead.
    */
+  /*
+   * A rail, not a stack. Stacked, three posts cost 120px of a 700px stage and
+   * the map is left 300px wide inside a 353px box — height-bound, with the
+   * river drawn small in the middle of its own panel. On one row the map gets
+   * that height back and fills the width, and every post is still here: the
+   * page already uses a snap rail for the suites on phone.
+   */
   .home-three .h3-berth__sites {
     grid-column: 1 / -1;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     position: static;
-    margin-top: 0.4rem;
-    padding: 0.3rem 0 0;
-    min-height: 0;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    padding: 0.25rem 0 0;
+    /* A scroll container contributes nothing to its row's auto height, so the
+       rail states the height it needs or the grid sizes the row without it and
+       clips the cards against the stage floor. */
+    height: 2.9rem;
+    flex: 0 0 auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  .home-three .h3-berth__sites::-webkit-scrollbar {
+    display: none;
   }
 
   .home-three .h3-berth__sites li {
+    flex: 0 0 min(88%, 19rem);
+    scroll-snap-align: start;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.7rem;
-    padding: 0.2rem 0;
-    min-height: 44px;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.1rem 0;
+    min-height: 40px;
+    border-bottom: 0;
   }
 
   /* The name takes the room and wraps; the pill never shrinks into it. */
@@ -3393,8 +3426,8 @@ figure) {
     flex: 1 1 auto;
     min-width: 0;
     display: block;
-    font-size: 0.8rem;
-    line-height: 1.25;
+    font-size: 0.74rem;
+    line-height: 1.2;
   }
 
   .home-three .h3-berth__site em {
@@ -3405,9 +3438,9 @@ figure) {
   .home-three .h3-berth__more {
     flex: 0 0 auto;
     margin-top: 0;
-    min-height: 36px;
-    padding: 0 0.85rem;
-    font-size: 0.53rem;
+    min-height: 32px;
+    padding: 0 0.7rem;
+    font-size: 0.5rem;
   }
 
   .home-three .h3-course {
