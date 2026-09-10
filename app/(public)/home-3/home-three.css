@@ -3852,24 +3852,6 @@ figure) {
     width: auto;
     max-width: 86vw;
   }
-
-  /*
-   * The dock's opaque cream was the fake clip: letter boxes already
-   * crossed the dock top, but the bar painted over the stems and left
-   * the padding strip the refs mark in red. Same cream lives on the
-   * wordmark (it runs to the screen bottom). Icons stay on top.
-   */
-  html:has(.home-three-hero) .hathor-phone-dock {
-    background: transparent !important;
-    border-top-color: transparent !important;
-    box-shadow: none !important;
-  }
-
-  html[data-public-theme="night"]:has(.home-three-hero) .hathor-phone-dock {
-    background: transparent !important;
-    border-top-color: transparent !important;
-    box-shadow: none !important;
-  }
 }
 
 /* ---------------------------------------------------------- reduced motion
