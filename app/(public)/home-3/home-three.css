@@ -1018,7 +1018,7 @@ figure) {
   background-image: var(--h3-chart-ghost, none);
   background-repeat: no-repeat;
   background-position: center;
-  background-size: min(120vh, 74vw) auto;
+  background-size: contain;
   opacity: 0.06;
   /* the photograph is a colour image; on this wall it has to read as a mark */
   filter: grayscale(1) contrast(1.15);
@@ -2464,6 +2464,31 @@ figure) {
     padding-block: clamp(0.8rem, 4vw, 1.4rem);
   }
 
+  /* Fit the faded vessel in the visible 100svh stage. The hold is taller
+     than the viewport, so painting on the panel/hold crops the photograph. */
+  .home-three .h3-chart-panel::before {
+    display: none;
+  }
+
+  .home-three .h3-chart-sticky::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--h3-chart-ghost, none);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.06;
+    filter: grayscale(1) contrast(1.15);
+  }
+
+  .home-three .h3-chart-sticky > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .home-three .h3-helm {
     flex: 0 0 auto;
     align-self: center;
@@ -2528,15 +2553,9 @@ figure) {
     padding: 0.28rem 0;
     min-height: 44px;
     display: flex;
-    align-items: center;
-  }
-
-  /* the pinned phone screen holds the plate and the list; the long-form
-     notes belong to the desktop wall, which has the room for them */
-  .home-three .h3-berth__note,
-  .home-three .h3-berth__blurb,
-  .home-three .h3-berth__more {
-    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
   }
 
   /* ---- the image panels: the floated frame drops under its plate */
@@ -3172,20 +3191,16 @@ figure) {
 
   .home-three .h3-chart-hold {
     height: 250svh;
+    /* in-flow room for the restored site posts that hang under the card */
+    padding-bottom: 22rem;
   }
 
   .home-three .h3-chart-hold::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-image: var(--h3-chart-ghost, none);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    content: none;
+  }
+
+  .home-three .h3-chart-sticky::before {
     opacity: 0.12;
-    filter: grayscale(1) contrast(1.15);
   }
 
   .home-three .h3-chart-sticky {
@@ -3328,7 +3343,7 @@ figure) {
     flex: 0 0 auto;
     gap: 0.35rem;
     max-height: none;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .home-three .h3-atlas-eyebrow {
@@ -3353,6 +3368,7 @@ figure) {
   }
 
   .home-three .h3-berth {
+    position: relative;
     grid-template-columns: 3.5rem minmax(0, 1fr);
     grid-template-areas:
       "plate name"
@@ -3376,11 +3392,20 @@ figure) {
     letter-spacing: 0.12em;
   }
 
-  .home-three .h3-berth__sites,
-  .home-three .h3-berth__note,
-  .home-three .h3-berth__blurb,
-  .home-three .h3-berth__more {
+  .home-three .h3-berth__note {
     display: none;
+  }
+
+  /* Hang the site posts under the compact card so the river map stays
+     the same size; they fill the leftover hold after the pin releases. */
+  .home-three .h3-berth__sites {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 0.55rem;
+    padding-bottom: 1.1rem;
   }
 
   .home-three .h3-course {
