@@ -3184,8 +3184,8 @@ figure) {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    opacity: 0.07;
-    filter: grayscale(1) contrast(1.1);
+    opacity: 0.12;
+    filter: grayscale(1) contrast(1.15);
   }
 
   .home-three .h3-chart-sticky {
@@ -3204,7 +3204,7 @@ figure) {
     row-gap: 0.55rem;
     justify-content: stretch;
     height: 100svh;
-    padding-top: calc(3.35rem + env(safe-area-inset-top, 0px));
+    padding-top: calc(4.15rem + env(safe-area-inset-top, 0px));
     padding-bottom: calc(
       var(--hathor-phone-dock-h, 4.5rem) + 0.45rem + env(safe-area-inset-bottom, 0px)
     );
@@ -3279,10 +3279,6 @@ figure) {
     max-height: 100%;
     flex: unset;
     align-self: center;
-    padding: 0.4rem 0.15rem 0.25rem;
-    background: var(--h3-paper);
-    box-shadow: inset 0 0 0 1px rgb(128 107 53 / 22%);
-    color: var(--h3-ink);
   }
 
   .home-three .h3-chart__plate {
