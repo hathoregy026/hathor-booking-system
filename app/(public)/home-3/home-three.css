@@ -2455,6 +2455,7 @@ figure) {
   .home-three .h3-chart-sticky {
     position: sticky;
     top: 0;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -2462,12 +2463,24 @@ figure) {
     gap: clamp(0.9rem, 4vw, 1.4rem);
     height: 100svh;
     padding-block: clamp(0.8rem, 4vw, 1.4rem);
+    background: var(--h3-beige);
   }
 
-  /* Fill the visible map stage. The hold is taller than the viewport, so
-     painting on the panel/hold would only show a slice of the photograph. */
-  .home-three .h3-chart-panel::before {
-    display: none;
+  /* Panel ghost stays on: it is the only full-bleed fill for the map
+     chapter (padding, leftover hold, hanging posts). The sticky layer
+     covers the pinned river to the stage edges. */
+  .home-three .h3-chart-hold::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--h3-chart-ghost, none);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.06;
+    filter: grayscale(1) contrast(1.15);
   }
 
   .home-three .h3-chart-sticky::before {
@@ -3185,20 +3198,14 @@ figure) {
    * Km and helm sit on a top rail so the Nile can take the full width.
    * Tags + the current mooring stay on the same screen. Scroll/JS untouched.
    */
-  .home-three .h3-chart-panel::before {
-    display: none;
-  }
-
   .home-three .h3-chart-hold {
     height: 250svh;
     /* in-flow room for the restored site posts that hang under the card */
     padding-bottom: 22rem;
   }
 
-  .home-three .h3-chart-hold::before {
-    content: none;
-  }
-
+  .home-three .h3-chart-panel::before,
+  .home-three .h3-chart-hold::before,
   .home-three .h3-chart-sticky::before {
     opacity: 0.12;
   }
@@ -3223,6 +3230,7 @@ figure) {
     padding-bottom: calc(
       var(--hathor-phone-dock-h, 4.5rem) + 0.45rem + env(safe-area-inset-bottom, 0px)
     );
+    background: var(--h3-beige);
   }
 
   .home-three .h3-course__run {
