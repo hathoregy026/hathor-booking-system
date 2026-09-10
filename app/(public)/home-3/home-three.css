@@ -131,12 +131,6 @@ html:has(.home-three) .public-main {
   overflow-x: clip;
 }
 
-/* home-3 lands on its own close; the shared footer would only repeat it */
-html:has(.home-three) .lux-footer,
-html:has(.home-three) footer.lux-footer {
-  display: none !important;
-}
-
 /* ------------------------------------------------------------------- reset */
 .home-three *,
 .home-three *::before,
@@ -2462,6 +2456,7 @@ figure) {
     justify-content: center;
     gap: clamp(0.9rem, 4vw, 1.4rem);
     height: 100svh;
+    max-height: 100dvh;
     padding-block: clamp(0.8rem, 4vw, 1.4rem);
     background: var(--h3-beige);
   }
@@ -2497,7 +2492,9 @@ figure) {
     filter: grayscale(1) contrast(1.15);
   }
 
-  .home-three .h3-chart-sticky > * {
+  .home-three .h3-chart-sticky > .h3-course__run,
+  .home-three .h3-chart-sticky > .h3-helm,
+  .home-three .h3-chart-sticky > .h3-chart {
     position: relative;
     z-index: 1;
   }
@@ -2511,11 +2508,25 @@ figure) {
     max-width: 370px;
     align-self: center;
     margin-top: 0;
-    flex: 0 0 auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .home-three .h3-chart__plate {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .home-three .h3-chart__svg {
-    max-height: min(42svh, 22rem);
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 420 / 565;
   }
 
   .home-three .h3-course__berths {
@@ -2531,8 +2542,7 @@ figure) {
     grid-template-columns: 4.75rem minmax(0, 1fr);
     grid-template-areas:
       "plate name"
-      "plate meta"
-      "sites sites";
+      "plate meta";
     align-content: start;
     column-gap: 0.85rem;
     row-gap: 0.3rem;
@@ -2557,8 +2567,12 @@ figure) {
   }
 
   .home-three .h3-berth__sites {
-    grid-area: sites;
-    margin-top: 0.35rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 0.55rem;
+    padding-inline: var(--h3-pad);
     border-top: 1px solid var(--h3-hair);
   }
 
@@ -3226,10 +3240,9 @@ figure) {
     row-gap: 0.55rem;
     justify-content: stretch;
     height: 100svh;
+    max-height: 100dvh;
     padding-top: calc(4.15rem + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(
-      var(--hathor-phone-dock-h, 4.5rem) + 0.45rem + env(safe-area-inset-bottom, 0px)
-    );
+    padding-bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.45rem);
     background: var(--h3-beige);
   }
 
@@ -3292,32 +3305,36 @@ figure) {
     grid-area: chart;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
     width: 100%;
     max-width: none;
     min-width: 0;
     min-height: 0;
-    height: auto;
+    height: 100%;
     max-height: 100%;
+    overflow: hidden;
     flex: unset;
-    align-self: center;
+    align-self: stretch;
   }
 
   .home-three .h3-chart__plate {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     min-height: 0;
-    height: auto;
+    height: 100%;
     width: 100%;
+    overflow: hidden;
   }
 
   .home-three .h3-chart__svg {
-    flex: 0 0 auto;
-    width: 100%;
+    flex: 0 1 auto;
+    width: auto;
     height: auto;
-    min-height: 0;
-    max-height: none;
+    max-width: 100%;
+    max-height: 100%;
     aspect-ratio: 420 / 565;
   }
 
@@ -3376,7 +3393,7 @@ figure) {
   }
 
   .home-three .h3-berth {
-    position: relative;
+    position: static;
     grid-template-columns: 3.5rem minmax(0, 1fr);
     grid-template-areas:
       "plate name"
@@ -3404,8 +3421,8 @@ figure) {
     display: none;
   }
 
-  /* Hang the site posts under the compact card so the river map stays
-     the same size; they fill the leftover hold after the pin releases. */
+  /* Park temple posts below the 100svh map stage so they never overlay
+     the river on a short iOS/Android visual viewport. */
   .home-three .h3-berth__sites {
     display: block;
     position: absolute;
@@ -3413,6 +3430,7 @@ figure) {
     right: 0;
     top: 100%;
     margin-top: 0.55rem;
+    padding-inline: var(--h3-pad);
     padding-bottom: 1.1rem;
   }
 
