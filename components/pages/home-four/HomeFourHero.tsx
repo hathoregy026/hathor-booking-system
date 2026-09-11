@@ -32,7 +32,7 @@ export function HomeFourHero({ poster }: { poster: string }) {
     const configure = () => {
       video.pause();
       const save = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? "");
-      const source = reduced.matches || save || (tablet.matches && !device.matches) ? "" : device.matches ? HATHOR_HERO_VIDEO_PHONE_SRC : HATHOR_HERO_VIDEO_SRC;
+      const source = reduced.matches || save ? "" : device.matches ? HATHOR_HERO_VIDEO_PHONE_SRC : HATHOR_HERO_VIDEO_SRC;
       if (!source) { video.removeAttribute("src"); video.load(); setAvailable(false); return; }
       if (video.getAttribute("src") !== source) video.src = source;
       setAvailable(true); play();

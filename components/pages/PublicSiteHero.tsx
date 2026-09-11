@@ -6,7 +6,7 @@ import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvide
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { HATHOR_HERO_VIDEO_SRC, HATHOR_HERO_VIDEO_PHONE_SRC } from "@/lib/branding";
-import { isPhoneViewport, logPhonePerfDev } from "@/lib/touch-device";
+import { isPhoneViewport, logPhonePerfDev, PHONE_VIEWPORT_MQ } from "@/lib/touch-device";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
@@ -88,10 +88,12 @@ export function PublicSiteHero({
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   /**
-   * Start on poster; enable `<video>` only after client confirms desktop
-   * (or phone when a mobile MP4 exists). Avoids downloading the desktop file on phones.
+   * Start on poster. After mount, attach exactly one reel: the 720×720 phone
+   * file at ≤480px, the 1920×1080 desktop file on tablet and desktop.
+   * Never list both as <source media> siblings — that is how the square phone
+   * encode leaked onto landscape screens.
    */
-  const [useLiveVideo, setUseLiveVideo] = useState(false);
+  const [heroVideoSrc, setHeroVideoSrc] = useState<string | null>(null);
   const heroImage = useSiteImage(posterImageName ?? "home-hero-poster");
   const heroPoster = heroPosterDelivery(heroImage.src);
   /** Video hero: no dark wash / gold tint — keep gold dust only. */
@@ -160,53 +162,75 @@ export function PublicSiteHero({
       : "hero-line hero-line--left";
 
   useLayoutEffect(() => {
-    if (!playVideo) return;
-    /*
-     * Large cinematic asset. Phones ≤480: mobile source if present, else poster.
-     * Never download the desktop MP4 on phones. Tablet keeps poster (existing).
-     */
-    const phone = isPhoneViewport();
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const narrowTablet = window.matchMedia("(max-width: 1024px)").matches;
-
-    if (phone && !HATHOR_HERO_VIDEO_PHONE_SRC) {
-      setUseLiveVideo(false);
-      logPhonePerfDev({
-        surface: "public-site-hero",
-        phone: true,
-        videoSource: "poster-only",
-        reason: "no-mobile-mp4",
-      });
-      return;
-    }
-    if (reduced || (narrowTablet && !phone)) {
-      setUseLiveVideo(false);
-      logPhonePerfDev({
-        surface: "public-site-hero",
-        phone,
-        videoSource: "poster-only",
-        reason: reduced ? "reduced-motion" : "tablet-poster",
-      });
+    if (!playVideo) {
+      setHeroVideoSrc(null);
       return;
     }
 
-    setUseLiveVideo(true);
+    const apply = () => {
+      const phone = isPhoneViewport();
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduced) {
+        setHeroVideoSrc(null);
+        logPhonePerfDev({
+          surface: "public-site-hero",
+          phone,
+          videoSource: "poster-only",
+          reason: "reduced-motion",
+        });
+        return;
+      }
+
+      if (phone) {
+        if (!HATHOR_HERO_VIDEO_PHONE_SRC) {
+          setHeroVideoSrc(null);
+          logPhonePerfDev({
+            surface: "public-site-hero",
+            phone: true,
+            videoSource: "poster-only",
+            reason: "no-mobile-mp4",
+          });
+          return;
+        }
+        setHeroVideoSrc(HATHOR_HERO_VIDEO_PHONE_SRC);
+        logPhonePerfDev({
+          surface: "public-site-hero",
+          phone: true,
+          videoSource: "mobile-mp4",
+        });
+        return;
+      }
+
+      setHeroVideoSrc(HATHOR_HERO_VIDEO_SRC);
+      logPhonePerfDev({
+        surface: "public-site-hero",
+        phone: false,
+        videoSource: "desktop-mp4",
+      });
+    };
+
+    apply();
+    const phoneMq = window.matchMedia(PHONE_VIEWPORT_MQ);
+    const reducedMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    phoneMq.addEventListener("change", apply);
+    reducedMq.addEventListener("change", apply);
+    return () => {
+      phoneMq.removeEventListener("change", apply);
+      reducedMq.removeEventListener("change", apply);
+    };
   }, [playVideo]);
 
   useLayoutEffect(() => {
-    if (!playVideo || !useLiveVideo) return;
+    if (!playVideo || !heroVideoSrc) return;
     const video = heroVideoRef.current;
     if (!video) return;
 
-    const phone = isPhoneViewport();
     let started = false;
     let idleId = 0;
     let delayId = 0;
     const cleanups: Array<() => void> = [];
-    const source =
-      phone && HATHOR_HERO_VIDEO_PHONE_SRC
-        ? HATHOR_HERO_VIDEO_PHONE_SRC
-        : HATHOR_HERO_VIDEO_SRC;
+    const source = heroVideoSrc;
 
     const pauseVideo = () => {
       if (!video.paused) video.pause();
@@ -239,13 +263,8 @@ export function PublicSiteHero({
        * Never reassign `src` after <source>/autoPlay has already selected a
        * stream — that reloads the MP4 mid-play and flashes the poster.
        */
-      if (!video.currentSrc && !video.getAttribute("src")) {
+      if (video.getAttribute("src") !== source) {
         video.src = source;
-        logPhonePerfDev({
-          surface: "public-site-hero",
-          phone,
-          videoSource: phone ? "mobile-mp4" : "desktop-mp4",
-        });
       }
       tryPlay();
     };
@@ -335,7 +354,7 @@ export function PublicSiteHero({
       window.clearTimeout(delayId);
       window.cancelIdleCallback?.(idleId);
     };
-  }, [playVideo, useLiveVideo]);
+  }, [playVideo, heroVideoSrc]);
 
   return (
     <section
@@ -357,9 +376,11 @@ export function PublicSiteHero({
           decoding="async"
           fetchPriority="high"
         />
-        {playVideo && useLiveVideo ? (
+        {playVideo && heroVideoSrc ? (
           <video
+            key={heroVideoSrc}
             ref={heroVideoRef}
+            src={heroVideoSrc}
             poster={heroPoster.src}
             autoPlay
             loop
@@ -367,20 +388,7 @@ export function PublicSiteHero({
             playsInline
             preload="none"
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
-          >
-            {HATHOR_HERO_VIDEO_PHONE_SRC ? (
-              <source
-                src={HATHOR_HERO_VIDEO_PHONE_SRC}
-                type="video/mp4"
-                media="(max-width: 480px)"
-              />
-            ) : null}
-            <source
-              src={HATHOR_HERO_VIDEO_SRC}
-              type="video/mp4"
-              media="(min-width: 481px)"
-            />
-          </video>
+          />
         ) : null}
       </div>
       {showMediaWash ? (

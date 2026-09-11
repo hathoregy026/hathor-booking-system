@@ -50,13 +50,15 @@ export function FullBleedBackgroundVideo({
 }: FullBleedBackgroundVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
-  /** Viewport/motion gate — only meaningful when `src` is set. */
-  const [allowLiveVideo, setAllowLiveVideo] = useState(false);
-  const useLiveVideo = Boolean(src) && allowLiveVideo;
+  /** Exactly one reel URL, chosen on the client. Null = poster/fallback. */
+  const [liveSrc, setLiveSrc] = useState<string | null>(null);
   const videoPoster = optimizedVideoPoster(poster);
 
   useLayoutEffect(() => {
-    if (!src) return;
+    if (!src) {
+      setLiveSrc(null);
+      return;
+    }
 
     /* Defer gate decision one frame — same viewport rules as PublicSiteHero. */
     const frame = window.requestAnimationFrame(() => {
@@ -64,18 +66,8 @@ export function FullBleedBackgroundVideo({
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)")
         .matches;
 
-      if (phone && !mobileSrc) {
-        setAllowLiveVideo(false);
-        logPhonePerfDev({
-          surface,
-          phone: true,
-          videoSource: "poster-only",
-          reason: "no-mobile-mp4-yet",
-        });
-        return;
-      }
       if (reduced) {
-        setAllowLiveVideo(false);
+        setLiveSrc(null);
         logPhonePerfDev({
           surface,
           phone,
@@ -84,24 +76,47 @@ export function FullBleedBackgroundVideo({
         });
         return;
       }
+      if (phone) {
+        if (!mobileSrc) {
+          setLiveSrc(null);
+          logPhonePerfDev({
+            surface,
+            phone: true,
+            videoSource: "poster-only",
+            reason: "no-mobile-mp4-yet",
+          });
+          return;
+        }
+        setLiveSrc(mobileSrc);
+        logPhonePerfDev({
+          surface,
+          phone: true,
+          videoSource: "mobile-mp4",
+        });
+        return;
+      }
 
-      setAllowLiveVideo(true);
+      setLiveSrc(src);
+      logPhonePerfDev({
+        surface,
+        phone: false,
+        videoSource: "desktop-mp4",
+      });
     });
 
     return () => window.cancelAnimationFrame(frame);
   }, [src, mobileSrc, surface]);
 
   useLayoutEffect(() => {
-    if (!src || !useLiveVideo) return;
+    if (!liveSrc) return;
     const video = videoRef.current;
     if (!video) return;
 
-    const phone = isPhoneViewport();
     let started = false;
     let idleId = 0;
     let delayId = 0;
     const cleanups: Array<() => void> = [];
-    const source = phone && mobileSrc ? mobileSrc : src;
+    const source = liveSrc;
 
     const pauseVideo = () => {
       if (!video.paused) video.pause();
@@ -130,13 +145,8 @@ export function FullBleedBackgroundVideo({
         connection?.effectiveType === "2g";
       if (slow) return;
 
-      if (!video.currentSrc && !video.getAttribute("src")) {
+      if (video.getAttribute("src") !== source) {
         video.src = source;
-        logPhonePerfDev({
-          surface,
-          phone,
-          videoSource: phone ? "mobile-mp4" : "desktop-mp4",
-        });
       }
       tryPlay();
     };
@@ -204,16 +214,18 @@ export function FullBleedBackgroundVideo({
       window.clearTimeout(delayId);
       window.cancelIdleCallback?.(idleId);
     };
-  }, [src, mobileSrc, useLiveVideo, surface]);
+  }, [liveSrc]);
 
-  if (!src || !useLiveVideo) {
+  if (!liveSrc) {
     return <>{fallback}</>;
   }
 
   return (
     <div ref={rootRef} className={className} data-full-bleed-video>
       <video
+        key={liveSrc}
         ref={videoRef}
+        src={liveSrc}
         poster={videoPoster}
         autoPlay
         loop
@@ -221,16 +233,7 @@ export function FullBleedBackgroundVideo({
         playsInline
         preload="metadata"
         aria-label={alt}
-      >
-        {mobileSrc ? (
-          <source
-            src={mobileSrc}
-            type="video/mp4"
-            media="(max-width: 480px)"
-          />
-        ) : null}
-        <source src={src} type="video/mp4" media="(min-width: 481px)" />
-      </video>
+      />
     </div>
   );
 }

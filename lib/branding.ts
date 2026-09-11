@@ -66,7 +66,13 @@ export const HATHOR_ADMIN_LOGIN_ICON_SRC = HATHOR_HERO_ICON_SRC;
 export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-hero-nile-promo-v20260811.mp4";
 
-/** Homepage hero reel — phones only (≤480px). Local file under /public/media/hathor/videos/. */
+/**
+ * Homepage hero reel — phones only (≤480px). 720×720 encode.
+ * Desktop and tablet must never load this file; they use HATHOR_HERO_VIDEO_SRC
+ * (1920×1080). Do not list both as <source media> siblings — browsers that
+ * ignore media on video sources will pick this square file first and it looks
+ * zoomed and pixelated on a landscape stage.
+ */
 export const HATHOR_HERO_VIDEO_PHONE_SRC =
   "/media/hathor/videos/phone%20hero%20videoi.mp4";
 
