@@ -7,6 +7,8 @@ import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useCmsPathImage } from "@/hooks/useCmsPathImage";
+import { RoomFolioAccordion } from "@/components/pages/rooms/RoomFolioAccordion";
+import { folioVariantForRoomSlug } from "@/lib/room-folio-panels";
 import type { RoomShowcase } from "@/lib/room-showcase";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
@@ -85,6 +87,8 @@ export function RoomDetailPage({ room }: { room: RoomShowcase }) {
         <div className="room-detail__amenities-heading"><p className="room-kicker">Utilities & comforts</p><h2>Everything,<br />considered</h2></div>
         <ul>{room.amenities.map((amenity) => <li key={amenity}><span aria-hidden="true">✦</span>{amenity}</li>)}</ul>
       </section>
+
+      <RoomFolioAccordion variant={folioVariantForRoomSlug(room.slug)} />
 
       <section className="room-detail__reserve">
         <p className="room-kicker">Choose a date and itinerary</p>

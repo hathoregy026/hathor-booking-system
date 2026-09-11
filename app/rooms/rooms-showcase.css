@@ -130,6 +130,11 @@
 .room-detail__amenities li span { color: var(--room-gold); }
 .room-detail__reserve > div { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; }
 
+.room-detail .ac-folio {
+  max-width: 78rem;
+  margin-inline: auto;
+}
+
 @media (max-width: 1024px) {
   .room-collection__hero,
   .room-detail__hero { min-height: 100svh; }

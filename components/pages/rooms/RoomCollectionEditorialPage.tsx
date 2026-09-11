@@ -18,6 +18,7 @@ import {
   RoomAmenityIcon,
   resolveAmenityCaption,
 } from "@/components/pages/rooms/RoomAmenityIcon";
+import { RoomFolioAccordion } from "@/components/pages/rooms/RoomFolioAccordion";
 import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
@@ -642,6 +643,7 @@ export function RoomCollectionEditorialPage({
             ) : null}
           </div>
         </section>
+        <RoomFolioAccordion variant={variant} />
         </main>
 
         <Footer />
