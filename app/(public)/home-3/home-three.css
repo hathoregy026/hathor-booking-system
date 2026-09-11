@@ -1215,6 +1215,32 @@ figure) {
   --hathor-btn-outline-ink: var(--h3-paper);
 }
 
+/* Book Now on that ink wall: cream at rest so the pill reads before hover,
+   then the shared gold hover. Two :not(#_) lifts beat the roster idle fill
+   without the hover/press gold having to live in this file's source order. */
+.home-three .h3-sail--royal .h3-sail__acts .h3-btn[data-hathor-btn="primary"]:not(#_):not(#_) {
+  background-color: var(--h3-paper) !important;
+  border-color: var(--h3-paper) !important;
+  color: var(--h3-ink) !important;
+  -webkit-text-fill-color: var(--h3-ink) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-three .h3-sail--royal .h3-sail__acts .h3-btn[data-hathor-btn="primary"]:hover:not(:disabled, [aria-disabled="true"]):not(#_):not(#_) {
+    background-color: var(--hathor-btn-hover-bg) !important;
+    border-color: var(--hathor-btn-hover-border) !important;
+    color: var(--hathor-btn-hover-text) !important;
+    -webkit-text-fill-color: var(--hathor-btn-hover-text) !important;
+  }
+}
+
+.home-three .h3-sail--royal .h3-sail__acts .h3-btn[data-hathor-btn="primary"]:active:not(:disabled, [aria-disabled="true"]):not(#_):not(#_) {
+  background-color: var(--hathor-btn-hover-bg) !important;
+  border-color: var(--hathor-btn-hover-border) !important;
+  color: var(--hathor-btn-hover-text) !important;
+  -webkit-text-fill-color: var(--hathor-btn-hover-text) !important;
+}
+
 /* the pill, at the foot of every card */
 /* The card actions are the site's one pill, retuned — not a second design.
    The roster in app/button-system.css owns skin, state and geometry and reads
