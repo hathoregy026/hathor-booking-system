@@ -187,47 +187,34 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   }
 
   /*
-   * Keep the clone's last-item stretch (image column shrinks, three plates
-   * rise, statement expands). Only stop the headline from clipping, and
-   * turn the third plate into a site pill instead of a 25vh oval.
+   * Phone/tablet wrap the collection cards in .suites-collection-rail.
+   * On desktop that wrapper must not participate in layout or the last-item
+   * stretch stays stuck at ~15vw (skinny photos, headline off-screen).
    */
-  html body main .mod-scroll__projects .last-item__content__title,
+  html body main .mod-scroll__projects .suites-collection-rail {
+    display: contents !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__item {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item {
+    width: 60vw;
+  }
+
   html body main .mod-scroll__projects .last-item__content__title .line,
   html body main .mod-scroll__projects .last-item__content__text p .line {
-    overflow: visible !important;
+    overflow: clip !important;
+    white-space: nowrap;
   }
 
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link {
-    box-sizing: border-box !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+  html body main .mod-scroll__projects .last-item .mod-scroll__projects__item__image .media__source,
+  html body main .mod-scroll__projects .last-item__carousel__item__image .media__source {
     width: 100% !important;
-    height: 25vh !important;
-    min-height: 25vh !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: #14120e !important;
-    overflow: hidden !important;
-    text-decoration: none !important;
-  }
-
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link svg,
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link::before,
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link::after {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link .last-item__carousel__item__text {
-    ${PILL}
-    width: auto !important;
-    background: #cdb684 !important;
-    border-color: #cdb684 !important;
-    color: #14120e !important;
-    -webkit-text-fill-color: #14120e !important;
+    object-fit: cover !important;
+    object-position: center !important;
   }
 
   html body main .mod-scroll__cierre__content__image :is(.media__wrap-source, .media__source, img) {
@@ -416,13 +403,29 @@ export const SUITES_LUX_FOOTER_HOST_HTML = `
   </footer>
 </div>
 `;
+function unwrapSuitesCollectionRail(projects: Element) {
+  const rail = projects.querySelector(":scope > .suites-collection-rail");
+  if (!rail) return;
+  while (rail.firstChild) {
+    projects.insertBefore(rail.firstChild, rail);
+  }
+  rail.remove();
+}
+
 /**
  * Wrap suite collection cards (excluding the closing last-item) in a
- * home-3-style horizontal snap rail for phone/tablet.
+ * home-3-style horizontal snap rail for phone/tablet only. Desktop must
+ * keep the clone's in-flow siblings so last-item can grow 15vw → 60vw → 42.5vw.
  */
 export function layoutSuitesCollectionRail(doc: Document) {
   const projects = doc.querySelector(".mod-scroll__projects");
   if (!projects) return;
+
+  const isDesktop = (doc.defaultView?.innerWidth ?? 1440) > 1024;
+  if (isDesktop) {
+    unwrapSuitesCollectionRail(projects);
+    return;
+  }
 
   if (projects.querySelector(":scope > .suites-collection-rail")) return;
 

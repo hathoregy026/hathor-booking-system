@@ -421,8 +421,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     ,time+.5)
 
-                    projects_tl.fromTo(elem,{ width:'15vw'},{ width:maxWidthItem+'vw', duration: 1, ease: 'power1.inOut(1)'},time)
-                    projects_tl.fromTo(media,{ height:'87vh'},{ height:''+(heightItem*2)+'vh',  duration: 1, ease: 'power1.inOut(.1)'},time)
+                    // last-item width is lastProject_tl (60vw → 42.5vw). If this
+                    // collection tween also owns it, the column stays ~15vw and
+                    // the headline is pushed off-screen.
+                    if(!elem.classList.contains('last-item')){
+                        projects_tl.fromTo(elem,{ width:'15vw'},{ width:maxWidthItem+'vw', duration: 1, ease: 'power1.inOut(1)'},time)
+                        projects_tl.fromTo(media,{ height:'87vh'},{ height:''+(heightItem*2)+'vh',  duration: 1, ease: 'power1.inOut(.1)'},time)
+                    }
 
                 }else{
 
@@ -469,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     end: "+="+(maxWidthItem*projectsAll.length)+"%",
                     scrub: 0,
                     onLeave: () => {
+                        if(triggerLastProject) triggerLastProject.refresh();
                         if(triggerCierre) triggerCierre.refresh();
                         if(triggerFlipCierreImage) triggerFlipCierreImage.refresh();
                         if(triggerParallaxCierre) triggerParallaxCierre.refresh();
@@ -501,9 +507,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 0.00–1.00: last-item holds while the image column shrinks
                 // and the statement panel stretches into view.
                 lastProject_tl.to(lastProject,{ x:''+( widthPin - adjust )+'vw', duration: 3, ease: 'none'},0)
-                lastProject_tl.fromTo(lastProject,{ width: maxWidthItem+'vw'},{ width: widthCarouselLast+'vw', duration: 1, ease: 'none'},0)
+                lastProject_tl.fromTo(lastProject,{ width: maxWidthItem+'vw'},{ width: widthCarouselLast+'vw', duration: 1, ease: 'none', overwrite: 'auto'},0)
                 lastProject_tl.fromTo(lastProject_carouselContent,{ width: (100-maxWidthItem)+'vw', x:maxWidthItem+'vw'},
-                    { width: (100-widthCarouselLast)+'vw',x:widthCarouselLast+'vw', duration: 1, ease: 'none'},0)
+                    { width: (100-widthCarouselLast)+'vw',x:widthCarouselLast+'vw', duration: 1, ease: 'none', overwrite: 'auto'},0)
 
                 // 0.00–1.00: three plates rise (two rooms + CTA) as the
                 // main photo shrinks, revealing the headline beside them.
@@ -535,9 +541,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     start: "left 0%",
                     end: "left -"+( widthPin - adjust )+"%",
                     scrub: 0,
+                    invalidateOnRefresh: true,
                     onEnter: () => {
                         gsap.set(pin,{width:''+( widthPin - adjust )+'vw'})
-                        if(triggerLastProject) triggerLastProject.refresh();
                     },
                 })
 
