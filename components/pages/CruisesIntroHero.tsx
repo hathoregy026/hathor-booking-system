@@ -5,13 +5,17 @@ import {
   useRef,
   type ComponentPropsWithoutRef,
 } from "react";
-import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { AnimaSplitLine } from "@/components/public/AnimaSplitLine";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useCruisesIntroScroll } from "@/hooks/useCruisesIntroScroll";
 import { CRUISES_PAGE } from "@/lib/page-content";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
-import { normalizeOptionalText } from "@/lib/website-text-shared";
+import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
+import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
+import {
+  normalizeOptionalText,
+  stackedHeroLines,
+} from "@/lib/website-text-shared";
 
 function Scene({
   className = "",
@@ -29,15 +33,21 @@ function Scene({
   );
 }
 
+const LINE_CLASS = ["cr-intro__line--a", "cr-intro__line--b", "cr-intro__line--c"] as const;
+
 /**
- * Short Suites-style landing: cream intro with rising titles, then a few
- * horizontal scrolls to the right into a Nile still before the listing.
+ * Contact-page opener on /cruises: cream panel, Italiana ladder, then the
+ * Nile still. Copy stays cruises-specific; the type, scale and scene rhythm
+ * are the Contact intro.
  */
 export function CruisesIntroHero() {
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   useCruisesIntroScroll({ runRef, trackRef });
   const { pages } = useWebsiteText();
+  const typography = useTypographySettings();
+  const cruisesHero = resolveHeroPageCopy(typography, "cruises");
+  const cruisesHeroLines = stackedHeroLines(cruisesHero.main, cruisesHero.second);
   const introBody =
     normalizeOptionalText(pages.cruises.overviewIntro) ??
     CRUISES_PAGE.hero.subtitle;
@@ -51,41 +61,39 @@ export function CruisesIntroHero() {
           </div>
           <div ref={trackRef} className="cr-intro__track">
             <Scene className="cr-intro__copy" aria-label="Cruises">
-              <div className="cr-intro__inner">
-                <nav className="cr-intro__menu" aria-label="Cruises page sections">
-                  <a href="#cruises-listing">Cruises</a>
-                  <Link href="/voyages">Voyages</Link>
-                  <Link href="/contact">Contact</Link>
-                  <BookNowTrigger className="cr-intro__book">Book Now</BookNowTrigger>
-                </nav>
-                <p className="cr-intro__marker">Cruises</p>
-                <p className="cr-intro__copyright">Hathor Dahabiya ©2026</p>
+              <nav className="cr-intro__nav" aria-label="Cruises page sections">
+                <a href="#cruises-listing">Cruises</a>
+                <Link href="/voyages">Voyages</Link>
+                <Link href="/suites">Suites</Link>
+                <Link href="/contact">Contact</Link>
+              </nav>
 
-                <div className="cr-intro__titles wt-page-hero" data-anima-title>
-                  <h1 className="cr-intro__title cr-intro__title--one">
-                    <AnimaSplitLine line={0}>Cruises</AnimaSplitLine>
-                    <br />
-                    <AnimaSplitLine line={1}>of the Nile</AnimaSplitLine>
-                  </h1>
-                  <h1 className="cr-intro__title cr-intro__title--two">
-                    <AnimaSplitLine line={2}>where</AnimaSplitLine>
-                    <br />
-                    <AnimaSplitLine line={3}>Egypt sails</AnimaSplitLine>
-                  </h1>
-                  <h1 className="cr-intro__title cr-intro__title--three">
-                    <AnimaSplitLine line={4}>meets</AnimaSplitLine>
-                    <br />
-                    <AnimaSplitLine line={5}>luxury</AnimaSplitLine>
+              <div className="cr-intro__inner">
+                <p className="cr-intro__eyebrow">Cruises</p>
+
+                <div className="cr-intro__title" data-anima-title>
+                  <h1 className="cr-intro__display wt-page-hero">
+                    {cruisesHeroLines.map((line, index) => (
+                      <span
+                        key={`${line}-${index}`}
+                        className={`cr-intro__line ${LINE_CLASS[index] ?? ""}`}
+                      >
+                        <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                      </span>
+                    ))}
                   </h1>
                 </div>
 
                 <p className="cr-intro__body wt-page-body">{introBody}</p>
-                <div className="cr-intro__wordmark" aria-label="Hathor Nile dahabiya">
-                  <span>HATHOR</span>
-                  <em>Nile</em>
-                  <strong>dahabiya</strong>
-                </div>
               </div>
+
+              <p className="cr-intro__mark">
+                Hathor Cruise <span className="cr-intro__reg">®</span> 2026
+              </p>
+              <p className="cr-intro__scroll">
+                <i />
+                Scroll
+              </p>
             </Scene>
 
             <Scene className="cr-intro__media" aria-hidden="true">
@@ -122,6 +130,9 @@ export function CruisesIntroHero() {
                   />
                 </figure>
               </div>
+              <p className="cr-intro__caption">
+                <span>Aboard</span> Luxor — Aswan
+              </p>
             </Scene>
           </div>
         </div>

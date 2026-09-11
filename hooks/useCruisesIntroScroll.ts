@@ -11,9 +11,8 @@ type CruisesIntroScrollRefs = {
 };
 
 /**
- * Short Suites-style horizontal intro: desktop scrubs a sticky track to the
- * right for about one extra viewport, then releases into the listing.
- * Tablet and phone stack the same scenes vertically.
+ * Contact-page intro engine: above 950px the cream panel and Nile still
+ * travel sideways; at 950px and below they stack as a vertical document.
  */
 export function useCruisesIntroScroll({
   runRef,
@@ -87,7 +86,7 @@ export function useCruisesIntroScroll({
     };
 
     const measure = () => {
-      desktop = window.innerWidth > 1024 && !reduced.matches;
+      desktop = window.innerWidth > 950 && !reduced.matches;
       if (!desktop) {
         run.style.height = "auto";
         track.style.transform = "none";

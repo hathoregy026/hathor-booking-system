@@ -139,15 +139,11 @@ html[data-public-theme="night"] [data-charter-page] {
 .wellness-editorial .we-epilogue__card-links a,
 .wellness-editorial .we-rite__meta,
 .wellness-editorial .we-historia__corner,
-.cr-intro .cr-intro__marker,
-.cr-intro .cr-intro__copyright,
-.cr-intro .cr-intro__menu,
-.cr-intro .cr-intro__menu a,
-.cr-intro .cr-intro__book,
-.cr-intro .cr-intro__wordmark,
-.cr-intro .cr-intro__wordmark span,
-.cr-intro .cr-intro__wordmark em,
-.cr-intro .cr-intro__wordmark strong,
+.cr-intro .cr-intro__nav,
+.cr-intro .cr-intro__nav a,
+.cr-intro .cr-intro__mark,
+.cr-intro .cr-intro__scroll,
+.cr-intro .cr-intro__caption,
 .nib-dining .nib-chapter,
 .nib-dining .nib-intro__copyright,
 .nib-dining .nib-fixed-rail,
@@ -208,8 +204,7 @@ html[data-public-theme="night"] [data-charter-page] {
 .about-boring .ab-intro__menu a:hover,
 .contact-editorial .ce-intro__menu a:hover,
 .wellness-editorial .we-threshold__index a:hover,
-.cr-intro .cr-intro__menu a:hover,
-.cr-intro .cr-intro__book:hover,
+.cr-intro .cr-intro__nav a:hover,
 .voyages-boring .vb-epilogue__social a:hover,
 .about-boring .ab-epilogue__social a:hover,
 .contact-editorial .ce-epilogue__social a:hover,
@@ -301,8 +296,7 @@ html[data-public-theme="night"] [data-charter-page] {
 
 .voyages-boring .vb-intro > .vb-intro__inner > .vb-marker,
 .about-boring .ab-intro > .ab-intro__inner > .ab-marker,
-.contact-editorial .ce-intro > .ce-intro__inner > .ce-marker,
-.cr-intro .cr-intro__marker {
+.contact-editorial .ce-intro > .ce-intro__inner > .ce-marker {
   position: absolute;
   top: 50%;
   left: var(--ed-gutter);
@@ -312,8 +306,7 @@ html[data-public-theme="night"] [data-charter-page] {
 
 .voyages-boring .vb-copyright,
 .about-boring .ab-copyright,
-.contact-editorial .ce-copyright,
-.cr-intro .cr-intro__copyright {
+.contact-editorial .ce-copyright {
   position: absolute;
   left: var(--ed-gutter);
   bottom: var(--ed-bottom);
@@ -322,8 +315,7 @@ html[data-public-theme="night"] [data-charter-page] {
 
 .voyages-boring .vb-intro__body,
 .about-boring .ab-intro__body,
-.contact-editorial .ce-intro__body,
-.cr-intro .cr-intro__body {
+.contact-editorial .ce-intro__body {
   position: absolute;
   right: var(--ed-gutter);
   bottom: calc(var(--ed-bottom) + 2.35rem);
@@ -335,8 +327,7 @@ html[data-public-theme="night"] [data-charter-page] {
 
 .voyages-boring .vb-intro__wordmark,
 .about-boring .ab-intro__wordmark,
-.contact-editorial .ce-intro__wordmark,
-.cr-intro .cr-intro__wordmark {
+.contact-editorial .ce-intro__wordmark {
   position: absolute;
   right: var(--ed-gutter);
   bottom: var(--ed-bottom);
@@ -355,10 +346,7 @@ html[data-public-theme="night"] [data-charter-page] {
 .about-boring .ab-intro__wordmark strong,
 .contact-editorial .ce-intro__wordmark span,
 .contact-editorial .ce-intro__wordmark em,
-.contact-editorial .ce-intro__wordmark strong,
-.cr-intro .cr-intro__wordmark span,
-.cr-intro .cr-intro__wordmark em,
-.cr-intro .cr-intro__wordmark strong {
+.contact-editorial .ce-intro__wordmark strong {
   display: inline;
   font-size: inherit !important;
   letter-spacing: inherit !important;
@@ -438,8 +426,7 @@ html[data-public-theme="night"] [data-charter-page] {
 
   .voyages-boring .vb-intro > .vb-intro__inner > .vb-marker,
   .about-boring .ab-intro > .ab-intro__inner > .ab-marker,
-  .contact-editorial .ce-intro > .ce-intro__inner > .ce-marker,
-  .cr-intro .cr-intro__marker {
+  .contact-editorial .ce-intro > .ce-intro__inner > .ce-marker {
     top: 7rem;
     transform: none;
   }
@@ -447,7 +434,6 @@ html[data-public-theme="night"] [data-charter-page] {
   .voyages-boring .vb-intro__body,
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
-  .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
     width: min(30rem, 66vw);
   }
@@ -472,7 +458,6 @@ html[data-public-theme="night"] [data-charter-page] {
   .voyages-boring .vb-intro__body,
   .about-boring .ab-intro__body,
   .contact-editorial .ce-intro__body,
-  .cr-intro .cr-intro__body,
   .nib-dining .nib-intro__copy {
     left: var(--ed-gutter);
     right: var(--ed-gutter);
@@ -484,8 +469,7 @@ html[data-public-theme="night"] [data-charter-page] {
 
   .voyages-boring .vb-intro__wordmark,
   .about-boring .ab-intro__wordmark,
-  .contact-editorial .ce-intro__wordmark,
-  .cr-intro .cr-intro__wordmark {
+  .contact-editorial .ce-intro__wordmark {
     max-width: calc(100% - (var(--ed-gutter) * 2));
     flex-wrap: wrap;
     justify-content: flex-end;

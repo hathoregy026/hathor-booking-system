@@ -426,7 +426,7 @@ export const HERO_PAGE_LABELS: Record<HeroPageKey, string> = {
 
 export const DEFAULT_HERO_PAGES: Record<HeroPageKey, HeroCopy> = {
   home: { ...DEFAULT_HERO_COPY },
-  cruises: { main: "Dahabiya Cruises List", second: "Sail Egypt" },
+  cruises: { main: "Sail the\nNile", second: "Cruises" },
   voyages: { main: "Our Voyages\nShaped by", second: "The Nile" },
   highlights: { main: "Dahabiya Cruise", second: "Highlights" },
   about: { main: "Welcome Aboard Hathor", second: "Dahabiya Cruise" },
@@ -514,7 +514,7 @@ export const LIVE_PAGE_FONTS: Partial<
   contact: ITALIANA_EDITORIAL_FONTS,
   about: ITALIANA_EDITORIAL_FONTS,
   wellness: BITHO_EDITORIAL_FONTS,
-  cruises: BITHO_EDITORIAL_FONTS,
+  cruises: ITALIANA_EDITORIAL_FONTS,
   voyages: ITALIANA_EDITORIAL_FONTS,
   gastronomy: BITHO_EDITORIAL_FONTS,
   suites: BITHO_EDITORIAL_FONTS,
@@ -1106,6 +1106,13 @@ export function resolveHeroPageCopy(
     stored.second.trim() === "Dahabiya Cruise";
   if (isLegacyHomepageDefault) {
     return { ...DEFAULT_HERO_PAGES.home };
+  }
+  const isLegacyCruisesDefault =
+    page === "cruises" &&
+    stored.main.trim() === "Dahabiya Cruises List" &&
+    stored.second.trim() === "Sail Egypt";
+  if (isLegacyCruisesDefault) {
+    return { ...DEFAULT_HERO_PAGES.cruises };
   }
   const main =
     stored.main.trim() ||

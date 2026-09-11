@@ -627,6 +627,7 @@ html[data-public-theme="night"] .hathor-editorial-page {
 html[data-public-theme="night"] .cr-intro {
   --cr-paper: var(--night-canvas);
   --cr-ink: var(--night-text);
+  --cr-ink-soft: var(--night-text-soft);
   --cr-gold: var(--night-gold);
   --cr-gold-deep: var(--night-gold-strong);
   background-color: var(--night-canvas) !important;
