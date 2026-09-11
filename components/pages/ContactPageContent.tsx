@@ -174,14 +174,14 @@ export function ContactPageContent() {
                 <div className="ce-intro__inner">
                   <Eyebrow>Contact</Eyebrow>
 
-                  <div className="ce-intro__title" id="contact" data-anima-title>
+                  <div className="ce-intro__title" id="contact">
                     <h1 className="ce-display ce-display--xl wt-page-hero">
                       {contactHeroLines.map((line, index) => (
                         <span
                           key={`${line}-${index}`}
                           className={`ce-line ${contactLineClass[index] ?? ""}`}
                         >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                          {line}
                         </span>
                       ))}
                     </h1>

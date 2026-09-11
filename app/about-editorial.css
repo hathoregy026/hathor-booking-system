@@ -1247,16 +1247,34 @@ html:has(.about-boring) .public-fab {
 }
 
 /* ===================================================== LUXURYHATHOR INTEGRITY
-   Suites anima-title CSS parks every .anima-split-char at translateY(110%)
-   inside overflow-clipped lines. About already reveals copy with --reveal;
-   without this override the intro title stays clipped/invisible. */
+   The intro title must paint on first view. Suites letter-split + --reveal
+   clip-masks were parking the heading in an empty box. */
+.about-boring .ab-intro {
+  --reveal: 1;
+}
+
+.about-boring .ab-intro .ab-line,
+.about-boring .ab-intro .ab-line > *,
+.about-boring .ab-intro .ab-line * {
+  overflow: visible !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.about-boring .ab-intro .wt-page-hero,
+.about-boring .ab-intro .ab-display,
+.about-boring .ab-intro .ab-line {
+  color: var(--ab-ink) !important;
+  -webkit-text-fill-color: var(--ab-ink) !important;
+}
+
 .about-boring .anima-split-char {
   transform: none !important;
   will-change: auto;
 }
 
-.about-boring .ab-intro .ab-line,
-.about-boring .ab-intro .ab-line > *,
-.about-boring .ab-intro .anima-split-line {
-  overflow: visible;
+@media (min-width: 951px) {
+  .about-boring {
+    --ab-t-xl: clamp(3.25rem, 5.6vw, 6.75rem);
+  }
 }

@@ -181,14 +181,14 @@ export function AboutPageContent() {
                 </nav>
 
                 <div className="ab-intro__inner">
-                  <div className="ab-intro__title" id="about" data-anima-title>
+                  <div className="ab-intro__title" id="about">
                     <h1 className="ab-display ab-display--xl wt-page-hero">
                       {aboutHeroLines.map((line, index) => (
                         <span
                           key={`${line}-${index}`}
                           className={`ab-line ${aboutLineClass[index] ?? ""}`}
                         >
-                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                          {line}
                         </span>
                       ))}
                     </h1>

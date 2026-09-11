@@ -1402,16 +1402,34 @@ html:has(.contact-editorial) .public-fab {
 }
 
 /* ===================================================== LUXURYHATHOR INTEGRITY
-   Suites anima-title CSS parks every .anima-split-char at translateY(110%)
-   inside overflow-clipped lines. Contact already reveals copy with --reveal;
-   without this override the intro title stays clipped/invisible. */
+   The intro title must paint on first view. Suites letter-split + --reveal
+   clip-masks were parking the heading in an empty box. */
+.contact-editorial .ce-intro {
+  --reveal: 1;
+}
+
+.contact-editorial .ce-intro .ce-line,
+.contact-editorial .ce-intro .ce-line > *,
+.contact-editorial .ce-intro .ce-line * {
+  overflow: visible !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.contact-editorial .ce-intro .wt-page-hero,
+.contact-editorial .ce-intro .ce-display,
+.contact-editorial .ce-intro .ce-line {
+  color: var(--ce-ink) !important;
+  -webkit-text-fill-color: var(--ce-ink) !important;
+}
+
 .contact-editorial .anima-split-char {
   transform: none !important;
   will-change: auto;
 }
 
-.contact-editorial .ce-intro .ce-line,
-.contact-editorial .ce-intro .ce-line > *,
-.contact-editorial .ce-intro .anima-split-line {
-  overflow: visible;
+@media (min-width: 951px) {
+  .contact-editorial {
+    --ce-t-xl: clamp(3.25rem, 5.6vw, 6.75rem);
+  }
 }
