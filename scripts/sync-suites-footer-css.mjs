@@ -64,8 +64,8 @@ const CLONE_ONLY = `
    ------------------------------------------------------------------------ */
 
 .hathor-lux-footer-host .hf {
-  --hf-display: "Italiana", "Playfair Display", Georgia, serif;
-  --hf-script: "Quiet Luxury", "Brittany Signature", cursive;
+  --hf-display: "Italiana", "Gamgote", Georgia, serif;
+  --hf-script: "Quiet Luxury", "Bastliga One", cursive;
   --hf-meta-font: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
 }
 

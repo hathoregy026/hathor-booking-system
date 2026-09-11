@@ -46,12 +46,13 @@
   --hf-river-ink: #f2ece0;
   --hf-river-line: rgb(242 236 224 / 40%);
 
-  /* ---- type stacks (every face already ships with the site) */
-  --hf-display: "Italiana", var(--font-hathor-display), "Gamgote", Georgia, serif;
-  --hf-script: "Bastliga One", var(--font-hathor-quiet-luxury), "Quiet Luxury",
-    cursive;
-  --hf-meta-font: var(--font-hathor-body), "Plus Jakarta Sans",
-    "Helvetica Neue", Arial, sans-serif;
+  /* ---- type stacks (named @font-face faces only)
+     Never interpolate next/font variables without a fallback: an undefined
+     var() makes the whole custom property invalid, and the gold script then
+     inherits the page display face (Italiana on rooms, cabins, gastronomy). */
+  --hf-display: "Italiana", "Gamgote", Georgia, serif;
+  --hf-script: "Quiet Luxury", "Bastliga One", cursive;
+  --hf-meta-font: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
 
   /* ---- the shared pill, sized for this composition only */
   --hathor-btn-width: 13.5rem;
@@ -192,11 +193,13 @@
   margin: -0.28em 0 0;
   padding-left: clamp(0.5rem, 3vw, 3.5rem);
   color: var(--hf-gold);
-  font-family: var(--hf-script);
+  font-family: var(--hf-script) !important;
   font-size: clamp(3rem, 6.6vw, 6.2rem);
   font-weight: 400;
+  font-style: normal;
   line-height: 1.05;
   letter-spacing: 0.01em;
+  text-transform: none;
 }
 
 /* ---------------------------------------------------------- 1b reservations */
