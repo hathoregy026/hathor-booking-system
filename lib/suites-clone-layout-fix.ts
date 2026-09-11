@@ -187,152 +187,47 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   }
 
   /*
-   * Horizon close: one 100vw split (image | statement), then one full plate.
-   * The clone's last-item carousel was stacking the same rooms and squeezing
-   * the headline into a sliver before the cierre sand field.
+   * Keep the clone's last-item stretch (image column shrinks, three plates
+   * rise, statement expands). Only stop the headline from clipping, and
+   * turn the third plate into a site pill instead of a 25vh oval.
    */
-  html body main .mod-scroll__projects .last-item {
-    position: relative !important;
-    min-width: 100vw !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100svh !important;
-    overflow: hidden !important;
-    transform: none !important;
-    translate: none !important;
-  }
-
-  html body main .mod-scroll__projects .last-item > .mod-scroll__projects__item__content {
-    width: 42vw !important;
-    height: 100% !important;
-    transform: none !important;
-  }
-
-  html body main .mod-scroll__projects .last-item__content {
-    position: absolute !important;
-    left: 42vw !important;
-    top: 0 !important;
-    width: 58vw !important;
-    max-width: 58vw !important;
-    height: 100% !important;
-    transform: none !important;
-    translate: none !important;
-    overflow: visible !important;
-    background: #fff !important;
-  }
-
-  html body main .mod-scroll__projects .last-item__content__wrap {
-    position: relative !important;
-    inset: auto !important;
-    width: 100% !important;
-    max-width: none !important;
-    height: 100% !important;
-    overflow: visible !important;
-    padding-right: clamp(2rem, 4vw, 4.5rem) !important;
-  }
-
   html body main .mod-scroll__projects .last-item__content__title,
   html body main .mod-scroll__projects .last-item__content__title .line,
   html body main .mod-scroll__projects .last-item__content__text p .line {
     overflow: visible !important;
-    max-width: none !important;
   }
 
-  html body main .mod-scroll__projects .last-item__content .char,
-  html body main .mod-scroll__projects .last-item__content__text span,
-  html body main .mod-scroll__projects .last-item__content__section {
-    transform: none !important;
-    translate: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  html body main .mod-scroll__projects .last-item__carousel {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link,
-  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta {
-    ${PILL}
-    margin-top: 1.75rem !important;
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 25vh !important;
+    min-height: 25vh !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
     background: #14120e !important;
-    border-color: #14120e !important;
-    color: #cdb684 !important;
-    -webkit-text-fill-color: #cdb684 !important;
+    overflow: hidden !important;
+    text-decoration: none !important;
   }
 
   html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link svg,
-  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta svg {
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link::before,
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link::after {
     display: none !important;
   }
 
-  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link .last-item__carousel__item__text,
-  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta .last-item__carousel__item__text {
-    font-family: inherit !important;
-    font-size: inherit !important;
-    font-style: normal !important;
-    letter-spacing: inherit !important;
-    color: inherit !important;
-    -webkit-text-fill-color: inherit !important;
-  }
-
-  html body main .mod-scroll__pin {
-    display: none !important;
-    width: 0 !important;
-    min-width: 0 !important;
-  }
-
-  html body main .mod-scroll__cierre {
-    width: 100vw !important;
-    min-width: 100vw !important;
-    overflow: hidden !important;
-  }
-
-  html body main .mod-scroll__cierre__content {
-    position: relative !important;
-    display: block !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100svh !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    transform: none !important;
-    translate: none !important;
-  }
-
-  html body main .mod-scroll__cierre__content::after,
-  html body main .mod-scroll__cierre__content .mod-scroll__logo,
-  html body main .mod-scroll__cierre__content .mod-scroll__footer-logo {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__cierre__content__image {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    max-width: none !important;
-    height: 100% !important;
-    aspect-ratio: auto !important;
-    border-radius: 0 !important;
-    transform: none !important;
-    translate: none !important;
-  }
-
-  html body main .mod-scroll__cierre__content__image > .flipMedia__media {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    transform: none !important;
-    translate: none !important;
-  }
-
-  html body main .mod-scroll__cierre__content__image > .flipMedia__media--down {
-    opacity: 0 !important;
-  }
-
-  html body main .mod-scroll__cierre__content__image > .flipMedia__media--up {
-    opacity: 1 !important;
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link .last-item__carousel__item__text {
+    ${PILL}
+    width: auto !important;
+    background: #cdb684 !important;
+    border-color: #cdb684 !important;
+    color: #14120e !important;
+    -webkit-text-fill-color: #14120e !important;
   }
 
   html body main .mod-scroll__cierre__content__image :is(.media__wrap-source, .media__source, img) {
@@ -343,57 +238,82 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     object-position: center !important;
   }
 
-  html body main .mod-title--lines {
+  html body main .hathor-suites-epilogue {
     display: grid !important;
-    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-    column-gap: var(--grid-gap, 1rem) !important;
+    grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.85fr) !important;
+    column-gap: clamp(2rem, 5vw, 4.5rem) !important;
     row-gap: 0 !important;
     align-items: end !important;
-    padding: clamp(5.5rem, 8vw, 8rem) var(--wrapper-padd, 2.5rem) 0 !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    padding: clamp(5.5rem, 9vw, 8.5rem) var(--wrapper-padd, 2.5rem) clamp(3.25rem, 6vw, 5rem) !important;
+    background: #d7d0c3 !important;
   }
 
-  html body main .mod-title--lines .line {
+  html body main .hathor-suites-epilogue .mod-title--lines,
+  html body main .hathor-suites-epilogue .mod-content--cols,
+  html body main .hathor-suites-epilogue .mod-content--center {
+    display: contents !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  html body main .hathor-suites-epilogue .mod-title--lines .line {
     overflow: visible !important;
     width: auto !important;
     max-width: none !important;
-  }
-
-  html body main .mod-title--lines .line:nth-child(1),
-  html body main .mod-title--lines .line:nth-child(2) {
-    grid-column: 1 / 9 !important;
     text-align: left !important;
   }
 
-  html body main .mod-title--lines .line:nth-child(3) {
-    grid-column: 9 / -1 !important;
-    text-align: left !important;
-    padding-bottom: 0.15em !important;
+  html body main .hathor-suites-epilogue .mod-title--lines .line:nth-child(1) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
   }
 
-  html body main .mod-content--cols {
-    padding: 1.5rem var(--wrapper-padd, 2.5rem) 0 !important;
+  html body main .hathor-suites-epilogue .mod-title--lines .line:nth-child(2) {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
   }
 
-  html body main .mod-content--cols .mod-content__col:not(.big_text) {
+  html body main .hathor-suites-epilogue .mod-title--lines .line:nth-child(3) {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+    align-self: end !important;
+    padding-bottom: 0.08em !important;
+  }
+
+  html body main .hathor-suites-epilogue .mod-content--cols .mod-content__col:not(.big_text) {
     display: none !important;
   }
 
-  html body main .mod-content--cols .mod-content__col.big_text {
-    width: calc((100% - var(--grid-gap, 1rem) * 11) / 12 * 4 + var(--grid-gap, 1rem) * 3) !important;
-    margin-left: auto !important;
-    padding-top: 1.15rem !important;
+  html body main .hathor-suites-epilogue .mod-content--cols .mod-content__col.big_text {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 1.15rem 0 0 !important;
     border-top: 1px solid rgb(182 159 100 / 0.45) !important;
   }
 
-  html body main .mod-content--center {
-    justify-content: flex-end !important;
-    padding: 1.35rem var(--wrapper-padd, 2.5rem) clamp(4rem, 7vw, 6.5rem) !important;
+  html body main .hathor-suites-epilogue .mod-content--center .mod-content__col {
+    grid-column: 2 !important;
+    grid-row: 4 !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 1.35rem 0 0 !important;
   }
 
-  html body main .mod-content--center .mod-content__col {
-    width: calc((100% - var(--grid-gap, 1rem) * 11) / 12 * 4 + var(--grid-gap, 1rem) * 3) !important;
-    justify-content: flex-start !important;
-    padding-inline: 0 !important;
+  html body main .hathor-suites-epilogue a.mod-content__btn {
+    margin: 0 !important;
+    align-self: flex-start !important;
   }
 
   html body .hathor-lux-footer-host {
@@ -628,32 +548,18 @@ export function layoutSuitesSlideCaptionPanels(doc: Document) {
   }
 }
 
-type SuitesGsapWin = Window & {
-  gsap?: {
-    killTweensOf?: (target: unknown) => void;
-    set?: (target: unknown, vars: Record<string, unknown>) => void;
-  };
-  ScrollTrigger?: {
-    getAll?: () => Array<{ trigger?: Element | string | null; kill: () => void }>;
-  };
-};
-
 /**
- * Freeze the clone's last-item carousel (stacked duplicate rooms + squeezed
- * headline) into a readable split, then one full-bleed plate. Moves View All
- * Suites onto the statement as a site pill.
+ * Keep View All Suites in the three-plate stack (href + pill label) and seat
+ * Life Upon / Nile / copy / Request Availability on one shared grid.
  */
 export function layoutSuitesHorizonClose(doc: Document) {
   const last = doc.querySelector<HTMLElement>(
     ".mod-scroll__projects__item.last-item",
   );
-  if (!last) return;
-
-  const wrap = last.querySelector<HTMLElement>(".last-item__content__wrap");
-  const link = last.querySelector<HTMLAnchorElement>(
+  const link = last?.querySelector<HTMLAnchorElement>(
     "a.last-item__carousel__item--link",
   );
-  if (wrap && link && !wrap.contains(link)) {
+  if (link) {
     link.classList.add("hathor-horizon-cta");
     link.setAttribute("href", "/rooms");
     link.setAttribute("target", "_top");
@@ -662,48 +568,21 @@ export function layoutSuitesHorizonClose(doc: Document) {
     });
     const label = link.querySelector(".last-item__carousel__item__text");
     if (label) label.textContent = "View All Suites";
-    wrap.appendChild(link);
   }
 
-  last
-    .querySelectorAll(".last-item__carousel__item:not(.last-item__carousel__item--link)")
-    .forEach((el) => {
-      el.setAttribute("hidden", "");
-    });
-  const carousel = last.querySelector<HTMLElement>(".last-item__carousel");
-  if (carousel && !carousel.querySelector("a.last-item__carousel__item--link")) {
-    carousel.setAttribute("hidden", "");
-  }
-
-  const win = doc.defaultView as SuitesGsapWin | null;
-  if (!win) return;
-
-  if (last.dataset.hathorHorizonBound !== "1") {
-    last.dataset.hathorHorizonBound = "1";
-    win.setTimeout(() => layoutSuitesHorizonClose(doc), 400);
-    win.setTimeout(() => layoutSuitesHorizonClose(doc), 1600);
-  }
-
-  if (win.innerWidth <= 1024) return;
-
-  const motion = [
-    last,
-    last.querySelector(":scope > .mod-scroll__projects__item__content"),
-    last.querySelector(".last-item__content"),
-    last.querySelector(".last-item__carousel"),
-    doc.querySelector(".mod-scroll__pin"),
-    doc.querySelector(".mod-scroll__cierre"),
-    doc.querySelector(".mod-scroll__cierre__content"),
-    doc.querySelector(".mod-scroll__cierre__content__image"),
-    ...Array.from(doc.querySelectorAll(".mod-scroll__cierre__content__image > *")),
-  ].filter(Boolean);
-
-  try {
-    win.gsap?.set?.(motion, {
-      clearProps: "transform,translate,x,y,width,height,top,left",
-    });
-  } catch {
-    /* Clone GSAP is optional during early iframe mount. */
+  const title = doc.querySelector<HTMLElement>(".mod-title--lines");
+  const cols = doc.querySelector<HTMLElement>(".mod-content--cols");
+  const center = doc.querySelector<HTMLElement>(".mod-content--center");
+  if (
+    title &&
+    cols &&
+    center &&
+    !title.parentElement?.classList.contains("hathor-suites-epilogue")
+  ) {
+    const host = doc.createElement("div");
+    host.className = "hathor-suites-epilogue";
+    title.before(host);
+    host.append(title, cols, center);
   }
 }
 

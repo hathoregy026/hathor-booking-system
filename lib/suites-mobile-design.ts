@@ -1344,18 +1344,57 @@ const SM_COLLECTION_CSS = `
   }
 
   html body main .mod-scroll__projects > .last-item .last-item__carousel {
-    display: none !important;
+    position: relative !important;
+    inset: auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: start !important;
+    gap: var(--sm-gap) !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 var(--sm-pad) 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item .last-item__carousel__item:not(.last-item__carousel__item--link) {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 4 !important;
+    overflow: hidden !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item .last-item__carousel__item:not(.last-item__carousel__item--link):nth-child(2) {
+    margin-top: clamp(1.75rem, 8vw, 3rem) !important;
+  }
+
+  html body main .mod-scroll__projects > .last-item .last-item__carousel__item .last-item__carousel__item__image {
+    position: absolute !important;
+    inset: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: auto !important;
+    transform: none !important;
   }
 
   html body main .mod-scroll__projects > .last-item a.last-item__carousel__item--link,
   html body main .mod-scroll__projects > .last-item a.hathor-horizon-cta {
+    grid-column: 1 / -1 !important;
     position: relative !important;
     box-sizing: border-box !important;
     ${PILL}
     width: auto !important;
     min-width: 12.5rem !important;
     max-width: 100% !important;
-    margin: clamp(1.5rem, 6vw, 2.25rem) 0 0 !important;
+    justify-self: start !important;
+    margin: clamp(1.5rem, 6vw, 2.25rem) 0 var(--sm-band) !important;
     background: var(--sm-ink-surface) !important;
     border-color: var(--sm-ink-surface) !important;
     color: #cdb684 !important;
@@ -1613,7 +1652,18 @@ const SM_CLOSING_CSS = `
     aspect-ratio: 4 / 5 !important;
   }
 
-  /* 14 · Life upon the timeless Nile. */
+  /* 14–16 · Life Upon / Nile / copy / availability on one shared stack. */
+  html body main .hathor-suites-epilogue {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: var(--sm-band) var(--sm-pad) var(--sm-band) !important;
+    background: var(--sm-sand) !important;
+  }
+
   html body main .mod-title--lines {
     display: flex !important;
     flex-direction: column !important;
@@ -1623,8 +1673,8 @@ const SM_CLOSING_CSS = `
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
-    padding: var(--sm-band) var(--sm-pad) clamp(1.5rem, 6vw, 2.25rem) !important;
-    background: var(--sm-sand) !important;
+    padding: 0 0 clamp(1.25rem, 5vw, 1.75rem) !important;
+    background: transparent !important;
   }
 
   html body main .mod-title--lines .line {
@@ -1662,8 +1712,8 @@ const SM_CLOSING_CSS = `
     box-sizing: border-box !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 0 var(--sm-pad) 0 !important;
-    background: var(--sm-sand) !important;
+    padding: 0 !important;
+    background: transparent !important;
   }
 
   html body main .mod-content--cols .mod-content__col:not(.big_text) {
@@ -1714,9 +1764,9 @@ const SM_CLOSING_CSS = `
     box-sizing: border-box !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: clamp(1.25rem, 5vw, 1.75rem) var(--sm-pad) var(--sm-band) !important;
+    padding: clamp(1.25rem, 5vw, 1.75rem) 0 0 !important;
     overflow: visible !important;
-    background: var(--sm-sand) !important;
+    background: transparent !important;
   }
 
   html body main .mod-content--center .mod-content__col {
@@ -1760,35 +1810,37 @@ const SM_CLOSING_CSS = `
     padding-bottom: 0 !important;
   }
 
-  html body main .mod-title--lines {
+  html body main .hathor-suites-epilogue {
     display: grid !important;
     grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) !important;
     column-gap: var(--sm-gap) !important;
     align-items: end !important;
   }
 
-  html body main .mod-title--lines .line:nth-child(1),
-  html body main .mod-title--lines .line:nth-child(2) {
+  html body main .hathor-suites-epilogue .mod-title--lines {
+    display: contents !important;
+  }
+
+  html body main .hathor-suites-epilogue .mod-title--lines .line:nth-child(1),
+  html body main .hathor-suites-epilogue .mod-title--lines .line:nth-child(2) {
     grid-column: 1 !important;
     text-align: left !important;
   }
 
-  html body main .mod-title--lines .line:nth-child(3) {
+  html body main .hathor-suites-epilogue .mod-title--lines .line:nth-child(3) {
     grid-column: 2 !important;
     grid-row: 1 / span 2 !important;
     align-self: end !important;
     text-align: left !important;
   }
 
-  html body main .mod-content--cols,
-  html body main .mod-content--center {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) !important;
-    justify-content: stretch !important;
+  html body main .hathor-suites-epilogue .mod-content--cols,
+  html body main .hathor-suites-epilogue .mod-content--center {
+    display: contents !important;
   }
 
-  html body main .mod-content--cols .mod-content__col.big_text,
-  html body main .mod-content--center .mod-content__col {
+  html body main .hathor-suites-epilogue .mod-content--cols .mod-content__col.big_text,
+  html body main .hathor-suites-epilogue .mod-content--center .mod-content__col {
     grid-column: 2 !important;
     width: 100% !important;
     margin: 0 !important;

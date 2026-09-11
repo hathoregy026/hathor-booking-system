@@ -493,25 +493,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if(!is_mobile){
 
-                /*
-                 * Hathor freeze: keep the last-item as a readable 100vw split,
-                 * then one full-bleed cierre plate. The original carousel pin
-                 * stacked duplicate rooms and squeezed the headline.
-                 */
-                gsap.set(lastProject, { width: '100vw', x: 0 });
-                gsap.set(pin, { width: 0, display: 'none' });
-                if (lastProject_carouselContent) {
-                    gsap.set(lastProject_carouselContent, { x: 0 });
-                }
-                if (lastProject_carousel) {
-                    gsap.set(lastProject_carousel, { y: 0, display: 'none' });
-                }
+                ///set width pin depends num items
+                gsap.set(pin,{width:''+widthPin+'vw'})
+
+                lastProject_tl = gsap.timeline({paused:true});
+
+                // 0.00–1.00: last-item holds while the image column shrinks
+                // and the statement panel stretches into view.
+                lastProject_tl.to(lastProject,{ x:''+( widthPin - adjust )+'vw', duration: 3, ease: 'none'},0)
+                lastProject_tl.fromTo(lastProject,{ width: maxWidthItem+'vw'},{ width: widthCarouselLast+'vw', duration: 1, ease: 'none'},0)
+                lastProject_tl.fromTo(lastProject_carouselContent,{ width: (100-maxWidthItem)+'vw', x:maxWidthItem+'vw'},
+                    { width: (100-widthCarouselLast)+'vw',x:widthCarouselLast+'vw', duration: 1, ease: 'none'},0)
+
+                // 0.00–1.00: three plates rise (two rooms + CTA) as the
+                // main photo shrinks, revealing the headline beside them.
+                lastProject_tl.fromTo(lastProject_carousel,{ y: '100vh'},
+                    { y: ''+(100-(heightItem*(numItem-1)))+'vh', duration: 1, ease: 'none'},0)
+                lastProject_tl.fromTo(lastProject_content,{ y: '0'},
+                    { y: '-'+(heightItem*(numItem-2))+'vh', duration: 1, ease: 'none'},0)
+                lastProject_tl.from(lastProject_carousel_items,{ height: '66vh', duration: 1, ease: 'none'},0)
+
+                // 1.00–1.75: plates settle smaller; headline chars play.
+                lastProject_tl.to(lastProject_carousel,{ y: '-'+(heightItem*(numItem-3))+'vh', duration: .75, ease: 'none'},1)
+                lastProject_tl.to(lastProject_content,{ y: '-'+(heightItem*(numItem-1))+'vh', duration: .75, ease: 'none'},1)
+                lastProject_tl.to(lastProject_carousel_items,{ height: '37.5vh', duration: .75, ease: 'power1.inOut',
+                    onStart: () => {
+                        lastProject_content_tl?.play();
+                        if(triggerCierre) triggerCierre.refresh();
+                        if(triggerFlipCierreImage) triggerFlipCierreImage.refresh();
+                        if(triggerParallaxCierre) triggerParallaxCierre.refresh();
+                    },
+                    onReverseComplete: () => {
+                        lastProject_content_tl?.reverse();
+                    }
+                },1)
 
                 triggerLastProject = ScrollTrigger.create({
                     containerAnimation: scroll_tl,
+                    animation: lastProject_tl,
                     trigger: lastProject,
-                    start: "left 85%",
-                    onEnter: () => { lastProject_content_tl?.timeScale(1.25).play(); },
+                    start: "left 0%",
+                    end: "left -"+( widthPin - adjust )+"%",
+                    scrub: 0,
+                    onEnter: () => {
+                        gsap.set(pin,{width:''+( widthPin - adjust )+'vw'})
+                        if(triggerLastProject) triggerLastProject.refresh();
+                    },
                 })
 
             }else{
@@ -565,9 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cierre = document.querySelector('.mod-scroll__cierre');
             const cierreContent = document.querySelector('.mod-scroll__cierre__content');
             const cierreMedia = cierreContent.querySelector('.mod-scroll__cierre__content__image');
-            gsap.set(cierre, { width: '100vw' });
-            gsap.set(cierreContent, { width: '100vw', x: 0 });
-            const percentMov = 0;
+            const percentMov = (((cierre.offsetWidth - cierreContent.offsetWidth)*100)/window.innerWidth);
 
             const cierre_tl = gsap.timeline({paused:true});
             cierre_tl.fromTo(cierreContent,{x:'0%'},{x:percentMov+'%', ease:'none'},0)
@@ -579,10 +604,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 start: "left 0%",
                 end: "left -"+percentMov+"%",
                 scrub: 0,
-                // markers: true,
             })
 
-            gsap.set(cierreMedia.querySelectorAll(':scope > *'), { x: 0 });
+            const cierre_parallax_tl = gsap.timeline({paused:true});
+            cierre_parallax_tl.from(cierreMedia.querySelectorAll(':scope > *'),{x:'-100%', ease:'none'},0)
+
+            triggerParallaxCierre = ScrollTrigger.create({
+                containerAnimation: scroll_tl,
+                animation: cierre_parallax_tl,
+                trigger: cierreContent,
+                start: "left 100%",
+                end: "left 0%",
+                scrub: .1,
+            })
 
         }
 
@@ -600,10 +634,8 @@ document.addEventListener('DOMContentLoaded', () => {
             scroll_tl.progress(0)
 
             let scroll_tl_end = ((scrollH_width*100)/window.innerWidth);
-            const cierreEl = document.querySelector('.mod-scroll__cierre');
-            const cierreLeft = cierreEl ? cierreEl.getBoundingClientRect().left : (scrollH_width - window.innerWidth);
-            /* Pin + 42/58 split leave a viewport remainder; land the cierre plate flush. */
-            scroll_tl.to(sections, {x: -(cierreLeft + window.innerWidth * 0.45), duration:100, ease: "none"});
+            const adjust_width = (document.querySelector('.mod-scroll__projects__item.last-item')) ? window.innerWidth*.2 : window.innerWidth*1.2 ;
+            scroll_tl.to(sections, {x: (scrollH_width-adjust_width) * -1, duration:100, ease: "none"});
             let onlyOnceLeave = true;
 
             scrollHTrigger = ScrollTrigger.create({
