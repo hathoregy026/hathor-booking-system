@@ -170,7 +170,6 @@ export function PartnersPageContent() {
 
   return (
     <div ref={rootRef} className="partners-editorial">
-      <PartnersCompanyStrip variant="intro" />
       <div className="pn-progress" aria-hidden="true">
         <i data-pn-progress />
       </div>
@@ -197,7 +196,7 @@ export function PartnersPageContent() {
 
                   <div className="pn-open__inner">
                     <div className="pn-open__title" id="partners" data-anima-title>
-                      <h2 className="pn-display pn-display--xl wt-page-hero">
+                      <h1 className="pn-display pn-display--xl wt-page-hero">
                         {heroLines.map((line, index) => (
                           <span
                             key={`${line}-${index}`}
@@ -206,7 +205,7 @@ export function PartnersPageContent() {
                             <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
                           </span>
                         ))}
-                      </h2>
+                      </h1>
                     </div>
 
                     <p className="pn-open__count pn-edit">
@@ -240,6 +239,10 @@ export function PartnersPageContent() {
                     <Link href="/contact">Contact</Link>
                   </nav>
                 </div>
+              </Scene>
+
+              <Scene className="pn-art" aria-label="In Distinguished Company">
+                <PartnersCompanyStrip variant="intro" />
               </Scene>
 
               {/* 02 — Image field: layered Nile imagery */}

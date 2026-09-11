@@ -1,302 +1,54 @@
-/* =========================================================================
-   Partners company strip — homepage coda + partners-page opening.
-   Desktop: the short Nile-path band. Tablet/phone: the same idea, compacted
-   so the section does not become a long vertical document.
-   Ground matches the footer seam (--hf-seam reads this paper).
-   ========================================================================= */
+/* Partners band: the supplied art is served as an image. Button sits under it.
+   Phone ≤480px swaps to the phone art via <picture>. Ground matches the footer. */
 
 .partners-company {
   --pcs-paper: #f3ede4;
-  --pcs-ink: #2b2419;
-  --pcs-ink-soft: #453d31;
-  --pcs-gold: #b69f64;
-  --pcs-gold-deep: #8a733b;
-  --pcs-plate: #3c2a18;
-  --pcs-display: "Playfair Display", Georgia, "Times New Roman", serif;
-  --pcs-script: "Bastliga One", var(--font-hathor-quiet-luxury), "Quiet Luxury",
-    cursive;
-  --pcs-meta: var(--font-hathor-body), "Piloner Thin", "Plus Jakarta Sans",
-    "Helvetica Neue", Arial, sans-serif;
-
   --hathor-btn-width: 16.75rem;
 
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   margin: 0;
-  padding: clamp(2.4rem, 4.2vw, 3.8rem) clamp(1.4rem, 5.2vw, 5.5rem)
-    clamp(1.8rem, 3.2vw, 2.6rem);
+  padding: 0 0 clamp(1.4rem, 2.4vw, 2rem);
   background: var(--pcs-paper);
-  color: var(--pcs-ink);
-  font-family: var(--pcs-meta);
-  -webkit-font-smoothing: antialiased;
 }
 
-.partners-company *,
-.partners-company *::before,
-.partners-company *::after {
-  box-sizing: border-box;
-}
-
-.partners-company__watermark {
+.partners-company__title {
   position: absolute;
-  top: 42%;
-  left: 50%;
-  z-index: 0;
-  width: min(22rem, 34vw);
-  transform: translate(-50%, -58%);
-  color: var(--pcs-gold);
-  opacity: 0.16;
-  pointer-events: none;
-}
-
-.partners-company__watermark svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.partners-company__intro,
-.partners-company__voyage,
-.partners-company__cta {
-  position: relative;
-  z-index: 1;
-}
-
-.partners-company__intro,
-.partners-company__copy,
-.partners-company__voyage,
-.partners-company__list,
-.partners-company__stop {
-  min-width: 0;
-}
-
-.partners-company__intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(14rem, 0.78fr);
-  gap: clamp(1.5rem, 5vw, 5.5rem);
-  align-items: end;
-}
-
-.partners-company .partners-company__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  margin: 0 0 0.7rem;
-  color: var(--pcs-gold-deep);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.partners-company .partners-company__eyebrow::after {
-  content: "";
-  width: 2.6rem;
+  width: 1px;
   height: 1px;
-  background: currentColor;
-  opacity: 0.7;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.partners-company .partners-company__headline {
-  margin: 0;
-  color: var(--pcs-ink);
-  font-family: var(--pcs-display);
-  font-size: clamp(2.05rem, 3.15vw, 3.35rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.08;
-}
-
-.partners-company .partners-company__script {
-  margin: 0.15rem 0 0;
-  color: var(--pcs-gold);
-  font-family: var(--pcs-script);
-  font-size: clamp(1.35rem, 2.05vw, 2.05rem);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.2;
-}
-
-.partners-company .partners-company__lead {
-  max-width: 22.5rem;
-  margin: 0 0 0.35rem auto;
-  padding-left: 1.15rem;
-  border-left: 1px solid var(--pcs-gold);
-  color: var(--pcs-ink-soft);
-  font-family: var(--pcs-display);
-  font-size: clamp(0.92rem, 1.05vw, 1.05rem);
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: 0.01em;
-  line-height: 1.55;
-}
-
-.partners-company__voyage {
-  display: grid;
-  grid-template-columns: 4.6rem minmax(0, 1fr) 6.2rem;
-  gap: 0.4rem;
-  align-items: center;
-  margin-top: clamp(1.6rem, 3.2vw, 2.7rem);
-}
-
-.partners-company__wave {
-  position: absolute;
-  color: var(--pcs-gold);
-  pointer-events: none;
-}
-
-.partners-company__wave--h {
-  top: 42%;
-  right: 5.4rem;
-  left: 4.2rem;
-  height: 3.2rem;
-  transform: translateY(-58%);
-}
-
-.partners-company__wave--v {
-  display: none;
-}
-
-.partners-company__end {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--pcs-gold);
-}
-
-.partners-company__end svg {
+.partners-company__image {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.partners-company__end--sail svg {
-  width: 3.6rem;
-}
-
-.partners-company__end--oasis svg {
-  width: 6rem;
-}
-
-.partners-company__list {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.partners-company__stop {
-  display: grid;
-  grid-template-rows: 4.6rem 0.7rem auto;
-  justify-items: center;
-  align-items: center;
-  min-width: 0;
-}
-
-.partners-company__mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 4.6rem;
-  color: var(--pcs-ink);
-}
-
-.partners-company__plate {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 3.55rem;
-  height: 3.55rem;
-  border-radius: 0.28rem;
-  background: var(--pcs-plate);
-  color: #e8d7a8;
-  font-family: var(--pcs-display);
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  line-height: 1.15;
-  text-transform: uppercase;
-}
-
-.partners-company__wordmark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.28rem;
-  color: var(--pcs-ink);
-  font-family: var(--pcs-display);
-  line-height: 1;
-}
-
-.partners-company__wordmark--booking {
-  font-size: 2.35rem;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-}
-
-.partners-company__wordmark--expedia {
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.partners-company__wordmark--expedia svg {
-  width: 0.85rem;
-  height: 0.85rem;
-  margin-top: -0.55rem;
-}
-
-.partners-company__wordmark--xluxury {
-  flex-direction: column;
-  gap: 0.12rem;
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.partners-company__wordmark--xluxury svg {
-  width: 2.6rem;
-  height: 1.35rem;
-}
-
-.partners-company__dot {
-  display: block;
-  width: 0.48rem;
-  height: 0.48rem;
-  border-radius: 50%;
-  background: var(--pcs-paper);
-  box-shadow: 0 0 0 1.35px var(--pcs-gold);
-}
-
-.partners-company .partners-company__name {
-  margin: 0.15rem 0 0;
-  color: var(--pcs-ink-soft);
-  font-family: var(--pcs-display);
-  font-size: 0.82rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.25;
-  text-align: center;
-}
-
 .partners-company__cta {
   display: flex;
   justify-content: center;
-  margin-top: clamp(1.35rem, 2.4vw, 1.9rem);
+  padding: 0.85rem 1.15rem 0;
 }
 
 .partners-company--intro {
-  padding-top: calc(5.4rem + env(safe-area-inset-top, 0px));
+  padding-top: 0;
 }
 
-/* Homepage: drop the beige document's extra foot so this cream band
-   sits directly on the footer with no beige gap. */
+.partners-editorial .pn-art {
+  width: min(100vw, 92rem);
+  padding: 0;
+  background: #f3ede4;
+}
+
+.partners-editorial .pn-art .partners-company {
+  width: 100%;
+}
+
 .home-three:has(+ .partners-company) .h3-doc {
   padding-bottom: 0;
 }
@@ -305,303 +57,37 @@ html:has(.partners-company--teaser) .hf {
   --hf-seam: #f3ede4;
 }
 
+html[data-public-theme="night"] .partners-company,
+html[data-public-theme="dark"] .partners-company {
+  --pcs-paper: #16130f;
+}
+
 html[data-public-theme="night"]:has(.partners-company--teaser) .hf,
 html[data-public-theme="dark"]:has(.partners-company--teaser) .hf {
   --hf-seam: #16130f;
 }
 
-html[data-public-theme="night"] .partners-company,
-html[data-public-theme="dark"] .partners-company {
-  --pcs-paper: #16130f;
-  --pcs-ink: #f2ece0;
-  --pcs-ink-soft: #d8cbb6;
-  --pcs-gold: #cbb079;
-  --pcs-gold-deep: #dfc894;
-  --pcs-plate: #2a2116;
-}
-
-/* =========================================================================
-   TABLET 481–1024 — keep the horizontal path, compact the band.
-   ========================================================================= */
-@media (max-width: 1024px) and (min-width: 481px) {
-  .partners-company {
-    --hathor-btn-width: 15.5rem;
-    padding: 2rem 1.6rem 1.55rem;
-  }
-
-  .partners-company--intro {
-    padding-top: calc(4.8rem + env(safe-area-inset-top, 0px));
-  }
-
-  .partners-company__watermark {
-    width: min(16rem, 38vw);
-    opacity: 0.13;
-  }
-
-  .partners-company__intro {
-    grid-template-columns: minmax(0, 1.05fr) minmax(12rem, 0.8fr);
-    gap: 1.4rem;
-    align-items: start;
-  }
-
-  .partners-company .partners-company__headline {
-    font-size: clamp(1.7rem, 3.4vw, 2.35rem);
-  }
-
-  .partners-company .partners-company__script {
-    font-size: clamp(1.15rem, 2.2vw, 1.55rem);
-  }
-
-  .partners-company .partners-company__lead {
-    max-width: none;
-    margin: 0.35rem 0 0;
-    font-size: 0.88rem;
-    line-height: 1.45;
-  }
-
-  .partners-company__voyage {
-    grid-template-columns: 3.4rem minmax(0, 1fr) 4.8rem;
-    margin-top: 1.35rem;
-  }
-
-  .partners-company__wave--h {
-    right: 4.2rem;
-    left: 3.1rem;
-  }
-
-  .partners-company__end--sail svg {
-    width: 2.8rem;
-  }
-
-  .partners-company__end--oasis svg {
-    width: 4.6rem;
-  }
-
-  .partners-company__stop {
-    grid-template-rows: 3.6rem 0.55rem auto;
-  }
-
-  .partners-company__mark {
-    height: 3.6rem;
-  }
-
-  .partners-company__plate {
-    width: 2.85rem;
-    height: 2.85rem;
-    font-size: 0.5rem;
-  }
-
-  .partners-company__wordmark--booking {
-    font-size: 1.85rem;
-  }
-
-  .partners-company__wordmark--expedia {
-    font-size: 0.95rem;
-  }
-
-  .partners-company__wordmark--xluxury {
-    font-size: 0.52rem;
-  }
-
-  .partners-company__wordmark--xluxury svg {
-    width: 2.1rem;
-    height: 1.05rem;
-  }
-
-  .partners-company .partners-company__name {
-    font-size: 0.72rem;
-  }
-
-  .partners-company__cta {
-    margin-top: 1.15rem;
-  }
-
+@media (max-width: 1024px) {
   .home-three:has(+ .partners-company) .h3-doc {
     padding-bottom: 0;
   }
 }
 
-/* =========================================================================
-   PHONE ≤480 — vertical Nile path, kept short.
-   ========================================================================= */
 @media (max-width: 480px) {
   .partners-company {
     --hathor-btn-width: min(16.5rem, 88vw);
-    padding: 1.35rem 1.15rem 1.4rem;
+    padding-bottom: 1.25rem;
   }
 
   .partners-company--intro {
-    padding-top: calc(4.4rem + env(safe-area-inset-top, 0px));
-    padding-bottom: 1.5rem;
-  }
-
-  .partners-company__watermark {
-    top: 18%;
-    width: 11.5rem;
-    transform: translate(-50%, -42%);
-    opacity: 0.15;
-  }
-
-  .partners-company__intro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.7rem;
-    text-align: center;
-  }
-
-  .partners-company__copy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .partners-company .partners-company__eyebrow {
-    justify-content: center;
-    margin-bottom: 0.45rem;
-    font-size: 0.6rem;
-    letter-spacing: 0.24em;
-  }
-
-  .partners-company .partners-company__eyebrow::before {
-    content: "";
-    width: 1.6rem;
-    height: 1px;
-    background: currentColor;
-    opacity: 0.7;
-  }
-
-  .partners-company .partners-company__eyebrow::after {
-    width: 1.6rem;
-  }
-
-  .partners-company .partners-company__headline {
-    max-width: 14.5rem;
-    font-size: 1.72rem;
-    line-height: 1.12;
-  }
-
-  .partners-company .partners-company__script {
-    margin-top: 0.05rem;
-    font-size: 1.18rem;
-  }
-
-  .partners-company .partners-company__lead {
-    max-width: 20rem;
-    margin: 0;
-    padding: 0.15rem 0.4rem 0;
-    border-left: 0;
-    font-size: 0.82rem;
-    line-height: 1.45;
-  }
-
-  .partners-company__voyage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.15rem;
-    margin-top: 0.95rem;
-  }
-
-  .partners-company__wave--h {
-    display: none;
-  }
-
-  .partners-company__wave--v {
-    display: block;
-    top: 1.6rem;
-    bottom: 1.6rem;
-    left: 50%;
-    width: 1.4rem;
-    height: auto;
-    transform: translateX(-50%);
-  }
-
-  .partners-company__end--sail svg {
-    width: 2.35rem;
-  }
-
-  .partners-company__end--oasis svg {
-    width: 3.8rem;
-    margin-top: 0.15rem;
-  }
-
-  .partners-company__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    width: 100%;
-    padding: 0.35rem 0;
-  }
-
-  .partners-company__stop {
-    display: grid;
-    grid-template-columns: 1fr 3.1rem 1fr;
-    grid-template-rows: auto;
-    column-gap: 0.7rem;
-    align-items: center;
-    justify-items: start;
-  }
-
-  .partners-company__mark {
-    width: 3.1rem;
-    height: 2.7rem;
-    grid-column: 2;
-    justify-self: center;
-  }
-
-  .partners-company .partners-company__name {
-    grid-column: 3;
-    margin: 0;
-    font-size: 0.84rem;
-    text-align: left;
-  }
-
-  .partners-company__plate {
-    width: 2.45rem;
-    height: 2.45rem;
-    font-size: 0.46rem;
-  }
-
-  .partners-company__wordmark--booking {
-    font-size: 1.55rem;
-  }
-
-  .partners-company__wordmark--expedia span {
-    display: none;
-  }
-
-  .partners-company__wordmark--expedia svg {
-    width: 1.15rem;
-    height: 1.15rem;
-    margin-top: 0;
-  }
-
-  .partners-company__wordmark--xluxury {
-    font-size: 0.48rem;
-  }
-
-  .partners-company__wordmark--xluxury svg {
-    width: 1.85rem;
-    height: 0.95rem;
-  }
-
-  .partners-company__dot {
-    display: none;
+    padding-top: 0;
   }
 
   .partners-company__cta {
-    margin-top: 0.85rem;
+    padding-top: 0.7rem;
   }
 
   .home-three:has(+ .partners-company) .h3-doc {
     padding-bottom: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .partners-company,
-  .partners-company * {
-    transition: none !important;
   }
 }
