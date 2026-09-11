@@ -351,7 +351,14 @@ figure) {
   align-items: stretch;
   width: max-content;
   height: 100%;
-}.home-three .h3-scene {
+}
+/* The desktop split wrappers (see DESKTOP · THE SPLIT CHOREOGRAPHY). Outside
+   that query they generate no box, so the track still sees every panel as its
+   own flex item and the single act is untouched. */
+.home-three :is(.h3-act, .h3-act__stage, .h3-act__track, .h3-flow) {
+  display: contents;
+}
+.home-three .h3-scene {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
@@ -1460,7 +1467,7 @@ figure) {
      flex item has an auto specified height, and `height: 100%` under it
      would not compute at all */
   height: 100%;
-  flex: calc(1 + var(--item, 0) * 2.6) 1 0;
+  flex: calc(1 + var(--item, 0) * var(--h3-open, 2.6)) 1 0;
   min-width: 0;
   overflow: hidden;
   transition: flex-grow 0.55s var(--h3-ease-soft);
@@ -3975,5 +3982,513 @@ figure) {
 
   .home-three .h3-ship {
     opacity: 1 !important;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP · THE SPLIT CHOREOGRAPHY
+   On a desktop pointer the story stops being one strip and moves the way the
+   homepage reads:
+
+     route     pinned    opener → lead → sailings → chart, then the hold
+                         while Hathor sails down to Aswan
+     pause     vertical  the claim
+     aboard    pinned    the three voyages → the suites wall
+     document  vertical  marquee → experiences → about → the close → contact
+
+   hooks/useHomeThreeFlow.ts gates its engine on this exact query, so layout
+   and scroll mapping cannot disagree. Touch tablets above 950px keep the
+   single act and phones keep their document; nothing here reaches either.
+   ========================================================================== */
+@media (min-width: 951px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* the outer run stops being a runway and becomes a column of passages */
+  .home-three .h3-run {
+    height: auto !important;
+  }
+
+  .home-three .h3-stage {
+    position: relative;
+    top: auto;
+    height: auto;
+    /* a hidden overflow here would be the scroller the act stages stick to,
+       and they would never pin */
+    overflow: visible;
+    display: block;
+  }
+
+  .home-three .h3-track {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+  }
+
+  .home-three .h3-act {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  .home-three .h3-act__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .home-three .h3-act__track {
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    height: 100%;
+  }
+
+  .home-three .h3-flow {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  /* `:where` keeps this at the panel rules' own weight, so a passage that
+     wants a fixed height (the close) can still state one */
+  .home-three .h3-flow > :where(.h3-scene) {
+    width: 100%;
+    height: auto;
+  }
+
+  /* the two walls an act ends on are exactly the visible stage, so the travel
+     stops on the whole wall, not with its edge under a classic scrollbar */
+  .home-three .h3-chart-panel,
+  .home-three .h3-imgtext {
+    width: calc(100vw - var(--h3-sbw, 0px));
+  }
+
+  /* ---- route · the mooring card is read whole at every stop --------------
+     Luxor and Aswan carry three sites each. Stacked with a pill under every
+     blurb, their card ran past the stage at both ends — the eyebrow under the
+     header, the last Read more below the fold. Each pill moves up beside its
+     site, and the plate gives back a little height instead. */
+  .home-three .h3-berth__media {
+    max-height: 22svh;
+    margin-bottom: 0.4rem;
+  }
+
+  .home-three .h3-berth__sites li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "site more"
+      "blurb more";
+    align-items: center;
+    column-gap: clamp(1rem, 2vw, 1.8rem);
+  }
+
+  .home-three .h3-berth__site {
+    grid-area: site;
+  }
+
+  .home-three .h3-berth__blurb {
+    grid-area: blurb;
+  }
+
+  .home-three .h3-berth__more {
+    grid-area: more;
+    margin-top: 0;
+  }
+
+  /* Piloner draws "4" and "-" as "±" (see --h3-num). The eyebrow is on the
+     stage now, so it takes the figure stack like every other line with a
+     digit in it. */
+  .home-three .h3-atlas-eyebrow {
+    font-family: var(--h3-num);
+  }
+
+  /* A short laptop stage cannot also carry the one-line blurbs: each site
+     keeps its name, era and pill, and the blurb stays on its own page — the
+     same trade the phone chart makes. The plate gives back a little more so
+     the last pill clears the floating Book Now. */
+  @media (max-height: 820px) {
+    .home-three .h3-berth__blurb {
+      display: none;
+    }
+
+    .home-three .h3-berth__media {
+      max-height: 17svh;
+    }
+  }
+
+  /* ---- pause · the claim reads as a page between the two acts ------------ */
+  .home-three .h3-text {
+    padding: calc(var(--h3-top) + var(--h3-pad-sm)) var(--h3-pad)
+      var(--h3-pad-md);
+  }
+
+  .home-three .h3-text__wrap {
+    width: 100%;
+    height: auto;
+    padding-block: 0;
+  }
+
+  /* the note steps out from under the ladder into the right half, a second
+     asymmetric beat rather than a paragraph stacked under a title */
+  .home-three .h3-text__copy {
+    width: calc(var(--h3-u) * 3.4 + var(--h3-gap) * 2.4);
+    margin-left: calc(var(--h3-u) * 6 + var(--h3-gap) * 6);
+  }
+
+  /* ---- aboard · the voyages ------------------------------------------------
+     The strip is sized so an open card and the reading column share one
+     stage: the act pins with the first voyage whole beside its note, and each
+     card after it opens centred. The hook reads `--h3-open` for those peaks. */
+  .home-three .h3-projects {
+    --h3-open: 2;
+    width: calc(var(--h3-u) * 3 + var(--h3-gap) * 4 + 120vw);
+  }
+
+  /* The foot is a column rather than three corner labels around a centred
+     pair: at full height the corners ran into the pills and the bottom label
+     sat on the stage floor. */
+  .home-three .h3-projects__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.5rem, 1.4svh, 0.9rem);
+    padding: var(--margin);
+    overflow: hidden;
+  }
+
+  .home-three .h3-projects__data {
+    position: relative;
+    inset: auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    height: auto;
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid var(--h3-hair);
+  }
+
+  /* `static` makes the corner offsets inert */
+  .home-three .h3-projects__data > * {
+    position: static;
+    white-space: nowrap;
+  }
+
+  /* the index closes the row: nights · the note · 01 */
+  .home-three .h3-projects__data > :nth-child(2) {
+    order: 3;
+  }
+
+  .home-three .h3-projects__name {
+    margin-top: auto;
+    padding: 0;
+  }
+
+  .home-three .h3-projects__acts {
+    flex-wrap: nowrap;
+    margin: 0 0 auto;
+  }
+
+  /* ---- aboard · the suites wall --------------------------------------------
+     The act ends on this wall, so it is composed to be read whole on one
+     stage: the tall plate holds the left four columns, the sentence and its
+     note take the right eight, and the second plate settles beneath them. */
+  .home-three .h3-imgtext__wrap {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: var(--h3-gap);
+    row-gap: clamp(1.2rem, 3svh, 2.2rem);
+    height: 100%;
+    padding: calc(var(--h3-top) + var(--h3-pad)) var(--h3-pad)
+      calc(var(--h3-pad) * 2);
+  }
+
+  .home-three .h3-imgtext__wrap > .h3-flip--a {
+    grid-column: 1 / span 4;
+    grid-row: 1 / span 2;
+    align-self: stretch;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    aspect-ratio: auto;
+  }
+
+  .home-three .h3-imgtext__text {
+    grid-column: 5 / -1;
+    grid-row: 1;
+    align-self: end;
+    width: auto;
+    padding: 0 0 0 var(--h3-gap);
+  }
+
+  /* the height term keeps the whole wall on a short laptop stage */
+  .home-three .h3-imgtext__text p {
+    font-size: clamp(1.6rem, min(3vw, 4.8svh), 3.1rem);
+    text-wrap: pretty;
+  }
+
+  /* balanced, so the sentence never leaves one word alone on its last line */
+  .home-three .h3-imgtext__text .h3-imgtext__line {
+    text-wrap: balance;
+  }
+
+  /* one sentence to a column, whatever width the stage gives the note */
+  .home-three .h3-imgtext__copy > span {
+    display: block;
+    break-inside: avoid-column;
+  }
+
+  .home-three .h3-imgtext__wrap > .h3-flip--b {
+    grid-column: 10 / -1;
+    grid-row: 2;
+    align-self: start;
+    width: 100%;
+    height: min(calc((var(--h3-u) * 3 + var(--h3-gap) * 2) * 0.75), 26svh);
+    margin: 0;
+    aspect-ratio: auto;
+  }
+
+  /* ---- document · the marquee lies down -----------------------------------
+     The rail that stood on end inside the act becomes a full-width band. The
+     words still march on their own loop; scroll adds a drift on top of it
+     (`translate` composes with the loop's `transform`), always leftward so
+     the band never opens a gap at its leading edge. */
+  .home-three .h3-carousel {
+    width: 100%;
+    height: auto;
+    padding: 0;
+  }
+
+  .home-three .h3-carousel__content {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    transform: none;
+    transform-origin: unset;
+    overflow: clip;
+  }
+
+  .home-three .h3-carousel__content > span {
+    translate: calc(var(--parallax, 0.5) * -24vw) 0;
+  }
+
+  /* each star sits on the line beside its word; as a block inside an inline
+     item it had dropped onto a line of its own, above the word and past the
+     band's edge */
+  .home-three .h3-carousel__item {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  /* ---- document · the experiences -----------------------------------------
+     Two plates on one row with a wall between them, and the links set as a
+     ledger under the second — in flow, so no photograph can lie over them. */
+  .home-three .h3-images--secundario {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    align-content: start;
+    column-gap: var(--h3-gap);
+    padding: var(--h3-pad-sm) var(--h3-pad);
+  }
+
+  .home-three .h3-images--secundario .h3-flip--a {
+    grid-column: 1 / span 7;
+    grid-row: 1 / span 2;
+    width: 100%;
+    height: min(
+      calc((var(--h3-u) * 7 + var(--h3-gap) * 6) * 960 / 1090),
+      calc(100svh - var(--h3-pad-sm) * 2)
+    );
+    aspect-ratio: auto;
+  }
+
+  .home-three .h3-images--secundario .h3-flip--b {
+    position: relative;
+    top: auto;
+    right: auto;
+    grid-column: 8 / -1;
+    grid-row: 1;
+    width: 100%;
+    /* on a short laptop the plate yields height so the ledger under it still
+       ends above the fold */
+    max-height: calc(100svh - var(--h3-pad-sm) * 2 - 16rem);
+    margin-top: clamp(2.5rem, 8svh, 6rem);
+    transform: none;
+  }
+
+  .home-three .h3-images__list {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    grid-column: 9 / -1;
+    grid-row: 2;
+    align-self: start;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+    max-width: none;
+    margin-top: clamp(1.2rem, 3svh, 2rem);
+  }
+
+  .home-three .h3-images__list a {
+    padding: 0.7rem 0;
+  }
+
+  /* ---- document · about -----------------------------------------------------
+     Each principle is a row on the twelve: note and title trade sides, and the
+     drift the act gave them as padding is a `translate` here, so the titles
+     move without re-wrapping their lines. */
+  .home-three .h3-terms {
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+    padding: calc(var(--h3-top) + var(--h3-pad-sm)) var(--h3-pad)
+      var(--h3-pad-sm);
+  }
+
+  .home-three .h3-terms__stack {
+    height: auto;
+    min-height: calc(100svh - var(--h3-top) - var(--h3-pad-sm) * 2);
+    gap: clamp(3rem, 8svh, 6rem);
+  }
+
+  .home-three .h3-terms__term,
+  .home-three .h3-terms__term--a,
+  .home-three .h3-terms__term--b,
+  .home-three .h3-terms__term--c {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--h3-gap);
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .home-three .h3-terms__copy,
+  .home-three .h3-terms__term--b .h3-terms__copy {
+    grid-row: 1;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    /* the notes stay readable above the frame riding the pointer */
+    z-index: 21;
+  }
+
+  .home-three .h3-terms__wrap-title {
+    grid-row: 1;
+    width: auto;
+    /* `translate` makes this wrapper a stacking context, so the title's own
+       z-index no longer reaches past it; the lift above the frame riding the
+       pointer has to live here */
+    z-index: 20;
+    translate: calc((var(--parallax, 0.5) - 0.5) * var(--h3-drift, 0vw)) 0;
+  }
+
+  .home-three .h3-terms__term--a .h3-terms__copy {
+    grid-column: 1 / span 3;
+  }
+
+  .home-three .h3-terms__term--a .h3-terms__wrap-title {
+    --h3-drift: 8vw;
+    grid-column: 5 / -1;
+  }
+
+  .home-three .h3-terms__term--b .h3-terms__wrap-title {
+    --h3-drift: -6vw;
+    grid-column: 2 / span 8;
+  }
+
+  .home-three .h3-terms__term--b .h3-terms__copy {
+    grid-column: 10 / -1;
+  }
+
+  .home-three .h3-terms__term--c .h3-terms__copy {
+    grid-column: 2 / span 3;
+  }
+
+  .home-three .h3-terms__term--c .h3-terms__wrap-title {
+    --h3-drift: 12vw;
+    grid-column: 5 / -1;
+  }
+
+  .home-three .h3-terms__title {
+    font-size: clamp(3rem, 6.4vw, 7.4rem);
+  }
+
+  /* ---- about · the frame that rides the pointer ---------------------------
+     It waits off the wall until the pointer arrives, lands under it, trails
+     it, and changes photograph by sliding: the next plate enters along the
+     way the pointer moved and pushes the last one out (hook: showPlate). */
+  .home-three .h3-terms__follow {
+    overflow: hidden;
+    opacity: 0;
+    scale: 0.7;
+    transition:
+      transform 0.55s cubic-bezier(0.16, 0.84, 0.32, 1),
+      opacity 0.4s var(--h3-ease-soft),
+      scale 0.6s var(--h3-ease-soft);
+  }
+
+  .home-three .h3-terms__follow.is-live {
+    opacity: 1;
+    scale: 1;
+  }
+
+  .home-three .h3-terms__follow.is-snap {
+    transition: none;
+  }
+
+  /* a waiting plate sits outside the frame with no transition, so it can only
+     ever be seen moving through the frame */
+  .home-three .h3-terms__plate,
+  .home-three .h3-terms__follow:not(.is-live) .h3-terms__plate[data-h3-term-plate="0"] {
+    opacity: 1;
+    transform: translate3d(0, var(--h3-from, 101%), 0);
+    transition: none;
+  }
+
+  .home-three .h3-terms__plate img {
+    transform: translate3d(0, calc(var(--h3-from, 101%) * -0.4), 0) scale(1.12);
+    transition: none;
+  }
+
+  .home-three .h3-terms__plate.is-on,
+  .home-three .h3-terms__follow:not(.is-live) .h3-terms__plate.is-on {
+    transform: translate3d(0, 0, 0);
+    transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .home-three .h3-terms__plate.is-on img {
+    transform: translate3d(0, 0, 0) scale(1);
+    transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .home-three .h3-terms__plate.is-out,
+  .home-three .h3-terms__follow:not(.is-live) .h3-terms__plate.is-out {
+    transform: translate3d(0, var(--h3-to, -101%), 0);
+    transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .home-three .h3-terms__plate.is-out img {
+    transform: translate3d(0, calc(var(--h3-to, -101%) * -0.4), 0) scale(1.12);
+    transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  /* ---- document · the close holds one full screen ------------------------ */
+  .home-three .h3-cierre {
+    width: 100%;
+    height: 100svh;
+    min-height: 34rem;
   }
 }

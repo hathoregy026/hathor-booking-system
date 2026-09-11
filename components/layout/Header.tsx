@@ -334,6 +334,20 @@ export function Header() {
     };
     window.addEventListener("message", onSuitesNavTone);
     cleanups.push(() => window.removeEventListener("message", onSuitesNavTone));
+
+    /*
+     * On phones and tablets /suites scrolls an element inside its iframe, which
+     * fires no window or frame scroll event, so the page reports its offset.
+     * Desktop never sends it: that scroller does not scroll above 1024px.
+     */
+    const onSuitesScroll = (event: Event) => {
+      const y = (event as CustomEvent<{ y?: number }>).detail?.y ?? 0;
+      setNavCompact(y > 40);
+    };
+    window.addEventListener("hathor:suites-scroll", onSuitesScroll);
+    cleanups.push(() =>
+      window.removeEventListener("hathor:suites-scroll", onSuitesScroll),
+    );
     if (!(pathname === "/suites" || pathname.startsWith("/suites/"))) {
       setSuitesNavTone(null);
     }

@@ -170,6 +170,29 @@ function Panel({
   );
 }
 
+/**
+ * One pinned horizontal passage. Desktop runs the story as two of these with
+ * vertical flow between them — the route to the chart, then the voyages to the
+ * suites wall. Everywhere else all three wrappers are `display: contents`, so
+ * the single act still sees every panel as one strip.
+ */
+function Act({ name, children }: { name: string; children: ReactNode }) {
+  return (
+    <div className="h3-act" data-h3-act={name}>
+      <div className="h3-act__stage" data-h3-act-stage>
+        <div className="h3-act__track" data-h3-act-track>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** A vertical passage between the desktop acts; invisible to the single act. */
+function Flow({ children }: { children: ReactNode }) {
+  return <div className="h3-flow">{children}</div>;
+}
+
 /* ------------------------------------------------------------------- data */
 
 /* 05 — the three sailings Hathor actually runs, on their own CMS slots. */
@@ -367,565 +390,581 @@ export function HomeThreePageContent({
               Ten panels on the Suites modules, in that page's own order of
               walls — white, beige, white, white, beige, black, rail, beige,
               blue, red — carrying the homepage story: the cruise, the
-              voyages, the suites, the experiences, about, the close. */}
+              voyages, the suites, the experiences, about, the close.
+              On a desktop pointer the story splits along the wrappers: the
+              route pins to the chart, the claim reads vertically, the voyages
+              pin to the suites wall, and the rest is a vertical document. */}
           <section ref={runRef} className="h3-run" aria-label="Aboard Hathor">
             <div className="h3-stage">
               <div ref={trackRef} className="h3-track">
-                {/* ---------------------------------------- 01 · the opener
-                    The Contact page's opening scene, carrying the homepage's
-                    identity: the rail stood on end in the corner, the eyebrow,
-                    the display ladder, and the mark and scroll hint at the
-                    foot. */}
-                <Panel className="h3-open" label="Hathor Dahabiya">
-                  <nav className="h3-open__nav" aria-label="This page">
-                    <Link href="/cruises">Cruises</Link>
-                    <Link href="/voyages">Voyages</Link>
-                    <Link href="/suites">Suites</Link>
-                    <Link href="/contact">Contact</Link>
-                  </nav>
+                <Act name="route">
+                  {/* ---------------------------------------- 01 · the opener
+                      The Contact page's opening scene, carrying the homepage's
+                      identity: the rail stood on end in the corner, the eyebrow,
+                      the display ladder, and the mark and scroll hint at the
+                      foot. */}
+                  <Panel className="h3-open" label="Hathor Dahabiya">
+                    <nav className="h3-open__nav" aria-label="This page">
+                      <Link href="/cruises">Cruises</Link>
+                      <Link href="/voyages">Voyages</Link>
+                      <Link href="/suites">Suites</Link>
+                      <Link href="/contact">Contact</Link>
+                    </nav>
 
-                  <div className="h3-open__inner">
-                    <p className="h3-open__eyebrow">Hathor Dahabiya</p>
+                    <div className="h3-open__inner">
+                      <p className="h3-open__eyebrow">Hathor Dahabiya</p>
 
-                    {/* Contact sets three SHORT lines — "Contact us / Ask any
-                        / Question" — and that is what lets the ladder hold one
-                        screen at 11rem. Long lines wrap into a fourth row and
-                        push the mark off the foot, so the break here is kept
-                        to the same measure. */}
-                    <h1 className="h3-open__title">
-                      <span className="h3-open__line h3-open__line--a">
-                        <AnimaSplitLine line={0}>Twelve</AnimaSplitLine>
-                      </span>
-                      <span className="h3-open__line h3-open__line--b">
-                        <AnimaSplitLine line={1}>guests</AnimaSplitLine>
-                      </span>
-                      <span className="h3-open__line h3-open__line--c">
-                        <AnimaSplitLine line={2}>One river</AnimaSplitLine>
-                      </span>
-                    </h1>
+                      {/* Contact sets three SHORT lines — "Contact us / Ask any
+                          / Question" — and that is what lets the ladder hold one
+                          screen at 11rem. Long lines wrap into a fourth row and
+                          push the mark off the foot, so the break here is kept
+                          to the same measure. */}
+                      <h1 className="h3-open__title">
+                        <span className="h3-open__line h3-open__line--a">
+                          <AnimaSplitLine line={0}>Twelve</AnimaSplitLine>
+                        </span>
+                        <span className="h3-open__line h3-open__line--b">
+                          <AnimaSplitLine line={1}>guests</AnimaSplitLine>
+                        </span>
+                        <span className="h3-open__line h3-open__line--c">
+                          <AnimaSplitLine line={2}>One river</AnimaSplitLine>
+                        </span>
+                      </h1>
 
-                    <p className="h3-open__body">
-                      A private sailing dahabiya on the Egyptian Nile. Eight
-                      cabins, two suites and two Royal Suites, between Luxor and
-                      Aswan.
+                      <p className="h3-open__body">
+                        A private sailing dahabiya on the Egyptian Nile. Eight
+                        cabins, two suites and two Royal Suites, between Luxor and
+                        Aswan.
+                      </p>
+                    </div>
+
+                    <p className="h3-open__mark">
+                      Hathor Cruise <span className="h3-reg">®</span> 2026
                     </p>
-                  </div>
-
-                  <p className="h3-open__mark">
-                    Hathor Cruise <span className="h3-reg">®</span> 2026
-                  </p>
-                  <p className="h3-open__scroll">
-                    <i />
-                    Scroll
-                  </p>
-                </Panel>
-
-                {/* ------------------------------ 02 · the cruise · the lead
-                    Contact's image lead: one tall plate with a second frame
-                    overlapping its right edge, lifted off the centre line. */}
-                <Panel className="h3-lead" label="The cruise">
-                  <Media
-                    slot="cruises-hero"
-                    alt="Hathor Dahabiya moored on the Nile at golden hour"
-                    className="h3-lead__main"
-                    sizes="(max-width: 950px) 100vw, 58vw"
-                  />
-                  <Flip
-                    className="h3-lead__inset"
-                    variant="leftRight"
-                    under="home-split-courtyard"
-                    underAlt="The pool deck aboard Hathor Dahabiya"
-                    over="home-cinematic-still"
-                    overAlt="Hathor Dahabiya under sail between Luxor and Aswan"
-                    sizes="(max-width: 950px) 78vw, 30vw"
-                  />
-                  {/* Contact's lead carries ONE line here and nothing else.
-                      A paragraph and a link under it grew the block into the
-                      plate's foot; the invitation lives on the sailings panel
-                      that follows instead. */}
-                  <p className="h3-lead__aboard">
-                    <span>Aboard</span> Luxor — Aswan
-                  </p>
-                </Panel>
-
-                {/* -------------------- 03 · the sailings · the cruise list
-                    Eight of the ten cabin sailings Hathor actually runs, on
-                    the CMS slot each one already owns, then the door through
-                    to the full list. The wall behind each card is its tier —
-                    room, suite, Royal Suite — so the ladder of value is read
-                    before a single price is. */}
-                <Panel className="h3-sailings" label="Sailings">
-                  <div className="h3-sailings__head">
-                    <p className="h3-kicker">02 — Sailings</p>
-                    <h2 className="h3-title h3-title--sm">
-                      Choose
-                      <br />
-                      your cabin
-                    </h2>
-                    <p className="h3-support">
-                      A five-star dahabiya where Nile history, contemporary
-                      comfort and intimate sailing come together. Three
-                      itineraries, four cabin grades, twelve guests aboard.
+                    <p className="h3-open__scroll">
+                      <i />
+                      Scroll
                     </p>
-                  </div>
+                  </Panel>
 
-                  <ul className="h3-sailings__rail">
-                    {SAILINGS.map((sailing, index) => (
-                      <li
-                        key={sailing.key}
-                        className={`h3-sail h3-sail--${sailing.tier}`}
-                        style={{ ["--i" as string]: index } as CSSProperties}
-                      >
-                        <Media
-                          slot={sailing.slot}
-                          alt={sailing.alt}
-                          className="h3-sail__plate"
-                          /* These sources are 4:3 landscape and the card box
-                             is portrait, so the crop throws most of the width
-                             away: the delivered variant has to be about twice
-                             the box's own width or what survives gets upscaled
-                             — which is what looked pixelated. */
-                          sizes="(max-width: 950px) 92vw, 42vw"
-                        />
+                  {/* ------------------------------ 02 · the cruise · the lead
+                      Contact's image lead: one tall plate with a second frame
+                      overlapping its right edge, lifted off the centre line. */}
+                  <Panel className="h3-lead" label="The cruise">
+                    <Media
+                      slot="cruises-hero"
+                      alt="Hathor Dahabiya moored on the Nile at golden hour"
+                      className="h3-lead__main"
+                      sizes="(max-width: 950px) 100vw, 58vw"
+                    />
+                    <Flip
+                      className="h3-lead__inset"
+                      variant="leftRight"
+                      under="home-split-courtyard"
+                      underAlt="The pool deck aboard Hathor Dahabiya"
+                      over="home-cinematic-still"
+                      overAlt="Hathor Dahabiya under sail between Luxor and Aswan"
+                      sizes="(max-width: 950px) 78vw, 30vw"
+                    />
+                    {/* Contact's lead carries ONE line here and nothing else.
+                        A paragraph and a link under it grew the block into the
+                        plate's foot; the invitation lives on the sailings panel
+                        that follows instead. */}
+                    <p className="h3-lead__aboard">
+                      <span>Aboard</span> Luxor — Aswan
+                    </p>
+                  </Panel>
 
-                        <div className="h3-sail__body">
-                          <p className="h3-sail__tier">{sailing.tierLabel}</p>
-                          <Link href={sailing.href} className="h3-sail__name">
-                            {sailing.name}
-                          </Link>
-                          <p className="h3-sail__route">
-                            {sailing.nights}
-                            <b>{sailing.day}s</b>
-                          </p>
-                          <p className="h3-sail__price">
-                            <em>from</em>
-                            {sailing.price}
-                          </p>
-
-                          {/* The site's own pills, on the site's own store.
-                              `inline` is the variant the roster in
-                              app/button-system.css skins — the `card` variant
-                              is an absolutely-placed disc meant to be used
-                              alone, which is why two of them landed on top of
-                              each other. */}
-                          <div className="h3-pills h3-sail__acts">
-                            {sailing.cabinSlug ? (
-                              <>
-                                <FavoriteButton
-                                  type="cabin"
-                                  slug={sailing.cabinSlug}
-                                  name={`${sailing.cabinName}, ${sailing.name}`}
-                                  variant="inline"
-                                  showLabel
-                                />
-                                <AddToVoyageButton
-                                  kind="cabin"
-                                  slug={sailing.cabinSlug}
-                                  name={`${sailing.cabinName}, ${sailing.name}`}
-                                  variant="inline"
-                                />
-                              </>
-                            ) : null}
-                            <BookNowTrigger className="h3-btn">
-                              Book now
-                            </BookNowTrigger>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-
-                    <li className="h3-sail h3-sail--more">
-                      <Link href="/cruises-list" className="h3-sail__link">
-                        <Media
-                          slot={SAILINGS[0]?.slot ?? "cruises-hero"}
-                          alt="Hathor Dahabiya on the Nile"
-                          className="h3-sail__plate"
-                          sizes="(max-width: 950px) 92vw, 42vw"
-                        />
-                        <div className="h3-sail__body h3-sail__body--more">
-                          <p className="h3-sail__tier">The full list</p>
-                          <h3 className="h3-sail__name">View more</h3>
-                          <span className="h3-text-link" aria-hidden="true">
-                            All sailings
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
-                  </ul>
-                </Panel>
-
-                {/* -------------------------------- 03 · the chart (sand) */}
-                <ChartPanel>
-                  <div className="h3-course">
-                    <div className="h3-course__head">
-                      <p className="h3-kicker">The route</p>
+                  {/* -------------------- 03 · the sailings · the cruise list
+                      Eight of the ten cabin sailings Hathor actually runs, on
+                      the CMS slot each one already owns, then the door through
+                      to the full list. The wall behind each card is its tier —
+                      room, suite, Royal Suite — so the ladder of value is read
+                      before a single price is. */}
+                  <Panel className="h3-sailings" label="Sailings">
+                    <div className="h3-sailings__head">
+                      <p className="h3-kicker">02 — Sailings</p>
                       <h2 className="h3-title h3-title--sm">
-                        Luxor
+                        Choose
                         <br />
-                        to Aswan
+                        your cabin
                       </h2>
                       <p className="h3-support">
-                        Drawn from the river&rsquo;s own coordinates. Sail it
-                        here, and see what stands at each mooring before you tie
-                        up there.
+                        A five-star dahabiya where Nile history, contemporary
+                        comfort and intimate sailing come together. Three
+                        itineraries, four cabin grades, twelve guests aboard.
                       </p>
                     </div>
 
-                    {/* The hold. Reaching the map pins the page until Hathor
-                        ties up at Aswan, then the story travels on. Above
-                        950px these two wrappers are `display: contents`, so
-                        the desktop grid still sees head / km / helm / chart /
-                        berths and the plateau lives in the scroll mapping
-                        instead. On a phone km and helm flank the river. */}
-                    <div className="h3-chart-hold" data-h3-chart-hold>
-                      <div className="h3-chart-sticky">
-                        <p className="h3-course__run">
-                          <span data-h3-km>0</span>
-                          <em>of {NILE_TOTAL_KM} km sailed</em>
-                        </p>
-                        <NileHelm />
-                        <NileChart />
-
-                        <div className="h3-course__berths">
-                          <p className="h3-atlas-eyebrow">
-                            A 4-night passage · Luxor to Aswan
-                          </p>
-                          <div
-                            className="h3-stop-buttons"
-                            role="group"
-                            aria-label="Explore places on the Nile"
-                          >
-                            {H4_STOPS.map((stop, i) => (
-                              <button
-                                key={stop.name}
-                                type="button"
-                                data-h3-tag={stop.t}
-                                aria-pressed={i === 0}
-                              >
-                                {stop.name}
-                              </button>
-                            ))}
-                          </div>
-                          <div className="h3-berth-stack">
-                          {NILE_MOORINGS.map((m) => (
-                            <article
-                              key={m.name}
-                              className="h3-berth"
-                              data-h3-berth
-                            >
-                              <Frame
-                                slot={m.slot}
-                                alt={m.imageAlt}
-                                className="h3-berth__media"
-                                ratio="16 / 9"
-                                sizes="(max-width: 950px) 34vw, min(38vw, 36rem)"
-                              />
-                              <p className="h3-berth__meta">
-                                <span>{m.day}</span>
-                                <em>
-                                  {m.legKm === 0
-                                    ? "Embarkation"
-                                    : `+${m.legKm} km`}
-                                </em>
-                              </p>
-                              <h3 className="h3-berth__name">
-                                {m.name}
-                                <b>{m.arabic}</b>
-                              </h3>
-                              <p className="h3-berth__note">{m.note}</p>
-                              <ul className="h3-berth__sites">
-                                {m.sites.map((s) => (
-                                  <li key={s.name}>
-                                    <p className="h3-berth__site">
-                                      <Link href={s.href}>{s.name}</Link>
-                                      <em>{s.era}</em>
-                                    </p>
-                                    <p className="h3-berth__blurb">{s.note}</p>
-                                    <Link href={s.href} className="h3-berth__more">
-                                      Read more
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </article>
-                          ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ChartPanel>
-
-                {/* ------------------------- 04 · the claim · text (white) */}
-                <Panel
-                  className="h3-text"
-                  label="She sails where the big ships cannot"
-                >
-                  <div className="h3-text__wrap">
-                    <div className="h3-text__inner">
-                      <h2 className="h3-text__title">
-                        <span className="h3-text__line">
-                          <AnimaSplitLine line={0}>She sails</AnimaSplitLine>
-                        </span>
-                        <span className="h3-text__line">
-                          <AnimaSplitLine line={1}>where the</AnimaSplitLine>
-                        </span>
-                        <span className="h3-text__line">
-                          <AnimaSplitLine line={2}>big ships</AnimaSplitLine>
-                        </span>
-                        <span className="h3-text__line h3-text__line--slide">
-                          <span>
-                            <AnimaSplitLine line={3}>cannot</AnimaSplitLine>
-                          </span>
-                        </span>
-                      </h2>
-                      <div className="h3-text__copy h3-support">
-                        <p>
-                          A dahabiya draws little more than a metre. She moors
-                          at Esna, Edfu and Kom Ombo while the floating hotels
-                          pass by, and ties up at banks that have no dock at
-                          all.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Panel>
-
-                {/* ------------------- 05 · the voyages · projects (beige) */}
-                <Panel className="h3-projects" label="The voyages">
-                  <div className="h3-projects__aside">
-                    <p className="h3-kicker">02 — The voyages</p>
-                    <p className="h3-support">
-                      Three sailings between the two cities. The river decides
-                      how long each one takes; the direction decides how it
-                      feels.
-                    </p>
-                    <Link className="h3-text-link" href="/voyages">
-                      All voyages
-                    </Link>
-                  </div>
-
-                  {VOYAGES.map((voyage, index) => (
-                    <article
-                      key={voyage.slot}
-                      className={`h3-projects__item h3-projects__item--${voyage.tone}`}
-                      data-h3-item
-                    >
-                      <div className="h3-projects__content">
-                        <Media
-                          slot={voyage.slot}
-                          alt={voyage.alt}
-                          className="h3-projects__image"
-                          sizes="(max-width: 950px) 100vw, 55vw"
-                        />
-
-                        <div className="h3-projects__text">
-                          <div className="h3-projects__data">
-                            <div>
-                              <span>{voyage.nights}</span>
-                            </div>
-                            <div>
-                              <span>{`0${index + 1}`}</span>
-                            </div>
-                            <div>
-                              <span>{voyage.note}</span>
-                            </div>
-                          </div>
-                          <Link
-                            href="/cruises-list"
-                            className="h3-projects__name"
-                          >
-                            {voyage.route}
-                          </Link>
-                          <div className="h3-pills h3-projects__acts">
-                            <FavoriteButton
-                              type="voyage"
-                              slug={voyage.slug}
-                              name={voyage.route}
-                              variant="inline"
-                              showLabel
-                            />
-                            <AddToVoyageButton
-                              kind="voyage"
-                              slug={voyage.slug}
-                              name={voyage.route}
-                              variant="inline"
-                            />
-                            <BookNowTrigger className="h3-btn">
-                              Book now
-                            </BookNowTrigger>
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </Panel>
-
-                {/* ----------------- 06 · the suites · images-text (black) */}
-                <Panel className="h3-imgtext" label="The suites">
-                  <div className="h3-imgtext__wrap">
-                    <Flip
-                      className="h3-flip--a"
-                      variant="rightLeft"
-                      under="scraped-royal-4"
-                      underAlt="A Royal Suite bathroom aboard Hathor"
-                      over="scraped-royal-1"
-                      overAlt="A Royal Suite aboard Hathor Dahabiya"
-                      sizes="(max-width: 950px) 88vw, 42vw"
-                    />
-                    <div className="h3-imgtext__text">
-                      <p className="h3-kicker">03 — The suites</p>
-                      {/* ref 5 — the sentence is built, not lit. Every
-                          character rises out of a clipped line in sequence,
-                          which is the site's own title motion and is plainly
-                          an animation; the column under it then lifts line by
-                          line behind it. */}
-                      <p className="h3-imgtext__line">
-                        <AnimaSplitLine line={0}>
-                          Twelve rooms, and the river in every one of them.
-                        </AnimaSplitLine>
-                      </p>
-                      <p className="h3-support h3-imgtext__copy">
-                        Eight cabins, two suites and two Royal Suites, each with
-                        its own window on the bank. Hand-worked wood, linen,
-                        and a bed made for the quiet after a shore day.
-                      </p>
-                      <Link className="h3-text-link" href="/suites">
-                        See the suites
-                      </Link>
-                    </div>
-                    <Flip
-                      className="h3-flip--b"
-                      variant="leftRight"
-                      under="scraped-cabin-1"
-                      underAlt="A river-view cabin aboard Hathor Dahabiya"
-                      over="scraped-luxsuite-2"
-                      overAlt="A Luxury Suite aboard Hathor Dahabiya"
-                      sizes="(max-width: 950px) 54vw, 24vw"
-                    />
-                  </div>
-                </Panel>
-
-                {/* ------------- 07 · the experiences · carousel (the rail) */}
-                <Panel className="h3-carousel" label="Aboard Hathor">
-                  <div className="h3-carousel__content" aria-hidden="true">
-                    <span>
-                      {[...MARQUEE, ...MARQUEE].map((word, index) => (
-                        <span
-                          key={`${word}-${index}`}
-                          className="h3-carousel__item"
+                    <ul className="h3-sailings__rail">
+                      {SAILINGS.map((sailing, index) => (
+                        <li
+                          key={sailing.key}
+                          className={`h3-sail h3-sail--${sailing.tier}`}
+                          style={{ ["--i" as string]: index } as CSSProperties}
                         >
-                          <i className="h3-carousel__star" />
-                          <b className="h3-carousel__text">{word}</b>
-                        </span>
+                          <Media
+                            slot={sailing.slot}
+                            alt={sailing.alt}
+                            className="h3-sail__plate"
+                            /* These sources are 4:3 landscape and the card box
+                               is portrait, so the crop throws most of the width
+                               away: the delivered variant has to be about twice
+                               the box's own width or what survives gets upscaled
+                               — which is what looked pixelated. */
+                            sizes="(max-width: 950px) 92vw, 42vw"
+                          />
+
+                          <div className="h3-sail__body">
+                            <p className="h3-sail__tier">{sailing.tierLabel}</p>
+                            <Link href={sailing.href} className="h3-sail__name">
+                              {sailing.name}
+                            </Link>
+                            <p className="h3-sail__route">
+                              {sailing.nights}
+                              <b>{sailing.day}s</b>
+                            </p>
+                            <p className="h3-sail__price">
+                              <em>from</em>
+                              {sailing.price}
+                            </p>
+
+                            {/* The site's own pills, on the site's own store.
+                                `inline` is the variant the roster in
+                                app/button-system.css skins — the `card` variant
+                                is an absolutely-placed disc meant to be used
+                                alone, which is why two of them landed on top of
+                                each other. */}
+                            <div className="h3-pills h3-sail__acts">
+                              {sailing.cabinSlug ? (
+                                <>
+                                  <FavoriteButton
+                                    type="cabin"
+                                    slug={sailing.cabinSlug}
+                                    name={`${sailing.cabinName}, ${sailing.name}`}
+                                    variant="inline"
+                                    showLabel
+                                  />
+                                  <AddToVoyageButton
+                                    kind="cabin"
+                                    slug={sailing.cabinSlug}
+                                    name={`${sailing.cabinName}, ${sailing.name}`}
+                                    variant="inline"
+                                  />
+                                </>
+                              ) : null}
+                              <BookNowTrigger className="h3-btn">
+                                Book now
+                              </BookNowTrigger>
+                            </div>
+                          </div>
+                        </li>
                       ))}
-                    </span>
-                  </div>
-                </Panel>
 
-                {/* ---------------- 08 · the experiences · images (beige) */}
-                <Panel
-                  className="h3-images h3-images--secundario"
-                  label="The experiences"
-                >
-                  <Flip
-                    className="h3-flip--a"
-                    variant="rightLeft"
-                    under="dining-lounge"
-                    underAlt="The lounge aboard Hathor Dahabiya"
-                    over="gastronomy-hero"
-                    overAlt="Dining aboard Hathor Dahabiya"
-                    sizes="(max-width: 950px) 100vw, 38vw"
-                  />
-                  <Flip
-                    className="h3-flip--b"
-                    variant="leftRight"
-                    under="wellness-fitness"
-                    underAlt="The fitness space aboard Hathor Dahabiya"
-                    over="wellness-hero"
-                    overAlt="Seneb Spa aboard Hathor Dahabiya"
-                    sizes="(max-width: 950px) 78vw, 30vw"
-                  />
-                  <nav className="h3-images__list" aria-label="Aboard Hathor">
-                    {EXPLORE.map((item) => (
-                      <Link key={item.href} href={item.href}>
-                        {item.label}
+                      <li className="h3-sail h3-sail--more">
+                        <Link href="/cruises-list" className="h3-sail__link">
+                          <Media
+                            slot={SAILINGS[0]?.slot ?? "cruises-hero"}
+                            alt="Hathor Dahabiya on the Nile"
+                            className="h3-sail__plate"
+                            sizes="(max-width: 950px) 92vw, 42vw"
+                          />
+                          <div className="h3-sail__body h3-sail__body--more">
+                            <p className="h3-sail__tier">The full list</p>
+                            <h3 className="h3-sail__name">View more</h3>
+                            <span className="h3-text-link" aria-hidden="true">
+                              All sailings
+                            </span>
+                          </div>
+                        </Link>
+                      </li>
+                    </ul>
+                  </Panel>
+
+                  {/* -------------------------------- 03 · the chart (sand) */}
+                  <ChartPanel>
+                    <div className="h3-course">
+                      <div className="h3-course__head">
+                        <p className="h3-kicker">The route</p>
+                        <h2 className="h3-title h3-title--sm">
+                          Luxor
+                          <br />
+                          to Aswan
+                        </h2>
+                        <p className="h3-support">
+                          Drawn from the river&rsquo;s own coordinates. Sail it
+                          here, and see what stands at each mooring before you tie
+                          up there.
+                        </p>
+                      </div>
+
+                      {/* The hold. Reaching the map pins the page until Hathor
+                          ties up at Aswan, then the story travels on. Above
+                          950px these two wrappers are `display: contents`, so
+                          the desktop grid still sees head / km / helm / chart /
+                          berths and the plateau lives in the scroll mapping
+                          instead. On a phone km and helm flank the river. */}
+                      <div className="h3-chart-hold" data-h3-chart-hold>
+                        <div className="h3-chart-sticky">
+                          <p className="h3-course__run">
+                            <span data-h3-km>0</span>
+                            <em>of {NILE_TOTAL_KM} km sailed</em>
+                          </p>
+                          <NileHelm />
+                          <NileChart />
+
+                          <div className="h3-course__berths">
+                            <p className="h3-atlas-eyebrow">
+                              A 4-night passage · Luxor to Aswan
+                            </p>
+                            <div
+                              className="h3-stop-buttons"
+                              role="group"
+                              aria-label="Explore places on the Nile"
+                            >
+                              {H4_STOPS.map((stop, i) => (
+                                <button
+                                  key={stop.name}
+                                  type="button"
+                                  data-h3-tag={stop.t}
+                                  aria-pressed={i === 0}
+                                >
+                                  {stop.name}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="h3-berth-stack">
+                            {NILE_MOORINGS.map((m) => (
+                              <article
+                                key={m.name}
+                                className="h3-berth"
+                                data-h3-berth
+                              >
+                                <Frame
+                                  slot={m.slot}
+                                  alt={m.imageAlt}
+                                  className="h3-berth__media"
+                                  ratio="16 / 9"
+                                  sizes="(max-width: 950px) 34vw, min(38vw, 36rem)"
+                                />
+                                <p className="h3-berth__meta">
+                                  <span>{m.day}</span>
+                                  <em>
+                                    {m.legKm === 0
+                                      ? "Embarkation"
+                                      : `+${m.legKm} km`}
+                                  </em>
+                                </p>
+                                <h3 className="h3-berth__name">
+                                  {m.name}
+                                  <b>{m.arabic}</b>
+                                </h3>
+                                <p className="h3-berth__note">{m.note}</p>
+                                <ul className="h3-berth__sites">
+                                  {m.sites.map((s) => (
+                                    <li key={s.name}>
+                                      <p className="h3-berth__site">
+                                        <Link href={s.href}>{s.name}</Link>
+                                        <em>{s.era}</em>
+                                      </p>
+                                      <p className="h3-berth__blurb">{s.note}</p>
+                                      <Link href={s.href} className="h3-berth__more">
+                                        Read more
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </article>
+                            ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ChartPanel>
+                </Act>
+
+                <Flow>
+                  {/* ------------------------- 04 · the claim · text (white) */}
+                  <Panel
+                    className="h3-text"
+                    label="She sails where the big ships cannot"
+                  >
+                    <div className="h3-text__wrap">
+                      <div className="h3-text__inner">
+                        <h2 className="h3-text__title">
+                          <span className="h3-text__line">
+                            <AnimaSplitLine line={0}>She sails</AnimaSplitLine>
+                          </span>
+                          <span className="h3-text__line">
+                            <AnimaSplitLine line={1}>where the</AnimaSplitLine>
+                          </span>
+                          <span className="h3-text__line">
+                            <AnimaSplitLine line={2}>big ships</AnimaSplitLine>
+                          </span>
+                          <span className="h3-text__line h3-text__line--slide">
+                            <span>
+                              <AnimaSplitLine line={3}>cannot</AnimaSplitLine>
+                            </span>
+                          </span>
+                        </h2>
+                        <div className="h3-text__copy h3-support">
+                          <p>
+                            A dahabiya draws little more than a metre. She moors
+                            at Esna, Edfu and Kom Ombo while the floating hotels
+                            pass by, and ties up at banks that have no dock at
+                            all.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Panel>
+                </Flow>
+
+                <Act name="aboard">
+                  {/* ------------------- 05 · the voyages · projects (beige) */}
+                  <Panel className="h3-projects" label="The voyages">
+                    <div className="h3-projects__aside">
+                      <p className="h3-kicker">02 — The voyages</p>
+                      <p className="h3-support">
+                        Three sailings between the two cities. The river decides
+                        how long each one takes; the direction decides how it
+                        feels.
+                      </p>
+                      <Link className="h3-text-link" href="/voyages">
+                        All voyages
                       </Link>
-                    ))}
-                  </nav>
-                </Panel>
+                    </div>
 
-                {/* ---------------------------- 09 · about · terms (deep)
-                    Suites' `follow__mouse`: a frame rides the cursor across
-                    the wall and changes to the photograph belonging to
-                    whichever principle is under the pointer — each one drawn
-                    from a different part of the site. */}
-                <Panel className="h3-terms" label="About Hathor">
-                  <div className="h3-terms__stack" data-h3-follow-host>
-                    {TERMS.map((term, index) => (
+                    {VOYAGES.map((voyage, index) => (
                       <article
-                        key={term.num}
-                        className={`h3-terms__term h3-terms__term--${term.tone}`}
-                        data-h3-term={index}
+                        key={voyage.slot}
+                        className={`h3-projects__item h3-projects__item--${voyage.tone}`}
+                        data-h3-item
                       >
-                        <p className="h3-terms__copy h3-support">{term.copy}</p>
-                        <div className="h3-terms__wrap-title">
-                          <span className="h3-terms__num">{term.num}</span>
-                          <h2 className="h3-terms__title">{term.title}</h2>
+                        <div className="h3-projects__content">
+                          <Media
+                            slot={voyage.slot}
+                            alt={voyage.alt}
+                            className="h3-projects__image"
+                            sizes="(max-width: 950px) 100vw, 55vw"
+                          />
+
+                          <div className="h3-projects__text">
+                            <div className="h3-projects__data">
+                              <div>
+                                <span>{voyage.nights}</span>
+                              </div>
+                              <div>
+                                <span>{`0${index + 1}`}</span>
+                              </div>
+                              <div>
+                                <span>{voyage.note}</span>
+                              </div>
+                            </div>
+                            <Link
+                              href="/cruises-list"
+                              className="h3-projects__name"
+                            >
+                              {voyage.route}
+                            </Link>
+                            <div className="h3-pills h3-projects__acts">
+                              <FavoriteButton
+                                type="voyage"
+                                slug={voyage.slug}
+                                name={voyage.route}
+                                variant="inline"
+                                showLabel
+                              />
+                              <AddToVoyageButton
+                                kind="voyage"
+                                slug={voyage.slug}
+                                name={voyage.route}
+                                variant="inline"
+                              />
+                              <BookNowTrigger className="h3-btn">
+                                Book now
+                              </BookNowTrigger>
+                            </div>
+                          </div>
                         </div>
                       </article>
                     ))}
+                  </Panel>
 
-                    <div
-                      className="h3-terms__follow"
-                      data-h3-follow
-                      aria-hidden="true"
-                    >
-                      {TERMS.map((term, index) => (
-                        <TermPlate
-                          key={term.num}
-                          slot={term.slot}
-                          alt={term.imageAlt}
-                          index={index}
-                        />
+                  {/* ----------------- 06 · the suites · images-text (black) */}
+                  <Panel className="h3-imgtext" label="The suites">
+                    <div className="h3-imgtext__wrap">
+                      <Flip
+                        className="h3-flip--a"
+                        variant="rightLeft"
+                        under="scraped-royal-4"
+                        underAlt="A Royal Suite bathroom aboard Hathor"
+                        over="scraped-royal-1"
+                        overAlt="A Royal Suite aboard Hathor Dahabiya"
+                        sizes="(max-width: 950px) 88vw, 42vw"
+                      />
+                      <div className="h3-imgtext__text">
+                        <p className="h3-kicker">03 — The suites</p>
+                        {/* ref 5 — the sentence is built, not lit. Every
+                            character rises out of a clipped line in sequence,
+                            which is the site's own title motion and is plainly
+                            an animation; the column under it then lifts line by
+                            line behind it. */}
+                        <p className="h3-imgtext__line">
+                          <AnimaSplitLine line={0}>
+                            Twelve rooms, and the river in every one of them.
+                          </AnimaSplitLine>
+                        </p>
+                        <p className="h3-support h3-imgtext__copy">
+                          <span>
+                            Eight cabins, two suites and two Royal Suites, each with its
+                            own window on the bank.
+                          </span>{" "}
+                          <span>
+                            Hand-worked wood, linen, and a bed made for the quiet after
+                            a shore day.
+                          </span>
+                        </p>
+                        <Link className="h3-text-link" href="/suites">
+                          See the suites
+                        </Link>
+                      </div>
+                      <Flip
+                        className="h3-flip--b"
+                        variant="leftRight"
+                        under="scraped-cabin-1"
+                        underAlt="A river-view cabin aboard Hathor Dahabiya"
+                        over="scraped-luxsuite-2"
+                        overAlt="A Luxury Suite aboard Hathor Dahabiya"
+                        sizes="(max-width: 950px) 54vw, 24vw"
+                      />
+                    </div>
+                  </Panel>
+                </Act>
+
+                <Flow>
+                  {/* ------------- 07 · the experiences · carousel (the rail) */}
+                  <Panel className="h3-carousel" label="Aboard Hathor">
+                    <div className="h3-carousel__content" aria-hidden="true">
+                      <span>
+                        {[...MARQUEE, ...MARQUEE].map((word, index) => (
+                          <span
+                            key={`${word}-${index}`}
+                            className="h3-carousel__item"
+                          >
+                            <i className="h3-carousel__star" />
+                            <b className="h3-carousel__text">{word}</b>
+                          </span>
+                        ))}
+                      </span>
+                    </div>
+                  </Panel>
+
+                  {/* ---------------- 08 · the experiences · images (beige) */}
+                  <Panel
+                    className="h3-images h3-images--secundario"
+                    label="The experiences"
+                  >
+                    <Flip
+                      className="h3-flip--a"
+                      variant="rightLeft"
+                      under="dining-lounge"
+                      underAlt="The lounge aboard Hathor Dahabiya"
+                      over="gastronomy-hero"
+                      overAlt="Dining aboard Hathor Dahabiya"
+                      sizes="(max-width: 950px) 100vw, 38vw"
+                    />
+                    <Flip
+                      className="h3-flip--b"
+                      variant="leftRight"
+                      under="wellness-fitness"
+                      underAlt="The fitness space aboard Hathor Dahabiya"
+                      over="wellness-hero"
+                      overAlt="Seneb Spa aboard Hathor Dahabiya"
+                      sizes="(max-width: 950px) 78vw, 30vw"
+                    />
+                    <nav className="h3-images__list" aria-label="Aboard Hathor">
+                      {EXPLORE.map((item) => (
+                        <Link key={item.href} href={item.href}>
+                          {item.label}
+                        </Link>
                       ))}
-                    </div>
-                  </div>
-                </Panel>
+                    </nav>
+                  </Panel>
 
-                {/* ----------------------------- 10 · the close · cierre
-                    ref 9 + 10 — one screen wide, not one and a half, so the
-                    act ends on the image instead of half a wall of nothing.
-                    The photograph is full bleed; the invitation is cut out of
-                    it and the pill draws itself open as the wall arrives. */}
-                <Panel className="h3-cierre" label="Sail with Hathor">
-                  <Flip
-                    className="h3-cierre__image"
-                    variant="upDown"
-                    under="charter-hero"
-                    underAlt="Hathor Dahabiya chartered in full on the Nile"
-                    over="home-call-to-action"
-                    overAlt="Hathor Dahabiya at anchor at dusk"
-                    sizes="100vw"
-                    anchor="edge"
-                  />
-                  <div className="h3-cierre__scrim" aria-hidden="true" />
-                  <div className="h3-cierre__note">
-                    <p className="h3-kicker">Luxor · Aswan · Egypt</p>
-                    <h2 className="h3-cierre__title">
-                      <AnimaSplitLine line={0}>Come aboard</AnimaSplitLine>
-                    </h2>
-                    <p className="h3-support">
-                      Twelve guests, five moorings and one river. The rest of
-                      the arrangements are ours.
-                    </p>
-                    <div className="h3-cierre__reveal">
-                      <BookNowTrigger className="h3-btn h3-cierre__book">
-                        Check availability
-                      </BookNowTrigger>
+                  {/* ---------------------------- 09 · about · terms (deep)
+                      Suites' `follow__mouse`: a frame rides the cursor across
+                      the wall and changes to the photograph belonging to
+                      whichever principle is under the pointer — each one drawn
+                      from a different part of the site. */}
+                  <Panel className="h3-terms" label="About Hathor">
+                    <div className="h3-terms__stack" data-h3-follow-host>
+                      {TERMS.map((term, index) => (
+                        <article
+                          key={term.num}
+                          className={`h3-terms__term h3-terms__term--${term.tone}`}
+                          data-h3-term={index}
+                        >
+                          <p className="h3-terms__copy h3-support">{term.copy}</p>
+                          <div className="h3-terms__wrap-title">
+                            <span className="h3-terms__num">{term.num}</span>
+                            <h2 className="h3-terms__title">{term.title}</h2>
+                          </div>
+                        </article>
+                      ))}
+
+                      <div
+                        className="h3-terms__follow"
+                        data-h3-follow
+                        aria-hidden="true"
+                      >
+                        {TERMS.map((term, index) => (
+                          <TermPlate
+                            key={term.num}
+                            slot={term.slot}
+                            alt={term.imageAlt}
+                            index={index}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </Panel>
+                  </Panel>
+
+                  {/* ----------------------------- 10 · the close · cierre
+                      ref 9 + 10 — one screen wide, not one and a half, so the
+                      act ends on the image instead of half a wall of nothing.
+                      The photograph is full bleed; the invitation is cut out of
+                      it and the pill draws itself open as the wall arrives. */}
+                  <Panel className="h3-cierre" label="Sail with Hathor">
+                    <Flip
+                      className="h3-cierre__image"
+                      variant="upDown"
+                      under="charter-hero"
+                      underAlt="Hathor Dahabiya chartered in full on the Nile"
+                      over="home-call-to-action"
+                      overAlt="Hathor Dahabiya at anchor at dusk"
+                      sizes="100vw"
+                      anchor="edge"
+                    />
+                    <div className="h3-cierre__scrim" aria-hidden="true" />
+                    <div className="h3-cierre__note">
+                      <p className="h3-kicker">Luxor · Aswan · Egypt</p>
+                      <h2 className="h3-cierre__title">
+                        <AnimaSplitLine line={0}>Come aboard</AnimaSplitLine>
+                      </h2>
+                      <p className="h3-support">
+                        Twelve guests, five moorings and one river. The rest of
+                        the arrangements are ours.
+                      </p>
+                      <div className="h3-cierre__reveal">
+                        <BookNowTrigger className="h3-btn h3-cierre__book">
+                          Check availability
+                        </BookNowTrigger>
+                      </div>
+                    </div>
+                  </Panel>
+                </Flow>
               </div>
             </div>
           </section>

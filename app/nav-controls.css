@@ -2167,3 +2167,74 @@ html[data-public-theme="night"] .public-lang-toggle__code {
       visibility 0s linear 0.28s;
   }
 }
+
+/* ==========================================================================
+   ADAPTIVE RHYTHM - phone and tablet header, phone dock (<= 1024px)
+   --------------------------------------------------------------------------
+   Same controls and look; only the geometry is made to hold as the screen
+   narrows or widens.
+   - The mark centres on the bar vertically too. It was placed on the centre
+     line rather than across it, so at tablet widths it sat ~18px low.
+   - The four tablet controls share one gap. The pair, the language selector
+     and the switch each carried their own margin: 17 / 11 / 23px.
+   - The language ring is the same diameter as the wishlist and cart rings, the
+     switch glyph matches its neighbours, and the switch label stays hidden
+     (at tablet widths it spilled out of the disc as "MODE").
+   - The phone dock scales marks, glyphs, captions and height with the viewport
+     between 320px and 480px instead of holding one fixed size.
+   Desktop (> 1024px) is untouched.
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .public-site,
+  .hathor-header {
+    --nav-ctl-gap: clamp(0.25rem, 1.6vw, 0.75rem);
+  }
+
+  .public-site .hathor-header--chrome:not(#_):not(#_) .hathor-header__menu-zone {
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .public-site .hathor-header--chrome:not(#_):not(#_) .hathor-header__col--right {
+    gap: var(--nav-ctl-gap) !important;
+  }
+
+  .hathor-header--chrome:not(#_)
+    .hathor-header__col--right
+    :is(.hsc, .public-lang-selector, .public-theme-toggle):not(#_):not(#_):not(#_) {
+    margin: 0 !important;
+  }
+
+  .hathor-header--chrome:not(#_) .public-lang-toggle:not(#_):not(#_):not(#_)::before {
+    width: var(--nav-ctl) !important;
+    height: var(--nav-ctl) !important;
+  }
+
+  .hathor-header--chrome:not(#_) .public-lang-toggle__globe:not(#_):not(#_) {
+    width: var(--nav-ctl) !important;
+    height: var(--nav-ctl) !important;
+  }
+
+  .public-theme-toggle__label:not(#_):not(#_):not(#_) {
+    display: none !important;
+  }
+
+  .public-theme-toggle:not(#_):not(#_):not(#_)
+    .public-theme-toggle__icon:not(#_):not(#_):not(#_) {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  :root,
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --hathor-phone-dock-h: calc(clamp(4.25rem, 18.4vw, 5rem) + env(safe-area-inset-bottom, 0px));
+    --dock-mark: clamp(2.25rem, 9.8vw, 2.75rem);
+    --dock-icon: clamp(1.125rem, 5vw, 1.375rem);
+    --dock-label: clamp(0.4375rem, 1.72vw, 0.5rem);
+  }
+}
