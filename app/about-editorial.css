@@ -1078,6 +1078,12 @@ html:has(.about-boring) .public-fab {
     display: none;
   }
 
+  .about-boring .ab-line,
+  .about-boring .ab-line > *,
+  .about-boring .anima-split-line {
+    overflow: visible;
+  }
+
   .ab-lead__main {
     width: 100%;
     height: auto;
@@ -1238,4 +1244,19 @@ html:has(.about-boring) .public-fab {
   .ab-principle__peek {
     display: none;
   }
+}
+
+/* ===================================================== LUXURYHATHOR INTEGRITY
+   Suites anima-title CSS parks every .anima-split-char at translateY(110%)
+   inside overflow-clipped lines. About already reveals copy with --reveal;
+   without this override the intro title stays clipped/invisible. */
+.about-boring .anima-split-char {
+  transform: none !important;
+  will-change: auto;
+}
+
+.about-boring .ab-intro .ab-line,
+.about-boring .ab-intro .ab-line > *,
+.about-boring .ab-intro .anima-split-line {
+  overflow: visible;
 }

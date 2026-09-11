@@ -1254,6 +1254,12 @@ html:has(.contact-editorial) .public-fab {
     display: none;
   }
 
+  .contact-editorial .ce-line,
+  .contact-editorial .ce-line > *,
+  .contact-editorial .anima-split-line {
+    overflow: visible;
+  }
+
   /* image lead stacks; the inset stops overlapping */
   .ce-lead__main {
     width: 100%;
@@ -1393,4 +1399,19 @@ html:has(.contact-editorial) .public-fab {
   .ce-flip__overlay {
     clip-path: none !important;
   }
+}
+
+/* ===================================================== LUXURYHATHOR INTEGRITY
+   Suites anima-title CSS parks every .anima-split-char at translateY(110%)
+   inside overflow-clipped lines. Contact already reveals copy with --reveal;
+   without this override the intro title stays clipped/invisible. */
+.contact-editorial .anima-split-char {
+  transform: none !important;
+  will-change: auto;
+}
+
+.contact-editorial .ce-intro .ce-line,
+.contact-editorial .ce-intro .ce-line > *,
+.contact-editorial .ce-intro .anima-split-line {
+  overflow: visible;
 }
