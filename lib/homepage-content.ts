@@ -140,6 +140,10 @@ export const HOMEPAGE_REVIEWS = {
 export const HOMEPAGE_PARTNERS = {
   title: "Our Partners",
   chapter: "Trusted Worldwide",
+  headline: "In Distinguished Company",
+  script: "trusted along the journey",
+  lead:
+    "We are proud to be recognized by leading travel and hospitality partners around the world, sharing our passion for authentic journeys on the Nile.",
   partners: [
     "Easy Trav Tourism",
     "Booking",
@@ -147,5 +151,5 @@ export const HOMEPAGE_PARTNERS = {
     "X Luxury Hospitality",
   ],
   href: "/partners",
-  hrefLabel: "Learn more",
+  hrefLabel: "Discover Our Partners",
 } as const;

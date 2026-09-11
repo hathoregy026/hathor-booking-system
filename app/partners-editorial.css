@@ -1260,7 +1260,8 @@ html:has(.partners-editorial) .public-fab {
   }
 
   .partners-editorial .pn-open__title,
-  .partners-editorial .pn-open__title h1 {
+  .partners-editorial .pn-open__title h1,
+  .partners-editorial .pn-open__title h2 {
     width: 100%;
     max-width: none;
     overflow: visible;

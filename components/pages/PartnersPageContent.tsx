@@ -13,6 +13,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { usePartnersEditorialScroll } from "@/hooks/usePartnersEditorialScroll";
+import { PartnersCompanyStrip } from "@/components/partners/PartnersCompanyStrip";
 import { HOMEPAGE_PARTNERS } from "@/lib/homepage-content";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
@@ -169,6 +170,7 @@ export function PartnersPageContent() {
 
   return (
     <div ref={rootRef} className="partners-editorial">
+      <PartnersCompanyStrip variant="intro" />
       <div className="pn-progress" aria-hidden="true">
         <i data-pn-progress />
       </div>
@@ -195,7 +197,7 @@ export function PartnersPageContent() {
 
                   <div className="pn-open__inner">
                     <div className="pn-open__title" id="partners" data-anima-title>
-                      <h1 className="pn-display pn-display--xl wt-page-hero">
+                      <h2 className="pn-display pn-display--xl wt-page-hero">
                         {heroLines.map((line, index) => (
                           <span
                             key={`${line}-${index}`}
@@ -204,7 +206,7 @@ export function PartnersPageContent() {
                             <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
                           </span>
                         ))}
-                      </h1>
+                      </h2>
                     </div>
 
                     <p className="pn-open__count pn-edit">

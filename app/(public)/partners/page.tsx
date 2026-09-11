@@ -4,6 +4,7 @@ import { PageStructuredData } from "@/components/seo/PageStructuredData";
 import { PARTNERS_SEO } from "@/lib/seo/page-metadata";
 import "../../partners-editorial.css";
 import "../../editorial-chrome.css";
+import "../../partners-company-strip.css";
 
 export const metadata: Metadata = PARTNERS_SEO;
 

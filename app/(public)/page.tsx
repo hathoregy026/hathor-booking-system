@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomeThreePageContent } from "@/components/pages/HomeThreePageContent";
 import { HomeThreeStructuredData } from "@/components/seo/HomeThreeStructuredData";
+import { PartnersCompanyStrip } from "@/components/partners/PartnersCompanyStrip";
 import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
 import {
   heroLogoTuneToImportantCss,
@@ -17,6 +18,7 @@ import { HOME_SEO } from "@/lib/seo/page-metadata";
 import "./home-experience.css";
 import "./home-responsive.css";
 import "./home-3/home-three.css";
+import "../partners-company-strip.css";
 
 export const revalidate = 300;
 
@@ -52,6 +54,7 @@ export default async function HomePage() {
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}
       />
+      <PartnersCompanyStrip variant="teaser" />
     </HomeExperienceShell>
   );
 }
