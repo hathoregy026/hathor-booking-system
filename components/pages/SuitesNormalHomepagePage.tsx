@@ -17,11 +17,16 @@ import {
 import {
   injectSuitesLuxFooter,
   layoutSuitesCollectionRail,
+  layoutSuitesHorizonClose,
   layoutSuitesSlideCaptionPanels,
   neutralizeSuitesCircleButtons,
   stripParenthesesFromSuitesCopy,
   SUITES_CLONE_LAYOUT_FIX_CSS,
 } from "@/lib/suites-clone-layout-fix";
+import {
+  layoutSuitesMobileScenes,
+  SUITES_MOBILE_DESIGN_CSS,
+} from "@/lib/suites-mobile-design";
 import {
   SUITES_CLIP_FIX_CSS,
   SUITES_COLLECTION_PANEL_CSS,
@@ -74,6 +79,7 @@ function suitesCssTail() {
     SUITES_RESPONSIVE_CHOREOGRAPHY_CSS,
     SUITES_REFERENCE_HERO_CSS,
     SUITES_CLONE_LAYOUT_FIX_CSS,
+    SUITES_MOBILE_DESIGN_CSS,
   ].join("\n");
 }
 
@@ -208,47 +214,6 @@ main .mod-scroll__intro__text p,
 main .mod-scroll__intro__text > p {
   text-align: right !important;
   max-width: 22rem !important;
-}
-
-@media (max-width: 950px) {
-  main .mod-scroll__intro__text {
-    width: min(100%, 32rem) !important;
-    max-width: min(100%, 32rem) !important;
-    margin-right: 0 !important;
-    transform: none !important;
-  }
-
-  main .mod-scroll__intro__text p,
-  main .mod-scroll__intro__text > p {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-}
-
-@media (max-width: 480px) {
-  main .mod-scroll__intro__title {
-    font-size: clamp(2.4rem, 11.8vw, 3.15rem) !important;
-  }
-
-  main .mod-scroll__text__title__line,
-  main .mod-scroll__projects__item__text__title {
-    font-size: clamp(2.65rem, 13vw, 3.6rem) !important;
-  }
-
-  main :is(.anima__title, .last-item__content__title .line, .mod-title--lines .line) {
-    max-width: 100% !important;
-    font-size: clamp(2.15rem, 10.4vw, 3.05rem) !important;
-    line-height: 0.92 !important;
-    white-space: normal !important;
-  }
-
-  main .mod-scroll__intro__text,
-  main .mod-scroll__intro__text p,
-  main .mod-scroll__intro__text > p {
-    text-align: left !important;
-    max-width: none !important;
-    font-size: 0.95rem !important;
-  }
 }
 
 html:not(.hathor-bitho-ready) .mod-scroll__intro__title {
@@ -699,11 +664,13 @@ export function SuitesNormalHomepagePage({
       tagSuiteCollectionPanels(doc);
       layoutSuitesCollectionRail(doc);
       layoutSuitesSlideCaptionPanels(doc);
+      layoutSuitesHorizonClose(doc);
       retargetCloneLinks(doc);
       stripParenthesesFromSuitesCopy(doc);
       neutralizeSuitesCircleButtons(doc);
       injectSuitesLuxFooter(doc);
       neutralizeSuitesCloneIntroMotion(doc);
+      layoutSuitesMobileScenes(doc);
 
       if (!doc.documentElement.dataset.hathorNavBound) {
         doc.documentElement.dataset.hathorNavBound = "1";

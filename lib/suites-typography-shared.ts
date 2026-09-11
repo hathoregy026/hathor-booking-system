@@ -184,20 +184,6 @@ html body main .mod-scroll__terms :is(
     line-height: 0.8 !important;
   }
 }
-@media (min-width: 481px) and (max-width: 1024px) {
-  html body main .mod-scroll__terms .mod-scroll__terms__term__title,
-  html body main .mod-scroll__terms .t-supertitulo-l {
-    font-size: min(7.2svh, 8vw) !important;
-    line-height: 0.84 !important;
-  }
-}
-@media (max-width: 480px) {
-  html body main .mod-scroll__terms .mod-scroll__terms__term__title,
-  html body main .mod-scroll__terms .t-supertitulo-l {
-    font-size: min(9.4vw, 2.8rem) !important;
-    line-height: 0.9 !important;
-  }
-}
 `;
 
 /**
@@ -297,49 +283,11 @@ export const SUITES_CLIP_FIX_CSS = `
 `;
 
 /**
- * Phone/tablet: only overflow + cierre safety. Art direction lives in
- * SUITES_CLONE_LAYOUT_FIX_CSS. Desktop horizontal choreography (>1024) untouched.
+ * Retained for the tail order only. Phone and tablet composition is
+ * SUITES_MOBILE_DESIGN_CSS (lib/suites-mobile-design.ts).
  */
 export const SUITES_RESPONSIVE_CHOREOGRAPHY_CSS = `
-@media (max-width: 1024px) {
-  html,
-  body,
-  main,
-  .mod-scroll {
-    max-width: 100% !important;
-    overflow-x: clip !important;
-  }
-
-  main .mod-scroll__carousel,
-  main .mod-scroll__carousel__content {
-    overflow: hidden !important;
-  }
-
-  main .mod-scroll__cierre {
-    width: 100% !important;
-    max-width: 100vw !important;
-    overflow: hidden !important;
-  }
-
-  main .mod-scroll__cierre__content {
-    height: auto !important;
-    width: 100% !important;
-  }
-
-  main .mod-scroll__cierre__content__image,
-  main .mod-scroll__cierre__content__image :is(.media, .media__wrap-source, .media__source) {
-    width: min(92vw, 46rem) !important;
-    max-width: 92vw !important;
-    transform: none !important;
-    clip-path: none !important;
-  }
-}
-
-@media (max-width: 1024px) and (prefers-reduced-motion: reduce) {
-  main .mod-scroll__carousel__content span {
-    animation-play-state: paused !important;
-  }
-}
+/* Phone and tablet: lib/suites-mobile-design.ts */
 `;
 
 export function suitesTypographyToCss(

@@ -1,9 +1,10 @@
 /**
- * Suites clone layout fixes that must win over the baked clone CSS and
- * SUITES_RESPONSIVE_CHOREOGRAPHY_CSS. Loaded last in the iframe tail.
+ * Suites clone layout fixes that must win over the baked clone CSS. Loaded in
+ * the iframe tail, before SUITES_MOBILE_DESIGN_CSS.
  *
- * Phone ≤480 + tablet ≤1024 unless a rule is unscoped (mosaic, Request
- * Availability pill, circle→pill).
+ * Desktop and shared rules only (mosaic, Request Availability pill,
+ * circle→pill, footer seat). Phone and tablet art direction lives in
+ * lib/suites-mobile-design.ts.
  */
 
 const PILL = `
@@ -37,785 +38,6 @@ const PILL = `
 `;
 
 export const SUITES_CLONE_LAYOUT_FIX_CSS = `
-/* ------------------------------------------------------------------ */
-/* Phone + tablet DNA tokens (desktop >1024 unchanged by these rules). */
-/* ------------------------------------------------------------------ */
-@media (max-width: 1024px) {
-  html body {
-    --suites-m-paper: #f3ede4;
-    --suites-m-ink: #14120e;
-    --suites-m-ink-soft: #4a453c;
-    --suites-m-gold: #b69f64;
-    --suites-m-gold-deep: #806b35;
-    --suites-m-sand: #ded4c6;
-    --suites-m-gap: 0.55rem;
-    --suites-m-slide: min(88vw, 26rem);
-  }
-
-  /* Kill choreography svh voids — horizontal LTR snap slides. */
-  html body main .mod-scroll__images.principal,
-  html body main .mod-scroll__images.secundario {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: var(--suites-m-gap) !important;
-    min-height: 0 !important;
-    height: auto !important;
-    max-height: none !important;
-    padding: var(--suites-m-gap) !important;
-    padding-right: calc(var(--suites-m-gap) + 10vw) !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    background: var(--suites-m-gold) !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .mod-scroll__images.principal::-webkit-scrollbar,
-  html body main .mod-scroll__images.secundario::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__images.principal .flipMedia,
-  html body main .mod-scroll__images.secundario .flipMedia,
-  html body main .mod-scroll__images-text .flipMedia {
-    display: contents !important;
-  }
-
-  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single,
-  html body main .mod-scroll__images.principal .flipMedia > .flipMedia__media,
-  html body main .mod-scroll__images.principal .flipMedia > .flipMedia__media--down,
-  html body main .mod-scroll__images.principal .flipMedia > .flipMedia__media--up,
-  html body main .mod-scroll__images.secundario .flipMedia > .flipMedia__media,
-  html body main .mod-scroll__images.secundario .flipMedia > .flipMedia__media--down,
-  html body main .mod-scroll__images.secundario .flipMedia > .flipMedia__media--up,
-  html body main .suites-slide-caption {
-    position: relative !important;
-    inset: auto !important;
-    flex: 0 0 var(--suites-m-slide) !important;
-    width: var(--suites-m-slide) !important;
-    max-width: var(--suites-m-slide) !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    margin: 0 !important;
-    aspect-ratio: 3 / 4 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-    overflow: hidden !important;
-    scroll-snap-align: start !important;
-    z-index: auto !important;
-    pointer-events: auto !important;
-  }
-
-  html body main .mod-scroll__images.principal > .mod-scroll__images__image-single :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media--down :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images .flipMedia > .flipMedia__media--up :is(.media, .media__wrap-source, .media__source) {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    object-fit: cover !important;
-    border-radius: 0 !important;
-  }
-
-  html body main .suites-slide-caption {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important;
-    align-items: flex-start !important;
-    gap: 0.45rem !important;
-    box-sizing: border-box !important;
-    padding: 1rem 0.9rem 1.15rem !important;
-    background: var(--suites-m-gold-deep) !important;
-    color: var(--suites-m-paper) !important;
-    -webkit-text-fill-color: var(--suites-m-paper) !important;
-  }
-
-  html body main .suites-slide-caption--ink {
-    background: var(--suites-m-ink) !important;
-  }
-
-  html body main .suites-slide-caption--sand {
-    background: var(--suites-m-sand) !important;
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main .suites-slide-caption__kicker {
-    font-family: "Plus Jakarta Sans", "Piloner Semibold", sans-serif !important;
-    font-size: 0.62rem !important;
-    letter-spacing: 0.2em !important;
-    text-transform: uppercase !important;
-    opacity: 0.78 !important;
-  }
-
-  html body main .suites-slide-caption__title {
-    font-family: "Rolling Fonte", "Instrument Serif", Georgia, serif !important;
-    font-size: clamp(1.35rem, 5.4vw, 1.85rem) !important;
-    line-height: 0.95 !important;
-    letter-spacing: -0.02em !important;
-    text-transform: uppercase !important;
-  }
-
-  /* Text bands — tight DNA spacing, no svh padding. */
-  html body main .mod-scroll__text {
-    position: relative !important;
-    z-index: 1 !important;
-    min-height: 0 !important;
-    padding: 1.75rem var(--wrapper-padd) 1.5rem !important;
-    background: var(--suites-m-paper) !important;
-    color: var(--suites-m-ink) !important;
-    text-align: left !important;
-  }
-
-  html body main .mod-scroll__text__section,
-  html body main .mod-scroll__text__title,
-  html body main .mod-scroll__text__title__line,
-  html body main .mod-scroll__text p {
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-    text-align: left !important;
-  }
-
-  html body main .mod-scroll__text__title {
-    margin-bottom: 1.15rem !important;
-  }
-
-  html body main .mod-scroll__text__title__line {
-    position: relative !important;
-    z-index: 1 !important;
-    max-width: 100% !important;
-    white-space: normal !important;
-    overflow: visible !important;
-  }
-
-  /* images-text — same horizontal rail; text as ink slide panel. */
-  html body main .mod-scroll__images-text {
-    min-height: 0 !important;
-    padding-block: 0 !important;
-    background: var(--suites-m-gold) !important;
-  }
-
-  html body main .mod-scroll__images-text .wrapper {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: var(--suites-m-gap) !important;
-    padding: var(--suites-m-gap) !important;
-    padding-right: calc(var(--suites-m-gap) + 10vw) !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .mod-scroll__images-text .wrapper::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media,
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--down,
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--up,
-  html body main .mod-scroll__images-text .suites-slide-caption {
-    position: relative !important;
-    inset: auto !important;
-    flex: 0 0 var(--suites-m-slide) !important;
-    width: var(--suites-m-slide) !important;
-    max-width: var(--suites-m-slide) !important;
-    height: auto !important;
-    min-height: 0 !important;
-    aspect-ratio: 3 / 4 !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-    overflow: hidden !important;
-    opacity: 1 !important;
-    transform: none !important;
-    scroll-snap-align: start !important;
-  }
-
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--down :is(.media, .media__wrap-source, .media__source),
-  html body main .mod-scroll__images-text .flipMedia > .flipMedia__media--up :is(.media, .media__wrap-source, .media__source) {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 0 !important;
-  }
-
-  html body main .mod-scroll__images-text__text {
-    position: relative !important;
-    z-index: 1 !important;
-    flex: 0 0 var(--suites-m-slide) !important;
-    width: var(--suites-m-slide) !important;
-    max-width: var(--suites-m-slide) !important;
-    min-height: 0 !important;
-    aspect-ratio: 3 / 4 !important;
-    margin: 0 !important;
-    padding: 1.15rem 1rem 1.25rem !important;
-    white-space: normal !important;
-    overflow: hidden !important;
-    font-size: clamp(1.15rem, 4.6vw, 1.65rem) !important;
-    line-height: 1.12 !important;
-    color: var(--suites-m-paper) !important;
-    -webkit-text-fill-color: var(--suites-m-paper) !important;
-    background: var(--suites-m-ink) !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    scroll-snap-align: start !important;
-  }
-
-  html body main .mod-scroll__images-text__text p,
-  html body main .mod-scroll__images-text__text .line,
-  html body main .mod-scroll__images-text__text span {
-    color: inherit !important;
-    -webkit-text-fill-color: inherit !important;
-    white-space: normal !important;
-  }
-
-  /* Terms mosaic — gold gutters, square, no huge svh. */
-  html body main .mod-scroll__terms {
-    min-height: 0 !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    color: var(--suites-m-ink) !important;
-  }
-
-  html body main .mod-scroll__terms :is(
-    .mod-scroll__terms__term__title,
-    .mod-scroll__terms__term__title *,
-    .mod-scroll__terms__term__num,
-    .mod-scroll__terms__term__text,
-    .mod-scroll__terms__term__text *,
-    .t-supertitulo-l,
-    .t-supertitulo-l *
-  ) {
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-    mix-blend-mode: normal !important;
-    filter: none !important;
-  }
-
-  html body main .mod-scroll__terms__term {
-    flex: none !important;
-    min-height: 0 !important;
-    justify-content: flex-start !important;
-    padding: 1.35rem var(--wrapper-padd) 1.2rem !important;
-    border-top: 1px solid rgba(20, 18, 14, 0.22) !important;
-  }
-
-  html body main .mod-scroll__terms__term:last-of-type {
-    border-bottom: 1px solid rgba(20, 18, 14, 0.22) !important;
-  }
-
-  html body main .mod-scroll__terms__term__wrap-title {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: baseline !important;
-    gap: 0.7rem !important;
-  }
-
-  html body main .mod-scroll__terms__term__num {
-    font-size: 0.72rem !important;
-    letter-spacing: 0.14em !important;
-    opacity: 0.72 !important;
-  }
-
-  html body main .mod-scroll__terms__term__title,
-  html body main .mod-scroll__terms .t-supertitulo-l {
-    width: auto !important;
-    font-size: clamp(1.55rem, 4.6vw, 2.15rem) !important;
-    line-height: 0.95 !important;
-  }
-
-  html body main .mod-scroll__terms__term__text.d-none.d-md-block {
-    display: block !important;
-  }
-
-  html body main .mod-scroll__terms__term__text-group {
-    display: none !important;
-  }
-
-  html body main .mod-scroll__terms__term__text {
-    width: 100% !important;
-    max-width: 36rem !important;
-    margin: 0.45rem 0 0 !important;
-    font-size: 0.88rem !important;
-    line-height: 1.45 !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse {
-    position: relative !important;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: var(--suites-m-gap) !important;
-    width: 100% !important;
-    min-height: 0 !important;
-    aspect-ratio: auto !important;
-    opacity: 1 !important;
-    transform: none !important;
-    overflow: hidden !important;
-    padding: var(--suites-m-gap) !important;
-    background: var(--suites-m-gold) !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img {
-    position: relative !important;
-    inset: auto !important;
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    aspect-ratio: 3 / 4 !important;
-    opacity: 1 !important;
-    transform: none !important;
-    clip-path: none !important;
-    object-fit: cover !important;
-    border-radius: 0 !important;
-  }
-
-  html body main .mod-scroll__terms .follow__mouse > img:first-child {
-    grid-row: span 2 !important;
-  }
-
-  /* Suite collection — near-full-bleed expand panels + restored wrap-text. */
-  html body main .mod-scroll__projects {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 1.25rem !important;
-    width: 100% !important;
-    overflow: visible !important;
-  }
-
-  html body main .mod-scroll__projects > .mod-scroll__projects__wrap-text {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: 100% !important;
-    padding: 1.75rem var(--wrapper-padd) 0.35rem !important;
-    box-sizing: border-box !important;
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main .mod-scroll__projects > .mod-scroll__projects__wrap-text :is(p, span, .line, h2, h3) {
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main .suites-collection-rail {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: stretch !important;
-    gap: var(--suites-m-gap) !important;
-    width: 100% !important;
-    padding-inline: var(--wrapper-padd, 1.15rem) !important;
-    padding-right: calc(var(--wrapper-padd, 1.15rem) + 8vw) !important;
-    scroll-padding-inline: var(--wrapper-padd, 1.15rem) !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    box-sizing: border-box !important;
-  }
-
-  html body main .suites-collection-rail::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  html body main .suites-collection-rail > .mod-scroll__projects__item {
-    flex: 0 0 var(--suites-m-slide) !important;
-    width: var(--suites-m-slide) !important;
-    max-width: var(--suites-m-slide) !important;
-    min-height: 0 !important;
-    height: auto !important;
-    scroll-snap-align: start !important;
-    border-radius: 0 !important;
-    overflow: hidden !important;
-    background: var(--suites-m-paper) !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__content {
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: 0 !important;
-    height: 100% !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__image,
-  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__wrap-source,
-  html body main .suites-collection-rail .mod-scroll__projects__item__image .media__source {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 3 / 4 !important;
-    object-fit: cover !important;
-    border-radius: 0 !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-    gap: 0.7rem !important;
-    padding: 1.15rem 1.1rem 1.35rem !important;
-    min-height: 0 !important;
-    height: auto !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: baseline !important;
-    justify-content: space-between !important;
-    gap: 0.65rem !important;
-    width: 100% !important;
-    order: 1 !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > * {
-    position: relative !important;
-    inset: auto !important;
-    width: auto !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(3) {
-    display: none !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__title {
-    order: 2 !important;
-    text-align: left !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    font-size: clamp(1.55rem, 5.8vw, 2.15rem) !important;
-    line-height: 0.92 !important;
-    letter-spacing: -0.03em !important;
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > *:nth-child(4),
-  html body main .suites-collection-rail .mod-scroll__projects__item__text__data > span,
-  html body main .suites-collection-rail .mod-scroll__projects__item__text a.btn {
-    order: 3 !important;
-    align-self: stretch !important;
-    justify-self: stretch !important;
-    grid-column: auto !important;
-    margin-top: 0.35rem !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  html body main .mod-scroll__projects > .last-item {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 0 !important;
-    height: auto !important;
-  }
-
-  html body main .mod-scroll__projects > .last-item > .media,
-  html body main .mod-scroll__projects > .last-item > .mod-scroll__projects__item__image,
-  html body main .mod-scroll__projects > .last-item .mod-scroll__projects__item__image {
-    border-radius: 0 !important;
-    overflow: hidden !important;
-  }
-
-  /* DNA pills */
-  html body main :is(.btn, .btn--bg, .btn--circle, .mod-content__btn, .last-item__carousel__item--link) {
-    ${PILL}
-  }
-
-  html body main :is(.btn, .btn--bg, .btn--circle, .mod-content__btn) :is(span, div) {
-    font-size: inherit !important;
-    font-style: normal !important;
-    letter-spacing: inherit !important;
-    text-transform: inherit !important;
-    line-height: 1 !important;
-  }
-
-  html body main :is(.btn--bg, .btn--bg-inv, .mod-content__btn, a.btn):not(.btn--bg-blue):not(.srh-actions__primary) {
-    background: transparent !important;
-    border-color: rgba(20, 18, 14, 0.58) !important;
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main [data-suite-panel="ink"] :is(.btn--bg, .btn--bg-inv, a.btn),
-  html body main [data-suite-panel="gold"] :is(.btn--bg, .btn--bg-inv, a.btn) {
-    border-color: rgba(243, 237, 228, 0.72) !important;
-    color: var(--suites-m-paper) !important;
-    -webkit-text-fill-color: var(--suites-m-paper) !important;
-    background: transparent !important;
-  }
-
-  /* last-item — horizontal snap, primary pill, tight copy. */
-  html body main .last-item__carousel {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    gap: var(--suites-m-gap) !important;
-    padding: 0.85rem var(--wrapper-padd) 1rem !important;
-    padding-right: calc(var(--wrapper-padd) + 10vw) !important;
-    background: var(--suites-m-paper) !important;
-    box-sizing: border-box !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    min-height: 0 !important;
-  }
-
-  html body main .last-item__carousel::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  html body main .last-item__carousel__item:not(.last-item__carousel__item--link) {
-    flex: 0 0 var(--suites-m-slide) !important;
-    width: var(--suites-m-slide) !important;
-    height: auto !important;
-    aspect-ratio: 3 / 4 !important;
-    border-radius: 0 !important;
-    overflow: hidden !important;
-    scroll-snap-align: start !important;
-  }
-
-  html body main .last-item__carousel__item__image,
-  html body main .last-item__carousel__item__image .media__source {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 0 !important;
-  }
-
-  html body main a.last-item__carousel__item--link {
-    ${PILL}
-    flex: 0 0 auto !important;
-    align-self: center !important;
-    width: max-content !important;
-    min-width: 12.5rem !important;
-    height: 2.85rem !important;
-    margin: 0 !important;
-    background: #12100c !important;
-    border-color: #12100c !important;
-    color: #cdb684 !important;
-    -webkit-text-fill-color: #cdb684 !important;
-    gap: 0 !important;
-    scroll-snap-align: start !important;
-  }
-
-  html body main a.last-item__carousel__item--link .last-item__carousel__item__text,
-  html body main a.last-item__carousel__item--link span {
-    display: inline !important;
-    color: inherit !important;
-    -webkit-text-fill-color: inherit !important;
-    font-size: 0.72rem !important;
-    letter-spacing: 0.18em !important;
-    text-transform: uppercase !important;
-  }
-
-  html body main a.last-item__carousel__item--link .last-item__carousel__item__arrow,
-  html body main a.last-item__carousel__item--link svg {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    visibility: hidden !important;
-  }
-
-  html body main .last-item__content {
-    background: var(--suites-m-paper) !important;
-    min-height: 0 !important;
-  }
-
-  html body main .last-item__content__wrap {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.65rem !important;
-    padding: 1.35rem var(--wrapper-padd) 1.75rem !important;
-    text-align: center !important;
-    min-height: 0 !important;
-  }
-
-  html body main .last-item__content__section {
-    color: var(--suites-m-gold-deep) !important;
-    -webkit-text-fill-color: var(--suites-m-gold-deep) !important;
-    letter-spacing: 0.2em !important;
-  }
-
-  html body main .last-item__content__title,
-  html body main .last-item__content__title .line {
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-    text-align: center !important;
-    max-width: 20rem !important;
-    margin-inline: auto !important;
-    font-size: clamp(1.85rem, 8.2vw, 2.55rem) !important;
-    line-height: 0.96 !important;
-  }
-
-  html body main .last-item__content__text,
-  html body main .last-item__content__text p {
-    color: var(--suites-m-ink-soft) !important;
-    -webkit-text-fill-color: var(--suites-m-ink-soft) !important;
-    max-width: 22rem !important;
-    margin: 0 auto !important;
-    font-size: clamp(0.95rem, 3.4vw, 1.08rem) !important;
-    line-height: 1.55 !important;
-    opacity: 1 !important;
-  }
-
-  /* cierre / chapters / CTA — tighter on phone/tablet only */
-  html body main .mod-scroll__cierre__content {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 1.25rem !important;
-    padding: 2rem var(--wrapper-padd) 2.5rem !important;
-    min-height: 0 !important;
-  }
-
-  html body main .mod-scroll__cierre .anima__title,
-  html body main .mod-scroll__cierre .anima__title .line {
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-    text-align: center !important;
-  }
-
-  html body main .mod-title--chapter,
-  html body main .mod-title--lines {
-    padding: 1.75rem var(--wrapper-padd) 1.15rem !important;
-  }
-
-  html body main .mod-title .anima__title,
-  html body main .mod-title--lines .line {
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main .mod-content--center {
-    padding: 1.75rem var(--wrapper-padd) 2.25rem !important;
-  }
-
-  html body main .mod-content--cols {
-    padding: 1.5rem var(--wrapper-padd) 1.15rem !important;
-  }
-
-  /* Clone footer contrast */
-  html body main .mod-footer__buttons-header {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    text-align: left !important;
-    gap: 0.35rem !important;
-    margin: 0 0 1.25rem !important;
-    width: 100% !important;
-    padding-inline: var(--wrapper-padd) !important;
-  }
-
-  html body main .mod-footer__buttons-header span {
-    display: none !important;
-  }
-
-  html body main .mod-footer__buttons-header__btn,
-  html body main .mod-footer__buttons-header__btn .line,
-  html body main .mod-footer__buttons-header__btn span,
-  html body main .mod-footer__buttons-header__btn .char {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    display: inline !important;
-    font-size: clamp(1.05rem, 4.6vw, 1.45rem) !important;
-    line-height: 1.3 !important;
-    letter-spacing: 0.02em !important;
-    text-align: left !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-    color: var(--suites-m-ink) !important;
-    -webkit-text-fill-color: var(--suites-m-ink) !important;
-  }
-
-  html body main .mod-footer__buttons-header__btn .line:nth-of-type(2),
-  html body main .mod-footer__buttons-header__btn.link .line:nth-of-type(2) {
-    display: none !important;
-  }
-
-  html body main .mod-footer__bg {
-    margin-top: 0.35rem !important;
-  }
-
-  html body main .mod-footer__footer__copyright {
-    color: var(--suites-m-gold-deep) !important;
-    -webkit-text-fill-color: var(--suites-m-gold-deep) !important;
-  }
-}
-
-@media (max-width: 480px) {
-  html body {
-    --suites-m-gap: 0.45rem;
-    --suites-m-slide: min(90vw, 24rem);
-  }
-
-  html body main .mod-scroll__terms__term {
-    padding: 1.05rem var(--wrapper-padd) 0.95rem !important;
-  }
-
-  html body main .mod-scroll__terms__term__title,
-  html body main .mod-scroll__terms .t-supertitulo-l {
-    font-size: clamp(1.28rem, 6.6vw, 1.7rem) !important;
-  }
-
-  html body main .mod-scroll__terms__term__text {
-    font-size: 0.8rem !important;
-    line-height: 1.4 !important;
-  }
-
-  html body main .mod-content__btn {
-    white-space: normal !important;
-    height: auto !important;
-    min-height: 2.85rem !important;
-    max-height: none !important;
-    padding: 0.7rem 1.2rem !important;
-    max-width: calc(100vw - 2.5rem) !important;
-    letter-spacing: 0.12em !important;
-    font-size: 0.64rem !important;
-  }
-
-  html body main .mod-footer__buttons-header__btn,
-  html body main .mod-footer__buttons-header__btn .line,
-  html body main .mod-footer__buttons-header__btn span {
-    font-size: clamp(0.95rem, 5.2vw, 1.2rem) !important;
-  }
-}
-
 /* DNA pills that also apply when circle→pill neutralization runs. */
 html body main .mod-content__btn,
 html body main .btn--circle {
@@ -956,23 +178,6 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   object-fit: cover !important;
 }
 
-@media (max-width: 1024px) {
-  html body main .mod-media--double,
-  html body main .mod-media--mosaic {
-    gap: var(--suites-m-gap, 0.55rem) !important;
-    padding: var(--suites-m-gap, 0.55rem) !important;
-    background: var(--suites-m-gold, #b69f64) !important;
-  }
-
-  html body main .mod-media--double .mod-media__item,
-  html body main .mod-media--mosaic .mod-media__item,
-  html body main .mod-media--double .col-6,
-  html body main .mod-media--double .col-4 {
-    aspect-ratio: 3 / 4 !important;
-    border-radius: 0 !important;
-  }
-}
-
 @media (min-width: 1025px) {
   html body main .mod-media--double .mod-media__item,
   html body main .mod-media--mosaic .mod-media__item,
@@ -980,15 +185,220 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
   html body main .mod-media--double .col-4 {
     aspect-ratio: 4 / 3 !important;
   }
-}
 
-/* Site footer inside the clone — phone only.
-   Skin and layout come from /suites-normal/styles/hathor-lux-footer.css, which
-   is generated from app/lux-footer.css by scripts/sync-suites-footer-css.mjs.
-   Only the host seat lives here. */
-@media (min-width: 481px) {
-  html body .hathor-lux-footer-host {
+  /*
+   * Horizon close: one 100vw split (image | statement), then one full plate.
+   * The clone's last-item carousel was stacking the same rooms and squeezing
+   * the headline into a sliver before the cierre sand field.
+   */
+  html body main .mod-scroll__projects .last-item {
+    position: relative !important;
+    min-width: 100vw !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100svh !important;
+    overflow: hidden !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  html body main .mod-scroll__projects .last-item > .mod-scroll__projects__item__content {
+    width: 42vw !important;
+    height: 100% !important;
+    transform: none !important;
+  }
+
+  html body main .mod-scroll__projects .last-item__content {
+    position: absolute !important;
+    left: 42vw !important;
+    top: 0 !important;
+    width: 58vw !important;
+    max-width: 58vw !important;
+    height: 100% !important;
+    transform: none !important;
+    translate: none !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  html body main .mod-scroll__projects .last-item__content__wrap {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    overflow: visible !important;
+    padding-right: clamp(2rem, 4vw, 4.5rem) !important;
+  }
+
+  html body main .mod-scroll__projects .last-item__content__title,
+  html body main .mod-scroll__projects .last-item__content__title .line,
+  html body main .mod-scroll__projects .last-item__content__text p .line {
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
+  html body main .mod-scroll__projects .last-item__content .char,
+  html body main .mod-scroll__projects .last-item__content__text span,
+  html body main .mod-scroll__projects .last-item__content__section {
+    transform: none !important;
+    translate: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  html body main .mod-scroll__projects .last-item__carousel {
     display: none !important;
+  }
+
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link,
+  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta {
+    ${PILL}
+    margin-top: 1.75rem !important;
+    background: #14120e !important;
+    border-color: #14120e !important;
+    color: #cdb684 !important;
+    -webkit-text-fill-color: #cdb684 !important;
+  }
+
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link svg,
+  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta svg {
+    display: none !important;
+  }
+
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link .last-item__carousel__item__text,
+  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta .last-item__carousel__item__text {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-style: normal !important;
+    letter-spacing: inherit !important;
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+  }
+
+  html body main .mod-scroll__pin {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+
+  html body main .mod-scroll__cierre {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    overflow: hidden !important;
+  }
+
+  html body main .mod-scroll__cierre__content {
+    position: relative !important;
+    display: block !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100svh !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  html body main .mod-scroll__cierre__content::after,
+  html body main .mod-scroll__cierre__content .mod-scroll__logo,
+  html body main .mod-scroll__cierre__content .mod-scroll__footer-logo {
+    display: none !important;
+  }
+
+  html body main .mod-scroll__cierre__content__image {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  html body main .mod-scroll__cierre__content__image > .flipMedia__media {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  html body main .mod-scroll__cierre__content__image > .flipMedia__media--down {
+    opacity: 0 !important;
+  }
+
+  html body main .mod-scroll__cierre__content__image > .flipMedia__media--up {
+    opacity: 1 !important;
+  }
+
+  html body main .mod-scroll__cierre__content__image :is(.media__wrap-source, .media__source, img) {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  html body main .mod-title--lines {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    column-gap: var(--grid-gap, 1rem) !important;
+    row-gap: 0 !important;
+    align-items: end !important;
+    padding: clamp(5.5rem, 8vw, 8rem) var(--wrapper-padd, 2.5rem) 0 !important;
+  }
+
+  html body main .mod-title--lines .line {
+    overflow: visible !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  html body main .mod-title--lines .line:nth-child(1),
+  html body main .mod-title--lines .line:nth-child(2) {
+    grid-column: 1 / 9 !important;
+    text-align: left !important;
+  }
+
+  html body main .mod-title--lines .line:nth-child(3) {
+    grid-column: 9 / -1 !important;
+    text-align: left !important;
+    padding-bottom: 0.15em !important;
+  }
+
+  html body main .mod-content--cols {
+    padding: 1.5rem var(--wrapper-padd, 2.5rem) 0 !important;
+  }
+
+  html body main .mod-content--cols .mod-content__col:not(.big_text) {
+    display: none !important;
+  }
+
+  html body main .mod-content--cols .mod-content__col.big_text {
+    width: calc((100% - var(--grid-gap, 1rem) * 11) / 12 * 4 + var(--grid-gap, 1rem) * 3) !important;
+    margin-left: auto !important;
+    padding-top: 1.15rem !important;
+    border-top: 1px solid rgb(182 159 100 / 0.45) !important;
+  }
+
+  html body main .mod-content--center {
+    justify-content: flex-end !important;
+    padding: 1.35rem var(--wrapper-padd, 2.5rem) clamp(4rem, 7vw, 6.5rem) !important;
+  }
+
+  html body main .mod-content--center .mod-content__col {
+    width: calc((100% - var(--grid-gap, 1rem) * 11) / 12 * 4 + var(--grid-gap, 1rem) * 3) !important;
+    justify-content: flex-start !important;
+    padding-inline: 0 !important;
+  }
+
+  html body .hathor-lux-footer-host {
+    display: block !important;
+    padding-bottom: 0 !important;
   }
 }
 
@@ -996,7 +406,12 @@ html body .hathor-lux-footer-host {
   position: relative !important;
   z-index: 5 !important;
   background: transparent !important;
-  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (max-width: 1024px) {
+  html body .hathor-lux-footer-host {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }
 `;
 
@@ -1200,7 +615,7 @@ export function layoutSuitesSlideCaptionPanels(doc: Document) {
   }
 
   const link = doc.querySelector<HTMLElement>(
-    "a.last-item__carousel__item--link",
+    "a.last-item__carousel__item--link, a.hathor-horizon-cta",
   );
   if (link) {
     link.querySelectorAll("svg, .last-item__carousel__item__arrow").forEach((n) => {
@@ -1210,6 +625,85 @@ export function layoutSuitesSlideCaptionPanels(doc: Document) {
     if (label && !label.textContent?.trim()) {
       label.textContent = "View All Suites";
     }
+  }
+}
+
+type SuitesGsapWin = Window & {
+  gsap?: {
+    killTweensOf?: (target: unknown) => void;
+    set?: (target: unknown, vars: Record<string, unknown>) => void;
+  };
+  ScrollTrigger?: {
+    getAll?: () => Array<{ trigger?: Element | string | null; kill: () => void }>;
+  };
+};
+
+/**
+ * Freeze the clone's last-item carousel (stacked duplicate rooms + squeezed
+ * headline) into a readable split, then one full-bleed plate. Moves View All
+ * Suites onto the statement as a site pill.
+ */
+export function layoutSuitesHorizonClose(doc: Document) {
+  const last = doc.querySelector<HTMLElement>(
+    ".mod-scroll__projects__item.last-item",
+  );
+  if (!last) return;
+
+  const wrap = last.querySelector<HTMLElement>(".last-item__content__wrap");
+  const link = last.querySelector<HTMLAnchorElement>(
+    "a.last-item__carousel__item--link",
+  );
+  if (wrap && link && !wrap.contains(link)) {
+    link.classList.add("hathor-horizon-cta");
+    link.setAttribute("href", "/rooms");
+    link.setAttribute("target", "_top");
+    link.querySelectorAll("svg, .last-item__carousel__item__arrow").forEach((n) => {
+      n.remove();
+    });
+    const label = link.querySelector(".last-item__carousel__item__text");
+    if (label) label.textContent = "View All Suites";
+    wrap.appendChild(link);
+  }
+
+  last
+    .querySelectorAll(".last-item__carousel__item:not(.last-item__carousel__item--link)")
+    .forEach((el) => {
+      el.setAttribute("hidden", "");
+    });
+  const carousel = last.querySelector<HTMLElement>(".last-item__carousel");
+  if (carousel && !carousel.querySelector("a.last-item__carousel__item--link")) {
+    carousel.setAttribute("hidden", "");
+  }
+
+  const win = doc.defaultView as SuitesGsapWin | null;
+  if (!win) return;
+
+  if (last.dataset.hathorHorizonBound !== "1") {
+    last.dataset.hathorHorizonBound = "1";
+    win.setTimeout(() => layoutSuitesHorizonClose(doc), 400);
+    win.setTimeout(() => layoutSuitesHorizonClose(doc), 1600);
+  }
+
+  if (win.innerWidth <= 1024) return;
+
+  const motion = [
+    last,
+    last.querySelector(":scope > .mod-scroll__projects__item__content"),
+    last.querySelector(".last-item__content"),
+    last.querySelector(".last-item__carousel"),
+    doc.querySelector(".mod-scroll__pin"),
+    doc.querySelector(".mod-scroll__cierre"),
+    doc.querySelector(".mod-scroll__cierre__content"),
+    doc.querySelector(".mod-scroll__cierre__content__image"),
+    ...Array.from(doc.querySelectorAll(".mod-scroll__cierre__content__image > *")),
+  ].filter(Boolean);
+
+  try {
+    win.gsap?.set?.(motion, {
+      clearProps: "transform,translate,x,y,width,height,top,left",
+    });
+  } catch {
+    /* Clone GSAP is optional during early iframe mount. */
   }
 }
 
