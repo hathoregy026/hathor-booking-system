@@ -137,13 +137,20 @@ export const HOMEPAGE_REVIEWS = {
   body: "Guest reflections on sailing with Hathor — from attentive service and refined suites to the quieter pace of life on the Nile.",
 } as const;
 
+/** Desktop band sets the lead on these three measured lines. */
+const PARTNERS_LEAD_LINES = [
+  "We are proud to be recognized by leading",
+  "travel and hospitality partners around the world,",
+  "sharing our passion for authentic journeys on the Nile.",
+] as const;
+
 export const HOMEPAGE_PARTNERS = {
   title: "Our Partners",
   chapter: "Trusted Worldwide",
   headline: "In Distinguished Company",
   script: "trusted along the journey",
-  lead:
-    "We are proud to be recognized by leading travel and hospitality partners around the world, sharing our passion for authentic journeys on the Nile.",
+  lead: PARTNERS_LEAD_LINES.join(" "),
+  leadLines: PARTNERS_LEAD_LINES,
   partners: [
     "Easy Trav Tourism",
     "Booking",
