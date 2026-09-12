@@ -590,7 +590,7 @@ export function HomeThreePageContent({
                       <div className="h3-course__head">
                         <p className="h3-kicker">The route</p>
                         <h2 className="h3-title h3-title--sm">
-                          Luxor
+                          Luxor{" "}
                           <br />
                           to Aswan
                         </h2>
@@ -739,6 +739,7 @@ export function HomeThreePageContent({
                       </Link>
                     </div>
 
+                    <div className="h3-projects__rail">
                     {VOYAGES.map((voyage, index) => (
                       <article
                         key={voyage.slot}
@@ -793,6 +794,7 @@ export function HomeThreePageContent({
                         </div>
                       </article>
                     ))}
+                    </div>
                   </Panel>
 
                   {/* ----------------- 06 · the suites · images-text (black) */}
@@ -984,6 +986,10 @@ export function HomeThreePageContent({
             >
               <div className="h3-chapter__intro">
                 <p className="h3-kicker">06 — Contact</p>
+                <p className="h3-chapter__aboard h3-support">
+                  Twelve guests, five moorings and one river. The rest of the
+                  arrangements are ours.
+                </p>
                 <i className="h3-chapter__rule" aria-hidden="true" />
               </div>
               <h2 className="h3-chapter__title" data-anima-title>

@@ -132,17 +132,22 @@ export function PartnersCompanyStrip({
                 <i aria-hidden="true" />
               </p>
               <h2 className="partners-company__title" id="partners-company-title">
-                {words.map((word, index) => (
-                  <Fragment key={`${word}-${index}`}>
-                    {index > 0 ? " " : null}
-                    <span
-                      className="partners-company__word"
-                      style={{ "--pc-w": index } as CSSProperties}
-                    >
-                      <span>{word}</span>
-                    </span>
-                  </Fragment>
-                ))}
+                <span className="partners-company__words">
+                  {words.map((word, index) => (
+                    <Fragment key={`${word}-${index}`}>
+                      {index > 0 ? " " : null}
+                      <span
+                        className="partners-company__word"
+                        style={{ "--pc-w": index } as CSSProperties}
+                      >
+                        <span>{word}</span>
+                      </span>
+                    </Fragment>
+                  ))}
+                </span>
+                <span className="partners-company__phone-title">
+                  {HOMEPAGE_PARTNERS.title}
+                </span>
               </h2>
               <p className="partners-company__script">
                 {HOMEPAGE_PARTNERS.script}
