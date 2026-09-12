@@ -352,9 +352,8 @@ export function Footer() {
         <div className="hf__lede">
           <div className="hf__reveal">
             <h2 className="hf__title">
-              Your Nile Story
-              <br />
-              Begins Here
+              <span className="hf__title-line">YOUR NILE STORY</span>
+              <span className="hf__title-line">BEGINS HERE</span>
             </h2>
             <p className="hf__script">Adventures the Nile</p>
           </div>
