@@ -627,7 +627,7 @@ export function injectSuitesLuxFooter(doc: Document) {
     const link = doc.createElement("link");
     link.id = "hathor-lux-footer-link";
     link.rel = "stylesheet";
-    link.href = "/suites-normal/styles/hathor-lux-footer.css";
+    link.href = "/suites-normal/styles/hathor-lux-footer.css?v=hathor-suites-footer-pills-20260912";
     doc.head.appendChild(link);
   }
 

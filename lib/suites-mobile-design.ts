@@ -110,6 +110,19 @@ html.hathor-suites-phone main {
   overscroll-behavior-x: none !important;
   touch-action: pan-y !important;
 }
+html.hathor-suites-narrow main .mod-scroll__images.secundario,
+html.hathor-suites-narrow main .suites-collection-rail,
+html.hathor-suites-phone main .mod-scroll__images.secundario,
+html.hathor-suites-phone main .suites-collection-rail {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  touch-action: pan-x pan-y !important;
+  overscroll-behavior-x: contain !important;
+}
+html.hathor-suites-narrow main .suites-collection-rail > .mod-scroll__projects__item[data-suite-panel="ivory"],
+html.hathor-suites-phone main .suites-collection-rail > .mod-scroll__projects__item[data-suite-panel="ivory"] {
+  display: none !important;
+}
 
 @media (max-width: 1024px) {
   html body {
@@ -950,25 +963,30 @@ const SM_STORY_CSS = `
     height: auto !important;
   }
 
-  /* 06 · Desktop image slide, adapted: square plates on a snap rail. */
+  /* 06 · Desktop image slide, adapted: square plates on a snap rail.
+     Phone/tablet: swipe right-to-left (LTR, next card enters from the right). */
   html body main .mod-scroll__images.secundario {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
+    direction: ltr !important;
     gap: var(--sm-gap) !important;
     box-sizing: border-box !important;
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
-    padding: calc(var(--sm-band) * 0.8) 0 0 var(--sm-pad) !important;
+    padding: calc(var(--sm-band) * 0.8) 0 0 0 !important;
+    padding-inline-start: var(--sm-pad) !important;
     scroll-padding-inline: var(--sm-pad) !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
     scroll-snap-stop: always !important;
+    touch-action: pan-x pan-y !important;
     background: var(--sm-sand) !important;
+    scrollbar-width: none !important;
   }
 
   html body main .mod-scroll__images.secundario::after {
@@ -984,6 +1002,7 @@ const SM_STORY_CSS = `
   html body main .mod-scroll__images.secundario .flipMedia__media {
     flex: 0 0 var(--sm-slide) !important;
     width: var(--sm-slide) !important;
+    direction: ltr !important;
     aspect-ratio: 4 / 5 !important;
     border-radius: 0 !important;
     overflow: hidden !important;
@@ -1203,17 +1222,21 @@ const SM_COLLECTION_CSS = `
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: stretch !important;
+    direction: rtl !important;
     gap: var(--sm-gap) !important;
     box-sizing: border-box !important;
     width: 100% !important;
     height: auto !important;
     margin: 0 !important;
-    padding: 0 0 0 var(--sm-pad) !important;
+    padding: 0 !important;
+    padding-inline-start: var(--sm-pad) !important;
     scroll-padding-inline: var(--sm-pad) !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
     scroll-snap-stop: always !important;
+    touch-action: pan-x pan-y !important;
+    scrollbar-width: none !important;
   }
 
   html body main .mod-scroll__projects .suites-collection-rail::after {
@@ -1229,10 +1252,15 @@ const SM_COLLECTION_CSS = `
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
+    direction: ltr !important;
     scroll-snap-align: start !important;
     scroll-snap-stop: always !important;
     overflow: hidden !important;
     border-radius: 0 !important;
+  }
+
+  html body main .suites-collection-rail > .mod-scroll__projects__item[data-suite-panel="ivory"] {
+    display: none !important;
   }
 
   html body main .suites-collection-rail .mod-scroll__projects__item__content {
@@ -1988,6 +2016,11 @@ const SM_CLOSING_CSS = `
 }
 
 @media (max-width: 480px) {
+  html body {
+    --sm-pad: clamp(0.65rem, 3.2vw, 1rem);
+    --sm-slide: calc(100vw - (2 * var(--sm-pad)) - 0.75rem);
+  }
+
   html body .hathor-lux-footer-host {
     padding-bottom: calc(clamp(4.25rem, 18.4vw, 5rem) + 0.75rem + env(safe-area-inset-bottom, 0px)) !important;
   }
@@ -1998,7 +2031,7 @@ const SM_CLOSING_CSS = `
   }
 
   html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item > .mod-scroll__projects__item__content {
-    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
+    padding-inline: var(--sm-pad) !important;
   }
 
   html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image,
@@ -2012,31 +2045,43 @@ const SM_CLOSING_CSS = `
   html body main .mod-scroll__images.secundario,
   html body main .mod-scroll__projects .suites-collection-rail {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important;
     flex-wrap: nowrap !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    scroll-snap-type: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-snap-stop: always !important;
     width: 100% !important;
-    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
+    padding-inline-end: 0 !important;
+    padding-inline-start: var(--sm-pad) !important;
+    touch-action: pan-x pan-y !important;
+  }
+
+  html body main .mod-scroll__images.secundario {
+    direction: ltr !important;
+  }
+
+  html body main .mod-scroll__projects .suites-collection-rail {
+    direction: rtl !important;
   }
 
   html body main .mod-scroll__images.secundario::after,
   html body main .mod-scroll__projects .suites-collection-rail::after {
-    display: none !important;
+    display: block !important;
+    flex: 0 0 calc(var(--sm-pad) - var(--sm-gap)) !important;
   }
 
   html body main .suites-collection-rail > .mod-scroll__projects__item,
   html body main .mod-scroll__images.secundario .flipMedia__media {
-    flex: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    scroll-snap-align: none !important;
+    flex: 0 0 var(--sm-slide) !important;
+    width: var(--sm-slide) !important;
+    max-width: var(--sm-slide) !important;
+    scroll-snap-align: start !important;
   }
 
   html body main .smr-rail {
     justify-content: flex-start !important;
-    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
+    padding-inline: var(--sm-pad) !important;
   }
 }
 `;
@@ -2202,13 +2247,14 @@ function bindRail(scroller: HTMLElement, itemSelector: string) {
   scroller.classList.add("smr-rail-scroller");
   const items = Array.from(
     scroller.querySelectorAll<HTMLElement>(itemSelector),
-  );
+  ).filter((item) => !item.closest('[data-suite-panel="ivory"]'));
   const total = Math.max(items.length, 1);
   const rail = makeRail(doc, total);
   scroller.after(rail);
 
   const update = () => {
     const style = doc.defaultView?.getComputedStyle(scroller);
+    const rtl = style?.direction === "rtl";
     const vertical =
       style?.flexDirection === "column" ||
       scroller.scrollWidth <= scroller.clientWidth + 2;
@@ -2231,16 +2277,19 @@ function bindRail(scroller: HTMLElement, itemSelector: string) {
         });
         progress = (best + 1) / total;
       } else {
-        const max = scroller.scrollWidth - scroller.clientWidth;
-        progress = max <= 1 ? 1 : scroller.scrollLeft / max;
-        const left = scroller.getBoundingClientRect().left;
+        const box = scroller.getBoundingClientRect();
+        const mark = rtl ? box.right : box.left;
         items.forEach((item, i) => {
-          const dist = Math.abs(item.getBoundingClientRect().left - left);
+          const edge = rtl
+            ? item.getBoundingClientRect().right
+            : item.getBoundingClientRect().left;
+          const dist = Math.abs(edge - mark);
           if (dist < bestDist) {
             bestDist = dist;
             best = i;
           }
         });
+        progress = (best + 1) / total;
       }
       index = best + 1;
     }
@@ -2264,7 +2313,11 @@ function mountRails(doc: Document) {
     "main .suites-collection-rail",
   );
   if (collection) {
-    bindRail(collection, ":scope > .mod-scroll__projects__item");
+    bindRail(
+      collection,
+      ':scope > .mod-scroll__projects__item:not([data-suite-panel="ivory"])',
+    );
+    collection.scrollLeft = 0;
   }
 }
 

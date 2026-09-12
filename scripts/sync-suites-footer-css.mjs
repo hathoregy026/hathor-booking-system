@@ -154,6 +154,39 @@ html[data-public-theme="night"] .hathor-lux-footer-host .hf__cta:hover {
   background: #dfc894;
   color: #14110d;
 }
+
+@media (max-width: 680px) {
+  .hathor-lux-footer-host .hf__desk {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .hathor-lux-footer-host .hf__actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .hathor-lux-footer-host .hf__cta {
+    flex: 1 1 calc(50% - 0.25rem) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: var(--hathor-btn-height, 2.7rem) !important;
+    padding: 0 0.45rem !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 0.06em !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+  }
+}
 `;
 
 const header = `/* GENERATED FILE — do not edit.
