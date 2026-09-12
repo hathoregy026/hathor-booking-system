@@ -488,7 +488,7 @@ export function HomeThreePageContent({
                     <div className="h3-sailings__head">
                       <p className="h3-kicker">02 — Sailings</p>
                       <h2 className="h3-title h3-title--sm">
-                        Choose
+                        Choose{" "}
                         <br />
                         your cabin
                       </h2>
