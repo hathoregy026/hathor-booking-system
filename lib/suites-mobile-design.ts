@@ -19,6 +19,8 @@
  * Every rule is inside a max-width: 1024px query. Desktop is untouched.
  */
 
+import { layoutSuitesCollectionRail } from "@/lib/suites-clone-layout-fix";
+
 const DISPLAY = `
   font-family: "Italiana", "Gamgote", Georgia, serif !important;
   font-style: normal !important;
@@ -77,6 +79,38 @@ const PILL = `
 /* Tokens, forced end states, frames, reveal                                 */
 /* ------------------------------------------------------------------------ */
 const SM_BASE_CSS = `
+/* Class is set from parent width so a wide-first iframe still cannot pan. */
+html.hathor-suites-narrow,
+html.hathor-suites-narrow body,
+html.hathor-suites-narrow #smooth-wrapper,
+html.hathor-suites-narrow #smooth-content {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+html.hathor-suites-narrow main .mod-scroll {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  transform: none !important;
+  translate: none !important;
+}
+html.hathor-suites-narrow main .mod-scroll > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  transform: none !important;
+  translate: none !important;
+}
+html.hathor-suites-phone,
+html.hathor-suites-phone body,
+html.hathor-suites-phone #smooth-wrapper,
+html.hathor-suites-phone #smooth-content,
+html.hathor-suites-phone main {
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none !important;
+  touch-action: pan-y !important;
+}
+
 @media (max-width: 1024px) {
   html body {
     --sm-paper: #f3ede4;
@@ -114,6 +148,33 @@ const SM_BASE_CSS = `
   html body main {
     background: var(--sm-paper) !important;
     overflow-x: clip !important;
+    max-width: 100% !important;
+    touch-action: pan-y !important;
+  }
+
+  html,
+  html body,
+  html #smooth-wrapper,
+  html.mobile #smooth-wrapper,
+  html #smooth-content {
+    overflow-x: clip !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  html body main .mod-scroll {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  html body main .mod-scroll > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    translate: none !important;
   }
 
   html #smooth-wrapper,
@@ -288,23 +349,25 @@ const SM_BASE_CSS = `
   html body main .smr-rail {
     display: flex !important;
     align-items: center !important;
-    gap: 1rem !important;
+    gap: 0.5rem !important;
     box-sizing: border-box !important;
     width: 100% !important;
     margin: 0 !important;
     padding: clamp(0.9rem, 3.6vw, 1.25rem) var(--sm-pad) 0 !important;
     overflow: visible !important;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif !important;
+    background: none !important;
   }
 
   html body main .smr-rail__count {
     display: inline-flex !important;
     align-items: baseline !important;
-    gap: 0.45em !important;
+    gap: 0.35em !important;
     flex: 0 0 auto !important;
-    min-width: 4.75rem !important;
+    min-width: 0 !important;
     overflow: visible !important;
     white-space: nowrap !important;
-    font-family: "Plus Jakarta Sans", "Piloner Thin", sans-serif !important;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif !important;
     font-style: normal !important;
     font-weight: 500 !important;
     font-size: 0.6875rem !important;
@@ -312,38 +375,26 @@ const SM_BASE_CSS = `
     letter-spacing: 0.16em !important;
     text-transform: uppercase !important;
     font-variant-numeric: tabular-nums !important;
-    color: var(--sm-label) !important;
-    -webkit-text-fill-color: var(--sm-label) !important;
+    font-feature-settings: "tnum" 1 !important;
+    color: var(--sm-text) !important;
+    -webkit-text-fill-color: var(--sm-text) !important;
   }
 
   html body main .smr-rail__sep {
     letter-spacing: 0 !important;
-    opacity: 0.5 !important;
+    opacity: 0.45 !important;
     transform: none !important;
+    font-family: inherit !important;
   }
 
   html body main .smr-rail__count b {
-    font-weight: 100 !important;
+    font-weight: 500 !important;
     color: var(--sm-text) !important;
     -webkit-text-fill-color: var(--sm-text) !important;
   }
 
   html body main .smr-rail__track {
-    position: relative !important;
-    flex: 1 1 auto !important;
-    height: 1px !important;
-    overflow: hidden !important;
-    background: var(--sm-hair) !important;
-  }
-
-  html body main .smr-rail__track > i {
-    position: absolute !important;
-    inset: 0 auto 0 0 !important;
-    width: 100% !important;
-    background: var(--sm-gold) !important;
-    transform: scaleX(var(--smr-progress, 0.25)) !important;
-    transform-origin: left center !important;
-    transition: transform 0.35s var(--sm-ease) !important;
+    display: none !important;
   }
 
   html body main :is(.smr-rail-scroller) {
@@ -608,7 +659,9 @@ const SM_HERO_CSS = `
   }
 
   html body main .srh-kicker {
-    font-size: clamp(1.85rem, 8.4vw, 2.35rem) !important;
+    font-size: clamp(1.22rem, 6.1vw, 1.55rem) !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.04em !important;
   }
 
   /*
@@ -1225,8 +1278,9 @@ const SM_COLLECTION_CSS = `
     inset: auto !important;
     width: auto !important;
     margin: 0 !important;
-    color: color-mix(in srgb, var(--suite-panel-fg, var(--sm-text)) 74%, transparent) !important;
-    -webkit-text-fill-color: color-mix(in srgb, var(--suite-panel-fg, var(--sm-text)) 74%, transparent) !important;
+    color: var(--suite-panel-fg, var(--sm-text)) !important;
+    -webkit-text-fill-color: var(--suite-panel-fg, var(--sm-text)) !important;
+    opacity: 1 !important;
   }
 
   html body main .mod-scroll__projects .mod-scroll__projects__item .mod-scroll__projects__item__text__data > div:nth-child(1) {
@@ -1264,12 +1318,32 @@ const SM_COLLECTION_CSS = `
     width: 100% !important;
     max-width: 100% !important;
     margin: clamp(0.8rem, 3.4vw, 1.1rem) 0 0 !important;
+    overflow: visible !important;
     font-size: clamp(1.95rem, 8.6vw, 2.75rem) !important;
     line-height: 0.9 !important;
     letter-spacing: -0.035em !important;
     text-align: left !important;
     color: var(--suite-panel-fg, var(--sm-text)) !important;
     -webkit-text-fill-color: var(--suite-panel-fg, var(--sm-text)) !important;
+    opacity: 1 !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item__text__title :is(.line, .clip-y, .char, span, div) {
+    overflow: visible !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+    min-height: 0.9em !important;
+  }
+
+  html body main .suites-collection-rail .mod-scroll__projects__item[data-suite-panel="ivory"] .mod-scroll__projects__item__text,
+  html body main .suites-collection-rail .mod-scroll__projects__item[data-suite-panel="ivory"] .mod-scroll__projects__item__text :is(div, span, a, p, h3, strong, em, .line, .char) {
+    color: #1c1917 !important;
+    -webkit-text-fill-color: #1c1917 !important;
+    opacity: 1 !important;
   }
 
   html body main .mod-scroll__projects .mod-scroll__projects__item .mod-scroll__projects__item__text a.btn {
@@ -1325,10 +1399,23 @@ const SM_COLLECTION_CSS = `
   }
 
   html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image {
-    width: auto !important;
-    margin-right: calc(var(--sm-pad) * -1) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     aspect-ratio: 4 / 5 !important;
-    max-height: min(80svh, 40rem) !important;
+    max-height: none !important;
+    height: auto !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    transform: none !important;
+    translate: none !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image :is(.media__wrap-source, .media__source, img) {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transform: none !important;
     border-radius: 0 !important;
   }
 
@@ -1653,7 +1740,8 @@ const SM_CLOSING_CSS = `
   }
 
   /* 13 · Mosaic in gold gutters. */
-  html body main .mod-media--mosaic {
+  html body main .mod-media--mosaic,
+  html.smr-on body main .mod-media--mosaic {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: var(--sm-gap) !important;
@@ -1665,11 +1753,42 @@ const SM_CLOSING_CSS = `
     background: var(--sm-gold) !important;
   }
 
-  html body main .mod-media--mosaic .mod-media__item {
+  html body main .mod-media--mosaic .media,
+  html body main .mod-media--mosaic .mod-media__item,
+  html.smr-on body main .mod-media--mosaic [data-smr],
+  html.smr-on body main .mod-media--mosaic [data-smr="frame"] {
+    --clipPath: 0% 0% 0% 0%;
+    --transY: 0% !important;
+    --scale: 1 !important;
     width: 100% !important;
     max-width: 100% !important;
     flex: none !important;
     aspect-ratio: 4 / 5 !important;
+    overflow: hidden !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    clip-path: none !important;
+    transform: none !important;
+    translate: none !important;
+    background: transparent !important;
+  }
+
+  html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .media__source, img) {
+    --transY: 0% !important;
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    aspect-ratio: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    clip-path: none !important;
+    transform: none !important;
+    object-fit: cover !important;
   }
 
   /* 14–16 · Life Upon / Nile / copy / availability on one shared stack. */
@@ -1872,6 +1991,53 @@ const SM_CLOSING_CSS = `
   html body .hathor-lux-footer-host {
     padding-bottom: calc(clamp(4.25rem, 18.4vw, 5rem) + 0.75rem + env(safe-area-inset-bottom, 0px)) !important;
   }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item > .mod-scroll__projects__item__content {
+    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
+  }
+
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image,
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image .media,
+  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image :is(.media__wrap-source, .media__source, img) {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  html body main .mod-scroll__images.secundario,
+  html body main .mod-scroll__projects .suites-collection-rail {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    scroll-snap-type: none !important;
+    width: 100% !important;
+    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
+  }
+
+  html body main .mod-scroll__images.secundario::after,
+  html body main .mod-scroll__projects .suites-collection-rail::after {
+    display: none !important;
+  }
+
+  html body main .suites-collection-rail > .mod-scroll__projects__item,
+  html body main .mod-scroll__images.secundario .flipMedia__media {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    scroll-snap-align: none !important;
+  }
+
+  html body main .smr-rail {
+    justify-content: flex-start !important;
+    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
+  }
 }
 `;
 
@@ -1911,7 +2077,6 @@ const FRAME_REVEALS = [
   ".suites-collection-rail .mod-scroll__projects__item__image",
   ".mod-scroll__projects > .mod-scroll__projects__item.last-item .mod-scroll__projects__item__image",
   ".mod-scroll__cierre__content__image",
-  ".mod-media--mosaic .mod-media__item",
 ] as const;
 
 function pad2(n: number) {
@@ -1919,9 +2084,36 @@ function pad2(n: number) {
   return String(value).padStart(2, "0");
 }
 
+function viewportWidth(doc: Document) {
+  const win = doc.defaultView;
+  if (!win) return 0;
+  let width = win.innerWidth;
+  try {
+    if (win.parent && win.parent !== win) {
+      width = Math.min(width || win.parent.innerWidth, win.parent.innerWidth);
+    }
+  } catch {
+    /* iframe may not read parent in rare hosts */
+  }
+  return width;
+}
+
+export function markSuitesViewportMode(doc: Document) {
+  const html = doc.documentElement;
+  const win = doc.defaultView as (Window & { is_mobile?: boolean }) | null;
+  const width = viewportWidth(doc);
+  const narrow = width > 0 && width <= NARROW_MAX;
+  const phone = width > 0 && width <= 480;
+  html.classList.toggle("hathor-suites-narrow", narrow);
+  html.classList.toggle("hathor-suites-phone", phone);
+  if (narrow) {
+    html.classList.add("mobile");
+    if (win) win.is_mobile = true;
+  }
+}
+
 function isNarrow(doc: Document) {
-  const width = doc.defaultView?.innerWidth ?? 0;
-  return width > 0 && width <= NARROW_MAX;
+  return viewportWidth(doc) > 0 && viewportWidth(doc) <= NARROW_MAX;
 }
 
 function prefersReducedMotion(doc: Document) {
@@ -1974,22 +2166,14 @@ function makeRail(doc: Document, total: number) {
   const sep = doc.createElement("span");
   sep.className = "smr-rail__sep";
   sep.setAttribute("aria-hidden", "true");
-  sep.textContent = "·";
+  sep.textContent = "/";
 
   const totalEl = doc.createElement("b");
   totalEl.setAttribute("data-smr-total", "1");
   totalEl.textContent = pad2(total);
 
   count.append(current, sep, totalEl);
-
-  const track = doc.createElement("span");
-  track.className = "smr-rail__track";
-  track.setAttribute("aria-hidden", "true");
-  const fill = doc.createElement("i");
-  track.append(fill);
-
-  rail.append(count, track);
-  rail.style.setProperty("--smr-progress", "0.25");
+  rail.append(count);
   return rail;
 }
 
@@ -2024,26 +2208,47 @@ function bindRail(scroller: HTMLElement, itemSelector: string) {
   scroller.after(rail);
 
   const update = () => {
-    const max = scroller.scrollWidth - scroller.clientWidth;
-    const progress = max <= 1 ? 1 : scroller.scrollLeft / max;
+    const style = doc.defaultView?.getComputedStyle(scroller);
+    const vertical =
+      style?.flexDirection === "column" ||
+      scroller.scrollWidth <= scroller.clientWidth + 2;
     let index = 1;
+    let progress = 1;
     if (items.length > 0) {
-      const left = scroller.getBoundingClientRect().left;
       let best = 0;
       let bestDist = Number.POSITIVE_INFINITY;
-      items.forEach((item, i) => {
-        const dist = Math.abs(item.getBoundingClientRect().left - left);
-        if (dist < bestDist) {
-          bestDist = dist;
-          best = i;
-        }
-      });
+      if (vertical) {
+        const view = scrollerRoot(doc);
+        const mark =
+          (view?.getBoundingClientRect().top ?? 0) +
+          (view?.clientHeight ?? doc.defaultView?.innerHeight ?? 0) * 0.38;
+        items.forEach((item, i) => {
+          const dist = Math.abs(item.getBoundingClientRect().top - mark);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        progress = (best + 1) / total;
+      } else {
+        const max = scroller.scrollWidth - scroller.clientWidth;
+        progress = max <= 1 ? 1 : scroller.scrollLeft / max;
+        const left = scroller.getBoundingClientRect().left;
+        items.forEach((item, i) => {
+          const dist = Math.abs(item.getBoundingClientRect().left - left);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+      }
       index = best + 1;
     }
     setRailProgress(rail, index, total, progress);
   };
 
   scroller.addEventListener("scroll", update, { passive: true });
+  scrollerRoot(doc)?.addEventListener("scroll", update, { passive: true });
   doc.defaultView?.addEventListener("resize", update);
   update();
   return rail;
@@ -2124,22 +2329,124 @@ function syncMotionClass(doc: Document) {
  * visible — that is why the CSS reveal is gated on html.smr-on.
  */
 export function layoutSuitesMobileScenes(doc: Document) {
+  markSuitesViewportMode(doc);
   const html = doc.documentElement;
   if (html.dataset.smrBound !== "1") {
     html.dataset.smrBound = "1";
     doc.defaultView?.addEventListener("resize", () => {
+      markSuitesViewportMode(doc);
       applyMobileScenes(doc);
     });
   }
   applyMobileScenes(doc);
 }
 
+type SuitesGsapWin = Window & {
+  is_mobile?: boolean;
+  gsap?: {
+    set?: (target: unknown, vars: Record<string, unknown>) => void;
+    killTweensOf?: (target: unknown) => void;
+  };
+  ScrollTrigger?: {
+    getAll?: () => Array<{
+      vars?: { pin?: unknown; containerAnimation?: unknown };
+      kill: () => void;
+    }>;
+    defaults?: (vars: Record<string, unknown>) => void;
+  };
+};
+
+function neutralizeDesktopHorizontalScroll(doc: Document) {
+  markSuitesViewportMode(doc);
+  const win = doc.defaultView as SuitesGsapWin | null;
+  if (!win) return;
+
+  win.is_mobile = true;
+  doc.documentElement.classList.add("mobile");
+
+  const scroll = doc.querySelector<HTMLElement>(".mod-scroll");
+  const lastItem = doc.querySelector<HTMLElement>(
+    ".mod-scroll__projects__item.last-item",
+  );
+  const lastImage = lastItem?.querySelector<HTMLElement>(
+    ".mod-scroll__projects__item__image",
+  );
+  const gsap = win.gsap;
+  if (gsap?.killTweensOf && gsap.set) {
+    if (scroll) {
+      gsap.killTweensOf(scroll);
+      gsap.set(scroll, { x: 0, y: 0, clearProps: "transform,x,y" });
+      scroll.querySelectorAll(":scope > *").forEach((el) => {
+        gsap.killTweensOf?.(el);
+        gsap.set?.(el, { x: 0, y: 0, clearProps: "transform,x,y,width" });
+      });
+    }
+    if (lastItem) {
+      gsap.killTweensOf(lastItem);
+      gsap.set(lastItem, { x: 0, width: "100%", clearProps: "transform,x,y" });
+    }
+    if (lastImage) {
+      gsap.killTweensOf(lastImage);
+      gsap.set(lastImage, {
+        x: 0,
+        y: 0,
+        width: "100%",
+        borderRadius: 0,
+        clearProps: "transform,x,y",
+      });
+    }
+    const pin = doc.querySelector(".mod-scroll__pin");
+    if (pin) {
+      gsap.killTweensOf(pin);
+      gsap.set(pin, { width: "100%", x: 0, clearProps: "transform" });
+    }
+  }
+
+  const triggers = win.ScrollTrigger?.getAll?.() ?? [];
+  triggers.forEach((st) => {
+    if (st.vars?.pin || st.vars?.containerAnimation) st.kill();
+  });
+
+  try {
+    win.ScrollTrigger?.defaults?.({ scroller: "#smooth-wrapper" });
+  } catch {
+    /* clone ScrollTrigger may not be ready yet */
+  }
+
+  const wrap = doc.querySelector<HTMLElement>("#smooth-wrapper");
+  wrap?.scrollTo({ left: 0, top: wrap.scrollTop });
+}
+
+function revealLazyMosaicImages(doc: Document) {
+  doc
+    .querySelectorAll<HTMLImageElement>(".mod-media--mosaic img")
+    .forEach((img) => {
+      const next =
+        img.getAttribute("data-lazy-src") ||
+        img.getAttribute("data-src") ||
+        img.getAttribute("src");
+      if (next && img.getAttribute("src") !== next) img.setAttribute("src", next);
+      img.removeAttribute("data-lazy-src");
+      img.classList.remove("lazyload", "lazyloading");
+      img.classList.add("lazyloaded");
+      img.style.opacity = "1";
+      img.style.visibility = "visible";
+      img.style.top = "0";
+      img.style.transform = "none";
+    });
+}
+
 function applyMobileScenes(doc: Document) {
+  markSuitesViewportMode(doc);
   const html = doc.documentElement;
   if (!isNarrow(doc)) {
     html.classList.remove("smr-on");
     return;
   }
+
+  layoutSuitesCollectionRail(doc);
+  neutralizeDesktopHorizontalScroll(doc);
+  revealLazyMosaicImages(doc);
 
   if (html.dataset.smrTagged !== "1") {
     tagReveals(doc);

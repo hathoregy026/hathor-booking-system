@@ -34,7 +34,7 @@ export function buildSuitesReferenceHeroMarkup(
 
   return `
   <div class="srh-canvas">
-    <p class="srh-kicker" aria-hidden="true">Our suites<br>present comfort</p>
+    <p class="srh-kicker" aria-hidden="true"><span class="srh-kicker--desk">Nile dahabiya<br>suites</span><span class="srh-kicker--phone">Nile dahabiya suites</span></p>
 
     <figure class="srh-frame srh-frame--portrait">
       <img
@@ -169,6 +169,20 @@ html body main .mod-scroll__intro.suites-reference-hero > .wrapper {
   font-size: clamp(3rem, 4.2vw, 4.65rem);
   line-height: .88;
   animation: srh-copy-arrive .9s .08s cubic-bezier(.22,.78,.19,1) both;
+}
+
+.srh-kicker--phone {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .srh-kicker--desk {
+    display: none !important;
+  }
+  .srh-kicker--phone {
+    display: block !important;
+    white-space: nowrap;
+  }
 }
 
 .srh-frame--portrait {
@@ -871,8 +885,9 @@ export function mountSuitesReferenceHero(
     wrapper.innerHTML = buildSuitesReferenceHeroMarkup(images);
   } else {
     const kicker = wrapper.querySelector(".srh-kicker");
-    if (kicker && kicker.innerHTML !== "Our suites<br>present comfort") {
-      kicker.innerHTML = "Our suites<br>present comfort";
+    if (kicker) {
+      kicker.innerHTML =
+        '<span class="srh-kicker--desk">Nile dahabiya<br>suites</span><span class="srh-kicker--phone">Nile dahabiya suites</span>';
     }
     if (images) {
       // Canvas already baked into the clone — still stamp live URLs so the

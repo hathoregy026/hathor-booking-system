@@ -25,6 +25,7 @@ import {
 } from "@/lib/suites-clone-layout-fix";
 import {
   layoutSuitesMobileScenes,
+  markSuitesViewportMode,
   SUITES_MOBILE_DESIGN_CSS,
 } from "@/lib/suites-mobile-design";
 import {
@@ -434,7 +435,16 @@ function fitTermsToViewport(doc: Document) {
 
 function refreshSuitesHorizontalScroll(doc: Document) {
   const win = doc.defaultView;
-  if (!win || win.innerWidth <= 1024) return;
+  if (!win) return;
+  let width = win.innerWidth;
+  try {
+    if (win.parent && win.parent !== win) {
+      width = Math.min(width || win.parent.innerWidth, win.parent.innerWidth);
+    }
+  } catch {
+    /* same-origin iframe */
+  }
+  if (width <= 1024) return;
 
   const host = doc.body ?? doc.documentElement;
   if (!host) return;
@@ -494,6 +504,7 @@ function prepareSuitesReferenceHero(
   }
 
   doc.documentElement.dataset.publicTheme = theme;
+  markSuitesViewportMode(doc);
 
   if (!doc.getElementById("hathor-font-faces")) {
     const fonts = doc.createElement("link");
@@ -700,6 +711,8 @@ export function SuitesNormalHomepagePage({
       // Wait for the clone's own boot (restInit → ScrollTrigger.refresh) so
       // that refresh happens while the iframe is still opacity:0.
       await waitForCloneBoot(doc);
+      layoutSuitesCollectionRail(doc);
+      layoutSuitesMobileScenes(doc);
 
       try {
         const data = await Promise.race([
@@ -709,6 +722,7 @@ export function SuitesNormalHomepagePage({
           }),
         ]);
         await softApplyConfig(doc, cms, data);
+        layoutSuitesMobileScenes(doc);
       } catch {
         /* Clip-fix still applies if CMS is unreachable. */
       }
@@ -726,7 +740,11 @@ export function SuitesNormalHomepagePage({
 
       // Late config may still arrive; soft-apply only, no layout re-seat.
       void loadSuitesConfig()
-        .then((data) => softApplyConfig(doc, cms, data))
+        .then((data) =>
+          softApplyConfig(doc, cms, data).then(() => {
+            layoutSuitesMobileScenes(doc);
+          }),
+        )
         .catch(() => undefined);
     } finally {
       applyLockRef.current = false;
@@ -801,7 +819,7 @@ export function SuitesNormalHomepagePage({
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-suites-phone-readapt-20260909d"
+        src="/suites-normal/index.html?v=hathor-suites-phone-vertical-20260912b"
         title="Hathor Suites"
         onLoad={() => {
           void apply();

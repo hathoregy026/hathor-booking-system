@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
        
         // if(control) console.log('resize');
         is_lg = (window.innerWidth<=1024);
-        is_mobile = (window.innerWidth<=1024);
+        is_mobile = (typeof hathorSuitesIsMobile === "function") ? hathorSuitesIsMobile() : (window.innerWidth<=1024);
         // if(control) console.log('is_lg: ',is_lg);
 
         /*

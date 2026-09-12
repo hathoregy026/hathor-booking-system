@@ -1,6 +1,44 @@
 <!DOCTYPE html><html lang="es"><head><base href="/suites-normal/">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script>
+	(function () {
+	  var w = window.innerWidth;
+	  try {
+	    if (window.parent && window.parent !== window) w = Math.min(w || window.parent.innerWidth, window.parent.innerWidth);
+	  } catch (e) {}
+	  var html = document.documentElement;
+	  if (w <= 1024) {
+	    html.classList.add("hathor-suites-narrow", "mobile");
+	    window.is_mobile = true;
+	  }
+	  if (w <= 480) html.classList.add("hathor-suites-phone");
+	})();
+	</script>
+	<style id="hathor-suites-phone-vertical">
+	html.hathor-suites-narrow,
+	html.hathor-suites-narrow body,
+	html.hathor-suites-narrow #smooth-wrapper,
+	html.hathor-suites-narrow #smooth-content {
+	  overflow-x: hidden !important;
+	  max-width: 100% !important;
+	  width: 100% !important;
+	}
+	html.hathor-suites-narrow main .mod-scroll {
+	  display: block !important;
+	  width: 100% !important;
+	  max-width: 100% !important;
+	  transform: none !important;
+	}
+	html.hathor-suites-phone,
+	html.hathor-suites-phone body,
+	html.hathor-suites-phone #smooth-wrapper,
+	html.hathor-suites-phone main {
+	  overflow-x: hidden !important;
+	  overscroll-behavior-x: none !important;
+	  touch-action: pan-y;
+	}
+	</style>
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 
 	<link rel="preload" href="assets/fonts/editorialnew-regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
@@ -799,7 +837,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
     <div class="wrapper">
 
   <div class="srh-canvas">
-    <p class="srh-kicker" aria-hidden="true">Our suites<br>present comfort</p>
+    <p class="srh-kicker" aria-hidden="true"><span class="srh-kicker--desk">Nile dahabiya<br>suites</span><span class="srh-kicker--phone">Nile dahabiya suites</span></p>
 
     <figure class="srh-frame srh-frame--portrait">
       <img
@@ -1689,12 +1727,12 @@ var wpcf7 = {
 //# sourceURL=contact-form-7-js-before
 </script>
 <script id="contact-form-7-js" src="scripts/vendor/contact-form.js"></script>
-<script id="root-js-js" src="scripts/root.js"></script>
+<script id="root-js-js" src="scripts/root.js?v=hathor-suites-phone-vertical-20260912"></script>
 <script id="rollovers-js-js" src="scripts/rollovers.js"></script>
 <script id="animations-js-js" src="scripts/animations.js?v=hathor-footer-segments-20260901"></script>
 <script id="clicks-js-js" src="scripts/clicks.js"></script>
-<script id="scroll-js-js" src="scripts/scroll.js?v=hathor-suites-horizon-fix-20260911c"></script>
-<script id="main-js-js" src="scripts/main.js?v=hathor-suites-boot-20260907b"></script>
+<script id="scroll-js-js" src="scripts/scroll.js?v=hathor-suites-phone-vertical-20260912"></script>
+<script id="main-js-js" src="scripts/main.js?v=hathor-suites-phone-vertical-20260912"></script>
 <script>window.lazyLoadOptions = {
                 elements_selector: "iframe[data-lazy-src]",
                 data_src: "lazy-src",

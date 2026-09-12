@@ -1,7 +1,19 @@
 let control = false;
 ///is_mobile
-let is_mobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-if(window.innerWidth<=1024) is_mobile = true;
+function hathorSuitesIsMobile() {
+  let mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (window.innerWidth <= 1024) mobile = true;
+  try {
+    if (window.matchMedia && window.matchMedia("(max-width: 1024px)").matches) mobile = true;
+    if (window.parent && window.parent !== window && window.parent.innerWidth <= 1024) mobile = true;
+  } catch (err) {}
+  return mobile;
+}
+let is_mobile = hathorSuitesIsMobile();
+if (is_mobile) document.documentElement.classList.add("hathor-suites-narrow", "mobile");
+if (Math.min(window.innerWidth, (function(){ try { return window.parent !== window ? window.parent.innerWidth : window.innerWidth; } catch(e){ return window.innerWidth; } })()) <= 480) {
+  document.documentElement.classList.add("hathor-suites-phone");
+}
 // is_mobile = false;
 
 //get browser

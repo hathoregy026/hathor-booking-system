@@ -200,8 +200,10 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     min-width: 0;
   }
 
-  html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item {
-    width: 60vw;
+  @media (min-width: 1025px) {
+    html body main .mod-scroll__projects > .mod-scroll__projects__item.last-item {
+      width: 60vw;
+    }
   }
 
   html body main .mod-scroll__projects .last-item__content__title .line,
@@ -417,11 +419,26 @@ function unwrapSuitesCollectionRail(projects: Element) {
  * home-3-style horizontal snap rail for phone/tablet only. Desktop must
  * keep the clone's in-flow siblings so last-item can grow 15vw → 60vw → 42.5vw.
  */
+function suitesParentAwareWidth(doc: Document) {
+  const win = doc.defaultView;
+  if (!win) return 0;
+  let width = win.innerWidth;
+  try {
+    if (win.parent && win.parent !== win) {
+      width = Math.min(width || win.parent.innerWidth, win.parent.innerWidth);
+    }
+  } catch {
+    /* same-origin iframe */
+  }
+  return width;
+}
+
 export function layoutSuitesCollectionRail(doc: Document) {
   const projects = doc.querySelector(".mod-scroll__projects");
   if (!projects) return;
 
-  const isDesktop = (doc.defaultView?.innerWidth ?? 1440) > 1024;
+  const width = suitesParentAwareWidth(doc);
+  const isDesktop = (width || doc.defaultView?.innerWidth || 1440) > 1024;
   if (isDesktop) {
     unwrapSuitesCollectionRail(projects);
     return;
