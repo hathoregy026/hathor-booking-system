@@ -2156,7 +2156,6 @@ html[data-public-theme="night"] :is(
    #ece8df behind a `:not(#_)` lift, so night needs the lift twice. */
 html[data-public-theme="night"]:not(:has(.home-four)) :is(
     .hathor-phone-dock,
-    .hathor-phone-dock .public-lang-menu,
     .hathor-phone-dock .public-lang-notice
   ):not(#_):not(#_) {
   background-color: var(--night-panel) !important;

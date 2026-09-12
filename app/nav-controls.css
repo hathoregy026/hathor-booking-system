@@ -2030,10 +2030,12 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
+    background-color: transparent !important;
     background-image: none !important;
     box-shadow: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+    /* Closed stack still occupies height — never paint that slab. */
+    opacity: 0 !important;
+    visibility: hidden !important;
     transform: translate3d(-50%, 0, 0) !important;
     transform-origin: bottom center !important;
     pointer-events: none !important;
@@ -2044,7 +2046,15 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 
   .hathor-phone-dock .public-lang-menu.is-open {
+    opacity: 1 !important;
+    visibility: visible !important;
     pointer-events: auto !important;
+  }
+
+  html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu:not(#_):not(#_) {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
   }
 
   .hathor-phone-dock .public-lang-menu::before,
