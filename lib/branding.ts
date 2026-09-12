@@ -67,21 +67,14 @@ export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-hero-nile-promo-v20260811.mp4";
 
 /**
- * Homepage hero reel — phones only (≤480px). 720×720 encode.
- * Desktop and tablet must never load this file; they use HATHOR_HERO_VIDEO_SRC
- * (1920×1080). Do not list both as <source media> siblings — browsers that
- * ignore media on video sources will pick this square file first and it looks
- * zoomed and pixelated on a landscape stage.
+ * LOCKED — phone homepage hero reel. Do not change this path.
+ * File: public/media/hathor/videos/phone hero videoi.mp4
+ * Phones only (≤480px). Desktop/tablet use HATHOR_HERO_VIDEO_SRC.
+ * Never list both as <source media> siblings. Never swap this for the
+ * desktop promo, Bar reel, or a new encode unless the user names a new file.
  */
 export const HATHOR_HERO_VIDEO_PHONE_SRC =
   "/media/hathor/videos/phone%20hero%20videoi.mp4";
-
-/**
- * First frame for the phone hero reel. Desktop keeps CMS `home-hero-poster`.
- * Matches the /hero-1 experiment so the yacht still is visible before play.
- */
-export const HATHOR_HERO_VIDEO_PHONE_POSTER =
-  "/media/hathor/optimized/home-amenities-1.webp";
 
 /** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
 export const HATHOR_HERO_POSTER_SRC = HATHOR_MEDIA.heroHomepage;

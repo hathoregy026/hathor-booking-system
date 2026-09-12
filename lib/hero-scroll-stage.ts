@@ -78,8 +78,26 @@ export function mountHeroScrollStage({
   };
 
   const logoMark = hero.querySelector(".hero-logo-mark");
-  const lineRight = hero.querySelector(".hero-line--right");
-  const lineLeft = hero.querySelector(".hero-line--left");
+  /*
+   * Phone home-3 overlay title: CSS holds it, then opposite-x fade.
+   * Scope the lines so hidden desktop `.hero-content` is never mixed in.
+   */
+  const overlayTitle = hero.querySelector(".hero-one-title");
+  const usePhoneOverlayTitle =
+    Boolean(overlayTitle) &&
+    Boolean(hero.closest(".home-three-hero")) &&
+    window.matchMedia("(max-width: 480px)").matches;
+  const lineRights = (
+    usePhoneOverlayTitle && overlayTitle
+      ? Array.from(overlayTitle.querySelectorAll(".hero-line--right"))
+      : [hero.querySelector(".hero-content .hero-line--right")]
+  ).filter(Boolean);
+  const lineLefts = (
+    usePhoneOverlayTitle && overlayTitle
+      ? Array.from(overlayTitle.querySelectorAll(".hero-line--left"))
+      : [hero.querySelector(".hero-content .hero-line--left")]
+  ).filter(Boolean);
+  const hasTitleLines = lineRights.length > 0 || lineLefts.length > 0;
   /* HTMLElement (not Element) — the CTA width is driven via .style custom props. */
   const cta = hero.querySelector<HTMLElement>(".hero-cta");
   const ctaText = hero.querySelector(".hero-cta-text");
@@ -120,12 +138,8 @@ export function mountHeroScrollStage({
   }
 
   /* Hold main hero titles until the delayed land rise — do not touch logo / CTA. */
-  if (
-    !skipLanding &&
-    !prefersReduced &&
-    (lineRight || lineLeft)
-  ) {
-    gsap.set([lineRight, lineLeft].filter(Boolean), {
+  if (!skipLanding && !prefersReduced && hasTitleLines && !usePhoneOverlayTitle) {
+    gsap.set([...lineRights, ...lineLefts], {
       y: TITLE_LAND_FROM_Y,
       opacity: 0,
       force3D: true,
@@ -188,8 +202,7 @@ export function mountHeroScrollStage({
   let disposed = false;
   let titleExitAttached = false;
 
-  const getTitleLines = () =>
-    [lineRight, lineLeft].filter(Boolean) as Element[];
+  const getTitleLines = () => [...lineRights, ...lineLefts];
 
   const clearTitleFailsafe = () => {
     if (titleFailsafeId) {
@@ -203,11 +216,11 @@ export function mountHeroScrollStage({
     tl: gsap.core.Timeline,
     opts: { travel: number; duration: number; at?: number },
   ) => {
-    if (!titlesLanded) return;
+    if (!titlesLanded || usePhoneOverlayTitle) return;
     const at = opts.at ?? 0;
-    if (lineRight) {
+    if (lineRights.length) {
       tl.fromTo(
-        lineRight,
+        lineRights,
         { x: 0, y: 0, opacity: 1 },
         {
           x: opts.travel,
@@ -215,13 +228,14 @@ export function mountHeroScrollStage({
           ease: "none",
           duration: opts.duration,
           immediateRender: false,
+          force3D: true,
         },
         at,
       );
     }
-    if (lineLeft) {
+    if (lineLefts.length) {
       tl.fromTo(
-        lineLeft,
+        lineLefts,
         { x: 0, y: 0, opacity: 1 },
         {
           x: -opts.travel,
@@ -229,6 +243,7 @@ export function mountHeroScrollStage({
           ease: "none",
           duration: opts.duration,
           immediateRender: false,
+          force3D: true,
         },
         at,
       );
@@ -242,7 +257,7 @@ export function mountHeroScrollStage({
     titleLandTween = null;
     clearTitleFailsafe();
     const lines = getTitleLines();
-    if (lines.length) {
+    if (lines.length && !usePhoneOverlayTitle) {
       gsap.set(lines, { y: 0, opacity: 1, clearProps: "transform" });
     }
     const wasLanded = titlesLanded;
@@ -314,8 +329,10 @@ export function mountHeroScrollStage({
     if (chrome.length) {
       gsap.set(chrome, { opacity: 1, y: 0, clearProps: "transform" });
     }
-    if (lineRight) gsap.set(lineRight, { x: 0, opacity: 1, clearProps: "transform" });
-    if (lineLeft) gsap.set(lineLeft, { x: 0, opacity: 1, clearProps: "transform" });
+    if (!usePhoneOverlayTitle) {
+      if (lineRights.length) gsap.set(lineRights, { x: 0, opacity: 1, clearProps: "transform" });
+      if (lineLefts.length) gsap.set(lineLefts, { x: 0, opacity: 1, clearProps: "transform" });
+    }
     if (kicker) gsap.set(kicker, { opacity: 1, y: 0 });
     if (sub) gsap.set(sub, { opacity: 1, y: 0 });
     if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
@@ -463,13 +480,15 @@ export function mountHeroScrollStage({
     killByPrefix("hero-stage");
     titleExitAttached = false;
 
-    if (titlesLanded) {
-      if (lineRight) gsap.set(lineRight, { x: 0, opacity: 1, clearProps: "transform" });
-      if (lineLeft) gsap.set(lineLeft, { x: 0, opacity: 1, clearProps: "transform" });
-    } else {
-      /* Preserve delayed title land (y/opacity); only reset scrub x. */
-      if (lineRight) gsap.set(lineRight, { x: 0 });
-      if (lineLeft) gsap.set(lineLeft, { x: 0 });
+    if (!usePhoneOverlayTitle) {
+      if (titlesLanded) {
+        if (lineRights.length) gsap.set(lineRights, { x: 0, opacity: 1, clearProps: "transform" });
+        if (lineLefts.length) gsap.set(lineLefts, { x: 0, opacity: 1, clearProps: "transform" });
+      } else {
+        /* Preserve delayed title land (y/opacity); only reset scrub x. */
+        if (lineRights.length) gsap.set(lineRights, { x: 0 });
+        if (lineLefts.length) gsap.set(lineLefts, { x: 0 });
+      }
     }
     if (kicker) gsap.set(kicker, { opacity: 1, y: 0 });
     if (sub) gsap.set(sub, { opacity: 1, y: 0 });
@@ -665,7 +684,7 @@ export function mountHeroScrollStage({
        * Logo land runs after build (playLanding) — do not force visible here
        * or letters flash before the rise. Scrub = title exit + Book Now stretch.
        */
-      if (lineRight || lineLeft) {
+      if (hasTitleLines && !usePhoneOverlayTitle) {
         appendTitleExitTweens(tl, {
           travel: titleTravel,
           duration: 0.55,
@@ -762,7 +781,7 @@ export function mountHeroScrollStage({
         },
         0.1,
       );
-      if (lineRight || lineLeft) {
+      if (hasTitleLines) {
         appendTitleExitTweens(tl, {
           travel: titleTravel,
           duration: 0.5,
@@ -855,7 +874,7 @@ export function mountHeroScrollStage({
         0,
       );
 
-      if (lineRight || lineLeft) {
+      if (hasTitleLines) {
         appendTitleExitTweens(tl, {
           travel: titleTravel,
           duration: 1,
@@ -979,7 +998,7 @@ export function mountHeroScrollStage({
 
   /*
    * Phone: video-only hero (no strips). Land logo on load like desktop —
-   * scrub only drives Book Now + soft title exit (not a second logo rise).
+   * overlay titles hold, then timed opposite-x fade (not scroll-scrub).
    */
   let rafId = 0;
   let rafIdInner = 0;
@@ -1143,7 +1162,7 @@ export function mountHeroScrollStage({
     titleLandTween?.kill();
     /* Never leave hero lines stuck at opacity:0 after a remount/cleanup race. */
     const lines = getTitleLines();
-    if (lines.length) {
+    if (lines.length && !usePhoneOverlayTitle) {
       gsap.set(lines, { y: 0, opacity: 1, clearProps: "transform" });
     }
     killByPrefix("hero-stage");

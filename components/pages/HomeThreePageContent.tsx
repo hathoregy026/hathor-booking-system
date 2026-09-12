@@ -359,7 +359,7 @@ export function HomeThreePageContent({
 
   return (
     <>
-      {/* Homepage hero stage. Phone uses the /hero-1 overlay on the phone reel,
+      {/* Homepage hero stage. Phone uses the overlay titles on the phone reel,
           fitted to the first-viewport box above the dock. Tablet keeps the
           framed film treatment; desktop choreography is unchanged. */}
       <div className="ex-root" data-hathor-logo-tuned="">

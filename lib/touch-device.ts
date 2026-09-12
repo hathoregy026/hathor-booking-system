@@ -8,6 +8,8 @@
 export const TOUCH_DEVICE_CLASS = "is-touch-device";
 export const PHONE_VIEWPORT_MAX = 480;
 export const PHONE_VIEWPORT_MQ = `(max-width: ${PHONE_VIEWPORT_MAX}px)`;
+/** Set on <html> before paint so the homepage can attach the phone hero reel. */
+export const PHONE_VIEWPORT_ATTR = "data-hathor-phone-vp";
 
 /** Coarse pointer = primary input is touch (phones, most tablets). */
 export function isTouchDevice(): boolean {
@@ -37,6 +39,41 @@ export function shouldLightenMotionForDevice(): boolean {
 export function isPhoneViewport(): boolean {
   if (typeof window === "undefined") return false;
   return window.matchMedia(PHONE_VIEWPORT_MQ).matches;
+}
+
+/**
+ * Phone hero video gate. Reads the blocking-script flag plus layout width so
+ * DevTools / Safari quirks cannot attach the desktop 1920 promo at ≤480px.
+ */
+export function isPhoneHeroVideoViewport(): boolean {
+  if (typeof window === "undefined") return false;
+  const mediaPhone = window.matchMedia(PHONE_VIEWPORT_MQ).matches;
+  const layoutPhone =
+    window.innerWidth <= PHONE_VIEWPORT_MAX ||
+    (typeof document !== "undefined" &&
+      document.documentElement.clientWidth <= PHONE_VIEWPORT_MAX);
+  /* Live width wins over a stale boot attribute after a desktop resize. */
+  if (!mediaPhone && !layoutPhone) return false;
+  if (
+    typeof document !== "undefined" &&
+    document.documentElement.getAttribute(PHONE_VIEWPORT_ATTR) === "1"
+  ) {
+    return true;
+  }
+  return mediaPhone || layoutPhone;
+}
+
+export function applyPhoneViewportAttr(): void {
+  if (typeof document === "undefined" || typeof window === "undefined") return;
+  const phone =
+    window.matchMedia(PHONE_VIEWPORT_MQ).matches ||
+    window.innerWidth <= PHONE_VIEWPORT_MAX ||
+    document.documentElement.clientWidth <= PHONE_VIEWPORT_MAX;
+  if (phone) {
+    document.documentElement.setAttribute(PHONE_VIEWPORT_ATTR, "1");
+  } else {
+    document.documentElement.removeAttribute(PHONE_VIEWPORT_ATTR);
+  }
 }
 
 /** Phone + tablet viewport band. Desktop begins strictly above 1024px. */
@@ -140,7 +177,7 @@ export function getTouchDeviceBlockingScript(): string {
    * React hydration (body is a React-owned node). TouchDeviceBootstrap mirrors
    * the class onto body after mount. html already has suppressHydrationWarning.
    */
-  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
+  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");}var w=window.innerWidth||d.clientWidth||0;var phoneVp=(m&&m("${PHONE_VIEWPORT_MQ}").matches)||w<=${PHONE_VIEWPORT_MAX};if(phoneVp){d.setAttribute("${PHONE_VIEWPORT_ATTR}","1");}else{d.removeAttribute("${PHONE_VIEWPORT_ATTR}");}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
 }
 
 export function lenisMobileSafeOptions(duration: number) {

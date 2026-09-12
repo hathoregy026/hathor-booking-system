@@ -9,9 +9,13 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import {
   HATHOR_HERO_VIDEO_SRC,
   HATHOR_HERO_VIDEO_PHONE_SRC,
-  HATHOR_HERO_VIDEO_PHONE_POSTER,
 } from "@/lib/branding";
-import { isPhoneViewport, logPhonePerfDev, PHONE_VIEWPORT_MQ } from "@/lib/touch-device";
+import {
+  applyPhoneViewportAttr,
+  isPhoneHeroVideoViewport,
+  logPhonePerfDev,
+  PHONE_VIEWPORT_MQ,
+} from "@/lib/touch-device";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
 import { usePublicSiteHeroMotion } from "@/hooks/usePublicSiteHeroMotion";
@@ -182,7 +186,8 @@ export function PublicSiteHero({
     }
 
     const apply = () => {
-      const phone = isPhoneViewport();
+      applyPhoneViewportAttr();
+      const phone = isPhoneHeroVideoViewport();
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (reduced) {
@@ -230,9 +235,11 @@ export function PublicSiteHero({
     const reducedMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     phoneMq.addEventListener("change", apply);
     reducedMq.addEventListener("change", apply);
+    window.addEventListener("resize", apply);
     return () => {
       phoneMq.removeEventListener("change", apply);
       reducedMq.removeEventListener("change", apply);
+      window.removeEventListener("resize", apply);
     };
   }, [playVideo]);
 
@@ -259,6 +266,18 @@ export function PublicSiteHero({
       void video.play().catch(() => {});
     };
 
+    const isPhoneReel = source === HATHOR_HERO_VIDEO_PHONE_SRC;
+
+    const forcePhoneReelIfDesktopLeaked = () => {
+      if (!isPhoneHeroVideoViewport()) return;
+      const attr = video.getAttribute("src") || "";
+      const current = video.currentSrc || attr;
+      if (attr.includes("phone") || current.includes("phone")) return;
+      video.src = HATHOR_HERO_VIDEO_PHONE_SRC;
+      video.load();
+      tryPlay();
+    };
+
     const startVideo = () => {
       if (started) return;
       started = true;
@@ -272,7 +291,8 @@ export function PublicSiteHero({
         connection?.saveData === true ||
         connection?.effectiveType === "slow-2g" ||
         connection?.effectiveType === "2g";
-      if (slow) return;
+      /* Phone reel is ~4MB — never leave the temple poster up on save-data. */
+      if (slow && !isPhoneReel) return;
 
       /*
        * Never reassign `src` after <source>/autoPlay has already selected a
@@ -283,6 +303,11 @@ export function PublicSiteHero({
       }
       tryPlay();
     };
+
+    video.addEventListener("loadedmetadata", forcePhoneReelIfDesktopLeaked);
+    cleanups.push(() => {
+      video.removeEventListener("loadedmetadata", forcePhoneReelIfDesktopLeaked);
+    });
 
     const onVisibility = () => {
       if (document.hidden) pauseVideo();
@@ -347,8 +372,8 @@ export function PublicSiteHero({
 
     const root = document.documentElement;
     /*
-     * Phone uses the dedicated 720×720 reel and must not sit on the desktop
-     * temple poster. Start it as soon as the source is attached — same as /hero-1.
+     * Phone uses the dedicated 720×960 reel and must start as soon as the
+     * source is attached. Poster is the desktop CMS still.
      * Desktop keeps the deferred idle start so the 26MB promo does not fight LCP.
      */
     if (source === HATHOR_HERO_VIDEO_PHONE_SRC) {
@@ -401,21 +426,17 @@ export function PublicSiteHero({
       data-site-image={posterImageName}
       className={`home-hero-container${applyGoldTint ? " hero-gold-tint" : ""}${
         playVideo ? " home-hero--clear-video" : ""
-      }${responsiveVideoFrame ? " home-hero--responsive-video-frame" : ""}`}
+      }${responsiveVideoFrame ? " home-hero--responsive-video-frame" : ""}${
+        heroVideoPlaying ? " is-hero-video-playing" : ""
+      }`}
       aria-label="Hero"
     >
       <div className="hero-media">
         <picture>
-          {playVideo ? (
-            <source
-              media="(max-width: 480px)"
-              srcSet={HATHOR_HERO_VIDEO_PHONE_POSTER}
-            />
-          ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element -- CMS hero still / video poster */}
           <img
             src={heroPoster.src}
-            srcSet={heroPoster.srcSet}
+            srcSet={playVideo ? undefined : heroPoster.srcSet}
             sizes={heroPoster.sizes}
             alt={heroImage.alt}
             decoding="async"
@@ -427,16 +448,15 @@ export function PublicSiteHero({
             key={heroVideoSrc}
             ref={heroVideoRef}
             src={heroVideoSrc}
-            poster={
-              heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC
-                ? HATHOR_HERO_VIDEO_PHONE_POSTER
-                : heroPoster.src
-            }
+            poster={heroPoster.src}
             autoPlay
             loop
             muted
             playsInline
             preload={heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC ? "auto" : "none"}
+            data-hathor-phone-hero={
+              heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC ? "locked" : undefined
+            }
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
             onPlay={() => setHeroVideoPlaying(true)}
             onPause={() => setHeroVideoPlaying(false)}
@@ -455,17 +475,11 @@ export function PublicSiteHero({
           <div className="hero-responsive-video-frame" aria-hidden="true" />
           <div className="hero-one-stage">
             <div className="hero-one-copy">
-              <p className="hero-one-eyebrow">A private world on the Nile</p>
               <h1 className="hero-one-title">
-                <span><span>A world</span></span>
-                <span><span>beyond</span></span>
-                <span><span>time.</span></span>
+                <span className="hero-line hero-line--right"><span>A world</span></span>
+                <span className="hero-line hero-line--left hero-line--plain"><span>beyond</span></span>
+                <span className="hero-line hero-line--right"><span>time.</span></span>
               </h1>
-              <p className="hero-one-note">
-                Ancient waters. Unhurried days.
-                <br />
-                The rare pleasure of simply being.
-              </p>
             </div>
             <p className="hero-one-location">
               LUXOR <span /> ASWAN

@@ -4,6 +4,10 @@
 
 Never recreate `_local/hathor-phone/HathorPhone.tsx`, never run a local server on port 3847 for the keyboard typing demo, and never restore that tool from old chats. It was nuclear-deleted on purpose. Keep the poison-pill file `_local/hathor-phone`. Do not confuse this with the real `.hathor-phone-dock` UI. See `.cursor/rules/no-hathor-phone-showoff.mdc`.
 
+## LOCKED — phone homepage hero video
+
+Never swap `HATHOR_HERO_VIDEO_PHONE_SRC` (`/media/hathor/videos/phone hero videoi.mp4`). Phone (≤480px) always plays that reel. Desktop/tablet keep `HATHOR_HERO_VIDEO_SRC`. See `.cursor/rules/phone-hero-video-locked.mdc`.
+
 ## LuxuryHathor design skill
 
 When the user says `luxuryhathor`, `LuxuryHathor`, `/luxuryhathor`, "match About and Contact," or asks for the Hathor editorial design DNA, load and follow the canonical project skill:

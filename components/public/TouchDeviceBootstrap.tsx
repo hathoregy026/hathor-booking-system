@@ -4,9 +4,11 @@ import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
+  applyPhoneViewportAttr,
   applyTouchDeviceClass,
   bindViewportHeightVar,
   isTouchDevice,
+  PHONE_VIEWPORT_MQ,
 } from "@/lib/touch-device";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
@@ -61,15 +63,19 @@ function bindDebouncedScrollTriggerRefresh(debounceMs = 200): () => void {
 export function TouchDeviceBootstrap() {
   useEffect(() => {
     applyTouchDeviceClass();
+    applyPhoneViewportAttr();
 
     gsap.registerPlugin(ScrollTrigger);
     const win = window as WindowWithScrollTrigger;
     win.ScrollTrigger = ScrollTrigger;
 
     const onPointerChange = () => applyTouchDeviceClass();
+    const onPhoneVpChange = () => applyPhoneViewportAttr();
     ensurePublicScrollController();
     const mq = window.matchMedia("(pointer: coarse)");
+    const phoneMq = window.matchMedia(PHONE_VIEWPORT_MQ);
     mq.addEventListener?.("change", onPointerChange);
+    phoneMq.addEventListener?.("change", onPhoneVpChange);
 
     const unbindVh = bindViewportHeightVar();
     /* Route refreshes through coordinator to avoid active-scroll refreshes. */
@@ -77,6 +83,7 @@ export function TouchDeviceBootstrap() {
 
     return () => {
       mq.removeEventListener?.("change", onPointerChange);
+      phoneMq.removeEventListener?.("change", onPhoneVpChange);
       unbindVh();
       unbindSt();
     };

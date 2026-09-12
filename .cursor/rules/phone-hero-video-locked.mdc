@@ -1,0 +1,37 @@
+---
+description: Phone homepage hero video is locked; never swap the reel
+alwaysApply: true
+---
+
+# LOCKED — phone homepage hero video
+
+The public homepage phone hero (≤480px) must always play this exact file:
+
+`HATHOR_HERO_VIDEO_PHONE_SRC` → `/media/hathor/videos/phone hero videoi.mp4`  
+(`public/media/hathor/videos/phone hero videoi.mp4`)
+
+This is the **phone reel**. It is not the desktop promo (`hathor-hero-nile-promo-v20260811.mp4`), not the Bar/amenities reel, and not a poster-only fallback when this MP4 exists.
+
+## Hard forbid
+
+Do **not**, unless the user names a **new phone encode file** in the same message:
+
+1. Change `HATHOR_HERO_VIDEO_PHONE_SRC` in `lib/branding.ts`
+2. Point the phone hero at the desktop MP4, a CDN stand-in, or another slot
+3. List desktop + phone as `<source media>` siblings on one `<video>`
+4. “Fix” phone by serving the temple/desktop promo because a frame looks similar
+5. Treat a missing/odd filename (spaces in `phone hero videoi.mp4`) as a reason to swap files
+
+## Required wiring
+
+- Phone (≤480px, also `window.innerWidth <= 480` / `data-hathor-phone-vp`): `HATHOR_HERO_VIDEO_PHONE_SRC`
+- Tablet and desktop: `HATHOR_HERO_VIDEO_SRC`
+- Phone preload/poster is the same CMS `home-hero-poster` as desktop. Do not let the poster replace the phone MP4.
+
+## Touch points
+
+- `lib/branding.ts` — `HATHOR_HERO_VIDEO_PHONE_SRC`
+- `components/pages/PublicSiteHero.tsx`
+- `components/pages/home-four/HomeFourHero.tsx`
+
+If asked to “edit the phone video”, keep this reel and only change overlay, crop, or playback behavior.

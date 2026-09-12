@@ -3991,6 +3991,24 @@ figure) {
    Homepage navigation, copy, reel sources and downstream choreography remain
    owned by the existing systems. Desktop (>1024px) is intentionally untouched.
    ========================================================================== */
+html[data-ex-experience]
+  .ex-root
+  .home-three-hero
+  .home-hero--responsive-video-frame
+  .hero-one-shade,
+html[data-ex-experience]
+  .ex-root
+  .home-three-hero
+  .home-hero--responsive-video-frame
+  .hero-one-stage,
+html[data-ex-experience]
+  .ex-root
+  .home-three-hero
+  .home-hero--responsive-video-frame
+  .hero-one-discover-label {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   html[data-ex-experience]
     .ex-root
@@ -4123,7 +4141,7 @@ figure) {
 
 @media (max-width: 480px) {
   /*
-   * Phone home hero: phone reel + /hero-1 overlay, lifted into the first
+   * Phone home hero: phone reel + overlay titles, lifted into the first
    * viewport above the dock (the red-box stage). Wordmark motion stays in
    * the timeline, visually hidden. Desktop / tablet are not selected here.
    */
@@ -4246,7 +4264,7 @@ figure) {
     .home-hero--responsive-video-frame
     .hero-one-copy {
     position: absolute;
-    top: 29%;
+    top: 32%;
     right: 10%;
     left: 10%;
   }
@@ -4255,40 +4273,57 @@ figure) {
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
-    .hero-one-eyebrow {
-    margin: 0;
-    font-size: 9px;
-    font-weight: 400;
-    letter-spacing: 0.21em;
-    text-transform: uppercase;
-    text-align: center;
-    animation: h3-hero-one-appear 1.4s 0.1s both;
-  }
-
-  html[data-ex-experience]
-    .ex-root
-    .home-three-hero
-    .home-hero--responsive-video-frame
     .hero-one-title {
     margin: 0;
-    padding: 29px 0 27px;
+    padding: 0;
     font-family: "Italiana", Georgia, serif;
     font-size: clamp(70px, 22vw, 116px);
     font-weight: 400;
     line-height: 0.91;
     letter-spacing: -0.035em;
     text-shadow: 0 4px 40px rgba(0, 0, 0, 0.32);
+    color: #f7f1e6;
+    -webkit-text-fill-color: #f7f1e6;
   }
 
   html[data-ex-experience]
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
-    .hero-one-title > span {
+    .hero-one-title > span,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line--right,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line--left {
     display: block;
-    overflow: hidden;
+    width: 100% !important;
+    overflow: visible;
     padding-bottom: 0.09em;
     margin-bottom: -0.04em;
+    font-family: "Italiana", Georgia, serif !important;
+    font-size: inherit !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    color: #f7f1e6 !important;
+    -webkit-text-fill-color: #f7f1e6 !important;
+    background: none !important;
+    background-image: none !important;
+    text-transform: none !important;
+    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.32);
+    will-change: transform;
   }
 
   html[data-ex-experience]
@@ -4307,13 +4342,20 @@ figure) {
     padding-left: 19%;
   }
 
+  /*
+   * Phone reel titles: hold hidden 4s, rise in, stay 4s, then opposite-x exit.
+   * 0.00–4.00 hidden · 4.00–5.65 rise (stagger) · 4.00–8.00 on screen · 8.00 exit
+   */
   html[data-ex-experience]
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title > span > span {
     display: block;
-    animation: h3-hero-one-title 1.65s cubic-bezier(0.19, 1, 0.22, 1) both;
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+    background: none !important;
+    animation: h3-hero-one-title 1.65s cubic-bezier(0.19, 1, 0.22, 1) 4s both;
   }
 
   html[data-ex-experience]
@@ -4321,7 +4363,7 @@ figure) {
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title > span:nth-child(2) > span {
-    animation-delay: 0.17s;
+    animation-delay: 4.17s;
   }
 
   html[data-ex-experience]
@@ -4329,20 +4371,28 @@ figure) {
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title > span:nth-child(3) > span {
-    animation-delay: 0.32s;
+    animation-delay: 4.32s;
   }
 
   html[data-ex-experience]
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
-    .hero-one-note {
-    margin: 0;
-    font-size: 11px;
-    line-height: 1.9;
-    letter-spacing: 0.035em;
-    text-align: center;
-    animation: h3-hero-one-appear 1.5s 0.8s both;
+    .hero-one-title .hero-line--right {
+    animation: h3-hero-one-title-exit-right 1.2s cubic-bezier(0.77, 0, 0.175, 1) 8s forwards !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line--left,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line--left.hero-line--plain {
+    animation: h3-hero-one-title-exit-left 1.2s cubic-bezier(0.77, 0, 0.175, 1) 8s forwards !important;
   }
 
   html[data-ex-experience]
@@ -4476,6 +4526,14 @@ figure) {
     width: 44px;
     height: 44px;
   }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame.is-hero-video-playing
+    .hero-media picture {
+    opacity: 0;
+  }
 }
 
 @media (max-width: 480px) and (max-height: 720px) {
@@ -4484,7 +4542,7 @@ figure) {
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-copy {
-    top: 24%;
+    top: 28%;
   }
 
   html[data-ex-experience]
@@ -4492,16 +4550,8 @@ figure) {
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title {
-    padding-block: 21px;
+    padding-block: 0;
     font-size: clamp(68px, 20vw, 86px);
-  }
-
-  html[data-ex-experience]
-    .ex-root
-    .home-three-hero
-    .home-hero--responsive-video-frame
-    .hero-one-note {
-    font-size: 10px;
   }
 
   html[data-ex-experience]
@@ -4531,18 +4581,31 @@ figure) {
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
-    .hero-one-eyebrow,
-  html[data-ex-experience]
-    .ex-root
-    .home-three-hero
-    .home-hero--responsive-video-frame
-    .hero-one-note,
-  html[data-ex-experience]
-    .ex-root
-    .home-three-hero
-    .home-hero--responsive-video-frame
     .hero-responsive-video-control--next {
     animation: none;
+  }
+}
+
+@media (max-width: 480px) and (prefers-reduced-motion: reduce) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span > span {
+    animation: h3-hero-one-appear 0.45s ease 4s both;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line--right,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title .hero-line--left {
+    animation: h3-hero-one-title-exit-fade 0.45s ease 8s forwards;
   }
 }
 
@@ -4564,6 +4627,37 @@ figure) {
   to {
     transform: translateY(0) rotate(0);
     opacity: 1;
+  }
+}
+
+@keyframes h3-hero-one-title-exit-right {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(38vw, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes h3-hero-one-title-exit-left {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(-38vw, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes h3-hero-one-title-exit-fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 

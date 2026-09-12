@@ -104,6 +104,9 @@ A poison-pill FILE at `_local/hathor-phone` blocks the old directory path — do
 This does NOT affect the real site `.hathor-phone-dock` (Saved/Voyage/Language).
 See `.cursor/rules/no-hathor-phone-showoff.mdc` (alwaysApply).
 
+# LOCKED — phone homepage hero video
+Phone (≤480px) must always play `HATHOR_HERO_VIDEO_PHONE_SRC` (`/media/hathor/videos/phone hero videoi.mp4`). Never swap it for the desktop promo or another reel. See `.cursor/rules/phone-hero-video-locked.mdc`.
+
 ## Imported Claude Cowork project instructions
 
 Act as an elite team consisting of a Senior UI/UX Designer, a Lead Full-Stack Programmer, and a Chief Cyber Security Engineer. We are working on an already-built project that needs refinement.

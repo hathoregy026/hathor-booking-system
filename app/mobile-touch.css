@@ -749,6 +749,18 @@ body.is-touch-device .lux-cursor {
   }
 }
 
+@media (max-width: 480px) {
+  /* Phone homepage reel — never keep the desktop 32% temple crop. */
+  .home-hero-container.home-hero--clear-video .hero-media video,
+  .home-hero-container.home-hero--clear-video .hero-media img {
+    object-position: center center !important;
+  }
+
+  .home-hero-container.home-hero--clear-video.is-hero-video-playing .hero-media picture {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 480px) and (hover: none) {
   .public-site .media-hover:hover,
   .public-site .lux-card:hover,
