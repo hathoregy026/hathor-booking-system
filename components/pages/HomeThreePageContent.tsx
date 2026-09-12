@@ -111,6 +111,7 @@ function Flip({
   className = "",
   sizes = "(max-width: 950px) 100vw, 50vw",
   anchor,
+  linked = false,
 }: {
   under: string;
   underAlt: string;
@@ -121,6 +122,8 @@ function Flip({
   sizes?: string;
   /** `edge` for a frame that never travels off the stage. */
   anchor?: "edge";
+  /** Read `--h3-flip` from an ancestor the hook measures, so frames can wipe as a pair. */
+  linked?: boolean;
 }) {
   const underImage = useSiteImage(under);
   const overImage = useSiteImage(over);
@@ -128,8 +131,8 @@ function Flip({
     <div
       className={`h3-flip h3-flip--${variant} ${className}`.trim()}
       /* the hook reads the axis to pick its horizontal or vertical formula */
-      data-h3-flip={variant === "upDown" ? "up" : "side"}
-      data-h3-flip-anchor={anchor}
+      data-h3-flip={linked ? undefined : variant === "upDown" ? "up" : "side"}
+      data-h3-flip-anchor={linked ? undefined : anchor}
     >
       <div className="h3-flip__media h3-flip__media--down">
         <Image
@@ -448,6 +451,80 @@ export function HomeThreePageContent({
                       <i />
                       Scroll
                     </p>
+
+                    {/* Phone only (≤480px): the opener and the lead become one
+                        composition on the lead's own three photographs. The
+                        two small frames are that flip turned into a pair —
+                        they trade plates off one `--h3-flip` that CSS scrubs
+                        once the whole block is on screen. Hidden elsewhere. */}
+                    <div className="h3-np">
+                      <div className="h3-np__hero">
+                        <Media
+                          slot="cruises-hero"
+                          alt=""
+                          className="h3-np__plate"
+                          sizes="(max-width: 950px) 100vw, 58vw"
+                        />
+                        <p className="h3-np__mark">
+                          <span className="h3-np__sr">Hathor Dahabiya</span>
+                          <span aria-hidden="true">
+                            <AnimaSplitLine line={0}>Hathor</AnimaSplitLine>
+                            <AnimaSplitLine line={1}>Dahabiya</AnimaSplitLine>
+                          </span>
+                        </p>
+                      </div>
+
+                      <div className="h3-np__lower">
+                        <svg
+                          className="h3-np__route"
+                          viewBox="0 -10 642 124"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path
+                            className="h3-np__route-line"
+                            d="M32 0V2Q32 10 40 10H337Q347 10 347 20V78C347 98 360 104 371 94C378 87 382 76 386 68"
+                            pathLength={100}
+                          />
+                          <circle className="h3-np__route-halo" cx="32" cy="0" r="8.5" />
+                          <circle className="h3-np__route-dot" cx="32" cy="0" r="4.6" />
+                        </svg>
+
+                        <Flip
+                          linked
+                          className="h3-np__frame"
+                          variant="leftRight"
+                          over="home-split-courtyard"
+                          overAlt=""
+                          under="home-cinematic-still"
+                          underAlt=""
+                          sizes="(max-width: 950px) 78vw, 30vw"
+                        />
+                        <Flip
+                          linked
+                          className="h3-np__arch"
+                          variant="rightLeft"
+                          over="home-cinematic-still"
+                          overAlt=""
+                          under="home-split-courtyard"
+                          underAlt=""
+                          sizes="(max-width: 950px) 78vw, 30vw"
+                        />
+
+                        <p className="h3-np__copy">
+                          A private dahabiya journey between Luxor and Aswan,
+                          shaped by stillness, history and the rhythm of the
+                          river.
+                        </p>
+
+                        <h2 className="h3-np__title">
+                          <span className="h3-np__sr">The Nile in private</span>
+                          <span aria-hidden="true">
+                            <AnimaSplitLine line={0}>The Nile in private</AnimaSplitLine>
+                          </span>
+                        </h2>
+                      </div>
+                    </div>
                   </Panel>
 
                   {/* ------------------------------ 02 · the cruise · the lead

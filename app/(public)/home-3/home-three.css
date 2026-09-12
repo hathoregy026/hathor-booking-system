@@ -5601,3 +5601,456 @@ html[data-ex-experience]
     min-height: 34rem;
   }
 }
+
+/* ==========================================================================
+   PHONE · THE OPENING COMPOSITION (≤480px only)
+   On a phone the opener and the lead become one editorial block: the cabin
+   plate runs wide with the wordmark set on it, a framed plate laps its corner,
+   a gold line travels from the plate's foot into that frame, an arched plate
+   stands beside the note, and the claim closes the block.
+
+   The same three photographs the lead carries, on the same motion system: the
+   wide plate keeps its `--transY` parallax, and the two small frames are the
+   lead's flip made a pair — both read ONE `--h3-flip`, scrubbed on
+   `.h3-np__lower`'s own view timeline only once the whole block is on screen,
+   so a guest sees both pairings whole before and after the plates trade. Line,
+   note and titles scrub on the same timelines.
+
+   Geometry is the reference board's 642-unit width (--h3-npu), which keeps
+   every overlap where it was drawn at any phone width. Nothing here renders
+   above 480px.
+   ========================================================================== */
+@property --h3-np-in {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+/* 1 = the settled pairing, which is also what shows without scroll timelines */
+@property --h3-np-flip {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+.home-three .h3-np {
+  display: none;
+}
+
+.home-three .h3-np__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  /* The opener's own copy leaves the phone; its h1 stays for assistive tech. */
+  .home-three .h3-scene.h3-open {
+    padding: var(--h3-band) 0;
+  }
+
+  .home-three .h3-open > .h3-open__nav,
+  .home-three .h3-open > .h3-open__mark,
+  .home-three .h3-open > .h3-open__scroll,
+  .home-three .h3-open .h3-open__eyebrow,
+  .home-three .h3-open .h3-open__body {
+    display: none;
+  }
+
+  .home-three .h3-open > .h3-open__inner {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* the lead's photographs now live in the composition */
+  .home-three .h3-scene.h3-lead {
+    display: none;
+  }
+
+  .home-three .h3-np {
+    --h3-npu: calc(100cqi / 642);
+    --h3-np-frame: #fff;
+    /* The fixed header and the dock hide the screen's top and foot, so every
+       timeline here is measured on the band a guest can actually see. */
+    --h3-np-inset: 4.75rem
+      calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem + env(safe-area-inset-bottom, 0px));
+
+    display: block;
+    width: 100%;
+    container-type: inline-size;
+  }
+
+  /* ---- the wide plate and the wordmark ---------------------------------- */
+  .home-three .h3-np__hero {
+    position: relative;
+    margin: 0 calc(8 * var(--h3-npu)) 0 calc(6 * var(--h3-npu));
+    view-timeline: --h3-np-hero block;
+    view-timeline-inset: var(--h3-np-inset);
+  }
+
+  .home-three .h3-np__plate {
+    width: 100%;
+    aspect-ratio: 628 / 306;
+    border-radius: 0 0 0 calc(30 * var(--h3-npu));
+    background: var(--h3-stone);
+  }
+
+  /* a low scrim under the wordmark only — the plate is a bright interior */
+  .home-three .h3-np__hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 0 0 0 calc(30 * var(--h3-npu));
+    background: linear-gradient(
+      18deg,
+      rgb(20 18 14 / 46%) 0%,
+      rgb(20 18 14 / 16%) 34%,
+      rgb(20 18 14 / 0%) 58%
+    );
+    pointer-events: none;
+  }
+
+  .home-three .h3-np__mark:not(#_) {
+    position: absolute;
+    z-index: 2;
+    left: calc(26 * var(--h3-npu));
+    bottom: calc(24 * var(--h3-npu));
+    margin: 0;
+    font-family: var(--h3-display);
+    font-size: calc(44 * var(--h3-npu));
+    font-weight: 400;
+    line-height: 1.18;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 1px calc(14 * var(--h3-npu)) rgb(20 18 14 / 28%);
+    pointer-events: none;
+  }
+
+  /* ---- the lower block: frame, arch, note, claim ------------------------ */
+  .home-three .h3-np__lower {
+    position: relative;
+    display: grid;
+    grid-template-columns:
+      calc(6 * var(--h3-npu))
+      calc(178 * var(--h3-npu))
+      calc(17 * var(--h3-npu))
+      calc(168 * var(--h3-npu))
+      calc(17 * var(--h3-npu))
+      calc(238 * var(--h3-npu))
+      minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    view-timeline: --h3-np-lower block;
+    view-timeline-inset: var(--h3-np-inset);
+    /* both frames inherit this one value, so they always trade in step */
+    --h3-flip: var(--h3-np-flip);
+  }
+
+  /* the gold line: from the wide plate's foot into the framed plate */
+  .home-three .h3-np__route {
+    position: absolute;
+    z-index: 1;
+    top: calc(-10 * var(--h3-npu));
+    left: 0;
+    width: 100%;
+    height: calc(124 * var(--h3-npu));
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .home-three .h3-np__route-line {
+    fill: none;
+    stroke: var(--h3-gold);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+  }
+
+  .home-three .h3-np__route-halo {
+    fill: var(--h3-paper);
+    stroke: var(--h3-gold);
+    stroke-width: 1.4;
+    stroke-opacity: 0.5;
+  }
+
+  .home-three .h3-np__route-dot {
+    fill: var(--h3-gold);
+  }
+
+  .home-three .h3-np__route-halo,
+  .home-three .h3-np__route-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .home-three .h3-np__frame {
+    z-index: 2;
+    grid-column: 6;
+    grid-row: 1;
+    align-self: start;
+    height: calc(354 * var(--h3-npu));
+    margin-top: calc(-70 * var(--h3-npu));
+    border: calc(4.5 * var(--h3-npu)) solid var(--h3-np-frame);
+    border-radius: calc(16 * var(--h3-npu));
+    background: var(--h3-np-frame);
+    box-shadow: 0 calc(14 * var(--h3-npu)) calc(34 * var(--h3-npu))
+      rgb(20 18 14 / 16%);
+  }
+
+  .home-three .h3-np__arch {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: end;
+    height: calc(276 * var(--h3-npu));
+    border-radius: 50% 50% 0 0 / calc(84 * var(--h3-npu))
+      calc(84 * var(--h3-npu)) 0 0;
+    background: var(--h3-stone);
+  }
+
+  /* the dinner plate is a landscape with its subject right of centre */
+  .home-three .h3-np__frame .h3-flip__media--up img,
+  .home-three .h3-np__arch .h3-flip__media--down img {
+    object-position: 68% center;
+  }
+
+  .home-three .h3-np__copy:not(#_) {
+    grid-column: 4;
+    grid-row: 1;
+    align-self: start;
+    margin: calc(120 * var(--h3-npu)) 0 0;
+    font-family: var(--h3-num);
+    font-size: max(0.6875rem, calc(17.5 * var(--h3-npu)));
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.34;
+    letter-spacing: 0.05em;
+    color: var(--h3-ink);
+  }
+
+  .home-three .h3-np__title:not(#_) {
+    grid-column: 4 / 7;
+    grid-row: 2;
+    align-self: end;
+    margin: calc(12 * var(--h3-npu)) 0 0;
+    font-family: var(--h3-display);
+    font-size: calc(45 * var(--h3-npu));
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--h3-ink);
+  }
+
+  html[data-public-theme="night"] .home-three .h3-np {
+    --h3-np-frame: #efe6d8;
+  }
+}
+
+@media (max-width: 480px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .home-three .h3-np__mark,
+    .home-three .h3-np__title {
+      --reveal: var(--h3-np-in);
+      animation: h3-np-in linear both;
+    }
+
+    .home-three .h3-np__mark {
+      animation-timeline: --h3-np-hero;
+      animation-range: entry 35% cover 52%;
+    }
+
+    .home-three .h3-np__title {
+      animation-timeline: --h3-np-lower;
+      animation-range: entry 55% cover 58%;
+    }
+
+    /* The line reaches the frame first. The plates trade only in the middle of
+       the stretch where both frames sit whole between header and dock, so the
+       first pairing holds before the slide and the second holds after it. */
+    .home-three .h3-np__route-line {
+      animation: h3-np-draw linear both;
+      animation-timeline: --h3-np-lower;
+      animation-range: entry 10% cover 35%;
+    }
+
+    .home-three .h3-np__lower {
+      animation: h3-np-flip linear both;
+      animation-timeline: --h3-np-lower;
+      animation-range: contain 33% contain 63%;
+    }
+
+    .home-three .h3-np__route-halo,
+    .home-three .h3-np__route-dot {
+      animation: h3-np-dot linear both;
+      animation-timeline: --h3-np-lower;
+      animation-range: entry 0% entry 25%;
+    }
+
+    .home-three .h3-np__copy {
+      animation: h3-np-copy linear both;
+      animation-timeline: --h3-np-lower;
+      animation-range: entry 30% cover 50%;
+    }
+  }
+}
+
+@keyframes h3-np-in {
+  from {
+    --h3-np-in: 0;
+  }
+
+  to {
+    --h3-np-in: 1;
+  }
+}
+
+@keyframes h3-np-flip {
+  from {
+    --h3-np-flip: 0;
+  }
+
+  to {
+    --h3-np-flip: 1;
+  }
+}
+
+@keyframes h3-np-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes h3-np-dot {
+  from {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1.25);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes h3-np-copy {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.1em, 0);
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 -0.3em -0.4em 0);
+  }
+}
+
+/* ==========================================================================
+   PHONE · THE MAP BEFORE THE SAILINGS (≤480px only)
+   Order only: the track stacks its panels as a column so the chart can take
+   the cards' place. No panel changes size, spacing or design.
+   ========================================================================== */
+@media (max-width: 480px) {
+  .home-three .h3-track {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home-three .h3-track .h3-scene {
+    order: 2;
+  }
+
+  .home-three .h3-track .h3-scene:is(.h3-open, .h3-lead) {
+    order: 0;
+  }
+
+  .home-three .h3-track .h3-scene.h3-chart-panel {
+    order: 1;
+  }
+}
+
+/* ==========================================================================
+   PHONE · HERO TITLE CENTRED IN THE FILM FRAME (≤480px only)
+   The title box is exactly the open part of the frame: inside the two side
+   rules, below their top, above the Enter control. The lines centre in it,
+   and the type keeps its design size unless that would cross a rule or the
+   controls — the box is a size container and the size is capped to it, so the
+   title cannot touch either on a short or narrow phone.
+   ========================================================================== */
+@media (max-width: 480px) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-copy {
+    /* the frame's top, and the controls' top above the stage foot */
+    --h1-copy-top: max(5.6rem, calc(env(safe-area-inset-top) + 4.65rem));
+    --h1-copy-foot: calc(3.35rem + 45px);
+    --h1-copy-air: 1.25rem;
+
+    top: calc(var(--h1-copy-top) + var(--h1-copy-air));
+    right: calc(1.25rem + 1px + 0.9rem);
+    bottom: calc(var(--h1-copy-foot) + var(--h1-copy-air));
+    left: calc(1.25rem + 1px + 0.9rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    container-type: size;
+  }
+
+  /* 4.6em holds "A WORLD" with its tracking; 3.5em holds three lines and gaps */
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title {
+    font-size: min(clamp(44px, 14vw, 58px), calc(100cqw / 4.6), calc(100cqh / 3.5));
+  }
+
+  /* hang the trailing tracking so every line centres on its letters */
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span > span {
+    text-indent: 0.04em;
+  }
+}
+
+@media (max-width: 480px) and (max-height: 720px) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-copy {
+    --h1-copy-foot: calc(3rem + 45px);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title {
+    font-size: min(clamp(68px, 20vw, 86px), calc(100cqw / 4.6), calc(100cqh / 3.5));
+  }
+}
