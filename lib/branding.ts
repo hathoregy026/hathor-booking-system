@@ -76,6 +76,13 @@ export const HATHOR_HERO_VIDEO_SRC =
 export const HATHOR_HERO_VIDEO_PHONE_SRC =
   "/media/hathor/videos/phone%20hero%20videoi.mp4";
 
+/**
+ * First frame for the phone hero reel. Desktop keeps CMS `home-hero-poster`.
+ * Matches the /hero-1 experiment so the yacht still is visible before play.
+ */
+export const HATHOR_HERO_VIDEO_PHONE_POSTER =
+  "/media/hathor/optimized/home-amenities-1.webp";
+
 /** Default static poster path (live hero uses CMS `home-hero-poster` via useSiteImage). */
 export const HATHOR_HERO_POSTER_SRC = HATHOR_MEDIA.heroHomepage;
 

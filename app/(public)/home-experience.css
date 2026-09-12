@@ -1064,6 +1064,7 @@ h1, h2, h3, h4, p {
 }
 
 /* Homepage video + CMS poster stacked: gold still stays visible until the reel plays. */
+html[data-ex-experience] .hero-media picture,
 html[data-ex-experience] .hero-media video,
 html[data-ex-experience] .hero-media img {
   position: absolute;

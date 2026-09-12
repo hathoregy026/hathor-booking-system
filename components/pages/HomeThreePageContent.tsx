@@ -359,8 +359,9 @@ export function HomeThreePageContent({
 
   return (
     <>
-      {/* Homepage hero stage. Phone ≤480: home-three-hero restyles the
-          wordmark into the cream bar above the dock (desktop unchanged). */}
+      {/* Homepage hero stage. Phone uses the /hero-1 overlay on the phone reel,
+          fitted to the first-viewport box above the dock. Tablet keeps the
+          framed film treatment; desktop choreography is unchanged. */}
       <div className="ex-root" data-hathor-logo-tuned="">
         <HathorLogoTuner />
         <div id="top">
@@ -373,6 +374,8 @@ export function HomeThreePageContent({
               lineLeft={EX_HERO.lineLeft}
               heroPage="home"
               posterImageName={EX_HERO.imageName}
+              responsiveVideoFrame
+              responsiveVideoFrameTarget="#home-three-story"
               logoPartsVariant={heroLogoTune.partsVariant}
               mobileLogoPartsVariant={heroLogoTuneMobile.partsVariant}
             />
@@ -380,7 +383,7 @@ export function HomeThreePageContent({
         </div>
       </div>
 
-      <div ref={rootRef} className="home-three">
+      <div ref={rootRef} className="home-three" id="home-three-story">
         <div className="h3-progress" aria-hidden="true">
           <i data-h3-progress />
         </div>

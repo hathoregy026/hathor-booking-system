@@ -3986,6 +3986,597 @@ figure) {
 }
 
 /* ==========================================================================
+   CURRENT HOMEPAGE · RESPONSIVE FILM FRAME
+   The Hero 1 reference contributes only its side rules and two controls.
+   Homepage navigation, copy, reel sources and downstream choreography remain
+   owned by the existing systems. Desktop (>1024px) is intentionally untouched.
+   ========================================================================== */
+@media (max-width: 1024px) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-chrome {
+    display: block;
+  }
+
+  /* Hero-1 overlay is phone-only. Tablet keeps the current titles. */
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-shade,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-stage,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-discover-label {
+    display: none;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control__mark {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-frame {
+    position: absolute;
+    z-index: 7;
+    top: max(6.6rem, calc(env(safe-area-inset-top) + 5.65rem));
+    right: clamp(1.25rem, 4vw, 2.6rem);
+    bottom: clamp(1.4rem, 3.2vw, 2.2rem);
+    left: clamp(1.25rem, 4vw, 2.6rem);
+    border-inline: 1px solid rgba(247, 241, 230, 0.34);
+    pointer-events: none;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control {
+    position: absolute;
+    z-index: 9;
+    bottom: clamp(2.8rem, 5.4vw, 4rem);
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(247, 241, 230, 0.58);
+    border-radius: 50%;
+    background: rgba(18, 17, 13, 0.18);
+    color: #f7f1e6;
+    -webkit-text-fill-color: #f7f1e6;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+    backdrop-filter: blur(5px);
+    pointer-events: auto;
+    transition:
+      color 300ms ease,
+      border-color 300ms ease,
+      background 300ms ease;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next {
+    left: clamp(2.35rem, 7vw, 5.2rem);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--playback {
+    right: clamp(2.35rem, 7vw, 5.2rem);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control:hover,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control:focus-visible {
+    border-color: #f7f1e6;
+    background: rgba(182, 159, 100, 0.25);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    stroke-width: 1;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next svg {
+    animation: h3-responsive-frame-arrow 2.8s ease-in-out infinite;
+  }
+}
+
+@media (max-width: 480px) {
+  /*
+   * Phone home hero: phone reel + /hero-1 overlay, lifted into the first
+   * viewport above the dock (the red-box stage). Wordmark motion stays in
+   * the timeline, visually hidden. Desktop / tablet are not selected here.
+   */
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame {
+    --h1-stage-bottom: var(--hathor-phone-dock-h, 4.5rem);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-media {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: var(--h1-stage-bottom) !important;
+    inset: 0 0 var(--h1-stage-bottom) 0 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-media picture,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-media video,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-media img {
+    transform: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-content,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-content .hero-heading {
+    display: none !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-logo-mark--split {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .gold-dust-particles {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: var(--h1-stage-bottom) !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-shade {
+    display: block;
+    position: absolute;
+    z-index: 6;
+    inset: 0 0 var(--h1-stage-bottom) 0;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(18, 24, 22, 0.49),
+        rgba(18, 24, 22, 0.15) 22%,
+        rgba(18, 24, 22, 0.27) 43%,
+        rgba(18, 24, 22, 0.67) 78%,
+        rgba(18, 24, 22, 0.8)
+      ),
+      linear-gradient(90deg, rgba(25, 27, 19, 0.18), transparent);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-stage {
+    display: block;
+    position: absolute;
+    z-index: 8;
+    inset: 0 0 var(--h1-stage-bottom) 0;
+    pointer-events: none;
+    color: #f7f1e6;
+    -webkit-text-fill-color: #f7f1e6;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-copy {
+    position: absolute;
+    top: 29%;
+    right: 10%;
+    left: 10%;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-eyebrow {
+    margin: 0;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.21em;
+    text-transform: uppercase;
+    text-align: center;
+    animation: h3-hero-one-appear 1.4s 0.1s both;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title {
+    margin: 0;
+    padding: 29px 0 27px;
+    font-family: "Italiana", Georgia, serif;
+    font-size: clamp(70px, 22vw, 116px);
+    font-weight: 400;
+    line-height: 0.91;
+    letter-spacing: -0.035em;
+    text-shadow: 0 4px 40px rgba(0, 0, 0, 0.32);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.09em;
+    margin-bottom: -0.04em;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span:nth-child(2) {
+    text-align: right;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span:nth-child(3) {
+    padding-left: 19%;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span > span {
+    display: block;
+    animation: h3-hero-one-title 1.65s cubic-bezier(0.19, 1, 0.22, 1) both;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span:nth-child(2) > span {
+    animation-delay: 0.17s;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span:nth-child(3) > span {
+    animation-delay: 0.32s;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-note {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.9;
+    letter-spacing: 0.035em;
+    text-align: center;
+    animation: h3-hero-one-appear 1.5s 0.8s both;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-location {
+    position: absolute;
+    right: 10%;
+    bottom: 26px;
+    left: 10%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 0;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    opacity: 0.85;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-location span {
+    flex: 1;
+    height: 1px;
+    background: rgba(247, 241, 230, 0.35);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-frame {
+    top: max(5.6rem, calc(env(safe-area-inset-top) + 4.65rem));
+    right: 1.25rem;
+    bottom: calc(var(--h1-stage-bottom) + 1.15rem);
+    left: 1.25rem;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control {
+    bottom: calc(var(--h1-stage-bottom) + 3.35rem);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next {
+    left: 10%;
+    display: flex;
+    width: auto;
+    height: auto;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 13px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    animation: h3-hero-one-appear 1.5s 1s backwards;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next
+    .hero-responsive-video-control__mark {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    border: 1px solid rgba(247, 241, 230, 0.5);
+    border-radius: 50%;
+    background: rgba(25, 27, 19, 0.18);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next:hover,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next:focus-visible {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next:hover
+    .hero-responsive-video-control__mark,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next:focus-visible
+    .hero-responsive-video-control__mark {
+    background: rgba(247, 241, 230, 0.15);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-discover-label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.07em;
+    color: #f7f1e6;
+    -webkit-text-fill-color: #f7f1e6;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--playback {
+    right: 10%;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 480px) and (max-height: 720px) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-copy {
+    top: 24%;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title {
+    padding-block: 21px;
+    font-size: clamp(68px, 20vw, 86px);
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-note {
+    font-size: 10px;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control {
+    bottom: calc(var(--h1-stage-bottom) + 3rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next svg {
+    animation: none;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title > span > span,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-eyebrow,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-note,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-responsive-video-control--next {
+    animation: none;
+  }
+}
+
+@keyframes h3-responsive-frame-arrow {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes h3-hero-one-title {
+  from {
+    transform: translateY(115%) rotate(3deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes h3-hero-one-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
    DESKTOP · THE SPLIT CHOREOGRAPHY
    On a desktop pointer the story stops being one strip and moves the way the
    homepage reads:

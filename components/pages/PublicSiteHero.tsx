@@ -1,11 +1,16 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { ArrowDown, Pause, Play } from "lucide-react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
 import { HathorLogoSplit } from "@/components/public/HathorLogoSplit";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
-import { HATHOR_HERO_VIDEO_SRC, HATHOR_HERO_VIDEO_PHONE_SRC } from "@/lib/branding";
+import {
+  HATHOR_HERO_VIDEO_SRC,
+  HATHOR_HERO_VIDEO_PHONE_SRC,
+  HATHOR_HERO_VIDEO_PHONE_POSTER,
+} from "@/lib/branding";
 import { isPhoneViewport, logPhonePerfDev, PHONE_VIEWPORT_MQ } from "@/lib/touch-device";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
@@ -67,6 +72,12 @@ export type PublicSiteHeroProps = {
   mobileLogoPartsVariant?: HathorLogoPartsVariant;
   /** Contact-derived hero typography for selected editorial routes. */
   editorial?: boolean;
+  /**
+   * Opt-in phone/tablet film chrome for the live homepage: fine side rules,
+   * a next-section control, and an accessible play/pause control.
+   */
+  responsiveVideoFrame?: boolean;
+  responsiveVideoFrameTarget?: string;
 };
 
 export function PublicSiteHero({
@@ -84,9 +95,13 @@ export function PublicSiteHero({
   logoPartsVariant,
   mobileLogoPartsVariant,
   editorial = false,
+  responsiveVideoFrame = false,
+  responsiveVideoFrameTarget = "#main-content",
 }: PublicSiteHeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const manuallyPausedRef = useRef(false);
+  const [heroVideoPlaying, setHeroVideoPlaying] = useState(false);
   /**
    * Start on poster. After mount, attach exactly one reel: the 720×720 phone
    * file at ≤480px, the 1920×1080 desktop file on tablet and desktop.
@@ -163,7 +178,6 @@ export function PublicSiteHero({
 
   useLayoutEffect(() => {
     if (!playVideo) {
-      setHeroVideoSrc(null);
       return;
     }
 
@@ -173,6 +187,7 @@ export function PublicSiteHero({
 
       if (reduced) {
         setHeroVideoSrc(null);
+        setHeroVideoPlaying(false);
         logPhonePerfDev({
           surface: "public-site-hero",
           phone,
@@ -237,7 +252,7 @@ export function PublicSiteHero({
     };
 
     const tryPlay = () => {
-      if (document.hidden) return;
+      if (document.hidden || manuallyPausedRef.current) return;
       video.muted = true;
       video.defaultMuted = true;
       video.setAttribute("muted", "");
@@ -331,7 +346,14 @@ export function PublicSiteHero({
     };
 
     const root = document.documentElement;
-    if (root.classList.contains("ex-scroll-ready")) {
+    /*
+     * Phone uses the dedicated 720×720 reel and must not sit on the desktop
+     * temple poster. Start it as soon as the source is attached — same as /hero-1.
+     * Desktop keeps the deferred idle start so the 26MB promo does not fight LCP.
+     */
+    if (source === HATHOR_HERO_VIDEO_PHONE_SRC) {
+      startVideo();
+    } else if (root.classList.contains("ex-scroll-ready")) {
       armDeferredStart();
     } else {
       const observer = new MutationObserver(() => {
@@ -356,6 +378,22 @@ export function PublicSiteHero({
     };
   }, [playVideo, heroVideoSrc]);
 
+  const toggleHeroVideo = () => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      manuallyPausedRef.current = false;
+      video.muted = true;
+      video.defaultMuted = true;
+      void video.play().catch(() => {});
+      return;
+    }
+
+    manuallyPausedRef.current = true;
+    video.pause();
+  };
+
   return (
     <section
       ref={heroRef}
@@ -363,31 +401,45 @@ export function PublicSiteHero({
       data-site-image={posterImageName}
       className={`home-hero-container${applyGoldTint ? " hero-gold-tint" : ""}${
         playVideo ? " home-hero--clear-video" : ""
-      }`}
+      }${responsiveVideoFrame ? " home-hero--responsive-video-frame" : ""}`}
       aria-label="Hero"
     >
       <div className="hero-media">
-        {/* eslint-disable-next-line @next/next/no-img-element -- CMS hero still / video poster */}
-        <img
-          src={heroPoster.src}
-          srcSet={heroPoster.srcSet}
-          sizes={heroPoster.sizes}
-          alt={heroImage.alt}
-          decoding="async"
-          fetchPriority="high"
-        />
+        <picture>
+          {playVideo ? (
+            <source
+              media="(max-width: 480px)"
+              srcSet={HATHOR_HERO_VIDEO_PHONE_POSTER}
+            />
+          ) : null}
+          {/* eslint-disable-next-line @next/next/no-img-element -- CMS hero still / video poster */}
+          <img
+            src={heroPoster.src}
+            srcSet={heroPoster.srcSet}
+            sizes={heroPoster.sizes}
+            alt={heroImage.alt}
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
         {playVideo && heroVideoSrc ? (
           <video
             key={heroVideoSrc}
             ref={heroVideoRef}
             src={heroVideoSrc}
-            poster={heroPoster.src}
+            poster={
+              heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC
+                ? HATHOR_HERO_VIDEO_PHONE_POSTER
+                : heroPoster.src
+            }
             autoPlay
             loop
             muted
             playsInline
-            preload="none"
+            preload={heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC ? "auto" : "none"}
             aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
+            onPlay={() => setHeroVideoPlaying(true)}
+            onPause={() => setHeroVideoPlaying(false)}
           />
         ) : null}
       </div>
@@ -396,6 +448,51 @@ export function PublicSiteHero({
       ) : null}
 
       <div className="home-hero-cover" aria-hidden="true" />
+
+      {responsiveVideoFrame ? (
+        <div className="hero-responsive-video-chrome">
+          <div className="hero-one-shade" aria-hidden="true" />
+          <div className="hero-responsive-video-frame" aria-hidden="true" />
+          <div className="hero-one-stage">
+            <div className="hero-one-copy">
+              <p className="hero-one-eyebrow">A private world on the Nile</p>
+              <h1 className="hero-one-title">
+                <span><span>A world</span></span>
+                <span><span>beyond</span></span>
+                <span><span>time.</span></span>
+              </h1>
+              <p className="hero-one-note">
+                Ancient waters. Unhurried days.
+                <br />
+                The rare pleasure of simply being.
+              </p>
+            </div>
+            <p className="hero-one-location">
+              LUXOR <span /> ASWAN
+            </p>
+          </div>
+          <a
+            className="hero-responsive-video-control hero-responsive-video-control--next"
+            href={responsiveVideoFrameTarget}
+            aria-label="Enter the extraordinary"
+          >
+            <span className="hero-responsive-video-control__mark">
+              <ArrowDown aria-hidden="true" />
+            </span>
+            <span className="hero-one-discover-label">Enter the extraordinary</span>
+          </a>
+          {heroVideoSrc ? (
+            <button
+              className="hero-responsive-video-control hero-responsive-video-control--playback"
+              type="button"
+              onClick={toggleHeroVideo}
+              aria-label={heroVideoPlaying ? "Pause background film" : "Play background film"}
+            >
+              {heroVideoPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       {goldDust ? <GoldDustParticles /> : null}
 
