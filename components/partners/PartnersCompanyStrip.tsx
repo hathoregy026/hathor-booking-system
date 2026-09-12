@@ -150,7 +150,12 @@ export function PartnersCompanyStrip({
                 </span>
               </h2>
               <p className="partners-company__script">
-                {HOMEPAGE_PARTNERS.script}
+                <span className="partners-company__script-desk">
+                  {HOMEPAGE_PARTNERS.script}
+                </span>
+                <span className="partners-company__script-phone">
+                  Dahabiya Cruise
+                </span>
               </p>
             </div>
 

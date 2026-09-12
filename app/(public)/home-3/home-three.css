@@ -3820,7 +3820,7 @@ figure) {
   .home-three .h3-cierre__note {
     justify-content: center;
     gap: 0.55rem;
-    padding: 0 1.25rem;
+    padding: 32% 1.25rem 6%;
   }
 
   .home-three .h3-cierre__reveal {
@@ -3876,6 +3876,50 @@ figure) {
 
   .home-three .h3-mosaic__item img {
     transform: none !important;
+  }
+
+  /* ---- marquee: stars stay on the word line, not clipped -------------- */
+  .home-three .h3-carousel {
+    display: flex;
+    align-items: center;
+    height: 1.28em;
+    overflow: hidden;
+  }
+
+  .home-three .h3-carousel__content {
+    position: relative;
+    top: auto;
+    left: auto;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .home-three .h3-carousel__content > span {
+    align-items: center;
+    gap: 0.72em;
+    padding: 0 0.72em;
+    height: 100%;
+  }
+
+  .home-three .h3-carousel__item {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.42em;
+    flex: 0 0 auto;
+    line-height: 1;
+  }
+
+  .home-three .h3-carousel__star {
+    position: relative;
+    top: 0;
+    width: 0.22em;
+    height: 0.22em;
+    flex: 0 0 auto;
+    align-self: center;
   }
 }
 
@@ -4594,12 +4638,17 @@ html[data-ex-experience]
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.16em;
     margin: 0;
     padding: 0;
     font-family: "Italiana", Georgia, serif;
     font-size: clamp(44px, 14vw, 58px);
     font-weight: 400;
-    line-height: 0.94;
+    line-height: 1;
     letter-spacing: 0.04em;
     text-shadow: 0 4px 40px rgba(0, 0, 0, 0.32);
     color: #f7f1e6;
@@ -4629,8 +4678,8 @@ html[data-ex-experience]
     display: block;
     width: 100% !important;
     overflow: visible;
-    padding-bottom: 0.09em;
-    margin-bottom: -0.04em;
+    padding-bottom: 0;
+    margin-bottom: 0;
     font-family: "Italiana", Georgia, serif !important;
     font-size: inherit !important;
     font-style: normal !important;
@@ -4653,6 +4702,7 @@ html[data-ex-experience]
     .hero-one-title {
     text-align: center;
     text-transform: uppercase;
+    gap: 0.16em;
   }
 
   html[data-ex-experience]
@@ -4684,6 +4734,15 @@ html[data-ex-experience]
     text-transform: uppercase !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    height: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
     white-space: nowrap !important;
   }
 
@@ -4717,6 +4776,9 @@ html[data-ex-experience]
     -webkit-text-fill-color: inherit !important;
     background: none !important;
     white-space: nowrap !important;
+    line-height: 1 !important;
+    padding: 0;
+    margin: 0;
     animation: h3-hero-one-title 1.65s cubic-bezier(0.19, 1, 0.22, 1) 4s both;
   }
 

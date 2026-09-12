@@ -178,6 +178,10 @@
   display: none;
 }
 
+.partners-company .partners-company__script-phone {
+  display: none;
+}
+
 .partners-company .partners-company__script {
   margin: calc(2.8 * var(--u)) 0 0;
   padding: 0.12em 0.2em 0.3em 0;
@@ -1179,7 +1183,15 @@ html[data-public-theme="dark"]:has(.partners-company--teaser) .hf {
     letter-spacing: 0.01em;
     color: var(--pc-script);
     text-align: center;
-    white-space: normal;
+    white-space: nowrap;
+  }
+
+  .partners-company--teaser .partners-company__script-desk {
+    display: none;
+  }
+
+  .partners-company--teaser .partners-company__script-phone {
+    display: inline;
   }
 
   .partners-company--teaser
