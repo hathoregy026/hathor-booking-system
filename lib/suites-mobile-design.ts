@@ -603,11 +603,31 @@ const SM_HERO_CSS = `
 
 @media (max-width: 480px) {
   html body main .mod-scroll__intro.suites-reference-hero .srh-canvas {
+    padding-inline: clamp(0.65rem, 3.2vw, 1rem) !important;
     padding-bottom: calc(var(--sm-band) + var(--hathor-phone-dock-h, 5rem)) !important;
   }
 
+  html body main .srh-kicker {
+    font-size: clamp(1.85rem, 8.4vw, 2.35rem) !important;
+  }
+
+  /*
+   * Main plate: equal radius on every corner, centered in the column,
+   * nearly full phone width. Portrait + detail stay on the same grid
+   * so they share that width without changing their overlap/arch.
+   */
   html body main .srh-frame--main {
-    max-height: min(52svh, 24rem) !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    max-height: min(68svh, 32rem) !important;
+    border-radius: clamp(1.35rem, 6.5vw, 2.15rem) !important;
+  }
+
+  html body main .srh-frame--portrait,
+  html body main .srh-frame--detail {
+    width: auto !important;
   }
 }
 `;

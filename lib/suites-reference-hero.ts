@@ -34,7 +34,7 @@ export function buildSuitesReferenceHeroMarkup(
 
   return `
   <div class="srh-canvas">
-    <p class="srh-kicker" aria-hidden="true">Suites<br>at rest</p>
+    <p class="srh-kicker" aria-hidden="true">Our suites<br>present comfort</p>
 
     <figure class="srh-frame srh-frame--portrait">
       <img
@@ -869,16 +869,22 @@ export function mountSuitesReferenceHero(
   intro.classList.add("suites-reference-hero");
   if (!wrapper.querySelector(".srh-canvas")) {
     wrapper.innerHTML = buildSuitesReferenceHeroMarkup(images);
-  } else if (images) {
-    // Canvas already baked into the clone — still stamp live URLs so the
-    // first painted frame matches CMS rather than any stale scraped src.
-    for (const [slot, url] of Object.entries(images)) {
-      if (!url?.trim()) continue;
-      wrapper
-        .querySelectorAll<HTMLImageElement>(`img[data-hathor-slot="${slot}"]`)
-        .forEach((img) => {
-          if (img.getAttribute("src") !== url) img.setAttribute("src", url);
-        });
+  } else {
+    const kicker = wrapper.querySelector(".srh-kicker");
+    if (kicker && kicker.innerHTML !== "Our suites<br>present comfort") {
+      kicker.innerHTML = "Our suites<br>present comfort";
+    }
+    if (images) {
+      // Canvas already baked into the clone — still stamp live URLs so the
+      // first painted frame matches CMS rather than any stale scraped src.
+      for (const [slot, url] of Object.entries(images)) {
+        if (!url?.trim()) continue;
+        wrapper
+          .querySelectorAll<HTMLImageElement>(`img[data-hathor-slot="${slot}"]`)
+          .forEach((img) => {
+            if (img.getAttribute("src") !== url) img.setAttribute("src", url);
+          });
+      }
     }
   }
   neutralizeSuitesCloneIntroMotion(doc);
