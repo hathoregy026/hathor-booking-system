@@ -3950,7 +3950,8 @@ figure) {
     --h3-phone-logo-bar: calc(var(--h3-phone-letter-h) + var(--h3-phone-dock));
     --h3-phone-scrub: var(--h3-phone-logo-bar);
     background: #ece8df !important;
-    height: calc(100svh + var(--h3-phone-scrub)) !important;
+    /* stage + letter scrub + one more stage, held while the story covers it */
+    height: calc(200svh + var(--h3-phone-scrub)) !important;
     min-height: 0 !important;
     overflow: visible;
     z-index: 3;
@@ -3960,12 +3961,16 @@ figure) {
     background: #16130f !important;
   }
 
-  /* Pull first content up through the short scrub so it lands as the
-     letters finish hiding — no empty video/cream band after the hero. */
+  /* Once the letters have hidden, the film stays still and the story glides
+     up over it like a sheet, instead of the whole stage being shoved off the
+     top as one block. The story overlaps the runway's last stage and sits
+     above it; the stage only unsticks once it is fully covered. */
   .ex-root:has(.home-three-hero) + .home-three {
-    margin-top: calc(-1 * var(--h3-phone-scrub, 13.5rem));
+    margin-top: -100svh;
     position: relative;
-    z-index: 1;
+    z-index: 4;
+    /* only ever on screen while the sheet is crossing the film */
+    box-shadow: 0 -1rem 2.4rem rgb(20 18 14 / 18%);
   }
 
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container {
@@ -6195,3 +6200,4 @@ html[data-ex-experience]
     opacity: 0;
   }
 }
+

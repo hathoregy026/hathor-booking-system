@@ -595,7 +595,12 @@ export function mountHeroScrollStage({
         start: "top top",
         end:
           isPhoneTouch && phoneRunway
-            ? "bottom bottom"
+            ? isHomeThreePhoneHero()
+              ? /* home-3 runway = stage + letter scrub + a stage the story covers;
+                   the scrub is only the part beyond those two stages */
+                () =>
+                  `+=${Math.max(1, phoneRunway.offsetHeight - 2 * hero.offsetHeight)}`
+              : "bottom bottom"
             : isTabletHero && tabletRunway
               ? "bottom bottom" /* runway height: 360svh (100 + 260 scrub) */
               : isTabletHero

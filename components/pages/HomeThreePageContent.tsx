@@ -12,6 +12,7 @@ import { H4_STOPS } from "@/components/pages/home-four/atlas-data";
 import { NileChart, NileHelm } from "@/components/pages/home-three/NileChart";
 import { useExScrollMotion } from "@/hooks/useExScrollMotion";
 import { useHomeThreeFlow } from "@/hooks/useHomeThreeFlow";
+import { useHomeThreePhoneSlide } from "@/hooks/useHomeThreePhoneSlide";
 import { EX_HERO } from "@/lib/ex-page-content";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { HOME_CAROUSEL_IMAGE_BY_ROOM } from "@/lib/home-carousel-images";
@@ -359,6 +360,7 @@ export function HomeThreePageContent({
 
   useExScrollMotion();
   useHomeThreeFlow({ rootRef, runRef, trackRef });
+  useHomeThreePhoneSlide(rootRef);
 
   return (
     <>
