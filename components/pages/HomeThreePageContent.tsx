@@ -373,9 +373,10 @@ export function HomeThreePageContent({
               animate={false}
               splitLetterLogo
               playVideo
-              lineRight={EX_HERO.lineRight}
-              lineLeft={EX_HERO.lineLeft}
-              heroPage="home"
+              /* The homepage title is set here, not from the typography
+                 dashboard: "Luxury Dahabiya" with the "Nile Cruise" script. */
+              lineRight="Luxury Dahabiya"
+              lineLeft="Nile Cruise"
               posterImageName={EX_HERO.imageName}
               responsiveVideoFrame
               responsiveVideoFrameTarget="#home-three-story"

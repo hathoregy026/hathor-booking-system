@@ -399,7 +399,7 @@
 
 .partners-company .pc-mark--easytrav {
   --pc-mark-h: 40;
-  aspect-ratio: 1;
+  aspect-ratio: 1728 / 760;
 }
 
 /* The art sets B. a hair right of its node and X a hair high. */
@@ -422,10 +422,6 @@
 
 .partners-company .pc-mark__tile {
   fill: var(--pc-tile);
-}
-
-.partners-company .pc-mark__emblem {
-  stroke: var(--pc-on-tile);
 }
 
 .partners-company .pc-mark__arrow {
@@ -454,14 +450,23 @@
   fill: var(--pc-mark-text);
 }
 
-.partners-company .pc-mark__caps--tile {
-  font-size: 6.7px;
-  fill: var(--pc-on-tile);
+/* Easy Trav: Roman capitals, weighted up a hair to the logo's stems, and the
+   tagline in the site's sans. Sizes live on the SVG so its geometry is one
+   place. */
+.partners-company .pc-mark__roman {
+  font-family: var(--pc-font-roman), "Forum", Georgia, serif;
+  font-weight: 400;
+  fill: var(--pc-mark-x);
+  stroke: var(--pc-mark-x);
+  stroke-width: 5;
+  stroke-linejoin: round;
+  paint-order: stroke;
 }
 
-.partners-company .pc-mark__caps--tag {
-  font-size: 2.3px;
-  opacity: 0.55;
+.partners-company .pc-mark__tagline {
+  font-family: var(--font-hathor-body), "Plus Jakarta Sans", Arial, sans-serif;
+  font-weight: 400;
+  fill: var(--pc-mark-x);
 }
 
 .partners-company .pc-mark__caps--x {
@@ -599,7 +604,7 @@
   }
 
   .partners-company .pc-mark--easytrav {
-    --pc-mark-h: 54;
+    --pc-mark-h: 50;
   }
 
   .partners-company .pc-mark--booking {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Cormorant_Garamond, EB_Garamond, Ms_Madi } from "next/font/google";
+import { Cormorant_Garamond, EB_Garamond, Forum, Ms_Madi } from "next/font/google";
 import {
   Fragment,
   useEffect,
@@ -43,6 +43,15 @@ const scriptFace = Ms_Madi({
   subsets: ["latin"],
   weight: "400",
   variable: "--pc-font-script",
+  display: "swap",
+  preload: false,
+});
+
+/* Roman capitals of the Easy Trav wordmark. */
+const romanFace = Forum({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--pc-font-roman",
   display: "swap",
   preload: false,
 });
@@ -116,7 +125,7 @@ export function PartnersCompanyStrip({
 
   return (
     <Root
-      className={`partners-company partners-company--${variant} ${displayFace.variable} ${textFace.variable} ${scriptFace.variable}`}
+      className={`partners-company partners-company--${variant} ${displayFace.variable} ${textFace.variable} ${scriptFace.variable} ${romanFace.variable}`}
       aria-labelledby="partners-company-title"
     >
       <div ref={frameRef} className="partners-company__frame">

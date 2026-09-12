@@ -7,62 +7,49 @@
 
 type MarkProps = { className?: string };
 
+/**
+ * Easy Trav's own logo, no ground: the sun open at its foot, two brush strokes
+ * of river, Roman capitals and the tagline. Drawn on the logo's 1700-unit
+ * board so every capital sits on the original letter's centre.
+ */
 export function EasyTravMark({ className = "" }: MarkProps) {
   return (
     <svg
       className={`pc-mark pc-mark--easytrav ${className}`}
-      viewBox="0 0 40 40"
+      viewBox="-14 0 1728 760"
       aria-hidden="true"
       focusable="false"
     >
-      <defs>
-        <radialGradient id="pc-easytrav-sheen" cx="0.5" cy="0.3" r="0.8">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.12" />
-          <stop offset="0.6" stopColor="#fff" stopOpacity="0" />
-          <stop offset="1" stopColor="#000" stopOpacity="0.16" />
-        </radialGradient>
-      </defs>
-      <rect className="pc-mark__tile" width="40" height="40" rx="0.7" />
-      <rect width="40" height="40" rx="0.7" fill="url(#pc-easytrav-sheen)" />
-      <g
-        className="pc-mark__emblem"
+      <path
+        className="pc-mark__hair"
+        d="M731 191.3A111 111 0 1 1 916.6 166.9"
         fill="none"
+        strokeWidth="9"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        transform="translate(20 17.4) scale(1.16) translate(-20 -16)"
-      >
-        <path
-          d="M18.2 16.9C15.9 15.8 15.6 12.4 17.6 10.8 19.6 9.2 22.6 10 22.9 12.4 23.2 14.6 21.2 16.4 18.8 17.4"
-          strokeWidth="0.8"
-        />
-        <path
-          d="M4.6 18.6C10.4 21.6 15.9 21.2 20.4 18.9 24.4 16.9 28 15.4 31.6 16.2"
-          strokeWidth="1"
-        />
-        <path
-          d="M9.2 20.6C14 22.6 19.4 22.4 24 20.6 27 19.4 29.4 19 32 19.6"
-          strokeWidth="0.5"
-        />
-      </g>
-      <text
-        className="pc-mark__caps pc-mark__caps--tile"
-        x="20"
-        y="30.6"
-        textAnchor="middle"
-        textLength="35.2"
-        lengthAdjust="spacing"
-      >
-        EASY TRAV
+      />
+      <path
+        className="pc-mark__x"
+        d="M735 228C770 205 810 186 860 183C905 180 945 190 985 205C1040 226 1100 250 1176 243C1135 262 1080 258 1030 240C985 224 945 212 900 209C840 205 785 216 735 228Z"
+      />
+      <path
+        className="pc-mark__x"
+        d="M495 250C560 292 630 322 700 321C790 320 880 278 972 219C910 252 830 290 750 296C660 302 575 285 495 250Z"
+      />
+      <text className="pc-mark__roman" x="-11 176.4 409.8 575.2" y="585" fontSize="290">
+        EASY
+      </text>
+      <text className="pc-mark__roman" x="901 1093.4 1308.9 1518.7" y="585" fontSize="290">
+        TRAV
       </text>
       <text
-        className="pc-mark__caps pc-mark__caps--tile pc-mark__caps--tag"
-        x="20"
-        y="34.2"
-        textAnchor="middle"
-        textLength="12.4"
+        className="pc-mark__tagline"
+        x="290"
+        y="725"
+        fontSize="100"
+        textLength="1091"
         lengthAdjust="spacing"
       >
-        TOURISM
+        Travel Made Easy
       </text>
     </svg>
   );

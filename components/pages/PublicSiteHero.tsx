@@ -475,10 +475,14 @@ export function PublicSiteHero({
           <div className="hero-responsive-video-frame" aria-hidden="true" />
           <div className="hero-one-stage">
             <div className="hero-one-copy">
+              {/* Same two lines as the desktop heading, so phone and desktop never drift. */}
               <h1 className="hero-one-title">
-                <span className="hero-line hero-line--right"><span>A world</span></span>
-                <span className="hero-line hero-line--left hero-line--plain"><span>beyond</span></span>
-                <span className="hero-line hero-line--right"><span>time.</span></span>
+                <span className="hero-line hero-line--right"><span>{displayRight}</span></span>
+                {displayLeft ? (
+                  <span className="hero-line hero-line--left hero-line--plain hero-one-title__script">
+                    <span>{displayLeft}</span>
+                  </span>
+                ) : null}
               </h1>
             </div>
             <p className="hero-one-location">

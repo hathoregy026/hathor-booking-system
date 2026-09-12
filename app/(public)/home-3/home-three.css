@@ -1649,13 +1649,15 @@ figure) {
     opacity 0.9s var(--h3-ease-soft);
 }
 
-.home-three .h3-imgtext .h3-support {
+.home-three .h3-imgtext .h3-support,
+.home-three .h3-imgtext .h3-imgtext__copy {
   color: rgb(243 237 228 / 82%);
   /* the module's column is col(8) wide; the 26rem note measure would set this
      as a narrow, very tall stack against the plates */
   max-width: none;
   columns: 2;
   column-gap: var(--h3-gap);
+  font-style: normal;
 }
 
 /* ============================== 07 · CAROUSEL · THE EXPERIENCES (marquee)
@@ -3509,6 +3511,7 @@ figure) {
   .home-three .h3-imgtext .h3-support {
     columns: 1;
     column-gap: 0;
+    font-style: normal;
   }
 
   /*
@@ -4161,7 +4164,7 @@ figure) {
 
   /*
    * Phone titles on the reel — Italiana at a size that fits 390–480px.
-   * Visible immediately (land delay is skipped in hero-scroll-stage).
+   * Overlay copy stays hidden until the 4s land hold, then the reel rise.
    */
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading,
   html[data-ex-experience] .ex-root .home-three-hero .home-hero-container .hero-heading .hero-line,
@@ -4653,6 +4656,10 @@ html[data-ex-experience]
     text-shadow: 0 4px 40px rgba(0, 0, 0, 0.32);
     color: #f7f1e6;
     -webkit-text-fill-color: #f7f1e6;
+    /* Hold the whole title off-screen until 4s — fill-mode:both is unreliable. */
+    opacity: 0;
+    visibility: hidden;
+    animation: h3-hero-one-title-gate 0.01s linear 4s forwards;
   }
 
   html[data-ex-experience]
@@ -4779,7 +4786,8 @@ html[data-ex-experience]
     line-height: 1 !important;
     padding: 0;
     margin: 0;
-    animation: h3-hero-one-title 1.65s cubic-bezier(0.19, 1, 0.22, 1) 4s both;
+    opacity: 0;
+    animation: h3-hero-one-title 1.65s cubic-bezier(0.19, 1, 0.22, 1) 4s forwards;
   }
 
   html[data-ex-experience]
@@ -5000,6 +5008,11 @@ html[data-ex-experience]
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
+    .hero-one-title,
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
     .hero-one-title > span > span,
   html[data-ex-experience]
     .ex-root
@@ -5007,6 +5020,8 @@ html[data-ex-experience]
     .home-hero--responsive-video-frame
     .hero-responsive-video-control--next {
     animation: none;
+    opacity: 1;
+    visibility: visible;
   }
 }
 
@@ -5040,6 +5055,17 @@ html[data-ex-experience]
   }
   50% {
     transform: translateY(3px);
+  }
+}
+
+@keyframes h3-hero-one-title-gate {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
   }
 }
 
@@ -6018,22 +6044,56 @@ html[data-ex-experience]
     container-type: size;
   }
 
-  /* 4.6em holds "A WORLD" with its tracking; 3.5em holds three lines and gaps */
+  /* 7.1em holds "Luxury Dahabiya"; 2.6em holds the line and the script on its foot */
   html[data-ex-experience]
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title {
-    font-size: min(clamp(44px, 14vw, 58px), calc(100cqw / 4.6), calc(100cqh / 3.5));
+    gap: 0;
+    font-size: min(clamp(44px, 14vw, 58px), calc(100cqw / 7.1), calc(100cqh / 2.6));
+    text-transform: none;
+    text-shadow: var(--h3-hero-shadow);
   }
 
-  /* hang the trailing tracking so every line centres on its letters */
   html[data-ex-experience]
     .ex-root
     .home-three-hero
     .home-hero--responsive-video-frame
-    .hero-one-title > span > span {
-    text-indent: 0.04em;
+    .hero-one-title
+    > .hero-line.hero-line--right {
+    font-family: "Italiana", Georgia, serif !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    text-shadow: var(--h3-hero-shadow) !important;
+  }
+
+  /* the reel's rise runs on the inner spans; they take each line's own measure */
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title
+    > .hero-line
+    > span {
+    line-height: inherit !important;
+  }
+
+  /* -0.285em puts the script's baseline 0.756 of the line's size below it */
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero--responsive-video-frame
+    .hero-one-title
+    > .hero-line.hero-line--left.hero-one-title__script {
+    margin-top: -0.285em !important;
+    font-family: "Bastliga One", var(--font-hathor-quiet-luxury, "Quiet Luxury"), cursive !important;
+    font-size: 1.3em !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    text-shadow: var(--h3-hero-shadow) !important;
   }
 }
 
@@ -6051,6 +6111,87 @@ html[data-ex-experience]
     .home-three-hero
     .home-hero--responsive-video-frame
     .hero-one-title {
-    font-size: min(clamp(68px, 20vw, 86px), calc(100cqw / 4.6), calc(100cqh / 3.5));
+    font-size: min(clamp(68px, 20vw, 86px), calc(100cqw / 7.1), calc(100cqh / 2.6));
+  }
+}
+
+/* ==========================================================================
+   HOMEPAGE HERO TITLE · "Luxury Dahabiya" over the "Nile Cruise" script
+   The footer's own pairing, set on the reel: Italiana for the line, Bastliga
+   One for the script laid across its foot, both white. The typography
+   dashboard still styles every other hero; only this one is restated here.
+   The old five-layer halo is replaced by one close shadow and one soft one —
+   enough to hold the letters on a bright frame without smudging them.
+   Motion is untouched: the lines keep their classes, so the land rise, the
+   scroll exit and the phone reel cycle all run as before.
+   ========================================================================== */
+.home-three-hero {
+  --h3-hero-shadow: 0 1px 2px rgb(8 5 4 / 32%), 0 2px 16px rgb(8 5 4 / 24%);
+}
+
+@media (min-width: 481px) {
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero-container
+    .hero-content
+    .hero-heading {
+    --h3-hero-m: clamp(3.25rem, 8.2vw, 8.25rem);
+    gap: 0 !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero-container.home-hero--clear-video
+    .hero-content
+    .hero-heading
+    .hero-line.hero-line--right {
+    left: 0 !important;
+    top: 0 !important;
+    font-family: "Italiana", var(--font-hathor-display, "Gamgote"), Georgia, serif !important;
+    font-size: var(--h3-hero-m) !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    white-space: nowrap !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    text-shadow: var(--h3-hero-shadow) !important;
+  }
+
+  html[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .home-hero-container.home-hero--clear-video
+    .hero-content
+    .hero-heading
+    .hero-line.hero-line--left.hero-line--plain {
+    left: 0 !important;
+    top: 0 !important;
+    margin-top: -0.285em !important;
+    font-family: "Bastliga One", var(--font-hathor-quiet-luxury, "Quiet Luxury"), cursive !important;
+    font-size: calc(var(--h3-hero-m) * 1.3) !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    white-space: nowrap !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    text-shadow: var(--h3-hero-shadow) !important;
+  }
+
+  /* First paint: keep desktop titles dark until the 4s GSAP land rise. */
+  html.ex-home[data-ex-experience]
+    .ex-root
+    .home-three-hero
+    .hero-content
+    .hero-heading
+    .hero-line {
+    opacity: 0;
   }
 }
