@@ -845,6 +845,7 @@ html[data-public-theme="night"] :is(
     .ac-hold
   ) :is(p, li, span, small, figcaption, .ac-edit, .chr-display, .pn-bridge__phrase) {
   color: var(--night-text) !important;
+  -webkit-text-fill-color: var(--night-text) !important;
 }
 
 /* ---- 5d. Gold-wash panels ---------------------------------------------
@@ -869,6 +870,7 @@ html[data-public-theme="night"] :is(
     .ac-bento-scene
   ) :is(p, li, span, small, dt, dd, figcaption, .ar-eyebrow, .ar-link, .ac-kicker, .ac-meta) {
   color: var(--night-text) !important;
+  -webkit-text-fill-color: var(--night-text) !important;
 }
 
 /* Rooms: the hold scene and bento captions read paper-warm in day. */
@@ -2254,7 +2256,23 @@ html[data-public-theme="night"] .home-three {
 /* The walls that were already dark in day and carry `--h3-paper` as their
    FOREGROUND. Enumerated explicitly — this is the section-5 trap again. The
    list is exactly the rules that read `color: var(--h3-paper)` in
-   home-three.css, so a wall cannot be missed by eye. */
+   home-three.css, so a wall cannot be missed by eye.
+
+   Night remaps `--h3-paper` to the canvas (a SURFACE). Titles such as
+   Twelve guests keep `-webkit-text-fill-color: var(--h3-paper)`, so restoring
+   `color` alone leaves ink-on-ink. Re-point paper to ivory on these walls and
+   set the fill, or the glyph stays canvas-coloured. */
+html[data-public-theme="night"] .home-three :is(
+    .h3-scene--dark,
+    .h3-imgtext,
+    .h3-carousel,
+    .h3-cierre,
+    .h3-terms,
+    .h3-projects__item--c
+  ):not(#_) {
+  --h3-paper: var(--night-text);
+}
+
 html[data-public-theme="night"] .home-three :is(
     .h3-scene--dark,
     .h3-imgtext,
@@ -2266,6 +2284,11 @@ html[data-public-theme="night"] .home-three :is(
   ):not(#_),
 html[data-public-theme="night"] .home-three .h3-sail--royal .h3-sail__body:not(#_) {
   color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .home-three .h3-terms__title:not(#_) {
+  color: var(--night-text) !important;
+  -webkit-text-fill-color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .home-three :is(
@@ -2288,6 +2311,11 @@ html[data-public-theme="night"] .home-three :is(
     .h3-terms
   ) :is(h1, h2, h3):not(#_) {
   color: var(--night-text) !important;
+  -webkit-text-fill-color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .home-three .h3-terms__num:not(#_) {
+  color: var(--night-gold) !important;
 }
 
 /* Gold stays the accent it is in day on these walls. */

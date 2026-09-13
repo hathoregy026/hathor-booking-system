@@ -76,11 +76,12 @@ function suitesCssTail() {
     SUITES_COLLECTION_PANEL_CSS,
     SUITES_EDITORIAL_CHROME_CSS,
     SUITES_DNA_COLOR_CSS,
-    EMBEDDED_PUBLIC_THEME_CSS,
     SUITES_RESPONSIVE_CHOREOGRAPHY_CSS,
     SUITES_REFERENCE_HERO_CSS,
     SUITES_CLONE_LAYOUT_FIX_CSS,
     SUITES_MOBILE_DESIGN_CSS,
+    /* Night last: later sheets pin day ink / -webkit-text-fill-color literals. */
+    EMBEDDED_PUBLIC_THEME_CSS,
   ].join("\n");
 }
 

@@ -19,6 +19,30 @@ html[data-public-theme="night"] {
   --c-light-blue-rgb: 33, 27, 20 !important;
 }
 
+/*
+ * Phone/tablet Suites CSS (suites-mobile-design) paints with --sm-* tokens on
+ * html body. Those stay day-ink (#14120e) unless remapped here at a higher
+ * specificity, which is what left "WHERE EVERY NILE HORIZON" and
+ * "YOUR NILE RESIDENCE AWAITS" as black type on the night canvas.
+ */
+html[data-public-theme="night"] body {
+  --sm-paper: #0f0d0a !important;
+  --sm-ivory: #17130f !important;
+  --sm-sand: #1c1712 !important;
+  --sm-stone: #241d15 !important;
+  --sm-gold: #c9ad72 !important;
+  --sm-ink-surface: #0b0907 !important;
+  --sm-text: #f4eddf !important;
+  --sm-text-soft: #d2c7b5 !important;
+  --sm-on-ink: #f4eddf !important;
+  --sm-on-ink-soft: rgb(244 237 223 / 0.74) !important;
+  --sm-on-gold: #f4eddf !important;
+  --sm-on-gold-soft: #d2c7b5 !important;
+  --sm-label: #c9ad72 !important;
+  --sm-hair: rgb(244 237 223 / 0.16) !important;
+  --sm-cream-edge: #f4eddf !important;
+}
+
 html[data-public-theme="night"],
 html[data-public-theme="night"] body,
 html[data-public-theme="night"] main,
@@ -225,9 +249,102 @@ html[data-public-theme="night"] main .mod-scroll__projects .last-item__content :
     p,
     a,
     strong,
-    em
+    em,
+    .line,
+    .char
   ) {
   color: #e9e1d3 !important;
   -webkit-text-fill-color: #e9e1d3 !important;
+}
+
+/*
+ * Display titles, SplitText lines, and the hardcoded #hathor-suites-typography
+ * sheet all pin #14120E (often via -webkit-text-fill-color) without a .bg-*
+ * ancestor. Night must beat those descendants or the glyph stays ink on the
+ * remapped dark wall.
+ */
+html[data-public-theme="night"] body,
+html[data-public-theme="night"] body :where(p, li, strong, em) {
+  color: #d2c7b5 !important;
+  -webkit-text-fill-color: #d2c7b5 !important;
+}
+
+html[data-public-theme="night"] body :is(
+    .t-supertitulo,
+    .t-supertitulo-l,
+    .t-supertitulo-xl,
+    .t-titulo-xxl,
+    .mod-scroll__intro__title,
+    .mod-scroll__carousel__text,
+    .mod-scroll__text__title,
+    .mod-scroll__text__title__line,
+    .mod-scroll__terms__term__title,
+    .mod-scroll__projects__item__text__title,
+    .last-item__content__title,
+    .last-item__content__title .line,
+    .anima__title,
+    .mod-title--lines .line,
+    .mod-scroll__projects__text,
+    .logo__normal,
+    .logo__boring
+  ),
+html[data-public-theme="night"] body :is(
+    .t-supertitulo,
+    .t-supertitulo-l,
+    .t-supertitulo-xl,
+    .t-titulo-xxl,
+    .mod-scroll__intro__title,
+    .mod-scroll__text__title__line,
+    .mod-scroll__terms__term__title,
+    .mod-scroll__projects__item__text__title,
+    .last-item__content__title,
+    .anima__title,
+    .mod-title--lines .line,
+    .mod-scroll__projects__text
+  ) :is(.line, .char, span, div) {
+  color: #f4eddf !important;
+  -webkit-text-fill-color: #f4eddf !important;
+}
+
+html[data-public-theme="night"] body :is(
+    .mod-scroll__section,
+    .last-item__content__section,
+    .mod-scroll__intro__copyright,
+    .mod-footer__footer__copyright,
+    .mod-title--chapter .mod-title__intro > div
+  ) {
+  color: #c9ad72 !important;
+  -webkit-text-fill-color: #c9ad72 !important;
+}
+
+html[data-public-theme="night"] body main .mod-content--cols .mod-content__text,
+html[data-public-theme="night"] body main .mod-content--cols .mod-content__text p,
+html[data-public-theme="night"] body main .mod-content--cols .mod-content__text a {
+  color: #d2c7b5 !important;
+  -webkit-text-fill-color: #d2c7b5 !important;
+}
+
+html[data-public-theme="night"] body main .mod-footer__content__project__year,
+html[data-public-theme="night"] body main .mod-footer__content__project__name,
+html[data-public-theme="night"] body main .mod-footer__content__project__text,
+html[data-public-theme="night"] body main .mod-footer__content__project__text * {
+  color: #e9e1d3 !important;
+  -webkit-text-fill-color: #e9e1d3 !important;
+}
+
+html[data-public-theme="night"] body main .suites-collection-rail
+  .mod-scroll__projects__item[data-suite-panel="ivory"]
+  .mod-scroll__projects__item__text,
+html[data-public-theme="night"] body main .suites-collection-rail
+  .mod-scroll__projects__item[data-suite-panel="ivory"]
+  .mod-scroll__projects__item__text :is(div, span, a, p, h3, strong, em, .line, .char) {
+  color: #e9e1d3 !important;
+  -webkit-text-fill-color: #e9e1d3 !important;
+}
+
+/* Cream glass pills over the hero collage keep dark type — light on light. */
+html[data-public-theme="night"] .srh-actions a:not(.srh-actions__primary) {
+  color: #17140f !important;
+  -webkit-text-fill-color: #17140f !important;
 }
 `;
