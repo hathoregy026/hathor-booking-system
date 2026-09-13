@@ -125,8 +125,7 @@ html[data-public-theme="day"] .hathor-header--over-hero:not(.hathor-header--menu
 /* Burger: gold over homepage imagery; ink on the cream chrome bar. */
 .public-site .hathor-header:not(.hathor-header--chrome) .hathor-header__menu-btn,
 .public-site .hathor-header:not(.hathor-header--chrome).hathor-header--owo-hero-layout .hathor-header__menu-btn,
-html[data-public-theme="day"] .hathor-header:not(.hathor-header--chrome).hathor-header--over-hero .hathor-header__menu-btn,
-html[data-public-theme="night"] .hathor-header:not(.hathor-header--chrome) .hathor-header__menu-btn {
+html[data-public-theme="day"] .hathor-header:not(.hathor-header--chrome).hathor-header--over-hero .hathor-header__menu-btn {
   color: #b69f64 !important;
 }
 
@@ -153,8 +152,7 @@ html[data-public-theme="night"] .hathor-header:not(.hathor-header--chrome) .hath
 /* Gold / charcoal editorial pill — beats land/scroll glass styles. */
 .public-site .hathor-header .public-theme-toggle,
 .public-site .hathor-header--owo-hero-layout .public-theme-toggle,
-.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle,
-html[data-public-theme="night"] .public-theme-toggle {
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle {
   color: #b69f64 !important;
   background: transparent !important;
 }
@@ -162,8 +160,7 @@ html[data-public-theme="night"] .public-theme-toggle {
 .public-site .hathor-header .public-theme-toggle__track,
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-active .public-theme-toggle__track,
 .public-site .hathor-header--owo-hero-layout.hathor-header--nav-compact .public-theme-toggle__track,
-.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__track,
-html[data-public-theme="night"] .public-theme-toggle__track {
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__track {
   background: #c4b57b !important;
   border-color: #c4b57b !important;
   box-shadow: none !important;
@@ -172,16 +169,14 @@ html[data-public-theme="night"] .public-theme-toggle__track {
 }
 
 .public-site .hathor-header .public-theme-toggle.is-night .public-theme-toggle__track,
-.public-site .hathor-header--owo-hero-layout .public-theme-toggle.is-night .public-theme-toggle__track,
-html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-toggle__track {
+.public-site .hathor-header--owo-hero-layout .public-theme-toggle.is-night .public-theme-toggle__track {
   background: #1a1714 !important;
   border-color: #c4b57b !important;
 }
 
 .public-site .hathor-header .public-theme-toggle__thumb,
 .public-site .hathor-header--owo-hero-layout.hathor-header--menu-active .public-theme-toggle__thumb,
-.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__thumb,
-html[data-public-theme="night"] .public-theme-toggle__thumb {
+.public-site .hathor-header--owo-hero-layout.hathor-header--menu-hovered .public-theme-toggle__thumb {
   position: relative !important;
   top: auto !important;
   left: auto !important;
@@ -194,6 +189,30 @@ html[data-public-theme="night"] .public-theme-toggle__thumb {
 
 .public-site .hathor-header .public-theme-toggle__label {
   color: #f2efe6 !important;
+}
+
+html[data-public-theme="night"] .hathor-header:not(.hathor-header--chrome) .hathor-header__menu-btn {
+  color: #e9e1d3 !important;
+}
+
+html[data-public-theme="night"] .public-theme-toggle {
+  color: #e9e1d3 !important;
+  background: transparent !important;
+}
+
+html[data-public-theme="night"] .public-theme-toggle__track,
+html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-toggle__track {
+  background: #241d15 !important;
+  border-color: rgb(233 225 211 / 55%) !important;
+}
+
+html[data-public-theme="night"] .public-theme-toggle__thumb {
+  background: #e9e1d3 !important;
+  color: #14110d !important;
+}
+
+html[data-public-theme="night"] .public-theme-toggle__label {
+  color: #e9e1d3 !important;
 }
 
 /* ==========================================================================
@@ -217,25 +236,27 @@ html[data-public-theme="night"] {
   --night-text-soft: #c8bda9;
   --night-muted: #a29885;
 
-  /* Gold reads as a true accent at night: 8.99:1 vs day's 2.05:1. */
-  --night-gold: #cbb079;
-  --night-gold-strong: #dfc894;
-  --night-gold-dim: rgb(203 176 121 / 62%);
+  /* Night is dark grades + white type only. Former gold tokens resolve to
+     ivory so labels, links and hairlines cannot introduce a second hue. */
+  --night-gold: #e9e1d3;
+  --night-gold-strong: #f4eddf;
+  --night-gold-dim: rgb(233 225 211 / 28%);
 
   /* Hairlines invert: light-alpha on dark instead of dark-alpha on light. */
-  --night-line: rgb(203 176 121 / 26%);
+  --night-line: rgb(233 225 211 / 22%);
   --night-line-soft: rgb(233 225 211 / 12%);
   --night-line-faint: rgb(233 225 211 / 7%);
 
   --night-shadow: 0 18px 60px rgb(0 0 0 / 46%);
   --night-shadow-soft: 0 10px 34px rgb(0 0 0 / 34%);
 
-  /* Two very low-amplitude gold blooms keep a flat near-black from reading
-     dead. Amplitude is deliberately under 8% so it never becomes a gradient. */
   --night-atmosphere:
-    radial-gradient(circle at 14% -14%, rgb(203 176 121 / 7%), transparent 38rem),
-    radial-gradient(circle at 94% 12%, rgb(140 116 62 / 5%), transparent 34rem),
     linear-gradient(180deg, #17130e 0%, var(--night-canvas) 46%, #100d0a 100%);
+
+  --nav-lux-gold: var(--night-text);
+  --nav-lux-gold-soft: rgb(233 225 211 / 0.38);
+  --lux-gold: var(--night-panel);
+  --hathor-mark-gold: var(--night-text);
 
   /* ---- Bridges into the shared public token vocabulary ---- */
   --bg-gradient: var(--night-atmosphere);
@@ -277,9 +298,22 @@ html[data-public-theme="night"] {
   --hathor-muted: var(--night-muted);
   --hathor-accent: var(--night-gold);
 
+  --hathor-gold: var(--night-text);
+  --hathor-gold-bright: var(--night-text);
+  --am-gold: var(--night-panel);
+  --pt-gold: var(--night-text);
+  --pc-gold: var(--night-panel);
+  --pc-gold-deep: var(--night-olive);
+  --pc-gold-text: var(--night-text);
+  --iv-gold: var(--night-panel);
+  --lx-gold: var(--night-panel);
+  --lx-gold-soft: var(--night-olive);
+  --cp-gold: var(--night-text);
+  --booking-gold-metal: var(--night-panel);
+
   /* Shared pill-button labels (public.css owns the geometry). */
-  --hathor-btn-label: var(--night-gold-strong);
-  --hathor-btn-hover-label: var(--night-canvas);
+  --hathor-btn-label: var(--night-text);
+  --hathor-btn-hover-label: var(--night-text);
 }
 
 /* ==========================================================================
@@ -304,6 +338,17 @@ html[data-public-theme="night"] :is(
     .public-page-body,
     .home-experience-route
   ) {
+  --lux-gold: var(--night-panel);
+  --lux-gold-bright: var(--night-text);
+  --lux-gold-cream: var(--night-panel);
+  --lux-cream: var(--night-canvas);
+  --lux-beige: var(--night-surface);
+  --lux-white: var(--night-text);
+  --lux-dark: var(--night-canvas);
+  --lux-dark-2: var(--night-surface);
+  --hathor-gold: var(--night-text);
+  --hathor-gold-bright: var(--night-text);
+  --hathor-accent: var(--night-text);
   background-color: transparent !important;
   color: var(--night-text-soft);
   letter-spacing: normal;
@@ -320,7 +365,7 @@ html[data-public-theme="night"] :is(.owo-hero, .preview-hero, .pt-hero, .hathor-
 }
 
 html[data-public-theme="night"] ::selection {
-  background: var(--night-gold);
+  background: var(--night-text);
   color: var(--night-canvas);
 }
 
@@ -344,7 +389,7 @@ html[data-public-theme="night"] .about-boring {
   --ab-ink: var(--night-text);
   --ab-ink-soft: var(--night-text-soft);
   --ab-gold: var(--night-gold);
-  --ab-gold-deep: var(--night-gold-strong);
+  --ab-gold-deep: var(--night-panel);
   --ab-wash-sand: var(--night-surface-raised);
   --ab-wash-stone: var(--night-stone);
   --ab-wash-olive: var(--night-olive);
@@ -361,7 +406,7 @@ html[data-public-theme="night"] .voyages-boring {
   --vb-ink: var(--night-text);
   --vb-ink-soft: var(--night-text-soft);
   --vb-gold: var(--night-gold);
-  --vb-gold-deep: var(--night-gold-strong);
+  --vb-gold-deep: var(--night-panel);
   --vb-wash-sand: var(--night-surface-raised);
   --vb-wash-stone: var(--night-stone);
   --vb-wash-olive: var(--night-olive);
@@ -370,8 +415,8 @@ html[data-public-theme="night"] .voyages-boring {
   --vb-cream-1: var(--vb-paper);
   --vb-cream-2: var(--vb-paper-warm);
   --vb-gold-1: var(--vb-wash-sand);
-  --vb-gold-2: var(--vb-gold);
-  --vb-gold-3: var(--vb-ink);
+  --vb-gold-2: var(--night-text);
+  --vb-gold-3: var(--night-olive);
   background-color: var(--night-canvas) !important;
   color: var(--night-text-soft) !important;
 }
@@ -384,7 +429,7 @@ html[data-public-theme="night"] .terms-editorial {
   --ce-ink: var(--night-text);
   --ce-ink-soft: var(--night-text-soft);
   --ce-gold: var(--night-gold);
-  --ce-gold-deep: var(--night-gold-strong);
+  --ce-gold-deep: var(--night-panel);
   --ce-wash-sand: var(--night-surface-raised);
   --ce-wash-stone: var(--night-stone);
   --ce-wash-olive: var(--night-olive);
@@ -401,7 +446,7 @@ html[data-public-theme="night"] .highlights-editorial {
   --hl-ink: var(--night-text);
   --hl-ink-soft: var(--night-text-soft);
   --hl-gold: var(--night-gold);
-  --hl-gold-deep: var(--night-gold-strong);
+  --hl-gold-deep: var(--night-panel);
   --hl-wash-sand: var(--night-surface-raised);
   --hl-wash-stone: var(--night-stone);
   --hl-wash-olive: var(--night-olive);
@@ -418,7 +463,7 @@ html[data-public-theme="night"] .wellness-editorial {
   --we-ink: var(--night-text);
   --we-ink-soft: var(--night-text-soft);
   --we-gold: var(--night-gold);
-  --we-gold-deep: var(--night-gold-strong);
+  --we-gold-deep: var(--night-panel);
   --we-wash-sand: var(--night-surface-raised);
   --we-wash-stone: var(--night-stone);
   --we-wash-olive: var(--night-olive);
@@ -435,7 +480,7 @@ html[data-public-theme="night"] .charter-editorial {
   --chr-ink: var(--night-text);
   --chr-ink-soft: var(--night-text-soft);
   --chr-gold: var(--night-gold);
-  --chr-gold-deep: var(--night-gold-strong);
+  --chr-gold-deep: var(--night-panel);
   --chr-wash-sand: var(--night-surface-raised);
   --chr-wash-stone: var(--night-stone);
   --chr-wash-olive: var(--night-olive);
@@ -452,7 +497,7 @@ html[data-public-theme="night"] .partners-editorial {
   --pn-ink: var(--night-text);
   --pn-ink-soft: var(--night-text-soft);
   --pn-gold: var(--night-gold);
-  --pn-gold-deep: var(--night-gold-strong);
+  --pn-gold-deep: var(--night-panel);
   --pn-wash-sand: var(--night-surface-raised);
   --pn-wash-stone: var(--night-stone);
   --pn-wash-olive: var(--night-olive);
@@ -469,7 +514,7 @@ html[data-public-theme="night"] .journal-editorial {
   --jn-ink: var(--night-text);
   --jn-ink-soft: var(--night-text-soft);
   --jn-gold: var(--night-gold);
-  --jn-gold-deep: var(--night-gold-strong);
+  --jn-gold-deep: var(--night-panel);
   --jn-wash-sand: var(--night-surface-raised);
   --jn-wash-stone: var(--night-stone);
   --jn-wash-olive: var(--night-olive);
@@ -486,7 +531,7 @@ html[data-public-theme="night"] .article-editorial {
   --ar-ink: var(--night-text);
   --ar-ink-soft: var(--night-text-soft);
   --ar-gold: var(--night-gold);
-  --ar-gold-deep: var(--night-gold-strong);
+  --ar-gold-deep: var(--night-panel);
   --ar-wash-sand: var(--night-surface-raised);
   --ar-wash-stone: var(--night-stone);
   --ar-wash-olive: var(--night-olive);
@@ -504,7 +549,7 @@ html[data-public-theme="night"] .accom-editorial-shell {
   --ac-ink: var(--night-text);
   --ac-ink-soft: var(--night-text-soft);
   --ac-gold: var(--night-gold);
-  --ac-gold-deep: var(--night-gold-strong);
+  --ac-gold-deep: var(--night-panel);
   --ac-wash-sand: var(--night-surface-raised);
   --ac-wash-stone: var(--night-stone);
   --ac-wash-olive: var(--night-olive);
@@ -521,7 +566,7 @@ html[data-public-theme="night"] .booking-page {
   --br-ink: var(--night-text);
   --br-soft: var(--night-text-soft);
   --br-gold: var(--night-gold);
-  --br-gold-deep: var(--night-gold-strong);
+  --br-gold-deep: var(--night-panel);
   --br-sand: var(--night-surface-raised);
   --br-stone: var(--night-stone);
   --br-olive: var(--night-olive);
@@ -537,7 +582,7 @@ html[data-public-theme="night"] .booking-success {
   --bs-ink: var(--night-text);
   --bs-soft: var(--night-text-soft);
   --bs-gold: var(--night-gold);
-  --bs-gold-deep: var(--night-gold-strong);
+  --bs-gold-deep: var(--night-panel);
   --bs-hair: var(--night-line-soft);
   background-color: var(--night-canvas) !important;
   color: var(--night-text-soft) !important;
@@ -573,8 +618,12 @@ html[data-public-theme="night"] :is(.venetian-page, .page-accommodation, .page-c
   --ink: var(--night-text);
   --ink-soft: var(--night-text-soft);
   --muted: var(--night-muted);
+  --gold: var(--night-panel);
+  --gold-soft: var(--night-olive);
+  --white: var(--night-text);
   --lux-paper: var(--night-canvas);
   --lux-paper-deep: var(--night-surface);
+  --lux-gold: var(--night-panel);
   background-color: var(--night-canvas) !important;
   color: var(--night-text-soft) !important;
 }
@@ -617,7 +666,7 @@ html[data-public-theme="night"] .hathor-editorial-page {
   --hep-ink: var(--night-text);
   --hep-ink-soft: var(--night-text-soft);
   --hep-gold: var(--night-gold);
-  --hep-gold-deep: var(--night-gold-strong);
+  --hep-gold-deep: var(--night-panel);
   --hep-line: var(--night-line-soft);
   background-color: var(--night-canvas) !important;
   color: var(--night-text-soft) !important;
@@ -629,7 +678,7 @@ html[data-public-theme="night"] .cr-intro {
   --cr-ink: var(--night-text);
   --cr-ink-soft: var(--night-text-soft);
   --cr-gold: var(--night-gold);
-  --cr-gold-deep: var(--night-gold-strong);
+  --cr-gold-deep: var(--night-panel);
   background-color: var(--night-canvas) !important;
   color: var(--night-text-soft) !important;
 }
@@ -639,8 +688,8 @@ html[data-public-theme="night"] .mask-reveal-route {
   --mr-cream: var(--night-canvas);
   --mr-cream-deep: var(--night-surface);
   --mr-cream-soft: var(--night-surface-raised);
-  --mr-gold: var(--night-gold);
-  --mr-gold-soft: var(--night-gold-strong);
+  --mr-gold: var(--night-panel);
+  --mr-gold-soft: var(--night-olive);
   --mr-ink: var(--night-text);
   --mr-muted: var(--night-muted);
   --mr-line: var(--night-line);
@@ -658,14 +707,14 @@ html[data-public-theme="night"] :is(.gastronomy-dining-shell, .nib-dining) {
   --nib-night: var(--night-canvas);
   --nib-cream: var(--night-text);
   --nib-cream-soft: var(--night-text-soft);
-  --nib-gold: var(--night-gold);
-  --nib-gold-deep: var(--night-gold-strong);
+  --nib-gold: var(--night-panel);
+  --nib-gold-deep: var(--night-panel);
   background-color: var(--night-canvas) !important;
 }
 
 html[data-public-theme="night"] .nib-surface--cream {
   background-color: var(--night-canvas) !important;
-  background-image: radial-gradient(circle at 68% 38%, rgb(203 176 121 / 8%), transparent 34%) !important;
+  background-image: none !important;
   color: var(--night-text-soft) !important;
 }
 
@@ -675,9 +724,9 @@ html[data-public-theme="night"] .suites-native-route {
   --sn-cream-deep: var(--night-surface);
   --sn-cream-soft: var(--night-surface-raised);
   --sn-hero-cream: var(--night-text);
-  --sn-gold: var(--night-gold);
-  --sn-gold-soft: var(--night-gold-strong);
-  --sn-gold-deep: var(--night-gold-strong);
+  --sn-gold: var(--night-panel);
+  --sn-gold-soft: var(--night-olive);
+  --sn-gold-deep: var(--night-panel);
   --sn-ink: var(--night-gold-strong);
   --sn-on-bg: var(--night-text);
   --sn-on-bg-muted: var(--night-muted);
@@ -801,15 +850,15 @@ html[data-public-theme="night"][data-mask-reveal] .public-site {
    brightest object on the page, so it takes the gold that the roster primary
    uses — same emphasis, a fraction of the glare. */
 html[data-public-theme="night"] .vb-reserve__button {
-  background: var(--night-gold) !important;
-  border-color: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
+  background: var(--night-panel) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .vb-reserve__button:is(:hover, :focus-visible) {
-  background: var(--night-gold-strong) !important;
-  border-color: var(--night-gold-strong) !important;
-  color: var(--night-canvas) !important;
+  background: var(--night-hover) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
 }
 
 /* ---- 5b. Vertical scene rails -----------------------------------------
@@ -921,9 +970,7 @@ html[data-public-theme="night"] :is(.vb-project__link, .vb-charter__link) {
 /* The reserve scene washes a gold radial over paper; on the dark ground the
    same wash needs a fraction of its day amplitude to stay a glow, not a haze. */
 html[data-public-theme="night"] .vb-reserve {
-  background:
-    radial-gradient(circle at 50% 44%, rgb(203 176 121 / 12%), transparent 38%),
-    var(--night-canvas) !important;
+  background: var(--night-canvas) !important;
 }
 
 
@@ -1005,7 +1052,7 @@ html[data-public-theme="night"] .hathor-header__dropdown-link {
 }
 
 html[data-public-theme="night"] .hathor-header__dropdown-link:is(:hover, :focus-visible) {
-  background: rgb(203 176 121 / 10%) !important;
+  background: rgb(233 225 211 / 10%) !important;
   color: var(--night-gold-strong) !important;
 }
 
@@ -1013,8 +1060,8 @@ html[data-public-theme="night"] .hathor-header__dropdown-link:is(:hover, :focus-
 html[data-public-theme="night"] .eno {
   --eno-cream: var(--night-surface);
   --eno-cream-deep: var(--night-canvas);
-  --eno-gold: var(--night-gold);
-  --eno-gold-deep: var(--night-gold-strong);
+  --eno-gold: var(--night-text);
+  --eno-gold-deep: var(--night-panel);
   --eno-ink: var(--night-text);
   --eno-muted: var(--night-muted);
   --eno-line: var(--night-line-soft);
@@ -1024,6 +1071,12 @@ html[data-public-theme="night"] .eno-prelayer--1 { background: var(--night-olive
 html[data-public-theme="night"] .eno-prelayer--2 { background: var(--night-panel) !important; }
 html[data-public-theme="night"] .eno-prelayer--3 { background: var(--night-canvas) !important; }
 html[data-public-theme="night"] .eno-panel { background: var(--night-surface) !important; }
+
+html[data-public-theme="night"] .eno-close:is(:hover, :focus-visible) {
+  background: var(--night-panel) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
+}
 
 /* ---- Site footer ----
    The footer declares its whole palette as --hf-* tokens, so night is a remap
@@ -1037,9 +1090,9 @@ html[data-public-theme="night"] .hf {
   --hf-ink-soft: var(--night-text-soft);
   --hf-meta: var(--night-muted);
   --hf-gold: var(--night-gold);
-  --hf-gold-deep: var(--night-gold-strong);
-  --hf-line: rgb(203 176 121 / 34%);
-  --hf-line-soft: rgb(203 176 121 / 18%);
+  --hf-gold-deep: var(--night-panel);
+  --hf-line: rgb(233 225 211 / 28%);
+  --hf-line-soft: rgb(233 225 211 / 14%);
   --hf-ghost: rgb(233 225 211 / 6%);
   --hf-video-opacity: 0.92;
   --hf-video-filter: saturate(0.78) contrast(1.08) brightness(0.5);
@@ -1057,7 +1110,7 @@ html[data-public-theme="night"] .public-site :is(.hf__link, .hf__base-link) {
  * relationship day has.
  */
 html[data-public-theme="night"] .public-site .hf__col-title {
-  color: var(--hf-gold-deep);
+  color: var(--night-text);
 }
 
 html[data-public-theme="night"] .public-site .hf__eyebrow {
@@ -1069,7 +1122,8 @@ html[data-public-theme="night"] .public-site .hf__legal {
 }
 
 html[data-public-theme="night"] .hf__top:hover {
-  color: var(--night-canvas);
+  background: var(--night-panel) !important;
+  color: var(--night-text) !important;
 }
 
 /* ---- Raised cards and hero copy chrome ---- */
@@ -1150,8 +1204,8 @@ html[data-public-theme="night"] .public-site :is(
     .btn-primary:not(.hero-cta)
   ) {
   background-color: transparent !important;
-  border-color: var(--night-gold) !important;
-  color: var(--night-gold-strong) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
   box-shadow: none !important;
 }
 
@@ -1160,9 +1214,9 @@ html[data-public-theme="night"] .public-site :is(
     .public-btn-outline-gold,
     .btn-primary:not(.hero-cta)
   ):is(:hover, :focus-visible) {
-  background-color: var(--night-gold) !important;
-  border-color: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
+  background-color: var(--night-panel) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .public-site .public-btn-dark {
@@ -1201,7 +1255,7 @@ html[data-public-theme="night"] .public-site :is(input, textarea)::placeholder {
 
 html[data-public-theme="night"] .public-site :is(input, textarea, select):focus-visible {
   border-color: var(--night-gold) !important;
-  outline: 2px solid rgb(203 176 121 / 34%);
+  outline: 2px solid rgb(233 225 211 / 34%);
   outline-offset: 2px;
 }
 
@@ -1234,11 +1288,11 @@ html[data-public-theme="night"] .public-theme-toggle.is-night .public-theme-togg
 
 /* ---- Scrollbar ---- */
 html[data-public-theme="night"] * {
-  scrollbar-color: rgb(203 176 121 / 38%) transparent;
+  scrollbar-color: rgb(233 225 211 / 38%) transparent;
 }
 
 html[data-public-theme="night"] ::-webkit-scrollbar-thumb {
-  background-color: rgb(203 176 121 / 34%);
+  background-color: rgb(233 225 211 / 34%);
   border-radius: 999px;
 }
 
@@ -1406,8 +1460,8 @@ html[data-public-theme="night"] :is(
 }
 
 html[data-public-theme="night"] .historia-cal-day--available:hover {
-  background-color: var(--night-gold-strong) !important;
-  color: var(--night-canvas) !important;
+  background-color: var(--night-hover) !important;
+  color: var(--night-text) !important;
 }
 
 /* ---- Coming-soon shell ---- */
@@ -1509,7 +1563,7 @@ html[data-public-theme="night"] .home-editorial {
   --h2-ink: var(--night-text);
   --h2-ink-soft: var(--night-text-soft);
   --h2-gold: var(--night-gold);
-  --h2-gold-deep: var(--night-gold-strong);
+  --h2-gold-deep: var(--night-panel);
   --h2-sand: var(--night-surface-raised);
   --h2-stone: var(--night-stone);
   --h2-olive: var(--night-olive);
@@ -1535,7 +1589,7 @@ html[data-public-theme="night"]:has(.home-editorial) :is(.public-site, .public-m
    to sit on html to outrank it. */
 html[data-public-theme="night"] {
   --cruises-cream: var(--night-canvas);
-  --cruises-gold: var(--night-gold);
+  --cruises-gold: var(--night-text);
 }
 
 /* Rooms showcase */
@@ -1543,8 +1597,8 @@ html[data-public-theme="night"] :is(.room-collection, .room-detail) {
   --room-cream: var(--night-canvas);
   --room-paper: var(--night-canvas);
   --room-soft: var(--night-surface);
-  --room-gold: var(--night-gold);
-  --room-gold-deep: var(--night-gold-strong);
+  --room-gold: var(--night-panel);
+  --room-gold-deep: var(--night-panel);
   --room-ink: var(--night-text);
   --room-ink-soft: var(--night-text-soft);
   --room-line: var(--night-line-soft);
@@ -1556,7 +1610,7 @@ html[data-public-theme="night"] :is(.room-collection, .room-detail) {
 html[data-public-theme="night"] .preview-site {
   --preview-bg: var(--night-canvas);
   --preview-surface: var(--night-panel);
-  --preview-gold: var(--night-gold);
+  --preview-gold: var(--night-panel);
   --preview-cream: var(--night-text);
   --preview-muted: var(--night-muted);
 }
@@ -1569,9 +1623,9 @@ html[data-public-theme="night"] .preview-header--light {
 html[data-public-theme="night"] .staggered-menu-wrapper {
   --sm-cream: var(--night-surface);
   --sm-cream-deep: var(--night-canvas);
-  --sm-gold: var(--night-gold);
-  --sm-gold-hard: var(--night-gold-strong);
-  --sm-gold-deep: var(--night-gold-strong);
+  --sm-gold: var(--night-panel);
+  --sm-gold-hard: var(--night-hover);
+  --sm-gold-deep: var(--night-olive);
   --sm-ink: var(--night-text);
   --sm-muted: var(--night-muted);
 }
@@ -1579,8 +1633,8 @@ html[data-public-theme="night"] .staggered-menu-wrapper {
 /* Favorites panel */
 html[data-public-theme="night"] .hfp {
   --hfp-cream: var(--night-panel);
-  --hfp-gold: var(--night-gold);
-  --hfp-gold-deep: var(--night-gold-strong);
+  --hfp-gold: var(--night-panel);
+  --hfp-gold-deep: var(--night-panel);
   --hfp-ink: var(--night-text);
   --hfp-line: var(--night-line-soft);
 }
@@ -1588,14 +1642,14 @@ html[data-public-theme="night"] .hfp {
 /* Add-to-voyage + favourite controls */
 html[data-public-theme="night"] .hathor-atv {
   --atv-cream: var(--night-panel);
-  --atv-gold: var(--night-gold);
-  --atv-gold-deep: var(--night-gold-strong);
+  --atv-gold: var(--night-panel);
+  --atv-gold-deep: var(--night-panel);
 }
 
 html[data-public-theme="night"] .hathor-fav {
   --hathor-fav-cream: var(--night-panel);
-  --hathor-fav-gold: var(--night-gold);
-  --hathor-fav-gold-deep: var(--night-gold-strong);
+  --hathor-fav-gold: var(--night-panel);
+  --hathor-fav-gold-deep: var(--night-panel);
 }
 
 html[data-public-theme="night"] .hathor-atv-confirm__panel {
@@ -1682,8 +1736,8 @@ html[data-public-theme="night"] .booking-page {
   --booking-bg-alt: var(--night-surface);
   --booking-surface: var(--night-surface-raised);
   --booking-card: var(--night-panel);
-  --booking-gold: var(--night-gold);
-  --booking-gold-dark: var(--night-gold-strong);
+  --booking-gold: var(--night-panel);
+  --booking-gold-dark: var(--night-olive);
   --booking-gold-light: var(--night-olive);
   --booking-navy: var(--night-text);
   --booking-navy-hover: var(--night-gold-strong);
@@ -1696,8 +1750,8 @@ html[data-public-theme="night"] .booking-page {
 }
 
 html[data-public-theme="night"] .hathor-booking-gate {
-  --gate-gold: var(--night-gold);
-  --gate-gold-deep: var(--night-gold-strong);
+  --gate-gold: var(--night-panel);
+  --gate-gold-deep: var(--night-panel);
   --gate-ink: var(--night-text);
   --gate-muted: var(--night-muted);
   --gate-cream: var(--night-canvas);
@@ -1705,8 +1759,8 @@ html[data-public-theme="night"] .hathor-booking-gate {
 }
 
 html[data-public-theme="night"] .hathor-voyage-stage {
-  --voyage-gold: var(--night-gold);
-  --voyage-gold-deep: var(--night-gold-strong);
+  --voyage-gold: var(--night-panel);
+  --voyage-gold-deep: var(--night-panel);
   --voyage-ink: var(--night-text);
   --voyage-muted: var(--night-muted);
   --voyage-cream: var(--night-canvas);
@@ -1722,16 +1776,12 @@ html[data-public-theme="night"] :is(.booking-page, .booking-shell-bg) {
 }
 
 html[data-public-theme="night"] .hathor-booking-gate {
-  background:
-    radial-gradient(ellipse 70% 42% at 50% 12%, rgb(203 176 121 / 12%), transparent 58%),
-    linear-gradient(180deg, #17130e 0%, var(--night-canvas) 100%) !important;
+  background: linear-gradient(180deg, #17130e 0%, var(--night-canvas) 100%) !important;
   color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .hathor-checkout {
-  background:
-    radial-gradient(circle at 8% 8%, rgb(203 176 121 / 12%), transparent 42%),
-    var(--night-canvas) !important;
+  background: var(--night-canvas) !important;
   color: var(--night-text) !important;
 }
 
@@ -1739,9 +1789,7 @@ html[data-public-theme="night"] :is(
     .booking-room-editorial__utilities,
     .booking-room-editorial__reserve
   ) {
-  background:
-    radial-gradient(circle at 20% 10%, rgb(203 176 121 / 11%), transparent 46%),
-    var(--night-surface) !important;
+  background: var(--night-surface) !important;
   color: var(--night-text-soft) !important;
 }
 
@@ -1752,9 +1800,7 @@ html[data-public-theme="night"] .cp-section--soft {
 }
 
 html[data-public-theme="night"] .sn-section--soft {
-  background:
-    radial-gradient(ellipse at 90% 0%, rgb(203 176 121 / 10%), transparent 55%),
-    var(--night-surface) !important;
+  background: var(--night-surface) !important;
   color: var(--night-text-soft) !important;
 }
 
@@ -1769,9 +1815,7 @@ html[data-public-theme="night"] .staggered-menu-panel {
 }
 
 html[data-public-theme="night"] .contact-success-popup__panel {
-  background:
-    radial-gradient(circle at 12% 8%, rgb(203 176 121 / 16%), transparent 46%),
-    var(--night-panel) !important;
+  background: var(--night-panel) !important;
   border-color: var(--night-line) !important;
   color: var(--night-text) !important;
 }
@@ -1813,21 +1857,21 @@ html[data-public-theme="night"] .sn-comfort__fog {
    Warning sits close to brand gold by necessity — every component using it
    also carries a text label, so state never rests on colour alone. */
 html[data-public-theme="night"] {
-  --night-danger: #e0806e;          /* 6.74:1 */
-  --night-danger-surface: rgb(224 128 110 / 12%);
-  --night-danger-line: rgb(224 128 110 / 42%);
+  --night-danger: var(--night-text);
+  --night-danger-surface: var(--night-panel);
+  --night-danger-line: rgb(233 225 211 / 42%);
 
-  --night-success: #8fb37c;         /* 8.04:1 */
-  --night-success-surface: rgb(143 179 124 / 12%);
-  --night-success-line: rgb(143 179 124 / 40%);
+  --night-success: var(--night-text);
+  --night-success-surface: var(--night-panel);
+  --night-success-line: rgb(233 225 211 / 40%);
 
-  --night-warning: #e5a94f;         /* 8.86:1 */
-  --night-warning-surface: rgb(229 169 79 / 12%);
-  --night-warning-line: rgb(229 169 79 / 40%);
+  --night-warning: var(--night-text);
+  --night-warning-surface: var(--night-panel);
+  --night-warning-line: rgb(233 225 211 / 40%);
 
-  --night-info: #b9b2a2;            /* 8.99:1 */
-  --night-info-surface: rgb(185 178 162 / 10%);
-  --night-info-line: rgb(185 178 162 / 34%);
+  --night-info: var(--night-text-soft);
+  --night-info-surface: var(--night-surface);
+  --night-info-line: rgb(233 225 211 / 34%);
 
   /* Focus is the one place the palette is allowed to shout. */
   --night-focus: var(--night-gold-strong);
@@ -2002,7 +2046,7 @@ html[data-public-theme="night"]:not(:has(.home-four)) :is(input, textarea, selec
    solid pill is re-stated explicitly rather than left to the flip. */
 html[data-public-theme="night"] .rh {
   --rh-ink: var(--night-text);
-  --rh-gold: var(--night-gold);
+  --rh-gold: var(--night-panel);
   --rh-hair: var(--night-line);
 }
 
@@ -2011,16 +2055,16 @@ html[data-public-theme="night"] .rh .rh__copy:not(#_) {
 }
 
 html[data-public-theme="night"] .rh .rh__act--solid:not(#_) {
-  border-color: var(--night-gold) !important;
-  background: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
+  border-color: var(--night-text) !important;
+  background: var(--night-panel) !important;
+  color: var(--night-text) !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
   html[data-public-theme="night"] .rh .rh__act--solid:hover:not(#_) {
-    border-color: var(--night-gold-strong) !important;
-    background: var(--night-gold-strong) !important;
-    color: var(--night-canvas) !important;
+    border-color: var(--night-text) !important;
+    background: var(--night-hover) !important;
+    color: var(--night-text) !important;
   }
 }
 
@@ -2033,9 +2077,7 @@ html[data-public-theme="night"] .rh .rh__act--solid:not(#_) {
    The scene keeps its role — the one warm, lit interruption in the sequence —
    as a deep bronze rather than a lit gold field. */
 html[data-public-theme="night"] .nib-surface--gold:not(#_) {
-  background:
-    radial-gradient(circle at 72% 36%, rgb(203 176 121 / 12%), transparent 34%),
-    #2a2116 !important;
+  background: var(--night-panel) !important;
   color: var(--night-text) !important;
 }
 
@@ -2052,6 +2094,10 @@ html[data-public-theme="night"]:not(:has(.home-four)) .public-site,
 html[data-public-theme="night"]:not(:has(.home-four)) .hathor-site,
 html[data-public-theme="night"]:not(:has(.home-four)) .preview-site {
   --typo-body-text-color: var(--night-text-soft) !important;
+  --typo-page-title-color: var(--night-text) !important;
+  --typo-page-subtitle-color: var(--night-text) !important;
+  --typo-hero-title-color: var(--night-text) !important;
+  --typo-hero-subtitle-color: var(--night-text) !important;
 }
 
 /* ---- 10h. Booking surfaces the token sets miss ----
@@ -2067,9 +2113,9 @@ html[data-public-theme="night"] :is(
 }
 
 html[data-public-theme="night"] .hathor-voyage-counter__btn:not(:disabled):hover:not(#_) {
-  background-color: var(--night-gold) !important;
-  border-color: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
+  background-color: var(--night-hover) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .hathor-checkout-column--summary:not(#_) {
@@ -2102,17 +2148,17 @@ html[data-public-theme="night"] :is(
    token set in section 9 cannot reach them: the step bar stayed day gold and
    the notch under it was a 10px band of #faf8f5 across a dark page. */
 html[data-public-theme="night"] .hathor-checkout-chrome {
-  --hathor-checkout-dark: var(--night-gold);
-  --hathor-checkout-bar: var(--night-gold);
+  --hathor-checkout-dark: var(--night-panel);
+  --hathor-checkout-bar: var(--night-panel);
   --hathor-checkout-surface: var(--night-canvas);
   --hathor-checkout-footer: var(--night-surface);
 }
 
 /* react-day-picker's own accent, one level below the calendar wrapper. */
 html[data-public-theme="night"] .booking-page .rdp-root {
-  --rdp-accent-color: var(--night-gold);
-  --rdp-accent-background-color: var(--night-gold);
-  --rdp-range_middle-background-color: rgb(203 176 121 / 18%);
+  --rdp-accent-color: var(--night-text);
+  --rdp-accent-background-color: var(--night-panel);
+  --rdp-range_middle-background-color: rgb(233 225 211 / 10%);
 }
 
 /* Availability calendar: the day cell is the one control a guest reads as a
@@ -2135,12 +2181,12 @@ html[data-public-theme="night"] .hathor-calendar-day[data-status="unavailable"]:
 
 html[data-public-theme="night"] .hathor-calendar .rdp-day_selected
   .hathor-calendar-day[data-status="available"]:not(#_) {
-  background-color: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
+  background-color: var(--night-panel) !important;
+  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .hathor-calendar-legend--available:not(#_) {
-  background-color: var(--night-gold) !important;
+  background-color: var(--night-panel) !important;
 }
 
 /* ---- 10i. Chrome and shells still painting a day literal ---- */
@@ -2249,7 +2295,7 @@ html[data-public-theme="night"] .home-three {
   --h3-ink: var(--night-text);
   --h3-ink-soft: var(--night-text-soft);
   --h3-gold: var(--night-gold);
-  --h3-gold-deep: var(--night-gold-strong);
+  --h3-gold-deep: var(--night-panel);
   --h3-hair: var(--night-line-soft);
 }
 
@@ -2377,12 +2423,78 @@ html[data-public-theme="night"] :is(
 }
 
 html[data-public-theme="night"] .hathor-booking-error__btn--primary:not(#_) {
-  background: var(--night-gold) !important;
-  border-color: var(--night-gold) !important;
-  color: var(--night-canvas) !important;
+  background: var(--night-panel) !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .hathor-booking-error__btn--ghost:not(#_) {
   border-color: var(--night-line) !important;
   color: var(--night-text) !important;
+}
+
+/* ==========================================================================
+   12. NO CHROMA FILLS
+   --------------------------------------------------------------------------
+   Dual-purpose gold tokens stay ivory for TYPE. Painted gold fields — pills,
+   badges, active chips, amenity walls — are restated as a dark grade so night
+   never introduces a second hue. Photography is untouched.
+   ========================================================================== */
+
+html[data-public-theme="night"] {
+  --lux-gold-bright: var(--night-text);
+}
+
+html[data-public-theme="night"] :is(
+    .lux-cruise-card__badge,
+    .hathor-badge,
+    .pn-btn--solid,
+    .ar-btn--solid,
+    .we-btn--solid,
+    .chr-btn--solid,
+    .jn-btn--solid,
+    .ac-pill--fill,
+    .mr-pill.is-active,
+    .mr-btn--solid,
+    .sn-btn--solid,
+    .room-pill,
+    .iv-cta,
+    .ce-pulse,
+    .hathor-modal-btn--primary
+  ):not(.hero-cta) {
+  background: var(--night-panel) !important;
+  background-image: none !important;
+  border-color: var(--night-text) !important;
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] .home-am-sequence {
+  --am-gold: var(--night-panel);
+  --am-cream: var(--night-canvas);
+  --am-ink: var(--night-text);
+  --am-typo-title-on-cream: var(--night-text);
+  --am-typo-title-on-gold: var(--night-text);
+}
+
+html[data-public-theme="night"] :is(.home-am-springs-host, .home-am-springs-frame) {
+  background: var(--night-canvas) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .home-am-opening__right-column,
+    .home-am-opening__caption,
+    .i-opening__caption,
+    .i-opening__right-column
+  ) {
+  color: var(--night-text) !important;
+}
+
+html[data-public-theme="night"] :is(
+    .home-am-opening__right-column,
+    .home-am-opening__caption,
+    .i-opening__caption,
+    .i-opening__right-column
+  ) :is(h1, h2, h3, h4, p, span, li, a, small, em, strong) {
+  color: var(--night-text) !important;
+  -webkit-text-fill-color: var(--night-text) !important;
 }

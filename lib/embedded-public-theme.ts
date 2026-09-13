@@ -7,14 +7,14 @@ html[data-public-theme="night"] {
   --c-beige-rgb: 23, 19, 15 !important;
   --c-dark-green: #f4eddf !important;
   --c-dark-green-rgb: 244, 237, 223 !important;
-  --c-green: #c9ad72 !important;
-  --c-green-rgb: 201, 173, 114 !important;
-  --c-light-green: #ddc78f !important;
-  --c-light-green-rgb: 221, 199, 143 !important;
-  --c-dark-blue: #d2c7b5 !important;
-  --c-dark-blue-rgb: 210, 199, 181 !important;
-  --c-blue: #c9ad72 !important;
-  --c-blue-rgb: 201, 173, 114 !important;
+  --c-green: #1c1712 !important;
+  --c-green-rgb: 28, 23, 18 !important;
+  --c-light-green: #241d15 !important;
+  --c-light-green-rgb: 36, 29, 21 !important;
+  --c-dark-blue: #e9e1d3 !important;
+  --c-dark-blue-rgb: 233, 225, 211 !important;
+  --c-blue: #1c1712 !important;
+  --c-blue-rgb: 28, 23, 18 !important;
   --c-light-blue: #211b14 !important;
   --c-light-blue-rgb: 33, 27, 20 !important;
 }
@@ -30,16 +30,17 @@ html[data-public-theme="night"] body {
   --sm-ivory: #17130f !important;
   --sm-sand: #1c1712 !important;
   --sm-stone: #241d15 !important;
-  --sm-gold: #c9ad72 !important;
+  --sm-gold: #1c1712 !important;
   --sm-ink-surface: #0b0907 !important;
   --sm-text: #f4eddf !important;
-  --sm-text-soft: #d2c7b5 !important;
+  --sm-text-soft: #e9e1d3 !important;
   --sm-on-ink: #f4eddf !important;
   --sm-on-ink-soft: rgb(244 237 223 / 0.74) !important;
   --sm-on-gold: #f4eddf !important;
-  --sm-on-gold-soft: #d2c7b5 !important;
-  --sm-label: #c9ad72 !important;
+  --sm-on-gold-soft: #e9e1d3 !important;
+  --sm-label: #f4eddf !important;
   --sm-hair: rgb(244 237 223 / 0.16) !important;
+  --sm-hair-gold: rgb(244 237 223 / 0.28) !important;
   --sm-cream-edge: #f4eddf !important;
 }
 
@@ -50,7 +51,7 @@ html[data-public-theme="night"] .page-content-wrapper,
 html[data-public-theme="night"] .mod-scroll,
 html[data-public-theme="night"] .mod-scroll__content {
   background-color: #0f0d0a !important;
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
 }
 
 html[data-public-theme="night"] :is(
@@ -62,7 +63,7 @@ html[data-public-theme="night"] :is(
     .mod-scroll__text
   ) {
   background-color: #17130f !important;
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
 }
 
 html[data-public-theme="night"] :is(
@@ -87,16 +88,16 @@ html[data-public-theme="night"] :is(
     .mod-scroll__intro__copyright,
     .mod-footer__footer__copyright
   ) {
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
   -webkit-text-fill-color: #d2c7b5 !important;
 }
 
 html[data-public-theme="night"] :is(a, button) {
-  border-color: rgb(201 173 114 / 38%) !important;
+  border-color: rgb(233 225 211 / 38%) !important;
 }
 
 html[data-public-theme="night"] :is(a, button):focus-visible {
-  outline-color: #c9ad72 !important;
+  outline-color: #f4eddf !important;
 }
 
 /*
@@ -113,17 +114,19 @@ html[data-public-theme="night"] :is(a, button):focus-visible {
  */
 html[data-public-theme="night"] body main .bg-beige {
   background-color: #1c1712 !important;
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
 }
 
 html[data-public-theme="night"] body main .bg-red {
   background-color: #241d15 !important;
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
 }
 
 html[data-public-theme="night"] body main .bg-blue,
-html[data-public-theme="night"] body main .before-bg-blue::before {
-  background-color: #2a2116 !important;
+html[data-public-theme="night"] body main .before-bg-blue::before,
+html[data-public-theme="night"] body main .mod-media--mosaic {
+  background: #1c1712 !important;
+  background-color: #1c1712 !important;
 }
 
 /*
@@ -172,7 +175,7 @@ html[data-public-theme="night"] body main :is(.bg-white, .bg-beige, .bg-red, .bg
   ),
 html[data-public-theme="night"] body main .mod-scroll__terms,
 html[data-public-theme="night"] body main .mod-scroll__terms :is(div, span, p, a, strong, em) {
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
   -webkit-text-fill-color: #d2c7b5 !important;
 }
 
@@ -181,8 +184,8 @@ html[data-public-theme="night"] body main :is(.bg-white, .bg-beige, .bg-red, .bg
     .mod-scroll__intro__copyright,
     .mod-footer__footer__copyright
   ) {
-  color: #c9ad72 !important;
-  -webkit-text-fill-color: #c9ad72 !important;
+  color: #f4eddf !important;
+  -webkit-text-fill-color: #f4eddf !important;
 }
 
 /* Two panels the DNA sheet grounds outside the .bg-* roster. */
@@ -205,7 +208,7 @@ html[data-public-theme="night"] .mod-scroll__projects__item[data-suite-panel="iv
   --suite-panel-fg: #e9e1d3;
 }
 html[data-public-theme="night"] .mod-scroll__projects__item[data-suite-panel="gold"] {
-  --suite-panel: #2a2116;
+  --suite-panel: #241d15;
   --suite-panel-fg: #e9e1d3;
 }
 html[data-public-theme="night"] .mod-scroll__projects__item[data-suite-panel="ink"] {
@@ -265,7 +268,7 @@ html[data-public-theme="night"] main .mod-scroll__projects .last-item__content :
  */
 html[data-public-theme="night"] body,
 html[data-public-theme="night"] body :where(p, li, strong, em) {
-  color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
   -webkit-text-fill-color: #d2c7b5 !important;
 }
 
@@ -313,15 +316,15 @@ html[data-public-theme="night"] body :is(
     .mod-footer__footer__copyright,
     .mod-title--chapter .mod-title__intro > div
   ) {
-  color: #c9ad72 !important;
-  -webkit-text-fill-color: #c9ad72 !important;
+  color: #f4eddf !important;
+  -webkit-text-fill-color: #f4eddf !important;
 }
 
 html[data-public-theme="night"] body main .mod-content--cols .mod-content__text,
 html[data-public-theme="night"] body main .mod-content--cols .mod-content__text p,
 html[data-public-theme="night"] body main .mod-content--cols .mod-content__text a {
-  color: #d2c7b5 !important;
-  -webkit-text-fill-color: #d2c7b5 !important;
+  color: #e9e1d3 !important;
+  -webkit-text-fill-color: #e9e1d3 !important;
 }
 
 html[data-public-theme="night"] body main .mod-footer__content__project__year,
@@ -342,9 +345,29 @@ html[data-public-theme="night"] body main .suites-collection-rail
   -webkit-text-fill-color: #e9e1d3 !important;
 }
 
-/* Cream glass pills over the hero collage keep dark type — light on light. */
-html[data-public-theme="night"] .srh-actions a:not(.srh-actions__primary) {
-  color: #17140f !important;
-  -webkit-text-fill-color: #17140f !important;
+html[data-public-theme="night"] .srh-actions a {
+  color: #f4eddf !important;
+  -webkit-text-fill-color: #f4eddf !important;
+  background: #241d15 !important;
+  border-color: rgb(244 237 223 / 0.45) !important;
+}
+
+html[data-public-theme="night"] .hf {
+  --hf-gold: #e9e1d3;
+  --hf-gold-deep: #e9e1d3;
+}
+
+html[data-public-theme="night"] :is(.hf__cta, .hf__cta--fill) {
+  background: #241d15 !important;
+  color: #f4eddf !important;
+  border-color: #e9e1d3 !important;
+}
+
+html[data-public-theme="night"] .header__menu__bg {
+  background: #241d15 !important;
+}
+
+html[data-public-theme="night"] .modal__content {
+  background: #17130f !important;
 }
 `;

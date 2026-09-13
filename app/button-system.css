@@ -59,17 +59,17 @@
  */
 html[data-public-theme="night"],
 html[data-public-theme="dark"] {
-  --hathor-btn-hover-bg: #dfc894;
-  --hathor-btn-hover-border: #dfc894;
-  --hathor-btn-hover-text: #14110d;
+  --hathor-btn-hover-bg: #332a1f;
+  --hathor-btn-hover-border: #e9e1d3;
+  --hathor-btn-hover-text: #e9e1d3;
 
   --hathor-btn-outline-bg: transparent;
-  --hathor-btn-outline-line: rgba(240, 233, 220, 0.55);
-  --hathor-btn-outline-ink: #ece5d7;
+  --hathor-btn-outline-line: rgba(233, 225, 211, 0.55);
+  --hathor-btn-outline-ink: #e9e1d3;
 
-  --hathor-btn-primary-bg: #cbb079;
-  --hathor-btn-primary-line: #cbb079;
-  --hathor-btn-primary-ink: #14110d;
+  --hathor-btn-primary-bg: #241d15;
+  --hathor-btn-primary-line: #e9e1d3;
+  --hathor-btn-primary-ink: #e9e1d3;
 }
 
 /* Ink surfaces keep the identical design — only the hairline and label invert.
