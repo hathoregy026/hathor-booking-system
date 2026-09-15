@@ -21,8 +21,7 @@ export function HomeFourHero({ poster }: { poster: string }) {
     const video = videoRef.current;
     if (!video) return;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-    const device = matchMedia("(max-width: 480px)");
-    const tablet = matchMedia("(max-width: 1024px)");
+    const device = matchMedia("(max-width: 1024px)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
     let visible = true, disposed = false;
     const play = () => {
@@ -42,12 +41,11 @@ export function HomeFourHero({ poster }: { poster: string }) {
     const timer = window.setTimeout(configure, 1200);
     reduced.addEventListener("change", configure);
     device.addEventListener("change", configure);
-    tablet.addEventListener("change", configure);
     document.addEventListener("visibilitychange", play);
     document.addEventListener("h4-motion-change", play);
     return () => {
       disposed = true; clearTimeout(timer); observer.disconnect(); video.pause();
-      reduced.removeEventListener("change", configure); device.removeEventListener("change", configure); tablet.removeEventListener("change", configure);
+      reduced.removeEventListener("change", configure); device.removeEventListener("change", configure);
       document.removeEventListener("visibilitychange", play); document.removeEventListener("h4-motion-change", play);
     };
   }, [paused]);

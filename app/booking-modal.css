@@ -956,6 +956,15 @@ html[data-public-theme="day"] .hathor-booking-modal__steps {
   }
 }
 
+@media (max-width: 1024px) {
+  .hathor-booking-modal {
+    padding:
+      max(0.85rem, env(safe-area-inset-top, 0px))
+      0.75rem
+      calc(var(--hathor-phone-dock-h, 4.5rem) + 0.55rem);
+  }
+}
+
 @media (max-width: 480px) {
   .hathor-booking-modal {
     padding:

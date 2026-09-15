@@ -175,6 +175,9 @@ html:has(.home-four) .public-fab{display:none!important}
  .home-four .h4-hero-copy{top:26%;left:7%;right:7%}
  .home-four .h4-hero-copy h1{font-size:clamp(3.5rem,9.6vw,7rem)}
 }
+@media(max-width:1024px){
+ .home-four .h4-hero-book{width:156px;bottom:calc(var(--hathor-phone-dock-h,4.5rem) + .85rem)}
+}
 @media(max-width:620px){
  .home-four .h4-hero{min-height:580px}
  .home-four .h4-hero-copy{top:24%;left:1.5rem;right:1.5rem;gap:1.1rem}

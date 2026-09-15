@@ -239,7 +239,7 @@ export function Header() {
   };
 
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 480px)");
+    const media = window.matchMedia("(max-width: 1024px)");
     const sync = () => {
       const next = media.matches;
       if (phoneViewportRef.current !== next) {

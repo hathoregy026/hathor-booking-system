@@ -115,8 +115,8 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   z-index: 8;
 }
 
-/* Phone: logo starts below the fold — logo formula parks CTA under the dock */
-@media (max-width: 480px) {
+/* Phone + tablet: logo starts below the fold — logo formula parks CTA under the dock */
+@media (max-width: 1024px) {
   html[data-ex-experience] .ex-root .home-hero-container .hero-button,
   html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button {
     bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.85rem) !important;

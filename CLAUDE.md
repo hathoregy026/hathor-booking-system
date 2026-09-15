@@ -6,7 +6,7 @@ Never recreate `_local/hathor-phone/HathorPhone.tsx`, never run a local server o
 
 ## LOCKED — phone homepage hero video
 
-Never swap `HATHOR_HERO_VIDEO_PHONE_SRC` (`/media/hathor/videos/phone hero videoi.mp4`). Phone (≤480px) always plays that reel. Desktop/tablet keep `HATHOR_HERO_VIDEO_SRC`. See `.cursor/rules/phone-hero-video-locked.mdc`.
+Never swap `HATHOR_HERO_VIDEO_PHONE_SRC` (`/media/hathor/videos/phone hero videoi.mp4`). Phone + tablet (≤1024px) always play that reel. Desktop (>1024) keeps `HATHOR_HERO_VIDEO_SRC`. See `.cursor/rules/phone-hero-video-locked.mdc`.
 
 ## LuxuryHathor design skill
 

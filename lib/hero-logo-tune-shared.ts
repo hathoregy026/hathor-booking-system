@@ -386,8 +386,8 @@ html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--spli
   bottom: calc(${bottom} + (var(--hathor-logo-h) / 2) - 26px + ${safe.ctaNudge}px) !important;
 }
 
-/* ≤480: injected narrow CSS previously parked Book Now under the cream dock */
-@media (max-width: 480px) {
+/* ≤1024: injected narrow CSS previously parked Book Now under the cream dock */
+@media (max-width: 1024px) {
   html[data-ex-experience] .ex-root .home-hero-container,
   .public-site .home-hero-container,
   .public-site .home-hero-container:has(.hero-logo-mark--split) {

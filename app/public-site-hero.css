@@ -353,7 +353,7 @@
   z-index: 8;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   .home-hero-container .hero-button,
   .home-hero-container:has(.hero-logo-mark--split) .hero-button,
   .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button {

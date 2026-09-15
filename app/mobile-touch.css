@@ -749,6 +749,46 @@ body.is-touch-device .lux-cursor {
   }
 }
 
+@media (max-width: 1024px) {
+  /* Compact homepage reel — never keep the desktop 32% temple crop. */
+  .home-hero-container.home-hero--clear-video .hero-media video,
+  .home-hero-container.home-hero--clear-video .hero-media img {
+    object-position: center center !important;
+  }
+
+  .home-hero-container.home-hero--clear-video.is-hero-video-playing .hero-media picture {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /*
+   * Tablet shares the phone bottom dock — lift Book Now clear of it.
+   * Phone already gets this inside the ≤480 block above; restating at ≤1024
+   * covers 481–1024 without pulling other phone-only perf rules onto tablet.
+   */
+  html[data-ex-experience] .ex-root .home-hero-container .hero-button,
+  html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  html.ex-home .home-hero-container .hero-button,
+  html.ex-home .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .public-site .home-hero-container .hero-button,
+  .public-site .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .home-hero-container .hero-button,
+  .home-hero-container:has(.hero-logo-mark--split) .hero-button,
+  .home-hero-container:not(:has(.hero-logo-mark--split)) .hero-button {
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.85rem) !important;
+    top: auto !important;
+  }
+
+  html[data-ex-experience] .ex-root .home-hero-container:has(.hero-logo-mark--split) .hero-scroll-hint,
+  .public-site .home-hero-container .hero-scroll-hint,
+  .public-site .home-hero-container [data-hero-scroll-hint],
+  .home-hero-container .hero-scroll-hint {
+    display: flex !important;
+    bottom: calc(var(--hathor-phone-dock-h, 4.5rem) + 4.5rem) !important;
+  }
+}
+
 @media (max-width: 480px) {
   /* Phone homepage reel — never keep the desktop 32% temple crop. */
   .home-hero-container.home-hero--clear-video .hero-media video,

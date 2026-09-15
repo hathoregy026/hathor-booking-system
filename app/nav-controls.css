@@ -787,8 +787,8 @@
   color: var(--nav-lux-ink) !important;
 }
 
-/* On phones the control collapses to a disc вЂ” knob only, no label. */
-@media (max-width: 480px) {
+/* On phone + tablet the control collapses to a disc — knob only, no label. */
+@media (max-width: 1024px) {
   .public-theme-toggle__label:not(#_):not(#_) {
     display: none !important;
   }
@@ -1165,8 +1165,8 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   color: #ffffff !important;
 }
 
-/* Phone homepage land: theme toggle matches white marks. */
-@media (max-width: 480px) {
+/* Phone + tablet homepage land: theme toggle matches white marks. */
+@media (max-width: 1024px) {
   .hathor-header--home:not(.hathor-header--nav-compact):not(
       .hathor-header--explore-open
     ):not(.hathor-header--editorial-open):not(#_)
@@ -1413,18 +1413,18 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 }
 
 /* ==========================================================================
-   PHONE-ONLY вЂ” icon tone sync with desktop scroll / mode behaviour
+   COMPACT ICON TONE — sync with desktop scroll / mode behaviour
    --------------------------------------------------------------------------
-   в‰¤480px only. Desktop and tablet geometry above stay untouched.
+   ≤1024px (phone + tablet). Desktop geometry above stays untouched.
 
-   Phone used to force the burger SVG and day/night thumb to ink while the
+   Compact chrome used to force the burger SVG and day/night thumb to ink while the
    favourites / voyage / language marks went white over the hero. That left
    two dark glyphs beside three white ones. Every chrome control must share
    one currentColor: white over the hero (and night light ink), ink once the
-   cream / paper bar is behind them вЂ” same story as desktop.
+   cream / paper bar is behind them — same story as desktop.
    ========================================================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   /*
    * Thumb + day/night states were locked to --nav-lux-ink (desktop pill DNA).
    * On the phone disc they must inherit the button's white/ink tone instead.
@@ -1559,15 +1559,16 @@ html[data-public-theme="night"] .public-lang-toggle__code {
 }
 
 /* ==========================================================================
-   PHONE BOTTOM DOCK — Saved, Voyage, Book Now, Language, Contact (≤480px)
+   COMPACT BOTTOM DOCK — Saved, Voyage, Book Now, Language, Contact (≤1024px)
    --------------------------------------------------------------------------
    Same components and handlers as the header marks. Markup lives outside
    <header> (portaled to body) so position:fixed pins to the viewport bottom
    — header backdrop-filter / isolation must not trap it.
    Five equal flex tracks; Book Now is the center tab.
+   Phone and tablet share this chrome; desktop (>1024) keeps header tools.
    ========================================================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   :root,
   .public-site,
   .hathor-header,
@@ -2237,14 +2238,27 @@ html[data-public-theme="night"] .public-lang-toggle__code {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   :root,
   .public-site,
   .hathor-header,
   .preview-header {
-    --hathor-phone-dock-h: calc(clamp(4.25rem, 18.4vw, 5rem) + env(safe-area-inset-bottom, 0px));
-    --dock-mark: clamp(2.25rem, 9.8vw, 2.75rem);
-    --dock-icon: clamp(1.125rem, 5vw, 1.375rem);
-    --dock-label: clamp(0.4375rem, 1.72vw, 0.5rem);
+    --hathor-phone-dock-h: calc(clamp(4.25rem, 18.4vw, 5.25rem) + env(safe-area-inset-bottom, 0px));
+    --dock-mark: clamp(2.25rem, 9.8vw, 2.9rem);
+    --dock-icon: clamp(1.125rem, 5vw, 1.45rem);
+    --dock-label: clamp(0.4375rem, 1.72vw, 0.5625rem);
+  }
+}
+
+/* Tablet adaptation — same dock layout, slightly roomier marks. */
+@media (min-width: 481px) and (max-width: 1024px) {
+  :root,
+  .public-site,
+  .hathor-header,
+  .preview-header {
+    --hathor-phone-dock-h: calc(5rem + env(safe-area-inset-bottom, 0px));
+    --dock-mark: 2.75rem;
+    --dock-icon: 1.4rem;
+    --dock-label: 0.5rem;
   }
 }

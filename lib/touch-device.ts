@@ -8,6 +8,9 @@
 export const TOUCH_DEVICE_CLASS = "is-touch-device";
 export const PHONE_VIEWPORT_MAX = 480;
 export const PHONE_VIEWPORT_MQ = `(max-width: ${PHONE_VIEWPORT_MAX}px)`;
+/** Phone + tablet chrome / hero reel band. Desktop begins strictly above 1024px. */
+export const COMPACT_CHROME_MAX = 1024;
+export const COMPACT_CHROME_MQ = `(max-width: ${COMPACT_CHROME_MAX}px)`;
 /** Set on <html> before paint so the homepage can attach the phone hero reel. */
 export const PHONE_VIEWPORT_ATTR = "data-hathor-phone-vp";
 
@@ -42,34 +45,35 @@ export function isPhoneViewport(): boolean {
 }
 
 /**
- * Phone hero video gate. Reads the blocking-script flag plus layout width so
- * DevTools / Safari quirks cannot attach the desktop 1920 promo at ≤480px.
+ * Compact hero video gate (phone + tablet ≤1024). Reads the blocking-script
+ * flag plus layout width so DevTools / Safari quirks cannot attach the
+ * desktop 1920 promo on the compact band.
  */
 export function isPhoneHeroVideoViewport(): boolean {
   if (typeof window === "undefined") return false;
-  const mediaPhone = window.matchMedia(PHONE_VIEWPORT_MQ).matches;
-  const layoutPhone =
-    window.innerWidth <= PHONE_VIEWPORT_MAX ||
+  const mediaCompact = window.matchMedia(COMPACT_CHROME_MQ).matches;
+  const layoutCompact =
+    window.innerWidth <= COMPACT_CHROME_MAX ||
     (typeof document !== "undefined" &&
-      document.documentElement.clientWidth <= PHONE_VIEWPORT_MAX);
+      document.documentElement.clientWidth <= COMPACT_CHROME_MAX);
   /* Live width wins over a stale boot attribute after a desktop resize. */
-  if (!mediaPhone && !layoutPhone) return false;
+  if (!mediaCompact && !layoutCompact) return false;
   if (
     typeof document !== "undefined" &&
     document.documentElement.getAttribute(PHONE_VIEWPORT_ATTR) === "1"
   ) {
     return true;
   }
-  return mediaPhone || layoutPhone;
+  return mediaCompact || layoutCompact;
 }
 
 export function applyPhoneViewportAttr(): void {
   if (typeof document === "undefined" || typeof window === "undefined") return;
-  const phone =
-    window.matchMedia(PHONE_VIEWPORT_MQ).matches ||
-    window.innerWidth <= PHONE_VIEWPORT_MAX ||
-    document.documentElement.clientWidth <= PHONE_VIEWPORT_MAX;
-  if (phone) {
+  const compact =
+    window.matchMedia(COMPACT_CHROME_MQ).matches ||
+    window.innerWidth <= COMPACT_CHROME_MAX ||
+    document.documentElement.clientWidth <= COMPACT_CHROME_MAX;
+  if (compact) {
     document.documentElement.setAttribute(PHONE_VIEWPORT_ATTR, "1");
   } else {
     document.documentElement.removeAttribute(PHONE_VIEWPORT_ATTR);
@@ -136,7 +140,11 @@ export function setViewportHeightCssVar(): void {
 export function bindViewportHeightVar(): () => void {
   if (typeof window === "undefined") return () => {};
 
-  setViewportHeightCssVar();
+  /* The blocking head script set --vh before paint. Writing it again here
+     forced a full-page style pass during hydration for the same value. */
+  if (!document.documentElement.style.getPropertyValue("--vh")) {
+    setViewportHeightCssVar();
+  }
   const touch = isTouchDevice();
   const phone = isPhoneViewport();
 
@@ -177,7 +185,7 @@ export function getTouchDeviceBlockingScript(): string {
    * React hydration (body is a React-owned node). TouchDeviceBootstrap mirrors
    * the class onto body after mount. html already has suppressHydrationWarning.
    */
-  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");}var w=window.innerWidth||d.clientWidth||0;var phoneVp=(m&&m("${PHONE_VIEWPORT_MQ}").matches)||w<=${PHONE_VIEWPORT_MAX};if(phoneVp){d.setAttribute("${PHONE_VIEWPORT_ATTR}","1");}else{d.removeAttribute("${PHONE_VIEWPORT_ATTR}");}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
+  return `(function(){try{var d=document.documentElement;var m=window.matchMedia;var coarse=m&&m("(pointer: coarse)").matches;var touchish=coarse||(m&&m("(hover: none)").matches&&m("(max-width: 1024px)").matches);if(touchish){d.classList.add("${TOUCH_DEVICE_CLASS}");}var w=window.innerWidth||d.clientWidth||0;var compactVp=(m&&m("${COMPACT_CHROME_MQ}").matches)||w<=${COMPACT_CHROME_MAX};if(compactVp){d.setAttribute("${PHONE_VIEWPORT_ATTR}","1");}else{d.removeAttribute("${PHONE_VIEWPORT_ATTR}");}var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight||0;if(h)d.style.setProperty("--vh",(h*0.01)+"px");}catch(e){}})();`;
 }
 
 export function lenisMobileSafeOptions(duration: number) {

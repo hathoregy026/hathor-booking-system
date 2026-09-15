@@ -15,6 +15,7 @@ import {
   isPhoneHeroVideoViewport,
   logPhonePerfDev,
   PHONE_VIEWPORT_MQ,
+  COMPACT_CHROME_MQ,
 } from "@/lib/touch-device";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { useTypographyInlineStyle, useTypographySettings } from "@/components/public/TypographySettingsProvider";
@@ -232,12 +233,15 @@ export function PublicSiteHero({
 
     apply();
     const phoneMq = window.matchMedia(PHONE_VIEWPORT_MQ);
+    const compactMq = window.matchMedia(COMPACT_CHROME_MQ);
     const reducedMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     phoneMq.addEventListener("change", apply);
+    compactMq.addEventListener("change", apply);
     reducedMq.addEventListener("change", apply);
     window.addEventListener("resize", apply);
     return () => {
       phoneMq.removeEventListener("change", apply);
+      compactMq.removeEventListener("change", apply);
       reducedMq.removeEventListener("change", apply);
       window.removeEventListener("resize", apply);
     };

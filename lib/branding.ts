@@ -67,9 +67,9 @@ export const HATHOR_HERO_VIDEO_SRC =
   "/media/hathor/videos/hathor-hero-nile-promo-v20260811.mp4";
 
 /**
- * LOCKED — phone homepage hero reel. Do not change this path.
+ * LOCKED — compact homepage hero reel. Do not change this path.
  * File: public/media/hathor/videos/phone hero videoi.mp4
- * Phones only (≤480px). Desktop/tablet use HATHOR_HERO_VIDEO_SRC.
+ * Phone + tablet (≤1024px). Desktop (>1024) uses HATHOR_HERO_VIDEO_SRC.
  * Never list both as <source media> siblings. Never swap this for the
  * desktop promo, Bar reel, or a new encode unless the user names a new file.
  */
