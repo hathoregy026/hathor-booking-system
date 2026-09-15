@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { editorialFlipProgress } from "@/lib/editorial-flip-progress";
+import { applyScrollY } from "@/lib/scroll-position-restore";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
 /*
- * Desktop proper: above the 950 switch, a pointer that can hover, motion
+ * Desktop proper: above the 1024 switch, a pointer that can hover, motion
  * allowed. `home-three.css` gates the split choreography on this exact string,
  * so the layout and the scroll mapping can never disagree about which story is
- * running. Touch tablets above 950px keep the single act.
+ * running. Touch tablets above 1024px keep the single act.
  */
 const SPLIT_QUERY =
-  "(min-width: 951px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
+  "(min-width: 1025px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
 
 type HomeThreeFlowRefs = {
   rootRef: RefObject<HTMLDivElement | null>;
@@ -53,7 +55,7 @@ type Act = Passage & {
 /**
  * Home 3 — the same editorial engine About, Contact, Suites and Royal Suites
  * already run: a sticky 100svh stage whose horizontal track is scrubbed by
- * vertical input above 950px, and natural vertical flow below it. The constants
+ * vertical input above 1024px, and natural vertical flow below it. The constants
  * (0.74 runway, 0.14 lerp, the reveal/parallax/focus formulas) are the site's,
  * not new ones — this page reads as family because it moves as family.
  *
@@ -126,6 +128,10 @@ export function useHomeThreeFlow({
       window.requestIdleCallback ??
       ((cb: () => void) => window.setTimeout(cb, 400));
     const primeHandle = idle(() => {
+      /* Only the translated desktop track defeats native lazy loading. The
+         vertical document (tablet, phone) loads each plate as it nears —
+         priming it there pulled every photograph on the page at once. */
+      if (!split && !desktop) return;
       scenes.forEach(primeScene);
       primeImages(root);
     });
@@ -573,12 +579,22 @@ export function useHomeThreeFlow({
         scene.style.setProperty("--parallax", progress.toFixed(4));
         scene.style.setProperty("--scene-progress", progress.toFixed(4));
         scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
-        if (progress > 0.02) primeScene(scene);
       });
       applyFlips("vertical");
       applyMedia("vertical");
       applyItems("vertical");
       applyChart("vertical");
+    };
+
+    /* The vertical document repaints at most once per frame, however many
+       scroll events a finger produces. */
+    let verticalFrame = 0;
+    const scheduleVertical = () => {
+      if (verticalFrame) return;
+      verticalFrame = requestAnimationFrame(() => {
+        verticalFrame = 0;
+        applyVerticalVars();
+      });
     };
 
     const paint = () => {
@@ -781,7 +797,7 @@ export function useHomeThreeFlow({
         `${Math.max(0, window.innerWidth - html.clientWidth)}px`,
       );
       setMode(splitQuery.matches && acts.length > 0);
-      desktop = window.innerWidth > 950 && !reduced.matches;
+      desktop = window.innerWidth > 1024 && !reduced.matches;
       if (split) {
         acts.forEach(measureAct);
         measureItems();
@@ -855,7 +871,7 @@ export function useHomeThreeFlow({
         return;
       }
       if (!desktop) {
-        applyVerticalVars();
+        scheduleVertical();
         return;
       }
       const rect = run.getBoundingClientRect();
@@ -882,29 +898,176 @@ export function useHomeThreeFlow({
       paint();
     };
 
-    const onResize = () => {
+    /* ---- keeping the reader's place while the window changes size -------
+       A resize re-measures every act and flips the story between horizontal
+       and vertical at 1024px, so the same scroll offset lands somewhere else
+       entirely. The scene (or document section) in view is noted whenever the
+       scroll settles; a resize restores it once the page has re-measured, on
+       whichever axis the new layout uses. */
+    type Anchor = { el: HTMLElement; offset: number; horizontal: boolean };
+    const docTop = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY;
+
+    const captureAnchor = (): Anchor | null => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      if (split || desktop) {
+        for (const scene of scenes) {
+          const r = scene.getBoundingClientRect();
+          if (r.width && r.left <= vw / 2 && r.right >= vw / 2 && r.top < vh / 2 && r.bottom > vh / 2) {
+            return { el: scene, offset: 0, horizontal: true };
+          }
+        }
+      }
+      const probe = Math.min(120, vh * 0.2);
+      const candidates = [
+        ...scenes,
+        ...root.querySelectorAll<HTMLElement>(".h3-doc > section"),
+        ...document.querySelectorAll<HTMLElement>(".partners-company, .hf"),
+      ];
+      /* the innermost section at the reading line: its top is nearest above it */
+      let best: Anchor | null = null;
+      for (const el of candidates) {
+        const r = el.getBoundingClientRect();
+        if (!r.height || r.top > probe || r.bottom <= probe) continue;
+        if (!best || r.top > best.offset) {
+          best = { el, offset: Math.round(r.top), horizontal: false };
+        }
+      }
+      return best;
+    };
+
+    /* the scroll offset that centres a scene on a pinned stage */
+    const actScrollFor = (passage: Passage, runEl: HTMLElement, scene: HTMLElement) => {
+      const x = scene.offsetLeft - Math.max(0, (window.innerWidth - scene.offsetWidth) / 2);
+      const p = clamp(x / Math.max(1, passage.travel));
+      let s = p * passage.scrollDistance;
+      if (passage.hold > 0 && p > passage.holdAt) s += passage.hold;
+      return docTop(runEl) + s;
+    };
+
+    const targetFor = (anchor: Anchor) => {
+      if (split) {
+        const act = actOf.get(anchor.el);
+        if (act) return actScrollFor(act, act.run, anchor.el);
+      } else if (desktop && track.contains(anchor.el)) {
+        return actScrollFor(whole, run, anchor.el);
+      }
+      return docTop(anchor.el) - (anchor.horizontal ? 0 : anchor.offset);
+    };
+
+    let lastKnownAnchor: Anchor | null = null;
+    let pendingAnchor: Anchor | null = null;
+    let anchorExpires = 0;
+    let anchorIdle = 0;
+    let resizeTimer = 0;
+
+    let guardFrame = 0;
+    const noteAnchor = () => {
+      /* While a resize holds the reader's place, anything that moves the page
+         without the reader (a refresh restoring its own offset, a scroll
+         engine re-initialising at a breakpoint) is put back next frame. */
+      if (pendingAnchor) {
+        if (!guardFrame) {
+          guardFrame = requestAnimationFrame(() => {
+            guardFrame = 0;
+            restoreAnchor();
+          });
+        }
+        return;
+      }
+      window.clearTimeout(anchorIdle);
+      anchorIdle = window.setTimeout(() => {
+        if (!pendingAnchor) lastKnownAnchor = captureAnchor();
+      }, 150);
+    };
+
+    /* runs after the re-measure, and again after each refresh that lands
+       while the hero pin and the other stages catch up */
+    const restoreAnchor = () => {
+      const anchor = pendingAnchor;
+      if (!anchor) return;
+      if (!anchor.el.isConnected || performance.now() > anchorExpires) {
+        pendingAnchor = null;
+        return;
+      }
+      const target = Math.max(0, Math.round(targetFor(anchor)));
+      if (Math.abs(target - window.scrollY) > 1) applyScrollY(target);
+      updateTarget();
+    };
+
+    /* One re-measure per resize, once the window stops changing — not one per
+       event, which is what made dragging a window edge freeze the page. */
+    const settleResize = () => {
       const width = window.innerWidth;
       const widthChanged = Math.abs(width - lastWidth) > 24;
       lastWidth = width;
       /* phone URL-bar height changes must not re-run the whole measurement */
-      if (!widthChanged && window.innerWidth <= 950) {
-        applyVerticalVars();
+      if (!widthChanged && width <= 1024) {
+        scheduleVertical();
         return;
       }
       measure();
       updateTarget();
+      requestAnimationFrame(restoreAnchor);
+    };
+
+    const onResize = () => {
+      if (Math.abs(window.innerWidth - lastWidth) > 24 && !pendingAnchor) {
+        pendingAnchor = lastKnownAnchor;
+      }
+      /* the hero pin can take seconds to rebuild after a big resize */
+      anchorExpires = performance.now() + 3500;
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(settleResize, 160);
     };
 
     window.addEventListener("scroll", updateTarget, { passive: true });
+    window.addEventListener("scroll", noteAnchor, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
+    ScrollTrigger.addEventListener("refresh", restoreAnchor);
+    /* the reader taking over ends the hold */
+    const releaseAnchor = () => {
+      pendingAnchor = null;
+    };
+    const intentEvents = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+    intentEvents.forEach((type) =>
+      window.addEventListener(type, releaseAnchor, { passive: true }),
+    );
+    /* stages that rebuild late (the hero pin, lazy plates) change the page's
+       height after the re-measure — hold the place through those as well */
+    let anchorFrame = 0;
+    const heightWatch = new ResizeObserver(() => {
+      if (!pendingAnchor || anchorFrame) return;
+      anchorFrame = requestAnimationFrame(() => {
+        anchorFrame = 0;
+        restoreAnchor();
+      });
+    });
+    heightWatch.observe(document.body);
     reduced.addEventListener("change", onResize);
     splitQuery.addEventListener("change", onResize);
     root.addEventListener("click", onTagClick);
     document.fonts?.ready.then(onResize).catch(() => undefined);
-    measure();
-    requestAnimationFrame(measure);
+    /* The desktop act needs its runway before first paint; the vertical
+       document does not, so it measures a frame later instead of forcing a
+       full-page layout in the middle of hydration. */
+    if (window.innerWidth > 1024) measure();
+    const bootFrame = requestAnimationFrame(() => {
+      measure();
+      noteAnchor();
+    });
 
     return () => {
+      cancelAnimationFrame(bootFrame);
+      if (verticalFrame) cancelAnimationFrame(verticalFrame);
+      window.clearTimeout(resizeTimer);
+      window.clearTimeout(anchorIdle);
+      window.removeEventListener("scroll", noteAnchor);
+      ScrollTrigger.removeEventListener("refresh", restoreAnchor);
+      intentEvents.forEach((type) => window.removeEventListener(type, releaseAnchor));
+      heightWatch.disconnect();
+      if (anchorFrame) cancelAnimationFrame(anchorFrame);
+      if (guardFrame) cancelAnimationFrame(guardFrame);
       followHost?.removeEventListener("pointermove", onFollowMove);
       followHost?.removeEventListener("pointerleave", onFollowLeave);
       if (window.cancelIdleCallback) window.cancelIdleCallback(primeHandle);

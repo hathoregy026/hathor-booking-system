@@ -37,7 +37,7 @@ function Frame({
   alt,
   className = "",
   ratio,
-  sizes = "(max-width: 950px) 100vw, 50vw",
+  sizes = "(max-width: 1024px) 100vw, 50vw",
 }: {
   slot: string;
   alt: string;
@@ -74,7 +74,7 @@ function Media({
   slot,
   alt,
   className = "",
-  sizes = "(max-width: 950px) 100vw, 50vw",
+  sizes = "(max-width: 1024px) 100vw, 50vw",
 }: {
   slot: string;
   alt: string;
@@ -110,7 +110,7 @@ function Flip({
   overAlt,
   variant,
   className = "",
-  sizes = "(max-width: 950px) 100vw, 50vw",
+  sizes = "(max-width: 1024px) 100vw, 50vw",
   anchor,
   linked = false,
 }: {
@@ -455,18 +455,18 @@ export function HomeThreePageContent({
                       Scroll
                     </p>
 
-                    {/* Phone only (≤480px): the opener and the lead become one
+                    {/* Compact (≤1024): the opener and the lead become one
                         composition on the lead's own three photographs. The
                         two small frames are that flip turned into a pair —
                         they trade plates off one `--h3-flip` that CSS scrubs
-                        once the whole block is on screen. Hidden elsewhere. */}
+                        once the whole block is on screen. Hidden on desktop. */}
                     <div className="h3-np">
                       <div className="h3-np__hero">
                         <Media
                           slot="cruises-hero"
                           alt=""
                           className="h3-np__plate"
-                          sizes="(max-width: 950px) 100vw, 58vw"
+                          sizes="(max-width: 1024px) 100vw, 58vw"
                         />
                         <p className="h3-np__mark">
                           <span className="h3-np__sr">Hathor Dahabiya</span>
@@ -501,7 +501,7 @@ export function HomeThreePageContent({
                           overAlt=""
                           under="home-cinematic-still"
                           underAlt=""
-                          sizes="(max-width: 950px) 78vw, 30vw"
+                          sizes="(max-width: 1024px) 78vw, 30vw"
                         />
                         <Flip
                           linked
@@ -511,7 +511,7 @@ export function HomeThreePageContent({
                           overAlt=""
                           under="home-split-courtyard"
                           underAlt=""
-                          sizes="(max-width: 950px) 78vw, 30vw"
+                          sizes="(max-width: 1024px) 78vw, 30vw"
                         />
 
                         <p className="h3-np__copy">
@@ -538,7 +538,7 @@ export function HomeThreePageContent({
                       slot="cruises-hero"
                       alt="Hathor Dahabiya moored on the Nile at golden hour"
                       className="h3-lead__main"
-                      sizes="(max-width: 950px) 100vw, 58vw"
+                      sizes="(max-width: 1024px) 100vw, 58vw"
                     />
                     <Flip
                       className="h3-lead__inset"
@@ -547,7 +547,7 @@ export function HomeThreePageContent({
                       underAlt="The pool deck aboard Hathor Dahabiya"
                       over="home-cinematic-still"
                       overAlt="Hathor Dahabiya under sail between Luxor and Aswan"
-                      sizes="(max-width: 950px) 78vw, 30vw"
+                      sizes="(max-width: 1024px) 78vw, 30vw"
                     />
                     {/* Contact's lead carries ONE line here and nothing else.
                         A paragraph and a link under it grew the block into the
@@ -595,7 +595,7 @@ export function HomeThreePageContent({
                                away: the delivered variant has to be about twice
                                the box's own width or what survives gets upscaled
                                — which is what looked pixelated. */
-                            sizes="(max-width: 950px) 92vw, 42vw"
+                            sizes="(max-width: 1024px) 92vw, 42vw"
                           />
 
                           <div className="h3-sail__body">
@@ -650,7 +650,7 @@ export function HomeThreePageContent({
                             slot={SAILINGS[0]?.slot ?? "cruises-hero"}
                             alt="Hathor Dahabiya on the Nile"
                             className="h3-sail__plate"
-                            sizes="(max-width: 950px) 92vw, 42vw"
+                            sizes="(max-width: 1024px) 92vw, 42vw"
                           />
                           <div className="h3-sail__body h3-sail__body--more">
                             <p className="h3-sail__tier">The full list</p>
@@ -728,7 +728,7 @@ export function HomeThreePageContent({
                                   alt={m.imageAlt}
                                   className="h3-berth__media"
                                   ratio="16 / 9"
-                                  sizes="(max-width: 950px) 34vw, min(38vw, 36rem)"
+                                  sizes="(max-width: 1024px) 34vw, min(38vw, 36rem)"
                                 />
                                 <p className="h3-berth__meta">
                                   <span>{m.day}</span>
@@ -831,7 +831,7 @@ export function HomeThreePageContent({
                             slot={voyage.slot}
                             alt={voyage.alt}
                             className="h3-projects__image"
-                            sizes="(max-width: 950px) 100vw, 55vw"
+                            sizes="(max-width: 1024px) 100vw, 55vw"
                           />
 
                           <div className="h3-projects__text">
@@ -887,7 +887,7 @@ export function HomeThreePageContent({
                         underAlt="A Royal Suite bathroom aboard Hathor"
                         over="scraped-royal-1"
                         overAlt="A Royal Suite aboard Hathor Dahabiya"
-                        sizes="(max-width: 950px) 88vw, 42vw"
+                        sizes="(max-width: 1024px) 88vw, 42vw"
                       />
                       <div className="h3-imgtext__text">
                         <p className="h3-kicker">03 — The suites</p>
@@ -922,7 +922,7 @@ export function HomeThreePageContent({
                         underAlt="A river-view cabin aboard Hathor Dahabiya"
                         over="scraped-luxsuite-2"
                         overAlt="A Luxury Suite aboard Hathor Dahabiya"
-                        sizes="(max-width: 950px) 54vw, 24vw"
+                        sizes="(max-width: 1024px) 54vw, 24vw"
                       />
                     </div>
                   </Panel>
@@ -958,7 +958,7 @@ export function HomeThreePageContent({
                       underAlt="The lounge aboard Hathor Dahabiya"
                       over="gastronomy-hero"
                       overAlt="Dining aboard Hathor Dahabiya"
-                      sizes="(max-width: 950px) 100vw, 38vw"
+                      sizes="(max-width: 1024px) 100vw, 38vw"
                     />
                     <Flip
                       className="h3-flip--b"
@@ -967,7 +967,7 @@ export function HomeThreePageContent({
                       underAlt="The fitness space aboard Hathor Dahabiya"
                       over="wellness-hero"
                       overAlt="Seneb Spa aboard Hathor Dahabiya"
-                      sizes="(max-width: 950px) 78vw, 30vw"
+                      sizes="(max-width: 1024px) 78vw, 30vw"
                     />
                     <nav className="h3-images__list" aria-label="Aboard Hathor">
                       {EXPLORE.map((item) => (
@@ -1146,7 +1146,7 @@ function TermPlate({
         src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}
         fill
-        sizes="(max-width: 950px) 1px, 22vw"
+        sizes="(max-width: 1024px) 1px, 22vw"
         quality={SITE_IMAGE_QUALITY}
       />
     </figure>
@@ -1162,7 +1162,7 @@ function MosaicPlate({ slot, alt }: { slot: string; alt: string }) {
         src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}
         fill
-        sizes="(max-width: 950px) 50vw, 24vw"
+        sizes="(max-width: 1024px) 50vw, 24vw"
         quality={SITE_IMAGE_QUALITY}
       />
     </figure>

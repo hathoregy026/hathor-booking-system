@@ -333,7 +333,7 @@ figure) {
 }
 
 /* ============================================================ HORIZONTAL ACT
-   Above 950px the run is a tall runway, the stage is pinned and the track is
+   Above 1024px the run is a tall runway, the stage is pinned and the track is
    translated on X — the Suites `mod-scroll` behaviour. Below it, everything
    collapses to a vertical document. */
 .home-three .h3-run {
@@ -529,9 +529,9 @@ figure) {
 }
 
 /* ---- the hold: the map is pinned until Hathor ties up at Aswan ---------
-   Above 950px the horizontal track itself freezes — the flow hook inserts a
+   Above 1024px the horizontal track itself freezes — the flow hook inserts a
    plateau in its scroll-to-x mapping at the point where this panel is centred,
-   so the page holds while the vessel sails and then travels on. Below 950px
+   so the page holds while the vessel sails and then travels on. Below 1024px
    the same beat is a sticky sub-stage with its own runway. Either way the
    wrappers are invisible to the desktop grid. */
 .home-three .h3-chart-hold,
@@ -1449,7 +1449,7 @@ figure) {
   background: var(--h3-beige);
   box-shadow: 0 -1px 0 var(--h3-beige);
 }
-/* Desktop/tablet: children join the projects flex. Phone (≤480) becomes a rail. */
+/* Desktop: children join the projects flex. Compact (≤1024) becomes a rail. */
 .home-three .h3-projects__rail {
   display: contents;
 }
@@ -2242,11 +2242,11 @@ figure) {
   }
 }
 
-/* ================================================== 950 · VERTICAL DOCUMENT
+/* ================================================== 1024 · VERTICAL DOCUMENT
    The structural switch. Pinning and horizontal translation stop and the act
    becomes a vertical editorial — the same reflow the Suites page makes.
    ========================================================================== */
-@media (max-width: 950px) {
+@media (max-width: 1024px) {
   .home-three {
     --h3-band: clamp(2.4rem, 9vw, 4rem);
     --h3-top: 0rem;
@@ -2330,7 +2330,7 @@ figure) {
   }
 
   /* ---- the sailings: the rail keeps travelling sideways
-     Everything else on this page becomes a vertical document below 950px, but
+     Everything else on this page becomes a vertical document Below 1024px, but
      eight cabins read as a stack is a page, not a passage — so this one module
      keeps its own left-to-right scroll, with snap points and a thumb-sized
      card, and the head sits above it. */
@@ -2959,10 +2959,10 @@ figure) {
   }
 }
 
-/* ================================================================ 480 · PHONE
+/* ================================================================ 1024 · COMPACT
    Packed intro, km | river | wheel, faded View more, short map hold.
    Animation hooks are untouched. */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   .home-three {
     --h3-stack-gap: 0.7rem;
   }
@@ -3578,10 +3578,10 @@ figure) {
 }
 
 /*
- * Phone-only (≤480px) homepage editorial pass.
- * Desktop / tablet rules above are not selected. Flip/slide CSS vars stay.
+ * Compact (phone + tablet ≤1024) homepage editorial pass.
+ * Desktop (>1024) rules above are not selected. Flip/slide CSS vars stay.
  */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   /* ---- ref 1 · sailing cards: shorter portrait, same inner order -------- */
   .home-three .h3-sail {
     width: 90vw;
@@ -5135,10 +5135,10 @@ html[data-ex-experience]
      document  vertical  marquee → experiences → about → the close → contact
 
    hooks/useHomeThreeFlow.ts gates its engine on this exact query, so layout
-   and scroll mapping cannot disagree. Touch tablets above 950px keep the
-   single act and phones keep their document; nothing here reaches either.
+   and scroll mapping cannot disagree. Fine-pointer desktops above 1024 keep
+   this split; compact viewports keep the vertical phone document.
    ========================================================================== */
-@media (min-width: 951px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   /* the outer run stops being a runway and becomes a column of passages */
   .home-three .h3-run {
     height: auto !important;
@@ -5632,8 +5632,8 @@ html[data-ex-experience]
 }
 
 /* ==========================================================================
-   PHONE · THE OPENING COMPOSITION (≤480px only)
-   On a phone the opener and the lead become one editorial block: the cabin
+   COMPACT · THE OPENING COMPOSITION (phone + tablet ≤1024)
+   On compact viewports the opener and the lead become one editorial block: the cabin
    plate runs wide with the wordmark set on it, a framed plate laps its corner,
    a gold line travels from the plate's foot into that frame, an arched plate
    stands beside the note, and the claim closes the block.
@@ -5646,8 +5646,8 @@ html[data-ex-experience]
    note and titles scrub on the same timelines.
 
    Geometry is the reference board's 642-unit width (--h3-npu), which keeps
-   every overlap where it was drawn at any phone width. Nothing here renders
-   above 480px.
+   every overlap where it was drawn at any compact width. Nothing here renders
+   above 1024px.
    ========================================================================== */
 @property --h3-np-in {
   syntax: "<number>";
@@ -5676,7 +5676,7 @@ html[data-ex-experience]
   white-space: nowrap;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   /* The opener's own copy leaves the phone; its h1 stays for assistive tech. */
   .home-three .h3-scene.h3-open {
     padding: var(--h3-band) 0;
@@ -5895,7 +5895,7 @@ html[data-ex-experience]
   }
 }
 
-@media (max-width: 480px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 1024px) and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .home-three .h3-np__mark,
     .home-three .h3-np__title {
@@ -6002,11 +6002,11 @@ html[data-ex-experience]
 }
 
 /* ==========================================================================
-   PHONE · THE MAP BEFORE THE SAILINGS (≤480px only)
+   COMPACT · THE MAP BEFORE THE SAILINGS (phone + tablet ≤1024)
    Order only: the track stacks its panels as a column so the chart can take
    the cards' place. No panel changes size, spacing or design.
    ========================================================================== */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   .home-three .h3-track {
     display: flex;
     flex-direction: column;
