@@ -106,8 +106,9 @@ export async function enforcePublicRateLimit(input: {
         "updatedAt" = NOW()
       RETURNING "count", "resetAt"
     `;
+  // node-pg sends Dates in the host's local zone and "resetAt" has no zone, so send UTC text.
   const rows = input.scope.startsWith("booking")
-    ? await bookingQuery<{count:number;resetAt:Date}>(query.text,query.values)
+    ? await bookingQuery<{count:number;resetAt:Date}>(query.text,query.values.map(v => v instanceof Date ? v.toISOString() : v))
     : await prisma.$queryRaw<Array<{count:number;resetAt:Date}>>(query);
 
   const row = rows[0];

@@ -160,8 +160,8 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
 
       <div className="booking-success__note">
         <p>Return date: {formatUtcDate(details.returnDate)}</p>
-        <p>Preferred payment method: {details.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : details.paymentMethod === "VISA" ? "Visa" : "—"}</p>
-        <p>Amount recorded: {formatPrice(details.amountPaidCents)} · Remaining balance: {formatPrice(Math.max(0,details.totalPriceCents-details.amountPaidCents))}</p>
+        <p>Preferred payment method: {details.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : details.paymentMethod === "VISA" ? "Visa" : "â€”"}</p>
+        <p>Amount recorded: {formatPrice(details.amountPaidCents)} Â· Remaining balance: {formatPrice(Math.max(0,details.totalPriceCents-details.amountPaidCents))}</p>
         {details.paymentSchedule.map(p => <p key={p.milestone}>{p.milestone === "INITIAL" ? "Initially" : p.dueAt ? formatUtcDate(p.dueAt) : p.milestone}: cumulative payments {formatPrice(p.cumulativeCents)}</p>)}
         <p>{details.emailStatus === "SENT" ? `Request email sent to ${details.customerEmail}.` : details.emailStatus === "FAILED" ? "Your request is saved. The email could not be sent; please contact Hathor if you need assistance." : "Request email pending."}</p>
       </div>

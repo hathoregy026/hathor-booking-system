@@ -125,16 +125,24 @@ export function GoldDustParticles() {
       });
     };
 
+    /* One batched set: GSAP reads every dot, then writes every dot. A set per
+       dot made each write invalidate the next dot's style read. Same seeded
+       sequence as before, so the field starts in exactly the same place. */
+    const randoms = nodes.map((_, i) => createSeededRandom(0x44555354 + i * 97));
+    const starts = randoms.map((random) => ({
+      x: (random() - 0.5) * (light ? 20 : 40),
+      y: (random() - 0.5) * (light ? 20 : 40),
+    }));
+    gsap.set(nodes, {
+      x: (i: number) => starts[i]?.x ?? 0,
+      y: (i: number) => starts[i]?.y ?? 0,
+      opacity: (i: number) => particles[i]?.opacity ?? 0,
+    });
+
     nodes.forEach((node, i) => {
       const seed = particles[i];
       if (!seed) return;
-      const random = createSeededRandom(0x44555354 + i * 97);
-
-      gsap.set(node, {
-        x: (random() - 0.5) * (light ? 20 : 40),
-        y: (random() - 0.5) * (light ? 20 : 40),
-        opacity: seed.opacity,
-      });
+      const random = randoms[i]!;
 
       const kick = gsap.delayedCall(random() * (light ? 1.2 : 2.5), () => {
         if (cancelled || paused) return;

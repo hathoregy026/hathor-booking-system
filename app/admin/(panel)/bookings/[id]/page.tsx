@@ -13,12 +13,12 @@ export default async function Page({ params }: { params: Promise<{id:string}> })
  const b=await prisma.booking.findUnique({where:{id},include:reservationInclude}); if(!b) notFound();
  const paid=netPaid(b.payments); const required=paymentSchedule(b.totalPriceCents!,b.cruiseSchedule.departureTime).requiredCents;
  return <main className="space-y-5 p-6"><Link href="/admin/bookings">Back to reservations</Link><h1>Reservation {b.id}</h1>
- <p>{b.customerName} · {b.customerEmail} · {b.customerPhone}</p><p>{b.status} · {b.acceptedAt ? "Accepted by Hathor" : "Not yet accepted"}</p>
- <p>{b.cruiseSchedule.cruise.name} · {b.cruiseSchedule.departureTime.toISOString().slice(0,10)} — {b.cruiseSchedule.arrivalTime.toISOString().slice(0,10)}</p>
- {b.bookingRooms.map(r=><p key={r.id}>Room {r.roomIndex+1}: {r.room.roomNumber} · {r.room.roomType} · {r.adults} adults / {r.children} children</p>)}
- <p>Preferred method: {b.paymentMethod ?? "Not selected"}</p><p>Total {formatPrice(b.totalPriceCents!)} · Received {formatPrice(paid)} · Balance {formatPrice(b.totalPriceCents!-paid)} · Required for confirmation {formatPrice(required)}</p>
- <p>Request email: {b.guestEmailStatus} · Team notification: {b.adminEmailStatus}</p>
- {b.payments.map(p=><p key={p.id}>{p.kind} · {p.method} · {formatPrice(p.amountCents)} · {p.reference}</p>)}
+ <p>{b.customerName} Â· {b.customerEmail} Â· {b.customerPhone}</p><p>{b.status} Â· {b.acceptedAt ? "Accepted by Hathor" : "Not yet accepted"}</p>
+ <p>{b.cruiseSchedule.cruise.name} Â· {b.cruiseSchedule.departureTime.toISOString().slice(0,10)} â€” {b.cruiseSchedule.arrivalTime.toISOString().slice(0,10)}</p>
+ {b.bookingRooms.map(r=><p key={r.id}>Room {r.roomIndex+1}: {r.room.roomNumber} Â· {r.room.roomType} Â· {r.adults} adults / {r.children} children</p>)}
+ <p>Preferred method: {b.paymentMethod ?? "Not selected"}</p><p>Total {formatPrice(b.totalPriceCents!)} Â· Received {formatPrice(paid)} Â· Balance {formatPrice(b.totalPriceCents!-paid)} Â· Required for confirmation {formatPrice(required)}</p>
+ <p>Request email: {b.guestEmailStatus} Â· Team notification: {b.adminEmailStatus}</p>
+ {b.payments.map(p=><p key={p.id}>{p.kind} Â· {p.method} Â· {formatPrice(p.amountCents)} Â· {p.reference}</p>)}
  <ReservationOperations id={id} status={b.status} />
  </main>;
 }

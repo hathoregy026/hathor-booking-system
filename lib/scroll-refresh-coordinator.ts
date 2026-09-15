@@ -6,6 +6,13 @@ type PendingReason = string;
 
 const ACTIVE_SCROLL_IDLE_MS = 180;
 const REFRESH_DEBOUNCE_MS = 140;
+/*
+ * Page boot asks for a refresh from several places (fonts, load, restore,
+ * touch bootstrap), each more than 140ms apart. Every one re-measured the
+ * whole page. For the first moments of a document they fold into one.
+ */
+const BOOT_WINDOW_MS = 2500;
+const BOOT_DEBOUNCE_MS = 450;
 
 const pendingReasons = new Set<PendingReason>();
 let refreshTimer: ReturnType<typeof setTimeout> | null = null;
@@ -62,7 +69,12 @@ function flushRefresh() {
 
 function scheduleRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(flushRefresh, REFRESH_DEBOUNCE_MS);
+  const booting =
+    typeof performance !== "undefined" && performance.now() < BOOT_WINDOW_MS;
+  refreshTimer = setTimeout(
+    flushRefresh,
+    booting ? BOOT_DEBOUNCE_MS : REFRESH_DEBOUNCE_MS,
+  );
 }
 
 export function initScrollRefreshCoordinator() {

@@ -1,9 +1,10 @@
 "use client";
 
-import { resetBrowserAppCaches } from "@/lib/browser-cache-reset";
 import { useEffect } from "react";
 
 const STORAGE_KEY = "hathor-deploy-id-v4";
+/** A returning tab checks at most this often — the endpoint is a cold function. */
+const CHECK_INTERVAL_MS = 60_000;
 
 function hardNavigateToFresh(deployId: string) {
   try {
@@ -37,46 +38,44 @@ async function fetchLiveDeployId(pageDeployId: string): Promise<string | null> {
 }
 
 /**
- * Keeps regular (non-Incognito) browsers on the current production build.
- * Only wipes Cache Storage / IndexedDB when a deploy mismatch is confirmed —
- * never on every page view (that made repeat visits feel stuck reloading).
+ * Keeps long-lived tabs on the current production build.
+ *
+ * The inline boot script already checks once on every full page load, so this
+ * only re-checks when a tab comes back into view (throttled). A mismatch
+ * reloads the page — hashed chunks and must-revalidate HTML make that enough,
+ * so browser caches and storage are left alone.
  */
 export function DeployFreshness({ deployId }: { deployId: string }) {
   useEffect(() => {
     if (!deployId || deployId === "dev") return;
     let cancelled = false;
+    let lastCheck = Date.now();
 
     const sync = async () => {
+      const now = Date.now();
+      if (now - lastCheck < CHECK_INTERVAL_MS) return;
+      lastCheck = now;
       const liveId = await fetchLiveDeployId(deployId);
       if (cancelled || !liveId || liveId === "dev") return;
 
       try {
         const prev = window.sessionStorage.getItem(STORAGE_KEY);
         window.sessionStorage.setItem(STORAGE_KEY, liveId);
-
         if (liveId !== deployId || (prev && prev !== liveId)) {
-          await resetBrowserAppCaches();
-          if (cancelled) return;
           hardNavigateToFresh(liveId);
         }
       } catch {
-        if (liveId !== deployId) {
-          await resetBrowserAppCaches();
-          if (!cancelled) hardNavigateToFresh(liveId);
-        }
+        if (liveId !== deployId) hardNavigateToFresh(liveId);
       }
     };
-
-    void sync();
 
     const onVisible = () => {
       if (document.visibilityState === "visible") void sync();
     };
+    /* A back/forward restore only reloads if production actually moved on. */
     const onPageShow = (event: PageTransitionEvent) => {
-      if (event.persisted) {
-        hardNavigateToFresh(deployId);
-        return;
-      }
+      if (!event.persisted) return;
+      lastCheck = 0;
       void sync();
     };
 

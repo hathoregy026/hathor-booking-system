@@ -45,10 +45,11 @@ export async function GET(request: NextRequest) {
     },
   );
 
-  /* Wipe HTTP cache for this origin so the next navigation cannot reuse old HTML/JS. */
-  if (stale) {
-    response.headers.set("Clear-Site-Data", '"cache", "storage"');
-  }
-
+  /*
+   * No Clear-Site-Data here. HTML is served must-revalidate and every Next
+   * chunk is content-hashed, so a reload already gets the new build. Wiping
+   * cache + storage on a mismatch made every returning visitor re-download
+   * the whole site after each deploy — and erased their saved favourites.
+   */
   return response;
 }

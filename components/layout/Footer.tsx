@@ -215,8 +215,9 @@ export function Footer() {
       else root.style.removeProperty("--hf-seam");
     };
 
-    readGround();
-    /* The page's own stylesheet can land a frame late on a client navigation. */
+    /* Read after the frame, never mid-hydration: the footer is below the fold,
+       and a synchronous read here forced a full-page style pass on every load.
+       The page's own stylesheet can also land a frame late on a client nav. */
     const frame = requestAnimationFrame(readGround);
     const settle = window.setTimeout(readGround, 400);
     const themeWatch = new MutationObserver(readGround);

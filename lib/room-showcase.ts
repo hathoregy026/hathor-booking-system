@@ -19,7 +19,7 @@ export const ROOM_SHOWCASES: readonly RoomShowcase[] = [
     eyebrow: "A quiet Nile-facing retreat",
     sizeSqm: 22,
     capacity: 2,
-    childrenAllowed: false,
+    childrenAllowed: true,
     description:
       "A generous king bed, warm Egyptian detail and a wide river view shape a calm private cabin for two.",
     images: [
@@ -37,7 +37,7 @@ export const ROOM_SHOWCASES: readonly RoomShowcase[] = [
     eyebrow: "Refined comfort, shared beautifully",
     sizeSqm: 22,
     capacity: 2,
-    childrenAllowed: false,
+    childrenAllowed: true,
     description:
       "Two individual beds and the same attentive cabin comforts create an elegant base for travelling companions.",
     images: [

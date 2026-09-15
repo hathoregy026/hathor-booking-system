@@ -86,7 +86,7 @@ export function RoomSelection({ duration, checkInDate, roomConfigs, availableRoo
                   {room.description ? <p className="historia-room-card__desc">{room.description}</p> : null}
                   <Link href={detailsHref} className="public-btn-outline-gold historia-room-card__link">View room details</Link>
 
-                  <p>{standardRateLabel(durationLabel)} — {formatPrice(standardPrice)}</p>
+                  <p>{standardRateLabel(durationLabel)} â€” {formatPrice(standardPrice)}</p>
 
                   <button type="button" className="public-btn-outline-gold historia-room-card__book" onClick={() => onBookRoom(selectionKey, selectedRate)}>Book</button>
                 </div>

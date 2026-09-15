@@ -3,8 +3,8 @@ const {chromium}=require('playwright');const pg=require('pg');
 (async()=>{const browser=await chromium.launch({headless:true});const page=await browser.newPage();let key;const errors=[];page.on('pageerror',e=>errors.push(e.message));
 try{
  await page.goto('http://localhost:3000/booking',{waitUntil:'domcontentloaded'});
- await page.getByLabel('Departure',{exact:true}).locator('option').nth(1).waitFor({state:'attached'});
- await page.getByLabel('Departure',{exact:true}).selectOption({label:'August 14, 2027 — August 18, 2027'});
+ await page.getByRole('combobox',{name:'Departure',exact:true}).locator('option').nth(1).waitFor({state:'attached'});
+ await page.getByRole('combobox',{name:'Departure',exact:true}).selectOption({label:'August 14, 2027 — August 18, 2027'});
  await page.getByLabel('Children',{exact:true}).fill('1');
  await page.getByRole('button',{name:'Check Availability',exact:true}).click();
  await page.getByRole('button',{name:'Select rooms & continue'}).click();
