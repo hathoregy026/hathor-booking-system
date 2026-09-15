@@ -118,7 +118,7 @@ export function serializeAdminBooking(
 /** True for checkout pending state (`PENDING` or legacy `PENDING_HOLD`). */
 export function isPendingBookingStatus(status: string): boolean {
   const upper = status.toUpperCase();
-  return upper === "PENDING" || upper === "PENDING_HOLD";
+  return upper === "REQUESTED" || upper === "PENDING" || upper === "PENDING_HOLD";
 }
 
 /** API accepts PENDING as alias for PENDING_HOLD (checkout pending state). */
@@ -133,6 +133,7 @@ export function normalizeAdminBookingStatus(
 }
 
 export function displayBookingStatus(status: string): string {
-  if (isPendingBookingStatus(status)) return "Pending";
+  if (status === "REQUESTED") return "Request received";
+  if (isPendingBookingStatus(status)) return "Temporary hold";
   return status.replace(/_/g, " ");
 }

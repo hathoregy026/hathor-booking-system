@@ -37,7 +37,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: "Room not found" }, { status: 404 });
     }
 
-    if (existing.deletedAt || existing.cruise.deletedAt) {
+    if (existing.deletedAt || existing.cruise?.deletedAt) {
       return NextResponse.json(
         { error: "Restore room from recycle bin before editing" },
         { status: 400 },

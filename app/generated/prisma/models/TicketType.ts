@@ -40,6 +40,7 @@ export type TicketTypeMinAggregateOutputType = {
   name: string | null
   description: string | null
   priceCents: number | null
+  roomType: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +51,7 @@ export type TicketTypeMaxAggregateOutputType = {
   name: string | null
   description: string | null
   priceCents: number | null
+  roomType: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +62,7 @@ export type TicketTypeCountAggregateOutputType = {
   name: number
   description: number
   priceCents: number
+  roomType: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,6 +83,7 @@ export type TicketTypeMinAggregateInputType = {
   name?: true
   description?: true
   priceCents?: true
+  roomType?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +94,7 @@ export type TicketTypeMaxAggregateInputType = {
   name?: true
   description?: true
   priceCents?: true
+  roomType?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +105,7 @@ export type TicketTypeCountAggregateInputType = {
   name?: true
   description?: true
   priceCents?: true
+  roomType?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,6 +203,7 @@ export type TicketTypeGroupByOutputType = {
   name: string
   description: string | null
   priceCents: number
+  roomType: string | null
   createdAt: Date
   updatedAt: Date
   _count: TicketTypeCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type TicketTypeWhereInput = {
   name?: Prisma.StringFilter<"TicketType"> | string
   description?: Prisma.StringNullableFilter<"TicketType"> | string | null
   priceCents?: Prisma.IntFilter<"TicketType"> | number
+  roomType?: Prisma.StringNullableFilter<"TicketType"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketType"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketType"> | Date | string
   cruise?: Prisma.XOR<Prisma.CruiseScalarRelationFilter, Prisma.CruiseWhereInput>
@@ -242,6 +250,7 @@ export type TicketTypeOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   priceCents?: Prisma.SortOrder
+  roomType?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cruise?: Prisma.CruiseOrderByWithRelationInput
@@ -250,6 +259,7 @@ export type TicketTypeOrderByWithRelationInput = {
 
 export type TicketTypeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  cruiseId_roomType?: Prisma.TicketTypeCruiseIdRoomTypeCompoundUniqueInput
   AND?: Prisma.TicketTypeWhereInput | Prisma.TicketTypeWhereInput[]
   OR?: Prisma.TicketTypeWhereInput[]
   NOT?: Prisma.TicketTypeWhereInput | Prisma.TicketTypeWhereInput[]
@@ -257,11 +267,12 @@ export type TicketTypeWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"TicketType"> | string
   description?: Prisma.StringNullableFilter<"TicketType"> | string | null
   priceCents?: Prisma.IntFilter<"TicketType"> | number
+  roomType?: Prisma.StringNullableFilter<"TicketType"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketType"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketType"> | Date | string
   cruise?: Prisma.XOR<Prisma.CruiseScalarRelationFilter, Prisma.CruiseWhereInput>
   bookingTickets?: Prisma.BookingTicketListRelationFilter
-}, "id">
+}, "id" | "cruiseId_roomType">
 
 export type TicketTypeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -269,6 +280,7 @@ export type TicketTypeOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   priceCents?: Prisma.SortOrder
+  roomType?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TicketTypeCountOrderByAggregateInput
@@ -287,6 +299,7 @@ export type TicketTypeScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"TicketType"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"TicketType"> | string | null
   priceCents?: Prisma.IntWithAggregatesFilter<"TicketType"> | number
+  roomType?: Prisma.StringNullableWithAggregatesFilter<"TicketType"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TicketType"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TicketType"> | Date | string
 }
@@ -296,6 +309,7 @@ export type TicketTypeCreateInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   cruise: Prisma.CruiseCreateNestedOneWithoutTicketTypesInput
@@ -308,6 +322,7 @@ export type TicketTypeUncheckedCreateInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutTicketTypeInput
@@ -318,6 +333,7 @@ export type TicketTypeUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cruise?: Prisma.CruiseUpdateOneRequiredWithoutTicketTypesNestedInput
@@ -330,6 +346,7 @@ export type TicketTypeUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutTicketTypeNestedInput
@@ -341,6 +358,7 @@ export type TicketTypeCreateManyInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -350,6 +368,7 @@ export type TicketTypeUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -360,6 +379,7 @@ export type TicketTypeUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -374,12 +394,18 @@ export type TicketTypeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type TicketTypeCruiseIdRoomTypeCompoundUniqueInput = {
+  cruiseId: string
+  roomType: string
+}
+
 export type TicketTypeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cruiseId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   priceCents?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -394,6 +420,7 @@ export type TicketTypeMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   priceCents?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -404,6 +431,7 @@ export type TicketTypeMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   priceCents?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -478,6 +506,7 @@ export type TicketTypeCreateWithoutCruiseInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutTicketTypeInput
@@ -488,6 +517,7 @@ export type TicketTypeUncheckedCreateWithoutCruiseInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutTicketTypeInput
@@ -528,6 +558,7 @@ export type TicketTypeScalarWhereInput = {
   name?: Prisma.StringFilter<"TicketType"> | string
   description?: Prisma.StringNullableFilter<"TicketType"> | string | null
   priceCents?: Prisma.IntFilter<"TicketType"> | number
+  roomType?: Prisma.StringNullableFilter<"TicketType"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketType"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketType"> | Date | string
 }
@@ -537,6 +568,7 @@ export type TicketTypeCreateWithoutBookingTicketsInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   cruise: Prisma.CruiseCreateNestedOneWithoutTicketTypesInput
@@ -548,6 +580,7 @@ export type TicketTypeUncheckedCreateWithoutBookingTicketsInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -573,6 +606,7 @@ export type TicketTypeUpdateWithoutBookingTicketsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cruise?: Prisma.CruiseUpdateOneRequiredWithoutTicketTypesNestedInput
@@ -584,6 +618,7 @@ export type TicketTypeUncheckedUpdateWithoutBookingTicketsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -593,6 +628,7 @@ export type TicketTypeCreateManyCruiseInput = {
   name: string
   description?: string | null
   priceCents: number
+  roomType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -602,6 +638,7 @@ export type TicketTypeUpdateWithoutCruiseInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingTickets?: Prisma.BookingTicketUpdateManyWithoutTicketTypeNestedInput
@@ -612,6 +649,7 @@ export type TicketTypeUncheckedUpdateWithoutCruiseInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutTicketTypeNestedInput
@@ -622,6 +660,7 @@ export type TicketTypeUncheckedUpdateManyWithoutCruiseInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   priceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -663,6 +702,7 @@ export type TicketTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   name?: boolean
   description?: boolean
   priceCents?: boolean
+  roomType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cruise?: boolean | Prisma.CruiseDefaultArgs<ExtArgs>
@@ -676,6 +716,7 @@ export type TicketTypeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   name?: boolean
   description?: boolean
   priceCents?: boolean
+  roomType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cruise?: boolean | Prisma.CruiseDefaultArgs<ExtArgs>
@@ -687,6 +728,7 @@ export type TicketTypeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   name?: boolean
   description?: boolean
   priceCents?: boolean
+  roomType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cruise?: boolean | Prisma.CruiseDefaultArgs<ExtArgs>
@@ -698,11 +740,12 @@ export type TicketTypeSelectScalar = {
   name?: boolean
   description?: boolean
   priceCents?: boolean
+  roomType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TicketTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseId" | "name" | "description" | "priceCents" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketType"]>
+export type TicketTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseId" | "name" | "description" | "priceCents" | "roomType" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketType"]>
 export type TicketTypeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cruise?: boolean | Prisma.CruiseDefaultArgs<ExtArgs>
   bookingTickets?: boolean | Prisma.TicketType$bookingTicketsArgs<ExtArgs>
@@ -727,6 +770,7 @@ export type $TicketTypePayload<ExtArgs extends runtime.Types.Extensions.Internal
     name: string
     description: string | null
     priceCents: number
+    roomType: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["ticketType"]>
@@ -1159,6 +1203,7 @@ export interface TicketTypeFieldRefs {
   readonly name: Prisma.FieldRef<"TicketType", 'String'>
   readonly description: Prisma.FieldRef<"TicketType", 'String'>
   readonly priceCents: Prisma.FieldRef<"TicketType", 'Int'>
+  readonly roomType: Prisma.FieldRef<"TicketType", 'String'>
   readonly createdAt: Prisma.FieldRef<"TicketType", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TicketType", 'DateTime'>
 }

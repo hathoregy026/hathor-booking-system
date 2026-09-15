@@ -58,6 +58,12 @@ export const ModelName = {
   Booking: 'Booking',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
+  SailingSector: 'SailingSector',
+  ScheduleSector: 'ScheduleSector',
+  InventoryAllocation: 'InventoryAllocation',
+  BookingGuest: 'BookingGuest',
+  BookingPayment: 'BookingPayment',
+  BookingPaymentSchedule: 'BookingPaymentSchedule',
   BookingTicket: 'BookingTicket',
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
@@ -104,6 +110,7 @@ export const CruiseScheduleScalarFieldEnum = {
   cruiseId: 'cruiseId',
   departureTime: 'departureTime',
   arrivalTime: 'arrivalTime',
+  isBookable: 'isBookable',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -116,6 +123,7 @@ export const RoomScalarFieldEnum = {
   cruiseId: 'cruiseId',
   name: 'name',
   roomNumber: 'roomNumber',
+  sizeSqm: 'sizeSqm',
   roomType: 'roomType',
   priceMultiplier: 'priceMultiplier',
   capacity: 'capacity',
@@ -134,6 +142,7 @@ export const TicketTypeScalarFieldEnum = {
   name: 'name',
   description: 'description',
   priceCents: 'priceCents',
+  roomType: 'roomType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -145,7 +154,6 @@ export const BookingScalarFieldEnum = {
   id: 'id',
   cruiseScheduleId: 'cruiseScheduleId',
   status: 'status',
-  ratePlan: 'ratePlan',
   paymentStatus: 'paymentStatus',
   idempotencyKey: 'idempotencyKey',
   holdExpiresAt: 'holdExpiresAt',
@@ -158,6 +166,18 @@ export const BookingScalarFieldEnum = {
   marketingOptIn: 'marketingOptIn',
   marketingOptInAt: 'marketingOptInAt',
   termsAcceptedAt: 'termsAcceptedAt',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  country: 'country',
+  paymentMethod: 'paymentMethod',
+  requestedAt: 'requestedAt',
+  acceptedAt: 'acceptedAt',
+  confirmedAt: 'confirmedAt',
+  cancelledAt: 'cancelledAt',
+  cancellationFeeCents: 'cancellationFeeCents',
+  requestFingerprint: 'requestFingerprint',
+  guestEmailStatus: 'guestEmailStatus',
+  adminEmailStatus: 'adminEmailStatus',
   totalPriceCents: 'totalPriceCents',
   currency: 'currency',
   priceSnapshotAt: 'priceSnapshotAt',
@@ -180,15 +200,89 @@ export type ApiRateLimitScalarFieldEnum = (typeof ApiRateLimitScalarFieldEnum)[k
 
 
 export const BookingRoomScalarFieldEnum = {
+  roomIndex: 'roomIndex',
   id: 'id',
   bookingId: 'bookingId',
   roomId: 'roomId',
   cruiseScheduleId: 'cruiseScheduleId',
   unitPriceCents: 'unitPriceCents',
+  adults: 'adults',
+  children: 'children',
   createdAt: 'createdAt'
 } as const
 
 export type BookingRoomScalarFieldEnum = (typeof BookingRoomScalarFieldEnum)[keyof typeof BookingRoomScalarFieldEnum]
+
+
+export const SailingSectorScalarFieldEnum = {
+  id: 'id',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt'
+} as const
+
+export type SailingSectorScalarFieldEnum = (typeof SailingSectorScalarFieldEnum)[keyof typeof SailingSectorScalarFieldEnum]
+
+
+export const ScheduleSectorScalarFieldEnum = {
+  cruiseScheduleId: 'cruiseScheduleId',
+  sectorId: 'sectorId'
+} as const
+
+export type ScheduleSectorScalarFieldEnum = (typeof ScheduleSectorScalarFieldEnum)[keyof typeof ScheduleSectorScalarFieldEnum]
+
+
+export const InventoryAllocationScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  bookingRoomId: 'bookingRoomId',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  state: 'state',
+  active: 'active',
+  expiresAt: 'expiresAt',
+  blockKey: 'blockKey',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type InventoryAllocationScalarFieldEnum = (typeof InventoryAllocationScalarFieldEnum)[keyof typeof InventoryAllocationScalarFieldEnum]
+
+
+export const BookingGuestScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  roomIndex: 'roomIndex',
+  fullName: 'fullName',
+  isChild: 'isChild'
+} as const
+
+export type BookingGuestScalarFieldEnum = (typeof BookingGuestScalarFieldEnum)[keyof typeof BookingGuestScalarFieldEnum]
+
+
+export const BookingPaymentScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  reference: 'reference',
+  method: 'method',
+  kind: 'kind',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  receivedAt: 'receivedAt',
+  recordedAt: 'recordedAt'
+} as const
+
+export type BookingPaymentScalarFieldEnum = (typeof BookingPaymentScalarFieldEnum)[keyof typeof BookingPaymentScalarFieldEnum]
+
+
+export const BookingPaymentScheduleScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  milestone: 'milestone',
+  dueAt: 'dueAt',
+  cumulativeCents: 'cumulativeCents'
+} as const
+
+export type BookingPaymentScheduleScalarFieldEnum = (typeof BookingPaymentScheduleScalarFieldEnum)[keyof typeof BookingPaymentScheduleScalarFieldEnum]
 
 
 export const BookingTicketScalarFieldEnum = {

@@ -106,10 +106,10 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
 
   return (
     <BookingSuccessShell
-      eyebrow="Confirmed"
+      eyebrow={details.status === "CONFIRMED" ? "Confirmed" : details.status === "REQUESTED" ? "Request received" : details.statusLabel}
       title="Reservation"
-      titleEm="received"
-      lede="Your cabin is reserved at the price below. No payment has been collected yet; the full balance remains pending."
+      titleEm={details.status === "REQUESTED" ? "request sent" : "details"}
+      lede={details.status === "REQUESTED" ? "Your booking request has been sent. The Hathor reservations team will contact you with the invoice and payment instructions. This is not a confirmed reservation and no payment was collected on this website." : details.status === "CONFIRMED" ? "Hathor has accepted your reservation and the required payment has been recorded." : "View the current status of your reservation below."}
     >
       <article className="booking-success__summary">
         <p className="booking-success__kicker">Booking summary</p>
@@ -158,17 +158,19 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
         </div>
       </article>
 
-      {details.customerEmail ? (
-        <p className="booking-success__note">
-          Your confirmation was sent to{" "}
-          <strong>{details.customerEmail}</strong>.
-        </p>
-      ) : null}
+      <div className="booking-success__note">
+        <p>Return date: {formatUtcDate(details.returnDate)}</p>
+        <p>Preferred payment method: {details.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : details.paymentMethod === "VISA" ? "Visa" : "—"}</p>
+        <p>Amount recorded: {formatPrice(details.amountPaidCents)} · Remaining balance: {formatPrice(Math.max(0,details.totalPriceCents-details.amountPaidCents))}</p>
+        {details.paymentSchedule.map(p => <p key={p.milestone}>{p.milestone === "INITIAL" ? "Initially" : p.dueAt ? formatUtcDate(p.dueAt) : p.milestone}: cumulative payments {formatPrice(p.cumulativeCents)}</p>)}
+        <p>{details.emailStatus === "SENT" ? `Request email sent to ${details.customerEmail}.` : details.emailStatus === "FAILED" ? "Your request is saved. The email could not be sent; please contact Hathor if you need assistance." : "Request email pending."}</p>
+      </div>
 
       <div className="booking-success__actions">
-        <Link href="/" className="public-btn-gold">
-          Back to Home
+        <Link href="/booking/lookup" className="public-btn-gold">
+          View Reservation
         </Link>
+        <Link href="/contact" className="public-btn-outline-gold">Contact Hathor</Link>
       </div>
     </BookingSuccessShell>
   );

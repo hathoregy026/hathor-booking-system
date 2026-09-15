@@ -48,7 +48,6 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
   adultCount: number | null;
   childCount: number | null;
   specialRequests: string | null;
-  ratePlan: "STANDARD" | "NON_REFUNDABLE";
   cruiseSchedule: {
     departureTime: Date;
     arrivalTime: Date;
@@ -64,15 +63,13 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
   }[];
   totalPriceCents: number | null;
   bookingUrl: string;
+  paymentMethod?: string | null;
 }): BookingEmailDetails | null {
   const email = booking.customerEmail?.trim();
   if (!email) return null;
 
   const parsed = parseGuestFromCustomerName(booking.customerName ?? "Guest");
-  const roomLabel =
-    booking.bookingRooms[0]?.room.roomType ??
-    booking.bookingRooms[0]?.room.name ??
-    "Luxury accommodation";
+  const roomLabel = booking.bookingRooms.map(r => r.room.roomType ?? r.room.name).join(", ");
   const ticketFallbackCents = booking.bookingTickets.reduce(
     (sum, ticket) =>
       sum +
@@ -96,12 +93,10 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
         ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
         : parsed.guests,
     totalPrice: formatPrice(totalPriceCents),
-    ratePlan:
-      booking.ratePlan === "NON_REFUNDABLE"
-        ? "Non-refundable rate (10% saving)"
-        : "Standard flexible rate",
+    ratePlan: "Standard Hathor rate",
     specialRequests: booking.specialRequests ?? undefined,
     bookingUrl: booking.bookingUrl,
+    paymentMethod: booking.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : "Visa",
   };
 }
 

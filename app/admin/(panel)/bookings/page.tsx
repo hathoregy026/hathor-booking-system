@@ -312,7 +312,7 @@ function AdminBookingsPageInner() {
       showToast(
         "success",
         status === BookingStatus.CONFIRMED
-          ? "Booking confirmed"
+          ? "Request accepted; confirmation requires recorded payment"
           : "Booking cancelled",
       );
     } catch (err) {

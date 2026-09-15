@@ -7,7 +7,7 @@ import {
   type StayDurationValue,
 } from "@/lib/booking-search-config";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
-import { prisma } from "@/lib/prisma";
+import { getBookingReservation } from "@/lib/booking-engine";
 import { verifyBookingAccessToken } from "@/lib/booking-access-token";
 
 export type BookingSuccessDetails = {
@@ -21,11 +21,18 @@ export type BookingSuccessDetails = {
   totalPriceCents: number;
   customerEmail: string | null;
   ratePlanLabel: string;
+  status: string;
+  paymentMethod: string | null;
+  amountPaidCents: number;
+  paymentSchedule: { milestone: string; dueAt: string | null; cumulativeCents: number }[];
+  emailStatus: string;
+  returnDate: string;
 };
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
-  [BookingStatus.PENDING_HOLD]: "Pending Confirmation",
-  [BookingStatus.CONFIRMED]: "Confirmed · Payment Pending",
+  [BookingStatus.REQUESTED]: "Request received",
+  [BookingStatus.PENDING_HOLD]: "Temporary hold",
+  [BookingStatus.CONFIRMED]: "Confirmed",
   [BookingStatus.CANCELLED]: "Cancelled",
   [BookingStatus.EXPIRED]: "Expired",
 };
@@ -65,54 +72,7 @@ export async function getBookingSuccessDetails(
   accessToken: string,
 ): Promise<BookingSuccessDetails | null> {
   if (!verifyBookingAccessToken(bookingId, accessToken)) return null;
-  const booking = await prisma.booking.findFirst({
-    where: {
-      id: bookingId,
-      deletedAt: null,
-    },
-    select: {
-      id: true,
-      totalPriceCents: true,
-      status: true,
-      customerName: true,
-      customerEmail: true,
-      adultCount: true,
-      childCount: true,
-      ratePlan: true,
-      cruiseSchedule: {
-        select: {
-          departureTime: true,
-          cruise: {
-            select: {
-              name: true,
-              slug: true,
-              ports: true,
-              basePriceCents: true,
-            },
-          },
-        },
-      },
-      bookingRooms: {
-        select: {
-          unitPriceCents: true,
-          room: {
-            select: {
-              name: true,
-              roomType: true,
-              priceMultiplier: true,
-            },
-          },
-        },
-      },
-      bookingTickets: {
-        select: {
-          quantity: true,
-          unitPriceCents: true,
-          ticketType: { select: { priceCents: true } },
-        },
-      },
-    },
-  });
+  const booking = await getBookingReservation(bookingId);
 
   if (!booking) return null;
 
@@ -126,24 +86,7 @@ export async function getBookingSuccessDetails(
 
   const durationMeta = resolveDurationMeta(cruise.slug);
 
-  const roomPriceCents = booking.bookingRooms.reduce((sum, entry) => {
-    if (entry.unitPriceCents !== null) return sum + entry.unitPriceCents;
-    const multiplier =
-      entry.room.priceMultiplier > 0 ? entry.room.priceMultiplier : 1;
-    return sum + Math.round(cruise.basePriceCents * multiplier);
-  }, 0);
-
-  const ticketPriceCents = booking.bookingTickets.reduce(
-    (sum, ticket) =>
-      sum +
-      ticket.quantity *
-        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
-    0,
-  );
-
-  const totalPriceCents =
-    booking.totalPriceCents ??
-    (roomPriceCents > 0 ? roomPriceCents : ticketPriceCents);
+  const totalPriceCents = booking.totalPriceCents!;
 
   return {
     bookingId: booking.id,
@@ -151,16 +94,19 @@ export async function getBookingSuccessDetails(
     cruiseTitle,
     durationMeta,
     checkInDate: booking.cruiseSchedule.departureTime.toISOString(),
-    roomType: primaryRoom?.roomType ?? null,
+    roomType: booking.bookingRooms.map(r => r.room.roomType ?? r.room.name).join(", "),
     guestSummary:
       booking.adultCount !== null && booking.childCount !== null
         ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
         : parseGuestSummary(booking.customerName),
     totalPriceCents,
     customerEmail: booking.customerEmail,
-    ratePlanLabel:
-      booking.ratePlan === "NON_REFUNDABLE"
-        ? "Non-refundable rate · 10% saving"
-        : "Standard flexible rate",
+    ratePlanLabel: "Standard Hathor rate",
+    status: booking.status,
+    paymentMethod: booking.paymentMethod,
+    amountPaidCents: booking.payments.reduce((sum,p) => sum + (p.kind === "REFUND" ? -p.amountCents : p.amountCents), 0),
+    paymentSchedule: booking.paymentSchedule.map(p => ({ milestone: p.milestone, dueAt: p.dueAt?.toISOString() ?? null, cumulativeCents: p.cumulativeCents })),
+    emailStatus: booking.guestEmailStatus,
+    returnDate: booking.cruiseSchedule.arrivalTime.toISOString(),
   };
 }

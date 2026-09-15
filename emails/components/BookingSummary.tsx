@@ -64,6 +64,7 @@ function buildSummaryRows(
     { label: "Room Type", value: details.roomType },
     { label: "Adults", value: adults },
     { label: "Children", value: children },
+    ...(details.paymentMethod ? [{ label: "Preferred payment method", value: details.paymentMethod }] : []),
     ...(details.ratePlan
       ? [{ label: "Rate", value: details.ratePlan }]
       : []),

@@ -54,7 +54,7 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     backgroundColor: emailColors.background,
     heroHeading: "Thank You, {guestName}",
     bodyText:
-      "Your booking request has been received. Our team is reviewing your reservation and will contact you within 24 hours to confirm your luxury Nile cruise experience.",
+      "Your booking request has been sent. Hathor reservations will contact you with the invoice and payment instructions. No payment has been collected.",
   },
   BookingConfirmed: {
     name: "BookingConfirmed",
@@ -65,7 +65,7 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     backgroundColor: emailColors.background,
     heroHeading: "Reservation Confirmed, {guestName}",
     bodyText:
-      "Your cabin is reserved. No payment has been collected yet; the full balance remains pending.",
+      "Hathor has accepted your reservation and the required initial payment has been recorded. Please follow the payment schedule for any remaining balance.",
   },
   AdminAlert: {
     name: "AdminAlert",
@@ -74,9 +74,9 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
     backgroundColor: emailColors.background,
-    heroHeading: "New Confirmed Reservation",
+    heroHeading: "New Booking Request",
     bodyText:
-      "This reservation was confirmed automatically without collecting payment. Follow up through your approved payment process.",
+      "Review this request and its preferred payment method. Send the invoice and payment instructions. Confirmation requires acceptance and the required recorded payment.",
   },
   ContactReceived: {
     name: "ContactReceived",

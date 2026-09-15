@@ -13,14 +13,7 @@ import type {
   RoomSearchConfig,
   StayDurationValue,
 } from "@/lib/booking-search-config";
-import {
-  ensureDefaultTicketType,
-  ensureScheduleForCheckIn,
-  ensureScheduleForDateRange,
-} from "@/lib/cruise-setup";
-import { departureDateKeyFromTime } from "@/lib/departure-dates";
 import { withDb } from "@/lib/db-safe";
-import { parseToUtcDate, utcDateKeyFromDate } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import {
   availabilityRoomSelect,
@@ -87,9 +80,9 @@ function mapRoomWithPrices(
     name: string;
     description: string | null;
     priceCents: number;
+    roomType: string | null;
   }[],
 ) {
-  const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;
 
   return {
     id: room.id,
@@ -97,11 +90,11 @@ function mapRoomWithPrices(
     capacity: room.capacity,
     description: room.description,
     roomType: room.roomType,
-    prices: ticketTypes.map((ticketType) => ({
+    prices: ticketTypes.filter(t => t.roomType === room.roomType).map((ticketType) => ({
       ticketTypeId: ticketType.id,
       name: ticketType.name,
       description: ticketType.description,
-      priceCents: Math.round(ticketType.priceCents * multiplier),
+      priceCents: ticketType.priceCents,
     })),
   };
 }
@@ -120,7 +113,7 @@ export function computeCheckInAvailability(input: {
   reason?: AvailabilityReason;
   needsScheduleCreation: boolean;
 } {
-  const { roomsForSearch, roomConfigs, schedules, unavailableBySchedule, previewIfNoSchedule } =
+  const { roomsForSearch, roomConfigs, schedules, unavailableBySchedule } =
     input;
 
   if (roomConfigs && roomsForSearch.length === 0) {
@@ -132,20 +125,7 @@ export function computeCheckInAvailability(input: {
   }
 
   if (schedules.length === 0) {
-    if (previewIfNoSchedule) {
-      const assignable =
-        !roomConfigs || canAssignRoomConfigs(roomsForSearch, roomConfigs);
-      return {
-        openRooms: assignable ? roomsForSearch : [],
-        reason: assignable ? undefined : "FULLY_BOOKED",
-        needsScheduleCreation: false,
-      };
-    }
-
-    return {
-      openRooms: [],
-      needsScheduleCreation: true,
-    };
+    return { openRooms: [], reason: "NO_SCHEDULES", needsScheduleCreation: false };
   }
 
   const openByRoomId = new Map<string, AvailabilityRoomRecord>();
@@ -216,7 +196,7 @@ export async function runAvailabilityLookup(
     const ticketTypes = await prisma.ticketType.findMany({
       where: { cruiseId },
       orderBy: { priceCents: "asc" },
-      select: availabilityTicketSelect,
+      select: { ...availabilityTicketSelect, roomType: true },
     });
 
     return { cruise, schedules, ticketTypes };
@@ -265,48 +245,8 @@ export async function runAvailabilityLookup(
     };
   }
 
-  let ticketTypes = context.ticketTypes;
-
-  if (ticketTypes.length === 0) {
-    await withDb(() => ensureDefaultTicketType(cruise.id, cruise.basePriceCents));
-
-    ticketTypes = await withDb(() =>
-      prisma.ticketType.findMany({
-        where: { cruiseId },
-        orderBy: { priceCents: "asc" },
-        select: availabilityTicketSelect,
-      }),
-    );
-  }
-
-  let schedules: ScheduleRef[] = context.schedules;
-
-  if (checkInDate) {
-    const checkInKey = utcDateKeyFromDate(parseToUtcDate(checkInDate));
-    schedules = context.schedules.filter(
-      (schedule) => departureDateKeyFromTime(schedule.departureTime) === checkInKey,
-    );
-  }
-
-  if (schedules.length === 0 && !previewOnly) {
-    const nights = Math.max(
-      1,
-      Math.round(
-        (parseToUtcDate(endDate).getTime() - parseToUtcDate(startDate).getTime()) /
-          (24 * 60 * 60 * 1000),
-      ),
-    );
-
-    const created = await withDb(() =>
-      checkInDate
-        ? ensureScheduleForCheckIn(cruiseId, checkInDate, nights)
-        : ensureScheduleForDateRange(cruiseId, startDate, endDate),
-    );
-
-    if (created) {
-      schedules = [created];
-    }
-  }
+  const ticketTypes = context.ticketTypes;
+  const schedules: ScheduleRef[] = context.schedules;
 
   const scheduleIds = schedules.map((schedule) => schedule.id);
   const roomIds = roomsForSearch.map((room) => room.id);
@@ -352,27 +292,6 @@ export async function runAvailabilityLookup(
       };
     })
     .filter((schedule) => schedule.availableRooms.length > 0);
-
-  if (previewOnly && schedules.length === 0 && availability.openRooms.length > 0) {
-    const virtualDeparture = checkInDate ?? startDate;
-    const virtualArrival = endDate;
-    return {
-      cruiseId,
-      startDate,
-      endDate,
-      cruise,
-      schedules: [
-        {
-          scheduleId: "",
-          departureTime: virtualDeparture,
-          arrivalTime: virtualArrival,
-          availableRooms: availability.openRooms.map((room) =>
-            mapRoomWithPrices(room, ticketTypes),
-          ),
-        },
-      ],
-    };
-  }
 
   const totalRooms = availableBySchedule.reduce(
     (count, schedule) => count + schedule.availableRooms.length,

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BookingStatus } from "@/app/generated/prisma/client";
 import { handleRouteError } from "@/lib/api";
 import { BIN_RETENTION_DAYS } from "@/lib/booking-retention";
 import {
@@ -25,22 +24,11 @@ export async function POST(request: NextRequest) {
     const purgeBefore = new Date(now);
     purgeBefore.setUTCDate(purgeBefore.getUTCDate() - BIN_RETENTION_DAYS);
 
-    const expiredHolds = await prisma.booking.updateMany({
-      where: {
-        status: BookingStatus.PENDING_HOLD,
-        holdExpiresAt: { lt: now },
-        deletedAt: null,
-      },
-      data: {
-        status: BookingStatus.EXPIRED,
-      },
+    const expiredHolds = await prisma.$transaction(async tx => {
+      const rows = await tx.$queryRaw<Array<{count: number}>>`SELECT hathor_expire_holds() AS count`;
+      return { count: rows[0]?.count ?? 0 };
     });
-
-    const purgedBookings = await prisma.booking.deleteMany({
-      where: {
-        deletedAt: { lt: purgeBefore },
-      },
-    });
+    const purgedBookings = { count: 0 }; // Reservation history is not disposable catalog data.
 
     const purgedRateLimits = await prisma.apiRateLimit.deleteMany({
       where: { resetAt: { lt: now } },
@@ -88,3 +76,5 @@ export async function POST(request: NextRequest) {
     return handleRouteError(error);
   }
 }
+
+export const GET = POST;

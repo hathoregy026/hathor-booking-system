@@ -52,10 +52,10 @@ export function getBookingRoomVisuals(
   }
 
   if (identity.includes("twin")) {
-    return { cover: CABIN_TWIN_GALLERY[0], gallery: CABIN_TWIN_GALLERY, sizeSqm: 22, childrenAllowed: false };
+    return { cover: CABIN_TWIN_GALLERY[0], gallery: CABIN_TWIN_GALLERY, sizeSqm: 22, childrenAllowed: true };
   }
 
-  return { cover: CABIN_KING_GALLERY[0], gallery: CABIN_KING_GALLERY, sizeSqm: 22, childrenAllowed: false };
+  return { cover: CABIN_KING_GALLERY[0], gallery: CABIN_KING_GALLERY, sizeSqm: 22, childrenAllowed: true };
 }
 
 export const HATHOR_BOOKING_INCLUSIONS = [

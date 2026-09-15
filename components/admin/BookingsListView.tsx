@@ -65,7 +65,7 @@ function BookingMobileCard({
   const purgeDate = booking.deletedAt
     ? getPermanentDeleteDate(parseISO(booking.deletedAt))
     : null;
-  const canConfirm = isPendingBookingStatus(booking.status);
+  const canConfirm = booking.status === "REQUESTED";
   const canCancel =
     isPendingBookingStatus(booking.status) ||
     booking.status === BookingStatus.CONFIRMED;
@@ -84,7 +84,7 @@ function BookingMobileCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate font-medium">{booking.guestName}</p>
+              <p className="truncate font-medium"><a href={`/admin/bookings/${booking.id}`}>{booking.guestName}</a></p>
               <p className="truncate text-xs text-muted">
                 {booking.cruiseName}
                 {booking.customerEmail !== "—" ? ` · ${booking.customerEmail}` : ""}
@@ -140,7 +140,7 @@ function BookingMobileCard({
                   ) : (
                     <>
                       <Check className="h-4 w-4" strokeWidth={2.2} />
-                      Confirm
+                      Accept request
                     </>
                   )}
                 </button>
@@ -297,7 +297,7 @@ export function BookingsListView({
                     ? getPermanentDeleteDate(parseISO(booking.deletedAt))
                     : null;
                   const isUpdating = updatingId === booking.id;
-                  const canConfirm = isPendingBookingStatus(booking.status);
+                  const canConfirm = booking.status === "REQUESTED";
                   const canCancel =
                     isPendingBookingStatus(booking.status) ||
                     booking.status === BookingStatus.CONFIRMED;
@@ -333,7 +333,7 @@ export function BookingsListView({
                             {getInitials(booking.guestName)}
                           </span>
                           <div className="min-w-0">
-                            <p className="truncate font-medium">{booking.guestName}</p>
+                            <p className="truncate font-medium"><a href={`/admin/bookings/${booking.id}`}>{booking.guestName}</a></p>
                             <p className="truncate text-xs text-muted">
                               {booking.cruiseName}
                               {booking.rooms.length > 0
@@ -424,7 +424,7 @@ export function BookingsListView({
                               const rowActions: RowAction[] = [];
                               if (canConfirm) {
                                 rowActions.push({
-                                  label: "Confirm booking",
+                                  label: "Accept request",
                                   icon: Check,
                                   tone: "success",
                                   onSelect: () => onConfirm(booking.id),

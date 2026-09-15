@@ -27,74 +27,104 @@ export type AggregateBookingRoom = {
 }
 
 export type BookingRoomAvgAggregateOutputType = {
+  roomIndex: number | null
   unitPriceCents: number | null
+  adults: number | null
+  children: number | null
 }
 
 export type BookingRoomSumAggregateOutputType = {
+  roomIndex: number | null
   unitPriceCents: number | null
+  adults: number | null
+  children: number | null
 }
 
 export type BookingRoomMinAggregateOutputType = {
+  roomIndex: number | null
   id: string | null
   bookingId: string | null
   roomId: string | null
   cruiseScheduleId: string | null
   unitPriceCents: number | null
+  adults: number | null
+  children: number | null
   createdAt: Date | null
 }
 
 export type BookingRoomMaxAggregateOutputType = {
+  roomIndex: number | null
   id: string | null
   bookingId: string | null
   roomId: string | null
   cruiseScheduleId: string | null
   unitPriceCents: number | null
+  adults: number | null
+  children: number | null
   createdAt: Date | null
 }
 
 export type BookingRoomCountAggregateOutputType = {
+  roomIndex: number
   id: number
   bookingId: number
   roomId: number
   cruiseScheduleId: number
   unitPriceCents: number
+  adults: number
+  children: number
   createdAt: number
   _all: number
 }
 
 
 export type BookingRoomAvgAggregateInputType = {
+  roomIndex?: true
   unitPriceCents?: true
+  adults?: true
+  children?: true
 }
 
 export type BookingRoomSumAggregateInputType = {
+  roomIndex?: true
   unitPriceCents?: true
+  adults?: true
+  children?: true
 }
 
 export type BookingRoomMinAggregateInputType = {
+  roomIndex?: true
   id?: true
   bookingId?: true
   roomId?: true
   cruiseScheduleId?: true
   unitPriceCents?: true
+  adults?: true
+  children?: true
   createdAt?: true
 }
 
 export type BookingRoomMaxAggregateInputType = {
+  roomIndex?: true
   id?: true
   bookingId?: true
   roomId?: true
   cruiseScheduleId?: true
   unitPriceCents?: true
+  adults?: true
+  children?: true
   createdAt?: true
 }
 
 export type BookingRoomCountAggregateInputType = {
+  roomIndex?: true
   id?: true
   bookingId?: true
   roomId?: true
   cruiseScheduleId?: true
   unitPriceCents?: true
+  adults?: true
+  children?: true
   createdAt?: true
   _all?: true
 }
@@ -186,11 +216,14 @@ export type BookingRoomGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 export type BookingRoomGroupByOutputType = {
+  roomIndex: number
   id: string
   bookingId: string
   roomId: string
   cruiseScheduleId: string
   unitPriceCents: number | null
+  adults: number
+  children: number
   createdAt: Date
   _count: BookingRoomCountAggregateOutputType | null
   _avg: BookingRoomAvgAggregateOutputType | null
@@ -218,51 +251,67 @@ export type BookingRoomWhereInput = {
   AND?: Prisma.BookingRoomWhereInput | Prisma.BookingRoomWhereInput[]
   OR?: Prisma.BookingRoomWhereInput[]
   NOT?: Prisma.BookingRoomWhereInput | Prisma.BookingRoomWhereInput[]
+  roomIndex?: Prisma.IntFilter<"BookingRoom"> | number
   id?: Prisma.StringFilter<"BookingRoom"> | string
   bookingId?: Prisma.StringFilter<"BookingRoom"> | string
   roomId?: Prisma.StringFilter<"BookingRoom"> | string
   cruiseScheduleId?: Prisma.StringFilter<"BookingRoom"> | string
   unitPriceCents?: Prisma.IntNullableFilter<"BookingRoom"> | number | null
+  adults?: Prisma.IntFilter<"BookingRoom"> | number
+  children?: Prisma.IntFilter<"BookingRoom"> | number
   createdAt?: Prisma.DateTimeFilter<"BookingRoom"> | Date | string
   booking?: Prisma.XOR<Prisma.BookingScalarRelationFilter, Prisma.BookingWhereInput>
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
   cruiseSchedule?: Prisma.XOR<Prisma.CruiseScheduleScalarRelationFilter, Prisma.CruiseScheduleWhereInput>
+  allocation?: Prisma.XOR<Prisma.InventoryAllocationNullableScalarRelationFilter, Prisma.InventoryAllocationWhereInput> | null
 }
 
 export type BookingRoomOrderByWithRelationInput = {
+  roomIndex?: Prisma.SortOrder
   id?: Prisma.SortOrder
   bookingId?: Prisma.SortOrder
   roomId?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   booking?: Prisma.BookingOrderByWithRelationInput
   room?: Prisma.RoomOrderByWithRelationInput
   cruiseSchedule?: Prisma.CruiseScheduleOrderByWithRelationInput
+  allocation?: Prisma.InventoryAllocationOrderByWithRelationInput
 }
 
 export type BookingRoomWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   bookingId_roomId?: Prisma.BookingRoomBookingIdRoomIdCompoundUniqueInput
+  bookingId_roomIndex?: Prisma.BookingRoomBookingIdRoomIndexCompoundUniqueInput
   AND?: Prisma.BookingRoomWhereInput | Prisma.BookingRoomWhereInput[]
   OR?: Prisma.BookingRoomWhereInput[]
   NOT?: Prisma.BookingRoomWhereInput | Prisma.BookingRoomWhereInput[]
+  roomIndex?: Prisma.IntFilter<"BookingRoom"> | number
   bookingId?: Prisma.StringFilter<"BookingRoom"> | string
   roomId?: Prisma.StringFilter<"BookingRoom"> | string
   cruiseScheduleId?: Prisma.StringFilter<"BookingRoom"> | string
   unitPriceCents?: Prisma.IntNullableFilter<"BookingRoom"> | number | null
+  adults?: Prisma.IntFilter<"BookingRoom"> | number
+  children?: Prisma.IntFilter<"BookingRoom"> | number
   createdAt?: Prisma.DateTimeFilter<"BookingRoom"> | Date | string
   booking?: Prisma.XOR<Prisma.BookingScalarRelationFilter, Prisma.BookingWhereInput>
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
   cruiseSchedule?: Prisma.XOR<Prisma.CruiseScheduleScalarRelationFilter, Prisma.CruiseScheduleWhereInput>
-}, "id" | "bookingId_roomId">
+  allocation?: Prisma.XOR<Prisma.InventoryAllocationNullableScalarRelationFilter, Prisma.InventoryAllocationWhereInput> | null
+}, "id" | "bookingId_roomId" | "bookingId_roomIndex">
 
 export type BookingRoomOrderByWithAggregationInput = {
+  roomIndex?: Prisma.SortOrder
   id?: Prisma.SortOrder
   bookingId?: Prisma.SortOrder
   roomId?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BookingRoomCountOrderByAggregateInput
   _avg?: Prisma.BookingRoomAvgOrderByAggregateInput
@@ -275,71 +324,99 @@ export type BookingRoomScalarWhereWithAggregatesInput = {
   AND?: Prisma.BookingRoomScalarWhereWithAggregatesInput | Prisma.BookingRoomScalarWhereWithAggregatesInput[]
   OR?: Prisma.BookingRoomScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BookingRoomScalarWhereWithAggregatesInput | Prisma.BookingRoomScalarWhereWithAggregatesInput[]
+  roomIndex?: Prisma.IntWithAggregatesFilter<"BookingRoom"> | number
   id?: Prisma.StringWithAggregatesFilter<"BookingRoom"> | string
   bookingId?: Prisma.StringWithAggregatesFilter<"BookingRoom"> | string
   roomId?: Prisma.StringWithAggregatesFilter<"BookingRoom"> | string
   cruiseScheduleId?: Prisma.StringWithAggregatesFilter<"BookingRoom"> | string
   unitPriceCents?: Prisma.IntNullableWithAggregatesFilter<"BookingRoom"> | number | null
+  adults?: Prisma.IntWithAggregatesFilter<"BookingRoom"> | number
+  children?: Prisma.IntWithAggregatesFilter<"BookingRoom"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BookingRoom"> | Date | string
 }
 
 export type BookingRoomCreateInput = {
+  roomIndex?: number
   id?: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
   booking: Prisma.BookingCreateNestedOneWithoutBookingRoomsInput
   room: Prisma.RoomCreateNestedOneWithoutBookingRoomsInput
   cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingRoomsInput
+  allocation?: Prisma.InventoryAllocationCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomUncheckedCreateInput = {
+  roomIndex?: number
   id?: string
   bookingId: string
   roomId: string
   cruiseScheduleId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomUpdateInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   booking?: Prisma.BookingUpdateOneRequiredWithoutBookingRoomsNestedInput
   room?: Prisma.RoomUpdateOneRequiredWithoutBookingRoomsNestedInput
   cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingRoomsNestedInput
+  allocation?: Prisma.InventoryAllocationUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomCreateManyInput = {
+  roomIndex?: number
   id?: string
   bookingId: string
   roomId: string
   cruiseScheduleId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
 }
 
 export type BookingRoomUpdateManyMutationInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingRoomUncheckedUpdateManyInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -358,39 +435,64 @@ export type BookingRoomBookingIdRoomIdCompoundUniqueInput = {
   roomId: string
 }
 
+export type BookingRoomBookingIdRoomIndexCompoundUniqueInput = {
+  bookingId: string
+  roomIndex: number
+}
+
 export type BookingRoomCountOrderByAggregateInput = {
+  roomIndex?: Prisma.SortOrder
   id?: Prisma.SortOrder
   bookingId?: Prisma.SortOrder
   roomId?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type BookingRoomAvgOrderByAggregateInput = {
+  roomIndex?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
 }
 
 export type BookingRoomMaxOrderByAggregateInput = {
+  roomIndex?: Prisma.SortOrder
   id?: Prisma.SortOrder
   bookingId?: Prisma.SortOrder
   roomId?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type BookingRoomMinOrderByAggregateInput = {
+  roomIndex?: Prisma.SortOrder
   id?: Prisma.SortOrder
   bookingId?: Prisma.SortOrder
   roomId?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type BookingRoomSumOrderByAggregateInput = {
+  roomIndex?: Prisma.SortOrder
   unitPriceCents?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
+}
+
+export type BookingRoomNullableScalarRelationFilter = {
+  is?: Prisma.BookingRoomWhereInput | null
+  isNot?: Prisma.BookingRoomWhereInput | null
 }
 
 export type BookingRoomCreateNestedManyWithoutCruiseScheduleInput = {
@@ -519,20 +621,44 @@ export type BookingRoomUncheckedUpdateManyWithoutBookingNestedInput = {
   deleteMany?: Prisma.BookingRoomScalarWhereInput | Prisma.BookingRoomScalarWhereInput[]
 }
 
+export type BookingRoomCreateNestedOneWithoutAllocationInput = {
+  create?: Prisma.XOR<Prisma.BookingRoomCreateWithoutAllocationInput, Prisma.BookingRoomUncheckedCreateWithoutAllocationInput>
+  connectOrCreate?: Prisma.BookingRoomCreateOrConnectWithoutAllocationInput
+  connect?: Prisma.BookingRoomWhereUniqueInput
+}
+
+export type BookingRoomUpdateOneWithoutAllocationNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingRoomCreateWithoutAllocationInput, Prisma.BookingRoomUncheckedCreateWithoutAllocationInput>
+  connectOrCreate?: Prisma.BookingRoomCreateOrConnectWithoutAllocationInput
+  upsert?: Prisma.BookingRoomUpsertWithoutAllocationInput
+  disconnect?: Prisma.BookingRoomWhereInput | boolean
+  delete?: Prisma.BookingRoomWhereInput | boolean
+  connect?: Prisma.BookingRoomWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BookingRoomUpdateToOneWithWhereWithoutAllocationInput, Prisma.BookingRoomUpdateWithoutAllocationInput>, Prisma.BookingRoomUncheckedUpdateWithoutAllocationInput>
+}
+
 export type BookingRoomCreateWithoutCruiseScheduleInput = {
+  roomIndex?: number
   id?: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
   booking: Prisma.BookingCreateNestedOneWithoutBookingRoomsInput
   room: Prisma.RoomCreateNestedOneWithoutBookingRoomsInput
+  allocation?: Prisma.InventoryAllocationCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomUncheckedCreateWithoutCruiseScheduleInput = {
+  roomIndex?: number
   id?: string
   bookingId: string
   roomId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomCreateOrConnectWithoutCruiseScheduleInput = {
@@ -565,28 +691,39 @@ export type BookingRoomScalarWhereInput = {
   AND?: Prisma.BookingRoomScalarWhereInput | Prisma.BookingRoomScalarWhereInput[]
   OR?: Prisma.BookingRoomScalarWhereInput[]
   NOT?: Prisma.BookingRoomScalarWhereInput | Prisma.BookingRoomScalarWhereInput[]
+  roomIndex?: Prisma.IntFilter<"BookingRoom"> | number
   id?: Prisma.StringFilter<"BookingRoom"> | string
   bookingId?: Prisma.StringFilter<"BookingRoom"> | string
   roomId?: Prisma.StringFilter<"BookingRoom"> | string
   cruiseScheduleId?: Prisma.StringFilter<"BookingRoom"> | string
   unitPriceCents?: Prisma.IntNullableFilter<"BookingRoom"> | number | null
+  adults?: Prisma.IntFilter<"BookingRoom"> | number
+  children?: Prisma.IntFilter<"BookingRoom"> | number
   createdAt?: Prisma.DateTimeFilter<"BookingRoom"> | Date | string
 }
 
 export type BookingRoomCreateWithoutRoomInput = {
+  roomIndex?: number
   id?: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
   booking: Prisma.BookingCreateNestedOneWithoutBookingRoomsInput
   cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingRoomsInput
+  allocation?: Prisma.InventoryAllocationCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomUncheckedCreateWithoutRoomInput = {
+  roomIndex?: number
   id?: string
   bookingId: string
   cruiseScheduleId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomCreateOrConnectWithoutRoomInput = {
@@ -616,19 +753,27 @@ export type BookingRoomUpdateManyWithWhereWithoutRoomInput = {
 }
 
 export type BookingRoomCreateWithoutBookingInput = {
+  roomIndex?: number
   id?: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
   room: Prisma.RoomCreateNestedOneWithoutBookingRoomsInput
   cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingRoomsInput
+  allocation?: Prisma.InventoryAllocationCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomUncheckedCreateWithoutBookingInput = {
+  roomIndex?: number
   id?: string
   roomId: string
   cruiseScheduleId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedCreateNestedOneWithoutBookingRoomInput
 }
 
 export type BookingRoomCreateOrConnectWithoutBookingInput = {
@@ -657,122 +802,235 @@ export type BookingRoomUpdateManyWithWhereWithoutBookingInput = {
   data: Prisma.XOR<Prisma.BookingRoomUpdateManyMutationInput, Prisma.BookingRoomUncheckedUpdateManyWithoutBookingInput>
 }
 
+export type BookingRoomCreateWithoutAllocationInput = {
+  roomIndex?: number
+  id?: string
+  unitPriceCents?: number | null
+  adults?: number
+  children?: number
+  createdAt?: Date | string
+  booking: Prisma.BookingCreateNestedOneWithoutBookingRoomsInput
+  room: Prisma.RoomCreateNestedOneWithoutBookingRoomsInput
+  cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingRoomsInput
+}
+
+export type BookingRoomUncheckedCreateWithoutAllocationInput = {
+  roomIndex?: number
+  id?: string
+  bookingId: string
+  roomId: string
+  cruiseScheduleId: string
+  unitPriceCents?: number | null
+  adults?: number
+  children?: number
+  createdAt?: Date | string
+}
+
+export type BookingRoomCreateOrConnectWithoutAllocationInput = {
+  where: Prisma.BookingRoomWhereUniqueInput
+  create: Prisma.XOR<Prisma.BookingRoomCreateWithoutAllocationInput, Prisma.BookingRoomUncheckedCreateWithoutAllocationInput>
+}
+
+export type BookingRoomUpsertWithoutAllocationInput = {
+  update: Prisma.XOR<Prisma.BookingRoomUpdateWithoutAllocationInput, Prisma.BookingRoomUncheckedUpdateWithoutAllocationInput>
+  create: Prisma.XOR<Prisma.BookingRoomCreateWithoutAllocationInput, Prisma.BookingRoomUncheckedCreateWithoutAllocationInput>
+  where?: Prisma.BookingRoomWhereInput
+}
+
+export type BookingRoomUpdateToOneWithWhereWithoutAllocationInput = {
+  where?: Prisma.BookingRoomWhereInput
+  data: Prisma.XOR<Prisma.BookingRoomUpdateWithoutAllocationInput, Prisma.BookingRoomUncheckedUpdateWithoutAllocationInput>
+}
+
+export type BookingRoomUpdateWithoutAllocationInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  booking?: Prisma.BookingUpdateOneRequiredWithoutBookingRoomsNestedInput
+  room?: Prisma.RoomUpdateOneRequiredWithoutBookingRoomsNestedInput
+  cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingRoomsNestedInput
+}
+
+export type BookingRoomUncheckedUpdateWithoutAllocationInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  bookingId?: Prisma.StringFieldUpdateOperationsInput | string
+  roomId?: Prisma.StringFieldUpdateOperationsInput | string
+  cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type BookingRoomCreateManyCruiseScheduleInput = {
+  roomIndex?: number
   id?: string
   bookingId: string
   roomId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
 }
 
 export type BookingRoomUpdateWithoutCruiseScheduleInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   booking?: Prisma.BookingUpdateOneRequiredWithoutBookingRoomsNestedInput
   room?: Prisma.RoomUpdateOneRequiredWithoutBookingRoomsNestedInput
+  allocation?: Prisma.InventoryAllocationUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateWithoutCruiseScheduleInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateManyWithoutCruiseScheduleInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingRoomCreateManyRoomInput = {
+  roomIndex?: number
   id?: string
   bookingId: string
   cruiseScheduleId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
 }
 
 export type BookingRoomUpdateWithoutRoomInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   booking?: Prisma.BookingUpdateOneRequiredWithoutBookingRoomsNestedInput
   cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingRoomsNestedInput
+  allocation?: Prisma.InventoryAllocationUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateWithoutRoomInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateManyWithoutRoomInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bookingId?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookingRoomCreateManyBookingInput = {
+  roomIndex?: number
   id?: string
   roomId: string
   cruiseScheduleId: string
   unitPriceCents?: number | null
+  adults?: number
+  children?: number
   createdAt?: Date | string
 }
 
 export type BookingRoomUpdateWithoutBookingInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   room?: Prisma.RoomUpdateOneRequiredWithoutBookingRoomsNestedInput
   cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingRoomsNestedInput
+  allocation?: Prisma.InventoryAllocationUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateWithoutBookingInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allocation?: Prisma.InventoryAllocationUncheckedUpdateOneWithoutBookingRoomNestedInput
 }
 
 export type BookingRoomUncheckedUpdateManyWithoutBookingInput = {
+  roomIndex?: Prisma.IntFieldUpdateOperationsInput | number
   id?: Prisma.StringFieldUpdateOperationsInput | string
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   unitPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  adults?: Prisma.IntFieldUpdateOperationsInput | number
+  children?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type BookingRoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  roomIndex?: boolean
   id?: boolean
   bookingId?: boolean
   roomId?: boolean
   cruiseScheduleId?: boolean
   unitPriceCents?: boolean
+  adults?: boolean
+  children?: boolean
   createdAt?: boolean
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
+  allocation?: boolean | Prisma.BookingRoom$allocationArgs<ExtArgs>
 }, ExtArgs["result"]["bookingRoom"]>
 
 export type BookingRoomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  roomIndex?: boolean
   id?: boolean
   bookingId?: boolean
   roomId?: boolean
   cruiseScheduleId?: boolean
   unitPriceCents?: boolean
+  adults?: boolean
+  children?: boolean
   createdAt?: boolean
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
@@ -780,11 +1038,14 @@ export type BookingRoomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 }, ExtArgs["result"]["bookingRoom"]>
 
 export type BookingRoomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  roomIndex?: boolean
   id?: boolean
   bookingId?: boolean
   roomId?: boolean
   cruiseScheduleId?: boolean
   unitPriceCents?: boolean
+  adults?: boolean
+  children?: boolean
   createdAt?: boolean
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
@@ -792,19 +1053,23 @@ export type BookingRoomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 }, ExtArgs["result"]["bookingRoom"]>
 
 export type BookingRoomSelectScalar = {
+  roomIndex?: boolean
   id?: boolean
   bookingId?: boolean
   roomId?: boolean
   cruiseScheduleId?: boolean
   unitPriceCents?: boolean
+  adults?: boolean
+  children?: boolean
   createdAt?: boolean
 }
 
-export type BookingRoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "bookingId" | "roomId" | "cruiseScheduleId" | "unitPriceCents" | "createdAt", ExtArgs["result"]["bookingRoom"]>
+export type BookingRoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"roomIndex" | "id" | "bookingId" | "roomId" | "cruiseScheduleId" | "unitPriceCents" | "adults" | "children" | "createdAt", ExtArgs["result"]["bookingRoom"]>
 export type BookingRoomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
+  allocation?: boolean | Prisma.BookingRoom$allocationArgs<ExtArgs>
 }
 export type BookingRoomIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   booking?: boolean | Prisma.BookingDefaultArgs<ExtArgs>
@@ -823,13 +1088,17 @@ export type $BookingRoomPayload<ExtArgs extends runtime.Types.Extensions.Interna
     booking: Prisma.$BookingPayload<ExtArgs>
     room: Prisma.$RoomPayload<ExtArgs>
     cruiseSchedule: Prisma.$CruiseSchedulePayload<ExtArgs>
+    allocation: Prisma.$InventoryAllocationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
+    roomIndex: number
     id: string
     bookingId: string
     roomId: string
     cruiseScheduleId: string
     unitPriceCents: number | null
+    adults: number
+    children: number
     createdAt: Date
   }, ExtArgs["result"]["bookingRoom"]>
   composites: {}
@@ -914,8 +1183,8 @@ export interface BookingRoomDelegate<ExtArgs extends runtime.Types.Extensions.In
    * // Get first 10 BookingRooms
    * const bookingRooms = await prisma.bookingRoom.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const bookingRoomWithIdOnly = await prisma.bookingRoom.findMany({ select: { id: true } })
+   * // Only select the `roomIndex`
+   * const bookingRoomWithRoomIndexOnly = await prisma.bookingRoom.findMany({ select: { roomIndex: true } })
    * 
    */
   findMany<T extends BookingRoomFindManyArgs>(args?: Prisma.SelectSubset<T, BookingRoomFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -959,9 +1228,9 @@ export interface BookingRoomDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   ]
    * })
    * 
-   * // Create many BookingRooms and only return the `id`
-   * const bookingRoomWithIdOnly = await prisma.bookingRoom.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many BookingRooms and only return the `roomIndex`
+   * const bookingRoomWithRoomIndexOnly = await prisma.bookingRoom.createManyAndReturn({
+   *   select: { roomIndex: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -1050,9 +1319,9 @@ export interface BookingRoomDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   ]
    * })
    * 
-   * // Update zero or more BookingRooms and only return the `id`
-   * const bookingRoomWithIdOnly = await prisma.bookingRoom.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more BookingRooms and only return the `roomIndex`
+   * const bookingRoomWithRoomIndexOnly = await prisma.bookingRoom.updateManyAndReturn({
+   *   select: { roomIndex: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1228,6 +1497,7 @@ export interface Prisma__BookingRoomClient<T, Null = never, ExtArgs extends runt
   booking<T extends Prisma.BookingDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BookingDefaultArgs<ExtArgs>>): Prisma.Prisma__BookingClient<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   room<T extends Prisma.RoomDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoomDefaultArgs<ExtArgs>>): Prisma.Prisma__RoomClient<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   cruiseSchedule<T extends Prisma.CruiseScheduleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CruiseScheduleDefaultArgs<ExtArgs>>): Prisma.Prisma__CruiseScheduleClient<runtime.Types.Result.GetResult<Prisma.$CruiseSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  allocation<T extends Prisma.BookingRoom$allocationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BookingRoom$allocationArgs<ExtArgs>>): Prisma.Prisma__InventoryAllocationClient<runtime.Types.Result.GetResult<Prisma.$InventoryAllocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1257,11 +1527,14 @@ export interface Prisma__BookingRoomClient<T, Null = never, ExtArgs extends runt
  * Fields of the BookingRoom model
  */
 export interface BookingRoomFieldRefs {
+  readonly roomIndex: Prisma.FieldRef<"BookingRoom", 'Int'>
   readonly id: Prisma.FieldRef<"BookingRoom", 'String'>
   readonly bookingId: Prisma.FieldRef<"BookingRoom", 'String'>
   readonly roomId: Prisma.FieldRef<"BookingRoom", 'String'>
   readonly cruiseScheduleId: Prisma.FieldRef<"BookingRoom", 'String'>
   readonly unitPriceCents: Prisma.FieldRef<"BookingRoom", 'Int'>
+  readonly adults: Prisma.FieldRef<"BookingRoom", 'Int'>
+  readonly children: Prisma.FieldRef<"BookingRoom", 'Int'>
   readonly createdAt: Prisma.FieldRef<"BookingRoom", 'DateTime'>
 }
     
@@ -1661,6 +1934,25 @@ export type BookingRoomDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many BookingRooms to delete.
    */
   limit?: number
+}
+
+/**
+ * BookingRoom.allocation
+ */
+export type BookingRoom$allocationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InventoryAllocation
+   */
+  select?: Prisma.InventoryAllocationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InventoryAllocation
+   */
+  omit?: Prisma.InventoryAllocationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InventoryAllocationInclude<ExtArgs> | null
+  where?: Prisma.InventoryAllocationWhereInput
 }
 
 /**

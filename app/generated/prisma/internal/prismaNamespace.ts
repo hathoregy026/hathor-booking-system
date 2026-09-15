@@ -404,6 +404,12 @@ export const ModelName = {
   Booking: 'Booking',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
+  SailingSector: 'SailingSector',
+  ScheduleSector: 'ScheduleSector',
+  InventoryAllocation: 'InventoryAllocation',
+  BookingGuest: 'BookingGuest',
+  BookingPayment: 'BookingPayment',
+  BookingPaymentSchedule: 'BookingPaymentSchedule',
   BookingTicket: 'BookingTicket',
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
@@ -426,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "booking" | "apiRateLimit" | "bookingRoom" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "booking" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -945,6 +951,450 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BookingRoomCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BookingRoomCountAggregateOutputType> | number
+        }
+      }
+    }
+    SailingSector: {
+      payload: Prisma.$SailingSectorPayload<ExtArgs>
+      fields: Prisma.SailingSectorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SailingSectorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SailingSectorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>
+        }
+        findFirst: {
+          args: Prisma.SailingSectorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SailingSectorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>
+        }
+        findMany: {
+          args: Prisma.SailingSectorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>[]
+        }
+        create: {
+          args: Prisma.SailingSectorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>
+        }
+        createMany: {
+          args: Prisma.SailingSectorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SailingSectorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>[]
+        }
+        delete: {
+          args: Prisma.SailingSectorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>
+        }
+        update: {
+          args: Prisma.SailingSectorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>
+        }
+        deleteMany: {
+          args: Prisma.SailingSectorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SailingSectorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SailingSectorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>[]
+        }
+        upsert: {
+          args: Prisma.SailingSectorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingSectorPayload>
+        }
+        aggregate: {
+          args: Prisma.SailingSectorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSailingSector>
+        }
+        groupBy: {
+          args: Prisma.SailingSectorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SailingSectorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SailingSectorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SailingSectorCountAggregateOutputType> | number
+        }
+      }
+    }
+    ScheduleSector: {
+      payload: Prisma.$ScheduleSectorPayload<ExtArgs>
+      fields: Prisma.ScheduleSectorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScheduleSectorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScheduleSectorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>
+        }
+        findFirst: {
+          args: Prisma.ScheduleSectorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScheduleSectorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>
+        }
+        findMany: {
+          args: Prisma.ScheduleSectorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>[]
+        }
+        create: {
+          args: Prisma.ScheduleSectorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>
+        }
+        createMany: {
+          args: Prisma.ScheduleSectorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScheduleSectorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>[]
+        }
+        delete: {
+          args: Prisma.ScheduleSectorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>
+        }
+        update: {
+          args: Prisma.ScheduleSectorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>
+        }
+        deleteMany: {
+          args: Prisma.ScheduleSectorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScheduleSectorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScheduleSectorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>[]
+        }
+        upsert: {
+          args: Prisma.ScheduleSectorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduleSectorPayload>
+        }
+        aggregate: {
+          args: Prisma.ScheduleSectorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScheduleSector>
+        }
+        groupBy: {
+          args: Prisma.ScheduleSectorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduleSectorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScheduleSectorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduleSectorCountAggregateOutputType> | number
+        }
+      }
+    }
+    InventoryAllocation: {
+      payload: Prisma.$InventoryAllocationPayload<ExtArgs>
+      fields: Prisma.InventoryAllocationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InventoryAllocationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InventoryAllocationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>
+        }
+        findFirst: {
+          args: Prisma.InventoryAllocationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InventoryAllocationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>
+        }
+        findMany: {
+          args: Prisma.InventoryAllocationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>[]
+        }
+        create: {
+          args: Prisma.InventoryAllocationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>
+        }
+        createMany: {
+          args: Prisma.InventoryAllocationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InventoryAllocationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>[]
+        }
+        delete: {
+          args: Prisma.InventoryAllocationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>
+        }
+        update: {
+          args: Prisma.InventoryAllocationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>
+        }
+        deleteMany: {
+          args: Prisma.InventoryAllocationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InventoryAllocationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InventoryAllocationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>[]
+        }
+        upsert: {
+          args: Prisma.InventoryAllocationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InventoryAllocationPayload>
+        }
+        aggregate: {
+          args: Prisma.InventoryAllocationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInventoryAllocation>
+        }
+        groupBy: {
+          args: Prisma.InventoryAllocationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InventoryAllocationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InventoryAllocationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InventoryAllocationCountAggregateOutputType> | number
+        }
+      }
+    }
+    BookingGuest: {
+      payload: Prisma.$BookingGuestPayload<ExtArgs>
+      fields: Prisma.BookingGuestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingGuestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingGuestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingGuestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingGuestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>
+        }
+        findMany: {
+          args: Prisma.BookingGuestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>[]
+        }
+        create: {
+          args: Prisma.BookingGuestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>
+        }
+        createMany: {
+          args: Prisma.BookingGuestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingGuestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingGuestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>
+        }
+        update: {
+          args: Prisma.BookingGuestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingGuestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingGuestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingGuestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingGuestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingGuestPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingGuestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingGuest>
+        }
+        groupBy: {
+          args: Prisma.BookingGuestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingGuestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingGuestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingGuestCountAggregateOutputType> | number
+        }
+      }
+    }
+    BookingPayment: {
+      payload: Prisma.$BookingPaymentPayload<ExtArgs>
+      fields: Prisma.BookingPaymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingPaymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingPaymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingPaymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingPaymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>
+        }
+        findMany: {
+          args: Prisma.BookingPaymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>[]
+        }
+        create: {
+          args: Prisma.BookingPaymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>
+        }
+        createMany: {
+          args: Prisma.BookingPaymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingPaymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingPaymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>
+        }
+        update: {
+          args: Prisma.BookingPaymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingPaymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingPaymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingPaymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingPaymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingPaymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingPayment>
+        }
+        groupBy: {
+          args: Prisma.BookingPaymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingPaymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingPaymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingPaymentCountAggregateOutputType> | number
+        }
+      }
+    }
+    BookingPaymentSchedule: {
+      payload: Prisma.$BookingPaymentSchedulePayload<ExtArgs>
+      fields: Prisma.BookingPaymentScheduleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingPaymentScheduleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingPaymentScheduleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>
+        }
+        findFirst: {
+          args: Prisma.BookingPaymentScheduleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingPaymentScheduleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>
+        }
+        findMany: {
+          args: Prisma.BookingPaymentScheduleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>[]
+        }
+        create: {
+          args: Prisma.BookingPaymentScheduleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>
+        }
+        createMany: {
+          args: Prisma.BookingPaymentScheduleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingPaymentScheduleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>[]
+        }
+        delete: {
+          args: Prisma.BookingPaymentScheduleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>
+        }
+        update: {
+          args: Prisma.BookingPaymentScheduleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingPaymentScheduleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingPaymentScheduleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingPaymentScheduleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingPaymentScheduleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPaymentSchedulePayload>
+        }
+        aggregate: {
+          args: Prisma.BookingPaymentScheduleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingPaymentSchedule>
+        }
+        groupBy: {
+          args: Prisma.BookingPaymentScheduleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingPaymentScheduleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingPaymentScheduleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingPaymentScheduleCountAggregateOutputType> | number
         }
       }
     }
@@ -1526,6 +1976,7 @@ export const CruiseScheduleScalarFieldEnum = {
   cruiseId: 'cruiseId',
   departureTime: 'departureTime',
   arrivalTime: 'arrivalTime',
+  isBookable: 'isBookable',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1538,6 +1989,7 @@ export const RoomScalarFieldEnum = {
   cruiseId: 'cruiseId',
   name: 'name',
   roomNumber: 'roomNumber',
+  sizeSqm: 'sizeSqm',
   roomType: 'roomType',
   priceMultiplier: 'priceMultiplier',
   capacity: 'capacity',
@@ -1556,6 +2008,7 @@ export const TicketTypeScalarFieldEnum = {
   name: 'name',
   description: 'description',
   priceCents: 'priceCents',
+  roomType: 'roomType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1567,7 +2020,6 @@ export const BookingScalarFieldEnum = {
   id: 'id',
   cruiseScheduleId: 'cruiseScheduleId',
   status: 'status',
-  ratePlan: 'ratePlan',
   paymentStatus: 'paymentStatus',
   idempotencyKey: 'idempotencyKey',
   holdExpiresAt: 'holdExpiresAt',
@@ -1580,6 +2032,18 @@ export const BookingScalarFieldEnum = {
   marketingOptIn: 'marketingOptIn',
   marketingOptInAt: 'marketingOptInAt',
   termsAcceptedAt: 'termsAcceptedAt',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  country: 'country',
+  paymentMethod: 'paymentMethod',
+  requestedAt: 'requestedAt',
+  acceptedAt: 'acceptedAt',
+  confirmedAt: 'confirmedAt',
+  cancelledAt: 'cancelledAt',
+  cancellationFeeCents: 'cancellationFeeCents',
+  requestFingerprint: 'requestFingerprint',
+  guestEmailStatus: 'guestEmailStatus',
+  adminEmailStatus: 'adminEmailStatus',
   totalPriceCents: 'totalPriceCents',
   currency: 'currency',
   priceSnapshotAt: 'priceSnapshotAt',
@@ -1602,15 +2066,89 @@ export type ApiRateLimitScalarFieldEnum = (typeof ApiRateLimitScalarFieldEnum)[k
 
 
 export const BookingRoomScalarFieldEnum = {
+  roomIndex: 'roomIndex',
   id: 'id',
   bookingId: 'bookingId',
   roomId: 'roomId',
   cruiseScheduleId: 'cruiseScheduleId',
   unitPriceCents: 'unitPriceCents',
+  adults: 'adults',
+  children: 'children',
   createdAt: 'createdAt'
 } as const
 
 export type BookingRoomScalarFieldEnum = (typeof BookingRoomScalarFieldEnum)[keyof typeof BookingRoomScalarFieldEnum]
+
+
+export const SailingSectorScalarFieldEnum = {
+  id: 'id',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt'
+} as const
+
+export type SailingSectorScalarFieldEnum = (typeof SailingSectorScalarFieldEnum)[keyof typeof SailingSectorScalarFieldEnum]
+
+
+export const ScheduleSectorScalarFieldEnum = {
+  cruiseScheduleId: 'cruiseScheduleId',
+  sectorId: 'sectorId'
+} as const
+
+export type ScheduleSectorScalarFieldEnum = (typeof ScheduleSectorScalarFieldEnum)[keyof typeof ScheduleSectorScalarFieldEnum]
+
+
+export const InventoryAllocationScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  bookingRoomId: 'bookingRoomId',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  state: 'state',
+  active: 'active',
+  expiresAt: 'expiresAt',
+  blockKey: 'blockKey',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type InventoryAllocationScalarFieldEnum = (typeof InventoryAllocationScalarFieldEnum)[keyof typeof InventoryAllocationScalarFieldEnum]
+
+
+export const BookingGuestScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  roomIndex: 'roomIndex',
+  fullName: 'fullName',
+  isChild: 'isChild'
+} as const
+
+export type BookingGuestScalarFieldEnum = (typeof BookingGuestScalarFieldEnum)[keyof typeof BookingGuestScalarFieldEnum]
+
+
+export const BookingPaymentScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  reference: 'reference',
+  method: 'method',
+  kind: 'kind',
+  amountCents: 'amountCents',
+  currency: 'currency',
+  receivedAt: 'receivedAt',
+  recordedAt: 'recordedAt'
+} as const
+
+export type BookingPaymentScalarFieldEnum = (typeof BookingPaymentScalarFieldEnum)[keyof typeof BookingPaymentScalarFieldEnum]
+
+
+export const BookingPaymentScheduleScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  milestone: 'milestone',
+  dueAt: 'dueAt',
+  cumulativeCents: 'cumulativeCents'
+} as const
+
+export type BookingPaymentScheduleScalarFieldEnum = (typeof BookingPaymentScheduleScalarFieldEnum)[keyof typeof BookingPaymentScheduleScalarFieldEnum]
 
 
 export const BookingTicketScalarFieldEnum = {
@@ -1780,6 +2318,13 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1808,20 +2353,6 @@ export type ListEnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'BookingRatePlan'
- */
-export type EnumBookingRatePlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingRatePlan'>
-    
-
-
-/**
- * Reference to a field of type 'BookingRatePlan[]'
- */
-export type ListEnumBookingRatePlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingRatePlan[]'>
-    
-
-
-/**
  * Reference to a field of type 'BookingPaymentStatus'
  */
 export type EnumBookingPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingPaymentStatus'>
@@ -1832,13 +2363,6 @@ export type EnumBookingPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'BookingPaymentStatus[]'
  */
 export type ListEnumBookingPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingPaymentStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -2013,6 +2537,12 @@ export type GlobalOmitConfig = {
   booking?: Prisma.BookingOmit
   apiRateLimit?: Prisma.ApiRateLimitOmit
   bookingRoom?: Prisma.BookingRoomOmit
+  sailingSector?: Prisma.SailingSectorOmit
+  scheduleSector?: Prisma.ScheduleSectorOmit
+  inventoryAllocation?: Prisma.InventoryAllocationOmit
+  bookingGuest?: Prisma.BookingGuestOmit
+  bookingPayment?: Prisma.BookingPaymentOmit
+  bookingPaymentSchedule?: Prisma.BookingPaymentScheduleOmit
   bookingTicket?: Prisma.BookingTicketOmit
   siteContent?: Prisma.SiteContentOmit
   blogPost?: Prisma.BlogPostOmit

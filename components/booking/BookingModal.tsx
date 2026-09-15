@@ -370,7 +370,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
               className="hathor-modal-btn hathor-modal-btn--primary"
               onClick={handleAvailabilityCheck}
             >
-              Check Availability
+              Continue to sailing dates
             </button>
           </footer>
         </div>

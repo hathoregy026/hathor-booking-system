@@ -18,18 +18,15 @@ datasource db {
 
 enum BookingStatus {
   PENDING_HOLD
+  REQUESTED
   CONFIRMED
   CANCELLED
   EXPIRED
 }
 
-enum BookingRatePlan {
-  STANDARD
-  NON_REFUNDABLE
-}
-
 enum BookingPaymentStatus {
   PENDING
+  PARTIALLY_PAID
   PAID
   PARTIALLY_REFUNDED
   REFUNDED
@@ -60,7 +57,8 @@ model Cruise {
   updatedAt      DateTime  @updatedAt
 
   schedules   CruiseSchedule[]
-  rooms       Room[]
+  rooms       Room[] @relation("CruiseRooms")
+  legacyRooms Room[] @relation("LegacyCruiseRoom")
   ticketTypes TicketType[]
 
   @@index([deletedAt])
@@ -71,21 +69,24 @@ model CruiseSchedule {
   cruiseId      String
   departureTime DateTime
   arrivalTime   DateTime
+  isBookable    Boolean @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   cruise       Cruise        @relation(fields: [cruiseId], references: [id], onDelete: Cascade)
   bookings     Booking[]
   bookingRooms BookingRoom[]
+  sectors ScheduleSector[]
 
   @@index([cruiseId])
 }
 
 model Room {
   id              String    @id @default(cuid())
-  cruiseId        String
+  cruiseId        String?
   name            String
-  roomNumber      String?
+  roomNumber      String? @unique
+  sizeSqm         Int @default(22)
   roomType        String?
   priceMultiplier Float     @default(1)
   capacity        Int
@@ -94,8 +95,10 @@ model Room {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  cruise       Cruise        @relation(fields: [cruiseId], references: [id], onDelete: Cascade)
+  cruise       Cruise?       @relation("LegacyCruiseRoom", fields: [cruiseId], references: [id], onDelete: Restrict)
+  voyages      Cruise[]      @relation("CruiseRooms")
   bookingRooms BookingRoom[]
+  allocations InventoryAllocation[]
 
   @@index([cruiseId])
   @@index([deletedAt])
@@ -107,6 +110,7 @@ model TicketType {
   name        String
   description String?
   priceCents  Int
+  roomType    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -114,13 +118,13 @@ model TicketType {
   bookingTickets BookingTicket[]
 
   @@index([cruiseId])
+  @@unique([cruiseId, roomType])
 }
 
 model Booking {
   id               String               @id @default(cuid())
   cruiseScheduleId String
   status           BookingStatus        @default(PENDING_HOLD)
-  ratePlan         BookingRatePlan      @default(STANDARD)
   paymentStatus    BookingPaymentStatus @default(PENDING)
   idempotencyKey   String?              @unique
   holdExpiresAt    DateTime?
@@ -133,6 +137,18 @@ model Booking {
   marketingOptIn   Boolean              @default(false)
   marketingOptInAt DateTime?
   termsAcceptedAt  DateTime?
+  firstName        String?
+  lastName         String?
+  country          String?
+  paymentMethod    String?
+  requestedAt      DateTime?
+  acceptedAt       DateTime?
+  confirmedAt      DateTime?
+  cancelledAt      DateTime?
+  cancellationFeeCents Int?
+  requestFingerprint String?
+  guestEmailStatus String @default("PENDING")
+  adminEmailStatus String @default("PENDING")
   totalPriceCents  Int?
   currency         String               @default("USD")
   priceSnapshotAt  DateTime?
@@ -143,8 +159,12 @@ model Booking {
   cruiseSchedule CruiseSchedule  @relation(fields: [cruiseScheduleId], references: [id])
   bookingRooms   BookingRoom[]
   bookingTickets BookingTicket[]
+  guests BookingGuest[]
+  payments BookingPayment[]
+  paymentSchedule BookingPaymentSchedule[]
 
   @@index([cruiseScheduleId, status])
+  @@unique([id, cruiseScheduleId])
   @@index([deletedAt])
   @@index([deletedAt, createdAt])
   @@index([status, deletedAt, createdAt])
@@ -160,19 +180,91 @@ model ApiRateLimit {
 }
 
 model BookingRoom {
+  roomIndex Int @default(0)
   id               String   @id @default(cuid())
   bookingId        String
   roomId           String
   cruiseScheduleId String
   unitPriceCents   Int?
+  adults           Int @default(1)
+  children         Int @default(0)
   createdAt        DateTime @default(now())
 
   booking        Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   room           Room           @relation(fields: [roomId], references: [id])
   cruiseSchedule CruiseSchedule @relation(fields: [cruiseScheduleId], references: [id])
+  allocation InventoryAllocation?
 
   @@unique([bookingId, roomId])
+  @@unique([bookingId, roomIndex])
   @@index([roomId, cruiseScheduleId])
+}
+
+model SailingSector {
+  id String @id @default(cuid())
+  startsAt DateTime @unique
+  endsAt DateTime
+  schedules ScheduleSector[]
+}
+
+model ScheduleSector {
+  cruiseScheduleId String
+  sectorId String
+  schedule CruiseSchedule @relation(fields: [cruiseScheduleId], references: [id], onDelete: Cascade)
+  sector SailingSector @relation(fields: [sectorId], references: [id], onDelete: Restrict)
+  @@id([cruiseScheduleId, sectorId])
+}
+
+model InventoryAllocation {
+  id String @id @default(cuid())
+  roomId String
+  bookingRoomId String? @unique
+  startsAt DateTime
+  endsAt DateTime
+  state String
+  active Boolean @default(true)
+  expiresAt DateTime?
+  blockKey String?
+  reason String?
+  createdAt DateTime @default(now())
+  room Room @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  bookingRoom BookingRoom? @relation(fields: [bookingRoomId], references: [id], onDelete: Cascade)
+  @@index([roomId, startsAt, endsAt])
+  @@index([blockKey])
+}
+
+model BookingGuest {
+  id String @id @default(cuid())
+  bookingId String
+  roomIndex Int
+  fullName String
+  isChild Boolean @default(false)
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  @@index([bookingId])
+}
+
+model BookingPayment {
+  id String @id @default(cuid())
+  bookingId String
+  reference String @unique
+  method String
+  kind String @default("RECEIPT")
+  amountCents Int
+  currency String @default("USD")
+  receivedAt DateTime
+  recordedAt DateTime @default(now())
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+  @@index([bookingId])
+}
+
+model BookingPaymentSchedule {
+  id String @id @default(cuid())
+  bookingId String
+  milestone String
+  dueAt DateTime?
+  cumulativeCents Int
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  @@unique([bookingId, milestone])
 }
 
 model BookingTicket {

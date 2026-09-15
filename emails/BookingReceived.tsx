@@ -24,7 +24,7 @@ export const PreviewProps: BookingReceivedEmailProps = {
 
 const DEFAULT_HERO = "Thank You";
 const DEFAULT_BODY =
-  "Your booking request has been received. Our team is reviewing your reservation and will contact you within 24 hours to confirm your luxury Nile cruise experience.";
+  "Your booking request has been sent. Hathor reservations will contact you with the invoice and payment instructions. No payment has been collected.";
 
 export default function BookingReceivedEmail({
   guestName = sampleGuestName,
@@ -58,9 +58,7 @@ export default function BookingReceivedEmail({
       <EmailBodyText>{body}</EmailBodyText>
       <BookingSummary details={details} />
       <EmailInfoCard title="What happens next?">
-        Our reservations team will verify availability and send you a
-        confirmation email. No payment is required until your booking is
-        confirmed.
+        Our reservations team will contact you with your invoice and payment instructions. Your reservation is confirmed only after Hathor acceptance and the required payment has been recorded.
       </EmailInfoCard>
     </EmailLayout>
   );

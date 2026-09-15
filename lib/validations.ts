@@ -32,7 +32,7 @@ export const luxuryRoomTypeSchema = z.enum([
   "luxury-royal-suites",
 ]);
 
-export const bookingRatePlanSchema = z.enum(["standard", "non-refundable"]);
+export const bookingRatePlanSchema = z.literal("standard");
 
 export const roomSearchConfigSchema = z
   .object({

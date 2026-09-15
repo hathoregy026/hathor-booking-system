@@ -312,7 +312,7 @@ type RoomRecord = {
   id: string;
   roomType: string | null;
   priceMultiplier: number;
-  cruise: { basePriceCents: number; slug: string | null };
+  cruise: { basePriceCents: number; slug: string | null } | null;
 };
 
 export function validateSelectedRooms(

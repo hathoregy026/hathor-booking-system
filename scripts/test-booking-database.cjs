@@ -1,0 +1,2 @@
+require('dotenv').config({quiet:true});const pg=require('pg');const fs=require('fs');
+(async()=>{const c=new pg.Client({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:false},connectionTimeoutMillis:8000,query_timeout:20000});try{await c.connect();await c.query(fs.readFileSync('scripts/test-booking-database.sql','utf8'));console.log('PASS database invariants; outer transaction rolled back');}catch(e){console.error(e.message);process.exitCode=1;}finally{await c.end()}})();

@@ -77,6 +77,36 @@ export type ApiRateLimit = Prisma.ApiRateLimitModel
  */
 export type BookingRoom = Prisma.BookingRoomModel
 /**
+ * Model SailingSector
+ * 
+ */
+export type SailingSector = Prisma.SailingSectorModel
+/**
+ * Model ScheduleSector
+ * 
+ */
+export type ScheduleSector = Prisma.ScheduleSectorModel
+/**
+ * Model InventoryAllocation
+ * 
+ */
+export type InventoryAllocation = Prisma.InventoryAllocationModel
+/**
+ * Model BookingGuest
+ * 
+ */
+export type BookingGuest = Prisma.BookingGuestModel
+/**
+ * Model BookingPayment
+ * 
+ */
+export type BookingPayment = Prisma.BookingPaymentModel
+/**
+ * Model BookingPaymentSchedule
+ * 
+ */
+export type BookingPaymentSchedule = Prisma.BookingPaymentScheduleModel
+/**
  * Model BookingTicket
  * 
  */

@@ -1,0 +1,4 @@
+require('dotenv').config({quiet:true});const pg=require('pg');const fs=require('fs');const crypto=require('crypto');
+const name='20260915160600_atomic_staff_booking_actions';const sql=fs.readFileSync(`prisma/migrations/${name}/migration.sql`,'utf8');const hash=crypto.createHash('sha256').update(sql).digest('hex');
+(async()=>{const c=new pg.Client({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:false},connectionTimeoutMillis:8000,query_timeout:20000});try{await c.connect();await c.query(`BEGIN; SET LOCAL idle_in_transaction_session_timeout='15s'; ${sql}
+INSERT INTO "_prisma_migrations" (id,checksum,finished_at,migration_name,applied_steps_count) VALUES(gen_random_uuid()::text,'${hash}',clock_timestamp(),'${name}',1); COMMIT;`);console.log('Applied atomic booking request migration');}catch(e){console.error(e.message);process.exitCode=1;}finally{await c.end()}})();

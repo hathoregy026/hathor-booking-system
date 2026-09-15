@@ -19,17 +19,17 @@ async function main() {
     },
   });
 
-  if (!room?.cruise.schedules[0]) {
+  if (!room || !room.cruise || !room.cruise.schedules[0]) {
     console.log("No room/schedule found");
     return;
   }
 
-  const schedule = room.cruise.schedules[0];
-  const ticketType = room.cruise.ticketTypes[0];
+  const schedule = room.cruise?.schedules[0];
+  const ticketType = room.cruise?.ticketTypes[0];
 
   console.log("Room:", room.id, room.name);
   console.log("Schedule:", schedule.id);
-  console.log("Ticket types:", room.cruise.ticketTypes);
+  console.log("Ticket types:", room.cruise?.ticketTypes);
 
   const holdExpiresAt = addUtcMinutes(15);
   const booking = await prisma.booking.create({

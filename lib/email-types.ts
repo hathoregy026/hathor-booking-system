@@ -12,4 +12,5 @@ export type BookingEmailDetails = {
   ratePlan?: string;
   specialRequests?: string;
   bookingUrl?: string;
+  paymentMethod?: string;
 };

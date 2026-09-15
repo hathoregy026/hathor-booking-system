@@ -1,0 +1,2 @@
+require('dotenv').config({quiet:true});const pg=require('pg');
+(async()=>{const c=new pg.Client({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:false},connectionTimeoutMillis:8000,query_timeout:8000});try{await c.connect();console.log((await c.query("SELECT pid,state,wait_event,pg_blocking_pids(pid) blocked_by,left(query,100) query FROM pg_stat_activity WHERE datname=current_database() AND (state='idle in transaction' OR wait_event_type='Lock')")).rows);}catch(e){console.log(e.message)}finally{await c.end()}})();

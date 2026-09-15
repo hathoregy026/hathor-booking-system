@@ -133,7 +133,7 @@ export async function sendAdminAlertEmail(bookingDetails: BookingEmailDetails) {
   const adminEmail = getAdminEmail();
   if (!adminEmail) {
     console.warn("[email] skipping admin alert — ADMIN_EMAIL not configured");
-    return;
+    throw new Error("Admin notification is not configured");
   }
 
   const template = await getEmailTemplateForSend("AdminAlert");

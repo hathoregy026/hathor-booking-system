@@ -1,3 +1,4 @@
+import { bookingQuery } from "@/lib/booking-database";
 import { createHash } from "crypto";
 import { Prisma } from "@/app/generated/prisma/client";
 import { getClientIp } from "@/lib/rate-limit";
@@ -90,8 +91,7 @@ export async function enforcePublicRateLimit(input: {
   const key = rateLimitKey(input.scope, input.request);
   const resetAt = new Date(Date.now() + input.windowMs);
 
-  const rows = await prisma.$queryRaw<Array<{ count: number; resetAt: Date }>>(
-    Prisma.sql`
+  const query = Prisma.sql`
       INSERT INTO "ApiRateLimit" ("key", "count", "resetAt", "updatedAt")
       VALUES (${key}, 1, ${resetAt}, NOW())
       ON CONFLICT ("key") DO UPDATE SET
@@ -105,8 +105,10 @@ export async function enforcePublicRateLimit(input: {
         END,
         "updatedAt" = NOW()
       RETURNING "count", "resetAt"
-    `,
-  );
+    `;
+  const rows = input.scope.startsWith("booking")
+    ? await bookingQuery<{count:number;resetAt:Date}>(query.text,query.values)
+    : await prisma.$queryRaw<Array<{count:number;resetAt:Date}>>(query);
 
   const row = rows[0];
   if (row && row.count > input.limit) {

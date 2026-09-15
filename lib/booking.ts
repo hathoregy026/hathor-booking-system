@@ -1,4 +1,4 @@
-import { BookingStatus, Prisma } from "@/app/generated/prisma/client";
+import { Prisma } from "@/app/generated/prisma/client";
 import { parseToUtcDate, utcNow } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 
@@ -16,31 +16,19 @@ export async function getUnavailableRoomIds({
 }: ActiveBookingFilter,
 database: Prisma.TransactionClient | typeof prisma = prisma,
 ): Promise<string[]> {
-  const now = utcNow();
-
-  const blocked = await database.bookingRoom.findMany({
-    where: {
-      cruiseScheduleId,
-      roomId: { in: roomIds },
-      ...(excludeBookingId ? { bookingId: { not: excludeBookingId } } : {}),
-      booking: {
-        deletedAt: null,
-        OR: [
-          { status: BookingStatus.CONFIRMED },
-          {
-            status: BookingStatus.PENDING_HOLD,
-            OR: [
-              { holdExpiresAt: null },
-              { holdExpiresAt: { gt: now } },
-            ],
-          },
-        ],
-      },
-    },
-    select: { roomId: true },
+  const schedule = await database.cruiseSchedule.findUnique({ where: { id: cruiseScheduleId } });
+  if (!schedule) return roomIds;
+  const blocked = await database.inventoryAllocation.findMany({
+    where: { roomId: { in: roomIds }, active: true,
+      startsAt: { lt: schedule.arrivalTime }, endsAt: { gt: schedule.departureTime },
+      OR: [{ expiresAt: null }, { expiresAt: { gt: utcNow() } }],
+      ...(excludeBookingId ? { OR: [
+        { bookingRoomId: null },
+        { bookingRoom: { bookingId: { not: excludeBookingId } } },
+      ], AND: [{ OR: [{ expiresAt: null }, { expiresAt: { gt: utcNow() } }] }] } : {}),
+    }, select: { roomId: true },
   });
-
-  return [...new Set(blocked.map((entry) => entry.roomId))];
+  return [...new Set(blocked.map(entry => entry.roomId))];
 }
 
 /**
@@ -53,24 +41,8 @@ export async function lockBookingInventory(
   cruiseScheduleId: string,
   roomIds: string[],
 ): Promise<void> {
-  const schedule = await tx.cruiseSchedule.findUnique({
-    where: { id: cruiseScheduleId },
-    select: { cruiseId: true, departureTime: true },
-  });
-
-  if (!schedule) {
-    throw new InvalidBookingError("Cruise schedule not found");
-  }
-
-  const sailingDate = schedule.departureTime.toISOString().slice(0, 10);
-  const sortedRoomIds = [...new Set(roomIds)].sort();
-
-  for (const roomId of sortedRoomIds) {
-    const lockKey = `${schedule.cruiseId}:${sailingDate}:${roomId}`;
-    await tx.$queryRaw<Array<{ locked: boolean }>>`
-      SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0)) IS NULL AS locked
-    `;
-  }
+  void cruiseScheduleId; void roomIds;
+  await tx.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(734821901)`;
 }
 
 /** Batch availability check — one query for all schedules (faster on pooled DB). */
@@ -79,48 +51,11 @@ export async function getUnavailableRoomsBySchedule(input: {
   roomIds: string[];
   excludeBookingId?: string;
 }): Promise<Map<string, Set<string>>> {
-  const { cruiseScheduleIds, roomIds, excludeBookingId } = input;
-
-  if (cruiseScheduleIds.length === 0 || roomIds.length === 0) {
-    return new Map();
+  const result = new Map<string, Set<string>>();
+  for (const cruiseScheduleId of input.cruiseScheduleIds) {
+    result.set(cruiseScheduleId, new Set(await getUnavailableRoomIds({ cruiseScheduleId, roomIds: input.roomIds, excludeBookingId: input.excludeBookingId })));
   }
-
-  const now = utcNow();
-
-  const blocked = await prisma.bookingRoom.findMany({
-    where: {
-      cruiseScheduleId: { in: cruiseScheduleIds },
-      roomId: { in: roomIds },
-      ...(excludeBookingId ? { bookingId: { not: excludeBookingId } } : {}),
-      booking: {
-        deletedAt: null,
-        OR: [
-          { status: BookingStatus.CONFIRMED },
-          {
-            status: BookingStatus.PENDING_HOLD,
-            OR: [
-              { holdExpiresAt: null },
-              { holdExpiresAt: { gt: now } },
-            ],
-          },
-        ],
-      },
-    },
-    select: { roomId: true, cruiseScheduleId: true },
-  });
-
-  const bySchedule = new Map<string, Set<string>>();
-
-  for (const entry of blocked) {
-    let roomSet = bySchedule.get(entry.cruiseScheduleId);
-    if (!roomSet) {
-      roomSet = new Set();
-      bySchedule.set(entry.cruiseScheduleId, roomSet);
-    }
-    roomSet.add(entry.roomId);
-  }
-
-  return bySchedule;
+  return result;
 }
 
 export async function getSchedulesInDateRange(
@@ -134,7 +69,8 @@ export async function getSchedulesInDateRange(
   return prisma.cruiseSchedule.findMany({
     where: {
       cruiseId,
-      departureTime: { lt: endDate },
+      isBookable: true,
+      departureTime: { lt: endDate, gt: utcNow() },
       arrivalTime: { gt: startDate },
     },
     orderBy: { departureTime: "asc" },

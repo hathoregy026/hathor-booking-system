@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BookingStatus } from "@/app/generated/prisma/client";
+import { z } from "zod";
+import { assertBookingAdmin, applyStaffBookingAction } from "@/lib/booking-admin-api";
+import { readPublicJsonBody } from "@/lib/public-api-security";
+const staffListSchema = z.object({ id: z.string().max(128).optional(), status: z.enum(["CONFIRMED","CANCELLED"]).optional(), ids: z.array(z.string().max(128)).min(1).max(100).optional(), action: z.enum(["soft-delete","restore","purge"]).optional() }).strict();
 import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
 import { fetchAdminBookingsFast } from "@/lib/admin-bookings-fetch";
@@ -37,91 +40,23 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const body = (await request.json()) as {
-      id?: string;
-      status?: BookingStatus;
-      ids?: string[];
-      action?: "soft-delete" | "restore" | "purge";
-    };
-
-    if (body.action && Array.isArray(body.ids) && body.ids.length > 0) {
-      if (body.action === "soft-delete") {
-        const result = await prisma.booking.updateMany({
-          where: {
-            id: { in: body.ids },
-            deletedAt: null,
-          },
-          data: {
-            deletedAt: new Date(),
-            status: BookingStatus.CANCELLED,
-            holdExpiresAt: null,
-          },
-        });
-
-        return NextResponse.json({ updated: result.count });
+    assertBookingAdmin(request);
+    const body = staffListSchema.parse(await readPublicJsonBody(request));
+    if (body.id && body.status) {
+      const booking = await applyStaffBookingAction(body.id, { status: body.status });
+      return NextResponse.json({ booking: { id: booking.id, status: booking.status } });
+    }
+    if (body.action === "soft-delete" && body.ids) {
+      for (const id of body.ids) {
+        await applyStaffBookingAction(id, { type: "cancel" });
+        await prisma.booking.update({ where: { id }, data: { deletedAt: new Date() } });
       }
-
-      if (body.action === "restore") {
-        const result = await prisma.booking.updateMany({
-          where: {
-            id: { in: body.ids },
-            deletedAt: { not: null },
-          },
-          data: { deletedAt: null },
-        });
-
-        return NextResponse.json({ updated: result.count });
-      }
-
-      if (body.action === "purge") {
-        const result = await prisma.booking.deleteMany({
-          where: {
-            id: { in: body.ids },
-            deletedAt: { not: null },
-          },
-        });
-
-        return NextResponse.json({ deleted: result.count });
-      }
-
-      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+      return NextResponse.json({ updated: body.ids.length });
     }
-
-    if (!body.id || !body.status) {
-      return NextResponse.json(
-        { error: "Booking id and status are required" },
-        { status: 400 },
-      );
+    if (body.action === "restore" && body.ids) {
+      const result = await prisma.booking.updateMany({ where: { id: { in: body.ids }, status: "CANCELLED" }, data: { deletedAt: null } });
+      return NextResponse.json({ updated: result.count });
     }
-
-    if (!Object.values(BookingStatus).includes(body.status)) {
-      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
-    }
-
-    const existing = await prisma.booking.findUnique({
-      where: { id: body.id },
-      select: { deletedAt: true },
-    });
-
-    if (!existing) {
-      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-    }
-
-    if (existing.deletedAt) {
-      return NextResponse.json(
-        { error: "Restore booking from recycle bin before editing status" },
-        { status: 400 },
-      );
-    }
-
-    const booking = await prisma.booking.update({
-      where: { id: body.id },
-      data: { status: body.status },
-      select: { id: true, status: true },
-    });
-
-    return NextResponse.json({ booking });
-  } catch (error) {
-    return handleRouteError(error);
-  }
+    return NextResponse.json({ error: "Permanent deletion of reservation records is disabled." }, { status: 400 });
+  } catch (error) { return handleRouteError(error); }
 }

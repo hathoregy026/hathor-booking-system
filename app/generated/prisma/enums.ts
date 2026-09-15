@@ -11,6 +11,7 @@
 
 export const BookingStatus = {
   PENDING_HOLD: 'PENDING_HOLD',
+  REQUESTED: 'REQUESTED',
   CONFIRMED: 'CONFIRMED',
   CANCELLED: 'CANCELLED',
   EXPIRED: 'EXPIRED'
@@ -19,16 +20,9 @@ export const BookingStatus = {
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
 
-export const BookingRatePlan = {
-  STANDARD: 'STANDARD',
-  NON_REFUNDABLE: 'NON_REFUNDABLE'
-} as const
-
-export type BookingRatePlan = (typeof BookingRatePlan)[keyof typeof BookingRatePlan]
-
-
 export const BookingPaymentStatus = {
   PENDING: 'PENDING',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
   PAID: 'PAID',
   PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED',
   REFUNDED: 'REFUNDED',

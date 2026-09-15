@@ -167,13 +167,14 @@ function stripAmenitiesBlock(description: string | null): string {
 
 export async function getBookingRoomDetails(
   roomId: string,
+  cruiseId?: string,
 ): Promise<BookingRoomDetails | null> {
   return withDb(async () => {
   const room = await prisma.room.findFirst({
     where: {
       id: roomId,
       deletedAt: null,
-      cruise: { deletedAt: null },
+      voyages: { some: { deletedAt: null, ...(cruiseId ? { id: cruiseId } : {}) } },
     },
     select: {
       id: true,
@@ -183,7 +184,10 @@ export async function getBookingRoomDetails(
       capacity: true,
       description: true,
       priceMultiplier: true,
-      cruise: {
+      voyages: {
+        where: { deletedAt: null, ...(cruiseId ? { id: cruiseId } : {}) },
+        orderBy: { slug: "asc" },
+        take: 1,
         select: {
           id: true,
           name: true,
@@ -197,14 +201,16 @@ export async function getBookingRoomDetails(
     },
   });
 
-  if (!room) return null;
+  if (!room || !room.voyages[0]) return null;
+  const cruise = room.voyages[0];
 
-  const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;
-  const priceCents = Math.round(room.cruise.basePriceCents * multiplier);
+  const rate = await prisma.ticketType.findFirst({ where: { cruiseId: cruise.id, roomType: room.roomType } });
+  if (!rate) return null;
+  const priceCents = rate.priceCents;
   const { nights, days, departureDay, stayDuration } = resolveItineraryMeta({
-    slug: room.cruise.slug,
-    name: room.cruise.name,
-    description: room.cruise.description,
+    slug: cruise.slug,
+    name: cruise.name,
+    description: cruise.description,
   });
   const visuals = getBookingRoomVisuals(room.name, room.roomType);
 
@@ -215,8 +221,8 @@ export async function getBookingRoomDetails(
 
   return {
     roomId: room.id,
-    cruiseId: room.cruise.id,
-    title: buildRoomDisplayTitle(room.name, room.cruise.ports),
+    cruiseId: cruise.id,
+    title: buildRoomDisplayTitle(room.name, cruise.ports),
     meta: metaParts.join(" "),
     description: stripAmenitiesBlock(room.description),
     amenities: resolveAmenities({
@@ -224,15 +230,15 @@ export async function getBookingRoomDetails(
       roomNumber: room.roomNumber,
       roomType: room.roomType,
       description: room.description,
-      cruiseSlug: room.cruise.slug,
+      cruiseSlug: cruise.slug,
     }),
     priceCents,
     capacity: room.capacity,
     roomType: room.roomType,
     roomName: room.name,
-    cruiseName: room.cruise.name,
-    cruiseSlug: room.cruise.slug,
-    ports: room.cruise.ports,
+    cruiseName: cruise.name,
+    cruiseSlug: cruise.slug,
+    ports: cruise.ports,
     departureDay,
     nights,
     days,

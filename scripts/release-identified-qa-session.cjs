@@ -1,0 +1,2 @@
+require('dotenv').config({quiet:true});const pg=require('pg');
+(async()=>{const c=new pg.Client({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:false},connectionTimeoutMillis:8000,query_timeout:8000});try{await c.connect();console.log((await c.query("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid=$1 AND state='idle in transaction' AND query=$2",[2552669,'SELECT id FROM "Booking" WHERE id=$1'])).rows);}finally{await c.end()}})();

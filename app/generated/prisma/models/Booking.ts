@@ -29,12 +29,14 @@ export type AggregateBooking = {
 export type BookingAvgAggregateOutputType = {
   adultCount: number | null
   childCount: number | null
+  cancellationFeeCents: number | null
   totalPriceCents: number | null
 }
 
 export type BookingSumAggregateOutputType = {
   adultCount: number | null
   childCount: number | null
+  cancellationFeeCents: number | null
   totalPriceCents: number | null
 }
 
@@ -42,7 +44,6 @@ export type BookingMinAggregateOutputType = {
   id: string | null
   cruiseScheduleId: string | null
   status: $Enums.BookingStatus | null
-  ratePlan: $Enums.BookingRatePlan | null
   paymentStatus: $Enums.BookingPaymentStatus | null
   idempotencyKey: string | null
   holdExpiresAt: Date | null
@@ -55,6 +56,18 @@ export type BookingMinAggregateOutputType = {
   marketingOptIn: boolean | null
   marketingOptInAt: Date | null
   termsAcceptedAt: Date | null
+  firstName: string | null
+  lastName: string | null
+  country: string | null
+  paymentMethod: string | null
+  requestedAt: Date | null
+  acceptedAt: Date | null
+  confirmedAt: Date | null
+  cancelledAt: Date | null
+  cancellationFeeCents: number | null
+  requestFingerprint: string | null
+  guestEmailStatus: string | null
+  adminEmailStatus: string | null
   totalPriceCents: number | null
   currency: string | null
   priceSnapshotAt: Date | null
@@ -67,7 +80,6 @@ export type BookingMaxAggregateOutputType = {
   id: string | null
   cruiseScheduleId: string | null
   status: $Enums.BookingStatus | null
-  ratePlan: $Enums.BookingRatePlan | null
   paymentStatus: $Enums.BookingPaymentStatus | null
   idempotencyKey: string | null
   holdExpiresAt: Date | null
@@ -80,6 +92,18 @@ export type BookingMaxAggregateOutputType = {
   marketingOptIn: boolean | null
   marketingOptInAt: Date | null
   termsAcceptedAt: Date | null
+  firstName: string | null
+  lastName: string | null
+  country: string | null
+  paymentMethod: string | null
+  requestedAt: Date | null
+  acceptedAt: Date | null
+  confirmedAt: Date | null
+  cancelledAt: Date | null
+  cancellationFeeCents: number | null
+  requestFingerprint: string | null
+  guestEmailStatus: string | null
+  adminEmailStatus: string | null
   totalPriceCents: number | null
   currency: string | null
   priceSnapshotAt: Date | null
@@ -92,7 +116,6 @@ export type BookingCountAggregateOutputType = {
   id: number
   cruiseScheduleId: number
   status: number
-  ratePlan: number
   paymentStatus: number
   idempotencyKey: number
   holdExpiresAt: number
@@ -105,6 +128,18 @@ export type BookingCountAggregateOutputType = {
   marketingOptIn: number
   marketingOptInAt: number
   termsAcceptedAt: number
+  firstName: number
+  lastName: number
+  country: number
+  paymentMethod: number
+  requestedAt: number
+  acceptedAt: number
+  confirmedAt: number
+  cancelledAt: number
+  cancellationFeeCents: number
+  requestFingerprint: number
+  guestEmailStatus: number
+  adminEmailStatus: number
   totalPriceCents: number
   currency: number
   priceSnapshotAt: number
@@ -118,12 +153,14 @@ export type BookingCountAggregateOutputType = {
 export type BookingAvgAggregateInputType = {
   adultCount?: true
   childCount?: true
+  cancellationFeeCents?: true
   totalPriceCents?: true
 }
 
 export type BookingSumAggregateInputType = {
   adultCount?: true
   childCount?: true
+  cancellationFeeCents?: true
   totalPriceCents?: true
 }
 
@@ -131,7 +168,6 @@ export type BookingMinAggregateInputType = {
   id?: true
   cruiseScheduleId?: true
   status?: true
-  ratePlan?: true
   paymentStatus?: true
   idempotencyKey?: true
   holdExpiresAt?: true
@@ -144,6 +180,18 @@ export type BookingMinAggregateInputType = {
   marketingOptIn?: true
   marketingOptInAt?: true
   termsAcceptedAt?: true
+  firstName?: true
+  lastName?: true
+  country?: true
+  paymentMethod?: true
+  requestedAt?: true
+  acceptedAt?: true
+  confirmedAt?: true
+  cancelledAt?: true
+  cancellationFeeCents?: true
+  requestFingerprint?: true
+  guestEmailStatus?: true
+  adminEmailStatus?: true
   totalPriceCents?: true
   currency?: true
   priceSnapshotAt?: true
@@ -156,7 +204,6 @@ export type BookingMaxAggregateInputType = {
   id?: true
   cruiseScheduleId?: true
   status?: true
-  ratePlan?: true
   paymentStatus?: true
   idempotencyKey?: true
   holdExpiresAt?: true
@@ -169,6 +216,18 @@ export type BookingMaxAggregateInputType = {
   marketingOptIn?: true
   marketingOptInAt?: true
   termsAcceptedAt?: true
+  firstName?: true
+  lastName?: true
+  country?: true
+  paymentMethod?: true
+  requestedAt?: true
+  acceptedAt?: true
+  confirmedAt?: true
+  cancelledAt?: true
+  cancellationFeeCents?: true
+  requestFingerprint?: true
+  guestEmailStatus?: true
+  adminEmailStatus?: true
   totalPriceCents?: true
   currency?: true
   priceSnapshotAt?: true
@@ -181,7 +240,6 @@ export type BookingCountAggregateInputType = {
   id?: true
   cruiseScheduleId?: true
   status?: true
-  ratePlan?: true
   paymentStatus?: true
   idempotencyKey?: true
   holdExpiresAt?: true
@@ -194,6 +252,18 @@ export type BookingCountAggregateInputType = {
   marketingOptIn?: true
   marketingOptInAt?: true
   termsAcceptedAt?: true
+  firstName?: true
+  lastName?: true
+  country?: true
+  paymentMethod?: true
+  requestedAt?: true
+  acceptedAt?: true
+  confirmedAt?: true
+  cancelledAt?: true
+  cancellationFeeCents?: true
+  requestFingerprint?: true
+  guestEmailStatus?: true
+  adminEmailStatus?: true
   totalPriceCents?: true
   currency?: true
   priceSnapshotAt?: true
@@ -293,7 +363,6 @@ export type BookingGroupByOutputType = {
   id: string
   cruiseScheduleId: string
   status: $Enums.BookingStatus
-  ratePlan: $Enums.BookingRatePlan
   paymentStatus: $Enums.BookingPaymentStatus
   idempotencyKey: string | null
   holdExpiresAt: Date | null
@@ -306,6 +375,18 @@ export type BookingGroupByOutputType = {
   marketingOptIn: boolean
   marketingOptInAt: Date | null
   termsAcceptedAt: Date | null
+  firstName: string | null
+  lastName: string | null
+  country: string | null
+  paymentMethod: string | null
+  requestedAt: Date | null
+  acceptedAt: Date | null
+  confirmedAt: Date | null
+  cancelledAt: Date | null
+  cancellationFeeCents: number | null
+  requestFingerprint: string | null
+  guestEmailStatus: string
+  adminEmailStatus: string
   totalPriceCents: number | null
   currency: string
   priceSnapshotAt: Date | null
@@ -341,7 +422,6 @@ export type BookingWhereInput = {
   id?: Prisma.StringFilter<"Booking"> | string
   cruiseScheduleId?: Prisma.StringFilter<"Booking"> | string
   status?: Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFilter<"Booking"> | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFilter<"Booking"> | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.StringNullableFilter<"Booking"> | string | null
   holdExpiresAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
@@ -354,6 +434,18 @@ export type BookingWhereInput = {
   marketingOptIn?: Prisma.BoolFilter<"Booking"> | boolean
   marketingOptInAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   termsAcceptedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  firstName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  lastName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  country?: Prisma.StringNullableFilter<"Booking"> | string | null
+  paymentMethod?: Prisma.StringNullableFilter<"Booking"> | string | null
+  requestedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  acceptedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  cancellationFeeCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  requestFingerprint?: Prisma.StringNullableFilter<"Booking"> | string | null
+  guestEmailStatus?: Prisma.StringFilter<"Booking"> | string
+  adminEmailStatus?: Prisma.StringFilter<"Booking"> | string
   totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
   currency?: Prisma.StringFilter<"Booking"> | string
   priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
@@ -363,13 +455,15 @@ export type BookingWhereInput = {
   cruiseSchedule?: Prisma.XOR<Prisma.CruiseScheduleScalarRelationFilter, Prisma.CruiseScheduleWhereInput>
   bookingRooms?: Prisma.BookingRoomListRelationFilter
   bookingTickets?: Prisma.BookingTicketListRelationFilter
+  guests?: Prisma.BookingGuestListRelationFilter
+  payments?: Prisma.BookingPaymentListRelationFilter
+  paymentSchedule?: Prisma.BookingPaymentScheduleListRelationFilter
 }
 
 export type BookingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  ratePlan?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   holdExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -382,6 +476,18 @@ export type BookingOrderByWithRelationInput = {
   marketingOptIn?: Prisma.SortOrder
   marketingOptInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentMethod?: Prisma.SortOrderInput | Prisma.SortOrder
+  requestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  acceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  requestFingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
+  guestEmailStatus?: Prisma.SortOrder
+  adminEmailStatus?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   currency?: Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -391,17 +497,20 @@ export type BookingOrderByWithRelationInput = {
   cruiseSchedule?: Prisma.CruiseScheduleOrderByWithRelationInput
   bookingRooms?: Prisma.BookingRoomOrderByRelationAggregateInput
   bookingTickets?: Prisma.BookingTicketOrderByRelationAggregateInput
+  guests?: Prisma.BookingGuestOrderByRelationAggregateInput
+  payments?: Prisma.BookingPaymentOrderByRelationAggregateInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleOrderByRelationAggregateInput
 }
 
 export type BookingWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   idempotencyKey?: string
+  id_cruiseScheduleId?: Prisma.BookingIdCruiseScheduleIdCompoundUniqueInput
   AND?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   OR?: Prisma.BookingWhereInput[]
   NOT?: Prisma.BookingWhereInput | Prisma.BookingWhereInput[]
   cruiseScheduleId?: Prisma.StringFilter<"Booking"> | string
   status?: Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFilter<"Booking"> | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFilter<"Booking"> | $Enums.BookingPaymentStatus
   holdExpiresAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   customerEmail?: Prisma.StringNullableFilter<"Booking"> | string | null
@@ -413,6 +522,18 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   marketingOptIn?: Prisma.BoolFilter<"Booking"> | boolean
   marketingOptInAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   termsAcceptedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  firstName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  lastName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  country?: Prisma.StringNullableFilter<"Booking"> | string | null
+  paymentMethod?: Prisma.StringNullableFilter<"Booking"> | string | null
+  requestedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  acceptedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  cancellationFeeCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  requestFingerprint?: Prisma.StringNullableFilter<"Booking"> | string | null
+  guestEmailStatus?: Prisma.StringFilter<"Booking"> | string
+  adminEmailStatus?: Prisma.StringFilter<"Booking"> | string
   totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
   currency?: Prisma.StringFilter<"Booking"> | string
   priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
@@ -422,13 +543,15 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   cruiseSchedule?: Prisma.XOR<Prisma.CruiseScheduleScalarRelationFilter, Prisma.CruiseScheduleWhereInput>
   bookingRooms?: Prisma.BookingRoomListRelationFilter
   bookingTickets?: Prisma.BookingTicketListRelationFilter
-}, "id" | "idempotencyKey">
+  guests?: Prisma.BookingGuestListRelationFilter
+  payments?: Prisma.BookingPaymentListRelationFilter
+  paymentSchedule?: Prisma.BookingPaymentScheduleListRelationFilter
+}, "id" | "idempotencyKey" | "id_cruiseScheduleId">
 
 export type BookingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  ratePlan?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   holdExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -441,6 +564,18 @@ export type BookingOrderByWithAggregationInput = {
   marketingOptIn?: Prisma.SortOrder
   marketingOptInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentMethod?: Prisma.SortOrderInput | Prisma.SortOrder
+  requestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  acceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  requestFingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
+  guestEmailStatus?: Prisma.SortOrder
+  adminEmailStatus?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   currency?: Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -461,7 +596,6 @@ export type BookingScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   cruiseScheduleId?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   status?: Prisma.EnumBookingStatusWithAggregatesFilter<"Booking"> | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanWithAggregatesFilter<"Booking"> | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusWithAggregatesFilter<"Booking"> | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   holdExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
@@ -474,6 +608,18 @@ export type BookingScalarWhereWithAggregatesInput = {
   marketingOptIn?: Prisma.BoolWithAggregatesFilter<"Booking"> | boolean
   marketingOptInAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   termsAcceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  firstName?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  lastName?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  country?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  paymentMethod?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  requestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  acceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  cancellationFeeCents?: Prisma.IntNullableWithAggregatesFilter<"Booking"> | number | null
+  requestFingerprint?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
+  guestEmailStatus?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  adminEmailStatus?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   totalPriceCents?: Prisma.IntNullableWithAggregatesFilter<"Booking"> | number | null
   currency?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   priceSnapshotAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
@@ -485,7 +631,6 @@ export type BookingScalarWhereWithAggregatesInput = {
 export type BookingCreateInput = {
   id?: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -498,6 +643,18 @@ export type BookingCreateInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -507,13 +664,15 @@ export type BookingCreateInput = {
   cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingsInput
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutBookingInput
   bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateInput = {
   id?: string
   cruiseScheduleId: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -526,6 +685,18 @@ export type BookingUncheckedCreateInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -534,12 +705,14 @@ export type BookingUncheckedCreateInput = {
   updatedAt?: Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutBookingInput
   bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestUncheckedCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentUncheckedCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -552,6 +725,18 @@ export type BookingUpdateInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -561,13 +746,15 @@ export type BookingUpdateInput = {
   cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingsNestedInput
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutBookingNestedInput
   bookingTickets?: Prisma.BookingTicketUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -580,6 +767,18 @@ export type BookingUncheckedUpdateInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -588,13 +787,15 @@ export type BookingUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutBookingNestedInput
   bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUncheckedUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUncheckedUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingCreateManyInput = {
   id?: string
   cruiseScheduleId: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -607,6 +808,18 @@ export type BookingCreateManyInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -618,7 +831,6 @@ export type BookingCreateManyInput = {
 export type BookingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -631,6 +843,18 @@ export type BookingUpdateManyMutationInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -643,7 +867,6 @@ export type BookingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -656,6 +879,18 @@ export type BookingUncheckedUpdateManyInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -674,11 +909,15 @@ export type BookingOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type BookingIdCruiseScheduleIdCompoundUniqueInput = {
+  id: string
+  cruiseScheduleId: string
+}
+
 export type BookingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  ratePlan?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   holdExpiresAt?: Prisma.SortOrder
@@ -691,6 +930,18 @@ export type BookingCountOrderByAggregateInput = {
   marketingOptIn?: Prisma.SortOrder
   marketingOptInAt?: Prisma.SortOrder
   termsAcceptedAt?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  paymentMethod?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  acceptedAt?: Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrder
+  requestFingerprint?: Prisma.SortOrder
+  guestEmailStatus?: Prisma.SortOrder
+  adminEmailStatus?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrder
@@ -702,6 +953,7 @@ export type BookingCountOrderByAggregateInput = {
 export type BookingAvgOrderByAggregateInput = {
   adultCount?: Prisma.SortOrder
   childCount?: Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
 }
 
@@ -709,7 +961,6 @@ export type BookingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  ratePlan?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   holdExpiresAt?: Prisma.SortOrder
@@ -722,6 +973,18 @@ export type BookingMaxOrderByAggregateInput = {
   marketingOptIn?: Prisma.SortOrder
   marketingOptInAt?: Prisma.SortOrder
   termsAcceptedAt?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  paymentMethod?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  acceptedAt?: Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrder
+  requestFingerprint?: Prisma.SortOrder
+  guestEmailStatus?: Prisma.SortOrder
+  adminEmailStatus?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrder
@@ -734,7 +997,6 @@ export type BookingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cruiseScheduleId?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  ratePlan?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   holdExpiresAt?: Prisma.SortOrder
@@ -747,6 +1009,18 @@ export type BookingMinOrderByAggregateInput = {
   marketingOptIn?: Prisma.SortOrder
   marketingOptInAt?: Prisma.SortOrder
   termsAcceptedAt?: Prisma.SortOrder
+  firstName?: Prisma.SortOrder
+  lastName?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  paymentMethod?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  acceptedAt?: Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrder
+  requestFingerprint?: Prisma.SortOrder
+  guestEmailStatus?: Prisma.SortOrder
+  adminEmailStatus?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrder
@@ -758,6 +1032,7 @@ export type BookingMinOrderByAggregateInput = {
 export type BookingSumOrderByAggregateInput = {
   adultCount?: Prisma.SortOrder
   childCount?: Prisma.SortOrder
+  cancellationFeeCents?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
 }
 
@@ -812,10 +1087,6 @@ export type EnumBookingStatusFieldUpdateOperationsInput = {
   set?: $Enums.BookingStatus
 }
 
-export type EnumBookingRatePlanFieldUpdateOperationsInput = {
-  set?: $Enums.BookingRatePlan
-}
-
 export type EnumBookingPaymentStatusFieldUpdateOperationsInput = {
   set?: $Enums.BookingPaymentStatus
 }
@@ -826,10 +1097,6 @@ export type NullableIntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
 }
 
 export type BookingCreateNestedOneWithoutBookingRoomsInput = {
@@ -844,6 +1111,48 @@ export type BookingUpdateOneRequiredWithoutBookingRoomsNestedInput = {
   upsert?: Prisma.BookingUpsertWithoutBookingRoomsInput
   connect?: Prisma.BookingWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.BookingUpdateToOneWithWhereWithoutBookingRoomsInput, Prisma.BookingUpdateWithoutBookingRoomsInput>, Prisma.BookingUncheckedUpdateWithoutBookingRoomsInput>
+}
+
+export type BookingCreateNestedOneWithoutGuestsInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutGuestsInput, Prisma.BookingUncheckedCreateWithoutGuestsInput>
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutGuestsInput
+  connect?: Prisma.BookingWhereUniqueInput
+}
+
+export type BookingUpdateOneRequiredWithoutGuestsNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutGuestsInput, Prisma.BookingUncheckedCreateWithoutGuestsInput>
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutGuestsInput
+  upsert?: Prisma.BookingUpsertWithoutGuestsInput
+  connect?: Prisma.BookingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BookingUpdateToOneWithWhereWithoutGuestsInput, Prisma.BookingUpdateWithoutGuestsInput>, Prisma.BookingUncheckedUpdateWithoutGuestsInput>
+}
+
+export type BookingCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutPaymentsInput, Prisma.BookingUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.BookingWhereUniqueInput
+}
+
+export type BookingUpdateOneRequiredWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutPaymentsInput, Prisma.BookingUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.BookingUpsertWithoutPaymentsInput
+  connect?: Prisma.BookingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BookingUpdateToOneWithWhereWithoutPaymentsInput, Prisma.BookingUpdateWithoutPaymentsInput>, Prisma.BookingUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type BookingCreateNestedOneWithoutPaymentScheduleInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutPaymentScheduleInput, Prisma.BookingUncheckedCreateWithoutPaymentScheduleInput>
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutPaymentScheduleInput
+  connect?: Prisma.BookingWhereUniqueInput
+}
+
+export type BookingUpdateOneRequiredWithoutPaymentScheduleNestedInput = {
+  create?: Prisma.XOR<Prisma.BookingCreateWithoutPaymentScheduleInput, Prisma.BookingUncheckedCreateWithoutPaymentScheduleInput>
+  connectOrCreate?: Prisma.BookingCreateOrConnectWithoutPaymentScheduleInput
+  upsert?: Prisma.BookingUpsertWithoutPaymentScheduleInput
+  connect?: Prisma.BookingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BookingUpdateToOneWithWhereWithoutPaymentScheduleInput, Prisma.BookingUpdateWithoutPaymentScheduleInput>, Prisma.BookingUncheckedUpdateWithoutPaymentScheduleInput>
 }
 
 export type BookingCreateNestedOneWithoutBookingTicketsInput = {
@@ -863,7 +1172,6 @@ export type BookingUpdateOneRequiredWithoutBookingTicketsNestedInput = {
 export type BookingCreateWithoutCruiseScheduleInput = {
   id?: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -876,6 +1184,18 @@ export type BookingCreateWithoutCruiseScheduleInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -884,12 +1204,14 @@ export type BookingCreateWithoutCruiseScheduleInput = {
   updatedAt?: Date | string
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutBookingInput
   bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutCruiseScheduleInput = {
   id?: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -902,6 +1224,18 @@ export type BookingUncheckedCreateWithoutCruiseScheduleInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -910,6 +1244,9 @@ export type BookingUncheckedCreateWithoutCruiseScheduleInput = {
   updatedAt?: Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutBookingInput
   bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestUncheckedCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentUncheckedCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutCruiseScheduleInput = {
@@ -945,7 +1282,6 @@ export type BookingScalarWhereInput = {
   id?: Prisma.StringFilter<"Booking"> | string
   cruiseScheduleId?: Prisma.StringFilter<"Booking"> | string
   status?: Prisma.EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFilter<"Booking"> | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFilter<"Booking"> | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.StringNullableFilter<"Booking"> | string | null
   holdExpiresAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
@@ -958,6 +1294,18 @@ export type BookingScalarWhereInput = {
   marketingOptIn?: Prisma.BoolFilter<"Booking"> | boolean
   marketingOptInAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   termsAcceptedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  firstName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  lastName?: Prisma.StringNullableFilter<"Booking"> | string | null
+  country?: Prisma.StringNullableFilter<"Booking"> | string | null
+  paymentMethod?: Prisma.StringNullableFilter<"Booking"> | string | null
+  requestedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  acceptedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
+  cancellationFeeCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  requestFingerprint?: Prisma.StringNullableFilter<"Booking"> | string | null
+  guestEmailStatus?: Prisma.StringFilter<"Booking"> | string
+  adminEmailStatus?: Prisma.StringFilter<"Booking"> | string
   totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
   currency?: Prisma.StringFilter<"Booking"> | string
   priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
@@ -969,7 +1317,6 @@ export type BookingScalarWhereInput = {
 export type BookingCreateWithoutBookingRoomsInput = {
   id?: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -982,6 +1329,18 @@ export type BookingCreateWithoutBookingRoomsInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -990,13 +1349,15 @@ export type BookingCreateWithoutBookingRoomsInput = {
   updatedAt?: Date | string
   cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingsInput
   bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleCreateNestedManyWithoutBookingInput
 }
 
 export type BookingUncheckedCreateWithoutBookingRoomsInput = {
   id?: string
   cruiseScheduleId: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -1009,6 +1370,18 @@ export type BookingUncheckedCreateWithoutBookingRoomsInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -1016,6 +1389,9 @@ export type BookingUncheckedCreateWithoutBookingRoomsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestUncheckedCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentUncheckedCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutBookingRoomsInput = {
@@ -1037,7 +1413,6 @@ export type BookingUpdateToOneWithWhereWithoutBookingRoomsInput = {
 export type BookingUpdateWithoutBookingRoomsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1050,6 +1425,18 @@ export type BookingUpdateWithoutBookingRoomsInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1058,13 +1445,15 @@ export type BookingUpdateWithoutBookingRoomsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingsNestedInput
   bookingTickets?: Prisma.BookingTicketUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutBookingRoomsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1077,6 +1466,18 @@ export type BookingUncheckedUpdateWithoutBookingRoomsInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1084,12 +1485,14 @@ export type BookingUncheckedUpdateWithoutBookingRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUncheckedUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUncheckedUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedUpdateManyWithoutBookingNestedInput
 }
 
-export type BookingCreateWithoutBookingTicketsInput = {
+export type BookingCreateWithoutGuestsInput = {
   id?: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -1102,6 +1505,18 @@ export type BookingCreateWithoutBookingTicketsInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -1110,13 +1525,15 @@ export type BookingCreateWithoutBookingTicketsInput = {
   updatedAt?: Date | string
   cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingsInput
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutBookingInput
+  bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleCreateNestedManyWithoutBookingInput
 }
 
-export type BookingUncheckedCreateWithoutBookingTicketsInput = {
+export type BookingUncheckedCreateWithoutGuestsInput = {
   id?: string
   cruiseScheduleId: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -1129,6 +1546,18 @@ export type BookingUncheckedCreateWithoutBookingTicketsInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -1136,6 +1565,537 @@ export type BookingUncheckedCreateWithoutBookingTicketsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutBookingInput
+  bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentUncheckedCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedCreateNestedManyWithoutBookingInput
+}
+
+export type BookingCreateOrConnectWithoutGuestsInput = {
+  where: Prisma.BookingWhereUniqueInput
+  create: Prisma.XOR<Prisma.BookingCreateWithoutGuestsInput, Prisma.BookingUncheckedCreateWithoutGuestsInput>
+}
+
+export type BookingUpsertWithoutGuestsInput = {
+  update: Prisma.XOR<Prisma.BookingUpdateWithoutGuestsInput, Prisma.BookingUncheckedUpdateWithoutGuestsInput>
+  create: Prisma.XOR<Prisma.BookingCreateWithoutGuestsInput, Prisma.BookingUncheckedCreateWithoutGuestsInput>
+  where?: Prisma.BookingWhereInput
+}
+
+export type BookingUpdateToOneWithWhereWithoutGuestsInput = {
+  where?: Prisma.BookingWhereInput
+  data: Prisma.XOR<Prisma.BookingUpdateWithoutGuestsInput, Prisma.BookingUncheckedUpdateWithoutGuestsInput>
+}
+
+export type BookingUpdateWithoutGuestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+  paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  childCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specialRequests?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingsNestedInput
+  bookingRooms?: Prisma.BookingRoomUpdateManyWithoutBookingNestedInput
+  bookingTickets?: Prisma.BookingTicketUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUpdateManyWithoutBookingNestedInput
+}
+
+export type BookingUncheckedUpdateWithoutGuestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+  paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  childCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specialRequests?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutBookingNestedInput
+  bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUncheckedUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedUpdateManyWithoutBookingNestedInput
+}
+
+export type BookingCreateWithoutPaymentsInput = {
+  id?: string
+  status?: $Enums.BookingStatus
+  paymentStatus?: $Enums.BookingPaymentStatus
+  idempotencyKey?: string | null
+  holdExpiresAt?: Date | string | null
+  customerEmail?: string | null
+  customerName?: string | null
+  customerPhone?: string | null
+  adultCount?: number | null
+  childCount?: number | null
+  specialRequests?: string | null
+  marketingOptIn?: boolean
+  marketingOptInAt?: Date | string | null
+  termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingsInput
+  bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutBookingInput
+  bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleCreateNestedManyWithoutBookingInput
+}
+
+export type BookingUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  cruiseScheduleId: string
+  status?: $Enums.BookingStatus
+  paymentStatus?: $Enums.BookingPaymentStatus
+  idempotencyKey?: string | null
+  holdExpiresAt?: Date | string | null
+  customerEmail?: string | null
+  customerName?: string | null
+  customerPhone?: string | null
+  adultCount?: number | null
+  childCount?: number | null
+  specialRequests?: string | null
+  marketingOptIn?: boolean
+  marketingOptInAt?: Date | string | null
+  termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutBookingInput
+  bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestUncheckedCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedCreateNestedManyWithoutBookingInput
+}
+
+export type BookingCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.BookingWhereUniqueInput
+  create: Prisma.XOR<Prisma.BookingCreateWithoutPaymentsInput, Prisma.BookingUncheckedCreateWithoutPaymentsInput>
+}
+
+export type BookingUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.BookingUpdateWithoutPaymentsInput, Prisma.BookingUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.BookingCreateWithoutPaymentsInput, Prisma.BookingUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.BookingWhereInput
+}
+
+export type BookingUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.BookingWhereInput
+  data: Prisma.XOR<Prisma.BookingUpdateWithoutPaymentsInput, Prisma.BookingUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type BookingUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+  paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  childCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specialRequests?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingsNestedInput
+  bookingRooms?: Prisma.BookingRoomUpdateManyWithoutBookingNestedInput
+  bookingTickets?: Prisma.BookingTicketUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUpdateManyWithoutBookingNestedInput
+}
+
+export type BookingUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+  paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  childCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specialRequests?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutBookingNestedInput
+  bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUncheckedUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedUpdateManyWithoutBookingNestedInput
+}
+
+export type BookingCreateWithoutPaymentScheduleInput = {
+  id?: string
+  status?: $Enums.BookingStatus
+  paymentStatus?: $Enums.BookingPaymentStatus
+  idempotencyKey?: string | null
+  holdExpiresAt?: Date | string | null
+  customerEmail?: string | null
+  customerName?: string | null
+  customerPhone?: string | null
+  adultCount?: number | null
+  childCount?: number | null
+  specialRequests?: string | null
+  marketingOptIn?: boolean
+  marketingOptInAt?: Date | string | null
+  termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingsInput
+  bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutBookingInput
+  bookingTickets?: Prisma.BookingTicketCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentCreateNestedManyWithoutBookingInput
+}
+
+export type BookingUncheckedCreateWithoutPaymentScheduleInput = {
+  id?: string
+  cruiseScheduleId: string
+  status?: $Enums.BookingStatus
+  paymentStatus?: $Enums.BookingPaymentStatus
+  idempotencyKey?: string | null
+  holdExpiresAt?: Date | string | null
+  customerEmail?: string | null
+  customerName?: string | null
+  customerPhone?: string | null
+  adultCount?: number | null
+  childCount?: number | null
+  specialRequests?: string | null
+  marketingOptIn?: boolean
+  marketingOptInAt?: Date | string | null
+  termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutBookingInput
+  bookingTickets?: Prisma.BookingTicketUncheckedCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestUncheckedCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentUncheckedCreateNestedManyWithoutBookingInput
+}
+
+export type BookingCreateOrConnectWithoutPaymentScheduleInput = {
+  where: Prisma.BookingWhereUniqueInput
+  create: Prisma.XOR<Prisma.BookingCreateWithoutPaymentScheduleInput, Prisma.BookingUncheckedCreateWithoutPaymentScheduleInput>
+}
+
+export type BookingUpsertWithoutPaymentScheduleInput = {
+  update: Prisma.XOR<Prisma.BookingUpdateWithoutPaymentScheduleInput, Prisma.BookingUncheckedUpdateWithoutPaymentScheduleInput>
+  create: Prisma.XOR<Prisma.BookingCreateWithoutPaymentScheduleInput, Prisma.BookingUncheckedCreateWithoutPaymentScheduleInput>
+  where?: Prisma.BookingWhereInput
+}
+
+export type BookingUpdateToOneWithWhereWithoutPaymentScheduleInput = {
+  where?: Prisma.BookingWhereInput
+  data: Prisma.XOR<Prisma.BookingUpdateWithoutPaymentScheduleInput, Prisma.BookingUncheckedUpdateWithoutPaymentScheduleInput>
+}
+
+export type BookingUpdateWithoutPaymentScheduleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+  paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  childCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specialRequests?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingsNestedInput
+  bookingRooms?: Prisma.BookingRoomUpdateManyWithoutBookingNestedInput
+  bookingTickets?: Prisma.BookingTicketUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUpdateManyWithoutBookingNestedInput
+}
+
+export type BookingUncheckedUpdateWithoutPaymentScheduleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+  paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adultCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  childCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  specialRequests?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutBookingNestedInput
+  bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUncheckedUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUncheckedUpdateManyWithoutBookingNestedInput
+}
+
+export type BookingCreateWithoutBookingTicketsInput = {
+  id?: string
+  status?: $Enums.BookingStatus
+  paymentStatus?: $Enums.BookingPaymentStatus
+  idempotencyKey?: string | null
+  holdExpiresAt?: Date | string | null
+  customerEmail?: string | null
+  customerName?: string | null
+  customerPhone?: string | null
+  adultCount?: number | null
+  childCount?: number | null
+  specialRequests?: string | null
+  marketingOptIn?: boolean
+  marketingOptInAt?: Date | string | null
+  termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cruiseSchedule: Prisma.CruiseScheduleCreateNestedOneWithoutBookingsInput
+  bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleCreateNestedManyWithoutBookingInput
+}
+
+export type BookingUncheckedCreateWithoutBookingTicketsInput = {
+  id?: string
+  cruiseScheduleId: string
+  status?: $Enums.BookingStatus
+  paymentStatus?: $Enums.BookingPaymentStatus
+  idempotencyKey?: string | null
+  holdExpiresAt?: Date | string | null
+  customerEmail?: string | null
+  customerName?: string | null
+  customerPhone?: string | null
+  adultCount?: number | null
+  childCount?: number | null
+  specialRequests?: string | null
+  marketingOptIn?: boolean
+  marketingOptInAt?: Date | string | null
+  termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
+  totalPriceCents?: number | null
+  currency?: string
+  priceSnapshotAt?: Date | string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutBookingInput
+  guests?: Prisma.BookingGuestUncheckedCreateNestedManyWithoutBookingInput
+  payments?: Prisma.BookingPaymentUncheckedCreateNestedManyWithoutBookingInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedCreateNestedManyWithoutBookingInput
 }
 
 export type BookingCreateOrConnectWithoutBookingTicketsInput = {
@@ -1157,7 +2117,6 @@ export type BookingUpdateToOneWithWhereWithoutBookingTicketsInput = {
 export type BookingUpdateWithoutBookingTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1170,6 +2129,18 @@ export type BookingUpdateWithoutBookingTicketsInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1178,13 +2149,15 @@ export type BookingUpdateWithoutBookingTicketsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cruiseSchedule?: Prisma.CruiseScheduleUpdateOneRequiredWithoutBookingsNestedInput
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutBookingTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cruiseScheduleId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1197,6 +2170,18 @@ export type BookingUncheckedUpdateWithoutBookingTicketsInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1204,12 +2189,14 @@ export type BookingUncheckedUpdateWithoutBookingTicketsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUncheckedUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUncheckedUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingCreateManyCruiseScheduleInput = {
   id?: string
   status?: $Enums.BookingStatus
-  ratePlan?: $Enums.BookingRatePlan
   paymentStatus?: $Enums.BookingPaymentStatus
   idempotencyKey?: string | null
   holdExpiresAt?: Date | string | null
@@ -1222,6 +2209,18 @@ export type BookingCreateManyCruiseScheduleInput = {
   marketingOptIn?: boolean
   marketingOptInAt?: Date | string | null
   termsAcceptedAt?: Date | string | null
+  firstName?: string | null
+  lastName?: string | null
+  country?: string | null
+  paymentMethod?: string | null
+  requestedAt?: Date | string | null
+  acceptedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationFeeCents?: number | null
+  requestFingerprint?: string | null
+  guestEmailStatus?: string
+  adminEmailStatus?: string
   totalPriceCents?: number | null
   currency?: string
   priceSnapshotAt?: Date | string | null
@@ -1233,7 +2232,6 @@ export type BookingCreateManyCruiseScheduleInput = {
 export type BookingUpdateWithoutCruiseScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1246,6 +2244,18 @@ export type BookingUpdateWithoutCruiseScheduleInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1254,12 +2264,14 @@ export type BookingUpdateWithoutCruiseScheduleInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutBookingNestedInput
   bookingTickets?: Prisma.BookingTicketUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateWithoutCruiseScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1272,6 +2284,18 @@ export type BookingUncheckedUpdateWithoutCruiseScheduleInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1280,12 +2304,14 @@ export type BookingUncheckedUpdateWithoutCruiseScheduleInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutBookingNestedInput
   bookingTickets?: Prisma.BookingTicketUncheckedUpdateManyWithoutBookingNestedInput
+  guests?: Prisma.BookingGuestUncheckedUpdateManyWithoutBookingNestedInput
+  payments?: Prisma.BookingPaymentUncheckedUpdateManyWithoutBookingNestedInput
+  paymentSchedule?: Prisma.BookingPaymentScheduleUncheckedUpdateManyWithoutBookingNestedInput
 }
 
 export type BookingUncheckedUpdateManyWithoutCruiseScheduleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
-  ratePlan?: Prisma.EnumBookingRatePlanFieldUpdateOperationsInput | $Enums.BookingRatePlan
   paymentStatus?: Prisma.EnumBookingPaymentStatusFieldUpdateOperationsInput | $Enums.BookingPaymentStatus
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   holdExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1298,6 +2324,18 @@ export type BookingUncheckedUpdateManyWithoutCruiseScheduleInput = {
   marketingOptIn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   marketingOptInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentMethod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  acceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1314,11 +2352,17 @@ export type BookingUncheckedUpdateManyWithoutCruiseScheduleInput = {
 export type BookingCountOutputType = {
   bookingRooms: number
   bookingTickets: number
+  guests: number
+  payments: number
+  paymentSchedule: number
 }
 
 export type BookingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookingRooms?: boolean | BookingCountOutputTypeCountBookingRoomsArgs
   bookingTickets?: boolean | BookingCountOutputTypeCountBookingTicketsArgs
+  guests?: boolean | BookingCountOutputTypeCountGuestsArgs
+  payments?: boolean | BookingCountOutputTypeCountPaymentsArgs
+  paymentSchedule?: boolean | BookingCountOutputTypeCountPaymentScheduleArgs
 }
 
 /**
@@ -1345,12 +2389,32 @@ export type BookingCountOutputTypeCountBookingTicketsArgs<ExtArgs extends runtim
   where?: Prisma.BookingTicketWhereInput
 }
 
+/**
+ * BookingCountOutputType without action
+ */
+export type BookingCountOutputTypeCountGuestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingGuestWhereInput
+}
+
+/**
+ * BookingCountOutputType without action
+ */
+export type BookingCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingPaymentWhereInput
+}
+
+/**
+ * BookingCountOutputType without action
+ */
+export type BookingCountOutputTypeCountPaymentScheduleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BookingPaymentScheduleWhereInput
+}
+
 
 export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   cruiseScheduleId?: boolean
   status?: boolean
-  ratePlan?: boolean
   paymentStatus?: boolean
   idempotencyKey?: boolean
   holdExpiresAt?: boolean
@@ -1363,6 +2427,18 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   marketingOptIn?: boolean
   marketingOptInAt?: boolean
   termsAcceptedAt?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  country?: boolean
+  paymentMethod?: boolean
+  requestedAt?: boolean
+  acceptedAt?: boolean
+  confirmedAt?: boolean
+  cancelledAt?: boolean
+  cancellationFeeCents?: boolean
+  requestFingerprint?: boolean
+  guestEmailStatus?: boolean
+  adminEmailStatus?: boolean
   totalPriceCents?: boolean
   currency?: boolean
   priceSnapshotAt?: boolean
@@ -1372,6 +2448,9 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.Booking$bookingRoomsArgs<ExtArgs>
   bookingTickets?: boolean | Prisma.Booking$bookingTicketsArgs<ExtArgs>
+  guests?: boolean | Prisma.Booking$guestsArgs<ExtArgs>
+  payments?: boolean | Prisma.Booking$paymentsArgs<ExtArgs>
+  paymentSchedule?: boolean | Prisma.Booking$paymentScheduleArgs<ExtArgs>
   _count?: boolean | Prisma.BookingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["booking"]>
 
@@ -1379,7 +2458,6 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   cruiseScheduleId?: boolean
   status?: boolean
-  ratePlan?: boolean
   paymentStatus?: boolean
   idempotencyKey?: boolean
   holdExpiresAt?: boolean
@@ -1392,6 +2470,18 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   marketingOptIn?: boolean
   marketingOptInAt?: boolean
   termsAcceptedAt?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  country?: boolean
+  paymentMethod?: boolean
+  requestedAt?: boolean
+  acceptedAt?: boolean
+  confirmedAt?: boolean
+  cancelledAt?: boolean
+  cancellationFeeCents?: boolean
+  requestFingerprint?: boolean
+  guestEmailStatus?: boolean
+  adminEmailStatus?: boolean
   totalPriceCents?: boolean
   currency?: boolean
   priceSnapshotAt?: boolean
@@ -1405,7 +2495,6 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   cruiseScheduleId?: boolean
   status?: boolean
-  ratePlan?: boolean
   paymentStatus?: boolean
   idempotencyKey?: boolean
   holdExpiresAt?: boolean
@@ -1418,6 +2507,18 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   marketingOptIn?: boolean
   marketingOptInAt?: boolean
   termsAcceptedAt?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  country?: boolean
+  paymentMethod?: boolean
+  requestedAt?: boolean
+  acceptedAt?: boolean
+  confirmedAt?: boolean
+  cancelledAt?: boolean
+  cancellationFeeCents?: boolean
+  requestFingerprint?: boolean
+  guestEmailStatus?: boolean
+  adminEmailStatus?: boolean
   totalPriceCents?: boolean
   currency?: boolean
   priceSnapshotAt?: boolean
@@ -1431,7 +2532,6 @@ export type BookingSelectScalar = {
   id?: boolean
   cruiseScheduleId?: boolean
   status?: boolean
-  ratePlan?: boolean
   paymentStatus?: boolean
   idempotencyKey?: boolean
   holdExpiresAt?: boolean
@@ -1444,6 +2544,18 @@ export type BookingSelectScalar = {
   marketingOptIn?: boolean
   marketingOptInAt?: boolean
   termsAcceptedAt?: boolean
+  firstName?: boolean
+  lastName?: boolean
+  country?: boolean
+  paymentMethod?: boolean
+  requestedAt?: boolean
+  acceptedAt?: boolean
+  confirmedAt?: boolean
+  cancelledAt?: boolean
+  cancellationFeeCents?: boolean
+  requestFingerprint?: boolean
+  guestEmailStatus?: boolean
+  adminEmailStatus?: boolean
   totalPriceCents?: boolean
   currency?: boolean
   priceSnapshotAt?: boolean
@@ -1452,11 +2564,14 @@ export type BookingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "ratePlan" | "paymentStatus" | "idempotencyKey" | "holdExpiresAt" | "customerEmail" | "customerName" | "customerPhone" | "adultCount" | "childCount" | "specialRequests" | "marketingOptIn" | "marketingOptInAt" | "termsAcceptedAt" | "totalPriceCents" | "currency" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "paymentStatus" | "idempotencyKey" | "holdExpiresAt" | "customerEmail" | "customerName" | "customerPhone" | "adultCount" | "childCount" | "specialRequests" | "marketingOptIn" | "marketingOptInAt" | "termsAcceptedAt" | "firstName" | "lastName" | "country" | "paymentMethod" | "requestedAt" | "acceptedAt" | "confirmedAt" | "cancelledAt" | "cancellationFeeCents" | "requestFingerprint" | "guestEmailStatus" | "adminEmailStatus" | "totalPriceCents" | "currency" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.Booking$bookingRoomsArgs<ExtArgs>
   bookingTickets?: boolean | Prisma.Booking$bookingTicketsArgs<ExtArgs>
+  guests?: boolean | Prisma.Booking$guestsArgs<ExtArgs>
+  payments?: boolean | Prisma.Booking$paymentsArgs<ExtArgs>
+  paymentSchedule?: boolean | Prisma.Booking$paymentScheduleArgs<ExtArgs>
   _count?: boolean | Prisma.BookingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BookingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1472,12 +2587,14 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     cruiseSchedule: Prisma.$CruiseSchedulePayload<ExtArgs>
     bookingRooms: Prisma.$BookingRoomPayload<ExtArgs>[]
     bookingTickets: Prisma.$BookingTicketPayload<ExtArgs>[]
+    guests: Prisma.$BookingGuestPayload<ExtArgs>[]
+    payments: Prisma.$BookingPaymentPayload<ExtArgs>[]
+    paymentSchedule: Prisma.$BookingPaymentSchedulePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     cruiseScheduleId: string
     status: $Enums.BookingStatus
-    ratePlan: $Enums.BookingRatePlan
     paymentStatus: $Enums.BookingPaymentStatus
     idempotencyKey: string | null
     holdExpiresAt: Date | null
@@ -1490,6 +2607,18 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     marketingOptIn: boolean
     marketingOptInAt: Date | null
     termsAcceptedAt: Date | null
+    firstName: string | null
+    lastName: string | null
+    country: string | null
+    paymentMethod: string | null
+    requestedAt: Date | null
+    acceptedAt: Date | null
+    confirmedAt: Date | null
+    cancelledAt: Date | null
+    cancellationFeeCents: number | null
+    requestFingerprint: string | null
+    guestEmailStatus: string
+    adminEmailStatus: string
     totalPriceCents: number | null
     currency: string
     priceSnapshotAt: Date | null
@@ -1893,6 +3022,9 @@ export interface Prisma__BookingClient<T, Null = never, ExtArgs extends runtime.
   cruiseSchedule<T extends Prisma.CruiseScheduleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CruiseScheduleDefaultArgs<ExtArgs>>): Prisma.Prisma__CruiseScheduleClient<runtime.Types.Result.GetResult<Prisma.$CruiseSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   bookingRooms<T extends Prisma.Booking$bookingRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$bookingRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookingTickets<T extends Prisma.Booking$bookingTicketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$bookingTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guests<T extends Prisma.Booking$guestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$guestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingGuestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Booking$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  paymentSchedule<T extends Prisma.Booking$paymentScheduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Booking$paymentScheduleArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1925,7 +3057,6 @@ export interface BookingFieldRefs {
   readonly id: Prisma.FieldRef<"Booking", 'String'>
   readonly cruiseScheduleId: Prisma.FieldRef<"Booking", 'String'>
   readonly status: Prisma.FieldRef<"Booking", 'BookingStatus'>
-  readonly ratePlan: Prisma.FieldRef<"Booking", 'BookingRatePlan'>
   readonly paymentStatus: Prisma.FieldRef<"Booking", 'BookingPaymentStatus'>
   readonly idempotencyKey: Prisma.FieldRef<"Booking", 'String'>
   readonly holdExpiresAt: Prisma.FieldRef<"Booking", 'DateTime'>
@@ -1938,6 +3069,18 @@ export interface BookingFieldRefs {
   readonly marketingOptIn: Prisma.FieldRef<"Booking", 'Boolean'>
   readonly marketingOptInAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly termsAcceptedAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly firstName: Prisma.FieldRef<"Booking", 'String'>
+  readonly lastName: Prisma.FieldRef<"Booking", 'String'>
+  readonly country: Prisma.FieldRef<"Booking", 'String'>
+  readonly paymentMethod: Prisma.FieldRef<"Booking", 'String'>
+  readonly requestedAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly acceptedAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly confirmedAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly cancelledAt: Prisma.FieldRef<"Booking", 'DateTime'>
+  readonly cancellationFeeCents: Prisma.FieldRef<"Booking", 'Int'>
+  readonly requestFingerprint: Prisma.FieldRef<"Booking", 'String'>
+  readonly guestEmailStatus: Prisma.FieldRef<"Booking", 'String'>
+  readonly adminEmailStatus: Prisma.FieldRef<"Booking", 'String'>
   readonly totalPriceCents: Prisma.FieldRef<"Booking", 'Int'>
   readonly currency: Prisma.FieldRef<"Booking", 'String'>
   readonly priceSnapshotAt: Prisma.FieldRef<"Booking", 'DateTime'>
@@ -2390,6 +3533,78 @@ export type Booking$bookingTicketsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.BookingTicketScalarFieldEnum | Prisma.BookingTicketScalarFieldEnum[]
+}
+
+/**
+ * Booking.guests
+ */
+export type Booking$guestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingGuest
+   */
+  select?: Prisma.BookingGuestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingGuest
+   */
+  omit?: Prisma.BookingGuestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingGuestInclude<ExtArgs> | null
+  where?: Prisma.BookingGuestWhereInput
+  orderBy?: Prisma.BookingGuestOrderByWithRelationInput | Prisma.BookingGuestOrderByWithRelationInput[]
+  cursor?: Prisma.BookingGuestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingGuestScalarFieldEnum | Prisma.BookingGuestScalarFieldEnum[]
+}
+
+/**
+ * Booking.payments
+ */
+export type Booking$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingPayment
+   */
+  select?: Prisma.BookingPaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingPayment
+   */
+  omit?: Prisma.BookingPaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingPaymentInclude<ExtArgs> | null
+  where?: Prisma.BookingPaymentWhereInput
+  orderBy?: Prisma.BookingPaymentOrderByWithRelationInput | Prisma.BookingPaymentOrderByWithRelationInput[]
+  cursor?: Prisma.BookingPaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingPaymentScalarFieldEnum | Prisma.BookingPaymentScalarFieldEnum[]
+}
+
+/**
+ * Booking.paymentSchedule
+ */
+export type Booking$paymentScheduleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BookingPaymentSchedule
+   */
+  select?: Prisma.BookingPaymentScheduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BookingPaymentSchedule
+   */
+  omit?: Prisma.BookingPaymentScheduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BookingPaymentScheduleInclude<ExtArgs> | null
+  where?: Prisma.BookingPaymentScheduleWhereInput
+  orderBy?: Prisma.BookingPaymentScheduleOrderByWithRelationInput | Prisma.BookingPaymentScheduleOrderByWithRelationInput[]
+  cursor?: Prisma.BookingPaymentScheduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BookingPaymentScheduleScalarFieldEnum | Prisma.BookingPaymentScheduleScalarFieldEnum[]
 }
 
 /**

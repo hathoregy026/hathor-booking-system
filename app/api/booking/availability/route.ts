@@ -1,3 +1,6 @@
+import { enforcePublicRateLimit } from "@/lib/public-api-security";
+import { getRequestAvailability } from "@/lib/booking-request-availability";
+import { stayDurationSchema } from "@/lib/validations";
 import { NextRequest, NextResponse } from "next/server";
 import { parseISO } from "date-fns";
 import { ZodError } from "zod";
@@ -32,7 +35,12 @@ function jsonValidationError(message: string) {
  */
 export async function GET(request: NextRequest) {
   try {
+    await enforcePublicRateLimit({request, scope:"booking-availability",limit:90,windowMs:60000});
     const { searchParams } = request.nextUrl;
+    if (searchParams.get("mode") === "request") {
+      const duration = stayDurationSchema.parse(searchParams.get("duration"));
+      return NextResponse.json({ sailings: await getRequestAvailability(duration) }, { headers: { "Cache-Control": "no-store" } });
+    }
     const from = searchParams.get("from");
     const to = searchParams.get("to");
 

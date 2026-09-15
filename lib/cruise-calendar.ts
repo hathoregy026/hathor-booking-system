@@ -1,8 +1,7 @@
-import { BookingStatus } from "@/app/generated/prisma/client";
+import { getUnavailableRoomsBySchedule } from "@/lib/booking";
 import {
   filterRoomsForConfigs,
   resolveCruiseByDuration,
-  type AvailabilityRoomRecord,
 } from "@/lib/availability-search";
 import { computeCheckInAvailability } from "@/lib/availability-lookup";
 import {
@@ -10,7 +9,6 @@ import {
   type RoomSearchConfig,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
-import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import {
   departureDateKeyFromTime,
   departureWeekdayForDuration,
@@ -46,20 +44,6 @@ function enumerateUtcDateKeys(from: Date, to: Date): string[] {
   }
 
   return keys;
-}
-
-function computeMinPriceCents(
-  rooms: AvailabilityRoomRecord[],
-  basePriceCents: number,
-): number {
-  if (rooms.length === 0) return basePriceCents;
-
-  return Math.min(
-    ...rooms.map((room) => {
-      const multiplier = room.priceMultiplier > 0 ? room.priceMultiplier : 1;
-      return Math.round(basePriceCents * multiplier);
-    }),
-  );
 }
 
 export async function getCruiseCalendarDays(input: {
@@ -118,10 +102,7 @@ export async function getCruiseCalendarDays(input: {
       ? roomsMatchingConfig.filter((room) => room.id === input.roomId)
       : roomsMatchingConfig;
 
-    const ticketType = await ensureDefaultTicketType(
-      cruiseRecord.id,
-      cruiseRecord.basePriceCents,
-    );
+    const rates = await prisma.ticketType.findMany({where: {cruiseId: cruiseRecord.id}});
 
     const rangeStart = utcDateKeyToDate(dateKeys[0] ?? todayKey);
     const rangeEnd = utcDateKeyToDate(dateKeys[dateKeys.length - 1] ?? todayKey);
@@ -130,6 +111,7 @@ export async function getCruiseCalendarDays(input: {
     const schedules = await prisma.cruiseSchedule.findMany({
       where: {
         cruiseId: cruiseRecord.id,
+        isBookable: true,
         departureTime: { gte: rangeStart, lt: rangeEnd },
       },
       select: { id: true, departureTime: true, arrivalTime: true },
@@ -137,39 +119,8 @@ export async function getCruiseCalendarDays(input: {
 
     const scheduleIds = schedules.map((schedule) => schedule.id);
     const roomIds = matchingRooms.map((room) => room.id);
-    const now = utcNow();
 
-    const blockedRows =
-      scheduleIds.length > 0 && roomIds.length > 0
-        ? await prisma.bookingRoom.findMany({
-            where: {
-              cruiseScheduleId: { in: scheduleIds },
-              roomId: { in: roomIds },
-              booking: {
-                deletedAt: null,
-                OR: [
-                  { status: BookingStatus.CONFIRMED },
-                  {
-                    status: BookingStatus.PENDING_HOLD,
-                    OR: [
-                      { holdExpiresAt: null },
-                      { holdExpiresAt: { gt: now } },
-                    ],
-                  },
-                ],
-              },
-            },
-            select: { cruiseScheduleId: true, roomId: true },
-          })
-        : [];
-
-    const blockedBySchedule = new Map<string, Set<string>>();
-    for (const row of blockedRows) {
-      const set =
-        blockedBySchedule.get(row.cruiseScheduleId) ?? new Set<string>();
-      set.add(row.roomId);
-      blockedBySchedule.set(row.cruiseScheduleId, set);
-    }
+    const blockedBySchedule = await getUnavailableRoomsBySchedule({ cruiseScheduleIds: scheduleIds, roomIds });
 
     const schedulesByDate = new Map<string, typeof schedules>();
     for (const schedule of schedules) {
@@ -179,10 +130,8 @@ export async function getCruiseCalendarDays(input: {
       schedulesByDate.set(dateKey, bucket);
     }
 
-    const priceCents = computeMinPriceCents(
-      matchingRooms,
-      ticketType.priceCents || cruiseRecord.basePriceCents,
-    );
+    const matchingRates = rates.filter(t => matchingRooms.some(r => r.roomType === t.roomType));
+    const priceCents = matchingRates.length ? Math.min(...matchingRates.map(t => t.priceCents)) : 0;
 
     return {
       matchingRooms,
@@ -223,7 +172,7 @@ export async function getCruiseCalendarDays(input: {
       return { date, priceCents: context.priceCents, status: "closed" };
     }
 
-    const status: CruiseCalendarDayStatus =
+    const status: CruiseCalendarDayStatus = daySchedules.length === 0 ? "closed" :
       availability.openRooms.length > 0 ? "available" : "booked";
 
     return {

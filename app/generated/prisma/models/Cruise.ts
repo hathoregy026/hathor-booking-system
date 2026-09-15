@@ -258,6 +258,7 @@ export type CruiseWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Cruise"> | Date | string
   schedules?: Prisma.CruiseScheduleListRelationFilter
   rooms?: Prisma.RoomListRelationFilter
+  legacyRooms?: Prisma.RoomListRelationFilter
   ticketTypes?: Prisma.TicketTypeListRelationFilter
 }
 
@@ -274,6 +275,7 @@ export type CruiseOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   schedules?: Prisma.CruiseScheduleOrderByRelationAggregateInput
   rooms?: Prisma.RoomOrderByRelationAggregateInput
+  legacyRooms?: Prisma.RoomOrderByRelationAggregateInput
   ticketTypes?: Prisma.TicketTypeOrderByRelationAggregateInput
 }
 
@@ -293,6 +295,7 @@ export type CruiseWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Cruise"> | Date | string
   schedules?: Prisma.CruiseScheduleListRelationFilter
   rooms?: Prisma.RoomListRelationFilter
+  legacyRooms?: Prisma.RoomListRelationFilter
   ticketTypes?: Prisma.TicketTypeListRelationFilter
 }, "id" | "slug">
 
@@ -342,7 +345,8 @@ export type CruiseCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schedules?: Prisma.CruiseScheduleCreateNestedManyWithoutCruiseInput
-  rooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomCreateNestedManyWithoutVoyagesInput
+  legacyRooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
   ticketTypes?: Prisma.TicketTypeCreateNestedManyWithoutCruiseInput
 }
 
@@ -358,7 +362,8 @@ export type CruiseUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schedules?: Prisma.CruiseScheduleUncheckedCreateNestedManyWithoutCruiseInput
-  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutVoyagesInput
+  legacyRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
   ticketTypes?: Prisma.TicketTypeUncheckedCreateNestedManyWithoutCruiseInput
 }
 
@@ -374,7 +379,8 @@ export type CruiseUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.CruiseScheduleUpdateManyWithoutCruiseNestedInput
-  rooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUpdateManyWithoutVoyagesNestedInput
+  legacyRooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
   ticketTypes?: Prisma.TicketTypeUpdateManyWithoutCruiseNestedInput
 }
 
@@ -390,7 +396,8 @@ export type CruiseUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.CruiseScheduleUncheckedUpdateManyWithoutCruiseNestedInput
-  rooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUncheckedUpdateManyWithoutVoyagesNestedInput
+  legacyRooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
   ticketTypes?: Prisma.TicketTypeUncheckedUpdateManyWithoutCruiseNestedInput
 }
 
@@ -485,6 +492,21 @@ export type CruiseScalarRelationFilter = {
   isNot?: Prisma.CruiseWhereInput
 }
 
+export type CruiseNullableScalarRelationFilter = {
+  is?: Prisma.CruiseWhereInput | null
+  isNot?: Prisma.CruiseWhereInput | null
+}
+
+export type CruiseListRelationFilter = {
+  every?: Prisma.CruiseWhereInput
+  some?: Prisma.CruiseWhereInput
+  none?: Prisma.CruiseWhereInput
+}
+
+export type CruiseOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -523,18 +545,58 @@ export type CruiseUpdateOneRequiredWithoutSchedulesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CruiseUpdateToOneWithWhereWithoutSchedulesInput, Prisma.CruiseUpdateWithoutSchedulesInput>, Prisma.CruiseUncheckedUpdateWithoutSchedulesInput>
 }
 
-export type CruiseCreateNestedOneWithoutRoomsInput = {
-  create?: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput>
-  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutRoomsInput
+export type CruiseCreateNestedOneWithoutLegacyRoomsInput = {
+  create?: Prisma.XOR<Prisma.CruiseCreateWithoutLegacyRoomsInput, Prisma.CruiseUncheckedCreateWithoutLegacyRoomsInput>
+  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutLegacyRoomsInput
   connect?: Prisma.CruiseWhereUniqueInput
 }
 
-export type CruiseUpdateOneRequiredWithoutRoomsNestedInput = {
-  create?: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput>
-  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutRoomsInput
-  upsert?: Prisma.CruiseUpsertWithoutRoomsInput
+export type CruiseCreateNestedManyWithoutRoomsInput = {
+  create?: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput> | Prisma.CruiseCreateWithoutRoomsInput[] | Prisma.CruiseUncheckedCreateWithoutRoomsInput[]
+  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutRoomsInput | Prisma.CruiseCreateOrConnectWithoutRoomsInput[]
+  connect?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+}
+
+export type CruiseUncheckedCreateNestedManyWithoutRoomsInput = {
+  create?: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput> | Prisma.CruiseCreateWithoutRoomsInput[] | Prisma.CruiseUncheckedCreateWithoutRoomsInput[]
+  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutRoomsInput | Prisma.CruiseCreateOrConnectWithoutRoomsInput[]
+  connect?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+}
+
+export type CruiseUpdateOneWithoutLegacyRoomsNestedInput = {
+  create?: Prisma.XOR<Prisma.CruiseCreateWithoutLegacyRoomsInput, Prisma.CruiseUncheckedCreateWithoutLegacyRoomsInput>
+  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutLegacyRoomsInput
+  upsert?: Prisma.CruiseUpsertWithoutLegacyRoomsInput
+  disconnect?: Prisma.CruiseWhereInput | boolean
+  delete?: Prisma.CruiseWhereInput | boolean
   connect?: Prisma.CruiseWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.CruiseUpdateToOneWithWhereWithoutRoomsInput, Prisma.CruiseUpdateWithoutRoomsInput>, Prisma.CruiseUncheckedUpdateWithoutRoomsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CruiseUpdateToOneWithWhereWithoutLegacyRoomsInput, Prisma.CruiseUpdateWithoutLegacyRoomsInput>, Prisma.CruiseUncheckedUpdateWithoutLegacyRoomsInput>
+}
+
+export type CruiseUpdateManyWithoutRoomsNestedInput = {
+  create?: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput> | Prisma.CruiseCreateWithoutRoomsInput[] | Prisma.CruiseUncheckedCreateWithoutRoomsInput[]
+  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutRoomsInput | Prisma.CruiseCreateOrConnectWithoutRoomsInput[]
+  upsert?: Prisma.CruiseUpsertWithWhereUniqueWithoutRoomsInput | Prisma.CruiseUpsertWithWhereUniqueWithoutRoomsInput[]
+  set?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  disconnect?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  delete?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  connect?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  update?: Prisma.CruiseUpdateWithWhereUniqueWithoutRoomsInput | Prisma.CruiseUpdateWithWhereUniqueWithoutRoomsInput[]
+  updateMany?: Prisma.CruiseUpdateManyWithWhereWithoutRoomsInput | Prisma.CruiseUpdateManyWithWhereWithoutRoomsInput[]
+  deleteMany?: Prisma.CruiseScalarWhereInput | Prisma.CruiseScalarWhereInput[]
+}
+
+export type CruiseUncheckedUpdateManyWithoutRoomsNestedInput = {
+  create?: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput> | Prisma.CruiseCreateWithoutRoomsInput[] | Prisma.CruiseUncheckedCreateWithoutRoomsInput[]
+  connectOrCreate?: Prisma.CruiseCreateOrConnectWithoutRoomsInput | Prisma.CruiseCreateOrConnectWithoutRoomsInput[]
+  upsert?: Prisma.CruiseUpsertWithWhereUniqueWithoutRoomsInput | Prisma.CruiseUpsertWithWhereUniqueWithoutRoomsInput[]
+  set?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  disconnect?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  delete?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  connect?: Prisma.CruiseWhereUniqueInput | Prisma.CruiseWhereUniqueInput[]
+  update?: Prisma.CruiseUpdateWithWhereUniqueWithoutRoomsInput | Prisma.CruiseUpdateWithWhereUniqueWithoutRoomsInput[]
+  updateMany?: Prisma.CruiseUpdateManyWithWhereWithoutRoomsInput | Prisma.CruiseUpdateManyWithWhereWithoutRoomsInput[]
+  deleteMany?: Prisma.CruiseScalarWhereInput | Prisma.CruiseScalarWhereInput[]
 }
 
 export type CruiseCreateNestedOneWithoutTicketTypesInput = {
@@ -562,7 +624,8 @@ export type CruiseCreateWithoutSchedulesInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  rooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomCreateNestedManyWithoutVoyagesInput
+  legacyRooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
   ticketTypes?: Prisma.TicketTypeCreateNestedManyWithoutCruiseInput
 }
 
@@ -577,7 +640,8 @@ export type CruiseUncheckedCreateWithoutSchedulesInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutVoyagesInput
+  legacyRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
   ticketTypes?: Prisma.TicketTypeUncheckedCreateNestedManyWithoutCruiseInput
 }
 
@@ -608,7 +672,8 @@ export type CruiseUpdateWithoutSchedulesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUpdateManyWithoutVoyagesNestedInput
+  legacyRooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
   ticketTypes?: Prisma.TicketTypeUpdateManyWithoutCruiseNestedInput
 }
 
@@ -623,8 +688,46 @@ export type CruiseUncheckedUpdateWithoutSchedulesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUncheckedUpdateManyWithoutVoyagesNestedInput
+  legacyRooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
   ticketTypes?: Prisma.TicketTypeUncheckedUpdateManyWithoutCruiseNestedInput
+}
+
+export type CruiseCreateWithoutLegacyRoomsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  slug: string
+  imageUrl?: string | null
+  basePriceCents?: number
+  ports?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schedules?: Prisma.CruiseScheduleCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomCreateNestedManyWithoutVoyagesInput
+  ticketTypes?: Prisma.TicketTypeCreateNestedManyWithoutCruiseInput
+}
+
+export type CruiseUncheckedCreateWithoutLegacyRoomsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  slug: string
+  imageUrl?: string | null
+  basePriceCents?: number
+  ports?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schedules?: Prisma.CruiseScheduleUncheckedCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutVoyagesInput
+  ticketTypes?: Prisma.TicketTypeUncheckedCreateNestedManyWithoutCruiseInput
+}
+
+export type CruiseCreateOrConnectWithoutLegacyRoomsInput = {
+  where: Prisma.CruiseWhereUniqueInput
+  create: Prisma.XOR<Prisma.CruiseCreateWithoutLegacyRoomsInput, Prisma.CruiseUncheckedCreateWithoutLegacyRoomsInput>
 }
 
 export type CruiseCreateWithoutRoomsInput = {
@@ -639,6 +742,7 @@ export type CruiseCreateWithoutRoomsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schedules?: Prisma.CruiseScheduleCreateNestedManyWithoutCruiseInput
+  legacyRooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
   ticketTypes?: Prisma.TicketTypeCreateNestedManyWithoutCruiseInput
 }
 
@@ -654,6 +758,7 @@ export type CruiseUncheckedCreateWithoutRoomsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schedules?: Prisma.CruiseScheduleUncheckedCreateNestedManyWithoutCruiseInput
+  legacyRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
   ticketTypes?: Prisma.TicketTypeUncheckedCreateNestedManyWithoutCruiseInput
 }
 
@@ -662,18 +767,18 @@ export type CruiseCreateOrConnectWithoutRoomsInput = {
   create: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput>
 }
 
-export type CruiseUpsertWithoutRoomsInput = {
-  update: Prisma.XOR<Prisma.CruiseUpdateWithoutRoomsInput, Prisma.CruiseUncheckedUpdateWithoutRoomsInput>
-  create: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput>
+export type CruiseUpsertWithoutLegacyRoomsInput = {
+  update: Prisma.XOR<Prisma.CruiseUpdateWithoutLegacyRoomsInput, Prisma.CruiseUncheckedUpdateWithoutLegacyRoomsInput>
+  create: Prisma.XOR<Prisma.CruiseCreateWithoutLegacyRoomsInput, Prisma.CruiseUncheckedCreateWithoutLegacyRoomsInput>
   where?: Prisma.CruiseWhereInput
 }
 
-export type CruiseUpdateToOneWithWhereWithoutRoomsInput = {
+export type CruiseUpdateToOneWithWhereWithoutLegacyRoomsInput = {
   where?: Prisma.CruiseWhereInput
-  data: Prisma.XOR<Prisma.CruiseUpdateWithoutRoomsInput, Prisma.CruiseUncheckedUpdateWithoutRoomsInput>
+  data: Prisma.XOR<Prisma.CruiseUpdateWithoutLegacyRoomsInput, Prisma.CruiseUncheckedUpdateWithoutLegacyRoomsInput>
 }
 
-export type CruiseUpdateWithoutRoomsInput = {
+export type CruiseUpdateWithoutLegacyRoomsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -685,10 +790,11 @@ export type CruiseUpdateWithoutRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.CruiseScheduleUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUpdateManyWithoutVoyagesNestedInput
   ticketTypes?: Prisma.TicketTypeUpdateManyWithoutCruiseNestedInput
 }
 
-export type CruiseUncheckedUpdateWithoutRoomsInput = {
+export type CruiseUncheckedUpdateWithoutLegacyRoomsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -700,7 +806,40 @@ export type CruiseUncheckedUpdateWithoutRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.CruiseScheduleUncheckedUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUncheckedUpdateManyWithoutVoyagesNestedInput
   ticketTypes?: Prisma.TicketTypeUncheckedUpdateManyWithoutCruiseNestedInput
+}
+
+export type CruiseUpsertWithWhereUniqueWithoutRoomsInput = {
+  where: Prisma.CruiseWhereUniqueInput
+  update: Prisma.XOR<Prisma.CruiseUpdateWithoutRoomsInput, Prisma.CruiseUncheckedUpdateWithoutRoomsInput>
+  create: Prisma.XOR<Prisma.CruiseCreateWithoutRoomsInput, Prisma.CruiseUncheckedCreateWithoutRoomsInput>
+}
+
+export type CruiseUpdateWithWhereUniqueWithoutRoomsInput = {
+  where: Prisma.CruiseWhereUniqueInput
+  data: Prisma.XOR<Prisma.CruiseUpdateWithoutRoomsInput, Prisma.CruiseUncheckedUpdateWithoutRoomsInput>
+}
+
+export type CruiseUpdateManyWithWhereWithoutRoomsInput = {
+  where: Prisma.CruiseScalarWhereInput
+  data: Prisma.XOR<Prisma.CruiseUpdateManyMutationInput, Prisma.CruiseUncheckedUpdateManyWithoutRoomsInput>
+}
+
+export type CruiseScalarWhereInput = {
+  AND?: Prisma.CruiseScalarWhereInput | Prisma.CruiseScalarWhereInput[]
+  OR?: Prisma.CruiseScalarWhereInput[]
+  NOT?: Prisma.CruiseScalarWhereInput | Prisma.CruiseScalarWhereInput[]
+  id?: Prisma.StringFilter<"Cruise"> | string
+  name?: Prisma.StringFilter<"Cruise"> | string
+  description?: Prisma.StringNullableFilter<"Cruise"> | string | null
+  slug?: Prisma.StringFilter<"Cruise"> | string
+  imageUrl?: Prisma.StringNullableFilter<"Cruise"> | string | null
+  basePriceCents?: Prisma.IntFilter<"Cruise"> | number
+  ports?: Prisma.StringNullableFilter<"Cruise"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Cruise"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Cruise"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Cruise"> | Date | string
 }
 
 export type CruiseCreateWithoutTicketTypesInput = {
@@ -715,7 +854,8 @@ export type CruiseCreateWithoutTicketTypesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schedules?: Prisma.CruiseScheduleCreateNestedManyWithoutCruiseInput
-  rooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomCreateNestedManyWithoutVoyagesInput
+  legacyRooms?: Prisma.RoomCreateNestedManyWithoutCruiseInput
 }
 
 export type CruiseUncheckedCreateWithoutTicketTypesInput = {
@@ -730,7 +870,8 @@ export type CruiseUncheckedCreateWithoutTicketTypesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schedules?: Prisma.CruiseScheduleUncheckedCreateNestedManyWithoutCruiseInput
-  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
+  rooms?: Prisma.RoomUncheckedCreateNestedManyWithoutVoyagesInput
+  legacyRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCruiseInput
 }
 
 export type CruiseCreateOrConnectWithoutTicketTypesInput = {
@@ -761,7 +902,8 @@ export type CruiseUpdateWithoutTicketTypesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.CruiseScheduleUpdateManyWithoutCruiseNestedInput
-  rooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUpdateManyWithoutVoyagesNestedInput
+  legacyRooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
 }
 
 export type CruiseUncheckedUpdateWithoutTicketTypesInput = {
@@ -776,7 +918,53 @@ export type CruiseUncheckedUpdateWithoutTicketTypesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schedules?: Prisma.CruiseScheduleUncheckedUpdateManyWithoutCruiseNestedInput
-  rooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
+  rooms?: Prisma.RoomUncheckedUpdateManyWithoutVoyagesNestedInput
+  legacyRooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
+}
+
+export type CruiseUpdateWithoutRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  ports?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schedules?: Prisma.CruiseScheduleUpdateManyWithoutCruiseNestedInput
+  legacyRooms?: Prisma.RoomUpdateManyWithoutCruiseNestedInput
+  ticketTypes?: Prisma.TicketTypeUpdateManyWithoutCruiseNestedInput
+}
+
+export type CruiseUncheckedUpdateWithoutRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  ports?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schedules?: Prisma.CruiseScheduleUncheckedUpdateManyWithoutCruiseNestedInput
+  legacyRooms?: Prisma.RoomUncheckedUpdateManyWithoutCruiseNestedInput
+  ticketTypes?: Prisma.TicketTypeUncheckedUpdateManyWithoutCruiseNestedInput
+}
+
+export type CruiseUncheckedUpdateManyWithoutRoomsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  basePriceCents?: Prisma.IntFieldUpdateOperationsInput | number
+  ports?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -787,12 +975,14 @@ export type CruiseUncheckedUpdateWithoutTicketTypesInput = {
 export type CruiseCountOutputType = {
   schedules: number
   rooms: number
+  legacyRooms: number
   ticketTypes: number
 }
 
 export type CruiseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   schedules?: boolean | CruiseCountOutputTypeCountSchedulesArgs
   rooms?: boolean | CruiseCountOutputTypeCountRoomsArgs
+  legacyRooms?: boolean | CruiseCountOutputTypeCountLegacyRoomsArgs
   ticketTypes?: boolean | CruiseCountOutputTypeCountTicketTypesArgs
 }
 
@@ -823,6 +1013,13 @@ export type CruiseCountOutputTypeCountRoomsArgs<ExtArgs extends runtime.Types.Ex
 /**
  * CruiseCountOutputType without action
  */
+export type CruiseCountOutputTypeCountLegacyRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoomWhereInput
+}
+
+/**
+ * CruiseCountOutputType without action
+ */
 export type CruiseCountOutputTypeCountTicketTypesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TicketTypeWhereInput
 }
@@ -841,6 +1038,7 @@ export type CruiseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   schedules?: boolean | Prisma.Cruise$schedulesArgs<ExtArgs>
   rooms?: boolean | Prisma.Cruise$roomsArgs<ExtArgs>
+  legacyRooms?: boolean | Prisma.Cruise$legacyRoomsArgs<ExtArgs>
   ticketTypes?: boolean | Prisma.Cruise$ticketTypesArgs<ExtArgs>
   _count?: boolean | Prisma.CruiseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cruise"]>
@@ -888,6 +1086,7 @@ export type CruiseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type CruiseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   schedules?: boolean | Prisma.Cruise$schedulesArgs<ExtArgs>
   rooms?: boolean | Prisma.Cruise$roomsArgs<ExtArgs>
+  legacyRooms?: boolean | Prisma.Cruise$legacyRoomsArgs<ExtArgs>
   ticketTypes?: boolean | Prisma.Cruise$ticketTypesArgs<ExtArgs>
   _count?: boolean | Prisma.CruiseCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -899,6 +1098,7 @@ export type $CruisePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     schedules: Prisma.$CruiseSchedulePayload<ExtArgs>[]
     rooms: Prisma.$RoomPayload<ExtArgs>[]
+    legacyRooms: Prisma.$RoomPayload<ExtArgs>[]
     ticketTypes: Prisma.$TicketTypePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1308,6 +1508,7 @@ export interface Prisma__CruiseClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   schedules<T extends Prisma.Cruise$schedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cruise$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CruiseSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rooms<T extends Prisma.Cruise$roomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cruise$roomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  legacyRooms<T extends Prisma.Cruise$legacyRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cruise$legacyRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ticketTypes<T extends Prisma.Cruise$ticketTypesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cruise$ticketTypesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1768,6 +1969,30 @@ export type Cruise$schedulesArgs<ExtArgs extends runtime.Types.Extensions.Intern
  * Cruise.rooms
  */
 export type Cruise$roomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Room
+   */
+  select?: Prisma.RoomSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Room
+   */
+  omit?: Prisma.RoomOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoomInclude<ExtArgs> | null
+  where?: Prisma.RoomWhereInput
+  orderBy?: Prisma.RoomOrderByWithRelationInput | Prisma.RoomOrderByWithRelationInput[]
+  cursor?: Prisma.RoomWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RoomScalarFieldEnum | Prisma.RoomScalarFieldEnum[]
+}
+
+/**
+ * Cruise.legacyRooms
+ */
+export type Cruise$legacyRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Room
    */

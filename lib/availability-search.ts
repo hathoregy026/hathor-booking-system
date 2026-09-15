@@ -99,9 +99,8 @@ export function roomCanHostGuests(
   config: RoomSearchConfig,
 ): boolean {
   const guestCount = config.adults + config.children;
-  const isLuxuryRoom = roomMatchesLuxuryType(room.roomType, "luxury-rooms");
 
-  return room.capacity >= guestCount && !(isLuxuryRoom && config.children > 0);
+  return room.capacity >= guestCount;
 }
 
 export function sortRoomsForBooking(
@@ -169,7 +168,8 @@ export async function getSchedulesFromCheckIn(
   return prisma.cruiseSchedule.findMany({
     where: {
       cruiseId,
-      departureTime: { gte: dayStart, lt: dayEnd },
+      isBookable: true,
+      departureTime: { gte: dayStart, lt: dayEnd, gt: new Date() },
     },
     orderBy: { departureTime: "asc" },
     select: {

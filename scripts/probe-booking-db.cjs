@@ -1,0 +1,3 @@
+require('dotenv').config({quiet:true});
+const pg=require('pg');
+(async()=>{const u=new URL(process.env.DIRECT_URL);const c=new pg.Client({connectionString:u.toString(),ssl:{rejectUnauthorized:false},connectionTimeoutMillis:8000,query_timeout:10000});try{await c.connect();console.log('connected');await c.query('BEGIN');console.log('begin');await c.query('SELECT pg_advisory_xact_lock(734821901)::text');console.log('lock');console.log((await c.query('SELECT hathor_expire_holds()')).rows);for(let i=0;i<15;i++){console.log('read',i,(await c.query('SELECT id FROM "Booking" WHERE id=$1',[String(i)])).rowCount);}await c.query('ROLLBACK');console.log('rolled back');}catch(e){console.log(e.message);}finally{await c.end();}})();

@@ -119,14 +119,6 @@ function departureDayForSlug(slug: string): string | null {
   return HATHOR_CRUISES.find((cruise) => cruise.slug === slug)?.departureDay ?? null;
 }
 
-function computeRoomPriceCents(
-  basePriceCents: number,
-  priceMultiplier: number,
-): number {
-  const multiplier = priceMultiplier > 0 ? priceMultiplier : 1;
-  return Math.round(basePriceCents * multiplier);
-}
-
 function buildCruiseSearchRooms(
   cruise: {
     id: string;
@@ -158,10 +150,8 @@ function buildCruiseSearchRooms(
       const dbRoom = cruise.rooms.find((room) => room.id === availRoom.id);
       if (!dbRoom) continue;
 
-      const priceCents = computeRoomPriceCents(
-        cruise.basePriceCents,
-        dbRoom.priceMultiplier,
-      );
+      const priceCents = availRoom.prices[0]?.priceCents;
+      if (!priceCents) continue;
 
       rooms.push({
         id: dbRoom.id,
