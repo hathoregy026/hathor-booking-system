@@ -5,7 +5,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
-import { logPhonePerfDev } from "@/lib/touch-device";
+import { COMPACT_CHROME_MQ, logPhonePerfDev } from "@/lib/touch-device";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -79,14 +79,20 @@ export function mountHeroScrollStage({
 
   const logoMark = hero.querySelector(".hero-logo-mark");
   /*
-   * Phone home-3 overlay title: CSS holds it, then opposite-x fade.
-   * Scope the lines so hidden desktop `.hero-content` is never mixed in.
+   * Compact home-3 overlay title (phone + tablet ≤1024): CSS holds it,
+   * then opposite-x fade. Scope the lines so hidden desktop `.hero-content`
+   * is never mixed in.
    */
+  const isHomeThreeHero = Boolean(hero.closest(".home-three-hero"));
+  /** Home-3 uses the phone film hero on phone and tablet; other heroes stay ≤480. */
+  const compactHeroMq = isHomeThreeHero
+    ? COMPACT_CHROME_MQ
+    : "(max-width: 480px)";
   const overlayTitle = hero.querySelector(".hero-one-title");
   const usePhoneOverlayTitle =
     Boolean(overlayTitle) &&
-    Boolean(hero.closest(".home-three-hero")) &&
-    window.matchMedia("(max-width: 480px)").matches;
+    isHomeThreeHero &&
+    window.matchMedia(compactHeroMq).matches;
   const lineRights = (
     usePhoneOverlayTitle && overlayTitle
       ? Array.from(overlayTitle.querySelectorAll(".hero-line--right"))
@@ -150,11 +156,10 @@ export function mountHeroScrollStage({
     return Boolean(logoMark?.querySelector(".hathor-logo-split"));
   }
 
-  /** Home-3 phone only — letters sit in the cream bar and hide behind the dock. */
+  /** Home-3 compact (≤1024) — letters sit in the cream bar / stay hidden in the film frame. */
   function isHomeThreePhoneHero() {
     return (
-      window.matchMedia("(max-width: 480px)").matches &&
-      Boolean(hero.closest(".home-three-hero"))
+      isHomeThreeHero && window.matchMedia(COMPACT_CHROME_MQ).matches
     );
   }
 
@@ -315,10 +320,11 @@ export function mountHeroScrollStage({
     });
   };
 
-  const isPhoneHero = window.matchMedia("(max-width: 480px)").matches;
-  const isTabletHero = window.matchMedia(
-    "(min-width: 481px) and (max-width: 1024px)",
-  ).matches;
+  /* Home-3: phone film design through tablet. Other heroes: phone band only. */
+  const isPhoneHero = window.matchMedia(compactHeroMq).matches;
+  const isTabletHero =
+    !isPhoneHero &&
+    window.matchMedia("(min-width: 481px) and (max-width: 1024px)").matches;
   /* Phone + tablet both grow the Book Now pill by width, never by scaleX. */
   const isNarrowCta = isPhoneHero || isTabletHero;
 
@@ -496,12 +502,13 @@ export function mountHeroScrollStage({
 
     const w = window.innerWidth;
     const isTouch = window.matchMedia("(max-width: 1024px)").matches;
-    const isPhoneTouch = window.matchMedia("(max-width: 480px)").matches;
+    /* Home-3 film hero (no strips) on phone + tablet; other heroes stay ≤480. */
+    const isPhoneTouch = window.matchMedia(compactHeroMq).matches;
 
     /*
-     * Phone ≤480: no gold Venetian strips — video-only hero.
+     * Compact home hero: no gold Venetian strips — video-only film frame.
      * Strips (rotationY + preserve-3d) were the main scroll lag source.
-     * Book Now stretch still scrubs; logo lands on load (not mid-scrub).
+     * Book Now is CSS-hidden on home-3 compact; logo lands on load (not mid-scrub).
      */
     cover.innerHTML = "";
     const strips: Element[] = [];

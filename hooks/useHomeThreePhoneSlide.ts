@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, type RefObject } from "react";
+import { COMPACT_CHROME_MQ } from "@/lib/touch-device";
 
-const PHONE_QUERY = "(max-width: 480px)";
+/** Phone + tablet film hero — same one-gesture slide as the phone design. */
+const PHONE_QUERY = COMPACT_CHROME_MQ;
 const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
 /** How far a finger has to travel before the slide commits (px). */
 const SWIPE_COMMIT = 10;
@@ -13,14 +15,15 @@ const easeInOutCubic = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
 /**
- * Phone homepage: the story slides over the pinned film as one gesture.
+ * Compact homepage (phone + tablet ≤1024): the story slides over the pinned
+ * film as one gesture.
  *
- * On a phone the site runs native scroll, so a wheel tick or a short swipe
- * moved the page in visible steps and the story arrived over the film like a
- * block. Between the top of the page and the point where the story fully
- * covers the film, any scroll now hands off to one eased slide — down onto
- * the story, or back up to the film. Everywhere else scrolling is untouched,
- * and reduced motion keeps plain scrolling throughout.
+ * On compact viewports the site runs native scroll, so a wheel tick or a short
+ * swipe moved the page in visible steps and the story arrived over the film
+ * like a block. Between the top of the page and the point where the story
+ * fully covers the film, any scroll now hands off to one eased slide — down
+ * onto the story, or back up to the film. Desktop (>1024) is untouched, and
+ * reduced motion keeps plain scrolling throughout.
  */
 export function useHomeThreePhoneSlide(
   storyRef: RefObject<HTMLElement | null>,

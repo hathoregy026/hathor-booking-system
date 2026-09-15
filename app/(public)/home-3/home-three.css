@@ -3935,11 +3935,11 @@ figure) {
 }
 
 /*
- * Home-3 phone hero — cream wordmark bar under the video, no Book Now.
- * Letters land in six equal seats; scroll hides them behind the dock.
- * Desktop / tablet / other routes are not selected here.
+ * Home-3 compact hero (phone + tablet ≤1024) — cream wordmark bar under the
+ * video, no Book Now. Letters land in six equal seats; scroll hides them
+ * behind the dock. Desktop (>1024) / other routes are not selected here.
  */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   html[data-ex-experience] .ex-root:has(.home-three-hero) {
     --h3-phone-dock: calc(var(--hathor-phone-dock-h, 4.5rem) + 0.5rem);
     --h3-phone-letter-h: 7.95rem;
@@ -3949,7 +3949,7 @@ figure) {
 
   html[data-ex-experience] .ex-root .home-three-hero.home-hero-runway {
     /*
-     * Phone home-3: only enough extra runway for letters to drop behind
+     * Compact home-3: only enough extra runway for letters to drop behind
      * the dock. The shared 170svh runway left the red-box gap (ref 3)
      * before Cruises / Twelve guests.
      */
@@ -4398,17 +4398,7 @@ html[data-ex-experience]
     display: block;
   }
 
-  /* Hero-1 overlay is phone-only. Tablet keeps the current titles. */
-  html[data-ex-experience]
-    .ex-root
-    .home-three-hero
-    .home-hero--responsive-video-frame
-    .hero-one-shade,
-  html[data-ex-experience]
-    .ex-root
-    .home-three-hero
-    .home-hero--responsive-video-frame
-    .hero-one-stage,
+  /* Discover label stays off; shade + stage titles follow the phone film block. */
   html[data-ex-experience]
     .ex-root
     .home-three-hero
@@ -4519,11 +4509,11 @@ html[data-ex-experience]
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   /*
-   * Phone home hero: phone reel + overlay titles, lifted into the first
-   * viewport above the dock (the red-box stage). Wordmark motion stays in
-   * the timeline, visually hidden. Desktop / tablet are not selected here.
+   * Compact home hero (phone + tablet): phone reel + overlay titles, lifted
+   * into the first viewport above the dock. Wordmark motion stays in the
+   * timeline, visually hidden. Desktop (>1024) is not selected here.
    */
   html[data-ex-experience]
     .ex-root
@@ -4981,7 +4971,7 @@ html[data-ex-experience]
   }
 }
 
-@media (max-width: 480px) and (max-height: 720px) {
+@media (max-width: 1024px) and (max-height: 720px) {
   html[data-ex-experience]
     .ex-root
     .home-three-hero
@@ -5038,7 +5028,7 @@ html[data-ex-experience]
   }
 }
 
-@media (max-width: 480px) and (prefers-reduced-motion: reduce) {
+@media (max-width: 1024px) and (prefers-reduced-motion: reduce) {
   html[data-ex-experience]
     .ex-root
     .home-three-hero
@@ -6036,14 +6026,13 @@ html[data-ex-experience]
 }
 
 /* ==========================================================================
-   PHONE · HERO TITLE CENTRED IN THE FILM FRAME (≤480px only)
+   COMPACT · HERO TITLE CENTRED IN THE FILM FRAME (phone + tablet ≤1024)
    The title box is exactly the open part of the frame: inside the two side
    rules, below their top, above the Enter control. The lines centre in it,
    and the type keeps its design size unless that would cross a rule or the
-   controls — the box is a size container and the size is capped to it, so the
-   title cannot touch either on a short or narrow phone.
+   controls — the box is a size container and the size is capped to it.
    ========================================================================== */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
   html[data-ex-experience]
     .ex-root
     .home-three-hero
@@ -6117,7 +6106,7 @@ html[data-ex-experience]
   }
 }
 
-@media (max-width: 480px) and (max-height: 720px) {
+@media (max-width: 1024px) and (max-height: 720px) {
   html[data-ex-experience]
     .ex-root
     .home-three-hero
