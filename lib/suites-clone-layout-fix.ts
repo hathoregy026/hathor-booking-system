@@ -80,6 +80,131 @@ html body main .mod-content__btn.t-titulo {
   -webkit-text-fill-color: #cdb684 !important;
 }
 
+/*
+ * View All Suites is a carousel tile in the clone (25–40vh × full column).
+ * Force the site primary pill on every breakpoint so it cannot balloon into
+ * a gold stadium over the photographs.
+ */
+html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link,
+html body main .mod-scroll__projects .last-item a.hathor-horizon-cta {
+  ${PILL}
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  justify-self: center !important;
+  width: max-content !important;
+  min-width: 12.5rem !important;
+  max-width: calc(100% - 1.5rem) !important;
+  height: 2.85rem !important;
+  min-height: 2.85rem !important;
+  max-height: 2.85rem !important;
+  margin: 0.85rem auto !important;
+  background: #12100c !important;
+  background-color: #12100c !important;
+  border-color: #12100c !important;
+  color: #cdb684 !important;
+  -webkit-text-fill-color: #cdb684 !important;
+  overflow: visible !important;
+  z-index: 4 !important;
+  transform: none !important;
+}
+
+html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link::before,
+html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link::after,
+html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link svg,
+html body main .mod-scroll__projects .last-item a.hathor-horizon-cta::before,
+html body main .mod-scroll__projects .last-item a.hathor-horizon-cta::after,
+html body main .mod-scroll__projects .last-item a.hathor-horizon-cta svg {
+  display: none !important;
+}
+
+html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link .last-item__carousel__item__text,
+html body main .mod-scroll__projects .last-item a.hathor-horizon-cta .last-item__carousel__item__text {
+  position: relative !important;
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-style: normal !important;
+  font-weight: inherit !important;
+  letter-spacing: inherit !important;
+  line-height: inherit !important;
+  text-transform: inherit !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html body main .mod-scroll__projects .last-item a.last-item__carousel__item--link:hover,
+  html body main .mod-scroll__projects .last-item a.hathor-horizon-cta:hover {
+    background: #b69f64 !important;
+    background-color: #b69f64 !important;
+    border-color: #b69f64 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+}
+
+/*
+ * Closing photograph: the clone paints a 150vw wall with an 8-column plate
+ * and flip/parallax translates that overflow:clip then crops. Show one
+ * viewport-filling cover image after the horizon copy.
+ */
+html body main .mod-scroll__cierre {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  flex: 0 0 100vw !important;
+}
+
+html body main .mod-scroll__cierre .mod-scroll__cierre__content {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  padding: 0 !important;
+  display: block !important;
+  transform: none !important;
+}
+
+html body main .mod-scroll__cierre .mod-scroll__cierre__content__image,
+html body main .mod-scroll__cierre .mod-scroll__cierre__content__image.flipMedia {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  aspect-ratio: auto !important;
+  overflow: hidden !important;
+  clip-path: none !important;
+  transform: none !important;
+}
+
+html body main .mod-scroll__cierre .mod-scroll__cierre__content__image > .flipMedia__media,
+html body main .mod-scroll__cierre .mod-scroll__cierre__content__image :is(.media__wrap-source, .media__source, img) {
+  position: absolute !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+
 html body main .mod-footer__content__project__wrap-image {
   display: flex !important;
   flex-direction: column !important;
@@ -206,10 +331,18 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     }
   }
 
-  html body main .mod-scroll__projects .last-item__content__title .line,
-  html body main .mod-scroll__projects .last-item__content__text p .line {
+  html body main .mod-scroll__projects .last-item__content__title .line {
     overflow: clip !important;
     white-space: nowrap;
+  }
+
+  html body main .mod-scroll__projects .last-item__content__text,
+  html body main .mod-scroll__projects .last-item__content__text p,
+  html body main .mod-scroll__projects .last-item__content__text p .line {
+    overflow: visible !important;
+    white-space: normal !important;
+    color: #4a453c !important;
+    -webkit-text-fill-color: #4a453c !important;
   }
 
   html body main .mod-scroll__projects .last-item .mod-scroll__projects__item__image .media__source,
@@ -558,6 +691,9 @@ export function layoutSuitesSlideCaptionPanels(doc: Document) {
     "a.last-item__carousel__item--link, a.hathor-horizon-cta",
   );
   if (link) {
+    link.classList.add("hathor-horizon-cta");
+    link.classList.remove("btn--bg-blue", "btn--bg-inv", "bg-blue");
+    link.setAttribute("data-hathor-btn", "primary");
     link.querySelectorAll("svg, .last-item__carousel__item__arrow").forEach((n) => {
       n.remove();
     });
@@ -581,8 +717,10 @@ export function layoutSuitesHorizonClose(doc: Document) {
   );
   if (link) {
     link.classList.add("hathor-horizon-cta");
+    link.classList.remove("btn--bg-blue", "btn--bg-inv", "bg-blue");
     link.setAttribute("href", "/rooms");
     link.setAttribute("target", "_top");
+    link.setAttribute("data-hathor-btn", "primary");
     link.querySelectorAll("svg, .last-item__carousel__item__arrow").forEach((n) => {
       n.remove();
     });

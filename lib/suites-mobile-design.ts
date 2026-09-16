@@ -1525,13 +1525,17 @@ const SM_COLLECTION_CSS = `
     position: relative !important;
     box-sizing: border-box !important;
     ${PILL}
-    width: auto !important;
+    width: max-content !important;
     min-width: 12.5rem !important;
-    max-width: 100% !important;
+    max-width: calc(100% - 0.5rem) !important;
+    height: 2.85rem !important;
+    min-height: 2.85rem !important;
+    max-height: 2.85rem !important;
     justify-self: start !important;
     margin: clamp(1.5rem, 6vw, 2.25rem) 0 var(--sm-band) !important;
-    background: var(--sm-ink-surface) !important;
-    border-color: var(--sm-ink-surface) !important;
+    background: #12100c !important;
+    background-color: #12100c !important;
+    border-color: #12100c !important;
     color: #cdb684 !important;
     -webkit-text-fill-color: #cdb684 !important;
   }
@@ -1644,48 +1648,41 @@ const SM_COLLECTION_CSS = `
 /* ------------------------------------------------------------------------ */
 const SM_CLOSING_CSS = `
 @media (max-width: 1024px) {
-  /* 11 · Closing plate on stone; the second frame wipes up over the first. */
+  /* 11 · Closing photograph fills the viewport; do not clip or 4:5-crop it. */
   html body main .mod-scroll__cierre {
     position: relative !important;
     width: 100% !important;
-    max-width: none !important;
-    height: auto !important;
-    min-height: 0 !important;
+    max-width: 100% !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     background: var(--sm-stone) !important;
   }
 
   html body main .mod-scroll__cierre .mod-scroll__cierre__content {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: block !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    padding: var(--sm-band) var(--sm-pad) 0 !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
+    padding: 0 !important;
     transform: none !important;
   }
 
   html body main .mod-scroll__cierre .mod-scroll__cierre__content::after {
-    content: "" !important;
-    display: block !important;
-    width: 1px !important;
-    height: clamp(2.75rem, 13vw, 4.5rem) !important;
-    margin-top: clamp(1.25rem, 5.4vw, 2rem) !important;
-    background: linear-gradient(180deg, var(--sm-gold), transparent) !important;
+    display: none !important;
   }
 
   html body main .mod-scroll__cierre .mod-scroll__cierre__content__image {
     position: relative !important;
     display: block !important;
     width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 4 / 5 !important;
-    margin: 0 auto !important;
+    max-width: none !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
     border-radius: 0 !important;
     overflow: hidden !important;
     clip-path: none !important;
@@ -1698,15 +1695,15 @@ const SM_CLOSING_CSS = `
     width: 100% !important;
     height: 100% !important;
     aspect-ratio: auto !important;
+    transform: none !important;
+    clip-path: none !important;
   }
 
-  html.smr-on body main .mod-scroll__cierre .mod-scroll__cierre__content__image > .flipMedia__media--up {
-    clip-path: inset(100% 0 0 0) !important;
-    transition: clip-path 1.5s var(--sm-ease) 0.2s !important;
-  }
-
+  html.smr-on body main .mod-scroll__cierre .mod-scroll__cierre__content__image > .flipMedia__media--up,
   html.smr-on body main .mod-scroll__cierre .mod-scroll__cierre__content__image.is-in > .flipMedia__media--up {
-    clip-path: inset(0 0 0 0) !important;
+    clip-path: none !important;
+    transform: none !important;
+    transition: none !important;
   }
 
   /* 12 · Reservations chapter. */

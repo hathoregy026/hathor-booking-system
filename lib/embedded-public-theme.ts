@@ -370,4 +370,19 @@ html[data-public-theme="night"] .header__menu__bg {
 html[data-public-theme="night"] .modal__content {
   background: #17130f !important;
 }
+
+html[data-public-theme="night"] body main .mod-scroll__projects .last-item a.last-item__carousel__item--link,
+html[data-public-theme="night"] body main .mod-scroll__projects .last-item a.hathor-horizon-cta {
+  background: #241d15 !important;
+  background-color: #241d15 !important;
+  border-color: #e9e1d3 !important;
+  color: #e9e1d3 !important;
+  -webkit-text-fill-color: #e9e1d3 !important;
+}
+
+html[data-public-theme="night"] body main .mod-scroll__projects .last-item a.last-item__carousel__item--link .last-item__carousel__item__text,
+html[data-public-theme="night"] body main .mod-scroll__projects .last-item a.hathor-horizon-cta .last-item__carousel__item__text {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
 `;

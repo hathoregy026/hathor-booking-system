@@ -820,7 +820,7 @@ export function SuitesNormalHomepagePage({
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-suites-phone-rails-20260912"
+        src="/suites-normal/index.html?v=hathor-suites-horizon-cta-20260916"
         title="Hathor Suites"
         onLoad={() => {
           void apply();
