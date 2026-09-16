@@ -14,6 +14,9 @@ export type BookingSuccessDetails = {
   bookingId: string;
   statusLabel: string;
   cruiseTitle: string;
+  voyageName: string;
+  durationSlug: string;
+  route: string | null;
   durationMeta: string;
   checkInDate: string;
   roomType: string | null;
@@ -92,6 +95,9 @@ export async function getBookingSuccessDetails(
     bookingId: booking.id,
     statusLabel: STATUS_LABELS[booking.status] ?? booking.status,
     cruiseTitle,
+    voyageName: cruise.name,
+    durationSlug: cruise.slug,
+    route: ports,
     durationMeta,
     checkInDate: booking.cruiseSchedule.departureTime.toISOString(),
     roomType: booking.bookingRooms.map(r => r.room.roomType ?? r.room.name).join(", "),

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
-import { Inter, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Italiana, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { BookingPageLayout } from "@/components/booking/BookingPageLayout";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
@@ -17,6 +17,14 @@ import "../specular-button.css";
 import "../booking-success.css";
 import "../button-system.css";
 import "../nav-controls.css";
+import "../booking-journey.css";
+
+const italiana = Italiana({
+  subsets: ["latin"],
+  variable: "--font-hathor-italiana",
+  weight: "400",
+  display: "swap",
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -66,7 +74,7 @@ export default async function BookingFlowLayout({
 
   return (
     <div
-      className={`${playfair.variable} ${inter.variable} ${gamgote.variable} ${plusJakarta.variable}`}
+      className={`${playfair.variable} ${inter.variable} ${gamgote.variable} ${plusJakarta.variable} ${italiana.variable}`}
     >
       <SiteImagesProvider images={cms.siteImages}>
         <BookingPageLayout>{children}</BookingPageLayout>
