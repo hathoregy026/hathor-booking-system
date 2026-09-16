@@ -140,3 +140,17 @@ export function verifyAdminPassword(password: string): boolean {
   // configured password's length through an early return.
   return safeEqual(password, expected);
 }
+
+/** Session identifier for audit metadata; null when the token is not usable. */
+export function sessionIdFromToken(token: string | undefined): string | null {
+  if (!verifySessionToken(token)) return null;
+  try {
+    const payloadPart = token!.split(".")[1]!;
+    const payload = JSON.parse(
+      Buffer.from(payloadPart, "base64url").toString("utf8"),
+    ) as { j?: unknown };
+    return typeof payload.j === "string" ? payload.j : null;
+  } catch {
+    return null;
+  }
+}

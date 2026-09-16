@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
-import { applyStaffBookingAction, assertBookingAdmin } from "@/lib/booking-admin-api";
+import { applyStaffBookingAction, assertBookingAdmin, bookingAdminSession } from "@/lib/booking-admin-api";
 import { readPublicJsonBody } from "@/lib/public-api-security";
 import { prisma } from "@/lib/prisma";
 import { bookingListSelect } from "@/lib/query-selects";
@@ -9,7 +9,7 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
   try {
     assertBookingAdmin(request);
     const { id } = await context.params;
-    await applyStaffBookingAction(id, await readPublicJsonBody(request));
+    await applyStaffBookingAction(id, await readPublicJsonBody(request), bookingAdminSession(request));
     const booking = await prisma.booking.findUniqueOrThrow({ where: { id }, select: bookingListSelect });
     return NextResponse.json({ booking: serializeAdminBooking(booking) });
   } catch (error) { return handleRouteError(error); }

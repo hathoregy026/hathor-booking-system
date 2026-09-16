@@ -15,16 +15,36 @@ export async function lockVessel(tx: Tx) {
 export async function expireHolds(tx: Tx) {
   await tx.$queryRaw`SELECT hathor_expire_holds()`;
 }
+/** Integer cents, so a stage never lands a cent away from the database's. */
+const share = (total: number, percent: number) => Math.ceil((total * percent) / 100);
+
+/**
+ * Stages depend on how far ahead the guest books, and mirror
+ * hathor_acquire_hold, which stores the authoritative rows:
+ *   over 60 days   30% now, 50% cumulative at 60 days, all of it at 45 days
+ *   46 to 60 days  50% now, then the rest at 45 days
+ *   45 days or less  the full amount
+ */
 export function paymentSchedule(total: number, departure: Date, now = new Date()) {
   const days = Math.round((Date.UTC(departure.getUTCFullYear(), departure.getUTCMonth(), departure.getUTCDate()) -
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / dayMs);
+  const day60 = new Date(departure.getTime() - 60 * dayMs);
+  const day45 = new Date(departure.getTime() - 45 * dayMs);
+
   return {
-    requiredCents: Math.ceil(total * (days <= 45 ? 1 : days <= 60 ? 0.5 : 0.3)),
-    milestones: [
-      { milestone: "INITIAL", dueAt: null, cumulativeCents: Math.ceil(total * 0.3) },
-      { milestone: "DAY_60", dueAt: new Date(departure.getTime() - 60 * dayMs), cumulativeCents: Math.ceil(total * 0.5) },
-      { milestone: "DAY_45", dueAt: new Date(departure.getTime() - 45 * dayMs), cumulativeCents: total },
-    ],
+    requiredCents: days <= 45 ? total : share(total, days <= 60 ? 50 : 30),
+    milestones: days > 60
+      ? [
+          { milestone: "INITIAL", dueAt: null, cumulativeCents: share(total, 30) },
+          { milestone: "DAY_60", dueAt: day60, cumulativeCents: share(total, 50) },
+          { milestone: "DAY_45", dueAt: day45, cumulativeCents: total },
+        ]
+      : days > 45
+        ? [
+            { milestone: "INITIAL", dueAt: null, cumulativeCents: share(total, 50) },
+            { milestone: "DAY_45", dueAt: day45, cumulativeCents: total },
+          ]
+        : [{ milestone: "INITIAL", dueAt: null, cumulativeCents: total }],
   };
 }
 export function cancellationFee(total: number, departure: Date, now = new Date(), reason = "CANCELLATION") {
@@ -80,9 +100,9 @@ export async function submitBookingRequest(input:GuestRequest,idempotencyKey:str
 }
 
 export async function administerBooking(id: string, action: {
-  type: "accept" | "cancel" | "record-payment";
+  type: "accept" | "decline" | "cancel" | "record-payment";
   reason?: "CANCELLATION" | "NO_SHOW" | "EARLY_DEPARTURE";
-  payment?: { reference: string; method: "VISA" | "BANK_TRANSFER"; amountCents: number; kind: "RECEIPT" | "REFUND"; receivedAt: Date };
+  payment?: { reference: string; method: "VISA" | "BANK_TRANSFER"; amountCents: number; kind: "RECEIPT" | "REFUND"; receivedAt: Date; recordedBySession?: string };
 }) {
   try {
     const rows=await bookingQuery<{booking:unknown}>("SELECT hathor_administer_booking($1,$2::jsonb) AS booking",[id,JSON.stringify(action)]);

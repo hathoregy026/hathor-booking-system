@@ -146,6 +146,7 @@ model Booking {
   confirmedAt      DateTime?
   cancelledAt      DateTime?
   cancellationFeeCents Int?
+  cancellationReason String?
   requestFingerprint String?
   guestEmailStatus String @default("PENDING")
   adminEmailStatus String @default("PENDING")
@@ -253,6 +254,7 @@ model BookingPayment {
   currency String @default("USD")
   receivedAt DateTime
   recordedAt DateTime @default(now())
+  recordedBySession String?
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   @@index([bookingId])
 }

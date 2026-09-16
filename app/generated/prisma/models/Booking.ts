@@ -65,6 +65,7 @@ export type BookingMinAggregateOutputType = {
   confirmedAt: Date | null
   cancelledAt: Date | null
   cancellationFeeCents: number | null
+  cancellationReason: string | null
   requestFingerprint: string | null
   guestEmailStatus: string | null
   adminEmailStatus: string | null
@@ -101,6 +102,7 @@ export type BookingMaxAggregateOutputType = {
   confirmedAt: Date | null
   cancelledAt: Date | null
   cancellationFeeCents: number | null
+  cancellationReason: string | null
   requestFingerprint: string | null
   guestEmailStatus: string | null
   adminEmailStatus: string | null
@@ -137,6 +139,7 @@ export type BookingCountAggregateOutputType = {
   confirmedAt: number
   cancelledAt: number
   cancellationFeeCents: number
+  cancellationReason: number
   requestFingerprint: number
   guestEmailStatus: number
   adminEmailStatus: number
@@ -189,6 +192,7 @@ export type BookingMinAggregateInputType = {
   confirmedAt?: true
   cancelledAt?: true
   cancellationFeeCents?: true
+  cancellationReason?: true
   requestFingerprint?: true
   guestEmailStatus?: true
   adminEmailStatus?: true
@@ -225,6 +229,7 @@ export type BookingMaxAggregateInputType = {
   confirmedAt?: true
   cancelledAt?: true
   cancellationFeeCents?: true
+  cancellationReason?: true
   requestFingerprint?: true
   guestEmailStatus?: true
   adminEmailStatus?: true
@@ -261,6 +266,7 @@ export type BookingCountAggregateInputType = {
   confirmedAt?: true
   cancelledAt?: true
   cancellationFeeCents?: true
+  cancellationReason?: true
   requestFingerprint?: true
   guestEmailStatus?: true
   adminEmailStatus?: true
@@ -384,6 +390,7 @@ export type BookingGroupByOutputType = {
   confirmedAt: Date | null
   cancelledAt: Date | null
   cancellationFeeCents: number | null
+  cancellationReason: string | null
   requestFingerprint: string | null
   guestEmailStatus: string
   adminEmailStatus: string
@@ -443,6 +450,7 @@ export type BookingWhereInput = {
   confirmedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   cancellationFeeCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  cancellationReason?: Prisma.StringNullableFilter<"Booking"> | string | null
   requestFingerprint?: Prisma.StringNullableFilter<"Booking"> | string | null
   guestEmailStatus?: Prisma.StringFilter<"Booking"> | string
   adminEmailStatus?: Prisma.StringFilter<"Booking"> | string
@@ -485,6 +493,7 @@ export type BookingOrderByWithRelationInput = {
   confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancellationFeeCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   requestFingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
   guestEmailStatus?: Prisma.SortOrder
   adminEmailStatus?: Prisma.SortOrder
@@ -531,6 +540,7 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   confirmedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   cancellationFeeCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  cancellationReason?: Prisma.StringNullableFilter<"Booking"> | string | null
   requestFingerprint?: Prisma.StringNullableFilter<"Booking"> | string | null
   guestEmailStatus?: Prisma.StringFilter<"Booking"> | string
   adminEmailStatus?: Prisma.StringFilter<"Booking"> | string
@@ -573,6 +583,7 @@ export type BookingOrderByWithAggregationInput = {
   confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancellationFeeCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   requestFingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
   guestEmailStatus?: Prisma.SortOrder
   adminEmailStatus?: Prisma.SortOrder
@@ -617,6 +628,7 @@ export type BookingScalarWhereWithAggregatesInput = {
   confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   cancellationFeeCents?: Prisma.IntNullableWithAggregatesFilter<"Booking"> | number | null
+  cancellationReason?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   requestFingerprint?: Prisma.StringNullableWithAggregatesFilter<"Booking"> | string | null
   guestEmailStatus?: Prisma.StringWithAggregatesFilter<"Booking"> | string
   adminEmailStatus?: Prisma.StringWithAggregatesFilter<"Booking"> | string
@@ -652,6 +664,7 @@ export type BookingCreateInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -694,6 +707,7 @@ export type BookingUncheckedCreateInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -734,6 +748,7 @@ export type BookingUpdateInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -776,6 +791,7 @@ export type BookingUncheckedUpdateInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -817,6 +833,7 @@ export type BookingCreateManyInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -852,6 +869,7 @@ export type BookingUpdateManyMutationInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -888,6 +906,7 @@ export type BookingUncheckedUpdateManyInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -939,6 +958,7 @@ export type BookingCountOrderByAggregateInput = {
   confirmedAt?: Prisma.SortOrder
   cancelledAt?: Prisma.SortOrder
   cancellationFeeCents?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrder
   requestFingerprint?: Prisma.SortOrder
   guestEmailStatus?: Prisma.SortOrder
   adminEmailStatus?: Prisma.SortOrder
@@ -982,6 +1002,7 @@ export type BookingMaxOrderByAggregateInput = {
   confirmedAt?: Prisma.SortOrder
   cancelledAt?: Prisma.SortOrder
   cancellationFeeCents?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrder
   requestFingerprint?: Prisma.SortOrder
   guestEmailStatus?: Prisma.SortOrder
   adminEmailStatus?: Prisma.SortOrder
@@ -1018,6 +1039,7 @@ export type BookingMinOrderByAggregateInput = {
   confirmedAt?: Prisma.SortOrder
   cancelledAt?: Prisma.SortOrder
   cancellationFeeCents?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrder
   requestFingerprint?: Prisma.SortOrder
   guestEmailStatus?: Prisma.SortOrder
   adminEmailStatus?: Prisma.SortOrder
@@ -1193,6 +1215,7 @@ export type BookingCreateWithoutCruiseScheduleInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1233,6 +1256,7 @@ export type BookingUncheckedCreateWithoutCruiseScheduleInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1303,6 +1327,7 @@ export type BookingScalarWhereInput = {
   confirmedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   cancellationFeeCents?: Prisma.IntNullableFilter<"Booking"> | number | null
+  cancellationReason?: Prisma.StringNullableFilter<"Booking"> | string | null
   requestFingerprint?: Prisma.StringNullableFilter<"Booking"> | string | null
   guestEmailStatus?: Prisma.StringFilter<"Booking"> | string
   adminEmailStatus?: Prisma.StringFilter<"Booking"> | string
@@ -1338,6 +1363,7 @@ export type BookingCreateWithoutBookingRoomsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1379,6 +1405,7 @@ export type BookingUncheckedCreateWithoutBookingRoomsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1434,6 +1461,7 @@ export type BookingUpdateWithoutBookingRoomsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1475,6 +1503,7 @@ export type BookingUncheckedUpdateWithoutBookingRoomsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1514,6 +1543,7 @@ export type BookingCreateWithoutGuestsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1555,6 +1585,7 @@ export type BookingUncheckedCreateWithoutGuestsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1610,6 +1641,7 @@ export type BookingUpdateWithoutGuestsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1651,6 +1683,7 @@ export type BookingUncheckedUpdateWithoutGuestsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1690,6 +1723,7 @@ export type BookingCreateWithoutPaymentsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1731,6 +1765,7 @@ export type BookingUncheckedCreateWithoutPaymentsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1786,6 +1821,7 @@ export type BookingUpdateWithoutPaymentsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1827,6 +1863,7 @@ export type BookingUncheckedUpdateWithoutPaymentsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1866,6 +1903,7 @@ export type BookingCreateWithoutPaymentScheduleInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1907,6 +1945,7 @@ export type BookingUncheckedCreateWithoutPaymentScheduleInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -1962,6 +2001,7 @@ export type BookingUpdateWithoutPaymentScheduleInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2003,6 +2043,7 @@ export type BookingUncheckedUpdateWithoutPaymentScheduleInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2042,6 +2083,7 @@ export type BookingCreateWithoutBookingTicketsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -2083,6 +2125,7 @@ export type BookingUncheckedCreateWithoutBookingTicketsInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -2138,6 +2181,7 @@ export type BookingUpdateWithoutBookingTicketsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2179,6 +2223,7 @@ export type BookingUncheckedUpdateWithoutBookingTicketsInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2218,6 +2263,7 @@ export type BookingCreateManyCruiseScheduleInput = {
   confirmedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationFeeCents?: number | null
+  cancellationReason?: string | null
   requestFingerprint?: string | null
   guestEmailStatus?: string
   adminEmailStatus?: string
@@ -2253,6 +2299,7 @@ export type BookingUpdateWithoutCruiseScheduleInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2293,6 +2340,7 @@ export type BookingUncheckedUpdateWithoutCruiseScheduleInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2333,6 +2381,7 @@ export type BookingUncheckedUpdateManyWithoutCruiseScheduleInput = {
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationFeeCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestFingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
   adminEmailStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2436,6 +2485,7 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   confirmedAt?: boolean
   cancelledAt?: boolean
   cancellationFeeCents?: boolean
+  cancellationReason?: boolean
   requestFingerprint?: boolean
   guestEmailStatus?: boolean
   adminEmailStatus?: boolean
@@ -2479,6 +2529,7 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   confirmedAt?: boolean
   cancelledAt?: boolean
   cancellationFeeCents?: boolean
+  cancellationReason?: boolean
   requestFingerprint?: boolean
   guestEmailStatus?: boolean
   adminEmailStatus?: boolean
@@ -2516,6 +2567,7 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   confirmedAt?: boolean
   cancelledAt?: boolean
   cancellationFeeCents?: boolean
+  cancellationReason?: boolean
   requestFingerprint?: boolean
   guestEmailStatus?: boolean
   adminEmailStatus?: boolean
@@ -2553,6 +2605,7 @@ export type BookingSelectScalar = {
   confirmedAt?: boolean
   cancelledAt?: boolean
   cancellationFeeCents?: boolean
+  cancellationReason?: boolean
   requestFingerprint?: boolean
   guestEmailStatus?: boolean
   adminEmailStatus?: boolean
@@ -2564,7 +2617,7 @@ export type BookingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "paymentStatus" | "idempotencyKey" | "holdExpiresAt" | "customerEmail" | "customerName" | "customerPhone" | "adultCount" | "childCount" | "specialRequests" | "marketingOptIn" | "marketingOptInAt" | "termsAcceptedAt" | "firstName" | "lastName" | "country" | "paymentMethod" | "requestedAt" | "acceptedAt" | "confirmedAt" | "cancelledAt" | "cancellationFeeCents" | "requestFingerprint" | "guestEmailStatus" | "adminEmailStatus" | "totalPriceCents" | "currency" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "paymentStatus" | "idempotencyKey" | "holdExpiresAt" | "customerEmail" | "customerName" | "customerPhone" | "adultCount" | "childCount" | "specialRequests" | "marketingOptIn" | "marketingOptInAt" | "termsAcceptedAt" | "firstName" | "lastName" | "country" | "paymentMethod" | "requestedAt" | "acceptedAt" | "confirmedAt" | "cancelledAt" | "cancellationFeeCents" | "cancellationReason" | "requestFingerprint" | "guestEmailStatus" | "adminEmailStatus" | "totalPriceCents" | "currency" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.Booking$bookingRoomsArgs<ExtArgs>
@@ -2616,6 +2669,7 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     confirmedAt: Date | null
     cancelledAt: Date | null
     cancellationFeeCents: number | null
+    cancellationReason: string | null
     requestFingerprint: string | null
     guestEmailStatus: string
     adminEmailStatus: string
@@ -3078,6 +3132,7 @@ export interface BookingFieldRefs {
   readonly confirmedAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly cancelledAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly cancellationFeeCents: Prisma.FieldRef<"Booking", 'Int'>
+  readonly cancellationReason: Prisma.FieldRef<"Booking", 'String'>
   readonly requestFingerprint: Prisma.FieldRef<"Booking", 'String'>
   readonly guestEmailStatus: Prisma.FieldRef<"Booking", 'String'>
   readonly adminEmailStatus: Prisma.FieldRef<"Booking", 'String'>
