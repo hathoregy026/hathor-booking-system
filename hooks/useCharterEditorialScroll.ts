@@ -2,7 +2,6 @@
 
 import { useEffect, type RefObject } from "react";
 import { editorialFlipProgress } from "@/lib/editorial-flip-progress";
-import { attachEditorialRemeasure } from "@/lib/editorial-remeasure";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
@@ -39,6 +38,7 @@ export function useCharterEditorialScroll({
     let frame = 0;
     let target = 0;
     let current = 0;
+    let lastWidth = window.innerWidth;
     html.setAttribute("data-charter-editorial", "");
 
     const applyFlips = (mode: "horizontal" | "vertical") => {
@@ -88,7 +88,7 @@ export function useCharterEditorialScroll({
       applyFlips("vertical");
     };
 
-    const measure = () => {
+    const measure = (snap = true) => {
       desktop = window.innerWidth > 950 && !reduced.matches;
       if (!desktop) {
         run.style.height = "auto";
@@ -102,7 +102,7 @@ export function useCharterEditorialScroll({
       run.style.height = `${scrollDistance + window.innerHeight}px`;
       const rect = run.getBoundingClientRect();
       target = clamp(-rect.top / scrollDistance);
-      current = target;
+      if (snap) current = target;
       const x = current * travel;
       track.style.transform = `translate3d(${-x}px,0,0)`;
       applySceneVars(x);
@@ -130,24 +130,34 @@ export function useCharterEditorialScroll({
       if (!frame) frame = requestAnimationFrame(tick);
     };
 
-    const remeasure = () => {
-      measure();
+    const onResize = () => {
+      const width = window.innerWidth;
+      const widthChanged = Math.abs(width - lastWidth) > 24;
+      lastWidth = width;
+      if (!widthChanged && width <= 950) {
+        applyVerticalVars();
+        return;
+      }
+      if (!widthChanged) {
+        measure(false);
+        updateTarget();
+        return;
+      }
+      measure(true);
       updateTarget();
     };
 
     window.addEventListener("scroll", updateTarget, { passive: true });
-    reduced.addEventListener("change", remeasure);
-    const detachRemeasure = attachEditorialRemeasure({
-      observe: track,
-      onRemeasure: remeasure,
-    });
-    measure();
-    requestAnimationFrame(measure);
+    window.addEventListener("resize", onResize, { passive: true });
+    reduced.addEventListener("change", onResize);
+    document.fonts?.ready.then(onResize).catch(() => undefined);
+    measure(true);
+    requestAnimationFrame(() => measure(true));
 
     return () => {
       window.removeEventListener("scroll", updateTarget);
-      reduced.removeEventListener("change", remeasure);
-      detachRemeasure();
+      window.removeEventListener("resize", onResize);
+      reduced.removeEventListener("change", onResize);
       if (frame) cancelAnimationFrame(frame);
       html.removeAttribute("data-charter-editorial");
       run.style.height = "";

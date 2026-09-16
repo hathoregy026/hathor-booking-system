@@ -327,7 +327,7 @@ export function CharterPageContent() {
                           slot={card.image}
                           alt={card.title}
                           className="chr-datum__media"
-                          ratio="5 / 4"
+                          ratio="16 / 9"
                         />
                         <div className="chr-datum__body">
                           <div className="chr-datum__top">

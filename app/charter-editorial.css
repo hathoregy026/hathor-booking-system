@@ -663,6 +663,11 @@ html:has(.charter-editorial) .public-fab {
 .chr-residence {
   width: min(145vw, 104rem);
   background: var(--chr-wash-stone);
+  gap: 0.65rem;
+}
+
+.chr-residence .chr-display--l {
+  font-size: clamp(1.9rem, 4.2vw, 3.85rem);
 }
 
 .chr-residence__head {
@@ -671,6 +676,10 @@ html:has(.charter-editorial) .public-fab {
   gap: 0.55rem;
   max-width: 44rem;
   flex: 0 0 auto;
+}
+
+.chr-residence__head .chr-support {
+  max-width: none;
 }
 
 .chr-residence__stats {
@@ -689,13 +698,14 @@ html:has(.charter-editorial) .public-fab {
   gap: clamp(0.75rem, 1.4vw, 1.25rem);
   flex: 1 1 auto;
   min-height: 0;
+  align-items: start;
 }
 
 .chr-datum {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: 0;
+  height: auto;
   background: rgb(236 228 218 / 0.55);
   border: 1px solid var(--chr-hair);
   overflow: visible;
@@ -704,16 +714,18 @@ html:has(.charter-editorial) .public-fab {
 .chr-datum__media {
   width: 100%;
   flex: 0 0 auto;
-  aspect-ratio: 5 / 3.4;
-  max-height: 34%;
+  aspect-ratio: 16 / 9;
+  max-height: 8.75rem;
+  height: auto;
 }
 
 .chr-datum__body {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.85rem 0.95rem 1rem;
-  min-height: 0;
+  gap: 0.35rem;
+  padding: 0.75rem 0.9rem 0.95rem;
+  min-width: 0;
+  min-height: min-content;
   flex: 1 1 auto;
 }
 
@@ -725,14 +737,20 @@ html:has(.charter-editorial) .public-fab {
 }
 
 .chr-datum__count {
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  font-size: clamp(1.85rem, 2.8vw, 2.8rem);
   line-height: 0.9;
+}
+
+.chr-datum h3.chr-display {
+  max-width: none;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .chr-datum__amenities {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.12rem;
   font-size: var(--chr-t-meta);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -743,10 +761,16 @@ html:has(.charter-editorial) .public-fab {
   display: block;
   overflow: visible;
   min-width: 0;
+  max-width: none;
+}
+
+.chr-datum .chr-link {
+  margin-top: auto;
+  padding-top: 0.35rem;
 }
 
 .chr-residence__outro {
-  max-width: 52ch;
+  max-width: 62ch;
   flex: 0 0 auto;
 }
 
@@ -1315,6 +1339,14 @@ html:has(.charter-editorial) .public-fab {
     padding: var(--chr-band) var(--chr-pad);
   }
 
+  .chr-residence__head {
+    max-width: none;
+  }
+
+  .chr-datum {
+    height: auto;
+  }
+
   .charter-editorial .chr-line {
     white-space: normal;
   }
@@ -1389,10 +1421,14 @@ html:has(.charter-editorial) .public-fab {
   }
 
   .chr-spine__media,
-  .chr-craft__media,
-  .chr-datum__media {
+  .chr-craft__media {
     max-height: none;
     aspect-ratio: 4 / 3;
+  }
+
+  .chr-datum__media {
+    max-height: 11rem;
+    aspect-ratio: 16 / 9;
   }
 
   .chr-river__routes {
@@ -1522,6 +1558,17 @@ html:has(.charter-editorial) .public-fab {
   .charter-editorial .chr-line--b,
   .charter-editorial .chr-line--c {
     padding-left: clamp(0.35rem, 1vw, 1rem);
+  }
+
+  .chr-residence__head {
+    max-width: none;
+    width: min(100%, 46rem);
+  }
+
+  .chr-residence__head .chr-line,
+  .chr-residence__head .chr-line > * {
+    white-space: nowrap;
+    overflow: visible;
   }
 }
 
