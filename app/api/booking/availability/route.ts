@@ -1,5 +1,5 @@
 import { enforcePublicRateLimit } from "@/lib/public-api-security";
-import { getRequestAvailability } from "@/lib/booking-request-availability";
+import { getSailingAvailability } from "@/lib/availability-service";
 import { stayDurationSchema } from "@/lib/validations";
 import { NextRequest, NextResponse } from "next/server";
 import { parseISO } from "date-fns";
@@ -39,7 +39,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     if (searchParams.get("mode") === "request") {
       const duration = stayDurationSchema.parse(searchParams.get("duration"));
-      return NextResponse.json({ sailings: await getRequestAvailability(duration) }, { headers: { "Cache-Control": "no-store" } });
+      const sailings = await getSailingAvailability({
+        duration,
+        departureDate: searchParams.get("departureDate"),
+        adults: Math.max(1, Number(searchParams.get("adults")) || 1),
+        children: Math.max(0, Number(searchParams.get("children")) || 0),
+        rooms: Math.max(1, Number(searchParams.get("rooms")) || 1),
+      });
+      return NextResponse.json({ sailings }, { headers: { "Cache-Control": "no-store" } });
     }
     const from = searchParams.get("from");
     const to = searchParams.get("to");

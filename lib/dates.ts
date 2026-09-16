@@ -2,7 +2,7 @@ import { addMinutes, isValid, parseISO } from "date-fns";
 
 /** Parse any ISO/date string into a UTC Date (never uses local server components). */
 export function parseToUtcDate(input: string): Date {
-  const parsed = parseISO(input);
+  const parsed = parseISO(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(input) ? `${input}T00:00:00.000Z` : input);
   if (!isValid(parsed)) {
     throw new Error(`Invalid date: ${input}`);
   }

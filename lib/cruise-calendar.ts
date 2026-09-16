@@ -1,9 +1,12 @@
-import { getUnavailableRoomsBySchedule } from "@/lib/booking";
 import {
-  filterRoomsForConfigs,
+  canAssignRoomConfigs,
   resolveCruiseByDuration,
 } from "@/lib/availability-search";
-import { computeCheckInAvailability } from "@/lib/availability-lookup";
+import {
+  freeCabinsOf,
+  getSailingAvailability,
+  type SailingAvailability,
+} from "@/lib/availability-service";
 import {
   normalizeRoomConfigsForDuration,
   type RoomSearchConfig,
@@ -15,10 +18,7 @@ import {
   isValidDepartureDateKey,
   utcDateKeyToDate,
 } from "@/lib/departure-dates";
-import { withDb } from "@/lib/db-safe";
 import { utcDateKeyFromDate, utcNow } from "@/lib/dates";
-import { prisma } from "@/lib/prisma";
-import { availabilityRoomSelect } from "@/lib/query-selects";
 
 export type CruiseCalendarDayStatus = "available" | "booked" | "closed";
 
@@ -28,6 +28,8 @@ export type CruiseCalendarDay = {
   priceCents: number;
   status: CruiseCalendarDayStatus;
 };
+
+const dayMs = 86_400_000;
 
 function enumerateUtcDateKeys(from: Date, to: Date): string[] {
   const keys: string[] = [];
@@ -46,6 +48,22 @@ function enumerateUtcDateKeys(from: Date, to: Date): string[] {
   return keys;
 }
 
+/** Cheapest cabin type that can actually host the request on this sailing. */
+function priceForRequest(
+  sailing: SailingAvailability,
+  roomConfigs: RoomSearchConfig[],
+): number | null {
+  const fitting = sailing.types.filter(type =>
+    roomConfigs.some(config => type.maxOccupancy >= config.adults + config.children),
+  );
+  const pool = fitting.length > 0 ? fitting : sailing.types;
+  return pool.length > 0 ? Math.min(...pool.map(type => type.priceCents)) : null;
+}
+
+/**
+ * Calendar days come from the same availability service as the booking flow,
+ * so a day can never show "available" while checkout reports it sold out.
+ */
 export async function getCruiseCalendarDays(input: {
   duration: StayDurationValue;
   roomConfigs: RoomSearchConfig[];
@@ -64,125 +82,61 @@ export async function getCruiseCalendarDays(input: {
   );
   const todayKey = utcDateKeyFromDate(utcNow());
   const dateKeys = enumerateUtcDateKeys(input.from, input.to);
+  const rangeStart = utcDateKeyToDate(dateKeys[0] ?? todayKey);
+  const rangeEnd = new Date(
+    utcDateKeyToDate(dateKeys[dateKeys.length - 1] ?? todayKey).getTime() + dayMs,
+  );
 
-  const cruise = await resolveCruiseByDuration(input.duration);
-  if (!cruise) {
-    return {
-      days: dateKeys.map((date) => ({
-        date,
-        priceCents: 0,
-        status: "closed" as const,
-      })),
-      departureDay,
-      cruiseId: null,
-    };
-  }
-
-  const context = await withDb(async () => {
-    const cruiseRecord = await prisma.cruise.findFirst({
-      where: { id: cruise.id, deletedAt: null },
-      select: {
-        id: true,
-        basePriceCents: true,
-        rooms: {
-          where: { deletedAt: null },
-          orderBy: { name: "asc" },
-          select: availabilityRoomSelect,
-        },
-      },
-    });
-
-    if (!cruiseRecord) return null;
-
-    const roomsMatchingConfig = filterRoomsForConfigs(
-      cruiseRecord.rooms,
-      roomConfigs,
-    );
-    const matchingRooms = input.roomId
-      ? roomsMatchingConfig.filter((room) => room.id === input.roomId)
-      : roomsMatchingConfig;
-
-    const rates = await prisma.ticketType.findMany({where: {cruiseId: cruiseRecord.id}});
-
-    const rangeStart = utcDateKeyToDate(dateKeys[0] ?? todayKey);
-    const rangeEnd = utcDateKeyToDate(dateKeys[dateKeys.length - 1] ?? todayKey);
-    rangeEnd.setUTCDate(rangeEnd.getUTCDate() + 1);
-
-    const schedules = await prisma.cruiseSchedule.findMany({
-      where: {
-        cruiseId: cruiseRecord.id,
-        isBookable: true,
-        departureTime: { gte: rangeStart, lt: rangeEnd },
-      },
-      select: { id: true, departureTime: true, arrivalTime: true },
-    });
-
-    const scheduleIds = schedules.map((schedule) => schedule.id);
-    const roomIds = matchingRooms.map((room) => room.id);
-
-    const blockedBySchedule = await getUnavailableRoomsBySchedule({ cruiseScheduleIds: scheduleIds, roomIds });
-
-    const schedulesByDate = new Map<string, typeof schedules>();
-    for (const schedule of schedules) {
-      const dateKey = departureDateKeyFromTime(schedule.departureTime);
-      const bucket = schedulesByDate.get(dateKey) ?? [];
-      bucket.push(schedule);
-      schedulesByDate.set(dateKey, bucket);
-    }
-
-    const matchingRates = rates.filter(t => matchingRooms.some(r => r.roomType === t.roomType));
-    const priceCents = matchingRates.length ? Math.min(...matchingRates.map(t => t.priceCents)) : 0;
-
-    return {
-      matchingRooms,
-      priceCents,
-      schedulesByDate,
-      blockedBySchedule,
-    };
+  const sailings = await getSailingAvailability({
+    duration: input.duration,
+    from: rangeStart,
+    to: rangeEnd,
+    roomConfigs,
+    roomId: input.roomId ?? null,
   });
 
-  if (!context || context.matchingRooms.length === 0) {
-    return {
-      days: dateKeys.map((date) => ({
-        date,
-        priceCents: 0,
-        status: "closed" as const,
-      })),
-      departureDay,
-      cruiseId: cruise.id,
-    };
+  const sailingsByDate = new Map<string, SailingAvailability[]>();
+  for (const sailing of sailings) {
+    const key = departureDateKeyFromTime(new Date(sailing.departureTime));
+    const bucket = sailingsByDate.get(key) ?? [];
+    bucket.push(sailing);
+    sailingsByDate.set(key, bucket);
   }
 
-  const days: CruiseCalendarDay[] = dateKeys.map((date) => {
+  const prices = sailings
+    .map(sailing => priceForRequest(sailing, roomConfigs))
+    .filter((price): price is number => price !== null);
+  const indicativePriceCents = prices.length > 0 ? Math.min(...prices) : 0;
+
+  const cruiseId =
+    sailings[0]?.cruiseId ??
+    (await resolveCruiseByDuration(input.duration))?.id ??
+    null;
+
+  const days: CruiseCalendarDay[] = dateKeys.map(date => {
     if (date < todayKey || !isValidDepartureDateKey(date, input.duration)) {
-      return { date, priceCents: context.priceCents, status: "closed" };
+      return { date, priceCents: indicativePriceCents, status: "closed" };
     }
 
-    const daySchedules = context.schedulesByDate.get(date) ?? [];
-
-    const availability = computeCheckInAvailability({
-      roomsForSearch: context.matchingRooms,
-      roomConfigs,
-      schedules: daySchedules,
-      unavailableBySchedule: context.blockedBySchedule,
-      previewIfNoSchedule: true,
-    });
-
-    if (availability.reason === "NO_MATCHING_ROOMS") {
-      return { date, priceCents: context.priceCents, status: "closed" };
+    const daySailings = sailingsByDate.get(date) ?? [];
+    if (daySailings.length === 0) {
+      return { date, priceCents: indicativePriceCents, status: "closed" };
     }
 
-    const status: CruiseCalendarDayStatus = daySchedules.length === 0 ? "closed" :
-      availability.openRooms.length > 0 ? "available" : "booked";
+    const openSailing = daySailings.find(sailing =>
+      canAssignRoomConfigs(freeCabinsOf(sailing), roomConfigs),
+    );
 
     return {
       date,
-      priceCents: context.priceCents,
-      status,
+      priceCents:
+        priceForRequest(openSailing ?? daySailings[0], roomConfigs) ??
+        indicativePriceCents,
+      status: openSailing ? "available" : "booked",
     };
   });
 
-  return { days, departureDay, cruiseId: cruise.id };
+  return { days, departureDay, cruiseId };
 }
 
 export function calendarMetaFromLocalDate(

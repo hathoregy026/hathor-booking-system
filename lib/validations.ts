@@ -9,7 +9,7 @@ const utcIsoDateString = z
   .string()
   .min(1, "Date is required")
   .transform((value, ctx) => {
-    const parsed = parseISO(value);
+    const parsed = parseISO(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value) ? `${value}T00:00:00.000Z` : value);
     if (!isValid(parsed)) {
       ctx.addIssue({
         code: "custom",

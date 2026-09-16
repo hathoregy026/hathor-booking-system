@@ -11,5 +11,7 @@ export async function bookingQuery<T extends pg.QueryResultRow>(text: string, va
   ssl: { rejectUnauthorized: false },
   types: { getTypeParser: (oid: number) => oid === 1114 ? (s: string) => new Date(s.replace(" ","T")+"Z") : pg.types.getTypeParser(oid) },
  });
- return (await pool.query<T>(text, values)).rows;
+ // Dates travel as UTC text: node-pg would otherwise send the host's local
+ // offset, which a zone-less timestamp column drops, shifting every comparison.
+ return (await pool.query<T>(text, values.map(value => value instanceof Date ? value.toISOString() : value))).rows;
 }

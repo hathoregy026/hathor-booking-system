@@ -2,12 +2,14 @@ import {
   canAssignRoomConfigs,
   computeStayDates,
   filterRoomsForConfigs,
-  getSchedulesFromCheckIn,
   resolveCruiseByDuration,
   sortRoomsForBooking,
-  type AvailabilityRoomRecord,
 } from "@/lib/availability-search";
-import { getSchedulesInDateRange, getUnavailableRoomsBySchedule } from "@/lib/booking";
+import {
+  getSailingAvailability,
+  type FreeCabin,
+  type RoomTypeAvailability,
+} from "@/lib/availability-service";
 import type { AvailabilityReason } from "@/lib/booking-types";
 import type {
   RoomSearchConfig,
@@ -15,10 +17,7 @@ import type {
 } from "@/lib/booking-search-config";
 import { withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
-import {
-  availabilityRoomSelect,
-  availabilityTicketSelect,
-} from "@/lib/query-selects";
+import { availabilityRoomSelect } from "@/lib/query-selects";
 
 type AvailabilityLookupInput = {
   cruiseId: string;
@@ -27,7 +26,7 @@ type AvailabilityLookupInput = {
   endDate: string;
   checkInDate?: string;
   roomConfigs?: RoomSearchConfig[];
-  /** When true, do not create schedules — used by calendar preview. */
+  /** Kept for callers; availability never creates a sailing to preview. */
   previewOnly?: boolean;
 };
 
@@ -73,103 +72,17 @@ type AvailabilityLookupResult = {
   reason?: AvailabilityReason;
 };
 
-function mapRoomWithPrices(
-  room: AvailabilityRoomRecord,
-  ticketTypes: {
-    id: string;
-    name: string;
-    description: string | null;
-    priceCents: number;
-    roomType: string | null;
-  }[],
-) {
-
-  return {
-    id: room.id,
-    name: room.name,
-    capacity: room.capacity,
-    description: room.description,
-    roomType: room.roomType,
-    prices: ticketTypes.filter(t => t.roomType === room.roomType).map((ticketType) => ({
-      ticketTypeId: ticketType.id,
-      name: ticketType.name,
-      description: ticketType.description,
-      priceCents: ticketType.priceCents,
-    })),
-  };
-}
-
-type ScheduleRef = { id: string; departureTime: Date; arrivalTime: Date };
-
-/** Shared check-in availability — used by search and calendar so both stay in sync. */
-export function computeCheckInAvailability(input: {
-  roomsForSearch: AvailabilityRoomRecord[];
-  roomConfigs?: RoomSearchConfig[];
-  schedules: ScheduleRef[];
-  unavailableBySchedule: Map<string, Set<string>>;
-  previewIfNoSchedule: boolean;
-}): {
-  openRooms: AvailabilityRoomRecord[];
-  reason?: AvailabilityReason;
-  needsScheduleCreation: boolean;
-} {
-  const { roomsForSearch, roomConfigs, schedules, unavailableBySchedule } =
-    input;
-
-  if (roomConfigs && roomsForSearch.length === 0) {
-    return {
-      openRooms: [],
-      reason: "NO_MATCHING_ROOMS",
-      needsScheduleCreation: false,
-    };
-  }
-
-  if (schedules.length === 0) {
-    return { openRooms: [], reason: "NO_SCHEDULES", needsScheduleCreation: false };
-  }
-
-  const openByRoomId = new Map<string, AvailabilityRoomRecord>();
-
-  for (const schedule of schedules) {
-    const unavailableSet = unavailableBySchedule.get(schedule.id) ?? new Set<string>();
-    const openRooms = roomsForSearch.filter((room) => !unavailableSet.has(room.id));
-
-    const assignableRooms =
-      roomConfigs && openRooms.length > 0
-        ? canAssignRoomConfigs(openRooms, roomConfigs)
-          ? openRooms
-          : []
-        : openRooms;
-
-    for (const room of assignableRooms) {
-      openByRoomId.set(room.id, room);
-    }
-  }
-
-  const openRooms = [...openByRoomId.values()];
-
-  return {
-    openRooms,
-    reason: openRooms.length === 0 ? "FULLY_BOOKED" : undefined,
-    needsScheduleCreation: false,
-  };
-}
-
+/**
+ * Catalog details plus availability from the one availability service, in the
+ * response shape the existing search endpoints already publish.
+ */
 export async function runAvailabilityLookup(
   input: AvailabilityLookupInput,
 ): Promise<AvailabilityLookupResult> {
-  const {
-    cruiseId,
-    roomId,
-    startDate,
-    endDate,
-    checkInDate,
-    roomConfigs,
-    previewOnly = false,
-  } = input;
+  const { cruiseId, roomId, startDate, endDate, checkInDate, roomConfigs } = input;
 
-  const context = await withDb(async () => {
-    const cruise = await prisma.cruise.findFirst({
+  const cruise = await withDb(() =>
+    prisma.cruise.findFirst({
       where: { id: cruiseId, deletedAt: null },
       select: {
         id: true,
@@ -181,60 +94,30 @@ export async function runAvailabilityLookup(
         rooms: {
           where: { deletedAt: null },
           orderBy: { name: "asc" },
-          select: {
-            ...availabilityRoomSelect,
-            roomNumber: true,
-          },
+          select: { ...availabilityRoomSelect, roomNumber: true },
         },
       },
-    });
+    }),
+  );
 
-    const schedules = checkInDate
-      ? await getSchedulesFromCheckIn(cruiseId, checkInDate, endDate)
-      : await getSchedulesInDateRange(cruiseId, startDate, endDate);
-
-    const ticketTypes = await prisma.ticketType.findMany({
-      where: { cruiseId },
-      orderBy: { priceCents: "asc" },
-      select: { ...availabilityTicketSelect, roomType: true },
-    });
-
-    return { cruise, schedules, ticketTypes };
-  });
-
-  if (!context.cruise) {
-    return {
-      cruiseId,
-      startDate,
-      endDate,
-      schedules: [],
-      reason: "CRUISE_NOT_FOUND",
-    };
+  if (!cruise) {
+    return { cruiseId, startDate, endDate, schedules: [], reason: "CRUISE_NOT_FOUND" };
   }
 
-  const { cruise } = context;
-  const allRooms = sortRoomsForBooking(cruise.rooms);
+  const catalogRooms = sortRoomsForBooking(cruise.rooms);
 
-  if (allRooms.length === 0) {
-    return {
-      cruiseId,
-      startDate,
-      endDate,
-      cruise,
-      schedules: [],
-      reason: "NO_ROOMS",
-    };
+  if (catalogRooms.length === 0) {
+    return { cruiseId, startDate, endDate, cruise, schedules: [], reason: "NO_ROOMS" };
   }
 
-  const roomsMatchingConfig: AvailabilityRoomRecord[] = roomConfigs
-    ? filterRoomsForConfigs(allRooms, roomConfigs)
-    : allRooms;
-
-  const roomsForSearch = roomId
-    ? roomsMatchingConfig.filter((room) => room.id === roomId)
+  const roomsMatchingConfig = roomConfigs
+    ? filterRoomsForConfigs(catalogRooms, roomConfigs)
+    : catalogRooms;
+  const catalogForSearch = roomId
+    ? roomsMatchingConfig.filter(room => room.id === roomId)
     : roomsMatchingConfig;
 
-  if ((roomConfigs || roomId) && roomsForSearch.length === 0) {
+  if ((roomConfigs || roomId) && catalogForSearch.length === 0) {
     return {
       cruiseId,
       startDate,
@@ -245,75 +128,74 @@ export async function runAvailabilityLookup(
     };
   }
 
-  const ticketTypes = context.ticketTypes;
-  const schedules: ScheduleRef[] = context.schedules;
-
-  const scheduleIds = schedules.map((schedule) => schedule.id);
-  const roomIds = roomsForSearch.map((room) => room.id);
-
-  const unavailableBySchedule =
-    scheduleIds.length > 0
-      ? await withDb(() =>
-          getUnavailableRoomsBySchedule({
-            cruiseScheduleIds: scheduleIds,
-            roomIds,
-          }),
-        )
-      : new Map<string, Set<string>>();
-
-  const availability = computeCheckInAvailability({
-    roomsForSearch,
+  const sailings = await getSailingAvailability({
+    duration: cruise.slug as StayDurationValue,
+    departureDate: checkInDate ?? null,
+    from: checkInDate ? null : startDate,
+    to: checkInDate ? null : endDate,
     roomConfigs,
-    schedules,
-    unavailableBySchedule,
-    previewIfNoSchedule: previewOnly,
+    roomId: roomId ?? null,
   });
 
-  const openRoomIds = new Set(availability.openRooms.map((room) => room.id));
+  const priceOf = (type: RoomTypeAvailability) => ({
+    ticketTypeId: type.ticketTypeId,
+    name: type.ticketName,
+    description: type.ticketDescription,
+    priceCents: type.priceCents,
+  });
 
-  const availableBySchedule = schedules
-    .map((schedule) => {
-      const unavailableSet =
-        unavailableBySchedule.get(schedule.id) ?? new Set<string>();
+  const schedules = sailings
+    .map(sailing => {
+      const cabins: { cabin: FreeCabin; type: RoomTypeAvailability }[] = [];
 
-      const assignableRooms = roomsForSearch.filter(
-        (room) => !unavailableSet.has(room.id) && openRoomIds.has(room.id),
-      );
+      for (const type of sailing.types) {
+        for (const cabin of type.freeCabins) {
+          if (roomId && cabin.id !== roomId) continue;
+          if (
+            roomConfigs?.length &&
+            !roomConfigs.some(config => cabin.capacity >= config.adults + config.children)
+          ) {
+            continue;
+          }
+          cabins.push({ cabin, type });
+        }
+      }
 
-      const availableRooms = assignableRooms.map((room) =>
-        mapRoomWithPrices(room, ticketTypes),
-      );
+      const assignable =
+        !roomConfigs?.length ||
+        canAssignRoomConfigs(cabins.map(entry => entry.cabin), roomConfigs);
 
       return {
-        scheduleId: schedule.id,
-        departureTime: schedule.departureTime.toISOString(),
-        arrivalTime: schedule.arrivalTime.toISOString(),
-        availableRooms,
+        scheduleId: sailing.scheduleId,
+        departureTime: sailing.departureTime,
+        arrivalTime: sailing.arrivalTime,
+        availableRooms: assignable
+          ? cabins.map(({ cabin, type }) => ({
+              id: cabin.id,
+              name: cabin.name,
+              capacity: cabin.capacity,
+              description: cabin.description,
+              roomType: cabin.roomType as string | null,
+              prices: [priceOf(type)],
+            }))
+          : [],
       };
     })
-    .filter((schedule) => schedule.availableRooms.length > 0);
+    .filter(schedule => schedule.availableRooms.length > 0);
 
-  const totalRooms = availableBySchedule.reduce(
-    (count, schedule) => count + schedule.availableRooms.length,
-    0,
-  );
-
-  let reason: AvailabilityReason | undefined = availability.reason;
-
-  if (totalRooms === 0 && !reason) {
-    if (schedules.length === 0) {
-      reason = "NO_SCHEDULES";
-    } else {
-      reason = "FULLY_BOOKED";
-    }
-  }
+  const reason: AvailabilityReason | undefined =
+    schedules.length > 0
+      ? undefined
+      : sailings.length === 0
+        ? "NO_SCHEDULES"
+        : "FULLY_BOOKED";
 
   return {
     cruiseId,
     startDate,
     endDate,
     cruise,
-    schedules: availableBySchedule,
+    schedules,
     ...(reason ? { reason } : {}),
   };
 }

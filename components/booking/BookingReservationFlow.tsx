@@ -7,10 +7,10 @@ import { useBookingStore } from "@/store/bookingStore";
 import { STAY_DURATION_OPTIONS, type StayDurationValue, type RoomSearchConfig } from "@/lib/booking-search-config";
 import { PHYSICAL_ROOM_TYPES, roomCapacity, type RequestedRoom, type PhysicalRoomType } from "@/lib/physical-inventory";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
-import type { getRequestAvailability } from "@/lib/booking-request-availability";
+import type { getSailingAvailability } from "@/lib/availability-service";
 
 export type RoomBookingEntry = { duration: StayDurationValue; roomConfig: RoomSearchConfig; roomId: string; roomName: string; cruiseId: string };
-type Sailing = Awaited<ReturnType<typeof getRequestAvailability>>[number];
+type Sailing = Awaited<ReturnType<typeof getSailingAvailability>>[number];
 type Hold = {
   requiredCents?: number; bookingId: string; accessToken: string; status: string; holdExpiresAt: string | null; totalPriceCents: number;
   rooms: { roomType: PhysicalRoomType; adults: number; children: number; unitPriceCents: number }[];
@@ -20,6 +20,11 @@ type Attempt = { key: string; duration: StayDurationValue; scheduleId: string; r
 const STORAGE = "hathor-request-attempt-v2";
 const inputClass = "hathor-checkout-field w-full border px-3 py-2.5 text-sm";
 const freshRoom = (): RequestedRoom => ({ roomType: "Luxury King Cabin", adults: 1, children: 0 });
+const guestQuery = (rooms: RequestedRoom[]) => new URLSearchParams({
+  adults: String(rooms.reduce((sum, r) => sum + r.adults, 0)),
+  children: String(rooms.reduce((sum, r) => sum + r.children, 0)),
+  rooms: String(rooms.length),
+}).toString();
 async function jsonResponse<T>(response: Response): Promise<T> {
   const data = await response.json();
   if (!response.ok) throw new Error(data.details?.formErrors?.[0] ?? data.error ?? "Please try again.");
@@ -94,7 +99,7 @@ export function BookingReservationFlow({ initialRoomBooking = null }: { initialR
     try {
       if (!scheduleId) throw new Error("Choose an existing sailing date.");
       if (rooms.some(r => r.adults + r.children > roomCapacity(r.roomType))) throw new Error("Guest count exceeds cabin capacity.");
-      const data = await jsonResponse<{ sailings: Sailing[] }>(await fetch(`/api/booking/availability?mode=request&duration=${duration}`, { cache: "no-store" }));
+      const data = await jsonResponse<{ sailings: Sailing[] }>(await fetch(`/api/booking/availability?mode=request&duration=${duration}&${guestQuery(rooms)}`, { cache: "no-store" }));
       setSailings(data.sailings); setChecked(true);
     } catch (e) { setError(e instanceof Error ? e.message : "Unable to check availability."); }
     finally { setBusy(false); }
@@ -156,8 +161,8 @@ export function BookingReservationFlow({ initialRoomBooking = null }: { initialR
         <p>Maximum {roomCapacity(room.roomType)} guests. Children count toward occupancy. Rates are per cabin.</p>
       </fieldset>)}
       <button className="public-btn-gold" disabled={busy || !scheduleId} onClick={() => void checkAvailability()}>Check Availability</button>
-      {checked && sailing && <div className="space-y-4"><p>{sailing.route} · {formatUtcDate(sailing.departureTime)} – {formatUtcDate(sailing.arrivalTime)}</p>{sailing.types.map(t => <p key={t.roomType}>{t.roomType} · {t.sizeSqm} m² · {formatPrice(t.priceCents)} · {t.available ? `${t.available} available` : "Sold out"}</p>)}
-        <button className="public-btn-gold" disabled={busy || rooms.some(r => (sailing.types.find(t => t.roomType === r.roomType)?.available ?? 0) < rooms.filter(x => x.roomType === r.roomType).length)} onClick={() => void acquire()}>{busy ? "Holding rooms…" : "Select rooms & continue"}</button>
+      {checked && sailing && <div className="space-y-4"><p>{sailing.route} · {formatUtcDate(sailing.departureTime)} – {formatUtcDate(sailing.arrivalTime)}</p>{sailing.types.map(t => <p key={t.roomType}>{t.roomType} · {t.sizeSqm} m² · {formatPrice(t.priceCents)} · {t.soldOut ? "Sold out" : `${t.availableCabins} available`}</p>)}
+        <button className="public-btn-gold" disabled={busy || rooms.some(r => (sailing.types.find(t => t.roomType === r.roomType)?.availableCabins ?? 0) < rooms.filter(x => x.roomType === r.roomType).length)} onClick={() => void acquire()}>{busy ? "Holding rooms…" : "Select rooms & continue"}</button>
       </div>}
     </section> : <>
       <aside className="booking-card space-y-3 p-4 sm:p-8"><h2 className="booking-serif">My voyage</h2><p>{sailing?.voyage ?? STAY_DURATION_OPTIONS.find(d => d.value === duration)?.label}</p><p>{sailing ? `${formatUtcDate(sailing.departureTime)} – ${formatUtcDate(sailing.arrivalTime)}` : ""}</p>

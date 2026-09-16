@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { prisma, resetDbConnectionHard } from '../lib/prisma';
 import { acquireBookingHold, submitBookingRequest, administerBooking, paymentSchedule, cancellationFee } from '../lib/booking-engine';
-import { getRequestAvailability } from '../lib/booking-request-availability';
+import { getSailingAvailability } from '../lib/availability-service';
 
 const keys: string[]=[];
 async function hold(schedule:string,type='Royal Suite',count=1,children=0) {
@@ -39,7 +39,7 @@ async function main(){
  assert.equal((await administerBooking(h.id,{type:'accept'})).status,'REQUESTED');await assert.rejects(prisma.booking.update({where:{id:h.id},data:{status:'CONFIRMED'}}));
  await administerBooking(h.id,{type:'cancel'});assert.equal(await prisma.inventoryAllocation.count({where:{bookingRoom:{bookingId:h.id},active:true}}),0);console.log('PASS children, price, retries, indefinite request, unpaid acceptance, cancellation');await clean();
  const exp=await hold(four.id);await prisma.booking.update({where:{id:exp.id},data:{holdExpiresAt:new Date(Date.now()-1000)}});await prisma.$queryRaw`SELECT hathor_expire_holds()`;assert.equal((await prisma.booking.findUniqueOrThrow({where:{id:exp.id}})).status,'EXPIRED');console.log('PASS expiry');await clean();
- const count=await prisma.cruiseSchedule.count();await getRequestAvailability('4-nights-luxor-aswan');assert.equal(await prisma.cruiseSchedule.count(),count);console.log('PASS read-only availability');
+ const count=await prisma.cruiseSchedule.count();await getSailingAvailability({duration:'4-nights-luxor-aswan',adults:1,children:0,rooms:1});assert.equal(await prisma.cruiseSchedule.count(),count);console.log('PASS read-only availability');
  const dep=new Date('2027-01-01T00:00:00Z');for(const [days,pct] of [[61,.3],[60,.5],[46,.5],[45,1]] as const)assert.equal(paymentSchedule(100000,dep,new Date(+dep-days*86400000)).requiredCents,100000*pct);
  for(const [days,pct] of [[90,0],[89,.25],[61,.25],[60,.5],[46,.5],[45,1]] as const)assert.equal(cancellationFee(100000,dep,new Date(+dep-days*86400000)),100000*pct);console.log('PASS payment/cancellation boundaries');
 }
