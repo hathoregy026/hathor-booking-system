@@ -7,23 +7,20 @@ import { formatCountdown, getRemainingSeconds } from "@/lib/client-dates";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
-import { JourneyBand, JourneyProgress, PageHead, PanelHead, type JourneyStep } from "./JourneyChrome";
+import { JourneyProgress, PanelHead, type JourneyStep } from "./JourneyChrome";
 import { ItineraryAccordion, VoyagePicker } from "./ItineraryPanel";
 import { SailingCalendar } from "./SailingCalendar";
-import { CabinCards, CabinPriceList } from "./CabinSelection";
+import { CabinCards } from "./CabinSelection";
 import { VoyageRail } from "./VoyageRail";
-import { GuestDetailsScreen } from "./GuestDetails";
-import { ReviewScreen } from "./ReviewRequest";
+import { DetailsPaymentScreen } from "./GuestDetails";
 import {
   MAX_CABINS,
   STORAGE_KEY,
   distributeParty,
   emptyGuestForm,
   partyProblem,
-  partySummary,
   passengersFor,
   plural,
-  rangeLabel,
   type Attempt,
   type GuestForm,
   type Hold,
@@ -41,12 +38,14 @@ async function readJson<T>(response: Response): Promise<T> {
 
 function Counter({
   label,
+  hint,
   value,
   min,
   max,
   onChange,
 }: {
   label: string;
+  hint?: string;
   value: number;
   min: number;
   max: number;
@@ -54,8 +53,11 @@ function Counter({
 }) {
   return (
     <div className="hj-counter">
-      <span className="hj-counter__label">{label}</span>
-      <span style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+      <span className="hj-counter__copy">
+        <span className="hj-counter__label">{label}</span>
+        {hint ? <span className="hj-counter__hint">{hint}</span> : null}
+      </span>
+      <span className="hj-counter__ctrl">
         <button
           type="button"
           className="hj-counter__btn"
@@ -105,6 +107,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const hold = attempt?.hold ?? null;
   const sailing = useMemo(() => sailings.find(entry => entry.scheduleId === scheduleId) ?? null, [sailings, scheduleId]);
   const problem = partyProblem(party);
+  const rooms = distributeParty(party);
 
   const saveAttempt = useCallback((next: Attempt) => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* private mode */ }
@@ -113,7 +116,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     try { localStorage.removeItem(STORAGE_KEY); } catch { /* private mode */ }
   }, []);
 
-  /** Availability for the chosen voyage and party — the one authoritative read. */
   const loadSailings = useCallback(async (signal?: AbortSignal): Promise<Sailing[]> => {
     const params = new URLSearchParams({
       mode: "request",
@@ -143,7 +145,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     return () => { controller.abort(); clearTimeout(timer); };
   }, [loadSailings]);
 
-  /** Bring a guest back to an unfinished request instead of starting a second one. */
   useEffect(() => {
     if (restored.current) return;
     restored.current = true;
@@ -173,7 +174,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         setRoomType(saved.roomType);
         setNames(passengersFor(saved.party).map(() => ""));
         setAttempt({ ...saved, hold: { ...saved.hold, ...current, accessToken: saved.hold.accessToken } });
-        setStep(3);
+        setStep(4);
       } catch {
         clearAttempt();
       }
@@ -181,20 +182,20 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     return () => { alive = false; };
   }, [router, clearAttempt]);
 
-  /** Each screen starts at its own beginning, not halfway down the last one. */
   useEffect(() => {
-    if (step === 1) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Land on the band, not the stage: the band carries the running summary and
-    // its own scroll-margin clears the fixed site header, so the new screen's
-    // title always arrives fully visible.
-    const target = document.getElementById("hj-band-top") ?? stageRef.current;
+    const target = document.getElementById("hj-folio-top") ?? stageRef.current;
     target?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   }, [step]);
 
-  /** Hold countdown on the later screens. */
   useEffect(() => {
-    if (!hold?.holdExpiresAt || step < 3) return;
+    if (loadingSailings) return;
+    if (step >= 3 && !sailing) setStep(scheduleId ? 2 : 1);
+    if (step === 4 && !hold) setStep(3);
+  }, [hold, loadingSailings, sailing, scheduleId, step]);
+
+  useEffect(() => {
+    if (!hold?.holdExpiresAt || step < 4) return;
     const timer = setInterval(() => setTick(value => value + 1), 1000);
     return () => clearInterval(timer);
   }, [hold?.holdExpiresAt, step]);
@@ -223,10 +224,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   function changeParty(patch: Partial<Party>) {
     setParty(current => ({ ...current, ...patch }));
     setRoomType(null);
-    setStep(1);
+    if (step > 2) setStep(2);
   }
 
-  async function checkAvailability() {
+  function jump(target: JourneyStep) {
+    if (target < step) setStep(target);
+  }
+
+  async function continueToSuites() {
     setBusy(true);
     setAlert(null);
     try {
@@ -237,7 +242,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       const fresh = list.find(entry => entry.scheduleId === scheduleId);
       if (!fresh) throw new Error("That sailing has just closed. Please choose another date.");
       if (fresh.soldOut) throw new Error("This sailing is fully booked. Please choose another date.");
-      setStep(2);
+      setStep(3);
     } catch (error) {
       setAlert(error instanceof Error ? error.message : "Unable to check availability.");
     } finally {
@@ -245,7 +250,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     }
   }
 
-  /** Silent revalidation, then the physical cabin hold from the existing engine. */
   async function holdCabins() {
     if (!roomType || !sailing) return;
     setBusy(true);
@@ -256,14 +260,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       const fresh = list.find(entry => entry.scheduleId === sailing.scheduleId);
       const type = fresh?.types.find(entry => entry.roomType === roomType);
       if (!fresh || !type || type.status !== "AVAILABLE") {
-        setStep(2);
+        setStep(3);
         throw new Error("That cabin has just been taken. Please choose another cabin or sailing.");
       }
 
       const key = attempt && attempt.scheduleId === sailing.scheduleId && attempt.roomType === roomType && attempt.party.cabins === party.cabins
         ? attempt.key
         : crypto.randomUUID();
-      const rooms = distributeParty(party).map(cabin => ({ roomType, adults: cabin.adults, children: cabin.children }));
+      const roomsForHold = distributeParty(party).map(cabin => ({ roomType, adults: cabin.adults, children: cabin.children }));
       const next: Attempt = { key, duration, scheduleId: sailing.scheduleId, roomType, party };
       saveAttempt(next);
 
@@ -271,7 +275,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         await fetch("/api/bookings/hold", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Idempotency-Key": key },
-          body: JSON.stringify({ cruiseScheduleId: sailing.scheduleId, rooms }),
+          body: JSON.stringify({ cruiseScheduleId: sailing.scheduleId, rooms: roomsForHold }),
         }),
       );
 
@@ -285,7 +289,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       saveAttempt(withHold);
       setAttempt(withHold);
       setNames(passengersFor(party).map(() => ""));
-      setStep(3);
+      setStep(4);
     } catch (error) {
       setAlert(error instanceof Error ? error.message : "Your cabin could not be held.");
     } finally {
@@ -293,8 +297,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     }
   }
 
-  async function continueToReview() {
-    if (!hold) return;
+  async function confirmRequest() {
+    if (!hold || !attempt) return;
     const found: Record<string, string> = {};
     if (!form.firstName.trim()) found.firstName = "Please enter the lead guest first name.";
     if (!form.lastName.trim()) found.lastName = "Please enter the lead guest last name.";
@@ -302,6 +306,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     if (!PHONE.test(form.phone.replace(/[\s()-]/g, ""))) found.phone = "Use an international number, for example +20 10 1234 5678.";
     if (form.country.trim().length < 2) found.country = "Please enter your country.";
     if (names.length === 0 || names.some(name => !name.trim())) found.names = "Please give a name for every travelling guest.";
+    if (!form.termsAccepted) found.terms = "Please accept the booking and cancellation terms.";
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
@@ -315,26 +320,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         }),
       );
       if (current.status !== "PENDING_HOLD") throw new Error("Your cabin hold has ended. Please choose your cabin again.");
-      const merged = { ...attempt!, hold: { ...hold, ...current, accessToken: hold.accessToken } };
+      const merged = { ...attempt, hold: { ...hold, ...current, accessToken: hold.accessToken } };
       setAttempt(merged);
       saveAttempt(merged);
-      setStep(4);
-    } catch (error) {
-      setAlert(error instanceof Error ? error.message : "We could not check your hold.");
-    } finally {
-      setBusy(false);
-    }
-  }
 
-  async function confirmRequest() {
-    if (!hold || !attempt) return;
-    if (!form.termsAccepted) {
-      setErrors(current => ({ ...current, terms: "Please accept the booking and cancellation terms." }));
-      return;
-    }
-    setBusy(true);
-    setAlert(null);
-    try {
       const passengers = passengersFor(party).map((passenger, index) => ({ ...passenger, fullName: names[index]?.trim() ?? "" }));
       const specialRequests = [
         form.dietary.trim() ? `Dietary requirements: ${form.dietary.trim()}` : "",
@@ -371,133 +360,171 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   const scene = { "--hj-scene": `url("${voyage.image}")` } as CSSProperties;
-  const datesLabel = sailing ? rangeLabel(sailing.departureTime, sailing.arrivalTime) : "Select";
-  const cabinLabel = roomType ? plural(party.cabins, "Cabin") : "Select";
-  const wide = step >= 3;
+  const rail = (
+    <VoyageRail
+      duration={duration}
+      sailing={sailing}
+      party={party}
+      roomType={roomType}
+      hold={hold}
+      step={step}
+      onJump={jump}
+    />
+  );
 
   return (
     <div className="hj" style={scene}>
-      <JourneyBand
-        step={step}
-        guests={partySummary(party)}
-        dates={datesLabel}
-        cabin={cabinLabel}
-        totalCents={hold?.totalPriceCents ?? null}
-        onJump={target => { if (target < step) setStep(target); }}
-      />
+      <div className="hj-folio" id="hj-folio-top" ref={stageRef}>
+        <JourneyProgress step={step} onJump={jump} />
 
-      <div className={`hj-stage${wide ? " hj-stage--wide" : ""}`} ref={stageRef}>
-        {step === 1 ? (
-          <>
-            <section className="hj-panel">
-              {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
-              <PanelHead title="Plan Your Journey" lede="Choose your route and sailing date." />
+        <div className="hj-stage">
+          {step === 1 ? (
+            <>
+              <section className="hj-panel">
+                {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
+                <PanelHead step={1} title="Plan Your Journey" lede="Three extraordinary voyages. One timeless river." />
 
-              <span className="hj-step-label">1. Choose your itinerary</span>
-              <VoyagePicker value={duration} onChange={next => { setDuration(next); setRoomType(null); setScheduleId(""); }} />
+                <span className="hj-step-label">Choose your itinerary</span>
+                <VoyagePicker value={duration} onChange={next => { setDuration(next); setRoomType(null); setScheduleId(""); }} />
 
-              <span className="hj-step-label">2. Select your sailing date</span>
-              <SailingCalendar
-                sailings={sailings}
-                loading={loadingSailings}
-                departureDay={voyage.departureDay.replace(/s$/, "")}
-                selectedId={scheduleId}
-                onSelect={setScheduleId}
-              />
+                <div className="hj-plan">
+                  <SailingCalendar
+                    sailings={sailings}
+                    loading={loadingSailings}
+                    departureDay={voyage.departureDay.replace(/s$/, "")}
+                    selectedId={scheduleId}
+                    onSelect={setScheduleId}
+                  />
+                  <ItineraryAccordion duration={duration} />
+                </div>
 
-              <span className="hj-step-label">3. Guests and cabins</span>
-              <div className="hj-counters">
-                <Counter label="Adults" value={party.adults} min={1} max={24} onChange={adults => changeParty({ adults })} />
-                <Counter label="Children" value={party.children} min={0} max={8} onChange={children => changeParty({ children })} />
-                <Counter label="Cabins" value={party.cabins} min={1} max={MAX_CABINS} onChange={cabins => changeParty({ cabins })} />
-              </div>
-              {problem ? <p className="hj-error">{problem}</p> : null}
-              <p className="hj-ledger__note">Children count toward cabin occupancy and are charged at the cabin rate.</p>
+                <p className="hj-dates-help">
+                  <span aria-hidden>✦</span>
+                  <span>
+                    Need a different date? If you cannot find your preferred sailing,{" "}
+                    <Link href="/contact">contact Hathor Reservations</Link>.
+                  </span>
+                </p>
 
-              <span className="hj-step-label">4. Your itinerary, day by day</span>
-              <ItineraryAccordion duration={duration} />
+                <div className="hj-actions">
+                  <span />
+                  <button type="button" className="hj-btn" disabled={!scheduleId} onClick={() => setStep(2)}>
+                    Continue to guests <span aria-hidden>→</span>
+                  </button>
+                </div>
+                {!scheduleId ? <p className="hj-note">Choose a sailing date to continue.</p> : null}
+              </section>
+              {rail}
+            </>
+          ) : null}
 
-              <span className="hj-step-label">5. Cabins and suites on this voyage</span>
-              <CabinPriceList sailing={sailing} />
+          {step === 2 ? (
+            <>
+              <section className="hj-panel">
+                {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
+                <PanelHead step={2} title="Tell Us Who Is Travelling" lede="Help us shape a voyage that is perfectly yours." />
 
-              <div className="hj-actions">
-                <button type="button" className="hj-btn" disabled={busy || !scheduleId || Boolean(problem)} onClick={() => void checkAvailability()}>
-                  {busy ? "Checking…" : "Continue to cabin selection"} <span aria-hidden>→</span>
-                </button>
-              </div>
-              {!scheduleId ? <p className="hj-note">Choose a sailing date to check availability.</p> : null}
-            </section>
-            <VoyageRail duration={duration} sailing={sailing} party={party} roomType={roomType} hold={hold} />
-          </>
-        ) : null}
+                <div className="hj-guests">
+                  <div>
+                    <span className="hj-step-label">Number of guests</span>
+                    <div className="hj-counters">
+                      <Counter label="Adults" hint="12 years and over" value={party.adults} min={1} max={24} onChange={adults => changeParty({ adults })} />
+                      <Counter label="Children" hint="Aged 2 – 11 years" value={party.children} min={0} max={8} onChange={children => changeParty({ children })} />
+                      <Counter label="Number of cabins" value={party.cabins} min={1} max={MAX_CABINS} onChange={cabins => changeParty({ cabins })} />
+                    </div>
 
-        {step === 2 && sailing ? (
-          <>
-            <section className="hj-panel">
-              {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
-              <PanelHead title="Select Your Cabin or Suite" lede="Live availability for your sailing, straight from our reservations system." />
-              <CabinCards sailing={sailing} cabins={party.cabins} selected={roomType} onSelect={setRoomType} />
-              <div className="hj-actions">
-                <button type="button" className="hj-btn hj-btn--quiet" onClick={() => setStep(1)}>Back to journey</button>
-                <button type="button" className="hj-btn" disabled={busy || !roomType} onClick={() => void holdCabins()}>
-                  {busy ? "Holding your cabin…" : "Continue to guest details"} <span aria-hidden>→</span>
-                </button>
-              </div>
-              <Link className="hj-underlink" href="/terms-and-conditions" target="_blank">View payment &amp; cancellation terms</Link>
-              <p className="hj-note">Your cabin is held for 15 minutes once you continue.</p>
-            </section>
-            <VoyageRail duration={duration} sailing={sailing} party={party} roomType={roomType} hold={hold} />
-          </>
-        ) : null}
+                    <span className="hj-step-label">Cabin arrangement</span>
+                    <div className="hj-choice-row">
+                      <label className={`hj-choice${party.cabins === 1 ? " hj-choice--on" : ""}`}>
+                        <input type="radio" name="hj-cabin-together" checked={party.cabins === 1} onChange={() => changeParty({ cabins: 1 })} />
+                        <span>
+                          <strong>One cabin</strong>
+                          <span>All guests in the same cabin, when occupancy allows.</span>
+                        </span>
+                      </label>
+                      <label className={`hj-choice${party.cabins > 1 ? " hj-choice--on" : ""}`}>
+                        <input type="radio" name="hj-cabin-together" checked={party.cabins > 1} onChange={() => changeParty({ cabins: Math.max(2, party.cabins) })} />
+                        <span>
+                          <strong>Separate cabins</strong>
+                          <span>Use the cabin counter for family or friends travelling together.</span>
+                        </span>
+                      </label>
+                    </div>
+                    {problem ? <p className="hj-error">{problem}</p> : null}
+                    <p className="hj-note-box">Children count toward cabin occupancy and are charged at the cabin rate.</p>
+                  </div>
 
-        {step === 3 && hold && roomType && sailing ? (
-          <div>
-            <PageHead title="Complete Your Booking" lede="Review your selections and enter the lead guest details." />
-            {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
-            <GuestDetailsScreen
-              duration={duration}
-              roomType={roomType}
-              party={party}
-              hold={hold}
-              departureIso={sailing.departureTime}
-              arrivalIso={sailing.arrivalTime}
-              form={form}
-              onForm={patchForm}
-              names={names}
-              onNames={patchName}
-              errors={errors}
-              busy={busy}
-              onEdit={() => setStep(2)}
-              onContinue={() => void continueToReview()}
-            />
-            {secondsLeft > 0 ? <p className="hj-note">Your cabin is held for {formatCountdown(secondsLeft)}.</p> : null}
-          </div>
-        ) : null}
+                  <div>
+                    <span className="hj-step-label">How guests will be allocated</span>
+                    <p className="hj-ledger__note" style={{ marginTop: 0 }}>
+                      Hathor spreads the party evenly across the cabins you request. This is the occupancy the availability check will use.
+                    </p>
+                    <div className="hj-rooms">
+                      {rooms.map((cabin, index) => (
+                        <div className="hj-roomchip" key={index}>
+                          <b>Cabin {String(index + 1).padStart(2, "0")}</b>
+                          <span>{plural(cabin.adults, "Adult")} · {plural(cabin.children, "Child", "Children")}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-        {step === 4 && hold && roomType && sailing ? (
-          <div>
-            <PageHead title="Complete Your Booking" lede="Review your selections and confirm how you would like to pay." />
-            {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
-            <ReviewScreen
-              duration={duration}
-              roomType={roomType}
-              party={party}
-              hold={hold}
-              departureIso={sailing.departureTime}
-              arrivalIso={sailing.arrivalTime}
-              form={form}
-              onForm={patchForm}
-              errors={errors}
-              busy={busy}
-              onEdit={() => setStep(3)}
-              onConfirm={() => void confirmRequest()}
-            />
-            {secondsLeft > 0 ? <p className="hj-note">Your cabin is held for {formatCountdown(secondsLeft)}.</p> : null}
-          </div>
-        ) : null}
+                <div className="hj-actions">
+                  <button type="button" className="hj-btn hj-btn--ghost" onClick={() => setStep(1)}>← Back to journey</button>
+                  <button type="button" className="hj-btn" disabled={busy || !scheduleId || Boolean(problem)} onClick={() => void continueToSuites()}>
+                    {busy ? "Checking…" : "Continue to suites"} <span aria-hidden>→</span>
+                  </button>
+                </div>
+              </section>
+              {rail}
+            </>
+          ) : null}
+
+          {step === 3 && sailing ? (
+            <>
+              <section className="hj-panel">
+                {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
+                <PanelHead step={3} title="Select Your Cabin or Suite" lede="Each residence is a sanctuary, inspired by the timeless beauty of the Nile." />
+                <p className="hj-suites-note">Only cabins that fit your party are selectable for this sailing.</p>
+                <CabinCards sailing={sailing} cabins={party.cabins} selected={roomType} onSelect={setRoomType} />
+                <div className="hj-actions">
+                  <button type="button" className="hj-btn hj-btn--ghost" onClick={() => setStep(2)}>← Back to guests</button>
+                  <button type="button" className="hj-btn" disabled={busy || !roomType} onClick={() => void holdCabins()}>
+                    {busy ? "Holding your cabin…" : "Continue to details"} <span aria-hidden>→</span>
+                  </button>
+                </div>
+                <p className="hj-note">Your cabin is held for 15 minutes once you continue. <Link className="hj-underlink" href="/terms-and-conditions" target="_blank">Payment &amp; cancellation terms</Link></p>
+              </section>
+              {rail}
+            </>
+          ) : null}
+
+          {step === 4 && hold && roomType && sailing ? (
+            <>
+              <section className="hj-panel">
+                <PanelHead step={4} title="Guest Details & Payment Preference" lede="Almost there. Please provide your details and choose your preferred payment method." />
+                {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
+                <DetailsPaymentScreen
+                  roomType={roomType}
+                  party={party}
+                  hold={hold}
+                  form={form}
+                  onForm={patchForm}
+                  names={names}
+                  onNames={patchName}
+                  errors={errors}
+                  busy={busy}
+                  onBack={() => setStep(3)}
+                  onConfirm={() => void confirmRequest()}
+                />
+                {secondsLeft > 0 ? <p className="hj-note">Your cabin is held for {formatCountdown(secondsLeft)}.</p> : null}
+              </section>
+              {rail}
+            </>
+          ) : null}
+        </div>
       </div>
-
-      <JourneyProgress step={step} />
     </div>
   );
 }

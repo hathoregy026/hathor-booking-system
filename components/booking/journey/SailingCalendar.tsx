@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { longDate, money, monthLabel, monthShort, utcParts, weekdayShort, type Sailing } from "./model";
+import { longDate, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
 import { IconInfo } from "./icons";
 
-const DOW = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 /**
  * Only real bookable sailings from the availability service are selectable.
@@ -32,8 +32,6 @@ export function SailingCalendar({
     return [...seen.values()];
   }, [sailings]);
 
-  // Tracking the month by value, not by index: when the sailing list changes
-  // the view falls back to the first open month without an extra render pass.
   const [monthKey, setMonthKey] = useState<string | null>(null);
   const monthIndex = Math.max(0, months.findIndex(month => `${month.year}-${month.month}` === monthKey));
   const current = months[monthIndex] ?? null;
@@ -62,20 +60,21 @@ export function SailingCalendar({
 
   if (loading) {
     return (
-      <div className="hj-dates">
+      <>
         <div className="hj-cal"><div className="hj-skeleton hj-skeleton--card" /></div>
         <div className="hj-sailings">
           <div className="hj-skeleton hj-skeleton--line" />
           <div className="hj-skeleton hj-skeleton--line" />
           <div className="hj-skeleton hj-skeleton--line" />
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="hj-dates">
+    <>
       <div className="hj-cal">
+        <p className="hj-sailings__label">Select your departure date</p>
         <div className="hj-cal__head">
           <button
             type="button"
@@ -104,6 +103,7 @@ export function SailingCalendar({
             if (day === 0) return <span key={`pad-${index}`} className="hj-cal__day" aria-hidden />;
             const sailing = byDay.get(day);
             if (!sailing) return <span key={day} className="hj-cal__day">{day}</span>;
+            if (sailing.soldOut) return <span key={day} className="hj-cal__day">{day}</span>;
             return (
               <button
                 key={day}
@@ -118,43 +118,36 @@ export function SailingCalendar({
             );
           })}
         </div>
+        <p className="hj-cal__legend">
+          <span><i className="on" /> Available departure</span>
+          <span><i className="off" /> Unavailable</span>
+        </p>
       </div>
 
       <div className="hj-sailings">
-        <span className="hj-sailings__label">Available sailing dates</span>
+        <span className="hj-sailings__label">Available departures</span>
         {sailings.length === 0 ? (
           <p className="hj-sailings__empty">No sailings are open for this voyage at the moment. Choose another itinerary, or contact our reservations team.</p>
         ) : (
           <div className="hj-sailings__list">
-            {sailings.map(sailing => {
-              const from = Math.min(...sailing.types.map(type => type.priceCents));
-              return (
-                <button
-                  key={sailing.scheduleId}
-                  type="button"
-                  className={`hj-sailing${selectedId === sailing.scheduleId ? " hj-sailing--on" : ""}`}
-                  onClick={() => onSelect(sailing.scheduleId)}
-                >
-                  <span className="hj-sailing__date">
-                    <span className="hj-sailing__dow">{weekdayShort(sailing.departureTime)}</span>
-                    <span className="hj-sailing__num">{utcParts(sailing.departureTime).day}</span>
-                    <span className="hj-sailing__mon">{monthShort(sailing.departureTime)}</span>
-                  </span>
-                  <span>
-                    <span className="hj-sailing__line">Check-in: {longDate(sailing.departureTime)}</span>
-                    <span className="hj-sailing__line">Check-out: {longDate(sailing.arrivalTime)}</span>
-                    <span className="hj-sailing__from">
-                      {sailing.soldOut ? "Fully booked" : `From ${money(from)} per cabin`}
-                    </span>
-                  </span>
-                  <span className="hj-sailing__chev" aria-hidden>›</span>
-                </button>
-              );
-            })}
+            {sailings.filter(entry => !entry.soldOut).map(sailing => (
+              <button
+                key={sailing.scheduleId}
+                type="button"
+                className={`hj-sailing${selectedId === sailing.scheduleId ? " hj-sailing--on" : ""}`}
+                onClick={() => onSelect(sailing.scheduleId)}
+              >
+                <span>
+                  <span className="hj-sailing__when">{shortDate(sailing.departureTime)}</span>
+                  <span className="hj-sailing__dow">{weekdayShort(sailing.departureTime)}</span>
+                </span>
+                <span className="hj-sailing__chev" aria-hidden>›</span>
+              </button>
+            ))}
           </div>
         )}
         <p className="hj-sailings__note"><IconInfo /> {departureDay} departures only.</p>
       </div>
-    </div>
+    </>
   );
 }

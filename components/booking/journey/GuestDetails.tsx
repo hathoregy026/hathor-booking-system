@@ -1,124 +1,51 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { itineraryFor } from "@/lib/booking-itineraries";
-import type { StayDurationValue } from "@/lib/booking-search-config";
+import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import {
   distributeParty,
-  longDate,
   money,
-  partySummary,
-  plural,
-  rangeLabel,
+  stageLabel,
   type GuestForm,
   type Hold,
   type Party,
 } from "./model";
-import { IconMail } from "./icons";
+import { IconBank, IconCard } from "./icons";
 
-/** The reservation as label and value rows, shared by screens 03 and 04. */
-export function ReservationLedger({
-  duration,
+/** Screen 04 — lead guest, passengers, payment preference, then send the request. */
+export function DetailsPaymentScreen({
   roomType,
   party,
   hold,
-  departureIso,
-  arrivalIso,
-}: {
-  duration: StayDurationValue;
-  roomType: PhysicalRoomType;
-  party: Party;
-  hold: Hold;
-  departureIso: string;
-  arrivalIso: string;
-}) {
-  const voyage = itineraryFor(duration);
-  return (
-    <div className="hj-ledger">
-      <div className="hj-ledger__row"><span>Journey</span><span>{voyage.route}</span></div>
-      <div className="hj-ledger__row"><span>Voyage</span><span>{voyage.title}</span></div>
-      <div className="hj-ledger__row"><span>Dates</span><span>{rangeLabel(departureIso, arrivalIso)}</span></div>
-      <div className="hj-ledger__row"><span>Check-in</span><span>{longDate(departureIso)}</span></div>
-      <div className="hj-ledger__row"><span>Guests</span><span>{partySummary(party)}</span></div>
-      <div className="hj-ledger__row"><span>Cabin type</span><span>{plural(party.cabins, "×")} {roomType}</span></div>
-      <div className="hj-ledger__row"><span>Rate</span><span>Standard Hathor rate</span></div>
-      <div className="hj-ledger__row hj-ledger__row--total"><span>Voyage total</span><span>{money(hold.totalPriceCents)}</span></div>
-    </div>
-  );
-}
-
-/** Screen 03 — the reservation, the lead guest, and what happens next. */
-export function GuestDetailsScreen({
-  duration,
-  roomType,
-  party,
-  hold,
-  departureIso,
-  arrivalIso,
   form,
   onForm,
   names,
   onNames,
   errors,
   busy,
-  onEdit,
-  onContinue,
+  onBack,
+  onConfirm,
 }: {
-  duration: StayDurationValue;
   roomType: PhysicalRoomType;
   party: Party;
   hold: Hold;
-  departureIso: string;
-  arrivalIso: string;
   form: GuestForm;
   onForm: (patch: Partial<GuestForm>) => void;
   names: string[];
   onNames: (index: number, value: string) => void;
   errors: Record<string, string>;
   busy: boolean;
-  onEdit: () => void;
-  onContinue: () => void;
+  onBack: () => void;
+  onConfirm: () => void;
 }) {
-  const [extrasOpen, setExtrasOpen] = useState(false);
   const cabins = distributeParty(party);
-  const firstStage = hold.paymentSchedule[0] ?? null;
   let cursor = 0;
 
   return (
-    <div className="hj-trio">
-      <section className="hj-card">
-        <span className="hj-card__eyebrow">01 / Your selection</span>
-        <h2 className="hj-card__title">Your Reservation</h2>
-        <ReservationLedger
-          duration={duration}
-          roomType={roomType}
-          party={party}
-          hold={hold}
-          departureIso={departureIso}
-          arrivalIso={arrivalIso}
-        />
-        {firstStage ? (
-          <div className="hj-deposit">
-            <span className="hj-deposit__label">
-              {hold.totalPriceCents > 0
-                ? `${Math.round((firstStage.cumulativeCents / hold.totalPriceCents) * 100)}% deposit after team review`
-                : "Deposit after team review"}
-            </span>
-            <span className="hj-deposit__amount">{money(firstStage.cumulativeCents)}</span>
-            <p className="hj-deposit__fine">Invoiced by Hathor Reservations. Nothing is charged on this website.</p>
-          </div>
-        ) : null}
-        <button type="button" className="hj-btn hj-btn--quiet hj-btn--wide" style={{ marginTop: "0.8rem" }} onClick={onEdit}>
-          Edit selections
-        </button>
-      </section>
-
-      <section className="hj-card">
-        <span className="hj-card__eyebrow">02 / Lead guest</span>
-        <h2 className="hj-card__title">Guest Information</h2>
-
+    <div className="hj-details">
+      <section>
+        <span className="hj-step-label">Lead guest details</span>
         <div className="hj-grid2">
           <label className={`hj-field${errors.firstName ? " hj-field--invalid" : ""}`}>
             <span>First name *</span>
@@ -151,11 +78,11 @@ export function GuestDetailsScreen({
           </label>
         </div>
 
-        <span className="hj-step-label">Passenger names</span>
+        <span className="hj-step-label">Passenger names (as per passports)</span>
         {errors.names ? <p className="hj-error" style={{ marginBottom: "0.5rem" }}>{errors.names}</p> : null}
         {cabins.map((cabin, cabinIndex) => (
           <div className="hj-cabinguests" key={cabinIndex}>
-            <p className="hj-cabinguests__title">Cabin {cabinIndex + 1} · {roomType}</p>
+            <p className="hj-cabinguests__title">Cabin {String(cabinIndex + 1).padStart(2, "0")} · {roomType}</p>
             <div className="hj-grid2">
               {[
                 ...Array.from({ length: cabin.adults }, (_, i) => ({ label: `Adult ${i + 1}` })),
@@ -174,74 +101,104 @@ export function GuestDetailsScreen({
           </div>
         ))}
 
-        <button
-          type="button"
-          className="hj-disclosure"
-          style={{ marginTop: "0.8rem" }}
-          aria-expanded={extrasOpen}
-          onClick={() => setExtrasOpen(open => !open)}
-        >
-          <span>Add a special request (optional)</span>
-          <span aria-hidden>{extrasOpen ? "–" : "+"}</span>
-        </button>
+        <label className="hj-field" style={{ marginTop: "1rem" }}>
+          <span>Airport transfer (optional)</span>
+          <textarea
+            value={form.transfers}
+            maxLength={600}
+            placeholder="Would you like Hathor to arrange airport transfers?"
+            onChange={event => onForm({ transfers: event.target.value })}
+          />
+        </label>
 
-        {extrasOpen ? (
-          <div style={{ marginTop: "0.7rem", display: "grid", gap: "0.7rem" }}>
-            <label className="hj-field">
-              <span>Dietary requirements</span>
-              <textarea value={form.dietary} maxLength={600} onChange={event => onForm({ dietary: event.target.value })} />
-            </label>
-            <label className="hj-field">
-              <span>Arrival and transfer details</span>
-              <textarea value={form.transfers} maxLength={600} onChange={event => onForm({ transfers: event.target.value })} />
-            </label>
-            <label className="hj-field">
-              <span>Anything else</span>
-              <textarea value={form.requests} maxLength={600} onChange={event => onForm({ requests: event.target.value })} />
-            </label>
-          </div>
-        ) : null}
+        <label className="hj-field" style={{ marginTop: "0.7rem" }}>
+          <span>Dietary requirements (optional)</span>
+          <textarea value={form.dietary} maxLength={600} onChange={event => onForm({ dietary: event.target.value })} />
+        </label>
 
-        <p className="hj-ledger__note">No account is required.</p>
+        <label className="hj-field" style={{ marginTop: "0.7rem" }}>
+          <span>Special requests (optional)</span>
+          <textarea
+            value={form.requests}
+            maxLength={600}
+            placeholder="Celebrations, connecting cabins, or anything we should know."
+            onChange={event => onForm({ requests: event.target.value })}
+          />
+        </label>
+      </section>
 
-        <div className="hj-actions" style={{ marginTop: "1rem" }}>
-          <button type="button" className="hj-btn hj-btn--wide" disabled={busy} onClick={onContinue}>
-            {busy ? "Checking your hold…" : "Continue to review & payment"} <span aria-hidden>→</span>
-          </button>
+      <section className="hj-pay">
+        <p className="hj-pay__title">Payment preference</p>
+        <p className="hj-pay__lede">Choose how you would prefer to pay. Invoice and payment instructions will follow from Hathor Reservations. No card details are collected on this website.</p>
+
+        <div style={{ display: "grid", gap: "0.55rem" }}>
+          <label className={`hj-choice${form.paymentMethod === "VISA" ? " hj-choice--on" : ""}`}>
+            <input
+              type="radio"
+              name="hj-payment-method"
+              checked={form.paymentMethod === "VISA"}
+              onChange={() => onForm({ paymentMethod: "VISA" })}
+            />
+            <span>
+              <strong><IconCard /> Visa / card payment</strong>
+              <span>Preferred method only. Hathor sends the invoice later — no card number is stored here.</span>
+            </span>
+          </label>
+          <label className={`hj-choice${form.paymentMethod === "BANK_TRANSFER" ? " hj-choice--on" : ""}`}>
+            <input
+              type="radio"
+              name="hj-payment-method"
+              checked={form.paymentMethod === "BANK_TRANSFER"}
+              onChange={() => onForm({ paymentMethod: "BANK_TRANSFER" })}
+            />
+            <span>
+              <strong><IconBank /> Bank transfer</strong>
+              <span>Pay via international bank transfer using the instructions on your invoice.</span>
+            </span>
+          </label>
         </div>
-        <p className="hj-note">No payment is collected at this step.</p>
+
+        <p className="hj-pay__title" style={{ marginTop: "1.3rem" }}>Payment schedule</p>
+        <ol className="hj-schedule">
+          {hold.paymentSchedule.map(stage => (
+            <li key={stage.milestone}>
+              <strong>{money(stage.cumulativeCents)}</strong>
+              <span>{stageLabel(stage)}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="hj-ledger__note">
+          After sending your reservation request, Hathor Reservations will review the details and send the invoice with payment instructions.
+        </p>
+
+        <span className="hj-step-label">Included in your voyage</span>
+        <ul className="hj-inclusions">
+          {HATHOR_BOOKING_INCLUSIONS.map(item => <li key={item}>{item}</li>)}
+        </ul>
+
+        <span className="hj-step-label">Terms</span>
+        <label className={`hj-terms${errors.terms ? " hj-field--invalid" : ""}`}>
+          <input type="checkbox" checked={form.termsAccepted} onChange={event => onForm({ termsAccepted: event.target.checked })} />
+          <span>
+            I have read the <Link href="/terms-and-conditions" target="_blank">booking and cancellation terms</Link> and understand
+            this sends a booking request, not a confirmed reservation.
+          </span>
+        </label>
+        {errors.terms ? <p className="hj-error">{errors.terms}</p> : null}
+
+        <label className="hj-terms" style={{ marginTop: "0.55rem" }}>
+          <input type="checkbox" checked={form.marketingOptIn} onChange={event => onForm({ marketingOptIn: event.target.checked })} />
+          <span>Keep me informed about Hathor voyages and offers. (optional)</span>
+        </label>
       </section>
 
-      <section className="hj-card">
-        <span className="hj-card__eyebrow">03 / Next steps</span>
-        <h2 className="hj-card__title">What Happens Next?</h2>
-        <ol className="hj-timeline">
-          <li data-state="now">
-            <span className="hj-timeline__dot">1</span>
-            <span><strong>Team reviews availability</strong><span>We verify the cabin and the final voyage total.</span></span>
-          </li>
-          <li>
-            <span className="hj-timeline__dot">2</span>
-            <span><strong>Receive your quote</strong><span>We email the approved quote and payment instructions.</span></span>
-          </li>
-          <li>
-            <span className="hj-timeline__dot">3</span>
-            <span><strong>Pay the first instalment</strong><span>{firstStage ? `${money(firstStage.cumulativeCents)} for this booking.` : "The amount shown on your invoice."}</span></span>
-          </li>
-          <li>
-            <span className="hj-timeline__dot">4</span>
-            <span><strong>Booking confirmed</strong><span>Issued once Hathor accepts and the payment is recorded.</span></span>
-          </li>
-          <li>
-            <span className="hj-timeline__dot">5</span>
-            <span><strong>Pay the balance</strong><span>Following the payment plan before embarkation.</span></span>
-          </li>
-        </ol>
-        <p className="hj-assist">
-          <span className="hj-assist__icon" aria-hidden><IconMail /></span>
-          <span>Need assistance? <Link href="/contact">Contact our reservations team</Link>.</span>
-        </p>
-      </section>
+      <div className="hj-actions" style={{ gridColumn: "1 / -1" }}>
+        <button type="button" className="hj-btn hj-btn--ghost" onClick={onBack}>← Back to suites</button>
+        <button type="button" className="hj-btn" disabled={busy} onClick={onConfirm}>
+          {busy ? "Sending your request…" : "Confirm request"} <span aria-hidden>→</span>
+        </button>
+      </div>
+      <p className="hj-note" style={{ gridColumn: "1 / -1" }}>No payment is collected at this step.</p>
     </div>
   );
 }

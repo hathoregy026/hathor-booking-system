@@ -98,3 +98,37 @@ export function IconMail(props: IconProps) {
     </Svg>
   );
 }
+
+export function IconPrice(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 3v18M8 8.5c0-1.6 1.7-2.8 4-2.8s4 1.2 4 2.8-1.7 2.8-4 2.8-4 1.1-4 2.8 1.7 2.8 4 2.8 4-1.2 4-2.8" />
+    </Svg>
+  );
+}
+
+export function IconCard(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="3" y="6" width="18" height="12" rx="1.8" />
+      <path d="M3 10h18" />
+    </Svg>
+  );
+}
+
+export function IconBank(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 10h16M6 10v8m4-8v8m4-8v8m4-8v8M3 18h18M12 4 3 9h18L12 4Z" />
+    </Svg>
+  );
+}
+
+export function IconPhone(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M7.5 3.8h9A1.7 1.7 0 0 1 18.2 5.5v13a1.7 1.7 0 0 1-1.7 1.7h-9A1.7 1.7 0 0 1 5.8 18.5v-13A1.7 1.7 0 0 1 7.5 3.8Z" />
+      <path d="M10 17.2h4" />
+    </Svg>
+  );
+}

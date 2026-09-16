@@ -166,3 +166,8 @@ export function rangeLabel(fromIso: string, toIso: string): string {
   const fromPart = from.month === to.month && from.year === to.year ? `${from.day}` : `${from.day} ${MONTHS[from.month].slice(0, 3)}`;
   return `${fromPart}–${to.day} ${MONTHS[to.month].slice(0, 3)} ${to.year}`;
 }
+
+/** Longer date span for the voyage folio. */
+export function folioRange(fromIso: string, toIso: string): string {
+  return `${shortDate(fromIso)} – ${shortDate(toIso)}`;
+}

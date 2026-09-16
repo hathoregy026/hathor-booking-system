@@ -1,15 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { HATHOR_VOYAGES, itineraryFor, type ItineraryCopy } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { IconRoute, IconSail, IconTemple } from "./icons";
 
-const VOYAGE_ICON: Record<StayDurationValue, React.ComponentType<{ className?: string }>> = {
-  "3-nights-aswan-luxor": IconTemple,
-  "4-nights-luxor-aswan": IconSail,
-  "7-nights-luxor-aswan-luxor": IconRoute,
-};
+const ITINERARY_THUMBS = [
+  "/media/hathor/optimized/home-voyage-3n-aswan-luxor.webp",
+  "/media/hathor/optimized/cruises-hero.webp",
+  "/media/hathor/optimized/about-hero.webp",
+  "/media/hathor/optimized/home-voyage-4n-luxor-aswan.webp",
+  "/media/hathor/optimized/home-story-legacy-large.webp",
+  "/media/hathor/optimized/home-voyage-7n-roundtrip.webp",
+  "/media/hathor/optimized/home-split-courtyard.webp",
+  "/media/hathor/optimized/home-call-to-action.webp",
+] as const;
+
+function dayThumb(day: number) {
+  return ITINERARY_THUMBS[(day - 1) % ITINERARY_THUMBS.length];
+}
+
+function placeFromPath(path: string) {
+  const first = path.split("→")[0]?.trim() ?? path;
+  return first
+    .replace(/^optional\s+/i, "")
+    .replace(/\s*(embarkation|disembarkation|breakfast\/check-out|breakfast|checkout).*$/i, "")
+    .trim();
+}
 
 export function VoyagePicker({
   value,
@@ -21,7 +38,6 @@ export function VoyagePicker({
   return (
     <div className="hj-voyages" role="radiogroup" aria-label="Choose your itinerary">
       {HATHOR_VOYAGES.map(voyage => {
-        const Icon = VOYAGE_ICON[voyage.duration];
         const on = value === voyage.duration;
         return (
           <button
@@ -33,10 +49,17 @@ export function VoyagePicker({
             onClick={() => onChange(voyage.duration)}
           >
             <span className="hj-voyage__dot" aria-hidden />
-            <span className="hj-voyage__icon" aria-hidden><Icon /></span>
+            <Image
+              className="hj-voyage__img"
+              src={voyage.image}
+              alt=""
+              width={480}
+              height={200}
+              sizes="(max-width: 720px) 100vw, 280px"
+            />
             <span className="hj-voyage__name">{voyage.title}</span>
             <span className="hj-voyage__meta hj-voyage__meta--route">{voyage.route}</span>
-            <span className="hj-voyage__meta hj-voyage__meta--day">{voyage.departureDay}</span>
+            <span className="hj-voyage__caption">{voyage.departureDay}</span>
           </button>
         );
       })}
@@ -51,7 +74,6 @@ function Copy({ copy }: { copy: ItineraryCopy }) {
         typeof part === "string" ? (
           <span key={index}>{part}</span>
         ) : (
-          // Opens in its own tab so reading about a stop never disturbs the booking.
           <a key={index} href={part.href} target="_blank" rel="noopener noreferrer">
             {part.label}
           </a>
@@ -67,8 +89,6 @@ function Copy({ copy }: { copy: ItineraryCopy }) {
  */
 export function ItineraryAccordion({ duration }: { duration: StayDurationValue }) {
   const voyage = itineraryFor(duration);
-  // Expanded days are tied to the voyage, so switching itinerary collapses
-  // them again without an extra render pass.
   const [expanded, setExpanded] = useState<{ duration: StayDurationValue; days: number[] }>({ duration, days: [] });
   const open = expanded.duration === duration ? expanded.days : [];
   const setOpen = (days: number[]) => setExpanded({ duration, days });
@@ -77,7 +97,7 @@ export function ItineraryAccordion({ duration }: { duration: StayDurationValue }
   return (
     <div className="hj-itinerary">
       <div className="hj-itinerary__top">
-        <p className="hj-itinerary__route">{voyage.route} · {voyage.days} days</p>
+        <p className="hj-itinerary__route">Itinerary · {voyage.title}</p>
         <button
           type="button"
           className="hj-linkbtn"
@@ -100,8 +120,12 @@ export function ItineraryAccordion({ duration }: { duration: StayDurationValue }
                   aria-controls={`hj-day-${duration}-${day.day}`}
                   onClick={() => setOpen(isOpen ? open.filter(entry => entry !== day.day) : [...open, day.day])}
                 >
-                  <span className="hj-day__num">Day {day.day}</span>
-                  <span className="hj-day__title">{day.title}</span>
+                  <Image className="hj-day__thumb" src={dayThumb(day.day)} alt="" width={88} height={88} sizes="44px" />
+                  <span>
+                    <span className="hj-day__num">Day {day.day}</span>
+                    <span className="hj-day__place">{placeFromPath(day.path)}</span>
+                    <span className="hj-day__title">{day.title}</span>
+                  </span>
                   <span className="hj-day__chev" aria-hidden>›</span>
                 </button>
               </h3>

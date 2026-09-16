@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { getBookingSuccessDetails } from "@/lib/booking-success-details";
 import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
+import { getBookingRoomVisuals } from "@/lib/booking-room-media";
+import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { JourneyProgress } from "@/components/booking/journey/JourneyChrome";
-import { PaymentJourney } from "@/components/booking/journey/PaymentJourney";
-import { longDate, money, stageLabel } from "@/components/booking/journey/model";
+import { folioRange, money, stageLabel } from "@/components/booking/journey/model";
+import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
 
 type PageProps = {
   searchParams: Promise<{ bookingId?: string; token?: string }>;
@@ -13,12 +15,14 @@ type PageProps = {
 
 const FALLBACK_SCENE = "/media/hathor/optimized/cruises-hero.webp";
 
-function Shell({ children, scene }: { children: ReactNode; scene?: string }) {
+function Shell({ children, scene, wide }: { children: ReactNode; scene?: string; wide?: boolean }) {
   const style = { "--hj-scene": `url("${scene ?? FALLBACK_SCENE}")` } as CSSProperties;
   return (
     <div className="hj" style={style}>
-      <div className="hj-stage hj-stage--wide">{children}</div>
-      <JourneyProgress step={5} />
+      <div className="hj-folio" id="hj-folio-top">
+        <JourneyProgress step={5} />
+        <div className={wide ? "hj-stage hj-stage--success" : "hj-stage hj-stage--wide"}>{children}</div>
+      </div>
     </div>
   );
 }
@@ -27,21 +31,19 @@ function NotFound({ title, message }: { title: string; message: string }) {
   return (
     <Shell>
       <section className="hj-panel" style={{ maxWidth: "640px", margin: "0 auto" }}>
-        <header className="hj-panel__head">
-          <h1>{title}</h1>
-          <p>{message}</p>
-          <div className="hj-ornament" aria-hidden><span>◆</span></div>
-        </header>
+        <p className="hj-panel__kicker">Reservation</p>
+        <h1 style={{ fontSize: "1.9rem" }}>{title}</h1>
+        <p className="hj-ledger__note">{message}</p>
         <div className="hj-actions">
-          <Link href="/booking" className="hj-btn">Start a new search</Link>
-          <Link href="/contact" className="hj-btn hj-btn--quiet">Contact Hathor</Link>
+          <Link href="/booking" className="hj-btn hj-btn--quiet">Start a new search</Link>
+          <Link href="/contact" className="hj-btn">Contact Hathor</Link>
         </div>
       </section>
     </Shell>
   );
 }
 
-/** Screen 04 result — the request is with Hathor Reservations, never "confirmed". */
+/** Request-sent result — never implied as confirmed unless the booking status is CONFIRMED. */
 export default async function BookingSuccessPage({ searchParams }: PageProps) {
   const query = await searchParams;
   const bookingId = query.bookingId?.trim();
@@ -66,103 +68,155 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
   const confirmed = details.status === "CONFIRMED";
   const voyage = HATHOR_ITINERARIES[details.durationSlug as keyof typeof HATHOR_ITINERARIES] ?? null;
   const method = details.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : details.paymentMethod === "VISA" ? "Visa" : "—";
-  const dueNow = details.paymentSchedule[0]?.cumulativeCents ?? null;
-  const balance = Math.max(0, details.totalPriceCents - details.amountPaidCents);
+  const roomVisual = details.roomType ? getBookingRoomVisuals(details.roomType, details.roomType) : null;
 
   return (
-    <Shell scene={voyage?.image}>
-      <div className="hj-duo">
-        <section className="hj-card">
-          <span className="hj-card__eyebrow">{requested ? "Request received" : details.statusLabel}</span>
-          <h1 className="hj-card__title" style={{ fontSize: "1.95rem" }}>
-            {requested
-              ? "Your booking request has been sent."
-              : confirmed
-                ? "Your reservation is confirmed."
-                : "Your reservation."}
-          </h1>
-          <p className="hj-ledger__note" style={{ marginTop: 0 }}>
-            {requested
-              ? "Hathor Reservations has your request. Our team will review it and email you the invoice and payment instructions. This is not a confirmed reservation, and no payment was collected on this website."
-              : confirmed
-                ? "Hathor has accepted your reservation and recorded the required payment."
-                : "This is the current status of your reservation."}
-          </p>
+    <Shell scene={voyage?.image} wide>
+      <section className="hj-panel">
+        <p className="hj-panel__kicker">Step 5 of 5</p>
+        <div className="hj-sent">
+          <span className="hj-sent__mark" aria-hidden>✓</span>
+          <span>
+            <strong>{requested ? "Request sent" : details.statusLabel}</strong>
+            <span className="hj-ledger__note" style={{ marginTop: "0.2rem" }}>
+              {requested
+                ? "Your reservation request has been successfully submitted."
+                : confirmed
+                  ? "Hathor has accepted your reservation and recorded the required payment."
+                  : "This is the current status of your reservation."}
+            </span>
+          </span>
+        </div>
 
-          {requested && dueNow !== null ? (
-            <div className="hj-deposit">
-              <span className="hj-deposit__label">Nothing has been charged</span>
-              <p className="hj-deposit__fine" style={{ marginTop: "0.2rem" }}>
-                After our team accepts your request we will invoice {money(dueNow)} to confirm the booking, for your
-                preferred method: {method}.
-              </p>
-            </div>
-          ) : null}
+        <h1 style={{ fontSize: "clamp(1.6rem, 2.6vw, 2.1rem)", lineHeight: 1.15 }}>
+          {requested
+            ? "Your Reservation Request Has Been Sent"
+            : confirmed
+              ? "Your reservation is confirmed."
+              : "Your reservation."}
+        </h1>
+        <p className="hj-ledger__note">
+          {requested
+            ? "Thank you for choosing Hathor. Our reservations team will review your request and contact you with invoice and payment instructions. This is not a confirmed reservation, and no payment was collected on this website."
+            : confirmed
+              ? "Hathor has accepted your reservation and recorded the required payment."
+              : "This is the current status of your reservation."}
+        </p>
 
-          <span className="hj-step-label">Your payment journey</span>
-          <PaymentJourney current={confirmed ? 5 : 3} />
+        <div className="hj-ref">
+          <span className="hj-ref__label">Reservation reference</span>
+          <span className="hj-ref__value">{details.bookingId}</span>
+        </div>
 
-          <div className="hj-actions">
-            <Link href="/booking/lookup" className="hj-btn hj-btn--solid">View reservation</Link>
-            <Link href="/contact" className="hj-btn">Contact reservations</Link>
-          </div>
-          <p className="hj-note">
+        <p className="hj-contact-line">
+          <span className="hj-assist__icon" aria-hidden><IconMail /></span>
+          <span>
             {details.emailStatus === "SENT"
               ? `A copy of this request was emailed to ${details.customerEmail}.`
               : details.emailStatus === "FAILED"
                 ? "Your request is saved, but our confirmation email could not be delivered. Please contact us so we can reach you."
                 : "Your request is saved. The confirmation email is on its way."}
+          </span>
+        </p>
+        {method !== "—" ? (
+          <p className="hj-contact-line">
+            <span>
+              Preferred payment method<br />
+              <strong>{method}</strong>
+            </span>
           </p>
-        </section>
+        ) : null}
 
-        <section className="hj-card">
-          <span className="hj-card__eyebrow">Your request</span>
-          <h2 className="hj-card__title">{details.voyageName}</h2>
-          {voyage ? (
-            <Image
-              src={voyage.image}
-              alt=""
-              width={640}
-              height={360}
-              sizes="(max-width: 1080px) 100vw, 330px"
-              style={{ width: "100%", height: "auto", borderRadius: "4px", display: "block", marginBottom: "0.8rem" }}
-            />
-          ) : null}
+        <span className="hj-step-label">What happens next?</span>
+        <ol className="hj-timeline">
+          <li data-state={requested ? "now" : "done"}>
+            <span className="hj-timeline__dot">1</span>
+            <span><strong>Hathor Reservations reviews your request</strong><span>We verify the cabin and the final voyage total.</span></span>
+          </li>
+          <li data-state={confirmed ? "done" : "next"}>
+            <span className="hj-timeline__dot">2</span>
+            <span><strong>You receive invoice and payment instructions</strong><span>Sent by email for your preferred method.</span></span>
+          </li>
+          <li data-state={confirmed ? "now" : "next"}>
+            <span className="hj-timeline__dot">3</span>
+            <span><strong>Reservation confirmed after payment is recorded</strong><span>Once Hathor accepts the request and the required payment is recorded.</span></span>
+          </li>
+        </ol>
+      </section>
 
-          <div className="hj-ledger">
-            <div className="hj-ledger__row"><span>Reference</span><span>{details.bookingId}</span></div>
-            {details.route ? <div className="hj-ledger__row"><span>Route</span><span>{details.route}</span></div> : null}
-            <div className="hj-ledger__row"><span>Check-in</span><span>{longDate(details.checkInDate)}</span></div>
-            <div className="hj-ledger__row"><span>Check-out</span><span>{longDate(details.returnDate)}</span></div>
-            {details.roomType ? <div className="hj-ledger__row"><span>Accommodation</span><span>{details.roomType}</span></div> : null}
-            <div className="hj-ledger__row"><span>Guests</span><span>{details.guestSummary}</span></div>
-            <div className="hj-ledger__row"><span>Preferred method</span><span>{method}</span></div>
+      <section className="hj-panel">
+        <span className="hj-step-label">Your booking summary</span>
+        {voyage ? (
+          <div className="hj-summary-thumbs">
+            <Image src={voyage.image} alt="" width={144} height={104} sizes="72px" />
+            <span>
+              <span className="hj-rail__label">Journey</span>
+              <span className="hj-rail__value">{voyage.title} · {details.route ?? voyage.route}</span>
+            </span>
           </div>
-
-          <div className="hj-total-block">
-            <span className="hj-total-block__label">Voyage total</span>
-            <div className="hj-total-block__amount">{money(details.totalPriceCents)}</div>
-            <p className="hj-deposit__fine">Taxes and service charges included.</p>
+        ) : null}
+        <div className="hj-summary-thumbs">
+          <span className="hj-rail__icon" aria-hidden><IconCalendar /></span>
+          <span>
+            <span className="hj-rail__label">Dates</span>
+            <span className="hj-rail__value">{folioRange(details.checkInDate, details.returnDate)}</span>
+          </span>
+        </div>
+        <div className="hj-summary-thumbs">
+          <span />
+          <span>
+            <span className="hj-rail__label">Guests</span>
+            <span className="hj-rail__value">{details.guestSummary}</span>
+          </span>
+        </div>
+        {details.roomType && roomVisual ? (
+          <div className="hj-summary-thumbs">
+            <Image src={roomVisual.cover} alt="" width={144} height={104} sizes="72px" />
+            <span>
+              <span className="hj-rail__label">Accommodation</span>
+              <span className="hj-rail__value">{details.roomType}</span>
+            </span>
           </div>
+        ) : null}
 
-          <span className="hj-step-label">Payment plan</span>
-          <div className="hj-ledger">
-            {details.paymentSchedule.map(stage => (
-              <div className="hj-ledger__row" key={stage.milestone}>
-                <span>{stageLabel(stage)}</span>
-                <span>{money(stage.cumulativeCents)}</span>
-              </div>
-            ))}
-            <div className="hj-ledger__row"><span>Recorded so far</span><span>{money(details.amountPaidCents)}</span></div>
-            <div className="hj-ledger__row"><span>Remaining</span><span>{money(balance)}</span></div>
-          </div>
+        <div className="hj-total-block">
+          <span className="hj-total-block__label">Total booking amount</span>
+          <div className="hj-total-block__amount">{money(details.totalPriceCents)}</div>
+          <p className="hj-deposit__fine">Taxes and service charges included.</p>
+        </div>
 
-          <div className="hj-deposit" style={{ background: "none", border: 0, padding: "0.6rem 0 0" }}>
-            <span className="hj-deposit__label">Booking status</span>
-            <span className="hj-rail__value">{requested ? "Awaiting Hathor review" : details.statusLabel}</span>
-          </div>
-        </section>
-      </div>
+        <span className="hj-step-label">Payment timeline</span>
+        <ol className="hj-schedule">
+          {details.paymentSchedule.map(stage => (
+            <li key={stage.milestone}>
+              <strong>{money(stage.cumulativeCents)}</strong>
+              <span>{stageLabel(stage)}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="hj-panel">
+        <span className="hj-step-label">We are here for you</span>
+        <p className="hj-ledger__note" style={{ marginTop: 0 }}>
+          Our concierge team is always happy to assist you with any questions.
+        </p>
+        <p className="hj-contact-line">
+          <span className="hj-assist__icon" aria-hidden><IconPhone /></span>
+          <a href={`tel:${PUBLIC_CONTACT.phone}`}>{PUBLIC_CONTACT.phoneDisplay}</a>
+        </p>
+        <p className="hj-note">{PUBLIC_CONTACT.workingHours}. {PUBLIC_CONTACT.dayOff}.</p>
+        <p className="hj-contact-line">
+          <span className="hj-assist__icon" aria-hidden><IconMail /></span>
+          <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a>
+        </p>
+        <p className="hj-ledger__note">Or reply directly to your confirmation email.</p>
+
+        <div className="hj-actions" style={{ justifyContent: "flex-start" }}>
+          <Link href="/" className="hj-btn">Return to Hathor <span aria-hidden>→</span></Link>
+          <Link href="/booking/lookup" className="hj-btn hj-btn--quiet">View my request</Link>
+        </div>
+      </section>
     </Shell>
   );
 }
