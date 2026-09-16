@@ -15,38 +15,7 @@ export async function lockVessel(tx: Tx) {
 export async function expireHolds(tx: Tx) {
   await tx.$queryRaw`SELECT hathor_expire_holds()`;
 }
-/** Integer cents, so a stage never lands a cent away from the database's. */
-const share = (total: number, percent: number) => Math.ceil((total * percent) / 100);
-
-/**
- * Stages depend on how far ahead the guest books, and mirror
- * hathor_acquire_hold, which stores the authoritative rows:
- *   over 60 days   30% now, 50% cumulative at 60 days, all of it at 45 days
- *   46 to 60 days  50% now, then the rest at 45 days
- *   45 days or less  the full amount
- */
-export function paymentSchedule(total: number, departure: Date, now = new Date()) {
-  const days = Math.round((Date.UTC(departure.getUTCFullYear(), departure.getUTCMonth(), departure.getUTCDate()) -
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / dayMs);
-  const day60 = new Date(departure.getTime() - 60 * dayMs);
-  const day45 = new Date(departure.getTime() - 45 * dayMs);
-
-  return {
-    requiredCents: days <= 45 ? total : share(total, days <= 60 ? 50 : 30),
-    milestones: days > 60
-      ? [
-          { milestone: "INITIAL", dueAt: null, cumulativeCents: share(total, 30) },
-          { milestone: "DAY_60", dueAt: day60, cumulativeCents: share(total, 50) },
-          { milestone: "DAY_45", dueAt: day45, cumulativeCents: total },
-        ]
-      : days > 45
-        ? [
-            { milestone: "INITIAL", dueAt: null, cumulativeCents: share(total, 50) },
-            { milestone: "DAY_45", dueAt: day45, cumulativeCents: total },
-          ]
-        : [{ milestone: "INITIAL", dueAt: null, cumulativeCents: total }],
-  };
-}
+export { paymentSchedule } from "@/lib/payment-schedule";
 export function cancellationFee(total: number, departure: Date, now = new Date(), reason = "CANCELLATION") {
   const days = Math.round((Date.UTC(departure.getUTCFullYear(), departure.getUTCMonth(), departure.getUTCDate()) -
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / dayMs);
@@ -85,6 +54,14 @@ export async function acquireBookingHold(input: {cruiseScheduleId:string;rooms:R
   const rows=await bookingQuery<{booking:unknown}>("SELECT hathor_acquire_hold($1,$2::jsonb,$3,$4) AS booking",[input.cruiseScheduleId,JSON.stringify(input.rooms),input.idempotencyKey,fingerprint]);
   return hydrate<Reservation>(rows[0].booking);
  } catch(error){rethrowDatabaseRequest(error);}
+}
+
+/** Frees a guest's own temporary hold now; sent requests are left untouched. */
+export async function releaseBookingHold(id: string) {
+  try {
+    const rows = await bookingQuery<{ booking: unknown }>("SELECT hathor_release_hold($1) AS booking", [id]);
+    return hydrate<Reservation>(rows[0].booking);
+  } catch (error) { rethrowDatabaseRequest(error); }
 }
 
 export type GuestRequest = {

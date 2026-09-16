@@ -132,3 +132,29 @@ export function IconPhone(props: IconProps) {
     </Svg>
   );
 }
+
+export function IconAdult(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="6.2" r="2.7" />
+      <path d="M6.5 20.5v-5.2a5.5 5.5 0 0 1 11 0v5.2" />
+    </Svg>
+  );
+}
+
+export function IconChild(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <circle cx="12" cy="9" r="2.2" />
+      <path d="M8.2 20.5v-3.6a3.8 3.8 0 0 1 7.6 0v3.6" />
+    </Svg>
+  );
+}
+
+export function IconClose(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M7 7l10 10M17 7 7 17" />
+    </Svg>
+  );
+}

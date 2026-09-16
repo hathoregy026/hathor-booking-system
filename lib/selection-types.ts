@@ -80,8 +80,15 @@ export interface VoyageSelectionState {
   residenceSlug: string | null;
   /** Derived from `residenceSlug`; reuses the existing booking union. */
   roomType: LuxuryRoomTypeValue | null;
+  /** The whole travelling party; the booking flow spreads it over cabins. */
   adults: number | null;
   children: number | null;
+  /**
+   * Departure day ("YYYY-MM-DD", UTC) when the selection was added from the
+   * booking flow. A date, never a schedule id, so it cannot rot between
+   * environments; the booking flow re-checks it against live availability.
+   */
+  sailingDate: string | null;
   charter: boolean;
   updatedAt: number;
 }
@@ -104,6 +111,7 @@ export const EMPTY_VOYAGE_SELECTION: VoyageSelectionState =
     roomType: null,
     adults: null,
     children: null,
+    sailingDate: null,
     charter: false,
     updatedAt: 0,
   });

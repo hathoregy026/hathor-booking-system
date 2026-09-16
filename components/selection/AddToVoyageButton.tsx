@@ -45,6 +45,13 @@ export type AddToVoyageButtonProps = {
   name: string;
   variant?: AddToVoyageVariant;
   className?: string;
+  /**
+   * Cabin only: runs before anything is added, e.g. a live availability check
+   * in the booking flow. Return a message to stop, or null to go ahead.
+   */
+  verify?: () => Promise<string | null>;
+  /** Cabin only: the sailing and party chosen in the booking flow. */
+  context?: { sailingDate: string | null; adults: number; children: number };
 };
 
 export function AddToVoyageButton({
@@ -53,14 +60,19 @@ export function AddToVoyageButton({
   name,
   variant = "inline",
   className,
+  verify,
+  context,
 }: AddToVoyageButtonProps) {
   const selection = useVoyageSelection();
   const setVoyage = useSelectionStore((state) => state.setVoyage);
   const setResidence = useSelectionStore((state) => state.setResidence);
+  const setSailingDate = useSelectionStore((state) => state.setSailingDate);
+  const setGuests = useSelectionStore((state) => state.setGuests);
   const openVoyage = useSelectionStore((state) => state.openVoyage);
 
   const [pending, setPending] = useState<PendingChange | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
 
   const cabinPair = kind === "cabin" ? parseCabinSlug(slug) : null;
 
@@ -70,7 +82,8 @@ export function AddToVoyageButton({
       : kind === "cabin"
         ? Boolean(cabinPair) &&
           selection.voyageSlug === cabinPair?.voyageSlug &&
-          selection.residenceSlug === cabinPair?.residenceSlug
+          selection.residenceSlug === cabinPair?.residenceSlug &&
+          (!context?.sailingDate || selection.sailingDate === context.sailingDate)
         : selection.residenceSlug === slug;
 
   const applyVoyage = useCallback(
@@ -83,11 +96,12 @@ export function AddToVoyageButton({
   );
 
   const handleClick = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
+    async (event: MouseEvent<HTMLButtonElement>) => {
       /* Safe inside linked cards: never navigate, never move the scroll. */
       event.preventDefault();
       event.stopPropagation();
       setNotice(null);
+      if (checking) return;
 
       /*
        * A cabin listing is a cruise + cabin PAIR — one click sets both halves of
@@ -110,8 +124,25 @@ export function AddToVoyageButton({
           return;
         }
 
+        if (verify) {
+          setChecking(true);
+          try {
+            const problem = await verify();
+            if (problem) {
+              setNotice(problem);
+              return;
+            }
+          } finally {
+            setChecking(false);
+          }
+        }
+
         setVoyage(cabinPair.voyageSlug as StayDurationValue);
         setResidence(cabinPair.residenceSlug);
+        if (context) {
+          setSailingDate(context.sailingDate);
+          setGuests(context.adults, context.children);
+        }
         trackSelectionEvent("voyage_add", { voyage_slug: cabinPair.voyageSlug });
         trackSelectionEvent("accommodation_add", {
           residence_slug: cabinPair.residenceSlug,
@@ -174,13 +205,18 @@ export function AddToVoyageButton({
     [
       applyVoyage,
       cabinPair,
+      checking,
+      context,
       kind,
       openVoyage,
       selection.residenceSlug,
       selection.voyageSlug,
+      setGuests,
       setResidence,
+      setSailingDate,
       setVoyage,
       slug,
+      verify,
     ],
   );
 
@@ -255,7 +291,8 @@ export function AddToVoyageButton({
       <button
         type="button"
         className={classes}
-        onClick={handleClick}
+        onClick={(event) => void handleClick(event)}
+        aria-busy={checking || undefined}
         aria-label={label}
         title={label}
         aria-pressed={selected}

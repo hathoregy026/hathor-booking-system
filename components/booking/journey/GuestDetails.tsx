@@ -2,46 +2,39 @@
 
 import Link from "next/link";
 import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
-import type { PhysicalRoomType } from "@/lib/physical-inventory";
+import { guestLabel, type CabinView } from "./allocation";
 import {
-  distributeParty,
   money,
   stageLabel,
   type GuestForm,
-  type Hold,
-  type Party,
+  type PaymentStage,
 } from "./model";
 import { IconBank, IconCard } from "./icons";
 
-/** Screen 04 — lead guest, passengers, payment preference, then send the request. */
+/** Step 3 — lead guest, passengers by cabin, payment preference, then send the request. */
 export function DetailsPaymentScreen({
-  roomType,
-  party,
-  hold,
+  cabins,
+  schedule,
   form,
   onForm,
   names,
-  onNames,
+  onName,
   errors,
   busy,
   onBack,
   onConfirm,
 }: {
-  roomType: PhysicalRoomType;
-  party: Party;
-  hold: Hold;
+  cabins: CabinView[];
+  schedule: PaymentStage[];
   form: GuestForm;
   onForm: (patch: Partial<GuestForm>) => void;
-  names: string[];
-  onNames: (index: number, value: string) => void;
+  names: Record<string, string>;
+  onName: (guestId: string, value: string) => void;
   errors: Record<string, string>;
   busy: boolean;
   onBack: () => void;
   onConfirm: () => void;
 }) {
-  const cabins = distributeParty(party);
-  let cursor = 0;
-
   return (
     <div className="hj-details">
       <section>
@@ -80,23 +73,16 @@ export function DetailsPaymentScreen({
 
         <span className="hj-step-label">Passenger names (as per passports)</span>
         {errors.names ? <p className="hj-error" style={{ marginBottom: "0.5rem" }}>{errors.names}</p> : null}
-        {cabins.map((cabin, cabinIndex) => (
-          <div className="hj-cabinguests" key={cabinIndex}>
-            <p className="hj-cabinguests__title">Cabin {String(cabinIndex + 1).padStart(2, "0")} · {roomType}</p>
+        {cabins.map(cabin => (
+          <div className="hj-cabinguests" key={cabin.id}>
+            <p className="hj-cabinguests__title">{cabin.label}</p>
             <div className="hj-grid2">
-              {[
-                ...Array.from({ length: cabin.adults }, (_, i) => ({ label: `Adult ${i + 1}` })),
-                ...Array.from({ length: cabin.children }, (_, i) => ({ label: `Child ${i + 1}` })),
-              ].map(guest => {
-                const index = cursor;
-                cursor += 1;
-                return (
-                  <label className="hj-field" key={`${cabinIndex}-${guest.label}`}>
-                    <span>{guest.label} full name *</span>
-                    <input value={names[index] ?? ""} maxLength={120} autoComplete="name" onChange={event => onNames(index, event.target.value)} />
-                  </label>
-                );
-              })}
+              {cabin.guests.map(guest => (
+                <label className="hj-field" key={guest.id}>
+                  <span>{guestLabel(guest)} full name *</span>
+                  <input value={names[guest.id] ?? ""} maxLength={120} autoComplete="off" onChange={event => onName(guest.id, event.target.value)} />
+                </label>
+              ))}
             </div>
           </div>
         ))}
@@ -160,7 +146,7 @@ export function DetailsPaymentScreen({
 
         <p className="hj-pay__title" style={{ marginTop: "1.3rem" }}>Payment schedule</p>
         <ol className="hj-schedule">
-          {hold.paymentSchedule.map(stage => (
+          {schedule.map(stage => (
             <li key={stage.milestone}>
               <strong>{money(stage.cumulativeCents)}</strong>
               <span>{stageLabel(stage)}</span>
@@ -169,6 +155,7 @@ export function DetailsPaymentScreen({
         </ol>
         <p className="hj-ledger__note">
           After sending your reservation request, Hathor Reservations will review the details and send the invoice with payment instructions.
+          Your cabins are reserved for you the moment you send this request.
         </p>
 
         <span className="hj-step-label">Included in your voyage</span>
@@ -193,7 +180,7 @@ export function DetailsPaymentScreen({
       </section>
 
       <div className="hj-actions" style={{ gridColumn: "1 / -1" }}>
-        <button type="button" className="hj-btn hj-btn--ghost" onClick={onBack}>← Back to suites</button>
+        <button type="button" className="hj-btn hj-btn--ghost" onClick={onBack}>← Back to guests &amp; suites</button>
         <button type="button" className="hj-btn" disabled={busy} onClick={onConfirm}>
           {busy ? "Sending your request…" : "Confirm request"} <span aria-hidden>→</span>
         </button>

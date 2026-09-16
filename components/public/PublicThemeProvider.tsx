@@ -4,7 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useState,
 } from "react";
 import {
@@ -45,12 +45,15 @@ function readStoredTheme(): PublicTheme {
 }
 
 export function PublicThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<PublicTheme>(() => {
-    if (typeof window === "undefined") return "day";
-    return readStoredTheme();
-  });
+  /*
+   * The server cannot know the saved theme, so the first client render must
+   * also say "day" or React reports a hydration mismatch on the toggle. The
+   * page itself is already painted in the right theme by the blocking <head>
+   * script; the layout effect corrects the toggle before the browser paints.
+   */
+  const [theme, setThemeState] = useState<PublicTheme>("day");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const next = readStoredTheme();
     setThemeState(next);
     applyPublicThemeToDocument(next);
@@ -71,9 +74,8 @@ export function PublicThemeProvider({ children }: { children: React.ReactNode })
     });
   }, []);
 
-  useEffect(() => {
-    applyPublicThemeToDocument(theme);
-  }, [theme]);
+  // No "apply on every theme change" effect: every setter above already writes
+  // the document, and such an effect would briefly write "day" during hydration.
 
   return (
     <PublicThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>

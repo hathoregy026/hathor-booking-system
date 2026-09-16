@@ -9,10 +9,7 @@ import {
   HATHOR_CRUISES,
   type HathorCruiseSeed,
 } from "@/lib/hathor-catalog";
-import {
-  getMaxCapacityForLuxuryType,
-  MAX_GUESTS_PER_ROOM,
-} from "@/lib/room-capacity";
+import { PARTY_MAX_ADULTS, PARTY_MAX_CHILDREN } from "@/lib/physical-inventory";
 import { findRoomShowcase, type RoomShowcase } from "@/lib/room-showcase";
 import {
   CHARTER_SLUG,
@@ -275,16 +272,15 @@ export function pruneVoyageSelection(
     roomType = null;
   }
 
-  const maxGuests = roomType
-    ? getMaxCapacityForLuxuryType(roomType)
-    : MAX_GUESTS_PER_ROOM;
+  /*
+   * Guests are the whole party, not one cabin's occupancy: the booking flow
+   * places them into as many cabins as they need (limits match that flow).
+   */
+  const adults = clampGuestCount(state.adults, 1, PARTY_MAX_ADULTS);
+  const children = clampGuestCount(state.children, 0, PARTY_MAX_CHILDREN);
 
-  const adults = clampGuestCount(state.adults, 1, maxGuests);
-  const children = clampGuestCount(
-    state.children,
-    0,
-    Math.max(0, maxGuests - (adults ?? 1)),
-  );
+  // A sailing date only means something for the voyage it was chosen on.
+  const sailingDate = voyageSlug ? state.sailingDate ?? null : null;
 
   const charter = state.charter === true;
 
@@ -294,6 +290,7 @@ export function pruneVoyageSelection(
     roomType === state.roomType &&
     adults === state.adults &&
     children === state.children &&
+    sailingDate === (state.sailingDate ?? null) &&
     charter === state.charter;
 
   if (unchanged) return state;
@@ -305,6 +302,7 @@ export function pruneVoyageSelection(
     roomType,
     adults,
     children,
+    sailingDate,
     charter,
   };
 }

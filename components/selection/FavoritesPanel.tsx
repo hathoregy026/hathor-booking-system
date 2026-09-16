@@ -6,14 +6,10 @@ import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useRouter } from "next/navigation";
-import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import {
   describeRoomTypesOnCruise,
-  getDefaultRoomTypeForDuration,
-  normalizeRoomConfigsForDuration,
   type StayDurationValue,
 } from "@/lib/booking-search-config";
-import { useBookingStore } from "@/store/bookingStore";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { formatPrice } from "@/lib/client-dates";
 import {
@@ -201,8 +197,6 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
   const setResidence = useSelectionStore((state) => state.setResidence);
   const setGuests = useSelectionStore((state) => state.setGuests);
   const setCharter = useSelectionStore((state) => state.setCharter);
-  const { openBooking } = useBookNowModal();
-  const hydrateFromModal = useBookingStore((state) => state.hydrateFromModal);
   const router = useRouter();
   const [handoffNotice, setHandoffNotice] = useState<string | null>(null);
 
@@ -225,50 +219,57 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
     residence ? luxuryTypeForResidence(residence) : null,
   );
 
+  const sailingLabel = selection.sailingDate
+    ? new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+        .format(new Date(`${selection.sailingDate}T00:00:00Z`))
+    : null;
+
   /*
-   * Hand off into the EXISTING booking path — hydrateFromModal + BookingModal.
-   * No second booking-state path, no server call, and no price: availability and
-   * the final amount stay with the existing server flow.
+   * Continue in the booking journey itself. It re-reads live availability for
+   * the saved sailing and cabin, places the party, and asks only for what is
+   * still missing — nothing is held until the guest sends the request.
    */
-  const handleCheckAvailability = useCallback(() => {
+  const handleContinueBooking = useCallback(() => {
     setHandoffNotice(null);
+    trackSelectionEvent("voyage_request_start");
+
+    if (selection.charter) {
+      onClose();
+      router.push("/charter");
+      return;
+    }
 
     const duration = selection.voyageSlug as StayDurationValue | null;
-
     if (!duration) {
       setHandoffNotice("Choose a voyage to complete your selection.");
       return;
     }
 
-    const residence = selection.residenceSlug
-      ? findResidence(selection.residenceSlug)
-      : null;
-    const residenceType = residence ? luxuryTypeForResidence(residence) : null;
-
+    const saved = selection.residenceSlug ? findResidence(selection.residenceSlug) : null;
+    const residenceType = saved ? luxuryTypeForResidence(saved) : null;
     if (residenceType && !isVoyageResidenceCompatible(duration, residenceType)) {
-      setHandoffNotice(
-        `This journey offers ${describeRoomTypesOnCruise(duration)}.`,
-      );
+      setHandoffNotice(`This journey offers ${describeRoomTypesOnCruise(duration)}.`);
       return;
     }
 
-    /* Only the voyage chosen: the project's own default tier, not a guess. */
-    const roomType = residenceType ?? getDefaultRoomTypeForDuration(duration);
+    const params = new URLSearchParams({
+      duration,
+      adults: String(adults),
+      children: String(children),
+    });
+    if (selection.residenceSlug) params.set("room", selection.residenceSlug);
+    if (selection.sailingDate) params.set("sailing", selection.sailingDate);
 
-    const roomConfigs = normalizeRoomConfigsForDuration(duration, [
-      { roomType, adults, children },
-    ]);
-
-    hydrateFromModal({ duration, roomConfigs });
     onClose();
-    openBooking();
+    router.push(`/booking?${params.toString()}`);
   }, [
     adults,
     children,
-    hydrateFromModal,
     onClose,
-    openBooking,
+    router,
+    selection.charter,
     selection.residenceSlug,
+    selection.sailingDate,
     selection.voyageSlug,
   ]);
 
@@ -301,6 +302,9 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
               {voyage.nights} Nights / {voyage.days} Days · Departs{" "}
               {voyage.departureDay}
             </p>
+            {sailingLabel ? (
+              <p className="hfp__meta">Sailing {sailingLabel}</p>
+            ) : null}
             <div className="hfp__actions">
               <Link href="/voyages" className="hfp__action" onClick={onClose}>
                 Change Journey
@@ -378,7 +382,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
           />
         </div>
         <p className="hfp__note">
-          Additional cabins are configured during availability.
+          Your whole party. You choose their cabins when you continue booking.
         </p>
       </section>
 
@@ -421,28 +425,9 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       ) : null}
 
       <div className="hfp__primary">
-        <button
-          type="button"
-          className="hfp__cta"
-          onClick={() => {
-            trackSelectionEvent("voyage_request_start");
-            onClose();
-            /*
-             * Private Charter is not a scheduled sailing. Route it to the
-             * existing charter enquiry rather than the contact form, preserving
-             * the mutual exclusion the store already enforces.
-             */
-            router.push(selection.charter ? "/charter" : "/contact");
-          }}
-        >
-          Request This Voyage
-        </button>
-        <button
-          type="button"
-          className="hfp__action"
-          onClick={handleCheckAvailability}
-        >
-          Check Availability
+        {/* Private Charter is not a scheduled sailing: it keeps its enquiry. */}
+        <button type="button" className="hfp__cta" onClick={handleContinueBooking}>
+          {selection.charter ? "Request This Voyage" : "Continue Booking"}
         </button>
         <Link href="/voyages" className="hfp__action" onClick={onClose}>
           Continue Exploring

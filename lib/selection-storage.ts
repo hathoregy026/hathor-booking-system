@@ -95,6 +95,10 @@ function asCount(value: unknown): number | null {
   return truncated >= 0 ? truncated : null;
 }
 
+function asSailingDate(value: unknown): string | null {
+  return typeof value === "string" && /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value) ? value : null;
+}
+
 function asLuxuryRoomType(value: unknown): LuxuryRoomTypeValue | null {
   return typeof value === "string" &&
     (LUXURY_ROOM_TYPE_VALUES as readonly string[]).includes(value)
@@ -162,6 +166,7 @@ function parseVoyageSelection(value: unknown): VoyageSelectionState {
     roomType: asLuxuryRoomType(value.roomType),
     adults: asCount(value.adults),
     children: asCount(value.children),
+    sailingDate: asSailingDate(value.sailingDate),
     charter: value.charter === true,
     updatedAt: asTimestamp(value.updatedAt),
   };

@@ -5,7 +5,7 @@ import { getBookingSuccessDetails } from "@/lib/booking-success-details";
 import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { JourneyProgress } from "@/components/booking/journey/JourneyChrome";
+import { JourneyProgress, StepGuide } from "@/components/booking/journey/JourneyChrome";
 import { folioRange, money, stageLabel } from "@/components/booking/journey/model";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
 
@@ -20,7 +20,7 @@ function Shell({ children, scene, wide }: { children: ReactNode; scene?: string;
   return (
     <div className="hj" style={style}>
       <div className="hj-folio" id="hj-folio-top">
-        <JourneyProgress step={5} />
+        <JourneyProgress step={4} />
         <div className={wide ? "hj-stage hj-stage--success" : "hj-stage hj-stage--wide"}>{children}</div>
       </div>
     </div>
@@ -73,7 +73,16 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
   return (
     <Shell scene={voyage?.image} wide>
       <section className="hj-panel">
-        <p className="hj-panel__kicker">Step 5 of 5</p>
+        <p className="hj-panel__kicker">Step 4 of 4</p>
+        <StepGuide
+          heading="What happens from here"
+          items={[
+            { label: "Request sent", hint: "Nothing was charged", done: requested || confirmed },
+            { label: "Hathor reviews it", hint: "We confirm cabins and total", done: confirmed },
+            { label: "Invoice and payment", hint: "By email, for your method", done: confirmed },
+            { label: "Booking confirmed", hint: "Once payment is recorded", done: confirmed },
+          ]}
+        />
         <div className="hj-sent">
           <span className="hj-sent__mark" aria-hidden>✓</span>
           <span>

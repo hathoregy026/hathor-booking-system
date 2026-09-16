@@ -1,6 +1,7 @@
 import type { getSailingAvailability } from "@/lib/availability-service";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import type { StayDurationValue } from "@/lib/booking-search-config";
+import type { Arrangement } from "./allocation";
 
 /** Shapes the booking journey reads from the existing engine endpoints. */
 
@@ -34,8 +35,6 @@ export type Hold = {
 
 export type Party = { adults: number; children: number; cabins: number };
 
-export type Passenger = { fullName: string; isChild: boolean; roomIndex: number };
-
 export type GuestForm = {
   firstName: string;
   lastName: string;
@@ -50,17 +49,23 @@ export type GuestForm = {
   marketingOptIn: boolean;
 };
 
+/**
+ * What the flow remembers between reloads. A hold exists only once the guest
+ * presses Confirm request, so `hold` is set just for that short window.
+ */
 export type Attempt = {
   key: string;
+  /** scheduleId + rooms payload; a different selection needs a new key. */
+  signature: string;
   duration: StayDurationValue;
   scheduleId: string;
-  roomType: PhysicalRoomType;
-  party: Party;
+  adults: number;
+  children: number;
+  arrangement: Arrangement;
   hold?: Hold;
 };
 
-export const STORAGE_KEY = "hathor-journey-attempt-v1";
-export const MAX_CABINS = 6;
+export const STORAGE_KEY = "hathor-journey-attempt-v2";
 
 export const emptyGuestForm = (): GuestForm => ({
   firstName: "",
@@ -94,31 +99,6 @@ export function partySummary(party: Party): string {
   if (party.children > 0) parts.push(plural(party.children, "Child", "Children"));
   parts.push(plural(party.cabins, "Cabin"));
   return parts.join(" · ");
-}
-
-/**
- * Guests spread evenly over the chosen cabins, adults first. This matches the
- * occupancy the availability service assumes, so what the guest sees on screen
- * is what the hold will ask the database for.
- */
-export function distributeParty(party: Party): { adults: number; children: number }[] {
-  const cabins = Array.from({ length: Math.max(1, party.cabins) }, () => ({ adults: 0, children: 0 }));
-  for (let i = 0; i < party.adults; i += 1) cabins[i % cabins.length].adults += 1;
-  for (let i = 0; i < party.children; i += 1) cabins[i % cabins.length].children += 1;
-  return cabins;
-}
-
-export function passengersFor(party: Party): Passenger[] {
-  return distributeParty(party).flatMap((cabin, roomIndex) => [
-    ...Array.from({ length: cabin.adults }, () => ({ fullName: "", isChild: false, roomIndex })),
-    ...Array.from({ length: cabin.children }, () => ({ fullName: "", isChild: true, roomIndex })),
-  ]);
-}
-
-export function partyProblem(party: Party): string | null {
-  if (party.adults < party.cabins) return "Each cabin needs at least one adult.";
-  if (party.adults + party.children > party.cabins * 4) return "That is more guests than the selected cabins can hold.";
-  return null;
 }
 
 /** UTC-safe calendar helpers: sailing times are stored as UTC midnight. */

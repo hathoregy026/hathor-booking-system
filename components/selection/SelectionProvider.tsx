@@ -75,6 +75,8 @@ type SelectionActions = {
   clearFavorites: () => void;
 
   setVoyage: (slug: StayDurationValue | null) => void;
+  /** The departure day chosen in the booking flow ("YYYY-MM-DD"). */
+  setSailingDate: (date: string | null) => void;
   setResidence: (slug: string | null) => void;
   setGuests: (adults: number | null, children: number | null) => void;
   setCharter: (charter: boolean) => void;
@@ -169,7 +171,14 @@ export const useSelectionStore = create<SelectionStore>((set, get) => ({
 
   setVoyage: (slug) => {
     const { voyage } = get();
-    set({ voyage: persistVoyage({ ...voyage, voyageSlug: slug }) });
+    // A date belongs to the voyage it was picked on.
+    const sailingDate = slug === voyage.voyageSlug ? voyage.sailingDate : null;
+    set({ voyage: persistVoyage({ ...voyage, voyageSlug: slug, sailingDate }) });
+  },
+
+  setSailingDate: (date) => {
+    const { voyage } = get();
+    set({ voyage: persistVoyage({ ...voyage, sailingDate: date }) });
   },
 
   setResidence: (slug) => {
