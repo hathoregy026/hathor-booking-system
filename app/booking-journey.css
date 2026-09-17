@@ -465,30 +465,35 @@ button.hj-progress__step { cursor: pointer; }
   background: var(--hj-gold-wash); color: var(--hj-gold-deep); font-size: 0.62rem;
 }
 .hj-filter__pill[aria-pressed="true"] .hj-filter__count { background: rgba(255, 253, 248, 0.18); color: #fffdf8; }
-.hj-filter__pill[disabled] { opacity: 0.4; cursor: not-allowed; }
 .hj-filter__shown { flex-basis: 100%; margin: 0; font-size: 0.7rem; color: var(--hj-ink-soft); }
 .hj-filter__hidden, .hj-filter__empty { font-size: 0.78rem; color: var(--hj-ink-soft); margin: 0 0 0.8rem; }
 
-/* room types, each with every cabin still free on the sailing */
+/* every cabin on the boat for the date, one card each */
 
-.hj-rooms { display: grid; gap: 0.9rem; }
-.hj-rtype {
+.hj-rooms { display: grid; gap: 0.65rem; }
+.hj .hj-drop--over { border-color: var(--hj-gold); background: #fff6e4; box-shadow: 0 0 0 2px var(--hj-gold) inset; }
+/* While a guest is being moved, every cabin with room says so.
+   Outline only: nothing may change size mid-drag, or the drop lands elsewhere. */
+.hj-rooms--moving .hj-cabin-card:not(.hj-cabin-card--full):not(.hj-cabin-card--out) { outline: 1px dashed var(--hj-gold); outline-offset: -5px; }
+
+.hj-cabin-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.7rem;
   background: #fffdf8;
   border: 1px solid var(--hj-line-soft);
-  padding: 0.85rem;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
-.hj-rtype--chosen { border-color: var(--hj-line); }
-.hj .hj-drop--over { border-color: var(--hj-gold); background: #fff6e4; box-shadow: 0 0 0 2px var(--hj-gold) inset; }
+.hj-cabin-card--used { border-color: var(--hj-gold); box-shadow: inset 3px 0 0 var(--hj-gold); }
+.hj-cabin-card--warn { border-color: rgba(165, 112, 44, 0.6); }
+.hj-cabin-card--target { border-style: dashed; border-color: var(--hj-gold); }
+.hj-cabin-card--out { opacity: 0.5; }
+.hj-cabin-card--out .hj-cabin-card__img { filter: grayscale(0.7); }
 
-.hj-rtype__head {
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: center;
-}
-.hj-room__media { position: relative; }
-.hj-room__img { width: 150px; height: 100px; object-fit: cover; display: block; border-radius: 1px; }
+.hj-cabin-card__media { position: relative; min-height: 120px; }
+.hj-cabin-card__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 1px; }
 .hj-room__save { position: absolute; top: 0.35rem; right: 0.35rem; display: flex; gap: 0.3rem; }
 .hj .hj-room__save .hathor-fav--card,
 .hj .hj-room__save .hathor-atv--card {
@@ -501,78 +506,95 @@ button.hj-progress__step { cursor: pointer; }
 .hj-room__save .hathor-atv__notice { display: none; }
 .hj .hj-room__save .hathor-atv--card[aria-busy="true"] { opacity: 0.55; cursor: progress; }
 
-.hj-room__body { min-width: 0; }
-.hj-room__name { font-family: var(--hj-display); font-size: 1.22rem; line-height: 1.2; font-weight: 500; margin: 0; }
-.hj-room__desc { font-size: 0.8rem; color: var(--hj-ink-soft); margin: 0.25rem 0 0; line-height: 1.45; }
-.hj-room__facts { display: flex; flex-wrap: wrap; gap: 0.3rem 0.85rem; margin: 0.4rem 0 0; font-size: 0.72rem; color: var(--hj-ink-soft); }
+.hj-cabin-card__main { min-width: 0; display: grid; gap: 0.35rem; align-content: start; }
+.hj-cabin-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.hj-cabin-card__title { display: grid; gap: 0.05rem; min-width: 0; }
+.hj-cabin-card__no { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hj-gold-deep); }
+.hj-cabin-card__price { display: grid; justify-items: end; text-align: right; flex: none; }
+.hj-room__name { font-family: var(--hj-display); font-size: 1.18rem; line-height: 1.2; font-weight: 500; margin: 0; }
+.hj-room__amount { font-family: var(--hj-display); font-size: 1.22rem; color: var(--hj-gold-deep); white-space: nowrap; }
+.hj-room__per { font-size: 0.62rem; color: var(--hj-ink-soft); }
+.hj-room__facts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.8rem; margin: 0; font-size: 0.72rem; color: var(--hj-ink-soft); }
 .hj-room__facts span { display: inline-flex; align-items: center; gap: 0.3rem; }
 .hj-room__facts .hj-icon { color: var(--hj-gold); }
-.hj-room__link { display: inline-block; margin-top: 0.4rem; font-size: 0.68rem; color: var(--hj-gold-deep); text-decoration: underline; text-underline-offset: 2px; }
+.hj-room__link { font-size: 0.68rem; color: var(--hj-gold-deep); text-decoration: underline; text-underline-offset: 2px; }
+/* The guest limit is the first thing on every card. */
+.hj-room__facts .hj-limit {
+  padding: 0.14rem 0.55rem;
+  border: 1px solid var(--hj-gold); border-radius: 999px;
+  color: var(--hj-gold-deep); font-weight: 500; font-size: 0.72rem;
+}
+.hj-room__facts .hj-limit .hj-icon { color: var(--hj-gold-deep); }
 
-.hj-room__side { display: grid; justify-items: end; gap: 0.25rem; text-align: right; min-width: 9rem; }
-.hj-room__amount { font-family: var(--hj-display); font-size: 1.3rem; color: var(--hj-gold-deep); white-space: nowrap; }
-.hj-room__per { font-size: 0.64rem; color: var(--hj-ink-soft); }
-.hj-room__state { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.hj-room__state--open { color: #5f7c54; }
-.hj-room__state--low { color: #a5702c; }
-
-/* While a guest is being moved, every cabin shows it can take them.
-   Outline only: nothing may change size mid-drag, or the drop lands elsewhere. */
-.hj-rooms--moving .hj-cab:not(.hj-cab--full) { outline: 1px dashed var(--hj-gold); outline-offset: -4px; }
-
-/* one card per free cabin */
-
-.hj-cabs {
+.hj-cabin-card__fill {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
-  gap: 0.55rem;
-  margin-top: 0.8rem;
-  padding-top: 0.75rem;
+  grid-template-columns: auto minmax(0, 1fr) 1.6rem;
+  grid-template-areas: "seats menus clear";
+  align-items: end;
+  gap: 0.8rem;
+  padding-top: 0.5rem;
   border-top: 1px solid var(--hj-line-soft);
 }
-.hj-cab {
-  position: relative;
-  min-width: 0;
+.hj-cabin-card__seats { grid-area: seats; display: flex; align-items: center; gap: 0.35rem; }
+.hj-cabin-card__count { margin-left: 0.3rem; font-size: 0.74rem; color: var(--hj-ink-soft); white-space: nowrap; }
+.hj-cabin-card__menus {
+  grid-area: menus;
   display: grid;
-  align-content: start;
+  grid-template-columns: repeat(2, minmax(4.6rem, 6.2rem));
+  justify-content: end;
   gap: 0.45rem;
-  padding: 0.5rem 0.55rem 0.6rem;
-  border: 1px dashed var(--hj-line);
-  background: rgba(255, 255, 255, 0.55);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
-.hj-cabs--suite { grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); }
-.hj-cab--used { border-style: solid; border-color: var(--hj-line); background: #fff; }
-.hj-cab--warn { border-color: rgba(165, 112, 44, 0.6); }
-.hj-cab--target { border-style: dashed; border-color: var(--hj-gold); }
-.hj-cab__head { display: flex; align-items: center; gap: 0.5rem; min-height: 1.6rem; }
-.hj-cab__name { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hj-gold-deep); white-space: nowrap; }
-.hj-cab__count { margin-left: auto; font-size: 0.68rem; color: var(--hj-ink-soft); white-space: nowrap; }
-.hj-cab__clear {
+.hj-cabin-card__clear {
+  grid-area: clear;
+  align-self: center;
   width: 1.6rem; height: 1.6rem; padding: 0;
   display: grid; place-items: center;
   border: 0; border-radius: 50%; background: none; color: var(--hj-ink-soft); cursor: pointer;
 }
-.hj-cab__clear:hover { background: var(--hj-gold-wash); color: var(--hj-ink); }
-.hj-cab__seats { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.hj-cabin-card__clear:hover { background: var(--hj-gold-wash); color: var(--hj-ink); }
+.hj-cabin-card__out {
+  margin: 0.15rem 0 0; padding-top: 0.5rem; border-top: 1px solid var(--hj-line-soft);
+  font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: #9a5a50;
+}
+.hj-cabin-card__warn { margin: 0; font-size: 0.7rem; color: #a5702c; }
+
+/* An empty place in a cabin: the size of a guest icon, dashed. */
 .hj-seat {
   width: var(--hj-tile-w); height: var(--hj-tile-h);
   border: 1px dashed var(--hj-line); border-radius: 3px;
-  background: rgba(176, 138, 74, 0.04);
+  background: rgba(176, 138, 74, 0.05);
 }
-.hj-cab__menus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+
+/* Arrange for me: which cabin types to use */
+
+.hj-arrange { display: grid; gap: 0.5rem; margin-top: 0.4rem; padding: 0.75rem; border: 1px solid var(--hj-gold); background: #fffdf8; }
+.hj-arrange__title { margin: 0; font-family: var(--hj-display); font-size: 1.05rem; color: var(--hj-ink); }
+.hj-arrange__lede { margin: 0; font-size: 0.74rem; line-height: 1.45; color: var(--hj-ink-soft); }
+.hj-arrange__types { display: grid; gap: 0.35rem; }
+.hj-arrange__type {
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  padding: 0.5rem 0.6rem; border: 1px solid var(--hj-line-soft); background: #fff; cursor: pointer;
+}
+.hj-arrange__type--on { border-color: var(--hj-gold); background: var(--hj-gold-wash); }
+.hj-arrange__type--out { opacity: 0.5; cursor: not-allowed; }
+.hj-arrange__type input { flex: none; width: 1rem; height: 1rem; margin: 0.15rem 0 0; accent-color: var(--hj-gold); }
+.hj-arrange__type strong { display: block; font-size: 0.84rem; font-weight: 500; color: var(--hj-ink); }
+.hj-arrange__type > span > span { display: block; font-size: 0.7rem; color: var(--hj-ink-soft); }
+.hj-arrange__problem { margin: 0; font-size: 0.72rem; color: #9b4a3d; }
+.hj-arrange__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.8rem; }
+
 .hj-cab__menu { display: grid; gap: 0.15rem; min-width: 0; }
 .hj-cab__menu > span { font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hj-ink-soft); }
 .hj-cab__menu select {
-  width: 100%; min-height: 2.25rem; padding: 0.25rem 1.6rem 0.25rem 0.55rem;
+  width: 100%;
   border: 1px solid var(--hj-line-soft); border-radius: var(--hj-radius);
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238d6b32' stroke-width='1.3'/%3E%3C/svg%3E") no-repeat right 0.55rem center;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238d6b32' stroke-width='1.3'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
   -webkit-appearance: none; appearance: none;
-  color: var(--hj-ink); font-size: 0.86rem; cursor: pointer;
+  color: var(--hj-ink); cursor: pointer;
 }
-.hj-cab__menu select:disabled { opacity: 0.45; cursor: not-allowed; }
+.hj-cab__menu select { min-height: 2.25rem; padding: 0.25rem 1.6rem 0.25rem 0.55rem; font-size: 0.86rem; }
+.hj-cab__menu select option:disabled { color: #c9bfae; }
 .hj-cab__menu select:focus-visible { outline: 2px solid var(--hj-gold); outline-offset: 1px; }
-.hj-cab__warn { margin: 0; font-size: 0.7rem; color: #a5702c; }
 .hj-cab__place {
   position: absolute; inset: 0; z-index: 2;
   display: flex; align-items: center; justify-content: center;
@@ -585,6 +607,55 @@ button.hj-progress__step { cursor: pointer; }
   font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
 }
 .hj-cab__place:hover span { background: var(--hj-gold-deep); }
+
+/* country menu: always opens below the field and stays inside the window */
+
+.hj-country { position: relative; }
+.hj-field .hj-country input { padding-right: 2.2rem; cursor: pointer; }
+.hj-field .hj-country--open input { cursor: text; border-color: var(--hj-gold); }
+.hj-field .hj-country--invalid input { border-color: #b4675c; }
+.hj-country__chevron {
+  position: absolute; right: 0.8rem; top: 23px;
+  width: 10px; height: 6px; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238d6b32' stroke-width='1.3'/%3E%3C/svg%3E") no-repeat;
+  transform: translateY(-50%);
+  transition: transform 0.15s ease;
+}
+.hj-country--open .hj-country__chevron { transform: translateY(-50%) rotate(180deg); }
+.hj-country__list {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 60;
+  margin: 0; padding: 0.25rem 0; list-style: none;
+  overflow-y: auto; overscroll-behavior: contain;
+  background: #fff; border: 1px solid var(--hj-line);
+  box-shadow: 0 14px 34px rgba(52, 38, 14, 0.16);
+}
+.hj-country__option {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem;
+  padding: 0.5rem 0.75rem; font-size: 0.86rem; line-height: 1.3; color: var(--hj-ink); cursor: pointer;
+}
+.hj-country__option--active { background: var(--hj-gold-wash); }
+.hj-country__option--chosen { color: var(--hj-gold-deep); font-weight: 500; }
+.hj-country__dial { flex: none; font-size: 0.8rem; color: var(--hj-ink-soft); }
+.hj-country__empty { padding: 0.6rem 0.75rem; font-size: 0.8rem; color: var(--hj-ink-soft); }
+
+/* phone number with the chosen country's code in front */
+
+.hj-field > .hj-phone {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  font-size: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  color: inherit;
+}
+.hj-phone__code {
+  display: grid; place-items: center;
+  min-width: 3.8rem; min-height: 46px; padding: 0 0.65rem;
+  border: 1px solid var(--hj-line-soft); border-right: 0; border-radius: var(--hj-radius) 0 0 var(--hj-radius);
+  background: #faf6ee; color: var(--hj-ink); font-size: 0.9rem; white-space: nowrap;
+}
+.hj-field .hj-phone input { flex: 1; min-width: 0; border-radius: 0 var(--hj-radius) var(--hj-radius) 0; }
 
 /* the step map */
 
@@ -712,9 +783,9 @@ button.hj-progress__step { cursor: pointer; }
 
 @media (max-width: 1320px) {
   .hj-stage--suites { grid-template-columns: minmax(0, 1fr) 272px 236px; gap: 1.2rem; }
-  .hj-rtype__head { grid-template-columns: 120px minmax(0, 1fr) auto; gap: 0.8rem; }
-  .hj-room__img { width: 120px; height: 90px; }
-  .hj-room__side { min-width: 8rem; }
+  .hj-cabin-card { grid-template-columns: 116px minmax(0, 1fr); gap: 0.8rem; }
+  .hj-cabin-card__fill { grid-template-columns: minmax(0, 1fr) 1.6rem; grid-template-areas: "seats clear" "menus menus"; }
+  .hj-cabin-card__menus { justify-content: start; }
 }
 
 @media (max-width: 1180px) {
@@ -733,7 +804,7 @@ button.hj-progress__step { cursor: pointer; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hj-tile, .hj-rtype, .hj-cab, .hj-pool, .hj-filter__pill { transition: none; }
+  .hj-tile, .hj-cabin-card, .hj-pool, .hj-filter__pill { transition: none; }
 }
 
 /* ---------- details + payment ---------- */
@@ -971,32 +1042,13 @@ button.hj-progress__step { cursor: pointer; }
   .hj-grid2, .hj-grid3 { grid-template-columns: minmax(0, 1fr); }
   .hj { --hj-tile-w: 3.55rem; --hj-tile-h: 3.25rem; }
   .hj-party .hj-counters { grid-template-columns: minmax(0, 1fr); }
-  .hj-rtype { padding: 0.7rem; }
-  .hj-rtype__head {
-    grid-template-columns: 96px minmax(0, 1fr);
-    grid-template-areas: "media body" "side side";
-    gap: 0.6rem 0.75rem;
-    align-items: start;
-  }
-  .hj-room__media { grid-area: media; }
-  .hj-room__body { grid-area: body; }
-  .hj-room__img { width: 96px; height: 96px; }
-  .hj-room__name { font-size: 1.08rem; }
-  .hj-room__desc { display: none; }
-  .hj-room__side {
-    grid-area: side;
-    grid-template-columns: auto minmax(0, 1fr);
-    justify-items: start;
-    align-items: baseline;
-    text-align: left;
-    column-gap: 0.6rem;
-  }
-  .hj-room__state { grid-column: 1 / -1; }
-  .hj-cabs { grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); }
-  .hj-cabs--suite { grid-template-columns: minmax(0, 1fr); }
-  .hj-cab { padding: 0.45rem 0.45rem 0.55rem; }
-  .hj-cab__name { letter-spacing: 0.06em; }
-  .hj-cab__head { gap: 0.3rem; }
+  .hj-cabin-card { grid-template-columns: 84px minmax(0, 1fr); gap: 0.65rem; padding: 0.6rem; }
+  .hj-cabin-card__media { min-height: 0; height: 84px; align-self: start; }
+  .hj-cabin-card__top { flex-direction: column; gap: 0.15rem; }
+  .hj-cabin-card__price { justify-items: start; text-align: left; }
+  .hj-room__name { font-size: 1.04rem; }
+  .hj-cabin-card__seats { flex-wrap: wrap; }
+  .hj-cabin-card__menus { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hj-guide__list { grid-template-columns: minmax(0, 1fr); gap: 0.45rem; }
   .hj-filter__pill { padding: 0.3rem 0.65rem; font-size: 0.7rem; }
   .hj-day__body { padding-left: 0; }
@@ -1013,8 +1065,9 @@ button.hj-progress__step { cursor: pointer; }
 .booking-page .hj .hj-terms { display: flex; align-items: flex-start; min-height: 0; }
 .booking-page .hj .hj-room__link,
 .booking-page .hj .hj-counter__btn,
-.booking-page .hj .hj-cab__clear,
+.booking-page .hj .hj-cabin-card__clear,
 .booking-page .hj .hj-cab__place { min-height: 0; }
+.booking-page .hj .hj-arrange__type { display: flex; align-items: flex-start; min-height: 0; }
 .booking-page .hj .hj-voyage { display: flex; }
 
 /* Night mode paints public headings cream; the folio stays ivory, so restore ink. */
@@ -1058,9 +1111,12 @@ html[data-public-theme="night"] .public-site .hj .hj-room__amount {
 .hj p.hj-note-box { font-size: 0.76rem; line-height: 1.5; letter-spacing: normal; font-weight: 400; }
 .hj p.hj-filter__shown { font-size: 0.7rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
 .hj p.hj-filter__hidden, .hj p.hj-filter__empty { font-size: 0.78rem; line-height: 1.5; letter-spacing: normal; font-weight: 400; }
-.hj p.hj-room__desc { font-size: 0.8rem; line-height: 1.45; letter-spacing: normal; font-weight: 400; }
 .hj p.hj-room__facts { font-size: 0.72rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
-.hj p.hj-cab__warn { font-size: 0.7rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
+.hj p.hj-cabin-card__out { font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.12em; font-weight: 400; }
+.hj p.hj-arrange__title { font-size: 1.05rem; line-height: 1.25; letter-spacing: normal; font-weight: 400; }
+.hj p.hj-arrange__lede { font-size: 0.74rem; line-height: 1.45; letter-spacing: normal; font-weight: 400; }
+.hj p.hj-arrange__problem { font-size: 0.72rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
+.hj p.hj-cabin-card__warn { font-size: 0.7rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
 .hj p.hj-tray__hint { font-size: 0.74rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
 .hj p.hj-deposit__fine { font-size: 0.72rem; line-height: 1.45; letter-spacing: normal; font-weight: 400; }
 .hj p.hj-ledger__note { font-size: 0.78rem; line-height: 1.5; letter-spacing: normal; font-weight: 400; }
@@ -1089,7 +1145,11 @@ html[data-public-theme="night"] .public-site .hj p:is(.hj-panel__kicker, .hj-pay
 html[data-public-theme="night"] .public-site .hj p:is(.hj-error, .hj-party__notice--warn) { color: #9b4a3d; }
 html[data-public-theme="night"] .public-site .hj p.hj-alert { color: #8d4437; }
 html[data-public-theme="night"] .public-site .hj p.hj-party__notice:not(.hj-party__notice--warn) { color: #5f7c54; }
-html[data-public-theme="night"] .public-site .hj p:is(.hj-party__blocker, .hj-cab__warn) { color: #a5702c; }
+html[data-public-theme="night"] .public-site .hj p:is(.hj-party__blocker, .hj-cabin-card__warn) { color: #a5702c; }
+html[data-public-theme="night"] .public-site .hj p.hj-cabin-card__out { color: #9a5a50; }
+html[data-public-theme="night"] .public-site .hj p.hj-arrange__title,
+html[data-public-theme="night"] .public-site .hj li.hj-country__option { color: var(--hj-ink); }
+html[data-public-theme="night"] .public-site .hj p.hj-arrange__problem { color: #9b4a3d; }
 
 .hj p.hj-tray__hint--warn { color: #9b4a3d; }
 html[data-public-theme="night"] .public-site .hj p.hj-tray__hint--warn { color: #9b4a3d; }

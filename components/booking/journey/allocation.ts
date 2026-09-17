@@ -10,12 +10,13 @@ import {
 /**
  * Guest-to-cabin arrangement for the Guests & Suites screen.
  *
- * Pure functions only. Every cabin free on the sailing is shown as its own
- * slot ("King Cabin 3"), and guests are placed into slots by dragging, tapping
- * or the Adults/Children menus — three ways of calling the same functions.
- * Slots are display positions, never physical cabins: the hold function picks
- * the actual cabin. The rules mirror what hathor_acquire_hold accepts, so a
- * finished arrangement is exactly the rooms payload the database allocates:
+ * Pure functions only. Guests are created by the Who Is Travelling counters
+ * and wait there until they are put in a cabin. Every cabin on the sailing has
+ * its own card ("Luxury King Cabin · Cabin 3"), and a guest goes into a cabin
+ * by dragging (or tapping) or by that cabin's Adults/Children menu — two ways
+ * of doing the same thing, sharing one count and one limit. Cabin numbers are
+ * positions on screen, never physical cabins: the hold function picks the
+ * actual cabin. The rules mirror what hathor_acquire_hold accepts:
  *   - King and Twin cabins sleep 2, both suites sleep 4
  *   - every cabin needs at least one adult (and so holds at most 3 children)
  *   - never more cabins of a type than are free on the sailing
@@ -24,12 +25,12 @@ import {
 export type GuestKind = "adult" | "child";
 export type Guest = { id: string; kind: GuestKind; number: number };
 
-/** A slot in use. Slots with nobody in them are not part of the arrangement. */
+/** A cabin with guests in it. Empty cabins are not part of the arrangement. */
 export type Cabin = { id: string; roomType: PhysicalRoomType; index: number };
 
 export type Arrangement = {
   cabins: Cabin[];
-  /** guestId → cabinId. A guest missing from the map is still to be placed. */
+  /** guestId → cabinId. A guest missing from the map is still waiting. */
   placement: Record<string, string>;
 };
 
@@ -60,10 +61,8 @@ const SHORT_NAME: Record<PhysicalRoomType, string> = {
 };
 
 export const shortName = (type: PhysicalRoomType) => SHORT_NAME[type];
-export const kindLabel = (kind: GuestKind, count = 2) =>
-  kind === "adult" ? (count === 1 ? "adult" : "adults") : count === 1 ? "child" : "children";
 
-/* ---------- slots ---------- */
+/* ---------- cabins ---------- */
 
 export const slotId = (roomType: PhysicalRoomType, index: number) => `${roomType}#${index}`;
 
@@ -74,7 +73,7 @@ export function parseSlot(id: string): { roomType: PhysicalRoomType; index: numb
   return { roomType: type as PhysicalRoomType, index };
 }
 
-/** "Luxury Suite 2" — the slot's position on screen, not a cabin number. */
+/** "King Cabin 3" — the cabin's card on screen, not a physical cabin number. */
 export function cabinLabel(cabinId: string): string {
   const slot = parseSlot(cabinId);
   return slot ? `${SHORT_NAME[slot.roomType]} ${slot.index + 1}` : "that cabin";
@@ -112,11 +111,12 @@ const isOpenSlot = (offers: Offers, cabinId: string) => {
   return Boolean(slot && slot.index < (offers[slot.roomType]?.available ?? 0));
 };
 
-/** Drops cabins nobody is in and keeps a stable order for the rooms payload. */
+/** Drops cabins nobody is in, keeping each guest exactly where they were put. */
 function normalise(arrangement: Arrangement): Arrangement {
   const used = new Set(Object.values(arrangement.placement));
   const cabins = arrangement.cabins.filter(cabin => used.has(cabin.id)).sort(byTypeThenIndex);
-  const placement = Object.fromEntries(Object.entries(arrangement.placement).filter(([, id]) => cabins.some(cabin => cabin.id === id)));
+  const kept = new Set(cabins.map(cabin => cabin.id));
+  const placement = Object.fromEntries(Object.entries(arrangement.placement).filter(([, id]) => kept.has(id)));
   return { cabins, placement };
 }
 
@@ -126,64 +126,35 @@ function withCabin(arrangement: Arrangement, cabinId: string): Arrangement {
   return { ...arrangement, cabins: [...arrangement.cabins, { id: cabinId, ...slot }] };
 }
 
-/* ---------- moving guests ---------- */
+/* ---------- putting guests in cabins ---------- */
 
+/** Drag, tap, or a drop on a cabin: one guest into one cabin, within its limit. */
 export function placeGuest(
   arrangement: Arrangement,
   guests: Guest[],
   guestId: string,
-  target: { cabinId: string } | { roomType: PhysicalRoomType },
+  target: { cabinId: string },
   offers: Offers,
 ): PlaceResult {
   const guest = guests.find(entry => entry.id === guestId);
   if (!guest) return { error: "That guest is no longer in your party." };
+  const { cabinId } = target;
+  const slot = parseSlot(cabinId);
+  if (!slot || !isOpenSlot(offers, cabinId)) return { error: `${cabinLabel(cabinId)} is not available on this date.` };
+  if (arrangement.placement[guestId] === cabinId) return { next: arrangement, cabinId };
 
   const withoutGuest: Record<string, string> = { ...arrangement.placement };
   delete withoutGuest[guestId];
-  const base: Arrangement = { ...arrangement, placement: withoutGuest };
-  const seated = (cabinId: string) => occupants(base, guests, cabinId);
-
-  let cabinId: string;
-  if ("cabinId" in target) {
-    cabinId = target.cabinId;
-    if (!isOpenSlot(offers, cabinId)) return { error: `${cabinLabel(cabinId)} is no longer free on this sailing.` };
-    if (arrangement.placement[guestId] === cabinId) return { next: arrangement, cabinId };
-  } else {
-    const { roomType } = target;
-    const available = offers[roomType]?.available ?? 0;
-    if (available === 0) return { error: `${SHORT_NAME[roomType]} is not available on this sailing.` };
-    const current = arrangement.placement[guestId];
-    if (current && parseSlot(current)?.roomType === roomType) return { next: arrangement, cabinId: current };
-
-    const slots = Array.from({ length: available }, (_, index) => slotId(roomType, index));
-    const withSpace = slots.filter(id => seated(id).length > 0 && seated(id).length < roomCapacity(roomType));
-    // A child joins an adult; an adult fills a cabin missing one, then joins
-    // company; only then does the next free cabin of this type open.
-    const hasAdult = (id: string) => seated(id).some(entry => entry.kind === "adult");
-    const empty = slots.find(id => seated(id).length === 0);
-    const chosen = guest.kind === "child"
-      ? withSpace.find(hasAdult) ?? empty ?? withSpace[0]
-      : withSpace.find(id => !hasAdult(id)) ?? withSpace[0] ?? empty;
-    if (!chosen) {
-      return {
-        error: available === 1
-          ? `The only free ${SHORT_NAME[roomType]} on this sailing is already full.`
-          : `All ${available} free ${SHORT_NAME[roomType]}s on this sailing are already full.`,
-      };
-    }
-    cabinId = chosen;
-  }
-
-  const slot = parseSlot(cabinId)!;
-  const inside = seated(cabinId);
-  if (inside.length >= roomCapacity(slot.roomType)) {
-    return { error: `${cabinLabel(cabinId)} is full. It sleeps ${roomCapacity(slot.roomType)}.` };
+  const inside = occupants({ ...arrangement, placement: withoutGuest }, guests, cabinId);
+  const capacity = roomCapacity(slot.roomType);
+  if (inside.length >= capacity) {
+    return { error: `${cabinLabel(cabinId)} is full — it takes up to ${capacity} guests.` };
   }
   if (guest.kind === "child" && inside.filter(entry => entry.kind === "child").length >= MAX_CHILDREN_PER_CABIN) {
     return { error: `${cabinLabel(cabinId)} already has ${MAX_CHILDREN_PER_CABIN} children.` };
   }
 
-  const next = normalise(withCabin({ ...base, placement: { ...withoutGuest, [guestId]: cabinId } }, cabinId));
+  const next = normalise(withCabin({ ...arrangement, placement: { ...withoutGuest, [guestId]: cabinId } }, cabinId));
   return { next, cabinId };
 }
 
@@ -194,16 +165,17 @@ export function unplaceGuest(arrangement: Arrangement, guestId: string): Arrange
   return normalise({ ...arrangement, placement });
 }
 
-/** Empties one cabin; its guests wait for another. */
+/** Empties one cabin; its guests go back to wait in Who Is Travelling. */
 export function clearCabin(arrangement: Arrangement, cabinId: string): Arrangement {
   const placement = Object.fromEntries(Object.entries(arrangement.placement).filter(([, id]) => id !== cabinId));
   return normalise({ ...arrangement, placement });
 }
 
 /**
- * The dropdown path: how many adults or children should be in this cabin.
- * It moves guests exactly as a drag would — raising takes guests who are still
- * waiting, lowering sends guests back to wait — so both methods stay in step.
+ * A cabin's Adults or Children menu — the same as dragging. The cabin ends up
+ * with that many: raising brings in guests who are waiting, lowering sends the
+ * most recently numbered ones back to wait. Guests already in the cabin stay,
+ * so dragging one guest in and choosing 2 gives two, never three.
  */
 export function setCabinCount(
   arrangement: Arrangement,
@@ -213,29 +185,35 @@ export function setCabinCount(
   count: number,
   offers: Offers,
 ): PlaceResult {
-  if (!isOpenSlot(offers, cabinId)) return { error: `${cabinLabel(cabinId)} is no longer free on this sailing.` };
-  const inside = occupants(arrangement, guests, cabinId).filter(guest => guest.kind === kind);
-  if (count === inside.length) return { next: arrangement, cabinId };
+  const slot = parseSlot(cabinId);
+  if (!slot || !isOpenSlot(offers, cabinId)) return { error: `${cabinLabel(cabinId)} is not available on this date.` };
+  const same = occupants(arrangement, guests, cabinId).filter(guest => guest.kind === kind);
+  if (count === same.length) return { next: arrangement, cabinId };
 
-  if (count < inside.length) {
+  if (count < same.length) {
     let next = arrangement;
-    for (const guest of [...inside].sort((a, b) => b.number - a.number).slice(0, inside.length - count)) {
+    for (const guest of [...same].sort((a, b) => b.number - a.number).slice(0, same.length - count)) {
       next = unplaceGuest(next, guest.id);
     }
     return { next, cabinId };
   }
 
-  const waiting = unplacedGuests(arrangement, guests).filter(guest => guest.kind === kind);
-  const needed = count - inside.length;
-  if (waiting.length < needed) {
+  const options = cabinCountOptions(arrangement, guests, cabinId, kind);
+  if (count > options.limit) {
+    return { error: `${cabinLabel(cabinId)} takes up to ${roomCapacity(slot.roomType)} guests.` };
+  }
+  if (count > options.reachable) {
+    const waiting = options.reachable - same.length;
+    const noun = kind === "adult" ? (waiting === 1 ? "adult is" : "adults are") : waiting === 1 ? "child is" : "children are";
     return {
-      error: waiting.length === 0
-        ? `Every ${kindLabel(kind, 1)} already has a cabin. Add more ${kindLabel(kind)} above, or lower another cabin first.`
-        : `Only ${waiting.length} ${kindLabel(kind, waiting.length)} ${waiting.length === 1 ? "is" : "are"} waiting for a cabin.`,
+      error: waiting === 0
+        ? `No ${kind === "adult" ? "adults" : "children"} are waiting. Add them in Who Is Travelling, or take one out of another cabin.`
+        : `Only ${waiting} ${noun} waiting. Add more in Who Is Travelling first.`,
     };
   }
+
   let next = arrangement;
-  for (const guest of waiting.slice(0, needed)) {
+  for (const guest of unplacedGuests(arrangement, guests).filter(entry => entry.kind === kind).slice(0, count - same.length)) {
     const result = placeGuest(next, guests, guest.id, { cabinId }, offers);
     if ("error" in result) return result;
     next = result.next;
@@ -243,23 +221,26 @@ export function setCabinCount(
   return { next, cabinId };
 }
 
-/** The largest number the Adults or Children menu can offer for a cabin. */
-export function cabinCountLimit(arrangement: Arrangement, guests: Guest[], cabinId: string, kind: GuestKind): number {
+/**
+ * What a cabin's menu can offer: `limit` is set by the cabin (its size, and at
+ * most three children), `reachable` by the guests actually waiting. Numbers
+ * above `reachable` are shown but cannot be chosen.
+ */
+export function cabinCountOptions(arrangement: Arrangement, guests: Guest[], cabinId: string, kind: GuestKind) {
   const slot = parseSlot(cabinId);
-  if (!slot) return 0;
+  if (!slot) return { current: 0, limit: 0, reachable: 0 };
   const inside = occupants(arrangement, guests, cabinId);
-  const same = inside.filter(guest => guest.kind === kind).length;
-  const other = inside.length - same;
+  const current = inside.filter(guest => guest.kind === kind).length;
+  const others = inside.length - current;
+  const room = roomCapacity(slot.roomType) - others;
+  const limit = kind === "child" ? Math.min(room, MAX_CHILDREN_PER_CABIN) : room;
   const waiting = unplacedGuests(arrangement, guests).filter(guest => guest.kind === kind).length;
-  const room = roomCapacity(slot.roomType) - other;
-  const cap = kind === "child" ? Math.min(room, MAX_CHILDREN_PER_CABIN) : room;
-  return Math.max(same, Math.min(cap, same + waiting));
+  return { current, limit, reachable: Math.min(limit, current + waiting) };
 }
 
 /**
- * The party size changed. Guests are anonymous until the details step, so the
- * ones removed are those still waiting first, then the most recently placed;
- * everyone else keeps their cabin.
+ * The Who Is Travelling totals changed. New guests wait in the middle; when the
+ * party shrinks, guests still waiting go first, then the most recently placed.
  */
 export function resizeParty(arrangement: Arrangement, guests: Guest[], adults: number, children: number): Arrangement {
   const placement: Record<string, string> = {};
@@ -267,7 +248,6 @@ export function resizeParty(arrangement: Arrangement, guests: Guest[], adults: n
     const ofKind = guests.filter(guest => guest.kind === kind);
     const placed = ofKind.filter(guest => arrangement.placement[guest.id]);
     if (total >= ofKind.length) {
-      // Growing: everyone keeps their tile and cabin; the newcomers wait.
       for (const guest of placed) placement[guest.id] = arrangement.placement[guest.id];
       continue;
     }
@@ -278,32 +258,35 @@ export function resizeParty(arrangement: Arrangement, guests: Guest[], adults: n
   return normalise({ cabins: arrangement.cabins, placement });
 }
 
-/** After a fresh availability read: keep cabins inside the free slots, closing any gaps. */
+/**
+ * After a fresh availability read. A cabin card that no longer exists (another
+ * guest booked one of that type) moves its guests to a free card of the same
+ * type if there is one; otherwise they go back to wait.
+ */
 export function fitToOffers(arrangement: Arrangement, offers: Offers): { next: Arrangement; removed: PhysicalRoomType[] } {
-  if (arrangement.cabins.every(cabin => isOpenSlot(offers, cabin.id))) return { next: arrangement, removed: [] };
+  const lost = arrangement.cabins.filter(cabin => !isOpenSlot(offers, cabin.id));
+  if (lost.length === 0) return { next: arrangement, removed: [] };
 
+  const placement = { ...arrangement.placement };
+  const cabins = arrangement.cabins.filter(cabin => isOpenSlot(offers, cabin.id));
   const removed: PhysicalRoomType[] = [];
-  const cabins: Cabin[] = [];
-  const renamed: Record<string, string> = {};
-  for (const type of PHYSICAL_ROOM_TYPES) {
-    const allowed = offers[type]?.available ?? 0;
-    arrangement.cabins.filter(cabin => cabin.roomType === type).sort(byTypeThenIndex).forEach((cabin, position) => {
-      if (position < allowed) {
-        const id = slotId(type, position);
-        renamed[cabin.id] = id;
-        cabins.push({ id, roomType: type, index: position });
-      } else {
-        removed.push(type);
-      }
-    });
+  for (const cabin of lost) {
+    const available = offers[cabin.roomType]?.available ?? 0;
+    const freeIndex = Array.from({ length: available }, (_, index) => index)
+      .find(index => !cabins.some(entry => entry.id === slotId(cabin.roomType, index)));
+    if (freeIndex === undefined) {
+      removed.push(cabin.roomType);
+      for (const [guest, id] of Object.entries(placement)) if (id === cabin.id) delete placement[guest];
+      continue;
+    }
+    const moved = slotId(cabin.roomType, freeIndex);
+    cabins.push({ id: moved, roomType: cabin.roomType, index: freeIndex });
+    for (const [guest, id] of Object.entries(placement)) if (id === cabin.id) placement[guest] = moved;
   }
-  const placement = Object.fromEntries(
-    Object.entries(arrangement.placement).filter(([, id]) => renamed[id]).map(([guest, id]) => [guest, renamed[id]]),
-  );
   return { next: normalise({ cabins, placement }), removed };
 }
 
-/* ---------- a ready-made start ---------- */
+/* ---------- Arrange for me ---------- */
 
 /** Lexicographic: the first differing position decides. */
 function ranksBefore(a: number[], b: number[]): boolean {
@@ -312,16 +295,16 @@ function ranksBefore(a: number[], b: number[]): boolean {
 }
 
 /**
- * So nobody has to drag to continue: the lowest voyage total that fits
- * everyone, then the fewest cabins, preferring the cabin type the guest chose
- * elsewhere (a room page or the cart) when there is one.
+ * Places everyone using only the cabin types the guest chose, within each
+ * cabin's limit: the lowest voyage total, then the fewest cabins. Returns null
+ * when those types cannot hold the whole party on this date.
  */
-export function autoArrange(guests: Guest[], offers: Offers, preferred: PhysicalRoomType | null = null): Arrangement | null {
+export function autoArrange(guests: Guest[], offers: Offers, allowed: readonly PhysicalRoomType[] = PHYSICAL_ROOM_TYPES): Arrangement | null {
   const adults = guests.filter(guest => guest.kind === "adult");
   const children = guests.filter(guest => guest.kind === "child");
   if (guests.length === 0) return EMPTY_ARRANGEMENT;
 
-  const limit = (type: PhysicalRoomType) => Math.min(offers[type]?.available ?? 0, adults.length);
+  const limit = (type: PhysicalRoomType) => (allowed.includes(type) ? Math.min(offers[type]?.available ?? 0, adults.length) : 0);
   const price = (type: PhysicalRoomType) => offers[type]?.priceCents ?? 0;
   const [king, twin, suite, royal] = PHYSICAL_ROOM_TYPES;
 
@@ -334,9 +317,8 @@ export function autoArrange(guests: Guest[], offers: Offers, preferred: Physical
           if (cabins === 0 || cabins > adults.length) continue;
           if (2 * (k + t) + 4 * (s + r) < guests.length) continue;
           const counts = [k, t, s, r];
-          const usesPreferred = preferred ? counts[PHYSICAL_ROOM_TYPES.indexOf(preferred)] > 0 : true;
           const total = k * price(king) + t * price(twin) + s * price(suite) + r * price(royal);
-          const key = [usesPreferred ? 0 : 1, total, cabins, t, r];
+          const key = [total, cabins, t, r];
           if (!best || ranksBefore(key, best.key)) best = { counts, key };
         }
       }
@@ -381,7 +363,7 @@ export function arrangementIssues(arrangement: Arrangement, guests: Guest[]): st
     const inside = occupants(arrangement, guests, cabin.id);
     const label = cabinLabel(cabin.id);
     if (!inside.some(guest => guest.kind === "adult")) issues.push(`${label} needs at least one adult.`);
-    else if (inside.length > roomCapacity(cabin.roomType)) issues.push(`${label} sleeps ${roomCapacity(cabin.roomType)}.`);
+    else if (inside.length > roomCapacity(cabin.roomType)) issues.push(`${label} takes up to ${roomCapacity(cabin.roomType)} guests.`);
   }
   return issues;
 }

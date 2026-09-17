@@ -39,7 +39,10 @@ export type GuestForm = {
   firstName: string;
   lastName: string;
   email: string;
+  /** The number as typed, without the country code. */
   phone: string;
+  /** ISO country code from the country menu; its dialling code prefixes the phone. */
+  countryCode: string;
   country: string;
   dietary: string;
   transfers: string;
@@ -72,6 +75,7 @@ export const emptyGuestForm = (): GuestForm => ({
   lastName: "",
   email: "",
   phone: "",
+  countryCode: "",
   country: "",
   dietary: "",
   transfers: "",
@@ -150,4 +154,15 @@ export function rangeLabel(fromIso: string, toIso: string): string {
 /** Longer date span for the voyage folio. */
 export function folioRange(fromIso: string, toIso: string): string {
   return `${shortDate(fromIso)} – ${shortDate(toIso)}`;
+}
+
+/**
+ * The phone number to send: the chosen country's code plus the number typed,
+ * without spaces or a leading trunk 0. A number typed with its own "+" wins.
+ */
+export function internationalPhone(phone: string, dial: string | null): string {
+  const digits = phone.replace(/[\s().-]/g, "");
+  if (digits.startsWith("+")) return digits;
+  if (digits.startsWith("00")) return `+${digits.slice(2)}`;
+  return dial ? `+${dial}${digits.replace(/^0+/, "")}` : digits;
 }

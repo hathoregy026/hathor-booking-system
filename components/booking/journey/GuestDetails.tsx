@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
+import { findCountry } from "@/lib/countries";
+import { CountryPicker } from "./CountryPicker";
 import { guestLabel, type CabinView } from "./allocation";
 import {
   money,
@@ -35,6 +37,8 @@ export function DetailsPaymentScreen({
   onBack: () => void;
   onConfirm: () => void;
 }) {
+  const country = findCountry(form.countryCode);
+
   return (
     <div className="hj-details">
       <section>
@@ -59,15 +63,32 @@ export function DetailsPaymentScreen({
         </label>
 
         <div className="hj-grid2" style={{ marginTop: "0.7rem" }}>
+          <div className={`hj-field${errors.country ? " hj-field--invalid" : ""}`}>
+            <span id="hj-country-label">Country *</span>
+            <CountryPicker
+              value={form.countryCode}
+              labelledBy="hj-country-label"
+              invalid={Boolean(errors.country)}
+              onChange={chosen => onForm({ countryCode: chosen?.code ?? "", country: chosen?.name ?? "" })}
+            />
+            {errors.country ? <p className="hj-error">{errors.country}</p> : null}
+          </div>
           <label className={`hj-field${errors.phone ? " hj-field--invalid" : ""}`}>
             <span>Phone *</span>
-            <input type="tel" inputMode="tel" value={form.phone} autoComplete="tel" placeholder="+20 10 1234 5678" onChange={event => onForm({ phone: event.target.value })} />
+            <span className="hj-phone">
+              <span className="hj-phone__code" aria-label={country ? `Country code for ${country.name}` : "Choose your country for its code"}>
+                {country ? `+${country.dial}` : "+"}
+              </span>
+              <input
+                type="tel"
+                inputMode="tel"
+                value={form.phone}
+                autoComplete="tel-national"
+                placeholder={country ? "Phone number" : "Choose your country first"}
+                onChange={event => onForm({ phone: event.target.value })}
+              />
+            </span>
             {errors.phone ? <p className="hj-error">{errors.phone}</p> : null}
-          </label>
-          <label className={`hj-field${errors.country ? " hj-field--invalid" : ""}`}>
-            <span>Country *</span>
-            <input value={form.country} autoComplete="country-name" maxLength={80} placeholder="e.g. Egypt" onChange={event => onForm({ country: event.target.value })} />
-            {errors.country ? <p className="hj-error">{errors.country}</p> : null}
           </label>
         </div>
 

@@ -28,9 +28,11 @@ import {
   shortName,
   type Arrangement,
 } from "./allocation";
+import { findCountry } from "@/lib/countries";
 import {
   STORAGE_KEY,
   emptyGuestForm,
+  internationalPhone,
   longDate,
   money,
   type Attempt,
@@ -78,8 +80,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const [loadingSailings, setLoadingSailings] = useState(true);
   const [scheduleId, setScheduleId] = useState("");
   const [arrangement, setArrangement] = useState<Arrangement>(EMPTY_ARRANGEMENT);
-  /** Once the guest moves anyone by hand, party changes stop re-arranging for them. */
-  const [touched, setTouched] = useState(false);
   const [step, setStep] = useState<JourneyStep>(1);
   const [attempt, setAttempt] = useState<Attempt | null>(null);
   const [form, setForm] = useState<GuestForm>(emptyGuestForm);
@@ -115,7 +115,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
   // A screen that lost its sailing (closed date, changed voyage) falls back to the journey.
   const view: JourneyStep = step > 1 && !loadingSailings && !sailing ? 1 : step;
-  const arrangeImpossible = useMemo(() => view === 2 && guests.length > 0 && autoArrange(guests, offers) === null, [guests, offers, view]);
+
+  const phoneToSend = internationalPhone(form.phone, findCountry(form.countryCode)?.dial ?? null);
 
   const saveAttempt = useCallback((next: Attempt) => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* private mode */ }
@@ -153,8 +154,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             return;
           }
           setScheduleId(match.scheduleId);
-          const startGuests = guestsFor(start?.adults ?? 2, start?.children ?? 0);
-          setArrangement(autoArrange(startGuests, offersFromTypes(match.types), start?.roomType ?? null) ?? EMPTY_ARRANGEMENT);
+          // The cabin chosen in the cart is the guest's own choice: place the party in that type
+          // when it fits. Otherwise everyone waits in Who Is Travelling to be placed.
+          if (start?.roomType) {
+            const startGuests = guestsFor(start.adults ?? 2, start.children ?? 0);
+            setArrangement(autoArrange(startGuests, offersFromTypes(match.types), [start.roomType]) ?? EMPTY_ARRANGEMENT);
+          }
           setStep(2);
         })
         .catch(error => { if (!controller.signal.aborted) setAlert(error instanceof Error ? error.message : "Availability is unavailable."); })
@@ -193,7 +198,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         setChildren(saved.children);
         setScheduleId(saved.scheduleId);
         setArrangement(saved.arrangement);
-        setTouched(true);
         setAttempt({ ...saved, hold: { ...saved.hold, ...current, accessToken: saved.hold.accessToken } });
         setStep(3);
       } catch {
@@ -230,27 +234,25 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     }
   }
 
+  /** Guests are created here: new ones wait in Who Is Travelling until they are placed. */
   function changeCounts(nextAdults: number, nextChildren: number) {
-    const nextGuests = guestsFor(nextAdults, nextChildren);
     setAdults(nextAdults);
     setChildren(nextChildren);
-    setArrangement(current =>
-      touched
-        ? resizeParty(current, guests, nextAdults, nextChildren)
-        : autoArrange(nextGuests, offers, preferred) ?? resizeParty(current, guests, nextAdults, nextChildren),
-    );
+    setArrangement(current => resizeParty(current, guests, nextAdults, nextChildren));
   }
 
   function changeArrangement(next: Arrangement) {
     setArrangement(next);
-    setTouched(true);
   }
 
-  function arrangeForMe() {
-    const next = autoArrange(guests, offers, preferred);
-    if (!next) return;
+  /** Arrange for me, in the cabin types the guest picked. A message when they cannot hold everyone. */
+  function arrangeForMe(types: PhysicalRoomType[]): string | null {
+    const next = autoArrange(guests, offers, types);
+    if (!next) {
+      return `${types.length === 1 ? "That cabin type" : "Those cabin types"} cannot take all ${guests.length} guests on this date. Choose another type as well.`;
+    }
     setArrangement(next);
-    setTouched(false);
+    return null;
   }
 
   /** Re-reads availability and trims or rebuilds the arrangement for that sailing. */
@@ -259,18 +261,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     setSailings(list);
     const fresh = list.find(entry => entry.scheduleId === scheduleId);
     if (!fresh) return null;
-    const freshOffers = offersFromTypes(fresh.types);
-    if (!touched) {
-      setArrangement(autoArrange(guests, freshOffers, preferred) ?? EMPTY_ARRANGEMENT);
-      return { fresh, removed: [] };
-    }
-    const { next, removed } = fitToOffers(arrangement, freshOffers);
+    const { next, removed } = fitToOffers(arrangement, offersFromTypes(fresh.types));
     setArrangement(next);
     return { fresh, removed };
   }
 
   const trimmedMessage = (removed: PhysicalRoomType[]) =>
-    `${[...new Set(removed)].map(type => shortName(type)).join(" and ")} ${removed.length === 1 ? "was" : "were"} just booked by another guest, so we removed it from your selection. Please place those guests again.`;
+    `A ${[...new Set(removed)].map(type => shortName(type)).join(" and ")} you chose was just booked by another guest. Its guests are waiting in Who Is Travelling — please place them again.`;
 
   async function enterGuestsSuites() {
     setBusy(true);
@@ -356,8 +353,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     if (!form.firstName.trim()) found.firstName = "Please enter the lead guest first name.";
     if (!form.lastName.trim()) found.lastName = "Please enter the lead guest last name.";
     if (!EMAIL.test(form.email.trim())) found.email = "Please enter a valid email address.";
-    if (!PHONE.test(form.phone.replace(/[\s()-]/g, ""))) found.phone = "Use an international number, for example +20 10 1234 5678.";
-    if (form.country.trim().length < 2) found.country = "Please enter your country.";
+    if (!form.countryCode) found.country = "Please choose your country.";
+    if (!PHONE.test(phoneToSend)) {
+      found.phone = form.countryCode
+        ? "Please check the phone number."
+        : "Choose your country first, then enter your number.";
+    }
     if (guests.some(guest => !(names[guest.id] ?? "").trim())) found.names = "Please give a name for every travelling guest.";
     if (!form.termsAccepted) found.terms = "Please accept the booking and cancellation terms.";
     return found;
@@ -430,7 +431,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             firstName: form.firstName.trim(),
             lastName: form.lastName.trim(),
             email: form.email.trim(),
-            phone: form.phone.replace(/[\s()-]/g, ""),
+            phone: phoneToSend,
             country: form.country.trim(),
             paymentMethod: form.paymentMethod,
             specialRequests,
@@ -472,7 +473,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   const leadDone = Boolean(form.firstName.trim() && form.lastName.trim() && EMAIL.test(form.email.trim())
-    && PHONE.test(form.phone.replace(/[\s()-]/g, "")) && form.country.trim().length >= 2);
+    && form.countryCode && PHONE.test(phoneToSend));
   const namesDone = guests.every(guest => (names[guest.id] ?? "").trim());
 
   const scene = { "--hj-scene": `url("${voyage.image}")` } as CSSProperties;
@@ -555,7 +556,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               arrangement={arrangement}
               onArrangement={changeArrangement}
               onArrange={arrangeForMe}
-              arrangeImpossible={arrangeImpossible}
+              preferredType={preferred}
               issues={issues}
               alert={alert}
               busy={busy}

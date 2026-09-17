@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { useEffect, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
@@ -12,7 +12,7 @@ import { PHYSICAL_ROOM_TYPES, roomCapacity, type PhysicalRoomType } from "@/lib/
 import {
   MAX_ADULTS,
   MAX_CHILDREN,
-  cabinCountLimit,
+  cabinCountOptions,
   cabinLabel,
   clearCabin,
   guestLabel,
@@ -35,10 +35,10 @@ import { PanelHead } from "./JourneyChrome";
 import { IconAdult, IconBed, IconChild, IconClose, IconGuests, IconSize } from "./icons";
 
 const CABIN_NOTE: Record<PhysicalRoomType, string> = {
-  "Luxury King Cabin": "King bed · panoramic Nile view.",
-  "Luxury Twin Cabin": "Twin beds · panoramic Nile view.",
-  "Luxury Suite": "Separate lounge · panoramic Nile view.",
-  "Royal Suite": "Private lounge · premium Nile view.",
+  "Luxury King Cabin": "King bed · panoramic Nile view",
+  "Luxury Twin Cabin": "Twin beds · panoramic Nile view",
+  "Luxury Suite": "Separate lounge · panoramic Nile view",
+  "Royal Suite": "Private lounge · premium Nile view",
 };
 
 const CABIN_BED: Partial<Record<PhysicalRoomType, string>> = {
@@ -106,7 +106,7 @@ function GuestTile({
       type="button"
       className={`hj-tile hj-tile--${guest.kind}${picked ? " hj-tile--picked" : ""}${lifted ? " hj-tile--lifted" : ""}`}
       aria-pressed={picked}
-      aria-label={`${guestLabel(guest)}, ${where ? `in ${where}` : "not in a cabin yet"}. Drag to a cabin, or press and then choose a cabin.`}
+      aria-label={`${guestLabel(guest)}, ${where ? `in ${where}` : "waiting for a cabin"}. Drag to a cabin, or press and then choose a cabin.`}
       data-guest={guest.id}
       onPointerDown={event => onBegin(event, guest.id)}
       onClick={() => onTap(guest.id)}
@@ -119,45 +119,139 @@ function GuestTile({
   );
 }
 
+/** A cabin's Adults or Children menu: numbers past its limit or past the waiting guests are shown but disabled. */
+function CountMenu({
+  label,
+  cabinLabelText,
+  options,
+  onChoose,
+}: {
+  label: "Adults" | "Children";
+  cabinLabelText: string;
+  options: { current: number; limit: number; reachable: number };
+  onChoose: (count: number) => void;
+}) {
+  return (
+    <label className="hj-cab__menu">
+      <span>{label}</span>
+      <select
+        value={options.current}
+        aria-label={`${label} in ${cabinLabelText}`}
+        onChange={event => onChoose(Number(event.target.value))}
+      >
+        {Array.from({ length: options.limit + 1 }, (_, count) => (
+          <option key={count} value={count} disabled={count > options.reachable}>
+            {count}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function RoomFilter({
   sailing,
   selected,
   onToggle,
   onAll,
-  shownCabins,
 }: {
   sailing: Sailing;
   selected: PhysicalRoomType[];
   onToggle: (type: PhysicalRoomType) => void;
   onAll: () => void;
-  shownCabins: number;
 }) {
-  const available = (type: PhysicalRoomType) => sailing.types.find(entry => entry.roomType === type)?.availableCabins ?? 0;
-  const total = PHYSICAL_ROOM_TYPES.reduce((sum, type) => sum + available(type), 0);
+  const info = (type: PhysicalRoomType) => sailing.types.find(entry => entry.roomType === type);
+  const count = (types: readonly PhysicalRoomType[], key: "totalCabins" | "availableCabins") =>
+    types.reduce<number>((sum, type) => sum + (info(type)?.[key] ?? 0), 0);
+  const shown: readonly PhysicalRoomType[] = selected.length === 0 ? PHYSICAL_ROOM_TYPES : selected;
+
   return (
     <div className="hj-filter">
-      <div className="hj-filter__pills" role="group" aria-label="Filter the available cabins">
+      <div className="hj-filter__pills" role="group" aria-label="Filter cabins by type">
         <button type="button" className="hj-filter__pill" aria-pressed={selected.length === 0} onClick={onAll}>
           All rooms
-          <span className="hj-filter__count" aria-label={`${total} available`}>{total}</span>
+          <span className="hj-filter__count" aria-label={`${count(PHYSICAL_ROOM_TYPES, "totalCabins")} cabins`}>{count(PHYSICAL_ROOM_TYPES, "totalCabins")}</span>
         </button>
         {PHYSICAL_ROOM_TYPES.map(type => (
           <button
             key={type}
             type="button"
-            className="hj-filter__pill"
+            className={`hj-filter__pill${(info(type)?.availableCabins ?? 0) === 0 ? " hj-filter__pill--out" : ""}`}
             aria-pressed={selected.includes(type)}
-            disabled={available(type) === 0}
             onClick={() => onToggle(type)}
           >
             {shortName(type)}
-            <span className="hj-filter__count" aria-label={`${available(type)} available`}>{available(type)}</span>
+            <span className="hj-filter__count" aria-label={`${info(type)?.totalCabins ?? 0} cabins`}>{info(type)?.totalCabins ?? 0}</span>
           </button>
         ))}
       </div>
       <p className="hj-filter__shown" aria-live="polite">
-        {shownCabins === 1 ? "Showing 1 available cabin" : `Showing ${shownCabins} available cabins`} for this sailing
+        Showing {plural(count(shown, "totalCabins"), "cabin")} · {count(shown, "availableCabins")} free on this date
       </p>
+    </div>
+  );
+}
+
+/** "Arrange for me": asks which cabin types to use, then places everyone within the limits. */
+function ArrangeChooser({
+  sailing,
+  guestCount,
+  initial,
+  onArrange,
+  onClose,
+}: {
+  sailing: Sailing;
+  guestCount: number;
+  initial: PhysicalRoomType[];
+  onArrange: (types: PhysicalRoomType[]) => string | null;
+  onClose: () => void;
+}) {
+  const [types, setTypes] = useState<PhysicalRoomType[]>(initial);
+  const [problem, setProblem] = useState<string | null>(null);
+
+  return (
+    <div className="hj-arrange" role="group" aria-labelledby="hj-arrange-title">
+      <p className="hj-arrange__title" id="hj-arrange-title">Which cabins would you like?</p>
+      <p className="hj-arrange__lede">Choose one or more types. We will place all {plural(guestCount, "guest")} within each cabin&apos;s limit.</p>
+      <div className="hj-arrange__types">
+        {sailing.types.map(type => {
+          const free = type.availableCabins;
+          const on = types.includes(type.roomType);
+          return (
+            <label key={type.roomType} className={`hj-arrange__type${on ? " hj-arrange__type--on" : ""}${free === 0 ? " hj-arrange__type--out" : ""}`}>
+              <input
+                type="checkbox"
+                checked={on}
+                disabled={free === 0}
+                onChange={event => {
+                  setProblem(null);
+                  setTypes(current => (event.target.checked ? [...current, type.roomType] : current.filter(entry => entry !== type.roomType)));
+                }}
+              />
+              <span>
+                <strong>{shortName(type.roomType)}</strong>
+                <span>{free === 0 ? "Unavailable for this date" : `${free} free · up to ${roomCapacity(type.roomType)} guests each`}</span>
+              </span>
+            </label>
+          );
+        })}
+      </div>
+      {problem ? <p className="hj-arrange__problem" role="alert">{problem}</p> : null}
+      <div className="hj-arrange__actions">
+        <button
+          type="button"
+          className="hj-btn"
+          disabled={types.length === 0}
+          onClick={() => {
+            const failure = onArrange(types);
+            if (failure) setProblem(failure);
+            else onClose();
+          }}
+        >
+          Arrange my guests
+        </button>
+        <button type="button" className="hj-btn hj-btn--ghost" onClick={onClose}>Cancel</button>
+      </div>
     </div>
   );
 }
@@ -174,7 +268,7 @@ export function GuestsSuitesScreen({
   arrangement,
   onArrangement,
   onArrange,
-  arrangeImpossible,
+  preferredType,
   issues,
   alert,
   busy,
@@ -194,8 +288,9 @@ export function GuestsSuitesScreen({
   onCounts: (adults: number, children: number) => void;
   arrangement: Arrangement;
   onArrangement: (next: Arrangement) => void;
-  onArrange: () => void;
-  arrangeImpossible: boolean;
+  /** Places everyone in the chosen types; returns a message when they cannot fit. */
+  onArrange: (types: PhysicalRoomType[]) => string | null;
+  preferredType: PhysicalRoomType | null;
   issues: string[];
   alert: string | null;
   busy: boolean;
@@ -210,6 +305,7 @@ export function GuestsSuitesScreen({
   const [picked, setPicked] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice>(null);
   const [filter, setFilter] = useState<PhysicalRoomType[]>([]);
+  const [choosing, setChoosing] = useState(false);
 
   const pickedGuest = picked ? guests.find(guest => guest.id === picked) ?? null : null;
   const waiting = unplacedGuests(arrangement, guests);
@@ -236,19 +332,15 @@ export function GuestsSuitesScreen({
       if (guest) setNotice({ tone: "ok", text: `${guestLabel(guest)} is waiting for a cabin.` });
       return;
     }
-    const result = target.startsWith("cabin:")
-      ? placeGuest(arrangement, guests, guestId, { cabinId: target.slice(6) }, offers)
-      : target.startsWith("type:")
-        ? placeGuest(arrangement, guests, guestId, { roomType: target.slice(5) as PhysicalRoomType }, offers)
-        : null;
-    if (!result) return;
-    settle(result, guest && "cabinId" in result ? `${guestLabel(guest)} is in ${cabinLabel(result.cabinId)}.` : null);
+    if (!target.startsWith("cabin:")) return;
+    const cabinId = target.slice(6);
+    settle(placeGuest(arrangement, guests, guestId, { cabinId }, offers), guest ? `${guestLabel(guest)} is in ${cabinLabel(cabinId)}.` : null);
   }
 
   function choose(cabinId: string, kind: GuestKind, count: number) {
     settle(
       setCabinCount(arrangement, guests, cabinId, kind, count, offers),
-      `${cabinLabel(cabinId)} now has ${plural(count, kind === "adult" ? "adult" : "child", kind === "adult" ? "adults" : "children")}.`,
+      `${cabinLabel(cabinId)}: ${plural(count, kind === "adult" ? "adult" : "child", kind === "adult" ? "adults" : "children")}.`,
     );
   }
 
@@ -268,11 +360,7 @@ export function GuestsSuitesScreen({
     return () => window.removeEventListener("keydown", cancel);
   }, [picked]);
 
-  const visibleTypes = useMemo(
-    () => sailing.types.filter(type => type.availableCabins > 0 && (filter.length === 0 || filter.includes(type.roomType))),
-    [filter, sailing.types],
-  );
-  const shownCabins = visibleTypes.reduce((sum, type) => sum + type.availableCabins, 0);
+  const visibleTypes = sailing.types.filter(type => filter.length === 0 || filter.includes(type.roomType));
   const hiddenWithGuests = arrangement.cabins.filter(cabin => !visibleTypes.some(type => type.roomType === cabin.roomType));
 
   const tileProps = (guest: Guest) => ({
@@ -325,7 +413,7 @@ export function GuestsSuitesScreen({
           step={2}
           titleId="hj-suites-title"
           title="Select Your Cabin or Suite"
-          lede="Every cabin still free on your sailing. Place your guests by dragging them in, or choose the number of adults and children under each cabin."
+          lede="Every cabin on the boat for your date. Put your guests into the cabins you want — drag them in, or choose how many adults and children on the cabin."
         />
         {guide}
       </div>
@@ -336,7 +424,6 @@ export function GuestsSuitesScreen({
           selected={filter}
           onToggle={type => setFilter(current => (current.includes(type) ? current.filter(entry => entry !== type) : [...current, type]))}
           onAll={() => setFilter([])}
-          shownCabins={shownCabins}
         />
 
         {hiddenWithGuests.length > 0 ? (
@@ -347,162 +434,118 @@ export function GuestsSuitesScreen({
         ) : null}
 
         <div className={`hj-rooms${drag || pickedGuest ? " hj-rooms--moving" : ""}`}>
-          {visibleTypes.map(type => {
+          {visibleTypes.flatMap(type => {
             const visuals = getBookingRoomVisuals(type.roomType, type.roomType);
             const slug = buildCabinSlug(duration, RESIDENCE_SLUG[type.roomType]);
-            const inUse = arrangement.cabins.filter(cabin => cabin.roomType === type.roomType).length;
-            const typeKey = `type:${type.roomType}`;
             const capacity = roomCapacity(type.roomType);
 
-            return (
-              <section
-                key={type.roomType}
-                className={`hj-rtype${inUse > 0 ? " hj-rtype--chosen" : ""}${drag?.over === typeKey ? " hj-drop--over" : ""}`}
-                data-hj-drop={typeKey}
-                aria-label={type.roomType}
-              >
-                <div className="hj-rtype__head">
-                  <div className="hj-room__media">
-                    <Image className="hj-room__img" src={visuals.cover} alt={type.roomType} width={360} height={240} sizes="(max-width: 480px) 96px, 150px" />
+            return Array.from({ length: type.totalCabins }, (_, index) => {
+              const unavailable = index >= type.availableCabins;
+              const cabinId = slotId(type.roomType, index);
+              const label = cabinLabel(cabinId);
+              const inside = unavailable ? [] : occupants(arrangement, guests, cabinId);
+              const adultsIn = inside.filter(guest => guest.kind === "adult").length;
+              const used = inside.length > 0;
+              const full = inside.length >= capacity;
+              const noAdult = used && adultsIn === 0;
+              const cabinKey = `cabin:${cabinId}`;
+              const pickedHere = pickedGuest ? arrangement.placement[pickedGuest.id] === cabinId : false;
+              const canTake = !unavailable && Boolean(pickedGuest) && !pickedHere && !full;
+
+              return (
+                <article
+                  key={cabinId}
+                  className={`hj-cabin-card${used ? " hj-cabin-card--used" : ""}${full ? " hj-cabin-card--full" : ""}${noAdult ? " hj-cabin-card--warn" : ""}${unavailable ? " hj-cabin-card--out" : ""}${canTake ? " hj-cabin-card--target" : ""}${drag?.over === cabinKey ? " hj-drop--over" : ""}`}
+                  data-hj-drop={unavailable ? undefined : cabinKey}
+                  aria-label={unavailable ? `${type.roomType}, cabin ${index + 1}, unavailable for this date` : `${type.roomType}, cabin ${index + 1}, ${inside.length} of ${capacity} guests`}
+                >
+                  <div className="hj-cabin-card__media">
+                    <Image className="hj-cabin-card__img" src={visuals.cover} alt="" width={360} height={240} sizes="(max-width: 480px) 96px, 150px" />
                     <div className="hj-room__save">
                       <FavoriteButton type="cabin" slug={slug} name={`${type.roomType} on the ${voyage.title} voyage`} variant="card" />
-                      <AddToVoyageButton
-                        kind="cabin"
-                        slug={slug}
-                        name={`${type.roomType} on the ${voyage.title} voyage`}
-                        variant="card"
-                        context={{ sailingDate, adults, children: childCount }}
-                        verify={async () => {
-                          const problem = await verifyCabinType(type.roomType);
-                          setNotice(problem ? { tone: "warn", text: problem } : { tone: "ok", text: `${type.roomType} for this sailing is in your cart.` });
-                          return problem;
-                        }}
-                      />
+                      {unavailable ? null : (
+                        <AddToVoyageButton
+                          kind="cabin"
+                          slug={slug}
+                          name={`${type.roomType} on the ${voyage.title} voyage`}
+                          variant="card"
+                          context={{ sailingDate, adults, children: childCount }}
+                          verify={async () => {
+                            const problem = await verifyCabinType(type.roomType);
+                            setNotice(problem ? { tone: "warn", text: problem } : { tone: "ok", text: `${type.roomType} for this sailing is in your cart.` });
+                            return problem;
+                          }}
+                        />
+                      )}
                     </div>
                   </div>
 
-                  <div className="hj-room__body">
-                    <h3 className="hj-room__name">{type.roomType}</h3>
-                    <p className="hj-room__desc">{CABIN_NOTE[type.roomType]}</p>
+                  <div className="hj-cabin-card__main">
+                    <div className="hj-cabin-card__top">
+                      <div className="hj-cabin-card__title">
+                        <h3 className="hj-room__name">{type.roomType}</h3>
+                        <span className="hj-cabin-card__no">Cabin {index + 1}</span>
+                      </div>
+                      <div className="hj-cabin-card__price">
+                        <span className="hj-room__amount">{money(type.priceCents)}</span>
+                        <span className="hj-room__per">per cabin · entire voyage</span>
+                      </div>
+                    </div>
+
                     <p className="hj-room__facts">
-                      <span><IconGuests /> Sleeps {type.maxOccupancy}</span>
+                      <span className="hj-limit"><IconGuests /> Up to {capacity} guests</span>
                       <span><IconSize /> {type.sizeSqm} m²</span>
-                      {CABIN_BED[type.roomType] ? <span><IconBed /> {CABIN_BED[type.roomType]}</span> : null}
+                      {CABIN_BED[type.roomType] ? <span><IconBed /> {CABIN_BED[type.roomType]}</span> : <span>{CABIN_NOTE[type.roomType].split(" · ")[0]}</span>}
+                      <a className="hj-room__link" href={`/rooms/${RESIDENCE_SLUG[type.roomType]}`} target="_blank" rel="noopener noreferrer">
+                        View details <span aria-hidden>›</span>
+                      </a>
                     </p>
-                    <a className="hj-room__link" href={`/rooms/${RESIDENCE_SLUG[type.roomType]}`} target="_blank" rel="noopener noreferrer">
-                      View details <span aria-hidden>›</span>
-                    </a>
-                  </div>
 
-                  <div className="hj-room__side">
-                    <span className="hj-room__amount">{money(type.priceCents)}</span>
-                    <span className="hj-room__per">per cabin · entire voyage</span>
-                    <span className={`hj-room__state hj-room__state--${type.availableCabins <= 2 ? "low" : "open"}`}>
-                      {plural(type.availableCabins, "cabin")} free{inUse > 0 ? ` · ${inUse} chosen` : ""}
-                    </span>
-                  </div>
-                </div>
-
-                <div className={`hj-cabs${capacity > 2 ? " hj-cabs--suite" : ""}`}>
-                  {Array.from({ length: type.availableCabins }, (_, index) => {
-                    const cabinId = slotId(type.roomType, index);
-                    const label = cabinLabel(cabinId);
-                    const inside = occupants(arrangement, guests, cabinId);
-                    const adultsIn = inside.filter(guest => guest.kind === "adult").length;
-                    const childrenIn = inside.length - adultsIn;
-                    const used = inside.length > 0;
-                    const noAdult = used && adultsIn === 0;
-                    const cabinKey = `cabin:${cabinId}`;
-                    const pickedHere = pickedGuest ? arrangement.placement[pickedGuest.id] === cabinId : false;
-                    const canTake = Boolean(pickedGuest) && !pickedHere && inside.length < capacity;
-                    const adultLimit = cabinCountLimit(arrangement, guests, cabinId, "adult");
-                    const childLimit = cabinCountLimit(arrangement, guests, cabinId, "child");
-
-                    return (
-                      <div
-                        key={cabinId}
-                        className={`hj-cab${used ? " hj-cab--used" : ""}${noAdult ? " hj-cab--warn" : ""}${inside.length >= capacity ? " hj-cab--full" : ""}${drag?.over === cabinKey ? " hj-drop--over" : ""}${canTake ? " hj-cab--target" : ""}`}
-                        data-hj-drop={cabinKey}
-                        role="group"
-                        aria-label={`${label}, ${inside.length} of ${capacity} guests`}
-                      >
-                        <div className="hj-cab__head">
-                          <span className="hj-cab__name">{label}</span>
-                          <span className="hj-cab__count">{inside.length} / {capacity}</span>
-                          {used ? (
-                            <button
-                              type="button"
-                              className="hj-cab__clear"
-                              aria-label={`Empty ${label}`}
-                              title={`Empty ${label}`}
-                              onClick={() => {
-                                onArrangement(clearCabin(arrangement, cabinId));
-                                setNotice({ tone: "ok", text: `${label} is empty. Its guests are waiting for a cabin.` });
-                              }}
-                            >
-                              <IconClose />
-                            </button>
-                          ) : null}
-                        </div>
-
-                        <div className="hj-cab__seats">
+                    {unavailable ? (
+                      <p className="hj-cabin-card__out">Unavailable for this date</p>
+                    ) : (
+                      <div className="hj-cabin-card__fill">
+                        <div className="hj-cabin-card__seats" aria-label={`${inside.length} of ${capacity} places taken`}>
                           {inside.map(guest => <GuestTile key={guest.id} {...tileProps(guest)} />)}
                           {Array.from({ length: capacity - inside.length }, (_, seat) => (
                             <span key={`seat-${seat}`} className="hj-seat" aria-hidden />
                           ))}
+                          <span className="hj-cabin-card__count" aria-hidden>{inside.length}/{capacity}</span>
                         </div>
-
-                        <div className="hj-cab__menus">
-                          <label className="hj-cab__menu">
-                            <span>Adults</span>
-                            <select
-                              value={adultsIn}
-                              aria-label={`Adults in ${label}`}
-                              disabled={adultLimit === 0 && adultsIn === 0}
-                              onChange={event => choose(cabinId, "adult", Number(event.target.value))}
-                            >
-                              {Array.from({ length: adultLimit + 1 }, (_, count) => <option key={count} value={count}>{count}</option>)}
-                            </select>
-                          </label>
-                          <label className="hj-cab__menu">
-                            <span>Children</span>
-                            <select
-                              value={childrenIn}
-                              aria-label={`Children in ${label}`}
-                              disabled={childLimit === 0 && childrenIn === 0}
-                              onChange={event => choose(cabinId, "child", Number(event.target.value))}
-                            >
-                              {Array.from({ length: childLimit + 1 }, (_, count) => <option key={count} value={count}>{count}</option>)}
-                            </select>
-                          </label>
+                        <div className="hj-cabin-card__menus">
+                          <CountMenu label="Adults" cabinLabelText={label} options={cabinCountOptions(arrangement, guests, cabinId, "adult")} onChoose={count => choose(cabinId, "adult", count)} />
+                          <CountMenu label="Children" cabinLabelText={label} options={cabinCountOptions(arrangement, guests, cabinId, "child")} onChoose={count => choose(cabinId, "child", count)} />
                         </div>
-
-                        {noAdult ? <p className="hj-cab__warn">Add an adult to this cabin.</p> : null}
-
-                        {canTake && pickedGuest ? (
-                          // Laid over the cabin, so choosing a guest never moves the page.
+                        {used ? (
                           <button
                             type="button"
-                            className="hj-cab__place"
-                            aria-label={`Place ${guestLabel(pickedGuest)} in ${label}`}
-                            onClick={() => drop(pickedGuest.id, cabinKey)}
+                            className="hj-cabin-card__clear"
+                            aria-label={`Empty ${label}`}
+                            title={`Empty ${label}`}
+                            onClick={() => {
+                              onArrangement(clearCabin(arrangement, cabinId));
+                              setNotice({ tone: "ok", text: `${label} is empty. Its guests are waiting in Who Is Travelling.` });
+                            }}
                           >
-                            <span aria-hidden>Place here</span>
+                            <IconClose />
                           </button>
                         ) : null}
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
-            );
+                    )}
+
+                    {noAdult ? <p className="hj-cabin-card__warn">Every cabin needs at least one adult.</p> : null}
+                  </div>
+
+                  {canTake && pickedGuest ? (
+                    // Laid over the cabin, so choosing a guest never moves the page.
+                    <button type="button" className="hj-cab__place" aria-label={`Place ${guestLabel(pickedGuest)} in ${label}`} onClick={() => drop(pickedGuest.id, cabinKey)}>
+                      <span aria-hidden>Place here</span>
+                    </button>
+                  ) : null}
+                </article>
+              );
+            });
           })}
-          {visibleTypes.length === 0 ? (
-            <p className="hj-filter__empty">
-              No cabins match this filter.{" "}
-              <button type="button" className="hj-linkbtn" onClick={() => setFilter([])}>Show all rooms</button>
-            </p>
-          ) : null}
         </div>
       </section>
 
@@ -512,7 +555,7 @@ export function GuestsSuitesScreen({
           <span className="hj-rail__ankh" aria-hidden>☥</span>
         </div>
         <p className="hj-party__lede">
-          Drag each guest into a cabin, tap a guest and then a cabin, or use the Adults and Children menus under each cabin.
+          Add your guests here, then put them in cabins: drag them, tap a guest and then a cabin, or use the Adults and Children menus on the cabin.
         </p>
 
         <div className="hj-counters">
@@ -526,25 +569,28 @@ export function GuestsSuitesScreen({
           {notice?.text ?? (pickedGuest ? `Choose a cabin for ${guestLabel(pickedGuest)}. Press Esc to cancel.` : "")}
         </p>
 
-        {arrangeImpossible ? (
-          <p className="hj-party__notice hj-party__notice--warn">
-            There are not enough free cabins on this sailing for {plural(guests.length, "guest")}. Try fewer guests or another date.
-          </p>
-        ) : (
-          <button
-            type="button"
-            className="hj-party__arrange"
-            onClick={() => {
-              onArrange();
-              setPicked(null);
-              setNotice({ tone: "ok", text: "We have arranged your guests. Move anyone you like." });
+        {choosing ? (
+          <ArrangeChooser
+            sailing={sailing}
+            guestCount={guests.length}
+            initial={preferredType && (offers[preferredType]?.available ?? 0) > 0 ? [preferredType] : []}
+            onArrange={types => {
+              const failure = onArrange(types);
+              if (!failure) {
+                setPicked(null);
+                setNotice({ tone: "ok", text: "Your guests are in their cabins. Move anyone you like." });
+              }
+              return failure;
             }}
-          >
+            onClose={() => setChoosing(false)}
+          />
+        ) : (
+          <button type="button" className="hj-party__arrange" onClick={() => setChoosing(true)}>
             Arrange for me
           </button>
         )}
 
-        <p className="hj-note-box">Every cabin needs one adult. Children count toward occupancy. Rates are per cabin for the whole voyage.</p>
+        <p className="hj-note-box">Each cabin shows how many guests it takes. Every cabin needs one adult. Rates are per cabin for the whole voyage.</p>
 
         <div className="hj-party__desk">{actions(false)}</div>
       </section>
