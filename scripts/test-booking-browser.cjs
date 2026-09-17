@@ -55,6 +55,18 @@ async function centre(locator) {
   await locator.page().waitForTimeout(200);
 }
 
+/** On tablet/phone, cabins after the first of a type sit behind a collapsed
+ *  toggle; open it before touching one. No-op on desktop, where the toggle
+ *  is hidden and every cabin is already shown. */
+async function expandCabinGroup(page, typeNamePattern) {
+  const toggle = page.locator('.hj-cabin-more__toggle').filter({ hasText: typeNamePattern });
+  if ((await toggle.count()) > 0 && (await toggle.first().isVisible())) {
+    await centre(toggle.first());
+    await toggle.first().click();
+    await page.waitForTimeout(250);
+  }
+}
+
 async function dragTo(page, source, target) {
   await centre(source);
   const from = await source.boundingBox();
@@ -110,6 +122,21 @@ async function walk(browser, label, width, height, mode, theme) {
   await page.getByRole('heading', { name: /select your cabin or suite/i }).waitFor({ timeout: 60000 });
   if ((await guideItems()) !== 3) problems.push(`${label}: guests & suites step should show a 3-point map`);
 
+  // Cabin collapse: desktop keeps every cabin flat (a display:contents group
+  // reports a zero-size rect); tablet/phone collapse cabins after the first
+  // of a type into a "N more" toggle, closed by default.
+  const collapseState = await page.evaluate(() => Array.from(document.querySelectorAll('.hj-cabin-more')).map(group => {
+    const list = group.querySelector('.hj-cabin-more__list');
+    const input = group.querySelector('.hj-cabin-more__input');
+    return { checked: input ? input.checked : null, listHeight: list ? list.getBoundingClientRect().height : null };
+  }));
+  if (label === 'desktop') {
+    if (collapseState.some(group => group.listHeight !== 0)) problems.push(`${label}: desktop should render every cabin flat, not behind a toggle (${JSON.stringify(collapseState)})`);
+  } else {
+    if (collapseState.length !== 4) problems.push(`${label}: expected 4 collapsible cabin groups (King, Twin, Luxury Suite, Royal Suite), found ${collapseState.length}`);
+    if (collapseState.some(group => group.checked || group.listHeight > 0)) problems.push(`${label}: extra cabins should start collapsed (${JSON.stringify(collapseState)})`);
+  }
+
   const allCount = Number(await page.getByRole('button', { name: /^All rooms/ }).locator('.hj-filter__count').innerText());
   const cards = page.locator('.hj-cabin-card');
   if (allCount !== 12 || (await cards.count()) !== 12) problems.push(`${label}: All rooms should list all 12 cabins (badge ${allCount}, cards ${await cards.count()})`);
@@ -135,6 +162,11 @@ async function walk(browser, label, width, height, mode, theme) {
   await shot('02-guests-waiting');
 
   // One shared count: Adult 1 dragged (or tapped) into King Cabin 3, then its menu set to 2.
+  await expandCabinGroup(page, /King Cabin/);
+  if (label !== 'desktop') {
+    const kingGroupHeight = await page.evaluate(() => document.querySelector('.hj-cabin-more')?.querySelector('.hj-cabin-more__list')?.getBoundingClientRect().height ?? 0);
+    if (kingGroupHeight <= 0) problems.push(`${label}: opening "more King Cabins" did not reveal the rest of the type`);
+  }
   const kingThree = page.locator('.hj-cabin-card[aria-label^="Luxury King Cabin, cabin 3,"]');
   const placeInto = async (guestId, card, cardName) => {
     if (mode === 'drag') {

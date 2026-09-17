@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import Image from "next/image";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
@@ -434,12 +434,15 @@ export function GuestsSuitesScreen({
         ) : null}
 
         <div className={`hj-rooms${drag || pickedGuest ? " hj-rooms--moving" : ""}`}>
-          {visibleTypes.flatMap(type => {
+          {visibleTypes.map(type => {
             const visuals = getBookingRoomVisuals(type.roomType, type.roomType);
             const slug = buildCabinSlug(duration, RESIDENCE_SLUG[type.roomType]);
             const capacity = roomCapacity(type.roomType);
 
-            return Array.from({ length: type.totalCabins }, (_, index) => {
+            // One card's full markup, shared by cabin 1 (always shown) and the
+            // rest (tablet/phone only: behind a native "N more" toggle, no JS —
+            // see .hj-cabin-more in the CSS for how desktop forces it open).
+            const cabinCard = (index: number) => {
               const unavailable = index >= type.availableCabins;
               const cabinId = slotId(type.roomType, index);
               const label = cabinLabel(cabinId);
@@ -544,7 +547,38 @@ export function GuestsSuitesScreen({
                   ) : null}
                 </article>
               );
-            });
+            };
+
+            const extra = Math.max(0, type.totalCabins - 1);
+            const extraFree = Math.max(0, type.availableCabins - 1);
+            const toggleId = `hj-cabin-more-${type.roomType.replace(/\s+/g, "-")}`;
+
+            // A React.Fragment (not a div) so cabin 1 and the "more" group sit
+            // as direct children of .hj-rooms, exactly like every other card —
+            // no wrapper, so no CSS is needed to make desktop look unwrapped.
+            return (
+              <Fragment key={type.roomType}>
+                {cabinCard(0)}
+                {extra > 0 ? (
+                  <div className="hj-cabin-more">
+                    {/* A plain checkbox toggle, not <details>: some browsers keep an
+                        internal box for <details> content even under display:contents,
+                        so desktop's "always open" state could not be forced reliably. */}
+                    <input type="checkbox" id={toggleId} className="hj-sr hj-cabin-more__input" />
+                    <label htmlFor={toggleId} className="hj-cabin-more__toggle">
+                      <span className="hj-cabin-more__label">
+                        {plural(extra, "more " + shortName(type.roomType))}
+                      </span>
+                      {extraFree > 0 ? <span className="hj-cabin-more__free">{extraFree} free</span> : null}
+                      <span className="hj-cabin-more__chevron" aria-hidden />
+                    </label>
+                    <div className="hj-cabin-more__list">
+                      {Array.from({ length: extra }, (_, i) => cabinCard(i + 1))}
+                    </div>
+                  </div>
+                ) : null}
+              </Fragment>
+            );
           })}
         </div>
       </section>
