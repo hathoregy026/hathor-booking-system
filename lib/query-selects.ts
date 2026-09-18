@@ -46,40 +46,6 @@ export function buildCruiseListSelect(options: { bin: boolean }) {
 /** @deprecated Use buildCruiseListSelect({ bin: false }) */
 export const cruiseListSelect = buildCruiseListSelect({ bin: false });
 
-export const bookingListSelect = {
-  id: true,
-  totalPriceCents: true,
-  customerName: true,
-  customerEmail: true,
-  customerPhone: true,
-  adultCount: true,
-  childCount: true,
-  specialRequests: true,
-  status: true,
-  deletedAt: true,
-  createdAt: true,
-  cruiseSchedule: {
-    select: {
-      departureTime: true,
-      arrivalTime: true,
-      cruise: { select: { name: true } },
-    },
-  },
-  bookingRooms: {
-    select: {
-      unitPriceCents: true,
-      room: { select: { name: true, roomType: true } },
-    },
-  },
-  bookingTickets: {
-    select: {
-      quantity: true,
-      unitPriceCents: true,
-      ticketType: { select: { priceCents: true } },
-    },
-  },
-} as const;
-
 export const dashboardBookingSelect = {
   id: true,
   totalPriceCents: true,

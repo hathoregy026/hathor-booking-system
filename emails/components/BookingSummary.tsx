@@ -47,8 +47,8 @@ function buildSummaryRows(
 
   if (showBookingReference && details.bookingId) {
     rows.push({
-      label: "Booking Reference",
-      value: details.bookingId,
+      label: "Booking Code",
+      value: details.bookingCode ?? details.bookingId,
       bold: true,
     });
   }
@@ -98,7 +98,8 @@ export function BookingSummary({
   details,
   showBookingReference = false,
   sectionTitle = "Your Reservation Details",
-}: BookingSummaryProps) {
+  spaceAfter = false,
+}: BookingSummaryProps & { spaceAfter?: boolean }) {
   if (!details) {
     return null;
   }
@@ -111,7 +112,7 @@ export function BookingSummary({
       cellPadding={0}
       cellSpacing={0}
       width="100%"
-      style={{ borderCollapse: "collapse", margin: "32px 0 0" }}
+      style={{ borderCollapse: "collapse", margin: spaceAfter ? "32px 0 28px" : "32px 0 0" }}
     >
       <tbody>
         <tr>

@@ -30,6 +30,7 @@ export type BookingSuccessDetails = {
   paymentSchedule: { milestone: string; dueAt: string | null; cumulativeCents: number }[];
   emailStatus: string;
   returnDate: string;
+  invoiceSent: boolean;
 };
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
@@ -114,5 +115,6 @@ export async function getBookingSuccessDetails(
     paymentSchedule: booking.paymentSchedule.map(p => ({ milestone: p.milestone, dueAt: p.dueAt?.toISOString() ?? null, cumulativeCents: p.cumulativeCents })),
     emailStatus: booking.guestEmailStatus,
     returnDate: booking.cruiseSchedule.arrivalTime.toISOString(),
+    invoiceSent: booking.acceptedAt !== null,
   };
 }

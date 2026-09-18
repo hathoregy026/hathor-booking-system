@@ -26,10 +26,11 @@ function computeTotalCents(
   );
 }
 
+/** New requests the team has not looked at yet (a request is created as a hold, then sent). */
 const NOTIFICATION_WHERE = (lastSeenBookingAt: Date) => ({
-  status: BookingStatus.CONFIRMED,
+  status: { in: [BookingStatus.REQUESTED, BookingStatus.CONFIRMED] },
   deletedAt: null,
-  createdAt: { gt: lastSeenBookingAt },
+  requestedAt: { gt: lastSeenBookingAt },
 });
 
 export async function GET() {
@@ -48,13 +49,16 @@ export async function GET() {
       withDb(() =>
         prisma.booking.findMany({
           where,
-          orderBy: { createdAt: "desc" },
+          orderBy: { requestedAt: "desc" },
           take: 20,
           select: {
             id: true,
             totalPriceCents: true,
             customerName: true,
+            firstName: true,
+            lastName: true,
             createdAt: true,
+            requestedAt: true,
             cruiseSchedule: {
               select: {
                 cruise: { select: { name: true } },
@@ -74,9 +78,12 @@ export async function GET() {
 
     const items = bookings.map((booking) => ({
       id: booking.id,
-      customerName: booking.customerName ?? "Guest",
+      customerName:
+        [booking.firstName, booking.lastName].filter(Boolean).join(" ") ||
+        booking.customerName ||
+        "Guest",
       cruiseName: booking.cruiseSchedule.cruise.name,
-      createdAt: booking.createdAt.toISOString(),
+      createdAt: (booking.requestedAt ?? booking.createdAt).toISOString(),
       totalPriceCents: computeTotalCents(
         booking.totalPriceCents,
         booking.bookingTickets,

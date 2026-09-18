@@ -1,6 +1,7 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { interpolateEmailText } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import { AmountCallout, BookingCodeCard, PaymentPlanTable } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
 import {
@@ -21,12 +22,18 @@ type BookingConfirmedEmailProps = {
 
 export const PreviewProps: BookingConfirmedEmailProps = {
   guestName: sampleGuestName,
-  details: sampleBookingDetails,
+  details: {
+    ...sampleBookingDetails,
+    paymentPlan: sampleBookingDetails.paymentPlan?.map((stage, index) => ({
+      ...stage,
+      state: index === 0 ? "paid" : index === 1 ? "due" : "upcoming",
+    })),
+  },
 };
 
 const DEFAULT_HERO = "Reservation Confirmed";
 const DEFAULT_BODY =
-  "Your cabin is reserved. No payment has been collected yet; our team will contact you separately when secure online payment becomes available.";
+  "Hathor has accepted your reservation and the required initial payment has been recorded. Please follow the payment schedule for any remaining balance.";
 
 const HIGHLIGHTS = [
   "Luxury cabin with panoramic Nile views",
@@ -51,10 +58,11 @@ export default function BookingConfirmedEmail({
   /* Short display title; guest name is shown on the line below. */
   const heading = (rawHeading.split(",")[0] || DEFAULT_HERO).trim();
   const body = bodyText?.trim() || DEFAULT_BODY;
+  const remaining = details.paymentPlan?.filter(stage => stage.state !== "paid") ?? [];
 
   return (
     <EmailLayout
-      preview="Your Hathor reservation is confirmed — payment is pending"
+      preview="Your Hathor reservation is confirmed — payment received"
       footerVariant="guest-reply"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
@@ -63,23 +71,34 @@ export default function BookingConfirmedEmail({
     >
       <EmailEyebrow>Reservation</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      <EmailBodyText>
-        For {guestName} · Payment pending
-      </EmailBodyText>
+      <EmailBodyText>For {guestName}</EmailBodyText>
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
-      <EmailBodyText muted>
-        Security note: Hathor will never ask you to send card details, passwords,
-        or verification codes by email or messaging apps.
-      </EmailBodyText>
-      <BookingSummary details={details} showBookingReference />
+
+      {details.amountPaid ? (
+        <AmountCallout
+          label="Payment received"
+          amount={details.amountPaid}
+          note={
+            remaining.length > 0 && details.balanceDue
+              ? `Remaining balance ${details.balanceDue} · see the schedule below`
+              : "Your voyage is paid in full"
+          }
+        />
+      ) : null}
+
+      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
+      {details.paymentPlan && remaining.length > 0 ? (
+        <PaymentPlanTable stages={details.paymentPlan} title="Your Payment Schedule" />
+      ) : null}
+      <BookingSummary details={details} showBookingReference spaceAfter />
 
       <table
         role="presentation"
         cellPadding={0}
         cellSpacing={0}
         width="100%"
-        style={{ borderCollapse: "collapse", margin: "36px 0 0" }}
+        style={{ borderCollapse: "collapse", margin: "36px 0 28px" }}
       >
         <tbody>
           <tr>
@@ -121,6 +140,11 @@ export default function BookingConfirmedEmail({
           </tr>
         </tbody>
       </table>
+
+      <EmailBodyText muted>
+        Security note: Hathor will never ask you to send card details, passwords,
+        or verification codes by email or messaging apps.
+      </EmailBodyText>
 
       {details.bookingUrl ? (
         <EmailCtaButton href={details.bookingUrl} label="View Your Reservation" />

@@ -11,7 +11,10 @@ import { HATHOR_LOGO_SRC } from "@/lib/branding";
 
 export const EMAIL_TEMPLATE_NAMES = [
   "BookingReceived",
+  "BookingInvoice",
   "BookingConfirmed",
+  "BookingDeclined",
+  "BookingMessage",
   "AdminAlert",
   "ContactReceived",
 ] as const;
@@ -56,9 +59,41 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     bodyText:
       "Your booking request has been sent. Hathor reservations will contact you with the invoice and payment instructions. No payment has been collected.",
   },
+  BookingInvoice: {
+    name: "BookingInvoice",
+    subject: "Your Hathor invoice — booking {bookingCode}",
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    primaryColor: emailColors.gold,
+    backgroundColor: emailColors.background,
+    heroHeading: "Your Invoice, {guestName}",
+    bodyText:
+      "Thank you for choosing Hathor. We have reviewed your request and your cabins are reserved for you. To confirm your booking, please pay the deposit below using your chosen payment method.",
+  },
+  BookingDeclined: {
+    name: "BookingDeclined",
+    subject: "An update on your Hathor booking request {bookingCode}",
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    primaryColor: emailColors.gold,
+    backgroundColor: emailColors.background,
+    heroHeading: "We're Sorry, {guestName}",
+    bodyText:
+      "Thank you for your interest in sailing with Hathor. Unfortunately we are unable to accept this booking request, and the cabins held for it have been released. No payment has been taken.",
+  },
+  BookingMessage: {
+    name: "BookingMessage",
+    subject: "A message about your Hathor booking {bookingCode}",
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    primaryColor: emailColors.gold,
+    backgroundColor: emailColors.background,
+    heroHeading: "A Note From Hathor",
+    bodyText: "Simply reply to this email with any questions — our reservations team reads every message.",
+  },
   BookingConfirmed: {
     name: "BookingConfirmed",
-    subject: "Reservation confirmed — payment pending | Hathor Dahabiya",
+    subject: "Your Hathor reservation is confirmed — {bookingCode}",
     logoUrl: HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,
@@ -69,7 +104,7 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
   },
   AdminAlert: {
     name: "AdminAlert",
-    subject: "New confirmed reservation — {guestName}",
+    subject: "New booking request — {guestName}",
     logoUrl: HATHOR_EMAIL_LOGO_URL,
     heroImageUrl: HATHOR_EMAIL_HERO_URL,
     primaryColor: emailColors.gold,

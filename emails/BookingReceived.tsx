@@ -1,10 +1,12 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { interpolateEmailText } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import { BookingCodeCard } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
 import {
   EmailBodyText,
+  EmailCtaButton,
   EmailEyebrow,
   EmailHeading,
   EmailInfoCard,
@@ -56,10 +58,12 @@ export default function BookingReceivedEmail({
       <EmailBodyText>For {guestName}</EmailBodyText>
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
+      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
       <BookingSummary details={details} />
       <EmailInfoCard title="What happens next?">
-        Our reservations team will contact you with your invoice and payment instructions. Your reservation is confirmed only after Hathor acceptance and the required payment has been recorded.
+        Our reservations team will review your request and email you an invoice for your chosen payment method. Once your deposit is received, we send your confirmation with the rest of the payment schedule.
       </EmailInfoCard>
+      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label="Track Your Booking" /> : null}
     </EmailLayout>
   );
 }

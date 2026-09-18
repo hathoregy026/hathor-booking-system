@@ -1,7 +1,10 @@
 import { render } from "@react-email/render";
 import AdminAlertEmail from "@/emails/AdminAlert";
-import BookingConfirmedEmail from "@/emails/BookingConfirmed";
+import BookingConfirmedEmail, { PreviewProps as ConfirmedPreview } from "@/emails/BookingConfirmed";
 import BookingReceivedEmail from "@/emails/BookingReceived";
+import BookingDeclinedEmail, { PreviewProps as DeclinedPreview } from "@/emails/BookingDeclined";
+import BookingInvoiceEmail, { PreviewProps as InvoicePreview } from "@/emails/BookingInvoice";
+import BookingMessageEmail, { PreviewProps as MessagePreview } from "@/emails/BookingMessage";
 import ContactReceivedEmail from "@/emails/ContactReceived";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
 import {
@@ -136,13 +139,13 @@ async function renderTemplateHtml(
         }),
       );
     case "BookingConfirmed":
-      return render(
-        BookingConfirmedEmail({
-          guestName: sampleGuestName,
-          details: sampleBookingDetails,
-          ...overrides,
-        }),
-      );
+      return render(BookingConfirmedEmail({ ...ConfirmedPreview, ...overrides }));
+    case "BookingInvoice":
+      return render(BookingInvoiceEmail({ ...InvoicePreview, ...overrides }));
+    case "BookingDeclined":
+      return render(BookingDeclinedEmail({ ...DeclinedPreview, ...overrides }));
+    case "BookingMessage":
+      return render(BookingMessageEmail({ ...MessagePreview, ...overrides }));
     case "AdminAlert":
       return render(
         AdminAlertEmail({
@@ -166,6 +169,7 @@ export async function renderEmailTemplatePreview(
   const overrides = buildEmailPreviewTheme(template);
   const subject = interpolateEmailText(template.subject, {
     guestName: sampleGuestName,
+    bookingCode: sampleBookingDetails.bookingCode ?? "",
   });
 
   return {

@@ -1,13 +1,25 @@
-import type { Prisma } from "@/app/generated/prisma/client";
-import { parseBookingCustomerName } from "@/lib/booking-guest-details";
-import { bookingListSelect } from "@/lib/query-selects";
+export type AdminBookingCabin = {
+  type: string;
+  adults: number;
+  children: number;
+  unitPriceCents: number;
+};
 
-export type AdminBookingRecord = Prisma.BookingGetPayload<{
-  select: typeof bookingListSelect;
-}>;
+/** Where a booking stands in Hathor's flow: request → invoice → paid deposit → confirmed. */
+export type AdminBookingStage =
+  | "hold"
+  | "new"
+  | "invoiced"
+  | "confirmed"
+  | "paid"
+  | "declined"
+  | "cancelled"
+  | "expired";
 
 export type AdminBookingDto = {
   id: string;
+  code: string;
+  stage: AdminBookingStage;
   customerName: string;
   guestName: string;
   guestPhone: string | null;
@@ -15,6 +27,7 @@ export type AdminBookingDto = {
   partySize: number | null;
   specialRequests: string | null;
   customerEmail: string;
+  country: string | null;
   status: string;
   cruiseName: string;
   checkInDate: string;
@@ -23,117 +36,80 @@ export type AdminBookingDto = {
   arrivalTime: string;
   rooms: string[];
   roomTypes: string[];
+  cabins: AdminBookingCabin[];
   totalPriceCents: number;
+  paidCents: number;
+  /** The first stage of the payment schedule: what confirms the booking. */
+  depositCents: number | null;
+  paymentMethod: string | null;
+  requestedAt: string | null;
+  acceptedAt: string | null;
+  confirmedAt: string | null;
+  cancelledAt: string | null;
+  cancellationReason: string | null;
+  guestEmailStatus: string;
+  adminEmailStatus: string;
   createdAt: string;
   deletedAt: string | null;
 };
 
-function withParsedGuest<T extends { customerName: string }>(
-  row: T,
-): T & {
-  guestName: string;
-  guestPhone: string | null;
-  partyLabel: string;
-  partySize: number | null;
-  specialRequests: string | null;
-} {
-  const parsed = parseBookingCustomerName(row.customerName);
-  return {
-    ...row,
-    guestName: parsed.guestName,
-    guestPhone: parsed.guestPhone,
-    partyLabel: parsed.partyLabel,
-    partySize: parsed.partySize,
-    specialRequests: parsed.specialRequests,
-  };
+export function bookingStage(input: {
+  status: string;
+  acceptedAt: string | Date | null;
+  cancellationReason: string | null;
+  paidCents: number;
+  totalPriceCents: number;
+}): AdminBookingStage {
+  switch (input.status) {
+    case "PENDING_HOLD":
+      return "hold";
+    case "REQUESTED":
+      return input.acceptedAt ? "invoiced" : "new";
+    case "CONFIRMED":
+      return input.totalPriceCents > 0 && input.paidCents >= input.totalPriceCents ? "paid" : "confirmed";
+    case "CANCELLED":
+      return input.cancellationReason === "HATHOR_DECLINED" ? "declined" : "cancelled";
+    default:
+      return "expired";
+  }
 }
 
-function computeTotalCents(
-  bookingTotalPriceCents: number | null,
-  rooms: { unitPriceCents: number | null }[],
-  tickets: {
-    quantity: number;
-    unitPriceCents: number | null;
-    ticketType: { priceCents: number };
-  }[],
-) {
-  if (bookingTotalPriceCents !== null) return bookingTotalPriceCents;
-  const roomTotal = rooms.reduce(
-    (sum, room) => sum + (room.unitPriceCents ?? 0),
-    0,
-  );
-  if (roomTotal > 0) return roomTotal;
-  return tickets.reduce(
-    (sum, ticket) =>
-      sum +
-      ticket.quantity *
-        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
-    0,
-  );
-}
+export const STAGE_LABELS: Record<AdminBookingStage, string> = {
+  hold: "Checkout hold",
+  new: "New request",
+  invoiced: "Invoice sent",
+  confirmed: "Confirmed",
+  paid: "Paid in full",
+  declined: "Declined",
+  cancelled: "Cancelled",
+  expired: "Expired",
+};
 
-export function serializeAdminBooking(
-  booking: AdminBookingRecord,
-): AdminBookingDto {
-  const departureTime = booking.cruiseSchedule.departureTime.toISOString();
-  const arrivalTime = booking.cruiseSchedule.arrivalTime.toISOString();
+export const STAGE_HINTS: Record<AdminBookingStage, string> = {
+  hold: "Guest is still at checkout — nothing sent yet",
+  new: "Review it, then confirm to send the invoice",
+  invoiced: "Waiting for the deposit — record it when received",
+  confirmed: "Deposit received — balance follows the schedule",
+  paid: "Everything is paid",
+  declined: "Turned down — cabins released",
+  cancelled: "Cancelled — cabins released",
+  expired: "Checkout hold ran out",
+};
 
-  const legacy = withParsedGuest({
-    id: booking.id,
-    customerName: booking.customerName ?? "—",
-    customerEmail: booking.customerEmail ?? "—",
-    status: booking.status,
-    cruiseName: booking.cruiseSchedule.cruise.name,
-    checkInDate: departureTime,
-    checkOutDate: arrivalTime,
-    departureTime,
-    arrivalTime,
-    rooms: booking.bookingRooms.map((entry) => entry.room.name),
-    roomTypes: booking.bookingRooms.map(
-      (entry) => entry.room.roomType ?? entry.room.name,
-    ),
-    totalPriceCents: computeTotalCents(
-      booking.totalPriceCents,
-      booking.bookingRooms,
-      booking.bookingTickets,
-    ),
-    createdAt: booking.createdAt.toISOString(),
-    deletedAt: booking.deletedAt?.toISOString() ?? null,
-  });
-  const adults = booking.adultCount;
-  const children = booking.childCount;
-  return {
-    ...legacy,
-    guestPhone: booking.customerPhone ?? legacy.guestPhone,
-    partyLabel:
-      adults !== null && children !== null
-        ? `${adults} adult${adults === 1 ? "" : "s"}, ${children} child${children === 1 ? "" : "ren"}`
-        : legacy.partyLabel,
-    partySize:
-      adults !== null && children !== null ? adults + children : legacy.partySize,
-    specialRequests: booking.specialRequests ?? legacy.specialRequests,
-  };
-}
-
-/** True for checkout pending state (`PENDING` or legacy `PENDING_HOLD`). */
+/** True for a request or checkout hold that still needs the team. */
 export function isPendingBookingStatus(status: string): boolean {
   const upper = status.toUpperCase();
   return upper === "REQUESTED" || upper === "PENDING" || upper === "PENDING_HOLD";
-}
-
-/** API accepts PENDING as alias for PENDING_HOLD (checkout pending state). */
-export function normalizeAdminBookingStatus(
-  value: string,
-): "PENDING_HOLD" | "CONFIRMED" | "CANCELLED" | null {
-  const upper = value.toUpperCase();
-  if (isPendingBookingStatus(upper)) return "PENDING_HOLD";
-  if (upper === "CONFIRMED") return "CONFIRMED";
-  if (upper === "CANCELLED") return "CANCELLED";
-  return null;
 }
 
 export function displayBookingStatus(status: string): string {
   if (status === "REQUESTED") return "Request received";
   if (isPendingBookingStatus(status)) return "Temporary hold";
   return status.replace(/_/g, " ");
+}
+
+export function paymentMethodLabel(method: string | null): string {
+  if (method === "BANK_TRANSFER") return "Bank Transfer";
+  if (method === "VISA") return "Visa";
+  return "Not chosen";
 }

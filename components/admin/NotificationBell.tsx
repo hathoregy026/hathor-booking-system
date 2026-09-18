@@ -191,7 +191,7 @@ export function NotificationBell() {
                   className="mt-1 text-xs"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  Confirmed reservations will appear here
+                  New booking requests will appear here
                 </p>
               </div>
             ) : (
@@ -202,7 +202,7 @@ export function NotificationBell() {
                     style={{ borderTop: "1px solid var(--border)" }}
                   >
                     <Link
-                      href="/admin/bookings"
+                      href={`/admin/bookings/${encodeURIComponent(item.id)}`}
                       className="block px-4 py-3 transition-colors hover:bg-[color-mix(in_srgb,var(--accent)_6%,transparent)]"
                       onClick={() => setOpen(false)}
                     >

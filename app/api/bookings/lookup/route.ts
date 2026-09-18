@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
 import { createBookingAccessToken } from "@/lib/booking-access-token";
+import { parseBookingReference } from "@/lib/booking-code";
 import { prisma } from "@/lib/prisma";
 import {
   assertTrustedPublicJsonRequest,
@@ -19,16 +20,17 @@ export async function POST(request: NextRequest) {
       windowMs: 15 * 60_000,
     });
     const parsed = bookingLookupSchema.parse(await request.json());
+    const reference = parseBookingReference(parsed.bookingId);
     const booking = await prisma.booking.findFirst({
       where: {
-        id: parsed.bookingId,
+        id: "prefix" in reference ? { startsWith: reference.prefix } : reference.id,
         customerEmail: { equals: parsed.email, mode: "insensitive" },
         deletedAt: null,
       },
       select: { id: true },
     });
     if (!booking) {
-      throw new PublicRequestError("Booking reference and email did not match", 404);
+      throw new PublicRequestError("Booking code and email did not match", 404);
     }
     const token = createBookingAccessToken(booking.id);
     return NextResponse.json({ bookingId: booking.id, accessToken: token });

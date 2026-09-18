@@ -38,9 +38,23 @@ const TEMPLATE_META: Record<
     label: "Booking Received",
     description: "Sent to guests when they submit a booking request.",
   },
+  BookingInvoice: {
+    label: "Invoice",
+    description:
+      "Sent when you press Confirm on a request: the deposit due, your payment instructions and the payment schedule. Use {bookingCode} in the subject.",
+  },
   BookingConfirmed: {
     label: "Booking Confirmed",
-    description: "Sent to guests when their cruise is confirmed.",
+    description:
+      "Sent automatically once a recorded payment covers the deposit: the amount received and the remaining schedule.",
+  },
+  BookingDeclined: {
+    label: "Booking Declined",
+    description: "Sent when you decline a request. Your optional note is added below this text.",
+  },
+  BookingMessage: {
+    label: "Team Reply",
+    description: "Frames the replies your team writes from a booking. The text here is the closing line under your message.",
   },
   AdminAlert: {
     label: "Admin Alert",

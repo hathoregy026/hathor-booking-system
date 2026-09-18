@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getBookingSuccessDetails } from "@/lib/booking-success-details";
+import { bookingCode } from "@/lib/booking-code";
 import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -78,7 +79,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
           heading="What happens from here"
           items={[
             { label: "Request sent", hint: "Nothing was charged", done: requested || confirmed },
-            { label: "Hathor reviews it", hint: "We confirm cabins and total", done: confirmed },
+            { label: "Hathor reviews it", hint: "We confirm cabins and total", done: confirmed || details.invoiceSent },
             { label: "Invoice and payment", hint: "By email, for your method", done: confirmed },
             { label: "Booking confirmed", hint: "Once payment is recorded", done: confirmed },
           ]}
@@ -113,8 +114,8 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
         </p>
 
         <div className="hj-ref">
-          <span className="hj-ref__label">Reservation reference</span>
-          <span className="hj-ref__value">{details.bookingId}</span>
+          <span className="hj-ref__label">Booking code · use it to track this booking</span>
+          <span className="hj-ref__value">{bookingCode(details.bookingId)}</span>
         </div>
 
         <p className="hj-contact-line">
@@ -138,13 +139,16 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
 
         <span className="hj-step-label">What happens next?</span>
         <ol className="hj-timeline">
-          <li data-state={requested ? "now" : "done"}>
+          <li data-state={requested && !details.invoiceSent ? "now" : "done"}>
             <span className="hj-timeline__dot">1</span>
             <span><strong>Hathor Reservations reviews your request</strong><span>We verify the cabin and the final voyage total.</span></span>
           </li>
-          <li data-state={confirmed ? "done" : "next"}>
+          <li data-state={confirmed ? "done" : details.invoiceSent ? "now" : "next"}>
             <span className="hj-timeline__dot">2</span>
-            <span><strong>You receive invoice and payment instructions</strong><span>Sent by email for your preferred method.</span></span>
+            <span>
+              <strong>{details.invoiceSent && !confirmed ? "Your invoice has been sent" : "You receive invoice and payment instructions"}</strong>
+              <span>{details.invoiceSent && !confirmed ? `Check ${details.customerEmail ?? "your email"} for the amount due and how to pay.` : "Sent by email for your preferred method."}</span>
+            </span>
           </li>
           <li data-state={confirmed ? "now" : "next"}>
             <span className="hj-timeline__dot">3</span>

@@ -4,10 +4,7 @@ import { submitBookingRequest } from "@/lib/booking-engine";
 import { bookingRequestSchema } from "@/lib/booking-request-validation";
 import { verifyBookingAccessToken } from "@/lib/booking-access-token";
 import { assertTrustedPublicJsonRequest, enforcePublicRateLimit, readPublicJsonBody, requireIdempotencyKey, PublicRequestError } from "@/lib/public-api-security";
-import { sendBookingReceivedEmail, sendAdminAlertEmail } from "@/lib/email";
-import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
-import { getSiteBaseUrl } from "@/lib/public-url";
-import { prisma } from "@/lib/prisma";
+import { sendRequestEmails } from "@/lib/booking-guest-mail";
 export const dynamic = "force-dynamic";
 /** Submit a request only. Acceptance and payments are staff operations. */
 export async function POST(request: NextRequest) {
@@ -20,23 +17,7 @@ export async function POST(request: NextRequest) {
     const { booking, replay } = await submitBookingRequest(parsed, key);
     if (!replay) {
       try {
-        const emailBooking = await prisma.booking.findUniqueOrThrow({ where: { id: booking.id }, include: {
-          bookingRooms: { include: { room: true } }, bookingTickets: { include: { ticketType: true } },
-          cruiseSchedule: { include: { cruise: true } },
-        } });
-        const details = buildEmailDetailsFromConfirmBooking({ ...emailBooking,
-          bookingUrl: `${getSiteBaseUrl()}/booking/success?bookingId=${encodeURIComponent(booking.id)}&token=${encodeURIComponent(parsed.accessToken)}`,
-        });
-        if (details) {
-          for (const recipient of ["guest", "admin"] as const) {
-            let status = "SENT";
-            try {
-              if (recipient === "guest") await sendBookingReceivedEmail(details.guestEmail, details.guestName, details);
-              else await sendAdminAlertEmail(details);
-            } catch { status = "FAILED"; console.error("[booking] request notification failed", recipient); }
-            await prisma.booking.update({ where: { id: booking.id }, data: recipient === "guest" ? { guestEmailStatus: status } : { adminEmailStatus: status } });
-          }
-        }
+        await sendRequestEmails(booking.id, parsed.accessToken);
       } catch { console.error("[booking] request notification status unavailable"); }
     }
     return NextResponse.json({ bookingId: booking.id, accessToken: parsed.accessToken, status: booking.status,

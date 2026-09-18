@@ -28,7 +28,10 @@ export type EmailPreviewDraft = {
 
 const TEMPLATE_LABELS: Record<EmailTemplateName, string> = {
   BookingReceived: "Booking Received",
+  BookingInvoice: "Invoice",
   BookingConfirmed: "Booking Confirmed",
+  BookingDeclined: "Booking Declined",
+  BookingMessage: "Team Reply",
   AdminAlert: "Admin Alert",
   ContactReceived: "Contact Reply",
 };

@@ -36,17 +36,17 @@ export default function BookingLookupPage() {
       <form onSubmit={submit} className="booking-card w-full space-y-5 p-6 sm:p-9">
         <div>
           <p className="text-xs uppercase tracking-[0.16em]">Hathor Dahabiya</p>
-          <h1 className="booking-serif mt-2 text-3xl">Find your reservation</h1>
-          <p className="mt-3 text-sm text-[var(--booking-muted)]">Enter the reference and email used when booking.</p>
+          <h1 className="booking-serif mt-2 text-3xl">Track your booking</h1>
+          <p className="mt-3 text-sm text-[var(--booking-muted)]">Enter the booking code from your email (for example HB-3F2A91C0) and the email you booked with.</p>
         </div>
-        <label className="block text-sm">Booking reference
-          <input className="hathor-checkout-field mt-2 w-full border px-3 py-3" value={bookingId} onChange={(e) => setBookingId(e.target.value)} required autoComplete="off" />
+        <label className="block text-sm">Booking code
+          <input className="hathor-checkout-field mt-2 w-full border px-3 py-3 uppercase" value={bookingId} onChange={(e) => setBookingId(e.target.value)} placeholder="HB-XXXXXXXX" required autoComplete="off" spellCheck={false} />
         </label>
         <label className="block text-sm">Email
           <input className="hathor-checkout-field mt-2 w-full border px-3 py-3" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
         </label>
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
-        <button className="booking-btn-primary w-full px-6 py-3" disabled={loading}>{loading ? "Checking…" : "View Reservation"}</button>
+        <button className="booking-btn-primary w-full px-6 py-3" disabled={loading}>{loading ? "Checking…" : "Track booking"}</button>
         <Link href="/booking" className="block text-center text-sm underline">Start a new reservation</Link>
       </form>
     </main>

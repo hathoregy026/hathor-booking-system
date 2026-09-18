@@ -23,9 +23,9 @@ export const PreviewProps: AdminAlertEmailProps = {
   details: sampleBookingDetails,
 };
 
-const DEFAULT_HERO = "New Confirmed Reservation";
+const DEFAULT_HERO = "New Booking Request";
 const DEFAULT_BODY =
-  "This reservation was confirmed automatically without collecting payment. Follow up through your approved payment process.";
+  "Review this request in the dashboard. Confirm it to email the guest an invoice for their chosen payment method, or decline it to release the cabins.";
 
 export default function AdminAlertEmail({
   details = sampleBookingDetails,
@@ -46,7 +46,7 @@ export default function AdminAlertEmail({
 
   return (
     <EmailLayout
-      preview="New confirmed Hathor reservation — payment pending"
+      preview={`New Hathor booking request${details.bookingCode ? ` ${details.bookingCode}` : ""} — ${details.guestName}`}
       footerVariant="admin"
       logoWidth={56}
       logoUrl={logoUrl}
@@ -101,7 +101,7 @@ export default function AdminAlertEmail({
         {body}
       </EmailBodyText>
 
-      <EmailCtaButton href={`${SITE_URL}/admin`} label="Open Dashboard" />
+      <EmailCtaButton href={details.adminUrl ?? `${SITE_URL}/admin/bookings`} label="Review Booking" />
     </EmailLayout>
   );
 }

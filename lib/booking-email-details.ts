@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import type { AdminBookingDto } from "@/lib/admin-bookings";
 import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { formatPrice } from "@/lib/client-dates";
@@ -97,28 +96,5 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
     specialRequests: booking.specialRequests ?? undefined,
     bookingUrl: booking.bookingUrl,
     paymentMethod: booking.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : "Visa",
-  };
-}
-
-export function buildEmailDetailsFromAdminBooking(
-  booking: AdminBookingDto,
-): BookingEmailDetails | null {
-  const email = booking.customerEmail?.trim();
-  if (!email || email === "—") return null;
-
-  const parsed = parseGuestFromCustomerName(booking.customerName);
-
-  return {
-    bookingId: booking.id,
-    guestName: parsed.guestName,
-    guestEmail: email,
-    guestPhone: parsed.guestPhone,
-    cruiseName: booking.cruiseName,
-    checkInDate: format(new Date(booking.departureTime), "MMMM d, yyyy"),
-    checkOutDate: format(new Date(booking.arrivalTime), "MMMM d, yyyy"),
-    roomType:
-      booking.roomTypes[0] ?? booking.rooms[0] ?? "Luxury accommodation",
-    guests: parsed.guests,
-    totalPrice: formatPrice(booking.totalPriceCents),
   };
 }

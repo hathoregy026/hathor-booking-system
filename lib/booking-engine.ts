@@ -84,7 +84,11 @@ export async function administerBooking(id: string, action: {
   try {
     const rows=await bookingQuery<{booking:unknown}>("SELECT hathor_administer_booking($1,$2::jsonb) AS booking",[id,JSON.stringify(action)]);
     return hydrate<Reservation>(rows[0].booking);
-  }catch(error){rethrowDatabaseRequest(error);}
+  }catch(error){
+    // Staff see the database's own reason ("Only a request awaiting review can be declined").
+    if ((error as {code?: string})?.code === "HB400" && error instanceof Error) throw new InvalidBookingError(error.message);
+    rethrowDatabaseRequest(error);
+  }
 }
 
 export async function getBookingReservation(id:string) {
