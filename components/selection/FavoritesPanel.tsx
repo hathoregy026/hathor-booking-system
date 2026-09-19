@@ -1,5 +1,7 @@
 "use client";
 
+import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { liveIndicativeFor } from "@/lib/cabin-prices-shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -214,10 +216,11 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
    * catalog on every render, never persisted, never summed, and never treated
    * as a booking total: the server states the amount a guest actually pays.
    */
-  const indicativeCents = indicativeFromPriceCents(
-    selection.voyageSlug,
-    residence ? luxuryTypeForResidence(residence) : null,
-  );
+  const cabinPrices = useCabinPrices();
+  const luxuryType = residence ? luxuryTypeForResidence(residence) : null;
+  const indicativeCents =
+    liveIndicativeFor(cabinPrices, selection.voyageSlug, luxuryType) ??
+    indicativeFromPriceCents(selection.voyageSlug, luxuryType);
 
   const sailingLabel = selection.sailingDate
     ? new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })

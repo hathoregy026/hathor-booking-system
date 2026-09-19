@@ -5,18 +5,13 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useState,
   type ReactNode,
   Suspense,
 } from "react";
-import dynamic from "next/dynamic";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const BookingModal = dynamic(
-  () =>
-    import("@/components/booking/BookingModal").then((mod) => mod.BookingModal),
-  { ssr: false },
-);
+/** Book now opens the booking journey itself, on its first step. */
+const BOOKING_HREF = "/booking";
 
 type BookingModalContextValue = {
   openBooking: () => void;
@@ -25,50 +20,29 @@ type BookingModalContextValue = {
 
 const BookingModalContext = createContext<BookingModalContextValue | null>(null);
 
-function BookModalAutoOpen({
-  onOpen,
-}: {
-  onOpen: () => void;
-}) {
+/** Old links ending in ?book=1 go to the booking journey too. */
+function BookLinkRedirect() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
-    if (searchParams.get("book") !== "1") return;
-    onOpen();
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("book");
-    const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-  }, [onOpen, pathname, router, searchParams]);
+    if (searchParams.get("book") === "1") router.replace(BOOKING_HREF);
+  }, [router, searchParams]);
 
   return null;
 }
 
 export function BookingModalProvider({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const [routePath, setRoutePath] = useState(pathname);
-
-  const openBooking = useCallback(() => setOpen(true), []);
-  const closeBooking = useCallback(() => setOpen(false), []);
-
-  /* Close modal when navigating away — keeps body scroll from staying locked. */
-  if (pathname !== routePath) {
-    setRoutePath(pathname);
-    if (open) {
-      setOpen(false);
-    }
-  }
+  const router = useRouter();
+  const openBooking = useCallback(() => router.push(BOOKING_HREF), [router]);
+  const closeBooking = useCallback(() => {}, []);
 
   return (
     <BookingModalContext.Provider value={{ openBooking, closeBooking }}>
       {children}
       <Suspense fallback={null}>
-        <BookModalAutoOpen onOpen={openBooking} />
+        <BookLinkRedirect />
       </Suspense>
-      <BookingModal open={open} onClose={closeBooking} />
     </BookingModalContext.Provider>
   );
 }

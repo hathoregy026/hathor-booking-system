@@ -181,10 +181,9 @@ async function walk(browser, label, width, height, mode, theme) {
 
   const cards = page.locator('.hj-cabin-card');
   if (desktop) {
-    // The preview: four cabin types heading the cabins column, 16:9 photographs,
-    // a View room link, and a way to list one type's cabins.
-    const types = page.locator('.hj-typehead');
-    if ((await types.count()) !== 4) problems.push(`desktop: the cabins column should head 4 cabin types, found ${await types.count()}`);
+    // The preview: any cabin card can be selected for it (and still takes guests),
+    // 16:9 photographs that open full screen, a View room link, and a way to list one type's cabins.
+    if ((await page.locator('.hj-cabin-card--shown').count()) !== 1) problems.push('desktop: exactly one cabin should show as selected for the preview');
     if ((await page.locator('.hj-gallery__view').getAttribute('target')) !== '_blank') problems.push('desktop: View room should open the room in a new tab');
     const frame = await page.locator('.hj-gallery__frame').boundingBox();
     if (!frame || Math.abs(frame.width / frame.height - 16 / 9) > 0.02) problems.push(`desktop: the cabin photograph should be 16:9 (${frame && (frame.width / frame.height).toFixed(3)})`);
@@ -192,10 +191,28 @@ async function walk(browser, label, width, height, mode, theme) {
     const firstPhoto = await counter.innerText();
     await page.getByRole('button', { name: 'Next photo' }).click();
     if ((await counter.innerText()) === firstPhoto) problems.push('desktop: Next photo did not change the photograph');
-    await page.getByRole('button', { name: /^Preview the Luxury Suite:/ }).click();
-    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Luxury Suite') problems.push('desktop: choosing Luxury Suite did not show it in the preview');
+    await page.getByRole('button', { name: 'Show Luxury Suite 2 in the preview' }).click();
+    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Luxury Suite') problems.push('desktop: selecting Luxury Suite 2 did not show it in the preview');
     await cabinAt('Royal Suite', 1).locator('.hj-room__facts').click();
-    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Royal Suite') problems.push('desktop: choosing a Royal Suite cabin did not show it in the preview');
+    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Royal Suite') problems.push('desktop: clicking a Royal Suite cabin did not show it in the preview');
+    const shown = await page.locator('.hj-cabin-card--shown').getAttribute('aria-label');
+    if (!shown?.startsWith('Royal Suite, cabin 1,')) problems.push(`desktop: the selected cabin should be Royal Suite 1 (${shown})`);
+    if ((await page.locator('.hj-cabin-card--shown').getAttribute('data-hj-drop')) === null) problems.push('desktop: the selected cabin must still take guests');
+    // Full screen photographs: open from the picture, move on, close with the X.
+    await page.locator('.hj-gallery__img').click();
+    const viewer = page.getByRole('dialog', { name: 'Royal Suite photos' });
+    if (!(await viewer.isVisible())) problems.push('desktop: clicking the photograph did not open it full screen');
+    const caption = page.locator('.hj-lightbox__caption');
+    const before = await caption.innerText();
+    await viewer.getByRole('button', { name: 'Next photo' }).click();
+    if ((await caption.innerText()) === before) problems.push('desktop: Next photo did not move on in the full-screen view');
+    await viewer.getByRole('button', { name: 'Close photos' }).click();
+    if (await viewer.isVisible()) problems.push('desktop: the X did not close the full-screen view');
+    // What each cabin includes and leaves out.
+    const incl = cabinAt('Royal Suite', 1).locator('.hj-cabin-card__incl');
+    await incl.locator('summary').click();
+    if ((await incl.locator('.hj-incl__list--in li').count()) === 0 || (await incl.locator('.hj-incl__list--out li').count()) === 0) problems.push('desktop: a cabin should list what is included and what is not');
+    await incl.locator('summary').click();
     await page.getByRole('button', { name: /^Show the 2 Royal Suites/ }).click();
     await page.waitForTimeout(250);
     const suiteCards = await cards.count();

@@ -5,13 +5,9 @@ import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
 import { findCountry } from "@/lib/countries";
 import { CountryPicker } from "./CountryPicker";
 import { guestLabel, type CabinView } from "./allocation";
-import {
-  money,
-  stageLabel,
-  type GuestForm,
-  type PaymentStage,
-} from "./model";
+import { type GuestForm, type PaymentStage } from "./model";
 import { IconBank, IconCard } from "./icons";
+import { PaymentPlan } from "./PaymentPlan";
 
 /** Step 3 — lead guest, passengers by cabin, payment preference, then send the request. */
 export function DetailsPaymentScreen({
@@ -161,14 +157,7 @@ export function DetailsPaymentScreen({
         <div className="hj-pay__pair">
           <div className="hj-pay__col">
             <p className="hj-pay__title" style={{ marginTop: "1.3rem" }}>Payment schedule</p>
-            <ol className="hj-schedule">
-              {schedule.map(stage => (
-                <li key={stage.milestone}>
-                  <strong>{money(stage.cumulativeCents)}</strong>
-                  <span>{stageLabel(stage)}</span>
-                </li>
-              ))}
-            </ol>
+            <PaymentPlan stages={schedule} />
             <p className="hj-ledger__note">
               After sending your reservation request, Hathor Reservations will review the details and send the invoice with payment instructions.
               Your cabins are reserved for you the moment you send this request.

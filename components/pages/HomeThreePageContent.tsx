@@ -1,5 +1,7 @@
 "use client";
 
+import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { livePriceFor } from "@/lib/cabin-prices-shared";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties, type ReactNode } from "react";
@@ -242,6 +244,8 @@ const TIER_LABEL: Record<string, { tier: string; label: string }> = {
   "Luxury Royal Suite": { tier: "royal", label: "Royal suite" },
 };
 
+const usdLabel = (cents: number) => `$${(cents / 100).toLocaleString("en-US")}`;
+
 const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
   cruise.rooms
     /* Twin and King are the same grade at the same price, so showing both
@@ -275,7 +279,10 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
             : cruise.ports.replace("→", "—"),
         nights: `${cruise.nights} nights`,
         day: cruise.departureDay,
-        price: `$${(room.priceCents / 100).toLocaleString("en-US")}`,
+        price: usdLabel(room.priceCents),
+        /* the dashboard's price for this voyage and cabin replaces the published one */
+        voyageSlug: cruise.slug,
+        roomNumber: room.roomNumber,
         tier: tier.tier,
         tierLabel: tier.label,
         /* the composite slug the selection store keys a cabin on; null when a
@@ -355,6 +362,7 @@ export function HomeThreePageContent({
   heroLogoTuneMobile,
 }: HomeThreeProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const cabinPrices = useCabinPrices();
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -609,7 +617,10 @@ export function HomeThreePageContent({
                             </p>
                             <p className="h3-sail__price">
                               <em>from</em>
-                              {sailing.price}
+                              {(() => {
+                                const live = livePriceFor(cabinPrices, sailing.voyageSlug, sailing.roomNumber);
+                                return live === null ? sailing.price : usdLabel(live);
+                              })()}
                             </p>
 
                             {/* The site's own pills, on the site's own store.

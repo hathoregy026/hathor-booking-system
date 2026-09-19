@@ -462,6 +462,10 @@ export default function AdminCruisesPage() {
       <div>
         <h1 className="admin-page-title">Cruises</h1>
         <p className="admin-page-subtitle">Manage fleet and cabin inventory</p>
+        <p className="mt-1 text-xs" style={{ color: "var(--text-secondary)" }}>
+          The price of each cabin, as the booking charges it, is set in{" "}
+          <a className="underline" href="/admin/prices">Prices &amp; Cabins</a>.
+        </p>
       </div>
 
       <div className="flex flex-col gap-4">

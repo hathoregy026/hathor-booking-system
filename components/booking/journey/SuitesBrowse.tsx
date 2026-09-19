@@ -15,6 +15,7 @@ import {
   IconBed,
   IconCheck,
   IconChevron,
+  IconClose,
   IconGuests,
   IconLink,
   IconOpen,
@@ -79,6 +80,7 @@ export function SuitesBrowse({
   duration,
   sailing,
   previewType,
+  previewLabel,
   arrangement,
   guests,
   onShowCabins,
@@ -87,6 +89,8 @@ export function SuitesBrowse({
   sailing: Sailing;
   /** The cabin type on show, chosen in the cabins column. */
   previewType: PhysicalRoomType;
+  /** The cabin chosen ("King Cabin 3"). */
+  previewLabel: string;
   arrangement: Arrangement;
   guests: Guest[];
   /** Filters the cabin cards to this type and brings them into view. */
@@ -95,6 +99,8 @@ export function SuitesBrowse({
   const [photo, setPhoto] = useState<{ type: PhysicalRoomType; index: number }>({ type: previewType, index: 0 });
   const browseRef = useRef<HTMLElement | null>(null);
   useStickyFit(browseRef);
+  /** Full-screen photographs: opened from the picture, closed with the X or Esc. */
+  const viewer = useRef<HTMLDialogElement | null>(null);
 
   const voyage = itineraryFor(duration);
   const type = sailing.types.find(entry => entry.roomType === previewType) ?? sailing.types[0];
@@ -118,10 +124,12 @@ export function SuitesBrowse({
           onKeyDown={event => {
             if (event.key === "ArrowRight") showPhoto(photoIndex + 1);
             if (event.key === "ArrowLeft") showPhoto(photoIndex - 1);
+            if (event.key === "Enter") viewer.current?.showModal();
           }}
         >
           <Image
             key={visuals.gallery[photoIndex]}
+            onClick={() => viewer.current?.showModal()}
             className="hj-gallery__img"
             src={visuals.gallery[photoIndex]}
             alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
@@ -130,7 +138,7 @@ export function SuitesBrowse({
             sizes="(min-width: 1081px) 46vw, 100vw"
           />
           {placed > 0 ? (
-            <span className="hj-gallery__badge"><IconCheck /> Selected</span>
+            <span className="hj-gallery__badge"><IconCheck /> In your booking</span>
           ) : null}
           <button type="button" className="hj-gallery__nav hj-gallery__nav--prev" aria-label="Previous photo" onClick={() => showPhoto(photoIndex - 1)}>
             <IconChevron direction="left" />
@@ -143,6 +151,41 @@ export function SuitesBrowse({
             View room <IconOpen />
           </a>
         </div>
+
+        <dialog
+          className="hj-lightbox"
+          ref={viewer}
+          aria-label={`${type.roomType} photos`}
+          onKeyDown={event => {
+            if (event.key === "ArrowRight") showPhoto(photoIndex + 1);
+            if (event.key === "ArrowLeft") showPhoto(photoIndex - 1);
+          }}
+          onClick={event => {
+            // A click on the dark surround closes, as the X does.
+            if (event.target === event.currentTarget) viewer.current?.close();
+          }}
+        >
+          <div className="hj-lightbox__stage">
+            <Image
+              key={`full-${visuals.gallery[photoIndex]}`}
+              className="hj-lightbox__img"
+              src={visuals.gallery[photoIndex]}
+              alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
+              fill
+              sizes="100vw"
+            />
+          </div>
+          <button type="button" className="hj-lightbox__close" aria-label="Close photos" onClick={() => viewer.current?.close()}>
+            <IconClose />
+          </button>
+          <button type="button" className="hj-lightbox__nav hj-lightbox__nav--prev" aria-label="Previous photo" onClick={() => showPhoto(photoIndex - 1)}>
+            <IconChevron direction="left" />
+          </button>
+          <button type="button" className="hj-lightbox__nav hj-lightbox__nav--next" aria-label="Next photo" onClick={() => showPhoto(photoIndex + 1)}>
+            <IconChevron direction="right" />
+          </button>
+          <span className="hj-lightbox__caption">{type.roomType} · {photoIndex + 1} / {photoCount}</span>
+        </dialog>
         <div className="hj-gallery__dots" role="group" aria-label="Photos">
           {visuals.gallery.map((src, index) => (
             <button
@@ -158,6 +201,7 @@ export function SuitesBrowse({
       </div>
 
       <div className="hj-detail">
+        <span className="hj-detail__kicker">Selected · {previewLabel}</span>
         <span className="hj-detail__name">{type.roomType}</span>
         <span className="hj-detail__tag">{story.tagline}</span>
         <ul className="hj-detail__features">

@@ -7,8 +7,9 @@ import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { JourneyProgress, StepBanner, StepGuide } from "@/components/booking/journey/JourneyChrome";
-import { folioRange, money, plural, shortDate, stageLabel } from "@/components/booking/journey/model";
+import { folioRange, money, plural, shortDate } from "@/components/booking/journey/model";
 import { VoyageBarFrame } from "@/components/booking/journey/VoyageRail";
+import { PaymentPlan } from "@/components/booking/journey/PaymentPlan";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
 
 type PageProps = {
@@ -17,13 +18,14 @@ type PageProps = {
 
 const FALLBACK_SCENE = "/media/hathor/optimized/cruises-hero.webp";
 
-function Shell({ children, scene, wide, banner, bar }: { children: ReactNode; scene?: string; wide?: boolean; banner?: ReactNode; bar?: ReactNode }) {
+function Shell({ children, scene, wide, banner, bar, guide }: { children: ReactNode; scene?: string; wide?: boolean; banner?: ReactNode; bar?: ReactNode; guide?: ReactNode }) {
   const style = { "--hj-scene": `url("${scene ?? FALLBACK_SCENE}")` } as CSSProperties;
   return (
     <div className="hj hj--step-4" style={style}>
       <div className="hj-folio" id="hj-folio-top">
         {banner}
         <JourneyProgress step={4} />
+        {guide ? <div className="hj-guidebar">{guide}</div> : null}
         <div className={wide ? "hj-stage hj-stage--success" : "hj-stage hj-stage--wide"}>{children}</div>
         {bar}
       </div>
@@ -74,10 +76,23 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
   const method = details.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : details.paymentMethod === "VISA" ? "Visa" : "—";
   const roomVisual = details.roomType ? getBookingRoomVisuals(details.roomType, details.roomType) : null;
 
+  const guide = (
+    <StepGuide
+      heading="What happens from here"
+      items={[
+        { label: "Request sent", hint: "Nothing was charged", done: requested || confirmed },
+        { label: "Hathor reviews it", hint: "We confirm cabins and total", done: confirmed || details.invoiceSent },
+        { label: "Invoice and payment", hint: "By email, for your method", done: confirmed },
+        { label: "Booking confirmed", hint: "Once payment is recorded", done: confirmed },
+      ]}
+    />
+  );
+
   return (
     <Shell
       scene={voyage?.image}
       wide
+      guide={guide}
       bar={
         voyage ? (
           <VoyageBarFrame
@@ -110,15 +125,6 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
     >
       <section className="hj-panel">
         <p className="hj-panel__kicker">Step 4 of 4</p>
-        <StepGuide
-          heading="What happens from here"
-          items={[
-            { label: "Request sent", hint: "Nothing was charged", done: requested || confirmed },
-            { label: "Hathor reviews it", hint: "We confirm cabins and total", done: confirmed || details.invoiceSent },
-            { label: "Invoice and payment", hint: "By email, for your method", done: confirmed },
-            { label: "Booking confirmed", hint: "Once payment is recorded", done: confirmed },
-          ]}
-        />
         <div className="hj-sent">
           <span className="hj-sent__mark" aria-hidden>✓</span>
           <span>
@@ -234,14 +240,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
         </div>
 
         <span className="hj-step-label">Payment timeline</span>
-        <ol className="hj-schedule">
-          {details.paymentSchedule.map(stage => (
-            <li key={stage.milestone}>
-              <strong>{money(stage.cumulativeCents)}</strong>
-              <span>{stageLabel(stage)}</span>
-            </li>
-          ))}
-        </ol>
+        <PaymentPlan stages={details.paymentSchedule} paidCents={details.amountPaidCents} />
       </section>
 
       <section className="hj-panel">

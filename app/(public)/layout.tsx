@@ -11,6 +11,8 @@ import { TypographySettingsProvider } from "@/components/public/TypographySettin
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
 import { WebsiteTextPageScope } from "@/components/public/WebsiteTextPageScope";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { getCabinPriceTable } from "@/lib/cabin-prices";
+import { CabinPricesProvider } from "@/components/public/CabinPricesProvider";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
@@ -126,7 +128,7 @@ export default async function PublicSiteLayout({
    * One request-scoped CMS bundle (unstable_cache, 300s). No headers()/connection()
    * so marketing HTML can ISR at the CDN.
    */
-  const cms = await loadPublicCmsBundle();
+  const [cms, cabinPrices] = await Promise.all([loadPublicCmsBundle(), getCabinPriceTable()]);
   const welcomeSplash = cms.welcomeSplash;
   const liveSite = cms.liveSite;
   /* Visitor settings — work hosts unlock client-side via PageVisibilityChrome. */
@@ -196,7 +198,8 @@ export default async function PublicSiteLayout({
                     welcomeSplash={welcomeSplash}
                     liveSite={liveSite}
                   >
-                    {children}
+                    {/* Dashboard → Prices, for every price shown on the public pages. */}
+                    <CabinPricesProvider prices={cabinPrices}>{children}</CabinPricesProvider>
                   </PublicLayout>
                 </ComingSoonGate>
               </PageVisibilityProvider>

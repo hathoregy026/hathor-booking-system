@@ -919,6 +919,9 @@ button.hj-progress__step { cursor: pointer; }
 .hj-timeline li[data-state="now"] .hj-timeline__dot { background: var(--hj-gold); border-color: var(--hj-gold); color: #fff; }
 .hj-timeline strong { display: block; font-weight: 500; font-size: 0.86rem; }
 .hj-timeline span { display: block; font-size: 0.77rem; color: var(--hj-ink-soft); margin-top: 0.08rem; }
+/* The number sits centred in its circle (the rule above would make it a block). */
+.hj-timeline span.hj-timeline__dot { display: grid; margin-top: 0; font-size: 0.7rem; color: inherit; }
+.hj-timeline li[data-state="next"] span.hj-timeline__dot { color: var(--hj-ink-soft); }
 
 .hj-assist {
   display: flex; gap: 0.45rem; align-items: flex-start;
@@ -1269,8 +1272,65 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
 .hj-rail__tagline,
 .hj-party__wand,
 .hj-sailings__more,
-.hj-typehead,
 .hj-step-lede { display: none; }
+
+/* One walkthrough map, directly below progress, on every step and viewport. */
+.hj-guidebar { display: block; padding: 0.85rem 0 0; }
+.hj-guidebar .hj-guide { margin: 0; }
+
+/* The payment plan: every invoice with its amount, share and date (every screen size). */
+.hj-payplan { display: grid; gap: 0.9rem; }
+.hj-payplan__steps { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--hj-line-soft); }
+.hj-payplan__step {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.8rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--hj-line-soft);
+}
+.hj-payplan__num {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--hj-gold);
+  border-radius: 50%;
+  background: #fffdf8;
+  color: var(--hj-gold-deep);
+  font-size: 0.74rem;
+}
+.hj-payplan__step--paid .hj-payplan__num { background: var(--hj-gold); color: #fffdf8; }
+.hj-payplan__body { display: grid; gap: 0.2rem; min-width: 0; }
+.hj .hj-payplan__title { font-size: 0.86rem; font-weight: 500; color: var(--hj-ink); }
+.hj .hj-payplan__when { font-size: 0.76rem; line-height: 1.45; color: var(--hj-ink-soft); }
+.hj .hj-payplan__amount { display: grid; justify-items: end; gap: 0.15rem; font-family: var(--hj-display); font-size: 1.05rem; color: var(--hj-ink); white-space: nowrap; }
+.hj-payplan__amount small { font-family: var(--hj-body); font-size: 0.66rem; color: var(--hj-ink-soft); }
+.hj-payplan__rules { display: grid; gap: 0.4rem; margin: 0; padding: 0.8rem 0.95rem; list-style: none; background: var(--hj-gold-wash); }
+.hj .hj-payplan__rules li { font-size: 0.74rem; line-height: 1.45; color: var(--hj-ink-soft); }
+.hj .hj-payplan__rules li[aria-current] { color: var(--hj-ink); font-weight: 500; }
+.hj .hj-payplan__rules li[aria-current]::before { content: "✓ "; color: var(--hj-gold-deep); }
+
+/* What a cabin includes and leaves out, folded under the card (every screen size). */
+.hj-cabin-card__incl { margin-top: 0.2rem; border-top: 1px solid var(--hj-line-soft); padding-top: 0.45rem; }
+.hj-cabin-card__incl > summary {
+  cursor: pointer;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hj-gold-deep);
+  list-style-position: inside;
+}
+.hj-incl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem 1.1rem; margin-top: 0.6rem; }
+.hj .hj-incl__title { display: block; margin-bottom: 0.35rem; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hj-ink); }
+.hj-incl__list { display: grid; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
+.hj .hj-incl__list li { position: relative; padding-left: 1.05rem; font-size: 0.72rem; line-height: 1.4; color: var(--hj-ink-soft); }
+.hj-incl__list li::before { position: absolute; left: 0; top: 0; font-size: 0.72rem; }
+.hj-incl__list--in li::before { content: "✓"; color: var(--hj-gold-deep); }
+.hj-incl__list--out li::before { content: "✕"; color: #9a5a50; }
+@media (max-width: 480px) {
+  .hj-incl { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* Undo arrangement, and the dialog that asks first (every screen size). */
 .hj-party__undo {
@@ -1553,8 +1613,11 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj .hj-panel > .hj-step-label:first-of-type,
   .hj .hj-details > section > .hj-step-label:first-child { margin-top: 0; }
 
-  /* The step map. */
-  .hj-guide { margin: 0 0 2.2rem; padding: 1rem 1.25rem 1.05rem; background: var(--hj-card); }
+  /* The step map: one bar, under the progress line, on every step. */
+  .hj-guidebar { display: block; padding: 1.2rem var(--hj-gutter) 0; }
+  .hj-guidebar .hj-guide { margin: 0; }
+  .hj-stage .hj-guide { display: none; }
+  .hj-guide { padding: 1rem 1.25rem 1.05rem; background: var(--hj-card); }
   .hj .hj-guide__heading { font-size: 0.6rem; letter-spacing: 0.22em; }
   .hj .hj-guide__label { background: var(--hj-card); font-size: 0.82rem; }
   .hj .hj-guide__hint { font-size: 0.7rem; }
@@ -1767,9 +1830,24 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-stage--success > .hj-panel + .hj-panel { border-left: 1px solid var(--hj-line-soft); }
   .hj-stage--success > .hj-panel:last-child { background: var(--hj-paper-deep); }
   .hj .hj-ref__value { font-family: var(--hj-italiana); font-size: 2.1rem; letter-spacing: 0.08em; }
-  /* The four-point map shares a narrow column here: two by two. */
-  .hj--step-4 .hj-guide__list { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1rem; }
-  .hj--step-4 .hj-guide__item::after { display: none; }
+  /* Request sent: room between every block. */
+  .hj--step-4 .hj-stage--success > .hj-panel > * + * { margin-top: 1.4rem; }
+  .hj--step-4 .hj-stage--success > .hj-panel > .hj-panel__kicker { margin-bottom: 0; }
+  .hj--step-4 .hj-sent { gap: 0.9rem; margin-bottom: 0; padding-bottom: 1.3rem; }
+  .hj--step-4 .hj-sent__mark { width: 2.2rem; height: 2.2rem; }
+  .hj--step-4 .hj-stage--success > .hj-panel > h1 { margin-top: 1.6rem; }
+  .hj--step-4 .hj-ref { margin: 1.6rem 0 0; padding: 1rem 1.1rem 1.05rem; }
+  .hj--step-4 .hj-ref__label { margin-bottom: 0.3rem; }
+  .hj--step-4 .hj-contact-line { gap: 0.7rem; }
+  .hj--step-4 p.hj-contact-line strong { display: block; margin-top: 0.2rem; }
+  .hj--step-4 .hj-stage--success .hj-step-label { margin-top: 2.2rem; }
+  .hj--step-4 .hj-timeline { gap: 1.1rem; }
+  .hj--step-4 .hj-timeline li { gap: 1rem; }
+  .hj--step-4 .hj-timeline li:not(:last-child)::before { top: 2rem; bottom: -1.1rem; }
+  .hj--step-4 .hj-timeline strong { font-size: 0.9rem; }
+  .hj--step-4 .hj-timeline span:not(.hj-timeline__dot) { margin-top: 0.2rem; }
+  .hj--step-4 .hj-summary-thumbs { padding: 0.8rem 0; }
+  .hj--step-4 .hj-total-block { margin-top: 1rem; }
   .hj--step-4 .hj-sent strong { display: block; font-family: var(--hj-display); font-size: 1.12rem; font-weight: 400; }
   .hj p.hj-contact-line { font-size: 0.9rem; line-height: 1.55; letter-spacing: normal; font-weight: 400; }
 
@@ -1795,7 +1873,7 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-stage--suites > .hj-suites-head {
     grid-area: head;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
     gap: 1rem clamp(1.6rem, 3vw, 3.2rem);
     margin-bottom: 1.8rem;
@@ -1813,9 +1891,6 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   }
   .hj .hj-suites-head .hj-panel__head p:not(.hj-panel__kicker) { margin-top: 0.7rem; font-size: 0.88rem; line-height: 1.55; }
   /* The step map stands as a short list beside the title. */
-  .hj-suites-head .hj-guide { margin: 0; }
-  .hj-suites-head .hj-guide__list { grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); gap: 0.55rem; }
-  .hj-suites-head .hj-guide__item::after { display: none; }
 
   /* Left: the photographs (16:9) and the type in detail. */
   .hj-stage--suites > .hj-browse {
@@ -1832,7 +1907,7 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-gallery { display: grid; gap: 0.9rem; min-width: 0; }
   .hj-gallery__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #e8dece; }
   .hj-gallery__frame:focus-visible { outline: 2px solid var(--hj-gold); outline-offset: 3px; }
-  .hj .hj-gallery__img { object-fit: cover; animation: hj-photo-in 0.45s ease; }
+  .hj .hj-gallery__img { object-fit: cover; animation: hj-photo-in 0.45s ease; cursor: zoom-in; }
   .hj .hj-gallery__nav {
     position: absolute;
     top: 50%;
@@ -1924,11 +1999,12 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-detail {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto auto auto auto auto 1fr;
-    grid-template-areas: "name features" "tag features" "price features" "show features" "link features" ". features";
+    grid-template-rows: auto auto auto auto auto auto 1fr;
+    grid-template-areas: "kicker kicker" "name features" "tag features" "price features" "show features" "link features" ". features";
     gap: 0 clamp(1.4rem, 2.4vw, 2.8rem);
     min-width: 0;
   }
+  .hj .hj-detail__kicker { grid-area: kicker; margin-bottom: 0.6rem; font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hj-gold-deep); }
   .hj .hj-detail__name {
     grid-area: name;
     font-family: var(--hj-italiana);
@@ -1985,49 +2061,6 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj p.hj-filter__shown { font-size: 0.76rem; }
   .hj-rooms { flex-direction: column; gap: 0.7rem; }
 
-  .hj .hj-typehead {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1.45rem 84px minmax(0, 1fr);
-    align-items: center;
-    gap: 0.9rem;
-    width: 100%;
-    margin-top: 0.9rem;
-    padding: 0.85rem 0.9rem 0.85rem 0.75rem;
-    text-align: left;
-    background: transparent;
-    border: 1px solid transparent;
-    border-top-color: var(--hj-line);
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .hj .hj-rooms > .hj-typehead:first-child { margin-top: 0; }
-  .hj .hj-typehead:hover { background: rgba(255, 253, 248, 0.7); }
-  .hj .hj-typehead--on {
-    background: var(--hj-card);
-    border-color: var(--hj-gold);
-    box-shadow: 0 14px 30px rgba(52, 38, 14, 0.08);
-  }
-  .hj-typehead--out { opacity: 0.55; }
-  .hj-typehead__mark {
-    display: grid;
-    place-items: center;
-    width: 1.45rem;
-    height: 1.45rem;
-    border-radius: 50%;
-    border: 1px solid var(--hj-gold);
-    background: var(--hj-card);
-    color: #fffdf8;
-  }
-  .hj-typehead--on .hj-typehead__mark { background: var(--hj-gold-deep); border-color: var(--hj-gold-deep); }
-  .hj-typehead__mark .hj-icon { width: 0.85rem; height: 0.85rem; stroke-width: 2.2; }
-  .hj-typehead__img { display: block; width: 84px; height: 84px; object-fit: cover; }
-  .hj-typehead__body { display: grid; gap: 0.12rem; min-width: 0; }
-  .hj .hj-typehead__name { font-family: var(--hj-display); font-size: 1.14rem; line-height: 1.2; color: var(--hj-ink); }
-  .hj .hj-typehead__tag { font-size: 0.76rem; line-height: 1.35; color: var(--hj-ink-soft); }
-  .hj .hj-typehead__price { margin-top: 0.3rem; font-size: 0.68rem; color: var(--hj-ink-soft); }
-  .hj .hj-typehead__amount { font-family: var(--hj-display); font-size: 1.08rem; color: var(--hj-ink); }
-  .hj .hj-typehead__free { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hj-gold-deep); }
 
   /* A cabin: small photograph, name and rate, its facts, then its places and menus. */
   .hj-rooms .hj-cabin-card {
@@ -2065,6 +2098,91 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-room__link .hj-icon { width: 0.85rem; height: 0.85rem; stroke-width: 1.6; }
   .hj-rooms .hj-cabin-card__fill { grid-template-columns: minmax(0, 1fr) 1.6rem; grid-template-areas: "seats clear" "menus menus"; gap: 0.55rem; }
   .hj-rooms .hj-cabin-card__menus { justify-content: stretch; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* Any cabin can be chosen for the preview; the chosen one says so and still takes guests. */
+  .hj-rooms .hj-cabin-card { cursor: pointer; }
+  .hj .hj-rooms .hj-cabin-card--shown {
+    border-color: var(--hj-gold-deep);
+    box-shadow: inset 0 0 0 1px var(--hj-gold-deep), 0 14px 30px rgba(52, 38, 14, 0.1);
+  }
+  .hj-rooms .hj-cabin-card__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title pick" "price price";
+    align-items: start;
+    gap: 0.25rem 0.6rem;
+  }
+  .hj-rooms .hj-cabin-card__title { grid-area: title; }
+  .hj-rooms .hj-cabin-card__price { grid-area: price; }
+  .hj .hj-cabin-card__pick {
+    grid-area: pick;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 0;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--hj-gold);
+    border-radius: 999px;
+    background: var(--hj-card);
+    color: var(--hj-gold-deep);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .hj .hj-cabin-card__pick[aria-pressed="true"] { background: var(--hj-gold-deep); border-color: var(--hj-gold-deep); color: #fffdf8; }
+  .hj-cabin-card__pick .hj-icon { width: 0.8rem; height: 0.8rem; stroke-width: 2.2; }
+
+  /* The photographs, full screen: left and right to move, X (or Esc) to close. */
+  .hj-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(14, 11, 8, 0.96);
+    color: #fbf6ec;
+  }
+  .hj-lightbox::backdrop { background: rgba(14, 11, 8, 0.8); }
+  .hj-lightbox__stage { position: absolute; inset: 4.5rem 6rem 4rem; }
+  .hj .hj-lightbox__img { object-fit: contain; }
+  .hj .hj-lightbox__close,
+  .hj .hj-lightbox__nav {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    min-height: 0;
+    padding: 0;
+    border: 1px solid rgba(251, 246, 236, 0.35);
+    border-radius: 50%;
+    background: rgba(251, 246, 236, 0.08);
+    color: #fbf6ec;
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+  .hj .hj-lightbox__close:hover,
+  .hj .hj-lightbox__nav:hover { background: rgba(251, 246, 236, 0.2); }
+  .hj .hj-lightbox__close { top: 1.2rem; right: 1.4rem; }
+  .hj .hj-lightbox__nav { top: 50%; transform: translateY(-50%); }
+  .hj .hj-lightbox__nav--prev { left: 1.4rem; }
+  .hj .hj-lightbox__nav--next { right: 1.4rem; }
+  .hj-lightbox .hj-icon { width: 1.3rem; height: 1.3rem; stroke-width: 1.5; }
+  .hj .hj-lightbox__caption {
+    position: absolute;
+    left: 50%;
+    bottom: 1.3rem;
+    transform: translateX(-50%);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(251, 246, 236, 0.8);
+  }
 
   /* Right: Who Is Travelling. A column taller than the screen moves with the
      page until its foot shows, then holds still. */
@@ -2296,9 +2414,8 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-plan { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hj-plan > .hj-itinerary { grid-column: 1 / -1; }
   .hj { --hj-rooms-w: 320px; --hj-party-w: 270px; }
-  .hj-stage--suites > .hj-suites-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
   /* The type in detail stacks under the photographs. */
-  .hj-detail { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "tag" "features" "price" "show" "link"; grid-template-rows: none; }
+  .hj-detail { grid-template-columns: minmax(0, 1fr); grid-template-areas: "kicker" "name" "tag" "features" "price" "show" "link"; grid-template-rows: none; }
   .hj-detail__features { margin-top: 1rem; }
   .hj-rooms .hj-cabin-card { grid-template-columns: 88px minmax(0, 1fr); }
   .hj .hj-names .hj-cabinguests { grid-template-columns: minmax(0, 1fr) 8.5rem; }
@@ -2317,5 +2434,5 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-voyagebar__panel,
   .hj-cue__line::after { animation: none; }
   .hj-voyagebar__nudge { animation: none; }
-  .hj-typehead, .hj-gallery__nav, .hj-gallery__dot, .hj-cue, .hj-detail__show, .hj-voyagebar__go { transition: none; }
+  .hj-gallery__nav, .hj-gallery__dot, .hj-cue, .hj-detail__show, .hj-voyagebar__go { transition: none; }
 }

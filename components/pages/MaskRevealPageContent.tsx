@@ -16,6 +16,8 @@ import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
+import { withLivePrices } from "@/lib/cabin-prices-shared";
+import { useCabinPrices } from "@/components/public/CabinPricesProvider";
 import { CRUISES_PAGE } from "@/lib/page-content";
 import {
   normalizeOptionalText,
@@ -232,7 +234,8 @@ export function MaskRevealPageContent() {
   const ctaTitle = resolveCmsText(cruisesText.ctaTitle, "Reserve your voyage");
   const ctaBody = normalizeOptionalText(cruisesText.ctaBody);
 
-  const items = useMemo(() => flattenCruises(HATHOR_CRUISES), []);
+  const cabinPrices = useCabinPrices();
+  const items = useMemo(() => flattenCruises(withLivePrices(HATHOR_CRUISES, cabinPrices)), [cabinPrices]);
   const durations = useMemo(
     () => [...new Set(items.map((i) => i.nights))].sort((a, b) => a - b),
     [items],

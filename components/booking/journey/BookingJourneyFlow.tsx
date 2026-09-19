@@ -648,6 +648,31 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         ) : null}
         <MobileBack step={view} onJump={jump} />
         <JourneyProgress step={view} onJump={jump} />
+        {/* The step's map: the same bar, in the same place, on every step. */}
+        <div className="hj-guidebar">
+          <StepGuide
+            items={
+              view === 1
+                ? [
+                    { label: "Choose your voyage", hint: "3, 4 or 7 nights on the Nile", done: true },
+                    { label: "Pick a sailing date", hint: "Open departures are marked", done: Boolean(scheduleId) },
+                    { label: "Continue to guests & suites", hint: "Nothing is held yet", done: false },
+                  ]
+                : view === 2
+                  ? [
+                      { label: "Set who is travelling", hint: "Adults and children", done: guests.length > 0 },
+                      { label: "Place every guest in a cabin", hint: "Drag, tap, or use the menus", done: issues.length === 0 },
+                      { label: "Continue to details", hint: "Nothing is held yet", done: false },
+                    ]
+                  : [
+                      { label: "Lead guest details", hint: "Name, email, phone, country", done: leadDone },
+                      { label: "Passenger names", hint: "As shown in passports", done: namesDone },
+                      { label: "Payment preference & terms", hint: "No card details needed", done: form.termsAccepted },
+                      { label: "Confirm request", hint: "Your cabins are reserved as you send", done: false },
+                    ]
+            }
+          />
+        </div>
         <SectionTabs items={mapTabs} />
 
         {view === 1 ? (
@@ -655,13 +680,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             <section className="hj-panel">
               {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
               <PanelHead step={1} title="Plan Your Journey" lede="Three extraordinary voyages. One timeless river." />
-              <StepGuide
-                items={[
-                  { label: "Choose your voyage", hint: "3, 4 or 7 nights on the Nile", done: true },
-                  { label: "Pick a sailing date", hint: "Open departures are marked", done: Boolean(scheduleId) },
-                  { label: "Continue to guests & suites", hint: "Nothing is held yet", done: false },
-                ]}
-              />
 
               <span className="hj-step-label" id="hj-m-route">Choose your itinerary</span>
               <VoyagePicker value={duration} onChange={next => { setDuration(next); setScheduleId(""); }} />
@@ -760,15 +778,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               onBack={() => jump(1)}
               onContinue={() => void continueToDetails()}
               verifyCabinType={verifyCabinType}
-              guide={
-                <StepGuide
-                  items={[
-                    { label: "Set who is travelling", hint: "Adults and children", done: guests.length > 0 },
-                    { label: "Place every guest in a cabin", hint: "Drag, tap, or use the menus", done: issues.length === 0 },
-                    { label: "Continue to details", hint: "Nothing is held yet", done: false },
-                  ]}
-                />
-              }
               rail={<>{rail}{summary}</>}
               mobileBar={
                 <ActionBar
@@ -791,14 +800,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           <div className="hj-stage">
             <section className="hj-panel">
               <PanelHead step={3} title="Guest Details & Payment Preference" lede="Almost there. Please provide your details and choose your preferred payment method." />
-              <StepGuide
-                items={[
-                  { label: "Lead guest details", hint: "Name, email, phone, country", done: leadDone },
-                  { label: "Passenger names", hint: "As shown in passports", done: namesDone },
-                  { label: "Payment preference & terms", hint: "No card details needed", done: form.termsAccepted },
-                  { label: "Confirm request", hint: "Your cabins are reserved as you send", done: false },
-                ]}
-              />
               {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
               <DetailsPaymentScreen
                 cabins={cabins}
