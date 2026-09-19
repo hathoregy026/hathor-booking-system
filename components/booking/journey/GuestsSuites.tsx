@@ -10,6 +10,7 @@ import type { StayDurationValue } from "@/lib/booking-search-config";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import { PHYSICAL_ROOM_TYPES, roomCapacity, type PhysicalRoomType } from "@/lib/physical-inventory";
 import {
+  EMPTY_ARRANGEMENT,
   MAX_ADULTS,
   MAX_CHILDREN,
   cabinCountOptions,
@@ -18,6 +19,7 @@ import {
   guestLabel,
   occupants,
   placeGuest,
+  placementReminder,
   setCabinCount,
   shortName,
   slotId,
@@ -32,9 +34,9 @@ import {
 import { useGuestDrag } from "./useGuestDrag";
 import { money, plural, type Sailing } from "./model";
 import { PanelHead } from "./JourneyChrome";
-import { IconBed, IconClose, IconGuests, IconSize, IconWand } from "./icons";
+import { IconBed, IconCheck, IconClose, IconGuests, IconOpen, IconSize, IconUndo, IconWand } from "./icons";
 import { ArrangeChooser, CABIN_BED, CABIN_NOTE, CountMenu, Counter, DragGhost, GuestTile, RESIDENCE_SLUG } from "./SuitesParts";
-import { SuitesBrowse } from "./SuitesBrowse";
+import { STORY, SuitesBrowse } from "./SuitesBrowse";
 import { useDesktop } from "./useDesktop";
 import { useStickyFit } from "./useStickyFit";
 
@@ -139,6 +141,13 @@ export function GuestsSuitesScreen({
   const [choosing, setChoosing] = useState(false);
   const partyRef = useRef<HTMLElement | null>(null);
   useStickyFit(partyRef);
+  const undoDialog = useRef<HTMLDialogElement | null>(null);
+  /** Desktop: the cabin type shown in the preview, chosen from the cabins column. */
+  const [previewType, setPreviewType] = useState<PhysicalRoomType>(() => {
+    const types = sailing.types;
+    if (preferredType && types.some(type => type.roomType === preferredType)) return preferredType;
+    return arrangement.cabins[0]?.roomType ?? (types.find(type => type.availableCabins > 0) ?? types[0]).roomType;
+  });
 
   const pickedGuest = picked ? guests.find(guest => guest.id === picked) ?? null : null;
   const waiting = unplacedGuests(arrangement, guests);
@@ -217,9 +226,19 @@ export function GuestsSuitesScreen({
     return failure;
   }
 
-  /** From the desktop browse: list just this type's cabins and bring them into view. */
+  /** Every guest back to Who Is Travelling, after the guest confirms it in the dialog. */
+  function undoAll() {
+    onArrangement(EMPTY_ARRANGEMENT);
+    setPicked(null);
+    setChoosing(false);
+    setNotice({ tone: "ok", text: "Every arrangement was undone. Your guests are waiting in Who Is Travelling." });
+    undoDialog.current?.close();
+  }
+
+  /** From the desktop preview: list just this type's cabins and bring them into view. */
   function showCabins(type: PhysicalRoomType) {
     setFilter([type]);
+    setPreviewType(type);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.requestAnimationFrame(() =>
       document.getElementById("hj-cabins")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }),
@@ -250,12 +269,13 @@ export function GuestsSuitesScreen({
   );
 
   const ready = issues.length === 0;
+  const reminder = placementReminder(arrangement, guests);
   const actions = (compact: boolean) => (
     <div className="hj-party__actions">
       <button type="button" className="hj-btn hj-btn--wide" disabled={busy || !ready} onClick={onContinue}>
         {busy ? "Checking availability…" : "Continue to details"} <span aria-hidden>→</span>
       </button>
-      {!ready ? <p className="hj-party__blocker">{issues[0]}</p> : null}
+      {!ready ? <p className="hj-party__blocker">{reminder ?? issues[0]}</p> : null}
       <button type="button" className="hj-btn hj-btn--ghost" aria-label="Back to journey" onClick={onBack}>
         ← {compact ? "Back" : "Back to journey"}
       </button>
@@ -279,9 +299,9 @@ export function GuestsSuitesScreen({
         <SuitesBrowse
           duration={duration}
           sailing={sailing}
+          previewType={previewType}
           arrangement={arrangement}
           guests={guests}
-          preferredType={preferredType}
           onShowCabins={showCabins}
         />
       ) : null}
@@ -328,6 +348,7 @@ export function GuestsSuitesScreen({
                   key={cabinId}
                   className={`hj-cabin-card${used ? " hj-cabin-card--used" : ""}${full ? " hj-cabin-card--full" : ""}${noAdult ? " hj-cabin-card--warn" : ""}${unavailable ? " hj-cabin-card--out" : ""}${canTake ? " hj-cabin-card--target" : ""}${drag?.over === cabinKey ? " hj-drop--over" : ""}`}
                   data-hj-drop={unavailable ? undefined : cabinKey}
+                  onClick={desktop ? () => setPreviewType(type.roomType) : undefined}
                   aria-label={unavailable ? `${type.roomType}, cabin ${index + 1}, unavailable for this date` : `${type.roomType}, cabin ${index + 1}, ${inside.length} of ${capacity} guests`}
                 >
                   <div className="hj-cabin-card__media">
@@ -374,8 +395,14 @@ export function GuestsSuitesScreen({
                       <span className="hj-limit"><IconGuests /> Up to {capacity} guests</span>
                       <span><IconSize /> {type.sizeSqm} m²</span>
                       {CABIN_BED[type.roomType] ? <span><IconBed /> {CABIN_BED[type.roomType]}</span> : <span>{CABIN_NOTE[type.roomType].split(" · ")[0]}</span>}
-                      <a className="hj-room__link" href={`/rooms/${RESIDENCE_SLUG[type.roomType]}`} target="_blank" rel="noopener noreferrer">
-                        View details <span aria-hidden>›</span>
+                      <a
+                        className="hj-room__link"
+                        href={`/rooms/${RESIDENCE_SLUG[type.roomType]}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`View the ${type.roomType} (opens in a new tab)`}
+                      >
+                        View room <IconOpen />
                       </a>
                     </p>
 
@@ -427,8 +454,37 @@ export function GuestsSuitesScreen({
 
             // A React.Fragment (not a div) so cabin 1 and the "more" group sit
             // as direct children of .hj-rooms, exactly like every other card.
+            const previewing = previewType === type.roomType;
+            const placedHere = arrangement.cabins
+              .filter(cabin => cabin.roomType === type.roomType)
+              .reduce((sum, cabin) => sum + occupants(arrangement, guests, cabin.id).length, 0);
+
             return (
               <Fragment key={type.roomType}>
+                {desktop ? (
+                  // Desktop: the cabin type heads its cabins; choosing it shows it in the preview.
+                  <button
+                    type="button"
+                    className={`hj-typehead${previewing ? " hj-typehead--on" : ""}${type.availableCabins === 0 ? " hj-typehead--out" : ""}`}
+                    aria-pressed={previewing}
+                    aria-label={`Preview the ${type.roomType}: ${money(type.priceCents)} per cabin, ${type.availableCabins} of ${type.totalCabins} free${placedHere ? `, ${plural(placedHere, "guest")} placed` : ""}`}
+                    onClick={() => setPreviewType(type.roomType)}
+                  >
+                    <span className="hj-typehead__mark" aria-hidden>{previewing ? <IconCheck /> : null}</span>
+                    <Image className="hj-typehead__img" src={visuals.cover} alt="" width={240} height={240} sizes="96px" />
+                    <span className="hj-typehead__body">
+                      <span className="hj-typehead__name">{type.roomType}</span>
+                      <span className="hj-typehead__tag">{STORY[type.roomType].tagline}</span>
+                      <span className="hj-typehead__price">
+                        <span className="hj-typehead__amount">{money(type.priceCents)}</span> per cabin · entire voyage
+                      </span>
+                      <span className="hj-typehead__free">
+                        {type.availableCabins === 0 ? "Fully booked on this date" : `${type.availableCabins} of ${type.totalCabins} free`}
+                        {placedHere ? ` · ${plural(placedHere, "guest")} placed` : ""}
+                      </span>
+                    </span>
+                  </button>
+                ) : null}
                 {cabinCard(0)}
                 {extra > 0 ? (
                   <div className="hj-cabin-more">
@@ -487,6 +543,31 @@ export function GuestsSuitesScreen({
             Arrange for me
           </button>
         )}
+
+        <button
+          type="button"
+          className="hj-party__undo"
+          disabled={arrangement.cabins.length === 0}
+          onClick={() => undoDialog.current?.showModal()}
+        >
+          <IconUndo className="hj-party__undo-icon" />
+          Undo arrangement
+        </button>
+        <dialog className="hj-confirm" ref={undoDialog} aria-labelledby="hj-undo-title" aria-describedby="hj-undo-text">
+          <h2 className="hj-confirm__title" id="hj-undo-title">Undo every arrangement?</h2>
+          <p className="hj-confirm__text" id="hj-undo-text">
+            All arrangements will be undone: every guest leaves their cabin and waits in Who Is Travelling again, and no cabin stays
+            chosen. The number of adults and children stays as it is.
+          </p>
+          <div className="hj-confirm__actions">
+            <button type="button" className="hj-btn hj-btn--quiet" onClick={() => undoDialog.current?.close()}>
+              Keep my arrangement
+            </button>
+            <button type="button" className="hj-btn" onClick={undoAll}>
+              Undo all
+            </button>
+          </div>
+        </dialog>
 
         <p className="hj-note-box">Each cabin shows how many guests it takes. Every cabin needs one adult. Rates are per cabin for the whole voyage.</p>
 

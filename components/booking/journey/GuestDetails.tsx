@@ -43,6 +43,7 @@ export function DetailsPaymentScreen({
     <div className="hj-details">
       <section>
         <span className="hj-step-label" id="hj-m-lead">Lead guest details</span>
+        <p className="hj-step-lede">This will be the primary contact for your voyage.</p>
         <div className="hj-lead">
           <div className="hj-grid2">
             <label className={`hj-field${errors.firstName ? " hj-field--invalid" : ""}`}>
@@ -95,6 +96,7 @@ export function DetailsPaymentScreen({
         </div>
 
         <span className="hj-step-label" id="hj-m-passengers">Passenger names (as per passports)</span>
+        <p className="hj-step-lede">Include every guest as they appear on their passport, cabin by cabin.</p>
         {errors.names ? <p className="hj-error" style={{ marginBottom: "0.5rem" }}>{errors.names}</p> : null}
         <div className="hj-names">
           {cabins.map(cabin => (
@@ -102,7 +104,7 @@ export function DetailsPaymentScreen({
               <p className="hj-cabinguests__title">{cabin.label}</p>
               <div className="hj-grid2">
                 {cabin.guests.map(guest => (
-                  <label className="hj-field" key={guest.id}>
+                  <label className={`hj-field${errors.names && !(names[guest.id] ?? "").trim() ? " hj-field--invalid" : ""}`} key={guest.id}>
                     <span>{guestLabel(guest)} full name *</span>
                     <input value={names[guest.id] ?? ""} maxLength={120} autoComplete="off" onChange={event => onName(guest.id, event.target.value)} />
                   </label>
@@ -114,21 +116,6 @@ export function DetailsPaymentScreen({
 
         <div className="hj-extras">
           <label className="hj-field" style={{ marginTop: "1rem" }}>
-            <span>Airport transfer (optional)</span>
-            <textarea
-              value={form.transfers}
-              maxLength={600}
-              placeholder="Would you like Hathor to arrange airport transfers?"
-              onChange={event => onForm({ transfers: event.target.value })}
-            />
-          </label>
-
-          <label className="hj-field" style={{ marginTop: "0.7rem" }}>
-            <span>Dietary requirements (optional)</span>
-            <textarea value={form.dietary} maxLength={600} onChange={event => onForm({ dietary: event.target.value })} />
-          </label>
-
-          <label className="hj-field" style={{ marginTop: "0.7rem" }}>
             <span>Special requests (optional)</span>
             <textarea
               value={form.requests}

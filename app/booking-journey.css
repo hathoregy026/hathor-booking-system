@@ -1268,7 +1268,58 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
 .hj-rail__media,
 .hj-rail__tagline,
 .hj-party__wand,
-.hj-sailings__more { display: none; }
+.hj-sailings__more,
+.hj-typehead,
+.hj-step-lede { display: none; }
+
+/* Undo arrangement, and the dialog that asks first (every screen size). */
+.hj-party__undo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  margin-top: 0.45rem;
+  min-height: 2.4rem;
+  padding: 0.35rem 0.95rem;
+  border: 1px solid var(--hj-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--hj-ink-soft);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.hj-party__undo:hover:not(:disabled) { border-color: #9b4a3d; color: #9b4a3d; }
+.hj-party__undo:disabled { opacity: 0.4; cursor: not-allowed; }
+.hj-party__undo .hj-party__undo-icon { width: 1rem; height: 1rem; }
+/* View room keeps its new-tab mark on the same line. */
+.hj-room__link { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; }
+.hj-room__link .hj-icon { width: 0.85em; height: 0.85em; }
+.hj-confirm {
+  /* The site's reset clears the browser's centring for dialogs; restore it. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  width: min(31rem, calc(100vw - 2rem));
+  padding: 1.6rem 1.6rem 1.4rem;
+  border: 1px solid var(--hj-line);
+  border-radius: 6px;
+  background: #fbf6ec;
+  color: var(--hj-ink);
+  box-shadow: 0 30px 80px rgba(20, 16, 10, 0.3);
+}
+.hj-confirm::backdrop { background: rgba(28, 22, 14, 0.45); }
+.hj .hj-confirm__title { margin: 0 0 0.6rem; font-size: 1.5rem; line-height: 1.2; }
+.hj p.hj-confirm__text { margin: 0 0 1.3rem; font-size: 0.9rem; line-height: 1.55; letter-spacing: normal; color: var(--hj-ink-soft); }
+.hj-confirm__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.6rem; }
+.hj .hj-confirm__actions .hj-btn { min-height: 46px; padding: 0.7rem 1.3rem; border-radius: 999px; letter-spacing: 0.16em; }
+@media (prefers-reduced-motion: reduce) {
+  .hj-party__undo { transition: none; }
+}
 
 /* Groups that only lay out on desktop. */
 .hj-lead,
@@ -1289,8 +1340,11 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
     --hj-card: #fffdf8;
     --hj-rail-w: clamp(300px, 22vw, 370px);
     --hj-rail-pad: clamp(1.4rem, 2vw, 2.2rem);
-    --hj-party-w: clamp(300px, 22vw, 380px);
-    --hj-bar-h: 0px;
+    --hj-party-w: clamp(290px, 20vw, 360px);
+    --hj-rooms-w: clamp(360px, 27vw, 520px);
+    --hj-col-gap: clamp(1.2rem, 1.8vw, 2rem);
+    /* The voyage bar along the bottom of every step. */
+    --hj-bar-h: 5.9rem;
     min-height: calc(100svh - var(--hj-top));
     padding: 0;
     background: var(--hj-paper);
@@ -1419,7 +1473,7 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
      with the page until its foot is in view, then sticks (useStickyFit). */
   .hj .hj-rail {
     position: sticky;
-    top: min(var(--hj-top), calc(100svh - var(--hj-sticky-h, 0px)));
+    top: min(var(--hj-top), calc(100svh - var(--hj-sticky-h, 0px) - var(--hj-bar-h)));
     align-self: start;
     max-height: none;
     overflow: visible;
@@ -1588,42 +1642,118 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
 
   /* ---------- 3 · Details & Payment ---------- */
 
+  /* Compact, after the reference: lead guest in two rows, one row per
+     passenger, the payment methods as rows, then schedule beside what is included. */
+  .hj--step-3 .hj-stage > .hj-panel { padding-top: clamp(1.4rem, 2.2vw, 2.2rem); }
+  .hj--step-3 .hj-guide { margin-bottom: 1.6rem; padding: 0.75rem 1.1rem 0.8rem; }
+  .hj.hj--step-3 .hj-step-label { margin-top: 1.9rem; margin-bottom: 0.35rem; }
+  .hj.hj--step-3 .hj-details > section > .hj-step-label:first-child { margin-top: 0; }
+  .hj p.hj-error { margin-top: 0.3rem; font-size: 0.76rem; line-height: 1.4; letter-spacing: normal; }
+  .hj p.hj-alert { font-size: 0.86rem; line-height: 1.5; letter-spacing: normal; }
+  .hj p.hj-step-lede { display: block; margin: 0 0 0.9rem; font-size: 0.8rem; line-height: 1.45; color: var(--hj-ink-soft); }
+
   .hj-details { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .hj-lead { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.1rem 1.2rem; }
+  .hj-lead { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.8rem 1rem; }
   .hj-lead > .hj-grid2 { display: contents; }
   .hj-lead .hj-field { grid-column: span 2; margin-top: 0 !important; }
   .hj-lead > .hj-grid2:last-child > .hj-field { grid-column: span 3; }
-  .hj-names { display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); gap: 1rem; }
-  .hj .hj-names .hj-cabinguests + .hj-cabinguests { margin-top: 0; }
-  .hj-extras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; margin-top: 1.6rem; }
-  .hj-extras > .hj-field { margin-top: 0 !important; }
-  .hj-details .hj-grid2 { gap: 1rem 1.2rem; }
-  .hj .hj-field > span { font-size: 0.62rem; letter-spacing: 0.18em; margin-bottom: 0.45rem; }
+  .hj-details .hj-grid2 { gap: 0.8rem 1rem; }
+  .hj .hj-field > span { font-size: 0.6rem; letter-spacing: 0.16em; margin-bottom: 0.35rem; }
   .hj-field input,
   .hj-field select,
-  .hj-field textarea { min-height: 52px; background: #fffdf9; border-color: var(--hj-line); }
-  .hj-field textarea { min-height: 96px; }
-  .hj-cabinguests { padding: 1.1rem 1.2rem; background: var(--hj-card); }
+  .hj-field textarea { min-height: 44px; padding: 0.55rem 0.8rem; font-size: 0.9rem; background: #fffdf9; border-color: var(--hj-line); }
+  .hj-phone__code { min-height: 44px; }
 
-  .hj-pay { margin-top: 2.6rem; padding-top: 2.4rem; border-top: 1px solid var(--hj-line-soft); }
-  .hj p.hj-pay__lede { max-width: 46rem; margin-bottom: 1.1rem; }
-  .hj-choice { align-items: center; gap: 1.1rem; min-height: 72px; padding: 1.05rem 1.35rem; background: var(--hj-card); }
-  .hj-choice input { width: 1.2rem; height: 1.2rem; margin-top: 0; }
-  .hj .hj-choice strong { gap: 0.65rem; font-family: var(--hj-display); font-size: 1.1rem; font-weight: 400; }
-  .hj .hj-choice span span { font-size: 0.8rem; margin-top: 0.2rem; }
-  .hj-pay__pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 2.4rem; }
-  .hj-pay__col { display: block; min-width: 0; padding-right: clamp(1.6rem, 3.2vw, 3.6rem); }
-  .hj-pay__col + .hj-pay__col { padding: 0 0 0 clamp(1.6rem, 3.2vw, 3.6rem); border-left: 1px solid var(--hj-line-soft); }
-  .hj .hj-pay__col > p.hj-pay__title { margin-top: 0 !important; }
-  .hj .hj-pay__col > .hj-step-label { margin-top: 0; }
-  .hj .hj-schedule strong { font-family: var(--hj-display); font-size: 1.08rem; font-weight: 400; }
-  .hj .hj-schedule span { font-size: 0.8rem; }
-  .hj .hj-inclusions { gap: 0.55rem; }
-  .hj .hj-inclusions li { padding-left: 1.5rem; font-size: 0.86rem; }
-  .hj .hj-inclusions li::before { content: "✓"; top: 0; font-size: 0.82rem; }
-  .hj .hj-pay > .hj-step-label { margin-top: 2.4rem; }
-  .hj-details > .hj-actions { margin-top: 2.4rem; padding-top: 1.6rem; border-top: 1px solid var(--hj-line-soft); }
+  /* One row per passenger: number, who, full name; the cabin beside its guests. */
+  .hj-names { display: grid; counter-reset: hj-pax; border-top: 1px solid var(--hj-line-soft); }
+  .hj .hj-names .hj-cabinguests {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 10.5rem;
+    align-items: center;
+    gap: 0 1.4rem;
+    margin: 0;
+    padding: 0.65rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--hj-line-soft);
+    background: none;
+  }
+  .hj .hj-names p.hj-cabinguests__title {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: stretch;
+    margin: 0;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--hj-line);
+    background: var(--hj-card);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-align: center;
+    color: var(--hj-gold-deep);
+  }
+  .hj-names .hj-cabinguests > .hj-grid2 { grid-column: 1; grid-row: 1; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .hj .hj-names .hj-field {
+    display: grid;
+    grid-template-columns: 1.9rem 9.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.9rem;
+    counter-increment: hj-pax;
+  }
+  .hj-names .hj-field::before {
+    content: counter(hj-pax);
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--hj-gold);
+    color: #fffdf8;
+    font-size: 0.74rem;
+  }
+  .hj .hj-names .hj-field > span { margin: 0; font-size: 0.6rem; }
+  .hj-names .hj-field--invalid::before { background: #9b4a3d; }
+
+  .hj-extras { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 1.2rem; }
+  .hj-extras > .hj-field { margin-top: 0 !important; }
+  .hj-field textarea { min-height: 70px; }
+
+  .hj-pay { margin-top: 1.9rem; padding-top: 1.7rem; border-top: 1px solid var(--hj-line-soft); }
+  .hj p.hj-pay__lede { max-width: 46rem; margin-bottom: 0.9rem; font-size: 0.8rem; }
+  .hj-choice { align-items: center; gap: 1rem; min-height: 58px; padding: 0.7rem 1.2rem; background: var(--hj-card); }
+  .hj-choice::after { content: "›"; margin-left: auto; padding-left: 1rem; font-size: 1.2rem; line-height: 1; color: var(--hj-gold-deep); }
+  .hj-choice input { width: 1.15rem; height: 1.15rem; margin-top: 0; }
+  .hj .hj-choice strong { gap: 0.6rem; font-family: var(--hj-display); font-size: 1.02rem; font-weight: 400; }
+  .hj .hj-choice span span { font-size: 0.76rem; margin-top: 0.1rem; }
+  .hj-pay__pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.7rem; }
+  .hj-pay__col { display: block; min-width: 0; padding-right: clamp(1.4rem, 2.8vw, 3rem); }
+  .hj-pay__col + .hj-pay__col { padding: 0 0 0 clamp(1.4rem, 2.8vw, 3rem); border-left: 1px solid var(--hj-line-soft); }
+  .hj .hj-pay__col > p.hj-pay__title { margin-top: 0 !important; margin-bottom: 0.8rem; }
+  .hj .hj-pay__col > .hj-step-label { margin-top: 0; margin-bottom: 0.8rem; }
+  /* Schedule rows: the stage on the left, its amount on the right. */
+  .hj .hj-schedule { gap: 0.7rem; }
+  .hj .hj-schedule li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: 1rem; }
+  .hj .hj-schedule strong { grid-column: 2; grid-row: 1; font-family: var(--hj-display); font-size: 1rem; font-weight: 400; }
+  .hj .hj-schedule span { grid-column: 1; grid-row: 1; margin: 0; font-size: 0.8rem; color: var(--hj-ink); }
+  .hj p.hj-ledger__note { font-size: 0.74rem; }
+  .hj .hj-inclusions { gap: 0.35rem; }
+  .hj .hj-inclusions li { padding-left: 1.4rem; font-size: 0.8rem; }
+  .hj .hj-inclusions li::before { content: "✓"; top: 0; font-size: 0.78rem; }
+  .hj .hj-pay > .hj-step-label { margin-top: 1.7rem; }
+  .hj-details > .hj-actions { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--hj-line-soft); }
   .hj-details > .hj-note { padding-bottom: 0.5rem; }
+
+  /* The reference's summary: "Edit" in words. */
+  .hj--step-3 .hj-rail__pencil { display: none; }
+  .hj--step-3 .hj-rail__edit {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.15rem 0;
+    border-radius: 0;
+    font-size: 0.7rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .hj--step-3 .hj-rail__edit-text { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
 
   /* ---------- 4 · Request sent ---------- */
 
@@ -1635,7 +1765,7 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   }
   .hj-stage--success > .hj-panel { padding: clamp(2rem, 3vw, 2.8rem) var(--hj-gutter) 3rem; }
   .hj-stage--success > .hj-panel + .hj-panel { border-left: 1px solid var(--hj-line-soft); }
-  .hj-stage--success > .hj-panel:nth-child(2) { background: var(--hj-paper-deep); }
+  .hj-stage--success > .hj-panel:last-child { background: var(--hj-paper-deep); }
   .hj .hj-ref__value { font-family: var(--hj-italiana); font-size: 2.1rem; letter-spacing: 0.08em; }
   /* The four-point map shares a narrow column here: two by two. */
   .hj--step-4 .hj-guide__list { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1rem; }
@@ -1645,15 +1775,18 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
 
   /* ---------- 2 · Guests & Suites ---------- */
 
-  .hj--step-2 { --hj-bar-h: 5.9rem; }
+  /* The preview (left) and Who Is Travelling (right) hold still while the
+     cabins column between them moves with the page, so every cabin can be
+     filled from there. Nothing scrolls inside a box of its own. */
   .hj .hj-stage--suites {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--hj-party-w);
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas: "head head" "browse party" "rooms party";
-    gap: 0 clamp(1.6rem, 2.6vw, 3rem);
-    padding: clamp(1.5rem, 2.4vw, 2.4rem) var(--hj-gutter) clamp(2.5rem, 4vw, 4rem);
-    background: none;
+    grid-template-columns: minmax(0, 1fr) var(--hj-rooms-w) var(--hj-party-w);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "head head party" "browse rooms party";
+    gap: 0;
+    padding: 0;
+    /* Who Is Travelling sits on the deeper paper, as the summary does on the other steps. */
+    background: linear-gradient(to left, var(--hj-paper-deep) calc(var(--hj-party-w) - 1px), var(--hj-line-soft) calc(var(--hj-party-w) - 1px), var(--hj-line-soft) var(--hj-party-w), transparent var(--hj-party-w));
   }
   /* The voyage bar holds the summary here; the tray is for touch screens. */
   .hj-stage--suites > .hj-rail,
@@ -1662,11 +1795,11 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj-stage--suites > .hj-suites-head {
     grid-area: head;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    align-items: end;
-    gap: 1.2rem clamp(2rem, 4vw, 4.5rem);
-    margin-bottom: 2rem;
-    padding-bottom: 1.8rem;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem clamp(1.6rem, 3vw, 3.2rem);
+    margin-bottom: 1.8rem;
+    padding: clamp(1.4rem, 2.2vw, 2.2rem) var(--hj-col-gap) 1.6rem var(--hj-gutter);
     border-bottom: 1px solid var(--hj-line-soft);
   }
   .hj-suites-head > .hj-alert { grid-column: 1 / -1; margin: 0; }
@@ -1674,73 +1807,29 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj .hj-suites-head .hj-panel__head h1 {
     font-family: var(--hj-italiana);
     font-weight: 400;
-    font-size: clamp(2.5rem, 3.3vw, 3.5rem);
+    font-size: clamp(2.3rem, 2.9vw, 3.3rem);
     line-height: 1;
     letter-spacing: 0.005em;
   }
-  .hj .hj-suites-head .hj-panel__head p:not(.hj-panel__kicker) { max-width: 40rem; margin-top: 0.8rem; font-size: 0.92rem; line-height: 1.55; }
+  .hj .hj-suites-head .hj-panel__head p:not(.hj-panel__kicker) { margin-top: 0.7rem; font-size: 0.88rem; line-height: 1.55; }
+  /* The step map stands as a short list beside the title. */
   .hj-suites-head .hj-guide { margin: 0; }
+  .hj-suites-head .hj-guide__list { grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); gap: 0.55rem; }
+  .hj-suites-head .hj-guide__item::after { display: none; }
 
-  /* The cabin types, their photographs (16:9) and the chosen type in detail. */
+  /* Left: the photographs (16:9) and the type in detail. */
   .hj-stage--suites > .hj-browse {
     grid-area: browse;
+    position: sticky;
+    top: min(calc(var(--hj-top) + 1rem), calc(100svh - var(--hj-sticky-h, 0px) - var(--hj-bar-h) - 1rem));
+    align-self: start;
     display: grid;
-    grid-template-columns: clamp(290px, 22vw, 360px) minmax(0, 1fr);
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas: "types gallery" "types detail" "types .";
-    align-items: start;
-    gap: 1.6rem clamp(1.4rem, 2vw, 2.4rem);
+    gap: 1.4rem;
     min-width: 0;
-    margin-bottom: 2.4rem;
-    padding-bottom: 2.6rem;
-    border-bottom: 1px solid var(--hj-line-soft);
+    padding: 0 var(--hj-col-gap) 2rem var(--hj-gutter);
   }
-  .hj-browse__types { grid-area: types; min-width: 0; }
-  .hj-typelist { display: grid; }
-  .hj .hj-typecard {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1.5rem clamp(80px, 6.2vw, 112px) minmax(0, 1fr);
-    align-items: center;
-    gap: 0.95rem;
-    width: 100%;
-    padding: 0.9rem 0.95rem 0.9rem 0.8rem;
-    text-align: left;
-    background: transparent;
-    border: 1px solid transparent;
-    border-bottom-color: var(--hj-line-soft);
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .hj .hj-typecard:hover { background: rgba(255, 253, 248, 0.7); }
-  .hj .hj-typecard--on {
-    background: var(--hj-card);
-    border-color: var(--hj-gold);
-    box-shadow: 0 14px 30px rgba(52, 38, 14, 0.08);
-  }
-  .hj-typecard--out { opacity: 0.55; }
-  .hj-typecard__mark {
-    display: grid;
-    place-items: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
-    border: 1px solid var(--hj-gold);
-    background: var(--hj-card);
-    color: #fffdf8;
-  }
-  .hj-typecard--on .hj-typecard__mark { background: var(--hj-gold-deep); border-color: var(--hj-gold-deep); }
-  .hj-typecard__mark .hj-icon { width: 0.9rem; height: 0.9rem; stroke-width: 2.2; }
-  .hj-typecard__img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; }
-  .hj-typecard__body { display: grid; gap: 0.1rem; min-width: 0; }
-  .hj .hj-typecard__name { font-family: var(--hj-display); font-size: 1.14rem; line-height: 1.2; color: var(--hj-ink); }
-  .hj .hj-typecard__tag { font-size: 0.76rem; line-height: 1.35; color: var(--hj-ink-soft); }
-  .hj .hj-typecard__from { margin-top: 0.4rem; font-size: 0.64rem; color: var(--hj-ink-soft); }
-  .hj .hj-typecard__amount { font-family: var(--hj-display); font-size: 1.2rem; line-height: 1.15; color: var(--hj-ink); }
-  .hj .hj-typecard__per { font-size: 0.66rem; line-height: 1.35; color: var(--hj-ink-soft); }
-  .hj .hj-typecard__placed { margin-top: 0.25rem; font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hj-gold-deep); }
 
-  .hj-gallery { grid-area: gallery; display: grid; gap: 1rem; min-width: 0; }
+  .hj-gallery { display: grid; gap: 0.9rem; min-width: 0; }
   .hj-gallery__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #e8dece; }
   .hj-gallery__frame:focus-visible { outline: 2px solid var(--hj-gold); outline-offset: 3px; }
   .hj .hj-gallery__img { object-fit: cover; animation: hj-photo-in 0.45s ease; }
@@ -1750,8 +1839,8 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
     z-index: 2;
     display: grid;
     place-items: center;
-    width: 3.1rem;
-    height: 3.1rem;
+    width: 3rem;
+    height: 3rem;
     padding: 0;
     border: 0;
     border-radius: 50%;
@@ -1764,12 +1853,12 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   }
   .hj .hj-gallery__nav:hover { background: #fff; transform: translateY(-50%) scale(1.05); }
   .hj-gallery__nav .hj-icon { width: 1.25rem; height: 1.25rem; stroke-width: 1.6; }
-  .hj-gallery__nav--prev { left: 1.2rem; }
-  .hj-gallery__nav--next { right: 1.2rem; }
+  .hj-gallery__nav--prev { left: 1.1rem; }
+  .hj-gallery__nav--next { right: 1.1rem; }
   .hj .hj-gallery__count {
     position: absolute;
-    left: 1.2rem;
-    bottom: 1.2rem;
+    left: 1.1rem;
+    bottom: 1.1rem;
     z-index: 2;
     padding: 0.4rem 0.9rem;
     border-radius: 999px;
@@ -1780,8 +1869,8 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   }
   .hj .hj-gallery__badge {
     position: absolute;
-    top: 1.2rem;
-    right: 1.2rem;
+    top: 1.1rem;
+    right: 1.1rem;
     z-index: 2;
     display: inline-flex;
     align-items: center;
@@ -1795,6 +1884,29 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
     text-transform: uppercase;
   }
   .hj-gallery__badge .hj-icon { width: 1rem; height: 1rem; stroke-width: 2; }
+  /* Opens the room's own page in a new tab. */
+  .hj .hj-gallery__view {
+    position: absolute;
+    right: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 0;
+    padding: 0.6rem 1.05rem;
+    border-radius: 999px;
+    background: rgba(255, 253, 248, 0.95);
+    color: var(--hj-ink);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 8px 22px rgba(20, 16, 10, 0.18);
+    transition: background 0.18s ease;
+  }
+  .hj .hj-gallery__view:hover { background: #fff; color: var(--hj-gold-deep); }
+  .hj-gallery__view .hj-icon { width: 0.95rem; height: 0.95rem; stroke-width: 1.6; }
   .hj-gallery__dots { display: flex; justify-content: center; gap: 0.65rem; }
   .hj .hj-gallery__dot {
     width: 0.6rem;
@@ -1810,137 +1922,214 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj .hj-gallery__dot[aria-pressed="true"] { background: var(--hj-gold-deep); transform: scale(1.2); }
 
   .hj-detail {
-    grid-area: detail;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: auto auto auto auto auto 1fr;
     grid-template-areas: "name features" "tag features" "price features" "show features" "link features" ". features";
-    gap: 0 clamp(1.6rem, 2.8vw, 3.2rem);
+    gap: 0 clamp(1.4rem, 2.4vw, 2.8rem);
     min-width: 0;
   }
   .hj .hj-detail__name {
     grid-area: name;
     font-family: var(--hj-italiana);
     font-weight: 400;
-    font-size: clamp(2.3rem, 2.9vw, 3.2rem);
+    font-size: clamp(2.1rem, 2.6vw, 3rem);
     line-height: 1;
     letter-spacing: 0.005em;
     color: var(--hj-ink);
   }
-  .hj .hj-detail__tag { grid-area: tag; margin-top: 0.55rem; font-family: var(--hj-display); font-style: italic; font-size: 1.12rem; color: var(--hj-ink-soft); }
-  .hj-detail__features { grid-area: features; display: grid; align-content: start; gap: 0.85rem; margin: 0.35rem 0 0; padding: 0; list-style: none; }
-  .hj .hj-detail__features li { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); align-items: center; gap: 0.9rem; font-size: 0.92rem; line-height: 1.4; color: var(--hj-ink); }
+  .hj .hj-detail__tag { grid-area: tag; margin-top: 0.5rem; font-family: var(--hj-display); font-style: italic; font-size: 1.06rem; color: var(--hj-ink-soft); }
+  .hj-detail__features { grid-area: features; display: grid; align-content: start; gap: 0.7rem; margin: 0.3rem 0 0; padding: 0; list-style: none; }
+  .hj .hj-detail__features li { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); align-items: center; gap: 0.8rem; font-size: 0.86rem; line-height: 1.4; color: var(--hj-ink); }
   .hj-detail__icon { display: grid; place-items: center; color: var(--hj-gold-deep); }
-  .hj-detail__icon .hj-icon { width: 1.4rem; height: 1.4rem; stroke-width: 1.15; }
-  .hj-detail__price { grid-area: price; display: grid; gap: 0.2rem; margin-top: 1.3rem; padding-top: 1.1rem; border-top: 1px solid var(--hj-line-soft); }
+  .hj-detail__icon .hj-icon { width: 1.3rem; height: 1.3rem; stroke-width: 1.15; }
+  .hj-detail__price { grid-area: price; display: grid; gap: 0.2rem; margin-top: 1.1rem; padding-top: 0.95rem; border-top: 1px solid var(--hj-line-soft); }
   .hj-detail__row { display: flex; align-items: baseline; gap: 0.6rem; }
-  .hj .hj-detail__from { font-size: 0.82rem; color: var(--hj-ink-soft); }
-  .hj .hj-detail__amount { font-family: var(--hj-display); font-size: 2.05rem; line-height: 1.1; color: var(--hj-ink); }
-  .hj .hj-detail__per { font-size: 0.82rem; line-height: 1.45; color: var(--hj-ink-soft); }
+  .hj .hj-detail__from { font-size: 0.8rem; color: var(--hj-ink-soft); }
+  .hj .hj-detail__amount { font-family: var(--hj-display); font-size: 1.9rem; line-height: 1.1; color: var(--hj-ink); }
+  .hj .hj-detail__per { font-size: 0.8rem; line-height: 1.45; color: var(--hj-ink-soft); }
   .hj .hj-detail__show {
     grid-area: show;
     justify-self: start;
     display: inline-flex;
     align-items: center;
-    gap: 0.65rem;
-    min-height: 48px;
-    margin-top: 1.2rem;
-    padding: 0.55rem 1.4rem;
+    gap: 0.6rem;
+    min-height: 46px;
+    margin-top: 1rem;
+    padding: 0.5rem 1.3rem;
     border: 1px solid var(--hj-gold-deep);
     border-radius: 999px;
     background: transparent;
     color: var(--hj-ink);
     font-family: var(--hj-display);
-    font-size: 1rem;
+    font-size: 0.98rem;
     letter-spacing: 0.01em;
     cursor: pointer;
     transition: background 0.18s ease;
   }
   .hj .hj-detail__show:hover:not(:disabled) { background: var(--hj-gold-wash); }
   .hj .hj-detail__show:disabled { opacity: 0.5; cursor: not-allowed; }
-  .hj .hj-detail__link { grid-area: link; justify-self: start; margin-top: 0.8rem; font-size: 0.74rem; letter-spacing: 0.08em; color: var(--hj-gold-deep); text-decoration: underline; text-underline-offset: 3px; }
+  .hj .hj-detail__link { grid-area: link; justify-self: start; margin-top: 0.75rem; font-size: 0.74rem; letter-spacing: 0.08em; color: var(--hj-gold-deep); text-decoration: underline; text-underline-offset: 3px; }
 
-  /* Every cabin on the boat for the date, two to a row. */
-  .hj-stage--suites > .hj-suites { grid-area: rooms; min-width: 0; scroll-margin-top: calc(var(--hj-top) + 1rem); }
-  .hj-filter { margin-bottom: 1.3rem; padding-bottom: 1.2rem; }
-  .hj .hj-filter__pill { min-height: 2.7rem; padding: 0.4rem 1.05rem; font-size: 0.78rem; background: var(--hj-card); }
-  .hj .hj-filter__pill[aria-pressed="true"] { background: var(--hj-ink); }
-  .hj p.hj-filter__shown { font-size: 0.78rem; }
-  .hj-rooms { flex-direction: row; flex-wrap: wrap; gap: 1rem; }
-  .hj-rooms .hj-cabin-card {
-    flex: 1 1 calc(50% - 0.5rem);
-    max-width: calc(50% - 0.5rem);
+  /* Middle: the room filter on top, then each cabin type with every one of its cabins. */
+  .hj-stage--suites > .hj-suites {
+    grid-area: rooms;
     min-width: 0;
-    grid-template-columns: clamp(120px, 10vw, 165px) minmax(0, 1fr);
-    gap: 1rem;
-    padding: 0.85rem;
+    padding: 0 var(--hj-col-gap) clamp(2.5rem, 4vw, 4rem) 0;
+    scroll-margin-top: calc(var(--hj-top) + 1rem);
   }
-  .hj .hj-room__amount { font-family: var(--hj-display); }
-  .hj-rooms .hj-cabin-card__top { flex-direction: column; gap: 0.3rem; }
-  .hj-rooms .hj-cabin-card__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.5rem; text-align: left; }
-  .hj-rooms .hj-cabin-card__fill { grid-template-columns: minmax(0, 1fr) 1.6rem; grid-template-areas: "seats clear" "menus menus"; gap: 0.6rem; }
-  .hj-rooms .hj-cabin-card__menus { justify-content: start; grid-template-columns: repeat(2, minmax(0, 7.5rem)); }
+  .hj-filter { margin-bottom: 1.1rem; padding-bottom: 1rem; gap: 0.6rem 1rem; }
+  .hj-filter__pills { gap: 0.4rem; }
+  .hj .hj-filter__pill { min-height: 2.5rem; padding: 0.35rem 0.85rem; font-size: 0.74rem; background: var(--hj-card); }
+  .hj .hj-filter__pill[aria-pressed="true"] { background: var(--hj-ink); }
+  .hj p.hj-filter__shown { font-size: 0.76rem; }
+  .hj-rooms { flex-direction: column; gap: 0.7rem; }
 
-  /* Who Is Travelling: beside the cabins all the way down. A column taller
-     than the screen scrolls with the page until its foot shows, then sticks. */
+  .hj .hj-typehead {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.45rem 84px minmax(0, 1fr);
+    align-items: center;
+    gap: 0.9rem;
+    width: 100%;
+    margin-top: 0.9rem;
+    padding: 0.85rem 0.9rem 0.85rem 0.75rem;
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-top-color: var(--hj-line);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hj .hj-rooms > .hj-typehead:first-child { margin-top: 0; }
+  .hj .hj-typehead:hover { background: rgba(255, 253, 248, 0.7); }
+  .hj .hj-typehead--on {
+    background: var(--hj-card);
+    border-color: var(--hj-gold);
+    box-shadow: 0 14px 30px rgba(52, 38, 14, 0.08);
+  }
+  .hj-typehead--out { opacity: 0.55; }
+  .hj-typehead__mark {
+    display: grid;
+    place-items: center;
+    width: 1.45rem;
+    height: 1.45rem;
+    border-radius: 50%;
+    border: 1px solid var(--hj-gold);
+    background: var(--hj-card);
+    color: #fffdf8;
+  }
+  .hj-typehead--on .hj-typehead__mark { background: var(--hj-gold-deep); border-color: var(--hj-gold-deep); }
+  .hj-typehead__mark .hj-icon { width: 0.85rem; height: 0.85rem; stroke-width: 2.2; }
+  .hj-typehead__img { display: block; width: 84px; height: 84px; object-fit: cover; }
+  .hj-typehead__body { display: grid; gap: 0.12rem; min-width: 0; }
+  .hj .hj-typehead__name { font-family: var(--hj-display); font-size: 1.14rem; line-height: 1.2; color: var(--hj-ink); }
+  .hj .hj-typehead__tag { font-size: 0.76rem; line-height: 1.35; color: var(--hj-ink-soft); }
+  .hj .hj-typehead__price { margin-top: 0.3rem; font-size: 0.68rem; color: var(--hj-ink-soft); }
+  .hj .hj-typehead__amount { font-family: var(--hj-display); font-size: 1.08rem; color: var(--hj-ink); }
+  .hj .hj-typehead__free { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hj-gold-deep); }
+
+  /* A cabin: small photograph, name and rate, its facts, then its places and menus. */
+  .hj-rooms .hj-cabin-card {
+    flex: none;
+    width: 100%;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 0.85rem;
+    padding: 0.75rem;
+  }
+  .hj-rooms .hj-cabin-card__media { align-self: start; min-height: 0; aspect-ratio: 1 / 1; }
+  .hj .hj-rooms .hj-room__save { top: 0.3rem; right: 0.3rem; gap: 0.25rem; }
+  .hj .hj-rooms .hj-room__save .hathor-fav--card,
+  .hj .hj-rooms .hj-room__save .hathor-atv--card { --hathor-fav-size: 1.75rem; --hathor-fav-icon: 0.85rem; --atv-size: 1.75rem; --atv-icon: 0.8rem; }
+  .hj-rooms .hj-cabin-card__top { flex-direction: column; gap: 0.2rem; }
+  .hj-rooms .hj-cabin-card__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.45rem; text-align: left; }
+  .hj .hj-room__name { font-size: 1.08rem; }
+  .hj .hj-room__amount { font-family: var(--hj-display); font-size: 1.1rem; }
+  .hj p.hj-room__facts { gap: 0.3rem 0.7rem; font-size: 0.7rem; }
+  /* View room: the cabin's own page, in a new tab. */
+  .hj .hj-rooms .hj-room__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 0;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--hj-gold);
+    border-radius: 999px;
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--hj-gold-deep);
+  }
+  .hj .hj-rooms .hj-room__link:hover { background: var(--hj-gold-wash); }
+  .hj-room__link .hj-icon { width: 0.85rem; height: 0.85rem; stroke-width: 1.6; }
+  .hj-rooms .hj-cabin-card__fill { grid-template-columns: minmax(0, 1fr) 1.6rem; grid-template-areas: "seats clear" "menus menus"; gap: 0.55rem; }
+  .hj-rooms .hj-cabin-card__menus { justify-content: stretch; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* Right: Who Is Travelling. A column taller than the screen moves with the
+     page until its foot shows, then holds still. */
   .hj-stage--suites > .hj-party {
     grid-area: party;
     position: sticky;
-    top: min(calc(var(--hj-top) + 1.2rem), calc(100svh - var(--hj-sticky-h, 0px) - var(--hj-bar-h) - 1.2rem));
+    top: min(var(--hj-top), calc(100svh - var(--hj-sticky-h, 0px) - var(--hj-bar-h)));
     align-self: start;
     max-height: none;
     overflow: visible;
-    padding: 0 0 0.4rem clamp(1.4rem, 2vw, 2.3rem);
-    border-left: 1px solid var(--hj-line-soft);
+    padding: clamp(1.4rem, 2.2vw, 2.2rem) clamp(1.1rem, 1.6vw, 1.8rem) 1.6rem;
+    border-left: 0;
   }
-  .hj-party__head { align-items: center; padding-bottom: 1.05rem; border-bottom: 1px solid var(--hj-line-soft); }
-  .hj .hj-party__title { font-family: var(--hj-italiana); font-weight: 400; font-size: clamp(2rem, 2.4vw, 2.6rem); line-height: 1; letter-spacing: 0.005em; }
-  .hj p.hj-party__lede { margin: 0.95rem 0 0.35rem; font-size: 0.8rem; }
+  .hj-party__head { align-items: center; padding-bottom: 0.9rem; border-bottom: 1px solid var(--hj-line-soft); }
+  .hj .hj-party__title { font-family: var(--hj-italiana); font-weight: 400; font-size: clamp(1.75rem, 2vw, 2.3rem); line-height: 1; letter-spacing: 0.005em; }
+  .hj p.hj-party__lede { margin: 0.8rem 0 0.3rem; font-size: 0.76rem; }
   .hj-party .hj-counter {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas: "label ctrl" "label hint";
-    row-gap: 0.3rem;
-    padding: 0.95rem 0 0.8rem;
+    row-gap: 0.25rem;
+    padding: 0.8rem 0 0.7rem;
   }
   .hj-party .hj-counter__copy { display: contents; }
-  .hj .hj-party .hj-counter__label { grid-area: label; align-self: center; font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; }
-  .hj .hj-party .hj-counter__hint { grid-area: hint; justify-self: center; font-size: 0.8rem; }
-  .hj-party .hj-counter__ctrl { grid-area: ctrl; gap: 1.1rem; }
-  .hj .hj-party .hj-counter__btn { width: 2.5rem; height: 2.5rem; font-size: 1.15rem; background: var(--hj-card); }
-  .hj .hj-party .hj-counter__value { font-size: 1.45rem; min-width: 1.6rem; }
-  .hj-party .hj-pool { margin-top: 1.1rem; padding: 0.95rem 1rem; background: rgba(255, 253, 248, 0.85); }
-  .hj .hj-pool__label { font-size: 0.64rem; letter-spacing: 0.22em; }
+  .hj .hj-party .hj-counter__label { grid-area: label; align-self: center; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; }
+  .hj .hj-party .hj-counter__hint { grid-area: hint; justify-self: center; font-size: 0.74rem; }
+  .hj-party .hj-counter__ctrl { grid-area: ctrl; gap: 0.8rem; }
+  .hj .hj-party .hj-counter__btn { width: 2.3rem; height: 2.3rem; font-size: 1.1rem; background: var(--hj-card); }
+  .hj .hj-party .hj-counter__value { font-size: 1.35rem; min-width: 1.4rem; }
+  .hj-party .hj-pool { margin-top: 0.95rem; padding: 0.85rem 0.9rem; background: var(--hj-card); }
+  .hj .hj-pool__label { font-size: 0.62rem; letter-spacing: 0.2em; }
   .hj .hj-party__arrange {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.7rem;
     width: 100%;
-    min-height: 3.4rem;
-    margin-top: 0.9rem;
-    padding: 0.6rem 1rem;
+    min-height: 3.2rem;
+    margin-top: 0.85rem;
+    padding: 0.55rem 1rem;
     border: 1px solid var(--hj-gold-deep);
     border-radius: 0;
     background: transparent;
     font-family: var(--hj-display);
-    font-size: 1.16rem;
+    font-size: 1.1rem;
     letter-spacing: 0;
     text-transform: none;
     color: var(--hj-ink);
   }
   .hj .hj-party__arrange:hover { background: var(--hj-gold-wash); }
-  .hj-party__wand { display: block; width: 1.35rem; height: 1.35rem; color: var(--hj-gold-deep); }
-  .hj-party .hj-arrange__types { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hj-party .hj-note-box { margin-top: 1rem; }
-  .hj-party__desk .hj-party__actions { margin-top: 1.2rem; }
+  .hj-party__wand { display: block; width: 1.3rem; height: 1.3rem; color: var(--hj-gold-deep); }
+  .hj .hj-party__undo { width: 100%; min-height: 2.6rem; margin-top: 0.5rem; border-radius: 0; }
+  .hj-party .hj-arrange__types { grid-template-columns: minmax(0, 1fr); }
+  .hj-party .hj-note-box { margin-top: 0.9rem; }
+  .hj-party__desk .hj-party__actions { margin-top: 1.1rem; }
   .hj .hj-party__actions .hj-btn:not(.hj-btn--ghost) {
-    min-height: 3.6rem;
+    min-height: 3.4rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     font-family: var(--hj-display);
-    font-size: 1.16rem;
+    font-size: 1.06rem;
     letter-spacing: 0.01em;
     text-transform: none;
     box-shadow: 0 14px 28px rgba(141, 107, 50, 0.22);
   }
+  .hj p.hj-party__blocker { font-size: 0.78rem; }
 
   /* The voyage along the bottom: open it for every row with its Edit. */
   .hj-voyagebar {
@@ -2017,8 +2206,37 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
     cursor: pointer;
     transition: background 0.18s ease;
   }
-  .hj .hj-voyagebar__go:hover:not(:disabled) { background: var(--hj-gold-deep); }
-  .hj .hj-voyagebar__go:disabled { opacity: 0.45; cursor: not-allowed; }
+  .hj .hj-voyagebar__go:hover { background: var(--hj-gold-deep); color: #fffdf8; }
+  a.hj-voyagebar__go { text-decoration: none; }
+  /* Something is still missing: the button stays pressable and says what. */
+  .hj .hj-voyagebar__go--waiting { background: #c9b48b; }
+  .hj .hj-voyagebar__go--waiting:hover { background: #b9a276; }
+  .hj-voyagebar__act { position: relative; display: flex; align-items: center; justify-content: flex-end; }
+  .hj .hj-voyagebar__nudge {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 1rem);
+    width: max-content;
+    max-width: min(26rem, 60vw);
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(165, 112, 44, 0.45);
+    border-radius: 6px;
+    background: #fffaf0;
+    color: #7a4f1d;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    box-shadow: 0 14px 34px rgba(52, 38, 14, 0.16);
+    animation: hj-panel-in 0.2s ease;
+  }
+  .hj-voyagebar__nudge::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 2.4rem;
+    border: 7px solid transparent;
+    border-top-color: #fffaf0;
+  }
+  .hj-voyagebar--plain .hj-voyagebar__toggle { cursor: default; }
   .hj-voyagebar__go .hj-icon { width: 1rem; height: 1rem; stroke-width: 1.8; }
   .hj-voyagebar__panel {
     position: absolute;
@@ -2032,19 +2250,20 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   }
   .hj .hj-voyagebar__panel .hj-rail { position: static; top: auto; padding: 1.4rem 1.6rem 1.5rem; }
 
-  /* A quiet hint that the step continues below. */
+  /* A quiet hint that the step continues below: a small tab on the voyage bar. */
   .hj-cue {
     position: fixed;
     left: 50%;
-    bottom: 1.3rem;
-    z-index: 35;
+    bottom: calc(var(--hj-bar-h) - 1px);
+    z-index: 41;
     display: inline-flex;
     align-items: center;
-    gap: 0.7rem;
-    padding: 0.5rem 0.95rem;
-    border-radius: 999px;
-    background: rgba(247, 242, 233, 0.92);
-    box-shadow: 0 8px 22px rgba(52, 38, 14, 0.1);
+    gap: 0.6rem;
+    padding: 0.4rem 0.95rem 0.35rem;
+    border: 1px solid var(--hj-line);
+    border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+    background: rgba(242, 234, 220, 0.98);
     font-size: 0.58rem;
     letter-spacing: 0.32em;
     text-transform: uppercase;
@@ -2055,8 +2274,7 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
     transition: opacity 0.35s ease, transform 0.35s ease;
   }
   .hj-cue--on { opacity: 1; transform: translate(-50%, 0); }
-  .hj--step-2 .hj-cue { bottom: calc(var(--hj-bar-h) + 1rem); }
-  .hj-cue__line { position: relative; width: 1px; height: 1.15rem; overflow: hidden; background: var(--hj-line); }
+  .hj-cue__line { position: relative; width: 1px; height: 0.95rem; overflow: hidden; background: var(--hj-line); }
   .hj-cue__line::after {
     content: "";
     position: absolute;
@@ -2073,24 +2291,18 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
 @keyframes hj-panel-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes hj-cue { from { top: -45%; } to { top: 100%; } }
 
-/* Wide screens: three cabins to a row. */
-@media (min-width: 1600px) {
-  .hj-rooms .hj-cabin-card { flex-basis: calc((100% - 2rem) / 3); max-width: calc((100% - 2rem) / 3); }
-}
-
 /* Narrow desktops: recompose rather than squeeze. */
 @media (min-width: 1081px) and (max-width: 1279px) {
   .hj-plan { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hj-plan > .hj-itinerary { grid-column: 1 / -1; }
+  .hj { --hj-rooms-w: 320px; --hj-party-w: 270px; }
   .hj-stage--suites > .hj-suites-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
-  .hj-stage--suites > .hj-browse { grid-template-columns: minmax(0, 1fr); grid-template-areas: "gallery" "detail" "types"; }
-  .hj-typelist { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; }
-  /* One wide card per row: name and rate side by side, seats and menus on one line. */
-  .hj-rooms .hj-cabin-card { flex-basis: 100%; max-width: none; grid-template-columns: 150px minmax(0, 1fr); }
-  .hj-rooms .hj-cabin-card__top { flex-direction: row; justify-content: space-between; gap: 1rem; }
-  .hj-rooms .hj-cabin-card__price { display: grid; justify-items: end; text-align: right; }
-  .hj-rooms .hj-cabin-card__fill { grid-template-columns: auto minmax(0, 1fr) 1.6rem; grid-template-areas: "seats menus clear"; align-items: end; }
-  .hj-rooms .hj-cabin-card__menus { justify-content: end; }
+  /* The type in detail stacks under the photographs. */
+  .hj-detail { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "tag" "features" "price" "show" "link"; grid-template-rows: none; }
+  .hj-detail__features { margin-top: 1rem; }
+  .hj-rooms .hj-cabin-card { grid-template-columns: 88px minmax(0, 1fr); }
+  .hj .hj-names .hj-cabinguests { grid-template-columns: minmax(0, 1fr) 8.5rem; }
+  .hj .hj-names .hj-field { grid-template-columns: 1.9rem 7rem minmax(0, 1fr); }
   .hj-voyagebar { grid-template-columns: auto minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr) auto auto; }
   .hj-voyagebar__img { display: none; }
   .hj-lead { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2104,5 +2316,6 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   .hj .hj-gallery__img,
   .hj-voyagebar__panel,
   .hj-cue__line::after { animation: none; }
-  .hj-typecard, .hj-gallery__nav, .hj-gallery__dot, .hj-cue, .hj-detail__show, .hj-voyagebar__go { transition: none; }
+  .hj-voyagebar__nudge { animation: none; }
+  .hj-typehead, .hj-gallery__nav, .hj-gallery__dot, .hj-cue, .hj-detail__show, .hj-voyagebar__go { transition: none; }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
@@ -9,6 +9,7 @@ import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import { occupants, shortName, type Arrangement, type Guest } from "./allocation";
 import { money, plural, type Sailing } from "./model";
 import { RESIDENCE_SLUG } from "./SuitesParts";
+import { useStickyFit } from "./useStickyFit";
 import {
   IconBath,
   IconBed,
@@ -16,13 +17,14 @@ import {
   IconChevron,
   IconGuests,
   IconLink,
+  IconOpen,
   IconSize,
   IconView,
   IconWifi,
 } from "./icons";
 
 /** What each type offers, from the room pages' own facts. The size comes from the live availability. */
-const STORY: Record<PhysicalRoomType, { tagline: string; features: (size: number) => { icon: ReactNode; text: string }[] }> = {
+export const STORY: Record<PhysicalRoomType, { tagline: string; features: (size: number) => { icon: ReactNode; text: string }[] }> = {
   "Luxury King Cabin": {
     tagline: "A calm retreat for two.",
     features: size => [
@@ -69,87 +71,45 @@ const STORY: Record<PhysicalRoomType, { tagline: string; features: (size: number
 };
 
 /**
- * Desktop only: look through the cabin types before placing anyone — the type
- * list, its photographs (16:9) and what it offers. Every booking control stays
- * in the cabin cards and Who Is Travelling below and beside it.
+ * Desktop only: the preview beside the cabins — the type's photographs (16:9)
+ * and what it offers. The cabin types and every cabin card sit in the column
+ * beside it; choosing one shows it here.
  */
 export function SuitesBrowse({
   duration,
   sailing,
+  previewType,
   arrangement,
   guests,
-  preferredType,
   onShowCabins,
 }: {
   duration: StayDurationValue;
   sailing: Sailing;
+  /** The cabin type on show, chosen in the cabins column. */
+  previewType: PhysicalRoomType;
   arrangement: Arrangement;
   guests: Guest[];
-  preferredType: PhysicalRoomType | null;
   /** Filters the cabin cards to this type and brings them into view. */
   onShowCabins: (type: PhysicalRoomType) => void;
 }) {
-  const [activeType, setActiveType] = useState<PhysicalRoomType>(() => {
-    const types = sailing.types;
-    if (preferredType && types.some(type => type.roomType === preferredType)) return preferredType;
-    return arrangement.cabins[0]?.roomType ?? (types.find(type => type.availableCabins > 0) ?? types[0]).roomType;
-  });
-  const [photo, setPhoto] = useState<{ type: PhysicalRoomType; index: number }>({ type: activeType, index: 0 });
+  const [photo, setPhoto] = useState<{ type: PhysicalRoomType; index: number }>({ type: previewType, index: 0 });
+  const browseRef = useRef<HTMLElement | null>(null);
+  useStickyFit(browseRef);
 
   const voyage = itineraryFor(duration);
-  const type = sailing.types.find(entry => entry.roomType === activeType) ?? sailing.types[0];
+  const type = sailing.types.find(entry => entry.roomType === previewType) ?? sailing.types[0];
   const visuals = getBookingRoomVisuals(type.roomType, type.roomType);
   const photoCount = visuals.gallery.length;
   const photoIndex = photo.type === type.roomType ? photo.index : 0;
   const showPhoto = (index: number) => setPhoto({ type: type.roomType, index: (index + photoCount) % photoCount });
   const story = STORY[type.roomType];
-  const guestsIn = (roomType: PhysicalRoomType) =>
-    arrangement.cabins.filter(cabin => cabin.roomType === roomType).reduce((sum, cabin) => sum + occupants(arrangement, guests, cabin.id).length, 0);
+  const placed = arrangement.cabins
+    .filter(cabin => cabin.roomType === type.roomType)
+    .reduce((sum, cabin) => sum + occupants(arrangement, guests, cabin.id).length, 0);
+  const roomHref = `/rooms/${RESIDENCE_SLUG[type.roomType]}`;
 
   return (
-    <section className="hj-browse" aria-label="Look through the cabin types">
-      <div className="hj-browse__types">
-        <span className="hj-browse__label">Select your cabin</span>
-        <div className="hj-typelist" role="radiogroup" aria-label="Cabin types">
-          {sailing.types.map(entry => {
-            const on = entry.roomType === type.roomType;
-            const placed = guestsIn(entry.roomType);
-            const out = entry.availableCabins === 0;
-            return (
-              <button
-                key={entry.roomType}
-                type="button"
-                role="radio"
-                aria-checked={on}
-                aria-label={`${entry.roomType}, ${money(entry.priceCents)} per cabin, ${entry.availableCabins} of ${entry.totalCabins} free${placed ? `, ${plural(placed, "guest")} placed` : ""}`}
-                className={`hj-typecard${on ? " hj-typecard--on" : ""}${out ? " hj-typecard--out" : ""}`}
-                onClick={() => setActiveType(entry.roomType)}
-              >
-                <span className="hj-typecard__mark" aria-hidden>{on ? <IconCheck /> : null}</span>
-                <Image
-                  className="hj-typecard__img"
-                  src={getBookingRoomVisuals(entry.roomType, entry.roomType).cover}
-                  alt=""
-                  width={260}
-                  height={220}
-                  sizes="130px"
-                />
-                <span className="hj-typecard__body">
-                  <span className="hj-typecard__name">{entry.roomType}</span>
-                  <span className="hj-typecard__tag">{STORY[entry.roomType].tagline}</span>
-                  <span className="hj-typecard__from">Per cabin</span>
-                  <span className="hj-typecard__amount">{money(entry.priceCents)}</span>
-                  <span className="hj-typecard__per">
-                    {out ? "Fully booked on this date" : `entire voyage · ${entry.availableCabins} of ${entry.totalCabins} free`}
-                  </span>
-                  {placed ? <span className="hj-typecard__placed">{plural(placed, "guest")} placed</span> : null}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
+    <section className="hj-browse" aria-label={`${type.roomType} preview`} ref={browseRef}>
       <div className="hj-gallery" aria-label={`${type.roomType} photos`}>
         <div
           className="hj-gallery__frame"
@@ -167,9 +127,9 @@ export function SuitesBrowse({
             alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
             fill
             priority
-            sizes="(min-width: 1081px) 42vw, 100vw"
+            sizes="(min-width: 1081px) 46vw, 100vw"
           />
-          {guestsIn(type.roomType) > 0 ? (
+          {placed > 0 ? (
             <span className="hj-gallery__badge"><IconCheck /> Selected</span>
           ) : null}
           <button type="button" className="hj-gallery__nav hj-gallery__nav--prev" aria-label="Previous photo" onClick={() => showPhoto(photoIndex - 1)}>
@@ -179,6 +139,9 @@ export function SuitesBrowse({
             <IconChevron direction="right" />
           </button>
           <span className="hj-gallery__count" aria-hidden>{photoIndex + 1} / {photoCount}</span>
+          <a className="hj-gallery__view" href={roomHref} target="_blank" rel="noopener noreferrer" aria-label={`View the ${type.roomType} (opens in a new tab)`}>
+            View room <IconOpen />
+          </a>
         </div>
         <div className="hj-gallery__dots" role="group" aria-label="Photos">
           {visuals.gallery.map((src, index) => (
@@ -221,9 +184,9 @@ export function SuitesBrowse({
           {type.availableCabins === 0
             ? "Fully booked on this date"
             : `Show the ${plural(type.totalCabins, shortName(type.roomType))} · ${type.availableCabins} free`}
-          <IconChevron direction="down" />
+          <IconChevron direction="right" />
         </button>
-        <a className="hj-detail__link" href={`/rooms/${RESIDENCE_SLUG[type.roomType]}`} target="_blank" rel="noopener noreferrer">
+        <a className="hj-detail__link" href={roomHref} target="_blank" rel="noopener noreferrer">
           Full cabin details <span aria-hidden>›</span>
         </a>
       </div>

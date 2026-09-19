@@ -7,7 +7,8 @@ import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { JourneyProgress, StepBanner, StepGuide } from "@/components/booking/journey/JourneyChrome";
-import { folioRange, money, stageLabel } from "@/components/booking/journey/model";
+import { folioRange, money, plural, shortDate, stageLabel } from "@/components/booking/journey/model";
+import { VoyageBarFrame } from "@/components/booking/journey/VoyageRail";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
 
 type PageProps = {
@@ -16,7 +17,7 @@ type PageProps = {
 
 const FALLBACK_SCENE = "/media/hathor/optimized/cruises-hero.webp";
 
-function Shell({ children, scene, wide, banner }: { children: ReactNode; scene?: string; wide?: boolean; banner?: ReactNode }) {
+function Shell({ children, scene, wide, banner, bar }: { children: ReactNode; scene?: string; wide?: boolean; banner?: ReactNode; bar?: ReactNode }) {
   const style = { "--hj-scene": `url("${scene ?? FALLBACK_SCENE}")` } as CSSProperties;
   return (
     <div className="hj hj--step-4" style={style}>
@@ -24,6 +25,7 @@ function Shell({ children, scene, wide, banner }: { children: ReactNode; scene?:
         {banner}
         <JourneyProgress step={4} />
         <div className={wide ? "hj-stage hj-stage--success" : "hj-stage hj-stage--wide"}>{children}</div>
+        {bar}
       </div>
     </div>
   );
@@ -76,6 +78,26 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
     <Shell
       scene={voyage?.image}
       wide
+      bar={
+        voyage ? (
+          <VoyageBarFrame
+            image={voyage.image}
+            title={voyage.title}
+            route={details.route ?? voyage.route}
+            dateMain={shortDate(details.checkInDate)}
+            dateSub={`to ${shortDate(details.returnDate)}`}
+            partyMain={details.guestSummary}
+            partySub={details.roomType ? plural(details.roomType.split(", ").length, "Cabin") : "Cabins to confirm"}
+            totalLabel={`Booking ${bookingCode(details.bookingId)}`}
+            totalValue={money(details.totalPriceCents)}
+            action={
+              <Link href="/" className="hj-voyagebar__go">
+                Return to Hathor <span aria-hidden>→</span>
+              </Link>
+            }
+          />
+        ) : null
+      }
       banner={
         <StepBanner
           step={4}

@@ -132,8 +132,98 @@ export function VoyageRail({
 }
 
 /**
- * Desktop Guests & Suites: the same summary as a bar along the bottom, so the
- * cabin photographs keep the full height of the screen.
+ * Desktop: the voyage along the bottom of every step. The toggle opens the
+ * full summary (every row with its Edit); the button is the step's next action.
+ * Request sent uses this frame directly with its own values and link.
+ */
+export function VoyageBarFrame({
+  image,
+  title,
+  route,
+  dateMain,
+  dateSub,
+  partyMain,
+  partySub,
+  totalLabel,
+  totalValue,
+  details,
+  onEdit,
+  action,
+  nudge,
+}: {
+  image: string;
+  title: string;
+  route: string;
+  dateMain: string;
+  dateSub: string;
+  partyMain: string;
+  partySub: string;
+  totalLabel: string;
+  totalValue: string;
+  /** The full voyage summary, opened from the bar. */
+  details?: ReactNode;
+  onEdit?: () => void;
+  /** The step's next action (a button or a link). */
+  action: ReactNode;
+  /** A reminder of what is still missing, shown above the action. */
+  nudge?: string | null;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className={`hj-voyagebar${open ? " hj-voyagebar--open" : ""}${details ? "" : " hj-voyagebar--plain"}`} aria-label="Your voyage">
+      {open && details ? <div className="hj-voyagebar__panel" id="hj-voyagebar-panel">{details}</div> : null}
+      {details ? (
+        <button
+          type="button"
+          className="hj-voyagebar__toggle"
+          aria-expanded={open}
+          aria-controls="hj-voyagebar-panel"
+          onClick={() => setOpen(current => !current)}
+        >
+          <span className="hj-voyagebar__title">Your Voyage</span>
+          <IconChevron direction={open ? "down" : "up"} />
+        </button>
+      ) : (
+        <span className="hj-voyagebar__toggle">
+          <span className="hj-voyagebar__title">Your Voyage</span>
+        </span>
+      )}
+      <Image className="hj-voyagebar__img" src={image} alt="" width={240} height={140} sizes="120px" />
+      <span className="hj-voyagebar__cell">
+        <span className="hj-voyagebar__main">{title}</span>
+        <span className="hj-voyagebar__sub">{route}</span>
+      </span>
+      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled">
+        <IconCalendar />
+        <span>
+          <span className="hj-voyagebar__main">{dateMain}</span>
+          <span className="hj-voyagebar__sub">{dateSub}</span>
+        </span>
+      </span>
+      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled">
+        <IconGuests />
+        <span>
+          <span className="hj-voyagebar__main">{partyMain}</span>
+          <span className="hj-voyagebar__sub">{partySub}</span>
+        </span>
+      </span>
+      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled hj-voyagebar__total">
+        <span className="hj-voyagebar__sub">{totalLabel}</span>
+        <span className="hj-voyagebar__amount">{totalValue}</span>
+      </span>
+      {onEdit ? <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>Edit</button> : <span />}
+      <span className="hj-voyagebar__act">
+        {nudge ? <span className="hj-voyagebar__nudge" role="status">{nudge}</span> : null}
+        {action}
+      </span>
+    </section>
+  );
+}
+
+/**
+ * The journey's bar: the summary of the voyage so far and the step's next
+ * action. When something is still missing, the action says exactly what
+ * instead of doing nothing.
  */
 export function VoyageBar({
   duration,
@@ -142,11 +232,16 @@ export function VoyageBar({
   childCount,
   cabins,
   totalCents,
+  pendingTotal,
   onEdit,
   details,
-  ready,
+  label,
+  ariaLabel,
+  blocker,
   busy,
+  busyLabel,
   onContinue,
+  onBlocked,
 }: {
   duration: StayDurationValue;
   sailing: Sailing | null;
@@ -154,61 +249,61 @@ export function VoyageBar({
   childCount: number;
   cabins: CabinView[];
   totalCents: number | null;
-  onEdit: () => void;
-  /** The full voyage summary (every row with its Edit), opened from the bar. */
+  /** What the total says before there is one ("From USD 3,000", "Place your guests"). */
+  pendingTotal: string;
+  onEdit?: () => void;
   details: ReactNode;
-  ready: boolean;
+  label: string;
+  ariaLabel: string;
+  /** What is still missing for this step, or null when the action can go ahead. */
+  blocker: string | null;
   busy: boolean;
+  busyLabel: string;
   onContinue: () => void;
+  /** Brings the missing part into view. */
+  onBlocked?: () => void;
 }) {
   const voyage = itineraryFor(duration);
-  const [open, setOpen] = useState(false);
+  const [nudge, setNudge] = useState<string | null>(null);
+  const [nudgeFor, setNudgeFor] = useState(blocker);
+  // A reminder goes as soon as the missing part is done (or another one takes its place).
+  if (blocker !== nudgeFor) {
+    setNudgeFor(blocker);
+    setNudge(null);
+  }
   return (
-    <section className={`hj-voyagebar${open ? " hj-voyagebar--open" : ""}`} aria-label="Your voyage">
-      {open ? <div className="hj-voyagebar__panel" id="hj-voyagebar-panel">{details}</div> : null}
-      <button
-        type="button"
-        className="hj-voyagebar__toggle"
-        aria-expanded={open}
-        aria-controls="hj-voyagebar-panel"
-        onClick={() => setOpen(current => !current)}
-      >
-        <span className="hj-voyagebar__title">Your Voyage</span>
-        <IconChevron direction={open ? "down" : "up"} />
-      </button>
-      <Image className="hj-voyagebar__img" src={voyage.image} alt="" width={240} height={140} sizes="120px" />
-      <span className="hj-voyagebar__cell">
-        <span className="hj-voyagebar__main">{voyage.title}</span>
-        <span className="hj-voyagebar__sub">{voyage.route}</span>
-      </span>
-      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled">
-        <IconCalendar />
-        <span>
-          <span className="hj-voyagebar__main">{sailing ? shortDate(sailing.departureTime) : "Select your dates"}</span>
-          <span className="hj-voyagebar__sub">{sailing ? `to ${shortDate(sailing.arrivalTime)}` : `${voyage.departureDay} departures`}</span>
-        </span>
-      </span>
-      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled">
-        <IconGuests />
-        <span>
-          <span className="hj-voyagebar__main">{partyLine(adults, childCount)}</span>
-          <span className="hj-voyagebar__sub">{cabins.length === 0 ? "No cabin yet" : plural(cabins.length, "Cabin")}</span>
-        </span>
-      </span>
-      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled hj-voyagebar__total">
-        <span className="hj-voyagebar__sub">{cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}</span>
-        <span className="hj-voyagebar__amount">{totalCents === null ? "Place your guests" : money(totalCents)}</span>
-      </span>
-      <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>Edit</button>
-      <button
-        type="button"
-        className="hj-voyagebar__go"
-        aria-label="Continue to guest details"
-        disabled={busy || !ready}
-        onClick={onContinue}
-      >
-        Continue <IconChevron direction="right" />
-      </button>
-    </section>
+    <VoyageBarFrame
+      image={voyage.image}
+      title={voyage.title}
+      route={voyage.route}
+      dateMain={sailing ? shortDate(sailing.departureTime) : "Choose a date"}
+      dateSub={sailing ? `to ${shortDate(sailing.arrivalTime)}` : `Departs ${voyage.departureDay}`}
+      partyMain={partyLine(adults, childCount)}
+      partySub={cabins.length === 0 ? "No cabin yet" : plural(cabins.length, "Cabin")}
+      totalLabel={cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}
+      totalValue={totalCents === null ? pendingTotal : money(totalCents)}
+      details={details}
+      onEdit={onEdit}
+      nudge={nudge}
+      action={
+        <button
+          type="button"
+          className={`hj-voyagebar__go${blocker ? " hj-voyagebar__go--waiting" : ""}`}
+          aria-label={ariaLabel}
+          aria-disabled={busy || undefined}
+          onClick={() => {
+            if (busy) return;
+            if (blocker) {
+              setNudge(blocker);
+              onBlocked?.();
+              return;
+            }
+            onContinue();
+          }}
+        >
+          {busy ? busyLabel : label} <IconChevron direction="right" />
+        </button>
+      }
+    />
   );
 }

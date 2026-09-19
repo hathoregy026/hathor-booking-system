@@ -185,6 +185,23 @@ export function IconLink(props: IconProps) {
   );
 }
 
+/** Opens in a new tab. */
+export function IconOpen(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M13.5 4.5H19.5V10.5M19.5 4.5 11 13M17 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 4 18.5v-10A1.5 1.5 0 0 1 5.5 7H10" />
+    </Svg>
+  );
+}
+
+export function IconUndo(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+    </Svg>
+  );
+}
+
 export function IconWand(props: IconProps) {
   return (
     <Svg {...props}>

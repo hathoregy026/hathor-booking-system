@@ -411,3 +411,17 @@ export function passengersPayload(arrangement: Arrangement, guests: Guest[], nam
     })),
   );
 }
+
+/** Guests in a sentence: "Adult 3", "Adult 3 and Child 1", "Adult 3, Child 1 and Child 2". */
+export function guestList(list: Guest[]): string {
+  const labels = list.map(guestLabel);
+  if (labels.length <= 1) return labels[0] ?? "";
+  return `${labels.slice(0, -1).join(", ")} and ${labels[labels.length - 1]}`;
+}
+
+/** What still stops Guests & Suites from continuing, said exactly; null when nothing does. */
+export function placementReminder(arrangement: Arrangement, guests: Guest[]): string | null {
+  const waiting = unplacedGuests(arrangement, guests);
+  if (waiting.length > 0) return `${guestList(waiting)} ${waiting.length === 1 ? "still needs" : "still need"} a cabin.`;
+  return arrangementIssues(arrangement, guests)[0] ?? null;
+}

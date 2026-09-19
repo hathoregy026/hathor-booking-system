@@ -181,22 +181,26 @@ async function walk(browser, label, width, height, mode, theme) {
 
   const cards = page.locator('.hj-cabin-card');
   if (desktop) {
-    // The gallery: four types, 16:9 photographs, and a way to list one type's cabins.
-    const types = page.getByRole('radiogroup', { name: 'Cabin types' }).getByRole('radio');
-    if ((await types.count()) !== 4) problems.push(`desktop: the gallery should offer 4 cabin types, found ${await types.count()}`);
+    // The preview: four cabin types heading the cabins column, 16:9 photographs,
+    // a View room link, and a way to list one type's cabins.
+    const types = page.locator('.hj-typehead');
+    if ((await types.count()) !== 4) problems.push(`desktop: the cabins column should head 4 cabin types, found ${await types.count()}`);
+    if ((await page.locator('.hj-gallery__view').getAttribute('target')) !== '_blank') problems.push('desktop: View room should open the room in a new tab');
     const frame = await page.locator('.hj-gallery__frame').boundingBox();
     if (!frame || Math.abs(frame.width / frame.height - 16 / 9) > 0.02) problems.push(`desktop: the cabin photograph should be 16:9 (${frame && (frame.width / frame.height).toFixed(3)})`);
     const counter = page.locator('.hj-gallery__count');
     const firstPhoto = await counter.innerText();
     await page.getByRole('button', { name: 'Next photo' }).click();
     if ((await counter.innerText()) === firstPhoto) problems.push('desktop: Next photo did not change the photograph');
-    await types.filter({ hasText: 'Luxury Suite' }).click();
-    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Luxury Suite') problems.push('desktop: choosing Luxury Suite did not show its details');
-    await page.getByRole('button', { name: /^Show the 2 Luxury Suites/ }).click();
+    await page.getByRole('button', { name: /^Preview the Luxury Suite:/ }).click();
+    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Luxury Suite') problems.push('desktop: choosing Luxury Suite did not show it in the preview');
+    await cabinAt('Royal Suite', 1).locator('.hj-room__facts').click();
+    if ((await page.locator('.hj-detail__name').innerText()).trim() !== 'Royal Suite') problems.push('desktop: choosing a Royal Suite cabin did not show it in the preview');
+    await page.getByRole('button', { name: /^Show the 2 Royal Suites/ }).click();
     await page.waitForTimeout(250);
     const suiteCards = await cards.count();
-    const onlySuites = await cards.evaluateAll(list => list.every(card => card.getAttribute('aria-label').startsWith('Luxury Suite,')));
-    if (suiteCards !== 2 || !onlySuites) problems.push(`desktop: Show the Luxury Suites should list their 2 cabins, found ${suiteCards}`);
+    const onlySuites = await cards.evaluateAll(list => list.every(card => card.getAttribute('aria-label').startsWith('Royal Suite,')));
+    if (suiteCards !== 2 || !onlySuites) problems.push(`desktop: Show the Royal Suites should list their 2 cabins, found ${suiteCards}`);
     await page.getByRole('button', { name: /^All rooms/ }).click();
     if (await page.locator('.hj-banner').count()) problems.push('desktop: the cabin step should keep the screen for the cabin photographs, without a banner');
     if (!(await page.locator('.hj-voyagebar').isVisible())) problems.push('desktop: the voyage bar should run along the bottom of Guests & Suites');
@@ -237,6 +241,12 @@ async function walk(browser, label, width, height, mode, theme) {
   await page.waitForTimeout(300);
   if ((await poolTiles.count()) !== 5) problems.push(`${label}: 3 adults and 2 children should wait in Who Is Travelling, found ${await poolTiles.count()}`);
   if ((await page.locator('.hj-cabin-card .hj-tile').count()) !== 0) problems.push(`${label}: guests were placed without the guest placing them`);
+  if (desktop) {
+    // Continue says exactly who still needs a cabin instead of doing nothing.
+    await page.locator('.hj-voyagebar__go').click();
+    const nudge = await page.locator('.hj-voyagebar__nudge').innerText().catch(() => '');
+    if (nudge !== 'Adult 1, Adult 2, Adult 3, Child 1 and Child 2 still need a cabin.') problems.push(`desktop: the voyage bar did not name the guests still to place (${nudge})`);
+  }
   await shot('02-guests-waiting');
 
   // One shared count: Adult 1 dragged (or tapped) into King Cabin 3, then its menu set to 2.
@@ -270,6 +280,19 @@ async function walk(browser, label, width, height, mode, theme) {
   if ((await kingThreeAdults.locator('option').count()) !== 3) problems.push(`${label}: a 2-guest cabin's menu should stop at 2`);
   await placeInto('adult-3', kingThree, 'King Cabin 3');
   if ((await kingThree.locator('.hj-tile').count()) !== 2) problems.push(`${label}: a third guest got into a 2-guest cabin (${mode})`);
+
+  if (desktop) {
+    // Undo arrangement asks first; keeping changes nothing, undoing sends everyone back.
+    const placedBefore = await page.locator('.hj-cabin-card .hj-tile').count();
+    await page.getByRole('button', { name: 'Undo arrangement' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Undo every arrangement?' });
+    if (!(await dialog.isVisible())) problems.push('desktop: Undo arrangement did not warn first');
+    await dialog.getByRole('button', { name: 'Keep my arrangement' }).click();
+    if ((await page.locator('.hj-cabin-card .hj-tile').count()) !== placedBefore) problems.push('desktop: keeping the arrangement changed it');
+    await page.getByRole('button', { name: 'Undo arrangement' }).click();
+    await dialog.getByRole('button', { name: 'Undo all' }).click();
+    if ((await page.locator('.hj-cabin-card .hj-tile').count()) !== 0 || (await poolTiles.count()) !== 5) problems.push('desktop: Undo all did not send every guest back to Who Is Travelling');
+  }
 
   // Arrange for me asks which types, then uses only those.
   if (mode === 'tap') await page.keyboard.press('Escape');
@@ -377,7 +400,8 @@ async function walk(browser, label, width, height, mode, theme) {
     await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'QA stop: the request was not sent.' }) });
   });
   const released = page.waitForResponse(response => response.url().includes('/api/bookings/release'), { timeout: 60000 }).catch(() => null);
-  await page.getByRole('button', { name: /confirm request/i }).click();
+  // The page's own button (the voyage bar has one too, further down the page).
+  await page.getByRole('button', { name: /confirm request/i }).first().click();
   await page.getByText(/QA stop: the request was not sent\. Nothing is being held/).waitFor({ timeout: 60000 });
   const release = await released;
   if (holdCalls.length !== 1) problems.push(`${label}: expected exactly one hold at Confirm, saw ${holdCalls.length}`);

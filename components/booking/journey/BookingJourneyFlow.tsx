@@ -37,9 +37,12 @@ import {
   autoArrange,
   cabinViews,
   fitToOffers,
+  guestLabel,
+  guestList,
   guestsFor,
   offersFromTypes,
   passengersPayload,
+  placementReminder,
   resizeParty,
   roomsPayload,
   shortName,
@@ -65,7 +68,8 @@ import {
 
 const PHONE = /^\+[1-9][0-9]{6,14}$/;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const COMPLETE_DETAILS = "Please complete the highlighted details.";
+/** Opens the reminder of exactly what is missing on Details & Payment. */
+const REMIND = "Before we can send your request, please add: ";
 
 class RequestFailed extends Error {
   constructor(message: string, readonly status: number) {
@@ -383,9 +387,31 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         ? "Please check the phone number."
         : "Choose your country first, then enter your number.";
     }
-    if (guests.some(guest => !(names[guest.id] ?? "").trim())) found.names = "Please give a name for every travelling guest.";
+    const unnamed = cabins.flatMap(cabin =>
+      cabin.guests.filter(guest => !(names[guest.id] ?? "").trim()).map(guest => `${guestLabel(guest)} (${cabin.label})`),
+    );
+    if (unnamed.length > 0) {
+      const list = unnamed.length === 1 ? unnamed[0] : `${unnamed.slice(0, -1).join(", ")} and ${unnamed[unnamed.length - 1]}`;
+      found.names = `Please give the full name of ${list}, as in the passport.`;
+    }
     if (!form.termsAccepted) found.terms = "Please accept the booking and cancellation terms.";
     return found;
+  }
+
+  /** The missing details in one sentence, so the guest knows exactly what to add. */
+  function detailsReminder(found: Record<string, string>): string | null {
+    const unnamed = guests.filter(guest => !(names[guest.id] ?? "").trim());
+    const parts = [
+      found.firstName ? "the lead guest's first name" : "",
+      found.lastName ? "the lead guest's last name" : "",
+      found.email ? "a valid email address" : "",
+      found.country ? "your country" : "",
+      found.phone ? (form.countryCode ? "a valid phone number" : "your phone number") : "",
+      found.names ? `the full ${unnamed.length === 1 ? "name" : "names"} of ${guestList(unnamed)}` : "",
+      found.terms ? "your acceptance of the booking terms" : "",
+    ].filter(Boolean);
+    if (parts.length === 0) return null;
+    return `${REMIND}${parts.join("; ")}.`;
   }
 
   async function confirmRequest() {
@@ -393,7 +419,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     const found = detailsProblems();
     setErrors(found);
     if (Object.keys(found).length > 0) {
-      setAlert(COMPLETE_DETAILS);
+      setAlert(detailsReminder(found));
+      revealMissingField();
       return;
     }
     if (issues.length > 0) {
@@ -504,11 +531,18 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
   // On a small screen an alert is far above the bar the guest pressed. A missing
   // field is shown by the bar itself (see the details bar below), not the alert.
-  useRevealOnPhone(".hj-alert", alert === COMPLETE_DETAILS ? null : alert);
-  const revealMissingField = () =>
+  useRevealOnPhone(".hj-alert", alert?.startsWith(REMIND) ? null : alert);
+  function revealMissingField() {
     window.requestAnimationFrame(() =>
-      window.requestAnimationFrame(() => reveal(document.querySelector(".hj-field--invalid, .hj-details .hj-error"), "center")),
+      window.requestAnimationFrame(() => {
+        const missing = document.querySelector(".hj-field--invalid, .hj-details .hj-error");
+        reveal(missing, "center");
+        // The first field still to fill takes the cursor, so the guest can type straight away.
+        const field = document.querySelector<HTMLElement>(".hj-field--invalid input, .hj-field--invalid textarea");
+        field?.focus({ preventScroll: true });
+      }),
     );
+  }
 
   /** The lowest open cabin rate: for the chosen sailing, or across the dates on offer. */
   const fromCents = useMemo(() => {
@@ -752,22 +786,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             />
           </div>
         ) : null}
-        {view === 2 && sailing ? (
-          <VoyageBar
-            duration={duration}
-            sailing={sailing}
-            adults={adults}
-            childCount={children}
-            cabins={cabins}
-            totalCents={totalCents}
-            onEdit={() => jump(1)}
-            details={rail}
-            ready={issues.length === 0}
-            busy={busy}
-            onContinue={() => void continueToDetails()}
-          />
-        ) : null}
-        <ScrollCue />
 
         {view === 3 && sailing ? (
           <div className="hj-stage">
@@ -811,6 +829,49 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             />
           </div>
         ) : null}
+
+        {view === 1 || sailing ? (
+          <VoyageBar
+            key={view}
+            duration={duration}
+            sailing={sailing}
+            adults={adults}
+            childCount={children}
+            cabins={cabins}
+            totalCents={totalCents}
+            pendingTotal={view === 1 ? (fromCents === null ? "Choose a date" : `From ${money(fromCents)}`) : "Place your guests"}
+            onEdit={view > 1 ? () => jump((view - 1) as JourneyStep) : undefined}
+            details={rail}
+            busy={busy}
+            {...(view === 1
+              ? {
+                  label: "Continue",
+                  ariaLabel: "Continue to guests and suites",
+                  busyLabel: "Checking…",
+                  blocker: scheduleId ? null : "Choose a sailing date first: the open dates are marked in the calendar.",
+                  onContinue: () => void enterGuestsSuites(),
+                  onBlocked: () => reveal(".hj-cal", "center"),
+                }
+              : view === 2
+                ? {
+                    label: "Continue",
+                    ariaLabel: "Continue to guest details",
+                    busyLabel: "Checking…",
+                    blocker: placementReminder(arrangement, guests),
+                    onContinue: () => void continueToDetails(),
+                    onBlocked: showWarning,
+                  }
+                : {
+                    label: "Confirm request",
+                    ariaLabel: "Confirm request from the voyage bar",
+                    busyLabel: "Sending…",
+                    blocker: detailsReminder(detailsProblems()),
+                    onContinue: () => void confirmRequest(),
+                    onBlocked: () => void confirmRequest(),
+                  })}
+          />
+        ) : null}
+        <ScrollCue />
       </div>
     </div>
   );
