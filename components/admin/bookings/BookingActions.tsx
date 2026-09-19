@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
 import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
@@ -62,8 +63,9 @@ function dueNowCents(booking: AdminBookingDto) {
 }
 
 function Dialog({ title, kicker, onClose, children }: { title: string; kicker?: string; onClose: () => void; children: ReactNode }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
+  // At the top of the dashboard (inside its theme), above the phone's bottom menu, whatever card opened it.
+  return createPortal(
+    <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4">
       <button type="button" className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" aria-label="Close" onClick={onClose} />
       <div
         role="dialog"
@@ -85,7 +87,8 @@ function Dialog({ title, kicker, onClose, children }: { title: string; kicker?: 
         </div>
         <div className="overflow-y-auto px-5 py-5">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.querySelector(".admin-shell") ?? document.body,
   );
 }
 
@@ -301,7 +304,7 @@ export function BookingActionDialog({
                 >
                   <span className="min-w-0">
                     <span className="block font-medium">
-                      {stageTitle(stage.milestone)}
+                      {stageTitle(stage.milestone, plan.length)}
                       {booking.totalPriceCents > 0 ? ` · ${Math.round((stage.amountCents / booking.totalPriceCents) * 100)}%` : ""}
                     </span>
                     <span className="block text-xs text-muted">

@@ -55,7 +55,7 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
     amountPaid: paid > 0 ? formatPrice(paid) : undefined,
     balanceDue: formatPrice(Math.max(0, total - paid)),
     paymentPlan: plan.map(stage => ({
-      title: stageTitle(stage.milestone),
+      title: stageTitle(stage.milestone, plan.length),
       when: stageWhen(stage.milestone, stage.dueAt, stage.state),
       amount: formatPrice(stage.amountCents),
       percent: total > 0 ? Math.round((stage.amountCents / total) * 100) : undefined,

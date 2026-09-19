@@ -258,7 +258,10 @@ export function BookingDetailView({
                     style={{ background: stage.state === "due" ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "var(--bg-secondary)" }}
                   >
                     <span className="min-w-0">
-                      <span className="block font-medium">{stageTitle(stage.milestone)}</span>
+                      <span className="block font-medium">
+                        {stageTitle(stage.milestone, plan.length)}
+                        {booking.totalPriceCents > 0 ? ` · ${Math.round((stage.amountCents / booking.totalPriceCents) * 100)}%` : ""}
+                      </span>
                       <span className="block text-xs text-muted">
                         {stage.dueAt ? `By ${format(parseISO(stage.dueAt), "d MMM yyyy")}` : "With the invoice"}
                       </span>

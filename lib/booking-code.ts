@@ -39,8 +39,9 @@ export function paymentPlan(
   });
 }
 
-export function stageTitle(milestone: string): string {
-  if (milestone === "INITIAL") return "Deposit to confirm";
+/** A stage's name. `stageCount` 1 means the whole voyage is paid in one go. */
+export function stageTitle(milestone: string, stageCount = 3): string {
+  if (milestone === "INITIAL") return stageCount === 1 ? "Full payment" : "Deposit to confirm";
   if (milestone === "DAY_60") return "Second payment · 60 days before";
   if (milestone === "DAY_45") return "Final balance · 45 days before";
   return milestone;
