@@ -70,7 +70,14 @@ async function expandCabinGroup(page, typeNamePattern) {
 }
 
 async function dragTo(page, source, target) {
-  await centre(source);
+  // The guests wait in a panel or tray that stays on screen; bring the cabin
+  // into view, and scroll to the guest only if it is not already visible.
+  await centre(target);
+  const onScreen = await source.evaluate(element => {
+    const box = element.getBoundingClientRect();
+    return box.top >= 0 && box.bottom <= innerHeight;
+  });
+  if (!onScreen) await centre(source);
   const from = await source.boundingBox();
   const to = await target.boundingBox();
   if (!from || !to) throw new Error('drag source or target is not on screen');
@@ -102,7 +109,23 @@ async function walk(browser, label, width, height, mode, theme) {
     await page.waitForTimeout(350);
     await page.screenshot({ path: `${OUT}/${label}-${name}.png`, fullPage: false });
   };
-  const guideItems = async () => page.locator('.hj-guide:visible .hj-guide__item').count();
+  // Desktop shows the step map as a list; tablet and phone show the same points as tabs.
+  const guideItems = async () => page.locator('.hj-guide:visible .hj-guide__item, .hj-mtabs:visible .hj-mtab').count();
+  const guideDone = async () => page.locator('.hj-guide:visible .hj-guide__item--done, .hj-mtabs:visible .hj-mtab--done').count();
+  // Desktop picks a date on the page; tablet and phone in the date sheet, then Apply.
+  const pickFirstDate = async () => {
+    if (desktop) {
+      await page.locator('.hj-sailing').first().waitFor({ timeout: 60000 });
+      await page.locator('.hj-sailing').first().click();
+      return;
+    }
+    await page.getByRole('button', { name: /^Departure/ }).click();
+    const sheet = page.getByRole('dialog', { name: 'Select departure date' });
+    await sheet.locator('.hj-sailing').first().waitFor({ timeout: 60000 });
+    await sheet.locator('.hj-sailing').first().click();
+    await sheet.getByRole('button', { name: 'Apply date' }).click();
+    await sheet.waitFor({ state: 'detached', timeout: 5000 });
+  };
   // Desktop has its own full-screen layout: a photograph banner on Journey and
   // Details & Payment, and on Guests & Suites a cabin-type gallery above the cards.
   // Every step keeps its map and every control at every size.
@@ -123,7 +146,8 @@ async function walk(browser, label, width, height, mode, theme) {
   // Step 1 — journey.
   await page.goto('http://localhost:3000/booking', { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: 'Expand all' }).waitFor({ timeout: 90000 });
-  await page.locator('.hj-sailing').first().waitFor({ timeout: 60000 });
+  // The dates arrive after the page is live (on tablet and phone they wait in the date sheet).
+  await page.locator('.hj-sailing').first().waitFor({ state: desktop ? 'visible' : 'attached', timeout: 60000 });
   if ((await guideItems()) !== 3) problems.push(`${label}: journey step should show a 3-point map`);
   if (desktop && !(await page.locator('.hj-banner').isVisible())) problems.push('desktop: the journey step should open with its photograph banner');
   for (const [pattern, expected] of [[/3 Nights/, 4], [/4 Nights/, 5], [/7 Nights/, 8]]) {
@@ -132,8 +156,7 @@ async function walk(browser, label, width, height, mode, theme) {
     const days = await page.locator('.hj-day').count();
     if (days !== expected) problems.push(`${label}: ${pattern} showed ${days} days, expected ${expected}`);
   }
-  await page.locator('.hj-sailing').first().waitFor({ timeout: 60000 });
-  await page.locator('.hj-sailing').first().click();
+  await pickFirstDate();
   if (desktop) {
     // Choosing a date turns the calendar to that date's month.
     await page.getByRole('button', { name: /^Show all \d+ departures$/ }).click();
@@ -344,7 +367,7 @@ async function walk(browser, label, width, height, mode, theme) {
   await page.locator('.hj-phone input').fill('010 1234 5678');
   for (let i = 0; i < 5; i += 1) await nameFields.nth(i).fill(`QA Guest ${i + 1}`);
   await page.getByRole('checkbox', { name: /booking and cancellation terms/i }).check();
-  if ((await page.locator('.hj-guide__item--done').count()) !== 3) problems.push(`${label}: the details map did not tick the three finished parts`);
+  if ((await guideDone()) !== 3) problems.push(`${label}: the details map did not tick the three finished parts`);
   await shot('06-details');
 
   // Confirm: a real hold, a failed request (no email), and an immediate release.

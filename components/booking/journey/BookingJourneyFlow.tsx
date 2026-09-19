@@ -14,6 +14,23 @@ import { GuestsSuitesScreen } from "./GuestsSuites";
 import { VoyageBar, VoyageRail } from "./VoyageRail";
 import { DetailsPaymentScreen } from "./GuestDetails";
 import {
+  ActionBar,
+  DateSheet,
+  GuestsSheet,
+  IconLead,
+  IconMap,
+  IconReceipt,
+  MobileBack,
+  PlanTiles,
+  ReviewCards,
+  SectionTabs,
+  partyLine,
+  reveal,
+  useRevealOnPhone,
+  type SectionTab,
+} from "./JourneyMobile";
+import { IconBed, IconCalendar, IconCard, IconGuests } from "./icons";
+import {
   EMPTY_ARRANGEMENT,
   arrangementIssues,
   arrangementTotal,
@@ -26,6 +43,7 @@ import {
   resizeParty,
   roomsPayload,
   shortName,
+  unplacedGuests,
   type Arrangement,
 } from "./allocation";
 import { findCountry } from "@/lib/countries";
@@ -36,6 +54,8 @@ import {
   internationalPhone,
   longDate,
   money,
+  plural,
+  shortDate,
   type Attempt,
   type GuestForm,
   type Hold,
@@ -45,6 +65,7 @@ import {
 
 const PHONE = /^\+[1-9][0-9]{6,14}$/;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const COMPLETE_DETAILS = "Please complete the highlighted details.";
 
 class RequestFailed extends Error {
   constructor(message: string, readonly status: number) {
@@ -88,6 +109,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [alert, setAlert] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  /** Phone and tablet: the date or party sheet open on the journey step. */
+  const [sheet, setSheet] = useState<"dates" | "guests" | null>(null);
   const restored = useRef(false);
   /** A sailing date handed over by the cart, applied once the dates load. */
   const pendingSailingDate = useRef(start?.sailingDate ?? null);
@@ -370,7 +393,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     const found = detailsProblems();
     setErrors(found);
     if (Object.keys(found).length > 0) {
-      setAlert("Please complete the highlighted details.");
+      setAlert(COMPLETE_DETAILS);
       return;
     }
     if (issues.length > 0) {
@@ -477,6 +500,83 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     && form.countryCode && PHONE.test(phoneToSend));
   const namesDone = guests.every(guest => (names[guest.id] ?? "").trim());
 
+  /* ---------- phone and tablet: the step map as tabs, the summary cards and the bar ---------- */
+
+  // On a small screen an alert is far above the bar the guest pressed. A missing
+  // field is shown by the bar itself (see the details bar below), not the alert.
+  useRevealOnPhone(".hj-alert", alert === COMPLETE_DETAILS ? null : alert);
+  const revealMissingField = () =>
+    window.requestAnimationFrame(() =>
+      window.requestAnimationFrame(() => reveal(document.querySelector(".hj-field--invalid, .hj-details .hj-error"), "center")),
+    );
+
+  /** The lowest open cabin rate: for the chosen sailing, or across the dates on offer. */
+  const fromCents = useMemo(() => {
+    const pool = sailing ? [sailing] : sailings;
+    const rates = pool.flatMap(entry => entry.types.filter(type => type.availableCabins > 0).map(type => type.priceCents));
+    return rates.length > 0 ? Math.min(...rates) : null;
+  }, [sailing, sailings]);
+  const waitingCount = unplacedGuests(arrangement, guests).length;
+  const namedCount = guests.filter(guest => (names[guest.id] ?? "").trim()).length;
+  const methodLabel = form.paymentMethod === "BANK_TRANSFER" ? "Bank transfer" : "Card";
+
+  const mapTabs: SectionTab[] =
+    view === 1
+      ? [
+          { id: "hj-m-route", label: "Voyage", icon: <IconMap />, status: plural(voyage.nights, "night"), done: true },
+          { id: "hj-m-dates", label: "Date", icon: <IconCalendar />, status: sailing ? shortDate(sailing.departureTime) : "To choose", done: Boolean(scheduleId) },
+          { id: "hj-m-summary", label: "Review", icon: <IconReceipt />, status: "Nothing held yet", done: false },
+        ]
+      : view === 2
+        ? [
+            { id: "hj-party", label: "Guests", icon: <IconGuests />, status: partyLine(adults, children).replace(" · ", ", "), done: guests.length > 0 },
+            {
+              id: "hj-cabins",
+              label: "Cabins",
+              icon: <IconBed />,
+              status: issues.length === 0 ? plural(cabins.length, "cabin") : waitingCount > 0 ? `${guests.length - waitingCount} of ${guests.length} placed` : "Check a cabin",
+              done: issues.length === 0,
+            },
+            { id: "hj-m-summary", label: "Review", icon: <IconReceipt />, status: "Nothing held yet", done: false },
+          ]
+        : [
+            { id: "hj-m-lead", label: "Lead guest", icon: <IconLead />, status: leadDone ? "Complete" : "Your details", done: leadDone },
+            { id: "hj-m-passengers", label: "Passengers", icon: <IconGuests />, status: `${namedCount} of ${guests.length} named`, done: namesDone },
+            { id: "hj-m-payment", label: "Payment", icon: <IconCard />, status: form.termsAccepted ? `${methodLabel} · terms` : methodLabel, done: form.termsAccepted },
+            { id: "hj-m-summary", label: "Review", icon: <IconReceipt />, status: "Then confirm", done: false },
+          ];
+
+  const summary = (
+    <ReviewCards
+      id="hj-m-summary"
+      title={view === 3 ? "Review your voyage" : "Your voyage so far"}
+      lede={view === 3 ? "Check everything once more, then confirm your request below." : "Nothing is held until you send your request."}
+      duration={duration}
+      sailing={sailing}
+      adults={adults}
+      childCount={children}
+      cabins={cabins}
+      totalCents={totalCents}
+      step={view}
+      onJump={jump}
+      payment={
+        view === 3
+          ? {
+              label: form.paymentMethod === "BANK_TRANSFER" ? "Bank transfer" : "Visa / card payment",
+              sub: "Invoice and payment instructions follow by email.",
+              onEdit: () => reveal("#hj-m-payment"),
+            }
+          : null
+      }
+    />
+  );
+
+  const partySub = `${partyLine(adults, children)} · ${plural(voyage.nights, "night")}`;
+  const totalLabel = cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total";
+  /** The bar's "Place guests" / "Check cabins": to the cabins, or to the cabin that needs an adult. */
+  const showWarning = () =>
+    waitingCount > 0 ? reveal("#hj-cabins") : reveal(document.querySelector(".hj-cabin-card--warn") ?? "#hj-cabins", "center");
+
   const scene = { "--hj-scene": `url("${voyage.image}")` } as CSSProperties;
   const rail = (
     <VoyageRail
@@ -512,7 +612,9 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             quote="A slower, richer way to see Egypt."
           />
         ) : null}
+        <MobileBack step={view} onJump={jump} />
         <JourneyProgress step={view} onJump={jump} />
+        <SectionTabs items={mapTabs} />
 
         {view === 1 ? (
           <div className="hj-stage">
@@ -527,8 +629,19 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
                 ]}
               />
 
-              <span className="hj-step-label">Choose your itinerary</span>
+              <span className="hj-step-label" id="hj-m-route">Choose your itinerary</span>
               <VoyagePicker value={duration} onChange={next => { setDuration(next); setScheduleId(""); }} />
+              <div className="hj-mplan" id="hj-m-dates">
+                <span className="hj-step-label">Your departure</span>
+                <PlanTiles
+                  sailing={sailing}
+                  loading={loadingSailings}
+                  adults={adults}
+                  childCount={children}
+                  onDates={() => setSheet("dates")}
+                  onGuests={() => setSheet("guests")}
+                />
+              </div>
 
               <div className="hj-plan">
                 <SailingCalendar
@@ -561,6 +674,34 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               {!scheduleId ? <p className="hj-note">Choose a sailing date to continue.</p> : null}
             </section>
             {rail}
+            {summary}
+            <ActionBar
+              label={sailing ? `Departs ${shortDate(sailing.departureTime)}` : voyage.title}
+              amount={fromCents === null ? (loadingSailings ? "Loading dates…" : "No open dates") : `From ${money(fromCents)}`}
+              sub={fromCents === null ? voyage.route : "per cabin, entire voyage"}
+              action={scheduleId ? "Continue" : "Choose a date"}
+              ariaLabel={scheduleId ? "Continue to guests & suites" : "Choose a departure date"}
+              busy={busy}
+              busyLabel="Checking…"
+              onAction={() => (scheduleId ? void enterGuestsSuites() : setSheet("dates"))}
+            />
+            <DateSheet
+              open={sheet === "dates"}
+              onClose={() => setSheet(null)}
+              sailings={sailings}
+              loading={loadingSailings}
+              departureDay={voyage.departureDay.replace(/s$/, "")}
+              voyageTitle={`${voyage.title} · ${voyage.route}`}
+              selectedId={scheduleId}
+              onApply={setScheduleId}
+            />
+            <GuestsSheet
+              open={sheet === "guests"}
+              onClose={() => setSheet(null)}
+              adults={adults}
+              childCount={children}
+              onCounts={changeCounts}
+            />
           </div>
         ) : null}
 
@@ -594,7 +735,20 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
                   ]}
                 />
               }
-              rail={rail}
+              rail={<>{rail}{summary}</>}
+              mobileBar={
+                <ActionBar
+                  label={totalLabel}
+                  amount={totalCents === null ? "No cabin yet" : money(totalCents)}
+                  sub={partySub}
+                  note={issues.length > 0 && waitingCount === 0 ? issues[0] : null}
+                  action={issues.length === 0 ? "Continue" : waitingCount > 0 ? "Place guests" : "Check cabins"}
+                  ariaLabel={issues.length === 0 ? "Continue to details" : undefined}
+                  busy={busy}
+                  busyLabel="Checking…"
+                  onAction={() => (issues.length === 0 ? void continueToDetails() : showWarning())}
+                />
+              }
             />
           </div>
         ) : null}
@@ -640,8 +794,21 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
                 onBack={() => jump(2)}
                 onConfirm={() => void confirmRequest()}
               />
+              {summary}
             </section>
             {rail}
+            <ActionBar
+              label={totalLabel}
+              amount={totalCents === null ? "—" : money(totalCents)}
+              sub={partySub}
+              action="Confirm request"
+              busy={busy}
+              busyLabel="Sending your request…"
+              onAction={() => {
+                void confirmRequest();
+                revealMissingField();
+              }}
+            />
           </div>
         ) : null}
       </div>

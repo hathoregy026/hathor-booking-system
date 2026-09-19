@@ -1,0 +1,1160 @@
+/* =====================================================================
+   Hathor booking journey — PHONE AND TABLET (up to 1080px).
+
+   Loaded after booking-journey.css. The desktop journey (1081px and up) is
+   that file's own layout; the only rules here that reach it are the base
+   ones that hide the phone and tablet pieces.
+
+   Every step reads the same way, top to bottom:
+     back · progress · the step's map as tabs · title · cards ·
+     a bar with the total and the one next action, above the site's dock.
+   Choices that need focus (the date, the party) open as bottom sheets.
+   The page scrolls as one: nothing inside it scrolls on its own, except
+   the swipe row of voyages and a sheet taller than the screen.
+   ===================================================================== */
+
+.hj-mback,
+.hj-mtabs,
+.hj-mplan,
+.hj-mbar,
+.hj-mreview,
+.hj-voyages__dots { display: none; }
+
+@media (max-width: 1080px) {
+  .hj {
+    --hj-card: #fffdf8;
+    --hj-r-card: 14px;
+    --hj-r-ctl: 12px;
+    --hj-fpad: 1rem;
+    /* The site's fixed header, and the sticky map under it. */
+    --hj-head: 76px;
+    --hj-tabs-h: 4.4rem;
+    /* Measured by the bar (JourneyMobile.tsx); the dock's own height otherwise. */
+    --hj-bottom: var(--hj-dock, var(--hathor-phone-dock-h, 0px));
+    --hj-card-shadow: 0 1px 2px rgba(52, 38, 14, 0.04), 0 10px 26px rgba(52, 38, 14, 0.05);
+    --hj-tile-w: 3.35rem;
+    --hj-tile-h: 3.05rem;
+    min-height: 0;
+    padding: calc(var(--hj-head) - 3.5rem + 0.9rem) 0 0;
+  }
+
+  .hj-folio {
+    padding: 0.35rem var(--hj-fpad) 0;
+    scroll-margin-top: calc(var(--hj-head) + 0.6rem);
+  }
+
+  .hj-stage,
+  .hj-stage--suites {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+  }
+
+  /* The phone pieces, and what they replace. */
+  .hj-mback { display: flex; }
+  .hj-mtabs { display: grid; }
+  .hj-mplan,
+  .hj-mreview,
+  .hj-mbar { display: block; }
+  .hj-rail,
+  .hj--step-1 .hj-guide,
+  .hj--step-2 .hj-guide,
+  .hj--step-3 .hj-guide,
+  .hj-panel__head .hj-panel__kicker { display: none; }
+
+  /* Parts a tab scrolls to stop below the header and the sticky map. */
+  .hj [id^="hj-m-"],
+  .hj #hj-party,
+  .hj #hj-cabins {
+    scroll-margin-top: calc(var(--hj-head) + var(--hj-tabs-h) + 1.25rem);
+  }
+
+  /* ---------- shared surfaces ---------- */
+
+  .hj-voyage,
+  .hj-mtile,
+  .hj-itinerary,
+  .hj-party,
+  .hj-rooms > .hj-cabin-card,
+  .hj-cabin-more,
+  .hj-lead,
+  .hj-cabinguests,
+  .hj-extras,
+  .hj-pay__col,
+  .hj-mcard {
+    background: var(--hj-card);
+    border: 1px solid var(--hj-line-soft);
+    border-radius: var(--hj-r-card);
+    box-shadow: var(--hj-card-shadow);
+  }
+
+  .hj .hj-step-label {
+    margin: 2rem 0 0.8rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+  }
+
+  .hj p.hj-alert {
+    margin: 0 0 1.1rem;
+    padding: 0.8rem 0.95rem;
+    border-radius: var(--hj-r-ctl);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .hj-btn {
+    border-radius: 999px;
+    min-height: 3rem;
+  }
+
+  /* The site gives every `__title` class its swash face and every p its own
+     size; inside the journey these are labels and serif headings. */
+  .hj .hj-day__title,
+  .hj .hj-cabinguests__title,
+  .hj p.hj-pay__title { font-family: var(--hj-body); }
+  .hj .hj-cal__title,
+  .hj .hj-party__title,
+  .hj p.hj-arrange__title { font-family: var(--hj-display); }
+  .hj p.hj-itinerary__route {
+    font-size: 0.64rem;
+    line-height: 1.4;
+    letter-spacing: 0.2em;
+    font-weight: 400;
+  }
+  .hj p.hj-panel__kicker,
+  .hj p.hj-cabinguests__title { font-size: 0.6rem; line-height: 1.4; letter-spacing: 0.18em; }
+  .hj p.hj-error { margin: 0.35rem 0 0; font-size: 0.76rem; line-height: 1.4; letter-spacing: normal; font-weight: 400; }
+
+  /* ---------- back, progress, the step's map ---------- */
+
+  .hj-mback {
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: -0.1rem 0 0.35rem;
+  }
+  .hj .hj-mback__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 2.5rem;
+    margin-left: -0.45rem;
+    padding: 0 0.6rem 0 0.2rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--hj-ink);
+    font-size: 0.84rem;
+    cursor: pointer;
+  }
+  .hj-mback__btn .hj-icon { width: 1.3rem; height: 1.3rem; color: var(--hj-gold-deep); stroke-width: 1.6; }
+  .hj-mback__of {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--hj-gold-deep);
+  }
+
+  .hj-progress {
+    --hj-pstep: 4.5rem;
+    --hj-pdot: 1.8rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0.25rem 0 1.05rem;
+    overflow: visible;
+  }
+  .hj-progress__step {
+    flex: none;
+    width: var(--hj-pstep);
+    min-width: 0;
+    gap: 0.42rem;
+  }
+  .hj-progress__dot {
+    width: var(--hj-pdot);
+    height: var(--hj-pdot);
+    font-size: 0.74rem;
+  }
+  .hj-progress__line {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0.4rem;
+    margin: calc(var(--hj-pdot) / 2) calc((var(--hj-pdot) - var(--hj-pstep)) / 2 + 0.3rem) 0;
+  }
+  .hj-progress__line:has(+ .hj-progress__step--done),
+  .hj-progress__line:has(+ .hj-progress__step--on) { background: var(--hj-gold); }
+  .hj .hj-progress__name {
+    max-width: var(--hj-pstep);
+    font-size: 0.66rem;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+  }
+  .booking-page .hj button.hj-progress__step { min-height: 0; }
+
+  .hj-mtabs {
+    grid-template-columns: repeat(var(--hj-mtabs-n, 4), minmax(0, 1fr));
+    z-index: 26;
+    margin: 0 0 1.6rem;
+    padding: 0.3rem;
+    background: var(--hj-card);
+    border: 1px solid var(--hj-line-soft);
+    border-radius: 16px;
+    /* A paper margin round the map hides the page passing under it. */
+    box-shadow: 0 0 0 0.55rem var(--hj-paper), 0 14px 22px -14px rgba(52, 38, 14, 0.25);
+  }
+  .hj .hj-mtab {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.14rem;
+    min-width: 0;
+    min-height: 3.75rem;
+    padding: 0.45rem 0.2rem 0.4rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: none;
+    color: var(--hj-ink);
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease;
+  }
+  .hj-mtab + .hj-mtab::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 22%;
+    bottom: 22%;
+    width: 1px;
+    background: var(--hj-line-soft);
+  }
+  .hj-mtab--on::before,
+  .hj-mtab--on + .hj-mtab::before { display: none; }
+  .hj .hj-mtab--on { background: var(--hj-gold-wash); border-color: var(--hj-gold); }
+  .hj-mtab__icon { position: relative; display: grid; place-items: center; color: var(--hj-gold-deep); }
+  .hj-mtab__icon .hj-icon { width: 1.3rem; height: 1.3rem; }
+  .hj-mtab__tick {
+    position: absolute;
+    top: -0.3rem;
+    right: -0.55rem;
+    display: grid;
+    place-items: center;
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 50%;
+    background: var(--hj-gold);
+    box-shadow: 0 0 0 2px var(--hj-card);
+  }
+  .hj-mtab__tick .hj-icon { width: 0.62rem; height: 0.62rem; color: #fffdf8; stroke-width: 2.4; }
+  .hj .hj-mtab__label {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .hj .hj-mtab__status {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.6rem;
+    line-height: 1.25;
+    color: var(--hj-ink-soft);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .hj .hj-mtab--now .hj-mtab__status { color: var(--hj-gold-deep); }
+  .hj .hj-mtab--on .hj-mtab__label { color: var(--hj-gold-deep); }
+
+  /* ---------- the head of each step ---------- */
+
+  .hj .hj-panel__head { margin: 0 0 1.35rem; }
+  .hj .hj-panel__head h1 {
+    font-size: clamp(1.95rem, 7.6vw, 2.45rem);
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+  }
+  .hj .hj-panel__head p {
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--hj-ink-soft);
+  }
+
+  /* ---------- 1 · Journey ---------- */
+
+  .hj--step-1 .hj-panel { display: flex; flex-direction: column; }
+  .hj--step-1 .hj-panel > .hj-step-label:first-of-type { margin-top: 0; }
+  /* Help about dates sits with the date, before the itinerary. */
+  .hj--step-1 .hj-panel > .hj-plan,
+  .hj--step-1 .hj-panel > .hj-plan ~ * { order: 2; }
+  .hj--step-1 .hj-panel > .hj-dates-help { order: 1; }
+  .hj--step-1 .hj-panel > .hj-actions,
+  .hj--step-1 .hj-panel > .hj-note,
+  .hj-plan > .hj-cal,
+  .hj-plan > .hj-sailings { display: none; }
+
+  .hj-voyage { padding: 0.55rem 0.55rem 0.95rem; border-radius: 16px; }
+  .hj-voyage--on { border-color: var(--hj-gold); background: #fffdf8; box-shadow: 0 0 0 1px var(--hj-gold) inset, var(--hj-card-shadow); }
+  .hj .hj-voyage__img {
+    height: auto;
+    aspect-ratio: 16 / 10;
+    margin-bottom: 0.85rem;
+    border-radius: 11px;
+  }
+  .hj-voyage__dot {
+    top: 1.05rem;
+    left: 1.05rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: rgba(255, 253, 248, 0.92);
+    box-shadow: 0 2px 8px rgba(28, 22, 14, 0.18);
+  }
+  .hj-voyage--on .hj-voyage__dot { background: var(--hj-gold); border-color: var(--hj-gold); }
+  .hj-voyage--on .hj-voyage__dot::after {
+    inset: auto;
+    left: 0.56rem;
+    top: 0.34rem;
+    width: 0.42rem;
+    height: 0.78rem;
+    border-radius: 0;
+    background: none;
+    border: solid #fffdf8;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .hj .hj-voyage__name { padding: 0 0.35rem; font-family: var(--hj-display); font-size: 1.28rem; line-height: 1.2; }
+  .hj .hj-voyage__meta { padding: 0 0.35rem; font-size: 0.86rem; white-space: normal; overflow: visible; width: auto; }
+  .hj .hj-voyage__caption { padding: 0 0.35rem; font-size: 0.86rem; }
+
+  .hj-mplan .hj-step-label { margin-top: 1.75rem; }
+  .hj-mtiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+  .hj .hj-mtile {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 4.3rem;
+    padding: 0.75rem 0.7rem 0.75rem 0.75rem;
+    color: var(--hj-ink);
+    text-align: left;
+    cursor: pointer;
+  }
+  .hj-mtile > .hj-icon { width: 0.95rem; height: 0.95rem; color: var(--hj-gold); }
+  .hj-mtile__icon {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--hj-gold-wash);
+    color: var(--hj-gold-deep);
+  }
+  .hj-mtile__icon .hj-icon { width: 1.15rem; height: 1.15rem; }
+  .hj-mtile__text { display: grid; gap: 0.12rem; min-width: 0; }
+  .hj .hj-mtile__label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hj-ink-soft); }
+  .hj .hj-mtile__value {
+    overflow: hidden;
+    font-family: var(--hj-display);
+    font-size: 1.04rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .hj .hj-mtile--todo { border-color: var(--hj-gold); box-shadow: 0 0 0 1px var(--hj-gold) inset, var(--hj-card-shadow); }
+  .hj .hj-mtile--todo .hj-mtile__value { color: var(--hj-gold-deep); }
+
+  .hj p.hj-dates-help {
+    margin: 0.85rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .hj-plan { display: block; margin-top: 2rem; }
+  .hj-itinerary { padding: 0.95rem 1rem 0.35rem; }
+  .hj-itinerary__top { align-items: center; margin-bottom: 0.2rem; }
+  .hj .hj-itinerary .hj-linkbtn { flex: none; min-height: 2.5rem; white-space: nowrap; }
+  .hj-day__button { grid-template-columns: 52px minmax(0, 1fr) auto; gap: 0.8rem; min-height: 64px; }
+  .hj-day__thumb { width: 52px; height: 52px; border-radius: 10px; }
+  .hj .hj-day__place { font-family: var(--hj-display); font-size: 1rem; }
+  .hj-day__body { padding: 0 0 0.9rem; }
+
+  /* ---------- the review cards ---------- */
+
+  .hj .hj-msection__title { font-family: var(--hj-display); font-size: 1.55rem; line-height: 1.15; }
+  .hj p.hj-msection__lede { margin: 0.35rem 0 1rem; font-size: 0.86rem; line-height: 1.5; color: var(--hj-ink-soft); }
+  .hj-mreview__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+  .hj-mcard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 0;
+    padding: 0.85rem 0.85rem 0.9rem;
+  }
+  .hj-mcard--wide { grid-column: 1 / -1; }
+  /* Frame and Edit on one line, the name under them: every card in a row
+     starts its name, and its facts, at the same height. */
+  .hj-mcard__top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "badge . edit" "label label label";
+    align-items: center;
+    row-gap: 0.55rem;
+  }
+  .hj-mcard__top > .hj-mcard__label { grid-area: label; }
+  .hj-mcard__top > .hj-mcard__edit { grid-area: edit; }
+  .hj-mcard__badge {
+    grid-area: badge;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.6rem;
+    height: 2.1rem;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--hj-gold-wash);
+    color: var(--hj-gold-deep);
+  }
+  .hj-mcard__badge .hj-icon { width: 1.15rem; height: 1.15rem; }
+  .hj-mcard__img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .hj .hj-mcard__label { min-width: 0; font-family: var(--hj-display); font-size: 1.06rem; line-height: 1.2; }
+  .hj .hj-mcard__top .hj-mcard__edit {
+    margin: -0.35rem -0.3rem;
+    min-width: 0;
+    min-height: 2.45rem;
+    padding: 0 0.3rem;
+    border: 0;
+    background: none;
+    color: var(--hj-gold-deep);
+    font-size: 0.74rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .hj-mcard__body { display: grid; gap: 0.15rem; min-width: 0; }
+  .hj .hj-mcard__value { font-size: 0.88rem; line-height: 1.35; color: var(--hj-ink); overflow-wrap: anywhere; }
+  .hj .hj-mcard__value--soft { color: var(--hj-ink-soft); }
+  .hj .hj-mcard__sub { font-size: 0.74rem; line-height: 1.4; color: var(--hj-ink-soft); }
+  .hj .hj-mcard__amount { font-family: var(--hj-display); font-size: 1.65rem; line-height: 1.1; color: var(--hj-gold-deep); }
+  .hj-mcard__cabin { display: grid; }
+  .hj-mcard__cabin + .hj-mcard__cabin { margin-top: 0.35rem; }
+
+  /* ---------- the bar ---------- */
+
+  .hj-mbar {
+    position: sticky;
+    bottom: var(--hj-bottom);
+    z-index: 30;
+    margin: 0 calc(-1 * var(--hj-fpad));
+    padding: 0.7rem var(--hj-fpad) 0.75rem;
+    background: rgba(251, 246, 236, 0.97);
+    border-top: 1px solid var(--hj-line);
+    box-shadow: 0 -14px 30px rgba(52, 38, 14, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .hj p.hj-mbar__note {
+    margin: 0 0 0.55rem;
+    font-size: 0.76rem;
+    line-height: 1.4;
+    color: #9b4a3d;
+  }
+  .hj-mbar__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .hj-mbar__sum { display: grid; gap: 0.06rem; min-width: 0; }
+  .hj .hj-mbar__label,
+  .hj .hj-mbar__sub,
+  .hj .hj-mbar__amount {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .hj .hj-mbar__label { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hj-ink-soft); }
+  .hj .hj-mbar__amount { font-family: var(--hj-display); font-size: 1.32rem; line-height: 1.2; color: var(--hj-ink); }
+  .hj .hj-mbar__sub { font-size: 0.72rem; line-height: 1.35; color: var(--hj-ink-soft); }
+  .hj .hj-mbar__go {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-width: 8.5rem;
+    min-height: 3.1rem;
+    padding: 0 1.3rem 0 1.45rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--hj-gold);
+    color: #fffdf8;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(141, 107, 50, 0.26);
+    transition: background 0.18s ease;
+  }
+  .hj-mbar__go:hover:not([disabled]) { background: var(--hj-gold-deep); }
+  .hj-mbar__go[disabled] { opacity: 0.6; cursor: progress; }
+  .hj-mbar__go .hj-icon { width: 1.05rem; height: 1.05rem; stroke-width: 1.7; }
+  /* While the keyboard is up the bar steps aside, keeping its place in the page. */
+  .hj:has(:is(input:not([type="checkbox"]):not([type="radio"]), textarea):focus) .hj-mbar { visibility: hidden; }
+
+  /* ---------- 2 · Guests & Suites ---------- */
+
+  .hj-stage--suites > .hj-suites-head { order: 0; }
+  .hj-stage--suites > .hj-party { order: 1; }
+  .hj-stage--suites > .hj-suites { order: 2; }
+  .hj-stage--suites > .hj-mreview { order: 3; }
+  .hj-stage--suites > .hj-tray { order: 4; }
+  .hj-suites-head .hj-panel__head { margin-bottom: 0; }
+
+  .hj-party { padding: 1.05rem 1rem 1.1rem; }
+  .hj .hj-party__title { font-size: 1.4rem; }
+  .hj .hj-party__lede { margin: 0.35rem 0 0.2rem; font-size: 0.8rem; }
+  .hj-party .hj-counters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+  .hj-party .hj-counter {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.55rem;
+    padding: 0.7rem 0.75rem 0.75rem;
+    border: 1px solid var(--hj-line-soft);
+    border-radius: var(--hj-r-ctl);
+    background: #fff;
+  }
+  .hj-party .hj-counter__ctrl { justify-content: space-between; }
+  .hj-counter__btn { width: 2.4rem; height: 2.4rem; font-size: 1.1rem; }
+  .hj .hj-counter__value { font-size: 1.3rem; }
+  .hj .hj-counter__value,
+  .hj .hj-mbar__amount,
+  .hj .hj-mcard__amount,
+  .hj .hj-mtile__value,
+  .hj .hj-room__amount,
+  .hj-sheet .hj-counter__value,
+  .hj-sheet .hj-sailing__when,
+  .hj-sheet .hj-cal__title { font-variant-numeric: lining-nums; }
+  .hj .hj-party__notice { margin-top: 0.7rem; }
+  .hj .hj-party__arrange {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.9rem;
+    margin-top: 0.55rem;
+    font-size: 0.66rem;
+  }
+  .hj .hj-party__arrange .hj-party__wand { display: inline-block; width: 1rem; height: 1rem; }
+  .hj-arrange { border-radius: var(--hj-r-ctl); }
+  .hj-arrange__type { border-radius: 10px; }
+
+  /* Tick boxes in the journey's own gold, not the browser's. */
+  .hj .hj-arrange__type input,
+  .hj .hj-terms input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0.08rem 0 0;
+    border: 1.5px solid var(--hj-gold);
+    border-radius: 5px;
+    background: #fff no-repeat center / 0.8rem;
+    cursor: pointer;
+  }
+  .hj .hj-arrange__type input:checked,
+  .hj .hj-terms input[type="checkbox"]:checked {
+    background-color: var(--hj-gold);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m5 12.5 4.2 4L19 7' fill='none' stroke='%23fffdf8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  .hj .hj-arrange__type input:disabled { border-color: var(--hj-line); background-color: #f3ede2; cursor: not-allowed; }
+  .hj .hj-arrange__type input:focus-visible,
+  .hj .hj-terms input[type="checkbox"]:focus-visible { outline: 2px solid var(--hj-gold-deep); outline-offset: 2px; }
+  .hj p.hj-note-box { margin-top: 0.85rem; border-radius: 10px; }
+
+  /* Cabin types as tabs under a hairline, scrolling sideways only if they must. */
+  .hj-suites { padding: 0; }
+  .hj-filter { margin: 0 0 1rem; padding: 0; border-bottom: 0; }
+  .hj-filter__pills {
+    gap: 0.2rem;
+    margin: 0 calc(-1 * var(--hj-fpad));
+    padding: 0 2.25rem 0 var(--hj-fpad);
+    border-bottom: 1px solid var(--hj-line-soft);
+    /* The last tab fades at the edge: there is more to swipe to. */
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.25rem), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 2.25rem), transparent);
+  }
+  .hj .hj-filter__pill {
+    min-height: 2.9rem;
+    margin-bottom: -1px;
+    padding: 0.4rem 0.55rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: none;
+    color: var(--hj-ink-soft);
+    font-size: 0.82rem;
+    gap: 0.25rem;
+  }
+  .hj .hj-filter__pill[aria-pressed="true"] { background: none; color: var(--hj-gold-deep); border-bottom-color: var(--hj-gold); font-weight: 500; }
+  .hj .hj-filter__count,
+  .hj .hj-filter__pill[aria-pressed="true"] .hj-filter__count {
+    display: inline;
+    min-width: 0;
+    height: auto;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font-size: 0.78rem;
+  }
+  .hj-filter__count::before { content: "("; }
+  .hj-filter__count::after { content: ")"; }
+  .hj p.hj-filter__shown { margin-top: 0.55rem; }
+
+  /* The first cabin of each type: a full card with its photograph. */
+  .hj-rooms { gap: 1rem; }
+  .hj-rooms > .hj-cabin-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .hj-rooms > .hj-cabin-card--used { border-color: var(--hj-gold); box-shadow: 0 0 0 1px var(--hj-gold) inset, var(--hj-card-shadow); }
+  .hj-rooms > .hj-cabin-card .hj-cabin-card__media { height: auto; min-height: 0; aspect-ratio: 16 / 10; }
+  .hj-rooms > .hj-cabin-card .hj-cabin-card__main { gap: 0.7rem; padding: 0.95rem 1rem 1rem; }
+  .hj .hj-rooms > .hj-cabin-card .hj-cabin-card__top { flex-direction: row; align-items: flex-start; gap: 0.75rem; }
+  .hj .hj-rooms > .hj-cabin-card .hj-cabin-card__price { justify-items: end; text-align: right; }
+  .hj .hj-rooms > .hj-cabin-card .hj-room__name { font-size: 1.32rem; }
+  .hj .hj-rooms > .hj-cabin-card .hj-room__amount { font-size: 1.22rem; }
+  .hj-room__save { top: 0.6rem; right: 0.6rem; gap: 0.4rem; }
+  .hj .hj-room__save .hathor-fav--card,
+  .hj .hj-room__save .hathor-atv--card { --hathor-fav-size: 2.35rem; --hathor-fav-icon: 1.05rem; --atv-size: 2.35rem; --atv-icon: 1rem; }
+  .hj .hj-cabin-card__no { font-size: 0.6rem; }
+  .hj .hj-room__facts { gap: 0.4rem; }
+  .hj .hj-room__facts > span {
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--hj-line-soft);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.74rem;
+  }
+  .hj .hj-room__facts > .hj-limit { border-color: var(--hj-gold); }
+  .hj .hj-room__link { margin-left: auto; font-size: 0.74rem; }
+  .hj-cabin-card__fill {
+    grid-template-columns: minmax(0, 1fr) 2.2rem;
+    grid-template-areas: "seats clear" "menus menus";
+    align-items: center;
+    gap: 0.7rem 0.6rem;
+    padding-top: 0.8rem;
+  }
+  .hj-cabin-card__seats { flex-wrap: wrap; gap: 0.4rem; }
+  .hj-cabin-card__menus { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: stretch; gap: 0.6rem; }
+  .hj .hj-cab__menu select { min-height: 2.75rem; border-radius: 10px; font-size: 0.95rem; }
+  .hj .hj-cabin-card__clear { width: 2.2rem; height: 2.2rem; border: 1px solid var(--hj-line-soft); background: #fff; }
+  .hj-cab__place span { padding: 0.55rem 1.1rem; font-size: 0.66rem; box-shadow: 0 6px 16px rgba(141, 107, 50, 0.3); }
+  /* On a tall card the "Place here" sits on the photograph, where the eye is. */
+  .hj-rooms > .hj-cabin-card > .hj-cab__place { align-items: flex-start; padding-top: calc(31.25% - 1rem); }
+
+  /* Cabins 2 and on of a type: compact rows in the "more" group. */
+  .hj-cabin-more { overflow: hidden; }
+  .hj .hj-cabin-more__toggle { min-height: 3.1rem; padding: 0.7rem 1rem; }
+  .hj-cabin-more__list .hj-cabin-card {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.65rem;
+    border-radius: 12px;
+    background: #fff;
+  }
+  .hj-cabin-more__list .hj-cabin-card__media { height: 76px; min-height: 0; align-self: start; }
+  .hj-cabin-more__list .hj-cabin-card__img { border-radius: 9px; }
+  .hj-cabin-more__list .hj-room__save { top: auto; right: auto; bottom: -2.9rem; left: 0; }
+  .hj .hj-cabin-more__list .hj-cabin-card__top { flex-direction: column; gap: 0.1rem; }
+  .hj .hj-cabin-more__list .hj-cabin-card__price { justify-items: start; text-align: left; }
+  .hj .hj-cabin-more__list .hj-room__name { font-size: 1.02rem; }
+  .hj .hj-cabin-more__list .hj-room__facts > span:not(.hj-limit) { display: none; }
+
+  /* The tray: guests still to place, then the bar — one unit above the dock. */
+  .hj-stage--suites > .hj-tray {
+    display: grid;
+    gap: 0.55rem;
+    position: sticky;
+    bottom: var(--hj-bottom);
+    z-index: 30;
+    margin: 0 calc(-1 * var(--hj-fpad));
+    padding: 0.7rem var(--hj-fpad) 0.75rem;
+    border: 0;
+    border-top: 1px solid var(--hj-line);
+    border-radius: 0;
+    background: rgba(251, 246, 236, 0.97);
+    box-shadow: 0 -14px 30px rgba(52, 38, 14, 0.1);
+  }
+  .hj-tray .hj-party__actions { display: none; }
+  .hj-tray .hj-mbar {
+    position: static;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .hj-tray--placing .hj-mbar { padding-top: 0.6rem; border-top: 1px solid var(--hj-line-soft); }
+  .hj-tray:not(.hj-tray--placing) .hj-pool--tray { display: none; }
+  .hj-pool--tray { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.75rem; }
+  .hj-pool--tray .hj-pool__label { margin: 0; }
+  .hj-pool--tray .hj-pool__tiles { flex: 1 1 auto; min-width: 0; gap: 0.4rem; }
+  .hj-pool--tray .hj-linkbtn { flex-basis: 100%; margin: 0; padding: 0.2rem 0; }
+  .hj .hj-tray__hint--how { color: var(--hj-ink-soft); }
+  .hj:has(:is(input:not([type="checkbox"]):not([type="radio"]), textarea):focus) .hj-tray { visibility: hidden; }
+
+  /* ---------- 3 · Details & Payment ---------- */
+
+  .hj-details { display: block; }
+  .hj-details > section > .hj-step-label:first-child { margin-top: 0; }
+  .hj-lead { display: block; padding: 1rem; }
+  .hj-lead .hj-grid2 { gap: 0.7rem; }
+  .hj-names { display: grid; gap: 0.65rem; }
+  .hj-cabinguests { padding: 0.9rem 1rem 1rem; }
+  .hj-cabinguests + .hj-cabinguests { margin-top: 0; }
+  .hj p.hj-cabinguests__title { margin-bottom: 0.65rem; }
+  .hj-extras { display: block; margin-top: 1rem; padding: 1rem; }
+  .hj-extras > .hj-field:first-child { margin-top: 0 !important; }
+  .hj-field input,
+  .hj-field select,
+  .hj-field textarea { min-height: 48px; border-radius: 10px; font-size: 16px; }
+  .hj-phone__code { min-height: 48px; border-radius: 10px 0 0 10px; }
+  .hj-field .hj-phone input { border-radius: 0 10px 10px 0; }
+
+  .hj-pay { margin-top: 2rem; }
+  .hj .hj-pay__title { font-size: 0.64rem; letter-spacing: 0.2em; margin: 0 0 0.45rem; }
+  .hj .hj-pay__lede { margin-bottom: 0.9rem; }
+  .hj-pay > div:has(> .hj-choice) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem !important; }
+  .hj .hj-choice {
+    position: relative;
+    display: block;
+    min-height: 0;
+    padding: 0.95rem 0.9rem 1rem;
+    border-radius: var(--hj-r-card);
+    background: var(--hj-card);
+    box-shadow: var(--hj-card-shadow);
+  }
+  .hj .hj-choice--on { border-color: var(--hj-gold); background: #fffaf0; box-shadow: 0 0 0 1px var(--hj-gold) inset, var(--hj-card-shadow); }
+  .hj .hj-choice input { position: absolute; top: 0.85rem; right: 0.85rem; width: 1.25rem; height: 1.25rem; margin: 0; }
+  .hj .hj-choice strong {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.55rem;
+    padding-right: 1.6rem;
+    font-family: var(--hj-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--hj-ink);
+  }
+  .hj .hj-choice strong .hj-icon { width: 1.5rem; height: 1.5rem; color: var(--hj-gold-deep); }
+  .hj .hj-choice > span > span { margin-top: 0.45rem; font-size: 0.76rem; line-height: 1.45; }
+
+  .hj-pay__pair { display: grid; gap: 0.65rem; margin-top: 1.25rem; }
+  .hj-pay__col { display: block; padding: 1rem; }
+  .hj .hj-pay__col > .hj-pay__title,
+  .hj .hj-pay__col > .hj-step-label { margin: 0 0 0.8rem !important; }
+  .hj p.hj-ledger__note { font-size: 0.78rem; }
+
+  .hj .hj-pay > .hj-step-label { margin-top: 1.5rem; }
+  .hj .hj-terms {
+    display: flex;
+    gap: 0.7rem;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid var(--hj-line-soft);
+    border-radius: var(--hj-r-ctl);
+    background: var(--hj-card);
+    font-size: 0.84rem;
+  }
+  .hj .hj-terms.hj-field--invalid { border-color: #b4675c; }
+  .hj .hj-terms input { flex: none; width: 1.25rem; height: 1.25rem; margin-top: 0.1rem; }
+  .hj-details > .hj-actions { display: none; }
+  .hj-details > .hj-note { margin-top: 1rem; }
+  .hj--step-3 .hj-panel > .hj-mreview { margin-top: 2.25rem; }
+
+  /* ---------- 4 · Request sent ---------- */
+
+  .hj--step-4 .hj-folio { padding-bottom: 2rem; }
+  .hj--step-4 .hj-stage { gap: 1rem; }
+  /* The voyage's photograph, with the first card rising over it like a sheet. */
+  .hj--step-4 .hj-stage--success::before {
+    content: "";
+    display: block;
+    aspect-ratio: 16 / 9;
+    margin: 0 calc(-1 * var(--hj-fpad)) -3.25rem;
+    background: var(--hj-scene) center / cover no-repeat;
+  }
+  .hj--step-4 .hj-stage > .hj-panel {
+    position: relative;
+    padding: 1.35rem 1.15rem 1.4rem;
+    background: var(--hj-card);
+    border: 1px solid var(--hj-line-soft);
+    border-radius: 18px;
+    box-shadow: var(--hj-card-shadow);
+  }
+  .hj--step-4 .hj-stage--success > .hj-panel:first-of-type { border-radius: 22px 22px 18px 18px; box-shadow: 0 -12px 30px rgba(28, 22, 14, 0.14); }
+  .hj--step-4 .hj-guide { margin: 0.2rem 0 1.25rem; border-radius: var(--hj-r-ctl); }
+  .hj--step-4 .hj-sent {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    text-align: center;
+  }
+  .hj--step-4 .hj-sent__mark { width: 2.6rem; height: 2.6rem; font-size: 1.1rem; }
+  .hj--step-4 .hj-sent strong { display: block; font-family: var(--hj-display); font-size: 1.35rem; font-weight: 500; }
+  .hj--step-4 .hj-sent .hj-ledger__note { display: block; }
+  .hj--step-4 .hj-guide { background: var(--hj-paper); }
+  .hj--step-4 .hj-guide__label { background: var(--hj-paper); }
+  .hj--step-4 .hj-stage--success > .hj-panel:first-of-type > h1,
+  .hj--step-4 .hj-stage--success > .hj-panel:first-of-type > h1 + p.hj-ledger__note { text-align: center; }
+  .hj--step-4 .hj-ref {
+    margin: 1.1rem 0;
+    padding: 0.95rem 1rem;
+    border: 1px dashed var(--hj-line);
+    border-radius: var(--hj-r-ctl);
+    background: #fffaf0;
+    text-align: center;
+  }
+  .hj .hj-ref__value { font-family: var(--hj-display); font-size: 1.55rem; letter-spacing: 0.04em; font-variant-numeric: lining-nums; }
+  .hj p.hj-contact-line { font-size: 0.86rem; line-height: 1.5; letter-spacing: normal; font-weight: 400; }
+  .hj--step-4 .hj-ledger__note { font-size: 0.8rem; line-height: 1.55; }
+  .hj--step-4 .hj-timeline { gap: 0.95rem; }
+  .hj--step-4 .hj-summary-thumbs { grid-template-columns: 64px minmax(0, 1fr); padding: 0.7rem 0; }
+  .hj--step-4 .hj-summary-thumbs img { width: 64px; height: 48px; border-radius: 8px; }
+  .hj--step-4 .hj-summary-thumbs > .hj-rail__icon { justify-self: center; margin: 0; }
+  .hj--step-4 .hj-summary-thumbs > .hj-rail__icon .hj-icon { width: 1.3rem; height: 1.3rem; }
+  .hj--step-4 .hj-actions { flex-direction: column-reverse; align-items: stretch; gap: 0.6rem; }
+  .hj--step-4 .hj-actions .hj-btn { width: 100%; }
+  /* The site's link colour (day and night) outranks the button's own. */
+  .hj a.hj-btn:not(#_) { color: #fffdf8; }
+  .hj a.hj-btn.hj-btn--quiet:not(#_) { color: var(--hj-gold-deep); }
+  .hj--step-4 .hj-stage--wide > .hj-panel .hj-actions { flex-direction: column; }
+}
+
+/* ---------- phone ---------- */
+
+@media (max-width: 600px) {
+  .hj { background: var(--hj-paper); }
+  .hj::before,
+  .hj::after { display: none; }
+  .hj-folio {
+    max-width: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  /* The voyages: a swipe row that shows the next card's edge, with dots. */
+  .hj .hj-voyages {
+    display: flex;
+    gap: 0.75rem;
+    margin: 0 calc(-1 * var(--hj-fpad));
+    padding: 0.2rem var(--hj-fpad) 0.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--hj-fpad);
+    scrollbar-width: none;
+  }
+  .hj .hj-voyages::-webkit-scrollbar { display: none; }
+  .hj .hj-voyage {
+    flex: 0 0 min(80%, 20rem);
+    align-items: stretch;
+    text-align: left;
+    scroll-snap-align: start;
+  }
+  .hj-voyages__dots { display: flex; justify-content: center; gap: 0.1rem; margin-top: 0.2rem; }
+  .hj .hj-voyages__dots .hj-voyages__pip {
+    min-width: 0;
+    width: 1.35rem;
+    height: 1.5rem;
+    min-height: 0;
+    padding: 0.52rem 0.4rem;
+    border: 0;
+    background: var(--hj-line) content-box;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: width 0.2s ease, background-color 0.2s ease;
+  }
+  .hj .hj-voyages__dots .hj-voyages__pip--on { width: 2.1rem; background-color: var(--hj-gold); }
+
+  .hj-grid2,
+  .hj-grid3 { grid-template-columns: minmax(0, 1fr); }
+  /* First and last name stay side by side. */
+  .hj-lead > .hj-grid2:first-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 400px) {
+  .hj-mtile > .hj-icon { display: none; }
+  .hj .hj-mtile { grid-template-columns: auto minmax(0, 1fr); padding-right: 0.6rem; }
+  .hj .hj-mtile__value { font-size: 0.98rem; }
+  .hj-pay > div:has(> .hj-choice) { grid-template-columns: minmax(0, 1fr); }
+  .hj .hj-choice strong { flex-direction: row; align-items: center; }
+  .hj-mreview__grid { gap: 0.55rem; }
+  .hj-mcard { padding: 0.75rem 0.7rem 0.8rem; }
+}
+
+/* ---------- tablet ---------- */
+
+@media (min-width: 601px) and (max-width: 1080px) {
+  .hj {
+    --hj-fpad: clamp(1.5rem, 4vw, 2.25rem);
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  .hj-folio {
+    max-width: 860px;
+    padding-top: 1rem;
+    border-radius: 22px 22px 0 0;
+  }
+  .hj-progress { --hj-pstep: 6.5rem; }
+  .hj .hj-progress__name { font-size: 0.72rem; }
+  .hj-mtabs { max-width: 40rem; margin-left: auto; margin-right: auto; }
+  .hj .hj-panel__head h1 { font-size: 2.6rem; }
+
+  .hj .hj-voyages { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; }
+  .hj .hj-voyage__name { font-size: 1.15rem; }
+
+  .hj-mreview__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hj-mreview__grid > .hj-mcard--wide { grid-column: auto; }
+
+  /* Cabin cards sit sideways: the photograph beside what the cabin offers. */
+  .hj-rooms > .hj-cabin-card { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+  .hj-rooms > .hj-cabin-card .hj-cabin-card__media { aspect-ratio: auto; min-height: 15rem; }
+  .hj-rooms > .hj-cabin-card > .hj-cab__place { align-items: center; padding-top: 0; }
+
+  .hj-pay__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+
+  .hj--step-4 .hj-stage--success::before { aspect-ratio: 21 / 9; }
+
+  /* Wide enough for each count to sit beside its name. */
+  .hj-party .hj-counter { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .hj-party .hj-counter__ctrl { justify-content: flex-end; gap: 0.75rem; }
+}
+
+/* Sticky map: only where the screen is tall enough to spare the room. */
+@media (max-width: 1080px) and (min-height: 700px) {
+  .hj-mtabs { position: sticky; top: calc(var(--hj-head) + 0.55rem); }
+}
+
+@media (max-width: 1080px) and (prefers-reduced-motion: reduce) {
+  .hj-mtab,
+  .hj-mbar__go,
+  .hj-voyages__pip { transition: none; }
+  .hj .hj-voyages { scroll-behavior: auto; }
+}
+
+/* Night mode greys p and span copy for dark pages; the journey stays ivory. */
+@media (max-width: 1080px) {
+  html[data-public-theme="night"] .public-site .hj :is(.hj-mbar__amount, .hj-mcard__value, .hj-mtile__value, .hj-msection__title, .hj-mcard__label, .hj-mtab__label) { color: var(--hj-ink); }
+  html[data-public-theme="night"] .public-site .hj :is(.hj-mcard__amount) { color: var(--hj-gold-deep); }
+  html[data-public-theme="night"] .public-site .hj p.hj-mbar__note { color: #9b4a3d; }
+  html[data-public-theme="night"] .public-site .hj p:is(.hj-msection__lede, .hj-dates-help) { color: var(--hj-ink-soft); }
+}
+
+/* =====================================================================
+   Bottom sheet (portalled to <body>, outside .hj, so it carries its own
+   tokens; the fonts are copied onto it when it opens).
+   ===================================================================== */
+
+.hj-sheet {
+  --hj-paper: #f7f1e6;
+  --hj-card: #fffdf8;
+  --hj-ink: #2c261c;
+  --hj-ink-soft: #7a7164;
+  --hj-line: rgba(154, 122, 70, 0.28);
+  --hj-line-soft: rgba(154, 122, 70, 0.16);
+  --hj-gold: #b08a4a;
+  --hj-gold-deep: #8d6b32;
+  --hj-gold-wash: rgba(176, 138, 74, 0.08);
+  --hj-display: var(--font-booking-serif), "Playfair Display", Georgia, serif;
+  --hj-body: var(--font-hathor-body, "Plus Jakarta Sans"), system-ui, sans-serif;
+  --hj-radius: 2px;
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: var(--hj-body);
+  color: var(--hj-ink);
+  -webkit-font-smoothing: antialiased;
+}
+.hj-sheet :is(p, li, label, span, button, input, select, textarea, a) { font-family: var(--hj-body); }
+.hj-sheet h2 { font-family: var(--hj-display); font-weight: 500; letter-spacing: -0.018em; color: var(--hj-ink); margin: 0; }
+.hj-sheet .hj-icon { width: 1.05em; height: 1.05em; flex: none; stroke: currentColor; fill: none; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.hj-sheet button:focus-visible { outline: 2px solid var(--hj-gold); outline-offset: 2px; }
+
+.hj-sheet__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 22, 14, 0.45);
+  animation: hj-sheet-fade 0.24s ease;
+}
+.hj-sheet__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 40rem;
+  max-height: calc(100svh - 1.5rem);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--hj-paper);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -18px 50px rgba(28, 22, 14, 0.25);
+  animation: hj-sheet-rise 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.2s ease;
+}
+.hj-sheet__panel--drag { transition: none; }
+.hj-sheet__handle {
+  display: flex;
+  justify-content: center;
+  padding: 0.6rem 0 0.35rem;
+  touch-action: none;
+  cursor: grab;
+}
+.hj-sheet__grab { width: 2.6rem; height: 0.3rem; border-radius: 999px; background: rgba(44, 38, 28, 0.2); }
+.hj-sheet__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 1.25rem 0.9rem;
+  border-bottom: 1px solid var(--hj-line-soft);
+}
+.hj-sheet__title { font-size: 1.65rem; line-height: 1.15; }
+.hj-sheet__lede { display: block; margin-top: 0.3rem; font-size: 0.86rem; line-height: 1.45; color: var(--hj-ink-soft); }
+.hj-sheet__close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 1px solid var(--hj-line-soft);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--hj-ink);
+  cursor: pointer;
+}
+.hj-sheet__close .hj-icon { width: 1.15rem; height: 1.15rem; stroke-width: 1.6; }
+.hj-sheet__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1.1rem 1.25rem 1.25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.hj-sheet__foot {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.25rem 1rem;
+  border-top: 1px solid var(--hj-line-soft);
+  background: var(--hj-card);
+}
+.hj-sheet__pick { margin: 0; font-size: 0.84rem; color: var(--hj-ink-soft); text-align: center; }
+.hj-mbtn {
+  width: 100%;
+  min-height: 3.2rem;
+  padding: 0 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--hj-gold);
+  color: #fffdf8;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(141, 107, 50, 0.24);
+}
+.hj-mbtn:hover:not([disabled]) { background: var(--hj-gold-deep); }
+.hj-mbtn[disabled] { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.hj-mlink {
+  min-height: 2.4rem;
+  padding: 0 0.6rem;
+  border: 0;
+  background: none;
+  color: var(--hj-gold-deep);
+  font-size: 0.86rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* The calendar and its departures, inside the date sheet. */
+.hj-datesheet { display: grid; gap: 1.35rem; }
+.hj-datesheet .hj-cal > .hj-sailings__label { display: none; }
+.hj-datesheet .hj-cal {
+  padding: 0.9rem 0.85rem 0.8rem;
+  background: var(--hj-card);
+  border: 1px solid var(--hj-line-soft);
+  border-radius: 16px;
+}
+.hj-datesheet .hj-cal__head { margin-bottom: 0.6rem; }
+.hj-datesheet .hj-cal__title { font-family: var(--hj-display); font-size: 1.2rem; }
+.hj-datesheet .hj-cal__nav { width: 2.5rem; height: 2.5rem; font-size: 1.1rem; }
+.hj-datesheet .hj-cal__grid { gap: 2px; }
+.hj-datesheet .hj-cal__dow { font-size: 0.62rem; padding-bottom: 0.35rem; }
+.hj-datesheet .hj-cal__day { font-size: 0.92rem; }
+.hj-datesheet .hj-cal__day--open { font-weight: 600; }
+/* A tap leaves :hover behind on touch screens; the chosen day stays gold. */
+.hj-datesheet .hj-cal__day--picked,
+.hj-datesheet .hj-cal__day--picked:hover { background: var(--hj-gold); color: #fff; box-shadow: 0 6px 14px rgba(141, 107, 50, 0.3); }
+.hj-datesheet .hj-cal__legend { margin-top: 0.8rem; font-size: 0.74rem; }
+.hj-datesheet .hj-sailings__label { margin-bottom: 0.1rem; font-size: 0.64rem; letter-spacing: 0.2em; }
+.hj-datesheet .hj-sailings__list { max-height: none; overflow: visible; gap: 0.45rem; margin-top: 0.7rem; }
+.hj-datesheet .hj-sailing {
+  min-height: 3.4rem;
+  padding: 0.65rem 0.95rem;
+  border: 1px solid var(--hj-line-soft);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--hj-ink);
+}
+.hj-datesheet .hj-sailing--on { border-color: var(--hj-gold); background: #fffaf0; box-shadow: 0 0 0 1px var(--hj-gold) inset; }
+.hj-datesheet .hj-sailing__when { font-family: var(--hj-display); font-size: 1.02rem; }
+.hj-datesheet .hj-sailing__dow { font-size: 0.66rem; letter-spacing: 0.12em; }
+/* The row's chevron becomes its radio circle. */
+.hj-datesheet .hj-sailing__chev {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1.5px solid var(--hj-line);
+  border-radius: 50%;
+  font-size: 0;
+}
+.hj-datesheet .hj-sailing--on .hj-sailing__chev { border-color: var(--hj-gold); background: var(--hj-gold); box-shadow: inset 0 0 0 3px #fff; }
+.hj-datesheet .hj-sailings__note { font-size: 0.76rem; color: var(--hj-ink-soft); }
+.hj-datesheet .hj-skeleton--card { height: 290px; border-radius: 16px; }
+
+.hj-guestsheet .hj-counter { padding: 1.05rem 0; }
+.hj-guestsheet .hj-counter__label { font-size: 1.05rem; }
+.hj-guestsheet .hj-counter__hint { font-size: 0.8rem; }
+.hj-guestsheet .hj-counter__btn { width: 2.75rem; height: 2.75rem; font-size: 1.2rem; }
+.hj-guestsheet .hj-counter__value { font-family: var(--hj-display); font-size: 1.45rem; min-width: 2rem; }
+
+@media (min-width: 601px) {
+  .hj-sheet { align-items: flex-end; padding: 0 1rem; }
+  .hj-datesheet { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
+  .hj-datesheet .hj-sailings__list { margin-top: 0.55rem; }
+}
+
+@keyframes hj-sheet-rise { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes hj-sheet-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hj-sheet__scrim,
+  .hj-sheet__panel { animation: none; transition: none; }
+}

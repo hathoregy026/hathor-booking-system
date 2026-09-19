@@ -104,6 +104,7 @@ export function GuestsSuitesScreen({
   verifyCabinType,
   guide,
   rail,
+  mobileBar,
 }: {
   duration: StayDurationValue;
   sailing: Sailing;
@@ -127,6 +128,8 @@ export function GuestsSuitesScreen({
   verifyCabinType: (roomType: PhysicalRoomType) => Promise<string | null>;
   guide: ReactNode;
   rail: ReactNode;
+  /** Phone and tablet: the total and Continue, at the foot of the guests tray. */
+  mobileBar?: ReactNode;
 }) {
   const voyage = itineraryFor(duration);
   const desktop = useDesktop();
@@ -328,7 +331,14 @@ export function GuestsSuitesScreen({
                   aria-label={unavailable ? `${type.roomType}, cabin ${index + 1}, unavailable for this date` : `${type.roomType}, cabin ${index + 1}, ${inside.length} of ${capacity} guests`}
                 >
                   <div className="hj-cabin-card__media">
-                    <Image className="hj-cabin-card__img" src={visuals.cover} alt="" width={360} height={240} sizes="(max-width: 480px) 96px, 150px" />
+                    <Image
+                      className="hj-cabin-card__img"
+                      src={visuals.cover}
+                      alt=""
+                      width={720}
+                      height={480}
+                      sizes={index === 0 ? "(max-width: 600px) 92vw, (max-width: 1080px) 300px, 150px" : "(max-width: 1080px) 96px, 150px"}
+                    />
                     <div className="hj-room__save">
                       <FavoriteButton type="cabin" slug={slug} name={`${type.roomType} on the ${voyage.title} voyage`} variant="card" />
                       {unavailable ? null : (
@@ -443,7 +453,7 @@ export function GuestsSuitesScreen({
         </div>
       </section>
 
-      <section className="hj-party" aria-labelledby="hj-party-title" ref={partyRef}>
+      <section className="hj-party" id="hj-party" aria-labelledby="hj-party-title" ref={partyRef}>
         <div className="hj-party__head">
           <h2 className="hj-party__title" id="hj-party-title">Who Is Travelling</h2>
           <span className="hj-rail__ankh" aria-hidden>☥</span>
@@ -483,11 +493,16 @@ export function GuestsSuitesScreen({
         <div className="hj-party__desk">{actions(false)}</div>
       </section>
 
-      <div className="hj-tray" aria-label="Guests still to place">
+      <div className={`hj-tray${waiting.length > 0 || pickedGuest ? " hj-tray--placing" : ""}`} aria-label="Guests still to place">
         {pool("tray")}
-        {pickedGuest ? <p className="hj-tray__hint">Now tap a cabin for {guestLabel(pickedGuest)}.</p> : null}
+        {pickedGuest ? (
+          <p className="hj-tray__hint">Now tap a cabin for {guestLabel(pickedGuest)}.</p>
+        ) : waiting.length > 0 ? (
+          <p className="hj-tray__hint hj-tray__hint--how">Tap a guest, then a cabin — or drag them in.</p>
+        ) : null}
         {notice?.tone === "warn" ? <p className="hj-tray__hint hj-tray__hint--warn">{notice.text}</p> : null}
         {actions(true)}
+        {mobileBar}
       </div>
 
       {rail}

@@ -42,7 +42,7 @@ export function DetailsPaymentScreen({
   return (
     <div className="hj-details">
       <section>
-        <span className="hj-step-label">Lead guest details</span>
+        <span className="hj-step-label" id="hj-m-lead">Lead guest details</span>
         <div className="hj-lead">
           <div className="hj-grid2">
             <label className={`hj-field${errors.firstName ? " hj-field--invalid" : ""}`}>
@@ -94,7 +94,7 @@ export function DetailsPaymentScreen({
           </div>
         </div>
 
-        <span className="hj-step-label">Passenger names (as per passports)</span>
+        <span className="hj-step-label" id="hj-m-passengers">Passenger names (as per passports)</span>
         {errors.names ? <p className="hj-error" style={{ marginBottom: "0.5rem" }}>{errors.names}</p> : null}
         <div className="hj-names">
           {cabins.map(cabin => (
@@ -140,7 +140,7 @@ export function DetailsPaymentScreen({
         </div>
       </section>
 
-      <section className="hj-pay">
+      <section className="hj-pay" id="hj-m-payment">
         <p className="hj-pay__title">Payment preference</p>
         <p className="hj-pay__lede">Choose how you would prefer to pay. Invoice and payment instructions will follow from Hathor Reservations. No card details are collected on this website.</p>
 

@@ -19,12 +19,15 @@ export function SailingCalendar({
   departureDay,
   selectedId,
   onSelect,
+  openOnSelected = false,
 }: {
   sailings: Sailing[];
   loading: boolean;
   departureDay: string;
   selectedId: string;
   onSelect: (scheduleId: string) => void;
+  /** Phone and tablet date sheet: open on the chosen date's month rather than the first. */
+  openOnSelected?: boolean;
 }) {
   const months = useMemo(() => {
     const seen = new Map<string, { year: number; month: number }>();
@@ -35,7 +38,12 @@ export function SailingCalendar({
     return [...seen.values()];
   }, [sailings]);
 
-  const [monthKey, setMonthKey] = useState<string | null>(null);
+  const [monthKey, setMonthKey] = useState<string | null>(() => {
+    const chosen = openOnSelected ? sailings.find(sailing => sailing.scheduleId === selectedId) : null;
+    if (!chosen) return null;
+    const { year, month } = utcParts(chosen.departureTime);
+    return `${year}-${month}`;
+  });
   // Choosing a date (here or in the list) turns the calendar to that date's month.
   const [shownFor, setShownFor] = useState(selectedId);
   if (selectedId !== shownFor) {

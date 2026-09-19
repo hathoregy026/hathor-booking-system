@@ -17,7 +17,9 @@ export type BodyLockOwner =
   | "booking-modal"
   | "booking-search"
   /* Favorites / My Voyage sheet (components/selection/FavoritesPanel.tsx). */
-  | "selection-panel";
+  | "selection-panel"
+  /* Booking journey bottom sheets on phone and tablet (components/booking/journey/JourneyMobile.tsx). */
+  | "journey-sheet";
 
 type SavedBodyStyles = {
   overflow: string;

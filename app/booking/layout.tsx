@@ -18,6 +18,7 @@ import "../booking-success.css";
 import "../button-system.css";
 import "../nav-controls.css";
 import "../booking-journey.css";
+import "../booking-journey-mobile.css";
 
 const italiana = Italiana({
   subsets: ["latin"],
