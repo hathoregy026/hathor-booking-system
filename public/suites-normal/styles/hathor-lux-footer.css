@@ -183,15 +183,20 @@
 
 .hf .hf__title {
   margin: 0;
-  max-width: 12ch;
+  max-width: none;
   color: var(--hf-ink);
   font-family: var(--hf-display);
-  font-size: clamp(2.6rem, 6.2vw, 6rem);
+  /* Match OUR PARTNERS: 39.27/1024 of the partners frame, capped at 1600. */
+  font-size: clamp(2.45rem, 3.84vw, 3.84rem);
   font-weight: 400;
   line-height: 0.94;
-  letter-spacing: -0.005em;
-  text-transform: none;
-  text-wrap: balance;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.hf .hf__title-line {
+  display: block;
+  white-space: nowrap;
 }
 
 .hf .hf__script {
@@ -475,8 +480,7 @@
   }
 
   .hf .hf__title {
-    max-width: 14ch;
-    font-size: clamp(2.5rem, 7.4vw, 4.6rem);
+    max-width: none;
   }
 
   .hf .hf__script {
@@ -533,9 +537,10 @@
   }
 
   .hf .hf__title {
-    max-width: 12ch;
-    font-size: clamp(1.6rem, 7.6vw, 2.2rem);
-    line-height: 0.98;
+    max-width: none;
+    font-size: clamp(2.3rem, 12.4vw, 3.45rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
   }
 
   /* Flush with the title above it — the desktop indent needs the width to
@@ -671,6 +676,32 @@
   }
 }
 
+/* Phone only — sit the invitation on the vertical middle of the screen.
+   Size is already matched to OUR PARTNERS; this does not move tablet/desktop. */
+@media (max-width: 480px) {
+  .hf .hf__lede {
+    min-height: calc(100svh - var(--hathor-phone-dock-h, 4.5rem));
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1fr auto 1fr;
+    align-items: stretch;
+    justify-items: start;
+    row-gap: 0.85rem;
+    padding-block: 0;
+  }
+
+  .hf .hf__lede > .hf__reveal:first-child {
+    grid-row: 2;
+    width: 100%;
+    align-self: center;
+  }
+
+  .hf .hf__desk {
+    grid-row: 3;
+    align-self: start;
+    width: 100%;
+  }
+}
+
 /* Narrowest phones — the labels are what set this floor, not the grid. */
 @media (max-width: 340px) {
   .hf .hf__link {
@@ -750,17 +781,15 @@ html[data-public-theme="night"] .hathor-lux-footer-host {
   --night-text: #e9e1d3;
   --night-text-soft: #c8bda9;
   --night-muted: #a29885;
-  --night-gold: #cbb079;
-  --night-gold-strong: #dfc894;
-  --night-gold-dim: rgb(203 176 121 / 62%);
-  --night-line: rgb(203 176 121 / 26%);
+  --night-gold: #e9e1d3;
+  --night-gold-strong: #f4eddf;
+  --night-gold-dim: rgb(233 225 211 / 28%);
+  --night-line: rgb(233 225 211 / 22%);
   --night-line-soft: rgb(233 225 211 / 12%);
   --night-line-faint: rgb(233 225 211 / 7%);
   --night-shadow: 0 18px 60px rgb(0 0 0 / 46%);
   --night-shadow-soft: 0 10px 34px rgb(0 0 0 / 34%);
-  --night-atmosphere: radial-gradient(circle at 14% -14%, rgb(203 176 121 / 7%), transparent 38rem),
-    radial-gradient(circle at 94% 12%, rgb(140 116 62 / 5%), transparent 34rem),
-    linear-gradient(180deg, #17130e 0%, var(--night-canvas) 46%, #100d0a 100%);
+  --night-atmosphere: linear-gradient(180deg, #17130e 0%, var(--night-canvas) 46%, #100d0a 100%);
 }
 
 /* ---- Site footer ----
@@ -775,9 +804,9 @@ html[data-public-theme="night"] .hf {
   --hf-ink-soft: var(--night-text-soft);
   --hf-meta: var(--night-muted);
   --hf-gold: var(--night-gold);
-  --hf-gold-deep: var(--night-gold-strong);
-  --hf-line: rgb(203 176 121 / 34%);
-  --hf-line-soft: rgb(203 176 121 / 18%);
+  --hf-gold-deep: var(--night-panel);
+  --hf-line: rgb(233 225 211 / 28%);
+  --hf-line-soft: rgb(233 225 211 / 14%);
   --hf-ghost: rgb(233 225 211 / 6%);
   --hf-video-opacity: 0.92;
   --hf-video-filter: saturate(0.78) contrast(1.08) brightness(0.5);
@@ -795,7 +824,7 @@ html[data-public-theme="night"] .public-site :is(.hf__link, .hf__base-link) {
  * relationship day has.
  */
 html[data-public-theme="night"] .public-site .hf__col-title {
-  color: var(--hf-gold-deep);
+  color: var(--night-text);
 }
 
 html[data-public-theme="night"] .public-site .hf__eyebrow {
@@ -807,7 +836,8 @@ html[data-public-theme="night"] .public-site .hf__legal {
 }
 
 html[data-public-theme="night"] .hf__top:hover {
-  color: var(--night-canvas);
+  background: var(--night-panel) !important;
+  color: var(--night-text) !important;
 }
 
 /* ------------------------------------------------------------------------
