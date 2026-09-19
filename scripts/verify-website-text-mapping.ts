@@ -213,8 +213,8 @@ assert(
   "about body uses live Rollgates",
 );
 assert(
-  livePageFontFamily("cruises", "hero_title", "Gabigaile") === "Bitho Luxury",
-  "cruises hero uses live Bitho",
+  livePageFontFamily("cruises", "hero_title", "Gabigaile") === "Italiana",
+  "cruises hero uses live Italiana",
 );
 assert(
   livePageFontFamily("wellness", "hero_subtitle", "Carista") === "Bitho Luxury",
