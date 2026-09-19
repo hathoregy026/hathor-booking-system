@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { SuitesNormalHomepagePage } from "@/components/pages/SuitesNormalHomepagePage";
+import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
 import { SUITES_SEO } from "@/lib/seo/page-metadata";
@@ -77,8 +78,14 @@ export default async function SuitesPage() {
           }),
         ]}
       />
-      <SuitesNormalHomepagePage images={images} css={css} />
+      <PublicCmsTextRuntime
+        websiteText={cms.websiteText}
+        websiteTextMobile={cms.websiteTextMobile}
+        typography={cms.typography}
+        typographyMobile={cms.typographyMobile}
+      >
+        <SuitesNormalHomepagePage images={images} css={css} />
+      </PublicCmsTextRuntime>
     </StandalonePageVisibilityShell>
   );
 }
-

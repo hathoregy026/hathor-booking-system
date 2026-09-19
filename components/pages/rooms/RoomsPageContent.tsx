@@ -29,7 +29,7 @@ export function RoomsPageContent() {
       heroImageAlt="Cabins and suites aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Cabins & Suites",
-        title: rooms.overviewTitle,
+        title: LUXURY_SUITES_PAGE.overview.title,
         copy: introParagraphs,
       }}
       copyPlacement={{

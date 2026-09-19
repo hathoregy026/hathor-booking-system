@@ -8,16 +8,18 @@ import {
   HOMEPAGE_DINING,
   HOMEPAGE_ITINERARIES,
   HOMEPAGE_LIFESTYLE,
-  HOMEPAGE_PARTNERS,
   HOMEPAGE_REVIEWS,
 } from "@/lib/homepage-content";
+import {
+  DEFAULT_GASTRONOMY_LIVE_TEXT,
+  type GastronomyLiveText,
+} from "@/lib/gastronomy-live-text";
 import {
   ABOUT_PAGE,
   BLOG_PAGE,
   CHARTER_PAGE,
   CONTACT_PAGE,
   CRUISES_PAGE,
-  GASTRONOMY_PAGE,
   HIGHLIGHTS_PAGE,
   LUXURY_CABINS_PAGE,
   LUXURY_SUITES_PAGE,
@@ -28,10 +30,11 @@ import {
   VOYAGES_ITINERARY_CMS_DEFAULTS,
   VOYAGES_PAGE,
 } from "@/lib/voyages-page-content";
+import { ROOM_COLLECTION_CONFIG } from "@/lib/room-collection-editorial";
 import {
-  DEFAULT_SUITES_NATIVE_CMS,
-  type SuitesNativeCmsFields,
-} from "@/lib/suites-native-content";
+  DEFAULT_SUITES_LIVE_TEXT,
+  type SuitesLiveText,
+} from "@/lib/suites-live-text";
 
 export const WEBSITE_TEXT_KEY = "website-text";
 /** Phone-only website copy (used on live site at max-width 767px). */
@@ -67,7 +70,6 @@ export type WebsiteText = {
       heroSupport: string;
       accommodationsTitle: string;
       accommodationsIntro: string;
-      accommodationsOutro: string;
       diningTitle: string;
       diningIntro: string;
       diningOutro: string;
@@ -125,21 +127,13 @@ export type WebsiteText = {
       ctaPrimary: string;
       ctaSecondary: string;
     };
-    /** Native /suites-preview (and future /suites) editorial ownership */
-    suites: SuitesNativeCmsFields;
+    /** Copy rendered by the live `/suites` experience. */
+    suites: SuitesLiveText;
     highlights: {
       intro: string[];
       landmarks: Array<{ title: string; body: string }>;
     };
-    gastronomy: {
-      intro: string[];
-      restaurantTitle: string;
-      restaurantService: string;
-      atmosphereTitle: string;
-      atmosphere: string;
-      closing: string;
-      venues: Array<{ title: string; description: string }>;
-    };
+    gastronomy: GastronomyLiveText;
     wellness: {
       /** Intro subtitle under the stacked hero title */
       heroSupport: string;
@@ -149,11 +143,9 @@ export type WebsiteText = {
       fitnessBody: string;
     };
     charter: {
-      overviewTitle: string;
       overviewIntro: string;
       benefitsIntro: string;
       benefits: string[];
-      cta: string;
     };
     contact: {
       /** Intro subtitle under the stacked hero title */
@@ -165,24 +157,19 @@ export type WebsiteText = {
       intro: string;
     };
     partners: {
-      title: string;
-      chapter: string;
       lead: string;
     };
     rooms: {
-      overviewTitle: string;
       overviewIntro: string;
       amenitiesTitle: string;
       amenitiesIntro: string;
     };
     cabins: {
-      overviewTitle: string;
       overviewIntro: string;
       amenitiesTitle: string;
       amenitiesIntro: string;
     };
     royal: {
-      overviewTitle: string;
       overviewIntro: string;
       amenitiesTitle: string;
       amenitiesIntro: string;
@@ -198,29 +185,25 @@ export type WebsiteTextNavItem = {
 };
 
 export const WEBSITE_TEXT_NAV: WebsiteTextNavItem[] = [
-  { id: "home", label: "Homepage", href: "/" },
-  { id: "about", label: "About", href: "/about" },
-  { id: "cruises", label: "Cruises", href: "/cruises-list" },
-  { id: "voyages", label: "Voyages", href: "/voyages" },
-  { id: "suites", label: "Suites (Native)", href: "/suites-preview" },
-  { id: "highlights", label: "Highlights", href: "/highlights" },
-  { id: "gastronomy", label: "Gastronomy", href: "/gastronomy" },
-  { id: "wellness", label: "Wellness", href: "/wellness" },
-  { id: "charter", label: "Charter", href: "/charter" },
-  { id: "contact", label: "Contact", href: "/contact" },
-  { id: "rooms", label: "Rooms & Suites", href: "/rooms" },
+  { id: "home", label: "Home", href: "/" },
+  { id: "suites", label: "Suites", href: "/suites" },
   {
     id: "cabins",
-    label: "Luxury Cabins",
+    label: "Luxury Rooms",
     href: "/luxury-cabins-Nile-Cruise",
   },
-  {
-    id: "royal",
-    label: "Royal Suites",
-    href: "/royal-suites",
-  },
-  { id: "blog", label: "Blog", href: "/blogs" },
+  { id: "rooms", label: "Luxury Suites", href: "/rooms" },
+  { id: "royal", label: "Royal Suites", href: "/royal-suites" },
+  { id: "cruises", label: "Scheduled Voyages", href: "/cruises-list" },
+  { id: "voyages", label: "Our Voyages", href: "/voyages" },
+  { id: "charter", label: "Private Charter", href: "/charter" },
+  { id: "highlights", label: "Highlights", href: "/highlights" },
+  { id: "wellness", label: "Wellness & Spa", href: "/wellness" },
+  { id: "gastronomy", label: "Dining", href: "/gastronomy" },
+  { id: "about", label: "Our Story", href: "/about" },
+  { id: "blog", label: "Journal", href: "/blogs" },
   { id: "partners", label: "Partners", href: "/partners" },
+  { id: "contact", label: "Contact", href: "/contact" },
 ];
 
 export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
@@ -315,9 +298,8 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
     about: {
       intro: [...ABOUT_PAGE.intro],
       heroSupport: ABOUT_PAGE.hero.subtitle,
-      accommodationsTitle: ABOUT_PAGE.accommodations.title,
+      accommodationsTitle: "Accommodation",
       accommodationsIntro: ABOUT_PAGE.accommodations.intro,
-      accommodationsOutro: ABOUT_PAGE.accommodations.outro,
       diningTitle: ABOUT_PAGE.dining.title,
       diningIntro: ABOUT_PAGE.dining.intro,
       diningOutro: ABOUT_PAGE.dining.outro,
@@ -361,7 +343,7 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       ctaPrimary: VOYAGES_PAGE.cta.primary,
       ctaSecondary: VOYAGES_PAGE.cta.secondary.label,
     },
-    suites: { ...DEFAULT_SUITES_NATIVE_CMS },
+    suites: { ...DEFAULT_SUITES_LIVE_TEXT },
     highlights: {
       intro: [...HIGHLIGHTS_PAGE.intro],
       landmarks: HIGHLIGHTS_PAGE.landmarks.map((l) => ({
@@ -370,16 +352,9 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       })),
     },
     gastronomy: {
-      intro: [...GASTRONOMY_PAGE.intro],
-      restaurantTitle: GASTRONOMY_PAGE.restaurant.title,
-      restaurantService: GASTRONOMY_PAGE.restaurant.service,
-      atmosphereTitle: GASTRONOMY_PAGE.restaurant.atmosphereTitle,
-      atmosphere: GASTRONOMY_PAGE.restaurant.atmosphere,
-      closing: GASTRONOMY_PAGE.restaurant.closing,
-      venues: GASTRONOMY_PAGE.venues.map((v) => ({
-        title: v.title,
-        description: v.description,
-      })),
+      ...DEFAULT_GASTRONOMY_LIVE_TEXT,
+      values: DEFAULT_GASTRONOMY_LIVE_TEXT.values.map((item) => ({ ...item })),
+      stories: DEFAULT_GASTRONOMY_LIVE_TEXT.stories.map((item) => ({ ...item })),
     },
     wellness: {
       heroSupport:
@@ -390,43 +365,37 @@ export const DEFAULT_WEBSITE_TEXT: WebsiteText = {
       fitnessBody: WELLNESS_PAGE.fitness.body,
     },
     charter: {
-      overviewTitle: CHARTER_PAGE.overview.title,
       overviewIntro: CHARTER_PAGE.overview.intro,
       benefitsIntro: CHARTER_PAGE.overview.benefitsIntro,
       benefits: [...CHARTER_PAGE.overview.benefits],
-      cta: CHARTER_PAGE.overview.cta,
     },
     contact: {
       heroSupport: CONTACT_PAGE.hero.subtitle,
       formTitle: CONTACT_PAGE.form.title,
-      formIntro: CONTACT_PAGE.form.intro,
+      formIntro:
+        "Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours.",
     },
     blog: {
       intro: BLOG_PAGE.intro,
     },
     partners: {
-      title: HOMEPAGE_PARTNERS.title,
-      chapter: HOMEPAGE_PARTNERS.chapter,
       lead: "We sail with trusted names in travel and hospitality, partners who share our care for the Nile and our guests.",
     },
     rooms: {
-      overviewTitle: LUXURY_SUITES_PAGE.overview.title,
       // Maps to intro body (not amenities). Default matches afterHero so visuals stay stable.
       overviewIntro: LUXURY_SUITES_PAGE.copyPlacement.afterHero.join("\n\n"),
-      amenitiesTitle: LUXURY_SUITES_PAGE.amenities.title,
-      amenitiesIntro: LUXURY_SUITES_PAGE.overview.body,
+      amenitiesTitle: "Included for your stay",
+      amenitiesIntro: ROOM_COLLECTION_CONFIG.suites.amenitiesLead,
     },
     cabins: {
-      overviewTitle: LUXURY_CABINS_PAGE.overview.title,
       overviewIntro: LUXURY_CABINS_PAGE.copyPlacement.afterHero.join("\n\n"),
-      amenitiesTitle: LUXURY_CABINS_PAGE.amenities.title,
-      amenitiesIntro: LUXURY_CABINS_PAGE.overview.body,
+      amenitiesTitle: "Included for your stay",
+      amenitiesIntro: ROOM_COLLECTION_CONFIG.cabins.amenitiesLead,
     },
     royal: {
-      overviewTitle: ROYAL_SUITES_PAGE.overview.title,
       overviewIntro: ROYAL_SUITES_PAGE.copyPlacement.afterHero.join("\n\n"),
-      amenitiesTitle: ROYAL_SUITES_PAGE.amenities.title,
-      amenitiesIntro: ROYAL_SUITES_PAGE.overview.body,
+      amenitiesTitle: "Included for your stay",
+      amenitiesIntro: ROOM_COLLECTION_CONFIG.royal.amenitiesLead,
     },
   },
 };
@@ -477,6 +446,68 @@ export function deepMergeWebsiteText(
   patch: unknown,
 ): WebsiteText {
   return mergeValue(base, patch) as WebsiteText;
+}
+
+export type WebsiteTextLengthViolation = {
+  path: string;
+  actual: number;
+  maximum: number;
+};
+
+/**
+ * Enforce the live layout's existing copy lengths at the server boundary.
+ * The shipped default is the permanent floor; a previously saved longer value
+ * remains editable without an accidental truncation on its next save.
+ */
+export function findWebsiteTextLengthViolation(
+  candidate: WebsiteText,
+  current: WebsiteText,
+): WebsiteTextLengthViolation | null {
+  const visit = (
+    defaults: unknown,
+    next: unknown,
+    saved: unknown,
+    path: string,
+  ): WebsiteTextLengthViolation | null => {
+    if (typeof defaults === "string" && typeof next === "string") {
+      const maximum = Math.max(
+        1,
+        defaults.length,
+        typeof saved === "string" ? saved.length : 0,
+      );
+      return next.length > maximum
+        ? { path, actual: next.length, maximum }
+        : null;
+    }
+
+    if (Array.isArray(defaults) && Array.isArray(next)) {
+      for (let index = 0; index < defaults.length; index += 1) {
+        const violation = visit(
+          defaults[index],
+          next[index],
+          Array.isArray(saved) ? saved[index] : undefined,
+          `${path}[${index}]`,
+        );
+        if (violation) return violation;
+      }
+      return null;
+    }
+
+    if (isPlainObject(defaults) && isPlainObject(next)) {
+      for (const key of Object.keys(defaults)) {
+        const violation = visit(
+          defaults[key],
+          next[key],
+          isPlainObject(saved) ? saved[key] : undefined,
+          path ? `${path}.${key}` : key,
+        );
+        if (violation) return violation;
+      }
+    }
+    return null;
+  };
+
+  return visit(DEFAULT_WEBSITE_TEXT, candidate, current, "");
 }
 
 /**
@@ -610,6 +641,9 @@ export function migrateLegacyWebsiteTextFields(raw: unknown): unknown {
 
   const aboutPage = isPlainObject(pages.about) ? { ...pages.about } : null;
   if (aboutPage) {
+    if (aboutPage.accommodationsTitle === ABOUT_PAGE.accommodations.title) {
+      delete aboutPage.accommodationsTitle;
+    }
     if (typeof aboutPage.welcomeBody === "string") {
       aboutPage.welcomeBody = replaceLegacyPlainText(aboutPage.welcomeBody);
     }
@@ -619,6 +653,31 @@ export function migrateLegacyWebsiteTextFields(raw: unknown): unknown {
       );
     }
     pages.about = aboutPage;
+  }
+
+  const contactPage = isPlainObject(pages.contact) ? { ...pages.contact } : null;
+  if (contactPage) {
+    if (contactPage.formIntro === CONTACT_PAGE.form.intro) {
+      delete contactPage.formIntro;
+    }
+    pages.contact = contactPage;
+  }
+
+  const roomMappings = [
+    ["rooms", LUXURY_SUITES_PAGE],
+    ["cabins", LUXURY_CABINS_PAGE],
+    ["royal", ROYAL_SUITES_PAGE],
+  ] as const;
+  for (const [key, legacy] of roomMappings) {
+    const roomPage = isPlainObject(pages[key]) ? { ...pages[key] } : null;
+    if (!roomPage) continue;
+    if (roomPage.amenitiesTitle === legacy.amenities.title) {
+      delete roomPage.amenitiesTitle;
+    }
+    if (roomPage.amenitiesIntro === legacy.overview.body) {
+      delete roomPage.amenitiesIntro;
+    }
+    pages[key] = roomPage;
   }
 
   const cruises = isPlainObject(pages.cruises) ? { ...pages.cruises } : null;

@@ -545,9 +545,11 @@ export function RoomCollectionEditorialPage({
                     {/* C · Guest charter — provisions grid */}
                     <Scene className="ac-charter-scene">
                       <div className="ac-charter-scene__head">
-                        <Kicker>Included for your stay</Kicker>
+                        <Kicker>{cms.amenitiesTitle}</Kicker>
                         <h3 className="ac-edit ac-edit--sm">{room.name}</h3>
-                        <p className="ac-meta">{config.amenitiesLead}</p>
+                        <p className="ac-meta">
+                          {resolveCmsText(cms.amenitiesIntro, config.amenitiesLead)}
+                        </p>
                       </div>
                       <CharterGrid room={room} />
                       <SelectionPills room={room} />

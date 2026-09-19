@@ -48,6 +48,145 @@ const PAGE_HERO_KEY: Record<PageId, HeroPageKey> = {
   partners: "partners",
 };
 
+type SuitesTextKey = keyof WebsiteText["pages"]["suites"];
+const SUITES_TEXT_SECTIONS: ReadonlyArray<{
+  title: string;
+  description?: string;
+  fields: ReadonlyArray<{
+    key: SuitesTextKey;
+    label: string;
+    multiline?: boolean;
+    rows?: number;
+  }>;
+}> = [
+  {
+    title: "Opening",
+    description: "The live mosaic hero and its four actions on /suites.",
+    fields: [
+      { key: "heroTitle", label: "Hero title", multiline: true, rows: 2 },
+      { key: "heroKicker", label: "Hero side title", multiline: true, rows: 2 },
+      { key: "heroBody", label: "Hero body", multiline: true, rows: 3 },
+      { key: "heroCabinsCta", label: "Cabins link" },
+      { key: "heroSuitesCta", label: "Suites link" },
+      { key: "heroBookCta", label: "Book link" },
+      { key: "heroVoyagesCta", label: "Voyages link" },
+    ],
+  },
+  {
+    title: "Suite story",
+    fields: [
+      { key: "storyLabel", label: "Section label" },
+      { key: "storyTitle", label: "Story title", multiline: true, rows: 4 },
+      { key: "storyBody", label: "Story body", multiline: true, rows: 4 },
+      { key: "storySecondBody", label: "Image story body", multiline: true, rows: 4 },
+    ],
+  },
+  {
+    title: "Three qualities",
+    fields: [
+      { key: "qualityOneTitle", label: "Quality 1 title" },
+      { key: "qualityOneBody", label: "Quality 1 body", multiline: true, rows: 3 },
+      { key: "qualityTwoTitle", label: "Quality 2 title" },
+      { key: "qualityTwoBody", label: "Quality 2 body", multiline: true, rows: 3 },
+      { key: "qualityThreeTitle", label: "Quality 3 title" },
+      { key: "qualityThreeBody", label: "Quality 3 body", multiline: true, rows: 3 },
+    ],
+  },
+  {
+    title: "Collection",
+    fields: [
+      { key: "collectionLabel", label: "Collection label" },
+      { key: "collectionBody", label: "Collection body", multiline: true, rows: 4 },
+      { key: "cabinMeta", label: "Cabins count" },
+      { key: "cabinDeck", label: "Cabins deck" },
+      { key: "cabinTitle", label: "Cabins title" },
+      { key: "suiteMeta", label: "Suites count" },
+      { key: "suiteDeck", label: "Suites deck" },
+      { key: "suiteTitle", label: "Suites title" },
+      { key: "royalMeta", label: "Royal count" },
+      { key: "royalDeck", label: "Royal deck" },
+      { key: "royalTitle", label: "Royal title" },
+      { key: "ensuiteMeta", label: "Ensuite meta" },
+      { key: "ensuiteDeck", label: "Ensuite location" },
+      { key: "ensuiteTitle", label: "Ensuite title" },
+      { key: "nightMeta", label: "Night meta" },
+      { key: "nightDeck", label: "Night route" },
+      { key: "nightTitle", label: "Night title" },
+      { key: "residenceCta", label: "Residence link" },
+      { key: "discoverCta", label: "Discover link" },
+      { key: "viewAllCta", label: "View all link" },
+    ],
+  },
+  {
+    title: "Closing",
+    fields: [
+      { key: "collectionClosingTitle", label: "Collection closing title", multiline: true, rows: 4 },
+      { key: "collectionClosingBody", label: "Collection closing body", multiline: true, rows: 3 },
+      { key: "reservationsLabel", label: "Reservations label" },
+      { key: "reservationsTitle", label: "Reservations title", multiline: true, rows: 2 },
+      { key: "closingTitle", label: "Final title", multiline: true, rows: 3 },
+      { key: "closingBody", label: "Final body", multiline: true, rows: 3 },
+    ],
+  },
+];
+
+type GastronomyText = WebsiteText["pages"]["gastronomy"];
+type GastronomyScalarKey = {
+  [K in keyof GastronomyText]: GastronomyText[K] extends string ? K : never;
+}[keyof GastronomyText];
+const GASTRONOMY_TEXT_SECTIONS: ReadonlyArray<{
+  title: string;
+  fields: ReadonlyArray<{
+    key: GastronomyScalarKey;
+    label: string;
+    multiline?: boolean;
+    rows?: number;
+  }>;
+}> = [
+  {
+    title: "Opening",
+    fields: [
+      { key: "introChapter", label: "Chapter label" },
+      { key: "introTitle", label: "Primary title", multiline: true, rows: 2 },
+      { key: "introSecondTitle", label: "Second title", multiline: true, rows: 2 },
+      { key: "introThirdTitle", label: "Third title", multiline: true, rows: 2 },
+      { key: "introBody", label: "Opening body", multiline: true, rows: 4 },
+      { key: "tableLabel", label: "Image label" },
+    ],
+  },
+  {
+    title: "Dining story",
+    fields: [
+      { key: "statementChapter", label: "Statement label" },
+      { key: "statementTitle", label: "Statement title", multiline: true, rows: 4 },
+      { key: "statementBody", label: "Statement body", multiline: true, rows: 5 },
+      { key: "riverBody", label: "River body", multiline: true, rows: 4 },
+      { key: "marquee", label: "Marquee word" },
+      { key: "coursesChapter", label: "Courses label" },
+      { key: "coursesTitle", label: "Courses title", multiline: true, rows: 3 },
+      { key: "coursesBody", label: "Courses body", multiline: true, rows: 3 },
+      { key: "experiencesChapter", label: "Experiences label" },
+      { key: "experiencesBody", label: "Experiences body", multiline: true, rows: 4 },
+    ],
+  },
+  {
+    title: "Closing",
+    fields: [
+      { key: "closingChapter", label: "Closing label" },
+      { key: "closingTitle", label: "Closing title", multiline: true, rows: 4 },
+      { key: "closingBody", label: "Closing body", multiline: true, rows: 4 },
+      { key: "closingCta", label: "Booking button" },
+      { key: "conciergeTitle", label: "Concierge title", multiline: true, rows: 2 },
+      { key: "diningClosingTitle", label: "Dining closing title", multiline: true, rows: 3 },
+      { key: "conciergeBody", label: "Concierge body", multiline: true, rows: 4 },
+      { key: "conciergeCta", label: "Concierge button" },
+      { key: "featureLabel", label: "Feature label" },
+      { key: "featureTitle", label: "Feature title" },
+      { key: "featureBody", label: "Feature body", multiline: true, rows: 3 },
+    ],
+  },
+];
+
 function Field({
   label,
   value,
@@ -65,28 +204,39 @@ function Field({
   hint?: string;
   placeholder?: string;
 }) {
+  // The field mounts with the text currently used on the selected live device.
+  // Keep that length as the editing ceiling so replacements cannot expand a
+  // designed text box and disturb its composition.
+  const [maxLength] = useState(() => Math.max(1, value.length));
+  const update = (next: string) => onChange(next.slice(0, maxLength));
+
   return (
     <label
       className={`wt-field${multiline && rows >= 3 ? " wt-field--wide" : ""}`}
     >
-      <span className="wt-field__meta">
-        <span className="wt-field__label">{label}</span>
-        {hint ? <span className="wt-field__hint">{hint}</span> : null}
-      </span>
+        <span className="wt-field__meta">
+          <span className="wt-field__label">{label}</span>
+          {hint ? <span className="wt-field__hint">{hint}</span> : null}
+          <span className="wt-field__limit" aria-live="polite">
+            {value.length}/{maxLength} characters
+          </span>
+        </span>
       {multiline ? (
         <textarea
           className="input wt-field__input"
           value={value}
           rows={rows}
+          maxLength={maxLength}
           placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => update(e.target.value)}
         />
       ) : (
         <input
           className="input wt-field__input"
           value={value}
+          maxLength={maxLength}
           placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => update(e.target.value)}
         />
       )}
     </label>
@@ -508,25 +658,27 @@ export function WebsiteTextPanel() {
           ) : null}
 
           <div className="wt-editor__form" key={`${activePage}-${device}`}>
-            <Section
-              step={1}
-              title="Hero titles"
-              description="The large heading pair at the top of this page. Use Enter for stacked lines."
-            >
-              <Field
-                label="First line"
-                value={heroCopy.main}
-                multiline
-                rows={2}
-                hint="Use Enter for a stacked second line"
-                onChange={(main) => setHero({ main })}
-              />
-              <Field
-                label="Second line"
-                value={heroCopy.second}
-                onChange={(second) => setHero({ second })}
-              />
-            </Section>
+            {activePage !== "suites" && activePage !== "gastronomy" ? (
+              <Section
+                step={1}
+                title="Hero titles"
+                description="The large heading pair at the top of this page. Use Enter for stacked lines."
+              >
+                <Field
+                  label="First line"
+                  value={heroCopy.main}
+                  multiline
+                  rows={2}
+                  hint="Use Enter for a stacked second line"
+                  onChange={(main) => setHero({ main })}
+                />
+                <Field
+                  label="Second line"
+                  value={heroCopy.second}
+                  onChange={(second) => setHero({ second })}
+                />
+              </Section>
+            ) : null}
 
             {activePage === "home" ? (
               <>
@@ -961,18 +1113,6 @@ export function WebsiteTextPanel() {
                       patchPage("about", {
                         ...text.pages.about,
                         accommodationsIntro,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Outro"
-                    value={text.pages.about.accommodationsOutro}
-                    multiline
-                    rows={3}
-                    onChange={(accommodationsOutro) =>
-                      patchPage("about", {
-                        ...text.pages.about,
-                        accommodationsOutro,
                       })
                     }
                   />
@@ -1539,197 +1679,31 @@ export function WebsiteTextPanel() {
 
             {activePage === "suites" ? (
               <>
-                <Section
-                  step={2}
-                  title="Hero"
-                  description="Native Suites mosaic hero (/suites-preview). Empty fields fall back to bake-time copy."
-                >
-                  <Field
-                    label="Eyebrow"
-                    value={text.pages.suites.heroEyebrow}
-                    onChange={(heroEyebrow) =>
-                      patchPage("suites", { ...text.pages.suites, heroEyebrow })
-                    }
-                  />
-                  <Field
-                    label="Title"
-                    value={text.pages.suites.heroTitle}
-                    hint="Line break between River / Suites"
-                    multiline
-                    rows={2}
-                    onChange={(heroTitle) =>
-                      patchPage("suites", { ...text.pages.suites, heroTitle })
-                    }
-                  />
-                  <Field
-                    label="Support"
-                    value={text.pages.suites.heroSupport}
-                    multiline
-                    rows={3}
-                    onChange={(heroSupport) =>
-                      patchPage("suites", { ...text.pages.suites, heroSupport })
-                    }
-                  />
-                </Section>
-                <Section step={3} title="Unrivaled + Step Aboard">
-                  <Field
-                    label="Unrivaled title"
-                    value={text.pages.suites.unrivaledTitle}
-                    onChange={(unrivaledTitle) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        unrivaledTitle,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Unrivaled body"
-                    value={text.pages.suites.unrivaledBody}
-                    multiline
-                    rows={3}
-                    onChange={(unrivaledBody) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        unrivaledBody,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Step Aboard title"
-                    value={text.pages.suites.stepTitle}
-                    onChange={(stepTitle) =>
-                      patchPage("suites", { ...text.pages.suites, stepTitle })
-                    }
-                  />
-                  <Field
-                    label="Step Aboard body"
-                    value={text.pages.suites.stepBody}
-                    multiline
-                    rows={4}
-                    onChange={(stepBody) =>
-                      patchPage("suites", { ...text.pages.suites, stepBody })
-                    }
-                  />
-                </Section>
-                <Section step={4} title="Comfort amenities">
-                  <Field
-                    label="Comfort title"
-                    value={text.pages.suites.comfortTitle}
-                    onChange={(comfortTitle) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        comfortTitle,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Comfort lead"
-                    value={text.pages.suites.comfortLead}
-                    multiline
-                    rows={3}
-                    onChange={(comfortLead) =>
-                      patchPage("suites", { ...text.pages.suites, comfortLead })
-                    }
-                  />
-                  <Field
-                    label="Shower body"
-                    value={text.pages.suites.amenityShowerBody}
-                    multiline
-                    rows={2}
-                    onChange={(amenityShowerBody) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        amenityShowerBody,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Balcony body"
-                    value={text.pages.suites.amenityBalconyBody}
-                    multiline
-                    rows={2}
-                    onChange={(amenityBalconyBody) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        amenityBalconyBody,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Smart TV body"
-                    value={text.pages.suites.amenitySmartTvBody}
-                    multiline
-                    rows={2}
-                    onChange={(amenitySmartTvBody) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        amenitySmartTvBody,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Minibar body"
-                    value={text.pages.suites.amenityMinibarBody}
-                    multiline
-                    rows={2}
-                    onChange={(amenityMinibarBody) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        amenityMinibarBody,
-                      })
-                    }
-                  />
-                </Section>
-                <Section step={5} title="Nile / Closing">
-                  <Field
-                    label="Nile title"
-                    value={text.pages.suites.nileTitle}
-                    onChange={(nileTitle) =>
-                      patchPage("suites", { ...text.pages.suites, nileTitle })
-                    }
-                  />
-                  <Field
-                    label="Nile body"
-                    value={text.pages.suites.nileBody}
-                    multiline
-                    rows={3}
-                    onChange={(nileBody) =>
-                      patchPage("suites", { ...text.pages.suites, nileBody })
-                    }
-                  />
-                  <Field
-                    label="Closing eyebrow"
-                    value={text.pages.suites.closingEyebrow}
-                    onChange={(closingEyebrow) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        closingEyebrow,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Closing title"
-                    value={text.pages.suites.closingTitle}
-                    onChange={(closingTitle) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        closingTitle,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Closing body"
-                    value={text.pages.suites.closingBody}
-                    multiline
-                    rows={3}
-                    onChange={(closingBody) =>
-                      patchPage("suites", {
-                        ...text.pages.suites,
-                        closingBody,
-                      })
-                    }
-                  />
-                </Section>
+                {SUITES_TEXT_SECTIONS.map((section, sectionIndex) => (
+                  <Section
+                    key={section.title}
+                    step={sectionIndex + 2}
+                    title={section.title}
+                    description={section.description}
+                  >
+                    {section.fields.map((field) => (
+                      <Field
+                        key={field.key}
+                        label={field.label}
+                        value={text.pages.suites[field.key]}
+                        multiline={field.multiline}
+                        rows={field.rows}
+                        hint={field.multiline ? "Use Enter for designed line breaks" : undefined}
+                        onChange={(value) =>
+                          patchPage("suites", {
+                            ...text.pages.suites,
+                            [field.key]: value,
+                          })
+                        }
+                      />
+                    ))}
+                  </Section>
+                ))}
               </>
             ) : null}
 
@@ -1789,116 +1763,87 @@ export function WebsiteTextPanel() {
 
             {activePage === "gastronomy" ? (
               <>
-                <Section step={2} title="Introduction">
-                  <Field
-                    label="Intro paragraphs"
-                    value={paragraphsToText(text.pages.gastronomy.intro)}
-                    multiline
-                    rows={6}
-                    hint="Blank line between paragraphs"
-                    onChange={(v) =>
-                      patchPage("gastronomy", {
-                        ...text.pages.gastronomy,
-                        intro: textToParagraphs(v),
-                      })
-                    }
-                  />
-                </Section>
-                <Section step={3} title="Restaurant">
-                  <Field
-                    label="Title"
-                    value={text.pages.gastronomy.restaurantTitle}
-                    onChange={(restaurantTitle) =>
-                      patchPage("gastronomy", {
-                        ...text.pages.gastronomy,
-                        restaurantTitle,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Service"
-                    value={text.pages.gastronomy.restaurantService}
-                    multiline
-                    rows={3}
-                    onChange={(restaurantService) =>
-                      patchPage("gastronomy", {
-                        ...text.pages.gastronomy,
-                        restaurantService,
-                      })
-                    }
-                  />
-                </Section>
-                <Section step={4} title="Atmosphere & closing">
-                  <Field
-                    label="Atmosphere title"
-                    value={text.pages.gastronomy.atmosphereTitle}
-                    onChange={(atmosphereTitle) =>
-                      patchPage("gastronomy", {
-                        ...text.pages.gastronomy,
-                        atmosphereTitle,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Atmosphere"
-                    value={text.pages.gastronomy.atmosphere}
-                    multiline
-                    rows={3}
-                    onChange={(atmosphere) =>
-                      patchPage("gastronomy", {
-                        ...text.pages.gastronomy,
-                        atmosphere,
-                      })
-                    }
-                  />
-                  <Field
-                    label="Closing"
-                    value={text.pages.gastronomy.closing}
-                    multiline
-                    rows={3}
-                    onChange={(closing) =>
-                      patchPage("gastronomy", {
-                        ...text.pages.gastronomy,
-                        closing,
-                      })
-                    }
-                  />
-                </Section>
-                <Section step={5} title="Venues">
-                  {text.pages.gastronomy.venues.map((venue, index) => (
-                    <ItemCard key={index} title={`Venue ${index + 1}`}>
+                {GASTRONOMY_TEXT_SECTIONS.slice(0, 2).map((section, index) => (
+                  <Section key={section.title} step={index + 2} title={section.title}>
+                    {section.fields.map((field) => (
                       <Field
-                        label="Title"
-                        value={venue.title}
-                        onChange={(title) => {
-                          const venues = text.pages.gastronomy.venues.map(
-                            (v, i) => (i === index ? { ...v, title } : v),
-                          );
+                        key={field.key}
+                        label={field.label}
+                        value={text.pages.gastronomy[field.key]}
+                        multiline={field.multiline}
+                        rows={field.rows}
+                        hint={field.multiline ? "Use Enter for designed line breaks" : undefined}
+                        onChange={(value) =>
                           patchPage("gastronomy", {
                             ...text.pages.gastronomy,
-                            venues,
-                          });
+                            [field.key]: value,
+                          })
+                        }
+                      />
+                    ))}
+                  </Section>
+                ))}
+                <Section step={4} title="Three values">
+                  {text.pages.gastronomy.values.map((item, index) => (
+                    <ItemCard key={index} title={`Value ${index + 1}`}>
+                      <Field
+                        label="Title"
+                        value={item.title}
+                        onChange={(title) => {
+                          const values = text.pages.gastronomy.values.map((entry, i) => i === index ? { ...entry, title } : entry);
+                          patchPage("gastronomy", { ...text.pages.gastronomy, values });
                         }}
                       />
                       <Field
-                        label="Description"
-                        value={venue.description}
+                        label="Body"
+                        value={item.body}
                         multiline
                         rows={3}
-                        onChange={(description) => {
-                          const venues = text.pages.gastronomy.venues.map(
-                            (v, i) =>
-                              i === index ? { ...v, description } : v,
-                          );
-                          patchPage("gastronomy", {
-                            ...text.pages.gastronomy,
-                            venues,
-                          });
+                        onChange={(body) => {
+                          const values = text.pages.gastronomy.values.map((entry, i) => i === index ? { ...entry, body } : entry);
+                          patchPage("gastronomy", { ...text.pages.gastronomy, values });
                         }}
                       />
                     </ItemCard>
                   ))}
                 </Section>
+                <Section step={5} title="Experience cards">
+                  {text.pages.gastronomy.stories.map((item, index) => (
+                    <ItemCard key={index} title={`Card ${index + 1}`}>
+                      {(["time", "place", "title", "cta"] as const).map((key) => (
+                        <Field
+                          key={key}
+                          label={key === "cta" ? "Link label" : key[0].toUpperCase() + key.slice(1)}
+                          value={item[key]}
+                          onChange={(value) => {
+                            const stories = text.pages.gastronomy.stories.map((entry, i) => i === index ? { ...entry, [key]: value } : entry);
+                            patchPage("gastronomy", { ...text.pages.gastronomy, stories });
+                          }}
+                        />
+                      ))}
+                    </ItemCard>
+                  ))}
+                </Section>
+                {GASTRONOMY_TEXT_SECTIONS.slice(2).map((section) => (
+                  <Section key={section.title} step={6} title={section.title}>
+                    {section.fields.map((field) => (
+                      <Field
+                        key={field.key}
+                        label={field.label}
+                        value={text.pages.gastronomy[field.key]}
+                        multiline={field.multiline}
+                        rows={field.rows}
+                        hint={field.multiline ? "Use Enter for designed line breaks" : undefined}
+                        onChange={(value) =>
+                          patchPage("gastronomy", {
+                            ...text.pages.gastronomy,
+                            [field.key]: value,
+                          })
+                        }
+                      />
+                    ))}
+                  </Section>
+                ))}
               </>
             ) : null}
 
@@ -1972,16 +1917,6 @@ export function WebsiteTextPanel() {
             {activePage === "charter" ? (
               <Section step={2} title="Private charter">
                 <Field
-                  label="Overview title"
-                  value={text.pages.charter.overviewTitle}
-                  onChange={(overviewTitle) =>
-                    patchPage("charter", {
-                      ...text.pages.charter,
-                      overviewTitle,
-                    })
-                  }
-                />
-                <Field
                   label="Overview intro"
                   value={text.pages.charter.overviewIntro}
                   multiline
@@ -2017,15 +1952,6 @@ export function WebsiteTextPanel() {
                         .map((line) => line.trim())
                         .filter(Boolean),
                     })
-                  }
-                />
-                <Field
-                  label="CTA"
-                  value={text.pages.charter.cta}
-                  multiline
-                  rows={2}
-                  onChange={(cta) =>
-                    patchPage("charter", { ...text.pages.charter, cta })
                   }
                 />
               </Section>
@@ -2078,17 +2004,6 @@ export function WebsiteTextPanel() {
                   title="Introduction"
                   description="Overview block at the top of the suites page."
                 >
-                  <Field
-                    label="Overview title"
-                    value={text.pages.rooms.overviewTitle}
-                    hint="Intro section H2"
-                    onChange={(overviewTitle) =>
-                      patchPage("rooms", {
-                        ...text.pages.rooms,
-                        overviewTitle,
-                      })
-                    }
-                  />
                   <Field
                     label="Overview intro"
                     value={text.pages.rooms.overviewIntro}
@@ -2143,17 +2058,6 @@ export function WebsiteTextPanel() {
                   description="Overview block at the top of the luxury cabins page."
                 >
                   <Field
-                    label="Overview title"
-                    value={text.pages.cabins.overviewTitle}
-                    hint="Intro section H2"
-                    onChange={(overviewTitle) =>
-                      patchPage("cabins", {
-                        ...text.pages.cabins,
-                        overviewTitle,
-                      })
-                    }
-                  />
-                  <Field
                     label="Overview intro"
                     value={text.pages.cabins.overviewIntro}
                     multiline
@@ -2206,17 +2110,6 @@ export function WebsiteTextPanel() {
                   title="Introduction"
                   description="Overview block at the top of the royal suites page."
                 >
-                  <Field
-                    label="Overview title"
-                    value={text.pages.royal.overviewTitle}
-                    hint="Intro section H2"
-                    onChange={(overviewTitle) =>
-                      patchPage("royal", {
-                        ...text.pages.royal,
-                        overviewTitle,
-                      })
-                    }
-                  />
                   <Field
                     label="Overview intro"
                     value={text.pages.royal.overviewIntro}
@@ -2281,28 +2174,6 @@ export function WebsiteTextPanel() {
                 title="Partners"
                 description="Hero title/chapter come from Website Text; partner names remain curated in code."
               >
-                <Field
-                  label="Hero title"
-                  value={text.pages.partners.title}
-                  hint="Primary hero title"
-                  onChange={(title) =>
-                    patchPage("partners", {
-                      ...text.pages.partners,
-                      title,
-                    })
-                  }
-                />
-                <Field
-                  label="Hero secondary title"
-                  value={text.pages.partners.chapter}
-                  hint="secondTitle under the main hero title"
-                  onChange={(chapter) =>
-                    patchPage("partners", {
-                      ...text.pages.partners,
-                      chapter,
-                    })
-                  }
-                />
                 <Field
                   label="Section lead"
                   value={text.pages.partners.lead}

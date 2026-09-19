@@ -28,7 +28,7 @@ export function RoyalSuitesPageContent() {
       heroImageAlt="Royal suite with panoramic Nile view aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Luxury Royal Suites",
-        title: royal.overviewTitle,
+        title: ROYAL_SUITES_PAGE.overview.title,
         copy: introParagraphs,
         stats: [
           "2 Luxury Suites & 2 Royal Suites",

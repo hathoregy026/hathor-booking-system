@@ -6,6 +6,7 @@ import { handleRouteError } from "@/lib/api";
 import { logDbError } from "@/lib/db-safe";
 import {
   DEFAULT_WEBSITE_TEXT,
+  findWebsiteTextLengthViolation,
   getWebsiteText,
   getWebsiteTextMobile,
   parseWebsiteText,
@@ -20,6 +21,8 @@ const REVALIDATE_PATHS = [
   "/",
   "/about",
   "/cruises-list",
+  "/voyages",
+  "/suites",
   "/highlights",
   "/gastronomy",
   "/wellness",
@@ -69,6 +72,20 @@ export async function PUT(request: NextRequest) {
     };
     const device = isAdminDevicePreview(body.device) ? body.device : "desktop";
     const settings = parseWebsiteText(body.settings);
+    const current =
+      device === "phone"
+        ? await getWebsiteTextMobile()
+        : await getWebsiteText();
+    const violation = findWebsiteTextLengthViolation(settings, current);
+    if (violation) {
+      return NextResponse.json(
+        {
+          error: `Text at ${violation.path} is ${violation.actual} characters; the live layout allows ${violation.maximum}.`,
+          ok: false,
+        },
+        { status: 400, headers: { "Cache-Control": "no-store" } },
+      );
+    }
     const saved =
       device === "phone"
         ? await saveWebsiteTextMobile(settings)

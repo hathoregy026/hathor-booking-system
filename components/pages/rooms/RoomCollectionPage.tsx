@@ -76,9 +76,7 @@ export function RoomCollectionPage({
         : variant === "royal"
           ? pages.royal
           : null;
-  const resolvedTitle = cms
-    ? resolveCmsText(cms.overviewTitle, title)
-    : title;
+  const resolvedTitle = title;
   const resolvedSupport = cms
     ? resolveCmsText(cms.overviewIntro, support)
     : support;

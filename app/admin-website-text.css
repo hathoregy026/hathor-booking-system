@@ -136,6 +136,13 @@
   padding-top: 0;
 }
 
+#website-text .wt-field__limit {
+  font-size: 0.68rem;
+  line-height: 1.2;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 #website-text.wt-panel--text .wt-item__body {
   display: grid;
   grid-template-columns: 1fr;

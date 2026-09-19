@@ -28,7 +28,7 @@ export function LuxuryCabinsPageContent() {
       heroImageAlt="Luxury cabin with Nile view aboard Hathor Dahabiya"
       intro={{
         eyebrow: "Luxury Rooms",
-        title: resolveCmsText(cabins.overviewTitle, LUXURY_CABINS_PAGE.overview.title)
+        title: LUXURY_CABINS_PAGE.overview.title
           .replace(/[,.]?\s*Hathor Dahabiya\.?/gi, "")
           .trim() || LUXURY_CABINS_PAGE.overview.title,
         copy: introParagraphs,

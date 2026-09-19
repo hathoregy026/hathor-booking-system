@@ -362,7 +362,7 @@ export function ContactPageContent() {
               <InquiryForm
                 type="contact"
                 title="Your message"
-                intro="Share dates, guests, and how you wish to sail. Our reservations team replies within 24 hours."
+                intro={contact.formIntro}
                 submitLabel="Send Message"
                 className="ce-form"
                 submitClassName="ce-btn ce-btn--xl"

@@ -18,6 +18,7 @@ export {
   WEBSITE_TEXT_MOBILE_KEY,
   WEBSITE_TEXT_NAV,
   deepMergeWebsiteText,
+  findWebsiteTextLengthViolation,
   parseWebsiteText,
   paragraphsToText,
   textToParagraphs,

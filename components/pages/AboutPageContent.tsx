@@ -279,7 +279,9 @@ export function AboutPageContent() {
               {/* 05 — Numbered manifesto: giant word, number, narrow copy */}
               <Scene className="ab-principles" id="stay">
                 <div className="ab-principles__head">
-                  <p className="ab-display ab-display--l">Accommodation</p>
+                  <p className="ab-display ab-display--l">
+                    {about.accommodationsTitle}
+                  </p>
                   <p className="ab-meta-copy">{about.accommodationsIntro}</p>
                 </div>
 

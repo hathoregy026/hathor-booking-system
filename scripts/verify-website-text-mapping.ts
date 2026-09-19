@@ -5,6 +5,8 @@
 
 import {
   DEFAULT_WEBSITE_TEXT,
+  WEBSITE_TEXT_NAV,
+  findWebsiteTextLengthViolation,
   migrateLegacyWebsiteTextFields,
   parseWebsiteText,
   resolveCmsText,
@@ -90,6 +92,32 @@ assert(
 assert(
   DEFAULT_WEBSITE_TEXT.pages.royal.amenitiesIntro.length > 0,
   "royal.amenitiesIntro default",
+);
+assert(
+  WEBSITE_TEXT_NAV.find((item) => item.id === "suites")?.href === "/suites",
+  "Suites editor targets the live page",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.suites.heroTitle === "Framed\nby the Nile" &&
+    DEFAULT_WEBSITE_TEXT.pages.suites.closingBody.length > 0,
+  "live Suites copy is mapped",
+);
+assert(
+  DEFAULT_WEBSITE_TEXT.pages.gastronomy.stories.length === 5 &&
+    DEFAULT_WEBSITE_TEXT.pages.gastronomy.conciergeBody.length > 0,
+  "live Dining copy is mapped",
+);
+
+const tooLong = structuredClone(DEFAULT_WEBSITE_TEXT);
+tooLong.pages.contact.formTitle += "x";
+const lengthViolation = findWebsiteTextLengthViolation(
+  tooLong,
+  DEFAULT_WEBSITE_TEXT,
+);
+assert(
+  lengthViolation?.path === "pages.contact.formTitle" &&
+    lengthViolation.actual === lengthViolation.maximum + 1,
+  "server rejects copy longer than the current live text",
 );
 
 const migrated = migrateLegacyWebsiteTextFields({

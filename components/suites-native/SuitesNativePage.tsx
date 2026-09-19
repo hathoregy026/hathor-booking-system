@@ -4,12 +4,12 @@ import { useRef } from "react";
 
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { SuitesMosaicHero } from "@/components/suites-native/SuitesMosaicHero";
 import { SuitesComfortExperience } from "@/components/suites-native/SuitesComfortExperience";
 import { SuitesNileStory } from "@/components/suites-native/SuitesNileStory";
 import { useSuitesSpringsFlow } from "@/hooks/useSuitesSpringsFlow";
 import {
+  DEFAULT_SUITES_NATIVE_CMS,
   SUITES_NATIVE_CTAS,
   resolveSuitesImage,
   resolveSuitesNativeView,
@@ -21,8 +21,7 @@ type Props = {
 
 export function SuitesNativePage({ images }: Props) {
   const pageRef = useRef<HTMLDivElement>(null);
-  const { pages } = useWebsiteText();
-  const c = resolveSuitesNativeView(pages.suites);
+  const c = resolveSuitesNativeView(DEFAULT_SUITES_NATIVE_CMS);
   useSuitesSpringsFlow(pageRef);
 
   return (

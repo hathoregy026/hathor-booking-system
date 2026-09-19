@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { usePublicTheme } from "@/components/public/PublicThemeProvider";
 import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
@@ -36,6 +37,7 @@ import {
   SUITES_SPLITTEXT_TYPE_GUARD_CSS,
   SUITES_TERMS_STAGE_CSS,
 } from "@/lib/suites-typography-shared";
+import type { SuitesLiveText } from "@/lib/suites-live-text";
 
 const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
@@ -590,6 +592,134 @@ function syncCloneTheme(iframe: HTMLIFrameElement | null, theme: string) {
   if (root) root.dataset.publicTheme = theme;
 }
 
+function replaceWithLines(element: Element | null, value: string) {
+  if (!element) return;
+  const doc = element.ownerDocument;
+  const lines = value.split("\n");
+  element.replaceChildren();
+  lines.forEach((line, index) => {
+    if (index > 0) element.appendChild(doc.createElement("br"));
+    element.appendChild(doc.createTextNode(line));
+  });
+}
+
+function setDecoratedLine(element: Element | undefined, value: string) {
+  if (!element) return;
+  const directSpans = Array.from(element.children).filter(
+    (child) => child.tagName === "SPAN",
+  );
+  if (directSpans.length === 0) {
+    element.textContent = value;
+    return;
+  }
+
+  const words = value.trim().split(/\s+/);
+  const directText = Array.from(element.childNodes).filter(
+    (node) => node.nodeType === Node.TEXT_NODE,
+  );
+  if (directText.length < 2 || words.length < 2) {
+    element.textContent = value;
+    return;
+  }
+  directText[0].textContent = `${words[0]} `;
+  directText[directText.length - 1].textContent = ` ${words.slice(1).join(" ")}`;
+}
+
+function setLineGroup(doc: Document, selector: string, value: string) {
+  const elements = Array.from(doc.querySelectorAll(selector));
+  const lines = value.split("\n");
+  elements.forEach((element, index) => {
+    setDecoratedLine(element, lines[index] ?? "");
+  });
+}
+
+function setText(doc: Document, selector: string, value: string) {
+  doc.querySelectorAll(selector).forEach((element) => {
+    element.textContent = value;
+  });
+}
+
+/** Apply Website Text without injecting HTML from the CMS. */
+function applySuitesLiveText(doc: Document, copy: SuitesLiveText) {
+  replaceWithLines(doc.querySelector(".srh-title"), copy.heroTitle);
+  replaceWithLines(doc.querySelector(".srh-copy__title"), copy.heroKicker);
+  const heroBodyLines = copy.heroBody.split("\n");
+  doc.querySelectorAll(".srh-copy__line").forEach((element, index) => {
+    element.textContent = heroBodyLines[index] ?? "";
+  });
+  const heroActions = doc.querySelectorAll(".srh-actions a");
+  [
+    copy.heroCabinsCta,
+    copy.heroSuitesCta,
+    copy.heroBookCta,
+    copy.heroVoyagesCta,
+  ].forEach((value, index) => {
+    const element = heroActions[index];
+    if (element) element.textContent = value;
+  });
+
+  setText(doc, ".mod-scroll__text__section", copy.storyLabel);
+  setLineGroup(doc, ".mod-scroll__text__title__line", copy.storyTitle);
+  setText(doc, ".mod-scroll__text__text p", copy.storyBody);
+  setText(doc, ".mod-scroll__images-text__text p", copy.storySecondBody);
+
+  const qualities = [
+    [copy.qualityOneTitle, copy.qualityOneBody],
+    [copy.qualityTwoTitle, copy.qualityTwoBody],
+    [copy.qualityThreeTitle, copy.qualityThreeBody],
+  ] as const;
+  doc.querySelectorAll(".mod-scroll__terms__term").forEach((term, index) => {
+    const quality = qualities[index];
+    if (!quality) return;
+    term.querySelectorAll(".mod-scroll__terms__term__title__color").forEach(
+      (element) => (element.textContent = quality[0]),
+    );
+    term.querySelectorAll(":scope > .mod-scroll__terms__term__text:not(.mod-scroll__terms__term__text-group) .mod-scroll__terms__term__text__single").forEach(
+      (element) => (element.textContent = quality[1]),
+    );
+  });
+  doc
+    .querySelectorAll(
+      ".mod-scroll__terms__term__text-group .mod-scroll__terms__term__text__single",
+    )
+    .forEach((element, index) => {
+      const quality = qualities[index];
+      if (quality) element.textContent = quality[1];
+    });
+
+  setText(doc, ".mod-scroll__projects__section", copy.collectionLabel);
+  setText(doc, ".mod-scroll__projects__text", copy.collectionBody);
+  const cards = [
+    [copy.cabinMeta, copy.cabinDeck, copy.cabinTitle, copy.residenceCta],
+    [copy.suiteMeta, copy.suiteDeck, copy.suiteTitle, copy.residenceCta],
+    [copy.royalMeta, copy.royalDeck, copy.royalTitle, copy.residenceCta],
+    [copy.ensuiteMeta, copy.ensuiteDeck, copy.ensuiteTitle, copy.discoverCta],
+    [copy.nightMeta, copy.nightDeck, copy.nightTitle, copy.discoverCta],
+  ] as const;
+  doc.querySelectorAll(".mod-scroll__projects__item").forEach((card, index) => {
+    const values = cards[index];
+    if (!values) return;
+    const meta = card.querySelectorAll(
+      ".mod-scroll__projects__item__text__data > div:not(.data-number) span",
+    );
+    if (meta[0]) meta[0].textContent = values[0];
+    if (meta[1]) meta[1].textContent = values[1];
+    const title = card.querySelector(".mod-scroll__projects__item__text__title");
+    if (title) title.textContent = values[2];
+    const cta = card.querySelector(".mod-scroll__projects__item__text__data a");
+    if (cta) cta.textContent = values[3];
+  });
+  setText(doc, ".last-item__carousel__item__text", copy.viewAllCta);
+  setText(doc, ".last-item__content__section", copy.collectionLabel);
+  setLineGroup(doc, ".last-item__content__title .line", copy.collectionClosingTitle);
+  setText(doc, ".last-item__content__text p", copy.collectionClosingBody);
+
+  setText(doc, ".mod-title--chapter .mod-title__intro .f-edit", copy.reservationsLabel);
+  replaceWithLines(doc.querySelector(".mod-title--chapter .anima__title"), copy.reservationsTitle);
+  setLineGroup(doc, ".mod-title--lines .line", copy.closingTitle);
+  setText(doc, ".mod-content__text p:first-child", copy.closingBody);
+}
+
 export function SuitesNormalHomepagePage({
   images: serverImages,
   css: serverCss = "",
@@ -599,6 +729,8 @@ export function SuitesNormalHomepagePage({
 } = {}) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { theme } = usePublicTheme();
+  const { pages } = useWebsiteText();
+  const suitesCopy = pages.suites;
 
   const themeRef = useRef(theme);
   const imagesRef = useRef<Record<string, string>>({
@@ -651,6 +783,7 @@ export function SuitesNormalHomepagePage({
       );
       if (!prepared) return;
       const { doc, cms } = prepared;
+      applySuitesLiveText(doc, suitesCopy);
 
       if (!doc.getElementById("hathor-bitho-ready-boot")) {
         const boot = doc.createElement("script");
@@ -683,6 +816,7 @@ export function SuitesNormalHomepagePage({
       injectSuitesLuxFooter(doc);
       neutralizeSuitesCloneIntroMotion(doc);
       layoutSuitesMobileScenes(doc);
+      applySuitesLiveText(doc, suitesCopy);
 
       if (!doc.documentElement.dataset.hathorNavBound) {
         doc.documentElement.dataset.hathorNavBound = "1";
@@ -714,6 +848,7 @@ export function SuitesNormalHomepagePage({
       await waitForCloneBoot(doc);
       layoutSuitesCollectionRail(doc);
       layoutSuitesMobileScenes(doc);
+      applySuitesLiveText(doc, suitesCopy);
 
       try {
         const data = await Promise.race([
@@ -744,13 +879,14 @@ export function SuitesNormalHomepagePage({
         .then((data) =>
           softApplyConfig(doc, cms, data).then(() => {
             layoutSuitesMobileScenes(doc);
+            applySuitesLiveText(doc, suitesCopy);
           }),
         )
         .catch(() => undefined);
     } finally {
       applyLockRef.current = false;
     }
-  }, [loadSuitesConfig, softApplyConfig]);
+  }, [loadSuitesConfig, softApplyConfig, suitesCopy]);
 
   useEffect(() => {
     let dispose: (() => void) | undefined;
@@ -829,4 +965,3 @@ export function SuitesNormalHomepagePage({
     </main>
   );
 }
-
