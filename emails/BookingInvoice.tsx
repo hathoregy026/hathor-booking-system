@@ -1,23 +1,25 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { interpolateEmailText } from "@/lib/email-templates";
+import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { AmountCallout, BookingCodeCard, PaymentPlanTable, TeamMessage } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
 import { EmailBodyText, EmailCtaButton, EmailEyebrow, EmailHeading, GoldDivider } from "./components/EmailUi";
-import { sampleBookingDetails, sampleGuestName, sampleInvoiceInstructions } from "./sample-data";
+import { sampleBookingDetails, sampleGuestName, sampleInvoicePaymentLink } from "./sample-data";
 
 type BookingInvoiceEmailProps = {
   guestName: string;
   details: BookingEmailDetails;
-  /** Written by the team when confirming: bank details or the secure card payment link. */
-  instructions: string;
+  /** The secure payment link the team pastes when confirming: the email's "Pay now" button. */
+  paymentLink?: string;
+  /** Anything else the team writes when confirming (bank details, a note). Optional. */
+  instructions?: string;
 } & EmailTemplateOverrides;
 
 export const PreviewProps: BookingInvoiceEmailProps = {
   guestName: sampleGuestName,
   details: sampleBookingDetails,
-  instructions: sampleInvoiceInstructions,
+  paymentLink: sampleInvoicePaymentLink,
 };
 
 const DEFAULT_HERO = "Your Invoice";
@@ -27,7 +29,8 @@ const DEFAULT_BODY =
 export default function BookingInvoiceEmail({
   guestName = sampleGuestName,
   details = sampleBookingDetails,
-  instructions = sampleInvoiceInstructions,
+  paymentLink,
+  instructions,
   logoUrl,
   heroImageUrl,
   primaryColor,
@@ -35,8 +38,9 @@ export default function BookingInvoiceEmail({
   heroHeading,
   bodyText,
 }: BookingInvoiceEmailProps) {
-  const heading = (interpolateEmailText(heroHeading ?? DEFAULT_HERO, { guestName }).split(",")[0] || DEFAULT_HERO).trim();
-  const body = bodyText?.trim() || DEFAULT_BODY;
+  const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
   const due = details.paymentPlan?.find(stage => stage.state === "due");
   const method = details.paymentMethod ?? "your chosen method";
 
@@ -51,7 +55,7 @@ export default function BookingInvoiceEmail({
     >
       <EmailEyebrow>Invoice</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      <EmailBodyText>For {guestName}</EmailBodyText>
+      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
 
@@ -59,11 +63,20 @@ export default function BookingInvoiceEmail({
         <AmountCallout
           label="Due now to confirm"
           amount={due.amount}
-          note={`Total voyage ${details.totalPrice} · paid by ${method}`}
+          note={`${due.percent ? `${due.percent}% of your ${details.totalPrice} voyage` : `Total voyage ${details.totalPrice}`} · paid by ${method}`}
         />
       ) : null}
 
-      <TeamMessage title={`How to pay by ${method}`} text={instructions} />
+      {paymentLink ? (
+        <>
+          <EmailCtaButton href={paymentLink} label={due ? `Pay ${due.amount} securely` : "Pay securely"} />
+          <EmailBodyText muted>
+            If the button does not open, copy this secure payment link into your browser: {paymentLink}
+          </EmailBodyText>
+        </>
+      ) : null}
+
+      {instructions?.trim() ? <TeamMessage title={`How to pay by ${method}`} text={instructions} /> : null}
 
       {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
       {details.paymentPlan ? <PaymentPlanTable stages={details.paymentPlan} /> : null}

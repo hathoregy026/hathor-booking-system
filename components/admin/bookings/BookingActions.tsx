@@ -6,6 +6,7 @@ import { useToast } from "@/components/admin/ToastProvider";
 import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
+import { paymentPlan, stageTitle } from "@/lib/booking-code";
 
 export type BookingActionKind =
   | "confirm"
@@ -18,20 +19,31 @@ export type BookingActionKind =
 
 type MailResult = { sent: boolean; to: string | null; error?: string } | null;
 
+/** The optional note under the pay button. Card payments need only the link, so their note starts empty. */
 const INSTRUCTION_DEFAULTS: Record<string, string> = {
   BANK_TRANSFER:
     "Please transfer {amount} to:\n\nBank: \nAccount name: Hathor Cruise\nIBAN: \nSWIFT / BIC: \n\nUse your booking code {code} as the transfer reference, and reply to this email with the transfer receipt.",
-  VISA:
-    "Pay {amount} securely by Visa using this link:\n[paste your secure payment link]\n\nReply to this email once you have paid and we will confirm your booking.",
+  VISA: "",
 };
 
 const storageKey = (method: string | null) => `hathor-invoice-instructions:${method ?? "ANY"}`;
 
 function readInstructions(method: string | null): string {
+  const fallback = INSTRUCTION_DEFAULTS[method ?? ""] ?? INSTRUCTION_DEFAULTS.BANK_TRANSFER!;
   try {
-    return localStorage.getItem(storageKey(method)) ?? INSTRUCTION_DEFAULTS[method ?? ""] ?? INSTRUCTION_DEFAULTS.BANK_TRANSFER!;
+    const saved = localStorage.getItem(storageKey(method));
+    // Older notes carried a "[paste …link]" placeholder; the link has its own field now.
+    return saved && !/\[paste/i.test(saved) ? saved : fallback;
   } catch {
-    return INSTRUCTION_DEFAULTS[method ?? ""] ?? INSTRUCTION_DEFAULTS.BANK_TRANSFER!;
+    return fallback;
+  }
+}
+
+function isSecureLink(value: string) {
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
   }
 }
 
@@ -134,9 +146,13 @@ export function BookingActionDialog({
 
   const dueNow = dueNowCents(booking);
   const amountText = formatPrice(dueNow);
+  /** Each payment with its own amount, worked out from the booking's schedule. */
+  const plan = paymentPlan(booking.paymentSchedule, booking.paidCents);
+  const duePercent = booking.totalPriceCents > 0 && dueNow > 0 ? Math.round((dueNow / booking.totalPriceCents) * 100) : null;
   const [instructions, setInstructions] = useState(() =>
     readInstructions(booking.paymentMethod).split("{amount}").join(amountText).split("{code}").join(booking.code),
   );
+  const [paymentLink, setPaymentLink] = useState("");
   const [declineMessage, setDeclineMessage] = useState("");
   const [notify, setNotify] = useState(true);
   const [replySubject, setReplySubject] = useState("");
@@ -189,11 +205,15 @@ export function BookingActionDialog({
     event.preventDefault();
     void run(async () => {
       if (kind === "confirm") {
-        if (/\[paste/i.test(instructions)) throw new Error("Replace the [paste …] placeholder with the real payment details first.");
-        const blank = /^\s*(Bank|IBAN|SWIFT[^:\n]*|Account[^:\n]*):[ \t]*$/im.exec(instructions);
-        if (blank) throw new Error(`Fill in “${blank[1]}” before sending the invoice.`);
-        const result = await patch({ type: "accept", instructions });
-        rememberInstructions(booking.paymentMethod, instructions, amountText, booking.code);
+        const link = paymentLink.trim();
+        const note = instructions.trim();
+        if (link && !isSecureLink(link)) throw new Error("Paste the full secure payment link — it starts with https://.");
+        if (!link && note.length < 10) throw new Error("Paste the payment link, or write how to pay in the note.");
+        if (/\[paste/i.test(note)) throw new Error("Replace the [paste …] placeholder in the note first.");
+        const blank = note ? /^\s*(Bank|IBAN|SWIFT[^:\n]*|Account[^:\n]*):[ \t]*$/im.exec(note) : null;
+        if (blank) throw new Error(`Fill in “${blank[1]}” in the note before sending the invoice.`);
+        const result = await patch({ type: "accept", paymentLink: link || undefined, instructions: note.length >= 10 ? note : undefined });
+        if (note) rememberInstructions(booking.paymentMethod, note, amountText, booking.code);
         report(
           booking.acceptedAt ? "" : "Request confirmed.",
           result.email,
@@ -262,22 +282,66 @@ export function BookingActionDialog({
       <Dialog title={booking.acceptedAt ? "Send the invoice again" : "Confirm & send invoice"} kicker={who} onClose={onClose}>
         <form onSubmit={submit}>
           <p className="text-sm text-muted">
-            The guest receives a branded invoice with the deposit due, your payment instructions and the full payment schedule.
-            The booking turns <strong>Confirmed</strong> automatically when you record a payment that covers the deposit.
+            The amounts are already worked out from the voyage total. Paste your secure payment link: the guest&rsquo;s
+            invoice shows the amount due now as a &ldquo;Pay&rdquo; button, with the full payment schedule. The booking turns{" "}
+            <strong>Confirmed</strong> automatically when you record a payment that covers the deposit.
           </p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             <Fact label="Pays by" value={paymentMethodLabel(booking.paymentMethod)} />
-            <Fact label="Due now" value={amountText} />
+            <Fact label={duePercent ? `Due now · ${duePercent}%` : "Due now"} value={amountText} />
             <Fact label="Total" value={formatPrice(booking.totalPriceCents)} />
           </div>
+          {plan.length > 0 ? (
+            <ol className="mt-3 overflow-hidden rounded-xl border text-sm" style={{ borderColor: "var(--border)" }}>
+              {plan.map(stage => (
+                <li
+                  key={stage.milestone}
+                  className="flex items-center justify-between gap-3 border-b px-3 py-2 last:border-b-0"
+                  style={{ borderColor: "var(--border)", background: stage.state === "due" ? "var(--bg-secondary)" : undefined }}
+                >
+                  <span className="min-w-0">
+                    <span className="block font-medium">
+                      {stageTitle(stage.milestone)}
+                      {booking.totalPriceCents > 0 ? ` · ${Math.round((stage.amountCents / booking.totalPriceCents) * 100)}%` : ""}
+                    </span>
+                    <span className="block text-xs text-muted">
+                      {stage.state === "paid"
+                        ? "Paid"
+                        : stage.milestone === "INITIAL"
+                          ? "With this invoice"
+                          : stage.dueAt
+                            ? `By ${new Date(stage.dueAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}`
+                            : "Before departure"}
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-semibold tabular">{formatPrice(stage.amountCents)}</span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
           <div className="mt-5">
-            <Field label={`How to pay by ${paymentMethodLabel(booking.paymentMethod)}`} hint="Remembered for the next invoice with this payment method.">
+            <Field label="Secure payment link" hint={`Paste the link from your payment provider for ${amountText}. The email turns it into a “Pay ${amountText} securely” button.`}>
+              <input
+                type="url"
+                inputMode="url"
+                className="input h-11 w-full px-3 text-sm"
+                placeholder="https://"
+                value={paymentLink}
+                onChange={(e) => setPaymentLink(e.target.value)}
+                maxLength={2000}
+                autoFocus
+              />
+            </Field>
+          </div>
+          <div className="mt-4">
+            <Field
+              label={`Note to the guest (optional)`}
+              hint={`Bank details or anything else about paying by ${paymentMethodLabel(booking.paymentMethod)}. Remembered for the next invoice with this payment method.`}
+            >
               <textarea
-                className="input min-h-[11rem] px-3 py-2.5 text-sm leading-relaxed"
+                className="input min-h-[7rem] px-3 py-2.5 text-sm leading-relaxed"
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
-                required
-                minLength={10}
                 maxLength={4000}
               />
             </Field>

@@ -34,6 +34,7 @@ const TEMPLATE_LABELS: Record<EmailTemplateName, string> = {
   BookingMessage: "Team Reply",
   AdminAlert: "Admin Alert",
   ContactReceived: "Contact Reply",
+  ContactAlert: "Contact Alert",
 };
 
 type EmailTemplatePreviewModalProps = {

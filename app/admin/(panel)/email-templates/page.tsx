@@ -65,7 +65,19 @@ const TEMPLATE_META: Record<
     description:
       "Sent to guests after they contact us. Edit the thank-you heading and message here.",
   },
+  ContactAlert: {
+    label: "Contact Alert",
+    description:
+      "Your team's copy of every contact and charter message: the guest's details and message, with a Reply button. Use {inquiryType} for “Contact inquiry” or “Charter request”.",
+  },
 };
+
+/** The words each email fills in for you. */
+function variablesFor(name: EmailTemplateName): string {
+  if (name === "ContactReceived") return "{guestName}";
+  if (name === "ContactAlert") return "{guestName}, {inquiryType}";
+  return "{guestName}, {bookingCode}";
+}
 
 function pickShared(templates: EmailTemplateRecord[]): SharedBranding {
   const first = templates[0];
@@ -420,7 +432,7 @@ export default function AdminEmailTemplatesPage() {
                 className="mt-1 block text-xs"
                 style={{ color: "var(--text-secondary)" }}
               >
-                Use {"{guestName}"} where needed.
+                You can use {variablesFor(activeCopy.name)} in the subject, heading and text; they are filled in for each email.
               </span>
             </label>
 

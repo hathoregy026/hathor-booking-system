@@ -16,6 +16,8 @@ export type AdminBookingStage =
   | "cancelled"
   | "expired";
 
+export type AdminPaymentStage = { milestone: string; cumulativeCents: number; dueAt: string | null };
+
 export type AdminBookingDto = {
   id: string;
   code: string;
@@ -41,6 +43,8 @@ export type AdminBookingDto = {
   paidCents: number;
   /** The first stage of the payment schedule: what confirms the booking. */
   depositCents: number | null;
+  /** Every stage of the payment schedule, cumulative, in order. */
+  paymentSchedule: AdminPaymentStage[];
   paymentMethod: string | null;
   requestedAt: string | null;
   acceptedAt: string | null;

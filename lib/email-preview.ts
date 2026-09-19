@@ -6,6 +6,7 @@ import BookingDeclinedEmail, { PreviewProps as DeclinedPreview } from "@/emails/
 import BookingInvoiceEmail, { PreviewProps as InvoicePreview } from "@/emails/BookingInvoice";
 import BookingMessageEmail, { PreviewProps as MessagePreview } from "@/emails/BookingMessage";
 import ContactReceivedEmail from "@/emails/ContactReceived";
+import ContactAlertEmail, { PreviewProps as ContactAlertPreview } from "@/emails/ContactAlert";
 import { sampleBookingDetails, sampleGuestName } from "@/emails/sample-data";
 import {
   HATHOR_EMAIL_HERO_URL,
@@ -160,6 +161,8 @@ async function renderTemplateHtml(
           ...overrides,
         }),
       );
+    case "ContactAlert":
+      return render(ContactAlertEmail({ ...ContactAlertPreview, ...overrides }));
   }
 }
 
@@ -170,6 +173,7 @@ export async function renderEmailTemplatePreview(
   const subject = interpolateEmailText(template.subject, {
     guestName: sampleGuestName,
     bookingCode: sampleBookingDetails.bookingCode ?? "",
+    inquiryType: "Charter request",
   });
 
   return {

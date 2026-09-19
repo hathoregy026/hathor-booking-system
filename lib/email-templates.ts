@@ -17,6 +17,7 @@ export const EMAIL_TEMPLATE_NAMES = [
   "BookingMessage",
   "AdminAlert",
   "ContactReceived",
+  "ContactAlert",
 ] as const;
 
 export type EmailTemplateName = (typeof EMAIL_TEMPLATE_NAMES)[number];
@@ -123,6 +124,16 @@ const DEFAULT_TEMPLATES: Record<EmailTemplateName, Omit<EmailTemplateRecord, "id
     heroHeading: "Thank you, {guestName}",
     bodyText:
       "Your note has reached the Hathor reservations desk. We will reply within 24 hours.",
+  },
+  ContactAlert: {
+    name: "ContactAlert",
+    subject: "Hathor {inquiryType} — {guestName}",
+    logoUrl: HATHOR_EMAIL_LOGO_URL,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    primaryColor: emailColors.gold,
+    backgroundColor: emailColors.background,
+    heroHeading: "New Message From {guestName}",
+    bodyText: "Reply straight from your inbox: the guest's email is the reply-to address of this message.",
   },
 };
 
@@ -309,4 +320,32 @@ export function getEmailTemplatePreviewHeroSrc(
   template: EmailTemplateRecord,
 ): string | null {
   return pickReliableEmailImageUrl(template.heroImageUrl) ?? HATHOR_EMAIL_HERO_URL;
+}
+
+/** Words the team can use in any subject, heading or body: {guestName}, {bookingCode}. */
+export const EMAIL_TEXT_VARIABLES = ["{guestName}", "{bookingCode}"] as const;
+
+/**
+ * A heading exactly as the team wrote it, with its words filled in. When it
+ * already names the guest, emails leave out their separate "For {name}" line.
+ */
+export function resolveEmailHeading(
+  heading: string | null | undefined,
+  fallback: string,
+  vars: Record<string, string>,
+): { heading: string; namesGuest: boolean } {
+  const source = heading?.trim() || fallback;
+  return {
+    heading: interpolateEmailText(source, vars).trim() || fallback,
+    namesGuest: source.includes("{guestName}"),
+  };
+}
+
+/** Body text as the team wrote it, with {guestName} and {bookingCode} filled in. */
+export function resolveEmailBody(
+  body: string | null | undefined,
+  fallback: string,
+  vars: Record<string, string>,
+): string {
+  return interpolateEmailText(body?.trim() || fallback, vars);
 }

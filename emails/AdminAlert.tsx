@@ -1,7 +1,7 @@
 import { Text } from "@react-email/components";
 import { format } from "date-fns";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { interpolateEmailText } from "@/lib/email-templates";
+import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { BookingSummary, GuestInfoTable } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
@@ -36,10 +36,9 @@ export default function AdminAlertEmail({
   heroHeading,
   bodyText,
 }: AdminAlertEmailProps) {
-  const heading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, {
-    guestName: details.guestName,
-  });
-  const body = bodyText?.trim() || DEFAULT_BODY;
+  const vars = { guestName: details.guestName, bookingCode: details.bookingCode ?? details.bookingId };
+  const { heading } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
   const receivedAt = new Date();
   const receivedDate = format(receivedAt, "MMMM d, yyyy");
   const receivedTime = format(receivedAt, "h:mm a");

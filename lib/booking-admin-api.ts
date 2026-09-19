@@ -18,9 +18,21 @@ export function bookingAdminSession(request: NextRequest) {
 
 const teamText = z.string().trim().max(4000);
 
+function isSecureLink(value: string) {
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export const staffActionSchema = z.discriminatedUnion("type", [
-  // Confirm: accept the request and email the invoice with these payment instructions.
-  z.object({ type: z.literal("accept"), instructions: teamText.min(10).optional() }).strict(),
+  // Confirm: accept the request and email the invoice with the payment link and/or payment instructions.
+  z.object({
+    type: z.literal("accept"),
+    instructions: teamText.min(10).optional(),
+    paymentLink: z.string().trim().max(2000).refine(isSecureLink, "Paste the full secure payment link (it starts with https://).").optional(),
+  }).strict(),
   z.object({ type: z.literal("decline"), message: teamText.optional(), notify: z.boolean().default(true) }).strict(),
   z.object({ type: z.literal("cancel"), reason: z.enum(["CANCELLATION","NO_SHOW","EARLY_DEPARTURE"]).default("CANCELLATION") }).strict(),
   z.object({ type: z.literal("record-payment"), payment: z.object({
@@ -55,7 +67,8 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
 
   if (action.type === "accept") {
     await administerBooking(id, { type: "accept" });
-    return "instructions" in action && action.instructions ? { email: await sendInvoice(id, action.instructions) } : {};
+    const invoice = "instructions" in action ? { instructions: action.instructions, paymentLink: action.paymentLink } : {};
+    return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice) } : {};
   }
 
   if (action.type === "decline") {

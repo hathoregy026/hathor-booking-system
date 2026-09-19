@@ -51,7 +51,7 @@ export function PaymentPlanTable({ stages, title = "Payment Schedule" }: { stage
                   return (
                     <tr key={`${stage.title}-${index}`}>
                       <td style={{ backgroundColor: background, borderBottom: `1px solid ${emailColors.borderSolid}`, padding: "14px 16px", verticalAlign: "top" }}>
-                        <Text style={{ color: emailColors.ink, fontFamily: emailFonts.body, fontSize: "14px", fontWeight: 500, lineHeight: "1.4", margin: "0 0 2px" }}>{stage.title}</Text>
+                        <Text style={{ color: emailColors.ink, fontFamily: emailFonts.body, fontSize: "14px", fontWeight: 500, lineHeight: "1.4", margin: "0 0 2px" }}>{stage.percent ? `${stage.title} · ${stage.percent}%` : stage.title}</Text>
                         <Text style={{ color: emailColors.textMuted, fontFamily: emailFonts.body, fontSize: "12px", fontWeight: 300, lineHeight: "1.5", margin: 0 }}>{stage.when}</Text>
                       </td>
                       <td align="right" style={{ backgroundColor: background, borderBottom: `1px solid ${emailColors.borderSolid}`, padding: "14px 16px", verticalAlign: "top", whiteSpace: "nowrap" }}>

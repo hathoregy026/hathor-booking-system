@@ -68,10 +68,20 @@ export async function PUT(request: NextRequest) {
     const shared = body.shared ?? {};
     const primaryColor = shared.primaryColor?.trim() || "#b69f64";
     const backgroundColor = shared.backgroundColor?.trim() || "#ece4da";
+    // A colour goes into every email's styles: only #rrggbb is accepted.
+    for (const [label, value] of [["Primary colour", primaryColor], ["Background colour", backgroundColor]] as const) {
+      if (!/^#[0-9a-f]{6}$/i.test(value)) return jsonError(`${label} must be a colour like #b69f64.`, 400);
+    }
 
     const incoming = body.templates ?? [];
     if (!incoming.length) {
       return jsonError("templates array is required", 400);
+    }
+    for (const entry of incoming) {
+      const label = entry.name ?? "a template";
+      if ((entry.subject?.trim().length ?? 0) > 200) return jsonError(`The subject of ${label} is longer than 200 characters.`, 400);
+      if ((entry.heroHeading?.trim().length ?? 0) > 200) return jsonError(`The heading of ${label} is longer than 200 characters.`, 400);
+      if ((entry.bodyText?.trim().length ?? 0) > 4000) return jsonError(`The text of ${label} is longer than 4,000 characters.`, 400);
     }
 
     await withDb(async () => {

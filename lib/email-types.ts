@@ -2,6 +2,8 @@ export type EmailPaymentStage = {
   title: string;
   when: string;
   amount: string;
+  /** This stage's share of the voyage total (30, 20, 50…). */
+  percent?: number;
   state: "paid" | "due" | "upcoming";
 };
 

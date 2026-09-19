@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 import ContactReceivedEmail from "@/emails/ContactReceived";
+import ContactAlertEmail, { type ContactAlertLine } from "@/emails/ContactAlert";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { getSiteBaseUrl } from "@/lib/public-url";
 import {
@@ -44,14 +45,6 @@ export type InquiryPayload = {
   selection?: SelectionEnquiry;
 };
 
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
 export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
   const resend = getResend();
   const adminEmail = getAdminNotificationEmail();
@@ -61,52 +54,20 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
   }
 
   const label = payload.type === "charter" ? "Charter request" : "Contact inquiry";
-  const lines = [
-    `<p><strong>Type:</strong> ${escapeHtml(label)}</p>`,
-    `<p><strong>Name:</strong> ${escapeHtml(payload.name)}</p>`,
-    `<p><strong>Email:</strong> ${escapeHtml(payload.email)}</p>`,
-  ];
-
-  if (payload.phone) {
-    lines.push(`<p><strong>Phone:</strong> ${escapeHtml(payload.phone)}</p>`);
-  }
-  if (payload.address) {
-    lines.push(`<p><strong>Address:</strong> ${escapeHtml(payload.address)}</p>`);
-  }
-  if (payload.checkIn) {
-    lines.push(`<p><strong>Check-in:</strong> ${escapeHtml(payload.checkIn)}</p>`);
-  }
-  if (payload.adults !== undefined) {
-    lines.push(`<p><strong>Adults:</strong> ${payload.adults}</p>`);
-  }
-  if (payload.children !== undefined) {
-    lines.push(`<p><strong>Children:</strong> ${payload.children}</p>`);
-  }
-  if (payload.preferredRoute) {
-    lines.push(
-      `<p><strong>Preferred route:</strong> ${escapeHtml(payload.preferredRoute)}</p>`,
-    );
-  }
-
   /*
-   * Resolved server-side from trusted catalog data. No client-supplied price,
-   * name or route reaches this block.
+   * Selection lines are resolved server-side from trusted catalog data. No
+   * client-supplied price, name or route reaches this block.
    */
   const selectionLines = resolveSelectionSummary(payload.selection);
-
-  if (selectionLines.length > 0) {
-    lines.push(`<hr>`, `<p><strong>HATHOR VOYAGE SELECTION</strong></p>`);
-    for (const line of selectionLines) {
-      lines.push(
-        `<p><strong>${escapeHtml(line.label)}:</strong> ${escapeHtml(line.value)}</p>`,
-      );
-    }
-    lines.push(`<hr>`);
-  }
-
-  lines.push(
-    `<p><strong>Message:</strong></p><p>${escapeHtml(payload.message).replaceAll("\n", "<br>")}</p>`,
-  );
+  const detailLines: ContactAlertLine[] = [
+    payload.phone ? { label: "Phone", value: payload.phone } : null,
+    payload.address ? { label: "Address", value: payload.address } : null,
+    payload.checkIn ? { label: "Check-in", value: payload.checkIn } : null,
+    payload.adults !== undefined ? { label: "Adults", value: String(payload.adults) } : null,
+    payload.children !== undefined ? { label: "Children", value: String(payload.children) } : null,
+    payload.preferredRoute ? { label: "Preferred route", value: payload.preferredRoute } : null,
+    ...selectionLines.map(line => ({ label: `Voyage selection · ${line.label}`, value: line.value })),
+  ].filter((line): line is ContactAlertLine => line !== null);
 
   const adminText = [
     `Type: ${label}`,
@@ -133,6 +94,20 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
     .join("\n");
 
   const siteUrl = getSiteBaseUrl().replace(/\/$/, "");
+  // The team's copy: Dashboard → Email Templates → Contact Alert.
+  const alertTemplate = await getEmailTemplateForSend("ContactAlert");
+  const alertVars = { guestName: payload.name, inquiryType: label };
+  const adminHtml = await render(
+    ContactAlertEmail({
+      guestName: payload.name,
+      guestEmail: payload.email,
+      inquiryType: label,
+      lines: detailLines,
+      message: payload.message,
+      ...buildEmailSendTheme(alertTemplate),
+    }),
+  );
+
   const template = await getEmailTemplateForSend("ContactReceived");
   const theme = buildEmailSendTheme(template);
   const guestSubject = resolveEmailSubject(template, {
@@ -171,8 +146,8 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
       from: getResendFromAddress(),
       to: adminEmail,
       replyTo: payload.email,
-      subject: `Hathor ${label} — ${payload.name}`,
-      html: lines.join("\n"),
+      subject: resolveEmailSubject(alertTemplate, alertVars),
+      html: adminHtml,
       text: adminText,
       tags: [{ name: "message_type", value: "contact_admin" }],
     },

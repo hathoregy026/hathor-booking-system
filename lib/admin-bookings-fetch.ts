@@ -1,4 +1,4 @@
-import { bookingStage, type AdminBookingCabin, type AdminBookingDto } from "@/lib/admin-bookings";
+import { bookingStage, type AdminBookingCabin, type AdminBookingDto, type AdminPaymentStage } from "@/lib/admin-bookings";
 import { bookingCode } from "@/lib/booking-code";
 import { bookingQuery } from "@/lib/booking-database";
 import { parseBookingCustomerName } from "@/lib/booking-guest-details";
@@ -33,6 +33,7 @@ type SqlRow = {
   totalPriceCents: number;
   paidCents: number;
   depositCents: number | null;
+  schedule: AdminPaymentStage[] | null;
 };
 
 const LIST_SQL = `
@@ -101,7 +102,11 @@ const LIST_SQL = `
     ) AS "paidCents",
     (SELECT MIN(s."cumulativeCents")::int
      FROM "BookingPaymentSchedule" s
-     WHERE s."bookingId" = b.id) AS "depositCents"
+     WHERE s."bookingId" = b.id) AS "depositCents",
+    (SELECT json_agg(json_build_object('milestone', s.milestone, 'cumulativeCents', s."cumulativeCents",
+       'dueAt', to_char(s."dueAt", 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')) ORDER BY s."cumulativeCents")
+     FROM "BookingPaymentSchedule" s
+     WHERE s."bookingId" = b.id) AS schedule
   FROM "Booking" b
   INNER JOIN "CruiseSchedule" cs ON cs.id = b."cruiseScheduleId"
   INNER JOIN "Cruise" c ON c.id = cs."cruiseId"
@@ -153,6 +158,7 @@ function mapRow(row: SqlRow): AdminBookingDto {
     totalPriceCents,
     paidCents,
     depositCents: row.depositCents,
+    paymentSchedule: row.schedule ?? [],
     paymentMethod: row.paymentMethod,
     requestedAt: iso(row.requestedAt),
     acceptedAt: iso(row.acceptedAt),

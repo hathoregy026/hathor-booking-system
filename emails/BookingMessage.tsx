@@ -1,5 +1,5 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { interpolateEmailText } from "@/lib/email-templates";
+import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { TeamMessage } from "./components/BookingBlocks";
 import { EmailLayout } from "./components/EmailLayout";
@@ -32,8 +32,9 @@ export default function BookingMessageEmail({
   heroHeading,
   bodyText,
 }: BookingMessageEmailProps) {
-  const heading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, { guestName }).trim() || DEFAULT_HERO;
-  const body = bodyText?.trim() || DEFAULT_BODY;
+  const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
+  const { heading } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
   const code = details.bookingCode ?? details.bookingId;
 
   return (

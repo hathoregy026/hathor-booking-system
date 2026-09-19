@@ -1,5 +1,5 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { interpolateEmailText } from "@/lib/email-templates";
+import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { AmountCallout, BookingCodeCard, PaymentPlanTable } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
@@ -52,12 +52,9 @@ export default function BookingConfirmedEmail({
   heroHeading,
   bodyText,
 }: BookingConfirmedEmailProps) {
-  const rawHeading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, {
-    guestName,
-  });
-  /* Short display title; guest name is shown on the line below. */
-  const heading = (rawHeading.split(",")[0] || DEFAULT_HERO).trim();
-  const body = bodyText?.trim() || DEFAULT_BODY;
+  const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
   const remaining = details.paymentPlan?.filter(stage => stage.state !== "paid") ?? [];
 
   return (
@@ -71,7 +68,7 @@ export default function BookingConfirmedEmail({
     >
       <EmailEyebrow>Reservation</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      <EmailBodyText>For {guestName}</EmailBodyText>
+      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
 

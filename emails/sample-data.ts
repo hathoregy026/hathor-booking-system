@@ -17,13 +17,16 @@ export const sampleBookingDetails: BookingEmailDetails = {
   amountPaid: "USD 2,100",
   balanceDue: "USD 4,900",
   paymentPlan: [
-    { title: "Deposit to confirm", when: "On receipt of this invoice", amount: "USD 2,100", state: "due" },
-    { title: "Second payment · 60 days before", when: "By May 5, 2026", amount: "USD 1,400", state: "upcoming" },
-    { title: "Final balance · 45 days before", when: "By May 20, 2026", amount: "USD 3,500", state: "upcoming" },
+    { title: "Deposit to confirm", when: "On receipt of this invoice", amount: "USD 2,100", percent: 30, state: "due" },
+    { title: "Second payment · 60 days before", when: "By May 5, 2026", amount: "USD 1,400", percent: 20, state: "upcoming" },
+    { title: "Final balance · 45 days before", when: "By May 20, 2026", amount: "USD 3,500", percent: 50, state: "upcoming" },
   ],
 };
 
 export const sampleGuestName = "Amelia Carter";
+
+/** A secure payment link, as the team pastes it when confirming. */
+export const sampleInvoicePaymentLink = "https://pay.example.com/hathor/HB-3F2A91C0";
 
 export const sampleInvoiceInstructions =
   "Please transfer the deposit to:\nHathor Cruise — Bank account details\nIBAN: EG00 0000 0000 0000 0000 0000 000\nSWIFT: XXXXEGCX\n\nUse your booking code as the transfer reference.";

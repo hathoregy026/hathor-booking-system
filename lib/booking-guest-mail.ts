@@ -58,6 +58,7 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
       title: stageTitle(stage.milestone),
       when: stageWhen(stage.milestone, stage.dueAt, stage.state),
       amount: formatPrice(stage.amountCents),
+      percent: total > 0 ? Math.round((stage.amountCents / total) * 100) : undefined,
       state: stage.state,
     })),
   };
@@ -76,8 +77,9 @@ async function deliver(id: string, send: (details: BookingEmailDetails) => Promi
   }
 }
 
-export function sendInvoice(id: string, instructions: string) {
-  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, instructions));
+/** The invoice: the amount due now (worked out from the plan), the team's payment link and any note. */
+export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }) {
+  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice));
 }
 
 export function sendConfirmation(id: string) {

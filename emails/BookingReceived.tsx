@@ -1,5 +1,5 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
-import { interpolateEmailText } from "@/lib/email-templates";
+import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { BookingCodeCard } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
@@ -38,11 +38,9 @@ export default function BookingReceivedEmail({
   heroHeading,
   bodyText,
 }: BookingReceivedEmailProps) {
-  const rawHeading = interpolateEmailText(heroHeading ?? DEFAULT_HERO, {
-    guestName,
-  });
-  const heading = (rawHeading.split(",")[0] || DEFAULT_HERO).trim();
-  const body = bodyText?.trim() || DEFAULT_BODY;
+  const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
 
   return (
     <EmailLayout
@@ -55,7 +53,7 @@ export default function BookingReceivedEmail({
     >
       <EmailEyebrow>Booking Request</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      <EmailBodyText>For {guestName}</EmailBodyText>
+      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
       {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
