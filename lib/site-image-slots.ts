@@ -621,6 +621,15 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 4,
   },
   {
+    // One photograph across the top of the booking steps (Journey, Details & Payment, Request sent).
+    name: "booking-banner",
+    altText: "Hathor Dahabiya sailing the Nile",
+    url: "/media/hathor/optimized/home-voyage-4n-luxor-aswan.webp",
+    category: "hero",
+    pagePath: "/booking",
+    displayOrder: 0,
+  },
+  {
     name: "contact-hero",
     altText: "Hathor Dahabiya on the Nile",
     url: HATHOR_MEDIA.heroContact,

@@ -7,7 +7,7 @@ import { itineraryFor } from "@/lib/booking-itineraries";
 import { paymentSchedule } from "@/lib/payment-schedule";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PhysicalRoomType, RequestedRoom } from "@/lib/physical-inventory";
-import { JourneyProgress, PanelHead, StepBanner, StepGuide, type JourneyStep } from "./JourneyChrome";
+import { JourneyBand, JourneyProgress, PanelHead, ScrollCue, StepBanner, StepGuide, type JourneyStep } from "./JourneyChrome";
 import { ItineraryAccordion, VoyagePicker } from "./ItineraryPanel";
 import { SailingCalendar } from "./SailingCalendar";
 import { GuestsSuitesScreen } from "./GuestsSuites";
@@ -494,8 +494,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   return (
     <div className={`hj hj--step-${view}`} style={scene}>
       <div className="hj-folio" id="hj-folio-top" ref={stageRef}>
-        <JourneyProgress step={view} onJump={jump} />
-
         {view === 1 ? (
           <StepBanner
             step={1}
@@ -503,7 +501,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             title="Plan Your Journey"
             lede="Three extraordinary voyages. One timeless river."
             quote="More than a journey."
-            image={voyage.image}
           />
         ) : null}
         {view === 3 ? (
@@ -513,9 +510,9 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             title="Details & Payment"
             lede="A few details to complete your reservation."
             quote="A slower, richer way to see Egypt."
-            image={voyage.image}
           />
         ) : null}
+        <JourneyProgress step={view} onJump={jump} />
 
         {view === 1 ? (
           <div className="hj-stage">
@@ -552,6 +549,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
                 </span>
               </p>
 
+              <JourneyBand />
               <div className="hj-actions">
                 <span className="hj-actions__hint">
                   {sailing ? `${voyage.title} · ${folioRange(sailing.departureTime, sailing.arrivalTime)}` : "Choose a sailing date to continue."}
@@ -609,8 +607,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             cabins={cabins}
             totalCents={totalCents}
             onEdit={() => jump(1)}
+            details={rail}
+            ready={issues.length === 0}
+            busy={busy}
+            onContinue={() => void continueToDetails()}
           />
         ) : null}
+        <ScrollCue />
 
         {view === 3 && sailing ? (
           <div className="hj-stage">

@@ -182,6 +182,7 @@ const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
   "landmark-hatshepsut": "/highlights",
   "landmark-valley-kings": "/highlights",
   "contact-hero": "/contact",
+  "booking-banner": "/booking",
   "blog-hero": "/blogs",
 
   "scraped-suites-hero": "/suites",

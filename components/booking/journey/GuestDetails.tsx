@@ -43,95 +43,101 @@ export function DetailsPaymentScreen({
     <div className="hj-details">
       <section>
         <span className="hj-step-label">Lead guest details</span>
-        <div className="hj-grid2">
-          <label className={`hj-field${errors.firstName ? " hj-field--invalid" : ""}`}>
-            <span>First name *</span>
-            <input value={form.firstName} autoComplete="given-name" maxLength={60} placeholder="e.g. Alex" onChange={event => onForm({ firstName: event.target.value })} />
-            {errors.firstName ? <p className="hj-error">{errors.firstName}</p> : null}
-          </label>
-          <label className={`hj-field${errors.lastName ? " hj-field--invalid" : ""}`}>
-            <span>Last name *</span>
-            <input value={form.lastName} autoComplete="family-name" maxLength={60} placeholder="e.g. Morgan" onChange={event => onForm({ lastName: event.target.value })} />
-            {errors.lastName ? <p className="hj-error">{errors.lastName}</p> : null}
-          </label>
-        </div>
-
-        <label className={`hj-field${errors.email ? " hj-field--invalid" : ""}`} style={{ marginTop: "0.7rem" }}>
-          <span>Email address *</span>
-          <input type="email" value={form.email} autoComplete="email" maxLength={254} placeholder="e.g. alex@example.com" onChange={event => onForm({ email: event.target.value })} />
-          {errors.email ? <p className="hj-error">{errors.email}</p> : null}
-        </label>
-
-        <div className="hj-grid2" style={{ marginTop: "0.7rem" }}>
-          <div className={`hj-field${errors.country ? " hj-field--invalid" : ""}`}>
-            <span id="hj-country-label">Country *</span>
-            <CountryPicker
-              value={form.countryCode}
-              labelledBy="hj-country-label"
-              invalid={Boolean(errors.country)}
-              onChange={chosen => onForm({ countryCode: chosen?.code ?? "", country: chosen?.name ?? "" })}
-            />
-            {errors.country ? <p className="hj-error">{errors.country}</p> : null}
+        <div className="hj-lead">
+          <div className="hj-grid2">
+            <label className={`hj-field${errors.firstName ? " hj-field--invalid" : ""}`}>
+              <span>First name *</span>
+              <input value={form.firstName} autoComplete="given-name" maxLength={60} placeholder="e.g. Alex" onChange={event => onForm({ firstName: event.target.value })} />
+              {errors.firstName ? <p className="hj-error">{errors.firstName}</p> : null}
+            </label>
+            <label className={`hj-field${errors.lastName ? " hj-field--invalid" : ""}`}>
+              <span>Last name *</span>
+              <input value={form.lastName} autoComplete="family-name" maxLength={60} placeholder="e.g. Morgan" onChange={event => onForm({ lastName: event.target.value })} />
+              {errors.lastName ? <p className="hj-error">{errors.lastName}</p> : null}
+            </label>
           </div>
-          <label className={`hj-field${errors.phone ? " hj-field--invalid" : ""}`}>
-            <span>Phone *</span>
-            <span className="hj-phone">
-              <span className="hj-phone__code" aria-label={country ? `Country code for ${country.name}` : "Choose your country for its code"}>
-                {country ? `+${country.dial}` : "+"}
-              </span>
-              <input
-                type="tel"
-                inputMode="tel"
-                value={form.phone}
-                autoComplete="tel-national"
-                placeholder={country ? "Phone number" : "Choose your country first"}
-                onChange={event => onForm({ phone: event.target.value })}
-              />
-            </span>
-            {errors.phone ? <p className="hj-error">{errors.phone}</p> : null}
+
+          <label className={`hj-field${errors.email ? " hj-field--invalid" : ""}`} style={{ marginTop: "0.7rem" }}>
+            <span>Email address *</span>
+            <input type="email" value={form.email} autoComplete="email" maxLength={254} placeholder="e.g. alex@example.com" onChange={event => onForm({ email: event.target.value })} />
+            {errors.email ? <p className="hj-error">{errors.email}</p> : null}
           </label>
+
+          <div className="hj-grid2" style={{ marginTop: "0.7rem" }}>
+            <div className={`hj-field${errors.country ? " hj-field--invalid" : ""}`}>
+              <span id="hj-country-label">Country *</span>
+              <CountryPicker
+                value={form.countryCode}
+                labelledBy="hj-country-label"
+                invalid={Boolean(errors.country)}
+                onChange={chosen => onForm({ countryCode: chosen?.code ?? "", country: chosen?.name ?? "" })}
+              />
+              {errors.country ? <p className="hj-error">{errors.country}</p> : null}
+            </div>
+            <label className={`hj-field${errors.phone ? " hj-field--invalid" : ""}`}>
+              <span>Phone *</span>
+              <span className="hj-phone">
+                <span className="hj-phone__code" aria-label={country ? `Country code for ${country.name}` : "Choose your country for its code"}>
+                  {country ? `+${country.dial}` : "+"}
+                </span>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  value={form.phone}
+                  autoComplete="tel-national"
+                  placeholder={country ? "Phone number" : "Choose your country first"}
+                  onChange={event => onForm({ phone: event.target.value })}
+                />
+              </span>
+              {errors.phone ? <p className="hj-error">{errors.phone}</p> : null}
+            </label>
+          </div>
         </div>
 
         <span className="hj-step-label">Passenger names (as per passports)</span>
         {errors.names ? <p className="hj-error" style={{ marginBottom: "0.5rem" }}>{errors.names}</p> : null}
-        {cabins.map(cabin => (
-          <div className="hj-cabinguests" key={cabin.id}>
-            <p className="hj-cabinguests__title">{cabin.label}</p>
-            <div className="hj-grid2">
-              {cabin.guests.map(guest => (
-                <label className="hj-field" key={guest.id}>
-                  <span>{guestLabel(guest)} full name *</span>
-                  <input value={names[guest.id] ?? ""} maxLength={120} autoComplete="off" onChange={event => onName(guest.id, event.target.value)} />
-                </label>
-              ))}
+        <div className="hj-names">
+          {cabins.map(cabin => (
+            <div className="hj-cabinguests" key={cabin.id}>
+              <p className="hj-cabinguests__title">{cabin.label}</p>
+              <div className="hj-grid2">
+                {cabin.guests.map(guest => (
+                  <label className="hj-field" key={guest.id}>
+                    <span>{guestLabel(guest)} full name *</span>
+                    <input value={names[guest.id] ?? ""} maxLength={120} autoComplete="off" onChange={event => onName(guest.id, event.target.value)} />
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
-        <label className="hj-field" style={{ marginTop: "1rem" }}>
-          <span>Airport transfer (optional)</span>
-          <textarea
-            value={form.transfers}
-            maxLength={600}
-            placeholder="Would you like Hathor to arrange airport transfers?"
-            onChange={event => onForm({ transfers: event.target.value })}
-          />
-        </label>
+        <div className="hj-extras">
+          <label className="hj-field" style={{ marginTop: "1rem" }}>
+            <span>Airport transfer (optional)</span>
+            <textarea
+              value={form.transfers}
+              maxLength={600}
+              placeholder="Would you like Hathor to arrange airport transfers?"
+              onChange={event => onForm({ transfers: event.target.value })}
+            />
+          </label>
 
-        <label className="hj-field" style={{ marginTop: "0.7rem" }}>
-          <span>Dietary requirements (optional)</span>
-          <textarea value={form.dietary} maxLength={600} onChange={event => onForm({ dietary: event.target.value })} />
-        </label>
+          <label className="hj-field" style={{ marginTop: "0.7rem" }}>
+            <span>Dietary requirements (optional)</span>
+            <textarea value={form.dietary} maxLength={600} onChange={event => onForm({ dietary: event.target.value })} />
+          </label>
 
-        <label className="hj-field" style={{ marginTop: "0.7rem" }}>
-          <span>Special requests (optional)</span>
-          <textarea
-            value={form.requests}
-            maxLength={600}
-            placeholder="Celebrations, connecting cabins, or anything we should know."
-            onChange={event => onForm({ requests: event.target.value })}
-          />
-        </label>
+          <label className="hj-field" style={{ marginTop: "0.7rem" }}>
+            <span>Special requests (optional)</span>
+            <textarea
+              value={form.requests}
+              maxLength={600}
+              placeholder="Celebrations, connecting cabins, or anything we should know."
+              onChange={event => onForm({ requests: event.target.value })}
+            />
+          </label>
+        </div>
       </section>
 
       <section className="hj-pay">
@@ -165,24 +171,30 @@ export function DetailsPaymentScreen({
           </label>
         </div>
 
-        <p className="hj-pay__title" style={{ marginTop: "1.3rem" }}>Payment schedule</p>
-        <ol className="hj-schedule">
-          {schedule.map(stage => (
-            <li key={stage.milestone}>
-              <strong>{money(stage.cumulativeCents)}</strong>
-              <span>{stageLabel(stage)}</span>
-            </li>
-          ))}
-        </ol>
-        <p className="hj-ledger__note">
-          After sending your reservation request, Hathor Reservations will review the details and send the invoice with payment instructions.
-          Your cabins are reserved for you the moment you send this request.
-        </p>
+        <div className="hj-pay__pair">
+          <div className="hj-pay__col">
+            <p className="hj-pay__title" style={{ marginTop: "1.3rem" }}>Payment schedule</p>
+            <ol className="hj-schedule">
+              {schedule.map(stage => (
+                <li key={stage.milestone}>
+                  <strong>{money(stage.cumulativeCents)}</strong>
+                  <span>{stageLabel(stage)}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="hj-ledger__note">
+              After sending your reservation request, Hathor Reservations will review the details and send the invoice with payment instructions.
+              Your cabins are reserved for you the moment you send this request.
+            </p>
+          </div>
 
-        <span className="hj-step-label">Included in your voyage</span>
-        <ul className="hj-inclusions">
-          {HATHOR_BOOKING_INCLUSIONS.map(item => <li key={item}>{item}</li>)}
-        </ul>
+          <div className="hj-pay__col">
+            <span className="hj-step-label">Included in your voyage</span>
+            <ul className="hj-inclusions">
+              {HATHOR_BOOKING_INCLUSIONS.map(item => <li key={item}>{item}</li>)}
+            </ul>
+          </div>
+        </div>
 
         <span className="hj-step-label">Terms</span>
         <label className={`hj-terms${errors.terms ? " hj-field--invalid" : ""}`}>

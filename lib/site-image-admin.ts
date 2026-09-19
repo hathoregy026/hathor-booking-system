@@ -177,6 +177,7 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "charter-rhythm": "Charter — Your Own Rhythm",
   "charter-itinerary": "Charter — Voyage Around You",
   "contact-hero": "Hero — Contact",
+  "booking-banner": "Booking — banner photo (Journey, Details & Payment, Request sent)",
   "blog-hero": "Hero — Blog",
   "scraped-suites-hero": "Luxury Suites - Suites Hero Photo",
   "scraped-suites-luxury-rooms": "Luxury Suites - Luxury Rooms Card",
@@ -238,6 +239,7 @@ const SLOT_LAYOUT_KINDS: Partial<Record<SiteImageSlot["name"], SiteImageLayoutKi
     "charter-rhythm": "standard",
     "charter-itinerary": "standard",
     "contact-hero": "hero",
+    "booking-banner": "hero",
     "blog-hero": "hero",
     "room-luxury": "hero",
     "cabins-hero": "hero",
@@ -551,6 +553,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     "/highlights",
     "/charter",
     "/contact",
+    "/booking",
     "/blogs",
   ];
 

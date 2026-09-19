@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
@@ -32,10 +32,11 @@ import {
 import { useGuestDrag } from "./useGuestDrag";
 import { money, plural, type Sailing } from "./model";
 import { PanelHead } from "./JourneyChrome";
-import { IconBed, IconClose, IconGuests, IconSize } from "./icons";
+import { IconBed, IconClose, IconGuests, IconSize, IconWand } from "./icons";
 import { ArrangeChooser, CABIN_BED, CABIN_NOTE, CountMenu, Counter, DragGhost, GuestTile, RESIDENCE_SLUG } from "./SuitesParts";
-import { SuitesBoard, type BoardContext } from "./SuitesBoard";
+import { SuitesBrowse } from "./SuitesBrowse";
 import { useDesktop } from "./useDesktop";
+import { useStickyFit } from "./useStickyFit";
 
 type Notice = { tone: "ok" | "warn"; text: string } | null;
 
@@ -133,6 +134,8 @@ export function GuestsSuitesScreen({
   const [notice, setNotice] = useState<Notice>(null);
   const [filter, setFilter] = useState<PhysicalRoomType[]>([]);
   const [choosing, setChoosing] = useState(false);
+  const partyRef = useRef<HTMLElement | null>(null);
+  useStickyFit(partyRef);
 
   const pickedGuest = picked ? guests.find(guest => guest.id === picked) ?? null : null;
   const waiting = unplacedGuests(arrangement, guests);
@@ -211,40 +214,13 @@ export function GuestsSuitesScreen({
     return failure;
   }
 
-  if (desktop) {
-    const ctx: BoardContext = {
-      duration,
-      voyageTitle: voyage.title,
-      sailing,
-      sailingDate,
-      offers,
-      guests,
-      adults,
-      childCount,
-      onCounts,
-      arrangement,
-      waiting,
-      pickedGuest,
-      placedIn,
-      notice,
-      setNotice,
-      drag,
-      tileProps,
-      drop,
-      choose,
-      clear,
-      choosing,
-      setChoosing,
-      arrange,
-      preferredType,
-      issues,
-      busy,
-      onContinue,
-      onBack,
-      alert,
-      verifyCabinType,
-    };
-    return <SuitesBoard ctx={ctx} />;
+  /** From the desktop browse: list just this type's cabins and bring them into view. */
+  function showCabins(type: PhysicalRoomType) {
+    setFilter([type]);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.requestAnimationFrame(() =>
+      document.getElementById("hj-cabins")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }),
+    );
   }
 
   const visibleTypes = sailing.types.filter(type => filter.length === 0 || filter.includes(type.roomType));
@@ -296,7 +272,19 @@ export function GuestsSuitesScreen({
         {guide}
       </div>
 
-      <section className="hj-panel hj-suites" aria-labelledby="hj-suites-title">
+      {desktop ? (
+        <SuitesBrowse
+          duration={duration}
+          sailing={sailing}
+          arrangement={arrangement}
+          guests={guests}
+          preferredType={preferredType}
+          onShowCabins={showCabins}
+        />
+      ) : null}
+
+      <section className="hj-panel hj-suites" id="hj-cabins" aria-labelledby="hj-suites-title">
+        <span className="hj-suites__label">Every cabin on this sailing · place your guests</span>
         <RoomFilter
           sailing={sailing}
           selected={filter}
@@ -455,7 +443,7 @@ export function GuestsSuitesScreen({
         </div>
       </section>
 
-      <section className="hj-party" aria-labelledby="hj-party-title">
+      <section className="hj-party" aria-labelledby="hj-party-title" ref={partyRef}>
         <div className="hj-party__head">
           <h2 className="hj-party__title" id="hj-party-title">Who Is Travelling</h2>
           <span className="hj-rail__ankh" aria-hidden>☥</span>
@@ -485,6 +473,7 @@ export function GuestsSuitesScreen({
           />
         ) : (
           <button type="button" className="hj-party__arrange" onClick={() => setChoosing(true)}>
+            <IconWand className="hj-party__wand" />
             Arrange for me
           </button>
         )}

@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 
 export type JourneyStep = 1 | 2 | 3;
 
@@ -80,10 +82,14 @@ export function PanelHead({
   );
 }
 
+/** Dashboard → Website Images → Booking: one photograph for every step banner. */
+export const BOOKING_BANNER_SLOT = "booking-banner";
+
 /**
- * The desktop step header: the voyage photograph across the page, with the step
- * number, title and a line of copy on a paper wash. Tablet and phone keep the
- * PanelHead instead (the banner is display:none there).
+ * The desktop step header: one photograph across the page (chosen in the
+ * dashboard), with the step number, title and a line of copy on a paper wash,
+ * and a line in the footer's script. Tablet and phone keep the PanelHead
+ * instead (the banner is display:none there).
  */
 export function StepBanner({
   step,
@@ -91,18 +97,17 @@ export function StepBanner({
   title,
   lede,
   quote,
-  image,
 }: {
   step: number;
   kicker: string;
   title: string;
   lede: string;
   quote?: string;
-  image: string;
 }) {
+  const photo = useSiteImage(BOOKING_BANNER_SLOT);
   return (
     <header className="hj-banner">
-      <Image className="hj-banner__img" src={image} alt="" fill priority sizes="100vw" />
+      {photo.src ? <Image className="hj-banner__img" src={photo.src} alt="" fill priority sizes="100vw" /> : null}
       <span className="hj-banner__shade" aria-hidden />
       <div className="hj-banner__copy">
         <span className="hj-banner__num" aria-hidden>
@@ -117,6 +122,51 @@ export function StepBanner({
       </div>
       {quote ? <span className="hj-banner__quote" aria-hidden>{quote}</span> : null}
     </header>
+  );
+}
+
+/** The closing band of a step, as in the reference: the name, the promise, the three words. */
+export function JourneyBand() {
+  return (
+    <div className="hj-band" aria-hidden>
+      <span className="hj-band__brand">
+        Hathor
+        <small>Dahabiya</small>
+      </span>
+      <span className="hj-band__line">A slower way<br />to see a greater Egypt</span>
+      <span className="hj-band__words">Luxury. Heritage. Belonging.</span>
+    </div>
+  );
+}
+
+/**
+ * A quiet "scroll" hint at the foot of the screen while there is more of the
+ * step below, instead of boxes that scroll on their own. It fades once the
+ * guest starts scrolling or reaches the end.
+ */
+export function ScrollCue() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const update = () => {
+      const below = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+      setShow(window.scrollY < 120 && below > 160);
+    };
+    const first = window.requestAnimationFrame(update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const settle = window.setTimeout(update, 900);
+    return () => {
+      window.cancelAnimationFrame(first);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      window.clearTimeout(settle);
+    };
+  }, []);
+  return (
+    <span className={`hj-cue${show ? " hj-cue--on" : ""}`} aria-hidden>
+      Scroll
+      <span className="hj-cue__line" />
+    </span>
   );
 }
 

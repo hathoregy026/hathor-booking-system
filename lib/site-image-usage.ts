@@ -18,6 +18,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/highlights": "Highlights",
   "/charter": "Charter",
   "/contact": "Contact",
+  "/booking": "Booking",
   "/blogs": "Blog",
   "/partners": "Partners",
   "/suites": "Suites",

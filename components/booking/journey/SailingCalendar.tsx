@@ -3,8 +3,11 @@
 import { useMemo, useState } from "react";
 import { longDate, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
 import { IconInfo } from "./icons";
+import { useDesktop } from "./useDesktop";
 
 const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+/** How many dates the desktop list shows before "Show all". */
+const NEXT_DATES = 5;
 
 /**
  * Only real bookable sailings from the availability service are selectable.
@@ -33,8 +36,32 @@ export function SailingCalendar({
   }, [sailings]);
 
   const [monthKey, setMonthKey] = useState<string | null>(null);
+  // Choosing a date (here or in the list) turns the calendar to that date's month.
+  const [shownFor, setShownFor] = useState(selectedId);
+  if (selectedId !== shownFor) {
+    setShownFor(selectedId);
+    const chosen = sailings.find(sailing => sailing.scheduleId === selectedId);
+    if (chosen) {
+      const { year, month } = utcParts(chosen.departureTime);
+      setMonthKey(`${year}-${month}`);
+    }
+  }
   const monthIndex = Math.max(0, months.findIndex(month => `${month.year}-${month.month}` === monthKey));
   const current = months[monthIndex] ?? null;
+  // Desktop lists the next few dates from the calendar's month (every date is one
+  // "Show all" away), so the list never needs a scroll box of its own. Tablet and
+  // phone keep the full list.
+  const desktop = useDesktop();
+  const [allDates, setAllDates] = useState(false);
+  const open = sailings.filter(entry => !entry.soldOut);
+  const fromMonth = current
+    ? open.filter(entry => {
+        const parts = utcParts(entry.departureTime);
+        return parts.year > current.year || (parts.year === current.year && parts.month >= current.month);
+      })
+    : open;
+  const byMonth = desktop && !allDates;
+  const listed = byMonth ? fromMonth.slice(0, NEXT_DATES) : open;
   const goToMonth = (next: number) => {
     const target = months[next];
     if (target) setMonthKey(`${target.year}-${target.month}`);
@@ -130,7 +157,10 @@ export function SailingCalendar({
           <p className="hj-sailings__empty">No sailings are open for this voyage at the moment. Choose another itinerary, or contact our reservations team.</p>
         ) : (
           <div className="hj-sailings__list">
-            {sailings.filter(entry => !entry.soldOut).map(sailing => (
+            {byMonth && listed.length === 0 && current ? (
+              <p className="hj-sailings__empty">No open departures from {monthLabel(current.year, current.month)}.</p>
+            ) : null}
+            {listed.map(sailing => (
               <button
                 key={sailing.scheduleId}
                 type="button"
@@ -146,6 +176,11 @@ export function SailingCalendar({
             ))}
           </div>
         )}
+        {desktop && (allDates || open.length > listed.length) ? (
+          <button type="button" className="hj-linkbtn hj-sailings__more" aria-pressed={allDates} onClick={() => setAllDates(value => !value)}>
+            {allDates ? "Show fewer dates" : `Show all ${open.length} departures`}
+          </button>
+        ) : null}
         <p className="hj-sailings__note"><IconInfo /> {departureDay} departures only.</p>
       </div>
     </>

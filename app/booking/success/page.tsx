@@ -21,8 +21,8 @@ function Shell({ children, scene, wide, banner }: { children: ReactNode; scene?:
   return (
     <div className="hj hj--step-4" style={style}>
       <div className="hj-folio" id="hj-folio-top">
-        <JourneyProgress step={4} />
         {banner}
+        <JourneyProgress step={4} />
         <div className={wide ? "hj-stage hj-stage--success" : "hj-stage hj-stage--wide"}>{children}</div>
       </div>
     </div>
@@ -83,7 +83,6 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
           title={requested ? "Request Sent" : confirmed ? "Reservation Confirmed" : "Your Reservation"}
           lede={requested ? "Thank you for choosing Hathor. We will be in touch with your invoice." : "The current status of your Nile voyage."}
           quote="Luxury. Heritage. Belonging."
-          image={voyage?.image ?? FALLBACK_SCENE}
         />
       }
     >

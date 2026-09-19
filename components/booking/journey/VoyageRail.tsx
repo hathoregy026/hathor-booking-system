@@ -1,12 +1,14 @@
 "use client";
 
+import { useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { folioRange, money, plural, shortDate, type Sailing } from "./model";
 import type { CabinView } from "./allocation";
-import { IconBed, IconCalendar, IconGuests, IconTemple } from "./icons";
+import { IconBed, IconCalendar, IconChevron, IconGuests, IconPencil, IconTemple } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
+import { useStickyFit } from "./useStickyFit";
 
 function Row({
   icon,
@@ -30,7 +32,8 @@ function Row({
       </span>
       {onEdit ? (
         <button type="button" className="hj-rail__edit" disabled={!canEdit} onClick={onEdit}>
-          Edit
+          <IconPencil className="hj-rail__pencil" />
+          <span className="hj-rail__edit-text">Edit</span>
         </button>
       ) : null}
     </div>
@@ -65,14 +68,17 @@ export function VoyageRail({
   onJump: (step: JourneyStep) => void;
 }) {
   const voyage = itineraryFor(duration);
+  const railRef = useRef<HTMLElement | null>(null);
+  useStickyFit(railRef);
 
   return (
-    <aside className="hj-rail" aria-label="Your voyage summary">
+    <aside className="hj-rail" aria-label="Your voyage summary" ref={railRef}>
       <div className="hj-rail__head">
         <h2 className="hj-rail__title">Your Voyage</h2>
         <span className="hj-rail__ankh" aria-hidden>☥</span>
       </div>
       <div className="hj-rail__rule" />
+      <Image className="hj-rail__media" src={voyage.image} alt="" width={640} height={360} sizes="340px" />
 
       <Row icon={<IconTemple />} label="Journey" canEdit={step > 1} onEdit={() => onJump(1)}>
         {voyage.title} · {voyage.route}
@@ -120,6 +126,7 @@ export function VoyageRail({
       </div>
 
       <p className="hj-rail__brand">Hathor</p>
+      <span className="hj-rail__tagline">A higher rhythm</span>
     </aside>
   );
 }
@@ -136,6 +143,10 @@ export function VoyageBar({
   cabins,
   totalCents,
   onEdit,
+  details,
+  ready,
+  busy,
+  onContinue,
 }: {
   duration: StayDurationValue;
   sailing: Sailing | null;
@@ -144,11 +155,27 @@ export function VoyageBar({
   cabins: CabinView[];
   totalCents: number | null;
   onEdit: () => void;
+  /** The full voyage summary (every row with its Edit), opened from the bar. */
+  details: ReactNode;
+  ready: boolean;
+  busy: boolean;
+  onContinue: () => void;
 }) {
   const voyage = itineraryFor(duration);
+  const [open, setOpen] = useState(false);
   return (
-    <section className="hj-voyagebar" aria-label="Your voyage summary">
-      <h2 className="hj-voyagebar__title">Your Voyage</h2>
+    <section className={`hj-voyagebar${open ? " hj-voyagebar--open" : ""}`} aria-label="Your voyage">
+      {open ? <div className="hj-voyagebar__panel" id="hj-voyagebar-panel">{details}</div> : null}
+      <button
+        type="button"
+        className="hj-voyagebar__toggle"
+        aria-expanded={open}
+        aria-controls="hj-voyagebar-panel"
+        onClick={() => setOpen(current => !current)}
+      >
+        <span className="hj-voyagebar__title">Your Voyage</span>
+        <IconChevron direction={open ? "down" : "up"} />
+      </button>
       <Image className="hj-voyagebar__img" src={voyage.image} alt="" width={240} height={140} sizes="120px" />
       <span className="hj-voyagebar__cell">
         <span className="hj-voyagebar__main">{voyage.title}</span>
@@ -172,7 +199,16 @@ export function VoyageBar({
         <span className="hj-voyagebar__sub">{cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}</span>
         <span className="hj-voyagebar__amount">{totalCents === null ? "Place your guests" : money(totalCents)}</span>
       </span>
-      <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>Edit journey</button>
+      <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>Edit</button>
+      <button
+        type="button"
+        className="hj-voyagebar__go"
+        aria-label="Continue to guest details"
+        disabled={busy || !ready}
+        onClick={onContinue}
+      >
+        Continue <IconChevron direction="right" />
+      </button>
     </section>
   );
 }
