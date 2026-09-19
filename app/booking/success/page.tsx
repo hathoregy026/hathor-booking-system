@@ -6,7 +6,7 @@ import { bookingCode } from "@/lib/booking-code";
 import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
-import { JourneyProgress, StepGuide } from "@/components/booking/journey/JourneyChrome";
+import { JourneyProgress, StepBanner, StepGuide } from "@/components/booking/journey/JourneyChrome";
 import { folioRange, money, stageLabel } from "@/components/booking/journey/model";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
 
@@ -16,12 +16,13 @@ type PageProps = {
 
 const FALLBACK_SCENE = "/media/hathor/optimized/cruises-hero.webp";
 
-function Shell({ children, scene, wide }: { children: ReactNode; scene?: string; wide?: boolean }) {
+function Shell({ children, scene, wide, banner }: { children: ReactNode; scene?: string; wide?: boolean; banner?: ReactNode }) {
   const style = { "--hj-scene": `url("${scene ?? FALLBACK_SCENE}")` } as CSSProperties;
   return (
-    <div className="hj" style={style}>
+    <div className="hj hj--step-4" style={style}>
       <div className="hj-folio" id="hj-folio-top">
         <JourneyProgress step={4} />
+        {banner}
         <div className={wide ? "hj-stage hj-stage--success" : "hj-stage hj-stage--wide"}>{children}</div>
       </div>
     </div>
@@ -72,7 +73,20 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
   const roomVisual = details.roomType ? getBookingRoomVisuals(details.roomType, details.roomType) : null;
 
   return (
-    <Shell scene={voyage?.image} wide>
+    <Shell
+      scene={voyage?.image}
+      wide
+      banner={
+        <StepBanner
+          step={4}
+          kicker={requested ? "Request sent" : details.statusLabel}
+          title={requested ? "Request Sent" : confirmed ? "Reservation Confirmed" : "Your Reservation"}
+          lede={requested ? "Thank you for choosing Hathor. We will be in touch with your invoice." : "The current status of your Nile voyage."}
+          quote="Luxury. Heritage. Belonging."
+          image={voyage?.image ?? FALLBACK_SCENE}
+        />
+      }
+    >
       <section className="hj-panel">
         <p className="hj-panel__kicker">Step 4 of 4</p>
         <StepGuide

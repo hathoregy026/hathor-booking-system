@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { folioRange, money, plural, type Sailing } from "./model";
+import { folioRange, money, plural, shortDate, type Sailing } from "./model";
 import type { CabinView } from "./allocation";
 import { IconBed, IconCalendar, IconGuests, IconTemple } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
@@ -120,5 +121,58 @@ export function VoyageRail({
 
       <p className="hj-rail__brand">Hathor</p>
     </aside>
+  );
+}
+
+/**
+ * Desktop Guests & Suites: the same summary as a bar along the bottom, so the
+ * cabin photographs keep the full height of the screen.
+ */
+export function VoyageBar({
+  duration,
+  sailing,
+  adults,
+  childCount,
+  cabins,
+  totalCents,
+  onEdit,
+}: {
+  duration: StayDurationValue;
+  sailing: Sailing | null;
+  adults: number;
+  childCount: number;
+  cabins: CabinView[];
+  totalCents: number | null;
+  onEdit: () => void;
+}) {
+  const voyage = itineraryFor(duration);
+  return (
+    <section className="hj-voyagebar" aria-label="Your voyage summary">
+      <h2 className="hj-voyagebar__title">Your Voyage</h2>
+      <Image className="hj-voyagebar__img" src={voyage.image} alt="" width={240} height={140} sizes="120px" />
+      <span className="hj-voyagebar__cell">
+        <span className="hj-voyagebar__main">{voyage.title}</span>
+        <span className="hj-voyagebar__sub">{voyage.route}</span>
+      </span>
+      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled">
+        <IconCalendar />
+        <span>
+          <span className="hj-voyagebar__main">{sailing ? shortDate(sailing.departureTime) : "Select your dates"}</span>
+          <span className="hj-voyagebar__sub">{sailing ? `to ${shortDate(sailing.arrivalTime)}` : `${voyage.departureDay} departures`}</span>
+        </span>
+      </span>
+      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled">
+        <IconGuests />
+        <span>
+          <span className="hj-voyagebar__main">{partyLine(adults, childCount)}</span>
+          <span className="hj-voyagebar__sub">{cabins.length === 0 ? "No cabin yet" : plural(cabins.length, "Cabin")}</span>
+        </span>
+      </span>
+      <span className="hj-voyagebar__cell hj-voyagebar__cell--ruled hj-voyagebar__total">
+        <span className="hj-voyagebar__sub">{cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}</span>
+        <span className="hj-voyagebar__amount">{totalCents === null ? "Place your guests" : money(totalCents)}</span>
+      </span>
+      <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>Edit journey</button>
+    </section>
   );
 }

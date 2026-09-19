@@ -1246,3 +1246,721 @@ html[data-public-theme="night"] .public-site .hj .hj-cab__menu select:not(#_):no
   background-repeat: no-repeat !important;
   background-position: right 0.55rem center !important;
 }
+
+/* =====================================================================
+   DESKTOP (1081px and up) — full-screen journey.
+   A slim progress bar, the voyage photograph as each step's banner
+   (Journey, Details & Payment, Request sent), and Guests & Suites as a
+   four-column board with the voyage summary along the bottom, so the
+   cabin photographs have the whole screen. Tablet and phone keep the
+   layout above: every element below is desktop-only or hidden there.
+   ===================================================================== */
+
+.hj-banner,
+.hj-voyagebar,
+.hj-actions__hint { display: none; }
+
+@media (min-width: 1081px) {
+  .hj {
+    --hj-top: calc(clamp(3.15rem, 7vh, 4.5rem) + 1.35rem);
+    --hj-gutter: clamp(1.75rem, 2.6vw, 3rem);
+    --hj-italiana: var(--font-hathor-italiana), "Italiana", Georgia, serif;
+    --hj-paper: #f7f2e9;
+    --hj-paper-deep: #f2eadc;
+    --hj-rail-w: clamp(300px, 22vw, 360px);
+    --hj-rail-pad: clamp(1.3rem, 1.9vw, 2rem);
+    min-height: calc(100svh - var(--hj-top));
+    padding: 0;
+    background: var(--hj-paper);
+  }
+  .hj::before,
+  .hj::after { display: none; }
+  /* The shell's own 100vh plus the header clearance would leave the page one
+     header taller than the screen; the journey sets its own height here. */
+  .booking-page:has(.hj) .booking-shell-bg { min-height: 0; }
+
+  .hj-folio {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    scroll-margin-top: var(--hj-top);
+  }
+  .hj-folio:has(.hj-stage--suites) { max-width: none; }
+
+  /* The step heads and step maps belong to tablet and phone; the banner and board carry them here. */
+  .hj-panel__head,
+  .hj-guide,
+  .hj--step-4 .hj-panel__kicker,
+  .hj--step-4 .hj-stage > .hj-panel > h1 { display: none; }
+
+  /* ---------- progress bar ---------- */
+
+  .hj-progress {
+    margin: 0;
+    padding: 0.95rem var(--hj-gutter) 0.8rem;
+    background: var(--hj-paper);
+    border-bottom: 1px solid var(--hj-line-soft);
+  }
+  .hj-progress__step { min-width: 7.5rem; gap: 0.45rem; }
+  .hj-progress__dot { width: 2.05rem; height: 2.05rem; font-size: 0.76rem; background: #fffdf8; }
+  .hj-progress__name { font-size: 0.76rem; letter-spacing: 0.02em; }
+  .hj-progress__line { width: clamp(3rem, 7vw, 7.5rem); margin-top: 1.02rem; }
+
+  /* ---------- banner ---------- */
+
+  .hj-banner {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    height: clamp(210px, 28vh, 300px);
+    overflow: hidden;
+    border-bottom: 1px solid var(--hj-line-soft);
+  }
+  .hj .hj-banner__img { z-index: -2; object-fit: cover; object-position: center 60%; }
+  .hj-banner__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, var(--hj-paper) 0%, var(--hj-paper) 30%, rgba(247, 242, 233, 0.9) 44%, rgba(247, 242, 233, 0.55) 57%, rgba(247, 242, 233, 0) 76%),
+      linear-gradient(270deg, rgba(24, 18, 10, 0.42) 0%, rgba(24, 18, 10, 0) 30%);
+  }
+  .hj-banner__copy {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.4rem, 2.4vw, 2.6rem);
+    max-width: 64%;
+    padding: 0 var(--hj-gutter);
+  }
+  .hj-banner__num {
+    display: grid;
+    justify-items: center;
+    font-family: var(--hj-display);
+    font-size: clamp(3.8rem, 5.4vw, 5.6rem);
+    font-weight: 400;
+    line-height: 0.88;
+    color: var(--hj-gold);
+    font-variant-numeric: lining-nums;
+  }
+  .hj-banner__of {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--hj-gold);
+    font-family: var(--hj-body);
+    font-size: 0.6rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--hj-gold-deep);
+  }
+  .hj-banner__text { display: grid; gap: 0.55rem; min-width: 0; }
+  .hj-banner__kicker { font-size: 0.66rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--hj-gold-deep); }
+  .hj h1.hj-banner__title {
+    font-family: var(--hj-italiana);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 3.6vw, 4rem);
+    line-height: 0.94;
+    letter-spacing: 0.012em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--hj-ink);
+  }
+  .hj-banner__lede { font-size: clamp(0.92rem, 1vw, 1.04rem); color: var(--hj-ink-soft); }
+  .hj-banner__quote {
+    margin: auto var(--hj-gutter) clamp(1.5rem, 3vh, 2.2rem) auto;
+    max-width: 15rem;
+    font-family: var(--hj-display);
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.45vw, 1.45rem);
+    line-height: 1.3;
+    text-align: right;
+    color: #fbf5ea;
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
+  }
+
+  /* ---------- page body: main column and the voyage rail ---------- */
+
+  .hj-stage {
+    grid-template-columns: minmax(0, 1fr) var(--hj-rail-w);
+    gap: 0;
+    align-items: start;
+    /* The rail's paper and hairline run the full height of the page. */
+    background: linear-gradient(to left, var(--hj-paper-deep) calc(var(--hj-rail-w) - 1px), var(--hj-line-soft) calc(var(--hj-rail-w) - 1px), var(--hj-line-soft) var(--hj-rail-w), transparent var(--hj-rail-w));
+  }
+  .hj-stage > .hj-panel { padding: clamp(1.6rem, 2.6vw, 2.5rem) var(--hj-gutter) 0; }
+  .hj-stage--wide { grid-template-columns: minmax(0, 1fr); background: none; padding: 2.5rem var(--hj-gutter); }
+
+  .hj .hj-rail {
+    position: sticky;
+    top: var(--hj-top);
+    max-height: calc(100svh - var(--hj-top));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    border-left: 0;
+    padding: 0 var(--hj-rail-pad) 1.6rem;
+    margin: 0;
+  }
+  .hj .hj-rail__head { padding-top: clamp(1.6rem, 2.6vw, 2.5rem); }
+  .hj .hj-rail__title { font-family: var(--hj-italiana); font-size: 2rem; font-weight: 400; letter-spacing: 0.01em; }
+  .hj-rail__row { padding: 0.85rem 0; }
+  .hj-rail__label { font-size: 0.58rem; letter-spacing: 0.2em; }
+  .hj-rail__value { font-size: 0.9rem; line-height: 1.45; }
+  .hj-total-block { padding-top: 1rem; }
+  .hj-total-block__amount { font-size: 2.1rem; }
+  .hj .hj-rail__brand { font-family: var(--hj-italiana); font-size: 1.35rem; letter-spacing: 0.32em; }
+
+  /* Buttons: the Hathor pill. */
+  .hj-btn { min-height: 52px; padding: 0.8rem 2rem; border-radius: 999px; font-size: 0.7rem; letter-spacing: 0.2em; }
+  .hj-btn--ghost { padding-left: 0.4rem; padding-right: 0.4rem; }
+
+  /* The step's actions stay in reach along the bottom of the screen. */
+  .hj-stage > .hj-panel > .hj-actions,
+  .hj-details > .hj-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    margin: 2rem calc(-1 * var(--hj-gutter)) 0;
+    padding: 0.95rem var(--hj-gutter);
+    background: rgba(247, 242, 233, 0.95);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--hj-line-soft);
+  }
+  .hj-actions__hint { display: block; font-family: var(--hj-display); font-size: 1rem; color: var(--hj-ink-soft); }
+  .hj-stage > .hj-panel > .hj-note { display: none; }
+  .hj-details > .hj-note { padding-bottom: 1.5rem; }
+
+  /* Section labels read the same across the steps (and escape `.public-site p`). */
+  .hj .hj-step-label,
+  .hj p.hj-sailings__label,
+  .hj span.hj-sailings__label,
+  .hj p.hj-itinerary__route,
+  .hj p.hj-pay__title {
+    font-family: var(--hj-body);
+    font-size: 0.68rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--hj-gold-deep);
+    margin-bottom: 0.95rem;
+  }
+  .hj .hj-step-label { margin-top: 2.1rem; }
+  .hj .hj-panel > .hj-step-label:first-of-type,
+  .hj .hj-details > section > .hj-step-label:first-child { margin-top: 0; }
+  .hj p.hj-pay__title { margin-top: 0; }
+  .hj .hj-pay .hj-step-label { margin-top: 2rem; }
+
+  /* The site gives every `__title` class its swash display face; these are labels, not titles. */
+  .hj .hj-day__title,
+  .hj .hj-cabinguests__title,
+  .hj .hj-progress__name { font-family: var(--hj-body); }
+  .hj .hj-cal__title,
+  .hj p.hj-arrange__title { font-family: var(--hj-display); }
+  .hj p.hj-cabinguests__title { font-size: 0.64rem; letter-spacing: 0.2em; margin-bottom: 0.7rem; }
+
+  /* ---------- 1 · Journey ---------- */
+
+  .hj--step-1 .hj-voyages { gap: clamp(0.9rem, 1.4vw, 1.4rem); }
+  .hj--step-1 .hj-voyage { padding: 0.75rem 0.75rem 1rem; background: #fffdf8; }
+  .hj--step-1 .hj-voyage__img { height: clamp(100px, 13vh, 150px); margin-bottom: 0.9rem; }
+  .hj--step-1 .hj-voyage__dot { top: 1.2rem; left: 1.2rem; width: 1.05rem; height: 1.05rem; }
+  .hj--step-1 .hj-voyage__name { font-size: 1.3rem; }
+  .hj--step-1 .hj-voyage__meta { font-size: 0.82rem; }
+  .hj--step-1 .hj-voyage__caption { font-size: 0.86rem; margin-top: 0.55rem; }
+
+  .hj-plan {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.8fr) minmax(0, 1.15fr);
+    gap: clamp(1.4rem, 2.4vw, 2.6rem);
+    margin-top: 2rem;
+  }
+  .hj-cal__title { font-size: 1.2rem; }
+  .hj-cal__day { font-size: 0.84rem; }
+  .hj-sailings__list { max-height: 22rem; margin-top: 0; }
+  .hj-sailing { padding: 0.8rem 0.9rem; }
+  .hj-sailing--on { background: #fffdf8; box-shadow: inset 2px 0 0 var(--hj-gold); }
+  .hj-sailing__when { font-family: var(--hj-display); font-size: 1rem; }
+  .hj-itinerary__top { margin-bottom: 0.55rem; }
+  .hj .hj-itinerary__top .hj-itinerary__route { margin: 0; }
+  .hj-daylist { max-height: 22rem; overflow-y: auto; scrollbar-width: thin; padding-right: 0.35rem; }
+  .hj-day__button { grid-template-columns: 56px minmax(0, 1fr) auto; }
+  .hj-day__thumb { width: 56px; height: 44px; }
+  .hj-day__place { font-family: var(--hj-display); font-size: 0.95rem; }
+  .hj-dates-help { margin-top: 1.6rem; font-size: 0.82rem; }
+
+  /* ---------- 3 · Details & Payment ---------- */
+
+  .hj-details {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 0 clamp(2rem, 3.6vw, 4rem);
+  }
+  .hj-pay { padding-left: clamp(1.6rem, 2.6vw, 2.8rem); border-left: 1px solid var(--hj-line-soft); }
+  .hj-details .hj-grid2 { gap: 0.9rem 1.1rem; }
+  .hj-field > span { font-size: 0.6rem; letter-spacing: 0.18em; margin-bottom: 0.4rem; }
+  .hj-field input,
+  .hj-field select,
+  .hj-field textarea { min-height: 50px; background: #fffdf9; border-color: var(--hj-line); }
+  .hj-field textarea { min-height: 88px; }
+  .hj-cabinguests { padding: 1rem 1.1rem; background: #fffdf8; }
+  .hj-choice { padding: 1rem 1.1rem; min-height: 64px; background: #fffdf8; }
+  .hj-choice strong { font-family: var(--hj-display); font-size: 1.02rem; font-weight: 400; }
+  .hj-schedule strong { font-family: var(--hj-display); font-size: 1.05rem; font-weight: 400; }
+
+  /* ---------- 4 · Request sent ---------- */
+
+  .hj-stage--success {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.1fr) minmax(0, 0.95fr);
+    gap: 0;
+    align-items: stretch;
+    background: none;
+  }
+  .hj-stage--success > .hj-panel { padding: clamp(1.8rem, 2.8vw, 2.6rem) var(--hj-gutter) 2.6rem; }
+  .hj-stage--success > .hj-panel + .hj-panel { border-left: 1px solid var(--hj-line-soft); }
+  .hj-stage--success > .hj-panel:nth-child(2) { background: var(--hj-paper-deep); }
+  .hj-ref__value { font-family: var(--hj-italiana); font-size: 2rem; letter-spacing: 0.08em; }
+  .hj--step-4 .hj-sent strong { display: block; font-family: var(--hj-display); font-size: 1.1rem; font-weight: 400; }
+  .hj p.hj-contact-line { font-size: 0.9rem; line-height: 1.55; letter-spacing: normal; font-weight: 400; }
+
+  /* ---------- 2 · Guests & Suites: the board ---------- */
+
+  .hj--step-2 { min-height: 0; }
+  .hj--step-2 .hj-folio {
+    display: flex;
+    flex-direction: column;
+    height: calc(100svh - var(--hj-top));
+    min-height: 640px;
+  }
+  .hj--step-2 .hj-progress { flex: none; }
+  .hj .hj-stage--suites { display: block; flex: 1; min-height: 0; background: none; }
+
+  .hj-board {
+    position: relative;
+    display: grid;
+    height: 100%;
+    grid-template-columns: clamp(312px, 23vw, 390px) minmax(0, 1.25fr) minmax(0, 1fr) clamp(318px, 23vw, 380px);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .hj-board__alert { grid-column: 1 / -1; margin: 0.9rem var(--hj-gutter) 0; }
+  .hj-board__types,
+  .hj-gallery,
+  .hj-detail,
+  .hj-partycol { grid-row: 2; min-height: 0; }
+
+  /* 1 — types */
+  .hj-board__types {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: 1.4rem clamp(0.9rem, 1.2vw, 1.3rem) 1.4rem;
+    border-right: 1px solid var(--hj-line-soft);
+  }
+  .hj h1.hj-board__heading {
+    margin: 0 0 1rem 0.4rem;
+    font-family: var(--hj-body);
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--hj-gold-deep);
+  }
+  .hj-typelist { display: grid; gap: 0.35rem; }
+  .hj-typecard {
+    position: relative;
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    align-items: center;
+    gap: 0.95rem;
+    width: 100%;
+    padding: 0.7rem 0.8rem 0.7rem 0.7rem;
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom-color: var(--hj-line-soft);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hj-typecard:hover { background: rgba(255, 253, 248, 0.75); }
+  .hj-typecard--on {
+    background: #fffdf8;
+    border-color: var(--hj-gold);
+    box-shadow: 0 12px 28px rgba(52, 38, 14, 0.08);
+  }
+  .hj-typecard--out { opacity: 0.55; }
+  .hj .hj-typecard.hj-drop--over { background: #fff6e4; border-color: var(--hj-gold); }
+  /* The radio mark sits on the photograph's corner. */
+  .hj-typecard__mark {
+    position: absolute;
+    top: 1.05rem;
+    left: 1.05rem;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--hj-gold);
+    background: rgba(255, 253, 248, 0.92);
+    color: #fffdf8;
+    box-shadow: 0 2px 6px rgba(20, 16, 10, 0.18);
+  }
+  .hj-typecard--on .hj-typecard__mark { background: var(--hj-gold-deep); border-color: var(--hj-gold-deep); }
+  .hj-typecard__mark .hj-icon { width: 0.85rem; height: 0.85rem; stroke-width: 2.2; }
+  .hj-typecard__img { width: 104px; height: 96px; object-fit: cover; display: block; }
+  .hj-typecard__body { display: grid; gap: 0.14rem; min-width: 0; }
+  .hj-typecard__name { font-family: var(--hj-display); font-size: 1.1rem; line-height: 1.15; color: var(--hj-ink); }
+  .hj-typecard__tag { font-size: 0.74rem; line-height: 1.35; color: var(--hj-ink-soft); }
+  .hj-typecard__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.4rem; margin-top: 0.3rem; }
+  .hj-typecard__amount { font-family: var(--hj-display); font-size: 1.12rem; color: var(--hj-ink); }
+  .hj-typecard__per { font-size: 0.64rem; color: var(--hj-ink-soft); }
+  .hj-typecard__meta { display: flex; flex-wrap: wrap; gap: 0.1rem 0.5rem; margin-top: 0.1rem; font-size: 0.66rem; color: var(--hj-ink-soft); }
+  .hj-typecard__meta b { font-weight: 600; color: var(--hj-gold-deep); }
+
+  /* 2 — gallery */
+  .hj-gallery { display: flex; flex-direction: column; padding: 1.4rem clamp(1rem, 1.4vw, 1.5rem) 1.1rem; }
+  .hj-gallery__frame { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #e8dece; }
+  .hj-gallery__frame:focus-visible { outline: 2px solid var(--hj-gold); outline-offset: 3px; }
+  .hj .hj-gallery__img { object-fit: cover; animation: hj-photo-in 0.45s ease; }
+  .hj-gallery__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 253, 248, 0.94);
+    color: var(--hj-ink);
+    box-shadow: 0 8px 22px rgba(20, 16, 10, 0.18);
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .hj-gallery__nav:hover { background: #fff; transform: translateY(-50%) scale(1.05); }
+  .hj-gallery__nav .hj-icon { width: 1.2rem; height: 1.2rem; stroke-width: 1.6; }
+  .hj-gallery__nav--prev { left: 1.1rem; }
+  .hj-gallery__nav--next { right: 1.1rem; }
+  .hj-gallery__count {
+    position: absolute;
+    left: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 2;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(20, 16, 10, 0.55);
+    color: #fffdf8;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+  .hj-gallery__badge {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(141, 107, 50, 0.92);
+    color: #fffdf8;
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .hj-gallery__badge .hj-icon { width: 0.95rem; height: 0.95rem; stroke-width: 2; }
+  .hj-gallery__save { position: absolute; top: 1.1rem; left: 1.1rem; z-index: 2; display: flex; gap: 0.45rem; }
+  .hj .hj-gallery__save .hathor-fav--card,
+  .hj .hj-gallery__save .hathor-atv--card {
+    position: static;
+    --hathor-fav-size: 2.6rem;
+    --hathor-fav-icon: 1.1rem;
+    --atv-size: 2.6rem;
+    --atv-icon: 1.05rem;
+  }
+  .hj-gallery__save .hathor-atv__notice { display: none; }
+  .hj-gallery__dots { display: flex; justify-content: center; gap: 0.6rem; padding-top: 1rem; }
+  .hj-gallery__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #d6c9b3;
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .hj-gallery__dot[aria-pressed="true"] { background: var(--hj-gold-deep); transform: scale(1.2); }
+
+  /* 3 — the type in detail */
+  .hj-detail {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: 1.55rem clamp(1.1rem, 1.7vw, 1.9rem) 1.6rem clamp(0.4rem, 0.8vw, 0.9rem);
+  }
+  .hj-detail__kicker { display: block; font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--hj-gold-deep); }
+  .hj h2.hj-detail__name {
+    margin-top: 0.55rem;
+    font-family: var(--hj-italiana);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 3vw, 3.3rem);
+    line-height: 0.98;
+    letter-spacing: 0.005em;
+    color: var(--hj-ink);
+  }
+  .hj-detail__tag { display: block; margin-top: 0.55rem; font-family: var(--hj-display); font-style: italic; font-size: 1.14rem; color: var(--hj-ink-soft); }
+  .hj-detail__features { display: grid; gap: 0.85rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+  .hj .hj-detail__features li { display: grid; grid-template-columns: 1.7rem minmax(0, 1fr); align-items: center; gap: 0.9rem; font-size: 0.92rem; line-height: 1.4; color: var(--hj-ink); }
+  .hj-detail__icon { display: grid; place-items: center; color: var(--hj-gold-deep); }
+  .hj-detail__icon .hj-icon { width: 1.4rem; height: 1.4rem; stroke-width: 1.15; }
+  .hj-detail__price { display: grid; gap: 0.25rem; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--hj-line-soft); }
+  .hj-detail__amount { font-family: var(--hj-display); font-size: 2.1rem; line-height: 1.1; color: var(--hj-ink); }
+  .hj-detail__per { font-size: 0.84rem; color: var(--hj-ink-soft); }
+  .hj-detail__fine { font-size: 0.76rem; line-height: 1.5; color: var(--hj-ink-soft); }
+  .hj-detail__fine a { color: var(--hj-gold-deep); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  .hj-detail__cabins { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--hj-line-soft); }
+  .hj-detail__label { display: block; font-size: 0.66rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hj-gold-deep); }
+  .hj-detail__hint { display: block; margin: 0.35rem 0 0.9rem; font-size: 0.76rem; line-height: 1.45; color: var(--hj-ink-soft); }
+
+  .hj-cabrows { display: grid; gap: 0.5rem; }
+  .hj-cabrow {
+    position: relative;
+    display: grid;
+    /* Name and empty button on top; the seats and the two menus share the row below. */
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name clear" "seats menus" "warn warn";
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    padding: 0.75rem 0.85rem;
+    background: #fffdf8;
+    border: 1px solid var(--hj-line-soft);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  }
+  .hj-cabrow--used { border-color: var(--hj-gold); box-shadow: inset 3px 0 0 var(--hj-gold); }
+  .hj-cabrow--warn { border-color: rgba(165, 112, 44, 0.6); }
+  .hj-cabrow--target { border-style: dashed; border-color: var(--hj-gold); }
+  .hj-cabrow--out {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "name out";
+    background: transparent;
+    opacity: 0.6;
+  }
+  .hj-cabrows--moving .hj-cabrow:not(.hj-cabrow--full):not(.hj-cabrow--out) { outline: 1px dashed var(--hj-gold); outline-offset: -5px; }
+  .hj-cabrow__name { grid-area: name; display: flex; align-items: baseline; gap: 0.6rem; min-height: 1.6rem; font-family: var(--hj-display); font-size: 1.04rem; color: var(--hj-ink); white-space: nowrap; }
+  .hj-cabrow__count { font-family: var(--hj-body); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--hj-ink-soft); }
+  .hj-cabrow__seats { grid-area: seats; display: flex; flex-wrap: wrap; gap: 0.35rem; --hj-tile-w: 3.35rem; --hj-tile-h: 3.05rem; }
+  .hj-cabrow__menus { grid-area: menus; align-self: end; display: grid; grid-template-columns: repeat(2, 4.6rem); gap: 0.4rem; }
+  .hj-cabrow__clear {
+    grid-area: clear;
+    justify-self: end;
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--hj-ink-soft);
+    cursor: pointer;
+  }
+  .hj-cabrow__clear:hover { background: var(--hj-gold-wash); color: var(--hj-ink); }
+  .hj-cabrow__out { grid-area: out; justify-self: end; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: #9a5a50; }
+  .hj-cabrow__warn { grid-area: warn; font-size: 0.72rem; color: #a5702c; }
+
+  /* 4 — who is travelling */
+  .hj-partycol {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: 1.4rem clamp(1.3rem, 2vw, 2.4rem) 0 clamp(1.2rem, 1.7vw, 1.9rem);
+    border-left: 1px solid var(--hj-line-soft);
+  }
+  /* A full column scrolls; nothing in it may be squeezed instead. */
+  .hj-partycol > * { flex-shrink: 0; }
+  .hj h2.hj-partycol__title {
+    padding-bottom: 0.95rem;
+    border-bottom: 1px solid var(--hj-line-soft);
+    font-family: var(--hj-italiana);
+    font-weight: 400;
+    font-size: clamp(1.85rem, 2.15vw, 2.35rem);
+    line-height: 1;
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+  }
+  .hj-partycol .hj-counter {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "label ctrl" "label hint";
+    row-gap: 0.3rem;
+    padding: 0.8rem 0 0.7rem;
+  }
+  .hj-partycol .hj-counter__copy { display: contents; }
+  .hj-partycol .hj-counter__label { grid-area: label; align-self: center; font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; }
+  .hj-partycol .hj-counter__hint { grid-area: hint; justify-self: center; font-size: 0.78rem; }
+  .hj-partycol .hj-counter__ctrl { grid-area: ctrl; gap: 1rem; }
+  .hj-partycol .hj-counter__btn { width: 2.4rem; height: 2.4rem; font-size: 1.1rem; background: #fffdf8; }
+  .hj-partycol .hj-counter__value { font-size: 1.4rem; min-width: 1.6rem; }
+
+  .hj-placement {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.95rem;
+    padding: 0.85rem 1rem 0.9rem;
+    border: 1px dashed var(--hj-line);
+    background: rgba(255, 253, 248, 0.7);
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .hj .hj-placement.hj-drop--over { background: #fff6e4; box-shadow: 0 0 0 2px var(--hj-gold) inset; }
+  .hj-placement__label { display: flex; align-items: center; gap: 0.6rem; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--hj-ink); }
+  .hj-placement__label .hj-icon { width: 1.35rem; height: 1.35rem; color: var(--hj-gold-deep); }
+  .hj-placement__status { font-family: var(--hj-display); font-size: 1.04rem; color: var(--hj-ink); }
+  .hj-placement__status--done { display: flex; align-items: center; gap: 0.45rem; color: #5f7c54; }
+  .hj-placement__status--done .hj-icon { stroke-width: 2; }
+  .hj .hj-pool--board { display: grid; gap: 0.55rem; margin: 0; padding: 0; border: 0; background: none; }
+  .hj-placement__hint { font-size: 0.78rem; line-height: 1.5; color: var(--hj-ink-soft); }
+  .hj-placement__list { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+  .hj .hj-placement__list li { display: grid; gap: 0.4rem; padding-top: 0.6rem; border-top: 1px solid var(--hj-line-soft); }
+  .hj-placement__cabin {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--hj-display);
+    font-size: 0.98rem;
+    color: var(--hj-ink);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+  }
+  .hj-placement__cabin:hover { color: var(--hj-gold-deep); text-decoration-color: currentColor; }
+  .hj-placement__guests { display: flex; flex-wrap: wrap; gap: 0.3rem; --hj-tile-w: 2.95rem; --hj-tile-h: 2.65rem; }
+  .hj-placement .hj-linkbtn { justify-self: start; }
+
+  .hj-partycol .hj-party__notice { margin-top: 0.7rem; }
+  .hj-arrangebox { display: grid; gap: 0.6rem; margin-top: 0.6rem; }
+  .hj-arrangebtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3.4rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--hj-gold-deep);
+    background: transparent;
+    font-family: var(--hj-display);
+    font-size: 1.18rem;
+    color: var(--hj-ink);
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+  .hj-arrangebtn:hover { background: var(--hj-gold-wash); }
+  .hj-arrangebtn .hj-icon { width: 1.4rem; height: 1.4rem; color: var(--hj-gold-deep); }
+  .hj-arrangebox__hint { font-size: 0.8rem; line-height: 1.5; color: var(--hj-ink-soft); }
+  .hj-partycol .hj-arrange { margin-top: 0.6rem; }
+  .hj-partycol .hj-arrange__types { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* Continue stays in view at the foot of the column, however long the column gets. */
+  .hj-partycol__foot {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    display: grid;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding: 1.1rem 0 1.1rem;
+    background: linear-gradient(180deg, rgba(247, 242, 233, 0), var(--hj-paper) 1.1rem);
+  }
+  .hj-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    width: 100%;
+    min-height: 3.4rem;
+    padding: 0.55rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--hj-gold);
+    color: #fffdf8;
+    font-family: var(--hj-display);
+    font-size: 1.16rem;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 14px 28px rgba(141, 107, 50, 0.24);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .hj-cta:hover:not(:disabled) { background: var(--hj-gold-deep); transform: translateY(-1px); }
+  .hj-cta:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+  .hj-cta .hj-icon { width: 1.2rem; height: 1.2rem; stroke-width: 1.6; }
+  .hj-partycol__foot .hj-btn--ghost { justify-self: center; min-height: 0; padding: 0.35rem 1rem; }
+
+  /* the voyage along the bottom */
+  .hj-voyagebar {
+    flex: none;
+    display: grid;
+    grid-template-columns: auto 108px minmax(0, 1.1fr) minmax(0, 0.85fr) minmax(0, 1.2fr) minmax(0, 0.95fr) auto;
+    align-items: center;
+    gap: 0 clamp(1rem, 1.6vw, 1.8rem);
+    padding: 0.8rem var(--hj-gutter);
+    background: var(--hj-paper-deep);
+    border-top: 1px solid var(--hj-line);
+    box-shadow: 0 -12px 32px rgba(52, 38, 14, 0.06);
+  }
+  .hj h2.hj-voyagebar__title { font-family: var(--hj-italiana); font-weight: 400; font-size: 1.85rem; line-height: 1; white-space: nowrap; }
+  .hj-voyagebar__img { display: block; width: 108px; height: 62px; object-fit: cover; }
+  .hj-voyagebar__cell { display: grid; min-width: 0; }
+  .hj-voyagebar__cell--ruled {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding-left: clamp(1rem, 1.6vw, 1.8rem);
+    border-left: 1px solid var(--hj-line-soft);
+  }
+  .hj-voyagebar__cell--ruled > span { display: grid; min-width: 0; }
+  .hj-voyagebar__cell > .hj-icon { flex: none; width: 1.55rem; height: 1.55rem; color: var(--hj-gold-deep); }
+  .hj-voyagebar__main { overflow: hidden; font-family: var(--hj-display); font-size: 1.06rem; color: var(--hj-ink); white-space: nowrap; text-overflow: ellipsis; }
+  .hj-voyagebar__sub { overflow: hidden; font-size: 0.74rem; color: var(--hj-ink-soft); white-space: nowrap; text-overflow: ellipsis; }
+  .hj-voyagebar__cell.hj-voyagebar__total { display: grid; justify-items: start; }
+  .hj-voyagebar__amount { font-family: var(--hj-display); font-size: 1.35rem; color: var(--hj-gold-deep); white-space: nowrap; }
+  .hj-voyagebar__edit {
+    padding: 0.4rem 0;
+    border: 0;
+    background: none;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--hj-gold-deep);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+}
+
+@keyframes hj-photo-in { from { opacity: 0.35; } to { opacity: 1; } }
+
+/* Narrow desktops: photos and details share the middle column. */
+@media (min-width: 1081px) and (max-width: 1279px) {
+  .hj-board { grid-template-columns: clamp(270px, 24vw, 300px) minmax(0, 1fr) clamp(280px, 25vw, 310px); }
+  .hj-board__types { grid-column: 1; }
+  .hj-gallery,
+  .hj-detail { grid-column: 2; }
+  .hj-partycol { grid-column: 3; }
+  .hj-gallery { grid-row: 2; align-self: start; height: 42vh; min-height: 300px; position: relative; z-index: 1; background: var(--hj-paper); }
+  .hj-detail { grid-row: 2; margin-top: max(42vh, 300px); padding-left: clamp(1rem, 1.4vw, 1.5rem); }
+  .hj-voyagebar { grid-template-columns: auto minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr) auto; }
+  .hj-voyagebar__img { display: none; }
+}
+
+@media (min-width: 1081px) and (prefers-reduced-motion: reduce) {
+  .hj .hj-gallery__img { animation: none; }
+  .hj-typecard, .hj-cta, .hj-gallery__nav, .hj-gallery__dot, .hj-cabrow { transition: none; }
+}

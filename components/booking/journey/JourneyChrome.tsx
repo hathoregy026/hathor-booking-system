@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export type JourneyStep = 1 | 2 | 3;
 
 const STEPS: { id: JourneyStep | 4; name: string }[] = [
@@ -74,6 +76,46 @@ export function PanelHead({
       <p className="hj-panel__kicker">Step {step} of {of}</p>
       <h1 id={titleId}>{title}</h1>
       <p>{lede}</p>
+    </header>
+  );
+}
+
+/**
+ * The desktop step header: the voyage photograph across the page, with the step
+ * number, title and a line of copy on a paper wash. Tablet and phone keep the
+ * PanelHead instead (the banner is display:none there).
+ */
+export function StepBanner({
+  step,
+  kicker,
+  title,
+  lede,
+  quote,
+  image,
+}: {
+  step: number;
+  kicker: string;
+  title: string;
+  lede: string;
+  quote?: string;
+  image: string;
+}) {
+  return (
+    <header className="hj-banner">
+      <Image className="hj-banner__img" src={image} alt="" fill priority sizes="100vw" />
+      <span className="hj-banner__shade" aria-hidden />
+      <div className="hj-banner__copy">
+        <span className="hj-banner__num" aria-hidden>
+          {String(step).padStart(2, "0")}
+          <span className="hj-banner__of">of 04</span>
+        </span>
+        <span className="hj-banner__text">
+          <span className="hj-banner__kicker">Step {step} of 4 · {kicker}</span>
+          <h1 className="hj-banner__title">{title}</h1>
+          <span className="hj-banner__lede">{lede}</span>
+        </span>
+      </div>
+      {quote ? <span className="hj-banner__quote" aria-hidden>{quote}</span> : null}
     </header>
   );
 }

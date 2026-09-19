@@ -151,6 +151,65 @@ export function IconChild(props: IconProps) {
   );
 }
 
+export function IconView(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="1.5" />
+      <path d="M3.5 15.5 9 11l4 3.2 2.6-2 4.9 3.8M15.5 8.6v.2" />
+    </Svg>
+  );
+}
+
+export function IconWifi(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M3.5 9.5a12.5 12.5 0 0 1 17 0M6.5 12.8a8 8 0 0 1 11 0M9.6 16a3.5 3.5 0 0 1 4.8 0" />
+      <path d="M12 19.2v.1" />
+    </Svg>
+  );
+}
+
+export function IconBath(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M3.5 12h17v2.5a4.5 4.5 0 0 1-4.5 4.5H8a4.5 4.5 0 0 1-4.5-4.5V12ZM6 12V6.2A2.2 2.2 0 0 1 10.2 5M7.5 19l-1 2m10-2 1 2" />
+    </Svg>
+  );
+}
+
+export function IconLink(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.2 1.2M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.2-1.2" />
+    </Svg>
+  );
+}
+
+export function IconWand(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="m4 20 11-11m-2-2 2 2M17 3v3m-1.5-1.5h3M20 8v2m-1-1h2M8.5 4v2m-1-1h2" />
+    </Svg>
+  );
+}
+
+export function IconCheck(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="m5 12.5 4.2 4L19 7" />
+    </Svg>
+  );
+}
+
+export function IconChevron({ direction = "right", ...props }: IconProps & { direction?: "left" | "right" | "up" | "down" }) {
+  const d = { right: "m9 5 7 7-7 7", left: "m15 5-7 7 7 7", up: "m5 15 7-7 7 7", down: "m5 9 7 7 7-7" }[direction];
+  return (
+    <Svg {...props}>
+      <path d={d} />
+    </Svg>
+  );
+}
+
 export function IconClose(props: IconProps) {
   return (
     <Svg {...props}>

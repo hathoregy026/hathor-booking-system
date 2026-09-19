@@ -101,12 +101,23 @@ async function walk(browser, label, width, height, mode, theme) {
     await page.screenshot({ path: `${OUT}/${label}-${name}.png`, fullPage: false });
   };
   const guideItems = async () => page.locator('.hj-guide:visible .hj-guide__item').count();
+  // Desktop has its own full-screen layout: step maps give way to the banner, and
+  // Guests & Suites is a board (a type list, then that type's cabins as rows).
+  const desktop = label === 'desktop';
+  const mapOf = count => (desktop ? 0 : count);
+  const cabinAt = (type, number) => page.locator(`:is(.hj-cabin-card, .hj-cabrow)[aria-label^="${type}, cabin ${number},"]`);
+  const openType = async type => {
+    if (!desktop) return;
+    await page.getByRole('radiogroup', { name: 'Cabin types' }).getByRole('radio', { name: new RegExp(`^${type},`) }).click();
+    await page.waitForTimeout(200);
+  };
 
   // Step 1 — journey.
   await page.goto('http://localhost:3000/booking', { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: 'Expand all' }).waitFor({ timeout: 90000 });
   await page.locator('.hj-sailing').first().waitFor({ timeout: 60000 });
-  if ((await guideItems()) !== 3) problems.push(`${label}: journey step should show a 3-point map`);
+  if ((await guideItems()) !== mapOf(3)) problems.push(`${label}: journey step should show a ${mapOf(3)}-point map`);
+  if (desktop && !(await page.locator('.hj-banner').isVisible())) problems.push('desktop: the journey step should open with its photograph banner');
   for (const [pattern, expected] of [[/3 Nights/, 4], [/4 Nights/, 5], [/7 Nights/, 8]]) {
     await page.getByRole('radio', { name: pattern }).click();
     await page.waitForTimeout(250);
@@ -120,33 +131,50 @@ async function walk(browser, label, width, height, mode, theme) {
 
   // Step 2 — guests & suites.
   await page.getByRole('heading', { name: /select your cabin or suite/i }).waitFor({ timeout: 60000 });
-  if ((await guideItems()) !== 3) problems.push(`${label}: guests & suites step should show a 3-point map`);
+  if ((await guideItems()) !== mapOf(3)) problems.push(`${label}: guests & suites step should show a ${mapOf(3)}-point map`);
 
-  // Cabin collapse: desktop keeps every cabin flat (a display:contents group
-  // reports a zero-size rect); tablet/phone collapse cabins after the first
-  // of a type into a "N more" toggle, closed by default.
-  const collapseState = await page.evaluate(() => Array.from(document.querySelectorAll('.hj-cabin-more')).map(group => {
-    const list = group.querySelector('.hj-cabin-more__list');
-    const input = group.querySelector('.hj-cabin-more__input');
-    return { checked: input ? input.checked : null, listHeight: list ? list.getBoundingClientRect().height : null };
-  }));
-  if (label === 'desktop') {
-    if (collapseState.some(group => group.listHeight !== 0)) problems.push(`${label}: desktop should render every cabin flat, not behind a toggle (${JSON.stringify(collapseState)})`);
+  let allCount = 0;
+  if (desktop) {
+    // The board: four types, each opening its own cabins; together all 12.
+    const types = page.getByRole('radiogroup', { name: 'Cabin types' }).getByRole('radio');
+    if ((await types.count()) !== 4) problems.push(`desktop: the board should offer 4 cabin types, found ${await types.count()}`);
+    for (const [type, expected] of [['Luxury King Cabin', 6], ['Luxury Twin Cabin', 2], ['Luxury Suite', 2], ['Royal Suite', 2]]) {
+      await openType(type);
+      const rows = page.locator('.hj-cabrow');
+      const count = await rows.count();
+      const onlyType = await rows.evaluateAll((list, wanted) => list.every(row => row.getAttribute('aria-label').startsWith(`${wanted},`)), type);
+      if (count !== expected || !onlyType) problems.push(`desktop: ${type} should open its ${expected} cabins, found ${count}`);
+      allCount += count;
+    }
+    if (allCount !== 12) problems.push(`desktop: the board should list all 12 cabins across its types, found ${allCount}`);
+    if ((await page.locator('.hj-gallery .hathor-fav').count()) !== 1) problems.push('desktop: the cabin photographs should carry a favourite button');
+    const counter = page.locator('.hj-gallery__count');
+    const firstPhoto = await counter.innerText();
+    await page.getByRole('button', { name: 'Next photo' }).click();
+    if ((await counter.innerText()) === firstPhoto) problems.push('desktop: Next photo did not change the photograph');
+    if (await page.locator('.hj-banner').count()) problems.push('desktop: the cabin step should keep the screen for the cabin photographs, without a banner');
+    if (!(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1))) problems.push('desktop: Guests & Suites should fit the screen without page scrolling');
   } else {
+    // Tablet/phone collapse cabins after the first of a type into a "N more" toggle, closed by default.
+    const collapseState = await page.evaluate(() => Array.from(document.querySelectorAll('.hj-cabin-more')).map(group => {
+      const list = group.querySelector('.hj-cabin-more__list');
+      const input = group.querySelector('.hj-cabin-more__input');
+      return { checked: input ? input.checked : null, listHeight: list ? list.getBoundingClientRect().height : null };
+    }));
     if (collapseState.length !== 4) problems.push(`${label}: expected 4 collapsible cabin groups (King, Twin, Luxury Suite, Royal Suite), found ${collapseState.length}`);
     if (collapseState.some(group => group.checked || group.listHeight > 0)) problems.push(`${label}: extra cabins should start collapsed (${JSON.stringify(collapseState)})`);
-  }
 
-  const allCount = Number(await page.getByRole('button', { name: /^All rooms/ }).locator('.hj-filter__count').innerText());
-  const cards = page.locator('.hj-cabin-card');
-  if (allCount !== 12 || (await cards.count()) !== 12) problems.push(`${label}: All rooms should list all 12 cabins (badge ${allCount}, cards ${await cards.count()})`);
-  await page.getByRole('button', { name: /^King Cabin/ }).click();
-  const kingCards = await cards.count();
-  const onlyKings = await cards.evaluateAll(list => list.every(card => card.getAttribute('aria-label').startsWith('Luxury King Cabin')));
-  if (kingCards !== 6 || !onlyKings) problems.push(`${label}: the King Cabin filter should list its 6 cabins, found ${kingCards}`);
-  await page.getByRole('button', { name: /^All rooms/ }).click();
-  if ((await cards.count()) !== 12) problems.push(`${label}: All rooms did not bring back all 12 cabins`);
-  if ((await page.locator('.hj-cabin-card .hathor-fav').count()) !== 12) problems.push(`${label}: every cabin card should have a favourite button`);
+    allCount = Number(await page.getByRole('button', { name: /^All rooms/ }).locator('.hj-filter__count').innerText());
+    const cards = page.locator('.hj-cabin-card');
+    if (allCount !== 12 || (await cards.count()) !== 12) problems.push(`${label}: All rooms should list all 12 cabins (badge ${allCount}, cards ${await cards.count()})`);
+    await page.getByRole('button', { name: /^King Cabin/ }).click();
+    const kingCards = await cards.count();
+    const onlyKings = await cards.evaluateAll(list => list.every(card => card.getAttribute('aria-label').startsWith('Luxury King Cabin')));
+    if (kingCards !== 6 || !onlyKings) problems.push(`${label}: the King Cabin filter should list its 6 cabins, found ${kingCards}`);
+    await page.getByRole('button', { name: /^All rooms/ }).click();
+    if ((await cards.count()) !== 12) problems.push(`${label}: All rooms did not bring back all 12 cabins`);
+    if ((await page.locator('.hj-cabin-card .hathor-fav').count()) !== 12) problems.push(`${label}: every cabin card should have a favourite button`);
+  }
   if ((await page.getByRole('button', { name: /add another/i }).count()) !== 0) problems.push(`${label}: an Add another button is still shown`);
   const body = await page.locator('body').innerText();
   if (/\bK0[1-6]\b|\bT0[12]\b|\bS0[12]\b|\bR0[12]\b/.test(body)) problems.push(`${label}: an internal cabin number is visible to the guest`);
@@ -158,16 +186,17 @@ async function walk(browser, label, width, height, mode, theme) {
   await page.getByRole('button', { name: 'One more children' }).first().click();
   await page.waitForTimeout(300);
   if ((await poolTiles.count()) !== 5) problems.push(`${label}: 3 adults and 2 children should wait in Who Is Travelling, found ${await poolTiles.count()}`);
-  if ((await page.locator('.hj-cabin-card .hj-tile').count()) !== 0) problems.push(`${label}: guests were placed without the guest placing them`);
+  if ((await page.locator(':is(.hj-cabin-card, .hj-cabrow, .hj-placement__guests) .hj-tile').count()) !== 0) problems.push(`${label}: guests were placed without the guest placing them`);
   await shot('02-guests-waiting');
 
   // One shared count: Adult 1 dragged (or tapped) into King Cabin 3, then its menu set to 2.
   await expandCabinGroup(page, /King Cabin/);
-  if (label !== 'desktop') {
+  await openType('Luxury King Cabin');
+  if (!desktop) {
     const kingGroupHeight = await page.evaluate(() => document.querySelector('.hj-cabin-more')?.querySelector('.hj-cabin-more__list')?.getBoundingClientRect().height ?? 0);
     if (kingGroupHeight <= 0) problems.push(`${label}: opening "more King Cabins" did not reveal the rest of the type`);
   }
-  const kingThree = page.locator('.hj-cabin-card[aria-label^="Luxury King Cabin, cabin 3,"]');
+  const kingThree = cabinAt('Luxury King Cabin', 3);
   const placeInto = async (guestId, card, cardName) => {
     if (mode === 'drag') {
       await centre(card);
@@ -204,9 +233,14 @@ async function walk(browser, label, width, height, mode, theme) {
   await chooser.getByRole('checkbox', { name: /Luxury Suite/ }).check();
   await chooser.getByRole('button', { name: 'Arrange my guests' }).click();
   await page.waitForTimeout(300);
-  const placedTypes = await page.locator('.hj-cabin-card--used').evaluateAll(list => list.map(card => card.getAttribute('aria-label').split(',')[0]));
+  // Where everyone went: the board lists used cabins by name ("King Cabin 1"); the cards mark theirs.
+  const usedCabins = async () => (desktop
+    ? page.locator('.hj-placement__cabin').allInnerTexts()
+    : page.locator('.hj-cabin-card--used').evaluateAll(list => list.map(card => card.getAttribute('aria-label').split(',')[0])));
+  const placedTypes = await usedCabins();
   if ((await poolTiles.count()) !== 0) problems.push(`${label}: Arrange for me left guests waiting`);
-  if (placedTypes.some(type => type !== 'Luxury King Cabin' && type !== 'Luxury Suite')) problems.push(`${label}: Arrange for me used a type that was not chosen: ${placedTypes}`);
+  const chosenType = desktop ? name => /^(King Cabin|Luxury Suite) \d+$/.test(name) : name => name === 'Luxury King Cabin' || name === 'Luxury Suite';
+  if (placedTypes.length === 0 || !placedTypes.every(chosenType)) problems.push(`${label}: Arrange for me used a type that was not chosen: ${placedTypes}`);
   await shot('03-arranged');
 
   // Cart: checks live availability, then keeps sailing and party.
@@ -214,7 +248,8 @@ async function walk(browser, label, width, height, mode, theme) {
     const availabilityChecks = [];
     const listener = request => { if (request.url().includes('/api/booking/availability')) availabilityChecks.push(request.url()); };
     page.on('request', listener);
-    const cart = page.locator('.hj-cabin-card[aria-label^="Luxury Suite, cabin 1,"] .hathor-atv');
+    await openType('Luxury Suite');
+    const cart = page.locator('.hj-gallery .hathor-atv');
     await centre(cart);
     await cart.click();
     await page.waitForFunction(() => {
@@ -231,17 +266,18 @@ async function walk(browser, label, width, height, mode, theme) {
     await page.waitForURL(/\/booking\?.*sailing=/, { timeout: 30000 });
     await page.getByRole('heading', { name: /select your cabin or suite/i }).waitFor({ timeout: 90000 });
     await page.waitForTimeout(500);
-    if ((await page.locator('.hj-cabin-card .hj-tile').count()) !== 5) problems.push('desktop: continuing from the cart did not place the party of 5');
-    const resumedTypes = await page.locator('.hj-cabin-card--used').evaluateAll(list => list.map(card => card.getAttribute('aria-label').split(',')[0]));
-    if (resumedTypes.length === 0 || resumedTypes.some(type => type !== 'Luxury Suite')) problems.push(`desktop: continuing from the cart did not use the Luxury Suite from the cart (${resumedTypes})`);
+    if ((await page.locator('.hj-placement__guests .hj-tile').count()) !== 5) problems.push('desktop: continuing from the cart did not place the party of 5');
+    const resumedTypes = await usedCabins();
+    if (resumedTypes.length === 0 || resumedTypes.some(name => !/^Luxury Suite \d+$/.test(name))) problems.push(`desktop: continuing from the cart did not use the Luxury Suite from the cart (${resumedTypes})`);
     await shot('05-resumed-from-cart');
   }
 
-  // Cards far apart on the page: tap Adult 1, then the Twin Cabin (drag is covered above).
-  const twinOne = page.locator('.hj-cabin-card[aria-label^="Luxury Twin Cabin, cabin 1,"]');
-  const adultOneTile = page.locator('.hj-cabin-card .hj-tile[data-guest="adult-1"]');
+  // Cabins far apart (another type on the board): tap Adult 1, then the Twin Cabin (drag is covered above).
+  const twinOne = cabinAt('Luxury Twin Cabin', 1);
+  const adultOneTile = page.locator(`${desktop ? '.hj-placement__guests' : '.hj-cabin-card'} .hj-tile[data-guest="adult-1"]`);
   await centre(adultOneTile);
   await adultOneTile.click();
+  await openType('Luxury Twin Cabin');
   const placeTwin = page.getByRole('button', { name: 'Place Adult 1 in Twin Cabin 1' });
   await centre(placeTwin);
   await placeTwin.click();
@@ -255,7 +291,8 @@ async function walk(browser, label, width, height, mode, theme) {
 
   // Step 3 — details and payment.
   await page.getByLabel(/first name/i).waitFor({ timeout: 60000 });
-  if ((await guideItems()) !== 4) problems.push(`${label}: details step should show a 4-point map`);
+  if ((await guideItems()) !== mapOf(4)) problems.push(`${label}: details step should show a ${mapOf(4)}-point map`);
+  if (desktop && !(await page.locator('.hj-banner').isVisible())) problems.push('desktop: the details step should open with its photograph banner');
   if (holdCalls.length > 0) problems.push(`${label}: a cabin was held before the guest confirmed`);
   const nameFields = page.getByLabel(/full name/i);
   if ((await nameFields.count()) !== 5) problems.push(`${label}: expected 5 passenger name fields, found ${await nameFields.count()}`);
@@ -284,7 +321,7 @@ async function walk(browser, label, width, height, mode, theme) {
   await page.locator('.hj-phone input').fill('010 1234 5678');
   for (let i = 0; i < 5; i += 1) await nameFields.nth(i).fill(`QA Guest ${i + 1}`);
   await page.getByRole('checkbox', { name: /booking and cancellation terms/i }).check();
-  if ((await page.locator('.hj-guide__item--done').count()) !== 3) problems.push(`${label}: the details map did not tick the three finished parts`);
+  if (!desktop && (await page.locator('.hj-guide__item--done').count()) !== 3) problems.push(`${label}: the details map did not tick the three finished parts`);
   await shot('06-details');
 
   // Confirm: a real hold, a failed request (no email), and an immediate release.
