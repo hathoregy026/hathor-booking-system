@@ -622,6 +622,8 @@ html[data-mask-reveal] .mask-reveal-route {
 
 .mr-card__finish {
   margin: 0;
+  flex: none;
+  white-space: nowrap;
   font-size: 0.54rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -652,7 +654,8 @@ html[data-mask-reveal] .mask-reveal-route {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 11ch;
+  /* The full cabin name fits beside the unit mark; the ellipsis is only a fallback. */
+  max-width: 100%;
 }
 
 .mr-card__unit {

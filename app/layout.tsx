@@ -159,6 +159,8 @@ gtag('config', 'G-3QKFST6VXE');`,
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        /* Page boot scripts (e.g. the cruises list) set the body colour as they load. */
+        suppressHydrationWarning
       >
         <TouchDeviceBootstrap />
         <DeployBoot />

@@ -1278,6 +1278,10 @@ html:has(.wellness-editorial) .public-fab {
     width: 100%;
     height: auto;
     min-height: 0;
+    /* The desktop stage is a fixed 5:4 box; stacked, it grows with its photos
+       so none of them runs into the copy below. */
+    max-height: none;
+    aspect-ratio: auto;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     gap: 0.75rem;
@@ -1294,6 +1298,12 @@ html:has(.wellness-editorial) .public-fab {
     width: 100%;
     height: auto;
     max-height: none;
+    /* Each photo keeps its own shape (set on the element) once it is in flow. */
+    aspect-ratio: var(--we-ratio, 4 / 3);
+  }
+
+  .we-essay__tall .we-media {
+    aspect-ratio: 3 / 4;
   }
 
   .we-essay__tall {

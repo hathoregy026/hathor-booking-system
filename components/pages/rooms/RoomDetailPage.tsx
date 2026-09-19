@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { Footer } from "@/components/layout/Footer";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useCmsPathImage } from "@/hooks/useCmsPathImage";
@@ -96,6 +97,8 @@ export function RoomDetailPage({ room }: { room: RoomShowcase }) {
         <div><BookNowTrigger className="room-pill">Check availability</BookNowTrigger><FavoriteButton type="residence" slug={room.slug} name={room.name} variant="inline" /><AddToVoyageButton kind="residence" slug={room.slug} name={room.name} variant="inline" /><Link href="/rooms" className="room-text-link">Explore other rooms</Link></div>
       </section>
     </main>
+      {/* The site footer every public page ends on: reservations desk and links. */}
+      <Footer />
     </div>
   );
 }
