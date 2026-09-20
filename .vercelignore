@@ -18,6 +18,20 @@ scripts/out-*
 node_modules
 .git
 backups/
+
+# Local scratch, evidence and restore snapshots. The build never reads these,
+# and single files inside them (a bundled browser, a repo dump) are larger than
+# the 100 MB per-file limit the upload allows.
+_local/
+output/
+redesign/
+scraped/
+OLD DASHBOARD BACK UP/
+.vercel-sync/
+repomix-output.xml
+assets/GPT SITE RESTORE/
+assets/NORMAL IS DEF BORING/
+assets/plates/
 scripts/diagnose-*
 hathoor-booking.json
 assets/LOGOS/*.ai
