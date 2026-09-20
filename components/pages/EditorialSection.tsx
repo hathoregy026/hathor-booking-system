@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 
 export function DiscoverLink({
@@ -57,11 +58,13 @@ export function EditorialSection({
 }: EditorialSectionProps) {
   const paragraphs = Array.isArray(body) ? body : [body];
   const label = chapter ?? eyebrow;
+  const image = useSiteImage(imageName);
+  const effectiveName = image.slot ?? imageName;
 
   return (
     <section
-      id={siteImageAnchorId(imageName)}
-      data-site-image={imageName}
+      id={siteImageAnchorId(effectiveName)}
+      data-site-image={effectiveName}
       className={`hathor-editorial ${dark ? "hathor-editorial--dark" : ""} ${fullBleed ? "hathor-editorial--bleed" : ""}`}
     >
       <div className={fullBleed ? "" : "page-container"}>

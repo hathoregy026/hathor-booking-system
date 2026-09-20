@@ -206,7 +206,7 @@ export function BookingItineraryFilter({
         <img
           src={toVercelOptimizedSrc(stagePhoto.src)}
           alt=""
-          data-site-image={VOYAGE_STAGE_SLOT}
+          data-site-image={stagePhoto.slot ?? VOYAGE_STAGE_SLOT}
           className="hathor-voyage-stage__photo"
         />
         <div className="hathor-voyage-stage__veil" />

@@ -6,6 +6,7 @@ import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { usePublicTheme } from "@/components/public/PublicThemeProvider";
 import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
+import { getPageScopedSiteImageName } from "@/lib/site-image-page-scope";
 import {
   applySuitesReferenceHeroImages,
   layoutSuitesConnectors,
@@ -479,8 +480,9 @@ function applyImages(doc: Document, images: Record<string, string>) {
       img.setAttribute("data-hathor-slot", current);
     }
     /* Same marker the rest of the site uses, so admin preview links land here. */
-    if (img.getAttribute("data-site-image") !== current) {
-      img.setAttribute("data-site-image", current);
+    const scopedName = getPageScopedSiteImageName("/suites", current);
+    if (img.getAttribute("data-site-image") !== scopedName) {
+      img.setAttribute("data-site-image", scopedName);
     }
     if (img.getAttribute("src") !== url) {
       img.setAttribute("src", url);
@@ -493,6 +495,17 @@ function applyImages(doc: Document, images: Record<string, string>) {
     img.classList.add("lazyloaded");
   });
   return changed;
+}
+
+function markSuitesSiteImages(doc: Document) {
+  doc.querySelectorAll<HTMLImageElement>("img[data-hathor-slot]").forEach((img) => {
+    const sourceName = img.getAttribute("data-hathor-slot");
+    if (!sourceName) return;
+    img.setAttribute(
+      "data-site-image",
+      getPageScopedSiteImageName("/suites", sourceName),
+    );
+  });
 }
 
 function prepareSuitesReferenceHero(
@@ -530,6 +543,7 @@ function prepareSuitesReferenceHero(
   ensureStyle(doc, "hathor-suites-tail", suitesCssTail());
 
   if (!mountSuitesReferenceHero(doc, images)) return null;
+  markSuitesSiteImages(doc);
   neutralizeSuitesCloneIntroMotion(doc);
   return { doc, cms };
 }

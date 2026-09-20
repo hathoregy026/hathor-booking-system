@@ -2,6 +2,10 @@ import { AMENITIES_SEQUENCE_IMAGE_SLOTS } from "@/lib/amenities-sequence-images"
 import { HOME_CAROUSEL_ADMIN_CARDS } from "@/lib/home-carousel-images";
 import { DINING_PLATE_NUMBERS, diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
+import {
+  getSiteImageSourceName,
+  isLegacySharedSiteImageSource,
+} from "@/lib/site-image-page-scope";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 import {
   SITE_IMAGE_PAGES,
@@ -112,8 +116,8 @@ const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
     label: "16. Gallery / Luxury Suites filter",
   },
   { name: "scraped-luxsuite-5", label: "17. Gallery / Interiors" },
-  { name: "room-suite", label: "18. Gallery / shared Luxury Suite" },
-  { name: "room-royal", label: "19. Gallery / shared Royal Suite" },
+  { name: "room-suite", label: "18. Gallery / Luxury Suite" },
+  { name: "room-royal", label: "19. Gallery / Royal Suite" },
   { name: "scraped-royal-2", label: "20. Nature slide 1" },
   { name: "scraped-royal-4", label: "21. Nature slide 2" },
   { name: "scraped-royal-6", label: "22. Nature slide 3" },
@@ -304,7 +308,7 @@ const CURATED_LABELS: Record<string, string> = (() => {
 
 /** Where on the page a slot belongs, so one page's list still reads in parts. */
 function sectionForSlot(slot: SiteImageSlot): string {
-  const name = slot.name;
+  const name = getSiteImageSourceName(slot.name);
   if (name === "burger-nav-image") return "Burger menu";
   if (name.startsWith("home-amenities-")) return "Amenities sequence";
   if (name.startsWith("moving-tilted-")) return "Moving tilted cards";
@@ -319,18 +323,20 @@ function sectionForSlot(slot: SiteImageSlot): string {
 }
 
 function labelForSlot(slot: SiteImageSlot): string {
-  if (SLOT_LABELS[slot.name]) return SLOT_LABELS[slot.name]!;
-  if (CURATED_LABELS[slot.name]) return CURATED_LABELS[slot.name];
-  if (slot.pagePath === "/gastronomy" && slot.name.startsWith("dining-")) {
+  const sourceName = getSiteImageSourceName(slot.name);
+  if (SLOT_LABELS[sourceName]) return SLOT_LABELS[sourceName]!;
+  if (CURATED_LABELS[sourceName]) return CURATED_LABELS[sourceName];
+  if (slot.pagePath === "/gastronomy" && sourceName.startsWith("dining-")) {
     return slot.altText;
   }
   const page = PAGE_GROUP_TITLES[slot.pagePath] ?? "Site";
-  return `${page} — ${slot.name.replace(/-/g, " ")}`;
+  return `${page} — ${sourceName.replace(/-/g, " ")}`;
 }
 
 function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
-  if (SLOT_LAYOUT_KINDS[slot.name]) return SLOT_LAYOUT_KINDS[slot.name]!;
-  if (slot.name.startsWith("dining-plate-")) return "gallery";
+  const name = getSiteImageSourceName(slot.name);
+  if (SLOT_LAYOUT_KINDS[name]) return SLOT_LAYOUT_KINDS[name]!;
+  if (name.startsWith("dining-plate-")) return "gallery";
   if (slot.category === "hero") return "hero";
   if (
     slot.name.includes("collage") ||
@@ -395,12 +401,15 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       pagePath,
       title,
       livePath: pagePath,
-      description: `Every photo on ${title} (${pagePath}), in the order guests meet them. A photo marked “also on” is shared — editing it changes every page listed.`,
+      description: `Every photo on ${title} (${pagePath}), in the order guests meet them. Each photo belongs only to this page, so editing it cannot change another page.`,
       items,
     });
   }
 
-  const orphans = SITE_IMAGE_SLOTS.filter((slot) => !painted.has(slot.name));
+  const orphans = SITE_IMAGE_SLOTS.filter(
+    (slot) =>
+      !painted.has(slot.name) && !isLegacySharedSiteImageSource(slot.name),
+  );
   if (orphans.length) {
     groups.push({
       pagePath: SITE_IMAGE_UNUSED_GROUP,

@@ -3,6 +3,7 @@ import {
   SITE_IMAGE_PAGE_SLOTS,
   SITE_IMAGE_USAGE_CRAWLED_AT,
 } from "@/lib/site-image-usage-map.generated";
+import { getPageScopedSiteImageName } from "@/lib/site-image-page-scope";
 
 /**
  * Where each photo really appears.
@@ -62,9 +63,10 @@ const PAGES_BY_SLOT: ReadonlyMap<string, string[]> = (() => {
   const map = new Map<string, string[]>();
   for (const path of SITE_IMAGE_PAGE_ORDER) {
     for (const name of SITE_IMAGE_PAGE_SLOTS[path] ?? []) {
-      const pages = map.get(name);
+      const scopedName = getPageScopedSiteImageName(path, name);
+      const pages = map.get(scopedName);
       if (pages) pages.push(path);
-      else map.set(name, [path]);
+      else map.set(scopedName, [path]);
     }
   }
   return map;
@@ -84,7 +86,9 @@ export function getSiteImageUsedOnPages(slotName: string): SiteImageUsedOnPage[]
 
 /** The slots a page paints, in the order the page paints them. */
 export function getSiteImageSlotNamesForPage(path: string): readonly string[] {
-  return SITE_IMAGE_PAGE_SLOTS[path] ?? [];
+  return (SITE_IMAGE_PAGE_SLOTS[path] ?? []).map((name) =>
+    getPageScopedSiteImageName(path, name),
+  );
 }
 
 export function formatSiteImageUsedOnLabel(pages: SiteImageUsedOnPage[]): string {

@@ -51,7 +51,7 @@ function Frame({
   return (
     <figure
       className={`h3-frame ${className}`.trim()}
-      data-site-image={slot}
+      data-site-image={image.slot ?? slot}
       style={
         ratio ? ({ ["--h3-ratio" as string]: ratio } as CSSProperties) : undefined
       }
@@ -86,7 +86,7 @@ function Media({
 }) {
   const image = useSiteImage(slot);
   return (
-    <figure className={`h3-media ${className}`.trim()} data-h3-media data-site-image={slot}>
+    <figure className={`h3-media ${className}`.trim()} data-h3-media data-site-image={image.slot ?? slot}>
       <span className="h3-media__wrap">
         <Image
           src={originSrcForNextImage(image.src)}
@@ -138,7 +138,7 @@ function Flip({
       data-h3-flip={linked ? undefined : variant === "upDown" ? "up" : "side"}
       data-h3-flip-anchor={linked ? undefined : anchor}
     >
-      <div className="h3-flip__media h3-flip__media--down" data-site-image={under}>
+      <div className="h3-flip__media h3-flip__media--down" data-site-image={underImage.slot ?? under}>
         <Image
           src={originSrcForNextImage(underImage.src)}
           alt={underAlt || underImage.alt}
@@ -147,7 +147,7 @@ function Flip({
           quality={SITE_IMAGE_QUALITY}
         />
       </div>
-      <div className="h3-flip__media h3-flip__media--up" data-site-image={over}>
+      <div className="h3-flip__media h3-flip__media--up" data-site-image={overImage.slot ?? over}>
         <Image
           src={originSrcForNextImage(overImage.src)}
           alt={overAlt || overImage.alt}
@@ -1124,7 +1124,7 @@ function ChartPanel({ children }: { children: ReactNode }) {
   return (
     <section
       className="h3-scene h3-chart-panel"
-      data-site-image="home-3-animated-map-bg"
+      data-site-image={ghost.slot ?? "home-3-animated-map-bg"}
       aria-label="The route between Luxor and Aswan"
       style={
         {
@@ -1153,7 +1153,7 @@ function TermPlate({
     <figure
       className="h3-terms__plate"
       data-h3-term-plate={index}
-      data-site-image={slot}
+      data-site-image={image.slot ?? slot}
       style={{ ["--i" as string]: index } as CSSProperties}
     >
       <Image
@@ -1171,7 +1171,7 @@ function TermPlate({
 function MosaicPlate({ slot, alt }: { slot: string; alt: string }) {
   const image = useSiteImage(slot);
   return (
-    <figure className="h3-mosaic__item" data-site-image={slot}>
+    <figure className="h3-mosaic__item" data-site-image={image.slot ?? slot}>
       <Image
         src={originSrcForNextImage(image.src)}
         alt={alt || image.alt}

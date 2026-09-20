@@ -92,8 +92,8 @@ function SlotImage({
   return (
     <figure
       className={className}
-      id={previewAnchor ? siteImageAnchorId(slot) : undefined}
-      data-site-image={slot}
+      id={previewAnchor ? siteImageAnchorId(image.slot ?? slot) : undefined}
+      data-site-image={image.slot ?? slot}
     >
       <img src={toVercelOptimizedSrc(image.src)} alt={alt ?? image.alt} />
     </figure>
@@ -119,11 +119,11 @@ function SlotFlipImage({
     <figure
       className={`nib-flip nib-flip--${axis} ${className}`}
       data-nib-flip
-      data-site-image={frontSlot}
-      id={siteImageAnchorId(frontSlot)}
+      data-site-image={front.slot ?? frontSlot}
+      id={siteImageAnchorId(front.slot ?? frontSlot)}
     >
       <img src={toVercelOptimizedSrc(front.src)} alt={alt || front.alt} />
-      <img src={toVercelOptimizedSrc(back.src)} alt="" aria-hidden data-site-image={backSlot} />
+      <img src={toVercelOptimizedSrc(back.src)} alt="" aria-hidden data-site-image={back.slot ?? backSlot} />
     </figure>
   );
 }
@@ -144,8 +144,8 @@ function Plate({
     <figure
       className={`nib-plate nib-plate--${number} ${className}`}
       data-nib-plate
-      data-site-image={slotName}
-      id={siteImageAnchorId(slotName)}
+      data-site-image={image.slot ?? slotName}
+      id={siteImageAnchorId(image.slot ?? slotName)}
       style={style}
     >
       <img src={toVercelOptimizedSrc(image.src)} alt={image.alt} />

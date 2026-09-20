@@ -38,7 +38,7 @@ function WellnessMedia({
   return (
     <figure
       className={`we-media ${className}`}
-      data-site-image={slot}
+      data-site-image={image.slot ?? slot}
       style={
         ratio ? ({ ["--we-ratio" as string]: ratio } as CSSProperties) : undefined
       }

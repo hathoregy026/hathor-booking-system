@@ -25,5 +25,5 @@ export function useCmsPathImage(pathOrSlot: string): {
   }
 
   const src = originSrcForNextImage(cms.src.trim() || pathOrSlot);
-  return { src, alt: cms.alt, slot };
+  return { src, alt: cms.alt, slot: cms.slot ?? slot };
 }

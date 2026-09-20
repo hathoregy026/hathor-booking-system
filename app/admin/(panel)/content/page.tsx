@@ -83,13 +83,15 @@ function buildSiteImageForm(
     for (const item of group.items) {
       const record = byName.get(item.name);
       const slot = getSiteImageSlot(item.name);
+      const effectiveRecord =
+        record ?? (slot?.sourceName ? byName.get(slot.sourceName) : undefined);
       form[item.name] = {
         name: item.name,
         label: item.label,
-        url: record
-          ? publicSiteImageSrc(item.name, record.url)
+        url: effectiveRecord
+          ? publicSiteImageSrc(item.name, effectiveRecord.url)
           : (slot?.url ?? ""),
-        altText: record?.altText ?? slot?.altText ?? item.defaultAlt,
+        altText: effectiveRecord?.altText ?? slot?.altText ?? item.defaultAlt,
       };
     }
   }

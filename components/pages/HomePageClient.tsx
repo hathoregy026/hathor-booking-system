@@ -53,7 +53,6 @@ import {
   DEFAULT_WHEEL_STAGE_SETTINGS,
   type WheelStageSettings,
 } from "@/lib/wheel-stage-settings-shared";
-import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
 
 const GALLERY_PREVIEW_ANCHORS = new Set([
@@ -82,6 +81,7 @@ function GalleryMarqueePhoto({
       decoding="async"
       fetchPriority="low"
       draggable={false}
+      data-site-image={image.slot ?? name}
     />
   );
 }
@@ -543,18 +543,6 @@ export function HomePageClient({
                               : "gallery-item"
                           }
                           tabIndex={copy === 1 ? -1 : undefined}
-                          id={
-                            copy === 0 &&
-                            GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                              ? siteImageAnchorId(item.imageName)
-                              : undefined
-                          }
-                          data-site-image={
-                            copy === 0 &&
-                            GALLERY_PREVIEW_ANCHORS.has(item.imageName)
-                              ? item.imageName
-                              : undefined
-                          }
                           aria-label={item.alt}
                         >
                           <span className="gallery-item__frame" aria-hidden="true">

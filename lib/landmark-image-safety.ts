@@ -3,6 +3,7 @@ import {
   type HighlightsLandmarkSlot,
 } from "@/lib/highlights-content";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
+import { getSiteImageSourceName } from "@/lib/site-image-page-scope";
 
 /**
  * Paths / filenames that must never resolve under landmark-* slots.
@@ -57,7 +58,8 @@ export function isSafeLandmarkCmsOverride(
   slotName: string,
   cmsUrl: string,
 ): boolean {
-  if (!isHighlightsLandmarkSlot(slotName)) return true;
+  const sourceName = getSiteImageSourceName(slotName);
+  if (!isHighlightsLandmarkSlot(sourceName)) return true;
   if (!cmsUrl.trim()) return false;
 
   const slot = getSiteImageSlot(slotName);

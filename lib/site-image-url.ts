@@ -1,12 +1,13 @@
 /**
  * Client-safe URL helpers for CMS / site images (no DB / Prisma imports).
  */
+import { getSiteImageSourceName } from "@/lib/site-image-page-scope";
 
 /** Stored when a hide-on-clear slot is deleted in the dashboard. */
 export const SITE_IMAGE_CLEARED_SRC = "__cleared__";
 
 export function isDiningPlateSlotName(name: string): boolean {
-  return name.startsWith("dining-plate-");
+  return getSiteImageSourceName(name).startsWith("dining-plate-");
 }
 
 /** These slots can be removed in Site Images and then stay hidden on the live page. */

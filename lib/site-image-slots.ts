@@ -6,6 +6,7 @@ import {
   diningPlateSrc,
 } from "@/lib/gastronomy-dining-media";
 import { HATHOR_MEDIA } from "@/lib/hathor-media";
+import { PAGE_SCOPED_SITE_IMAGE_ALIASES } from "@/lib/site-image-page-scope";
 
 export type SiteImageSlot = {
   name: string;
@@ -14,6 +15,8 @@ export type SiteImageSlot = {
   category: ImageCategory;
   pagePath: string;
   displayOrder: number;
+  /** Previous shared slot used only as the initial value for a page-owned slot. */
+  sourceName?: string;
 };
 
 const DINING_SCENE_SLOTS: SiteImageSlot[] = [
@@ -46,7 +49,7 @@ const DINING_PLATE_SLOTS: SiteImageSlot[] = DINING_PLATE_NUMBERS.map(
 );
 
 /** Canonical image slots — seeded to SiteImage and editable in admin → Site Images. */
-export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
+export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
   ...DINING_SCENE_SLOTS,
   ...DINING_PLATE_SLOTS,
   // Homepage (live EX page only)
@@ -933,6 +936,31 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     pagePath: "/",
     displayOrder: 0,
   },
+];
+
+const BASE_SLOT_BY_NAME = new Map(
+  SITE_IMAGE_BASE_SLOTS.map((slot) => [slot.name, slot]),
+);
+
+const PAGE_SCOPED_SLOTS: SiteImageSlot[] =
+  PAGE_SCOPED_SITE_IMAGE_ALIASES.flatMap((alias) => {
+    const source = BASE_SLOT_BY_NAME.get(alias.sourceName);
+    if (!source) return [];
+    return [
+      {
+        ...source,
+        name: alias.name,
+        sourceName: alias.sourceName,
+        pagePath: alias.pagePath,
+        displayOrder: alias.displayOrder,
+      },
+    ];
+  });
+
+/** Canonical slots plus page-owned aliases for every formerly shared photo. */
+export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
+  ...SITE_IMAGE_BASE_SLOTS,
+  ...PAGE_SCOPED_SLOTS,
 ];
 
 export const BURGER_NAV_IMAGE_SLOT_NAME = "burger-nav-image" as const;

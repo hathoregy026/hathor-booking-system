@@ -57,7 +57,7 @@ export function TestimonialsCarousel({
   return (
     <section
       id={siteImageAnchorId(backgroundImageName)}
-      data-site-image={backgroundImageName}
+      data-site-image={managedBackground.slot ?? backgroundImageName}
       className="lux-testimonials"
       style={bgStyle}
     >

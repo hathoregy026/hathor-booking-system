@@ -31,7 +31,8 @@ export function ManagedImage({
   const image = useSiteImage(name);
   const nextSrc = originSrcForNextImage(image.src);
   const resolvedAlt = alt ?? image.alt;
-  const anchorId = previewAnchor ? siteImageAnchorId(name) : undefined;
+  const effectiveName = image.slot ?? name;
+  const anchorId = previewAnchor ? siteImageAnchorId(effectiveName) : undefined;
 
   if (props.fill) {
     return (
@@ -45,7 +46,7 @@ export function ManagedImage({
         unoptimized={unoptimized}
         className={className}
         id={id ?? anchorId}
-        data-site-image={name}
+        data-site-image={effectiveName}
       />
     );
   }
@@ -62,7 +63,7 @@ export function ManagedImage({
       width={props.width ?? 800}
       height={props.height ?? 600}
       id={id ?? anchorId}
-      data-site-image={name}
+      data-site-image={effectiveName}
     />
   );
 }

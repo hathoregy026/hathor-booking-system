@@ -90,7 +90,7 @@ function NatureGoldBand({
       className="home-am-nature__gold-band home-am-nature__gold-band--has-bg"
       data-am-nature-caption
       id="home-am-nature-caption"
-      data-site-image={name}
+      data-site-image={image.slot ?? name}
       /*
         Wait below the viewport while the leading gold sheet establishes a
         visible lead, then follow it upward as a clearly separate cover layer.
@@ -114,7 +114,7 @@ function NatureGoldBand({
           src={image.src}
           alt=""
           id={previewAnchor ? siteImageAnchorId(name) : undefined}
-          data-site-image={name}
+          data-site-image={image.slot ?? name}
           decoding="async"
           draggable={false}
         />

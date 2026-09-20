@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { withDb, logDbError } from "@/lib/db-safe";
 import { HOME_CAROUSEL_DEFAULT_URLS } from "@/lib/home-carousel-images";
 import {
-  SITE_IMAGE_SLOTS,
+  SITE_IMAGE_BASE_SLOTS,
   getDefaultSiteImage,
   getSiteImageSlot,
 } from "@/lib/site-image-slots";
@@ -81,7 +81,7 @@ function applyLegacySlotFallbacks(
 
 export function defaultStoredSiteImageMap(): StoredSiteImagePublicMap {
   const map: StoredSiteImagePublicMap = {};
-  for (const slot of SITE_IMAGE_SLOTS) {
+  for (const slot of SITE_IMAGE_BASE_SLOTS) {
     map[slot.name] = { src: slot.url, alt: slot.altText };
   }
   return map;
@@ -134,7 +134,8 @@ export function storedMapToSiteImageMap(
   stored: StoredSiteImagePublicMap | null | undefined,
 ): SiteImageMap {
   const map: SiteImageMap = {};
-  for (const slot of SITE_IMAGE_SLOTS) {
+  /* Unsaved page aliases inherit from their source at lookup time. */
+  for (const slot of SITE_IMAGE_BASE_SLOTS) {
     map[slot.name] = { src: slot.url, alt: slot.altText };
   }
   if (!stored || typeof stored !== "object") return map;

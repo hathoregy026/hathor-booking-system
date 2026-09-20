@@ -4,10 +4,13 @@ import {
   getDefaultSiteImage,
   type SiteImageName,
 } from "@/lib/site-image-slots";
+import { getSiteImageSourceName } from "@/lib/site-image-page-scope";
 
 export type ResolvedSiteImage = {
   src: string;
   alt: string;
+  /** Effective dashboard slot for the current page. */
+  slot?: string;
 };
 
 export type SiteImageMap = Record<string, ResolvedSiteImage>;
@@ -70,5 +73,9 @@ export function resolveSiteImageFromMap(
   map: SiteImageMap,
   name: SiteImageName | string,
 ): ResolvedSiteImage {
-  return map[name] ?? getDefaultSiteImage(name);
+  return (
+    map[name] ??
+    map[getSiteImageSourceName(name)] ??
+    getDefaultSiteImage(name)
+  );
 }

@@ -40,7 +40,7 @@ function CharterMedia({
   return (
     <figure
       className={`chr-media ${className}`}
-      data-site-image={slot}
+      data-site-image={image.slot ?? slot}
       style={
         ratio ? ({ ["--chr-ratio" as string]: ratio } as CSSProperties) : undefined
       }

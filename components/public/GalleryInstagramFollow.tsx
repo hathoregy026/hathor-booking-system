@@ -191,7 +191,7 @@ function BurstPhoto({ name }: { name: SiteImageName }) {
     // eslint-disable-next-line @next/next/no-img-element -- intentional: eager native decode, no Next lazy
     <img
       src={image.src}
-      data-site-image={name}
+      data-site-image={image.slot ?? name}
       alt=""
       decoding="async"
       loading="eager"

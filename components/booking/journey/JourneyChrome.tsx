@@ -107,7 +107,7 @@ export function StepBanner({
   const photo = useSiteImage(BOOKING_BANNER_SLOT);
   return (
     <header className="hj-banner">
-      {photo.src ? <Image className="hj-banner__img" data-site-image={BOOKING_BANNER_SLOT} src={photo.src} alt="" fill priority sizes="100vw" /> : null}
+      {photo.src ? <Image className="hj-banner__img" data-site-image={photo.slot ?? BOOKING_BANNER_SLOT} src={photo.src} alt="" fill priority sizes="100vw" /> : null}
       <span className="hj-banner__shade" aria-hidden />
       <div className="hj-banner__copy">
         <span className="hj-banner__num" aria-hidden>

@@ -6,9 +6,14 @@ import {
   useContext,
   type ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import type { ResolvedSiteImage, SiteImageMap } from "@/lib/resolve-site-images";
 import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";
+import {
+  getPageScopedSiteImageName,
+  getSiteImageSourceName,
+} from "@/lib/site-image-page-scope";
 
 type SiteImagesContextValue = {
   getImage: (name: string) => ResolvedSiteImage;
@@ -28,15 +33,20 @@ type SiteImagesProviderProps = {
  * Native `<img>` / CSS callers should use `toVercelOptimizedSrc` themselves.
  */
 export function SiteImagesProvider({ images, children }: SiteImagesProviderProps) {
+  const pathname = usePathname();
   const getImage = useCallback(
     (name: string): ResolvedSiteImage => {
-      const image = images[name] ?? getDefaultSiteImage(name);
+      const effectiveName = getPageScopedSiteImageName(pathname, name);
+      const sourceName = getSiteImageSourceName(effectiveName);
+      const image =
+        images[effectiveName] ?? images[sourceName] ?? getDefaultSiteImage(effectiveName);
       return {
         ...image,
-        src: preferLocalOptimizedSiteImage(name, image.src),
+        slot: effectiveName,
+        src: preferLocalOptimizedSiteImage(sourceName, image.src),
       };
     },
-    [images],
+    [images, pathname],
   );
 
   return (
@@ -52,6 +62,7 @@ export function useSiteImage(name: string): ResolvedSiteImage {
     const image = getDefaultSiteImage(name);
     return {
       ...image,
+      slot: name,
       src: preferLocalOptimizedSiteImage(name, image.src),
     };
   }

@@ -12,6 +12,7 @@ import {
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { SUITES_DASHBOARD_SLOT_NAMES } from "@/lib/site-image-usage";
 import { SUITES_REFERENCE_HERO_IMAGE_DEFAULTS } from "@/lib/suites-reference-hero";
+import { getPageScopedSiteImageName } from "@/lib/site-image-page-scope";
 import {
   DEFAULT_SUITES_TYPOGRAPHY,
   DEFAULT_SUITES_TYPOGRAPHY_PHONE,
@@ -40,7 +41,10 @@ export default async function SuitesPage() {
     ...SUITES_REFERENCE_HERO_IMAGE_DEFAULTS,
   };
   for (const name of SUITES_DASHBOARD_SLOT_NAMES) {
-    const src = cms.siteImages[name]?.src?.trim();
+    const scopedName = getPageScopedSiteImageName("/suites", name);
+    const src = (
+      cms.siteImages[scopedName] ?? cms.siteImages[name]
+    )?.src?.trim();
     if (src) images[name] = src;
   }
 

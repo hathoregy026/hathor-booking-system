@@ -20,7 +20,11 @@ export function useManagedSource(src: string): {
   /* Hooks stay unconditional; the result is only read for a known slot. */
   const managed = useSiteImage(slot ?? "");
   if (!slot) return { src, slot: null, alt: null };
-  return { src: managed.src?.trim() || src, slot, alt: managed.alt || null };
+  return {
+    src: managed.src?.trim() || src,
+    slot: managed.slot ?? slot,
+    alt: managed.alt || null,
+  };
 }
 
 type ManagedSourceImageProps = Omit<ImageProps, "src"> & { src: string };
