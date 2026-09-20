@@ -526,7 +526,7 @@ export function VoyagesPageContent({
                 <Flip
                   className="vb-charter__media"
                   axis="right"
-                  front="home-voyage-nile-majesty"
+                  front="charter-hero"
                   back="home-call-to-action"
                   frontAlt="Hathor private charter"
                   backAlt="The Nile at golden hour"

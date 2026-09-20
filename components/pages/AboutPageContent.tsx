@@ -271,7 +271,7 @@ export function AboutPageContent() {
                   axis="right"
                   ratio="1090 / 960"
                   front="home-story-craft-large"
-                  back="room-luxury"
+                  back="scraped-cabin-1"
                   frontAlt="Craft aboard Hathor"
                   backAlt="Cabin aboard Hathor"
                 />

@@ -559,7 +559,7 @@ export function HighlightsPageContent() {
                   className="hl-closing__media"
                   axis="up"
                   ratio="1483 / 960"
-                  front="home-voyage-nile-majesty"
+                  front="landmark-hatshepsut"
                   back="highlights-hero"
                   frontAlt="Sailing the Nile aboard Hathor"
                   backAlt="Sunset aboard Hathor"

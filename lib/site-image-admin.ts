@@ -145,10 +145,7 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "gastronomy-hero": "Dining — Hero",
   "gastronomy-restaurant": "Dining — Private Table",
   "gastronomy-table": "Dining — Long Table",
-  "gastronomy-courses": "Dining — Courses",
   "gastronomy-wine": "Dining — Wine Pairing",
-  "gastronomy-chef": "Dining — Chef",
-  "gastronomy-service": "Dining — Service",
   "gastronomy-celebration": "Dining — Celebration",
   "dining-plate-1": "Plate 1",
   "dining-plate-2": "Plate 2",
@@ -410,7 +407,7 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
       title: "Not on the live site",
       livePath: null,
       description:
-        "Kept slots the last site audit never found on a page. Nothing here is shown to guests — they can be removed once you are sure.",
+        "The last site audit found none of these on a page. Some belong to a section that is no longer part of the site; the rest are places a page will fill once you set a photo. Nothing here is shown to guests today.",
       items: orphans.map((slot, index) =>
         toAdminItem(slot, SITE_IMAGE_UNUSED_GROUP, index + 1),
       ),

@@ -398,7 +398,7 @@ export function BlogPostPageContent({
         {/* A closing scene, not a footer: the site footer is the only <footer>. */}
         <section className="ar-close" aria-label="Continue reading">
           <ArticleMedia
-            slot="highlights-hero"
+            slot="blog-hero"
             alt=""
             role="background"
             className="ar-close__bg"

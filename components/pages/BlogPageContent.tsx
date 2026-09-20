@@ -495,7 +495,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                   className="jn-closing__media"
                   axis="up"
                   ratio="16 / 10"
-                  front="blog-hero"
+                  front="highlights-hero"
                   back="home-voyage-nile-majesty"
                   frontAlt="Hathor journal on the Nile"
                   backAlt="Sailing the Nile aboard Hathor"
