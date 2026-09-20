@@ -14,6 +14,9 @@ import { getSiteImagePagePaths } from "@/lib/site-image-usage";
 export const SITE_IMAGE_ANCHOR_PREFIX = "site-image-";
 export const SITE_IMAGE_VIEW_PARAM = "viewImage";
 
+/** The Suites page mirrors a scraped document inside a frame of its own. */
+const CLONED_PAGE = "/suites";
+
 export function siteImageAnchorId(name: string): string {
   return `${SITE_IMAGE_ANCHOR_PREFIX}${name}`;
 }
@@ -90,6 +93,12 @@ export function resolveSiteImageLivePath(
   const pages = getSiteImagePagePaths(name);
   if (pages.length === 0) return null;
   if (pages.includes(adminGroupPagePath)) {
+    /* Suites renders a cloned document that scrolls itself, so a link can open
+       the page but never reach the photo. Send it to a page that can. */
+    if (adminGroupPagePath === CLONED_PAGE) {
+      const positionable = pages.find((page) => page !== CLONED_PAGE);
+      if (positionable) return buildSiteImageLivePath(positionable, name);
+    }
     return buildSiteImageLivePath(adminGroupPagePath, name);
   }
   return buildSiteImageLivePath(pages[0], name);
