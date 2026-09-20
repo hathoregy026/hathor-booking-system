@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FileText, Ship } from "lucide-react";
+import { ArrowUpRight, Ship } from "lucide-react";
 import {
   useRef,
   type ComponentPropsWithoutRef,
@@ -189,13 +189,14 @@ function SelectionPills({ room }: { room: RoomShowcase }) {
         name={room.name}
         variant="inline"
       />
+      {/* Straight to this room’s own page. */}
       <Link
         href={`/rooms/${room.slug}`}
-        className="ac-pill ac-pill--icon"
-        aria-label={`Residence notes for ${room.name}`}
+        className="ac-pill ac-pill--fill ac-pill--icon"
+        aria-label={`View the ${room.name} room`}
       >
-        <FileText className="ac-pill__glyph" aria-hidden="true" />
-        <span className="ac-pill__label">Residence notes</span>
+        <ArrowUpRight className="ac-pill__glyph" aria-hidden="true" />
+        <span className="ac-pill__label">View the room</span>
       </Link>
     </div>
   );

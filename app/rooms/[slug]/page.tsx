@@ -9,7 +9,7 @@ import {
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { findRoomShowcase, ROOM_SHOWCASES } from "@/lib/room-showcase";
-import "../rooms-showcase.css";
+import "../room-folio.css";
 
 const ROOM_CANONICAL: Record<string, string> = {
   "luxury-king-room": "/luxury-cabins-Nile-Cruise",

@@ -1,0 +1,1126 @@
+/* ==========================================================================
+   ROOM FOLIO — a single room's own page
+   One column of paper: breadcrumb → title → tabs → gallery + fare card →
+   specification rail → the room in words → every photograph → the ledger →
+   what is included → the full folio. Desktop, tablet and phone share the
+   same order; only the grid changes.
+   ========================================================================== */
+
+.room-folio-route {
+  --rf-paper: #efe9e0;
+  --rf-panel: #f7f3ec;
+  --rf-ink: #1b1813;
+  --rf-soft: #6e675c;
+  --rf-gold: #b69f64;
+  --rf-gold-deep: #8a6c2f;
+  --rf-hair: rgb(27 24 19 / 14%);
+  --rf-hair-soft: rgb(27 24 19 / 8%);
+
+  /* Every var() carries a fallback: an undefined one would void the whole
+     declaration and drop the page back to the body face. */
+  --rf-display: "Italiana", var(--font-hathor-display, "Gamgote"), Georgia,
+    serif;
+  --rf-script: "Rollgates Luxury Italic", "Playfair Display", Georgia, serif;
+  /* No decorative face in the text stack: it would lend its own digits and
+     separators to anything the first font is missing. */
+  --rf-meta: var(--font-hathor-body, "Plus Jakarta Sans"), system-ui,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --rf-pad: clamp(1.15rem, 4.5vw, 4.5rem);
+  --rf-gap: clamp(1.5rem, 2.6vw, 2.25rem);
+  --rf-band: clamp(2.75rem, 5.5vw, 4.75rem);
+
+  /* The accordion below reads these when it styles itself. */
+  --ac-paper: var(--rf-paper);
+  --ac-ink: var(--rf-ink);
+  --ac-ink-soft: var(--rf-soft);
+  --ac-gold: var(--rf-gold);
+  --ac-gold-deep: var(--rf-gold-deep);
+  --ac-hair: var(--rf-hair);
+  --ac-display: var(--rf-display);
+  --ac-meta: var(--rf-meta);
+
+  background: var(--rf-paper);
+  color: var(--rf-ink);
+}
+
+.rf {
+  display: block;
+  /* Clear the transparent site header. */
+  padding-top: clamp(3.75rem, 6vw, 5.25rem);
+  padding-bottom: var(--rf-band);
+  font-family: var(--rf-meta);
+}
+
+.rf__wrap {
+  width: 100%;
+  max-width: 120rem;
+  margin-inline: auto;
+  padding-inline: var(--rf-pad);
+}
+
+.rf .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- breadcrumb ---------------------------------------------------------- */
+
+.rf__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  padding-block: clamp(1.4rem, 3vw, 2.25rem) 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--rf-soft);
+}
+
+.rf__crumbs a {
+  color: var(--rf-soft);
+  transition: color 0.25s ease;
+}
+
+.rf__crumbs a:hover {
+  color: var(--rf-ink);
+}
+
+.rf__crumbs span[aria-current] {
+  color: var(--rf-ink);
+}
+
+/* --- masthead ------------------------------------------------------------ */
+
+.rf__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--rf-gap);
+  padding-block: clamp(0.9rem, 2vw, 1.5rem) clamp(1.1rem, 2.4vw, 1.9rem);
+}
+
+.rf__kicker {
+  margin: 0 0 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rf-gold-deep);
+}
+
+.rf__title {
+  margin: 0;
+  font-family: var(--rf-display);
+  font-weight: 400;
+  font-size: clamp(2.7rem, 6.6vw, 5.1rem);
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.rf__script {
+  margin: 0.35rem 0 0;
+  font-family: var(--rf-script);
+  font-size: clamp(1.75rem, 3.8vw, 2.9rem);
+  line-height: 1.1;
+  color: var(--rf-gold-deep);
+}
+
+.rf__meta {
+  margin: 0.7rem 0 0;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  color: var(--rf-soft);
+}
+
+.rf__head-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding-top: 0.5rem;
+}
+
+
+/* `.public-site [class*="__title"]` claims every `__title` class for the
+   site's default face, so the page's own display stack is stated again
+   from the route root, where it outranks that rule. */
+.room-folio-route .rf .rf__title,
+.room-folio-route .rf .rf__display,
+.room-folio-route .rf .rf__price,
+.room-folio-route .rf .rf-ledger__price,
+.room-folio-route .rf .rf-ledger__count,
+.room-folio-route .rf .rf__amenities-title,
+.room-folio-route .rf .rf-ledger__cell--room h3 {
+  font-family: var(--rf-display);
+}
+
+.room-folio-route .rf .rf__script,
+.room-folio-route .rf .rf__display em {
+  font-family: var(--rf-script);
+}
+/* --- tabs ---------------------------------------------------------------- */
+
+.rf__tabs {
+  display: flex;
+  gap: clamp(1.25rem, 3vw, 2.6rem);
+  border-bottom: 1px solid var(--rf-hair);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.rf__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.rf__tab {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 0 0 0.85rem;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: var(--rf-soft);
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.rf__tab::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  background: var(--rf-ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.rf__tab:hover {
+  color: var(--rf-ink);
+}
+
+.rf__tab.is-active {
+  color: var(--rf-ink);
+}
+
+.rf__tab.is-active::after {
+  transform: scaleX(1);
+}
+
+/* --- gallery mosaic + fare card ------------------------------------------ */
+
+.rf__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(20rem, 24vw, 26rem);
+  grid-template-rows: auto auto;
+  gap: var(--rf-gap);
+  align-items: start;
+  padding-block: clamp(1.4rem, 3vw, 2.25rem) 0;
+}
+
+.rf__stage .rf__specs {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 0;
+}
+
+/* Every photograph of the room: a plate and two on a wide screen, one
+   swipeable strip on a phone. Each opens full screen. */
+.rf__frames {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  /* The plate sets the height; the pair beside it splits that height. */
+  grid-template-rows: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.rf__frame {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: #ddd5c8;
+  cursor: zoom-in;
+}
+
+.rf__frame img {
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .rf__frame:hover img {
+    transform: scale(1.03);
+  }
+}
+
+.rf__frame:focus-visible {
+  outline: 2px solid var(--rf-gold-deep);
+  outline-offset: 2px;
+}
+
+.rf__frame:nth-child(1) {
+  grid-column: 1 / 9;
+  grid-row: 1 / 3;
+  aspect-ratio: 16 / 11;
+}
+
+.rf__frame:nth-child(2) {
+  grid-column: 9 / 13;
+  grid-row: 1;
+}
+
+.rf__frame:nth-child(3) {
+  grid-column: 9 / 13;
+  grid-row: 2;
+}
+
+/* The rest share the row beneath, however many of them there are. */
+.rf__frame:nth-child(n + 4) {
+  grid-column: span var(--rf-tail-span, 4);
+  grid-row: 3;
+  aspect-ratio: 3 / 2;
+}
+/* --- the fare card ------------------------------------------------------- */
+
+.rf__card {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: sticky;
+  top: clamp(4.5rem, 8vw, 6.5rem);
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.15rem, 1.8vw, 1.6rem);
+  border: 1px solid var(--rf-gold);
+  background: var(--rf-panel);
+}
+
+.rf__card-kicker {
+  margin: 0 0 0.6rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rf-gold-deep);
+}
+
+.rf__price {
+  margin: 0;
+  font-family: var(--rf-display);
+  font-size: clamp(2.5rem, 4vw, 3.3rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--rf-gold-deep);
+}
+
+.rf__price-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--rf-ink);
+}
+
+.rf__price-fine {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--rf-soft);
+}
+
+.rf__rows {
+  margin: 1.1rem 0 0;
+  border-top: 1px solid var(--rf-hair);
+}
+
+.rf__row {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rf-hair-soft);
+}
+
+.rf__row dt {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rf-soft);
+}
+
+.rf__row dt svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--rf-gold-deep);
+}
+
+.rf__row dd {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.rf__row dd small {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.8125rem;
+  color: var(--rf-soft);
+}
+
+.rf__select select {
+  width: 100%;
+  appearance: none;
+  padding: 0.35rem 1.6rem 0.35rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--rf-hair);
+  border-radius: 0;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a6c2f' stroke-width='1.6'><path d='M6 9l6 6 6-6'/></svg>")
+    right center / 1rem no-repeat;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.rf__select select:focus-visible {
+  outline: 2px solid var(--rf-gold-deep);
+  outline-offset: 2px;
+}
+
+/* --- the two buttons the page repeats ------------------------------------ */
+
+/* --- specification rail --------------------------------------------------- */
+
+.rf__specs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--rf-hair);
+  background: var(--rf-panel);
+  list-style: none;
+}
+
+.rf__specs li {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  border-left: 1px solid var(--rf-hair);
+}
+
+.rf__specs li:first-child {
+  border-left: 0;
+}
+
+.rf__specs span {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rf-soft);
+}
+
+.rf__specs strong {
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+/* --- the room in words ---------------------------------------------------- */
+
+.rf__story {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.75rem, 4vw, 4rem);
+  padding-block: var(--rf-band);
+  scroll-margin-top: 5rem;
+}
+
+.rf__display {
+  margin: 0;
+  font-family: var(--rf-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.rf__display span {
+  display: block;
+}
+
+.rf__display em {
+  display: block;
+  font-family: var(--rf-script);
+  font-style: normal;
+  font-size: 1.05em;
+  line-height: 1.05;
+  text-transform: none;
+  color: var(--rf-gold-deep);
+}
+
+.rf__display--sm {
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.rf__display--row {
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+}
+
+.rf__lead {
+  margin: 0;
+  max-width: 34rem;
+  font-size: clamp(1rem, 1.25vw, 1.0625rem);
+  line-height: 1.65;
+  color: var(--rf-ink);
+}
+
+.rf__note {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--rf-soft);
+}
+
+.rf__amenities-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.9rem;
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--rf-hair);
+}
+
+.rf__amenities-head .rf__kicker {
+  margin: 0;
+}
+
+.rf__amenities-title {
+  margin: 0;
+  font-family: var(--rf-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+.rf__amenities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.1rem 1.5rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  scroll-margin-top: 5rem;
+}
+
+.rf__amenities li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.rf__amenity-glyph {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  color: var(--rf-gold-deep);
+}
+
+.rf__amenity-glyph svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.rf__amenity-label {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--rf-ink);
+}
+
+/* --- every photograph ----------------------------------------------------- */
+
+/* --- the ledger ----------------------------------------------------------- */
+
+.rf__fare {
+  padding-bottom: var(--rf-band);
+  scroll-margin-top: 5rem;
+}
+
+.rf__fare-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.75rem 1.5rem;
+  padding-bottom: 1.25rem;
+}
+
+.rf__fare-head .rf__kicker {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.rf__fare-head .rf__meta {
+  margin: 0;
+  text-align: right;
+}
+
+.rf-ledger {
+  border: 1px solid var(--rf-hair);
+  background: var(--rf-panel);
+}
+
+.rf-ledger__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1.15fr) minmax(0, 0.9fr) minmax(0, 0.6fr);
+}
+
+.rf-ledger__row--head {
+  border-bottom: 1px solid var(--rf-hair);
+  background: rgb(27 24 19 / 4%);
+}
+
+.rf-ledger__row--head span {
+  padding: 0.7rem 1.25rem;
+  border-left: 1px solid var(--rf-hair-soft);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rf-soft);
+}
+
+.rf-ledger__row--head span:first-child {
+  border-left: 0;
+}
+
+.rf-ledger__cell {
+  padding: 1.25rem;
+  border-left: 1px solid var(--rf-hair-soft);
+  font-size: 0.875rem;
+  color: var(--rf-ink);
+}
+
+.rf-ledger__cell:first-child {
+  border-left: 0;
+}
+
+.rf-ledger__cell--room {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.rf-ledger__thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 5.25rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #ddd5c8;
+}
+
+.rf-ledger__thumb img {
+  object-fit: cover;
+}
+
+.rf-ledger__cell--room h3 {
+  margin: 0 0 0.3rem;
+  font-family: var(--rf-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+}
+
+.rf-ledger__cell--room p {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--rf-soft);
+}
+
+.rf-ledger__ticks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rf-ledger__ticks li {
+  position: relative;
+  padding-left: 1.2rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.rf-ledger__ticks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  width: 0.7rem;
+  height: 0.35rem;
+  border-left: 1.5px solid var(--rf-gold-deep);
+  border-bottom: 1.5px solid var(--rf-gold-deep);
+  transform: rotate(-45deg);
+}
+
+.rf-ledger__cell .rf__text-link {
+  display: inline-block;
+  margin-top: 0.7rem;
+}
+
+.rf-ledger__price {
+  margin: 0;
+  font-family: var(--rf-display);
+  font-size: clamp(1.7rem, 2.6vw, 2.25rem);
+  line-height: 1;
+  color: var(--rf-gold-deep);
+}
+
+.rf-ledger__cell--price p:not(.rf-ledger__price) {
+  margin: 0.3rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--rf-soft);
+}
+
+.rf-ledger__cell--count {
+  text-align: left;
+}
+
+.rf-ledger__count {
+  margin: 0;
+  font-family: var(--rf-display);
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.rf__total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--rf-hair);
+  background: var(--rf-panel);
+}
+
+.rf__total-line {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--rf-soft);
+}
+
+.rf__total-sum {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.rf__total-sum span {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rf-soft);
+}
+
+.rf__total-sum strong {
+  font-family: var(--rf-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  color: var(--rf-gold-deep);
+}
+
+/* --- included / good to know ---------------------------------------------- */
+
+.rf__notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  padding-bottom: clamp(1.6rem, 3vw, 2.6rem);
+  scroll-margin-top: 5rem;
+}
+
+.rf__included-list,
+.rf__know-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rf__included-list li,
+.rf__know-list li {
+  position: relative;
+  padding: 0 0 0.6rem 1.4rem;
+  border-bottom: 1px solid var(--rf-hair-soft);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.rf__included-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  width: 0.75rem;
+  height: 0.38rem;
+  border-left: 1.5px solid var(--rf-gold-deep);
+  border-bottom: 1.5px solid var(--rf-gold-deep);
+  transform: rotate(-45deg);
+}
+
+.rf__know-list li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--rf-soft);
+}
+
+/* --- the folio accordion + closing band ----------------------------------- */
+
+.rf .rf__folio {
+  scroll-margin-top: 5rem;
+  padding: clamp(1.6rem, 2.6vw, 2.4rem) 0 0;
+  border-top: 1px solid var(--rf-hair);
+}
+
+.rf__folio .ac-kicker {
+  margin-bottom: 0.5rem;
+}
+
+.rf__folio h2.ac-folio__title {
+  margin-bottom: clamp(0.9rem, 1.6vw, 1.35rem);
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.rf__folio .ac-folio__summary {
+  min-height: 3.4rem;
+  padding-block: 0.7rem;
+}
+
+.rf__folio .ac-folio__label {
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+}
+
+.rf__folio .ac-folio__stack {
+  max-width: none;
+}
+
+/* ==========================================================================
+   TABLET — the card leaves the side and sits under the photographs
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .rf__stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* One column: the parts follow each other in the order they are written. */
+  .rf__frames,
+  .rf__stage .rf__specs,
+  .rf__card {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .rf__card {
+    position: static;
+  }
+
+
+  .rf__story {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .rf__notes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+
+  .rf-ledger__row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rf-ledger__row--head {
+    display: none;
+  }
+
+  .rf-ledger__cell {
+    border-left: 1px solid var(--rf-hair-soft);
+    border-top: 1px solid var(--rf-hair-soft);
+  }
+
+  .rf-ledger__cell:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .rf-ledger__cell:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .rf__total {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 0.85rem;
+  }
+
+
+
+}
+
+/* ==========================================================================
+   PHONE — one column, the mosaic becomes a single frame
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  /* The set becomes one strip the thumb swipes through. */
+  .rf__frames {
+    display: flex;
+    gap: 0.5rem;
+    margin-inline: calc(var(--rf-pad) * -1);
+    padding-inline: var(--rf-pad);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .rf__frames::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rf__frame,
+  .rf__frame:nth-child(1),
+  .rf__frame:nth-child(2),
+  .rf__frame:nth-child(3),
+  .rf__frame:nth-child(n + 4) {
+    flex: 0 0 86%;
+    aspect-ratio: 4 / 3;
+    scroll-snap-align: center;
+  }
+
+  .rf-view__stage {
+    inset: 3.5rem 0.75rem 4.5rem;
+  }
+
+  .rf-view__nav {
+    top: auto;
+    bottom: 1.1rem;
+    transform: none;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .rf-view__caption {
+    inset: auto 0 2rem;
+  }
+  .rf__head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rf__head-acts {
+    justify-content: flex-start;
+    padding-top: 0.25rem;
+  }
+
+
+
+
+  .rf__specs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rf__specs li:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .rf__specs li:nth-child(n + 3) {
+    border-top: 1px solid var(--rf-hair);
+  }
+
+  .rf__amenities {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem 1rem;
+  }
+
+
+
+  .rf-ledger__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rf-ledger__cell {
+    border-left: 0;
+    border-top: 1px solid var(--rf-hair-soft);
+  }
+
+  .rf-ledger__cell:first-child {
+    border-top: 0;
+  }
+
+  .rf-ledger__cell--count {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .rf-ledger__cell--count p {
+    margin: 0;
+  }
+
+  .rf__fare-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rf__fare-head .rf__meta {
+    text-align: left;
+  }
+
+  .rf__total {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+
+}
+
+/* ==========================================================================
+   FULL SCREEN — one photograph at a time, arrows either side
+   ========================================================================== */
+
+.rf-view {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(14 11 8 / 96%);
+  color: #f7f3ec;
+}
+
+.rf-view::backdrop {
+  background: rgb(14 11 8 / 80%);
+}
+
+.rf-view__stage {
+  position: absolute;
+  inset: clamp(3.5rem, 8vh, 5rem) clamp(1rem, 8vw, 6rem);
+}
+
+.rf-view__img {
+  object-fit: contain;
+}
+
+.rf-view__close,
+.rf-view__nav {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid rgb(247 243 236 / 35%);
+  border-radius: 50%;
+  background: rgb(247 243 236 / 8%);
+  color: #f7f3ec;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.rf-view__close svg,
+.rf-view__nav svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.rf-view__close:hover,
+.rf-view__nav:hover {
+  background: rgb(247 243 236 / 20%);
+}
+
+.rf-view__close {
+  top: 1.1rem;
+  right: 1.2rem;
+}
+
+.rf-view__nav {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.rf-view__nav--prev {
+  left: 1.2rem;
+}
+
+.rf-view__nav--next {
+  right: 1.2rem;
+}
+
+.rf-view__caption {
+  position: absolute;
+  inset: auto 0 1.35rem;
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(247 243 236 / 78%);
+}
+
+/* --- the site's pill, sized for this page -------------------------------- */
+
+.rf__act {
+  margin-top: 1.25rem;
+}
+
+.rf__card .rf__act {
+  --hathor-btn-width: 100%;
+  width: 100% !important;
+}
+
+.rf__total .rf__act,
+
+/* ==========================================================================
+   NIGHT MODE — the same paper, after dark
+   ========================================================================== */
+
+html[data-public-theme="night"] .room-folio-route {
+  --rf-paper: #14120e;
+  --rf-panel: #1c1a15;
+  --rf-ink: #f2ece1;
+  --rf-soft: #a79d8c;
+  --rf-hair: rgb(242 236 225 / 16%);
+  --rf-hair-soft: rgb(242 236 225 / 10%);
+  --rf-gold-deep: #cbab6b;
+}
+
+html[data-public-theme="night"] .rf-ledger__row--head {
+  background: rgb(242 236 225 / 5%);
+}
+
+
+
