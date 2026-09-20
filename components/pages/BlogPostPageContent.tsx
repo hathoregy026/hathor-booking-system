@@ -322,8 +322,10 @@ export function BlogPostPageContent({
               const slot = interludeSlots[index];
               const shape = INTERLUDE_SHAPES[index % INTERLUDE_SHAPES.length]!;
               const isLast = index === articleBlocks.length - 1;
+              /* Two steps on, so the pair's detail plate is not the very next
+                 interlude's photograph shown twice in succession. */
               const secondSlot =
-                interludeSlots[(index + 1) % Math.max(1, interludeSlots.length)];
+                interludeSlots[(index + 2) % Math.max(1, interludeSlots.length)];
 
               return (
                 <Fragment key={index}>
