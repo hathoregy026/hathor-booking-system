@@ -72,6 +72,70 @@ function waitForMotionReady(): Promise<void> {
   });
 }
 
+/** The pinned stage a scene sits on, if the page is running its horizontal act. */
+function findStickyStage(target: HTMLElement): HTMLElement | null {
+  for (
+    let node: HTMLElement | null = target.parentElement;
+    node && node !== document.body;
+    node = node.parentElement
+  ) {
+    if (getComputedStyle(node).position === "sticky") return node;
+  }
+  return null;
+}
+
+/** The long track inside the stage that the page slides sideways. */
+function findTravellingTrack(
+  target: HTMLElement,
+  stage: HTMLElement,
+): HTMLElement | null {
+  let track: HTMLElement | null = null;
+  for (
+    let node: HTMLElement | null = target.parentElement;
+    node && node !== stage;
+    node = node.parentElement
+  ) {
+    if (node.getBoundingClientRect().width > window.innerWidth * 1.1) {
+      track = node;
+    }
+  }
+  return track;
+}
+
+/**
+ * On a page that turns vertical scrolling into horizontal travel, the photo's
+ * distance along the track is the page position that brings it on screen.
+ */
+function scrollToTravellingScene(target: HTMLElement): boolean {
+  const stage = findStickyStage(target);
+  if (!stage) return false;
+
+  /* Some pages slide the stage itself instead of a track inside it. */
+  const track =
+    findTravellingTrack(target, stage) ??
+    (stage.getBoundingClientRect().width > window.innerWidth * 1.1 ? stage : null);
+  const runway = stage.parentElement;
+  if (!track || !runway) return false;
+
+  const trackRect = track.getBoundingClientRect();
+  const travel = trackRect.width - window.innerWidth;
+  const scrollable = runway.offsetHeight - window.innerHeight;
+  if (travel <= 0 || scrollable <= 0) return false;
+
+  const targetRect = target.getBoundingClientRect();
+  /* Centre the photo on the stage rather than pinning it to the left edge. */
+  const wanted =
+    targetRect.left -
+    trackRect.left -
+    Math.max(0, (window.innerWidth - targetRect.width) / 2);
+  const progress = Math.min(1, Math.max(0, wanted / travel));
+  const top =
+    runway.getBoundingClientRect().top + window.scrollY + progress * scrollable;
+
+  window.scrollTo({ top, behavior: "smooth" });
+  return true;
+}
+
 function scrollToElement(target: HTMLElement) {
   const pinIndex = target.dataset.siteImagePinIndex;
   const pinTotal = target.dataset.siteImagePinTotal;
@@ -92,6 +156,8 @@ function scrollToElement(target: HTMLElement) {
     window.scrollTo({ top, behavior: "smooth" });
     return;
   }
+
+  if (scrollToTravellingScene(target)) return;
 
   const rect = target.getBoundingClientRect();
   const top = Math.max(0, rect.top + window.scrollY - 88);
