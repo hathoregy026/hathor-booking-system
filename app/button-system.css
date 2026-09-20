@@ -206,6 +206,9 @@ html[data-public-theme="dark"] {
     .ab-card--ink,
     .hl-card--ink,
     .h2-epilogue,
+    .mr-card,
+    .mr-cta,
+    .mr-filters,
     .lux-hero,
     .hero-button,
     [data-hathor-surface="ink"]

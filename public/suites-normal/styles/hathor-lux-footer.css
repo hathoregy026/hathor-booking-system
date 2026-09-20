@@ -770,6 +770,28 @@
   }
 }
 
+/* Phones: the shared pill (app/button-system.css) keeps its geometry and wins on
+   size, so its own variables tighten the type and inset here — both labels fit
+   their pill instead of touching its edge. The narrowest phones stack them. */
+@media (max-width: 680px) {
+  .hf .hf__actions {
+    --hathor-btn-pad-x: 0.75rem;
+    --hathor-btn-tracking: 0.1em;
+    --hathor-btn-font-size: 0.66rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .hf .hf__actions {
+    flex-wrap: wrap;
+  }
+
+  .hf .hf__actions > *,
+  .hf .hf__cta {
+    flex-basis: 100% !important;
+  }
+}
+
 html[data-public-theme="night"] .hathor-lux-footer-host {
   --night-canvas: #14110d;
   --night-surface: #191510;
