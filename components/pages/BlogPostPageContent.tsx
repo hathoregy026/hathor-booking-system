@@ -14,6 +14,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useArticleEditorialScroll } from "@/hooks/useArticleEditorialScroll";
 import {
   formatBlogPublishedDate,
+  assignBlogImageNames,
   getBlogHeroImageName,
   getBlogSupportImageName,
   type BlogPostDetailClient,
@@ -169,6 +170,11 @@ export function BlogPostPageContent({
 
   const publishedLabel = formatBlogPublishedDate(post.publishedAt);
   const supportSlot = getBlogSupportImageName(post.slug);
+  /* Two dispatches side by side must not carry the same photograph. */
+  const relatedImages = assignBlogImageNames([
+    post.slug,
+    ...related.map((item) => item.slug),
+  ]);
   const commercial = blogCommercialLink(post.slug, post.title);
 
   return (
@@ -375,7 +381,7 @@ export function BlogPostPageContent({
                   </span>
                   <Link href={`/blogs/${item.slug}`} className="ar-further__thumb">
                     <ArticleMedia
-                      slot={getBlogHeroImageName(item.slug)}
+                      slot={relatedImages[item.slug] ?? getBlogHeroImageName(item.slug)}
                       alt=""
                       role="detail"
                       ratio="5 / 4"
