@@ -427,7 +427,7 @@ export function PublicSiteHero({
     <section
       ref={heroRef}
       id={posterImageName ? siteImageAnchorId(posterImageName) : undefined}
-      data-site-image={heroImage.slot ?? posterImageName}
+      data-site-image={posterImageName}
       className={`home-hero-container${applyGoldTint ? " hero-gold-tint" : ""}${
         playVideo ? " home-hero--clear-video" : ""
       }${responsiveVideoFrame ? " home-hero--responsive-video-frame" : ""}${

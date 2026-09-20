@@ -43,12 +43,33 @@ export function SiteImagesProvider({ images, children }: SiteImagesProviderProps
       const livePathname =
         typeof window === "undefined" ? pathname : window.location.pathname;
       const effectiveName = getPageScopedSiteImageName(livePathname, name);
-      const sourceName = getSiteImageSourceName(effectiveName);
+      /* If the public map already contains a persisted page alias, prefer that
+         exact key. This keeps the client resolver deterministic even when a
+         layout was rendered through an internal route during prerendering. */
+      const normalizedPath = (livePathname.split(/[?#]/, 1)[0] || "/").replace(
+        /\/+$/,
+        "",
+      ) || "/";
+      const routeKey =
+        normalizedPath === "/"
+          ? "home"
+          : normalizedPath
+              .toLowerCase()
+              .replace(/^\/+|\/+$/g, "")
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-+|-+$/g, "");
+      const persistedAlias = `page-${routeKey}-${name}`;
+      const selectedName = images[persistedAlias]
+        ? persistedAlias
+        : effectiveName;
+      const sourceName = getSiteImageSourceName(selectedName);
       const image =
-        images[effectiveName] ?? images[sourceName] ?? getDefaultSiteImage(effectiveName);
+        images[selectedName] ??
+        images[sourceName] ??
+        getDefaultSiteImage(selectedName);
       return {
         ...image,
-        slot: effectiveName,
+        slot: selectedName,
         src: preferLocalOptimizedSiteImage(sourceName, image.src),
       };
     },
