@@ -7,12 +7,17 @@ import {
   siteImageAnchorId,
 } from "@/lib/site-image-preview";
 
-/** Pages that clone a scraped document keep their photos in a same-origin frame. */
-function findInFrames(selector: string): HTMLElement | null {
+/** The photo, plus the frame it lives in when a page clones a document. */
+type PreviewTarget = {
+  element: HTMLElement;
+  frame: HTMLIFrameElement | null;
+};
+
+function findInFrames(selector: string): PreviewTarget | null {
   for (const frame of Array.from(document.querySelectorAll("iframe"))) {
     try {
       const inner = frame.contentDocument?.querySelector<HTMLElement>(selector);
-      if (inner) return frame;
+      if (inner) return { element: inner, frame };
     } catch {
       /* cross-origin frame — nothing to read */
     }
@@ -20,15 +25,15 @@ function findInFrames(selector: string): HTMLElement | null {
   return null;
 }
 
-function findPreviewTarget(name: string): HTMLElement | null {
+function findPreviewTarget(name: string): PreviewTarget | null {
   const anchorId = siteImageAnchorId(name);
   const byId = document.getElementById(anchorId);
-  if (byId) return byId;
+  if (byId) return { element: byId, frame: null };
 
   const selector = `[data-site-image="${CSS.escape(name)}"]`;
   try {
     const byData = document.querySelector<HTMLElement>(selector);
-    if (byData) return byData;
+    if (byData) return { element: byData, frame: null };
     const inFrame = findInFrames(selector);
     if (inFrame) return inFrame;
   } catch {
@@ -38,7 +43,8 @@ function findPreviewTarget(name: string): HTMLElement | null {
   /* Only fall back for slots that actually live on this page — never for orphans */
   const fallbackId = getSiteImageFallbackSectionId(name);
   if (fallbackId) {
-    return document.getElementById(fallbackId);
+    const section = document.getElementById(fallbackId);
+    if (section) return { element: section, frame: null };
   }
   return null;
 }
@@ -168,7 +174,20 @@ function scrollToPreviewName(name: string) {
   try {
     const target = findPreviewTarget(name);
     if (!target) return;
-    scrollToElement(target);
+
+    if (target.frame) {
+      /* Bring the cloned page into view, then move it to the photo inside. */
+      scrollToElement(target.frame);
+      const view = target.frame.contentWindow;
+      if (view) {
+        const rect = target.element.getBoundingClientRect();
+        const top = Math.max(0, rect.top + view.scrollY - 88);
+        view.scrollTo({ top, behavior: "smooth" });
+      }
+      return;
+    }
+
+    scrollToElement(target.element);
   } catch (error) {
     console.warn("[SiteImagePreviewScroll] scroll failed", error);
   }
