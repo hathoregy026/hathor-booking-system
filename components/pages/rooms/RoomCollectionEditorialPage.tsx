@@ -635,7 +635,12 @@ export function RoomCollectionEditorialPage({
             {rooms[0] ? (
               <aside className="ac-landing__panel">
                 <Frame
-                  src={rooms[0].images[0] ?? config.aperture.image}
+                  /* The second view: the first one closes the sequence above. */
+                  src={
+                    rooms[0].images[1] ??
+                    rooms[0].images[0] ??
+                    config.aperture.image
+                  }
                   alt={rooms[0].name}
                   className="ac-landing__frame"
                 />

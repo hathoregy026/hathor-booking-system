@@ -52,6 +52,8 @@ const PAGES = [
   "/charter",
   "/about",
   "/blogs",
+  /* One article stands for every blog post — they all share the same slots. */
+  "/blogs/the-magic-of-sleeping-on-the-nile-river",
   "/partners",
   "/contact",
   "/terms-and-conditions",
@@ -107,11 +109,31 @@ const COLLECT = () => {
         if (poster) out.push({ order: order++, kind: "poster", src: poster, slot, painted, frame });
         continue;
       }
-      const background = getComputedStyle(el).backgroundImage;
+      const style = getComputedStyle(el);
+      const background = style.backgroundImage;
       if (background && background !== "none" && background.includes("url(")) {
         for (const match of background.matchAll(/url\((["']?)(.*?)\1\)/g)) {
           out.push({ order: order++, kind: "background", src: match[2], slot, painted, frame });
         }
+        continue;
+      }
+      /* A photo handed to CSS as a custom property (chart ghost, hero cut-out).
+         Read the element's own declaration — custom properties inherit, so a
+         computed value would credit every child with its parent's photo. */
+      if (el.getAttribute("data-site-image")) {
+        const custom = Array.from(el.style)
+          .filter((property) => property.startsWith("--"))
+          .map((property) => el.style.getPropertyValue(property))
+          .find((value) => value && value.includes("url("));
+        const match = custom?.match(/url\((["']?)(.*?)\1\)/);
+        out.push({
+          order: order++,
+          kind: "css-variable",
+          src: match ? match[2] : "",
+          slot,
+          painted,
+          frame,
+        });
       }
     }
   };
@@ -188,7 +210,9 @@ async function main() {
       const rows = [];
       for (const item of found) {
         const file = fileKey(item.src);
-        if (!file || IGNORED_FILE.test(file)) continue;
+        /* A marked element with no readable URL still proves the slot is live. */
+        if (!file && !item.slot) continue;
+        if (file && IGNORED_FILE.test(file)) continue;
         rows.push({ file, slot: item.slot, painted: item.painted, kind: item.kind });
         if (item.slot) {
           const pages = usage.get(item.slot) ?? new Set();
@@ -212,10 +236,12 @@ async function main() {
   }
   await browser.close();
 
-  /* The same photograph twice in a row reads as a mistake on the page. */
+  /* The same photograph twice in a row reads as a mistake on the page.
+     Only real pictures count: a poster, a CSS variable or a backdrop is the
+     same photo as the image beside it, shown once. */
   const repeats = [];
   for (const [route, rows] of Object.entries(pageRows)) {
-    const painted = rows.filter((row) => row.painted);
+    const painted = rows.filter((row) => row.painted && row.file && row.kind === "img");
     for (let i = 1; i < painted.length; i += 1) {
       const current = painted[i];
       const previous = painted[i - 1];
@@ -275,8 +301,10 @@ ${body}
 };
 `;
 
-  if (!crawled.length) {
-    console.log("\nno page answered — the map on disk is left untouched");
+  if (failures.length) {
+    /* A page that did not answer would drop its photos from the map and make
+       them look unused, so a partial crawl never rewrites it. */
+    console.log("\nsome pages did not answer — the map on disk is left untouched");
   } else if (!REPORT_ONLY) {
     writeFileSync(OUT_FILE, file);
     console.log(

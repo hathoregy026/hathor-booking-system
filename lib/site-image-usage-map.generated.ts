@@ -6,7 +6,7 @@
  * is used: `node scripts/audit-site-images.mjs --base https://…`.
  */
 
-export const SITE_IMAGE_USAGE_SOURCE = "http://localhost:3000";
+export const SITE_IMAGE_USAGE_SOURCE = "https://www.easytravegypt.com";
 export const SITE_IMAGE_USAGE_CRAWLED_AT = "2026-09-20";
 
 /** Pages visited by the audit, in the order the dashboard lists them. */
@@ -29,6 +29,8 @@ export const SITE_IMAGE_PAGE_ORDER: readonly string[] = [
   "/highlights",
   "/charter",
   "/about",
+  "/blogs",
+  "/blogs/the-magic-of-sleeping-on-the-nile-river",
   "/partners",
   "/contact",
   "/terms-and-conditions",
@@ -51,6 +53,7 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "home-carousel-king-7n",
     "home-carousel-suite-7n",
     "home-carousel-royal-7n",
+    "home-3-animated-map-bg",
     "landmark-valley-kings",
     "highlights-lifestyle",
     "home-alt-highlights",
@@ -251,7 +254,6 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "dining-plate-2",
     "dining-plate-3",
     "dining-plate-4",
-    "dining-plate-5",
     "dining-plate-6",
     "dining-plate-7",
     "wellness-fitness",
@@ -323,6 +325,26 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "gastronomy-wine",
     "home-story-legacy-large",
     "home-split-courtyard",
+  ],
+  "/blogs": [
+    "burger-nav-image",
+    "blog-hero",
+    "landmark-obelisk",
+    "highlights-lifestyle",
+    "landmark-valley-kings",
+    "gastronomy-hero",
+    "landmark-hatshepsut",
+    "home-voyage-nile-majesty",
+  ],
+  "/blogs/the-magic-of-sleeping-on-the-nile-river": [
+    "burger-nav-image",
+    "landmark-obelisk",
+    "gastronomy-hero",
+    "home-voyage-nile-majesty",
+    "highlights-lifestyle",
+    "landmark-valley-kings",
+    "highlights-hero",
+    "landmark-hatshepsut",
   ],
   "/partners": [
     "burger-nav-image",

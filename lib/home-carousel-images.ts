@@ -5,6 +5,8 @@ import type { SiteImageName } from "@/lib/site-image-slots";
  * Never share defaults or CMS fallbacks across cards in this carousel.
  */
 export const HOME_CAROUSEL_IMAGE_BY_ROOM = {
+  "KING-3N": "home-carousel-king-3n",
+  "TWIN-3N": "home-carousel-twin-3n",
   "SUITE-3N": "home-carousel-suite-3n",
   "ROYAL-3N": "home-carousel-royal-3n",
   "KING-4N": "home-carousel-king-4n",
@@ -21,6 +23,8 @@ export type HomeCarouselRoomNumber = keyof typeof HOME_CAROUSEL_IMAGE_BY_ROOM;
 
 /** Unique default media for each carousel slot — one card, one image. */
 export const HOME_CAROUSEL_DEFAULT_URLS = {
+  "home-carousel-king-3n": "/media/hathor/scraped/cabin-5.webp",
+  "home-carousel-twin-3n": "/media/hathor/scraped/cabin-6.webp",
   "home-carousel-suite-3n": "/media/hathor/scraped/luxsuite-1.webp",
   "home-carousel-royal-3n": "/media/hathor/scraped/royal-1.webp",
   "home-carousel-king-4n": "/media/hathor/scraped/cabin-1.webp",
@@ -40,6 +44,14 @@ export const HOME_CAROUSEL_ADMIN_CARDS: ReadonlyArray<{
   name: (typeof HOME_CAROUSEL_IMAGE_BY_ROOM)[HomeCarouselRoomNumber];
   label: string;
 }> = [
+  {
+    name: "home-carousel-king-3n",
+    label: "3N Aswan/Luxor · King Cabin",
+  },
+  {
+    name: "home-carousel-twin-3n",
+    label: "3N Aswan/Luxor · Twin Cabin",
+  },
   {
     name: "home-carousel-suite-3n",
     label: "Homepage itinerary — 3N Aswan/Luxor · Suite",

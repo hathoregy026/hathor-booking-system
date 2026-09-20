@@ -323,6 +323,22 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
   },
   // Homepage itineraries carousel — one slot per cruise room card (unique defaults)
   {
+    name: "home-carousel-king-3n",
+    altText: "Luxury King cabin on the 3-night Aswan to Luxor itinerary",
+    url: "/media/hathor/scraped/cabin-5.webp",
+    category: "room",
+    pagePath: "/cruises-list",
+    displayOrder: 38,
+  },
+  {
+    name: "home-carousel-twin-3n",
+    altText: "Luxury Twin cabin on the 3-night Aswan to Luxor itinerary",
+    url: "/media/hathor/scraped/cabin-6.webp",
+    category: "room",
+    pagePath: "/cruises-list",
+    displayOrder: 39,
+  },
+  {
     name: "home-carousel-suite-3n",
     altText: "Luxury Suite on the 3-night Aswan to Luxor itinerary",
     url: "/media/hathor/scraped/luxsuite-1.webp",

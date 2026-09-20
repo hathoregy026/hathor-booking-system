@@ -17,6 +17,7 @@ import { useTypographySettings } from "@/components/public/TypographySettingsPro
 import { useJournalEditorialScroll } from "@/hooks/useJournalEditorialScroll";
 import {
   formatBlogPublishedDate,
+  assignBlogImageNames,
   getBlogHeroImageName,
   type BlogPostSummaryClient,
 } from "@/lib/blog-display";
@@ -168,6 +169,14 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
 
   const intro = pages.blog.intro.trim() || BLOG_PAGE.intro;
 
+  /* One photo per post across the whole page, so two cards side by side
+     never carry the same picture. */
+  const heroImages = useMemo(
+    () => assignBlogImageNames(posts.map((post) => post.slug)),
+    [posts],
+  );
+  const heroImageFor = (slug: string) => heroImages[slug] ?? getBlogHeroImageName(slug);
+
   const featured = posts[0] ?? null;
   const openings = posts.slice(1, 1 + OPENINGS_COUNT);
   const contents = posts.slice(0, Math.min(CONTENTS_COUNT, posts.length));
@@ -254,7 +263,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                 <Scene className="jn-feature" id="feature">
                   <div className="jn-feature__visual">
                     <JournalMedia
-                      slot={getBlogHeroImageName(featured.slug)}
+                      slot={heroImageFor(featured.slug)}
                       alt={`Editorial view for ${featured.title}`}
                       priority
                       className="jn-feature__media"
@@ -358,7 +367,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                           aria-label={`Read ${post.title}`}
                         >
                           <JournalMedia
-                            slot={getBlogHeroImageName(post.slug)}
+                            slot={heroImageFor(post.slug)}
                             alt=""
                             className="jn-entry__media"
                             ratio="5 / 4"
@@ -401,7 +410,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                         aria-label={`Read ${post.title}`}
                       >
                         <JournalMedia
-                          slot={getBlogHeroImageName(post.slug)}
+                          slot={heroImageFor(post.slug)}
                           alt={`Editorial view for ${post.title}`}
                           className="jn-gallery__media"
                           ratio={index === 1 ? "4 / 5" : "5 / 4"}
@@ -434,7 +443,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                         aria-label={`Read ${post.title}`}
                       >
                         <JournalMedia
-                          slot={getBlogHeroImageName(post.slug)}
+                          slot={heroImageFor(post.slug)}
                           alt={`Editorial view for ${post.title}`}
                           className="jn-opening__media"
                           ratio="4 / 5"
@@ -531,7 +540,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                     aria-label={`Read ${post.title}`}
                   >
                     <JournalMedia
-                      slot={getBlogHeroImageName(post.slug)}
+                      slot={heroImageFor(post.slug)}
                       alt=""
                       className="jn-archive__media"
                       ratio="5 / 4"

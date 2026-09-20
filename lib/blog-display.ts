@@ -105,6 +105,36 @@ export function getBlogArticleImageNames(
   const start = pool.indexOf(getBlogHeroImageName(slug));
   return Array.from(
     { length: Math.max(0, count) },
-    (_, index) => pool[(start + 1 + index * 2) % pool.length]!,
+    /* One step at a time: no interlude repeats the one before it. */
+    (_, index) => pool[(start + 1 + index) % pool.length]!,
   );
+}
+
+/**
+ * One hero photo per post for a list page, nudged along the pool whenever it
+ * would repeat the card before it — so no two cards in a row carry the same
+ * picture. Pass the slugs in the order the page renders them.
+ */
+export function assignBlogImageNames(
+  slugs: readonly string[],
+): Record<string, (typeof BLOG_HERO_IMAGE_NAMES)[number]> {
+  const pool = BLOG_HERO_IMAGE_NAMES;
+  const assigned: Record<string, (typeof BLOG_HERO_IMAGE_NAMES)[number]> = {};
+  let previous: string | null = null;
+
+  for (const slug of slugs) {
+    if (assigned[slug]) {
+      previous = assigned[slug];
+      continue;
+    }
+    const start = pool.indexOf(getBlogHeroImageName(slug));
+    let pick = pool[start]!;
+    for (let step = 1; pick === previous && step < pool.length; step += 1) {
+      pick = pool[(start + step) % pool.length]!;
+    }
+    assigned[slug] = pick;
+    previous = pick;
+  }
+
+  return assigned;
 }

@@ -262,7 +262,7 @@ export function WellnessEditorialPageContent() {
                   className="we-inhale__media"
                   axis="left"
                   ratio="3 / 4"
-                  front="wellness-hero"
+                  front="wellness-fitness"
                   back="home-call-to-action"
                   frontAlt="Seneb Spa aboard Hathor"
                   backAlt="Open-air calm on the Nile deck"

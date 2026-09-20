@@ -82,7 +82,8 @@ export const ROOM_COLLECTION_CONFIG: Record<
       { value: "Nile", label: "View", note: "Panoramic" },
     ],
     aperture: {
-      image: "/media/hathor/scraped/cabin-1.webp",
+      /* Its own photograph, so the hero never repeats a gallery tile. */
+      image: "cabins-hero",
       caption: "River light",
       sub: "King & twin cabins",
     },
@@ -128,7 +129,8 @@ export const ROOM_COLLECTION_CONFIG: Record<
       { value: "Jacuzzi", label: "Wellness", note: "Private" },
     ],
     aperture: {
-      image: "/media/hathor/scraped/luxsuite-1.webp",
+      /* The sixth suite view — the preview sequence shows the other five. */
+      image: "/media/hathor/scraped/luxsuite-6.webp",
       caption: "Suite light",
       sub: "Panoramic Nile",
     },
@@ -174,7 +176,8 @@ export const ROOM_COLLECTION_CONFIG: Record<
       { value: "Main", label: "Deck", note: "Prime views" },
     ],
     aperture: {
-      image: "/media/hathor/scraped/royal-1.webp",
+      /* A royal view kept for the hero alone; the sequence shows 1–5. */
+      image: "/media/hathor/scraped/royal-7.webp",
       caption: "Main deck",
       sub: "Signature residence",
     },

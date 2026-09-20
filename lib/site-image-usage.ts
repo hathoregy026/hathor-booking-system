@@ -35,6 +35,7 @@ export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/charter": "Charter",
   "/about": "About Us",
   "/blogs": "Blog",
+  "/blogs/the-magic-of-sleeping-on-the-nile-river": "Blog — article",
   "/partners": "Partners",
   "/contact": "Contact",
   "/terms-and-conditions": "Terms & Conditions",

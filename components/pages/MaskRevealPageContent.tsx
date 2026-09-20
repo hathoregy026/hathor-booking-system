@@ -12,6 +12,7 @@ import { cabinSlugForListing } from "@/lib/selection-catalog";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { CruisesIntroHero } from "@/components/pages/CruisesIntroHero";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { homeCarouselImageName } from "@/lib/home-carousel-images";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
@@ -61,12 +62,6 @@ const FEATURE_FILTERS = [
   { id: "safe", label: "Safe", match: /safe/i },
 ] as const;
 
-function roomImageName(roomType: string): string {
-  if (roomType.includes("Royal")) return "room-royal";
-  if (roomType.includes("Suite")) return "room-suite";
-  return "room-luxury";
-}
-
 function roomDetailHref(roomType: string): string {
   if (roomType.includes("Royal")) {
     return "/royal-suites";
@@ -93,7 +88,8 @@ function flattenCruises(cruises: HathorCruiseSeed[]): ListingItem[] {
       priceCents: room.priceCents,
       capacity: room.capacity,
       amenities: room.amenities,
-      imageName: roomImageName(room.roomType),
+      /* One photo per cruise room card, so no two rows repeat a picture. */
+      imageName: homeCarouselImageName(room.roomNumber),
       detailHref: roomDetailHref(room.roomType),
     })),
   );
