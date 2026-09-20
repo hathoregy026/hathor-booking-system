@@ -4,6 +4,7 @@ import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
+import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import {
   PageStructuredData,
   hotelRoomNode,
@@ -46,17 +47,19 @@ export default async function LuxuryCabinsPage() {
           }),
         ]}
       />
-      <PublicCmsTextRuntime
-        websiteText={cms.websiteText}
-        websiteTextMobile={cms.websiteTextMobile}
-        typography={cms.typography}
-        typographyMobile={cms.typographyMobile}
-      >
-        <RoomCollectionEditorialPage
-          variant="cabins"
-          rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
-        />
-      </PublicCmsTextRuntime>
+      <SiteImagesProvider images={cms.siteImages}>
+        <PublicCmsTextRuntime
+          websiteText={cms.websiteText}
+          websiteTextMobile={cms.websiteTextMobile}
+          typography={cms.typography}
+          typographyMobile={cms.typographyMobile}
+        >
+          <RoomCollectionEditorialPage
+            variant="cabins"
+            rooms={ROOM_SHOWCASES.filter((room) => room.slug.includes("room"))}
+          />
+        </PublicCmsTextRuntime>
+      </SiteImagesProvider>
     </StandalonePageVisibilityShell>
   );
 }

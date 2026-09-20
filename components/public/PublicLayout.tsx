@@ -6,7 +6,6 @@ import { PublicScrollGuardian } from "@/components/public/PublicScrollGuardian";
 import { PublicScrollInfrastructure } from "@/components/public/PublicScrollInfrastructure";
 import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { ScrollPositionRestore } from "@/components/public/ScrollPositionRestore";
-import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { PageTransition } from "@/components/ui/PageTransition";
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
@@ -46,7 +45,6 @@ export function PublicLayout({
         <ScrollPositionRestore />
         <LuxuryTextAnimations />
         <AnimaTitleScroll />
-        <SiteImagePreviewScroll />
         <PublicNavbar />
         <PageVisibilityChrome>
           <PageTransition>{children}</PageTransition>

@@ -1,7 +1,6 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
 import { rebuildSiteImagePublicMap } from "@/lib/site-image-public-map";
-import { HOMEPAGE_LIVE_SLOT_NAMES } from "@/lib/site-image-preview";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 import { getSiteImageUsedOnPages } from "@/lib/site-image-usage";
 
@@ -57,13 +56,8 @@ export async function revalidateSiteImagePages(
   for (const name of slotNames) {
     const slot = getSiteImageSlot(name);
     if (slot?.pagePath) paths.add(slot.pagePath);
-    if (HOMEPAGE_LIVE_SLOT_NAMES.has(name)) paths.add("/");
-    if (name === "home-wheel-image") {
-      paths.add("/");
-      paths.add("/partners");
-    }
-    /* Shared slots (Suites ↔ Rooms/Cabins/Royal, Dining cross-links, etc.) */
-    for (const page of getSiteImageUsedOnPages(name, slot?.pagePath ?? "/")) {
+    /* Every page the audit found painting this photo. */
+    for (const page of getSiteImageUsedOnPages(name)) {
       if (page.path.startsWith("/#")) continue;
       paths.add(page.path === "/" ? "/" : page.path);
     }

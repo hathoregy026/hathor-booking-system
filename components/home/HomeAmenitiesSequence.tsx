@@ -114,6 +114,7 @@ function NatureGoldBand({
           src={image.src}
           alt=""
           id={previewAnchor ? siteImageAnchorId(name) : undefined}
+          data-site-image={name}
           decoding="async"
           draggable={false}
         />

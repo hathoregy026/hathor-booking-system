@@ -4,11 +4,12 @@ import { DINING_PLATE_NUMBERS, diningPlateSlotName } from "@/lib/gastronomy-dini
 import { SITE_IMAGE_SLOTS, type SiteImageSlot } from "@/lib/site-image-slots";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
 import {
+  SITE_IMAGE_PAGES,
   SITE_IMAGE_PAGE_TITLES,
-  SUITES_DASHBOARD_SLOT_NAMES,
   formatSiteImageUsedOnLabel,
-  getSiteImageAdminAppearPaths,
+  getSiteImageSlotNamesForPage,
   getSiteImageUsedOnPages,
+  siteImagePageTitle,
   type SiteImageUsedOnPage,
 } from "@/lib/site-image-usage";
 
@@ -263,10 +264,14 @@ export type SiteImageAdminItem = {
   livePath: string | null;
   layoutKind: SiteImageLayoutKind;
   layoutLabel: string;
-  /** Every live page that uses this linked image. */
+  /** The part of the page this photo belongs to (“Gallery”, “Dining plates”…). */
+  section: string;
+  /** Every live page that paints this photo, in visiting order. */
   usedOnPages: SiteImageUsedOnPage[];
-  /** Compact label for the card (e.g. “Used on: Suites · Luxury Rooms”). */
+  /** Compact label for the card (e.g. “Used on: Suites · Luxury Cabins”). */
   usedOnLabel: string;
+  /** True when more than one page shows it — editing here changes all of them. */
+  sharedAcrossPages: boolean;
 };
 
 export type SiteImageAdminGroup = {
@@ -274,10 +279,51 @@ export type SiteImageAdminGroup = {
   title: string;
   items: SiteImageAdminItem[];
   description?: string;
+  /** The page a visitor can open, or null for the unused group. */
+  livePath?: string | null;
 };
+
+/** The page path used for slots the live site no longer paints. */
+export const SITE_IMAGE_UNUSED_GROUP = "unused";
+
+/** Labels written for the curated sections, reused wherever a slot appears. */
+const CURATED_LABELS: Record<string, string> = (() => {
+  const labels: Record<string, string> = {};
+  const add = (cards: ReadonlyArray<{ name: string; label: string }>) => {
+    for (const card of cards) {
+      /* Suites labels carry their own numbering; page order comes from the audit. */
+      labels[card.name] = card.label.replace(/^\d+\.\s*/, "");
+    }
+  };
+  add(HOMEPAGE_LIVE_ADMIN_CARDS);
+  add(AMENITIES_SEQUENCE_ADMIN_CARDS);
+  add(OUR_VOYAGES_ADMIN_CARDS);
+  add(MOVING_TILTED_ADMIN_CARDS);
+  add(CRUISES_ADMIN_CARDS);
+  add(SUITES_ADMIN_CARDS);
+  add(DINING_PLATES_ADMIN_CARDS);
+  return labels;
+})();
+
+/** Where on the page a slot belongs, so one page's list still reads in parts. */
+function sectionForSlot(slot: SiteImageSlot): string {
+  const name = slot.name;
+  if (name === "burger-nav-image") return "Burger menu";
+  if (name.startsWith("home-amenities-")) return "Amenities sequence";
+  if (name.startsWith("moving-tilted-")) return "Moving tilted cards";
+  if (name.startsWith("floating-ig-")) return "Floating IG bubbles";
+  if (name.startsWith("dining-plate-")) return "Dining plates";
+  if (name.startsWith("home-carousel-")) return "Itinerary carousel";
+  if (name.startsWith("home-voyage-")) return "Our Voyages";
+  if (name.startsWith("home-wheel-")) return "Wheel reveal";
+  if (name.startsWith("scraped-")) return "Gallery";
+  if (slot.category === "hero") return "Banner";
+  return "Page photos";
+}
 
 function labelForSlot(slot: SiteImageSlot): string {
   if (SLOT_LABELS[slot.name]) return SLOT_LABELS[slot.name]!;
+  if (CURATED_LABELS[slot.name]) return CURATED_LABELS[slot.name];
   if (slot.pagePath === "/gastronomy" && slot.name.startsWith("dining-")) {
     return slot.altText;
   }
@@ -300,358 +346,76 @@ function layoutForSlot(slot: SiteImageSlot): SiteImageLayoutKind {
 }
 
 export function getSiteImageGroupHeading(pageTitle: string): string {
-  if (pageTitle === "Homepage" || pageTitle === "Home") return "Homepage Images";
-  if (pageTitle === "About Us") return "About Us Images";
-  if (pageTitle === "Amenities Sequence") return "Amenities Sequence Images";
-  if (pageTitle === "Our Voyages") return "Our Voyages Accordion Images";
-  if (pageTitle === "Floating IG" || pageTitle === "Floating IG images") {
-    return "Floating IG Bubble Images";
-  }
-  if (pageTitle === "Burger Nav Image") return "Burger Nav Image";
-  if (pageTitle === "Animated map bg") return "Animated map bg";
-  if (pageTitle === "Moving Tilted Cards") return "Moving Tilted Cards Images";
-  if (pageTitle === "Suites") return "Suites Images";
-  if (pageTitle === "Dining") return "Dining Images";
-  if (pageTitle === "Dining Plates") return "Dining Plates Images";
   return `${pageTitle} Images`;
 }
 
 function toAdminItem(
   slot: SiteImageSlot,
-  adminGroupPagePath: string,
-  labelOverride?: string,
-  displayOrderOverride?: number,
+  groupPagePath: string,
+  displayOrder: number,
 ): SiteImageAdminItem {
   const layoutKind = layoutForSlot(slot);
-  const usedOnPages = getSiteImageUsedOnPages(slot.name, slot.pagePath);
+  const usedOnPages = getSiteImageUsedOnPages(slot.name);
   return {
     name: slot.name,
-    label: labelOverride ?? labelForSlot(slot),
+    label: labelForSlot(slot),
     defaultAlt: slot.altText,
     category: slot.category,
     pagePath: slot.pagePath,
-    livePath: resolveSiteImageLivePath(slot.name, adminGroupPagePath),
-    displayOrder: displayOrderOverride ?? slot.displayOrder,
+    livePath: resolveSiteImageLivePath(slot.name, groupPagePath),
+    displayOrder,
     layoutKind,
     layoutLabel: LAYOUT_LABELS[layoutKind],
+    section: sectionForSlot(slot),
     usedOnPages,
     usedOnLabel: formatSiteImageUsedOnLabel(usedOnPages),
+    sharedAcrossPages: usedOnPages.length > 1,
   };
 }
 
-function pushUniqueItem(
-  items: SiteImageAdminItem[],
-  seen: Set<string>,
-  item: SiteImageAdminItem,
-) {
-  if (seen.has(item.name)) return;
-  seen.add(item.name);
-  items.push(item);
-}
-
+/**
+ * One group per live page, in visiting order, holding that page's photos in
+ * the order the page paints them. Slots the audit never saw are gathered at
+ * the end so nothing disappears silently.
+ */
 export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
   const byName = new Map(SITE_IMAGE_SLOTS.map((slot) => [slot.name, slot]));
+  const groups: SiteImageAdminGroup[] = [];
+  const painted = new Set<string>();
 
-  const homepageItems: SiteImageAdminItem[] = [];
-  const homepageSeen = new Set<string>();
-  HOMEPAGE_LIVE_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      homepageItems,
-      homepageSeen,
-      toAdminItem(slot, "/", card.label, index + 1),
-    );
-  });
+  for (const pagePath of SITE_IMAGE_PAGES) {
+    const items: SiteImageAdminItem[] = [];
+    getSiteImageSlotNamesForPage(pagePath).forEach((name) => {
+      const slot = byName.get(name);
+      if (!slot) return;
+      painted.add(name);
+      items.push(toAdminItem(slot, pagePath, items.length + 1));
+    });
+    if (!items.length) continue;
 
-  const amenitiesItems: SiteImageAdminItem[] = [];
-  const amenitiesSeen = new Set<string>();
-  AMENITIES_SEQUENCE_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      amenitiesItems,
-      amenitiesSeen,
-      toAdminItem(slot, "/#amenities-sequence", card.label, index + 1),
-    );
-  });
+    const title = siteImagePageTitle(pagePath);
+    groups.push({
+      pagePath,
+      title,
+      livePath: pagePath,
+      description: `Every photo on ${title} (${pagePath}), in the order guests meet them. A photo marked “also on” is shared — editing it changes every page listed.`,
+      items,
+    });
+  }
 
-  const movingTiltedItems: SiteImageAdminItem[] = [];
-  const movingTiltedSeen = new Set<string>();
-  MOVING_TILTED_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      movingTiltedItems,
-      movingTiltedSeen,
-      toAdminItem(slot, "/#moving-tilted-cards", card.label, index + 1),
-    );
-  });
-
-  const floatingIgCards: ReadonlyArray<{ name: string; label: string }> = [
-    { name: "floating-ig-1", label: "Bubble 1 — Lounge" },
-    { name: "floating-ig-2", label: "Bubble 2 — Nile highlights" },
-    { name: "floating-ig-3", label: "Bubble 3 — Dining" },
-    { name: "floating-ig-4", label: "Bubble 4 — Suite" },
-  ];
-  const floatingIgItems: SiteImageAdminItem[] = [];
-  const floatingIgSeen = new Set<string>();
-  floatingIgCards.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      floatingIgItems,
-      floatingIgSeen,
-      toAdminItem(slot, "/#floating-ig", card.label, index + 1),
-    );
-  });
-
-  const burgerNavItems: SiteImageAdminItem[] = [];
-  const burgerNavSeen = new Set<string>();
-  const burgerNavSlot = byName.get("burger-nav-image");
-  if (burgerNavSlot) {
-    pushUniqueItem(
-      burgerNavItems,
-      burgerNavSeen,
-      toAdminItem(
-        burgerNavSlot,
-        "/#burger-nav",
-        "Burger menu — right panel photo",
-        1,
+  const orphans = SITE_IMAGE_SLOTS.filter((slot) => !painted.has(slot.name));
+  if (orphans.length) {
+    groups.push({
+      pagePath: SITE_IMAGE_UNUSED_GROUP,
+      title: "Not on the live site",
+      livePath: null,
+      description:
+        "Kept slots the last site audit never found on a page. Nothing here is shown to guests — they can be removed once you are sure.",
+      items: orphans.map((slot, index) =>
+        toAdminItem(slot, SITE_IMAGE_UNUSED_GROUP, index + 1),
       ),
-    );
+    });
   }
 
-  const animatedMapBgItems: SiteImageAdminItem[] = [];
-  const animatedMapBgSeen = new Set<string>();
-  const animatedMapBgSlot = byName.get("home-3-animated-map-bg");
-  if (animatedMapBgSlot) {
-    pushUniqueItem(
-      animatedMapBgItems,
-      animatedMapBgSeen,
-      toAdminItem(
-        animatedMapBgSlot,
-        "/home-3#animated-map-bg",
-        "Animated map bg — Home 3 chart wallpaper",
-        1,
-      ),
-    );
-  }
-
-  const ourVoyagesItems: SiteImageAdminItem[] = [];
-  const ourVoyagesSeen = new Set<string>();
-  OUR_VOYAGES_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      ourVoyagesItems,
-      ourVoyagesSeen,
-      toAdminItem(slot, "/#our-voyages", card.label, index + 1),
-    );
-  });
-
-  const diningPlatesItems: SiteImageAdminItem[] = [];
-  const diningPlatesSeen = new Set<string>();
-  DINING_PLATES_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      diningPlatesItems,
-      diningPlatesSeen,
-      toAdminItem(slot, "/#dining-plates", card.label, index + 1),
-    );
-  });
-
-  const cruisesItems: SiteImageAdminItem[] = [];
-  const cruisesSeen = new Set<string>();
-  CRUISES_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      cruisesItems,
-      cruisesSeen,
-      toAdminItem(slot, "/cruises-list", card.label, index + 1),
-    );
-  });
-
-  const suitesItems: SiteImageAdminItem[] = [];
-  const suitesSeen = new Set<string>();
-  SUITES_ADMIN_CARDS.forEach((card, index) => {
-    const slot = byName.get(card.name);
-    if (!slot) return;
-    pushUniqueItem(
-      suitesItems,
-      suitesSeen,
-      toAdminItem(slot, "/suites", card.label, index + 1),
-    );
-  });
-  // Safety: any other shared Suites slot from the usage map
-  for (const name of SUITES_DASHBOARD_SLOT_NAMES) {
-    const slot = byName.get(name);
-    if (!slot) continue;
-    pushUniqueItem(
-      suitesItems,
-      suitesSeen,
-      toAdminItem(slot, "/suites"),
-    );
-  }
-
-  const byPage = new Map<string, SiteImageAdminItem[]>();
-  const seenByPage = new Map<string, Set<string>>();
-
-  for (const slot of SITE_IMAGE_SLOTS) {
-    // Legacy coarse Gastronomy slots are retained for older cross-page content,
-    // but the Dining dashboard exposes only source-scene image controls.
-    if (slot.pagePath === "/gastronomy" && slot.name.startsWith("gastronomy-")) {
-      continue;
-    }
-    if (slot.name.startsWith("dining-plate-")) {
-      continue;
-    }
-    if (
-      slot.pagePath === "/" ||
-      slot.pagePath === "/#amenities-sequence" ||
-      slot.pagePath === "/#moving-tilted-cards" ||
-      slot.pagePath === "/#floating-ig" ||
-      slot.pagePath === "/#burger-nav" ||
-      slot.pagePath === "/#our-voyages" ||
-      slot.pagePath === "/home-3#animated-map-bg"
-    ) {
-      continue;
-    }
-
-    for (const appearPath of getSiteImageAdminAppearPaths(slot)) {
-      if (
-        appearPath === "/" ||
-        appearPath === "/#amenities-sequence" ||
-        appearPath === "/#moving-tilted-cards" ||
-        appearPath === "/#floating-ig" ||
-        appearPath === "/#burger-nav" ||
-        appearPath === "/#our-voyages" ||
-        appearPath === "/home-3#animated-map-bg" ||
-        appearPath === "/cruises-list" ||
-        appearPath === "/suites"
-      ) {
-        // Handled by dedicated curated groups above.
-        continue;
-      }
-      const items = byPage.get(appearPath) ?? [];
-      const seen = seenByPage.get(appearPath) ?? new Set<string>();
-      pushUniqueItem(items, seen, toAdminItem(slot, appearPath));
-      byPage.set(appearPath, items);
-      seenByPage.set(appearPath, seen);
-    }
-  }
-
-  const pageOrder = [
-    "/rooms",
-    "/luxury-cabins-Nile-Cruise",
-    "/royal-suites",
-    "/about",
-    "/gastronomy",
-    "/wellness",
-    "/highlights",
-    "/charter",
-    "/contact",
-    "/booking",
-    "/blogs",
-  ];
-
-  const orderedPaths = [
-    ...pageOrder.filter((pagePath) => byPage.has(pagePath)),
-    ...[...byPage.keys()].filter((pagePath) => !pageOrder.includes(pagePath)),
-  ];
-
-  return [
-    {
-      pagePath: "/",
-      title: "Homepage",
-      description:
-        "Only photos that appear on the live homepage. Shared photos also list every other page that uses them.",
-      items: homepageItems,
-    },
-    {
-      pagePath: "/#amenities-sequence",
-      title: "Amenities Sequence",
-      description:
-        "Eleven unique photos for the homepage amenities scroll only, listed in the order guests see them (1 first → 11 last). Never shared with Cruises, About, Homepage, or any other page.",
-      items: amenitiesItems,
-    },
-    {
-      pagePath: "/#our-voyages",
-      title: "Our Voyages",
-      description:
-        "Background photos for the homepage Our Voyages accordion only. These four images are independent from every other page.",
-      items: ourVoyagesItems,
-    },
-    {
-      pagePath: "/#moving-tilted-cards",
-      title: "Moving Tilted Cards",
-      description:
-        "Photos for the homepage moving tilted gallery cards only. Each card has its own upload and is independent from Homepage, Dining, Wellness, and every other page.",
-      items: movingTiltedItems,
-    },
-    {
-      pagePath: "/#floating-ig",
-      title: "Floating IG",
-      description:
-        "Photos for the Sail with Hathor floating Instagram bubbles only. Each bubble has its own upload — independent from Homepage, Our Voyages, and every other page.",
-      items: floatingIgItems,
-    },
-    {
-      pagePath: "/#burger-nav",
-      title: "Burger Nav Image",
-      description:
-        "Right-panel photo in the open burger menu on Suites, Cruises, and other inner pages. Filter this tab to replace it without touching any other page photos.",
-      items: burgerNavItems,
-    },
-    {
-      pagePath: "/home-3#animated-map-bg",
-      title: "Animated map bg",
-      description:
-        "Wallpaper behind the Home 3 Nile chart. Upload here to cover the phone map stage; independent from the homepage cinematic still.",
-      items: animatedMapBgItems,
-    },
-    {
-      pagePath: "/cruises-list",
-      title: "Cruises",
-      description:
-        "Cruises page hero plus the homepage itinerary carousel cards. Each cruise room card has its own upload — edit here, shown on the homepage itineraries slider.",
-      items: cruisesItems,
-    },
-    {
-      pagePath: "/suites",
-      title: "Suites",
-      description:
-        "Images used on the Suites page (including the residence filter cards). These are the same linked uploads as Luxury Rooms / Cabins / Royal — edit once, updates every page that uses them.",
-      items: suitesItems,
-    },
-    ...orderedPaths.flatMap((pagePath) => {
-      const group = {
-        pagePath,
-        title: PAGE_GROUP_TITLES[pagePath] ?? pagePath,
-        description:
-          pagePath === "/rooms"
-            ? "Luxury Rooms images. Shared Suites / Homepage photos also appear here and show every page that uses them."
-            : pagePath === "/gastronomy"
-              ? "Dining page scenes. Cut-out course plates are under the Dining Plates filter."
-              : undefined,
-        items: (byPage.get(pagePath) ?? []).sort(
-          (a, b) =>
-            a.displayOrder - b.displayOrder || a.label.localeCompare(b.label),
-        ),
-      };
-      if (pagePath !== "/gastronomy") return [group];
-      return [
-        group,
-        {
-          pagePath: "/#dining-plates",
-          title: "Dining Plates",
-          description:
-            "The seven plated-course cutouts on Dining. Filter this tab to replace each plate without touching the other Dining photos.",
-          items: diningPlatesItems,
-        },
-      ];
-    }),
-  ];
+  return groups;
 }

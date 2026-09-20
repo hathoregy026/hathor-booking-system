@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { HATHOR_VOYAGES, itineraryFor, type ItineraryCopy } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 

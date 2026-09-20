@@ -40,6 +40,7 @@ function PartnersMedia({
   return (
     <figure
       className={`pn-media ${className}`}
+      data-site-image={slot}
       style={
         ratio ? ({ ["--pn-ratio" as string]: ratio } as CSSProperties) : undefined
       }

@@ -1164,6 +1164,36 @@ select.admin-input option:checked {
   line-height: 1.35;
 }
 
+/* A photo that serves several pages — editing it changes every page named. */
+.vcc-card__shared {
+  margin: 0.35rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+}
+
+.vcc-card__shared-flag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  background: rgba(201, 169, 110, 0.16);
+  border: 1px solid rgba(201, 169, 110, 0.55);
+  color: #c9a96e;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.vcc-card__shared-pages {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
 .vcc-status {
   flex-shrink: 0;
   display: inline-flex;
@@ -4364,4 +4394,93 @@ textarea.wt-field__input {
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+/* Website Images — page filter, search and the parts of a page */
+.site-images-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.site-images-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 18rem;
+  max-width: 26rem;
+}
+
+.site-images-search__icon {
+  position: absolute;
+  left: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.site-images-search__input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border-radius: 999px;
+  padding: 0.6rem 1rem 0.6rem 2.25rem;
+  font-size: 0.8125rem;
+}
+
+.site-images-search__input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.site-images-filter__hint {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.site-images-tab__count {
+  display: inline-block;
+  margin-left: 0.45rem;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.site-images-empty {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.site-image-group__path {
+  margin-left: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.site-image-section + .site-image-section {
+  border-top: 1px solid var(--border);
+}
+
+.site-image-section__title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 1rem 1.25rem 0;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.site-image-section__count {
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
 }

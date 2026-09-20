@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RoomDetailPage } from "@/components/pages/rooms/RoomDetailPage";
+import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import {
   PageStructuredData,
   hotelRoomNode,
 } from "@/components/seo/PageStructuredData";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { findRoomShowcase, ROOM_SHOWCASES } from "@/lib/room-showcase";
 import "../rooms-showcase.css";
 
@@ -49,6 +51,7 @@ export default async function RoomPage({
   const room = findRoomShowcase((await params).slug);
   if (!room) notFound();
   const parent = ROOM_CANONICAL[room.slug] ?? "/suites";
+  const cms = await loadPublicCmsBundle();
 
   return (
     <>
@@ -72,7 +75,9 @@ export default async function RoomPage({
           }),
         ]}
       />
-      <RoomDetailPage room={room} />
+      <SiteImagesProvider images={cms.siteImages}>
+        <RoomDetailPage room={room} />
+      </SiteImagesProvider>
     </>
   );
 }

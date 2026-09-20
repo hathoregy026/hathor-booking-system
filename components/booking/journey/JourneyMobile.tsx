@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";

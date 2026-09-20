@@ -56,6 +56,7 @@ function VoyageMedia({
   return (
     <figure
       className={`vb-media ${className}`}
+      data-site-image={slot}
       style={{ "--vb-fit": fit } as CSSProperties}
     >
       <Image

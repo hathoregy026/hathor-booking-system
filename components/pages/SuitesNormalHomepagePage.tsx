@@ -478,6 +478,10 @@ function applyImages(doc: Document, images: Record<string, string>) {
     if (img.getAttribute("data-hathor-slot") !== current) {
       img.setAttribute("data-hathor-slot", current);
     }
+    /* Same marker the rest of the site uses, so admin preview links land here. */
+    if (img.getAttribute("data-site-image") !== current) {
+      img.setAttribute("data-site-image", current);
+    }
     if (img.getAttribute("src") !== url) {
       img.setAttribute("src", url);
       changed = true;

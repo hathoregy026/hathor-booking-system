@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import Image from "next/image";
+import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import Link from "next/link";
 import { getBookingSuccessDetails } from "@/lib/booking-success-details";
 import { bookingCode } from "@/lib/booking-code";

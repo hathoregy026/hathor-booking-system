@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {

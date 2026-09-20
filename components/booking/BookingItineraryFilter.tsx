@@ -26,10 +26,12 @@ import {
 import {
   clampRoomSearchConfig,
 } from "@/lib/room-capacity";
+import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
 
 const PRIVATE_CHARTER_OPTION = "private-charter" as const;
 const PRIVATE_CHARTER_HREF = "/charter";
-const VOYAGE_STAGE_IMAGE = "/media/hathor/booking/voyage-palace-nile.webp";
+const VOYAGE_STAGE_SLOT = "booking-voyage-stage";
 
 const TRUST_MARKS = [
   { label: "Best Rate Guarantee", Icon: ShieldCheck },
@@ -193,6 +195,7 @@ export function BookingItineraryFilter({
     });
   };
 
+  const stagePhoto = useSiteImage(VOYAGE_STAGE_SLOT);
   const primaryRoom = roomConfigs[0];
   const maxGuestsRoom1 = 4;
 
@@ -201,8 +204,9 @@ export function BookingItineraryFilter({
       <div className="hathor-voyage-stage__media" aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={VOYAGE_STAGE_IMAGE}
+          src={toVercelOptimizedSrc(stagePhoto.src)}
           alt=""
+          data-site-image={VOYAGE_STAGE_SLOT}
           className="hathor-voyage-stage__photo"
         />
         <div className="hathor-voyage-stage__veil" />

@@ -48,6 +48,7 @@ function HighlightsMedia({
   return (
     <figure
       className={`hl-media ${className}`}
+      data-site-image={slot}
       style={
         {
           ...(ratio ? { ["--hl-ratio" as string]: ratio } : {}),

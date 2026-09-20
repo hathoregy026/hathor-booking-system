@@ -62,6 +62,7 @@ function ArticleMedia({
   return (
     <figure
       className={`ar-media ar-media--${role} ${className}`}
+      data-site-image={slot}
       style={
         ratio ? ({ ["--ar-ratio" as string]: ratio } as CSSProperties) : undefined
       }

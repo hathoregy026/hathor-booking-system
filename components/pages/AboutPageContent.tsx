@@ -36,6 +36,7 @@ function AboutMedia({
   return (
     <figure
       className={`ab-media ${className}`}
+      data-site-image={slot}
       style={
         ratio ? ({ ["--ab-ratio" as string]: ratio } as CSSProperties) : undefined
       }

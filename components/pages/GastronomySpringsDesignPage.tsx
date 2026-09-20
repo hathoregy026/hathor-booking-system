@@ -123,7 +123,7 @@ function SlotFlipImage({
       id={siteImageAnchorId(frontSlot)}
     >
       <img src={toVercelOptimizedSrc(front.src)} alt={alt || front.alt} />
-      <img src={toVercelOptimizedSrc(back.src)} alt="" aria-hidden />
+      <img src={toVercelOptimizedSrc(back.src)} alt="" aria-hidden data-site-image={backSlot} />
     </figure>
   );
 }

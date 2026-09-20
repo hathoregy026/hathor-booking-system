@@ -7,16 +7,30 @@ import {
   siteImageAnchorId,
 } from "@/lib/site-image-preview";
 
+/** Pages that clone a scraped document keep their photos in a same-origin frame. */
+function findInFrames(selector: string): HTMLElement | null {
+  for (const frame of Array.from(document.querySelectorAll("iframe"))) {
+    try {
+      const inner = frame.contentDocument?.querySelector<HTMLElement>(selector);
+      if (inner) return frame;
+    } catch {
+      /* cross-origin frame — nothing to read */
+    }
+  }
+  return null;
+}
+
 function findPreviewTarget(name: string): HTMLElement | null {
   const anchorId = siteImageAnchorId(name);
   const byId = document.getElementById(anchorId);
   if (byId) return byId;
 
+  const selector = `[data-site-image="${CSS.escape(name)}"]`;
   try {
-    const byData = document.querySelector<HTMLElement>(
-      `[data-site-image="${CSS.escape(name)}"]`,
-    );
+    const byData = document.querySelector<HTMLElement>(selector);
     if (byData) return byData;
+    const inFrame = findInFrames(selector);
+    if (inFrame) return inFrame;
   } catch {
     /* ignore invalid selector */
   }

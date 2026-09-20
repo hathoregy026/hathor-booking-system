@@ -220,9 +220,26 @@ export function SiteImageSlotCard({
             <span aria-hidden> · </span>
             {item.name}
           </p>
-          <p className="vcc-card__used-on" title={item.usedOnLabel}>
-            {item.usedOnLabel}
-          </p>
+          {item.sharedAcrossPages ? (
+            <p className="vcc-card__shared" title={item.usedOnLabel}>
+              <span className="vcc-card__shared-flag">
+                Shared · {item.usedOnPages.length} pages
+              </span>
+              <span className="vcc-card__shared-pages">
+                {item.usedOnPages
+                  .slice(0, 3)
+                  .map((page) => page.title)
+                  .join(" · ")}
+                {item.usedOnPages.length > 3
+                  ? ` +${item.usedOnPages.length - 3} more`
+                  : ""}
+              </span>
+            </p>
+          ) : (
+            <p className="vcc-card__used-on" title={item.usedOnLabel}>
+              {item.usedOnLabel}
+            </p>
+          )}
         </div>
 
         <div className="vcc-card__footer">

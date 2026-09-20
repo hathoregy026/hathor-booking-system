@@ -1,72 +1,98 @@
-import { HOMEPAGE_LIVE_SLOT_NAMES } from "@/lib/site-image-preview";
-import type { SiteImageSlot } from "@/lib/site-image-slots";
+import {
+  SITE_IMAGE_PAGE_ORDER,
+  SITE_IMAGE_PAGE_SLOTS,
+  SITE_IMAGE_USAGE_CRAWLED_AT,
+} from "@/lib/site-image-usage-map.generated";
 
-/** Human titles for page paths shown on admin image cards. */
+/**
+ * Where each photo really appears.
+ *
+ * The map under `site-image-usage-map.generated` is written by
+ * `scripts/audit-site-images.mjs`, which walks the deployed site and records
+ * the slot behind every image it paints. Nothing here is hand-maintained, so
+ * the dashboard's page filters, the "also used on" note and the "View on site"
+ * link all describe the site as it actually is.
+ */
+
+/** Human titles for page paths shown across the images dashboard. */
 export const SITE_IMAGE_PAGE_TITLES: Record<string, string> = {
   "/": "Homepage",
-  "/#amenities-sequence": "Amenities Sequence",
-  "/#moving-tilted-cards": "Moving Tilted Cards",
-  "/#floating-ig": "Floating IG",
-  "/#burger-nav": "Burger Nav Image",
-  "/home-3#animated-map-bg": "Animated map bg",
-  "/#our-voyages": "Our Voyages",
+  "/voyages": "Voyages",
+  "/voyages/luxor-to-aswan": "Voyage — Luxor to Aswan",
+  "/voyages/aswan-to-luxor": "Voyage — Aswan to Luxor",
   "/cruises-list": "Cruises",
-  "/about": "About Us",
+  "/suites": "Suites",
+  "/rooms": "Luxury Suite",
+  "/rooms/luxury-suite": "Luxury Suite — detail",
+  "/luxury-cabins-Nile-Cruise": "Luxury Cabins",
+  "/rooms/luxury-king-room": "Luxury King — detail",
+  "/rooms/luxury-twin-room": "Luxury Twin — detail",
+  "/royal-suites": "Royal Suites",
+  "/rooms/royal-suite": "Royal Suite — detail",
   "/gastronomy": "Dining",
-  "/#dining-plates": "Dining Plates",
   "/wellness": "Wellness",
   "/highlights": "Highlights",
   "/charter": "Charter",
-  "/contact": "Contact",
-  "/booking": "Booking",
+  "/about": "About Us",
   "/blogs": "Blog",
   "/partners": "Partners",
-  "/suites": "Suites",
-  "/rooms": "Luxury Rooms",
-  "/luxury-cabins-Nile-Cruise": "Luxury Cabins Gallery",
-  "/royal-suites": "Royal Suites Gallery",
+  "/contact": "Contact",
+  "/terms-and-conditions": "Terms & Conditions",
+  "/booking": "Booking",
+  "/booking/lookup": "Booking — find a request",
 };
 
-/**
- * Extra live pages beyond a slot’s primary `pagePath`.
- * Keep linked images shared — do not duplicate slots.
- */
-const EXTRA_USAGE_BY_SLOT: Partial<Record<string, readonly string[]>> = {
-  "home-wheel-image": ["/", "/partners"],
-  "room-suite": ["/suites", "/rooms", "/gastronomy"],
-  "room-royal": ["/suites", "/royal-suites"],
-  "wellness-fitness": ["/wellness", "/gastronomy"],
-  /* room-luxury: Suites Place panel only (cabins hero is cabins-hero). */
+export const SITE_IMAGE_USAGE_DATE = SITE_IMAGE_USAGE_CRAWLED_AT;
 
-  "scraped-suites-hero": ["/suites"],
-  "scraped-suites-luxury-rooms": ["/suites"],
-  "scraped-suites-luxury-suites": ["/suites"],
-  "scraped-suites-royal": ["/suites"],
-  "scraped-luxsuite-1": ["/suites", "/rooms"],
-  "scraped-luxsuite-2": ["/suites", "/rooms"],
-  "scraped-luxsuite-3": ["/suites", "/rooms"],
-  "scraped-luxsuite-4": ["/suites", "/rooms"],
-  "scraped-luxsuite-5": ["/suites", "/rooms"],
-  "scraped-luxsuite-6": ["/suites", "/rooms"],
-  "scraped-cabin-1": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-2": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-3": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-4": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-5": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-6": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-7": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-cabin-8": ["/suites", "/luxury-cabins-Nile-Cruise"],
-  "scraped-royal-1": ["/suites", "/royal-suites"],
-  "scraped-royal-2": ["/suites", "/royal-suites"],
-  "scraped-royal-3": ["/suites", "/royal-suites"],
-  "scraped-royal-4": ["/suites", "/royal-suites"],
-  "scraped-royal-5": ["/suites", "/royal-suites"],
-  "scraped-royal-6": ["/suites", "/royal-suites"],
-  "scraped-royal-7": ["/suites", "/royal-suites"],
-  "scraped-royal-8": ["/suites", "/royal-suites"],
+export type SiteImageUsedOnPage = {
+  path: string;
+  title: string;
 };
 
-/** Slot names the Suites iframe reads from the dashboard (shared with Rooms / galleries). */
+export function siteImagePageTitle(path: string): string {
+  return SITE_IMAGE_PAGE_TITLES[path] ?? path;
+}
+
+/** Page order from the audit, so every list reads in visiting order. */
+export const SITE_IMAGE_PAGES: readonly string[] = SITE_IMAGE_PAGE_ORDER;
+
+/** slot → the pages that paint it, in page order. */
+const PAGES_BY_SLOT: ReadonlyMap<string, string[]> = (() => {
+  const map = new Map<string, string[]>();
+  for (const path of SITE_IMAGE_PAGE_ORDER) {
+    for (const name of SITE_IMAGE_PAGE_SLOTS[path] ?? []) {
+      const pages = map.get(name);
+      if (pages) pages.push(path);
+      else map.set(name, [path]);
+    }
+  }
+  return map;
+})();
+
+/** The pages that show this photo. Empty when the live site never paints it. */
+export function getSiteImagePagePaths(slotName: string): readonly string[] {
+  return PAGES_BY_SLOT.get(slotName) ?? [];
+}
+
+export function getSiteImageUsedOnPages(slotName: string): SiteImageUsedOnPage[] {
+  return getSiteImagePagePaths(slotName).map((path) => ({
+    path,
+    title: siteImagePageTitle(path),
+  }));
+}
+
+/** The slots a page paints, in the order the page paints them. */
+export function getSiteImageSlotNamesForPage(path: string): readonly string[] {
+  return SITE_IMAGE_PAGE_SLOTS[path] ?? [];
+}
+
+export function formatSiteImageUsedOnLabel(pages: SiteImageUsedOnPage[]): string {
+  if (pages.length === 0) return "Not on the live site";
+  if (pages.length === 1) return `Used on: ${pages[0].title}`;
+  return `Used on: ${pages.map((page) => page.title).join(" · ")}`;
+}
+
+/** Slot names the Suites clone reads from the dashboard (shared with the room pages). */
 export const SUITES_DASHBOARD_SLOT_NAMES = [
   "scraped-suites-hero",
   "scraped-royal-5",
@@ -99,68 +125,3 @@ export const SUITES_DASHBOARD_SLOT_NAMES = [
   "scraped-cabin-8",
   "suites-nile-still",
 ] as const;
-
-export type SiteImageUsedOnPage = {
-  path: string;
-  title: string;
-};
-
-function pageTitle(path: string): string {
-  return SITE_IMAGE_PAGE_TITLES[path] ?? path;
-}
-
-/** Ordered unique pages where this slot appears live. */
-export function getSiteImageUsedOnPages(
-  slotName: string,
-  primaryPagePath: string,
-): SiteImageUsedOnPage[] {
-  const paths = new Set<string>([primaryPagePath]);
-  for (const path of EXTRA_USAGE_BY_SLOT[slotName] ?? []) {
-    paths.add(path);
-  }
-  if (HOMEPAGE_LIVE_SLOT_NAMES.has(slotName)) {
-    paths.add("/");
-  }
-
-  const preferredOrder = [
-    "/",
-    "/#amenities-sequence",
-    "/#our-voyages",
-    "/#moving-tilted-cards",
-    "/#floating-ig",
-    "/#burger-nav",
-    "/home-3#animated-map-bg",
-    "/suites",
-    "/rooms",
-    "/luxury-cabins-Nile-Cruise",
-    "/royal-suites",
-    "/cruises-list",
-    "/about",
-    "/gastronomy",
-    "/#dining-plates",
-    "/wellness",
-    "/highlights",
-    "/charter",
-    "/contact",
-    "/blogs",
-    "/partners",
-  ];
-
-  const ordered = [
-    ...preferredOrder.filter((path) => paths.has(path)),
-    ...[...paths].filter((path) => !preferredOrder.includes(path)),
-  ];
-
-  return ordered.map((path) => ({ path, title: pageTitle(path) }));
-}
-
-/** Every admin page tab that should list this slot (primary + shared usages). */
-export function getSiteImageAdminAppearPaths(slot: SiteImageSlot): string[] {
-  return getSiteImageUsedOnPages(slot.name, slot.pagePath).map((page) => page.path);
-}
-
-export function formatSiteImageUsedOnLabel(pages: SiteImageUsedOnPage[]): string {
-  if (pages.length === 0) return "Not linked to a live page";
-  if (pages.length === 1) return `Used on: ${pages[0].title}`;
-  return `Used on: ${pages.map((page) => page.title).join(" · ")}`;
-}

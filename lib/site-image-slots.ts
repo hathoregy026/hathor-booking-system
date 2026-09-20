@@ -621,6 +621,15 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     displayOrder: 4,
   },
   {
+    // The photograph behind the guests + itinerary stage on step 1.
+    name: "booking-voyage-stage",
+    altText: "Hathor Dahabiya moored below a Nile palace",
+    url: "/media/hathor/booking/voyage-palace-nile.webp",
+    category: "hero",
+    pagePath: "/booking",
+    displayOrder: 1,
+  },
+  {
     // One photograph across the top of the booking steps (Journey, Details & Payment, Request sent).
     name: "booking-banner",
     altText: "Hathor Dahabiya sailing the Nile",

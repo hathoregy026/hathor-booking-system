@@ -39,6 +39,7 @@ function ContactMedia({
   return (
     <figure
       className={`ce-media ${className}`}
+      data-site-image={slot}
       style={ratio ? ({ ["--ce-ratio" as string]: ratio } as CSSProperties) : undefined}
     >
       <Image

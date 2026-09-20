@@ -129,6 +129,7 @@ function ApertureHeroShell({
     <div
       className="rh"
       id="folio"
+      data-site-image={cms.slot ?? undefined}
       style={
         {
           "--rh-img": `url("${cms.src}")`,

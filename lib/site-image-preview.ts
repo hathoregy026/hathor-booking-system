@@ -1,3 +1,5 @@
+import { getSiteImagePagePaths } from "@/lib/site-image-usage";
+
 /**
  * Admin “View on Live Site” preview targets.
  *
@@ -15,205 +17,6 @@ export const SITE_IMAGE_VIEW_PARAM = "viewImage";
 export function siteImageAnchorId(name: string): string {
   return `${SITE_IMAGE_ANCHOR_PREFIX}${name}`;
 }
-
-/**
- * Slots currently rendered on the live homepage (`HomePageClient` / `/`).
- * Keep in sync with `lib/ex-page-content.ts` + hero poster.
- */
-export const HOMEPAGE_LIVE_SLOT_NAMES = new Set<string>([
-  "home-hero-poster",
-  "burger-nav-image",
-  "home-story-craft-large",
-  "home-call-to-action",
-  "home-carousel-suite-3n",
-  "home-carousel-royal-3n",
-  "home-carousel-king-4n",
-  "home-carousel-twin-4n",
-  "home-carousel-suite-4n",
-  "home-carousel-royal-4n",
-  "home-carousel-king-7n",
-  "home-carousel-twin-7n",
-  "home-carousel-suite-7n",
-  "home-carousel-royal-7n",
-  "home-amenities-1",
-  "home-amenities-2",
-  "home-amenities-3",
-  "home-amenities-4",
-  "home-amenities-5",
-  "home-amenities-6",
-  "home-amenities-7",
-  "home-amenities-8",
-  "home-amenities-9",
-  "home-amenities-10",
-  "home-amenities-11",
-  "home-amenities-13",
-  "home-amenities-12",
-  "home-amenities-14",
-  "home-amenities-15",
-  "moving-tilted-1",
-  "moving-tilted-2",
-  "moving-tilted-3",
-  "moving-tilted-4",
-  "moving-tilted-5",
-  "home-voyage-3n-aswan-luxor",
-  "home-voyage-4n-luxor-aswan",
-  "home-voyage-7n-roundtrip",
-  "home-voyage-nile-majesty",
-  "home-wheel-stage",
-  "home-wheel-image",
-  "floating-ig-1",
-  "floating-ig-2",
-  "floating-ig-3",
-  "floating-ig-4",
-]);
-
-/**
- * Primary public page where a slot is rendered.
- * Missing entries = not shown on the live site (still editable in CMS).
- */
-const SITE_IMAGE_PRIMARY_PAGE: Partial<Record<string, string>> = {
-  "home-hero-poster": "/",
-  "home-story-craft-large": "/",
-  "home-call-to-action": "/",
-  "home-amenities-1": "/",
-  "home-amenities-2": "/",
-  "home-amenities-3": "/",
-  "home-amenities-4": "/",
-  "home-amenities-5": "/",
-  "home-amenities-6": "/",
-  "home-amenities-7": "/",
-  "home-amenities-8": "/",
-  "home-amenities-9": "/",
-  "home-amenities-10": "/",
-  "home-amenities-11": "/",
-  "home-amenities-13": "/",
-  "home-amenities-12": "/",
-  "home-amenities-14": "/",
-  "home-amenities-15": "/",
-  "home-wheel-stage": "/",
-  "home-wheel-image": "/",
-  "home-voyage-3n-aswan-luxor": "/",
-  "home-voyage-4n-luxor-aswan": "/",
-  "home-voyage-7n-roundtrip": "/",
-  "home-voyage-nile-majesty": "/",
-  "home-carousel-suite-3n": "/",
-  "home-carousel-royal-3n": "/",
-  "home-carousel-king-4n": "/",
-  "home-carousel-twin-4n": "/",
-  "home-carousel-suite-4n": "/",
-  "home-carousel-royal-4n": "/",
-  "home-carousel-king-7n": "/",
-  "home-carousel-twin-7n": "/",
-  "home-carousel-suite-7n": "/",
-  "home-carousel-royal-7n": "/",
-
-  "floating-ig-1": "/",
-  "floating-ig-2": "/",
-  "floating-ig-3": "/",
-  "floating-ig-4": "/",
-
-  "moving-tilted-1": "/",
-  "moving-tilted-2": "/",
-  "moving-tilted-3": "/",
-  "moving-tilted-4": "/",
-  "moving-tilted-5": "/",
-
-  "cruises-hero": "/cruises-list",
-  "cabins-hero": "/luxury-cabins-Nile-Cruise",
-  "room-luxury": "/suites",
-  "room-suite": "/rooms",
-  "room-royal": "/royal-suites",
-  charter: "/charter",
-  "charter-hero": "/charter",
-  "charter-privacy": "/charter",
-  "charter-service": "/charter",
-  "charter-rhythm": "/charter",
-  "charter-itinerary": "/charter",
-  "about-hero": "/about",
-  "about-dining": "/about",
-  "gastronomy-hero": "/gastronomy",
-  "gastronomy-restaurant": "/gastronomy",
-  "gastronomy-table": "/gastronomy",
-  "gastronomy-courses": "/gastronomy",
-  "gastronomy-wine": "/gastronomy",
-  "gastronomy-chef": "/gastronomy",
-  "gastronomy-service": "/gastronomy",
-  "gastronomy-celebration": "/gastronomy",
-  "gastronomy-plate-1": "/gastronomy",
-  "gastronomy-plate-2": "/gastronomy",
-  "gastronomy-plate-3": "/gastronomy",
-  "gastronomy-plate-4": "/gastronomy",
-  "gastronomy-plate-5": "/gastronomy",
-  "gastronomy-plate-6": "/gastronomy",
-  "gastronomy-plate-7": "/gastronomy",
-  "dining-intro-hero": "/gastronomy",
-  "dining-spiral-bridge": "/gastronomy",
-  "dining-projects-backdrop": "/gastronomy",
-  "dining-projects-course-1": "/gastronomy",
-  "dining-projects-course-2": "/gastronomy",
-  "dining-projects-course-3": "/gastronomy",
-  "dining-projects-thumb-1": "/gastronomy",
-  "dining-projects-thumb-2": "/gastronomy",
-  "dining-projects-thumb-3": "/gastronomy",
-  "dining-captions-start": "/gastronomy",
-  "dining-captions-end": "/gastronomy",
-  "dining-first-light": "/gastronomy",
-  "dining-course-layers": "/gastronomy",
-  "dining-wine-pairing": "/gastronomy",
-  "dining-dessert-hour": "/gastronomy",
-  "dining-gallery-left": "/gastronomy",
-  "dining-gallery-right": "/gastronomy",
-  "dining-private-menu": "/gastronomy",
-  "dining-lounge": "/gastronomy",
-  "dining-celebration": "/gastronomy",
-  "dining-closing": "/gastronomy",
-  "dining-plate-1": "/gastronomy",
-  "dining-plate-2": "/gastronomy",
-  "dining-plate-3": "/gastronomy",
-  "dining-plate-4": "/gastronomy",
-  "dining-plate-5": "/gastronomy",
-  "dining-plate-6": "/gastronomy",
-  "dining-plate-7": "/gastronomy",
-  "wellness-hero": "/wellness",
-  "wellness-fitness": "/wellness",
-  "highlights-hero": "/highlights",
-  "highlights-lifestyle": "/highlights",
-  "landmark-obelisk": "/highlights",
-  "landmark-hatshepsut": "/highlights",
-  "landmark-valley-kings": "/highlights",
-  "contact-hero": "/contact",
-  "booking-banner": "/booking",
-  "blog-hero": "/blogs",
-
-  "scraped-suites-hero": "/suites",
-  "scraped-suites-luxury-rooms": "/suites",
-  "scraped-suites-luxury-suites": "/suites",
-  "scraped-suites-royal": "/suites",
-  "scraped-luxsuite-1": "/suites",
-  "scraped-luxsuite-2": "/suites",
-  "scraped-luxsuite-3": "/suites",
-  "scraped-luxsuite-4": "/suites",
-  "scraped-luxsuite-5": "/suites",
-  "scraped-luxsuite-6": "/suites",
-  "scraped-cabin-1": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-2": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-3": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-4": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-5": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-6": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-7": "/luxury-cabins-Nile-Cruise",
-  "scraped-cabin-8": "/luxury-cabins-Nile-Cruise",
-  "scraped-royal-1": "/royal-suites",
-  "scraped-royal-2": "/royal-suites",
-  "scraped-royal-3": "/royal-suites",
-  "scraped-royal-4": "/royal-suites",
-  "scraped-royal-5": "/royal-suites",
-  "scraped-royal-6": "/royal-suites",
-  "scraped-royal-7": "/royal-suites",
-  "scraped-royal-8": "/royal-suites",
-  "suites-nile-still": "/suites",
-  "burger-nav-image": "/",
-};
 
 /**
  * Optional section id when the exact image node is not found yet.
@@ -261,11 +64,9 @@ export function getSiteImageFallbackSectionId(name: string): string | undefined 
   return SLOT_FALLBACK_SECTION[name];
 }
 
+/** True when the last site audit found this photo painted on a page. */
 export function isSiteImageOnLiveSite(name: string): boolean {
-  return (
-    HOMEPAGE_LIVE_SLOT_NAMES.has(name) ||
-    Boolean(SITE_IMAGE_PRIMARY_PAGE[name])
-  );
+  return getSiteImagePagePaths(name).length > 0;
 }
 
 /** Public path + query, e.g. `/about?viewImage=about-dining`. */
@@ -276,54 +77,22 @@ export function buildSiteImageLivePath(pagePath: string, name: string): string {
 }
 
 /**
- * Live preview URL for an admin card.
- * - Homepage tab: prefer `/` when the image is actually on the homepage.
- * - Other tabs: primary page for that slot.
- * - Returns null when the slot is not rendered anywhere on the live site.
+ * Where “View on site” should open this photo.
+ *
+ * The audit map decides: the admin group's own page when that page paints the
+ * photo, otherwise the first page that does. Null when no page shows it, so
+ * the card can say so instead of offering a dead link.
  */
 export function resolveSiteImageLivePath(
   name: string,
   adminGroupPagePath: string,
 ): string | null {
-  if (
-    adminGroupPagePath === "/#floating-ig" ||
-    adminGroupPagePath === "/#moving-tilted-cards" ||
-    adminGroupPagePath === "/#amenities-sequence" ||
-    adminGroupPagePath === "/#our-voyages"
-  ) {
-    return buildSiteImageLivePath("/", name);
+  const pages = getSiteImagePagePaths(name);
+  if (pages.length === 0) return null;
+  if (pages.includes(adminGroupPagePath)) {
+    return buildSiteImageLivePath(adminGroupPagePath, name);
   }
-
-  if (adminGroupPagePath === "/#burger-nav") {
-    return buildSiteImageLivePath("/suites", name);
-  }
-
-  if (adminGroupPagePath === "/#dining-plates") {
-    return buildSiteImageLivePath("/gastronomy", name);
-  }
-
-  /* Cruises-tab itinerary cards still render on the homepage slider. */
-  if (adminGroupPagePath === "/cruises-list" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
-    return buildSiteImageLivePath("/", name);
-  }
-
-  if (adminGroupPagePath === "/suites") {
-    return buildSiteImageLivePath("/suites", name);
-  }
-
-  if (adminGroupPagePath === "/" && HOMEPAGE_LIVE_SLOT_NAMES.has(name)) {
-    return buildSiteImageLivePath("/", name);
-  }
-
-  const primary = SITE_IMAGE_PRIMARY_PAGE[name];
-  if (!primary) return null;
-
-  /* Prefer the admin tab’s own page when this slot’s primary page matches it */
-  if (adminGroupPagePath === primary) {
-    return buildSiteImageLivePath(primary, name);
-  }
-
-  return buildSiteImageLivePath(primary, name);
+  return buildSiteImageLivePath(pages[0], name);
 }
 
 export function readSiteImagePreviewName(

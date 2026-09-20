@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { GastronomyPageContent } from "@/components/pages/GastronomyPageContent";
 import { GastronomyDiningRuntime } from "@/components/pages/GastronomyDiningRuntime";
-import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
@@ -49,7 +48,6 @@ export default async function GastronomyPage() {
       >
         <GastronomyDiningRuntime />
         <SiteImagesProvider images={cms.siteImages}>
-          <SiteImagePreviewScroll />
           <GastronomyPageContent />
         </SiteImagesProvider>
       </PublicCmsTextRuntime>

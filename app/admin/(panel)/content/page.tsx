@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, ImageIcon, Loader2, Save } from "lucide-react";
+import { ChevronDown, ImageIcon, Loader2, Save, Search } from "lucide-react";
 import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { SiteImageSlotCard } from "@/components/admin/SiteImageSlotCard";
 import { useToast } from "@/components/admin/ToastProvider";
@@ -9,6 +9,8 @@ import { adminFetch } from "@/lib/admin-fetch";
 import {
   getSiteImageAdminGroups,
   getSiteImageGroupHeading,
+  type SiteImageAdminGroup,
+  type SiteImageAdminItem,
 } from "@/lib/site-image-admin";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 import {
@@ -36,6 +38,40 @@ type SiteImageFormItem = {
 };
 
 const SITE_IMAGE_GROUPS = getSiteImageAdminGroups();
+
+/** The hash a page tab writes, e.g. #wellness or #rooms-royal-suite. */
+function groupSlug(pagePath: string): string {
+  return (
+    pagePath.replace(/^\//, "").replace(/\//g, "-").toLowerCase() || "home"
+  );
+}
+
+/** A page’s photos split into the parts of the page they belong to. */
+function sectionsOf(group: SiteImageAdminGroup): {
+  name: string;
+  items: SiteImageAdminItem[];
+}[] {
+  const sections: { name: string; items: SiteImageAdminItem[] }[] = [];
+  for (const item of group.items) {
+    const last = sections.find((section) => section.name === item.section);
+    if (last) last.items.push(item);
+    else sections.push({ name: item.section, items: [item] });
+  }
+  return sections;
+}
+
+function matchesQuery(item: SiteImageAdminItem, query: string): boolean {
+  if (!query) return true;
+  const haystack = [
+    item.label,
+    item.name,
+    item.section,
+    item.usedOnLabel,
+  ]
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(query);
+}
 
 function buildSiteImageForm(
   records: SiteImageRecord[],
@@ -94,6 +130,7 @@ export default function AdminContentPage() {
   const [openImageGroup, setOpenImageGroup] = useState<string>(
     SITE_IMAGE_GROUPS[0]?.pagePath ?? "/",
   );
+  const [imageQuery, setImageQuery] = useState("");
 
   useEffect(() => {
     const applyHash = () => {
@@ -105,27 +142,18 @@ export default function AdminContentPage() {
         return;
       }
 
-      const match = SITE_IMAGE_GROUPS.find((group) => {
-        const path = group.pagePath.toLowerCase();
-        const slug = path.replace(/^\/#?/, "").replace(/\//g, "-") || "home";
-        return (
-          raw === "site-images" ||
-          raw === "website-images" ||
-          raw === "images" ||
-          raw === slug ||
-          raw === path ||
-          path.endsWith(raw) ||
-          (raw === "floating-ig" && path.includes("floating-ig")) ||
-          (raw === "our-voyages" && path.includes("our-voyages")) ||
-          (raw === "amenities-sequence" && path.includes("amenities-sequence")) ||
-          (raw === "amenities" && path.includes("amenities-sequence")) ||
-          (raw === "dining-plates" && path.includes("dining-plates")) ||
-          (raw === "plates" && path.includes("dining-plates")) ||
-          (raw === "burger-nav" && path.includes("burger-nav")) ||
-          (raw === "burger-nav-image" && path.includes("burger-nav")) ||
-          (raw === "burger" && path.includes("burger-nav"))
-        );
-      });
+      const match = SITE_IMAGE_GROUPS.find(
+        (group) =>
+          raw === groupSlug(group.pagePath) ||
+          raw === group.pagePath.toLowerCase() ||
+          raw === group.title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      );
+      if (raw === "site-images" || raw === "website-images" || raw === "images") {
+        document
+          .getElementById("site-images")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
 
       if (match) {
         setOpenImageGroup(match.pagePath);
@@ -293,6 +321,29 @@ export default function AdminContentPage() {
     [loadContent, persistSiteImageSlot, showToast],
   );
 
+  const query = imageQuery.trim().toLowerCase();
+
+  /* Searching narrows both the page tabs and the photos inside them. */
+  const visibleGroups = useMemo(() => {
+    if (!query) return SITE_IMAGE_GROUPS;
+    return SITE_IMAGE_GROUPS.map((group) => ({
+      ...group,
+      items: group.items.filter((item) => matchesQuery(item, query)),
+    })).filter((group) => group.items.length > 0);
+  }, [query]);
+
+  const matchCount = useMemo(
+    () => visibleGroups.reduce((total, group) => total + group.items.length, 0),
+    [visibleGroups],
+  );
+
+  const activeGroup = useMemo(
+    () =>
+      visibleGroups.find((group) => group.pagePath === openImageGroup) ??
+      visibleGroups[0] ??
+      null,
+    [visibleGroups, openImageGroup],
+  );
   const imagesDirty = useMemo(() => {
     return JSON.stringify(siteImages) !== JSON.stringify(savedSiteImages);
   }, [siteImages, savedSiteImages]);
@@ -347,9 +398,27 @@ export default function AdminContentPage() {
         icon={ImageIcon}
       />
       <div id="site-images" className="site-images-cms space-y-5">
+        <div className="site-images-filter">
+          <label className="site-images-search">
+            <Search className="site-images-search__icon" aria-hidden />
+            <input
+              value={imageQuery}
+              onChange={(event) => setImageQuery(event.target.value)}
+              placeholder="Search a photo by name, page or slot"
+              className="site-images-search__input"
+              aria-label="Search website images"
+            />
+          </label>
+          <p className="site-images-filter__hint">
+            {query
+              ? `${matchCount} photo${matchCount === 1 ? "" : "s"} match “${imageQuery.trim()}” across ${visibleGroups.length} page${visibleGroups.length === 1 ? "" : "s"}.`
+              : "Pick a page to see every photo on it, in the order guests meet them."}
+          </p>
+        </div>
+
         <div className="site-images-tabs" role="tablist" aria-label="Choose a page">
-          {SITE_IMAGE_GROUPS.map((group) => {
-            const isActive = openImageGroup === group.pagePath;
+          {visibleGroups.map((group) => {
+            const isActive = activeGroup?.pagePath === group.pagePath;
             return (
               <button
                 key={group.pagePath}
@@ -359,28 +428,32 @@ export default function AdminContentPage() {
                 className={`site-images-tab${isActive ? " is-active" : ""}`}
                 onClick={() => {
                   setOpenImageGroup(group.pagePath);
-                  const slug =
-                    group.pagePath.replace(/^\/#?/, "").replace(/\//g, "-") ||
-                    "home";
                   window.history.replaceState(
                     null,
                     "",
-                    `#${slug === "" || slug === "home" ? "site-images" : slug}`,
+                    `#${groupSlug(group.pagePath)}`,
                   );
                 }}
               >
                 {group.title}
+                <span className="site-images-tab__count">{group.items.length}</span>
               </button>
             );
           })}
         </div>
 
-        {SITE_IMAGE_GROUPS.map((group) => {
-          const isOpen = openImageGroup === group.pagePath;
+        {visibleGroups.length === 0 ? (
+          <p className="site-images-empty">
+            No photo matches “{imageQuery.trim()}”.
+          </p>
+        ) : null}
+
+        {visibleGroups.map((group) => {
+          const isOpen = activeGroup?.pagePath === group.pagePath;
           const assignedCount = group.items.filter(
             (item) => siteImages[item.name]?.url?.trim(),
           ).length;
-          const headingId = `site-images-${group.pagePath.replace(/\//g, "-") || "home"}`;
+          const headingId = `site-images-${groupSlug(group.pagePath)}`;
 
           return (
             <section
@@ -403,17 +476,16 @@ export default function AdminContentPage() {
                 <div className="site-image-group__header-text">
                   <h3 className="site-image-group__title">
                     {getSiteImageGroupHeading(group.title)}
+                    {group.livePath ? (
+                      <span className="site-image-group__path">{group.livePath}</span>
+                    ) : null}
                   </h3>
-                  <p className="site-image-group__meta">
-                    {group.description
-                      ? group.description
-                      : `${assignedCount} of ${group.items.length} photos set`}
-                  </p>
                   {group.description ? (
-                    <p className="site-image-group__meta">
-                      {assignedCount} of {group.items.length} photos set
-                    </p>
+                    <p className="site-image-group__meta">{group.description}</p>
                   ) : null}
+                  <p className="site-image-group__meta">
+                    {assignedCount} of {group.items.length} photos set
+                  </p>
                 </div>
                 <ChevronDown
                   className={`site-image-group__chevron${isOpen ? " is-open" : ""}`}
@@ -421,51 +493,63 @@ export default function AdminContentPage() {
                 />
               </button>
 
-              {isOpen ? (
-                <div className="site-image-group__grid">
-                  {group.items.map((item) => {
-                    const image = siteImages[item.name];
-                    const url = image?.url ?? "";
-                    const altText = image?.altText ?? item.defaultAlt;
+              {isOpen
+                ? sectionsOf(group).map((section) => (
+                    <div key={section.name} className="site-image-section">
+                      {sectionsOf(group).length > 1 ? (
+                        <h4 className="site-image-section__title">
+                          {section.name}
+                          <span className="site-image-section__count">
+                            {section.items.length}
+                          </span>
+                        </h4>
+                      ) : null}
+                      <div className="site-image-group__grid">
+                        {section.items.map((item) => {
+                          const image = siteImages[item.name];
+                          const url = image?.url ?? "";
+                          const altText = image?.altText ?? item.defaultAlt;
 
-                    return (
-                      <SiteImageSlotCard
-                        key={`${group.pagePath}:${item.name}`}
-                        item={item}
-                        pageTitle={group.title}
-                        url={url}
-                        altText={altText}
-                        onAltTextChange={(nextAlt) =>
-                          updateSiteImage(item.name, { altText: nextAlt })
-                        }
-                        onUrlChange={(nextUrl, meta) => {
-                          const nextAlt =
-                            !altText.trim() ||
-                            /^(homepage-)+/.test(altText.trim())
-                              ? meta?.suggestedAltText ??
-                                item.label ??
-                                altText
-                              : altText;
-                          void handleSiteImageUrlChange(
-                            item.name,
-                            nextUrl,
-                            nextAlt,
+                          return (
+                            <SiteImageSlotCard
+                              key={`${group.pagePath}:${item.name}`}
+                              item={item}
+                              pageTitle={group.title}
+                              url={url}
+                              altText={altText}
+                              onAltTextChange={(nextAlt) =>
+                                updateSiteImage(item.name, { altText: nextAlt })
+                              }
+                              onUrlChange={(nextUrl, meta) => {
+                                const nextAlt =
+                                  !altText.trim() ||
+                                  /^(homepage-)+/.test(altText.trim())
+                                    ? meta?.suggestedAltText ??
+                                      item.label ??
+                                      altText
+                                    : altText;
+                                void handleSiteImageUrlChange(
+                                  item.name,
+                                  nextUrl,
+                                  nextAlt,
+                                );
+                              }}
+                              {...(item.name === "home-wheel-stage"
+                                ? {
+                                    opacity: wheelStage.opacity,
+                                    onOpacityChange: (opacity: number) =>
+                                      setWheelStage({ opacity }),
+                                    onOpacityCommit: handleWheelOpacityCommit,
+                                    opacitySaving,
+                                  }
+                                : {})}
+                            />
                           );
-                        }}
-                        {...(item.name === "home-wheel-stage"
-                          ? {
-                              opacity: wheelStage.opacity,
-                              onOpacityChange: (opacity: number) =>
-                                setWheelStage({ opacity }),
-                              onOpacityCommit: handleWheelOpacityCommit,
-                              opacitySaving,
-                            }
-                          : {})}
-                      />
-                    );
-                  })}
-                </div>
-              ) : null}
+                        })}
+                      </div>
+                    </div>
+                  ))
+                : null}
             </section>
           );
         })}

@@ -71,6 +71,7 @@ function JournalMedia({
   return (
     <figure
       className={`jn-media ${className}`}
+      data-site-image={slot}
       style={
         ratio ? ({ ["--jn-ratio" as string]: ratio } as CSSProperties) : undefined
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
-import Image from "next/image";
+import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { folioRange, money, plural, shortDate, type Sailing } from "./model";

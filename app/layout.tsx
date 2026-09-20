@@ -21,6 +21,7 @@ import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
 import { DeployBoot } from "@/components/public/DeployBoot";
 import { SiteBookingChrome } from "@/components/public/SiteBookingChrome";
+import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { SelectionProvider } from "@/components/selection/SelectionProvider";
 import "./hathor-fonts.css";
 import "./globals.css";
@@ -163,6 +164,8 @@ gtag('config', 'G-3QKFST6VXE');`,
         suppressHydrationWarning
       >
         <TouchDeviceBootstrap />
+        {/* Dashboard “View on site” links (?viewImage=slot) work on every page. */}
+        <SiteImagePreviewScroll />
         <DeployBoot />
         {/*
           Favorites + My Voyage state. Renders no markup of its own — it hydrates

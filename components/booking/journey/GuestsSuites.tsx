@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
-import Image from "next/image";
+import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
