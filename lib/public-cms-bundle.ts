@@ -75,7 +75,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v14";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v15";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -95,8 +95,12 @@ const PUBLIC_CMS_KEYS = [
 
 /** Keys known to exceed ~2KB — full SELECT value hangs on some pooler paths. */
 const CHUNKED_SETTING_KEYS = new Set<string>([SITE_IMAGE_PUBLIC_MAP_KEY]);
-/** Max expected public image-map payload (src-only overrides). */
-const IMAGE_MAP_MAX_CHARS = 48_000;
+/**
+ * Max public image-map payload. Page-owned slots can legitimately grow beyond
+ * the former 48 KB cap after many dashboard uploads; truncating JSON there
+ * made every override fail parsing and appear unchanged on the live site.
+ */
+const IMAGE_MAP_MAX_CHARS = 256_000;
 
 const CMS_BUILD_SKIP = "CMS_SKIP_BUILD_RESOLUTION";
 
@@ -131,7 +135,13 @@ async function readSettingValue(
   );
   const row = result.rows[0];
   if (!row?.v) return null;
-  return row.v.slice(0, Number(row.len) || row.v.length);
+  const length = Number(row.len) || row.v.length;
+  if (length > row.v.length) {
+    throw new Error(
+      `[public-cms] ${key} exceeds ${IMAGE_MAP_MAX_CHARS} characters`,
+    );
+  }
+  return row.v;
 }
 
 export type PublicCmsBundle = {

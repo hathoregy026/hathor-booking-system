@@ -54,14 +54,14 @@ export async function POST(request: NextRequest) {
 
     let mapAction: "ensured" | "rebuilt" | "present" = "ensured";
     if (body.forceRebuildMap) {
-      await rebuildSiteImagePublicMap();
+      await rebuildSiteImagePublicMap({ throwOnError: true });
       mapAction = "rebuilt";
     } else {
       const result = await ensureSiteImagePublicMap();
       mapAction = result.created ? "ensured" : "present";
     }
 
-    revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
+    revalidateTag(PUBLIC_CMS_CACHE_TAG, { expire: 0 });
     revalidatePath("/", "layout");
     for (const path of ["/", "/cruises-list", "/rooms"] as const) {
       revalidatePath(path);

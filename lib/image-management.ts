@@ -186,13 +186,15 @@ export async function upsertSiteImagesBulk(items: SiteImageBulkItem[]) {
           }),
         );
         results.push(updated);
-      } else if (canHideSiteImageOnClear(slot.name)) {
+      } else if (canHideSiteImageOnClear(slot.name) || slot.sourceName) {
         const created = await withDb(() =>
           prisma.siteImage.create({
             data: {
               name: slot.name,
               altText: nextAlt,
-              url: SITE_IMAGE_CLEARED_SRC,
+              url: canHideSiteImageOnClear(slot.name)
+                ? SITE_IMAGE_CLEARED_SRC
+                : slot.url,
               category: slot.category,
               pagePath: slot.pagePath,
               displayOrder: slot.displayOrder,

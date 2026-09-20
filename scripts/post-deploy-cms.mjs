@@ -37,6 +37,7 @@ const base = (
 ).replace(/\/$/, "");
 const secret = env.CRON_SECRET?.trim();
 const bypass = env.VERCEL_AUTOMATION_BYPASS_SECRET?.trim();
+const forceRebuildMap = process.argv.includes("--force");
 
 if (!secret) {
   console.error(JSON.stringify({ ok: false, error: "CRON_SECRET missing" }));
@@ -55,7 +56,7 @@ if (bypass) {
 const res = await fetch(`${base}/api/internal/revalidate-public-cms`, {
   method: "POST",
   headers,
-  body: JSON.stringify({}),
+  body: JSON.stringify({ forceRebuildMap }),
 });
 const text = await res.text();
 let body;

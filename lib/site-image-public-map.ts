@@ -116,10 +116,16 @@ export function buildSiteImageOverridesMap(
      * SiteSetting row stays small enough for reliable pooler transfer.
      */
     const isRemote = /^https?:\/\//i.test(record.url);
-    if (!isRemote && slot && record.url === slot.url && alt === slot.altText) {
+    if (
+      !isRemote &&
+      slot &&
+      !slot.sourceName &&
+      record.url === slot.url &&
+      alt === slot.altText
+    ) {
       continue;
     }
-    if (!isRemote && slot && record.url === slot.url) {
+    if (!isRemote && slot && !slot.sourceName && record.url === slot.url) {
       continue;
     }
     overrides[record.name] = { src: record.url, alt };
@@ -251,7 +257,9 @@ export function parseStoredSiteImageMap(raw: unknown): StoredSiteImagePublicMap 
  * Also used by `npm run rebuild:site-image-map` (raw pg) for deploy bootstrap.
  * Admin image create/update/delete always calls this before revalidateTag.
  */
-export async function rebuildSiteImagePublicMap(): Promise<StoredSiteImagePublicMap> {
+export async function rebuildSiteImagePublicMap(options?: {
+  throwOnError?: boolean;
+}): Promise<StoredSiteImagePublicMap> {
   try {
     const records = await withDb(() =>
       prisma.siteImage.findMany({
@@ -283,8 +291,61 @@ export async function rebuildSiteImagePublicMap(): Promise<StoredSiteImagePublic
     return overrides;
   } catch (error) {
     logDbError("site-image-public-map.rebuild", error);
+    if (options?.throwOnError) throw error;
     return {};
   }
+}
+
+type SiteImagePublicMapRecord = {
+  name: string;
+  url: string;
+};
+
+/**
+ * Publish only the rows that were just saved.
+ *
+ * Dashboard saves used to rescan the entire SiteImage table before updating
+ * SiteSetting. On a slow pooler that scan can time out after the image row is
+ * already committed, leaving the dashboard successful but the public map
+ * stale. This JSONB merge is one parameterized statement and provides
+ * read-after-write delivery for the exact slots that changed.
+ */
+export async function patchSiteImagePublicMap(
+  records: readonly SiteImagePublicMapRecord[],
+): Promise<void> {
+  const patch: Record<string, string> = {};
+
+  for (const record of records) {
+    const slot = getSiteImageSlot(record.name);
+    if (!slot) continue;
+    const url = record.url.trim();
+    if (
+      canHideSiteImageOnClear(record.name) &&
+      isSiteImageClearedSrc(url)
+    ) {
+      patch[record.name] = SITE_IMAGE_CLEARED_SRC;
+      continue;
+    }
+    if (!shouldUseDatabaseSiteImageUrl(url)) continue;
+    if (!isSafeLandmarkCmsOverride(record.name, url)) continue;
+    patch[record.name] = url;
+  }
+
+  if (Object.keys(patch).length === 0) return;
+  const payload = JSON.stringify(patch);
+
+  await withDb(() =>
+    prisma.$executeRaw`
+      INSERT INTO "SiteSetting" ("key", "value", "updatedAt")
+      VALUES (${SITE_IMAGE_PUBLIC_MAP_KEY}, ${payload}, NOW())
+      ON CONFLICT ("key") DO UPDATE SET
+        "value" = (
+          COALESCE(NULLIF("SiteSetting"."value", ''), '{}')::jsonb ||
+          ${payload}::jsonb
+        )::text,
+        "updatedAt" = NOW()
+    `,
+  );
 }
 
 /**

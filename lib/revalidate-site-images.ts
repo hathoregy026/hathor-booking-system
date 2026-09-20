@@ -1,6 +1,9 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
-import { rebuildSiteImagePublicMap } from "@/lib/site-image-public-map";
+import {
+  patchSiteImagePublicMap,
+  rebuildSiteImagePublicMap,
+} from "@/lib/site-image-public-map";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 import { getSiteImageUsedOnPages } from "@/lib/site-image-usage";
 
@@ -32,9 +35,16 @@ const GLOBAL_NAV_IMAGE_SLOTS = new Set(["burger-nav-image"]);
  */
 export async function revalidateSiteImagePages(
   slotNames?: string[],
+  changedRecords?: readonly { name: string; url: string }[],
 ): Promise<void> {
-  await rebuildSiteImagePublicMap();
-  revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
+  if (changedRecords?.length) {
+    await patchSiteImagePublicMap(changedRecords);
+  } else {
+    await rebuildSiteImagePublicMap();
+  }
+  /* Route-handler CMS mutations need immediate expiry. `max` serves one stale
+     response first, which made a successful upload still look unchanged. */
+  revalidateTag(PUBLIC_CMS_CACHE_TAG, { expire: 0 });
   revalidatePath("/", "layout");
 
   if (!slotNames?.length) {
