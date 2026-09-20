@@ -36,7 +36,13 @@ export function SiteImagesProvider({ images, children }: SiteImagesProviderProps
   const pathname = usePathname();
   const getImage = useCallback(
     (name: string): ResolvedSiteImage => {
-      const effectiveName = getPageScopedSiteImageName(pathname, name);
+      /* Next can expose an internal/prerender pathname to a layout-level client
+         provider. The browser URL is the authoritative route after hydration,
+         including client-side navigation, so page-owned slots cannot fall back
+         to their former shared source on the live site. */
+      const livePathname =
+        typeof window === "undefined" ? pathname : window.location.pathname;
+      const effectiveName = getPageScopedSiteImageName(livePathname, name);
       const sourceName = getSiteImageSourceName(effectiveName);
       const image =
         images[effectiveName] ?? images[sourceName] ?? getDefaultSiteImage(effectiveName);
