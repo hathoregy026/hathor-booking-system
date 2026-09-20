@@ -176,14 +176,10 @@ function scrollToPreviewName(name: string) {
     if (!target) return;
 
     if (target.frame) {
-      /* Bring the cloned page into view, then move it to the photo inside. */
+      /* A cloned page brings its own scrolling, so let the browser walk every
+         container between the photo and the frame. */
       scrollToElement(target.frame);
-      const view = target.frame.contentWindow;
-      if (view) {
-        const rect = target.element.getBoundingClientRect();
-        const top = Math.max(0, rect.top + view.scrollY - 88);
-        view.scrollTo({ top, behavior: "smooth" });
-      }
+      target.element.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
