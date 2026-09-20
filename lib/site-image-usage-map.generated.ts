@@ -98,6 +98,7 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "home-voyage-4n-luxor-aswan",
     "home-voyage-7n-roundtrip",
     "home-voyage-nile-majesty",
+    "charter-hero",
     "home-call-to-action",
   ],
   "/voyages/luxor-to-aswan": [
@@ -118,6 +119,7 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "home-voyage-4n-luxor-aswan",
     "home-voyage-7n-roundtrip",
     "home-voyage-nile-majesty",
+    "charter-hero",
     "home-call-to-action",
   ],
   "/voyages/aswan-to-luxor": [
@@ -138,6 +140,7 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "home-voyage-4n-luxor-aswan",
     "home-voyage-7n-roundtrip",
     "home-voyage-nile-majesty",
+    "charter-hero",
     "home-call-to-action",
   ],
   "/cruises-list": [
@@ -331,6 +334,7 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "home-story-way-of-life",
     "home-cinematic-still",
     "home-story-craft-large",
+    "scraped-cabin-1",
     "room-luxury",
     "room-royal",
     "scraped-cabin-3",
@@ -360,6 +364,7 @@ export const SITE_IMAGE_PAGE_SLOTS: Readonly<Record<string, readonly string[]>> 
     "highlights-lifestyle",
     "landmark-valley-kings",
     "highlights-hero",
+    "blog-hero",
   ],
   "/partners": [
     "burger-nav-image",
