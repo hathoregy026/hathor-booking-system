@@ -103,6 +103,8 @@ export function GuestsSuitesScreen({
   onArrangement,
   onArrange,
   preferredType,
+  preferredRoomId,
+  onReleasePreferredRoom,
   issues,
   alert,
   busy,
@@ -125,6 +127,8 @@ export function GuestsSuitesScreen({
   /** Places everyone in the chosen types; returns a message when they cannot fit. */
   onArrange: (types: PhysicalRoomType[]) => string | null;
   preferredType: PhysicalRoomType | null;
+  preferredRoomId: string | null;
+  onReleasePreferredRoom: () => void;
   issues: string[];
   alert: string | null;
   busy: boolean;
@@ -292,6 +296,7 @@ export function GuestsSuitesScreen({
     <>
       <div className="hj-suites-head">
         {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
+        {preferredRoomId ? <div className="hj-map-choice" role="status"><span>From the ship map: cabin {preferredRoomId}. Place your guests in this cabin type. The exact room is checked again when you send your request; it is not held yet.</span><button type="button" onClick={onReleasePreferredRoom}>Choose freely instead</button></div> : null}
         <PanelHead
           step={2}
           titleId="hj-suites-title"

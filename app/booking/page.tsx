@@ -1,4 +1,5 @@
 import { BookingJourneyFlow, type JourneyStart } from "@/components/booking/journey/BookingJourneyFlow";
+import Link from "next/link";
 import { getBookingRoomDetails } from "@/lib/booking-room-details";
 import { PARTY_MAX_ADULTS, PARTY_MAX_CHILDREN, PHYSICAL_ROOM_TYPES, type PhysicalRoomType } from "@/lib/physical-inventory";
 import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
@@ -52,17 +53,19 @@ export default async function BookingPage({
       }
     : null;
 
-  if (roomId && roomId.length <= 128) {
-    const details = await getBookingRoomDetails(roomId);
+  if (roomId) {
+    const details = /^(K0[1-6]|T0[12]|S0[12]|R0[12])$/.test(roomId) ? await getBookingRoomDetails(roomId) : null;
     const roomType = PHYSICAL_ROOM_TYPES.find(type => type === details?.roomType) as PhysicalRoomType | undefined;
-    const duration = isDuration(details?.stayDuration) ? details.stayDuration : start?.duration;
-    if (roomType || duration) {
-      start = {
-        ...start,
-        duration: duration ?? "7-nights-luxor-aswan-luxor",
-        roomType: roomType ?? start?.roomType ?? null,
-      };
+    if (!details || !roomType) {
+      return <section className="hj-exact-unavailable" role="alert"><p>Cabin selection</p><h1>We could not verify this cabin.</h1><span>Your booking has not been started. Refresh to check again, or choose another cabin.</span><Link href="/booking">Explore all cabins ↗</Link></section>;
     }
+    const duration = start?.duration ?? (isDuration(details?.stayDuration) ? details.stayDuration : null);
+    start = {
+      ...start,
+      duration: duration ?? "7-nights-luxor-aswan-luxor",
+      roomType,
+      roomId: details.roomId,
+    };
   }
 
   // Keyed on the start, so continuing from the cart while already on this page

@@ -89,6 +89,7 @@ async function readJson<T>(response: Response): Promise<T> {
 export type JourneyStart = {
   duration: StayDurationValue;
   roomType: PhysicalRoomType | null;
+  roomId?: string | null;
   sailingDate?: string | null;
   adults?: number | null;
   children?: number | null;
@@ -105,6 +106,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const [sailings, setSailings] = useState<Sailing[]>([]);
   const [loadingSailings, setLoadingSailings] = useState(true);
   const [scheduleId, setScheduleId] = useState("");
+  const [preferredRoomId, setPreferredRoomId] = useState(start?.roomId ?? null);
   const [arrangement, setArrangement] = useState<Arrangement>(EMPTY_ARRANGEMENT);
   const [step, setStep] = useState<JourneyStep>(1);
   const [attempt, setAttempt] = useState<Attempt | null>(null);
@@ -127,7 +129,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const guests = useMemo(() => guestsFor(adults, children), [adults, children]);
   const cabins = useMemo(() => cabinViews(arrangement, guests, offers), [arrangement, guests, offers]);
   const issues = useMemo(() => arrangementIssues(arrangement, guests), [arrangement, guests]);
-  const rooms = useMemo(() => roomsPayload(arrangement, guests), [arrangement, guests]);
+  const rooms = useMemo(() => {
+    const payload = roomsPayload(arrangement, guests);
+    if (preferredRoomId && preferred) {
+      const chosen = payload.find(entry => entry.roomType === preferred);
+      if (chosen) chosen.roomId = preferredRoomId;
+    }
+    return payload;
+  }, [arrangement, guests, preferredRoomId, preferred]);
   const signature = sailing ? JSON.stringify({ scheduleId: sailing.scheduleId, rooms }) : "";
   const hold = attempt?.hold && attempt.signature === signature ? attempt.hold : null;
   const totalCents = hold?.totalPriceCents ?? arrangementTotal(arrangement, offers);
@@ -182,6 +191,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             return;
           }
           setScheduleId(match.scheduleId);
+          if (start?.roomId && !match.types.some(type => type.freeCabins.some(cabin => cabin.id === start.roomId))) {
+            setAlert(`Cabin ${start.roomId} is no longer open for this sailing. Choose another date or release the map selection below.`);
+            return;
+          }
           // The cabin chosen in the cart is the guest's own choice: place the party in that type
           // when it fits. Otherwise everyone waits in Who Is Travelling to be placed.
           if (start?.roomType) {
@@ -326,6 +339,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         throw new Error("That sailing has just closed. Please choose another date.");
       }
       if (result.removed.length > 0) throw new Error(trimmedMessage(result.removed));
+      if (preferredRoomId) {
+        if (!result.fresh.types.some(type => type.freeCabins.some(cabin => cabin.id === preferredRoomId))) {
+          throw new Error(`Cabin ${preferredRoomId} is no longer open. Choose another date or release the map selection.`);
+        }
+        if (!rooms.some(room => room.roomId === preferredRoomId)) {
+          throw new Error(`Place guests in the selected cabin type, or release cabin ${preferredRoomId} above to choose freely.`);
+        }
+      }
       setStep(3);
     } catch (error) {
       setAlert(error instanceof Error ? error.message : "Unable to check availability.");
@@ -416,6 +437,11 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
   async function confirmRequest() {
     if (!sailing) return;
+    if (preferredRoomId && !rooms.some(room => room.roomId === preferredRoomId)) {
+      setAlert(`Place guests in the selected cabin type, or release cabin ${preferredRoomId} to choose freely.`);
+      setStep(2);
+      return;
+    }
     const found = detailsProblems();
     setErrors(found);
     if (Object.keys(found).length > 0) {
@@ -682,7 +708,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               <PanelHead step={1} title="Plan Your Journey" lede="Three extraordinary voyages. One timeless river." />
 
               <span className="hj-step-label" id="hj-m-route">Choose your itinerary</span>
-              <VoyagePicker value={duration} onChange={next => { setDuration(next); setScheduleId(""); }} />
+              <VoyagePicker value={duration} onChange={next => { setDuration(next); setScheduleId(""); setPreferredRoomId(null); }} />
+              {preferredRoomId ? <div className="hj-map-choice" role="status"><span>Chosen on the ship map: cabin {preferredRoomId}. It will be rechecked and reserved exactly when you send your request; nothing is held yet.</span><button type="button" onClick={() => setPreferredRoomId(null)}>Choose freely instead</button></div> : null}
               <div className="hj-mplan" id="hj-m-dates">
                 <span className="hj-step-label">Your departure</span>
                 <PlanTiles
@@ -772,6 +799,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               onArrangement={changeArrangement}
               onArrange={arrangeForMe}
               preferredType={preferred}
+              preferredRoomId={preferredRoomId}
+              onReleasePreferredRoom={() => setPreferredRoomId(null)}
               issues={issues}
               alert={alert}
               busy={busy}

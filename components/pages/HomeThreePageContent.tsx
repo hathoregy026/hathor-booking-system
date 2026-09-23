@@ -25,6 +25,7 @@ import type { HeroLogoTune } from "@/lib/hero-logo-tune-shared";
 import { NILE_MOORINGS, NILE_TOTAL_KM } from "@/lib/nile-route";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
+import { ShipExperience } from "@/components/home/ShipExperience";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -957,6 +958,10 @@ export function HomeThreePageContent({
                       </span>
                     </div>
                   </Panel>
+
+                  {/* The ship atlas is a full editorial passage between the
+                      experiences rail and its photographic chapter. */}
+                  <ShipExperience />
 
                   {/* ---------------- 08 · the experiences · images (beige) */}
                   <Panel

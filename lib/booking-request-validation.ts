@@ -5,6 +5,7 @@ export const requestedRoomSchema = z.object({
   roomType: z.enum(PHYSICAL_ROOM_TYPES),
   adults: z.number().int().min(1).max(4),
   children: z.number().int().min(0).max(3),
+  roomId: z.string().regex(/^(K0[1-6]|T0[12]|S0[12]|R0[12])$/).optional(),
 }).strict().refine(r => r.adults + r.children <= roomCapacity(r.roomType), "Guest count exceeds cabin capacity.");
 export const holdRequestSchema = z.object({
   cruiseScheduleId: z.string().min(1).max(128),

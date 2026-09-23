@@ -49,7 +49,7 @@ function rethrowDatabaseRequest(error: unknown): never {
   throw error;
 }
 export async function acquireBookingHold(input: {cruiseScheduleId:string;rooms:RequestedRoom[];idempotencyKey:string}) {
- const fingerprint=createHash("sha256").update(JSON.stringify({sailing:input.cruiseScheduleId,rooms:input.rooms.map(r=>[r.roomType,r.adults,r.children])})).digest("hex");
+ const fingerprint=createHash("sha256").update(JSON.stringify({sailing:input.cruiseScheduleId,rooms:input.rooms.map(r=>r.roomId ? [r.roomType,r.adults,r.children,r.roomId] : [r.roomType,r.adults,r.children])})).digest("hex");
  try {
   const rows=await bookingQuery<{booking:unknown}>("SELECT hathor_acquire_hold($1,$2::jsonb,$3,$4) AS booking",[input.cruiseScheduleId,JSON.stringify(input.rooms),input.idempotencyKey,fingerprint]);
   return hydrate<Reservation>(rows[0].booking);
