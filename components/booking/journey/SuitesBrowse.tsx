@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
-import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { itineraryFor } from "@/lib/booking-itineraries";
@@ -23,6 +22,11 @@ import {
   IconView,
   IconWifi,
 } from "./icons";
+
+/** Direct file URL. Skips /_next/image, whose earlier misses were stored as immutable. */
+function gallerySrc(src: string): string {
+  return src.includes("?") ? src : `${src}?v=2`;
+}
 
 /** What each type offers, from the room pages' own facts. The size comes from the live availability. */
 export const STORY: Record<PhysicalRoomType, { tagline: string; features: (size: number) => { icon: ReactNode; text: string }[] }> = {
@@ -127,15 +131,12 @@ export function SuitesBrowse({
             if (event.key === "Enter") viewer.current?.showModal();
           }}
         >
-          <Image
+          <img
             key={visuals.gallery[photoIndex]}
             onClick={() => viewer.current?.showModal()}
             className="hj-gallery__img"
-            src={visuals.gallery[photoIndex]}
+            src={gallerySrc(visuals.gallery[photoIndex])}
             alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
-            fill
-            priority
-            sizes="(min-width: 1081px) 46vw, 100vw"
           />
           {placed > 0 ? (
             <span className="hj-gallery__badge"><IconCheck /> In your booking</span>
@@ -166,13 +167,11 @@ export function SuitesBrowse({
           }}
         >
           <div className="hj-lightbox__stage">
-            <Image
+            <img
               key={`full-${visuals.gallery[photoIndex]}`}
               className="hj-lightbox__img"
-              src={visuals.gallery[photoIndex]}
+              src={gallerySrc(visuals.gallery[photoIndex])}
               alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
-              fill
-              sizes="100vw"
             />
           </div>
           <button type="button" className="hj-lightbox__close" aria-label="Close photos" onClick={() => viewer.current?.close()}>
