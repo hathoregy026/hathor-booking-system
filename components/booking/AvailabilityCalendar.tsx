@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CruiseCalendarDay } from "@/lib/cruise-calendar";
 import {
-  BOOKING_MODAL_YEARS,
   type BookingModalYear,
   departureDayPlural,
   embarkationLabel,
   MONTH_ROW_LABELS,
 } from "@/lib/booking-modal-helpers";
+import { bookingCalendarYears } from "@/lib/booking-horizon";
 import { calendarDateToUtcIso, formatPrice, formatUtcDate } from "@/lib/client-dates";
 import {
   normalizeRoomConfigsForDuration,
@@ -120,7 +120,7 @@ export function AvailabilityCalendar({
           <h3 className="hathor-avail-calendar__title">{embarkationLabel(duration)}</h3>
         </div>
         <div className="hathor-avail-calendar__tabs" role="tablist" aria-label="Calendar year">
-          {BOOKING_MODAL_YEARS.map((tabYear) => (
+          {bookingCalendarYears().map((tabYear) => (
             <button
               key={tabYear}
               type="button"

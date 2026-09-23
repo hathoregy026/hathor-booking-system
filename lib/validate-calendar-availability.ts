@@ -1,7 +1,5 @@
 import { addMonths, endOfMonth, startOfMonth } from "date-fns";
-import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import {
-  LUXURY_TO_DB_ROOM_TYPES,
   STAY_DURATION_OPTIONS,
   durationSupportsRoomType,
   normalizeRoomConfigsForDuration,
@@ -17,6 +15,7 @@ import { utcDateKeyFromDate, utcNow } from "@/lib/dates";
 import {
   computeStayDates,
   resolveCruiseByDuration,
+  roomMatchesConfig,
 } from "@/lib/availability-search";
 import { runAvailabilityLookup } from "@/lib/availability-lookup";
 
@@ -42,25 +41,6 @@ export type AvailabilityAuditResult = {
   passed: boolean;
 };
 
-function expectedCatalogMinCents(
-  duration: StayDurationValue,
-  roomType: LuxuryRoomTypeValue,
-): number | null {
-  const cruise = HATHOR_CRUISES.find((entry) => entry.slug === duration);
-  if (!cruise) return null;
-
-  const allowed = LUXURY_TO_DB_ROOM_TYPES[roomType].map((v) => v.toLowerCase());
-  const matching = cruise.rooms.filter((room) => {
-    const normalized = room.roomType.trim().toLowerCase();
-    return allowed.some(
-      (type) => normalized === type || normalized.includes(type),
-    );
-  });
-
-  if (matching.length === 0) return null;
-  return Math.min(...matching.map((room) => room.priceCents));
-}
-
 function enumerateMonthKeys(from: Date, to: Date): string[] {
   const keys: string[] = [];
   const cursor = new Date(
@@ -78,7 +58,7 @@ function enumerateMonthKeys(from: Date, to: Date): string[] {
   return keys;
 }
 
-/** Read-only audit: calendar vs search preview vs RAW_DATA catalog rules. */
+/** Read-only audit: calendar vs search preview, including date-specific rates. */
 export async function runCalendarAvailabilityAudit(
   monthsAhead = 18,
 ): Promise<AvailabilityAuditResult> {
@@ -105,7 +85,6 @@ export async function runCalendarAvailabilityAudit(
       const roomConfigs = normalizeRoomConfigsForDuration(duration, [
         { roomType, adults: 1, children: 0 },
       ]);
-      const expectedPrice = expectedCatalogMinCents(duration, roomType);
       const cruise = await resolveCruiseByDuration(duration);
 
       if (!cruise) {
@@ -157,20 +136,6 @@ export async function runCalendarAvailabilityAudit(
             continue;
           }
 
-          if (
-            expectedPrice !== null &&
-            day.status === "available" &&
-            day.priceCents !== expectedPrice
-          ) {
-            fail(
-              "price_mismatch",
-              duration,
-              roomType,
-              dateKey,
-              `Calendar price ${day.priceCents} != catalog ${expectedPrice}`,
-            );
-          }
-
           const checkInDate = checkInIsoFromDateKey(dateKey);
           const { startDate, endDate } = computeStayDates(checkInDate, duration);
 
@@ -186,6 +151,18 @@ export async function runCalendarAvailabilityAudit(
           const searchHasRooms = search.schedules.some(
             (schedule) => schedule.availableRooms.length > 0,
           );
+          const searchPrices = search.schedules.flatMap(schedule =>
+            schedule.availableRooms
+              .filter(room => roomMatchesConfig({ ...room, priceMultiplier: 1 }, roomConfigs[0]))
+              .flatMap(room => room.prices.map(price => price.priceCents)),
+          );
+          if (day.status === "available" && searchPrices.length > 0) {
+            const searchMinimum = Math.min(...searchPrices);
+            if (day.priceCents !== searchMinimum) {
+              fail("price_mismatch", duration, roomType, dateKey,
+                `Calendar price ${day.priceCents} != search price ${searchMinimum}`);
+            }
+          }
           const searchDeparture = search.schedules[0]?.departureTime?.slice(0, 10);
 
           if (day.status === "available" && !searchHasRooms) {

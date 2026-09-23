@@ -1,13 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { longDate, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
+import { longDate, money, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
 import { IconInfo } from "./icons";
 import { useDesktop } from "./useDesktop";
 
 const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 /** How many dates the desktop list shows before "Show all". */
 const NEXT_DATES = 5;
+
+function startingPrice(sailing: Sailing): number | null {
+  const prices = sailing.types.filter(type => type.status === "AVAILABLE").map(type => type.priceCents);
+  return prices.length ? Math.min(...prices) : null;
+}
 
 /**
  * Only real bookable sailings from the availability service are selectable.
@@ -144,7 +149,7 @@ export function SailingCalendar({
                 key={day}
                 type="button"
                 className={`hj-cal__day hj-cal__day--open${selectedId === sailing.scheduleId ? " hj-cal__day--picked" : ""}`}
-                aria-label={`Sailing departing ${longDate(sailing.departureTime)}`}
+                aria-label={`Sailing departing ${longDate(sailing.departureTime)}${startingPrice(sailing) !== null ? `, from ${money(startingPrice(sailing)!)}` : ""}`}
                 aria-pressed={selectedId === sailing.scheduleId}
                 onClick={() => onSelect(sailing.scheduleId)}
               >
@@ -179,7 +184,10 @@ export function SailingCalendar({
                   <span className="hj-sailing__when">{shortDate(sailing.departureTime)}</span>
                   <span className="hj-sailing__dow">{weekdayShort(sailing.departureTime)}</span>
                 </span>
-                <span className="hj-sailing__chev" aria-hidden>›</span>
+                <span className="hj-sailing__aside">
+                  {startingPrice(sailing) !== null ? <span className="hj-sailing__price">From {money(startingPrice(sailing)!)}</span> : null}
+                  <span className="hj-sailing__chev" aria-hidden>›</span>
+                </span>
               </button>
             ))}
           </div>

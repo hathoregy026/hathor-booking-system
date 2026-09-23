@@ -315,6 +315,8 @@ button.hj-progress__step { cursor: pointer; }
 .hj-sailing--on { color: var(--hj-gold-deep); }
 .hj-sailing__when { display: block; font-size: 0.86rem; }
 .hj-sailing__dow { display: block; font-size: 0.72rem; color: var(--hj-ink-soft); margin-top: 0.08rem; }
+.hj-sailing__aside { display: flex; align-items: center; gap: 0.5rem; }
+.hj-sailing__price { color: var(--hj-gold-deep); font-size: 0.72rem; white-space: nowrap; }
 .hj-sailing__chev { color: var(--hj-gold); font-size: 0.9rem; }
 .hj-sailings__note { display: flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; color: var(--hj-ink-soft); margin: 0.7rem 0 0; }
 .hj-sailings__empty { font-size: 0.82rem; color: var(--hj-ink-soft); margin: 0.5rem 0 0; }

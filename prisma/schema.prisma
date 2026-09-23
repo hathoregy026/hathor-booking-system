@@ -77,6 +77,7 @@ model CruiseSchedule {
   bookings     Booking[]
   bookingRooms BookingRoom[]
   sectors ScheduleSector[]
+  datePrices SailingPrice[]
 
   @@index([cruiseId])
 }
@@ -116,9 +117,24 @@ model TicketType {
 
   cruise         Cruise          @relation(fields: [cruiseId], references: [id], onDelete: Cascade)
   bookingTickets BookingTicket[]
+  datePrices     SailingPrice[]
 
   @@index([cruiseId])
   @@unique([cruiseId, roomType])
+}
+
+/** Optional cabin rate for one real sailing; TicketType remains the fallback. */
+model SailingPrice {
+  cruiseScheduleId String
+  ticketTypeId     String
+  priceCents       Int
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  schedule   CruiseSchedule @relation(fields: [cruiseScheduleId], references: [id], onDelete: Cascade)
+  ticketType TicketType     @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+
+  @@id([cruiseScheduleId, ticketTypeId])
+  @@index([ticketTypeId])
 }
 
 model Booking {

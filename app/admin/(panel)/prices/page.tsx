@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Loader2, RotateCcw, Save } from "lucide-react";
 import { ActionButton } from "@/components/admin/ActionButton";
 import { MoneyInput } from "@/components/admin/MoneyInput";
+import { SailingPriceEditor } from "@/components/admin/SailingPriceEditor";
 import { useToast } from "@/components/admin/ToastProvider";
 import { adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
@@ -212,6 +213,8 @@ export default function AdminPricesPage() {
               Cabin names, numbers and descriptions are edited in <Link className="underline" href="/admin/cruises">Cruises</Link>.
             </p>
           </div>
+
+          <SailingPriceEditor voyages={data.voyages} roomTypes={roomTypes} />
 
           <div className="flex flex-wrap items-center gap-3">
             <ActionButton icon={saving ? Loader2 : Save} onClick={() => void save()} disabled={!dirty || invalid || saving} className="px-5 py-2.5 text-sm">

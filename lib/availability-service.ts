@@ -109,6 +109,7 @@ type CatalogRow = {
 };
 
 type FreePairRow = { scheduleId: string; cabinId: string };
+type DatePriceRow = { scheduleId: string; roomType: PhysicalRoomType; priceCents: number };
 
 const dayMs = 86_400_000;
 
@@ -166,6 +167,19 @@ function readCatalog(duration: StayDurationValue) {
   `, [duration]);
 }
 
+/** Only explicitly edited dates; all other dates keep TicketType's base rate. */
+function readDatePrices(duration: StayDurationValue, from: Date, to: Date) {
+  return bookingQuery<DatePriceRow>(`
+    SELECT s.id AS "scheduleId", t."roomType", p."priceCents"
+    FROM "CruiseSchedule" s
+    JOIN "Cruise" c ON c.id = s."cruiseId"
+    JOIN "SailingPrice" p ON p."cruiseScheduleId" = s.id
+    JOIN "TicketType" t ON t.id = p."ticketTypeId" AND t."cruiseId" = c.id
+    WHERE c.slug = $1 AND c."deletedAt" IS NULL
+      AND s."departureTime" >= $2::timestamp AND s."departureTime" < $3::timestamp
+  `, [duration, from, to]);
+}
+
 /**
  * Cabin/sailing pairs with no overlapping active allocation. Holds, submitted
  * requests, confirmed bookings, manual blocks, maintenance and charter blocks
@@ -207,10 +221,14 @@ export async function getSailingAvailability(
   const sailingRows = await readSailings(input.duration, from, to);
   if (sailingRows.length === 0) return [];
 
-  const [catalog, freePairs] = await Promise.all([
+  const [catalog, freePairs, datePrices] = await Promise.all([
     readCatalog(input.duration),
     readFreePairs(input.duration, from, to),
+    readDatePrices(input.duration, from, to),
   ]);
+  const priceBySailingAndType = new Map(
+    datePrices.map(rate => [`${rate.scheduleId}|${rate.roomType}`, Number(rate.priceCents)]),
+  );
 
   const requestedCabins = Math.max(1, input.rooms ?? input.roomConfigs?.length ?? 1);
   const perCabin = guestsPerCabin(input);
@@ -236,7 +254,9 @@ export async function getSailingAvailability(
           roomType: cabin.roomType,
           sizeSqm: cabin.sizeSqm,
           maxOccupancy: cabin.capacity,
-          priceCents: cabin.priceCents,
+          priceCents:
+            priceBySailingAndType.get(`${sailing.scheduleId}|${cabin.roomType}`) ??
+            cabin.priceCents,
           ticketTypeId: cabin.ticketTypeId,
           ticketName: cabin.ticketName,
           ticketDescription: cabin.ticketDescription,

@@ -9,9 +9,7 @@ import {
   departureWeekdayForDuration,
 } from "@/lib/departure-dates";
 
-export const BOOKING_MODAL_YEARS = [2026, 2027] as const;
-
-export type BookingModalYear = (typeof BOOKING_MODAL_YEARS)[number];
+export type BookingModalYear = number;
 
 export const MONTH_ROW_LABELS = [
   "January",
