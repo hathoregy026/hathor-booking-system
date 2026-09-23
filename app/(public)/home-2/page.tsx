@@ -60,7 +60,7 @@ export default async function MainHomeTwoPage() {
             path: "/home-2",
             name: "Hathor Dahabiya — luxury Nile cruise, Luxor to Aswan",
             description:
-              "A private twelve-guest Dahabiya sailing between Luxor and Aswan, with cabins, suites and Royal Suites.",
+              "A private 32-guest Dahabiya sailing between Luxor and Aswan, with cabins, suites and Royal Suites.",
             departure: "Luxor",
             arrival: "Aswan",
           }),

@@ -222,7 +222,7 @@ export function CharterPageContent() {
                   </p>
                   <div className="chr-index__meta">
                     <p className="chr-meta">Exclusive vessel</p>
-                    <p className="chr-meta">Twelve guests · Three decks</p>
+                    <p className="chr-meta">32 guests · Three decks</p>
                   </div>
                   <p className="chr-index__scroll">
                     <i />

@@ -4,7 +4,7 @@ const SITE = SEO_SITE_ORIGIN;
 const PAGE_URL = `${SITE}/`;
 const PAGE_NAME = "Hathor Dahabiya — Luxury Nile Cruise from Luxor to Aswan";
 const PAGE_DESCRIPTION =
-  "Hathor is a private luxury Dahabiya sailing the Nile between Luxor and Aswan for just twelve guests: eight cabins, two suites, two Royal Suites, Seneb Spa, two restaurants and shore days at Esna, Edfu and Kom Ombo.";
+  "Hathor is a private luxury Dahabiya sailing the Nile between Luxor and Aswan for 32 guests: eight cabins, two suites, two Royal Suites, Seneb Spa, two restaurants and shore days at Esna, Edfu and Kom Ombo.";
 
 /**
  * Structured data for the live homepage. Everything asserted here is visible on the page —
@@ -105,7 +105,7 @@ export function HomeThreeStructuredData() {
           name: "How many guests does Hathor Dahabiya carry?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Twelve. Hathor is arranged across three decks with eight cabins of 22 sqm, two suites of 46 sqm and two Royal Suites of 56 sqm.",
+            text: "32 guests. Hathor is arranged across three decks with eight cabins of 22 sqm, two suites of 46 sqm and two Royal Suites of 56 sqm.",
           },
         },
         {

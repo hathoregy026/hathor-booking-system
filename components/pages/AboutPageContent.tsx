@@ -228,7 +228,7 @@ export function AboutPageContent() {
                   backAlt="Dining aboard Hathor"
                 />
                 <p className="ab-lead__caption">
-                  Aboard · Three decks · Twelve guests
+                  Aboard · Three decks · 32 guests
                 </p>
               </Scene>
 

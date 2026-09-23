@@ -47,7 +47,7 @@ const MOORING_COPY = [
     day: "Day one",
     slot: "landmark-valley-kings",
     imageAlt: "The Valley of the Kings on the west bank at Luxor",
-    note: "Hathor takes on her twelve guests at dusk, with Karnak still lit on the east bank.",
+    note: "Hathor takes on her 32 guests at dusk, with Karnak still lit on the east bank.",
     sites: [
       {
         name: "Karnak Temple",

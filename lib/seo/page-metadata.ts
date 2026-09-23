@@ -5,7 +5,7 @@ import { SEO_KEYWORD_MAP } from "@/lib/seo/keyword-map";
 export const HOME_SEO = buildPageMetadata({
   title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
   description:
-    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. Twelve guests, Nile-view suites, fine dining and unhurried temple days aboard Hathor.",
+    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. 32 guests, Nile-view suites, fine dining and unhurried temple days aboard Hathor.",
   path: SEO_KEYWORD_MAP.home.path,
   keywords: [
     "Luxury Dahabiya Nile Cruise",
@@ -47,7 +47,7 @@ export const LUXOR_TO_ASWAN_SEO = buildPageMetadata({
 export const ASWAN_TO_LUXOR_SEO = buildPageMetadata({
   title: "Aswan to Luxor Nile Cruise | Hathor Dahabiya",
   description:
-    "A three-night Aswan to Luxor Nile cruise on Hathor Dahabiya — Philae, Kom Ombo and Edfu, then Luxor’s temples, with just twelve guests aboard.",
+    "A three-night Aswan to Luxor Nile cruise on Hathor Dahabiya — Philae, Kom Ombo and Edfu, then Luxor’s temples, with 32 guests aboard.",
   path: SEO_KEYWORD_MAP.aswanToLuxor.path,
   keywords: [
     "Aswan to Luxor Nile Cruise",
@@ -95,7 +95,7 @@ export const CABINS_SEO = buildPageMetadata({
 export const SUITES_SEO = buildPageMetadata({
   title: "Luxury Nile Cruise Suites | Hathor Dahabiya",
   description:
-    "Discover Hathor’s Nile cruise suites: generous river residences with panoramic glass, private comfort and the quieter scale of a twelve-guest Dahabiya.",
+    "Discover Hathor’s Nile cruise suites: generous river residences with panoramic glass, private comfort and the quieter scale of a 32-guest Dahabiya.",
   path: SEO_KEYWORD_MAP.suites.path,
   keywords: [
     "Luxury Nile Cruise Suites",
@@ -179,9 +179,9 @@ export const BLOGS_SEO = buildPageMetadata({
 export const ABOUT_SEO = buildPageMetadata({
   title: "About Hathor Dahabiya | A Private Nile Sailing",
   description:
-    "Hathor is a twelve-guest luxury Dahabiya: eight cabins, two suites and two Royal Suites, sailing the Nile between Luxor and Aswan with a dedicated crew.",
+    "Hathor is a 32-guest luxury Dahabiya: eight cabins, two suites and two Royal Suites, sailing the Nile between Luxor and Aswan with a dedicated crew.",
   path: SEO_KEYWORD_MAP.about.path,
-  keywords: ["About Hathor Dahabiya", "Hathor cruise story", "twelve guest dahabiya"],
+  keywords: ["About Hathor Dahabiya", "Hathor cruise story", "32 guest dahabiya"],
 });
 
 export const CONTACT_SEO = buildPageMetadata({

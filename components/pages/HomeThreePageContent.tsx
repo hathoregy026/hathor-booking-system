@@ -439,7 +439,7 @@ export function HomeThreePageContent({
                           to the same measure. */}
                       <h1 className="h3-open__title">
                         <span className="h3-open__line h3-open__line--a">
-                          <AnimaSplitLine line={0}>Twelve</AnimaSplitLine>
+                          <AnimaSplitLine line={0}>32</AnimaSplitLine>
                         </span>
                         <span className="h3-open__line h3-open__line--b">
                           <AnimaSplitLine line={1}>guests</AnimaSplitLine>
@@ -584,7 +584,7 @@ export function HomeThreePageContent({
                       <p className="h3-support">
                         A five-star dahabiya where Nile history, contemporary
                         comfort and intimate sailing come together. Three
-                        itineraries, four cabin grades, twelve guests aboard.
+                        itineraries, four cabin grades, 32 guests aboard.
                       </p>
                     </div>
 
@@ -1054,7 +1054,7 @@ export function HomeThreePageContent({
                         <AnimaSplitLine line={0}>Come aboard</AnimaSplitLine>
                       </h2>
                       <p className="h3-support">
-                        Twelve guests, five moorings and one river. The rest of
+                        32 guests, five moorings and one river. The rest of
                         the arrangements are ours.
                       </p>
                       <div className="h3-cierre__reveal">
@@ -1082,7 +1082,7 @@ export function HomeThreePageContent({
               <div className="h3-chapter__intro">
                 <p className="h3-kicker">06 — Contact</p>
                 <p className="h3-chapter__aboard h3-support">
-                  Twelve guests, five moorings and one river. The rest of the
+                  32 guests, five moorings and one river. The rest of the
                   arrangements are ours.
                 </p>
                 <i className="h3-chapter__rule" aria-hidden="true" />

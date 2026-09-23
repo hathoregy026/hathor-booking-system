@@ -76,7 +76,7 @@ export default async function SuitesPage() {
             path: "/suites",
             name: "Hathor luxury Nile cruise suites",
             description:
-              "Nile-view suites aboard Hathor Dahabiya, a twelve-guest luxury sailing between Luxor and Aswan.",
+              "Nile-view suites aboard Hathor Dahabiya, a 32-guest luxury sailing between Luxor and Aswan.",
             occupancy: 4,
             floorSizeSqm: 46,
           }),

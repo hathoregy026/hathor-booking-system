@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     template: "%s | Hathor Dahabiya",
   },
   description:
-    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. Twelve guests, Nile-view suites and unhurried temple days aboard Hathor.",
+    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. 32 guests, Nile-view suites and unhurried temple days aboard Hathor.",
   keywords: [
     "Luxury Dahabiya Nile Cruise",
     "Hathor Dahabiya",
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
     description:
-      "A private twelve-guest Dahabiya sailing between Luxor and Aswan.",
+      "A private 32-guest Dahabiya sailing between Luxor and Aswan.",
     locale: "en_US",
     type: "website",
   },
@@ -114,7 +114,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
     description:
-      "A private twelve-guest Dahabiya sailing between Luxor and Aswan.",
+      "A private 32-guest Dahabiya sailing between Luxor and Aswan.",
   },
   robots: TEMPORARY_DEPLOYMENT_ROBOTS,
 };

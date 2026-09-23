@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     template: "%s | Hathor Dahabiya",
   },
   description:
-    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. Twelve guests, Nile-view suites and unhurried temple days aboard Hathor.",
+    "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. 32 guests, Nile-view suites and unhurried temple days aboard Hathor.",
   icons: {
     icon: HATHOR_FAVICON_SRC,
     apple: HATHOR_FAVICON_SRC,
