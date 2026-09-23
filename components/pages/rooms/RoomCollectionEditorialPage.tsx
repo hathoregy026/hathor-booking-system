@@ -24,6 +24,7 @@ import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useCmsPathImage } from "@/hooks/useCmsPathImage";
+import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { useRoomCollectionEditorialScroll } from "@/hooks/useRoomCollectionEditorialScroll";
 import {
   ROOM_COLLECTION_CONFIG,
@@ -132,7 +133,7 @@ function ApertureHeroShell({
       data-site-image={cms.slot ?? undefined}
       style={
         {
-          "--rh-img": `url("${cms.src}")`,
+          "--rh-img": `url("${freshMediaSrc(cms.src)}")`,
         } as CSSProperties
       }
     >

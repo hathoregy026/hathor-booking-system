@@ -1,5 +1,6 @@
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { DEFAULT_LIVE_SITE_BG_SRC } from "@/lib/live-site-settings-shared";
 
 type SiteComingSoonProps = {
@@ -18,7 +19,7 @@ export function SiteComingSoon({
       <div className="site-coming-soon" role="status" aria-live="polite">
       <div
         className="site-coming-soon__bg"
-        style={{ backgroundImage: `url(${backgroundImageUrl})` }}
+        style={{ backgroundImage: `url(${freshMediaSrc(backgroundImageUrl)})` }}
         aria-hidden
       />
       <div className="site-coming-soon__content">

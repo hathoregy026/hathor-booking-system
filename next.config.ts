@@ -68,6 +68,8 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
   images: {
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
     // Next 16 defaults qualities to [75] only — anything else snaps to 75.
     // 90 keeps photo detail; 75 stays allowed for any legacy callers.
     qualities: [75, 90],

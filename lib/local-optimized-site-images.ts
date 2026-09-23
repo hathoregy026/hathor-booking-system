@@ -3,6 +3,7 @@
  * The Set is patched by scripts/mirror-supabase-site-images-to-public.mjs —
  * do not hand-maintain the list; keep the helper functions below it.
  */
+import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
 /**
@@ -126,7 +127,7 @@ export function preferLocalOptimizedSiteImage(
   _name: string,
   src: string,
 ): string {
-  return src.trim();
+  return freshMediaSrc(src.trim());
 }
 
 /**
@@ -141,7 +142,7 @@ export function toVercelOptimizedSrc(
   const trimmed = src.trim();
   if (!trimmed) return trimmed;
   if (trimmed.startsWith("/_next/image?")) return trimmed;
-  if (isLocalPublicPath(trimmed)) return trimmed;
+  if (isLocalPublicPath(trimmed)) return freshMediaSrc(trimmed);
   if (!/^https?:\/\//i.test(trimmed) || !isAllowlistedRemoteImage(trimmed)) {
     return trimmed;
   }
@@ -195,7 +196,7 @@ export function heroPosterDelivery(src: string): {
 }
 
 export function cssImageUrl(src: string): string {
-  const safe = src.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  const safe = freshMediaSrc(src).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
   return `url("${safe}")`;
 }
 

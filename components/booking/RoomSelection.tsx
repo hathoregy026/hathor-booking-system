@@ -8,6 +8,7 @@ import type { AvailableRoom } from "@/lib/booking-types";
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
 import { standardRateLabel, type RatePlanId } from "@/lib/rate-plans";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
+import { freshMediaSrc } from "@/lib/fresh-media-src";
 
 type RoomSelectionProps = {
   duration: StayDurationValue | "";
@@ -72,7 +73,7 @@ export function RoomSelection({ duration, checkInDate, roomConfigs, availableRoo
             return (
               <article key={selectionKey} className={`historia-room-card${isSelected ? " historia-room-card--selected" : ""}`}>
                 <div className="historia-room-card__media">
-                  <div className="historia-room-card__image" style={{ backgroundImage: `url(${visuals.cover})` }} role="img" aria-label={`${room.name} aboard Hathor Dahabiya`} />
+                  <div className="historia-room-card__image" style={{ backgroundImage: `url(${freshMediaSrc(visuals.cover)})` }} role="img" aria-label={`${room.name} aboard Hathor Dahabiya`} />
                   <span className="historia-room-card__index">0{roomIndex + 1}</span>
                 </div>
                 <div className="historia-room-card__body">

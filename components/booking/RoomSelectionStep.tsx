@@ -12,6 +12,7 @@ import {
   Wifi,
 } from "lucide-react";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { getScheduleIdForSelection } from "@/lib/booking-types";
 import { buildAvailabilityQueryParams } from "@/lib/booking-search-config";
 import { useBookingStore } from "@/store/bookingStore";
@@ -148,7 +149,7 @@ export function RoomSelectionStep({ heroImageUrl }: RoomSelectionStepProps) {
             const selectionKey = room.selectionKey ?? room.id;
             const isSelected = selectedRoomIds.includes(selectionKey);
             const imageStyle = heroImageUrl
-              ? { backgroundImage: `url(${heroImageUrl})` }
+              ? { backgroundImage: `url(${freshMediaSrc(heroImageUrl)})` }
               : { background: ROOM_PLACEHOLDER };
 
             const detailsParams = new URLSearchParams();
