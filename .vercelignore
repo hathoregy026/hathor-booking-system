@@ -25,7 +25,7 @@ backups/
 _local/
 output/
 redesign/
-scraped/
+/scraped/
 OLD DASHBOARD BACK UP/
 .vercel-sync/
 repomix-output.xml
