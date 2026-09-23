@@ -304,6 +304,7 @@ const TERMS = [
     imageAlt: "Hathor Dahabiya under sail on the Nile",
     title: "Twelve guests",
     copy: "Eight cabins, two suites and two Royal Suites. The whole boat holds fewer people than one deck of a cruise ship, which is the entire point of her.",
+    aside: "A full sailing is thirty-two, across twelve quiet rooms.",
   },
   {
     tone: "b",
@@ -1006,6 +1007,9 @@ export function HomeThreePageContent({
                           <div className="h3-terms__wrap-title">
                             <span className="h3-terms__num">{term.num}</span>
                             <h2 className="h3-terms__title">{term.title}</h2>
+                            {"aside" in term ? (
+                              <p className="h3-terms__aside">{term.aside}</p>
+                            ) : null}
                           </div>
                         </article>
                       ))}
