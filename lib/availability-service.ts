@@ -168,8 +168,9 @@ function readCatalog(duration: StayDurationValue) {
 }
 
 /** Only explicitly edited dates; all other dates keep TicketType's base rate. */
-function readDatePrices(duration: StayDurationValue, from: Date, to: Date) {
-  return bookingQuery<DatePriceRow>(`
+async function readDatePrices(duration: StayDurationValue, from: Date, to: Date) {
+  try {
+    return await bookingQuery<DatePriceRow>(`
     SELECT s.id AS "scheduleId", t."roomType", p."priceCents"
     FROM "CruiseSchedule" s
     JOIN "Cruise" c ON c.id = s."cruiseId"
@@ -177,7 +178,14 @@ function readDatePrices(duration: StayDurationValue, from: Date, to: Date) {
     JOIN "TicketType" t ON t.id = p."ticketTypeId" AND t."cruiseId" = c.id
     WHERE c.slug = $1 AND c."deletedAt" IS NULL
       AND s."departureTime" >= $2::timestamp AND s."departureTime" < $3::timestamp
-  `, [duration, from, to]);
+    `, [duration, from, to]);
+  } catch (error) {
+    // A local preview can still browse base-rate sailings before its separate
+    // database receives the date-pricing migration. Admin editing stays blocked.
+    if (error && typeof error === "object" && "code" in error && error.code === "42P01"
+      && "message" in error && String(error.message).includes("SailingPrice")) return [];
+    throw error;
+  }
 }
 
 /**

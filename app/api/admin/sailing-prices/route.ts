@@ -37,6 +37,16 @@ type DateRateRow = {
   availableCabins: number;
 };
 
+function handleDatePriceError(error: unknown) {
+  if (error && typeof error === "object" && "code" in error && error.code === "42P01") {
+    return NextResponse.json({
+      code: "DATE_PRICING_NOT_READY",
+      error: "Date pricing is not set up on this database yet.",
+    }, { status: 503, headers: { "Cache-Control": "private, no-store" } });
+  }
+  return handleRouteError(error);
+}
+
 function monthBounds(month: string): [string, string] {
   const [year, monthNumber] = month.split("-").map(Number);
   const next = new Date(Date.UTC(year, monthNumber, 1)).toISOString().slice(0, 10);
@@ -80,7 +90,7 @@ export async function GET(request: NextRequest) {
     const input = querySchema.parse(Object.fromEntries(request.nextUrl.searchParams));
     return NextResponse.json(await readDateRates(input), { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    return handleRouteError(error);
+    return handleDatePriceError(error);
   }
 }
 
@@ -133,6 +143,6 @@ export async function PUT(request: NextRequest) {
     }
     return NextResponse.json(await readDateRates(input), { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    return handleRouteError(error);
+    return handleDatePriceError(error);
   }
 }
