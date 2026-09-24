@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ShipDeckPlan, type PlanRoomView } from "@/components/ship/ShipDeckPlan";
-import { ShipWaterSurface } from "@/components/home/ShipWaterSurface";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { bookingHorizonYear } from "@/lib/booking-horizon";
@@ -22,7 +21,6 @@ export function ShipExperience() {
   const planRef = useRef<HTMLDivElement>(null);
   const arrivalPlayed = useRef(false);
   const [sailingIn, setSailingIn] = useState(false);
-  const [waterAwake, setWaterAwake] = useState(false);
   const [duration, setDuration] = useState<StayDurationValue>("7-nights-luxor-aswan-luxor");
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [data, setData] = useState<Payload | null>(null);
@@ -46,7 +44,6 @@ export function ShipExperience() {
       readinessObserver.disconnect();
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       setSailingIn(true);
-      setWaterAwake(true);
       finishTimer = window.setTimeout(() => setSailingIn(false), 4100);
     };
     const observer = new IntersectionObserver(entries => {
@@ -102,7 +99,6 @@ export function ShipExperience() {
 
   return (
     <section id="explore-hathor" className="h3-scene h3-ship-experience" aria-labelledby="h3-ship-title">
-      <ShipWaterSurface awake={waterAwake} />
       <header className="h3-ship__masthead">
         <div><p className="h3-ship__eyebrow">Hathor · An intimate river residence</p><h2 id="h3-ship-title">{config.title}</h2></div>
         <div className="h3-ship__invitation"><p className="h3-ship__eyebrow">{config.eyebrow}</p><p>{config.introduction}</p><span aria-hidden="true">Explore the ship ↓</span></div>

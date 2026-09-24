@@ -1,7 +1,5 @@
 .home-three .h3-scene.h3-ship-experience { --ship-cream: #ece8df; --ship-gold: #b69f64; --ship-ink: #2c2824; --h3-meta: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif; position: relative; height: auto; min-height: 0; padding: clamp(1.2rem, 3vh, 2.4rem) clamp(1rem, 3vw, 3.6rem); background: var(--ship-cream); color: var(--ship-ink); overflow: clip; }
 .home-three .h3-ship-experience * { box-sizing: border-box; }
-.home-three .h3-ship__water-surface { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .9; }
-.home-three .h3-ship-experience > :not(.h3-ship__water-surface) { position: relative; z-index: 1; }
 .home-three .h3-ship__eyebrow { margin: 0 0 .45rem; font: 600 .62rem/1.4 var(--h3-meta); letter-spacing: .14em; text-transform: uppercase; color: #71603d; }
 .home-three .h3-ship__masthead { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(.8rem, 2vh, 1.5rem); }
 .home-three .h3-ship-experience h2 { margin: 0; font: 400 clamp(2.8rem, 4.5vw, 5.2rem)/.98 var(--h3-display); letter-spacing: -.035em; text-wrap: balance; }
@@ -19,7 +17,7 @@
 .home-three .h3-ship__deck-tabs button[aria-pressed="true"] i { opacity: 1; }
 .home-three .h3-ship__instruction { font: 500 .64rem/1.4 var(--h3-meta); letter-spacing: .06em; }
 .home-three .h3-ship__workspace { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(300px, .8fr); gap: clamp(1.2rem, 2.4vw, 2.7rem); align-items: stretch; padding-top: clamp(.8rem, 1.7vh, 1.3rem); }
-.home-three .h3-ship__theatre { position: relative; min-width: 0; background: radial-gradient(ellipse at 50% 53%, #faf7ef66 0, #f1ece144 53%, #ece8df00 78%); }
+.home-three .h3-ship__theatre { position: relative; min-width: 0; background: radial-gradient(ellipse at 50% 53%, #faf7ef 0, #f1ece1 53%, #ece8df00 78%); }
 .home-three .h3-ship__swipe-hint { display: none; }
 .home-three .h3-ship__deck-heading { display: flex; justify-content: space-between; align-items: center; min-height: 2.8rem; margin-bottom: .2rem; }
 .home-three .h3-ship__deck-heading h3 { margin: 0; font: 400 clamp(1.55rem, 2.1vw, 2.3rem)/1 var(--h3-display); }

@@ -171,9 +171,6 @@ async function browserTests() {
     await section.locator('select').first().selectOption('7-nights-luxor-aswan-luxor');
     await page.waitForFunction(() => document.querySelectorAll('.ship-plan__room[data-state="open"]').length === 9);
     assert.equal(await section.locator('.h3-ship__deck-reveal').evaluate(element => getComputedStyle(element).animationName), 'none');
-    const stillWater = section.locator('.h3-ship__water-surface');
-    await section.hover();
-    assert.equal(await stillWater.evaluate(element => element.getContext('2d').getImageData(0, 0, 1, 1).data[3]), 0, 'Reduced motion keeps the water still');
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     assert.equal(await section.locator('.h3-ship__deck-reveal').evaluate(element => getComputedStyle(element).animationName), 'ship-deck-arrive');
     console.log('PASS: failed/empty/loading availability fails closed; reduced-motion support.');
@@ -240,23 +237,11 @@ async function browserTests() {
     });
     await motionPage.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__theatre')?.getAttribute('data-sailing-in') === 'true');
     assert.equal(await theatre.locator('.ship-plan--compact').evaluate(element => getComputedStyle(element).animationName), 'ship-sail-in');
-    const water = motionPage.locator('#explore-hathor .h3-ship__water-surface');
-    await motionPage.waitForFunction(() => {
-      const canvas = document.querySelector('#explore-hathor .h3-ship__water-surface');
-      return canvas?.getContext('2d')?.getImageData(0, 0, 1, 1).data[3] === 255;
-    });
+    assert.equal(await motionPage.locator('#explore-hathor .h3-ship__water-surface').count(), 0, 'No water overlay remains');
     await motionPage.waitForTimeout(1500);
     await motionPage.locator('#explore-hathor').screenshot({ path: path.join(out, 'ship-sailing-entrance.png') });
     await motionPage.waitForFunction(() => !document.querySelector('#explore-hathor .h3-ship__theatre')?.hasAttribute('data-sailing-in'));
     assert.equal(await theatre.locator('.ship-plan--compact').evaluate(element => getComputedStyle(element).animationName), 'none', 'Animation finishes without leaving a transform on room targets');
-    assert.equal(await water.evaluate(element => element.getContext('2d').getImageData(0, 0, 1, 1).data[3]), 255, 'Water continues after the ship settles');
-    await motionPage.waitForTimeout(5200);
-    await motionPage.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__water-surface')?.getContext('2d')?.getImageData(0, 0, 1, 1).data[3] === 0);
-    const surfaceBox = await motionPage.locator('#explore-hathor').boundingBox();
-    await motionPage.mouse.move(surfaceBox.x + surfaceBox.width * .4, surfaceBox.y + surfaceBox.height * .25);
-    await motionPage.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__water-surface')?.getContext('2d')?.getImageData(0, 0, 1, 1).data[3] === 255);
-    await motionPage.waitForTimeout(550);
-    await motionPage.locator('#explore-hathor').screenshot({ path: path.join(out, 'ship-mouse-waves.png') });
     const motionPhone = await motionContext.newPage();
     await motionPhone.setViewportSize({ width: 390, height: 844 });
     await motionPhone.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded', timeout: 90000 });
@@ -268,12 +253,11 @@ async function browserTests() {
       window.scrollTo(0, y);
     });
     await motionPhone.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__theatre')?.getAttribute('data-sailing-in') === 'true');
-    assert.equal(await motionPhone.locator('#explore-hathor .h3-ship__water-surface').evaluate(element => Math.round(element.getBoundingClientRect().width)), 390, 'Phone water spans the full section');
     await motionPhone.waitForTimeout(1500);
     await motionPhone.locator('#explore-hathor').screenshot({ path: path.join(out, 'ship-sailing-entrance-phone.png') });
     assert.ok(await motionPhone.locator('#explore-hathor').evaluate(element => element.scrollWidth <= innerWidth + 2), 'Phone entrance does not widen the page');
     await motionContext.close();
-    console.log('PASS: whole-section cream water lingers after arrival, fades slowly, responds to mouse, and fits the phone.');
+    console.log('PASS: ship arrives without water effects on desktop and phone.');
   } finally { await browser.close(); }
 }
 if (process.argv.includes('--browser')) browserTests().catch(error => { console.error(error); process.exitCode = 1; });

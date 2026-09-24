@@ -14,6 +14,11 @@ export default function hathorImageLoader({
   width: number;
   quality?: number;
 }): string {
+  // Vercel's image optimizer rejects SVGs. Branding vectors are trusted local
+  // public assets and should be served directly instead of returning HTTP 400.
+  if (/^\/branding\/[^/?#]+\.svg(?:[?#].*)?$/i.test(src)) {
+    return src;
+  }
   if (isVersionedMediaPath(src)) {
     const file = freshMediaSrc(src);
     return `${file}${file.includes("?") ? "&" : "?"}w=${width}`;
