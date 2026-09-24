@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ShipDeckPlan, type PlanRoomView } from "@/components/ship/ShipDeckPlan";
+import { ShipWaterSurface } from "@/components/home/ShipWaterSurface";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { bookingHorizonYear } from "@/lib/booking-horizon";
@@ -21,6 +22,7 @@ export function ShipExperience() {
   const planRef = useRef<HTMLDivElement>(null);
   const arrivalPlayed = useRef(false);
   const [sailingIn, setSailingIn] = useState(false);
+  const [waterAwake, setWaterAwake] = useState(false);
   const [duration, setDuration] = useState<StayDurationValue>("7-nights-luxor-aswan-luxor");
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [data, setData] = useState<Payload | null>(null);
@@ -44,6 +46,7 @@ export function ShipExperience() {
       readinessObserver.disconnect();
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       setSailingIn(true);
+      setWaterAwake(true);
       finishTimer = window.setTimeout(() => setSailingIn(false), 4100);
     };
     const observer = new IntersectionObserver(entries => {
@@ -99,6 +102,7 @@ export function ShipExperience() {
 
   return (
     <section id="explore-hathor" className="h3-scene h3-ship-experience" aria-labelledby="h3-ship-title">
+      <ShipWaterSurface awake={waterAwake} />
       <header className="h3-ship__masthead">
         <div><p className="h3-ship__eyebrow">Hathor · An intimate river residence</p><h2 id="h3-ship-title">{config.title}</h2></div>
         <div className="h3-ship__invitation"><p className="h3-ship__eyebrow">{config.eyebrow}</p><p>{config.introduction}</p><span aria-hidden="true">Explore the ship ↓</span></div>
@@ -116,34 +120,6 @@ export function ShipExperience() {
         <div className="h3-ship__deck-heading"><div><p className="h3-ship__eyebrow">{deck.subtitle}</p><h3>{deck.name}</h3></div><span className="h3-ship__orientation" aria-hidden="true">Stern <span>⟶</span> Bow</span></div>
         <span className="h3-ship__swipe-hint" aria-hidden="true">Swipe across the deck ↔</span>
         <div key={deck.id} ref={planRef} className="h3-ship__deck-reveal">
-          <svg className="h3-ship__surface" viewBox="0 0 1774 640" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <defs>
-              <linearGradient id="h3-ship-rolling-fold" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#ece8df" stopOpacity="0" />
-                <stop offset=".22" stopColor="#fffdf6" stopOpacity=".82" />
-                <stop offset=".49" stopColor="#c9baa1" stopOpacity=".48" />
-                <stop offset=".72" stopColor="#faf5e9" stopOpacity=".72" />
-                <stop offset="1" stopColor="#ece8df" stopOpacity="0" />
-              </linearGradient>
-              <radialGradient id="h3-ship-cream-swell">
-                <stop offset=".48" stopColor="#ece8df" stopOpacity="0" />
-                <stop offset=".64" stopColor="#c8b99e" stopOpacity=".25" />
-                <stop offset=".73" stopColor="#fffdf6" stopOpacity=".88" />
-                <stop offset=".81" stopColor="#c8b99e" stopOpacity=".34" />
-                <stop offset=".91" stopColor="#ece8df" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="h3-ship-soft-swell">
-                <stop offset=".46" stopColor="#ece8df" stopOpacity="0" />
-                <stop offset=".68" stopColor="#fdfaf2" stopOpacity=".68" />
-                <stop offset=".79" stopColor="#c9baa0" stopOpacity=".28" />
-                <stop offset=".95" stopColor="#ece8df" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            <path className="h3-ship__fold h3-ship__fold--far" fill="url(#h3-ship-rolling-fold)" d="M-90 48 C10 -18 100 5 190 66 S360 128 455 65 S625 -2 720 65 S890 130 985 62 S1155 -3 1250 65 S1420 130 1515 61 S1710 -2 1860 57 L1860 174 C1700 134 1620 201 1515 159 S1340 111 1250 158 S1070 206 985 155 S805 106 720 158 S540 204 455 158 S280 110 190 159 S10 200 -90 156 Z" />
-            <path className="h3-ship__fold h3-ship__fold--near" fill="url(#h3-ship-rolling-fold)" d="M-90 95 C10 31 105 62 195 112 S365 161 455 113 S630 44 720 113 S895 166 985 111 S1160 45 1250 113 S1425 166 1515 110 S1710 49 1860 106 L1860 210 C1705 178 1610 233 1515 196 S1340 155 1250 197 S1075 237 985 196 S810 150 720 198 S545 238 455 197 S280 153 195 196 S10 239 -90 196 Z" />
-            <ellipse className="h3-ship__fold h3-ship__fold--lower" cx="900" cy="350" rx="515" ry="325" fill="url(#h3-ship-soft-swell)" />
-            <ellipse className="h3-ship__fold h3-ship__fold--bow" cx="1510" cy="340" rx="385" ry="315" fill="url(#h3-ship-cream-swell)" />
-          </svg>
           <ShipDeckPlan deck={deck.id} rooms={views} selected={view ? selected : null} onSelect={chooseRoom} vertical compact />
         </div>
         <div className="h3-ship__plan-footer"><p>{deck.description}</p>{slots.length ? <div className="h3-ship__legend" aria-label="Room status key"><span><i data-state="open" />Available</span><span><i data-state="closed" />Unavailable</span><span><i data-state="selected" />Selected</span><span><i data-state="unknown" />Not checked</span></div> : <span className="h3-ship__context-note">No guest rooms on this deck</span>}</div>
