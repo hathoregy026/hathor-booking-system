@@ -24,18 +24,19 @@
 .home-three .h3-ship__orientation { display: flex; align-items: center; gap: .7rem; font: 500 .55rem/1 var(--h3-meta); text-transform: uppercase; letter-spacing: .1em; color: #817358; }
 .home-three .h3-ship__orientation span { font-size: 1.5rem; }
 .home-three .h3-ship__deck-reveal { position: relative; z-index: 1; animation: ship-deck-arrive .65s cubic-bezier(.18,.68,.25,1) both; transform-origin: 50% 65%; }
-.home-three .h3-ship__ripples { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; fill: none; stroke: #ece8df; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 1px 1px #85796080); }
-.home-three .h3-ship__ripples path { opacity: 0; stroke-dasharray: 145 85; transform-box: fill-box; }
-.home-three .h3-ship__ripples path:nth-child(even) { stroke-width: 2.4; }
+.home-three .h3-ship__surface { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; overflow: visible; opacity: 0; pointer-events: none; filter: blur(3px); }
+.home-three .h3-ship__surface + .ship-plan { position: relative; z-index: 1; }
+.home-three .h3-ship__fold { transform-box: fill-box; transform-origin: center; }
 .home-three .h3-ship__theatre[data-sailing-in="true"] .ship-plan--compact { animation: ship-sail-in 3.1s cubic-bezier(.21,.67,.26,1) both; transform-origin: 50% 60%; }
-.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path { animation: ship-ripple-pass 3.35s ease-in-out both; }
-.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path:nth-child(1) { animation-delay: .15s; }
-.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path:nth-child(2) { animation-delay: .4s; }
-.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path:nth-child(3) { animation-delay: .28s; }
-.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path:nth-child(4) { animation-delay: .55s; }
-.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path:nth-child(5) { animation-delay: .7s; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__surface { animation: ship-surface-rise 4.1s ease-in-out both; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__fold--far { animation: ship-fold-drift 3.8s ease-in-out both; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__fold--near { animation: ship-fold-drift 3.5s .18s ease-in-out both; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__fold--lower { animation: ship-fold-drift 3.65s .1s ease-in-out both; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__fold--bow { animation: ship-bow-fold 3.7s ease-in-out both; }
 @keyframes ship-sail-in { 0% { opacity: .82; transform: translate3d(-5%, 7px, 0) rotate(-.45deg) scale(.99); } 55% { opacity: 1; transform: translate3d(-.6%, -2px, 0) rotate(.12deg) scale(1); } 78% { transform: translate3d(.18%, 1px, 0) rotate(-.06deg) scale(1); } 100% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0) scale(1); } }
-@keyframes ship-ripple-pass { 0% { opacity: 0; stroke-dashoffset: 0; transform: translateX(1.2%); } 25% { opacity: .78; } 65% { opacity: .72; } 100% { opacity: 0; stroke-dashoffset: -230; transform: translateX(-1.6%); } }
+@keyframes ship-surface-rise { 0% { opacity: 0; } 22%, 62% { opacity: .94; } 100% { opacity: 0; } }
+@keyframes ship-fold-drift { 0% { transform: translateX(4%) scaleY(.68); } 38% { transform: translateX(.3%) scaleY(1.14); } 72% { transform: translateX(-2%) scaleY(.92); } 100% { transform: translateX(-4%) scaleY(.6); } }
+@keyframes ship-bow-fold { 0% { transform: translateX(-3%) scale(.85); } 50% { transform: translateX(1%) scale(1.06); } 100% { transform: translateX(3%) scale(.86); } }
 @keyframes ship-deck-arrive { from { opacity: 0; transform: perspective(1400px) translateY(15px) rotateX(5deg) scale(.98); } to { opacity: 1; transform: perspective(1400px) translateY(0) rotateX(0) scale(1); } }
 .home-three .h3-ship__plan-footer { display: flex; align-items: start; justify-content: space-between; gap: 1.2rem; padding: .35rem 0 0; }
 .home-three .h3-ship__plan-footer > p { margin: 0; max-width: 27rem; font: 400 .68rem/1.55 var(--h3-meta); color: #685e4b; }
@@ -97,7 +98,7 @@
   .home-three .h3-ship__deck-tabs i, .home-three .h3-ship__instruction, .home-three .h3-ship__deck-heading, .home-three .h3-ship__plan-footer > p { display: none; }
   .home-three .h3-ship__workspace { padding-top: .25rem; }
   .home-three .h3-ship__deck-reveal { margin: 0 -1rem; padding: 0 1rem; overflow-x: auto; overscroll-behavior-inline: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: #b69f64 transparent; }
-  .home-three .h3-ship__ripples { left: 1rem; width: 800px; }
+  .home-three .h3-ship__surface { left: 1rem; width: 800px; }
   .home-three .h3-ship__swipe-hint { position: absolute; z-index: 3; right: 0; bottom: 2.6rem; display: block; padding: .28rem .4rem; background: #f5eacfe6; color: #544731; font: 600 .53rem/1.3 var(--h3-meta); letter-spacing: .04em; pointer-events: none; }
   .home-three .h3-ship__plan-footer { justify-content: center; padding: .25rem 0 .1rem; }
   .home-three .h3-ship__legend { justify-content: center; font-size: .53rem; gap: .25rem .6rem; }
@@ -124,11 +125,11 @@
 @media (max-width: 480px) { .home-three .h3-ship__deck-tabs small { display: none; } }
 @media (max-width: 360px) {
   .home-three .ship-plan--responsive.ship-plan--compact { width: 650px; }
-  .home-three .h3-ship__ripples { width: 650px; }
+  .home-three .h3-ship__surface { width: 650px; }
   .home-three .h3-ship-experience h2 { font-size: 1.65rem; }
   .home-three .h3-ship__legend, .home-three .h3-ship__fineprint, .home-three .h3-ship__availability-note { display: none; }
   .home-three .h3-ship__room-copy > p:not(.h3-ship__eyebrow):not(.h3-ship__room-spec) { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; }
 }
 /* Continue the ship's cream canvas into the immediately following photo chapter. */
 .home-three .h3-scene.h3-images--secundario { background: #ece8df; box-shadow: 0 -1px 0 #ece8df; }
-@media (prefers-reduced-motion: reduce) { .home-three .h3-ship__deck-reveal, .home-three .h3-ship__theatre[data-sailing-in="true"] .ship-plan--compact, .home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__ripples path { animation: none; } .home-three .h3-ship-experience * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .home-three .h3-ship__deck-reveal, .home-three .h3-ship__theatre[data-sailing-in="true"] .ship-plan--compact, .home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__surface, .home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__fold { animation: none; } .home-three .h3-ship-experience * { transition: none !important; } }

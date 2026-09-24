@@ -237,7 +237,8 @@ async function browserTests() {
     });
     await motionPage.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__theatre')?.getAttribute('data-sailing-in') === 'true');
     assert.equal(await theatre.locator('.ship-plan--compact').evaluate(element => getComputedStyle(element).animationName), 'ship-sail-in');
-    assert.equal(await theatre.locator('.h3-ship__ripples path').first().evaluate(element => getComputedStyle(element).animationName), 'ship-ripple-pass');
+    assert.equal(await theatre.locator('.h3-ship__surface').evaluate(element => getComputedStyle(element).animationName), 'ship-surface-rise');
+    assert.equal(await theatre.locator('.h3-ship__fold--near').evaluate(element => getComputedStyle(element).animationName), 'ship-fold-drift');
     await motionPage.waitForTimeout(1500);
     await theatre.screenshot({ path: path.join(out, 'ship-sailing-entrance.png') });
     await motionPage.waitForFunction(() => !document.querySelector('#explore-hathor .h3-ship__theatre')?.hasAttribute('data-sailing-in'));
@@ -253,12 +254,12 @@ async function browserTests() {
       window.scrollTo(0, y);
     });
     await motionPhone.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__theatre')?.getAttribute('data-sailing-in') === 'true');
-    assert.equal(await phonePlan.locator('.h3-ship__ripples').evaluate(element => Math.round(element.getBoundingClientRect().width)), 800, 'Phone ripples track the full swipeable ship width');
+    assert.equal(await phonePlan.locator('.h3-ship__surface').evaluate(element => Math.round(element.getBoundingClientRect().width)), 800, 'Phone folds track the full swipeable ship width');
     await motionPhone.waitForTimeout(1500);
     await phonePlan.screenshot({ path: path.join(out, 'ship-sailing-entrance-phone.png') });
     assert.ok(await motionPhone.locator('#explore-hathor').evaluate(element => element.scrollWidth <= innerWidth + 2), 'Phone entrance does not widen the page');
     await motionContext.close();
-    console.log('PASS: ship waits until mostly in view, sails with ripples, settles; phone waves remain within the swipeable plan.');
+    console.log('PASS: ship waits until mostly in view, sails over folding cream surface, settles; phone surface remains within the swipeable plan.');
   } finally { await browser.close(); }
 }
 if (process.argv.includes('--browser')) browserTests().catch(error => { console.error(error); process.exitCode = 1; });
