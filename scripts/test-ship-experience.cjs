@@ -120,6 +120,13 @@ async function browserTests() {
     await section.locator('[data-slot="K01"]').evaluate(element => element.click());
     await reveal(section);
     await section.screenshot({ path: path.join(out, 'lower-desktop-full.png') });
+    await page.setViewportSize({ width: 1920, height: 900 });
+    await page.waitForTimeout(300);
+    await reveal(section);
+    const largeDesktopHeight = await section.evaluate(element => Math.round(element.getBoundingClientRect().height));
+    console.log(`large desktop layout: ${largeDesktopHeight}px at 1920 × 900`);
+    assert.ok(largeDesktopHeight <= 850, '1920 × 900: the explorer fits below the navigation in one screen');
+    await section.screenshot({ path: path.join(out, 'lower-desktop-1920.png') });
     for (const [name, width, height] of [['tablet', 768, 1024], ['phone', 390, 844], ['small-phone', 320, 750]]) {
       await page.setViewportSize({ width, height });
       await page.waitForTimeout(600);
@@ -134,6 +141,18 @@ async function browserTests() {
       assert.equal(await target.getAttribute('aria-pressed'), 'true');
       await reveal(section.locator('.h3-ship__theatre'));
       await section.locator('.h3-ship__theatre').screenshot({ path: path.join(out, `lower-${name}.png`) });
+      const layout = await section.evaluate(element => ({ sectionHeight: Math.round(element.getBoundingClientRect().height), mapHeight: Math.round(element.querySelector('.ship-plan').getBoundingClientRect().height), detailTop: Math.round(element.querySelector('.h3-ship__detail').getBoundingClientRect().top - element.getBoundingClientRect().top), actionBottom: Math.round(element.querySelector('.h3-ship__book').getBoundingClientRect().bottom - element.getBoundingClientRect().top) }));
+      console.log(`${name} layout: ${JSON.stringify(layout)}`);
+      if (width <= 700) assert.ok(layout.actionBottom <= height - 50 - 64, `${name}: selected room action fits above the phone dock`);
+      if (name === 'phone') {
+        await reveal(section);
+        await section.screenshot({ path: path.join(out, 'lower-phone-full.png') });
+        assert.ok(await section.locator('.h3-ship__deck-reveal').evaluate(element => element.scrollWidth > element.clientWidth), 'Phone plan can be swiped across');
+        await section.locator('.h3-ship__deck-reveal').evaluate(element => { element.scrollLeft = element.scrollWidth; });
+        await section.locator('[data-slot="ROOM09"]').click();
+        assert.equal(await section.locator('.h3-ship__book').getAttribute('href'), '/contact');
+        await section.screenshot({ path: path.join(out, 'lower-phone-room9.png') });
+      }
     }
     console.log('PASS: desktop/tablet/phone, keyboard, both Royal Suites, exact cabin links, unavailable/unlinked rooms.');
     await page.setViewportSize({ width: 1440, height: 1000 });

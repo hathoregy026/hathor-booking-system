@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ShipDeckPlan, type PlanRoomView } from "@/components/ship/ShipDeckPlan";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
@@ -27,7 +27,6 @@ export function ShipExperience() {
   const [deckId, setDeckId] = useState<ShipDeckId>("lower");
   const [sailingId, setSailingId] = useState("");
   const [selected, setSelected] = useState<ShipSlotId | null>(null);
-  const detailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -67,10 +66,6 @@ export function ShipExperience() {
 
   function chooseRoom(id: ShipSlotId) {
     setSelected(id);
-    // The portrait plan is tall: bring the actual room details into reach on phones.
-    if (window.matchMedia("(max-width: 700px)").matches) {
-      requestAnimationFrame(() => detailRef.current?.scrollIntoView({ block: "nearest", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }));
-    }
   }
 
   return (
@@ -87,18 +82,16 @@ export function ShipExperience() {
         <span className="h3-ship__instruction">{deck.id === "sun" ? "An open-air retreat" : "Select a room on the plan"}</span>
       </div>
 
+      <div className="h3-ship__workspace">
       <div className="h3-ship__theatre">
         <div className="h3-ship__deck-heading"><div><p className="h3-ship__eyebrow">{deck.subtitle}</p><h3>{deck.name}</h3></div><span className="h3-ship__orientation" aria-hidden="true">Stern <span>⟶</span> Bow</span></div>
+        <span className="h3-ship__swipe-hint" aria-hidden="true">Swipe across the deck ↔</span>
         <div key={deck.id} className="h3-ship__deck-reveal">
-          <ShipDeckPlan deck={deck.id} rooms={views} selected={view ? selected : null} onSelect={chooseRoom} vertical />
+          <ShipDeckPlan deck={deck.id} rooms={views} selected={view ? selected : null} onSelect={chooseRoom} vertical compact />
         </div>
         <div className="h3-ship__plan-footer"><p>{deck.description}</p>{slots.length ? <div className="h3-ship__legend" aria-label="Room status key"><span><i data-state="open" />Available</span><span><i data-state="closed" />Unavailable</span><span><i data-state="selected" />Selected</span><span><i data-state="unknown" />Not checked</span></div> : <span className="h3-ship__context-note">No guest rooms on this deck</span>}</div>
       </div>
-
-      {slots.length ? <div className="h3-ship__room-list" role="group" aria-label={`Choose a room on ${deck.name}`}>
-        {views.map(item => <button type="button" key={item.slotId} aria-pressed={selected === item.slotId} data-state={item.state} onClick={() => chooseRoom(item.slotId)}><span>{item.number}</span><span>{item.name}</span><i aria-hidden="true">↗</i></button>)}
-      </div> : null}
-
+      <aside className="h3-ship__console" aria-label="Room and departure details">
       <div className="h3-ship__reservation">
         <div className="h3-ship__reservation-label"><p className="h3-ship__eyebrow">Make it your journey</p><h3>Find your departure</h3></div>
         <div className="h3-ship__voyage">
@@ -111,7 +104,7 @@ export function ShipExperience() {
       </div>
       {loading ? <p className="h3-ship__notice" role="status">Checking live cabin availability…</p> : error ? <p className="h3-ship__notice" role="alert">{error} <button type="button" onClick={() => { setLoading(true); setError(null); setRetry(value => value + 1); }}>Try again ↗</button></p> : !sailing ? <p className="h3-ship__notice">No scheduled departures in this period. Choose a later month or <Link href="/contact">contact reservations</Link>.</p> : null}
 
-      <div ref={detailRef} className="h3-ship__detail" aria-live="polite" aria-atomic="true">
+      <div className="h3-ship__detail" aria-live="polite" aria-atomic="true">
         {slot && view ? <>
           <div className="h3-ship__room-copy"><p className="h3-ship__eyebrow">{deck.name} · Room {view.number}</p><h3>{view.name}</h3>{room ? <p className="h3-ship__room-spec">{room.roomType} <span>·</span> {room.sizeSqm} m² <span>·</span> Up to {room.capacity} guests</p> : null}<p>{(room?.description || slot.description)?.split("\n\nAmenities:")[0].trim() || "Select your preferred departure to plan your stay aboard Hathor."}</p></div>
           <div className="h3-ship__room-booking"><p className="h3-ship__status" data-state={view.state}>{!slot.roomId ? "Contact us about this room" : view.state === "open" ? `Available · ${shortDate(sailing!.departureTime)}` : view.state === "closed" ? "Unavailable on this departure" : "Choose a departure to check availability"}</p>
@@ -120,7 +113,9 @@ export function ShipExperience() {
             {bookingUrl ? <p className="h3-ship__availability-note">Your exact cabin is rechecked during booking.</p> : null}
           </div>
           <button className="h3-ship__close" type="button" onClick={() => setSelected(null)} aria-label="Close room details">×</button>
-        </> : <div className="h3-ship__welcome"><span aria-hidden="true">✧</span><div><h3>{deck.id === "sun" ? "A little closer to the sky." : "Which room will be yours?"}</h3><p>{deck.id === "sun" ? "Explore the lower and main decks to choose your room." : "Tap a room on the furnished plan, or choose from the room list, to see its details and availability."}</p></div></div>}
+        </> : <div className="h3-ship__welcome"><span aria-hidden="true">✧</span><div><h3>{deck.id === "sun" ? "A little closer to the sky." : "Which room will be yours?"}</h3><p>{deck.id === "sun" ? "Explore the lower and main decks to choose your room." : "Tap a numbered room on the plan to see its details and availability here."}</p></div></div>}
+      </div>
+      </aside>
       </div>
       <p className="h3-ship__fineprint">Illustrated deck plans. Furnishings are indicative. Only guest rooms are selectable.</p>
     </section>

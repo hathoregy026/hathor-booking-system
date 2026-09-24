@@ -29,7 +29,7 @@ Main-deck additional constraint: preserve the two Royal Suites at the left, Roya
 
 ## Interaction and performance
 
-Desktop and tablet use a large horizontal furnished plan. Phones turn the whole plan into a portrait layout with upright labels and room-sized touch targets; a horizontal room list provides an alternative way to select. Deck changes use a short dimensional reveal, with subtle pool light on the sun deck. Reduced-motion disables both. Only the active deck image loads; all three optimized images total under 0.8 MB. Asset-load failure offers retry; availability failure keeps the visual explorer usable without showing a room as bookable.
+The public map crops unused transparent artboard margins without moving room hit areas. On desktop, the furnished plan and a booking panel sit side by side; selecting a numbered room updates its details and departure controls within the same screen. Tablet places a short two-column booking panel under the plan. Phones show a touch-scrollable horizontal deck above compact departure and room details, with a visible swipe hint. The redundant room-number list and automatic return scroll were removed. Deck changes use a short dimensional reveal, with subtle pool light on the sun deck. Reduced-motion disables both. Only the active deck image loads; all three optimized images total under 0.8 MB. Asset-load failure offers retry; availability failure keeps the visual explorer usable without showing a room as bookable.
 
 ## Verification
 
@@ -41,6 +41,6 @@ Desktop and tablet use a large horizontal furnished plan. Phones turn the whole 
 
 `node scripts/test-ship-experience.cjs --browser` with localhost:3000 running.
 
-The browser regression uses controlled API responses and intercepts dashboard saves; it never writes live data or creates a booking. It checks desktop 1440, tablet 768, phones 390/320, room-only interactions, both Royal Suites, exact-cabin links, unavailable/unlinked rooms, keyboard activation, reduced motion, empty/error responses, and dashboard name/number changes on the public map. Anonymous admin GET/PUT rejection is checked against the actual local server. Screenshots are written to `_local/ship-plan-qa/` for visual inspection.
+The browser regression uses controlled API responses and intercepts dashboard saves; it never writes live data or creates a booking. It checks desktop 1440 and 1920, tablet 768, phones 390/320, room-only interactions, swipe reachability, single-screen placement of the booking action, both Royal Suites, exact-cabin links, unavailable/unlinked rooms, keyboard activation, reduced motion, empty/error responses, and dashboard name/number changes on the public map. Anonymous admin GET/PUT rejection is checked against the actual local server. Screenshots are written to `_local/ship-plan-qa/` for visual inspection.
 
 Local database timeouts prevented a real database-backed save/reload or reservation test. Do not treat the fixture-based UI test as proof of production database connectivity. No deployment, migration or live data change was performed.

@@ -1,110 +1,118 @@
-.home-three .h3-ship-experience { --ship-cream: #ece8df; --ship-gold: #b69f64; --ship-ink: #2c2824; position: relative; padding: clamp(3rem, 7vw, 8rem) clamp(1rem, 3.5vw, 4.5rem) 3rem; background: var(--ship-cream); color: var(--ship-ink); overflow: clip; }
-.home-three .h3-ship-experience { --h3-meta: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif; }
+.home-three .h3-scene.h3-ship-experience { --ship-cream: #ece8df; --ship-gold: #b69f64; --ship-ink: #2c2824; --h3-meta: var(--font-hathor-body), "Plus Jakarta Sans", sans-serif; position: relative; height: auto; min-height: 0; padding: clamp(1.2rem, 3vh, 2.4rem) clamp(1rem, 3vw, 3.6rem); background: var(--ship-cream); color: var(--ship-ink); overflow: clip; }
 .home-three .h3-ship-experience * { box-sizing: border-box; }
-.home-three .h3-ship__masthead { display: grid; grid-template-columns: 1.5fr 1fr; align-items: end; gap: 5%; margin-bottom: 3rem; }
-.home-three .h3-ship__eyebrow { margin: 0 0 1rem; font: 600 .65rem/1.5 var(--h3-meta); letter-spacing: .17em; text-transform: uppercase; color: #71603d; }
-.home-three .h3-ship-experience h2 { margin: 0; max-width: 10em; font: 400 clamp(3.7rem, 6.6vw, 7.8rem)/1.02 var(--h3-display); letter-spacing: -.04em; text-wrap: balance; }
-.home-three .h3-ship__invitation { max-width: 26rem; justify-self: end; padding-bottom: .3rem; }
-.home-three .h3-ship__invitation > p:not(.h3-ship__eyebrow) { font: 400 .9rem/1.9 var(--h3-meta); margin: 0; }
-.home-three .h3-ship__invitation > span { display: block; margin-top: 1.3rem; font: 600 .65rem/1.5 var(--h3-meta); letter-spacing: .12em; text-transform: uppercase; }
+.home-three .h3-ship__eyebrow { margin: 0 0 .45rem; font: 600 .62rem/1.4 var(--h3-meta); letter-spacing: .14em; text-transform: uppercase; color: #71603d; }
+.home-three .h3-ship__masthead { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(.8rem, 2vh, 1.5rem); }
+.home-three .h3-ship-experience h2 { margin: 0; font: 400 clamp(2.8rem, 4.5vw, 5.2rem)/.98 var(--h3-display); letter-spacing: -.035em; text-wrap: balance; }
+.home-three .h3-ship__invitation { max-width: 26rem; padding-bottom: .15rem; }
+.home-three .h3-ship__invitation > p:not(.h3-ship__eyebrow) { margin: 0; font: 400 .78rem/1.55 var(--h3-meta); }
+.home-three .h3-ship__invitation > span { display: none; }
 .home-three .h3-ship__deck-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-top: 1px solid #b4a68b; border-bottom: 1px solid #b4a68b; }
 .home-three .h3-ship__deck-tabs { display: flex; }
-.home-three .h3-ship__deck-tabs button { position: relative; display: flex; align-items: center; gap: 1.2rem; min-height: 4.7rem; padding: .8rem 2rem; color: #706956; background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; transition: color .25s, background .25s; }
-.home-three .h3-ship__deck-tabs button:first-child { padding-left: 1rem; }
+.home-three .h3-ship__deck-tabs button { display: flex; align-items: center; gap: .8rem; min-height: 3.55rem; padding: .45rem 1.3rem; color: #706956; background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; transition: color .25s, background .25s; }
+.home-three .h3-ship__deck-tabs button:first-child { padding-left: .8rem; }
 .home-three .h3-ship__deck-tabs button[aria-pressed="true"] { background: #e0d7c4; color: #302819; border-bottom-color: #8d6b29; }
-.home-three .h3-ship__deck-tabs small { font: 500 .65rem/1 var(--h3-meta); color: #82704b; }
-.home-three .h3-ship__deck-tabs span { font: 400 1.45rem/1 var(--h3-display); white-space: nowrap; }
-.home-three .h3-ship__deck-tabs i { font-size: 1rem; font-style: normal; opacity: 0; transition: opacity .2s; }
+.home-three .h3-ship__deck-tabs small { font: 500 .6rem/1 var(--h3-meta); color: #82704b; }
+.home-three .h3-ship__deck-tabs span { font: 400 1.2rem/1 var(--h3-display); white-space: nowrap; }
+.home-three .h3-ship__deck-tabs i { font-size: .9rem; font-style: normal; opacity: 0; }
 .home-three .h3-ship__deck-tabs button[aria-pressed="true"] i { opacity: 1; }
-.home-three .h3-ship__instruction { font: 500 .67rem/1.4 var(--h3-meta); letter-spacing: .06em; }
-.home-three .h3-ship__theatre { position: relative; background: radial-gradient(ellipse at 50% 50%, #faf7ef 0, #f1ece1 48%, #ece8df00 75%); }
-.home-three .h3-ship__deck-heading { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; }
-.home-three .h3-ship__deck-heading h3 { margin: 0; font: 400 clamp(1.9rem, 3vw, 3rem)/1 var(--h3-display); }
-.home-three .h3-ship__deck-heading .h3-ship__eyebrow { margin-bottom: .5rem; }
-.home-three .h3-ship__orientation { display: flex; align-items: center; gap: 1rem; font: 500 .6rem/1 var(--h3-meta); text-transform: uppercase; letter-spacing: .1em; color: #817358; }
-.home-three .h3-ship__orientation span { font-size: 2.2rem; }
-.home-three .h3-ship__deck-reveal { margin: -2rem -1rem -1.5rem; animation: ship-deck-arrive .85s cubic-bezier(.18,.68,.25,1) both; transform-origin: 50% 65%; }
-@keyframes ship-deck-arrive { from { opacity: 0; transform: perspective(1400px) translateY(26px) rotateX(7deg) scale(.97); filter: drop-shadow(0 25px 15px #6b532526); } to { opacity: 1; transform: perspective(1400px) translateY(0) rotateX(0) scale(1); filter: drop-shadow(0 5px 4px #6b532510); } }
-.home-three .h3-ship__plan-footer { display: flex; align-items: end; justify-content: space-between; gap: 2rem; padding-bottom: 1.7rem; border-bottom: 1px solid #b4a68b; }
-.home-three .h3-ship__plan-footer > p { margin: 0; max-width: 35rem; font: 400 .78rem/1.8 var(--h3-meta); color: #685e4b; }
-.home-three .h3-ship__legend { display: flex; flex-wrap: wrap; justify-content: end; gap: .8rem 1.3rem; font: 500 .62rem/1.4 var(--h3-meta); }
-.home-three .h3-ship__legend span { display: flex; align-items: center; gap: .4rem; white-space: nowrap; }
+.home-three .h3-ship__instruction { font: 500 .64rem/1.4 var(--h3-meta); letter-spacing: .06em; }
+.home-three .h3-ship__workspace { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(300px, .8fr); gap: clamp(1.2rem, 2.4vw, 2.7rem); align-items: stretch; padding-top: clamp(.8rem, 1.7vh, 1.3rem); }
+.home-three .h3-ship__theatre { position: relative; min-width: 0; background: radial-gradient(ellipse at 50% 53%, #faf7ef 0, #f1ece1 53%, #ece8df00 78%); }
+.home-three .h3-ship__swipe-hint { display: none; }
+.home-three .h3-ship__deck-heading { display: flex; justify-content: space-between; align-items: center; min-height: 2.8rem; margin-bottom: .2rem; }
+.home-three .h3-ship__deck-heading h3 { margin: 0; font: 400 clamp(1.55rem, 2.1vw, 2.3rem)/1 var(--h3-display); }
+.home-three .h3-ship__orientation { display: flex; align-items: center; gap: .7rem; font: 500 .55rem/1 var(--h3-meta); text-transform: uppercase; letter-spacing: .1em; color: #817358; }
+.home-three .h3-ship__orientation span { font-size: 1.5rem; }
+.home-three .h3-ship__deck-reveal { animation: ship-deck-arrive .65s cubic-bezier(.18,.68,.25,1) both; transform-origin: 50% 65%; }
+@keyframes ship-deck-arrive { from { opacity: 0; transform: perspective(1400px) translateY(15px) rotateX(5deg) scale(.98); } to { opacity: 1; transform: perspective(1400px) translateY(0) rotateX(0) scale(1); } }
+.home-three .h3-ship__plan-footer { display: flex; align-items: start; justify-content: space-between; gap: 1.2rem; padding: .35rem 0 0; }
+.home-three .h3-ship__plan-footer > p { margin: 0; max-width: 27rem; font: 400 .68rem/1.55 var(--h3-meta); color: #685e4b; }
+.home-three .h3-ship__legend { display: flex; flex-wrap: wrap; justify-content: end; gap: .4rem .9rem; padding-top: .15rem; font: 500 .56rem/1.4 var(--h3-meta); }
+.home-three .h3-ship__legend span { display: flex; align-items: center; gap: .3rem; white-space: nowrap; }
 .home-three .h3-ship__legend i { width: 6px; height: 6px; border: 1px solid #968973; border-radius: 50%; }
 .home-three .h3-ship__legend i[data-state="open"] { background: #496447; border-color: #496447; }
 .home-three .h3-ship__legend i[data-state="closed"] { background: #7c7262; border-color: #7c7262; border-radius: 0; }
 .home-three .h3-ship__legend i[data-state="selected"] { background: #a4823c; border-color: #a4823c; }
-.home-three .h3-ship__context-note { font: 500 .65rem/1.5 var(--h3-meta); color: #786b53; white-space: nowrap; }
-.home-three .h3-ship__room-list { display: flex; flex-wrap: wrap; gap: .4rem; padding: 1rem 0; }
-.home-three .h3-ship__room-list button { display: inline-flex; align-items: center; gap: .6rem; min-height: 44px; padding: .4rem .7rem; border: 1px solid #b4a68b; border-radius: 0; background: transparent; color: #50472f; font: 500 .65rem/1.4 var(--h3-meta); cursor: pointer; }
-.home-three .h3-ship__room-list button > span:first-child { color: #8a6d34; font-weight: 700; }
-.home-three .h3-ship__room-list button > span:nth-child(2) { display: none; }
-.home-three .h3-ship__room-list i { font-style: normal; }
-.home-three .h3-ship__room-list button[aria-pressed="true"] { background: #514528; color: #fff5de; border-color: #514528; }
-.home-three .h3-ship__room-list button[aria-pressed="true"] > span:first-child { color: #e6cf96; }
-.home-three .h3-ship__reservation { display: grid; grid-template-columns: 1fr 2.5fr; gap: 2rem; align-items: end; padding: 1.4rem 0 1.5rem; }
-.home-three .h3-ship__reservation-label h3 { margin: 0; font: 400 1.8rem/1 var(--h3-display); }
-.home-three .h3-ship__reservation-label p { margin-bottom: .65rem; }
-.home-three .h3-ship__voyage { display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 1rem; }
-.home-three .h3-ship__voyage label { display: grid; gap: .5rem; min-width: 0; color: #6a5d43; font: 600 .64rem/1.5 var(--h3-meta); text-transform: uppercase; letter-spacing: .08em; }
-.home-three .h3-ship__voyage :is(select,input) { width: 100%; min-width: 0; min-height: 48px; padding: .7rem .5rem; border: 0; border-bottom: 1px solid #a99a7b; border-radius: 0; background: #e4dccb; color: #30291b; font: 500 .76rem/1.5 var(--h3-meta); text-transform: none; letter-spacing: 0; color-scheme: light; }
+.home-three .h3-ship__context-note { font: 500 .62rem/1.4 var(--h3-meta); color: #786b53; white-space: nowrap; }
+.home-three .h3-ship__console { display: flex; flex-direction: column; justify-content: start; min-width: 0; padding-left: clamp(1rem, 1.6vw, 2rem); border-left: 1px solid #b9a987; }
+.home-three .h3-ship__reservation { padding-bottom: 1rem; border-bottom: 1px solid #c5b698; }
+.home-three .h3-ship__reservation-label h3 { margin: 0 0 .9rem; font: 400 1.7rem/1 var(--h3-display); }
+.home-three .h3-ship__voyage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .65rem; }
+.home-three .h3-ship__voyage label { display: grid; gap: .3rem; min-width: 0; color: #6a5d43; font: 600 .59rem/1.4 var(--h3-meta); text-transform: uppercase; letter-spacing: .06em; }
+.home-three .h3-ship__voyage label:first-child { grid-column: 1 / -1; }
+.home-three .h3-ship__voyage :is(select,input) { width: 100%; min-width: 0; min-height: 43px; padding: .52rem .45rem; border: 0; border-bottom: 1px solid #a99a7b; border-radius: 0; background: #e4dccb; color: #30291b; font: 500 .69rem/1.5 var(--h3-meta); text-transform: none; letter-spacing: 0; color-scheme: light; }
 .home-three .h3-ship__voyage select:disabled { opacity: .65; }
-.home-three .h3-ship__notice { margin: 0 0 1rem; padding: .8rem 1rem; border-left: 2px solid #b69f64; color: #63563c; background: #e5ddcd; font: 500 .76rem/1.7 var(--h3-meta); }
-.home-three .h3-ship__notice button { min-height: 44px; border: 0; background: transparent; text-decoration: underline; color: inherit; cursor: pointer; }
-.home-three .h3-ship__detail { position: relative; display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; padding: clamp(1.3rem, 3vw, 3rem); border: 1px solid #bdac8a; background: #f4f0e6; scroll-margin-top: 5rem; }
-.home-three .h3-ship__room-copy h3 { margin: 0 0 1rem; font: 400 clamp(2rem, 3vw, 3.3rem)/1.08 var(--h3-display); overflow-wrap: anywhere; }
-.home-three .h3-ship__room-copy > p:not(.h3-ship__eyebrow) { max-width: 42rem; font: 400 .82rem/1.85 var(--h3-meta); }
-.home-three .h3-ship__room-copy .h3-ship__room-spec { color: #7e6a40; font-size: .7rem; }
-.home-three .h3-ship__room-spec span { margin: 0 .4rem; }
-.home-three .h3-ship__room-booking { padding: .7rem 0 .2rem 2rem; border-left: 1px solid #cebea1; }
-.home-three .h3-ship__status { margin: 0 0 .8rem; font: 600 .7rem/1.5 var(--h3-meta); color: #6d644f; }
+.home-three .h3-ship__notice { margin: .8rem 0 0; padding: .55rem .7rem; border-left: 2px solid #b69f64; color: #63563c; background: #e5ddcd; font: 500 .68rem/1.5 var(--h3-meta); }
+.home-three .h3-ship__notice button { min-height: 36px; border: 0; background: transparent; text-decoration: underline; color: inherit; cursor: pointer; }
+.home-three .h3-ship__detail { position: relative; flex: 1; min-height: 11rem; padding: 1.1rem 0 0; }
+.home-three .h3-ship__room-copy h3 { margin: 0 0 .5rem; padding-right: 2rem; font: 400 clamp(1.8rem, 2vw, 2.5rem)/1.03 var(--h3-display); overflow-wrap: anywhere; }
+.home-three .h3-ship__room-copy > p:not(.h3-ship__eyebrow) { margin: .35rem 0; font: 400 .71rem/1.6 var(--h3-meta); }
+.home-three .h3-ship__room-copy .h3-ship__room-spec { color: #7e6a40; font-size: .65rem; }
+.home-three .h3-ship__room-spec span { margin: 0 .25rem; }
+.home-three .h3-ship__room-booking { padding-top: .7rem; }
+.home-three .h3-ship__status { margin: 0 0 .45rem; font: 600 .65rem/1.45 var(--h3-meta); color: #6d644f; }
 .home-three .h3-ship__status[data-state="open"] { color: #456040; }
-.home-three .h3-ship__price { margin: .5rem 0 1.4rem; font: 400 2.2rem/1 var(--h3-display); }
-.home-three .h3-ship__price small { display: block; margin-top: .4rem; font: 400 .64rem/1.5 var(--h3-meta); color: #7c6c4f; }
-.home-three .h3-ship__book { display: flex; justify-content: space-between; align-items: center; gap: 1.3rem; min-height: 50px; padding: .8rem 1.2rem; border: 1px solid #514528; background: #514528; color: #fff7e7; font: 500 .75rem/1.5 var(--h3-meta); text-decoration: none; transition: background .2s; }
+.home-three .h3-ship__price { margin: .25rem 0 .6rem; font: 400 1.8rem/1 var(--h3-display); }
+.home-three .h3-ship__price small { display: block; margin-top: .2rem; font: 400 .6rem/1.35 var(--h3-meta); color: #7c6c4f; }
+.home-three .h3-ship__book { display: flex; justify-content: space-between; align-items: center; gap: .8rem; min-height: 44px; padding: .65rem .8rem; border: 1px solid #514528; background: #514528; color: #fff7e7; font: 500 .68rem/1.4 var(--h3-meta); text-decoration: none; transition: background .2s; }
 .home-three .h3-ship__book:hover { background: #74603a; }
-.home-three .h3-ship__availability-note { margin: .65rem 0 0; font: 400 .67rem/1.6 var(--h3-meta); color: #7c6c4f; }
-.home-three .h3-ship__close { position: absolute; top: .3rem; right: .3rem; width: 44px; height: 44px; border: 0; background: transparent; color: #76674d; font-size: 1.5rem; cursor: pointer; }
-.home-three .h3-ship__welcome { display: flex; align-items: center; gap: 1.5rem; grid-column: 1/-1; min-height: 7rem; }
-.home-three .h3-ship__welcome > span { color: #9f8246; font-size: 3.5rem; }
-.home-three .h3-ship__welcome h3 { margin: 0 0 .7rem; font: 400 clamp(1.8rem, 2.6vw, 2.7rem)/1 var(--h3-display); }
-.home-three .h3-ship__welcome p { margin: 0; max-width: 38rem; font: 400 .8rem/1.7 var(--h3-meta); color: #76674d; }
-.home-three .h3-ship__fineprint { margin: 1rem 0 0; text-align: center; font: 400 .59rem/1.7 var(--h3-meta); color: #897b61; }
-.home-three .h3-ship-experience :is(button,a,input,select):focus-visible { outline: 3px solid #887032; outline-offset: 4px; }
+.home-three .h3-ship__availability-note { margin: .4rem 0 0; font: 400 .61rem/1.4 var(--h3-meta); color: #7c6c4f; }
+.home-three .h3-ship__close { position: absolute; top: .6rem; right: -.35rem; width: 44px; height: 44px; border: 0; background: transparent; color: #76674d; font-size: 1.5rem; cursor: pointer; }
+.home-three .h3-ship__welcome { display: flex; align-items: start; gap: .8rem; }
+.home-three .h3-ship__welcome > span { color: #9f8246; font-size: 1.7rem; line-height: 1; }
+.home-three .h3-ship__welcome h3 { margin: 0 0 .45rem; font: 400 1.55rem/1.1 var(--h3-display); }
+.home-three .h3-ship__welcome p { margin: 0; font: 400 .7rem/1.55 var(--h3-meta); color: #76674d; }
+.home-three .h3-ship__fineprint { margin: .65rem 0 0; text-align: center; font: 400 .55rem/1.45 var(--h3-meta); color: #897b61; }
+.home-three .h3-ship-experience :is(button,a,input,select):focus-visible { outline: 3px solid #887032; outline-offset: 3px; }
 @media (max-width: 1100px) {
-  .home-three .h3-ship__deck-tabs button { padding: .7rem 1rem; gap: .6rem; }
-  .home-three .h3-ship__instruction { max-width: 8rem; text-align: right; }
-  .home-three .h3-ship__reservation { grid-template-columns: 1fr; gap: 1.5rem; }
-  .home-three .h3-ship__plan-footer { align-items: start; gap: 1rem; }
-  .home-three .h3-ship__legend { max-width: 18rem; }
+  .home-three .h3-ship__workspace { display: block; }
+  .home-three .h3-ship__console { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 1rem; border-left: 0; border-top: 1px solid #b9a987; padding: .8rem 0 0; margin-top: .5rem; }
+  .home-three .h3-ship__reservation { border: 0; padding: 0; }
+  .home-three .h3-ship__detail { padding: 0 0 0 1rem; border-left: 1px solid #c5b698; }
+  .home-three .h3-ship__notice { grid-column: 1 / -1; grid-row: 2; }
+  .home-three .h3-ship__plan-footer { padding-top: .1rem; }
 }
 @media (max-width: 700px) {
-  .home-three .h3-ship-experience { padding: 3.5rem 1rem 2rem; }
-  .home-three .h3-ship__masthead { display: block; margin-bottom: 2rem; }
-  .home-three .h3-ship-experience h2 { font-size: clamp(3.4rem, 13vw, 5rem); }
-  .home-three .h3-ship__invitation { margin-top: 1.5rem; max-width: 100%; }
-  .home-three .h3-ship__invitation .h3-ship__eyebrow, .home-three .h3-ship__invitation > span { display: none; }
-  .home-three .h3-ship__invitation > p:not(.h3-ship__eyebrow) { font-size: .8rem; }
+  .home-three .h3-scene.h3-ship-experience { padding: .75rem 1rem 1rem; }
+  .home-three .h3-ship__masthead { display: block; margin-bottom: .65rem; }
+  .home-three .h3-ship__masthead .h3-ship__eyebrow { font-size: .53rem; margin-bottom: .15rem; }
+  .home-three .h3-ship-experience h2 { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+  .home-three .h3-ship__invitation { display: none; }
   .home-three .h3-ship__deck-bar { display: block; }
   .home-three .h3-ship__deck-tabs { justify-content: space-between; }
-  .home-three .h3-ship__deck-tabs button, .home-three .h3-ship__deck-tabs button:first-child { flex: 1; flex-direction: column; align-items: start; justify-content: center; gap: .5rem; padding: .9rem .7rem; }
-  .home-three .h3-ship__deck-tabs span { font-size: 1.15rem; }
-  .home-three .h3-ship__deck-tabs i, .home-three .h3-ship__instruction, .home-three .h3-ship__orientation { display: none; }
-  .home-three .h3-ship__deck-heading { padding-top: 1.6rem; }
-  .home-three .h3-ship__deck-heading h3 { font-size: 2rem; }
-  .home-three .h3-ship__deck-reveal { margin: -1rem -1rem -1.8rem; }
-  .home-three .h3-ship__plan-footer { flex-direction: column; gap: 1rem; }
-  .home-three .h3-ship__legend { justify-content: start; max-width: none; font-size: .6rem; }
-  .home-three .h3-ship__room-list { flex-wrap: nowrap; overflow-x: auto; padding: 1rem 0; scrollbar-width: thin; }
-  .home-three .h3-ship__room-list button { flex: none; }
-  .home-three .h3-ship__room-list button > span:nth-child(2) { display: block; max-width: 10rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .home-three .h3-ship__voyage { grid-template-columns: 1fr 1fr; gap: .8rem; }
-  .home-three .h3-ship__voyage label:first-child { grid-column: 1/-1; }
-  .home-three .h3-ship__detail { grid-template-columns: 1fr; gap: 1rem; }
-  .home-three .h3-ship__room-copy { padding-top: .4rem; }
-  .home-three .h3-ship__room-copy h3 { padding-right: .5rem; }
-  .home-three .h3-ship__room-booking { border-left: 0; border-top: 1px solid #cebea1; padding: 1.3rem 0 0; }
-  .home-three .h3-ship__welcome { align-items: start; gap: .8rem; }
-  .home-three .h3-ship__welcome > span { font-size: 2rem; }
-  .home-three .h3-ship__welcome h3 { font-size: 1.6rem; }
+  .home-three .h3-ship__deck-tabs button, .home-three .h3-ship__deck-tabs button:first-child { flex: 1; justify-content: center; gap: .25rem; min-height: 44px; padding: .45rem .2rem; }
+  .home-three .h3-ship__deck-tabs span { font-size: 1rem; }
+  .home-three .h3-ship__deck-tabs i, .home-three .h3-ship__instruction, .home-three .h3-ship__deck-heading, .home-three .h3-ship__plan-footer > p { display: none; }
+  .home-three .h3-ship__workspace { padding-top: .25rem; }
+  .home-three .h3-ship__deck-reveal { margin: 0 -1rem; padding: 0 1rem; overflow-x: auto; overscroll-behavior-inline: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: #b69f64 transparent; }
+  .home-three .h3-ship__swipe-hint { position: absolute; z-index: 3; right: 0; bottom: 2.6rem; display: block; padding: .28rem .4rem; background: #f5eacfe6; color: #544731; font: 600 .53rem/1.3 var(--h3-meta); letter-spacing: .04em; pointer-events: none; }
+  .home-three .h3-ship__plan-footer { justify-content: center; padding: .25rem 0 .1rem; }
+  .home-three .h3-ship__legend { justify-content: center; font-size: .53rem; gap: .25rem .6rem; }
+  .home-three .h3-ship__console { display: block; margin-top: .3rem; padding-top: .45rem; }
+  .home-three .h3-ship__reservation-label { display: none; }
+  .home-three .h3-ship__voyage { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem; }
+  .home-three .h3-ship__voyage label, .home-three .h3-ship__voyage label:first-child { grid-column: auto; font-size: .53rem; }
+  .home-three .h3-ship__voyage :is(select,input) { min-height: 42px; padding: .3rem; font-size: .58rem; }
+  .home-three .h3-ship__detail { min-height: 4.3rem; margin-top: .5rem; padding: .5rem 0 0; border: 0; border-top: 1px solid #c5b698; }
+  .home-three .h3-ship__room-copy h3 { margin-bottom: .25rem; font-size: 1.55rem; }
+  .home-three .h3-ship__room-copy > p:not(.h3-ship__eyebrow) { margin: .2rem 0; font-size: .64rem; line-height: 1.4; }
+  .home-three .h3-ship__room-booking { display: grid; grid-template-columns: 1fr auto; gap: .2rem .5rem; align-items: center; padding-top: .25rem; }
+  .home-three .h3-ship__status { margin: 0; }
+  .home-three .h3-ship__price { margin: 0; font-size: 1.4rem; text-align: right; }
+  .home-three .h3-ship__price small { font-size: .48rem; }
+  .home-three .h3-ship__book { grid-column: 1 / -1; min-height: 42px; }
+  .home-three .h3-ship__availability-note { grid-column: 1 / -1; margin: 0; }
+  .home-three .h3-ship__close { top: -.3rem; }
+  .home-three .h3-ship__welcome > span { font-size: 1.3rem; }
+  .home-three .h3-ship__welcome h3 { font-size: 1.25rem; margin-bottom: .15rem; }
+  .home-three .h3-ship__welcome p { font-size: .6rem; line-height: 1.3; }
+  .home-three .h3-ship__fineprint { margin-top: .45rem; }
+}
+@media (max-width: 480px) { .home-three .h3-ship__deck-tabs small { display: none; } }
+@media (max-width: 360px) {
+  .home-three .ship-plan--responsive.ship-plan--compact { width: 650px; }
+  .home-three .h3-ship-experience h2 { font-size: 1.65rem; }
+  .home-three .h3-ship__legend, .home-three .h3-ship__fineprint, .home-three .h3-ship__availability-note { display: none; }
+  .home-three .h3-ship__room-copy > p:not(.h3-ship__eyebrow):not(.h3-ship__room-spec) { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .home-three .h3-ship__deck-reveal { animation: none; } .home-three .h3-ship-experience * { transition: none !important; } }

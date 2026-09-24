@@ -13,18 +13,19 @@ export type PlanRoomView = {
 };
 
 /** Art and hit areas share one coordinate system at every screen size. */
-export function ShipDeckPlan({ deck, rooms, selected, onSelect, vertical = false }: {
+export function ShipDeckPlan({ deck, rooms, selected, onSelect, vertical = false, compact = false }: {
   deck: ShipDeckId;
   rooms: PlanRoomView[];
   selected: ShipSlotId | null;
   onSelect: (id: ShipSlotId) => void;
   vertical?: boolean;
+  compact?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [attempt, setAttempt] = useState(0);
   return (
-    <div className={`ship-plan${vertical ? " ship-plan--responsive" : ""}`} data-deck={deck}>
+    <div className={`ship-plan${vertical ? " ship-plan--responsive" : ""}${compact ? " ship-plan--compact" : ""}`} data-deck={deck}>
       {failed ? <div className="ship-plan__error" role="alert">
         <p>The deck illustration could not load.</p>
         <button type="button" onClick={() => { setFailed(false); setLoaded(false); setAttempt(value => value + 1); }}>Reload illustration</button>
