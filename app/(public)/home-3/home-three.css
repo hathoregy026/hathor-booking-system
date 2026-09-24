@@ -3628,15 +3628,27 @@ figure) {
  * Desktop (>1024) rules above are not selected. Flip/slide CSS vars stay.
  */
 @media (max-width: 1024px) {
-  /* ---- ref 1 · sailing cards: shorter portrait, same inner order -------- */
+  /* ---- ref 1 · sailing cards: match the voyage rail's landscape plate --- */
   .home-three .h3-sail {
     width: 90vw;
     max-width: 90vw;
   }
 
   .home-three .h3-sail__plate {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
     flex: 0 0 auto;
+  }
+
+  /* Cabin photographs have mixed landscape ratios. On compact screens the
+     full photograph belongs inside the shared 4:3 plate, without the desktop
+     parallax overscan or an object-fit crop. */
+  .home-three .h3-sail__plate .h3-media__wrap {
+    top: 0;
+    height: 100%;
+  }
+
+  .home-three .h3-sail__plate img {
+    object-fit: contain;
   }
 
   .home-three .h3-sail__body {
@@ -6250,4 +6262,3 @@ html[data-ex-experience]
     opacity: 0;
   }
 }
-
