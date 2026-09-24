@@ -55,6 +55,7 @@ export const ModelName = {
   CruiseSchedule: 'CruiseSchedule',
   Room: 'Room',
   TicketType: 'TicketType',
+  SailingPrice: 'SailingPrice',
   Booking: 'Booking',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
@@ -148,6 +149,16 @@ export const TicketTypeScalarFieldEnum = {
 } as const
 
 export type TicketTypeScalarFieldEnum = (typeof TicketTypeScalarFieldEnum)[keyof typeof TicketTypeScalarFieldEnum]
+
+
+export const SailingPriceScalarFieldEnum = {
+  cruiseScheduleId: 'cruiseScheduleId',
+  ticketTypeId: 'ticketTypeId',
+  priceCents: 'priceCents',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SailingPriceScalarFieldEnum = (typeof SailingPriceScalarFieldEnum)[keyof typeof SailingPriceScalarFieldEnum]
 
 
 export const BookingScalarFieldEnum = {

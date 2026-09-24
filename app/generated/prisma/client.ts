@@ -62,6 +62,11 @@ export type Room = Prisma.RoomModel
  */
 export type TicketType = Prisma.TicketTypeModel
 /**
+ * Model SailingPrice
+ * * Optional cabin rate for one real sailing; TicketType remains the fallback.
+ */
+export type SailingPrice = Prisma.SailingPriceModel
+/**
  * Model Booking
  * 
  */

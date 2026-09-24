@@ -1,4 +1,5 @@
 import { freshMediaSrc, isVersionedMediaPath } from "./fresh-media-src";
+import { responsiveMediaSrc } from "./responsive-media";
 
 /**
  * Local /media files are already on this origin. Serving them through
@@ -20,6 +21,8 @@ export default function hathorImageLoader({
     return src;
   }
   if (isVersionedMediaPath(src)) {
+    const responsive = responsiveMediaSrc(src, width);
+    if (responsive) return responsive;
     const file = freshMediaSrc(src);
     return `${file}${file.includes("?") ? "&" : "?"}w=${width}`;
   }

@@ -202,6 +202,7 @@ export type CruiseScheduleWhereInput = {
   bookings?: Prisma.BookingListRelationFilter
   bookingRooms?: Prisma.BookingRoomListRelationFilter
   sectors?: Prisma.ScheduleSectorListRelationFilter
+  datePrices?: Prisma.SailingPriceListRelationFilter
 }
 
 export type CruiseScheduleOrderByWithRelationInput = {
@@ -216,6 +217,7 @@ export type CruiseScheduleOrderByWithRelationInput = {
   bookings?: Prisma.BookingOrderByRelationAggregateInput
   bookingRooms?: Prisma.BookingRoomOrderByRelationAggregateInput
   sectors?: Prisma.ScheduleSectorOrderByRelationAggregateInput
+  datePrices?: Prisma.SailingPriceOrderByRelationAggregateInput
 }
 
 export type CruiseScheduleWhereUniqueInput = Prisma.AtLeast<{
@@ -233,6 +235,7 @@ export type CruiseScheduleWhereUniqueInput = Prisma.AtLeast<{
   bookings?: Prisma.BookingListRelationFilter
   bookingRooms?: Prisma.BookingRoomListRelationFilter
   sectors?: Prisma.ScheduleSectorListRelationFilter
+  datePrices?: Prisma.SailingPriceListRelationFilter
 }, "id">
 
 export type CruiseScheduleOrderByWithAggregationInput = {
@@ -272,6 +275,7 @@ export type CruiseScheduleCreateInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutCruiseScheduleInput
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleUncheckedCreateInput = {
@@ -285,6 +289,7 @@ export type CruiseScheduleUncheckedCreateInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCruiseScheduleInput
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorUncheckedCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceUncheckedCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleUpdateInput = {
@@ -298,6 +303,7 @@ export type CruiseScheduleUpdateInput = {
   bookings?: Prisma.BookingUpdateManyWithoutCruiseScheduleNestedInput
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleUncheckedUpdateInput = {
@@ -311,6 +317,7 @@ export type CruiseScheduleUncheckedUpdateInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUncheckedUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUncheckedUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleCreateManyInput = {
@@ -433,6 +440,20 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type CruiseScheduleCreateNestedOneWithoutDatePricesInput = {
+  create?: Prisma.XOR<Prisma.CruiseScheduleCreateWithoutDatePricesInput, Prisma.CruiseScheduleUncheckedCreateWithoutDatePricesInput>
+  connectOrCreate?: Prisma.CruiseScheduleCreateOrConnectWithoutDatePricesInput
+  connect?: Prisma.CruiseScheduleWhereUniqueInput
+}
+
+export type CruiseScheduleUpdateOneRequiredWithoutDatePricesNestedInput = {
+  create?: Prisma.XOR<Prisma.CruiseScheduleCreateWithoutDatePricesInput, Prisma.CruiseScheduleUncheckedCreateWithoutDatePricesInput>
+  connectOrCreate?: Prisma.CruiseScheduleCreateOrConnectWithoutDatePricesInput
+  upsert?: Prisma.CruiseScheduleUpsertWithoutDatePricesInput
+  connect?: Prisma.CruiseScheduleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CruiseScheduleUpdateToOneWithWhereWithoutDatePricesInput, Prisma.CruiseScheduleUpdateWithoutDatePricesInput>, Prisma.CruiseScheduleUncheckedUpdateWithoutDatePricesInput>
+}
+
 export type CruiseScheduleCreateNestedOneWithoutBookingsInput = {
   create?: Prisma.XOR<Prisma.CruiseScheduleCreateWithoutBookingsInput, Prisma.CruiseScheduleUncheckedCreateWithoutBookingsInput>
   connectOrCreate?: Prisma.CruiseScheduleCreateOrConnectWithoutBookingsInput
@@ -485,6 +506,7 @@ export type CruiseScheduleCreateWithoutCruiseInput = {
   bookings?: Prisma.BookingCreateNestedManyWithoutCruiseScheduleInput
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleUncheckedCreateWithoutCruiseInput = {
@@ -497,6 +519,7 @@ export type CruiseScheduleUncheckedCreateWithoutCruiseInput = {
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCruiseScheduleInput
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorUncheckedCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceUncheckedCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleCreateOrConnectWithoutCruiseInput = {
@@ -538,6 +561,74 @@ export type CruiseScheduleScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"CruiseSchedule"> | Date | string
 }
 
+export type CruiseScheduleCreateWithoutDatePricesInput = {
+  id?: string
+  departureTime: Date | string
+  arrivalTime: Date | string
+  isBookable?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cruise: Prisma.CruiseCreateNestedOneWithoutSchedulesInput
+  bookings?: Prisma.BookingCreateNestedManyWithoutCruiseScheduleInput
+  bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutCruiseScheduleInput
+  sectors?: Prisma.ScheduleSectorCreateNestedManyWithoutScheduleInput
+}
+
+export type CruiseScheduleUncheckedCreateWithoutDatePricesInput = {
+  id?: string
+  cruiseId: string
+  departureTime: Date | string
+  arrivalTime: Date | string
+  isBookable?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCruiseScheduleInput
+  bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutCruiseScheduleInput
+  sectors?: Prisma.ScheduleSectorUncheckedCreateNestedManyWithoutScheduleInput
+}
+
+export type CruiseScheduleCreateOrConnectWithoutDatePricesInput = {
+  where: Prisma.CruiseScheduleWhereUniqueInput
+  create: Prisma.XOR<Prisma.CruiseScheduleCreateWithoutDatePricesInput, Prisma.CruiseScheduleUncheckedCreateWithoutDatePricesInput>
+}
+
+export type CruiseScheduleUpsertWithoutDatePricesInput = {
+  update: Prisma.XOR<Prisma.CruiseScheduleUpdateWithoutDatePricesInput, Prisma.CruiseScheduleUncheckedUpdateWithoutDatePricesInput>
+  create: Prisma.XOR<Prisma.CruiseScheduleCreateWithoutDatePricesInput, Prisma.CruiseScheduleUncheckedCreateWithoutDatePricesInput>
+  where?: Prisma.CruiseScheduleWhereInput
+}
+
+export type CruiseScheduleUpdateToOneWithWhereWithoutDatePricesInput = {
+  where?: Prisma.CruiseScheduleWhereInput
+  data: Prisma.XOR<Prisma.CruiseScheduleUpdateWithoutDatePricesInput, Prisma.CruiseScheduleUncheckedUpdateWithoutDatePricesInput>
+}
+
+export type CruiseScheduleUpdateWithoutDatePricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departureTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arrivalTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isBookable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cruise?: Prisma.CruiseUpdateOneRequiredWithoutSchedulesNestedInput
+  bookings?: Prisma.BookingUpdateManyWithoutCruiseScheduleNestedInput
+  bookingRooms?: Prisma.BookingRoomUpdateManyWithoutCruiseScheduleNestedInput
+  sectors?: Prisma.ScheduleSectorUpdateManyWithoutScheduleNestedInput
+}
+
+export type CruiseScheduleUncheckedUpdateWithoutDatePricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cruiseId?: Prisma.StringFieldUpdateOperationsInput | string
+  departureTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arrivalTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isBookable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bookings?: Prisma.BookingUncheckedUpdateManyWithoutCruiseScheduleNestedInput
+  bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutCruiseScheduleNestedInput
+  sectors?: Prisma.ScheduleSectorUncheckedUpdateManyWithoutScheduleNestedInput
+}
+
 export type CruiseScheduleCreateWithoutBookingsInput = {
   id?: string
   departureTime: Date | string
@@ -548,6 +639,7 @@ export type CruiseScheduleCreateWithoutBookingsInput = {
   cruise: Prisma.CruiseCreateNestedOneWithoutSchedulesInput
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleUncheckedCreateWithoutBookingsInput = {
@@ -560,6 +652,7 @@ export type CruiseScheduleUncheckedCreateWithoutBookingsInput = {
   updatedAt?: Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorUncheckedCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceUncheckedCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleCreateOrConnectWithoutBookingsInput = {
@@ -588,6 +681,7 @@ export type CruiseScheduleUpdateWithoutBookingsInput = {
   cruise?: Prisma.CruiseUpdateOneRequiredWithoutSchedulesNestedInput
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleUncheckedUpdateWithoutBookingsInput = {
@@ -600,6 +694,7 @@ export type CruiseScheduleUncheckedUpdateWithoutBookingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUncheckedUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUncheckedUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleCreateWithoutBookingRoomsInput = {
@@ -612,6 +707,7 @@ export type CruiseScheduleCreateWithoutBookingRoomsInput = {
   cruise: Prisma.CruiseCreateNestedOneWithoutSchedulesInput
   bookings?: Prisma.BookingCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleUncheckedCreateWithoutBookingRoomsInput = {
@@ -624,6 +720,7 @@ export type CruiseScheduleUncheckedCreateWithoutBookingRoomsInput = {
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCruiseScheduleInput
   sectors?: Prisma.ScheduleSectorUncheckedCreateNestedManyWithoutScheduleInput
+  datePrices?: Prisma.SailingPriceUncheckedCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleCreateOrConnectWithoutBookingRoomsInput = {
@@ -652,6 +749,7 @@ export type CruiseScheduleUpdateWithoutBookingRoomsInput = {
   cruise?: Prisma.CruiseUpdateOneRequiredWithoutSchedulesNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleUncheckedUpdateWithoutBookingRoomsInput = {
@@ -664,6 +762,7 @@ export type CruiseScheduleUncheckedUpdateWithoutBookingRoomsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUncheckedUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUncheckedUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleCreateWithoutSectorsInput = {
@@ -676,6 +775,7 @@ export type CruiseScheduleCreateWithoutSectorsInput = {
   cruise: Prisma.CruiseCreateNestedOneWithoutSchedulesInput
   bookings?: Prisma.BookingCreateNestedManyWithoutCruiseScheduleInput
   bookingRooms?: Prisma.BookingRoomCreateNestedManyWithoutCruiseScheduleInput
+  datePrices?: Prisma.SailingPriceCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleUncheckedCreateWithoutSectorsInput = {
@@ -688,6 +788,7 @@ export type CruiseScheduleUncheckedCreateWithoutSectorsInput = {
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutCruiseScheduleInput
   bookingRooms?: Prisma.BookingRoomUncheckedCreateNestedManyWithoutCruiseScheduleInput
+  datePrices?: Prisma.SailingPriceUncheckedCreateNestedManyWithoutScheduleInput
 }
 
 export type CruiseScheduleCreateOrConnectWithoutSectorsInput = {
@@ -716,6 +817,7 @@ export type CruiseScheduleUpdateWithoutSectorsInput = {
   cruise?: Prisma.CruiseUpdateOneRequiredWithoutSchedulesNestedInput
   bookings?: Prisma.BookingUpdateManyWithoutCruiseScheduleNestedInput
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutCruiseScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleUncheckedUpdateWithoutSectorsInput = {
@@ -728,6 +830,7 @@ export type CruiseScheduleUncheckedUpdateWithoutSectorsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutCruiseScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUncheckedUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleCreateManyCruiseInput = {
@@ -749,6 +852,7 @@ export type CruiseScheduleUpdateWithoutCruiseInput = {
   bookings?: Prisma.BookingUpdateManyWithoutCruiseScheduleNestedInput
   bookingRooms?: Prisma.BookingRoomUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleUncheckedUpdateWithoutCruiseInput = {
@@ -761,6 +865,7 @@ export type CruiseScheduleUncheckedUpdateWithoutCruiseInput = {
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   bookingRooms?: Prisma.BookingRoomUncheckedUpdateManyWithoutCruiseScheduleNestedInput
   sectors?: Prisma.ScheduleSectorUncheckedUpdateManyWithoutScheduleNestedInput
+  datePrices?: Prisma.SailingPriceUncheckedUpdateManyWithoutScheduleNestedInput
 }
 
 export type CruiseScheduleUncheckedUpdateManyWithoutCruiseInput = {
@@ -781,12 +886,14 @@ export type CruiseScheduleCountOutputType = {
   bookings: number
   bookingRooms: number
   sectors: number
+  datePrices: number
 }
 
 export type CruiseScheduleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | CruiseScheduleCountOutputTypeCountBookingsArgs
   bookingRooms?: boolean | CruiseScheduleCountOutputTypeCountBookingRoomsArgs
   sectors?: boolean | CruiseScheduleCountOutputTypeCountSectorsArgs
+  datePrices?: boolean | CruiseScheduleCountOutputTypeCountDatePricesArgs
 }
 
 /**
@@ -820,6 +927,13 @@ export type CruiseScheduleCountOutputTypeCountSectorsArgs<ExtArgs extends runtim
   where?: Prisma.ScheduleSectorWhereInput
 }
 
+/**
+ * CruiseScheduleCountOutputType without action
+ */
+export type CruiseScheduleCountOutputTypeCountDatePricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SailingPriceWhereInput
+}
+
 
 export type CruiseScheduleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -833,6 +947,7 @@ export type CruiseScheduleSelect<ExtArgs extends runtime.Types.Extensions.Intern
   bookings?: boolean | Prisma.CruiseSchedule$bookingsArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.CruiseSchedule$bookingRoomsArgs<ExtArgs>
   sectors?: boolean | Prisma.CruiseSchedule$sectorsArgs<ExtArgs>
+  datePrices?: boolean | Prisma.CruiseSchedule$datePricesArgs<ExtArgs>
   _count?: boolean | Prisma.CruiseScheduleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cruiseSchedule"]>
 
@@ -874,6 +989,7 @@ export type CruiseScheduleInclude<ExtArgs extends runtime.Types.Extensions.Inter
   bookings?: boolean | Prisma.CruiseSchedule$bookingsArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.CruiseSchedule$bookingRoomsArgs<ExtArgs>
   sectors?: boolean | Prisma.CruiseSchedule$sectorsArgs<ExtArgs>
+  datePrices?: boolean | Prisma.CruiseSchedule$datePricesArgs<ExtArgs>
   _count?: boolean | Prisma.CruiseScheduleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CruiseScheduleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -890,6 +1006,7 @@ export type $CruiseSchedulePayload<ExtArgs extends runtime.Types.Extensions.Inte
     bookings: Prisma.$BookingPayload<ExtArgs>[]
     bookingRooms: Prisma.$BookingRoomPayload<ExtArgs>[]
     sectors: Prisma.$ScheduleSectorPayload<ExtArgs>[]
+    datePrices: Prisma.$SailingPricePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1297,6 +1414,7 @@ export interface Prisma__CruiseScheduleClient<T, Null = never, ExtArgs extends r
   bookings<T extends Prisma.CruiseSchedule$bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CruiseSchedule$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bookingRooms<T extends Prisma.CruiseSchedule$bookingRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CruiseSchedule$bookingRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BookingRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sectors<T extends Prisma.CruiseSchedule$sectorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CruiseSchedule$sectorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScheduleSectorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  datePrices<T extends Prisma.CruiseSchedule$datePricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CruiseSchedule$datePricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SailingPricePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1803,6 +1921,30 @@ export type CruiseSchedule$sectorsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.ScheduleSectorScalarFieldEnum | Prisma.ScheduleSectorScalarFieldEnum[]
+}
+
+/**
+ * CruiseSchedule.datePrices
+ */
+export type CruiseSchedule$datePricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SailingPrice
+   */
+  select?: Prisma.SailingPriceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SailingPrice
+   */
+  omit?: Prisma.SailingPriceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SailingPriceInclude<ExtArgs> | null
+  where?: Prisma.SailingPriceWhereInput
+  orderBy?: Prisma.SailingPriceOrderByWithRelationInput | Prisma.SailingPriceOrderByWithRelationInput[]
+  cursor?: Prisma.SailingPriceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SailingPriceScalarFieldEnum | Prisma.SailingPriceScalarFieldEnum[]
 }
 
 /**

@@ -8,14 +8,18 @@ const ts = require('typescript');
 function load(relative) {
   const filename = path.resolve(__dirname, '..', relative);
   const source = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
   }).outputText;
   const loaded = new Module(filename, module);
   loaded.filename = filename;
   loaded.paths = Module._nodeModulePaths(path.dirname(filename));
   loaded.require = id => id === './fresh-media-src'
     ? load('lib/fresh-media-src.ts')
-    : module.require(id);
+    : id === './responsive-media'
+      ? load('lib/responsive-media.ts')
+      : id === './responsive-media-manifest.json'
+        ? require(path.resolve(__dirname, '..', 'lib/responsive-media-manifest.json'))
+        : module.require(id);
   loaded._compile(source, filename);
   return loaded.exports;
 }
@@ -28,6 +32,16 @@ assert.equal(loader({ src: golden, width: 32, quality: 75 }), golden);
 assert.equal(loader({ src: dark, width: 1080, quality: 90 }), dark, 'Responsive widths still use the same vector');
 assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + dark)));
 assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + golden)));
-assert.match(loader({ src: '/media/hathor/optimized/room-luxury.webp', width: 640 }), /^\/media\/hathor\/optimized\/room-luxury\.webp\?v=\d+&w=640$/);
+const optimized = loader({ src: '/media/hathor/r2/landmark-valley-kings.webp', width: 256 });
+assert.match(optimized, /^\/media\/hathor\/responsive\/r2\/landmark-valley-kings-384\.webp\?v=\d+$/);
+assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + optimized.split('?')[0])));
+assert.match(loader({ src: '/media/hathor/r2/landmark-valley-kings.webp', width: 1920 }), /^\/media\/hathor\/r2\/landmark-valley-kings\.webp\?v=\d+&w=1920$/);
+assert.match(loader({ src: '/media/hathor/ship/main-deck.webp', width: 640 }), /^\/media\/hathor\/ship\/main-deck\.webp\?v=\d+&w=640$/);
 assert.match(loader({ src: 'https://images.unsplash.com/photo-1', width: 640, quality: 90 }), /^\/_next\/image\?/);
-console.log('PASS: branding SVGs bypass the optimizer; photos keep their existing delivery paths.');
+for (const [source, widths] of Object.entries(require('../lib/responsive-media-manifest.json'))) {
+  for (const width of widths) {
+    const result = loader({ src: source, width });
+    assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + result.split('?')[0])), `missing ${result}`);
+  }
+}
+console.log('PASS: SVGs and CMS URLs retain their paths; all responsive photo URLs exist; full-size and ship plans fall back to originals.');

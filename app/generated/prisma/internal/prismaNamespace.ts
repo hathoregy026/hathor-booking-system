@@ -401,6 +401,7 @@ export const ModelName = {
   CruiseSchedule: 'CruiseSchedule',
   Room: 'Room',
   TicketType: 'TicketType',
+  SailingPrice: 'SailingPrice',
   Booking: 'Booking',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "booking" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -729,6 +730,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TicketTypeCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TicketTypeCountAggregateOutputType> | number
+        }
+      }
+    }
+    SailingPrice: {
+      payload: Prisma.$SailingPricePayload<ExtArgs>
+      fields: Prisma.SailingPriceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SailingPriceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SailingPriceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>
+        }
+        findFirst: {
+          args: Prisma.SailingPriceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SailingPriceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>
+        }
+        findMany: {
+          args: Prisma.SailingPriceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>[]
+        }
+        create: {
+          args: Prisma.SailingPriceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>
+        }
+        createMany: {
+          args: Prisma.SailingPriceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SailingPriceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>[]
+        }
+        delete: {
+          args: Prisma.SailingPriceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>
+        }
+        update: {
+          args: Prisma.SailingPriceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>
+        }
+        deleteMany: {
+          args: Prisma.SailingPriceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SailingPriceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SailingPriceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>[]
+        }
+        upsert: {
+          args: Prisma.SailingPriceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SailingPricePayload>
+        }
+        aggregate: {
+          args: Prisma.SailingPriceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSailingPrice>
+        }
+        groupBy: {
+          args: Prisma.SailingPriceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SailingPriceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SailingPriceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SailingPriceCountAggregateOutputType> | number
         }
       }
     }
@@ -2016,6 +2091,16 @@ export const TicketTypeScalarFieldEnum = {
 export type TicketTypeScalarFieldEnum = (typeof TicketTypeScalarFieldEnum)[keyof typeof TicketTypeScalarFieldEnum]
 
 
+export const SailingPriceScalarFieldEnum = {
+  cruiseScheduleId: 'cruiseScheduleId',
+  ticketTypeId: 'ticketTypeId',
+  priceCents: 'priceCents',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SailingPriceScalarFieldEnum = (typeof SailingPriceScalarFieldEnum)[keyof typeof SailingPriceScalarFieldEnum]
+
+
 export const BookingScalarFieldEnum = {
   id: 'id',
   cruiseScheduleId: 'cruiseScheduleId',
@@ -2536,6 +2621,7 @@ export type GlobalOmitConfig = {
   cruiseSchedule?: Prisma.CruiseScheduleOmit
   room?: Prisma.RoomOmit
   ticketType?: Prisma.TicketTypeOmit
+  sailingPrice?: Prisma.SailingPriceOmit
   booking?: Prisma.BookingOmit
   apiRateLimit?: Prisma.ApiRateLimitOmit
   bookingRoom?: Prisma.BookingRoomOmit
