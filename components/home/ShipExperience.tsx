@@ -18,7 +18,8 @@ const VOYAGES: { value: StayDurationValue; label: string }[] = [
 const shortDate = (iso: string) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(iso));
 
 export function ShipExperience() {
-  const theatreRef = useRef<HTMLDivElement>(null);
+  const planRef = useRef<HTMLDivElement>(null);
+  const arrivalPlayed = useRef(false);
   const [sailingIn, setSailingIn] = useState(false);
   const [duration, setDuration] = useState<StayDurationValue>("7-nights-luxor-aswan-luxor");
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
@@ -31,21 +32,30 @@ export function ShipExperience() {
   const [selected, setSelected] = useState<ShipSlotId | null>(null);
 
   useEffect(() => {
-    const theatre = theatreRef.current;
-    if (!theatre || !('IntersectionObserver' in window)) return;
+    const plan = planRef.current;
+    if (!plan || arrivalPlayed.current || !('IntersectionObserver' in window)) return;
 
     let finishTimer: number | undefined;
-    const observer = new IntersectionObserver(entries => {
-      if (!entries.some(entry => entry.isIntersecting)) return;
+    let inFrame = false;
+    const startArrival = () => {
+      if (!inFrame || arrivalPlayed.current || plan.querySelector('.ship-plan__canvas[data-ready="true"]') === null) return;
+      arrivalPlayed.current = true;
       observer.disconnect();
+      readinessObserver.disconnect();
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       setSailingIn(true);
-      finishTimer = window.setTimeout(() => setSailingIn(false), 1850);
-    }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
-    observer.observe(theatre);
+      finishTimer = window.setTimeout(() => setSailingIn(false), 4100);
+    };
+    const observer = new IntersectionObserver(entries => {
+      inFrame = entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.85);
+      startArrival();
+    }, { threshold: 0.85, rootMargin: '-12% 0px -30% 0px' });
+    const readinessObserver = new MutationObserver(startArrival);
+    readinessObserver.observe(plan, { attributes: true, attributeFilter: ['data-ready'], subtree: true });
+    observer.observe(plan);
 
-    return () => { observer.disconnect(); window.clearTimeout(finishTimer); };
-  }, []);
+    return () => { observer.disconnect(); readinessObserver.disconnect(); window.clearTimeout(finishTimer); };
+  }, [deckId]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,22 +106,24 @@ export function ShipExperience() {
 
       <div className="h3-ship__deck-bar">
         <div className="h3-ship__deck-tabs" role="group" aria-label="Explore a deck">
-          {decks.map((item, index) => <button key={item.id} type="button" aria-pressed={deck.id === item.id} onClick={() => { setDeckId(item.id); setSelected(null); }}><small>0{index + 1}</small><span>{item.name}</span><i aria-hidden="true">↗</i></button>)}
+          {decks.map((item, index) => <button key={item.id} type="button" aria-pressed={deck.id === item.id} onClick={() => { setSailingIn(false); setDeckId(item.id); setSelected(null); }}><small>0{index + 1}</small><span>{item.name}</span><i aria-hidden="true">↗</i></button>)}
         </div>
         <span className="h3-ship__instruction">{deck.id === "sun" ? "An open-air retreat" : "Select a room on the plan"}</span>
       </div>
 
       <div className="h3-ship__workspace">
-      <div ref={theatreRef} className="h3-ship__theatre" data-sailing-in={sailingIn ? "true" : undefined}>
+      <div className="h3-ship__theatre" data-sailing-in={sailingIn ? "true" : undefined}>
         <div className="h3-ship__deck-heading"><div><p className="h3-ship__eyebrow">{deck.subtitle}</p><h3>{deck.name}</h3></div><span className="h3-ship__orientation" aria-hidden="true">Stern <span>⟶</span> Bow</span></div>
         <span className="h3-ship__swipe-hint" aria-hidden="true">Swipe across the deck ↔</span>
-        <svg className="h3-ship__wake" viewBox="0 0 520 210" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-          <path d="M510 30 C390 25 360 8 255 38 S105 55 5 24" />
-          <path d="M510 105 C375 102 340 91 230 122 S90 145 5 118" />
-          <path d="M510 182 C390 186 345 207 245 178 S105 167 5 195" />
-        </svg>
-        <div key={deck.id} className="h3-ship__deck-reveal">
+        <div key={deck.id} ref={planRef} className="h3-ship__deck-reveal">
           <ShipDeckPlan deck={deck.id} rooms={views} selected={view ? selected : null} onSelect={chooseRoom} vertical compact />
+          <svg className="h3-ship__ripples" viewBox="0 0 1774 640" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <path d="M75 92 C260 70 355 105 540 84 S860 68 1045 89 S1355 100 1570 82" />
+            <path d="M125 65 C300 53 395 76 555 62 S930 51 1090 68 S1425 77 1600 67" />
+            <path d="M70 548 C255 570 365 532 545 554 S875 576 1050 552 S1380 535 1580 553" />
+            <path d="M120 579 C300 594 410 566 575 584 S925 593 1090 576 S1420 563 1595 577" />
+            <path d="M1605 100 C1705 142 1742 217 1735 315 S1700 500 1610 539" />
+          </svg>
         </div>
         <div className="h3-ship__plan-footer"><p>{deck.description}</p>{slots.length ? <div className="h3-ship__legend" aria-label="Room status key"><span><i data-state="open" />Available</span><span><i data-state="closed" />Unavailable</span><span><i data-state="selected" />Selected</span><span><i data-state="unknown" />Not checked</span></div> : <span className="h3-ship__context-note">No guest rooms on this deck</span>}</div>
       </div>
