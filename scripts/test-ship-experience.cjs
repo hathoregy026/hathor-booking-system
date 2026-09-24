@@ -85,6 +85,8 @@ async function browserTests() {
     await section.waitFor({ timeout: 30000 });
     await page.waitForFunction(() => document.querySelectorAll('#explore-hathor .ship-plan__room[data-state="open"]').length === 9);
     await page.waitForTimeout(4500); // Existing homepage scroll engine finishes measuring its hero.
+    assert.equal(await section.locator('.h3-ship__theatre').getAttribute('data-sailing-in'), null, 'Reduced-motion visit skips the sailing entrance');
+    assert.equal(await page.locator('.h3-images--secundario').evaluate(element => getComputedStyle(element).backgroundColor), 'rgb(236, 232, 223)', 'Photo chapter matches the ship cream');
     async function reveal(locator, offset = 80) {
       await locator.evaluate((element, topOffset) => {
         const y = element.getBoundingClientRect().top + scrollY - topOffset;
@@ -133,6 +135,7 @@ async function browserTests() {
       await reveal(section.locator('.h3-ship__theatre'));
       const bounds = await section.evaluate(element => ({ width: element.getBoundingClientRect().width, scrollWidth: element.scrollWidth }));
       assert.ok(bounds.scrollWidth <= width + 2, `${name}: no section overflow`);
+      assert.equal(await page.locator('.h3-images--secundario').evaluate(element => getComputedStyle(element).backgroundColor), 'rgb(236, 232, 223)', `${name}: cream continues into photo chapter`);
       const target = section.locator('[data-slot="K01"]');
       const rect = await target.boundingBox();
       if (width <= 700) assert.ok(rect.width >= 44 && rect.height >= 44, `${name}: comfortable room hit area`);
@@ -209,6 +212,28 @@ async function browserTests() {
       assert.equal(response.status(), 401);
     }
     console.log('PASS: unauthenticated admin GET and PUT rejected. Screenshots: _local/ship-plan-qa/');
+
+    const motionContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+    await motionContext.route('**/api/ship-experience?**', route => route.fulfill({ json: { config, rooms, sailings } }));
+    await motionContext.route('**/api/**', route => route.request().method() === 'GET' ? route.fallback() : route.abort());
+    const motionPage = await motionContext.newPage();
+    await motionPage.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    const theatre = motionPage.locator('#explore-hathor .h3-ship__theatre');
+    await theatre.waitFor();
+    await motionPage.waitForTimeout(4500);
+    assert.equal(await theatre.getAttribute('data-sailing-in'), null, 'Entrance waits until the ship reaches the viewport');
+    await theatre.evaluate(element => {
+      const y = element.getBoundingClientRect().top + scrollY - 100;
+      if (window.__hathorLenis) window.__hathorLenis.scrollTo(y, { immediate: true, force: true });
+      window.scrollTo(0, y);
+    });
+    await motionPage.waitForFunction(() => document.querySelector('#explore-hathor .h3-ship__theatre')?.getAttribute('data-sailing-in') === 'true');
+    assert.equal(await theatre.locator('.ship-plan--compact').evaluate(element => getComputedStyle(element).animationName), 'ship-sail-in');
+    await theatre.screenshot({ path: path.join(out, 'ship-sailing-entrance.png') });
+    await motionPage.waitForFunction(() => !document.querySelector('#explore-hathor .h3-ship__theatre')?.hasAttribute('data-sailing-in'));
+    assert.equal(await theatre.locator('.ship-plan--compact').evaluate(element => getComputedStyle(element).animationName), 'none', 'Animation finishes without leaving a transform on room targets');
+    await motionContext.close();
+    console.log('PASS: ship sails into view once, settles, and the next chapter retains cream on desktop and phone.');
   } finally { await browser.close(); }
 }
 if (process.argv.includes('--browser')) browserTests().catch(error => { console.error(error); process.exitCode = 1; });

@@ -18,12 +18,20 @@
 .home-three .h3-ship__instruction { font: 500 .64rem/1.4 var(--h3-meta); letter-spacing: .06em; }
 .home-three .h3-ship__workspace { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(300px, .8fr); gap: clamp(1.2rem, 2.4vw, 2.7rem); align-items: stretch; padding-top: clamp(.8rem, 1.7vh, 1.3rem); }
 .home-three .h3-ship__theatre { position: relative; min-width: 0; background: radial-gradient(ellipse at 50% 53%, #faf7ef 0, #f1ece1 53%, #ece8df00 78%); }
+.home-three .h3-ship__wake { position: absolute; z-index: 0; top: 19%; left: 0; width: 44%; height: 62%; overflow: visible; opacity: 0; pointer-events: none; fill: none; stroke: #a99a77; stroke-width: 1.2; stroke-linecap: round; }
+.home-three .h3-ship__wake path { stroke-dasharray: 680; stroke-dashoffset: 680; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__wake { animation: ship-wake-fade 1.8s ease-out both; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__wake path { animation: ship-wake-draw 1.45s .1s cubic-bezier(.25,.65,.35,1) both; }
+.home-three .h3-ship__theatre[data-sailing-in="true"] .ship-plan--compact { animation: ship-sail-in 1.65s cubic-bezier(.16,.75,.25,1) both; transform-origin: 50% 60%; }
+@keyframes ship-sail-in { 0% { opacity: .55; transform: translate3d(-6%, 9px, 0) rotate(-.7deg) scale(.985); } 62% { opacity: 1; transform: translate3d(.6%, -2px, 0) rotate(.14deg) scale(1.003); } 100% { opacity: 1; transform: translate3d(0, 0, 0) rotate(0) scale(1); } }
+@keyframes ship-wake-draw { to { stroke-dashoffset: 0; } }
+@keyframes ship-wake-fade { 0%, 12% { opacity: 0; transform: translateX(10%); } 35%, 65% { opacity: .6; } 100% { opacity: 0; transform: translateX(-5%); } }
 .home-three .h3-ship__swipe-hint { display: none; }
 .home-three .h3-ship__deck-heading { display: flex; justify-content: space-between; align-items: center; min-height: 2.8rem; margin-bottom: .2rem; }
 .home-three .h3-ship__deck-heading h3 { margin: 0; font: 400 clamp(1.55rem, 2.1vw, 2.3rem)/1 var(--h3-display); }
 .home-three .h3-ship__orientation { display: flex; align-items: center; gap: .7rem; font: 500 .55rem/1 var(--h3-meta); text-transform: uppercase; letter-spacing: .1em; color: #817358; }
 .home-three .h3-ship__orientation span { font-size: 1.5rem; }
-.home-three .h3-ship__deck-reveal { animation: ship-deck-arrive .65s cubic-bezier(.18,.68,.25,1) both; transform-origin: 50% 65%; }
+.home-three .h3-ship__deck-reveal { position: relative; z-index: 1; animation: ship-deck-arrive .65s cubic-bezier(.18,.68,.25,1) both; transform-origin: 50% 65%; }
 @keyframes ship-deck-arrive { from { opacity: 0; transform: perspective(1400px) translateY(15px) rotateX(5deg) scale(.98); } to { opacity: 1; transform: perspective(1400px) translateY(0) rotateX(0) scale(1); } }
 .home-three .h3-ship__plan-footer { display: flex; align-items: start; justify-content: space-between; gap: 1.2rem; padding: .35rem 0 0; }
 .home-three .h3-ship__plan-footer > p { margin: 0; max-width: 27rem; font: 400 .68rem/1.55 var(--h3-meta); color: #685e4b; }
@@ -115,4 +123,6 @@
   .home-three .h3-ship__legend, .home-three .h3-ship__fineprint, .home-three .h3-ship__availability-note { display: none; }
   .home-three .h3-ship__room-copy > p:not(.h3-ship__eyebrow):not(.h3-ship__room-spec) { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; }
 }
-@media (prefers-reduced-motion: reduce) { .home-three .h3-ship__deck-reveal { animation: none; } .home-three .h3-ship-experience * { transition: none !important; } }
+/* Continue the ship's cream canvas into the immediately following photo chapter. */
+.home-three .h3-scene.h3-images--secundario { background: #ece8df; box-shadow: 0 -1px 0 #ece8df; }
+@media (prefers-reduced-motion: reduce) { .home-three .h3-ship__deck-reveal, .home-three .h3-ship__theatre[data-sailing-in="true"] .ship-plan--compact, .home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__wake, .home-three .h3-ship__theatre[data-sailing-in="true"] .h3-ship__wake path { animation: none; } .home-three .h3-ship-experience * { transition: none !important; } }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ShipDeckPlan, type PlanRoomView } from "@/components/ship/ShipDeckPlan";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
@@ -18,6 +18,8 @@ const VOYAGES: { value: StayDurationValue; label: string }[] = [
 const shortDate = (iso: string) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(iso));
 
 export function ShipExperience() {
+  const theatreRef = useRef<HTMLDivElement>(null);
+  const [sailingIn, setSailingIn] = useState(false);
   const [duration, setDuration] = useState<StayDurationValue>("7-nights-luxor-aswan-luxor");
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [data, setData] = useState<Payload | null>(null);
@@ -27,6 +29,23 @@ export function ShipExperience() {
   const [deckId, setDeckId] = useState<ShipDeckId>("lower");
   const [sailingId, setSailingId] = useState("");
   const [selected, setSelected] = useState<ShipSlotId | null>(null);
+
+  useEffect(() => {
+    const theatre = theatreRef.current;
+    if (!theatre || !('IntersectionObserver' in window)) return;
+
+    let finishTimer: number | undefined;
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      observer.disconnect();
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      setSailingIn(true);
+      finishTimer = window.setTimeout(() => setSailingIn(false), 1850);
+    }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
+    observer.observe(theatre);
+
+    return () => { observer.disconnect(); window.clearTimeout(finishTimer); };
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -83,9 +102,14 @@ export function ShipExperience() {
       </div>
 
       <div className="h3-ship__workspace">
-      <div className="h3-ship__theatre">
+      <div ref={theatreRef} className="h3-ship__theatre" data-sailing-in={sailingIn ? "true" : undefined}>
         <div className="h3-ship__deck-heading"><div><p className="h3-ship__eyebrow">{deck.subtitle}</p><h3>{deck.name}</h3></div><span className="h3-ship__orientation" aria-hidden="true">Stern <span>⟶</span> Bow</span></div>
         <span className="h3-ship__swipe-hint" aria-hidden="true">Swipe across the deck ↔</span>
+        <svg className="h3-ship__wake" viewBox="0 0 520 210" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M510 30 C390 25 360 8 255 38 S105 55 5 24" />
+          <path d="M510 105 C375 102 340 91 230 122 S90 145 5 118" />
+          <path d="M510 182 C390 186 345 207 245 178 S105 167 5 195" />
+        </svg>
         <div key={deck.id} className="h3-ship__deck-reveal">
           <ShipDeckPlan deck={deck.id} rooms={views} selected={view ? selected : null} onSelect={chooseRoom} vertical compact />
         </div>
