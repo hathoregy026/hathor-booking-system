@@ -1,346 +1,556 @@
 {
-  "/media/hathor/optimized/about-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/cruises-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/dining-intro-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/dining-projects-course-1.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/gastronomy-celebration.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/gastronomy-chef.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/gastronomy-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/gastronomy-restaurant.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/gastronomy-table.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/gastronomy-wine.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-1.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-11.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-13.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-14.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-2.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-5.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-6.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-8.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-amenities-9.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-call-to-action.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-carousel-royal-3n.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-split-courtyard.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-story-craft-large.webp": [
-    384,
-    768
-  ],
-  "/media/hathor/optimized/home-story-dining.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-story-legacy-large.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-voyage-3n-aswan-luxor.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-voyage-4n-luxor-aswan.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-voyage-7n-roundtrip.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-voyage-nile-majesty.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-wheel-image.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/home-wheel-stage.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/moving-tilted-1.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/moving-tilted-4.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/room-luxury.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/room-royal.webp": [
-    384,
-    768
-  ],
-  "/media/hathor/optimized/room-suite.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/scraped-luxsuite-1.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/scraped-luxsuite-2.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/scraped-luxsuite-4.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/scraped-luxsuite-5.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/optimized/scraped-luxsuite-6.webp": [
-    384,
-    768
-  ],
-  "/media/hathor/optimized/scraped-royal-2.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/about-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/charter-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/contact-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/cruises-hero.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/home-cinematic-still.webp": [
-    384,
-    768
-  ],
-  "/media/hathor/r2/home-split-courtyard.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/home-wheel-back.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/landmark-hatshepsut.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/landmark-obelisk.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/landmark-valley-kings.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/room-luxury.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/room-suite.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/wellness-fitness.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/r2/wellness-hero.webp": [
-    384,
-    768
-  ],
-  "/media/hathor/scraped/cabin-1.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/cabin-3.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/cabin-6.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/cabin-8.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/luxsuite-1.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/luxsuite-2.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/luxsuite-3.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/luxsuite-5.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/luxsuite-6.webp": [
-    384,
-    768
-  ],
-  "/media/hathor/scraped/royal-5.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/royal-6.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/royal-7.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/royal-8.webp": [
-    384,
-    768,
-    1280
-  ],
-  "/media/hathor/scraped/suites-royal.webp": [
-    384,
-    768,
-    1280
-  ]
+  "/media/hathor/optimized/about-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "44241dcc8f42"
+  },
+  "/media/hathor/optimized/cruises-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "68404c78f15d"
+  },
+  "/media/hathor/optimized/dining-intro-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "2a8864a65560"
+  },
+  "/media/hathor/optimized/dining-projects-course-1.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "da1c6976075e"
+  },
+  "/media/hathor/optimized/gastronomy-celebration.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "4f2eb9c7c231"
+  },
+  "/media/hathor/optimized/gastronomy-chef.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "76871417126c"
+  },
+  "/media/hathor/optimized/gastronomy-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "b0eb1c00bf69"
+  },
+  "/media/hathor/optimized/gastronomy-restaurant.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "af3381eeea75"
+  },
+  "/media/hathor/optimized/gastronomy-table.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "0f65f3e4bf24"
+  },
+  "/media/hathor/optimized/gastronomy-wine.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "2fcc1d9a8a1e"
+  },
+  "/media/hathor/optimized/home-amenities-1.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "8bfe3a04e695"
+  },
+  "/media/hathor/optimized/home-amenities-11.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "6fb91460b8f5"
+  },
+  "/media/hathor/optimized/home-amenities-13.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "5f7e85578e5e"
+  },
+  "/media/hathor/optimized/home-amenities-14.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "ec99fc034164"
+  },
+  "/media/hathor/optimized/home-amenities-2.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "58bd6bc8124e"
+  },
+  "/media/hathor/optimized/home-amenities-5.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "8c35e4f0361c"
+  },
+  "/media/hathor/optimized/home-amenities-6.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "d4dc29bbd461"
+  },
+  "/media/hathor/optimized/home-amenities-8.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "19080e0f809b"
+  },
+  "/media/hathor/optimized/home-amenities-9.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "ae6983eed7a9"
+  },
+  "/media/hathor/optimized/home-call-to-action.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "8e0c96faf287"
+  },
+  "/media/hathor/optimized/home-carousel-royal-3n.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "8325899613fb"
+  },
+  "/media/hathor/optimized/home-split-courtyard.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "58bd6bc8124e"
+  },
+  "/media/hathor/optimized/home-story-craft-large.webp": {
+    "widths": [
+      384,
+      768
+    ],
+    "version": "2547f0f89572"
+  },
+  "/media/hathor/optimized/home-story-dining.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "c223f5b4d9b5"
+  },
+  "/media/hathor/optimized/home-story-legacy-large.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "5c327fd7b7d9"
+  },
+  "/media/hathor/optimized/home-voyage-3n-aswan-luxor.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "f37c86e36ba8"
+  },
+  "/media/hathor/optimized/home-voyage-4n-luxor-aswan.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "5bb3ef30e770"
+  },
+  "/media/hathor/optimized/home-voyage-7n-roundtrip.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "0f65f3e4bf24"
+  },
+  "/media/hathor/optimized/home-voyage-nile-majesty.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "5919eb9fb8df"
+  },
+  "/media/hathor/optimized/home-wheel-image.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "e3e9a8f7b68d"
+  },
+  "/media/hathor/optimized/home-wheel-stage.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "ea7f7210c49e"
+  },
+  "/media/hathor/optimized/moving-tilted-1.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "0f65f3e4bf24"
+  },
+  "/media/hathor/optimized/moving-tilted-4.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "f37c86e36ba8"
+  },
+  "/media/hathor/optimized/room-luxury.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "0bb0740796cc"
+  },
+  "/media/hathor/optimized/room-royal.webp": {
+    "widths": [
+      384,
+      768
+    ],
+    "version": "8ef23c4043e3"
+  },
+  "/media/hathor/optimized/room-suite.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "a5d48fef5374"
+  },
+  "/media/hathor/optimized/scraped-luxsuite-1.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "a5d48fef5374"
+  },
+  "/media/hathor/optimized/scraped-luxsuite-2.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "eb6bcbd35a48"
+  },
+  "/media/hathor/optimized/scraped-luxsuite-4.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "b620529aaf7b"
+  },
+  "/media/hathor/optimized/scraped-luxsuite-5.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "af75cdf0350e"
+  },
+  "/media/hathor/optimized/scraped-luxsuite-6.webp": {
+    "widths": [
+      384,
+      768
+    ],
+    "version": "8ef23c4043e3"
+  },
+  "/media/hathor/optimized/scraped-royal-2.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "af75cdf0350e"
+  },
+  "/media/hathor/r2/about-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "cfc05b563ce2"
+  },
+  "/media/hathor/r2/charter-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "77650e8624d5"
+  },
+  "/media/hathor/r2/contact-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "103dccfe03b3"
+  },
+  "/media/hathor/r2/cruises-hero.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "0c41cb267da0"
+  },
+  "/media/hathor/r2/home-cinematic-still.webp": {
+    "widths": [
+      384,
+      768
+    ],
+    "version": "610ab11ff854"
+  },
+  "/media/hathor/r2/home-split-courtyard.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "19da48275c14"
+  },
+  "/media/hathor/r2/home-wheel-back.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "68a452be54e0"
+  },
+  "/media/hathor/r2/landmark-hatshepsut.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "11b48bdbb34f"
+  },
+  "/media/hathor/r2/landmark-obelisk.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "a729bbf14ed3"
+  },
+  "/media/hathor/r2/landmark-valley-kings.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "ab4cf55e58e3"
+  },
+  "/media/hathor/r2/room-luxury.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "2d9d821639d2"
+  },
+  "/media/hathor/r2/room-suite.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "4f9754968378"
+  },
+  "/media/hathor/r2/wellness-fitness.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "165862de7886"
+  },
+  "/media/hathor/r2/wellness-hero.webp": {
+    "widths": [
+      384,
+      768
+    ],
+    "version": "8ed2785d46a0"
+  },
+  "/media/hathor/scraped/cabin-1.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "2d9d821639d2"
+  },
+  "/media/hathor/scraped/cabin-3.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "967f0514db6c"
+  },
+  "/media/hathor/scraped/cabin-6.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "b65a96efd8ef"
+  },
+  "/media/hathor/scraped/cabin-8.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "a82b6f795407"
+  },
+  "/media/hathor/scraped/luxsuite-1.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "4f9754968378"
+  },
+  "/media/hathor/scraped/luxsuite-2.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "aa213792bcbe"
+  },
+  "/media/hathor/scraped/luxsuite-3.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "74a026666da1"
+  },
+  "/media/hathor/scraped/luxsuite-5.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "55e6a3bf6767"
+  },
+  "/media/hathor/scraped/luxsuite-6.webp": {
+    "widths": [
+      384,
+      768
+    ],
+    "version": "4ac81222a5d5"
+  },
+  "/media/hathor/scraped/royal-5.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "4f9754968378"
+  },
+  "/media/hathor/scraped/royal-6.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "ccc8a5f8ee18"
+  },
+  "/media/hathor/scraped/royal-7.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "a82b6f795407"
+  },
+  "/media/hathor/scraped/royal-8.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "c29d35e44638"
+  },
+  "/media/hathor/scraped/suites-royal.webp": {
+    "widths": [
+      384,
+      768,
+      1280
+    ],
+    "version": "9bb30d8ae135"
+  }
 }

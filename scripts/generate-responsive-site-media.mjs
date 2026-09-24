@@ -2,6 +2,7 @@
 import { readdir, mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 import sharp from "sharp";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -49,7 +50,10 @@ async function walk(directory) {
       available.push(width);
     }
     if (available.length) {
-      manifest[`/media/hathor/${relative}`] = available;
+      manifest[`/media/hathor/${relative}`] = {
+        widths: available,
+        version: createHash("sha256").update(sourceBuffer).digest("hex").slice(0, 12),
+      };
       originalBytes += sourceSize;
     }
   }

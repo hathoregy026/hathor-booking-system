@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const Module = require('node:module');
+const { createHash } = require('node:crypto');
 const ts = require('typescript');
 
 function load(relative) {
@@ -33,13 +34,15 @@ assert.equal(loader({ src: dark, width: 1080, quality: 90 }), dark, 'Responsive 
 assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + dark)));
 assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + golden)));
 const optimized = loader({ src: '/media/hathor/r2/landmark-valley-kings.webp', width: 256 });
-assert.match(optimized, /^\/media\/hathor\/responsive\/r2\/landmark-valley-kings-384\.webp\?v=\d+$/);
+assert.match(optimized, /^\/media\/hathor\/responsive\/r2\/landmark-valley-kings-384\.webp\?v=[a-f0-9]{12}$/);
 assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + optimized.split('?')[0])));
 assert.match(loader({ src: '/media/hathor/r2/landmark-valley-kings.webp', width: 1920 }), /^\/media\/hathor\/r2\/landmark-valley-kings\.webp\?v=\d+&w=1920$/);
 assert.match(loader({ src: '/media/hathor/ship/main-deck.webp', width: 640 }), /^\/media\/hathor\/ship\/main-deck\.webp\?v=\d+&w=640$/);
 assert.match(loader({ src: 'https://images.unsplash.com/photo-1', width: 640, quality: 90 }), /^\/_next\/image\?/);
-for (const [source, widths] of Object.entries(require('../lib/responsive-media-manifest.json'))) {
-  for (const width of widths) {
+for (const [source, entry] of Object.entries(require('../lib/responsive-media-manifest.json'))) {
+  const sourceFile = path.resolve(__dirname, '..', 'public' + source);
+  assert.equal(createHash('sha256').update(fs.readFileSync(sourceFile)).digest('hex').slice(0, 12), entry.version, `stale derivatives for ${source}`);
+  for (const width of entry.widths) {
     const result = loader({ src: source, width });
     assert.ok(fs.existsSync(path.resolve(__dirname, '..', 'public' + result.split('?')[0])), `missing ${result}`);
   }
