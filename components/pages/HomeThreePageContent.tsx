@@ -600,12 +600,9 @@ export function HomeThreePageContent({
                             slot={sailing.slot}
                             alt={sailing.alt}
                             className="h3-sail__plate"
-                            /* These sources are 4:3 landscape and the card box
-                               is portrait, so the crop throws most of the width
-                               away: the delivered variant has to be about twice
-                               the box's own width or what survives gets upscaled
-                               — which is what looked pixelated. */
-                            sizes="(max-width: 1024px) 92vw, 42vw"
+                            /* Desktop plate is 4:3 to match the sources; compact
+                               cards are ~90vw. Deliver at card width, not 2×. */
+                            sizes="(max-width: 1024px) 92vw, 24vw"
                           />
 
                           <div className="h3-sail__body">
@@ -663,7 +660,7 @@ export function HomeThreePageContent({
                             slot={SAILINGS[0]?.slot ?? "cruises-hero"}
                             alt="Hathor Dahabiya on the Nile"
                             className="h3-sail__plate"
-                            sizes="(max-width: 1024px) 92vw, 42vw"
+                            sizes="(max-width: 1024px) 92vw, 24vw"
                           />
                           <div className="h3-sail__body h3-sail__body--more">
                             <p className="h3-sail__tier">The full list</p>

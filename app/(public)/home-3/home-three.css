@@ -1169,9 +1169,9 @@ figure) {
 .home-three .h3-sail {
   position: relative;
   flex: 0 0 auto;
-  /* wider than the first pass: the card now carries a price, a pill and two
-     controls, and 15.5vw crowded them */
-  width: clamp(15rem, 19vw, 21.5rem);
+  /* Desktop (>1024): wider, shorter cards so 4:3 cabin photos sit without
+     a tall portrait crop. ≤1024 keeps its own widths in the media blocks. */
+  width: clamp(17rem, 22vw, 24rem);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1190,11 +1190,10 @@ figure) {
   overflow: hidden;
 }
 .home-three .h3-sail__plate {
-  /* a fixed 4:5 rather than "whatever height is left": the sources are 4:3
-     landscape, and a 5:8 box crops so hard that what survives has to be
-     upscaled to fill it */
+  /* Desktop: match the 4:3 source frames so the photo fills without a tall
+     portrait crop. Tablet/phone override this under max-width: 1024px. */
   flex: 0 0 auto;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
 }
 
 /* ---- the controls, held on the plate ----------------------------------- */
