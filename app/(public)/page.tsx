@@ -20,6 +20,7 @@ import "./home-responsive.css";
 import "./home-3/home-three.css";
 import "./home-3/ship-experience.css";
 import "../partners-company-strip.css";
+import { safeStyleText } from "@/lib/safe-style";
 
 export const revalidate = 300;
 
@@ -49,7 +50,7 @@ export default async function HomePage() {
       <HomeThreeStructuredData />
       <style
         data-hathor-logo-tune-ssr
-        dangerouslySetInnerHTML={{ __html: logoTuneCss }}
+        dangerouslySetInnerHTML={{ __html: safeStyleText(logoTuneCss) }}
       />
       <HomeThreePageContent
         heroLogoTune={cms.heroLogoTune}

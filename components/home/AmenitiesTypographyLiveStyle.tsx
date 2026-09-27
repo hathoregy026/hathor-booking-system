@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
+import { safeStyleText } from "@/lib/safe-style";
 
 const STYLE_ID = "hathor-amenities-typo-live";
 
@@ -33,7 +34,7 @@ export function AmenitiesTypographyLiveStyle({ css }: { css: string }) {
     <style
       id={STYLE_ID}
       data-hathor-amenities-typo-ssr
-      dangerouslySetInnerHTML={{ __html: css }}
+      dangerouslySetInnerHTML={{ __html: safeStyleText(css) }}
     />
   );
 }

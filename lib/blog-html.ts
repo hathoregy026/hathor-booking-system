@@ -105,6 +105,12 @@ export function sanitizeBlogHtml(html: string): string {
   const $ = cheerio.load(html, null, false);
 
   $("*").each((_, element) => {
+    // The parser types <script>/<style> as "script"/"style", not "tag", so
+    // they must be dropped before the tag-only filter below or they survive.
+    if (element.type === "script" || element.type === "style") {
+      $(element).remove();
+      return;
+    }
     if (element.type !== "tag") return;
 
     const tagName = element.name.toLowerCase();

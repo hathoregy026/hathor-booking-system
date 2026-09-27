@@ -21,6 +21,7 @@ import "../home-dining-slider.css";
 import "../home-experience.css";
 import "../home-responsive.css";
 import "../home-editorial.css";
+import { safeStyleText } from "@/lib/safe-style";
 
 export const revalidate = 300;
 
@@ -77,7 +78,7 @@ export default async function MainHomeTwoPage() {
       ) : null}
       <style
         data-hathor-logo-tune-ssr
-        dangerouslySetInnerHTML={{ __html: logoTuneCss }}
+        dangerouslySetInnerHTML={{ __html: safeStyleText(logoTuneCss) }}
       />
       <HomeEditorialPage
         heroLogoTune={cms.heroLogoTune}
