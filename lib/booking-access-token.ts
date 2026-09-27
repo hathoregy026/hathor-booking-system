@@ -1,7 +1,16 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
 const TOKEN_VERSION = "v1";
-const TOKEN_TTL_SECONDS = 60 * 60 * 24 * 400;
+/*
+ * This token is a bearer credential mailed straight to the guest (the
+ * confirmation email's booking-status link) and returned to the browser, so
+ * anyone who ever obtains a copy (a forwarded email, a shared inbox, a leaked
+ * log line, browser history) can view/cancel that booking until it expires.
+ * 400 days was far longer than any realistic booking-to-departure window;
+ * 180 days comfortably covers bookings made well in advance while cutting
+ * the exposure window from a leaked token by more than half.
+ */
+const TOKEN_TTL_SECONDS = 60 * 60 * 24 * 180;
 
 type BookingAccessPayload = {
   b: string;
