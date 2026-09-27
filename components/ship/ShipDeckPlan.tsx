@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { SHIP_REGIONS, type ShipDeckId, type ShipSlotId } from "@/lib/ship-experience-shared";
+import { SHIP_REGIONS, shipDeckArt, type ShipDeckId, type ShipSlotId } from "@/lib/ship-experience-shared";
 import "./ship-deck-plan.css";
 
 export type PlanRoomView = {
@@ -30,8 +30,8 @@ export function ShipDeckPlan({ deck, rooms, selected, onSelect, vertical = false
         <p>The deck illustration could not load.</p>
         <button type="button" onClick={() => { setFailed(false); setLoaded(false); setAttempt(value => value + 1); }}>Reload illustration</button>
       </div> : <div className="ship-plan__canvas" data-ready={loaded}>
-        <Image key={attempt} className="ship-plan__art" src={`/media/hathor/ship/${deck}-deck.webp${attempt ? `?retry=${attempt}` : ""}`} width={1774} height={887} unoptimized
-          alt={`${deck === "lower" ? "Lower deck with two suites, nine rooms, reception and service areas" : deck === "main" ? "Main deck with two Royal Suites, library, lounge and dining areas" : "Sun deck with shaded lounge, circular bar, two pools and sun loungers"}. Furnished overhead illustration.`}
+        <Image key={attempt} className="ship-plan__art" src={`${shipDeckArt(deck)}${attempt ? `&retry=${attempt}` : ""}`} width={1774} height={887} unoptimized
+          alt={`${deck === "lower" ? "Lower deck with two suites, eight rooms, reception and service areas" : deck === "main" ? "Main deck with two Royal Suites, library, gym, lounge, restaurant and outdoor terrace" : "Sun deck with shaded lounge, circular bar, two pools and sun loungers"}. Furnished overhead illustration.`}
           loading={vertical ? "lazy" : "eager"} onLoad={() => setLoaded(true)} onError={() => setFailed(true)} draggable={false} />
         {!loaded ? <p className="ship-plan__loading" role="status">Preparing the deck illustration…</p> : null}
         {deck === "sun" ? <div className="ship-plan__water" aria-hidden="true" /> : null}

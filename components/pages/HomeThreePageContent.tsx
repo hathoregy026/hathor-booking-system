@@ -25,7 +25,7 @@ import type { HeroLogoTune } from "@/lib/hero-logo-tune-shared";
 import { NILE_MOORINGS, NILE_TOTAL_KM } from "@/lib/nile-route";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
-import { ShipExperience } from "@/components/home/ShipExperience";
+import { DeckAtlas } from "@/components/home/deck-atlas/DeckAtlas";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -303,9 +303,9 @@ const TERMS = [
     num: "01",
     slot: "about-hero",
     imageAlt: "Hathor Dahabiya under sail on the Nile",
-    title: "Twelve guests",
+    title: "Twelve rooms",
     copy: "Eight cabins, two suites and two Royal Suites. The whole boat holds fewer people than one deck of a cruise ship, which is the entire point of her.",
-    aside: "A full sailing is thirty-two, across twelve quiet rooms.",
+    aside: "A full sailing is thirty-two guests, across twelve quiet rooms.",
   },
   {
     tone: "b",
@@ -438,7 +438,7 @@ export function HomeThreePageContent({
                           screen at 11rem. Long lines wrap into a fourth row and
                           push the mark off the foot, so the break here is kept
                           to the same measure. */}
-                      <h1 className="h3-open__title">
+                      <h2 className="h3-open__title">
                         <span className="h3-open__line h3-open__line--a">
                           <AnimaSplitLine line={0}>32</AnimaSplitLine>
                         </span>
@@ -448,7 +448,7 @@ export function HomeThreePageContent({
                         <span className="h3-open__line h3-open__line--c">
                           <AnimaSplitLine line={2}>One river</AnimaSplitLine>
                         </span>
-                      </h1>
+                      </h2>
 
                       <p className="h3-open__body">
                         A private sailing dahabiya on the Egyptian Nile. Eight
@@ -778,6 +778,10 @@ export function HomeThreePageContent({
                 </Act>
 
                 <Flow>
+                  {/* The ship, deck by deck, straight after the route she sails:
+                      the deck plans, the spaces aboard and live cabin choice. */}
+                  <DeckAtlas />
+
                   {/* ------------------------- 04 · the claim · text (white) */}
                   <Panel
                     className="h3-text"
@@ -955,10 +959,6 @@ export function HomeThreePageContent({
                       </span>
                     </div>
                   </Panel>
-
-                  {/* The ship atlas is a full editorial passage between the
-                      experiences rail and its photographic chapter. */}
-                  <ShipExperience />
 
                   {/* ---------------- 08 · the experiences · images (beige) */}
                   <Panel
