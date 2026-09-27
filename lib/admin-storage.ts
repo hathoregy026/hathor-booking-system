@@ -25,6 +25,8 @@ function assertValidImageBytes(buffer: Buffer, contentType: string): void {
   const isWebp =
     buffer.toString("ascii", 0, 4) === "RIFF" &&
     buffer.toString("ascii", 8, 12) === "WEBP";
+  // ISO base media file format (MP4): a 4-byte box size, then ASCII "ftyp".
+  const isMp4 = buffer.toString("ascii", 4, 8) === "ftyp";
 
   if (contentType.includes("jpeg") || contentType.includes("jpg")) {
     if (!isJpeg) throw new Error("Processed JPEG is invalid. Please try again.");
@@ -32,6 +34,10 @@ function assertValidImageBytes(buffer: Buffer, contentType: string): void {
   }
   if (contentType.includes("png")) {
     if (!isPng) throw new Error("Processed PNG is invalid. Please try again.");
+    return;
+  }
+  if (contentType.startsWith("video/")) {
+    if (!isMp4) throw new Error("Processed video is invalid. Please try again.");
     return;
   }
   if (contentType.includes("webp") || (!isJpeg && !isPng)) {
