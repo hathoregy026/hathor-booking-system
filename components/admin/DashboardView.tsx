@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   AlertTriangle,
   BarChart3,
+  CalendarOff,
   CheckCircle2,
   DollarSign,
   Globe,
@@ -58,6 +59,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   { href: "/admin/cruises", label: "Add New Cruise", icon: Ship, primary: true },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/bookings", label: "View All Bookings", icon: List },
+  { href: "/admin/availability", label: "Close Cabins", icon: CalendarOff },
   { href: "/admin/pages", label: "Pages", icon: LayoutGrid },
   { href: "/admin/preload-screen", label: "Preload Screen", icon: Sparkles },
   { href: "/admin/website-text", label: "Edit Website Text", icon: Globe },

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   BarChart3,
+  CalendarOff,
   FileText,
   ImageIcon,
   Map,
@@ -33,6 +34,7 @@ const NAV: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket },
+  { href: "/admin/availability", label: "Availability", icon: CalendarOff },
   { href: "/admin/cruises", label: "Cruises", icon: Ship },
   { href: "/admin/ship-experience", label: "Ship Experience", icon: Map },
   { href: "/admin/prices", label: "Prices & Cabins", icon: Tag },
