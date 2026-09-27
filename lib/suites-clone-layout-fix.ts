@@ -38,6 +38,12 @@ const PILL = `
 `;
 
 export const SUITES_CLONE_LAYOUT_FIX_CSS = `
+/* Word boxes from keepSplitWordsWhole: a title may wrap between words only. */
+html body main .hathor-split-word {
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
 /* DNA pills that also apply when circle→pill neutralization runs. */
 html body main .mod-content__btn,
 html body main .btn--circle {
@@ -336,6 +342,17 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     white-space: nowrap;
   }
 
+  /* The card is a fixed 60vw, so the longest line ("Nile horizon") must fit
+     at every desktop width: the empty word spacers pushed "horizon" past the
+     clip, and 8.7vw left no slack once they were gone. */
+  html body main .mod-scroll__projects .last-item__content__title .line > span:empty {
+    display: none !important;
+  }
+
+  html body main .mod-scroll__projects .last-item__content__title .line {
+    font-size: clamp(4.3rem, 8.3vw, 8.8rem) !important;
+  }
+
   html body main .mod-scroll__projects .last-item__content__text,
   html body main .mod-scroll__projects .last-item__content__text p,
   html body main .mod-scroll__projects .last-item__content__text p .line {
@@ -405,6 +422,18 @@ html body main .mod-media--mosaic .mod-media__item :is(.media__wrap-source, .med
     grid-row: 1 / span 2 !important;
     align-self: end !important;
     padding-bottom: 0.08em !important;
+  }
+
+  /* With no third line the right column above the body copy is empty, so a
+     single-line title takes the whole row instead of the narrow left track. */
+  html body main .hathor-suites-epilogue:has(.mod-title--lines .line:nth-child(3):empty)
+    .mod-title--lines .line:is(:nth-child(1), :nth-child(2)) {
+    grid-column: 1 / -1 !important;
+  }
+
+  html body main .hathor-suites-epilogue:has(.mod-title--lines .line:nth-child(3):empty)
+    .mod-content--cols .mod-content__col.big_text {
+    margin-top: clamp(1.75rem, 3vw, 2.75rem) !important;
   }
 
   html body main .hathor-suites-epilogue .mod-content--cols .mod-content__col:not(.big_text) {
@@ -742,6 +771,34 @@ export function layoutSuitesHorizonClose(doc: Document) {
     title.before(host);
     host.append(title, cols, center);
   }
+}
+
+/**
+ * The clone splits `.mod-title .line` into chars only, so every letter is its
+ * own inline-block and a wrapping title can break between any two of them.
+ * Each run of letters is regrouped under a no-wrap word box. The char nodes
+ * are moved, not recreated, so the GSAP tweens holding them keep working.
+ */
+export function keepSplitWordsWhole(doc: Document) {
+  doc.querySelectorAll("main .line").forEach((line) => {
+    if (!line.querySelector(":scope > .char")) return;
+    let word: HTMLElement | null = null;
+    Array.from(line.childNodes).forEach((node) => {
+      const isChar =
+        node.nodeType === Node.ELEMENT_NODE &&
+        (node as Element).classList.contains("char");
+      if (!isChar) {
+        word = null;
+        return;
+      }
+      if (!word) {
+        word = doc.createElement("span");
+        word.className = "hathor-split-word";
+        line.insertBefore(word, node);
+      }
+      word.appendChild(node);
+    });
+  });
 }
 
 export function neutralizeSuitesCircleButtons(doc: Document) {

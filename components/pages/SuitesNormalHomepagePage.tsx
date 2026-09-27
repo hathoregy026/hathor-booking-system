@@ -17,6 +17,7 @@ import {
 } from "@/lib/suites-reference-hero";
 import {
   injectSuitesLuxFooter,
+  keepSplitWordsWhole,
   layoutSuitesCollectionRail,
   layoutSuitesHorizonClose,
   layoutSuitesSlideCaptionPanels,
@@ -603,8 +604,21 @@ function replaceWithLines(element: Element | null, value: string) {
   });
 }
 
+/*
+ * Live text is applied again after the clone's SplitText has run. By then the
+ * words live in `.char` wrappers and only whitespace text nodes remain direct
+ * children — writing into those printed every word twice ("NILENILE").
+ */
+function alreadySplitAs(element: Element, value: string) {
+  const chars = element.querySelectorAll(".char");
+  if (chars.length === 0) return false;
+  const rendered = Array.from(chars, (char) => char.textContent ?? "").join("");
+  return rendered === value.replace(/\s+/g, "");
+}
+
 function setDecoratedLine(element: Element | undefined, value: string) {
   if (!element) return;
+  if (alreadySplitAs(element, value)) return;
   const directSpans = Array.from(element.children).filter(
     (child) => child.tagName === "SPAN",
   );
@@ -849,6 +863,7 @@ export function SuitesNormalHomepagePage({
       layoutSuitesCollectionRail(doc);
       layoutSuitesMobileScenes(doc);
       applySuitesLiveText(doc, suitesCopy);
+      keepSplitWordsWhole(doc);
 
       try {
         const data = await Promise.race([
@@ -880,6 +895,7 @@ export function SuitesNormalHomepagePage({
           softApplyConfig(doc, cms, data).then(() => {
             layoutSuitesMobileScenes(doc);
             applySuitesLiveText(doc, suitesCopy);
+            keepSplitWordsWhole(doc);
           }),
         )
         .catch(() => undefined);
