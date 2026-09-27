@@ -11,6 +11,7 @@ import { withDbRetry } from "@/lib/db-retry";
 import { prisma } from "@/lib/prisma";
 import { buildCruiseListSelect, roomAdminSelect } from "@/lib/query-selects";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -60,6 +61,9 @@ function serializeOrphanRoom(
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const bin = new URL(request.url).searchParams.get("bin") === "true";
     const select = buildCruiseListSelect({ bin });
@@ -107,6 +111,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       ids?: string[];
@@ -225,6 +232,9 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   console.log("=== CREATE CRUISE DEBUG ===");
   console.log("Request received");
 

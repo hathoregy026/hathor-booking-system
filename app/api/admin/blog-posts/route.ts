@@ -9,11 +9,15 @@ import {
   parsePublishedAt,
   resolveBlogSlug,
 } from "@/lib/admin-blog";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const posts = await fetchBlogPostsForAdmin();
     return NextResponse.json({ posts });
@@ -30,6 +34,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = await request.json();
     const input = parseBlogPostFormData(

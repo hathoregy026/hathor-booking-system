@@ -9,6 +9,7 @@ import {
   getResendFromAddress,
   getTestEmailRecipient,
 } from "@/lib/resend-config";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -18,6 +19,9 @@ export const revalidate = 0;
  * Protected by middleware (HMAC session).
  */
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   const hasResendKey = Boolean(process.env.RESEND_API_KEY?.trim());
   const to = getTestEmailRecipient();
   const from = getResendFromAddress();

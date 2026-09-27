@@ -12,11 +12,15 @@ import {
   saveHeroLogoTune,
   saveHeroLogoTuneMobile,
 } from "@/lib/hero-logo-tune";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const [tune, tuneMobile] = await Promise.all([
       getHeroLogoTune(),
@@ -44,6 +48,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       tune?: unknown;

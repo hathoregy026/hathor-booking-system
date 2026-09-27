@@ -4,10 +4,14 @@ import {
   getGastronomyTypography,
   saveGastronomyTypography,
 } from "@/lib/gastronomy-typography";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const [settings, settingsMobile] = await Promise.all([
       getGastronomyTypography(),
@@ -20,6 +24,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = await request.json();
     const phone = body.device === "phone";

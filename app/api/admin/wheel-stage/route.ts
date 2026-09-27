@@ -9,11 +9,15 @@ import {
   parseWheelStageSettings,
   saveWheelStageSettings,
 } from "@/lib/wheel-stage-settings";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const settings = await getWheelStageSettings();
     return NextResponse.json(
@@ -37,6 +41,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as { settings?: unknown };
     const settings = parseWheelStageSettings(body.settings);

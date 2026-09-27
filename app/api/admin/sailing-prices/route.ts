@@ -5,6 +5,7 @@ import { bookingQuery } from "@/lib/booking-database";
 import { bookingHorizonYear } from "@/lib/booking-horizon";
 import { PHYSICAL_ROOM_TYPES } from "@/lib/physical-inventory";
 import { PublicRequestError } from "@/lib/public-api-security";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -86,6 +87,9 @@ async function readDateRates(input: z.infer<typeof querySchema>) {
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const input = querySchema.parse(Object.fromEntries(request.nextUrl.searchParams));
     return NextResponse.json(await readDateRates(input), { headers: { "Cache-Control": "private, no-store" } });
@@ -95,6 +99,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const input = saveSchema.parse(await request.json());
     checkMonth(input.month);

@@ -4,8 +4,12 @@ import { purgeRoomIfAllowed } from "@/lib/catalog-bin";
 import { prisma } from "@/lib/prisma";
 import { roomAdminSelect } from "@/lib/query-selects";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export async function PATCH(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       ids?: string[];

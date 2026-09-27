@@ -12,6 +12,7 @@ import {
   saveTypographySettings,
   saveTypographySettingsMobile,
 } from "@/lib/typography-settings";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -35,6 +36,9 @@ const REVALIDATE_PATHS = [
 ] as const;
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const [settings, settingsMobile] = await Promise.all([
       getTypographySettings(),
@@ -62,6 +66,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       settings?: unknown;

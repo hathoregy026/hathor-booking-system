@@ -11,6 +11,18 @@ export class AdminAuthError extends Error {
   }
 }
 
+/**
+ * Second lock for /api/admin route handlers. Middleware already rejects
+ * unauthenticated requests, but a framework-level middleware bypass (the
+ * CVE-2025-29927 class) must not open every admin endpoint at once.
+ */
+export async function adminApiGuard(): Promise<Response | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+  if (verifySessionToken(token)) return null;
+  return Response.json({ error: "Unauthorized" }, { status: 401 });
+}
+
 /** Verify admin session cookie — use in Server Actions and server-only loaders. */
 export async function assertAdminSession(): Promise<void> {
   const cookieStore = await cookies();

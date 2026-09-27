@@ -4,6 +4,7 @@ import { markBookingsSeenNow } from "@/lib/admin-profile-pg";
 import { ADMIN_PROFILE_ID } from "@/lib/admin-profile-constants";
 import { logDbError, withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -34,6 +35,9 @@ const NOTIFICATION_WHERE = (lastSeenBookingAt: Date) => ({
 });
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const profile = await withDb(() =>
       prisma.adminProfile.findUnique({
@@ -108,6 +112,9 @@ export async function GET() {
 }
 
 export async function POST() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     await markBookingsSeenNow();
     return NextResponse.json({ ok: true });

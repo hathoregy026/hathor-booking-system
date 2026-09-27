@@ -30,8 +30,6 @@ export async function GET(request: NextRequest) {
       stale,
       ok: true,
       productionUrl,
-      gitSha: process.env.VERCEL_GIT_COMMIT_SHA?.trim() || null,
-      vercelEnv: process.env.VERCEL_ENV?.trim() || null,
     },
     {
       headers: {

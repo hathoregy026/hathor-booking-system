@@ -4,12 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { buildCruiseListSelect } from "@/lib/query-selects";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 import { purgeReplacedWebsiteImage } from "@/lib/website-image-storage";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const body = (await request.json()) as {

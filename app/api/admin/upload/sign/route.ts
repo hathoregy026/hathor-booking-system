@@ -13,11 +13,15 @@ import {
   sanitizeStorageFolder,
 } from "@/lib/seo-image-filename";
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       folder?: string;

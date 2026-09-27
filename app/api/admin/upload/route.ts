@@ -13,6 +13,7 @@ import {
   parseImageProcessKind,
   resolveImageProcessKind,
 } from "@/lib/image-size-policy";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -21,6 +22,9 @@ export const maxDuration = 60;
 const MAX_UPLOAD_REQUEST_BYTES = MAX_VIDEO_BYTES + 1024 * 1024;
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const contentLength = Number(request.headers.get("content-length") ?? "0");
     if (Number.isFinite(contentLength) && contentLength > MAX_UPLOAD_REQUEST_BYTES) {
