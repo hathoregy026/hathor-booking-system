@@ -334,6 +334,7 @@ export async function POST(request: NextRequest) {
 
     throw lastError ?? new Error("Could not generate a unique slug");
   } catch (error: unknown) {
+    // Full detail stays server-side; the client only ever gets a generic 500.
     console.error("=== DATABASE ERROR ===");
     const prismaError = error as {
       code?: string;
@@ -345,14 +346,6 @@ export async function POST(request: NextRequest) {
     console.error("Full error:", error);
     console.error("Error meta:", prismaError.meta);
 
-    return NextResponse.json(
-      {
-        error: "Failed to create cruise",
-        message: prismaError.message ?? String(error),
-        code: prismaError.code,
-        meta: prismaError.meta,
-      },
-      { status: 500 },
-    );
+    return handleRouteError(error);
   }
 }
