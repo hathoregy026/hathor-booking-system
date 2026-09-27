@@ -9,6 +9,7 @@ import { SELECTION_ENQUIRY_LIMITS } from "@/lib/selection-enquiry";
 import { CHARTER_PAGE } from "@/lib/page-content";
 import {
   assertTrustedPublicJsonRequest,
+  enforceKeyedRateLimit,
   enforcePublicRateLimit,
   PublicRequestError,
   RateLimitExceededError,
@@ -30,7 +31,9 @@ const inquirySchema = z.object({
     .regex(
       /^[\p{L}\p{M}][\p{L}\p{M}\p{N} .,'’\-]{1,119}$/u,
       "Name contains unsupported characters",
-    ),
+    )
+    // Echoed into the receipt sent to the typed-in address: no link-like text.
+    .refine((value) => !/(www\.|[\p{L}\p{N}-]\.\p{L}{2,})/iu.test(value), "Please enter a name without web addresses."),
   email: z.string().trim().email("Valid email is required").max(254),
   phone: z
     .string()
@@ -144,6 +147,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // A receipt goes to the typed-in address: cap it per recipient, not just per IP,
+    // so many IPs cannot email-bomb one victim through Hathor's sending domain.
+    await enforceKeyedRateLimit({
+      scope: "contact-recipient",
+      keyValue: parsed.data.email.toLowerCase(),
+      limit: 3,
+      windowMs: 60 * 60_000,
+    });
     await sendInquiryEmail(parsed.data);
     return NextResponse.json(
       { ok: true },
