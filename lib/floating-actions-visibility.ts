@@ -1,11 +1,38 @@
+function pathOf(pathname: string | null): string {
+  return (pathname ?? "").toLowerCase();
+}
+
+export function isAdminPath(pathname: string | null): boolean {
+  const path = pathOf(pathname);
+  return path === "/admin" || path.startsWith("/admin/");
+}
+
+export function isBookingPath(pathname: string | null): boolean {
+  const path = pathOf(pathname);
+  return (
+    path === "/booking" ||
+    path.startsWith("/booking/") ||
+    path === "/book" ||
+    path.startsWith("/book/")
+  );
+}
+
 /**
- * Floating BOOK NOW + chat — site-wide except booking flows and admin dashboard.
+ * Phone dock Book Now + contact. Hidden on booking and admin so the
+ * desktop chat rules below do not leak into the phone dock.
  */
 export function shouldShowFloatingActions(pathname: string | null): boolean {
   if (!pathname) return true;
-  const path = pathname.toLowerCase();
-  if (path === "/admin" || path.startsWith("/admin/")) return false;
-  if (path === "/booking" || path.startsWith("/booking/")) return false;
-  if (path === "/book" || path.startsWith("/book/")) return false;
+  if (isAdminPath(pathname) || isBookingPath(pathname)) return false;
   return true;
+}
+
+/** Desktop chat bubble — every public page, including booking. */
+export function shouldShowDesktopChat(pathname: string | null): boolean {
+  return !isAdminPath(pathname);
+}
+
+/** Desktop Book Now pill sits beside the chat, except on booking. */
+export function shouldShowDesktopBookNow(pathname: string | null): boolean {
+  return shouldShowDesktopChat(pathname) && !isBookingPath(pathname);
 }
