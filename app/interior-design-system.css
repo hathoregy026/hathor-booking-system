@@ -95,8 +95,7 @@ html:not([data-ex-experience]) .public-site .hathor-chapter-eyebrow {
 }
 
 html:not([data-ex-experience]) .public-site .section-body,
-html:not([data-ex-experience]) .public-site .hathor-body-text,
-html:not([data-ex-experience]) .public-site .hathor-section-lead {
+html:not([data-ex-experience]) .public-site .hathor-body-text {
   margin: 0;
   max-width: 42rem;
   font-family: var(--public-title, var(--public-serif));
@@ -113,8 +112,7 @@ html:not([data-ex-experience]) .public-site .hathor-body-text + .hathor-body-tex
 }
 
 /* Section header stack: title > indication > body */
-html:not([data-ex-experience]) .public-site .section-header,
-html:not([data-ex-experience]) .public-site .hathor-section-header {
+html:not([data-ex-experience]) .public-site .section-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -123,9 +121,7 @@ html:not([data-ex-experience]) .public-site .hathor-section-header {
   margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
 
-html:not([data-ex-experience]) .public-site .section-header .section-body,
-html:not([data-ex-experience]) .public-site .hathor-section-header .hathor-body-text,
-html:not([data-ex-experience]) .public-site .hathor-section-header .section-body {
+html:not([data-ex-experience]) .public-site .section-header .section-body {
   margin-inline: auto;
 }
 
@@ -154,13 +150,6 @@ html:not([data-ex-experience]) .public-site .lux-cta-band p {
 }
 
 /* Contact cards - consistent type contrast */
-html:not([data-ex-experience]) .public-site .hathor-contact-card {
-  color: var(--public-text, #1a1a1a);
-}
-
-html:not([data-ex-experience]) .public-site .hathor-contact-card p {
-  color: inherit;
-}
 
 /* Editorial content: keep title>indication>body order readable */
 html:not([data-ex-experience]) .public-site .hathor-editorial__content {
@@ -181,21 +170,6 @@ html:not([data-ex-experience]) .public-site .hathor-editorial__content .section-
 }
 
 /* Partner cards - centered, even grid */
-html:not([data-ex-experience]) .public-site .hathor-partners-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 1rem;
-  align-items: stretch;
-}
-
-html:not([data-ex-experience]) .public-site .hathor-partner-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 5.5rem;
-  padding: 1.25rem;
-  text-align: center;
-}
 
 html:not([data-ex-experience]) .public-site .hathor-partner-card__name {
   color: var(--public-text, #1a1a1a);
@@ -207,8 +181,7 @@ html:not([data-ex-experience]) .public-site .hathor-partner-card__name {
 
 /* Venetian / lux interior pages - align type hierarchy with homepage */
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end,
-html:not([data-ex-experience]) .public-site .venetian-page .lux-wrap,
-html:not([data-ex-experience]) .public-site .venetian-page .hlx-head {
+html:not([data-ex-experience]) .public-site .venetian-page .lux-wrap {
   width: var(--content-shell, 100%);
   max-width: none;
   margin-inline: auto;
@@ -226,8 +199,6 @@ html:not([data-ex-experience]) .public-site .venetian-page .lux-kicker {
 }
 
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-lead,
-html:not([data-ex-experience]) .public-site .venetian-page .hlx-head .lux-lead,
-html:not([data-ex-experience]) .public-site .venetian-page .dnx .lux-lead,
 html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-lead {
   font-family: var(--public-title, var(--public-serif));
   font-style: normal;
@@ -239,10 +210,6 @@ html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-lead 
 
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-copy,
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-copy p,
-html:not([data-ex-experience]) .public-site .venetian-page .hlx-head .lux-copy,
-html:not([data-ex-experience]) .public-site .venetian-page .hlx-head .lux-copy p,
-html:not([data-ex-experience]) .public-site .venetian-page .dnx .lux-copy,
-html:not([data-ex-experience]) .public-site .venetian-page .dnx .lux-copy p,
 html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-copy,
 html:not([data-ex-experience]) .public-site .venetian-page .spx-intro .lux-copy p {
   font-family: var(--public-title, var(--public-serif));
@@ -271,15 +238,6 @@ html:not([data-ex-experience]) .public-site .venetian-page .lux-end {
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-copy,
 html:not([data-ex-experience]) .public-site .venetian-page .lux-end .lux-lead {
   margin-inline: auto;
-}
-
-html:not([data-ex-experience]) .public-site .venetian-page .cta-row,
-html:not([data-ex-experience]) .public-site .venetian-page .lux-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.85rem;
 }
 
 

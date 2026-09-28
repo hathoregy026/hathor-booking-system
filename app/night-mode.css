@@ -659,18 +659,6 @@ html[data-public-theme="night"] [data-highlights-page] {
 }
 
 /* Shared editorial page chrome */
-html[data-public-theme="night"] .hathor-editorial-page {
-  --hep-paper: var(--night-canvas);
-  --hep-cream: var(--night-surface);
-  --hep-soft: var(--night-surface-raised);
-  --hep-ink: var(--night-text);
-  --hep-ink-soft: var(--night-text-soft);
-  --hep-gold: var(--night-gold);
-  --hep-gold-deep: var(--night-panel);
-  --hep-line: var(--night-line-soft);
-  background-color: var(--night-canvas) !important;
-  color: var(--night-text-soft) !important;
-}
 
 /* Cruise intro */
 html[data-public-theme="night"] .cr-intro {
@@ -1201,12 +1189,6 @@ html[data-public-theme="night"] .public-site :is(
   color: var(--night-text) !important;
 }
 
-html[data-public-theme="night"] .public-site .public-btn-dark {
-  background-color: var(--night-panel) !important;
-  border-color: var(--night-line) !important;
-  color: var(--night-text) !important;
-}
-
 /* ---- Floating actions ---- */
 html[data-public-theme="night"] :is(
     .public-fab__book,
@@ -1338,11 +1320,6 @@ html[data-public-theme="night"] :is(
   color: var(--night-text-soft) !important;
 }
 
-html[data-public-theme="night"] .hl-onboard {
-  background-color: var(--night-surface) !important;
-  color: var(--night-text-soft) !important;
-}
-
 /* ---- Homepage experience shell ---- */
 html[data-public-theme="night"] :is(.nav-bar.is-solid, .nav-bar.is-open .nav-links) {
   background-color: rgb(20 17 13 / 94%) !important;
@@ -1392,12 +1369,6 @@ html[data-public-theme="night"] :is(
   background-color: var(--night-surface) !important;
   border-color: var(--night-line-soft) !important;
   color: var(--night-text-soft) !important;
-}
-
-html[data-public-theme="night"] .hathor-checkout-column--payment {
-  background-color: var(--night-panel) !important;
-  border-color: var(--night-line) !important;
-  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] :is(
@@ -1731,15 +1702,6 @@ html[data-public-theme="night"] .booking-page {
   --booking-shadow-hover: var(--night-shadow);
 }
 
-html[data-public-theme="night"] .hathor-booking-gate {
-  --gate-gold: var(--night-panel);
-  --gate-gold-deep: var(--night-panel);
-  --gate-ink: var(--night-text);
-  --gate-muted: var(--night-muted);
-  --gate-cream: var(--night-canvas);
-  --gate-wash: var(--night-surface);
-}
-
 html[data-public-theme="night"] .hathor-voyage-stage {
   --voyage-gold: var(--night-panel);
   --voyage-gold-deep: var(--night-panel);
@@ -1757,16 +1719,6 @@ html[data-public-theme="night"] :is(.booking-page, .booking-shell-bg) {
   color: var(--night-text) !important;
 }
 
-html[data-public-theme="night"] .hathor-booking-gate {
-  background: linear-gradient(180deg, #17130e 0%, var(--night-canvas) 100%) !important;
-  color: var(--night-text) !important;
-}
-
-html[data-public-theme="night"] .hathor-checkout {
-  background: var(--night-canvas) !important;
-  color: var(--night-text) !important;
-}
-
 html[data-public-theme="night"] :is(
     .booking-room-editorial__utilities,
     .booking-room-editorial__reserve
@@ -1776,15 +1728,6 @@ html[data-public-theme="night"] :is(
 }
 
 /* ---- Light gradients elsewhere on the site ---- */
-html[data-public-theme="night"] .cp-section--soft {
-  background: linear-gradient(180deg, var(--night-surface) 0%, var(--night-canvas) 100%) !important;
-  color: var(--night-text-soft) !important;
-}
-
-html[data-public-theme="night"] .sn-section--soft {
-  background: var(--night-surface) !important;
-  color: var(--night-text-soft) !important;
-}
 
 html[data-public-theme="night"] .hlx-panel-copy {
   background: linear-gradient(180deg, var(--night-panel) 0%, var(--night-surface) 100%) !important;
@@ -1803,15 +1746,6 @@ html[data-public-theme="night"] .contact-success-popup__panel {
 }
 
 /* Fades that dissolve content into the page ground must follow the ground. */
-html[data-public-theme="night"] .hl-nile__shade {
-  background: linear-gradient(to right, var(--night-canvas) 0%, rgb(20 17 13 / 0) 100%) !important;
-}
-
-html[data-public-theme="night"] .sn-comfort__fog {
-  background:
-    linear-gradient(90deg, transparent 40%, rgb(20 17 13 / 92%) 100%),
-    linear-gradient(180deg, transparent 45%, rgb(20 17 13 / 92%) 100%) !important;
-}
 
 /* ==========================================================================
    10. SEMANTIC FEEDBACK, CONTROLS AND SURFACES A TOKEN FLIP CANNOT REACH
@@ -2100,17 +2034,6 @@ html[data-public-theme="night"] .hathor-voyage-counter__btn:not(:disabled):hover
   color: var(--night-text) !important;
 }
 
-html[data-public-theme="night"] .hathor-checkout-column--summary:not(#_) {
-  background-color: var(--night-panel) !important;
-  border-color: var(--night-line) !important;
-  color: var(--night-text) !important;
-}
-
-html[data-public-theme="night"] .hathor-checkout-payment-note:not(#_) {
-  border-left-color: var(--night-gold) !important;
-  color: var(--night-text-soft) !important;
-}
-
 html[data-public-theme="night"] :is(
     .hathor-checkout-room-dropdown__name,
     .hathor-checkout-room-dropdown__view,
@@ -2159,12 +2082,6 @@ html[data-public-theme="night"] .hathor-calendar-day[data-status="available"]
 html[data-public-theme="night"] .hathor-calendar-day[data-status="unavailable"]:not(#_) {
   background-color: #262019 !important;
   color: var(--night-muted) !important;
-}
-
-html[data-public-theme="night"] .hathor-calendar .rdp-day_selected
-  .hathor-calendar-day[data-status="available"]:not(#_) {
-  background-color: var(--night-panel) !important;
-  color: var(--night-text) !important;
 }
 
 html[data-public-theme="night"] .hathor-calendar-legend--available:not(#_) {

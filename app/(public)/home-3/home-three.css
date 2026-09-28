@@ -180,14 +180,7 @@ figure) {
 }
 
 /* ------------------------------------------------------------ type classes */
-.home-three .h3-script {
-  font-family: var(--h3-script);
-  font-size: var(--h3-t-script);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.005em;
-  color: var(--h3-gold);
-}.home-three .h3-kicker {
+.home-three .h3-kicker {
   font-family: var(--h3-meta);
   font-size: var(--h3-t-kicker);
   font-weight: 300;
@@ -195,17 +188,6 @@ figure) {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--h3-gold-deep);
-}.home-three .h3-display {
-  font-family: var(--h3-display);
-  font-size: var(--h3-t-stmt);
-  font-weight: 400;
-  line-height: 0.88;
-  letter-spacing: -0.025em;
-  text-transform: uppercase;
-}.home-three .h3-display--xl {
-  font-size: var(--h3-t-display);
-}.home-three .h3-display--sm {
-  font-size: clamp(1.9rem, 4.2vw, 4.6rem);
 }.home-three .h3-big {
   font-family: var(--h3-support);
   font-size: var(--h3-t-big);
@@ -226,13 +208,6 @@ figure) {
   letter-spacing: 0.02em;
   color: var(--h3-ink-soft);
   max-width: 26rem;
-}.home-three .h3-meta {
-  font-family: var(--h3-meta);
-  font-size: var(--h3-t-meta);
-  font-weight: 300;
-  line-height: 1.55;
-  color: var(--h3-ink-soft);
-  max-width: 25rem;
 }.home-three .h3-reg {
   font-size: 0.55em;
   vertical-align: super;
@@ -273,11 +248,8 @@ figure) {
    default of 1 keeps the document readable before the hook first measures. */
 .home-three .h3-kicker,
 .home-three .h3-support,
-.home-three .h3-meta,
 .home-three .h3-big,
-.home-three .h3-script,
-.home-three .h3-course__run,
-.home-three .h3-statement__tag {
+.home-three .h3-course__run {
   /* 10px, not 18: these elements translate while their neighbours do not, so
      the travel has to stay inside the smallest gap on the page or arriving
      copy crosses the control beneath it */
@@ -298,23 +270,13 @@ figure) {
   gap: 0.75rem;
 }.home-three .h3-btn {
   flex: 0 0 auto;
-}.home-three .h3-btn:focus-visible,
-.home-three .h3-cta__btn:focus-visible {
+}.home-three .h3-btn:focus-visible {
   outline: 2px solid var(--h3-gold-deep);
   outline-offset: 3px;
 }
 
 /* dark scenes flip ink and paper; `data-hathor-surface="ink"` on the section
    tells the master button system to invert the outline pill with them */
-.home-three .h3-scene--dark {
-  color: var(--h3-paper);
-  --h3-hair: rgb(243 237 228 / 22%);
-}.home-three .h3-scene--dark .h3-support,
-.home-three .h3-scene--dark .h3-meta {
-  color: rgb(243 237 228 / 82%);
-}.home-three .h3-scene--dark .h3-kicker {
-  color: var(--h3-gold);
-}
 
 /* ---------------------------------------------------------------- progress */
 .home-three .h3-progress {
@@ -2072,9 +2034,6 @@ figure) {
 .home-three .h3-pt-md {
   padding-top: var(--h3-pad-md);
 }
-.home-three .h3-pb-md {
-  padding-bottom: var(--h3-pad-md);
-}
 .home-three .h3-pb-sm {
   padding-bottom: var(--h3-pad-sm);
 }
@@ -2168,13 +2127,6 @@ figure) {
 /* -------------------------------------------------- 15 · CONTENT · CENTER
    `mod-content--center`: the request. One centred line and the page's two
    actions, on the roster geometry the whole site shares. */
-.home-three .h3-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.6rem;
-  text-align: center;
-}
 .home-three .h3-center__title {
   font-family: var(--h3-display);
   font-size: clamp(2rem, 4.4vw, 4.8rem);
@@ -2186,57 +2138,6 @@ figure) {
 }
 
 /* --------------------------------------------------------- 16 · FOOTER */
-.home-three .h3-footer {
-  border-top: 1px solid var(--h3-hair);
-  padding-top: 2.2rem;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--h3-gap);
-  align-items: start;
-}
-.home-three .h3-footer__mark {
-  font-family: var(--h3-display);
-  font-size: clamp(1.6rem, 3vw, 3rem);
-  line-height: 0.9;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-.home-three .h3-footer__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-.home-three .h3-footer__nav a,
-.home-three .h3-footer__legal a {
-  font-family: var(--h3-meta);
-  font-size: var(--h3-t-kicker);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--h3-ink-soft);
-  transition: color 0.3s var(--h3-ease-soft);
-}
-.home-three .h3-footer__nav a:hover,
-.home-three .h3-footer__legal a:hover {
-  color: var(--h3-gold-deep);
-}
-.home-three .h3-footer__legal {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.9rem;
-  border-top: 1px solid var(--h3-hair);
-  margin-top: 2.4rem;
-  padding-top: 1.2rem;
-}
-.home-three .h3-footer__legal p {
-  font-family: var(--h3-num);
-  font-size: var(--h3-t-kicker);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--h3-ink-soft);
-}
 
 /* ==========================================================================
    THE LINE SPLIT INSIDE THE ACT
@@ -2652,12 +2553,6 @@ figure) {
     transform: none;
   }
 
-  .home-three .h3-lead__caption {
-    position: static;
-    max-width: none;
-    margin-top: clamp(1.4rem, 5vw, 2rem);
-  }
-
   .home-three .h3-images--secundario .h3-flip--a {
     aspect-ratio: 375 / 281;
     height: auto;
@@ -2902,12 +2797,6 @@ figure) {
     padding: var(--h3-band) 0;
   }
 
-  .home-three .h3-cierre__content {
-    width: 100%;
-    height: auto;
-    padding: 0 var(--h3-pad);
-  }
-
   .home-three .h3-cierre__image {
     width: 100%;
     max-width: none;
@@ -2950,15 +2839,6 @@ figure) {
     align-items: stretch;
     width: 100%;
   }
-
-  .home-three .h3-footer {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    row-gap: 1.8rem;
-  }
-
-  .home-three .h3-footer__mark {
-    grid-column: 1 / -1;
-  }
 }
 
 /* ================================================================ 620 · PHONE
@@ -3000,12 +2880,6 @@ figure) {
     font-size: clamp(1.5rem, 8vw, 2.4rem);
   }
 
-  .home-three .h3-footer__legal {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.85rem;
-  }
-
   .home-three .h3-doc {
     padding-bottom: calc(2.5rem + var(--hathor-phone-dock-h, 4.5rem));
   }
@@ -3021,7 +2895,6 @@ figure) {
 
   .home-three .h3-kicker,
   .home-three .h3-support,
-  .home-three .h3-meta,
   .home-three .h3-big,
   .home-three .h3-course__run em,
   .home-three .h3-helm__read em,
@@ -3582,13 +3455,6 @@ figure) {
     margin-bottom: var(--h3-stack-gap);
   }
 
-  .home-three .h3-center {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 1.35rem;
-  }
-
   .home-three .h3-center__title {
     line-height: 1.22;
     letter-spacing: -0.03em;
@@ -3600,33 +3466,6 @@ figure) {
   }
 
   /* Contact close only — do not restack voyage/sail card actions. */
-  .home-three .h3-center .h3-pills {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: min(100%, 17.5rem);
-    margin-inline: auto;
-    gap: 0.75rem;
-  }
-
-  .home-three .h3-center .h3-pills .h3-btn:not(#_):not(#_) {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    box-sizing: border-box !important;
-  }
-
-  .home-three .h3-wrapper:has(.h3-center).h3-pb-md {
-    padding-bottom: 1.75rem;
-  }
-
-  .home-three .h3-footer__nav {
-    gap: 0.7rem;
-  }
-
-  .home-three .h3-footer__legal {
-    padding-bottom: 0.35rem;
-  }
 }
 
 /*
@@ -4367,9 +4206,7 @@ figure) {
 
   .home-three .h3-kicker,
   .home-three .h3-support,
-  .home-three .h3-meta,
   .home-three .h3-big,
-  .home-three .h3-script,
   .home-three .h3-course__run,
   .home-three .h3-frame__img,
   .home-three .h3-berth,

@@ -1,4 +1,4 @@
-﻿/* Venetian pages redesign — faithful port. Scoped under .venetian-page */
+/* Venetian pages redesign — faithful port. Scoped under .venetian-page */
 .venetian-page {
   --gold: #b69f64;
   --gold-soft: #d4c28a;
@@ -75,9 +75,7 @@
 }
 
 .btn:not(.hero-cta):hover,
-.btn-light:not(.hero-cta):hover,
-.btn-dark:not(.hero-cta):hover,
-.btn-filled:not(.hero-cta):hover {
+.btn-light:not(.hero-cta):hover {
   background: var(--gold, #b69f64);
   border-color: var(--gold, #b69f64);
   color: var(--hathor-btn-hover-label, #2c2824);
@@ -85,9 +83,7 @@
   transform: translateY(-2px);
 }
 
-.btn-light:not(.hero-cta),
-.btn-dark:not(.hero-cta),
-.btn-filled:not(.hero-cta) {
+.btn-light:not(.hero-cta) {
   background: #faf8f5;
   color: #b69f64;
   border-color: var(--gold, #b69f64);
@@ -173,14 +169,6 @@
    Accommodation вЂ” full-screen stacked room slideshows
    Pin room в†’ scroll cycles 4 full-bleed images в†’ next room
    ========================================================= */
-
-.page-accommodation .nav-links a.is-active {
-  color: var(--gold);
-}
-
-.page-accommodation .nav-bar.is-solid .nav-links a.is-active {
-  color: var(--gold);
-}
 
 /* Cream intro only (no room faded backgrounds) */
 .acc-intro-block {
@@ -775,14 +763,6 @@
    Venetian Cruises вЂ” luxury page styles
    ========================================================= */
 
-.page-cruises .nav-links a.is-active {
-  color: var(--gold);
-}
-
-.page-cruises .nav-bar.is-solid .nav-links a.is-active {
-  color: var(--gold);
-}
-
 /* ---- Intro ---- */
 .cruise-intro {
   text-align: center;
@@ -1338,98 +1318,6 @@
 }
 
 /* ---- Availability modal ---- */
-.avail-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.avail-modal[hidden] {
-  display: none !important;
-}
-
-.avail-modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(26, 20, 16, 0.55);
-  backdrop-filter: blur(8px);
-}
-
-.avail-modal-panel {
-  position: relative;
-  width: min(460px, 100%);
-  background: var(--cream);
-  border: 1px solid rgba(182, 159, 100, 0.35);
-  border-radius: 16px;
-  padding: 36px 32px 32px;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
-}
-
-.avail-modal-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.4rem;
-  line-height: 1;
-  color: var(--ink);
-  border: 1px solid rgba(182, 159, 100, 0.35);
-}
-
-.avail-modal-panel h3 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.8rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin: 0 0 22px;
-  color: var(--ink);
-}
-
-.avail-dates {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.avail-date {
-  text-align: left;
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid rgba(182, 159, 100, 0.3);
-  background: var(--white);
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  color: var(--ink);
-  transition: border-color 0.3s, background 0.3s;
-}
-
-.avail-date:hover,
-.avail-date.is-selected {
-  border-color: var(--gold);
-  background: rgba(182, 159, 100, 0.1);
-}
-
-.avail-date.is-wait {
-  opacity: 0.7;
-}
-
-.avail-note {
-  font-size: 0.85rem;
-  color: var(--muted);
-  line-height: 1.55;
-  margin: 0 0 20px;
-}
-
-.avail-continue {
-  width: 100%;
-}
 
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
@@ -1517,10 +1405,6 @@
   background: var(--lux-paper);
 }
 
-.venetian-page .nav-links a.is-active {
-  color: var(--lux-gold);
-}
-
 /* Embossed gold вЂ” never split into chars (breaks clip/filter) */
 .lux-gold {
   font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
@@ -1547,7 +1431,6 @@
 
 .lux-gold-xl { font-size: clamp(2.6rem, 6vw, 4.8rem); }
 .lux-gold-lg { font-size: clamp(2.1rem, 4.5vw, 3.4rem); }
-.lux-gold-md { font-size: clamp(1.7rem, 3.2vw, 2.5rem); }
 
 .lux-kicker {
   /* font/size/case/color from typography Small indication */
@@ -1571,12 +1454,6 @@
 }
 .lux-copy p { margin: 0 0 1em; }
 .lux-copy p:last-child { margin-bottom: 0; }
-
-.lux-shell {
-  position: relative;
-  z-index: 20;
-  background: var(--lux-paper);
-}
 
 .lux-wrap {
   width: var(--content-shell, 100%);
@@ -1605,9 +1482,6 @@
    WELLNESS (SPORT) вЂ” cinematic performance gallery
    Full-bleed pin frames with floating glass info
    ========================================================= */
-.spx {
-  background: var(--lux-paper);
-}
 
 .spx-intro {
   text-align: center;
@@ -1682,18 +1556,6 @@
   max-width: min(640px, 100%);
 }
 
-.spx-frame--right .spx-frame-ui {
-  margin-left: auto;
-  text-align: right;
-  align-items: flex-end;
-}
-
-.spx-frame--right .spx-frame-shade {
-  background:
-    linear-gradient(270deg, rgba(20, 16, 12, 0.72) 0%, rgba(20, 16, 12, 0.2) 55%, rgba(20, 16, 12, 0.4) 100%),
-    linear-gradient(180deg, rgba(20, 16, 12, 0.35) 0%, transparent 40%, rgba(20, 16, 12, 0.55) 100%);
-}
-
 .spx-frame-ui .lux-gold {
   margin-bottom: 0.85rem;
   /* readable emboss on dark */
@@ -1711,22 +1573,6 @@
   color: rgba(245, 239, 228, 0.75);
   max-width: 38ch;
   margin-bottom: 1.5rem;
-}
-
-.spx-frame--right .spx-frame-ui .lux-copy {
-  margin-left: auto;
-}
-
-.spx-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: rgba(182, 159, 100, 0.2);
-  border: 1px solid rgba(182, 159, 100, 0.25);
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 0 auto;
-  max-width: 1000px;
 }
 
 .spx-metric {
@@ -1752,16 +1598,7 @@
   color: var(--lux-muted);
 }
 
-.spx-metrics-wrap {
-  padding: clamp(4rem, 8vw, 6rem) 1.25rem;
-  background: var(--lux-paper);
-}
-
 /* Wellness вЂ” additional luxury bands */
-.spx-atelier {
-  padding: clamp(5rem, 10vw, 8rem) 0;
-  background: var(--lux-paper);
-}
 
 .spx-atelier-grid {
   display: grid;
@@ -1773,33 +1610,6 @@
 .spx-atelier-media .lux-mask {
   aspect-ratio: 4 / 5;
   box-shadow: 0 30px 70px rgba(62, 48, 38, 0.12);
-}
-
-.spx-atelier-list {
-  list-style: none;
-  margin: 1.5rem 0 2rem;
-  padding: 0;
-  display: grid;
-  gap: 0.85rem;
-}
-
-.spx-atelier-list li {
-  display: flex;
-  gap: 0.85rem;
-  align-items: flex-start;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: var(--lux-muted);
-  letter-spacing: 0.02em;
-}
-
-.spx-atelier-list li::before {
-  content: "";
-  width: 8px;
-  height: 1px;
-  margin-top: 0.7em;
-  flex-shrink: 0;
-  background: var(--lux-gold);
 }
 
 .spx-quote {
@@ -1911,20 +1721,6 @@
 }
 
 /* Highlights extras */
-.hlx-manifesto {
-  padding: clamp(4rem, 8vw, 6.5rem) 1.25rem;
-  background: var(--lux-paper);
-  border-top: 1px solid rgba(182, 159, 100, 0.15);
-}
-
-.hlx-manifesto-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  max-width: 1100px;
-  margin: 0 auto;
-  text-align: center;
-}
 
 .hlx-manifesto-item h3 {
   font-family: "Cormorant Garamond", "Playfair Display", serif;
@@ -1945,20 +1741,6 @@
   margin-bottom: 0;
 }
 
-.hlx-compare {
-  padding: 0 1.25rem clamp(5rem, 9vw, 7rem);
-  background: var(--lux-paper);
-}
-
-.hlx-compare-inner {
-  max-width: 1000px;
-  margin: 0 auto;
-  border: 1px solid rgba(182, 159, 100, 0.25);
-  border-radius: 14px;
-  overflow: hidden;
-  background: #faf8f5;
-}
-
 .hlx-compare-row {
   display: grid;
   grid-template-columns: 1.1fr 1fr 1fr;
@@ -1970,14 +1752,6 @@
 
 .hlx-compare-row:last-child {
   border-bottom: 0;
-}
-
-.hlx-compare-row.is-head {
-  background: rgba(182, 159, 100, 0.08);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--lux-gold);
 }
 
 .hlx-compare-row span {
@@ -1999,9 +1773,6 @@
   .spx-suite-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .hlx-manifesto-grid {
-    grid-template-columns: 1fr;
-  }
   .hlx-compare-row {
     grid-template-columns: 1fr;
     gap: 0.35rem;
@@ -2017,32 +1788,6 @@
 /* =========================================================
    HIGHLIGHTS вЂ” horizontal cinematic gallery (unique)
    ========================================================= */
-.hlx {
-  background: var(--lux-paper);
-  padding-top: clamp(4.5rem, 9vw, 7rem);
-}
-
-.hlx-head {
-  text-align: center;
-  max-width: 46rem;
-  margin: 0 auto 3rem;
-  padding: 0 1.25rem;
-}
-
-.hlx-head .lux-gold {
-  margin: 0 auto 1rem;
-}
-
-.hlx-head .lux-lead {
-  max-width: 36ch;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.hlx-head .lux-copy {
-  max-width: 50ch;
-  margin: 0 auto 1.5rem;
-}
 
 .hlx-pin {
   height: 100vh;
@@ -2099,15 +1844,6 @@
   background: linear-gradient(180deg, #fff 0%, #faf6ef 100%);
 }
 
-.hlx-panel-num {
-  font-family: "Playfair Display", serif;
-  font-size: 2.5rem;
-  line-height: 1;
-  color: rgba(182, 159, 100, 0.28);
-  letter-spacing: -0.03em;
-  margin-bottom: 0.75rem;
-}
-
 .hlx-panel-copy h3 {
   font-family: "Cormorant Garamond", "Playfair Display", serif;
   font-weight: 400;
@@ -2152,7 +1888,6 @@
 /* =========================================================
    DINING вЂ” keep existing cinematic panels
    ========================================================= */
-.dnx { background: var(--lux-paper); }
 
 .dnx-chapter {
   position: relative;
@@ -2202,11 +1937,6 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
-.dnx-chapter--right .dnx-panel {
-  margin-left: auto;
-  margin-right: clamp(1.25rem, 10vw, 8rem);
-}
-
 .dnx-panel .lux-gold { margin-bottom: 0.85rem; }
 .dnx-panel .btn { margin-top: 1.5rem; }
 
@@ -2228,7 +1958,6 @@
 }
 
 @media (max-width: 1024px) {
-  .spx-metrics { grid-template-columns: 1fr 1fr; }
 
   /* Wellness — unpin frames; stack media + copy vertically */
   .spx-frame {
@@ -2260,12 +1989,6 @@
       clamp(1.25rem, 5vw, 2rem)
       clamp(2.5rem, 6vw, 3.5rem);
     background: #1a1410;
-  }
-
-  .spx-frame--right .spx-frame-ui {
-    margin-left: 0;
-    text-align: left;
-    align-items: flex-start;
   }
 
   /* Highlights — native horizontal scroll-snap (no GSAP pin) */
@@ -2326,15 +2049,13 @@
     transform: none !important;
   }
 
-  .dnx-panel,
-  .dnx-chapter--right .dnx-panel {
+  .dnx-panel {
     margin-left: 1.25rem;
     margin-right: 1.25rem;
   }
 }
 
 @media (max-width: 700px) {
-  .spx-metrics { grid-template-columns: 1fr; }
   .lux-gold-xl { font-size: clamp(2.1rem, 10vw, 2.9rem); }
 }
 
@@ -2536,7 +2257,6 @@
 .venetian-page .cruise-intro-title,
 .venetian-page .cruise-exp-title,
 .venetian-page .lux-gold,
-.venetian-page .hlx-head .lux-gold,
 .venetian-page .spx-intro .lux-gold,
 .venetian-page .cta-inner h2 {
   text-wrap: balance;
@@ -2546,8 +2266,6 @@
 .venetian-page .cruise-intro-copy,
 .venetian-page .spx-intro .lux-lead,
 .venetian-page .spx-intro .lux-copy,
-.venetian-page .hlx-head .lux-lead,
-.venetian-page .hlx-head .lux-copy,
 .venetian-page .lux-end .lux-lead,
 .venetian-page .lux-end .lux-copy {
   text-wrap: pretty;
@@ -2570,13 +2288,11 @@
 }
 
 .venetian-page .spx-intro .lux-lead,
-.venetian-page .hlx-head .lux-lead,
 .venetian-page .lux-end .lux-lead {
   max-width: 40ch;
 }
 
 .venetian-page .spx-intro .lux-copy,
-.venetian-page .hlx-head .lux-copy,
 .venetian-page .lux-end .lux-copy {
   max-width: 52ch;
   line-height: 1.85;
@@ -2698,19 +2414,10 @@
   text-align: left;
 }
 
-.venetian-page .spx-frame--right .spx-frame-ui {
-  text-align: right;
-}
-
 .venetian-page .spx-frame-ui .lux-lead,
 .venetian-page .spx-frame-ui .lux-copy {
   max-width: 36ch;
   line-height: 1.7;
-}
-
-.venetian-page .spx-frame--right .spx-frame-ui .lux-lead,
-.venetian-page .spx-frame--right .spx-frame-ui .lux-copy {
-  margin-left: auto;
 }
 
 .venetian-page .spx-suite-body {
@@ -2747,28 +2454,12 @@
   text-align: center;
 }
 
-.venetian-page .cta-inner p,
-.venetian-page .hathor-cta-note {
+.venetian-page .cta-inner p {
   max-width: 48ch;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.75;
   text-wrap: pretty;
-}
-
-.venetian-page .hathor-cta-sub {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-style: italic;
-  font-size: clamp(1.1rem, 2vw, 1.35rem);
-  letter-spacing: 0.02em;
-  color: rgba(245, 239, 228, 0.88);
-  margin: 0.25rem auto 0.85rem;
-  max-width: 36ch;
-}
-
-.venetian-page .hathor-cta-note {
-  color: rgba(245, 239, 228, 0.68);
-  margin-bottom: 1.75rem;
 }
 
 .venetian-page .spx-atelier-copy {
