@@ -27,7 +27,7 @@ export function handleRouteError(error: unknown) {
 
   if (error instanceof ZodError) {
     return NextResponse.json(
-      { error: "Validation failed", details: error.flatten() },
+      { error: friendlyValidationMessage(error), details: error.flatten() },
       { status: 400 },
     );
   }
@@ -71,4 +71,20 @@ export function handleRouteError(error: unknown) {
 
   console.error(error);
   return jsonError("Internal server error", 500);
+}
+
+/*
+ * Forms show only `error`, so name the field and reason when the check has
+ * hand-written wording (refinements, custom-format messages). Zod's generic
+ * messages stay behind "Validation failed".
+ */
+function friendlyValidationMessage(error: ZodError): string {
+  const issue = error.issues[0];
+  if (!issue || (issue.code !== "custom" && issue.code !== "invalid_format")) {
+    return "Validation failed";
+  }
+  const field = [...issue.path].reverse().find((part) => typeof part === "string");
+  if (!field) return issue.message;
+  const label = field.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (c) => c.toUpperCase());
+  return `${label}: ${issue.message}`;
 }
