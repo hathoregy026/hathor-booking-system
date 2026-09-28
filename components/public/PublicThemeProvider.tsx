@@ -28,7 +28,7 @@ const PublicThemeContext = createContext<PublicThemeContextValue | null>(null);
  * An explicitly saved choice always wins.
  *
  * With nothing saved, fall back to the document rather than to "day": the
- * blocking script in <head> has already resolved `prefers-color-scheme` onto
+ * blocking script in <head> has already resolved the starting theme onto
  * `data-public-theme` before first paint. Normalising a missing key straight
  * to "day" made React disagree with that script, so a visitor on a dark system
  * watched the site load in night and then flip to day one frame after
