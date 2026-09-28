@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteAnalytics } from "@/components/public/SiteAnalytics";
+import { isCustomDomainLive } from "@/lib/public-url";
 import { HATHOR_FAVICON_SRC } from "@/lib/branding";
 import { SiteStructuredData } from "@/components/seo/SiteStructuredData";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
@@ -29,6 +30,12 @@ import "./mobile-touch.css";
 import "./floating-actions.css";
 import "./booking-modal.css";
 import "./nav-controls.css";
+
+/*
+ * hathorcruise.com keeps its existing Google Analytics property (and history);
+ * until the domain moves, the rebuild reports to its own test property.
+ */
+const GA_MEASUREMENT_ID = isCustomDomainLive() ? "G-XH35BQ76FN" : "G-3QKFST6VXE";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -143,13 +150,13 @@ export default function RootLayout({
         {/* Disable GA on /admin before gtag loads — staff traffic must not inflate reports. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(location.pathname.indexOf("/admin")===0){window["ga-disable-G-3QKFST6VXE"]=true;}}catch(e){}})();`,
+            __html: `(function(){try{if(location.pathname.indexOf("/admin")===0){window["ga-disable-${GA_MEASUREMENT_ID}"]=true;}}catch(e){}})();`,
           }}
         />
         {/* Google tag (gtag.js) — site-wide, after first-paint boot scripts. */}
         <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-3QKFST6VXE"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
         />
         <script
           dangerouslySetInnerHTML={{
@@ -161,7 +168,7 @@ gtag('js', new Date());
   function clean(href){try{var u=new URL(href);u.searchParams.delete('token');u.hash='';return u.toString();}catch(e){return '';}}
   var cfg={page_location:clean(location.href)};
   if(document.referrer){cfg.page_referrer=clean(document.referrer);}
-  gtag('config', 'G-3QKFST6VXE', cfg);
+  gtag('config', '${GA_MEASUREMENT_ID}', cfg);
 })();`,
           }}
         />
