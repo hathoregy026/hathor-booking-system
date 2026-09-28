@@ -56,6 +56,20 @@ export const ASWAN_TO_LUXOR_SEO = buildPageMetadata({
   ],
 });
 
+export const LUXOR_ASWAN_LUXOR_SEO = buildPageMetadata({
+  /* hathorcruise.com ranked several room pages for this itinerary with
+     "7 night, 8 day" / "7 Nights 8 Days" titles; keep that phrase. */
+  title: "7 Night Luxor to Aswan Nile Cruise | Hathor Dahabiya",
+  description:
+    "The complete 7-night, 8-day Hathor Dahabiya round trip: Luxor to Aswan and back, with every temple between at a private sailing pace, aboard a 32-guest luxury Dahabiya.",
+  path: SEO_KEYWORD_MAP.luxorAswanLuxor.path,
+  keywords: [
+    "7 Night Luxor Aswan Luxor Nile Cruise",
+    "7 night 8 day dahabiya cruise",
+    "Luxor Aswan round trip dahabiya",
+  ],
+});
+
 /* Leads with the phrase hathorcruise.com/charter ranked with (its title, H1 and H2). */
 export const CHARTER_SEO_TITLE = "Charter Dahabiya Cruise | Private Nile Cruise Egypt | Hathor";
 
@@ -164,11 +178,13 @@ export const CRUISES_LIST_SEO = buildPageMetadata({
 });
 
 export const BLOGS_SEO = buildPageMetadata({
-  title: "Nile Cruise Journal | Hathor Dahabiya Stories",
+  /* Restores the phrase hathorcruise.com/blogs ranked with. */
+  title: "Luxury Nile Cruise Egypt Blog | Dahabiya Travel Tips & Stories",
   description:
-    "Guides and stories from the Nile: when to sail a Dahabiya, Luxor and Aswan temples, packing, cabins and the slower rhythm of Hathor voyages.",
+    "Luxury Nile cruise Egypt travel tips and stories: when to sail a Dahabiya, Luxor and Aswan temples, packing, cabins and the slower rhythm of Hathor voyages.",
   path: SEO_KEYWORD_MAP.blogs.path,
   keywords: [
+    "Luxury Nile Cruise Egypt",
     "Dahabiya Nile cruise journal",
     "Egypt travel stories",
     "Luxor Aswan cruise guide",
@@ -182,11 +198,17 @@ export const BLOGS_SEO = buildPageMetadata({
 });
 
 export const ABOUT_SEO = buildPageMetadata({
-  title: "About Hathor Dahabiya | A Private Nile Sailing",
+  /* Restores the phrase hathorcruise.com/about ranked with. */
+  title: "Dahabiya Nile Cruise Egypt | About Hathor Luxury Sailing",
   description:
-    "Hathor is a 32-guest luxury Dahabiya: eight cabins, two suites and two Royal Suites, sailing the Nile between Luxor and Aswan with a dedicated crew.",
+    "Hathor is a 32-guest luxury Dahabiya Nile cruise in Egypt: eight cabins, two suites and two Royal Suites, sailing between Luxor and Aswan with a dedicated crew.",
   path: SEO_KEYWORD_MAP.about.path,
-  keywords: ["About Hathor Dahabiya", "Hathor cruise story", "32 guest dahabiya"],
+  keywords: [
+    "Dahabiya Nile Cruise Egypt",
+    "About Hathor Dahabiya",
+    "Hathor cruise story",
+    "32 guest dahabiya",
+  ],
 });
 
 export const CONTACT_SEO = buildPageMetadata({
@@ -228,11 +250,17 @@ export const WELLNESS_SEO = buildPageMetadata({
 });
 
 export const GASTRONOMY_SEO = buildPageMetadata({
-  title: "Dining on the Nile | Hathor Dahabiya Gastronomy",
+  /* Restores the phrase hathorcruise.com/gastronomy ranked with. */
+  title: "Luxury Nile Cruise Dining | Culinary Experience on Hathor",
   description:
-    "Egyptian flavours and considered service aboard Hathor Dahabiya — indoor and deck dining shaped by the river between Luxor and Aswan.",
+    "A luxury Nile cruise culinary experience aboard Hathor Dahabiya — Egyptian flavours and considered service, indoor and deck dining shaped by the river between Luxor and Aswan.",
   path: "/gastronomy",
-  keywords: ["Nile cruise dining", "Hathor Dahabiya restaurant", "Egypt river gastronomy"],
+  keywords: [
+    "Luxury Nile Cruise dining",
+    "Nile cruise culinary experience",
+    "Hathor Dahabiya restaurant",
+    "Egypt river gastronomy",
+  ],
 });
 
 export const PARTNERS_SEO = buildPageMetadata({

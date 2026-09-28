@@ -35,6 +35,12 @@ export const SEO_KEYWORD_MAP = {
     secondary: ["3 night Aswan Luxor dahabiya"],
     intent: "commercial",
   },
+  luxorAswanLuxor: {
+    path: "/voyages/luxor-aswan-luxor",
+    primary: "7 Night Luxor Aswan Luxor Nile Cruise",
+    secondary: ["7 night 8 day dahabiya cruise", "Luxor Aswan round trip dahabiya"],
+    intent: "commercial",
+  },
   charter: {
     path: "/charter",
     /* hathorcruise.com/charter ranked with this exact phrase (title, H1, H2) */
@@ -95,7 +101,7 @@ export const SEO_KEYWORD_MAP = {
 export const VOYAGE_ROUTE_HREF: Record<string, string> = {
   "3-nights-aswan-luxor": "/voyages/aswan-to-luxor",
   "4-nights-luxor-aswan": "/voyages/luxor-to-aswan",
-  "7-nights-luxor-aswan-luxor": "/voyages",
+  "7-nights-luxor-aswan-luxor": "/voyages/luxor-aswan-luxor",
   "nile-majesty": "/charter",
 };
 
