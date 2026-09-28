@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
-import { SuitesNormalHomepagePage } from "@/components/pages/SuitesNormalHomepagePage";
-import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
+import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { Footer } from "@/components/layout/Footer";
+import { SuitesNativeBoot } from "@/components/suites-native/SuitesNativeBoot";
+import { SuitesNativePage } from "@/components/suites-native/SuitesNativePage";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
-import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
 import { SUITES_SEO } from "@/lib/seo/page-metadata";
 import {
   PageStructuredData,
@@ -11,47 +12,31 @@ import {
 } from "@/components/seo/PageStructuredData";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { SUITES_DASHBOARD_SLOT_NAMES } from "@/lib/site-image-usage";
-import { SUITES_REFERENCE_HERO_IMAGE_DEFAULTS } from "@/lib/suites-reference-hero";
-import { getPageScopedSiteImageName } from "@/lib/site-image-page-scope";
-import {
-  DEFAULT_SUITES_TYPOGRAPHY,
-  DEFAULT_SUITES_TYPOGRAPHY_PHONE,
-  getSuitesTypography,
-} from "@/lib/suites-typography";
-import { suitesTypographyToCss } from "@/lib/suites-typography-shared";
+import { SUITES_NATIVE_SLOT_DEFAULTS } from "@/lib/suites-native-content";
 
 import "../page-visibility.css";
 import "../site-coming-soon.css";
-import "../suites-normal-clone.css";
+import "../suites-native.css";
 
 export const metadata: Metadata = SUITES_SEO;
 
 /**
  * Outside (public): Suites owns its own layout. Still must honor dashboard
  * Pages + Live Site gates on the custom domain (Vercel / localhost stay open).
+ *
+ * Renders the native rebuild (server-rendered content, one H1) instead of
+ * the Springs iframe clone: the iframe's content was populated entirely by
+ * client JS, so crawlers saw only the nav shell. This is the same component
+ * already proven at the internal /suites-preview route.
  */
 export default async function SuitesPage() {
-  const [cms, desktop, phone] = await Promise.all([
-    loadPublicCmsBundle(),
-    getSuitesTypography(),
-    getSuitesTypography(true),
-  ]);
+  const cms = await loadPublicCmsBundle();
 
-  const images: Record<string, string> = {
-    ...SUITES_REFERENCE_HERO_IMAGE_DEFAULTS,
-  };
+  const images: Record<string, string> = { ...SUITES_NATIVE_SLOT_DEFAULTS };
   for (const name of SUITES_DASHBOARD_SLOT_NAMES) {
-    const scopedName = getPageScopedSiteImageName("/suites", name);
-    const src = (
-      cms.siteImages[scopedName] ?? cms.siteImages[name]
-    )?.src?.trim();
+    const src = cms.siteImages[name]?.src?.trim();
     if (src) images[name] = src;
   }
-
-  const css = combineDesktopAndPhoneCss(
-    suitesTypographyToCss(desktop, DEFAULT_SUITES_TYPOGRAPHY),
-    suitesTypographyToCss(phone, DEFAULT_SUITES_TYPOGRAPHY_PHONE),
-  );
 
   return (
     <StandalonePageVisibilityShell
@@ -82,14 +67,11 @@ export default async function SuitesPage() {
           }),
         ]}
       />
-      <PublicCmsTextRuntime
-        websiteText={cms.websiteText}
-        websiteTextMobile={cms.websiteTextMobile}
-        typography={cms.typography}
-        typographyMobile={cms.typographyMobile}
-      >
-        <SuitesNormalHomepagePage images={images} css={css} />
-      </PublicCmsTextRuntime>
+      <SuitesNativeBoot>
+        <PublicNavbar />
+        <SuitesNativePage images={images} />
+        <Footer />
+      </SuitesNativeBoot>
     </StandalonePageVisibilityShell>
   );
 }
