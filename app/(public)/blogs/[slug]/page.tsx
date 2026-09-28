@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { BlogArticleBody } from "@/components/pages/BlogArticleBody";
 import { BlogPostPageContent } from "@/components/pages/BlogPostPageContent";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -64,6 +64,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await getPublishedBlogPostBySlug(slug);
 
   if (!post) {
+    /* Old hathorcruise.com links carry mixed-case slugs (e.g. "Spiritual-journey-to-Egypt"):
+       send them to the post's own address rather than a 404, so their rankings carry over. */
+    const lower = slug.toLowerCase();
+    const match = lower !== slug ? await getPublishedBlogPostBySlug(lower) : null;
+    if (match) permanentRedirect(`/blogs/${match.slug}`);
     notFound();
   }
 

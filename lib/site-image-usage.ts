@@ -128,5 +128,4 @@ export const SUITES_DASHBOARD_SLOT_NAMES = [
   "scraped-cabin-4",
   "scraped-cabin-7",
   "scraped-cabin-8",
-  "suites-nile-still",
 ] as const;

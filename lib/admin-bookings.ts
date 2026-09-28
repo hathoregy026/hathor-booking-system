@@ -1,4 +1,6 @@
 export type AdminBookingCabin = {
+  /** The physical cabin (K01…R02), for "see it on the ship". */
+  roomId?: string;
   type: string;
   adults: number;
   children: number;
@@ -32,6 +34,8 @@ export type AdminBookingDto = {
   country: string | null;
   status: string;
   cruiseName: string;
+  /** The voyage's slug (e.g. "4-nights-luxor-aswan"); the ship map opens on it. */
+  cruiseSlug?: string;
   checkInDate: string;
   checkOutDate: string;
   departureTime: string;

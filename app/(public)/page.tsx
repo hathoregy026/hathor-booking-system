@@ -18,7 +18,6 @@ import { HOME_SEO } from "@/lib/seo/page-metadata";
 import "./home-experience.css";
 import "./home-responsive.css";
 import "./home-3/home-three.css";
-import "./home-3/ship-experience.css";
 import "../partners-company-strip.css";
 import { safeStyleText } from "@/lib/safe-style";
 

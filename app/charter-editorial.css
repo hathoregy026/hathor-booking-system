@@ -1,7 +1,12 @@
 /* ==========================================================================
    CHARTER — EDITORIAL (LuxuryHathor)
+   One idea: not a cabin, the whole ship. The story opens on Hathor drawn in
+   profile with a gold wash taking every deck, counts what "whole" means, then
+   earns the request: the vessel, every residence, three freedoms, the days,
+   the passage board (which fills in the form), the steps, and quiet proof.
+
    Motion: hooks/useCharterEditorialScroll.ts
-     --reveal  --parallax  --focus  --chr-flip
+     --reveal  --parallax  --scene-progress  --focus  --chr-flip
    ========================================================================== */
 
 .charter-editorial {
@@ -32,9 +37,22 @@
 
   --chr-pad: clamp(1rem, 2.2vw, 2.4rem);
   --chr-gap: clamp(0.75rem, 1.4vw, 1.4rem);
-  --chr-col: calc((100vw - (var(--chr-pad) * 2) - (var(--chr-gap) * 11)) / 12);
   --chr-band: clamp(4.5rem, 8vh, 7rem);
   --chr-header-clear: 4.25rem;
+  /* scene rhythm on the pinned stage */
+  --chr-scene-top: calc(var(--chr-header-clear) + 1.25rem);
+  --chr-scene-bottom: clamp(1.25rem, 3svh, 2.25rem);
+  --chr-scene-x: clamp(2rem, 4vw, 4.5rem);
+  /* photo system (desktop story): one top line, one frame, one gap. The
+     frame leaves 25rem under it so a caption always fits the screen. */
+  --chr-line-top: calc(var(--chr-header-clear) + clamp(1.75rem, 5svh, 3.25rem));
+  --chr-img: min(56svh, calc(100svh - 25rem), 40rem);
+  /* one pill width for every action on the page (the longest label fits) */
+  --chr-pill: 17.5rem;
+  --hathor-btn-width: var(--chr-pill);
+  --chr-gutter: clamp(1.75rem, 3.2vw, 3.75rem);
+  --chr-caption-gap: clamp(0.85rem, 2svh, 1.25rem);
+  --chr-head-w: clamp(17.5rem, 22vw, 24rem); /* never narrower than a pill */
   --chr-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   position: relative;
@@ -94,6 +112,8 @@ html:has(.charter-editorial) .public-fab {
 .charter-editorial p,
 .charter-editorial ol,
 .charter-editorial ul,
+.charter-editorial dl,
+.charter-editorial dd,
 .charter-editorial figure,
 .charter-editorial blockquote {
   margin: 0;
@@ -118,17 +138,17 @@ html:has(.charter-editorial) .public-fab {
   cursor: pointer;
 }
 
-.charter-editorial main {
+.charter-editorial .chr-main {
   width: 100%;
 }
 
-/* ------------------------------------------------------------ type */
+/* ------------------------------------------------------------------- type */
 .charter-editorial .chr-display {
   font-family: var(--chr-display);
   font-weight: 400;
   font-style: normal;
   text-transform: uppercase;
-  line-height: 0.96;
+  line-height: 0.92;
   letter-spacing: -0.012em;
   overflow-wrap: normal;
   word-break: keep-all;
@@ -156,12 +176,6 @@ html:has(.charter-editorial) .public-fab {
   letter-spacing: -0.005em;
   overflow-wrap: break-word;
   word-break: normal;
-}
-
-.charter-editorial .chr-edit--m {
-  font-size: clamp(1.15rem, 1.8vw, 1.75rem);
-  line-height: 1.4;
-  max-width: 34ch;
 }
 
 .charter-editorial .chr-eyebrow {
@@ -192,12 +206,11 @@ html:has(.charter-editorial) .public-fab {
   color: var(--chr-ink-soft);
 }
 
-/* Title lines: each phrase stays on one line; words never split */
+/* Clip-mask reveal: each whole phrase slides up from behind its own edge. */
 .charter-editorial .chr-line {
   display: block;
   overflow: clip;
   padding-bottom: 0.08em;
-  white-space: normal;
 }
 
 .charter-editorial .chr-line > * {
@@ -219,24 +232,29 @@ html:has(.charter-editorial) .public-fab {
   display: inline-block;
 }
 
-.charter-editorial .chr-line--a {
-  padding-left: 0;
+/* Word gaps live on the words, not in the non-breaking space between them,
+   so a phrase that wraps on a phone never starts its next row indented. */
+.charter-editorial .chr-line .anima-split-line > span:not(.anima-split-word) {
+  font-size: 0;
 }
 
-.charter-editorial .chr-line--b {
-  padding-left: clamp(0.5rem, 2vw, 2.5rem);
+.charter-editorial .chr-line .anima-split-word:not(:last-child) {
+  margin-right: 0.26em;
 }
 
-.charter-editorial .chr-line--c {
-  padding-left: clamp(0.25rem, 1vw, 1.25rem);
+/* Scene titles never outgrow a short stage. */
+.charter-editorial .chr-scene h2.chr-display--l {
+  font-size: min(var(--chr-t-l), 8.4svh);
+}
+
+.charter-editorial .chr-scene h2.chr-display--m {
+  font-size: min(var(--chr-t-m), 6.4svh);
 }
 
 .charter-editorial h3.chr-display {
   font-size: clamp(1.15rem, 1.55vw, 1.85rem);
-  line-height: 1.05;
+  line-height: 1.02;
   white-space: normal;
-  overflow-wrap: normal;
-  word-break: keep-all;
   max-width: 14ch;
 }
 
@@ -262,11 +280,14 @@ html:has(.charter-editorial) .public-fab {
   transition: width 0.4s var(--chr-ease-soft);
 }
 
-.charter-editorial .chr-link:hover {
+.charter-editorial .chr-link:hover,
+.charter-editorial .chr-link:focus-visible {
   --chr-lw: 100%;
 }
 
-/* ----------------------------------------------------------------- buttons */
+/* ----------------------------------------------------------------- buttons
+   Geometry and skin come from app/button-system.css; groups only set the one
+   peer width so every pill in a group is the same box. */
 .charter-editorial .chr-btn {
   position: relative;
   display: inline-flex;
@@ -276,7 +297,6 @@ html:has(.charter-editorial) .public-fab {
   isolation: isolate;
   box-sizing: border-box;
   flex: 0 0 auto;
-  line-height: 1;
   min-height: 44px;
   padding: 0 1.45rem;
   border: 1px solid var(--chr-ink);
@@ -338,6 +358,24 @@ html:has(.charter-editorial) .public-fab {
   cursor: wait;
 }
 
+/* Every group of actions: the same pill, the same width, one 0.75rem rhythm,
+   left edges on the column line. Two-by-two where four sit together. */
+/* The group has the pill's width, so the button system's "min(width, 100%)"
+   below 1024px still resolves to the same pill everywhere. */
+.charter-editorial .chr-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: min(var(--chr-pill), 100%);
+}
+
+.charter-editorial .chr-actions--grid {
+  display: grid;
+  grid-template-columns: repeat(2, var(--chr-pill));
+  width: auto;
+}
+
 /* ---------------------------------------------------------------- progress */
 .chr-progress {
   position: fixed;
@@ -367,6 +405,9 @@ html:has(.charter-editorial) .public-fab {
   top: 0;
   height: 100svh;
   overflow: hidden;
+  /* clip, not a scroll container: a #hash or keyboard focus can never scroll
+     the stage sideways and desync the story from the page scroll. */
+  overflow: clip;
   display: flex;
   align-items: stretch;
 }
@@ -383,15 +424,12 @@ html:has(.charter-editorial) .public-fab {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
-    padding: calc(var(--chr-header-clear) + 0.75rem) var(--chr-pad)
-    clamp(1.1rem, 2.5vh, 2rem);
+  padding: var(--chr-scene-top) var(--chr-scene-x) var(--chr-scene-bottom);
   display: flex;
   flex-direction: column;
-  gap: clamp(0.75rem, 1.6vh, 1.35rem);
-  overflow: visible;
+  min-width: 0;
+  overflow: clip;
   isolation: isolate;
-  min-width: 0;
-  min-width: 0;
 }
 
 /* ------------------------------------------------------------ media + flip */
@@ -403,11 +441,13 @@ html:has(.charter-editorial) .public-fab {
   flex-shrink: 0;
 }
 
+/* The picture inside a frame drifts in with the frame's own slide (--chr-in,
+   0 → 1 as it arrives) and settles from a slightly closer crop. */
 .chr-media__image {
   object-fit: cover;
-  transform: scale(1.05)
-    translate3d(0, calc((var(--parallax, 0.5) - 0.5) * -3%), 0);
-  will-change: transform;
+  transform: translate3d(calc((1 - var(--chr-in, 1)) * 9%), calc((var(--parallax, 0.5) - 0.5) * -3%), 0)
+    scale(calc(1.05 + (1 - var(--chr-in, 1)) * 0.1 + var(--focus, 0) * 0.02));
+  transition: transform 0.8s var(--chr-ease-soft);
 }
 
 .chr-flip {
@@ -425,10 +465,6 @@ html:has(.charter-editorial) .public-fab {
   height: 100%;
 }
 
-.chr-flip__overlay {
-  clip-path: inset(0 100% 0 0);
-}
-
 .chr-flip--left .chr-flip__overlay {
   clip-path: inset(0 calc((1 - var(--chr-flip, 0)) * 100%) 0 0);
 }
@@ -441,95 +477,191 @@ html:has(.charter-editorial) .public-fab {
   clip-path: inset(calc((1 - var(--chr-flip, 0)) * 100%) 0 0 0);
 }
 
-/* ----------------------------------------------------------- 01 · index */
-.chr-index {
-  width: min(100vw, 78rem);
-  flex-direction: row;
-  align-items: stretch;
-  gap: clamp(1.25rem, 2.5vw, 2.5rem);
-  background: var(--chr-paper);
-}
-
-.chr-index__copy {
-  flex: 1 1 52%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(0.7rem, 1.4vh, 1.2rem);
-}
-
-.chr-index__chapters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem 1.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.chr-index__chapters a {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--chr-ink-soft);
-  white-space: nowrap;
-  transition: color 0.3s var(--chr-ease-soft);
-}
-
-.chr-index__chapters a span {
-  font-family: var(--chr-edit);
-  font-style: italic;
-  letter-spacing: 0.04em;
-  color: var(--chr-gold-deep);
-}
-
-.chr-index__chapters a:hover {
+/* ---------------------------------------------------------- the ship drawing */
+.chr-ship {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
   color: var(--chr-ink);
 }
 
-.chr-index__title {
+.chr-ship path,
+.chr-ship rect {
+  vector-effect: non-scaling-stroke;
+}
+
+.chr-ship__lines {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+}
+
+.chr-ship__fine {
+  stroke-opacity: 0.5;
+}
+
+.chr-ship .chr-ship__pane {
+  fill: currentcolor;
+  fill-opacity: 0.07;
+  stroke-opacity: 0.8;
+}
+
+.chr-ship .chr-ship__boot {
+  fill: currentcolor;
+  fill-opacity: 0.88;
+  stroke: none;
+}
+
+/* "Yours": the gold wash takes the hull from stern to bow. */
+.chr-ship__wash {
+  fill: var(--chr-gold);
+  fill-opacity: 0.34;
+  stroke: none;
+}
+
+.chr-ship__reveal {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  animation: chr-ship-take 2.4s var(--chr-ease-soft) 0.45s forwards;
+}
+
+@keyframes chr-ship-take {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.chr-ship__water {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1px;
+  stroke-opacity: 0.55;
+}
+
+.chr-ship .chr-ship__wake {
+  vector-effect: none;
+  stroke-width: 0.8;
+  stroke-opacity: 0.4;
+  stroke-dasharray: 34 22;
+  animation: chr-ship-wake 6s linear infinite;
+}
+
+@keyframes chr-ship-wake {
+  to {
+    stroke-dashoffset: 56;
+  }
+}
+
+/* ============================================================ 01 · THE OFFER
+   A drawing sheet: title block and pitch above, the ship across the foot,
+   and the count of what "the whole ship" means under it. */
+.chr-deed {
+  --reveal: 1;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: var(--chr-gap);
+  row-gap: clamp(0.9rem, 2.6svh, 2.1rem);
+  padding-left: var(--chr-pad);
+  padding-right: var(--chr-pad);
+  background: var(--chr-paper);
+}
+
+.chr-deed__top {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.chr-deed__chapters ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem clamp(1rem, 2.2vw, 2.4rem);
+}
+
+.chr-deed__chapters a {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6em;
+  padding: 0.35em 0;
+}
+
+.chr-deed__chapters a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.1em;
+  width: 0;
+  height: 1px;
+  background: var(--chr-gold-deep);
+  transition: width 0.4s var(--chr-ease-soft);
+}
+
+.chr-deed__chapters a:hover::after,
+.chr-deed__chapters a:focus-visible::after {
+  width: 100%;
+}
+
+.chr-deed__title {
+  grid-column: 1 / span 8;
+  grid-row: 2;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.7rem, 1.8svh, 1.2rem);
   min-width: 0;
 }
 
-.chr-index__lead {
-  max-width: 32ch;
-  font-family: "Rollgates Luxury Italic", var(--chr-edit-italic), serif;
-  font-style: italic;
-  font-size: clamp(0.875rem, 0.95vw, 1.05rem);
-  line-height: 1.55;
-  color: var(--chr-ink-soft);
+/* The offer in plain words, under the title. */
+.charter-editorial .chr-deed__intro {
+  max-width: 54ch;
 }
 
-.chr-index__meta {
+.charter-editorial .chr-deed__title h1 {
+  font-size: min(calc(var(--chr-t-xl) * 1.22), 10.5svh);
+  line-height: 0.9;
+}
+
+.chr-deed__pitch {
+  grid-column: 9 / -1;
+  grid-row: 2;
+  align-self: center;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 1.25rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.9rem, 2.2svh, 1.5rem);
+  min-width: 0;
 }
 
-.chr-index__scroll {
+.charter-editorial .chr-deed__lead {
+  font-size: clamp(1.2rem, min(1.9vw, 3.4svh), 2.1rem);
+  line-height: 1.22;
+  max-width: 18ch;
+}
+
+.chr-deed__cue {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  margin-top: 0.35rem;
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--chr-ink-soft);
-  white-space: nowrap;
+  gap: 0.7rem;
 }
 
-.chr-index__scroll i {
+.chr-deed__cue i {
   display: block;
-  width: 2.8rem;
+  width: 3.2rem;
   height: 1px;
-  background: var(--chr-ink);
+  background: currentcolor;
   transform-origin: 0 50%;
-  animation: chr-scroll-hint 2.4s var(--chr-ease-soft) infinite;
+  animation: chr-cue 2.4s var(--chr-ease-soft) infinite;
 }
 
-@keyframes chr-scroll-hint {
+@keyframes chr-cue {
   0%,
   100% {
     transform: scaleX(0.35);
@@ -539,638 +671,702 @@ html:has(.charter-editorial) .public-fab {
   }
 }
 
-.chr-index__visual {
-  flex: 0 1 38%;
-  width: min(38%, 22rem);
-  max-height: calc(100svh - var(--chr-header-clear) - 3rem);
-  align-self: center;
-  aspect-ratio: 4 / 5;
-}
-
-/* ----------------------------------------------------------- 02 · claim */
-.chr-claim {
-  width: min(112vw, 88rem);
-  flex-direction: row;
-  align-items: stretch;
-  gap: 0;
-  padding-left: 0;
-  padding-right: 0;
-  background: var(--chr-wash-sand);
-}
-
-.chr-claim__visual {
-  position: relative;
-  flex: 1 1 58%;
-  min-width: 0;
-  height: 100%;
-  padding: calc(var(--chr-header-clear) + 0.75rem) 0
-    clamp(1.1rem, 2.5vh, 2rem) var(--chr-pad);
-}
-
-.chr-claim__main {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: auto;
-}
-
-.chr-claim__inset {
-  position: absolute;
-  right: clamp(0.75rem, 2vw, 1.5rem);
-  bottom: clamp(1.2rem, 3vh, 2.2rem);
-  width: min(32%, 11rem);
-  aspect-ratio: 4 / 5;
-  box-shadow: 0 12px 36px rgb(20 18 14 / 18%);
-}
-
-.chr-claim__wash {
-  flex: 0 0 min(36%, 26rem);
+.chr-deed__plan {
+  grid-column: 1 / -1;
+  grid-row: 3;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  padding: calc(var(--chr-header-clear) + 0.75rem) var(--chr-pad)
-    clamp(1.1rem, 2.5vh, 2rem);
-  background: var(--chr-wash-sand);
+  gap: clamp(0.8rem, 2svh, 1.4rem);
   min-width: 0;
 }
 
-.chr-claim__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-top: 0.35rem;
+/* The drawing keeps its proportion; on short screens it narrows, never crops. */
+.chr-deed__ship {
+  position: relative;
+  width: min(100%, calc(29svh * 604 / 112));
+  transform: translate3d(calc((var(--parallax, 0.5) - 0.5) * 14vw), 0, 0);
+  transition: transform 0.8s var(--chr-ease-soft);
 }
 
-/* ----------------------------------------------------------- 03 · spine */
-.chr-spine {
-  width: min(150vw, 108rem);
+/* The key sits in the open water above the foredeck — the one empty corner
+   of the drawing at every desktop width. */
+.chr-deed__legend {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.chr-deed__legend i {
+  flex: 0 0 auto;
+  width: 0.95rem;
+  height: 0.62rem;
+  border: 1px solid var(--chr-gold-deep);
+  background: rgb(182 159 100 / 34%);
+}
+
+.chr-deed__ledger {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--chr-hair);
+}
+
+.chr-deed__ledger > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding: clamp(0.6rem, 1.4svh, 0.9rem) clamp(0.6rem, 1.2vw, 1.2rem) 0;
+  border-left: 1px solid var(--chr-hair);
+}
+
+.chr-deed__ledger > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.charter-editorial .chr-deed__ledger dd {
+  font-size: clamp(1.6rem, min(2.6vw, 4.6svh), 3rem);
+  line-height: 1;
+  color: var(--chr-ink);
+}
+
+/* ============================================================ PHOTO SYSTEM
+   One frame for every photograph in the story: portrait 4:5 at one height
+   (--chr-img), hanging from one top line (--chr-line-top), one --chr-gutter
+   from whatever sits beside it. A caption sits --chr-caption-gap below its
+   frame; a room's text sits the same distance beside its frame. */
+.chr-photo {
+  flex: 0 0 auto;
+  height: var(--chr-img);
+  width: auto;
+}
+
+/* A text column: the same width in every scene, and a container so its title
+   can size itself to fit (see --chr-fit on TitleLines). */
+.chr-column {
+  flex: 0 0 var(--chr-head-w);
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.7rem, 1.8svh, 1.1rem);
+  min-width: 0;
+}
+
+.charter-editorial .chr-column h2.chr-display--l {
+  font-size: min(var(--chr-t-l), 8.4svh, calc(100cqi / (var(--chr-fit, 10) * 0.64)));
+}
+
+.chr-vow,
+.chr-keys,
+.chr-freedoms,
+.chr-days,
+.chr-passages,
+.chr-steps,
+.chr-proof {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--chr-gutter);
+  padding-top: var(--chr-line-top);
+}
+
+/* ------------------------------------------------------------- slide-in
+   The story travels right to left, so each frame opens like a curtain from
+   the edge that arrives first while its picture drifts into place, and each
+   block of text slides in a little behind it. --chr-in is written per
+   element by the scroll hook (0 off to the right → 1 settled). */
+.chr-photo {
+  clip-path: inset(0 calc((1 - var(--chr-in, 1)) * 100%) 0 0);
+}
+
+[data-chr-reveal] {
+  transform: translate3d(calc((1 - var(--chr-in, 1)) * 3rem), 0, 0);
+  opacity: calc(0.1 + var(--chr-in, 1) * 0.9);
+}
+
+/* ============================================================ 02 · REQUEST
+   Straight after the ship: the whole request on one screen — an intro line,
+   every field on one sheet, and the desk for those who would rather talk. */
+.chr-request {
+  width: 100vw;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--chr-gutter);
+  padding-top: var(--chr-line-top);
   background: var(--chr-paper-warm);
 }
 
-.chr-spine__head {
-  display: grid;
-  grid-template-columns: minmax(12rem, 0.85fr) minmax(0, 1.15fr);
-  gap: 0.65rem var(--chr-gap);
-  align-items: end;
-  flex: 0 0 auto;
-}
-
-.chr-spine__head .chr-eyebrow {
-  grid-column: 1 / -1;
-}
-
-.chr-spine__head .chr-support {
-  max-width: 42ch;
-  align-self: end;
-}
-
-.chr-spine__columns {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.9rem, 1.6vw, 1.5rem);
+.chr-request__sheet {
   flex: 1 1 auto;
-  min-height: 0;
-  align-items: stretch;
-}
-
-.chr-spine__col {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
   min-width: 0;
-  min-height: 0;
-}
-
-.chr-spine__n {
-  font-size: clamp(1.25rem, 1.8vw, 1.85rem);
-  color: var(--chr-gold-deep);
-}
-
-.chr-spine__media {
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: none;
-  aspect-ratio: 4 / 5;
-  height: auto;
-}
-
-.chr-spine__col .chr-support {
-  max-width: none;
-}
-
-/* ------------------------------------------------------- 04 · residence */
-.chr-residence {
-  width: min(145vw, 104rem);
-  background: var(--chr-wash-stone);
-  gap: 0.65rem;
-}
-
-.chr-residence .chr-display--l {
-  font-size: clamp(1.9rem, 4.2vw, 3.85rem);
-}
-
-.chr-residence__head {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  max-width: 44rem;
-  flex: 0 0 auto;
+  gap: clamp(0.9rem, calc(6svh - 1.8rem), 2.6rem);
 }
 
-.chr-residence__head .chr-support {
-  max-width: none;
+.chr-request__photo {
+  display: none;
 }
 
-.chr-residence__stats {
+.chr-request__desk {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem 1.35rem;
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--chr-gold-deep);
-}
-
-.chr-residence__wall {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.75rem, 1.4vw, 1.25rem);
-  flex: 1 1 auto;
-  min-height: 0;
-  align-items: start;
-}
-
-.chr-datum {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  height: auto;
-  background: rgb(236 228 218 / 0.55);
-  border: 1px solid var(--chr-hair);
-  overflow: visible;
-}
-
-.chr-datum__media {
-  width: 100%;
-  flex: 0 0 auto;
-  aspect-ratio: 16 / 9;
-  max-height: 8.75rem;
-  height: auto;
-}
-
-.chr-datum__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.75rem 0.9rem 0.95rem;
-  min-width: 0;
-  min-height: min-content;
-  flex: 1 1 auto;
-}
-
-.chr-datum__top {
-  display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.5rem clamp(1.25rem, 2.4vw, 2.5rem);
+  padding-top: clamp(0.7rem, 1.6svh, 1rem);
+  border-top: 1px solid var(--chr-hair);
 }
 
-.chr-datum__count {
-  font-size: clamp(1.85rem, 2.8vw, 2.8rem);
-  line-height: 0.9;
+@media (min-width: 951px) and (prefers-reduced-motion: no-preference) {
+  /* spacing grows with screen height, so a tall screen is filled, not emptied */
+  .charter-editorial .chr-request .ch-request {
+    gap: clamp(0.9rem, calc(6svh - 1.8rem), 2.6rem);
+  }
+
+  .charter-editorial .chr-request .ch-request__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: var(--chr-gutter);
+    row-gap: 0.45rem;
+    align-items: start;
+  }
+
+  .charter-editorial .chr-request .ch-request__intro > .chr-eyebrow {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .charter-editorial .chr-request .ch-request__intro > h2 {
+    grid-column: 1;
+    grid-row: 2 / span 3;
+    font-size: min(var(--chr-t-m), 6.4svh);
+  }
+
+  .charter-editorial .chr-request .ch-request__intro > p:not(.chr-eyebrow) {
+    grid-column: 2;
+    max-width: 44ch;
+  }
+
+  /* Every field on one sheet: four columns, message and send on the last row. */
+  .charter-editorial .chr-request .ch-form {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    row-gap: clamp(0.75rem, calc(5svh - 1.5rem), 2rem);
+  }
+
+  .charter-editorial .chr-request .ch-form__row {
+    display: contents;
+  }
+
+  /* a label that wraps never lifts its input off the row's line */
+  .charter-editorial .chr-request .ch-form__field {
+    justify-content: flex-end;
+  }
+
+  .charter-editorial .chr-request .ch-form__field--full {
+    grid-column: 1 / span 3;
+    grid-row: 4;
+  }
+
+  .charter-editorial .chr-request textarea.ch-form__input {
+    height: calc(1.4em * 2 + 1rem);
+    resize: none;
+  }
+
+  /* on the sheet, the send pill is exactly one field column wide */
+  .charter-editorial .chr-request .ch-form > .chr-btn {
+    --hathor-btn-width: 100%;
+    grid-column: 4;
+    grid-row: 4;
+    align-self: end;
+  }
+
+  .charter-editorial .chr-request .ch-form__status {
+    grid-column: 1 / -1;
+    grid-row: 5;
+  }
+
+  .charter-editorial .chr-request .ch-form__status:empty {
+    display: none;
+  }
 }
 
-.chr-datum h3.chr-display {
-  max-width: none;
-  overflow-wrap: break-word;
-  word-break: normal;
+/* Room for the photograph: the sheet takes three columns beside the frame. */
+@media (min-width: 1200px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
+  .chr-request__photo {
+    display: block;
+  }
+
+  .charter-editorial .chr-request .ch-form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .charter-editorial .chr-request .ch-form__field--full {
+    grid-column: 1 / span 2;
+    grid-row: 5;
+  }
+
+  .charter-editorial .chr-request .ch-form > .chr-btn {
+    grid-column: 3;
+    grid-row: 5;
+  }
+
+  .charter-editorial .chr-request .ch-form__status {
+    grid-row: 6;
+  }
 }
 
-.chr-datum__amenities {
-  display: flex;
-  flex-direction: column;
-  gap: 0.12rem;
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--chr-ink-soft);
+/* ============================================================ 03 · THE VESSEL
+   The one dark wash in the story: photographs as evidence. Colours are fixed
+   because this surface is dark in both themes. */
+.chr-vow {
+  background: #0b0a08;
+  color: #ece4da;
 }
 
-.chr-datum .chr-support {
-  display: block;
-  overflow: visible;
-  min-width: 0;
-  max-width: none;
+.chr-vow__copy {
+  flex-basis: min(30rem, 30vw);
 }
 
-.chr-datum .chr-link {
-  margin-top: auto;
-  padding-top: 0.35rem;
+.charter-editorial .chr-vow .chr-eyebrow {
+  color: #b69f64;
 }
 
-.chr-residence__outro {
-  max-width: 62ch;
-  flex: 0 0 auto;
+.charter-editorial .chr-vow__statement {
+  font-size: clamp(1.1rem, min(1.6vw, 2.9svh), 1.75rem);
+  line-height: 1.42;
+  color: rgb(236 228 218 / 88%);
+  max-width: 30ch;
 }
 
-/* ----------------------------------------------------------- 05 · craft */
-.chr-craft {
-  width: min(145vw, 104rem);
+.charter-editorial .chr-vow .chr-meta {
+  color: #b69f64 !important;
+}
+
+/* ============================================================ 04 · RESIDENCES
+   Three frames, each with its specification beside it. */
+.chr-keys {
   background: var(--chr-paper);
 }
 
-.chr-craft__head {
+.chr-keys__stats {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 36rem;
-  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.35rem 0;
 }
 
-.chr-craft__strip {
+.chr-keys__stats li + li::before {
+  content: "·";
+  margin: 0 0.7em;
+  color: var(--chr-gold-deep);
+}
+
+.chr-keys__sheet {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--chr-gutter);
+}
+
+.chr-key {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--chr-caption-gap);
+}
+
+.chr-key__text {
+  flex: 0 0 clamp(14rem, 16vw, 17.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.55rem, 1.4svh, 0.85rem);
+  min-width: 0;
+}
+
+.chr-key__name {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.8rem;
+}
+
+.chr-key__count {
+  font-family: var(--chr-display);
+  font-size: min(var(--chr-t-xl), 9svh);
+  line-height: 0.78;
+  color: var(--chr-gold-deep);
+}
+
+.charter-editorial .chr-key h3.chr-display {
+  max-width: 12ch;
+  padding-bottom: 0.1em;
+}
+
+.chr-key__amenities {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-family: var(--chr-edit);
+  font-size: clamp(0.82rem, 0.85vw, 0.95rem);
+  line-height: 1.35;
+  color: var(--chr-ink);
+}
+
+.chr-key__amenities li::before {
+  content: "–";
+  margin-right: 0.5em;
+  color: var(--chr-gold-deep);
+}
+
+/* ============================================================ 05 · FREEDOMS
+   Three equal columns: the frame, its word set to the column's own width,
+   then the promise. */
+.chr-freedoms {
+  background: var(--chr-wash-sand);
+}
+
+.chr-freedoms__head .chr-support {
+  max-width: none;
+}
+
+.chr-freedoms__row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(0.75rem, 1.4vw, 1.25rem);
-  flex: 1 1 auto;
-  min-height: 0;
-  align-items: stretch;
+  grid-template-columns: repeat(3, calc(var(--chr-img) * 0.8));
+  column-gap: var(--chr-gutter);
 }
 
-.chr-craft__tile {
+.chr-freedom {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  min-width: 0;
-  min-height: 0;
-}
-
-.chr-craft__media {
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
-  aspect-ratio: 3 / 4;
-  max-height: 58%;
-}
-
-.chr-craft__copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  flex: 0 0 auto;
-}
-
-.chr-craft__copy .chr-support {
-  display: block;
-  overflow: visible;
+  gap: var(--chr-caption-gap);
   min-width: 0;
 }
 
-/* ----------------------------------------------------------- 06 · river */
-.chr-river {
-  width: min(150vw, 112rem);
-  flex-direction: row;
-  gap: clamp(1rem, 2vw, 2rem);
+.chr-freedom__caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--chr-caption-gap);
+}
+
+/* the longest word ("Flexibility.") fills the column; the others match it */
+.charter-editorial .chr-freedom__word .chr-display {
+  font-size: 12.5cqi;
+  line-height: 0.86;
+}
+
+.chr-freedom__copy {
+  display: grid;
+  grid-template-columns: 2.2em minmax(0, 1fr);
+  column-gap: 0.4rem;
+  row-gap: 0.4rem;
+  align-items: baseline;
+}
+
+.chr-freedom__n {
+  grid-row: 1 / span 2;
+  font-style: italic;
+  color: var(--chr-gold-deep);
+}
+
+.charter-editorial .chr-freedom h3 {
+  font-size: var(--chr-t-s);
+  line-height: 1.12;
+}
+
+/* ============================================================ 06 · DAYS
+   Four frames on one line, captions on one line beneath. */
+.chr-days {
+  background: var(--chr-paper-warm);
+}
+
+.chr-days__sheet {
+  display: grid;
+  grid-template-columns: repeat(4, calc(var(--chr-img) * 0.8));
+  column-gap: var(--chr-gutter);
+}
+
+.chr-day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--chr-caption-gap);
+  min-width: 0;
+}
+
+.chr-day__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+/* ============================================================ 07 · PASSAGES
+   A departure board. Choosing a line fills the request form; the frame beside
+   it wipes to whichever line is under the pointer or focus. */
+.chr-passages {
   background: var(--chr-wash-olive);
 }
 
-.chr-river__aside {
-  flex: 0 0 min(28%, 18rem);
-  display: flex;
-  align-items: center;
-  min-width: 0;
+.charter-editorial .chr-passages :is(.chr-eyebrow, .chr-support) {
+  color: var(--chr-ink);
 }
 
-.chr-river__hero {
-  width: 100%;
-  max-height: calc(100svh - var(--chr-header-clear) - 3rem);
+.charter-editorial .chr-passages__pref {
+  font-size: clamp(1.05rem, 1.4vw, 1.4rem);
+  font-style: italic;
+}
+
+.chr-passages__frame {
+  position: relative;
   aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--chr-wash-stone);
 }
 
-.chr-river__main {
-  flex: 1 1 auto;
-  min-width: 0;
+.chr-passages__frame .chr-passages__image {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  clip-path: inset(100% 0 0 0);
+  /* the outgoing frame waits under the incoming wipe */
+  transition: clip-path 0.7s var(--chr-ease-soft) 0.7s;
+}
+
+.chr-passages__frame .chr-passages__image.is-shown {
+  z-index: 2;
+  clip-path: inset(0 0 0 0);
+  transition-delay: 0s;
+}
+
+.chr-passages__board {
+  flex: 0 0 clamp(21rem, 28vw, 32rem);
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  min-height: 0;
-}
-
-.chr-river__head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 40rem;
-  flex: 0 0 auto;
-}
-
-.chr-river__pref {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-  min-width: 0;
-}
-
-.chr-river__routes {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55rem 0.9rem;
-  flex: 1 1 auto;
-  min-height: 0;
-  align-content: start;
-  overflow: visible;
+  border-top: 1px solid var(--chr-hair);
 }
 
 .chr-passage {
   display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
-  gap: 0.15rem 0.7rem;
-  padding: 0.45rem;
-  border: 1px solid transparent;
-  border-bottom-color: rgb(20 18 14 / 16%);
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  column-gap: 0.6rem;
+  row-gap: 0.2rem;
+  align-items: baseline;
+  width: 100%;
+  padding: clamp(0.5rem, 1.25svh, 0.85rem) 0;
+  border-bottom: 1px solid var(--chr-hair);
   text-align: left;
-  min-width: 0;
-  transition:
-    background-color 0.3s var(--chr-ease-soft),
-    border-color 0.3s var(--chr-ease-soft);
-}
-
-.chr-passage:hover,
-.chr-passage.is-active {
-  background: rgb(236 228 218 / 0.4);
-  border-color: var(--chr-ink);
-}
-
-.chr-passage__media {
-  grid-row: 1 / span 3;
-  width: 3.25rem;
-  height: 3.25rem;
-  aspect-ratio: 1;
-  align-self: center;
 }
 
 .chr-passage__n {
-  font-family: var(--chr-edit);
+  grid-row: 1 / span 2;
   font-style: italic;
-  font-size: 0.9rem;
-  color: var(--chr-gold-deep);
-}
-
-.chr-passage__route {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
-  min-width: 0;
-  text-wrap: balance;
-}
-
-.chr-passage__cta {
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--chr-ink-soft);
-  white-space: nowrap;
 }
 
-.chr-passage.is-active .chr-passage__cta {
+.charter-editorial .chr-passage__route {
+  font-size: clamp(1.15rem, min(1.8vw, 3.7svh), 2rem);
+  line-height: 1.05;
+  white-space: nowrap;
+  transition: transform 0.4s var(--chr-ease-soft);
+}
+
+.charter-editorial .chr-passages .chr-passage__cta {
+  grid-column: 2;
+  color: var(--chr-ink-soft) !important;
+  opacity: 0.7;
+  transition: opacity 0.3s var(--chr-ease-soft);
+}
+
+.chr-passage:hover .chr-passage__route,
+.chr-passage:focus-visible .chr-passage__route {
+  transform: translateX(0.45rem);
+}
+
+.chr-passage:hover .chr-passage__cta,
+.chr-passage:focus-visible .chr-passage__cta {
+  opacity: 1;
+}
+
+.chr-passage.is-active {
+  border-bottom-color: var(--chr-ink);
+}
+
+.charter-editorial .chr-passages .chr-passage.is-active .chr-passage__cta {
+  color: var(--chr-ink) !important;
+  opacity: 1;
+}
+
+.chr-passage.is-active .chr-passage__n {
   color: var(--chr-ink);
 }
 
-/* ---------------------------------------------------------- 07 · chrono */
-.chr-chrono {
-  width: min(120vw, 92rem);
-  flex-direction: row;
-  align-items: stretch;
-  gap: clamp(1.1rem, 2.2vw, 2.2rem);
-  background: var(--chr-paper-warm);
-}
-
-.chr-chrono__copy {
-  flex: 1 1 52%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.chr-chrono__head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.chr-chrono__steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.85rem;
-}
-
-.chr-step {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  min-width: 0;
-  padding-top: 0.65rem;
-  border-top: 1px solid var(--chr-hair);
-}
-
-.chr-step__n {
-  font-size: clamp(1.25rem, 1.8vw, 1.85rem);
-  color: var(--chr-gold-deep);
-}
-
-.chr-step .chr-support {
-  max-width: none;
-}
-
-.chr-chrono__visuals {
-  flex: 0 1 40%;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 0.75rem;
-  align-items: end;
-}
-
-.chr-chrono__media {
-  width: 100%;
-  aspect-ratio: 5 / 4;
-  max-height: calc(100svh - var(--chr-header-clear) - 4rem);
-}
-
-.chr-chrono__secondary {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  max-height: calc(100svh - var(--chr-header-clear) - 8rem);
-}
-
-/* --------------------------------------------------------- 08 · archive */
-.chr-archive {
-  width: min(120vw, 90rem);
-  flex-direction: row;
-  gap: clamp(1.1rem, 2.2vw, 2.2rem);
-  background: var(--chr-black);
-  color: var(--chr-paper);
-}
-
-.chr-archive__visuals {
-  flex: 0 0 min(36%, 22rem);
-  display: grid;
-  grid-template-columns: 1fr 0.85fr;
-  gap: 0.7rem;
-  align-items: center;
-  min-width: 0;
-}
-
-.chr-archive__media {
-  width: 100%;
-  max-height: calc(100svh - var(--chr-header-clear) - 4rem);
-}
-
-.chr-archive__media--b {
-  margin-top: 12%;
-}
-
-.chr-archive__copy {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.chr-archive .chr-eyebrow {
-  color: var(--chr-gold);
-}
-
-.chr-archive .chr-display {
-  color: var(--chr-paper);
-}
-
-.chr-archive .chr-support,
-.chr-archive .chr-meta {
-  color: rgb(236 228 218 / 0.72);
-}
-
-.chr-archive__facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55rem 1.5rem;
-  padding-top: 0.55rem;
-  border-top: 1px solid rgb(236 228 218 / 0.18);
-}
-
-.chr-archive__facts li {
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgb(236 228 218 / 0.72);
-  padding-left: 0.85rem;
-  position: relative;
-  overflow-wrap: break-word;
-  word-break: normal;
-}
-
-.chr-archive__facts li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 0.35rem;
-  height: 1px;
-  background: var(--chr-gold);
-}
-
-.chr-archive__quotes {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem 1.75rem;
-}
-
-.chr-quote blockquote {
-  font-size: clamp(1rem, 1.35vw, 1.35rem);
-  line-height: 1.35;
-  max-width: 28ch;
-  color: var(--chr-paper);
-  overflow-wrap: break-word;
-  word-break: normal;
-}
-
-.chr-quote cite {
-  display: block;
-  margin-top: 0.7rem;
-  font-style: normal;
-  font-size: var(--chr-t-meta);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--chr-gold);
-}
-
-/* ============================================================== EPILOGUE */
-.chr-epilogue {
-  position: relative;
-  padding: clamp(3rem, 7vw, 5.5rem) var(--chr-pad) clamp(2.2rem, 4vw, 3.5rem);
+/* ============================================================ 08 · STEPS
+   Three steps whose gold rules sit on the frames' top line. */
+.chr-steps {
   background: var(--chr-paper);
 }
 
-.chr-epilogue__head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-width: 44rem;
-  margin-bottom: clamp(1.75rem, 3.5vw, 2.8rem);
+.chr-steps__head .chr-actions {
+  margin-top: 0.4rem;
 }
 
-.chr-epilogue__pref {
-  font-size: clamp(1.05rem, 1.4vw, 1.35rem);
-}
-
-.chr-epilogue__board {
+.chr-steps__line {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.75fr);
-  gap: clamp(1.25rem, 2.5vw, 2.4rem);
-  align-items: start;
+  grid-template-columns: repeat(3, clamp(12.5rem, 15vw, 17rem));
+  column-gap: var(--chr-gutter);
 }
 
-.chr-epilogue__card {
+.chr-step {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: clamp(1.1rem, 1.8vw, 1.65rem);
-  background: var(--chr-paper-warm);
-  border: 1px solid var(--chr-hair);
+  gap: 0.55rem;
+  padding-top: var(--chr-caption-gap);
 }
 
-.chr-epilogue__media {
-  width: 100%;
-  aspect-ratio: 356 / 420;
-  max-height: 22rem;
+/* the gold rule draws itself as the scene arrives */
+.chr-step::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--chr-gold);
+  transform: scaleX(var(--reveal, 1));
+  transform-origin: 0 50%;
+  transition: transform 1.1s var(--chr-ease-soft);
 }
 
-.chr-epilogue__media-alt {
-  width: 100%;
-  aspect-ratio: 5 / 3;
-  max-height: 9rem;
-}
-
-.chr-epilogue__card h3 {
+.chr-step__n {
   font-size: var(--chr-t-s);
-  max-width: none;
+  font-style: italic;
+  line-height: 1;
+  color: var(--chr-gold-deep);
 }
 
-.chr-epilogue__pills {
+/* ============================================================ 09 · PROOF
+   The last frame of the story is exactly one screen wide, so it arrives
+   whole and rests there before the page moves on. */
+.chr-proof {
+  min-width: 100vw;
+  justify-content: center;
+  background: var(--chr-wash-stone);
+}
+
+.chr-proof__voices {
+  flex-basis: min(30rem, 30vw);
+}
+
+.chr-quote {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: clamp(0.8rem, 1.8svh, 1.1rem);
+  border-top: 1px solid var(--chr-hair);
+}
+
+.charter-editorial .chr-quote blockquote {
+  font-size: clamp(1rem, min(1.3vw, 2.5svh), 1.4rem);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--chr-ink);
+}
+
+.chr-proof__close {
+  gap: var(--chr-caption-gap);
+  align-items: stretch;
+}
+
+.chr-proof__facts {
+  border-top: 1px solid var(--chr-hair);
+}
+
+.chr-proof__facts li {
+  position: relative;
+  padding: clamp(0.45rem, 1.1svh, 0.7rem) 0 clamp(0.45rem, 1.1svh, 0.7rem) 1.6rem;
+  border-bottom: 1px solid var(--chr-hair);
+  font-family: var(--chr-edit);
+  font-size: clamp(0.92rem, 1vw, 1.08rem);
+  line-height: 1.35;
+  color: var(--chr-ink);
+}
+
+/* a drawn tick, not an icon font */
+.chr-proof__facts li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 50%;
+  width: 0.7rem;
+  height: 0.38rem;
+  border-left: 1px solid var(--chr-gold-deep);
+  border-bottom: 1px solid var(--chr-gold-deep);
+  transform: translateY(-70%) rotate(-45deg);
+}
+
+.chr-proof__close .chr-actions {
+  margin-top: 0.4rem;
+}
+
+/* ============================================================== EPILOGUE
+   A short closing: the request is already one step back in the story. */
+.chr-epilogue {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--chr-gutter);
+  align-items: start;
+  padding: clamp(3rem, 7vw, 5.5rem) var(--chr-pad) clamp(2.5rem, 5vw, 4rem);
+  background: var(--chr-paper-warm);
+}
+
+.chr-epilogue__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.8rem, 1.6vw, 1.2rem);
+}
+
+.chr-epilogue__copy .chr-actions {
+  margin-top: 0.4rem;
+}
+
+.charter-editorial .chr-epilogue__voyages {
+  color: var(--chr-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--chr-gold);
+  transition: text-decoration-color 0.3s var(--chr-ease-soft);
+}
+
+.charter-editorial .chr-epilogue__voyages:hover,
+.charter-editorial .chr-epilogue__voyages:focus-visible {
+  text-decoration-color: currentcolor;
+}
+
+.chr-epilogue__desk {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-top: 0.2rem;
+  align-items: baseline;
+  gap: 0.5rem clamp(1.25rem, 2.4vw, 2.5rem);
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--chr-hair);
+  align-self: stretch;
 }
 
-.chr-epilogue__pills .chr-btn {
-  min-width: 10.5rem;
-  min-height: 44px;
+.chr-epilogue__photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--chr-gutter);
+}
+
+.chr-epilogue__photos .chr-photo {
+  width: 100%;
   height: auto;
 }
 
@@ -1265,6 +1461,45 @@ html:has(.charter-editorial) .public-fab {
   padding: 1.35rem 0;
 }
 
+.charter-editorial .ch-form__success h2:focus {
+  outline: none;
+}
+
+.charter-editorial .ch-form__status p {
+  margin: 0;
+}
+
+.charter-editorial .ch-form__note,
+.charter-editorial .ch-form__fallback {
+  margin: 0;
+  color: var(--chr-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.charter-editorial .ch-form__fallback {
+  margin-top: 0.4rem;
+}
+
+.charter-editorial :is(.ch-form__note, .ch-form__fallback) a,
+.charter-editorial .ch-form__again {
+  color: var(--chr-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.charter-editorial .ch-form__again {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 .charter-editorial .ch-form .chr-btn {
   align-self: flex-start;
   min-height: 44px;
@@ -1283,32 +1518,35 @@ html:has(.charter-editorial) .public-fab {
   border: 0;
 }
 
-/* ==========================================================================
-   RESPONSIVE — 950px structural break
-   ========================================================================== */
-@media (max-width: 1180px) {
-  .chr-claim__actions .chr-btn {
-    white-space: normal;
-    text-align: center;
-    line-height: 1.25;
-    height: auto;
-    min-height: 44px;
-  height: auto;
-    padding: 0.65rem 1.2rem;
-  }
-
-  .chr-claim__actions .chr-btn > span {
-    white-space: normal;
-  }
+/* Night mode: the page tokens remap in night-mode.css; the eyebrow's deep
+   gold would sink into the night canvas, so it takes the brighter gold, and
+   the drawing's boot-top stays a line rather than a bright band. */
+html[data-public-theme="night"] .charter-editorial .chr-ship .chr-ship__boot {
+  fill-opacity: 0.2;
 }
 
-@media (max-width: 950px) {
+/* Deep gold is only ever an accent on this page (numerals, ticks, dots, the
+   key swatch); night-mode.css maps it to a dark panel, so it takes the gold. */
+html[data-public-theme="night"] body .charter-editorial {
+  --chr-gold-deep: var(--chr-gold);
+}
+
+html[data-public-theme="night"] .charter-editorial .chr-eyebrow,
+html[data-public-theme="night"] .charter-editorial :is(.chr-key__count, .chr-freedom__n, .chr-step__n) {
+  color: var(--chr-gold);
+}
+
+/* ==========================================================================
+   VERTICAL DOCUMENT — at 950px and below, and whenever reduced motion is
+   asked for: no pinning, no sideways travel. The same scenes recompose as an
+   editorial document. Photographs keep one rule here too: every frame is the
+   same portrait, either one of an even pair or (on phones) full width.
+   ========================================================================== */
+@media (max-width: 950px), (prefers-reduced-motion: reduce) {
   .charter-editorial {
-    --chr-band: clamp(2.5rem, 8vw, 4rem);
-    --chr-header-clear: 4.5rem;
-    --chr-t-xl: clamp(2.4rem, 11vw, 4rem);
-    --chr-t-l: clamp(1.9rem, 8vw, 3rem);
-    --chr-t-m: clamp(1.55rem, 6.5vw, 2.4rem);
+    --chr-band: clamp(3rem, 9vw, 5rem);
+    --chr-measure: 72rem;
+    --chr-gutter: clamp(1.1rem, 3.6vw, 2.2rem);
   }
 
   .chr-run {
@@ -1328,155 +1566,399 @@ html:has(.charter-editorial) .public-fab {
     width: 100%;
     height: auto;
     transform: none !important;
+    will-change: auto;
   }
 
-  .chr-scene {
+  .chr-scene,
+  .chr-vow,
+  .chr-keys,
+  .chr-freedoms,
+  .chr-days,
+  .chr-passages,
+  .chr-steps,
+  .chr-proof,
+  .chr-request {
     width: 100% !important;
+    min-width: 0;
     height: auto;
-    max-height: none;
     min-height: 0;
     overflow: visible;
-    padding: var(--chr-band) var(--chr-pad);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: clamp(1.4rem, 4.5vw, 2.4rem);
+    padding: var(--chr-band) max(var(--chr-pad), calc((100% - var(--chr-measure)) / 2));
   }
 
-  .chr-residence__head {
-    max-width: none;
-  }
-
-  .chr-datum {
+  .chr-photo {
+    width: 100%;
     height: auto;
   }
 
-  .charter-editorial .chr-line {
-    white-space: normal;
+  .chr-column {
+    flex: none;
   }
 
-  .charter-editorial .chr-line > * {
-    white-space: normal;
+  .charter-editorial .chr-scene h2.chr-display--l,
+  .charter-editorial .chr-column h2.chr-display--l {
+    font-size: var(--chr-t-l);
   }
 
-  .charter-editorial .chr-line--b,
-  .charter-editorial .chr-line--c {
-    padding-left: 0;
+  /* stacked, the slide comes from below and eases on its own clock */
+  [data-chr-reveal] {
+    transform: translate3d(0, calc((1 - var(--chr-in, 1)) * 2rem), 0);
+    transition:
+      transform 0.9s var(--chr-ease-soft),
+      opacity 0.9s var(--chr-ease-soft);
   }
 
-  .chr-index,
-  .chr-claim,
-  .chr-river,
-  .chr-chrono,
-  .chr-archive {
+  .chr-photo {
+    transition: clip-path 1.1s var(--chr-ease-soft);
+  }
+
+  /* --- 01 offer */
+  .chr-deed {
+    display: flex;
     flex-direction: column;
+    gap: clamp(1.1rem, 4vw, 1.8rem);
+    padding-top: calc(var(--chr-header-clear) + clamp(1.5rem, 6vw, 3rem));
   }
 
-  .chr-index__visual,
-  .chr-river__aside,
-  .chr-river__hero,
-  .chr-chrono__visuals,
-  .chr-archive__visuals {
-    width: 100%;
-    max-width: 28rem;
-    max-height: none;
+  .chr-deed__top {
+    display: contents;
   }
 
-  .chr-index__scroll {
+  .chr-deed__top > .chr-eyebrow {
+    order: 1;
+  }
+
+  .chr-deed__title,
+  .chr-deed__pitch {
+    align-self: stretch;
+  }
+
+  .chr-deed__title {
+    order: 2;
+  }
+
+  .charter-editorial .chr-deed__title h1 {
+    font-size: var(--chr-t-xl);
+  }
+
+  .chr-deed__pitch {
+    order: 3;
+  }
+
+  .charter-editorial .chr-deed__lead {
+    font-size: clamp(1.2rem, 4.6vw, 1.75rem);
+    max-width: 24ch;
+  }
+
+  .chr-deed__cue {
     display: none;
   }
 
-  .chr-claim {
-    padding: var(--chr-band) var(--chr-pad);
+  .chr-deed__plan {
+    order: 4;
+    margin-top: clamp(0.5rem, 3vw, 1.5rem);
   }
 
-  .chr-claim__visual {
-    padding: 0;
-    height: auto;
-  }
-
-  .chr-claim__main {
-    aspect-ratio: 4 / 3;
-    height: auto;
-  }
-
-  .chr-claim__inset {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: 55%;
-    margin: -6% 0 0 auto;
-  }
-
-  .chr-claim__wash {
-    flex: 1 1 auto;
+  .chr-deed__ship {
     width: 100%;
-    padding: 1.25rem 0 0;
+    transform: none;
   }
 
-  .chr-spine__head {
-    grid-template-columns: 1fr;
+  .chr-deed__chapters {
+    order: 5;
+    padding-top: 0.2rem;
   }
 
-  .chr-spine__columns,
-  .chr-residence__wall,
-  .chr-craft__strip {
-    grid-template-columns: 1fr 1fr;
+  /* --- 02 request: the form's own stacked layout */
+  .chr-request {
+    padding-top: calc(var(--chr-band) * 0.8);
   }
 
-  .chr-spine__media,
-  .chr-craft__media {
-    max-height: none;
-    aspect-ratio: 4 / 3;
+  /* --- 03 vessel: copy, then the two frames as an even pair */
+  .chr-vow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    row-gap: clamp(1.4rem, 4.5vw, 2.4rem);
+    align-items: start;
   }
 
-  .chr-datum__media {
-    max-height: 11rem;
-    aspect-ratio: 16 / 9;
+  .chr-vow__copy {
+    grid-column: 1 / -1;
+    grid-row: 1;
   }
 
-  .chr-river__routes {
-    grid-template-columns: 1fr;
-    overflow: visible;
+  /* --- 04 residences: frame on the left, specification on the right */
+  .chr-keys__head .chr-support {
+    max-width: 58ch;
   }
 
-  .chr-chrono__steps,
-  .chr-archive__facts,
-  .chr-archive__quotes {
-    grid-template-columns: 1fr;
+  .chr-keys__sheet {
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--chr-hair);
   }
 
-  .chr-chrono__visuals,
-  .chr-archive__visuals {
-    grid-template-columns: 1fr 1fr;
+  .chr-key {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    align-items: start;
+    padding: clamp(1.3rem, 4vw, 2rem) 0;
+    border-bottom: 1px solid var(--chr-hair);
   }
 
-  .chr-archive__media--b {
-    margin-top: 0;
+  .chr-key__text {
+    flex: none;
   }
 
-  .chr-epilogue__board {
-    grid-template-columns: 1fr;
+  .chr-key__count {
+    font-size: var(--chr-t-l);
+  }
+
+  /* --- 05 freedoms: frame left; word and promise right */
+  .chr-freedoms__row {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 7vw, 3.5rem);
+  }
+
+  .chr-freedom {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    align-items: start;
+    container-type: normal;
+  }
+
+  .charter-editorial .chr-freedom__word .chr-display {
+    font-size: var(--chr-t-l);
+  }
+
+  /* --- 06 days: an even grid */
+  .chr-days__sheet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.8rem, 5vw, 2.6rem) var(--chr-gutter);
+  }
+
+  /* --- 07 passages */
+  .chr-passages {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    row-gap: clamp(1.4rem, 4.5vw, 2.4rem);
+    align-items: start;
+  }
+
+  .chr-passages__head {
+    grid-column: 1 / -1;
+  }
+
+  .chr-passages__head .chr-support {
+    max-width: 52ch;
+  }
+
+  .chr-passages__frame {
+    position: sticky;
+    top: calc(var(--chr-header-clear) + 1rem);
+  }
+
+  .chr-passages__board {
+    flex: none;
+  }
+
+  .charter-editorial .chr-passage__route {
+    font-size: clamp(1.2rem, 3.6vw, 1.9rem);
+    white-space: normal;
+  }
+
+  .chr-passage {
+    min-height: 44px;
+  }
+
+  .charter-editorial .chr-passages .chr-passage__cta {
+    opacity: 0.85;
+  }
+
+  /* --- 08 steps: head, the three steps, then the two frames as a pair */
+  .chr-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    row-gap: clamp(1.4rem, 4.5vw, 2.4rem);
+    align-items: start;
+  }
+
+  .chr-steps__head,
+  .chr-steps__line {
+    grid-column: 1 / -1;
+  }
+
+  .chr-steps__line {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 1.8rem;
+  }
+
+  /* --- 09 proof: frame beside the voices, then the facts and the ask */
+  .chr-proof {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+    row-gap: clamp(1.4rem, 4.5vw, 2.4rem);
+    align-items: start;
+  }
+
+  .chr-proof__close {
+    grid-column: 1 / -1;
+  }
+
+  /* --- line reveals: phrases may wrap on narrow screens */
+  .charter-editorial .chr-line > * {
+    white-space: normal;
   }
 }
 
+/* Tablet and phone type scale and the epilogue stack. */
+@media (max-width: 950px) {
+  .charter-editorial {
+    --chr-header-clear: 4.5rem;
+    --chr-t-xl: clamp(2.4rem, 11vw, 4rem);
+    --chr-t-l: clamp(1.9rem, 8vw, 3rem);
+    --chr-t-m: clamp(1.55rem, 6.5vw, 2.4rem);
+  }
+
+  .chr-epilogue {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones: one column. Every photograph is full width at 3:2 — one shape,
+   one width, one rhythm down the page — and every action is a full-width pill. */
 @media (max-width: 620px) {
-  .chr-spine__columns,
-  .chr-residence__wall,
-  .chr-craft__strip,
-  .chr-chrono__visuals,
-  .chr-archive__visuals {
-    grid-template-columns: 1fr;
+  .charter-editorial .chr-photo {
+    aspect-ratio: 3 / 2;
+  }
+
+  .chr-vow,
+  .chr-passages,
+  .chr-steps,
+  .chr-proof,
+  .chr-key,
+  .chr-freedom {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chr-key,
+  .chr-freedom {
+    gap: var(--chr-caption-gap);
+  }
+
+  .chr-vow__copy,
+  .chr-proof__voices {
+    order: -1;
+  }
+
+  .chr-days__sheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chr-passages__frame {
+    position: relative;
+    top: auto;
+  }
+
+  .chr-steps__line {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.4rem;
+  }
+
+  .chr-epilogue__photos .chr-photo {
+    aspect-ratio: 4 / 5;
+  }
+
+  .charter-editorial .chr-actions,
+  .charter-editorial .chr-actions--grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* The button system sizes phone pills to their label; on this page a group
+     reads as one stack, so every pill takes the column's full width. */
+  .charter-editorial :is(.chr-actions, .ch-form) .chr-btn:not(#_):not(#_) {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .chr-deed__ledger {
+    grid-template-columns: minmax(0, 1fr);
+    border-top: 0;
+  }
+
+  .chr-deed__ledger > div,
+  .chr-deed__ledger > div:first-child {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--chr-hair);
+  }
+
+  .chr-deed__ledger > div:last-child {
+    border-bottom: 1px solid var(--chr-hair);
+  }
+
+  .charter-editorial .chr-deed__ledger dd {
+    min-width: 2.4ch;
+    font-size: 1.85rem;
+  }
+
+  /* the ship is long: on a phone it sails through a window instead of shrinking */
+  .chr-deed__plan {
+    margin-left: calc(var(--chr-pad) * -1);
+    margin-right: calc(var(--chr-pad) * -1);
+  }
+
+  .chr-deed__ship {
+    overflow: hidden;
+  }
+
+  .chr-deed__legend {
+    position: static;
+    margin: 0.7rem var(--chr-pad) 0;
+    text-align: left;
+  }
+
+  .chr-deed__ship .chr-ship {
+    width: 185%;
+    animation: chr-ship-sail 22s ease-in-out infinite alternate;
+  }
+
+  .charter-editorial .chr-deed__ledger {
+    padding: 0 var(--chr-pad);
   }
 
   .charter-editorial .ch-form__row {
     grid-template-columns: 1fr;
   }
+}
 
-  .chr-epilogue__pills .chr-btn,
-  .chr-claim__actions .chr-btn {
-    flex: 1 1 auto;
-    min-width: min(12rem, 100%);
+@keyframes chr-ship-sail {
+  from {
+    transform: translate3d(0, 0, 0);
   }
-
-  .chr-passage__route {
-    white-space: normal;
+  to {
+    transform: translate3d(-46%, 0, 0);
   }
 }
 
@@ -1485,31 +1967,105 @@ html:has(.charter-editorial) .public-fab {
     --chr-pad: 1.25rem;
   }
 
-  .chr-support,
-  .chr-index__lead {
+  .chr-support {
     max-width: none;
   }
 }
 
-/* ------------------------------------------------------- reduced motion */
+/* Reduced motion on a wide screen: the document keeps the desktop columns. */
+@media (min-width: 951px) and (prefers-reduced-motion: reduce) {
+  .chr-keys__sheet {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--chr-gutter);
+    border-top: 0;
+  }
+
+  .chr-key {
+    display: flex;
+    flex-direction: column;
+    gap: var(--chr-caption-gap);
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .chr-days__sheet {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .chr-freedoms__row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--chr-gutter);
+  }
+
+  .chr-freedom {
+    display: flex;
+    flex-direction: column;
+    container-type: inline-size;
+  }
+
+  .charter-editorial .chr-freedom__word .chr-display {
+    font-size: 12.5cqi;
+  }
+}
+
+/* ------------------------------------------------------- reduced motion
+   Completed states only: text in place, frames open, images still, the ship
+   already taken, the wake and the cue at rest. */
 @media (prefers-reduced-motion: reduce) {
   .charter-editorial .chr-line > *,
-  .charter-editorial .chr-media__image {
+  .charter-editorial .chr-media__image,
+  .charter-editorial .chr-step::before,
+  .charter-editorial .chr-passage__route,
+  .charter-editorial [data-chr-reveal] {
     transform: none !important;
     opacity: 1 !important;
     transition: none !important;
   }
 
-  .chr-index__scroll i {
+  .charter-editorial .chr-photo {
+    clip-path: none !important;
+    transition: none !important;
+  }
+
+  .chr-ship__reveal {
+    animation: none;
+    transform: none;
+  }
+
+  .chr-ship .chr-ship__wake,
+  .chr-deed__ship .chr-ship,
+  .chr-deed__cue i {
     animation: none !important;
+  }
+
+  .chr-deed__ship .chr-ship {
+    width: 100%;
   }
 
   .chr-flip__overlay {
     clip-path: none !important;
   }
+
+  .chr-passages__frame .chr-passages__image {
+    transition: none;
+  }
 }
 
-/* ===================================================== LUXURYHATHOR INTEGRITY */
+/* ===================================================== LUXURYHATHOR INTEGRITY
+   The opening title must paint on first view: it never waits on the scroll
+   reveal or the word-rise timeline (titles further on keep their masked rise). */
+.charter-editorial .chr-deed .chr-line > *,
+.charter-editorial .chr-deed .anima-split-word {
+  transform: none !important;
+  opacity: 1;
+}
+
+.charter-editorial .chr-deed .wt-page-hero {
+  color: var(--chr-ink);
+}
+
 .charter-editorial .anima-split-char {
   transform: none !important;
   will-change: auto;
@@ -1518,67 +2074,5 @@ html:has(.charter-editorial) .public-fab {
 @media (min-width: 951px) {
   .charter-editorial {
     --chr-t-xl: clamp(3.25rem, 5.35vw, 5.8rem);
-  }
-
-  .charter-editorial .chr-scene {
-    overflow: hidden;
-  }
-
-  .charter-editorial .chr-index {
-    width: min(100vw, 90rem);
-    gap: clamp(2rem, 4vw, 4.5rem);
-  }
-
-  .charter-editorial .chr-index__copy {
-    flex-basis: 60%;
-  }
-
-  .charter-editorial .chr-index__visual {
-    flex-basis: 31%;
-    width: min(31%, 21rem);
-  }
-
-  .charter-editorial .chr-index__title,
-  .charter-editorial .chr-index__title h1 {
-    width: 100%;
-    max-width: none;
-    overflow: visible;
-  }
-
-  .charter-editorial .chr-line {
-    overflow: visible;
-    white-space: nowrap;
-  }
-
-  .charter-editorial .chr-line > * {
-    white-space: nowrap;
-    transform: translateY(calc((1 - var(--reveal, 1)) * 14%));
-  }
-
-  .charter-editorial .chr-line--b,
-  .charter-editorial .chr-line--c {
-    padding-left: clamp(0.35rem, 1vw, 1rem);
-  }
-
-  .chr-residence__head {
-    max-width: none;
-    width: min(100%, 46rem);
-  }
-
-  .chr-residence__head .chr-line,
-  .chr-residence__head .chr-line > * {
-    white-space: nowrap;
-    overflow: visible;
-  }
-}
-
-@media (max-width: 950px) {
-  .charter-editorial .chr-scene {
-    overflow: visible;
-  }
-
-  .charter-editorial .chr-line,
-  .charter-editorial .chr-line > * {
-    white-space: normal;
   }
 }

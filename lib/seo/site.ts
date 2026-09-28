@@ -2,8 +2,16 @@ import { HATHOR_FAVICON_SRC, HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 
-/** Canonical public origin for EasyTravEgypt / Hathor Dahabiya. */
-export const SEO_SITE_ORIGIN = "https://www.easytravegypt.com";
+/**
+ * Canonical public origin. This site is the rebuild of www.hathorcruise.com —
+ * the domain with the search history — so canonical tags, the sitemap, robots
+ * and structured data all name it, never an interim domain, and its rankings
+ * carry over when the domain moves here. Override only through
+ * NEXT_PUBLIC_SEO_SITE_ORIGIN.
+ */
+export const SEO_SITE_ORIGIN = (
+  process.env.NEXT_PUBLIC_SEO_SITE_ORIGIN?.trim() || "https://www.hathorcruise.com"
+).replace(/\/+$/, "");
 
 export const SEO_BRAND_NAME = "Hathor Dahabiya";
 export const SEO_LEGAL_NAME = "EasyTravEgypt";

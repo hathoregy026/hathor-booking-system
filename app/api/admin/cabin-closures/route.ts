@@ -6,6 +6,8 @@ import { bookingCode } from "@/lib/booking-code";
 import { readPublicJsonBody, requireIdempotencyKey } from "@/lib/public-api-security";
 import { handleRouteError } from "@/lib/api";
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { SHIP_EXPERIENCE_KEY } from "@/lib/ship-experience";
+import { DEFAULT_SHIP_EXPERIENCE, parseShipExperience, shipRoomNames } from "@/lib/ship-experience-shared";
 
 /*
  * Dashboard → Availability. Closing a cabin writes the same inventory block the
@@ -176,10 +178,20 @@ async function readRooms(slug: string) {
   `, [slug]);
 }
 
+/** Each cabin's name on the ship map, from the same settings the homepage map reads. */
+async function readShipNames(): Promise<Record<string, string>> {
+  const rows = await bookingQuery<{ value: string }>(`SELECT value FROM "SiteSetting" WHERE key = $1`, [SHIP_EXPERIENCE_KEY]);
+  try {
+    return shipRoomNames(rows[0] ? parseShipExperience(JSON.parse(rows[0].value)) : DEFAULT_SHIP_EXPERIENCE);
+  } catch {
+    return shipRoomNames(DEFAULT_SHIP_EXPERIENCE);
+  }
+}
+
 /** One voyage's future sailings in a month, each with what occupies every cabin. */
 async function readBoard(slug: string, month: string) {
   const [from, to] = monthWindow(month);
-  const [rooms, sailings, voyage] = await Promise.all([
+  const [rooms, sailings, voyage, shipNames] = await Promise.all([
     readRooms(slug),
     bookingQuery<SailingRow>(`
       SELECT s.id, s."departureTime", s."arrivalTime"
@@ -190,6 +202,7 @@ async function readBoard(slug: string, month: string) {
       ORDER BY s."departureTime"
     `, [slug, from, to]),
     bookingQuery<{ name: string }>(`SELECT name FROM "Cruise" WHERE slug = $1 AND "deletedAt" IS NULL`, [slug]),
+    readShipNames(),
   ]);
   const ids = sailings.map(sailing => sailing.id);
   const [occupancy, overlaps] = ids.length
@@ -231,7 +244,8 @@ async function readBoard(slug: string, month: string) {
   return {
     voyage: { slug, name: voyage[0]?.name ?? slug },
     month,
-    rooms: rooms.map(room => ({ id: room.id, name: room.name, roomType: room.roomType ?? "Cabin", capacity: room.capacity })),
+    /* The type is always the booking catalogue's; the name is the room's on the ship. */
+    rooms: rooms.map(room => ({ id: room.id, name: room.name, roomType: room.roomType ?? "Cabin", capacity: room.capacity, shipName: shipNames[room.id] ?? null })),
     sailings: sailings.map(sailing => {
       const cabins: Record<string, ReturnType<typeof toOccupancy>[]> = {};
       for (const row of occupancy.filter(entry => entry.scheduleId === sailing.id)) {

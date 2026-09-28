@@ -56,15 +56,20 @@ export const ASWAN_TO_LUXOR_SEO = buildPageMetadata({
   ],
 });
 
+/* Leads with the phrase hathorcruise.com/charter ranked with (its title, H1 and H2). */
+export const CHARTER_SEO_TITLE = "Charter Dahabiya Cruise | Private Nile Cruise Egypt | Hathor";
+
 export const CHARTER_SEO = buildPageMetadata({
-  title: "Private Nile Cruise Egypt | Hathor Dahabiya Charter",
+  title: CHARTER_SEO_TITLE,
   description:
-    "Charter Hathor Dahabiya for a private Nile cruise in Egypt. The entire vessel, a dedicated crew and a tailored Luxor–Aswan itinerary for your party alone.",
+    "Charter your own luxury Dahabiya: Hathor's whole ship for up to 32 guests, your own crew and chef, on a private Nile cruise in Egypt from Luxor to Aswan.",
   path: SEO_KEYWORD_MAP.charter.path,
   keywords: [
+    "Charter Dahabiya Cruise",
     "Private Nile Cruise Egypt",
     "Private Dahabiya Charter",
-    "exclusive Nile boat charter",
+    "Dahabiya charter Egypt",
+    "Nile cruise charter",
   ],
   image: {
     url: "/media/hathor/r2/charter-hero.webp",

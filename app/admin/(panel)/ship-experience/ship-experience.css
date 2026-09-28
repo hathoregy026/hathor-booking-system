@@ -20,7 +20,6 @@
 .sx-admin__deck-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .sx-admin__deck-tabs button { min-height: 2.5rem; padding: .5rem .8rem; border: 1px solid var(--border); border-radius: 99px; background: var(--bg-secondary); color: var(--text-secondary); font-size: .76rem; font-weight: 600; cursor: pointer; }
 .sx-admin__deck-tabs button[aria-pressed="true"] { border-color: var(--accent); background: var(--sidebar-active); color: var(--text-primary); }
-.sx-admin__map { position: relative; width: 100%; background: radial-gradient(ellipse at 50% 50%, #faf7ee, #ece8df); overflow: hidden; }
 .sx-admin__editor { border: 0; padding: 0; margin: 0; min-width: 0; }
 .sx-admin__room-picker { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
 .sx-admin__room-picker button { display: flex; align-items: center; gap: .5rem; min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--border); border-radius: 2px; background: var(--bg-secondary); color: var(--text-primary); font-size: .72rem; cursor: pointer; }
@@ -61,3 +60,28 @@
 
   .sx-admin__save { bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
 }
+
+/* ---- the homepage deck plan, embedded ---- */
+/* The plan keeps its own paper and theme, exactly as on the homepage. */
+.sx-admin .deck-atlas.sx-plan { margin: 0 0 .9rem; padding: .6rem .6rem .4rem; border-radius: .7rem; overflow: hidden; }
+.sx-admin .deck-atlas.sx-plan .da-legend { justify-content: flex-start; padding: .55rem .3rem .1rem; }
+/* The room pop-up: only the dialog shows; its wrapper takes no room on the page. */
+.sx-admin .deck-atlas.sx-sheet { padding: 0; background: none; min-height: 0; }
+.sx-admin .deck-atlas.sx-sheet .sx-sheet__act { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: .9rem; }
+.sx-admin .deck-atlas.sx-sheet .sx-sheet__act .sx-admin__locked { padding: 0; font-size: .74rem; }
+.sx-admin .deck-atlas.sx-plan .da-plan__viewport { margin-inline: 0; }
+.sx-admin__list-label, .sx-admin__group-title { margin: 1rem 0 .45rem; color: var(--text-secondary); font-size: .66rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.sx-admin__group-title { margin-top: 1.2rem; }
+.sx-admin__room-picker button { flex-wrap: wrap; text-align: left; }
+.sx-admin__room-picker small { flex-basis: 100%; color: var(--text-secondary); font-size: .64rem; }
+.sx-admin__room-picker button[data-hidden] { opacity: .6; border-style: dashed; }
+.sx-admin__row-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .9rem; margin-top: .6rem; }
+.sx-admin__row-actions a:not(.admin-btn-outline) { color: var(--accent); font-size: .7rem; font-weight: 600; }
+.sx-admin__availability-row .sx-admin__row-actions { margin-top: 0; }
+.sx-admin__availability-row[data-selected] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.sx-admin__availability-row .sx-admin__taken { grid-column: 1 / -1; margin: 0; color: var(--text-primary); font-size: .74rem; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.sx-admin__sailing { margin: 0 0 .8rem; font-size: .85rem; font-weight: 600; }
+.sx-admin__stepper { display: flex; gap: .5rem; margin: -.6rem 0 1.2rem; }
+.sx-admin__stepper button { min-height: 2.3rem; padding: .35rem .85rem; border: 1px solid var(--border-strong); border-radius: 99px; background: var(--bg-glass); color: var(--text-primary); font-size: .72rem; font-weight: 600; cursor: pointer; }
+.sx-admin__stepper button:hover:not(:disabled) { border-color: var(--accent); }
+.sx-admin__stepper button:disabled { opacity: .4; cursor: default; }

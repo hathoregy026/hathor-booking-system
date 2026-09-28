@@ -8,16 +8,15 @@ import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { shouldShowFloatingActions } from "@/lib/floating-actions-visibility";
+import {
+  shouldShowDesktopBookNow,
+  shouldShowDesktopChat,
+} from "@/lib/floating-actions-visibility";
 import { useSelectionPanelOpen } from "@/components/selection/SelectionProvider";
-
-const HERO_CTA_SELECTOR =
-  ".home-hero-container .hero-button .hero-cta, .home-hero-container .hero-cta";
 
 export function FloatingActions() {
   const pathname = usePathname();
   const [chatOpen, setChatOpen] = useState(false);
-  const [showBook, setShowBook] = useState(false);
   const [nearFooter, setNearFooter] = useState(false);
   /*
    * A selection sheet is a modal surface. Park the dock while one is open so no
@@ -25,49 +24,12 @@ export function FloatingActions() {
    * normal behaviour resumes the moment the sheet closes. Nothing permanent.
    */
   const selectionOpen = useSelectionPanelOpen();
-  const visible = shouldShowFloatingActions(pathname);
+  const visible = shouldShowDesktopChat(pathname);
+  const showBook = shouldShowDesktopBookNow(pathname);
 
   useEffect(() => {
-    if (!visible) return;
-
     setChatOpen(false);
-    setShowBook(false);
-
-    let observer: IntersectionObserver | null = null;
-    let cancelled = false;
-
-    const attach = () => {
-      if (cancelled) return;
-      observer?.disconnect();
-      observer = null;
-
-      const source = document.querySelector(HERO_CTA_SELECTOR);
-      if (!source) {
-        setShowBook(true);
-        return;
-      }
-
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          setShowBook(!entry?.isIntersecting);
-        },
-        { threshold: 0.15, rootMargin: "0px" },
-      );
-      observer.observe(source);
-    };
-
-    /* Hero mounts after route paint — retry briefly */
-    attach();
-    const t1 = window.setTimeout(attach, 120);
-    const t2 = window.setTimeout(attach, 400);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      observer?.disconnect();
-    };
-  }, [pathname, visible]);
+  }, [pathname]);
 
   /*
    * The dock is `position: fixed`, so once a page scrolls past its hero it
@@ -144,14 +106,13 @@ export function FloatingActions() {
       ) : null}
 
       <div className="public-fab__cluster">
-        <div
-          className={`public-fab__book-slot${showBook ? " public-fab__book-slot--visible" : ""}`}
-          aria-hidden={!showBook}
-        >
-          <BookNowTrigger className="public-fab__book">
-            <span className="public-fab__book-text">{HOMEPAGE_HERO.cta}</span>
-          </BookNowTrigger>
-        </div>
+        {showBook ? (
+          <div className="public-fab__book-slot public-fab__book-slot--visible">
+            <BookNowTrigger className="public-fab__book">
+              <span className="public-fab__book-text">{HOMEPAGE_HERO.cta}</span>
+            </BookNowTrigger>
+          </div>
+        ) : null}
 
         <div
           className={`public-fab__chat${chatOpen ? " public-fab__chat--open" : ""}`}

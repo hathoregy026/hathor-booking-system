@@ -32,6 +32,9 @@ repomix-output.xml
 assets/GPT SITE RESTORE/
 assets/NORMAL IS DEF BORING/
 assets/plates/
+
+# Media the live site does not use, kept for reference (see unused content/README.md).
+unused content/
 scripts/diagnose-*
 hathoor-booking.json
 assets/LOGOS/*.ai

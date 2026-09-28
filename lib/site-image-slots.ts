@@ -7,6 +7,7 @@ import {
 } from "@/lib/gastronomy-dining-media";
 import { HATHOR_MEDIA } from "@/lib/hathor-media";
 import { PAGE_SCOPED_SITE_IMAGE_ALIASES } from "@/lib/site-image-page-scope";
+import { SHIP_SPACE_IMAGE_SLOTS } from "@/lib/ship-space-images";
 
 export type SiteImageSlot = {
   name: string;
@@ -48,10 +49,23 @@ const DINING_PLATE_SLOTS: SiteImageSlot[] = DINING_PLATE_NUMBERS.map(
   }),
 );
 
+/* The ship deck plan's space photographs — one slot per space, owned by nothing else. */
+const SHIP_SPACE_SLOTS: SiteImageSlot[] = SHIP_SPACE_IMAGE_SLOTS.map(
+  (slot, displayOrder) => ({
+    name: slot.name,
+    altText: slot.altText,
+    url: slot.url,
+    category: slot.category,
+    pagePath: "/",
+    displayOrder,
+  }),
+);
+
 /** Canonical image slots — seeded to SiteImage and editable in admin → Site Images. */
 export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
   ...DINING_SCENE_SLOTS,
   ...DINING_PLATE_SLOTS,
+  ...SHIP_SPACE_SLOTS,
   // Homepage (live EX page only)
   {
     name: "home-hero-poster",
@@ -142,14 +156,6 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
     displayOrder: 70,
   },
   {
-    name: "home-wheel-stage",
-    altText: HATHOR_MEDIA.wheelStageAlt,
-    url: HATHOR_MEDIA.wheelStage,
-    category: "hero",
-    pagePath: "/",
-    displayOrder: 71,
-  },
-  {
     name: "home-wheel-image",
     altText: "Wheel portal — Hathor Dahabiya on the Nile at golden hour",
     url: HATHOR_MEDIA.wheelBack,
@@ -157,7 +163,7 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
     pagePath: "/",
     displayOrder: 72,
   },
-  // Homepage amenities sequence — 11 unique mounts (Admin tab: Amenities Sequence)
+  // Amenities photos still painted on live pages (Partners and Wellness).
   {
     name: "home-amenities-1",
     altText: "Amenities sequence — fullscreen intro aboard Hathor",
@@ -167,116 +173,12 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
     displayOrder: 0,
   },
   {
-    name: "home-amenities-2",
-    altText: "Amenities sequence — rising full-bleed Nile view",
-    url: HATHOR_MEDIA.splitCourtyard,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 1,
-  },
-  {
-    name: "home-amenities-3",
-    altText: "Amenities sequence — rising full-stage Bar reel",
-    url: HATHOR_MEDIA.about,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 2,
-  },
-  {
-    name: "home-amenities-4",
-    altText: "Amenities sequence — first half/half slider photo",
-    url: HATHOR_MEDIA.storyLegacyLarge,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 3,
-  },
-  {
-    name: "home-amenities-5",
-    altText: "Amenities sequence — second half/half slider photo",
-    url: HATHOR_MEDIA.collageLiving,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 4,
-  },
-  {
-    name: "home-amenities-6",
-    altText: "Amenities sequence — third half/half slider photo",
-    url: HATHOR_MEDIA.storyWayOfLife,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 5,
-  },
-  {
-    name: "home-amenities-7",
-    altText: "Amenities sequence — fourth half/half slider photo",
-    url: HATHOR_MEDIA.storyDining,
-    category: "dining",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 6,
-  },
-  {
-    name: "home-amenities-8",
-    altText: "Amenities sequence — fixed left opening photo",
-    url: HATHOR_MEDIA.cinematicStill,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 7,
-  },
-  {
-    name: "home-amenities-9",
-    altText: "Amenities sequence — opening card, A Way of Life pool deck",
-    url: HATHOR_MEDIA.storyWayOfLife,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 8,
-  },
-  {
-    name: "home-amenities-10",
-    altText: "Amenities sequence — opening card, fine dining",
-    url: HATHOR_MEDIA.storyDining,
-    category: "dining",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 9,
-  },
-  {
-    name: "home-amenities-11",
-    altText: "Amenities sequence — opening card, third photo",
-    url: HATHOR_MEDIA.wellness,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 10,
-  },
-  {
     name: "home-amenities-13",
     altText: "Amenities sequence — opening card, fourth photo",
     url: HATHOR_MEDIA.fitness,
     category: "general",
     pagePath: "/#amenities-sequence",
     displayOrder: 11,
-  },
-  {
-    name: "home-amenities-12",
-    altText: "Amenities sequence — full-bleed nature chapter before Our Voyages",
-    url: HATHOR_MEDIA.about,
-    category: "general",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 12,
-  },
-  {
-    name: "home-amenities-14",
-    altText: "Amenities sequence — dining gold panel background",
-    url: HATHOR_MEDIA.restaurant,
-    category: "dining",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 13,
-  },
-  {
-    name: "home-amenities-15",
-    altText: "Amenities sequence — dining gold panel (unused legacy slot)",
-    url: HATHOR_MEDIA.altDining,
-    category: "dining",
-    pagePath: "/#amenities-sequence",
-    displayOrder: 14,
   },
   // Homepage “Our Voyages” accordion — dedicated slots (Admin tab: Our Voyages)
   {
@@ -596,15 +498,6 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
     displayOrder: 4,
   },
   {
-    // The photograph behind the guests + itinerary stage on step 1.
-    name: "booking-voyage-stage",
-    altText: "Hathor Dahabiya moored below a Nile palace",
-    url: "/media/hathor/booking/voyage-palace-nile.webp",
-    category: "hero",
-    pagePath: "/booking",
-    displayOrder: 1,
-  },
-  {
     // One photograph across the top of the booking steps (Journey, Details & Payment, Request sent).
     name: "booking-banner",
     altText: "Hathor Dahabiya sailing the Nile",
@@ -846,64 +739,7 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
     pagePath: "/luxury-cabins-Nile-Cruise",
     displayOrder: 17,
   },
-  {
-    name: "suites-nile-still",
-    altText: "Nile still aboard Hathor Dahabiya",
-    url: "/media/hathor/optimized/home-call-to-action.webp",
-    category: "suite",
-    pagePath: "/suites",
-    displayOrder: 25,
-  },
-  // Floating Instagram bubbles — Sail with Hathor only (independent of other page photos)
-  {
-    name: "floating-ig-1",
-    altText: "Hathor Instagram float — lounge",
-    url: HATHOR_MEDIA.collageLiving,
-    category: "general",
-    pagePath: "/#floating-ig",
-    displayOrder: 1,
-  },
-  {
-    name: "floating-ig-2",
-    altText: "Hathor Instagram float — Nile highlights",
-    url: HATHOR_MEDIA.altHighlights,
-    category: "general",
-    pagePath: "/#floating-ig",
-    displayOrder: 2,
-  },
-  {
-    name: "floating-ig-3",
-    altText: "Hathor Instagram float — dining",
-    url: HATHOR_MEDIA.restaurant,
-    category: "general",
-    pagePath: "/#floating-ig",
-    displayOrder: 3,
-  },
-  {
-    name: "floating-ig-4",
-    altText: "Hathor Instagram float — suite",
-    url: HATHOR_MEDIA.cinematicStill,
-    category: "general",
-    pagePath: "/#floating-ig",
-    displayOrder: 4,
-  },
   // Moving tilted cards — homepage gallery only (independent of all other photos)
-  {
-    name: "moving-tilted-1",
-    altText: "Moving tilted card — luxury lounge aboard Hathor",
-    url: HATHOR_MEDIA.collageLiving,
-    category: "general",
-    pagePath: "/#moving-tilted-cards",
-    displayOrder: 1,
-  },
-  {
-    name: "moving-tilted-2",
-    altText: "Moving tilted card — Nile cruise highlights",
-    url: HATHOR_MEDIA.altHighlights,
-    category: "general",
-    pagePath: "/#moving-tilted-cards",
-    displayOrder: 2,
-  },
   {
     name: "moving-tilted-3",
     altText: "Moving tilted card — gastronomy on the Nile",
@@ -911,22 +747,6 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
     category: "general",
     pagePath: "/#moving-tilted-cards",
     displayOrder: 3,
-  },
-  {
-    name: "moving-tilted-4",
-    altText: "Moving tilted card — wellness aboard Hathor",
-    url: HATHOR_MEDIA.wellness,
-    category: "general",
-    pagePath: "/#moving-tilted-cards",
-    displayOrder: 4,
-  },
-  {
-    name: "moving-tilted-5",
-    altText: "Moving tilted card — suite interior aboard Hathor",
-    url: HATHOR_MEDIA.cinematicStill,
-    category: "general",
-    pagePath: "/#moving-tilted-cards",
-    displayOrder: 5,
   },
   {
     name: "burger-nav-image",

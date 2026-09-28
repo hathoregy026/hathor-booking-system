@@ -39,7 +39,7 @@ type Occupancy = {
   sameSailing: boolean;
   source: { voyage: string | null; slug: string | null; departure: string; arrival: string };
 };
-type Room = { id: string; name: string; roomType: string; capacity: number };
+type Room = { id: string; name: string; roomType: string; capacity: number; shipName?: string | null };
 type Overlap = { voyage: string; slug: string; departure: string; arrival: string };
 type Sailing = { scheduleId: string; departure: string; arrival: string; overlaps: Overlap[]; cabins: Record<string, Occupancy[]> };
 type Board = { voyage: { slug: string; name: string }; month: string; rooms: Room[]; sailings: Sailing[] };
@@ -74,11 +74,22 @@ const TYPE_SHORT: Record<string, string> = {
 
 const DEFAULT_REASONS = new Set(["Closed from the dashboard", "Maintenance", "Private charter"]);
 
-/** Every King shares one name in the database; the booking calls them King Cabin 1–6. */
-const CABIN_PREFIX: Record<string, string> = { K: "King Cabin", T: "Twin Cabin", S: "Luxury Suite", R: "Royal Suite" };
-function cabinLabel(id: string, fallback?: string) {
-  const match = /^([KTSR])0?(\d+)$/.exec(id);
-  return match ? `${CABIN_PREFIX[match[1]]} ${Number(match[2])}` : fallback || id;
+const TYPE_ONE: Record<string, string> = {
+  "Luxury King Cabin": "King cabin",
+  "Luxury Twin Cabin": "Twin cabin",
+  "Luxury Suite": "Luxury suite",
+  "Royal Suite": "Royal suite",
+};
+/* A cabin is named as the ship map names it ("Room 2"); its type always comes from
+   the booking catalogue, never from the letter in its code (K02 is a twin). */
+function cabinName(room: Room | undefined, id: string) {
+  return room?.shipName || (room ? `${TYPE_ONE[room.roomType] ?? room.roomType} ${id}` : id);
+}
+/** The same with the type spelled out, for lists with no type heading ("Room 2 · Twin cabin"). */
+function cabinLabel(room: Room | undefined, id: string) {
+  const name = cabinName(room, id);
+  if (!room?.shipName || /suite/i.test(name)) return name;
+  return `${name} · ${TYPE_ONE[room.roomType] ?? room.roomType}`;
 }
 
 /* ---------- dates (sailings are stored as UTC days) ---------- */
@@ -233,7 +244,7 @@ export default function AdminAvailabilityPage() {
 
   const sailing = board?.sailings.find(entry => entry.scheduleId === scheduleId) ?? null;
   const rooms = useMemo(() => board?.rooms ?? [], [board]);
-  const roomName = useCallback((id: string) => cabinLabel(id, rooms.find(room => room.id === id)?.name), [rooms]);
+  const roomName = useCallback((id: string) => cabinLabel(rooms.find(room => room.id === id), id), [rooms]);
 
   const groups = useMemo(() => {
     const order = [...PHYSICAL_ROOM_TYPES, ...new Set(rooms.map(room => room.roomType).filter(type => !PHYSICAL_ROOM_TYPES.includes(type as never)))];
@@ -473,7 +484,7 @@ export default function AdminAvailabilityPage() {
                         const body = (
                           <>
                             <span className="cav-tile__top">
-                              <span className="cav-tile__name">{cabinLabel(room.id, room.name)}</span>
+                              <span className="cav-tile__name">{cabinName(room, room.id)}</span>
                               {selectable ? (
                                 <span className={`cav-check${chosen ? " is-on" : ""}`} aria-hidden>{chosen ? <Check className="h-3 w-3" /> : null}</span>
                               ) : null}
@@ -766,7 +777,7 @@ function CloseDialog({ voyage, sailing, rooms, charter, onClose, onDone, roomNam
         <div className="cav-summary">
           <p className="cav-eyebrow">{longDay(sailing.departure)}</p>
           <div className="cav-chips">
-            {charter ? <span className="cav-chip">All {rooms.length} cabins</span> : rooms.map(room => <span key={room.id} className="cav-chip">{cabinLabel(room.id, room.name)}</span>)}
+            {charter ? <span className="cav-chip">All {rooms.length} cabins</span> : rooms.map(room => <span key={room.id} className="cav-chip">{cabinLabel(room, room.id)}</span>)}
           </div>
         </div>
 

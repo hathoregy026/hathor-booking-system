@@ -1078,7 +1078,7 @@ export function HomeAmenitiesSequence({
             data-parallax--145-0='{"transform":"translateY(0svh)"}'
           />
           <NatureGoldBand
-            name={(natureGoldBg?.name ?? "home-amenities-14") as SiteImageName}
+            name={(natureGoldBg?.name ?? "home-amenities-13") as SiteImageName}
             previewAnchor={natureGoldBg?.previewAnchor ?? true}
           >
             <div

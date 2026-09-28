@@ -2,7 +2,8 @@
 
 .public-fab {
   position: fixed;
-  z-index: 60;
+  /* Above booking page chrome (1100), below the site nav (1200) and booking modal (1300). */
+  z-index: 1150;
   bottom: max(clamp(1.25rem, 3.5vh, 2.5rem), env(safe-area-inset-bottom));
   pointer-events: none;
   opacity: 1;
@@ -264,7 +265,18 @@
   }
 }
 
-@media (max-width: 480px) {
+/*
+ * Desktop only (>1024px). Page styles hide .public-fab with display:none;
+ * this restores the cluster on desktop without touching phone or tablet.
+ * Coming Soon keeps its own hide.
+ */
+@media (min-width: 1025px) {
+  html:not(#_):not(:has(.hathor-page-construction)) .public-fab {
+    display: block !important;
+  }
+}
+
+@media (max-width: 1024px) {
   .public-fab {
     display: none !important;
     pointer-events: none !important;

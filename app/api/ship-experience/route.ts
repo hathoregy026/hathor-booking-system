@@ -28,10 +28,20 @@ export async function GET(request: NextRequest) {
     }
     const from = new Date(Math.max(now.getTime(), monthStart.getTime()));
     const to = new Date(Math.min(from.getTime() + 183 * 86_400_000, horizonEnd.getTime()));
+    /* The rooms and their types come from the booking catalogue on every answer.
+       If only the sailing read fails, the map still shows every room as the
+       booking system has it, and says that dates could not be checked. */
     const ship = await loadShipExperience();
-    const sailings = await getSailingAvailability({ duration, from, to, adults: 1, children: 0, rooms: 1 });
+    let sailings: Awaited<ReturnType<typeof getSailingAvailability>> = [];
+    let availabilityError = false;
+    try {
+      sailings = await getSailingAvailability({ duration, from, to, adults: 1, children: 0, rooms: 1 });
+    } catch (error) {
+      console.error("[ship-experience] availability read failed", error);
+      availabilityError = true;
+    }
     return NextResponse.json(
-      { ...ship, sailings },
+      { ...ship, sailings, availabilityError },
       { headers: { "Cache-Control": "no-store", "CDN-Cache-Control": "no-store" } },
     );
   } catch (error) {

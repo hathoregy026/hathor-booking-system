@@ -1,7 +1,8 @@
 /** Canonical Dining media — local optimized WebP (Vercel), not Supabase. */
 const BASE = "/media/hathor/optimized";
 
-export const DINING_PLATE_NUMBERS = [1, 2, 3, 4, 5, 6, 7] as const;
+/** Plate 5 was a cleared slot guests never saw, so it is not a live plate. */
+export const DINING_PLATE_NUMBERS = [1, 2, 3, 4, 6, 7] as const;
 export type DiningPlateNumber = (typeof DINING_PLATE_NUMBERS)[number];
 
 export const diningPlateSlotName = (number: DiningPlateNumber | number) =>

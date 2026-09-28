@@ -7,6 +7,7 @@ import {
   isLegacySharedSiteImageSource,
 } from "@/lib/site-image-page-scope";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
+import { SHIP_SPACE_IMAGE_SLOTS, isShipSpaceImageName } from "@/lib/ship-space-images";
 import {
   SITE_IMAGE_PAGES,
   SITE_IMAGE_PAGE_TITLES,
@@ -31,10 +32,6 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-hero-poster", label: "Hero — video poster / cover" },
     { name: "home-story-craft-large", label: "About — main photo" },
     { name: "home-call-to-action", label: "Call to action image" },
-    {
-      name: "home-wheel-stage",
-      label: "Wheel stage — parchment behind the wheel (before it opens)",
-    },
     {
       name: "home-wheel-image",
       label: "Wheel reveal — image the wheel opens into",
@@ -80,11 +77,7 @@ const MOVING_TILTED_ADMIN_CARDS: ReadonlyArray<{
   name: string;
   label: string;
 }> = [
-  { name: "moving-tilted-1", label: "Card 1 — Lounge" },
-  { name: "moving-tilted-2", label: "Card 2 — Nile highlights" },
   { name: "moving-tilted-3", label: "Card 3 — Dining" },
-  { name: "moving-tilted-4", label: "Card 4 — Wellness" },
-  { name: "moving-tilted-5", label: "Card 5 — Suite" },
 ];
 
 /**
@@ -128,7 +121,6 @@ const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
   { name: "scraped-cabin-4", label: "27. Cabin gallery still" },
   { name: "scraped-cabin-7", label: "28. Cabin gallery still" },
   { name: "scraped-cabin-8", label: "29. Cabin gallery still" },
-  { name: "suites-nile-still", label: "30. Nile still" },
 ];
 
 const DINING_PLATES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
@@ -155,7 +147,6 @@ const SLOT_LABELS: Partial<Record<SiteImageSlot["name"], string>> = {
   "dining-plate-2": "Plate 2",
   "dining-plate-3": "Plate 3",
   "dining-plate-4": "Plate 4",
-  "dining-plate-5": "Plate 5",
   "dining-plate-6": "Plate 6",
   "dining-plate-7": "Plate 7",
   "home-story-way-of-life": "Way of Life — photo (home story)",
@@ -287,6 +278,10 @@ export type SiteImageAdminGroup = {
 /** The page path used for slots the live site no longer paints. */
 export const SITE_IMAGE_UNUSED_GROUP = "unused";
 
+/** The tab for the deck plan's space photos; the site crawl does not place these. */
+export const SITE_IMAGE_SHIP_GROUP = "ship-deck-plan";
+const SHIP_DECK_TITLES = { lower: "Lower deck", main: "Main deck", sun: "Sun deck" } as const;
+
 /** Labels written for the curated sections, reused wherever a slot appears. */
 const CURATED_LABELS: Record<string, string> = (() => {
   const labels: Record<string, string> = {};
@@ -406,9 +401,34 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     });
   }
 
+  /* One tab for the deck plan, split by deck, each photo named after its space. */
+  const shipItems = SHIP_SPACE_IMAGE_SLOTS.flatMap((space, index) => {
+    const slot = byName.get(space.name);
+    if (!slot) return [];
+    return [{
+      ...toAdminItem(slot, SITE_IMAGE_SHIP_GROUP, index + 1),
+      label: space.space,
+      section: SHIP_DECK_TITLES[space.deck],
+      livePath: "/#explore-hathor",
+      usedOnLabel: "Homepage deck plan only",
+    }];
+  });
+  if (shipItems.length) {
+    groups.push({
+      pagePath: SITE_IMAGE_SHIP_GROUP,
+      title: "Ship deck plan",
+      livePath: "/",
+      description:
+        "The photo that opens when a guest selects a space on the homepage deck plan. Each photo belongs only to its space, so changing one here changes nothing else on the site. Stairs, entrances, the restroom and crew areas are named on the plan without a photo.",
+      items: shipItems,
+    });
+  }
+
   const orphans = SITE_IMAGE_SLOTS.filter(
     (slot) =>
-      !painted.has(slot.name) && !isLegacySharedSiteImageSource(slot.name),
+      !painted.has(slot.name) &&
+      !isShipSpaceImageName(slot.name) &&
+      !isLegacySharedSiteImageSource(slot.name),
   );
   if (orphans.length) {
     groups.push({

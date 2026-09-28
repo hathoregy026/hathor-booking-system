@@ -9,7 +9,7 @@ import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
 export const CHARTER_PRIVATE = {
   hero: {
-    kicker: "Private Charter Services",
+    kicker: "Private Dahabiya Charter · Egypt",
     headline: CHARTER_PAGE.hero.title,
     secondLine: CHARTER_PAGE.hero.secondTitle,
     subhead:
@@ -18,7 +18,8 @@ export const CHARTER_PRIVATE = {
     secondaryCta: "Check Availability",
   },
   inquiry: {
-    title: "Begin your private voyage",
+    /* the old hathorcruise.com/charter section heading, kept for its ranking */
+    title: "Charter Dahabiya Cruise",
     lead: CHARTER_PAGE.overview.cta,
     tripTypes: ["One-Way", "Round-Trip", "Multi-Stop"] as const,
   },
@@ -110,7 +111,7 @@ export const CHARTER_PRIVATE = {
     ],
   },
   passages: {
-    kicker: "Featured charter passages",
+    kicker: "Private Nile cruise routes",
     title: "Compose your route",
     lead: "Select a preferred passage. We refine every landing, hour and shore experience around your guests.",
     routes: CHARTER_PAGE.overview.routes,

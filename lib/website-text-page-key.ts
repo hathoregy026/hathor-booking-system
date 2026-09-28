@@ -19,7 +19,7 @@ export function pathnameToWebsiteTextPage(pathname: string): HeroPageKey | null 
   if (path === "/partners") return "partners";
   if (path === "/blogs" || path.startsWith("/blogs/")) return "blog";
   if (path === "/rooms" || path.startsWith("/rooms/")) return "suites";
-  if (path === "/suites" || path === "/suites-preview") return "suites";
+  if (path === "/suites") return "suites";
   if (path === "/luxury-cabins-Nile-Cruise") return "luxury_cabins";
   if (path === "/royal-suites") return "royal_suites";
 

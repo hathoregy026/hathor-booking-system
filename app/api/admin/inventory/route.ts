@@ -31,7 +31,10 @@ export async function GET(request: NextRequest) {
         endsAt: { gt: sailing.departureTime },
         OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
       },
-      select: { roomId: true, state: true, blockKey: true, reason: true },
+      select: {
+        roomId: true, state: true, blockKey: true, reason: true, startsAt: true, endsAt: true,
+        bookingRoom: { select: { bookingId: true, booking: { select: { customerName: true, status: true } } } },
+      },
     });
     const shipBlockKeys = allocations.filter(allocation => allocation.state === "MANUAL_BLOCK" && allocation.reason === "Ship Explorer" && allocation.blockKey).map(allocation => allocation.blockKey!);
     const sharedBlocks = shipBlockKeys.length ? await prisma.inventoryAllocation.findMany({
@@ -42,8 +45,12 @@ export async function GET(request: NextRequest) {
     for (const allocation of sharedBlocks) {
       if (allocation.blockKey) blockCounts.set(allocation.blockKey, (blockCounts.get(allocation.blockKey) ?? 0) + 1);
     }
-    return NextResponse.json({ allocations: allocations.map(allocation => ({
+    return NextResponse.json({ allocations: allocations.map(({ bookingRoom, ...allocation }) => ({
       ...allocation,
+      /* The website booking holding the cabin, so the ship map can name and link it. */
+      bookingId: bookingRoom?.bookingId ?? null,
+      guest: bookingRoom?.booking.customerName ?? null,
+      bookingStatus: bookingRoom?.booking.status ?? null,
       releasable: allocation.state === "MANUAL_BLOCK" && allocation.reason === "Ship Explorer" && !!allocation.blockKey && blockCounts.get(allocation.blockKey) === 1,
     })) }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) { return handleRouteError(error); }

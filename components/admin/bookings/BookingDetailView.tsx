@@ -190,7 +190,7 @@ export function BookingDetailView({
                   <li key={index} className="flex flex-col gap-2 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-start sm:justify-between" style={{ borderColor: "var(--border)" }}>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold">
-                        Cabin {index + 1} · {cabin.type}
+                        Cabin {index + 1} · {cabin.type}{cabin.roomId ? <span className="text-muted"> · {cabin.roomId}</span> : null}
                       </p>
                       <p className="text-xs text-muted">
                         {cabin.adults} adult{cabin.adults === 1 ? "" : "s"}
@@ -207,7 +207,20 @@ export function BookingDetailView({
                         </ul>
                       ) : null}
                     </div>
-                    <span className="shrink-0 text-sm font-semibold tabular">{formatPrice(cabin.unitPriceCents)}</span>
+                    <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
+                      <span className="text-sm font-semibold tabular">{formatPrice(cabin.unitPriceCents)}</span>
+                      {cabin.roomId ? (
+                        /* The dashboard's ship map opens on this departure, with this exact cabin picked out. */
+                        <Link
+                          href={`/admin/ship-experience?tab=bookings&room=${encodeURIComponent(cabin.roomId)}${booking.cruiseSlug ? `&voyage=${encodeURIComponent(booking.cruiseSlug)}` : ""}&date=${booking.departureTime.slice(0, 10)}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold"
+                          style={{ color: "var(--accent)" }}
+                        >
+                          <Ship className="h-3.5 w-3.5" aria-hidden />
+                          See it on the ship map
+                        </Link>
+                      ) : null}
+                    </div>
                   </li>
                 );
               })}

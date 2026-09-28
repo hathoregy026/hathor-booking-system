@@ -12,6 +12,7 @@ import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { formatPrice } from "@/lib/client-dates";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
+import { resolveAmenityCaption } from "@/components/pages/rooms/RoomAmenityIcon";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { refreshCruisesHeroStripes } from "@/hooks/useCruisesHeroStripes";
 import gsap from "gsap";
@@ -271,7 +272,7 @@ export function CruisesPageListingsGrid() {
             <p className="cruise-card-desc">{item.description}</p>
             <ul className="cruise-card-amenities">
               {item.amenities.map((amenity) => (
-                <li key={amenity}>{amenity}</li>
+                <li key={amenity}>{resolveAmenityCaption(amenity).tight}</li>
               ))}
             </ul>
             <div className="cruise-card-price">
