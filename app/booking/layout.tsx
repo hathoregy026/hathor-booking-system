@@ -20,27 +20,36 @@ import "../nav-controls.css";
 import "../booking-journey.css";
 import "../booking-journey-mobile.css";
 
+/*
+ * preload: false — the production build packs these font rules into a CSS file
+ * the public pages share, so a preload here was fetched on every public page.
+ * They still load wherever this layout's text uses them.
+ */
 const italiana = Italiana({
   subsets: ["latin"],
   variable: "--font-hathor-italiana",
   weight: "400",
   display: "swap",
+  preload: false,
 });
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-booking-serif",
   weight: ["400", "500", "600", "700"],
+  preload: false,
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-booking-sans",
   weight: ["300", "400", "500", "600", "700"],
+  preload: false,
 });
 
+/* The same WOFF2 the public layout serves (half the OpenType file's size). */
 const gamgote = localFont({
-  src: "../../public/fonts/Gamgote-Regular.otf",
+  src: "../../public/fonts/Gamgote-Regular.woff2",
   variable: "--font-hathor-gamgote",
   display: "swap",
   weight: "400",

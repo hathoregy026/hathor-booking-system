@@ -35,9 +35,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+/* No public page sets text in the mono face; it loads only where used. */
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 /*
