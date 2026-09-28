@@ -1,4 +1,9 @@
-import { toAbsolutePublicUrl, VERCEL_PRODUCTION_ORIGIN } from "@/lib/public-url";
+import {
+  CUSTOM_DOMAIN_ORIGIN,
+  isCustomDomainLive,
+  toAbsolutePublicUrl,
+  VERCEL_PRODUCTION_ORIGIN,
+} from "@/lib/public-url";
 import { EMAIL_IMAGE_BUCKET } from "@/lib/image-upload";
 
 export type SharedEmailBranding = {
@@ -14,6 +19,12 @@ const SUPABASE_EMAIL_IMAGES_PATH =
 function isTrustedEmailHost(hostname: string): boolean {
   const host = hostname.toLowerCase();
   if (host === "hathor-booking-system.vercel.app") return true;
+  if (
+    isCustomDomainLive() &&
+    (host === new URL(CUSTOM_DOMAIN_ORIGIN).hostname || host === "hathorcruise.com")
+  ) {
+    return true;
+  }
   if (host.endsWith(".vercel.app") && host.includes("hathor-booking-system")) {
     return true;
   }
