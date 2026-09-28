@@ -178,6 +178,7 @@ export function DeckAtlasPlan({ deck, rooms, spaces, focusId, selectedId, reveal
               onFocus={() => onFocus(room.slotId)} onBlur={() => onFocus(null)}
               onClick={() => onSelect(room.slotId)}>
               <span className="da-plan__num"><i aria-hidden="true" />{room.label}</span>
+              {room.state === "closed" ? <b className="da-plan__booked" aria-hidden="true">Booked</b> : null}
             </button>
           ))}
         </div>

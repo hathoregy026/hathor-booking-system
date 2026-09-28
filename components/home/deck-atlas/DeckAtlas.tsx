@@ -396,7 +396,7 @@ export function DeckAtlas() {
               {sheet.price ? <p className="da-price">{sheet.price}<small>per cabin · entire voyage</small></p> : null}
             </div>
             <div className="da-detail__act">
-              {sheet.checkHref ? <Link className="btn" data-hathor-btn="primary" href={sheet.checkHref}>Check availability</Link>
+              {sheet.checkHref ? <Link className="btn" data-hathor-btn="primary" href={sheet.checkHref}>{pick.state === "closed" ? "See other dates" : "Check availability"}</Link>
                 : <Link className="btn" data-hathor-btn="primary" href="/contact">Contact reservations</Link>}
               {sheet.viewHref ? <Link className="btn" href={sheet.viewHref}>View room</Link> : null}
             </div>

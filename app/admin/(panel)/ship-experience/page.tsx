@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { DeckAtlasPlan, type AtlasPlanRoom, type AtlasState, type SpotId } from "@/components/home/deck-atlas/DeckAtlasPlan";
+import { X } from "lucide-react";
+import { DeckAtlasPlan, PlanCloseUp, type AtlasPlanRoom, type AtlasState, type SpotId } from "@/components/home/deck-atlas/DeckAtlasPlan";
 import { facilitiesWith, facilityMark, type Facility } from "@/components/home/deck-atlas/facilities";
 import { useToast } from "@/components/admin/ToastProvider";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
+import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { bookingHorizonYear } from "@/lib/booking-horizon";
 import type { ShipRoom } from "@/lib/ship-experience";
 import {
@@ -56,11 +59,13 @@ async function readResponse<T>(response: Response): Promise<T> {
   return payload as T;
 }
 
-/** The plan, drawn exactly as on the homepage, inside the dashboard. */
-function AdminPlan({ deck, rooms, spaces, focusId, selectedId, onRoom, onSpace, onFocus }: {
+/** The plan, drawn exactly as on the homepage (same component, styles and fonts), inside the dashboard. */
+function AdminPlan({ deck, rooms, spaces, focusId, selectedId, onRoom, onSpace, onFocus, legend }: {
   deck: ShipDeckId; rooms: AtlasPlanRoom[]; spaces: Facility[];
   focusId: SpotId | null; selectedId: ShipSlotId | null;
   onRoom: (id: ShipSlotId) => void; onSpace: (id: ShipSpaceId) => void; onFocus: (id: SpotId | null) => void;
+  /** The homepage's own key for free and booked rooms, when a departure is shown. */
+  legend?: boolean;
 }) {
   return (
     <div className="deck-atlas sx-plan" data-revealed="">
@@ -70,6 +75,69 @@ function AdminPlan({ deck, rooms, spaces, focusId, selectedId, onRoom, onSpace, 
             revealed onFocus={onFocus} onSelect={onRoom} onOpenSpace={onSpace} />
         </div>
       </div>
+      {legend ? <ul className="da-legend" aria-label="Plan key">
+        <li data-state="open"><i />Free</li>
+        <li data-state="closed"><i />Booked on this date</li>
+        <li data-state="selected"><i />Selected</li>
+      </ul> : null}
+    </div>
+  );
+}
+
+/**
+ * A room on the bookings map, opened the way the homepage opens it — the same
+ * pop-up — but with what the team needs: who holds it, for which nights, and
+ * the booking or closure behind it.
+ */
+function AdminRoomSheet({ slot, cabin, deckName, sailing, allocation, open, working, onClose, onBlock }: {
+  slot: PlanSlot | undefined; cabin: RoomDraft | undefined; deckName: string;
+  sailing: SailingAvailability | undefined; allocation: Allocation | undefined; open: boolean | null;
+  working: boolean; onClose: () => void; onBlock: (roomId: string, allocation?: Allocation) => void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const shown = !!slot && open !== null;
+  useEffect(() => {
+    const element = dialog.current;
+    if (!element) return;
+    if (shown && !element.open) element.showModal();
+    if (!shown && element.open) element.close();
+  }, [shown]);
+  const region = slot ? SHIP_REGIONS[slot.slotId] : null;
+  const photo = cabin?.roomType ? getBookingRoomVisuals(cabin.name, cabin.roomType).gallery[0] : undefined;
+  const status = !sailing ? "" : open
+    ? `Free · ${rangeLabel(sailing.departureTime, sailing.arrivalTime)}`
+    : `${takenBy(allocation)} · ${allocation ? rangeLabel(allocation.startsAt, allocation.endsAt) : rangeLabel(sailing.departureTime, sailing.arrivalTime)}`;
+  return (
+    <div className="deck-atlas sx-sheet">
+      <dialog ref={dialog} className="da-modal" aria-labelledby="sx-sheet-title"
+        onCancel={event => { event.preventDefault(); onClose(); }}
+        onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
+        {slot && region ? <div className="da-modal__panel" data-kind="room">
+          <button type="button" className="da-modal__close" aria-label={`Close ${slot.name}`} onClick={onClose}><X aria-hidden="true" /></button>
+          <figure className="da-modal__media">
+            {photo ? <Image className="da-modal__img" src={photo} alt={cabin?.name ?? slot.name} fill sizes="(max-width: 1100px) 500px, 540px" />
+              : <PlanCloseUp className="da-closeup--hero" deck={region.deck} areas={[region]} label={slot.name} />}
+          </figure>
+          <div className="da-modal__info">
+            <p className="da-kicker">{deckName} · {slot.name}</p>
+            <h3 id="sx-sheet-title" className="da-modal__title">{cabin?.name ?? slot.name}</h3>
+            {cabin ? <p className="da-modal__spec">{cabin.sizeSqm} m² · Up to {cabin.capacity} guests · {cabin.id}</p> : null}
+            <div className="da-modal__terms">
+              <p className="da-status" data-state={open ? "open" : "closed"}>{status}</p>
+            </div>
+            <div className="da-modal__where">
+              <p className="da-kicker">Where it is</p>
+              <PlanCloseUp deck={region.deck} areas={[region]} label={slot.name} ratio={3} />
+            </div>
+            <div className="sx-sheet__act">
+              {allocation?.bookingId ? <Link className="admin-btn-primary" href={`/admin/bookings/${allocation.bookingId}`}>Open the booking</Link> : null}
+              {cabin && open ? <button type="button" className="admin-btn-outline" disabled={working} onClick={() => onBlock(cabin.id)}>Close this date</button> : null}
+              {cabin && !open && allocation?.releasable ? <button type="button" className="admin-btn-outline" disabled={working} onClick={() => onBlock(cabin.id, allocation)}>Reopen</button> : null}
+              {!open && !allocation?.bookingId && !allocation?.releasable ? <p className="sx-admin__locked">Closed elsewhere in the dashboard — reopen it where it was closed.</p> : null}
+            </div>
+          </div>
+        </div> : null}
+      </dialog>
     </div>
   );
 }
@@ -94,6 +162,8 @@ export default function ShipExperienceAdminPage() {
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [workingRoom, setWorkingRoom] = useState<string | null>(null);
   const [mapTarget, setMapTarget] = useState<MapTarget | null>(null);
+  /* The room opened on the bookings map. */
+  const [sheetSlot, setSheetSlot] = useState<ShipSlotId | null>(null);
 
   /* Opened from a booking: straight to its departure on the bookings map, with its cabin picked out. */
   useEffect(() => {
@@ -235,7 +305,8 @@ export default function ShipExperienceAdminPage() {
   function chooseDeck(id: ShipDeckId) { setDeckId(id); setSelection(null); setHovered(null); }
   function pickRoom(id: ShipSlotId) {
     setSelection({ kind: "room", id });
-    if (tab === "availability") document.getElementById(`sx-row-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    /* On the bookings map a room opens as on the homepage, saying whether it is booked and by whom. */
+    if (tab === "availability") setSheetSlot(id);
   }
 
   const deckTabs = <div className="sx-admin__deck-tabs" role="group" aria-label="Deck">{SHIP_DECK_IDS.map(id => <button key={id} type="button" aria-pressed={deckId === id} onClick={() => chooseDeck(id)}>{config.decks.find(item => item.id === id)?.name}</button>)}</div>;
@@ -373,9 +444,9 @@ export default function ShipExperienceAdminPage() {
         {availabilityLoading ? <p role="status">Checking live inventory…</p> : !sailing ? <p>No sailing to manage in this period. Choose a later month above.</p> : <>
           <p className="sx-admin__sailing">{rangeLabel(sailing.departureTime, sailing.arrivalTime)} · {sailing.availableCabins} of {sailing.types.reduce((sum, type) => sum + type.totalCabins, 0)} cabins free</p>
           {deckTabs}
-          <AdminPlan deck={deckId} rooms={planRooms} spaces={[]} focusId={hovered ?? (selection?.kind === "room" ? selection.id : null)}
-            selectedId={selection?.kind === "room" ? selection.id : null} onRoom={pickRoom} onSpace={() => undefined} onFocus={setHovered} />
-          <ul className="sx-admin__legend"><li data-state="open">Free</li><li data-state="closed">Booked or closed</li></ul>
+          <AdminPlan deck={deckId} rooms={planRooms} spaces={deckSpaces.filter(space => space.visible !== false)} focusId={hovered ?? (selection?.kind === "room" ? selection.id : null)}
+            selectedId={selection?.kind === "room" ? selection.id : null} onRoom={pickRoom} legend
+            onSpace={id => { setTab("layout"); setSelection({ kind: "space", id }); }} onFocus={setHovered} />
           <div className="sx-admin__availability-grid">{config.rooms.filter(slot => slot.roomId && SHIP_REGIONS[slot.slotId].deck === deckId).map(slot => {
             const cabin = cabinOf(slot);
             const roomId = slot.roomId!;
@@ -394,6 +465,16 @@ export default function ShipExperienceAdminPage() {
               </div>
             </div>;
           })}</div>
+          {(() => {
+            const slot = sheetSlot ? config.rooms.find(item => item.slotId === sheetSlot) : undefined;
+            const roomId = slot?.roomId ?? null;
+            const openHere = roomId ? sailing.types.some(type => type.freeCabins.some(item => item.id === roomId)) : null;
+            return <AdminRoomSheet slot={slot} cabin={slot ? cabinOf(slot) : undefined}
+              deckName={slot ? config.decks.find(item => item.id === SHIP_REGIONS[slot.slotId].deck)?.name ?? "" : ""}
+              sailing={sailing} allocation={roomId ? allocations.find(item => item.roomId === roomId) : undefined}
+              open={slot && roomId ? openHere : null} working={workingRoom !== null}
+              onClose={() => setSheetSlot(null)} onBlock={(id, allocation) => void changeBlock(id, allocation)} />;
+          })()}
           <p className="sx-admin__footnote">Closures are date-specific and checked against overlapping voyages. An existing booking or hold always takes priority, and a closure made elsewhere in the dashboard can only be reopened where it was made.</p>
         </>}
       </section> : null}
