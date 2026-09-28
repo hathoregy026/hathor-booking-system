@@ -508,7 +508,6 @@ html[data-gastronomy-dining] body {
 .nib-atelier .nib-plate--2 { left: 26%; top: 43%; width: 21vw; --plate-x: 2vw; --plate-tilt: 9deg; --plate-rest: 3deg; }
 .nib-atelier .nib-plate--3 { left: 43%; top: 4%; width: 27vw; --plate-x: -3vw; --plate-tilt: -7deg; --plate-rest: 4deg; }
 .nib-atelier .nib-plate--4 { left: 66%; top: 48%; width: 23vw; --plate-x: 5vw; --plate-tilt: 11deg; --plate-rest: -3deg; }
-.nib-atelier .nib-plate--5 { left: 76%; top: 5%; width: 20vw; --plate-x: 3vw; --plate-tilt: -9deg; --plate-rest: 2deg; }
 .nib-atelier .nib-plate--6 { left: 8%; top: 58%; width: 18vw; --plate-x: -2vw; --plate-tilt: 6deg; --plate-rest: 5deg; }
 .nib-atelier .nib-plate--7 { left: 50%; top: 61%; width: 18vw; --plate-x: 2vw; --plate-tilt: -6deg; --plate-rest: -4deg; }
 
@@ -998,7 +997,6 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
   .nib-atelier .nib-plate--2 { left: 51%; top: 8%; }
   .nib-atelier .nib-plate--3 { left: 26%; top: 22%; }
   .nib-atelier .nib-plate--4 { left: 0; top: 42%; }
-  .nib-atelier .nib-plate--5 { left: 53%; top: 46%; }
   .nib-atelier .nib-plate--6 { left: 27%; top: 64%; }
   .nib-atelier .nib-plate--7 { left: 6%; top: 79%; }
 

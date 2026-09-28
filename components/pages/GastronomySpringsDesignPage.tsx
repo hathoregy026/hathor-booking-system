@@ -10,6 +10,7 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
+import { getSiteImageSlot } from "@/lib/site-image-slots";
 import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
 
 const typeStyle = {
@@ -139,7 +140,8 @@ function Plate({
 }) {
   const slotName = diningPlateSlotName(number);
   const image = useSiteImage(slotName);
-  if (!image.src.trim()) return null;
+  /* A removed plate must stay blank. Missing slots otherwise fall back to the hero. */
+  if (!getSiteImageSlot(slotName) || !image.src.trim()) return null;
   return (
     <figure
       className={`nib-plate nib-plate--${number} ${className}`}
@@ -298,7 +300,6 @@ export function GastronomySpringsDesignPage() {
                   <Plate number={2} style={{ "--plate-delay": "0.08" } as CSSProperties} />
                   <Plate number={3} style={{ "--plate-delay": "0.16" } as CSSProperties} />
                   <Plate number={4} style={{ "--plate-delay": "0.24" } as CSSProperties} />
-                  <Plate number={5} style={{ "--plate-delay": "0.32" } as CSSProperties} />
                   <Plate number={6} style={{ "--plate-delay": "0.40" } as CSSProperties} />
                   <Plate number={7} style={{ "--plate-delay": "0.48" } as CSSProperties} />
                 </div>
