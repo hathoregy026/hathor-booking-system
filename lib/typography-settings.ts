@@ -7,26 +7,30 @@ import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   TYPOGRAPHY_SETTINGS_KEY,
   TYPOGRAPHY_SETTINGS_MOBILE_KEY,
-  typographySettingsSchema,
-  parseTypographySettings,
   type TypographySettings,
 } from "@/lib/typography-settings-shared";
+import {
+  typographySettingsSchema,
+  parseTypographySettings,
+} from "@/lib/typography-settings-schema";
 import { prisma } from "@/lib/prisma";
 
 export {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   TYPOGRAPHY_SETTINGS_KEY,
   TYPOGRAPHY_SETTINGS_MOBILE_KEY,
-  typographySettingsSchema,
   typographyToCssVars,
   typographyToImportantCss,
   typographyToInlineStyle,
-  parseTypographySettings,
   type TypographySettings,
   type TypographyTextStyle,
   type TypographyRole,
   HATHOR_LUXURY_FONTS,
 } from "@/lib/typography-settings-shared";
+export {
+  typographySettingsSchema,
+  parseTypographySettings,
+} from "@/lib/typography-settings-schema";
 
 async function writeViaSql(key: string, payload: string): Promise<void> {
   const pool = getSharedPgPool(resolveDatabaseUrl());

@@ -1,8 +1,6 @@
 import { z } from "zod";
-import {
-  typographyTextStyleSchema,
-  type TypographyTextStyle,
-} from "@/lib/typography-settings-shared";
+import { type TypographyTextStyle } from "@/lib/typography-settings-shared";
+import { typographyTextStyleSchema } from "@/lib/typography-settings-schema";
 
 const hexColor = z
   .string()

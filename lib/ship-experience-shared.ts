@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 export const SHIP_DECK_IDS = ["lower", "main", "sun"] as const;
 export type ShipDeckId = (typeof SHIP_DECK_IDS)[number];
 export const SHIP_ROOM_IDS = ["S01", "S02", "K01", "K02", "K03", "K04", "K05", "K06", "T01", "T02", "R01", "R02"] as const;
@@ -43,39 +41,34 @@ export const SHIP_REGIONS: Record<ShipSlotId, { deck: ShipDeckId; x: number; y: 
   R02: { deck: "main", x: 72, y: 481, width: 303, height: 175, edge: "bottom", name: "Royal Suite 2", number: "R2" },
 };
 
-const text = (max: number) => z.string().trim().min(1).max(max);
-const deckSchema = z.object({ id: z.enum(SHIP_DECK_IDS), name: text(42), subtitle: text(90), description: text(220), visible: z.boolean() }).strict();
-const roomSchema = z.object({
-  slotId: z.enum(SHIP_SLOT_IDS), roomId: z.enum(SHIP_ROOM_IDS).nullable(),
-  /* What the ship map shows: the number on the plan ("1", "S1"), the room's name
-     there ("Room 1") and an optional line in its pop-up. The linked cabin's own
-     name, type and price still come from the booking catalogue. */
-  name: text(80), number: text(20), description: z.string().trim().max(600), visible: z.boolean(),
-}).strict();
+/*
+ * The saved ship-map config. Validation (zod) lives in
+ * `ship-experience-schema.ts`, which only the server and the dashboard load —
+ * this file is also part of the homepage deck plan.
+ */
+export type ShipDeckConfig = { id: ShipDeckId; name: string; subtitle: string; description: string; visible: boolean };
+/* What the ship map shows: the number on the plan ("1", "S1"), the room's name
+   there ("Room 1") and an optional line in its pop-up. The linked cabin's own
+   name, type and price still come from the booking catalogue. */
+export type ShipPlanRoom = {
+  slotId: ShipSlotId; roomId: (typeof SHIP_ROOM_IDS)[number] | null;
+  name: string; number: string; description: string; visible: boolean;
+};
 /** A named space on the plan; its default wording lives with the plan drawing. */
-const spaceSchema = z.object({ id: z.enum(SHIP_SPACE_IDS), name: text(60), line: z.string().trim().max(240), visible: z.boolean() }).strict();
-export const shipExperienceSchema = z.object({
-  version: z.literal(3),
-  kicker: text(80), eyebrow: text(48), title: text(80), introduction: text(260),
-  decks: z.array(deckSchema).length(3),
-  rooms: z.array(roomSchema).length(13),
+export type ShipSpaceConfig = { id: ShipSpaceId; name: string; line: string; visible: boolean };
+export type ShipExperienceConfig = {
+  version: 3;
+  kicker: string; eyebrow: string; title: string; introduction: string;
+  decks: ShipDeckConfig[];
+  rooms: ShipPlanRoom[];
   /* Only the spaces edited in the dashboard; every other space keeps its default wording. */
-  spaces: z.array(spaceSchema).max(SHIP_SPACE_IDS.length),
-}).strict().superRefine((value, context) => {
-  if (new Set(value.decks.map(deck => deck.id)).size !== 3) context.addIssue({ code: "custom", path: ["decks"], message: "Every deck must appear once" });
-  if (new Set(value.rooms.map(room => room.slotId)).size !== 13) context.addIssue({ code: "custom", path: ["rooms"], message: "Every plan room must appear once" });
-  const linked = value.rooms.flatMap(room => room.roomId ? [room.roomId] : []);
-  if (new Set(linked).size !== linked.length) context.addIssue({ code: "custom", path: ["rooms"], message: "A physical cabin can only be linked to one plan room" });
-  if (!value.decks.some(deck => deck.visible)) context.addIssue({ code: "custom", path: ["decks"], message: "Keep at least one deck visible" });
-  if (new Set(value.spaces.map(space => space.id)).size !== value.spaces.length) context.addIssue({ code: "custom", path: ["spaces"], message: "Each space can appear once" });
-});
-export type ShipExperienceConfig = z.infer<typeof shipExperienceSchema>;
+  spaces: ShipSpaceConfig[];
+};
 
 /** Each booking cabin's name on the ship map ("Room 2", "Suite 1"), by cabin id. */
 export function shipRoomNames(config: Pick<ShipExperienceConfig, "rooms">): Record<string, string> {
   return Object.fromEntries(config.rooms.flatMap(slot => slot.roomId ? [[slot.roomId, slot.name]] : []));
 }
-export type ShipPlanRoom = ShipExperienceConfig["rooms"][number];
 
 export const DEFAULT_SHIP_EXPERIENCE: ShipExperienceConfig = {
   version: 3,
@@ -91,35 +84,3 @@ export const DEFAULT_SHIP_EXPERIENCE: ShipExperienceConfig = {
   rooms: SHIP_SLOT_IDS.map(slotId => ({ slotId, roomId: slotId === "ROOM09" ? null : slotId, name: SHIP_REGIONS[slotId].name, number: SHIP_REGIONS[slotId].number, description: "", visible: slotId !== "ROOM09" })),
   spaces: [],
 };
-
-/* Version 2: the same rooms and decks, before the kicker and the spaces were editable. */
-const version2Schema = z.object({
-  version: z.literal(2),
-  eyebrow: text(48), title: text(80), introduction: text(260),
-  decks: z.array(deckSchema).length(3),
-  rooms: z.array(roomSchema).length(13),
-}).strict();
-
-// Upgrade saved text/visibility, not abstract coordinates or clickable facilities.
-const legacySchema = z.object({
-  eyebrow: text(48), title: text(80), introduction: text(260), decks: z.array(deckSchema).length(3),
-  rooms: z.array(z.object({ roomId: z.enum(SHIP_ROOM_IDS), visible: z.boolean() })).length(12),
-});
-export function parseShipExperience(value: unknown): ShipExperienceConfig {
-  const current = shipExperienceSchema.safeParse(value);
-  if (current.success) return current.data;
-  const version2 = version2Schema.safeParse(value);
-  if (version2.success) {
-    const candidate = shipExperienceSchema.safeParse({ ...version2.data, version: 3, kicker: DEFAULT_SHIP_EXPERIENCE.kicker, spaces: [] });
-    if (candidate.success) return candidate.data;
-  }
-  const legacy = legacySchema.safeParse(value);
-  if (legacy.success) {
-    const candidate = shipExperienceSchema.safeParse({
-      ...DEFAULT_SHIP_EXPERIENCE, ...legacy.data,
-      rooms: DEFAULT_SHIP_EXPERIENCE.rooms.map(room => ({ ...room, visible: legacy.data.rooms.find(old => old.roomId === room.roomId)?.visible ?? room.visible })),
-    });
-    if (candidate.success) return candidate.data;
-  }
-  return DEFAULT_SHIP_EXPERIENCE;
-}

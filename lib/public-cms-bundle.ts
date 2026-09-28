@@ -20,9 +20,9 @@ import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
   TYPOGRAPHY_SETTINGS_KEY,
   TYPOGRAPHY_SETTINGS_MOBILE_KEY,
-  parseTypographySettings,
   type TypographySettings,
 } from "@/lib/typography-settings-shared";
+import { parseTypographySettings } from "@/lib/typography-settings-schema";
 import {
   DEFAULT_WEBSITE_TEXT,
   WEBSITE_TEXT_KEY,
@@ -40,9 +40,9 @@ import {
 import {
   DEFAULT_PAGE_VISIBILITY_SETTINGS,
   PAGE_VISIBILITY_KEY,
-  parsePageVisibilitySettings,
   type PageVisibilitySettings,
 } from "@/lib/page-visibility-shared";
+import { parsePageVisibilitySettings } from "@/lib/page-visibility-schema";
 import {
   DEFAULT_WELCOME_SPLASH_SETTINGS,
   WELCOME_SPLASH_SETTINGS_KEY,
@@ -52,9 +52,9 @@ import {
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
   LIVE_SITE_SETTINGS_KEY,
-  parseLiveSiteSettings,
   type LiveSiteSettings,
 } from "@/lib/live-site-settings-shared";
+import { parseLiveSiteSettings } from "@/lib/live-site-settings-schema";
 import {
   DEFAULT_WHEEL_STAGE_SETTINGS,
   WHEEL_STAGE_SETTINGS_KEY,

@@ -1,11 +1,18 @@
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { withDb } from "@/lib/db-safe";
 import {
   DEFAULT_SUITES_TYPOGRAPHY,
   DEFAULT_SUITES_TYPOGRAPHY_PHONE,
-  suitesTypographySchema,
   type SuitesTypography,
 } from "@/lib/suites-typography-shared";
+import { typographyTextStyleSchema } from "@/lib/typography-settings-schema";
+
+export const suitesTypographySchema = z.object({
+  display: typographyTextStyleSchema,
+  secondary: typographyTextStyleSchema,
+  body: typographyTextStyleSchema,
+}) satisfies z.ZodType<SuitesTypography>;
 
 export const SUITES_TYPOGRAPHY_KEY = "suites-typography";
 export const SUITES_TYPOGRAPHY_MOBILE_KEY = "suites-typography-mobile";
@@ -13,7 +20,6 @@ export const SUITES_TYPOGRAPHY_MOBILE_KEY = "suites-typography-mobile";
 export {
   DEFAULT_SUITES_TYPOGRAPHY,
   DEFAULT_SUITES_TYPOGRAPHY_PHONE,
-  suitesTypographySchema,
 };
 export type { SuitesTypography };
 

@@ -1,17 +1,15 @@
-import { z } from "zod";
 import {
   hathorFontStackForAdmin,
-  typographyTextStyleSchema,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 
-export const suitesTypographySchema = z.object({
-  display: typographyTextStyleSchema,
-  secondary: typographyTextStyleSchema,
-  body: typographyTextStyleSchema,
-});
-
-export type SuitesTypography = z.infer<typeof suitesTypographySchema>;
+/* Its validation lives with the server reader (`suites-typography.ts`), so the
+   /suites page that imports this file for its CSS never ships zod. */
+export type SuitesTypography = {
+  display: TypographyTextStyle;
+  secondary: TypographyTextStyle;
+  body: TypographyTextStyle;
+};
 
 /** Suites follows the About / Contact editorial hierarchy: Italiana display and Rollgates support copy. */
 export const DEFAULT_SUITES_TYPOGRAPHY: SuitesTypography = {

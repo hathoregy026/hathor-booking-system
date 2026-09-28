@@ -7,7 +7,8 @@ import { readPublicJsonBody, requireIdempotencyKey } from "@/lib/public-api-secu
 import { handleRouteError } from "@/lib/api";
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
 import { SHIP_EXPERIENCE_KEY } from "@/lib/ship-experience";
-import { DEFAULT_SHIP_EXPERIENCE, parseShipExperience, shipRoomNames } from "@/lib/ship-experience-shared";
+import { DEFAULT_SHIP_EXPERIENCE, shipRoomNames } from "@/lib/ship-experience-shared";
+import { parseShipExperience } from "@/lib/ship-experience-schema";
 
 /*
  * Dashboard → Availability. Closing a cabin writes the same inventory block the

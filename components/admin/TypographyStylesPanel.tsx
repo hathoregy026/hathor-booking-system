@@ -36,7 +36,6 @@ import {
   heroSecondShimmerInlineStyle,
   isTypographySettingsEqual,
   parseMarqueePhrases,
-  parseTypographySettings,
   type HeroAlign,
   type HeroLayout,
   type HeroPageKey,
@@ -47,6 +46,7 @@ import {
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
+import { parseTypographySettings } from "@/lib/typography-settings-schema";
 import { parseWebsiteText } from "@/lib/website-text-shared";
 
 type EditorGroup =

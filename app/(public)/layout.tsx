@@ -158,6 +158,7 @@ export default async function PublicSiteLayout({
     >
       {siteIsLive ? (
         <style
+          data-hathor-typography-ssr
           dangerouslySetInnerHTML={{
             __html: safeStyleText(typographyCss),
           }}

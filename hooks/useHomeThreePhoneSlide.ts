@@ -127,8 +127,41 @@ export function useHomeThreePhoneSlide(
       touchY = null;
     };
 
+    /*
+     * The slide only exists between the top of the page and the cover point.
+     * A non-passive wheel or touchmove listener makes the browser wait for this
+     * script before it scrolls at all — on a busy phone, every frame of every
+     * swipe — so they are attached only while the page is in that stretch, and
+     * the rest of the page scrolls without waiting. The cover point is noted
+     * whenever the page changes size, with a screen of slack so a late shift
+     * above the story never leaves the stretch unguarded; the handlers still
+     * read it fresh.
+     */
+    let blocking = false;
+    let cover = coverAt();
+    const block = (on: boolean) => {
+      if (on === blocking) return;
+      blocking = on;
+      if (on) {
+        window.addEventListener("wheel", onWheel, { passive: false });
+        window.addEventListener("touchmove", onTouchMove, { passive: false });
+      } else {
+        window.removeEventListener("wheel", onWheel);
+        window.removeEventListener("touchmove", onTouchMove);
+      }
+    };
+    const syncBlocking = () =>
+      block(sliding || (active() && window.scrollY <= cover + window.innerHeight));
+    const remeasure = () => {
+      cover = coverAt();
+      syncBlocking();
+    };
+    const sizeWatch = new ResizeObserver(remeasure);
+    sizeWatch.observe(document.body);
+
     /* keyboard, scrollbar or leftover momentum: settle whichever way it was going */
     const onScroll = () => {
+      syncBlocking();
       if (!active() || sliding) return;
       const y = window.scrollY;
       if (y !== lastY) direction = y > lastY ? 1 : -1;
@@ -142,9 +175,10 @@ export function useHomeThreePhoneSlide(
       }, SETTLE_DELAY);
     };
 
-    window.addEventListener("wheel", onWheel, { passive: false });
+    syncBlocking();
+    phone.addEventListener("change", syncBlocking);
+    reduced.addEventListener("change", syncBlocking);
     window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -152,9 +186,11 @@ export function useHomeThreePhoneSlide(
     return () => {
       cancelAnimationFrame(frame);
       window.clearTimeout(settleId);
-      window.removeEventListener("wheel", onWheel);
+      block(false);
+      sizeWatch.disconnect();
+      phone.removeEventListener("change", syncBlocking);
+      reduced.removeEventListener("change", syncBlocking);
       window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);
       window.removeEventListener("scroll", onScroll);

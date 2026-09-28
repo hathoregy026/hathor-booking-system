@@ -24,7 +24,6 @@
 .public-site button.btn-secondary,
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
-.public-site .public-btn-dark,
 .public-site .public-fab__book,
 .public-site .cruise-filter--cta,
 .venetian-page a.btn:not(.hero-cta),
@@ -48,7 +47,6 @@
 .public-site .btn:not(.hero-cta)::before,
 .public-site .public-btn-gold::before,
 .public-site .public-btn-outline-gold::before,
-.public-site .public-btn-dark::before,
 .public-site .public-fab__book::before,
 .public-site .cruise-filter--cta::before,
 .venetian-page a.btn:not(.hero-cta)::before,
@@ -91,7 +89,6 @@
 .public-site .btn:not(.hero-cta):hover::before,
 .public-site .public-btn-gold:hover::before,
 .public-site .public-btn-outline-gold:hover::before,
-.public-site .public-btn-dark:hover::before,
 .public-site .public-fab__book:hover::before,
 .public-site .cruise-filter--cta:hover::before,
 .venetian-page a.btn:not(.hero-cta):hover::before,
@@ -103,7 +100,6 @@
 .public-site .btn:not(.hero-cta):focus-visible::before,
 .public-site .public-btn-gold:focus-visible::before,
 .public-site .public-btn-outline-gold:focus-visible::before,
-.public-site .public-btn-dark:focus-visible::before,
 .public-site .public-fab__book:focus-visible::before,
 .public-site .cruise-filter--cta:focus-visible::before,
 .venetian-page a.btn:not(.hero-cta):focus-visible::before,
@@ -123,7 +119,6 @@
 .public-site .btn:not(.hero-cta)::after,
 .public-site .public-btn-gold::after,
 .public-site .public-btn-outline-gold::after,
-.public-site .public-btn-dark::after,
 .public-site .public-fab__book::after,
 .public-site .cruise-filter--cta::after,
 .venetian-page a.btn:not(.hero-cta)::after,
@@ -155,7 +150,6 @@
 .public-site .btn:not(.hero-cta):hover::after,
 .public-site .public-btn-gold:hover::after,
 .public-site .public-btn-outline-gold:hover::after,
-.public-site .public-btn-dark:hover::after,
 .public-site .public-fab__book:hover::after,
 .public-site .cruise-filter--cta:hover::after,
 .venetian-page a.btn:not(.hero-cta):hover::after,
@@ -167,7 +161,6 @@
 .public-site .btn:not(.hero-cta):focus-visible::after,
 .public-site .public-btn-gold:focus-visible::after,
 .public-site .public-btn-outline-gold:focus-visible::after,
-.public-site .public-btn-dark:focus-visible::after,
 .public-site .public-fab__book:focus-visible::after,
 .public-site .cruise-filter--cta:focus-visible::after,
 .venetian-page a.btn:not(.hero-cta):focus-visible::after,
@@ -186,7 +179,6 @@
 .public-site .btn:not(.hero-cta)::after,
 .public-site .public-btn-gold::after,
 .public-site .public-btn-outline-gold::after,
-.public-site .public-btn-dark::after,
 .public-site .public-fab__book::after,
 .public-site .cruise-filter--cta::after,
 .venetian-page a.btn:not(.hero-cta)::after,
@@ -201,7 +193,6 @@
 .public-site .btn:not(.hero-cta) > *,
 .public-site .public-btn-gold > *,
 .public-site .public-btn-outline-gold > *,
-.public-site .public-btn-dark > *,
 .public-site .public-fab__book > *,
 .public-site .cruise-filter--cta > *,
 .venetian-page a.btn:not(.hero-cta) > *,
@@ -233,7 +224,6 @@
   .public-site .btn:not(.hero-cta):hover::before,
   .public-site .public-btn-gold:hover::before,
   .public-site .public-btn-outline-gold:hover::before,
-  .public-site .public-btn-dark:hover::before,
   .public-site .public-fab__book:hover::before,
   .public-site .cruise-filter--cta:hover::before,
   .venetian-page a.btn:not(.hero-cta):hover::before,
@@ -245,7 +235,6 @@
   .public-site .btn:not(.hero-cta):focus-visible::before,
   .public-site .public-btn-gold:focus-visible::before,
   .public-site .public-btn-outline-gold:focus-visible::before,
-  .public-site .public-btn-dark:focus-visible::before,
   .public-site .public-fab__book:focus-visible::before,
   .public-site .cruise-filter--cta:focus-visible::before,
   .venetian-page a.btn:not(.hero-cta):focus-visible::before,
@@ -269,7 +258,6 @@
 .public-site button.btn:not(.hero-cta),
 .public-site .public-btn-gold,
 .public-site .public-btn-outline-gold,
-.public-site .public-btn-dark,
 .public-site .public-fab__book,
 .public-site .public-fab__book-text {
   color: var(--hathor-btn-label, #746235);
@@ -299,7 +287,6 @@
 .public-site button.btn:not(.hero-cta):hover,
 .public-site .public-btn-gold:hover,
 .public-site .public-btn-outline-gold:hover,
-.public-site .public-btn-dark:hover,
 .public-site .public-fab__book:hover,
 .public-site .public-fab__book:hover .public-fab__book-text,
 .public-site .public-fab__chat-main:hover,
@@ -332,8 +319,7 @@
 .public-site .btn-primary:disabled,
 .public-site .btn-secondary:disabled,
 .public-site .public-btn-gold:disabled,
-.public-site .public-btn-outline-gold:disabled,
-.public-site .public-btn-dark:disabled {
+.public-site .public-btn-outline-gold:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
@@ -344,8 +330,7 @@
 .public-site .btn-primary:disabled:hover,
 .public-site .btn-secondary:disabled:hover,
 .public-site .public-btn-gold:disabled:hover,
-.public-site .public-btn-outline-gold:disabled:hover,
-.public-site .public-btn-dark:disabled:hover {
+.public-site .public-btn-outline-gold:disabled:hover {
   transform: none;
   box-shadow: none;
 }
@@ -354,8 +339,7 @@
 .public-site button.btn:disabled::before,
 .public-site .btn:disabled::before,
 .public-site .public-btn-gold:disabled::before,
-.public-site .public-btn-outline-gold:disabled::before,
-.public-site .public-btn-dark:disabled::before {
+.public-site .public-btn-outline-gold:disabled::before {
   opacity: 0 !important;
   animation: none !important;
 }

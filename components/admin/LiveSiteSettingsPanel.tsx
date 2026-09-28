@@ -8,9 +8,9 @@ import { adminFetch } from "@/lib/admin-fetch";
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
   isLiveSiteSettingsEqual,
-  parseLiveSiteSettings,
   type LiveSiteSettings,
 } from "@/lib/live-site-settings-shared";
+import { parseLiveSiteSettings } from "@/lib/live-site-settings-schema";
 
 async function readAdminError(
   response: Response,

@@ -603,10 +603,6 @@
   }
 
   /* Carousel prev / next chevrons. */
-  html[data-ex-experience] .home-carousel .carousel-nav button {
-    min-width: 44px;
-    min-height: 44px;
-  }
 
   /*
    * Header brand mark — 38x38. Its size IS the design, so the box is left
@@ -1080,10 +1076,6 @@
     letter-spacing: 0.06em;
     line-height: 1.15;
   }
-
-  html[data-ex-experience] .carousel-nav {
-    margin-top: clamp(18px, 3vw, 24px);
-  }
 }
 
 @media (min-width: 768px) and (max-width: 1024.98px) {
@@ -1106,11 +1098,6 @@
   html[data-ex-experience] .carousel-container {
     height: clamp(320px, 54vh, 440px);
   }
-
-  html[data-ex-experience] .services-cta {
-    margin-top: clamp(24px, 5vw, 32px);
-    padding-inline: clamp(14px, 4vw, 20px);
-  }
 }
 
 /* ==========================================================================
@@ -1126,10 +1113,6 @@
     height: 380svh;
   }
 
-  html[data-ex-experience] .home-helm-portal {
-    height: 300svh;
-  }
-
   html[data-ex-experience] .ex-stack-scroll {
     height: var(--stack-runway-vh, 400svh) !important;
   }
@@ -1140,10 +1123,6 @@
     height: 340svh;
   }
 
-  html[data-ex-experience] .home-helm-portal {
-    height: 280svh;
-  }
-
   html[data-ex-experience] .ex-stack-scroll {
     height: var(--stack-runway-vh, 360svh) !important;
   }
@@ -1152,14 +1131,6 @@
 @media (max-width: 480px) {
   html[data-ex-experience] .hcta-track {
     height: 300svh;
-  }
-
-  html[data-ex-experience] .home-helm-portal {
-    height: 240svh;
-  }
-
-  html[data-ex-experience] .home-helm-portal__wheel {
-    width: min(78vw, 46svh, 360px);
   }
 
   html[data-ex-experience] .ex-stack-scroll {
@@ -1230,31 +1201,7 @@
   }
 }
 
-@media (max-width: 767.98px) {
-  html[data-ex-experience] .gallery-marquee {
-    --gallery-card: clamp(260px, 78vw, 360px);
-    --gallery-gap: 12px;
-    margin-bottom: clamp(48px, 8vw, 64px);
-  }
-
-  html[data-ex-experience] .gallery-item {
-    height: clamp(220px, 58vw, 300px);
-  }
-
-  html[data-ex-experience] .testimonials-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-}
-
 @media (max-width: 480px) {
-  html[data-ex-experience] .gallery-marquee {
-    --gallery-card: clamp(240px, 84vw, 320px);
-  }
-
-  html[data-ex-experience] .gallery-item {
-    height: clamp(200px, 54vw, 280px);
-  }
 
   html[data-ex-experience] .instagram-follow {
     margin-top: 0.85rem;
@@ -1358,9 +1305,7 @@
     text-align: left;
   }
 
-  html[data-ex-experience] .carousel-slide__hit,
-  html[data-ex-experience] .testimonial-card,
-  html[data-ex-experience] .gallery-item {
+  html[data-ex-experience] .testimonial-card {
     -webkit-tap-highlight-color: transparent;
   }
 }

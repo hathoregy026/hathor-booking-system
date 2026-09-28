@@ -14,9 +14,7 @@ html {
 
 @media (pointer: coarse) {
   .lux-cursor,
-  .custom-cursor,
-  .cursor-dot,
-  .cursor-follower {
+  .custom-cursor {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -129,12 +127,6 @@ body.is-touch-device .lux-cursor {
     pointer-events: none !important;
   }
 
-  .home-hero-container .blind-strip-v--mobile {
-    display: block !important;
-    backface-visibility: hidden;
-    will-change: transform, opacity;
-  }
-
   /* Kill dashboard X/Y offsets that shove titles off narrow frames */
   .public-site .hathor-page-hero__title,
   .public-site .hathor-page-hero__subtitle,
@@ -166,7 +158,6 @@ body.is-touch-device .lux-cursor {
     line-height: 1.5 !important;
   }
 
-  .public-site .hathor-page-hero__content,
   .public-site .pt-hero__copy {
     padding-left: var(--content-gutter, 20px) !important;
     padding-right: var(--content-gutter, 20px) !important;
@@ -175,7 +166,6 @@ body.is-touch-device .lux-cursor {
 
   /* Hide scroll hint on tablet only — phones restore a refined cue below */
   .public-site .hero-scroll-hint,
-  .public-site .scroll-hint,
   .public-site [data-hero-scroll-hint] {
     display: none !important;
   }
@@ -197,8 +187,7 @@ body.is-touch-device .lux-cursor {
 
   .public-site .section-inner,
   .public-site .public-page-body,
-  .public-site .hathor-editorial,
-  .public-site .content-shell {
+  .public-site .hathor-editorial {
     padding-left: max(var(--content-gutter, 20px), env(safe-area-inset-left));
     padding-right: max(var(--content-gutter, 20px), env(safe-area-inset-right));
     box-sizing: border-box;
@@ -217,7 +206,6 @@ body.is-touch-device .lux-cursor {
   .public-site .hero-cta,
   .public-site .hathor-header__menu-btn,
   .public-site .hathor-explore a,
-  .public-site .carousel-nav button,
   .public-site [data-carousel-prev],
   .public-site [data-carousel-next],
   .public-site .ab-btn,
@@ -225,14 +213,11 @@ body.is-touch-device .lux-cursor {
   .public-site .ar-btn,
   .public-site .ce-btn,
   .public-site .chr-btn,
-  .public-site .h2-btn,
-  .public-site .hep-button,
   .public-site .hl-btn,
   .public-site .jn-btn,
   .public-site .mr-btn,
   .public-site .pn-btn,
   .public-site .room-pill,
-  .public-site .sn-btn,
   .public-site .we-btn,
   .public-site .contact-success-popup__again {
     min-height: 44px;
@@ -247,7 +232,6 @@ body.is-touch-device .lux-cursor {
   .booking-page input,
   .booking-page textarea,
   .booking-page select,
-  .booking-page .booking-input,
   .booking-page .booking-widget-select,
   .booking-modal input,
   .booking-modal textarea,
@@ -260,7 +244,6 @@ body.is-touch-device .lux-cursor {
   .booking-page button,
   .booking-page [role="button"],
   .booking-page .booking-search-mode__button,
-  .booking-page .booking-btn,
   .booking-page .booking-btn-outline {
     min-height: 44px;
     touch-action: manipulation;
@@ -282,9 +265,7 @@ body.is-touch-device .lux-cursor {
     --content-gutter: 16px;
   }
 
-  .public-site .hathor-editorial__grid,
-  .public-site .hathor-stats-grid,
-  .public-site .testimonials-grid {
+  .public-site .hathor-editorial__grid {
     grid-template-columns: 1fr !important;
   }
 
@@ -392,11 +373,6 @@ body.is-touch-device .lux-cursor {
     filter: none !important;
   }
 
-  .public-site .hathor-lux-text,
-  .public-site .hathor-lux-text--in {
-    filter: none !important;
-  }
-
   @keyframes hathor-lux-text-land {
     from {
       opacity: 0;
@@ -416,7 +392,6 @@ body.is-touch-device .lux-cursor {
     -webkit-backdrop-filter: blur(3px);
   }
 
-  .public-mobile-nav__backdrop,
   .sm-backdrop {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -451,8 +426,7 @@ body.is-touch-device .lux-cursor {
 
   /* Fully remove gold blinds layer — video shows immediately */
   .home-hero-container .home-hero-cover,
-  .home-hero-container .blind-strip-v,
-  .home-hero-container .blind-strip-v--mobile {
+  .home-hero-container .blind-strip-v {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -803,7 +777,6 @@ body.is-touch-device .lux-cursor {
 
 @media (max-width: 480px) and (hover: none) {
   .public-site .media-hover:hover,
-  .public-site .lux-card:hover,
   .public-site .lux-cruise-card:hover,
   .public-site .cruise-card:hover,
   .public-site button:hover,
@@ -839,9 +812,5 @@ body.is-touch-device .lux-cursor {
 @media (min-width: 769px) and (max-width: 1024px) {
   .public-site {
     --content-gutter: 28px;
-  }
-
-  .public-site .testimonials-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }

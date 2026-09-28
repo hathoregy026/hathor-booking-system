@@ -12,16 +12,23 @@ import "../site-coming-soon.css";
 import "../button-system.css";
 import "../nav-controls.css";
 
+/*
+ * preload: false — the production build packs these font rules into a CSS file
+ * the public pages share, so a preload here was fetched on every public page.
+ * They still load wherever this layout's text uses them.
+ */
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-booking-serif",
   weight: ["400", "500", "600", "700"],
+  preload: false,
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-booking-sans",
   weight: ["300", "400", "500", "600", "700"],
+  preload: false,
 });
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Public navbar control geometry, matched to the supplied desktop and phone
  * references. This file is intentionally loaded after the legacy navbar CSS.
  */
@@ -256,14 +256,6 @@
   color: #fff !important;
 }
 
-.public-theme-toggle__glyph:not(#_) {
-  display: none !important;
-}
-
-.public-lang-toggle__phone-label {
-  display: none;
-}
-
 /* Keep the reference cluster compact and evenly centred. */
 .hathor-header__col--right:not(#_) {
   display: flex !important;
@@ -456,28 +448,6 @@
   .public-lang-toggle:not(#_) .public-theme-toggle__icon:not(#_) {
     width: 2.15rem !important;
     height: 2.15rem !important;
-  }
-
-  .public-lang-toggle__phone-label {
-    position: absolute;
-    top: 0.35rem;
-    right: -0.05rem;
-    z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.1rem;
-    height: 0.75rem;
-    padding: 0 0.2rem;
-    border-radius: 999px;
-    background: var(--nav-control-ink);
-    color: #fff;
-    font-family: var(--public-sans, var(--font-hathor-body, inherit));
-    font-size: 0.43rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    pointer-events: none;
   }
 }
 

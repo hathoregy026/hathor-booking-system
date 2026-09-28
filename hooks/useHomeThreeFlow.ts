@@ -96,6 +96,28 @@ export function useHomeThreeFlow({
     });
 
     /*
+     * Every frame measures first and writes last. Setting a scene's variables
+     * between two measurements made the browser recompute style and layout
+     * once per element, every frame of a scroll — the cost slower phones felt
+     * as a heavy page. Writes are queued while the frame measures and applied
+     * together at its end, and a value that has not changed since the last
+     * frame is never written again, so the scenes off screen cost nothing.
+     */
+    const written = new WeakMap<HTMLElement, Map<string, string>>();
+    const queued: [HTMLElement, string, string][] = [];
+    const setVar = (el: HTMLElement, prop: string, value: string) => {
+      let props = written.get(el);
+      if (!props) written.set(el, (props = new Map()));
+      if (props.get(prop) === value) return;
+      props.set(prop, value);
+      queued.push([el, prop, value]);
+    };
+    const flushVars = () => {
+      for (const [el, prop, value] of queued) el.style.setProperty(prop, value);
+      queued.length = 0;
+    };
+
+    /*
      * Native lazy-loading never fires inside this act. The track is one long
      * strip translated on X, so every scene past the first sits outside the
      * viewport at a position the lazy loader treats as permanently off-screen
@@ -318,13 +340,18 @@ export function useHomeThreeFlow({
     const totalKm = Number(chart?.dataset.h3TotalKm || "0");
     const courseLen = course ? course.getTotalLength() : 0;
     let shownBerth = -1;
+    let pressedTag = -1;
+    let paintedProgress = -1;
     let manual: number | null = null;
     let previousScroll = window.scrollY;
+    if (course && courseLen) course.style.strokeDasharray = String(courseLen);
 
     const paintChart = (p: number) => {
       if (!course || !courseLen) return;
       const progress = manual ?? p;
-      course.style.strokeDasharray = String(courseLen);
+      /* three path lookups and a dozen writes: only when Hathor has moved */
+      if (progress === paintedProgress) return;
+      paintedProgress = progress;
       course.style.strokeDashoffset = String(courseLen * (1 - progress));
 
       const at = courseLen * progress;
@@ -368,9 +395,13 @@ export function useHomeThreeFlow({
         marks[i]?.classList.toggle("is-on", reached);
         if (reached) active = i;
       });
-      tags.forEach((tag, i) => {
-        tag.setAttribute("aria-pressed", String(i === Math.max(0, active)));
-      });
+      const pressed = Math.max(0, active);
+      if (pressed !== pressedTag) {
+        pressedTag = pressed;
+        tags.forEach((tag, i) => {
+          tag.setAttribute("aria-pressed", String(i === pressed));
+        });
+      }
       if (active !== shownBerth) {
         shownBerth = active;
         berths.forEach((b, i) => b.classList.toggle("is-on", i === active));
@@ -411,10 +442,11 @@ export function useHomeThreeFlow({
     const applyFlips = (mode: "horizontal" | "vertical") => {
       flips.forEach((el) => {
         if (reduced.matches) {
-          el.style.setProperty("--h3-flip", "1");
+          setVar(el, "--h3-flip", "1");
           return;
         }
-        el.style.setProperty(
+        setVar(
+          el,
           "--h3-flip",
           editorialFlipProgress(
             el.getBoundingClientRect(),
@@ -438,7 +470,7 @@ export function useHomeThreeFlow({
         mode === "horizontal" ? window.innerWidth : window.innerHeight;
       medias.forEach((el) => {
         if (reduced.matches) {
-          el.style.setProperty("--transY", "50%");
+          setVar(el, "--transY", "50%");
           return;
         }
         const rect = el.getBoundingClientRect();
@@ -447,7 +479,7 @@ export function useHomeThreeFlow({
         const p = clamp(
           (viewport * 0.95 - start) / Math.max(1, viewport * 0.85 + size),
         );
-        el.style.setProperty("--transY", `${(100 - p * 100).toFixed(2)}%`);
+        setVar(el, "--transY", `${(100 - p * 100).toFixed(2)}%`);
       });
     };
 
@@ -475,11 +507,12 @@ export function useHomeThreeFlow({
         const span = 1 / (group.length + 0.6);
         group.forEach((el, i) => {
           if (reduced.matches) {
-            el.style.setProperty("--item", "1");
+            setVar(el, "--item", "1");
             return;
           }
           const peak = (i + 0.9) * span;
-          el.style.setProperty(
+          setVar(
+            el,
             "--item",
             (1 - clamp(Math.abs(q - peak) / (span * 1.15))).toFixed(4),
           );
@@ -555,16 +588,17 @@ export function useHomeThreeFlow({
         );
         const parallax = clamp((viewport - left) / Math.max(1, viewport + width));
         const focus = Math.sin(parallax * Math.PI);
-        scene.style.setProperty("--reveal", enter.toFixed(4));
-        scene.style.setProperty("--parallax", parallax.toFixed(4));
-        scene.style.setProperty("--scene-progress", parallax.toFixed(4));
-        scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
+        setVar(scene, "--reveal", enter.toFixed(4));
+        setVar(scene, "--parallax", parallax.toFixed(4));
+        setVar(scene, "--scene-progress", parallax.toFixed(4));
+        setVar(scene, "--focus", Math.max(0, focus).toFixed(4));
         if (enter > 0.02) primeScene(scene);
       });
       applyFlips("horizontal");
       applyMedia("horizontal");
       applyItems("horizontal");
       applyChart("horizontal", held);
+      flushVars();
     };
 
     const applyVerticalVars = () => {
@@ -575,15 +609,16 @@ export function useHomeThreeFlow({
           (viewport - rect.top) / Math.max(1, viewport + rect.height),
         );
         const focus = Math.sin(progress * Math.PI);
-        scene.style.setProperty("--reveal", clamp(progress * 1.8).toFixed(4));
-        scene.style.setProperty("--parallax", progress.toFixed(4));
-        scene.style.setProperty("--scene-progress", progress.toFixed(4));
-        scene.style.setProperty("--focus", Math.max(0, focus).toFixed(4));
+        setVar(scene, "--reveal", clamp(progress * 1.8).toFixed(4));
+        setVar(scene, "--parallax", progress.toFixed(4));
+        setVar(scene, "--scene-progress", progress.toFixed(4));
+        setVar(scene, "--focus", Math.max(0, focus).toFixed(4));
       });
       applyFlips("vertical");
       applyMedia("vertical");
       applyItems("vertical");
       applyChart("vertical");
+      flushVars();
     };
 
     /* The vertical document repaints at most once per frame, however many
@@ -674,6 +709,8 @@ export function useHomeThreeFlow({
         act.x = p * act.travel;
         act.held = held;
         act.track.style.transform = `translate3d(${-act.x}px,0,0)`;
+      });
+      acts.forEach((act) => {
         /* Once a stage unpins, the scroll that moves it is carried onto the
            travel axis, so reveals, wipes and parallax inside it keep going on
            the new axis instead of freezing where the travel stopped. */
@@ -698,10 +735,11 @@ export function useHomeThreeFlow({
           );
           parallax = clamp((height - rect.top) / Math.max(1, height + rect.height));
         }
-        scene.style.setProperty("--reveal", enter.toFixed(4));
-        scene.style.setProperty("--parallax", parallax.toFixed(4));
-        scene.style.setProperty("--scene-progress", parallax.toFixed(4));
-        scene.style.setProperty(
+        setVar(scene, "--reveal", enter.toFixed(4));
+        setVar(scene, "--parallax", parallax.toFixed(4));
+        setVar(scene, "--scene-progress", parallax.toFixed(4));
+        setVar(
+          scene,
           "--focus",
           Math.max(0, Math.sin(parallax * Math.PI)).toFixed(4),
         );
@@ -719,7 +757,7 @@ export function useHomeThreeFlow({
               anchor,
             )
           : editorialFlipProgress(rect, "vertical", anchor);
-        el.style.setProperty("--h3-flip", progress.toFixed(4));
+        setVar(el, "--h3-flip", progress.toFixed(4));
       });
 
       medias.forEach((el) => {
@@ -731,7 +769,7 @@ export function useHomeThreeFlow({
         const p = clamp(
           (viewport * 0.95 - start) / Math.max(1, viewport * 0.85 + size),
         );
-        el.style.setProperty("--transY", `${(100 - p * 100).toFixed(2)}%`);
+        setVar(el, "--transY", `${(100 - p * 100).toFixed(2)}%`);
       });
 
       /* each card crossfades with its neighbour between their two peaks, so
@@ -751,12 +789,13 @@ export function useHomeThreeFlow({
             value =
               i === last ? 1 : 1 - (at - peak) / Math.max(1, peaks[i + 1] - peak);
           }
-          el.style.setProperty("--item", clamp(value).toFixed(4));
+          setVar(el, "--item", clamp(value).toFixed(4));
         });
       });
 
       const chartAct = chartPanel ? actOf.get(chartPanel) : undefined;
       applyChart(chartAct ? "horizontal" : "vertical", chartAct ? chartAct.held : -1);
+      flushVars();
 
       /* one line for the whole horizontal story: it fills through the route,
          waits through the pause, and finishes on the suites wall */

@@ -6,19 +6,21 @@ import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
   DEFAULT_LIVE_SITE_SETTINGS,
   LIVE_SITE_SETTINGS_KEY,
-  liveSiteSettingsSchema,
   type LiveSiteSettings,
 } from "@/lib/live-site-settings-shared";
+import { liveSiteSettingsSchema } from "@/lib/live-site-settings-schema";
 import { prisma } from "@/lib/prisma";
 
 export {
   DEFAULT_LIVE_SITE_SETTINGS,
   LIVE_SITE_SETTINGS_KEY,
-  parseLiveSiteSettings,
-  liveSiteSettingsSchema,
   isLiveSiteSettingsEqual,
   type LiveSiteSettings,
 } from "@/lib/live-site-settings-shared";
+export {
+  parseLiveSiteSettings,
+  liveSiteSettingsSchema,
+} from "@/lib/live-site-settings-schema";
 
 async function writeSettingsViaSql(payload: string): Promise<void> {
   const pool = getSharedPgPool(resolveDatabaseUrl());
