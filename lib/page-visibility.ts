@@ -6,9 +6,9 @@ import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import {
   DEFAULT_PAGE_VISIBILITY_SETTINGS,
   PAGE_VISIBILITY_KEY,
-  pageVisibilitySettingsSchema,
   type PageVisibilitySettings,
 } from "@/lib/page-visibility-shared";
+import { pageVisibilitySettingsSchema } from "@/lib/page-visibility-schema";
 import { prisma } from "@/lib/prisma";
 
 export {
@@ -19,14 +19,16 @@ export {
   isPageLive,
   isPageVisibilitySettingsEqual,
   normalizePublicPath,
-  parsePageVisibilitySettings,
   resolveManagedPublicPage,
-  pageVisibilitySettingsSchema,
   type ManagedPublicPage,
   type ManagedPublicPageId,
   type PageVisibilityMap,
   type PageVisibilitySettings,
 } from "@/lib/page-visibility-shared";
+export {
+  parsePageVisibilitySettings,
+  pageVisibilitySettingsSchema,
+} from "@/lib/page-visibility-schema";
 
 async function writeSettingsViaSql(payload: string): Promise<void> {
   const pool = getSharedPgPool(resolveDatabaseUrl());

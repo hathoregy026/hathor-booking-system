@@ -8,7 +8,8 @@ import { prisma } from "@/lib/prisma";
 import { PublicRequestError, readPublicJsonBody } from "@/lib/public-api-security";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 import { loadShipExperience, SHIP_EXPERIENCE_KEY } from "@/lib/ship-experience";
-import { SHIP_ROOM_IDS, shipExperienceSchema } from "@/lib/ship-experience-shared";
+import { SHIP_ROOM_IDS } from "@/lib/ship-experience-shared";
+import { shipExperienceSchema } from "@/lib/ship-experience-schema";
 import { PHYSICAL_ROOM_TYPES, roomCapacity } from "@/lib/physical-inventory";
 
 export const dynamic = "force-dynamic";

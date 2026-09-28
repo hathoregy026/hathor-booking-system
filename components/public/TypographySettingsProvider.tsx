@@ -12,7 +12,6 @@ import { combineDesktopAndPhoneCss } from "@/lib/admin-device-preview";
 import { useIsPhoneViewport } from "@/hooks/useIsPhoneViewport";
 import {
   DEFAULT_TYPOGRAPHY_SETTINGS,
-  parseTypographySettings,
   typographyToImportantCss,
   typographyToInlineStyle,
   type TypographyRole,
@@ -94,6 +93,10 @@ export function TypographySettingsProvider({
           settings?: unknown;
           settingsMobile?: unknown;
         };
+        /* the parser (and zod) load only for this preview, never with the page */
+        const { parseTypographySettings } = await import(
+          "@/lib/typography-settings-schema"
+        );
         if (cancelled) return;
         const next = parseTypographySettings(data.settings);
         const nextMobile = data.settingsMobile

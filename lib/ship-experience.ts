@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import {
   DEFAULT_SHIP_EXPERIENCE,
-  parseShipExperience,
   SHIP_ROOM_IDS,
   type ShipExperienceConfig,
 } from "@/lib/ship-experience-shared";
+import { parseShipExperience } from "@/lib/ship-experience-schema";
 
 export const SHIP_EXPERIENCE_KEY = "ship-experience-v1";
 

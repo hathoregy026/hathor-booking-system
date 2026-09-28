@@ -8,10 +8,10 @@ import {
   defaultPageVisibilityMap,
   getManagedPageGroups,
   isPageVisibilitySettingsEqual,
-  parsePageVisibilitySettings,
   type ManagedPublicPageId,
   type PageVisibilitySettings,
 } from "@/lib/page-visibility-shared";
+import { parsePageVisibilitySettings } from "@/lib/page-visibility-schema";
 
 async function readAdminError(
   response: Response,

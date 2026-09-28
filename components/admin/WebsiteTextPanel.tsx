@@ -22,10 +22,10 @@ import {
   resolvePageStyle,
   type HeroPageKey,
   type PageStyleRole,
-  parseTypographySettings,
   type TypographySettings,
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
+import { parseTypographySettings } from "@/lib/typography-settings-schema";
 import { WebsiteTextStyleBar } from "@/components/admin/WebsiteTextStyleBar";
 
 type PageId = (typeof WEBSITE_TEXT_NAV)[number]["id"];

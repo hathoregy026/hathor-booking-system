@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { typographyTextStyleSchema } from "@/lib/typography-settings-shared";
+import { typographyTextStyleSchema } from "@/lib/typography-settings-schema";
 
 export const gastronomyTypographySchema = z.object({
   display: typographyTextStyleSchema,

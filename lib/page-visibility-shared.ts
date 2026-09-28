@@ -1,4 +1,3 @@
-import { z } from "zod";
 
 export const PAGE_VISIBILITY_KEY = "page-visibility";
 
@@ -86,16 +85,10 @@ export type PageVisibilitySettings = {
   pages: PageVisibilityMap;
 };
 
-const pageIdSchema = z.enum(
-  MANAGED_PUBLIC_PAGES.map((page) => page.id) as [
-    ManagedPublicPageId,
-    ...ManagedPublicPageId[],
-  ],
-);
-
-export const pageVisibilitySettingsSchema = z.object({
-  pages: z.record(pageIdSchema, z.boolean()),
-});
+/*
+ * Validation (zod) lives in `page-visibility-schema.ts`, which only the server
+ * and the dashboard load — this file is also part of every public page.
+ */
 
 export function defaultPageVisibilityMap(): PageVisibilityMap {
   return Object.fromEntries(
@@ -151,29 +144,6 @@ export function resolveManagedPublicPage(
   }
 
   return null;
-}
-
-export function parsePageVisibilitySettings(
-  raw: unknown,
-): PageVisibilitySettings {
-  const defaults = defaultPageVisibilityMap();
-  const src =
-    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
-  const pagesRaw =
-    src.pages && typeof src.pages === "object"
-      ? (src.pages as Record<string, unknown>)
-      : {};
-
-  const pages = { ...defaults };
-  for (const page of MANAGED_PUBLIC_PAGES) {
-    const value = pagesRaw[page.id];
-    if (typeof value === "boolean") {
-      pages[page.id] = value;
-    }
-  }
-
-  const parsed = pageVisibilitySettingsSchema.safeParse({ pages });
-  return parsed.success ? parsed.data : DEFAULT_PAGE_VISIBILITY_SETTINGS;
 }
 
 export function isPageVisibilitySettingsEqual(
