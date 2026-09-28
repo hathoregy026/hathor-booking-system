@@ -97,21 +97,21 @@ export const EX_PINNED = {
       body: "A five-star Dahabiya where Nile history, contemporary comfort and intimate sailing come together.",
     },
     {
-      imageName: "home-amenities-2" as SiteImageName,
+      imageName: "home-amenities-1" as SiteImageName,
       alt: "Hathor Dahabiya on the Nile",
       title: "WHERE TIME\nMOVES GENTLY.",
       indication: "Private Nile Sailing",
       body: "Glide between Luxor and Aswan, soft light on the water, Egypt unfolding at a gracious pace.",
     },
     {
-      imageName: "home-amenities-3" as SiteImageName,
+      imageName: "home-amenities-1" as SiteImageName,
       alt: "Luxury Dahabiya Nile cruise",
       title: "WHERE HISTORY\nMEETS ELEGANCE",
       indication: "Bar Hathor",
       body: "With a limited number of cabins and suites, service remains personal, discreet and responsive throughout the journey.",
     },
     {
-      imageName: "home-amenities-4" as SiteImageName,
+      imageName: "home-amenities-1" as SiteImageName,
       alt: "Hathor Dahabiya ship on the Nile at golden hour",
       title: "GOLDEN HOUR\nON THE NILE.",
       indication: "History · Comfort · Style",
@@ -125,7 +125,7 @@ export const EX_TEXT_BLOCKS = [
     title: HOMEPAGE_LIFESTYLE.title,
     body: HOMEPAGE_LIFESTYLE.body,
     /** Text only — photo is amenities slot 6 / card 9. */
-    imageName: "home-amenities-6" as SiteImageName,
+    imageName: "home-amenities-1" as SiteImageName,
     alt: "Guests enjoying a Nile sunset moment aboard Hathor Dahabiya",
     cta: "Discover More",
     href: "/about",
@@ -134,7 +134,7 @@ export const EX_TEXT_BLOCKS = [
     title: HOMEPAGE_DINING.title,
     body: HOMEPAGE_DINING.body,
     /** Text only — photo is amenities slot 7 / card 10. */
-    imageName: "home-amenities-7" as SiteImageName,
+    imageName: "home-amenities-13" as SiteImageName,
     alt: "Fine dining aboard Hathor Dahabiya",
     cta: "Explore Dining",
     href: "/gastronomy",
@@ -145,12 +145,12 @@ export const EX_GALLERY = {
   title: "Sail with Hathor",
   images: [
     {
-      imageName: "moving-tilted-1" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Luxury lounge aboard Hathor",
       href: "/about",
     },
     {
-      imageName: "moving-tilted-2" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Nile cruise highlights",
       href: "/highlights",
     },
@@ -160,12 +160,12 @@ export const EX_GALLERY = {
       href: "/gastronomy",
     },
     {
-      imageName: "moving-tilted-4" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Wellness aboard Hathor",
       href: "/wellness",
     },
     {
-      imageName: "moving-tilted-5" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Suite interior aboard Hathor",
       href: "/suites",
     },
@@ -177,19 +177,19 @@ export const EX_GALLERY = {
   /** Dedicated Floating IG slots — editable under Admin → Floating IG images */
   followPreviews: [
     {
-      imageName: "floating-ig-1" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Hathor Instagram lounge",
     },
     {
-      imageName: "floating-ig-2" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Hathor Instagram Nile highlights",
     },
     {
-      imageName: "floating-ig-3" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Hathor Instagram dining",
     },
     {
-      imageName: "floating-ig-4" as SiteImageName,
+      imageName: "moving-tilted-3" as SiteImageName,
       alt: "Hathor Instagram suite",
     },
   ],

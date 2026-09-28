@@ -33,10 +33,6 @@ const HOMEPAGE_LIVE_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> 
     { name: "home-story-craft-large", label: "About — main photo" },
     { name: "home-call-to-action", label: "Call to action image" },
     {
-      name: "home-wheel-stage",
-      label: "Wheel stage — parchment behind the wheel (before it opens)",
-    },
-    {
       name: "home-wheel-image",
       label: "Wheel reveal — image the wheel opens into",
     },
@@ -81,11 +77,7 @@ const MOVING_TILTED_ADMIN_CARDS: ReadonlyArray<{
   name: string;
   label: string;
 }> = [
-  { name: "moving-tilted-1", label: "Card 1 — Lounge" },
-  { name: "moving-tilted-2", label: "Card 2 — Nile highlights" },
   { name: "moving-tilted-3", label: "Card 3 — Dining" },
-  { name: "moving-tilted-4", label: "Card 4 — Wellness" },
-  { name: "moving-tilted-5", label: "Card 5 — Suite" },
 ];
 
 /**
@@ -129,7 +121,6 @@ const SUITES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> = [
   { name: "scraped-cabin-4", label: "27. Cabin gallery still" },
   { name: "scraped-cabin-7", label: "28. Cabin gallery still" },
   { name: "scraped-cabin-8", label: "29. Cabin gallery still" },
-  { name: "suites-nile-still", label: "30. Nile still" },
 ];
 
 const DINING_PLATES_ADMIN_CARDS: ReadonlyArray<{ name: string; label: string }> =
