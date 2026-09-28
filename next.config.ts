@@ -17,10 +17,10 @@ const CSP_DIRECTIVES = [
   "form-action 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://hathor-booking-system.vercel.app https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com",
-  "media-src 'self' blob: https://*.supabase.co",
+  "img-src 'self' data: blob: https://jgkmiettciwacrpcubil.supabase.co https://images.unsplash.com https://hathor-booking-system.vercel.app https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com",
+  "media-src 'self' blob: https://jgkmiettciwacrpcubil.supabase.co",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
+  "connect-src 'self' https://jgkmiettciwacrpcubil.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
   "worker-src 'self' blob:",
   "frame-src 'self'",
   "manifest-src 'self'",
@@ -85,11 +85,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.supabase.co",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        // Pinned to this project: a wildcard lets anyone run images from their own
+        // Supabase project through this site's paid image optimizer.
+        hostname: "jgkmiettciwacrpcubil.supabase.co",
       },
     ],
   },

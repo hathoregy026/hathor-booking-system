@@ -3,6 +3,7 @@ import { z } from "zod";
 import { handleRouteError } from "@/lib/api";
 import { isSafePublicImageUrl, upsertSiteImagesBulk } from "@/lib/image-management";
 import { revalidateSiteImagePages } from "@/lib/revalidate-site-images";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,9 @@ const bulkSchema = z.object({
 });
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = bulkSchema.parse(await request.json());
     const images = await upsertSiteImagesBulk(body.images);

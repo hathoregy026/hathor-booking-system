@@ -3,7 +3,7 @@ import { handleRouteError } from "@/lib/api";
 import { submitBookingRequest } from "@/lib/booking-engine";
 import { bookingRequestSchema } from "@/lib/booking-request-validation";
 import { verifyBookingAccessToken } from "@/lib/booking-access-token";
-import { assertTrustedPublicJsonRequest, enforcePublicRateLimit, readPublicJsonBody, requireIdempotencyKey, PublicRequestError } from "@/lib/public-api-security";
+import { assertTrustedPublicJsonRequest, enforceKeyedRateLimit, enforcePublicRateLimit, readPublicJsonBody, requireIdempotencyKey, PublicRequestError } from "@/lib/public-api-security";
 import { sendRequestEmails } from "@/lib/booking-guest-mail";
 export const dynamic = "force-dynamic";
 /** Submit a request only. Acceptance and payments are staff operations. */
@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
     const key = requireIdempotencyKey(request);
     const parsed = bookingRequestSchema.parse(await readPublicJsonBody(request));
     if (!verifyBookingAccessToken(parsed.bookingId, parsed.accessToken)) throw new PublicRequestError("Invalid booking authorization", 401);
+    // The request receipt is emailed to the typed-in address: cap per recipient too.
+    await enforceKeyedRateLimit({ scope: "booking-request-recipient", keyValue: parsed.email.toLowerCase(), limit: 5, windowMs: 60 * 60_000, bookingScoped: true });
     const { booking, replay } = await submitBookingRequest(parsed, key);
     if (!replay) {
       try {

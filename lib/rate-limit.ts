@@ -56,10 +56,37 @@ export function resetRateLimit(key: string): void {
   store.delete(key);
 }
 
+/**
+ * Resolve the caller's IP for rate-limiting/abuse-tracking purposes.
+ *
+ * `x-vercel-forwarded-for` is stamped by Vercel's own edge network and is
+ * NOT something a client can set — Vercel strips any client-supplied copy
+ * of this exact header before the request reaches our code. Use it first.
+ *
+ * The generic `x-forwarded-for` header, by contrast, is only "append the
+ * real IP to whatever the client already sent" at most proxies, so the
+ * *first* hop (`split(",")[0]`) is attacker-controlled — a client can send
+ * `X-Forwarded-For: <anything>` and have that value read back as "their"
+ * IP, minting a fresh rate-limit bucket on every request. Off Vercel (e.g.
+ * local dev behind a single reverse proxy) the last hop is the one our own
+ * proxy observed directly, so it is the one to trust.
+ */
 export function getClientIp(request: Request): string {
+  const vercelIp = request.headers.get("x-vercel-forwarded-for");
+  if (vercelIp) {
+    return vercelIp.split(",")[0]?.trim() || "unknown";
+  }
+
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
-    return forwarded.split(",")[0]?.trim() ?? "unknown";
+    const hops = forwarded
+      .split(",")
+      .map((hop) => hop.trim())
+      .filter(Boolean);
+    if (hops.length > 0) {
+      return hops[hops.length - 1];
+    }
   }
+
   return request.headers.get("x-real-ip") ?? "unknown";
 }

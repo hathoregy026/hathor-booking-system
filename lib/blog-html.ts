@@ -26,7 +26,6 @@ const ALLOWED_ATTR = new Set([
   "src",
   "alt",
   "title",
-  "class",
   "target",
   "rel",
 ]);
@@ -62,13 +61,25 @@ const CANONICAL_PATH_ALIASES: Readonly<Record<string, string>> = {
   "/rooms/dahabiya-nile-cruise-luxor-to-aswan": "/voyages/luxor-to-aswan",
 };
 
-function isUnsafeUrl(value: string): boolean {
-  const normalized = value.trim().toLowerCase();
-  return (
-    normalized.startsWith("javascript:") ||
-    normalized.startsWith("data:text/html") ||
-    normalized.startsWith("vbscript:")
-  );
+const SAFE_URL_SCHEMES = new Set(["http:", "https:", "mailto:", "tel:"]);
+
+/**
+ * A blocklist of schemes (javascript:, data:text/html, ...) is not enough:
+ * browsers strip ASCII tab/newline/CR from a URL before parsing its scheme
+ * (per the WHATWG URL spec), so `jav\tascript:` still executes even though
+ * a naive `.startsWith("javascript:")` check does not recognise it. Parsing
+ * with the platform's own URL constructor applies that same normalisation,
+ * so it agrees with what the browser will actually navigate to; only an
+ * explicit scheme allowlist is then checked, closing off `data:`, `vbscript:`
+ * and anything else without needing to enumerate every dangerous scheme.
+ */
+function isSafeUrl(value: string): boolean {
+  try {
+    const url = new URL(value, "https://www.hathorcruise.com");
+    return SAFE_URL_SCHEMES.has(url.protocol.toLowerCase());
+  } catch {
+    return false;
+  }
 }
 
 function normalizeInternalHref(value: string): string {
@@ -94,6 +105,12 @@ export function sanitizeBlogHtml(html: string): string {
   const $ = cheerio.load(html, null, false);
 
   $("*").each((_, element) => {
+    // The parser types <script>/<style> as "script"/"style", not "tag", so
+    // they must be dropped before the tag-only filter below or they survive.
+    if (element.type === "script" || element.type === "style") {
+      $(element).remove();
+      return;
+    }
     if (element.type !== "tag") return;
 
     const tagName = element.name.toLowerCase();
@@ -116,7 +133,7 @@ export function sanitizeBlogHtml(html: string): string {
 
     if (tagName === "a") {
       const href = element.attribs.href?.trim() ?? "";
-      if (!href || isUnsafeUrl(href)) {
+      if (!href || !isSafeUrl(href)) {
         $(element).removeAttr("href");
       } else {
         const normalizedHref = normalizeInternalHref(href);
@@ -134,7 +151,7 @@ export function sanitizeBlogHtml(html: string): string {
 
     if (tagName === "img") {
       const src = element.attribs.src?.trim() ?? "";
-      if (!src || isUnsafeUrl(src)) {
+      if (!src || !isSafeUrl(src)) {
         $(element).remove();
       }
     }

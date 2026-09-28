@@ -12,6 +12,7 @@ import {
   mergeAllEmailTemplates,
 } from "@/lib/email-templates";
 import { prisma } from "@/lib/prisma";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,6 +31,9 @@ async function loadMergedTemplates() {
 
 /** Saved templates from the database. */
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const templates = await loadMergedTemplates();
     const previews = await renderAllEmailTemplatePreviews(templates);
@@ -60,6 +64,9 @@ export async function GET() {
  * on top of the latest saved branding/copy from the database.
  */
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       shared?: EmailPreviewDraftShared;

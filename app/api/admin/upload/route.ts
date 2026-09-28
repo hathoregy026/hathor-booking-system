@@ -3,6 +3,7 @@ import { processImageToWebp, processVideoToMp4 } from "@/lib/media-process";
 import {
   ALLOWED_IMAGE_EXTENSIONS,
   ALLOWED_VIDEO_EXTENSIONS,
+  MAX_VIDEO_BYTES,
   validateImageFile,
   validateVideoFile,
 } from "@/lib/image-upload";
@@ -12,12 +13,24 @@ import {
   parseImageProcessKind,
   resolveImageProcessKind,
 } from "@/lib/image-size-policy";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+/* Multipart overhead on top of the largest allowed file (video). */
+const MAX_UPLOAD_REQUEST_BYTES = MAX_VIDEO_BYTES + 1024 * 1024;
+
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
+    const contentLength = Number(request.headers.get("content-length") ?? "0");
+    if (Number.isFinite(contentLength) && contentLength > MAX_UPLOAD_REQUEST_BYTES) {
+      return NextResponse.json({ error: "Upload is too large" }, { status: 413 });
+    }
+
     const formData = await request.formData();
     const file = formData.get("file");
     const folder = (formData.get("folder") as string | null)?.trim() || "general";

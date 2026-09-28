@@ -307,12 +307,29 @@ const calendarDateParam = z
     message: "Invalid date",
   });
 
-export const cruiseCalendarQuerySchema = z.object({
-  duration: stayDurationSchema,
-  rooms: roomsJsonParam,
-  from: calendarDateParam,
-  to: calendarDateParam,
-  roomId: z.string().trim().min(1).max(128).optional(),
-});
+/*
+ * Unauthenticated: a from/to span with no cap lets one request make the
+ * server enumerate and serialize millions of calendar-day entries (a
+ * resource-exhaustion DoS). No real search needs more than about a year.
+ */
+const MAX_CALENDAR_RANGE_DAYS = 400;
+
+export const cruiseCalendarQuerySchema = z
+  .object({
+    duration: stayDurationSchema,
+    rooms: roomsJsonParam,
+    from: calendarDateParam,
+    to: calendarDateParam,
+    roomId: z.string().trim().min(1).max(128).optional(),
+  })
+  .refine(
+    (value) => {
+      const from = parseISO(value.from);
+      const to = parseISO(value.to);
+      const spanDays = (to.getTime() - from.getTime()) / 86_400_000;
+      return spanDays >= 0 && spanDays <= MAX_CALENDAR_RANGE_DAYS;
+    },
+    { message: `Date range must be between 0 and ${MAX_CALENDAR_RANGE_DAYS} days`, path: ["to"] },
+  );
 
 export type CruiseCalendarQuery = z.infer<typeof cruiseCalendarQuerySchema>;

@@ -86,7 +86,7 @@ function isLocalPublicPath(src: string): boolean {
 }
 
 function isAllowlistedRemoteImage(src: string): boolean {
-  return isSupabaseStorageUrl(src) || src.includes("images.unsplash.com");
+  return isSupabaseStorageUrl(src);
 }
 
 export function localOptimizedSiteImagePath(name: string): string {

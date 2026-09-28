@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { adminSiteContentSelect } from "@/lib/query-selects";
 import { SITE_CONTENT_SECTIONS } from "@/lib/site-content";
 import { purgeReplacedWebsiteImage } from "@/lib/website-image-storage";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -20,6 +21,9 @@ type ContentPayload = {
 };
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const content = await withDb(() =>
       prisma.siteContent.findMany({
@@ -42,6 +46,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       sections?: ContentPayload[];

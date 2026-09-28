@@ -3,6 +3,7 @@ import { handleRouteError } from "@/lib/api";
 import { ensureDefaultTicketType } from "@/lib/cruise-setup";
 import { prisma } from "@/lib/prisma";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -19,6 +20,9 @@ const roomSelect = {
 } as const;
 
 export async function POST(request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id: cruiseId } = await context.params;
     const body = (await request.json()) as {

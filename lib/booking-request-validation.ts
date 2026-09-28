@@ -1,6 +1,15 @@
 import { z } from "zod";
 import { PHYSICAL_ROOM_TYPES, roomCapacity } from "@/lib/physical-inventory";
 
+/*
+ * Names are echoed into emails sent to an address the requester typed in.
+ * Refusing link-like text stops the booking form being used to make Hathor's
+ * own mail server deliver "pay at evil.example"-style phishing to a victim.
+ */
+const LINK_LIKE = /(https?:|www\.|:\/\/|[\p{L}\p{N}-]\.\p{L}{2,})/iu;
+const personName = (max: number) =>
+  z.string().trim().min(1).max(max).refine((value) => !LINK_LIKE.test(value), "Please enter a name without web addresses.");
+
 export const requestedRoomSchema = z.object({
   roomType: z.enum(PHYSICAL_ROOM_TYPES),
   adults: z.number().int().min(1).max(4),
@@ -14,8 +23,8 @@ export const holdRequestSchema = z.object({
 export const bookingRequestSchema = z.object({
   bookingId: z.string().min(1).max(128),
   accessToken: z.string().min(1).max(1024),
-  firstName: z.string().trim().min(1).max(60),
-  lastName: z.string().trim().min(1).max(60),
+  firstName: personName(60),
+  lastName: personName(60),
   email: z.string().trim().email().max(254),
   phone: z.string().trim().regex(/^\+[1-9][0-9]{6,14}$/, "Use an international phone number, for example +201234567890."),
   country: z.string().trim().min(2).max(80),
@@ -24,6 +33,6 @@ export const bookingRequestSchema = z.object({
   marketingOptIn: z.boolean().default(false),
   termsAccepted: z.literal(true),
   passengers: z.array(z.object({
-    fullName: z.string().trim().min(1).max(120), isChild: z.boolean(), roomIndex: z.number().int().min(0).max(11),
+    fullName: personName(120), isChild: z.boolean(), roomIndex: z.number().int().min(0).max(11),
   }).strict()).min(1).max(32),
 }).strict();

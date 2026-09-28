@@ -7,12 +7,16 @@ import {
 } from "@/lib/image-management";
 import { prisma } from "@/lib/prisma";
 import { revalidateSiteImagePages } from "@/lib/revalidate-site-images";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export const dynamic = "force-dynamic";
 
 export async function PUT(request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const body = await request.json();
@@ -29,6 +33,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const existing = await prisma.siteImage.findUnique({ where: { id } });
@@ -41,6 +48,9 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const body = (await request.json()) as { displayOrder?: number };

@@ -3,8 +3,10 @@ import { handleRouteError } from "@/lib/api";
 import { createBookingAccessToken } from "@/lib/booking-access-token";
 import { parseBookingReference } from "@/lib/booking-code";
 import { prisma } from "@/lib/prisma";
+import { createHash } from "crypto";
 import {
   assertTrustedPublicJsonRequest,
+  enforceKeyedRateLimit,
   enforcePublicRateLimit,
   PublicRequestError,
 } from "@/lib/public-api-security";
@@ -20,6 +22,19 @@ export async function POST(request: NextRequest) {
       windowMs: 15 * 60_000,
     });
     const parsed = bookingLookupSchema.parse(await request.json());
+    /*
+     * Also throttle per targeted email, independent of the caller's IP.
+     * Otherwise one attacker spread across many IPs (or one honest IP
+     * spraying many harvested emails) can brute-force the 8-char booking
+     * code against a specific victim at the full per-IP rate.
+     */
+    await enforceKeyedRateLimit({
+      scope: "booking-lookup-email",
+      keyValue: createHash("sha256").update(parsed.email.trim().toLowerCase()).digest("hex"),
+      limit: 6,
+      windowMs: 15 * 60_000,
+      bookingScoped: true,
+    });
     const reference = parseBookingReference(parsed.bookingId);
     const booking = await prisma.booking.findFirst({
       where: {

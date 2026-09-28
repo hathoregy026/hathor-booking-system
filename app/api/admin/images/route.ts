@@ -6,10 +6,14 @@ import {
   parseSiteImageInput,
 } from "@/lib/image-management";
 import { revalidateSiteImagePages } from "@/lib/revalidate-site-images";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const pagePath = request.nextUrl.searchParams.get("pagePath") ?? undefined;
     const images = await listSiteImages(pagePath || undefined);
@@ -21,6 +25,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = await request.json();
     const input = parseSiteImageInput(body);

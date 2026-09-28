@@ -6,11 +6,26 @@ export const STALE_VERCEL_DEPLOYMENT_HOST =
 export const VERCEL_PRODUCTION_ORIGIN =
   "https://hathor-booking-system.vercel.app";
 
+/** The client-facing domain once its DNS points at this Vercel project. */
+export const CUSTOM_DOMAIN_ORIGIN = "https://www.hathorcruise.com";
+
+/*
+ * Switchover flag. Set NEXT_PUBLIC_CUSTOM_DOMAIN_LIVE=true in Vercel
+ * (Production only) and redeploy once hathorcruise.com resolves to Vercel.
+ * Until then emails and redirects must keep using the Vercel address, or
+ * guests' links would open the old Bluehost site.
+ */
+export function isCustomDomainLive(): boolean {
+  return process.env.NEXT_PUBLIC_CUSTOM_DOMAIN_LIVE?.trim() === "true";
+}
+
 /**
  * Canonical production origin for redirects and absolute links.
  * Prefer the live Vercel production alias — never the old Bluehost custom domain.
  */
 export function getProductionOrigin(): string {
+  if (isCustomDomainLive()) return CUSTOM_DOMAIN_ORIGIN;
+
   const fromVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
   if (fromVercel) {
     const origin = fromVercel.startsWith("http")
@@ -35,6 +50,8 @@ export function isStaleVercelDeploymentHost(hostname: string): boolean {
  * Prefer an explicit site URL only when it is actually this Vercel deployment.
  */
 export function getSiteBaseUrl(): string {
+  if (isCustomDomainLive()) return CUSTOM_DOMAIN_ORIGIN;
+
   const explicit =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.SITE_URL?.trim();

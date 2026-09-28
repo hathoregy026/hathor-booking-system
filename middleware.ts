@@ -182,6 +182,14 @@ export async function middleware(request: NextRequest) {
       if (await isPurgeAuthorised(request)) {
         return withCachePurge(NextResponse.next());
       }
+      /*
+       * The /purge page itself sends Clear-Site-Data and wipes the visitor's
+       * storage, so an unauthorised request must not reach it — otherwise any
+       * link to /purge erases a guest's in-progress booking state.
+       */
+      if (pathname === "/purge") {
+        return withHtmlNoStore(NextResponse.redirect(new URL("/", request.url)));
+      }
       /* Not authorised — ignore the purge request and serve the page normally. */
     }
 
@@ -214,6 +222,39 @@ export async function middleware(request: NextRequest) {
        * Do not Clear-Site-Data on every visit.
        */
       return withTemporaryNoIndex(request, withHtmlMustRevalidate(NextResponse.next()));
+    }
+
+    /*
+     * Admin API calls must come from the admin UI on this origin. SameSite=Lax on
+     * the session cookie still sends it on same-SITE requests, so a sibling
+     * subdomain (or an XSS on one) could otherwise submit admin changes.
+     */
+    if (pathname.startsWith("/api/admin")) {
+      const isWrite = !["GET", "HEAD", "OPTIONS"].includes(request.method);
+      const fetchSite = request.headers.get("sec-fetch-site")?.toLowerCase();
+      const origin = request.headers.get("origin");
+      // Compare against the Host the browser actually used: nextUrl.origin can
+      // be normalised (e.g. to localhost) and would reject genuine admin saves.
+      const servedHosts = [
+        request.headers.get("host"),
+        request.headers.get("x-forwarded-host")?.split(",")[0]?.trim(),
+      ].filter(Boolean);
+      let originHost: string | null = null;
+      if (origin) {
+        try {
+          originHost = new URL(origin).host;
+        } catch {
+          originHost = "invalid";
+        }
+      }
+      // Any method: some admin GETs have side effects (e.g. sending a test email).
+      if (
+        fetchSite === "cross-site" ||
+        fetchSite === "same-site" ||
+        (isWrite && originHost !== null && !servedHosts.includes(originHost))
+      ) {
+        return NextResponse.json({ error: "Cross-origin request rejected" }, { status: 403 });
+      }
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;

@@ -10,6 +10,7 @@ import {
   parsePublishedAt,
   resolveBlogSlug,
 } from "@/lib/admin-blog";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,6 +18,9 @@ export const revalidate = 0;
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const post = await fetchBlogPostForAdminById(id);
@@ -36,6 +40,9 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const body = await request.json();
@@ -61,6 +68,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const { id } = await context.params;
     const slug = await deleteBlogPostRecord(id);

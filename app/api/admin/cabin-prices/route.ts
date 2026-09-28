@@ -7,6 +7,7 @@ import { CABIN_PRICES_TAG } from "@/lib/cabin-prices";
 import { PHYSICAL_ROOM_TYPES } from "@/lib/physical-inventory";
 import { PublicRequestError } from "@/lib/public-api-security";
 import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +51,9 @@ async function readPrices() {
 }
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     return NextResponse.json(await readPrices(), { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
@@ -91,6 +95,9 @@ const saveSchema = z.object({
  * was sent with; new requests use the new price at once.
  */
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = saveSchema.parse(await request.json());
     type SaveResult = { pricesValid: boolean; sizesValid: boolean };

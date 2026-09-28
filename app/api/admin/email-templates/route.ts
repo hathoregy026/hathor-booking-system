@@ -12,6 +12,7 @@ import {
   type EmailTemplateName,
 } from "@/lib/email-templates";
 import { prisma } from "@/lib/prisma";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -27,6 +28,9 @@ function resolvePersistedImageUrl(
 }
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const rows = await withDb(() =>
       prisma.emailTemplate.findMany({ orderBy: { name: "asc" } }),
@@ -49,6 +53,9 @@ export async function GET() {
 
 /** Save shared branding + all template copy in one request. */
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       shared?: {
@@ -168,6 +175,9 @@ export async function PUT(request: NextRequest) {
 
 /** @deprecated Use PUT to save all templates at once. */
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       name?: string;

@@ -11,6 +11,7 @@ import {
   validateEmailImageFile,
 } from "@/lib/image-upload";
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,6 +39,9 @@ function mimeFromExtension(extension: string): string {
  * Logo uploads are rejected (brand icon is locked).
  */
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const form = await request.formData();
     const field = String(form.get("field") ?? "").trim();
@@ -123,6 +127,9 @@ export async function POST(request: NextRequest) {
  * Prefer POST multipart for new uploads.
  */
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const body = (await request.json()) as {
       field?: string;

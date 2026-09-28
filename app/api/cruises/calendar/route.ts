@@ -7,12 +7,19 @@ import {
   normalizeRoomConfigsForDuration,
 } from "@/lib/booking-search-config";
 import { cruiseCalendarQuerySchema } from "@/lib/validations";
+import { enforcePublicRateLimit } from "@/lib/public-api-security";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   try {
+    await enforcePublicRateLimit({
+      request,
+      scope: "cruises-calendar",
+      limit: 60,
+      windowMs: 60_000,
+    });
     const { searchParams } = request.nextUrl;
     const parsed = cruiseCalendarQuerySchema.parse({
       duration: searchParams.get("duration"),

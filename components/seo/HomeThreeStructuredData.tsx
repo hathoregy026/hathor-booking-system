@@ -133,7 +133,7 @@ export function HomeThreeStructuredData() {
       type="application/ld+json"
       /* one graph, server-rendered: no client cost, no hydration mismatch */
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }),
+        __html: JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c"),
       }}
     />
   );

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { withDb } from "@/lib/db-safe";
 import { prisma } from "@/lib/prisma";
 import { dashboardBookingSelect } from "@/lib/query-selects";
+import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -39,6 +40,9 @@ function computeTotalCents(
 }
 
 export async function GET() {
+  const denied = await adminApiGuard();
+  if (denied) return denied;
+
   try {
     const [statsRows, recentBookings] = await Promise.all([
       withDb(() =>

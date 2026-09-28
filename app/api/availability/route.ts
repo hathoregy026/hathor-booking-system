@@ -10,9 +10,19 @@ import {
   availabilitySearchSchema,
   availabilityWidgetSearchSchema,
 } from "@/lib/validations";
+import {
+  enforcePublicRateLimit,
+  RateLimitExceededError,
+} from "@/lib/public-api-security";
 
 export async function GET(request: NextRequest) {
   try {
+    await enforcePublicRateLimit({
+      request,
+      scope: "availability",
+      limit: 60,
+      windowMs: 60_000,
+    });
     const { searchParams } = request.nextUrl;
     const duration = searchParams.get("duration");
     const checkInDate = searchParams.get("checkInDate");
@@ -62,7 +72,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    if (error instanceof ZodError) {
+    if (error instanceof ZodError || error instanceof RateLimitExceededError) {
       return handleRouteError(error);
     }
     logDbError("availability.GET", error);

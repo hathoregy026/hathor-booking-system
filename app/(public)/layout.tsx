@@ -43,6 +43,7 @@ import "../page-visibility.css";
 import "../site-coming-soon.css";
 import "../button-system.css";
 import "../nav-controls.css";
+import { safeStyleText } from "@/lib/safe-style";
 
 /** Public CMS data is edge-cached; admin save routes invalidate this layout. */
 export const revalidate = 300;
@@ -159,7 +160,7 @@ export default async function PublicSiteLayout({
         <style
           data-hathor-typography-ssr
           dangerouslySetInnerHTML={{
-            __html: typographyCss,
+            __html: safeStyleText(typographyCss),
           }}
         />
       ) : null}
@@ -167,7 +168,7 @@ export default async function PublicSiteLayout({
         <style
           data-hathor-logo-tune-site
           dangerouslySetInnerHTML={{
-            __html: logoTuneCss,
+            __html: safeStyleText(logoTuneCss),
           }}
         />
       ) : null}
@@ -175,7 +176,7 @@ export default async function PublicSiteLayout({
         <style
           data-hathor-hieroglyph-tune-site
           dangerouslySetInnerHTML={{
-            __html: hieroglyphTuneCss,
+            __html: safeStyleText(hieroglyphTuneCss),
           }}
         />
       ) : null}

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
+import { SiteAnalytics } from "@/components/public/SiteAnalytics";
 import { HATHOR_FAVICON_SRC } from "@/lib/branding";
 import { SiteStructuredData } from "@/components/seo/SiteStructuredData";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
@@ -156,7 +156,13 @@ export default function RootLayout({
             __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-3QKFST6VXE');`,
+(function(){
+  /* The booking-status link carries the guest's access token; never send it to GA. */
+  function clean(href){try{var u=new URL(href);u.searchParams.delete('token');u.hash='';return u.toString();}catch(e){return '';}}
+  var cfg={page_location:clean(location.href)};
+  if(document.referrer){cfg.page_referrer=clean(document.referrer);}
+  gtag('config', 'G-3QKFST6VXE', cfg);
+})();`,
           }}
         />
       </head>
@@ -180,7 +186,7 @@ gtag('config', 'G-3QKFST6VXE');`,
             {children}
           </SiteBookingChrome>
         </SelectionProvider>
-        <Analytics />
+        <SiteAnalytics />
       </body>
     </html>
   );

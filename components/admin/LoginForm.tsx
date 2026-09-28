@@ -10,6 +10,20 @@ type LoginFormProps = {
   redirectTo?: string;
 };
 
+/**
+ * `redirectTo` comes from the `?from=` query param, which is attacker-
+ * controlled (anyone can send a victim a crafted login link). Only ever
+ * navigate to a same-origin relative path — a `javascript:` URI or an
+ * absolute `https://evil.example/...` value would otherwise run script or
+ * phish in the context of a session that just authenticated successfully.
+ */
+function safeRedirectPath(candidate: string): string {
+  if (candidate.startsWith("/") && !candidate.startsWith("//") && !candidate.startsWith("/\\")) {
+    return candidate;
+  }
+  return "/admin";
+}
+
 function LoginFormInner({ redirectTo = "/admin" }: LoginFormProps) {
   const { theme } = useAdminTheme();
   const [password, setPassword] = useState("");
@@ -39,7 +53,7 @@ function LoginFormInner({ redirectTo = "/admin" }: LoginFormProps) {
         );
       }
 
-      window.location.href = redirectTo;
+      window.location.href = safeRedirectPath(redirectTo);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
