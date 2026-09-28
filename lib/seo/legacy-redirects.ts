@@ -61,6 +61,19 @@ export const LEGACY_HATHORCRUISE_REDIRECTS: ReadonlyArray<readonly [source: stri
   ["/rooms/Luxury-Nile-Cruise-Cairo-to-Aswan", "/suites"],
   ["/rooms/Best-Dahabiya-Nile-cruise", "/royal-suites"],
 
+  /* Indexed by Google on the old site with no same-slug post: nearest subject. */
+  ["/blogs/dahabiya-nile-cruise-price", "/blogs/dahabiya-cruise-cost-explained-whats-included"],
+  ["/blogs/dahabiya-nile-cruise-inclusions-exclusions", "/blogs/dahabiya-cruise-cost-explained-whats-included"],
+  ["/blogs/best-dahabiya-nile-cruise-for-families", "/blogs/what-is-the-best-dahabiya-nile-cruise"],
+  ["/blogs/book-luxury-nile-cruise-room", "/blogs/how-to-choose-the-right-cabin-on-a-dahabiya"],
+  ["/blogs/dahabiya-nile-cruise-itinerary", "/voyages"],
+  ["/blogs/dahabiya-nile-cruise-luxor-to-aswan-vs-aswan-to-luxor", "/voyages"],
+  ["/rooms/Dahabiya-nile", "/cruises-list"],
+  ["/rooms/Best-nile-luxury-cruise", "/cruises-list"],
+  ["/rooms/Traditional-Nile-River-boat", "/cruises-list"],
+  ["/rooms/nile-sailing-cruise", "/cruises-list"],
+  ["/page/dahabiya-hathor-deck%20plans", "/suites"],
+
   /* Renamed pages. */
   ["/our-partners", "/partners"],
   ["/page/terms-conditions", "/terms-and-conditions"],
