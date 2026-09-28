@@ -18,6 +18,7 @@ import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { withLivePrices } from "@/lib/cabin-prices-shared";
+import { resolveAmenityCaption } from "@/components/pages/rooms/RoomAmenityIcon";
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
 import { CRUISES_PAGE } from "@/lib/page-content";
 import {
@@ -555,7 +556,7 @@ export function MaskRevealPageContent() {
                                 className="mr-card__feature"
                                 title={amenity}
                               >
-                                {amenity.split(/\s+/)[0]}
+                                {resolveAmenityCaption(amenity).tight}
                               </span>
                             ))}
                           </div>

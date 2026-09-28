@@ -38,6 +38,8 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "_local/**",
+      // Media, scratch and snapshots the live site does not use (see its README.md).
+      "unused content/**",
       // Scratch/probe files kept at the repo root during design work.
       ".tmp-*",
       ".tmp-*/**",

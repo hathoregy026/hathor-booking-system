@@ -310,11 +310,21 @@
   font-display: swap;
 }
 
+/*
+ * Piloner (Thin, Thin Italic, Semibold, Semibold Italic) ships as Fontspring DEMO
+ * files: the digit 4, hyphen, straight quotes, brackets, slash, plus, ampersand,
+ * at, hash, percent and similar ASCII symbols draw a "DEMO" stamp. The unicode-range keeps Piloner for
+ * the letters and punctuation it draws properly and lets every other character
+ * fall through to the next family in the stack (Plus Jakarta Sans). Replace the
+ * files with the licensed fonts and this range can go.
+ */
 @font-face {
   font-family: "Piloner Thin";
   src:
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.woff2") format("woff2"),
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-thin-iF66b5d28bd9725.otf") format("opentype");
+  /* DEMO build: characters outside this range fall through to the next font (see the note above). */
+  unicode-range: U+0000-0020, U+002C, U+002E, U+0030-0033, U+0035-003B, U+003F, U+0041-005A, U+0061-007A, U+00A0-FFFF;
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -325,6 +335,8 @@
   src:
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.woff2") format("woff2"),
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-thinitalic-iF66b5d28bdf68e.otf") format("opentype");
+  /* DEMO build: characters outside this range fall through to the next font (see the note above). */
+  unicode-range: U+0000-0020, U+002C, U+002E, U+0030-0033, U+0035-003B, U+003F, U+0041-005A, U+0061-007A, U+00A0-FFFF;
   font-weight: 100;
   font-style: italic;
   font-display: swap;
@@ -335,6 +347,8 @@
   src:
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.woff2") format("woff2"),
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibold-iF66b5d28bcf566.otf") format("opentype");
+  /* DEMO build: characters outside this range fall through to the next font (see the note above). */
+  unicode-range: U+0000-0020, U+002C, U+002E, U+0030-0033, U+0035-003B, U+003F, U+0041-005A, U+0061-007A, U+00A0-FFFF;
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -345,6 +359,8 @@
   src:
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.woff2") format("woff2"),
     url("/fonts/more-fonts/Fontspring-DEMO-piloner-semibolditalic-iF66b5d28bd44fe.otf") format("opentype");
+  /* DEMO build: characters outside this range fall through to the next font (see the note above). */
+  unicode-range: U+0000-0020, U+002C, U+002E, U+0030-0033, U+0035-003B, U+003F, U+0041-005A, U+0061-007A, U+00A0-FFFF;
   font-weight: 600;
   font-style: italic;
   font-display: swap;

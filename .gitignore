@@ -110,3 +110,8 @@ next-env.d.ts
 /assets/LOGOS/gold.svg
 /assets/LOGOS/hathor-logo-behind-the-sheet-egypt-toors-gold-01.svg
 /assets/LOGOS/hathor-logo-behing-the-sheet-egypt-toors-pyramids.svg
+
+# Media the live site does not use (see unused content/README.md). Files that were
+# already in git were moved with `git mv` and stay tracked; nothing new is added.
+/unused content/*
+!/unused content/README.md
