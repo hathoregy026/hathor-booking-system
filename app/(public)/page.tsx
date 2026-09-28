@@ -3,11 +3,6 @@ import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomeThreePageContent } from "@/components/pages/HomeThreePageContent";
 import { HomeThreeStructuredData } from "@/components/seo/HomeThreeStructuredData";
 import { PartnersCompanyStrip } from "@/components/partners/PartnersCompanyStrip";
-import { combineDesktopAndNarrowCss } from "@/lib/admin-device-preview";
-import {
-  heroLogoTuneToImportantCss,
-  heroLogoTuneToNarrowImportantCss,
-} from "@/lib/hero-logo-tune-shared";
 import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { HOME_SEO } from "@/lib/seo/page-metadata";
@@ -27,10 +22,6 @@ export const metadata: Metadata = HOME_SEO;
 export default async function HomePage() {
   const cms = await loadPublicCmsBundle();
 
-  const logoTuneCss = combineDesktopAndNarrowCss(
-    heroLogoTuneToImportantCss(cms.heroLogoTune),
-    heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
-  );
   const heroPosterSrc = cms.siteImages["home-hero-poster"]?.src?.trim();
   const heroPoster = heroPosterSrc ? heroPosterDelivery(heroPosterSrc) : null;
 
@@ -46,10 +37,7 @@ export default async function HomePage() {
         />
       ) : null}
       <HomeThreeStructuredData />
-      <style
-        data-hathor-logo-tune-ssr
-        dangerouslySetInnerHTML={{ __html: logoTuneCss }}
-      />
+      {/* The saved logo tune is rendered once for every page, by the public layout. */}
       <HomeThreePageContent
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}

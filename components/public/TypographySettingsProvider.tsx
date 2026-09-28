@@ -74,10 +74,25 @@ export function TypographySettingsProvider({
     else if (initial) setMobile(initial);
   }, [initial, initialMobile]);
 
-  /* Apply before paint so homepage never flashes ink/uppercase defaults. */
+  /*
+   * The public layout already renders these exact settings as a <style> in the
+   * body, after every stylesheet in <head>, so it decides the cascade. A second
+   * copy here only doubled ~57KB of !important rules in every page's style
+   * work. The sheet is written only when there is no server copy, or when a
+   * dashboard preview has fetched newer settings. Before paint either way, so
+   * the homepage never flashes ink/uppercase defaults.
+   */
   useLayoutEffect(() => {
+    const serverCopy =
+      desktop === initial &&
+      mobile === (initialMobile ?? initial) &&
+      document.querySelector("style[data-hathor-typography-ssr]");
+    if (serverCopy) {
+      document.getElementById(STYLE_ID)?.remove();
+      return;
+    }
     applyLiveCss(desktop, mobile);
-  }, [desktop, mobile]);
+  }, [desktop, mobile, initial, initialMobile]);
 
   /* Soft refresh only for admin preview (?cmsRefresh=1 / ?logoTune=1). */
   useEffect(() => {
