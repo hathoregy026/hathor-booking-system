@@ -966,6 +966,14 @@ export function SuitesNormalHomepagePage({
 
   return (
     <main className="suites-normal-clone" aria-label="Hathor Suites">
+      {/*
+       * Everything visible below lives in the iframe document, which search
+       * engines and screen readers treat as a separate page — so this page
+       * had no heading of its own. Mirror the hero's visible kicker and
+       * copy here (visually hidden, never different from what is shown).
+       */}
+      <h1 className="sr-only">Nile Dahabiya Suites</h1>
+      <p className="sr-only">{suitesCopy.heroBody.replace(/\n/g, " ")}</p>
       <div className="public-site suites-normal-clone__nav">
         <PublicNavbar />
       </div>
