@@ -718,25 +718,7 @@ html[data-public-theme="night"] .nib-surface--cream {
   color: var(--night-text-soft) !important;
 }
 
-/* Suites — --sn-ink and --sn-on-bg are foregrounds, --sn-cream* are surfaces */
-html[data-public-theme="night"] .suites-native-route {
-  --sn-cream: var(--night-canvas);
-  --sn-cream-deep: var(--night-surface);
-  --sn-cream-soft: var(--night-surface-raised);
-  --sn-hero-cream: var(--night-text);
-  --sn-gold: var(--night-panel);
-  --sn-gold-soft: var(--night-olive);
-  --sn-gold-deep: var(--night-panel);
-  --sn-ink: var(--night-gold-strong);
-  --sn-on-bg: var(--night-text);
-  --sn-on-bg-muted: var(--night-muted);
-  --sn-muted: var(--night-muted);
-  --sn-line: var(--night-line);
-  --sn-card-line: var(--night-line-soft);
-  --sn-page-atmosphere: var(--night-atmosphere);
-}
-
-html[data-public-theme="night"] :is(.suites-native-shell, .suites-normal-clone) {
+html[data-public-theme="night"] .suites-normal-clone {
   background-color: var(--night-canvas) !important;
   background-image: var(--night-atmosphere) !important;
   color: var(--night-text-soft) !important;
