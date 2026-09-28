@@ -10,6 +10,8 @@ import {
   hotelRoomNode,
 } from "@/components/seo/PageStructuredData";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { resolvePageVisibilityForRequest } from "@/lib/live-site-gate";
+import { isPageLive } from "@/lib/page-visibility-shared";
 import { SUITES_DASHBOARD_SLOT_NAMES } from "@/lib/site-image-usage";
 import { SUITES_REFERENCE_HERO_IMAGE_DEFAULTS } from "@/lib/suites-reference-hero";
 import { getPageScopedSiteImageName } from "@/lib/site-image-page-scope";
@@ -24,7 +26,21 @@ import "../page-visibility.css";
 import "../site-coming-soon.css";
 import "../suites-normal-clone.css";
 
-export const metadata: Metadata = SUITES_SEO;
+/**
+ * While the dashboard "Pages" toggle has /suites turned off, visitors see
+ * PageUnderConstruction (a thin placeholder) instead of the real page below —
+ * so Google must not index it as if it were the real content. This mirrors
+ * the same visibility check StandalonePageVisibilityShell uses, and clears
+ * itself automatically once the page is switched live.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const cms = await loadPublicCmsBundle();
+  const effectiveVisibility = await resolvePageVisibilityForRequest(cms.pageVisibility);
+  if (!isPageLive("/suites", effectiveVisibility)) {
+    return { ...SUITES_SEO, robots: { index: false, follow: false } };
+  }
+  return SUITES_SEO;
+}
 
 /**
  * Outside (public): Suites owns its own layout. Still must honor dashboard

@@ -185,12 +185,20 @@ export type VoyagesPageContentProps = {
   voyages: HomepageAccordionCruise[];
   heroTitleLinesOverride?: readonly string[];
   nonCharterDetailsHref?: string;
+  /**
+   * The one dedicated voyage/route each page is actually about. When set,
+   * replaces the generic "Hathor way" statement paragraph (shared by all
+   * voyage pages otherwise) with copy specific to this voyage, so the
+   * three dedicated pages don't read as duplicates of each other.
+   */
+  openingStatementOverride?: string;
 };
 
 export function VoyagesPageContent({
   voyages,
   heroTitleLinesOverride,
   nonCharterDetailsHref,
+  openingStatementOverride,
 }: VoyagesPageContentProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
@@ -291,7 +299,7 @@ export function VoyagesPageContent({
                 <p className="vb-statement__body wt-page-body">
                   {resolveCmsText(
                     copy.statementBody,
-                    VOYAGES_PAGE.opening.body[0] ?? "",
+                    openingStatementOverride ?? VOYAGES_PAGE.opening.body[0] ?? "",
                   )}
                 </p>
               </Scene>

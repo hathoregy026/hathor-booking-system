@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
 import { getPublishedBlogPosts } from "@/lib/blog-posts";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
+import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
+import { isPageLive } from "@/lib/page-visibility-shared";
 
 const STATIC_PATHS = [
   "/",
   "/voyages",
   "/voyages/luxor-to-aswan",
   "/voyages/aswan-to-luxor",
+  "/voyages/luxor-aswan-luxor",
   "/charter",
   "/suites",
   "/luxury-cabins-Nile-Cruise",
@@ -25,7 +28,20 @@ const STATIC_PATHS = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const entries: MetadataRoute.Sitemap = STATIC_PATHS.map((path) => ({
+
+  /* /suites shows a thin "coming soon" placeholder while its dashboard
+     visibility toggle is off — leave it out of the sitemap until then,
+     same self-correcting check as its own generateMetadata(). */
+  let suitesLive = true;
+  try {
+    const cms = await loadPublicCmsBundle();
+    suitesLive = isPageLive("/suites", cms.pageVisibility);
+  } catch (error) {
+    console.error("[sitemap] page visibility unavailable:", error);
+  }
+  const staticPaths = STATIC_PATHS.filter((path) => path !== "/suites" || suitesLive);
+
+  const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: path === "/" ? `${SEO_SITE_ORIGIN}/` : `${SEO_SITE_ORIGIN}${path}`,
     lastModified,
     changeFrequency: path === "/" || path === "/voyages" ? "weekly" : "monthly",

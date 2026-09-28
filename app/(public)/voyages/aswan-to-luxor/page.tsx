@@ -45,6 +45,7 @@ export default async function AswanToLuxorVoyagePage() {
         voyages={voyages}
         heroTitleLinesOverride={["Aswan to", "Luxor", "Nile Cruise"]}
         nonCharterDetailsHref="/cruises-list"
+        openingStatementOverride="An intimate south-to-north passage — three nights through Philae, Kom Ombo and Edfu at a Dahabiya's unhurried pace, ending among Luxor's temples aboard a 32-guest luxury Dahabiya."
       />
     </>
   );

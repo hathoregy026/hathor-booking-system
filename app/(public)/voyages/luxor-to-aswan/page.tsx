@@ -45,6 +45,7 @@ export default async function LuxorToAswanVoyagePage() {
         voyages={voyages}
         heroTitleLinesOverride={["Luxor to", "Aswan", "Nile Cruise"]}
         nonCharterDetailsHref="/cruises-list"
+        openingStatementOverride="The classic Nile voyage from Luxor's monumental banks to Aswan's quiet grace — four nights of temples, feluccas and evenings lit by river sunset, aboard a 32-guest luxury Dahabiya."
       />
     </>
   );

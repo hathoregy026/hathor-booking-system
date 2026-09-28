@@ -45,6 +45,7 @@ export default async function LuxorAswanLuxorVoyagePage() {
         voyages={voyages}
         heroTitleLinesOverride={["Luxor, Aswan", "& Luxor", "Nile Cruise"]}
         nonCharterDetailsHref="/cruises-list"
+        openingStatementOverride="The complete Nile circuit between Luxor and Aswan and back — seven nights, eight days, with time for every temple, river light and the quieter days only a full round trip allows aboard a 32-guest luxury Dahabiya."
       />
     </>
   );
