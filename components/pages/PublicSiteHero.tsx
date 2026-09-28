@@ -374,14 +374,47 @@ export function PublicSiteHero({
       });
     };
 
+    /*
+     * The phone reel is attached once the page has loaded and the browser is
+     * idle — or at the visitor's first touch, scroll or key, whichever comes
+     * first. Rendered with its src from the start, it downloaded (~2.5MB) at
+     * hydration, beside the page's own scripts, styles and fonts, which on a
+     * slow phone connection delayed the page becoming usable. The poster holds
+     * the frame until then; the reel itself is unchanged.
+     */
+    const armPhoneStart = () => {
+      const intents = ["touchstart", "pointerdown", "scroll", "keydown"] as const;
+      const onIntent = () => startVideo();
+      intents.forEach((type) =>
+        window.addEventListener(type, onIntent, { once: true, passive: true }),
+      );
+      cleanups.push(() =>
+        intents.forEach((type) => window.removeEventListener(type, onIntent)),
+      );
+
+      const whenIdle = () => {
+        if (typeof window.requestIdleCallback === "function") {
+          idleId = window.requestIdleCallback(startVideo, { timeout: 1200 });
+          return;
+        }
+        delayId = window.setTimeout(startVideo, 300);
+      };
+      if (document.readyState === "complete") {
+        whenIdle();
+      } else {
+        window.addEventListener("load", whenIdle, { once: true });
+        cleanups.push(() => window.removeEventListener("load", whenIdle));
+      }
+    };
+
     const root = document.documentElement;
     /*
-     * Phone uses the dedicated 720×960 reel and must start as soon as the
-     * source is attached. Poster is the desktop CMS still.
+     * Phone uses the dedicated 720×960 reel (see armPhoneStart). Poster is the
+     * desktop CMS still.
      * Desktop keeps the deferred idle start so the 26MB promo does not fight LCP.
      */
     if (source === HATHOR_HERO_VIDEO_PHONE_SRC) {
-      startVideo();
+      armPhoneStart();
     } else if (root.classList.contains("ex-scroll-ready")) {
       armDeferredStart();
     } else {
@@ -451,7 +484,8 @@ export function PublicSiteHero({
           <video
             key={heroVideoSrc}
             ref={heroVideoRef}
-            src={heroVideoSrc}
+            /* the phone reel's src is attached by armPhoneStart, not at render */
+            src={heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC ? undefined : heroVideoSrc}
             poster={heroPoster.src}
             autoPlay
             loop
