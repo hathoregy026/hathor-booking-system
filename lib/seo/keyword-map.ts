@@ -37,8 +37,9 @@ export const SEO_KEYWORD_MAP = {
   },
   charter: {
     path: "/charter",
-    primary: "Private Nile Cruise Egypt",
-    secondary: ["Private Dahabiya Charter", "exclusive Nile boat charter"],
+    /* hathorcruise.com/charter ranked with this exact phrase (title, H1, H2) */
+    primary: "Charter Dahabiya Cruise",
+    secondary: ["Private Nile Cruise Egypt", "Private Dahabiya Charter", "Dahabiya charter Egypt", "Nile cruise charter"],
     intent: "commercial",
   },
   cabins: {

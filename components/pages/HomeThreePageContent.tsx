@@ -1055,14 +1055,18 @@ export function HomeThreePageContent({
                       <h2 className="h3-cierre__title">
                         <AnimaSplitLine line={0}>Come aboard</AnimaSplitLine>
                       </h2>
-                      <p className="h3-support">
-                        32 guests, five moorings and one river. The rest of
-                        the arrangements are ours.
-                      </p>
-                      <div className="h3-cierre__reveal">
-                        <BookNowTrigger className="h3-btn h3-cierre__book">
-                          Check availability
-                        </BookNowTrigger>
+                      {/* Everything under the title, so "Come aboard" can be
+                          the exact centre of the note (and of the pool). */}
+                      <div className="h3-cierre__after">
+                        <p className="h3-support">
+                          32 guests, five moorings and one river. The rest of
+                          the arrangements are ours.
+                        </p>
+                        <div className="h3-cierre__reveal">
+                          <BookNowTrigger className="h3-btn h3-cierre__book">
+                            Check availability
+                          </BookNowTrigger>
+                        </div>
                       </div>
                     </div>
                   </Panel>

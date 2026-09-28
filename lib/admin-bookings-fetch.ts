@@ -27,6 +27,7 @@ type SqlRow = {
   departureTime: Date;
   arrivalTime: Date;
   cruiseName: string;
+  cruiseSlug: string;
   roomNames: string[] | null;
   roomTypes: string[] | null;
   cabins: AdminBookingCabin[] | null;
@@ -60,6 +61,7 @@ const LIST_SQL = `
     cs."departureTime",
     cs."arrivalTime",
     c.name AS "cruiseName",
+    c.slug AS "cruiseSlug",
     COALESCE(
       (SELECT ARRAY_AGG(DISTINCT r.name)
        FROM "BookingRoom" br
@@ -75,6 +77,7 @@ const LIST_SQL = `
       ARRAY[]::text[]
     ) AS "roomTypes",
     (SELECT json_agg(json_build_object(
+        'roomId', r.id,
         'type', COALESCE(r."roomType", r.name),
         'adults', br.adults,
         'children', br.children,
@@ -148,6 +151,7 @@ function mapRow(row: SqlRow): AdminBookingDto {
     country: row.country,
     status: row.status,
     cruiseName: row.cruiseName,
+    cruiseSlug: row.cruiseSlug,
     checkInDate: departureTime,
     checkOutDate: arrivalTime,
     departureTime,

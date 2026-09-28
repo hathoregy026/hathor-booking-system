@@ -2360,6 +2360,12 @@ html[data-public-theme="night"] .home-three :is(
   -webkit-text-fill-color: var(--night-text) !important;
 }
 
+/* The close's small line is white like its title (the rule above would make it
+   the soft body tone); night already re-points --h3-paper to ivory here. */
+html[data-public-theme="night"] .home-three .h3-cierre .h3-cierre__note > .h3-kicker:not(#_) {
+  color: var(--h3-paper) !important;
+}
+
 html[data-public-theme="night"] .home-three .h3-terms__num:not(#_) {
   color: var(--night-gold) !important;
 }

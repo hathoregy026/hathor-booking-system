@@ -7,6 +7,7 @@ import {
   isLegacySharedSiteImageSource,
 } from "@/lib/site-image-page-scope";
 import { resolveSiteImageLivePath } from "@/lib/site-image-preview";
+import { SHIP_SPACE_IMAGE_SLOTS, isShipSpaceImageName } from "@/lib/ship-space-images";
 import {
   SITE_IMAGE_PAGES,
   SITE_IMAGE_PAGE_TITLES,
@@ -287,6 +288,10 @@ export type SiteImageAdminGroup = {
 /** The page path used for slots the live site no longer paints. */
 export const SITE_IMAGE_UNUSED_GROUP = "unused";
 
+/** The tab for the deck plan's space photos; the site crawl does not place these. */
+export const SITE_IMAGE_SHIP_GROUP = "ship-deck-plan";
+const SHIP_DECK_TITLES = { lower: "Lower deck", main: "Main deck", sun: "Sun deck" } as const;
+
 /** Labels written for the curated sections, reused wherever a slot appears. */
 const CURATED_LABELS: Record<string, string> = (() => {
   const labels: Record<string, string> = {};
@@ -406,9 +411,34 @@ export function getSiteImageAdminGroups(): SiteImageAdminGroup[] {
     });
   }
 
+  /* One tab for the deck plan, split by deck, each photo named after its space. */
+  const shipItems = SHIP_SPACE_IMAGE_SLOTS.flatMap((space, index) => {
+    const slot = byName.get(space.name);
+    if (!slot) return [];
+    return [{
+      ...toAdminItem(slot, SITE_IMAGE_SHIP_GROUP, index + 1),
+      label: space.space,
+      section: SHIP_DECK_TITLES[space.deck],
+      livePath: "/#explore-hathor",
+      usedOnLabel: "Homepage deck plan only",
+    }];
+  });
+  if (shipItems.length) {
+    groups.push({
+      pagePath: SITE_IMAGE_SHIP_GROUP,
+      title: "Ship deck plan",
+      livePath: "/",
+      description:
+        "The photo that opens when a guest selects a space on the homepage deck plan. Each photo belongs only to its space, so changing one here changes nothing else on the site. Stairs, entrances, the restroom and crew areas are named on the plan without a photo.",
+      items: shipItems,
+    });
+  }
+
   const orphans = SITE_IMAGE_SLOTS.filter(
     (slot) =>
-      !painted.has(slot.name) && !isLegacySharedSiteImageSource(slot.name),
+      !painted.has(slot.name) &&
+      !isShipSpaceImageName(slot.name) &&
+      !isLegacySharedSiteImageSource(slot.name),
   );
   if (orphans.length) {
     groups.push({

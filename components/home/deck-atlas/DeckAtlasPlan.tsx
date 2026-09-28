@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, type CSSProperties } from "react";
 import { SHIP_REGIONS, shipDeckArt, type ShipDeckId, type ShipSlotId } from "@/lib/ship-experience-shared";
-import { FACILITY_BY_ID, facilityNumber, isFacilityId, type Facility, type FacilityId } from "./facilities";
+import { FACILITY_BY_ID, facilityMark, isFacilityId, type Facility, type FacilityId } from "./facilities";
 
 export type AtlasState = "open" | "closed" | "unknown" | "request";
 export type AtlasPlanRoom = { slotId: ShipSlotId; label: string; name: string; state: AtlasState };
@@ -87,7 +87,7 @@ const ALT: Record<ShipDeckId, string> = {
 
 const STATE_WORD: Record<AtlasState, string> = {
   open: "available",
-  closed: "unavailable on this departure",
+  closed: "booked on this departure",
   unknown: "availability not checked yet",
   request: "contact reservations about this room",
 };
@@ -146,24 +146,24 @@ export function DeckAtlasPlan({ deck, rooms, spaces, focusId, selectedId, reveal
             alt="" aria-hidden="true" draggable={false} data-on={focusId ? "" : undefined}
             style={{ clipPath: spot ? spotlight(areasOf(spot)) : DARK }} />
           {selectedId ? <span className="da-plan__crop" style={boundsStyle(SHIP_REGIONS[selectedId])} aria-hidden="true"><i /><i /><i /><i /></span> : null}
-          {marks.map(({ space, area, part, place, places }) => {
-            const number = facilityNumber(space.id);
+          {marks.map(({ space, area, part, place, places }, index) => {
+            const mark = facilityMark(space.id);
             const pointer = {
               onPointerEnter: () => onFocus(space.id), onPointerLeave: () => onFocus(null),
               onClick: () => onOpenSpace(space.id),
             };
             const common = {
-              className: "da-plan__space", style: { ...boundsStyle(area), ["--i" as string]: rooms.length + number },
+              className: "da-plan__space", style: { ...boundsStyle(area), ["--i" as string]: rooms.length + index },
               "data-kind": space.kind, "data-focus": focusId === space.id || undefined,
             };
             /* A shape-only piece answers the pointer; the numbered piece carries keyboard focus. */
             if (!place) return <span key={`${space.id}-${part}`} {...common} data-part="" aria-hidden="true" {...pointer} />;
             return (
               <button key={`${space.id}-${part}`} type="button" {...common} {...pointer}
-                aria-label={`${number}, ${space.name}${places > 1 ? ` (${place} of ${places})` : ""}${space.kind === "crew" ? ", crew only" : ""}. See it closer`}
+                aria-label={`${mark}, ${space.name}${places > 1 ? ` (${place} of ${places})` : ""}${space.kind === "crew" ? ", crew only" : ""}. See it closer`}
                 onFocus={() => onFocus(space.id)} onBlur={() => onFocus(null)}>
-                <b className="da-plan__space-mark" aria-hidden="true">{number}</b>
-                <b className="da-plan__space-name" aria-hidden="true"><small>{number}</small>{space.name}</b>
+                <b className="da-plan__space-mark" aria-hidden="true">{mark}</b>
+                <b className="da-plan__space-name" aria-hidden="true"><small>{mark}</small>{space.name}</b>
               </button>
             );
           })}

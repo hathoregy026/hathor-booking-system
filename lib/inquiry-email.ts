@@ -45,7 +45,14 @@ export type InquiryPayload = {
   selection?: SelectionEnquiry;
 };
 
-export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
+/*
+ * The team's copy is the one that must arrive: it is sent on its own and a
+ * failure fails the request. The guest's receipt follows separately — an
+ * address the provider refuses can no longer take the team's copy down with
+ * it — and the caller learns whether the receipt went, so the page never
+ * promises a confirmation that was not sent.
+ */
+export async function sendInquiryEmail(payload: InquiryPayload): Promise<{ receiptSent: boolean }> {
   const resend = getResend();
   const adminEmail = getAdminNotificationEmail();
 
@@ -62,7 +69,9 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
   const detailLines: ContactAlertLine[] = [
     payload.phone ? { label: "Phone", value: payload.phone } : null,
     payload.address ? { label: "Address", value: payload.address } : null,
-    payload.checkIn ? { label: "Check-in", value: payload.checkIn } : null,
+    payload.checkIn
+      ? { label: payload.type === "charter" ? "Preferred start date" : "Check-in", value: payload.checkIn }
+      : null,
     payload.adults !== undefined ? { label: "Adults", value: String(payload.adults) } : null,
     payload.children !== undefined ? { label: "Children", value: String(payload.children) } : null,
     payload.preferredRoute ? { label: "Preferred route", value: payload.preferredRoute } : null,
@@ -75,7 +84,9 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
     `Email: ${payload.email}`,
     payload.phone ? `Phone: ${payload.phone}` : "",
     payload.address ? `Address: ${payload.address}` : "",
-    payload.checkIn ? `Check-in: ${payload.checkIn}` : "",
+    payload.checkIn
+      ? `${payload.type === "charter" ? "Preferred start date" : "Check-in"}: ${payload.checkIn}`
+      : "",
     payload.adults !== undefined ? `Adults: ${payload.adults}` : "",
     payload.children !== undefined ? `Children: ${payload.children}` : "",
     payload.preferredRoute ? `Preferred route: ${payload.preferredRoute}` : "",
@@ -141,32 +152,42 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<void> {
       "For your security, never send passwords or card details by email. Hathor will not request payment through an unverified link in response to a contact message.",
     ].join("\n");
 
-  const result = await resend.batch.send([
-    {
-      from: getResendFromAddress(),
-      to: adminEmail,
-      replyTo: payload.email,
-      subject: resolveEmailSubject(alertTemplate, alertVars),
-      html: adminHtml,
-      text: adminText,
-      tags: [{ name: "message_type", value: "contact_admin" }],
-    },
-    {
+  const team = await resend.emails.send({
+    from: getResendFromAddress(),
+    to: adminEmail,
+    replyTo: payload.email,
+    subject: resolveEmailSubject(alertTemplate, alertVars),
+    html: adminHtml,
+    text: adminText,
+    tags: [{ name: "message_type", value: payload.type === "charter" ? "charter_admin" : "contact_admin" }],
+  });
+  if (team.error) {
+    throw new Error(team.error.message);
+  }
+
+  let receiptSent = false;
+  try {
+    const receipt = await resend.emails.send({
       from: getResendFromAddress(),
       to: payload.email,
       replyTo: process.env.RESEND_REPLY_TO?.trim() || PUBLIC_CONTACT.email,
       subject: guestSubject,
       html: guestHtml,
       text: guestText,
-      tags: [{ name: "message_type", value: "contact_guest" }],
-    },
-  ]);
-
-  if (result.error) {
-    throw new Error(result.error.message);
+      tags: [{ name: "message_type", value: payload.type === "charter" ? "charter_guest" : "contact_guest" }],
+    });
+    receiptSent = !receipt.error;
+    if (receipt.error) {
+      console.warn(`[inquiry] guest receipt refused by email provider (${receipt.error.name})`);
+    }
+  } catch (error) {
+    console.warn(
+      `[inquiry] guest receipt failed (${error instanceof Error ? error.name : "unknown"})`,
+    );
   }
 
-  console.log(`[inquiry] ${label} and guest receipt accepted by email provider`);
+  console.log(`[inquiry] ${label} accepted by email provider; guest receipt ${receiptSent ? "sent" : "not sent"}`);
+  return { receiptSent };
 }
 
 export function getInquiryFallbackMailto(payload: InquiryPayload): string {

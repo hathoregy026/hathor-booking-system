@@ -125,15 +125,47 @@ const inquirySchema = z.object({
   website: z.literal("").optional(),
 });
 
+/*
+ * The limiter counts in the database. A guest's charter or contact message must
+ * not be lost (or left spinning) because the database is slow or briefly
+ * unreachable: if the count errors or takes longer than 3 s the message goes
+ * through — validation and the honeypot still apply. A real over-limit answer
+ * is always enforced.
+ */
+const RATE_LIMIT_WAIT_MS = 3_000;
+
+async function limitInquiries(request: Request): Promise<void> {
+  const check = enforcePublicRateLimit({
+    request,
+    scope: "contact-inquiry",
+    limit: 5,
+    windowMs: 10 * 60_000,
+  });
+  // A late failure after the wait below must not surface as an unhandled rejection.
+  check.catch(() => undefined);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const waited = new Promise<"waited">((resolve) => {
+    timer = setTimeout(() => resolve("waited"), RATE_LIMIT_WAIT_MS);
+  });
+  try {
+    const outcome = await Promise.race([check.then(() => "counted" as const), waited]);
+    if (outcome === "waited") {
+      console.warn("[inquiry] rate limit check timed out; message continues");
+    }
+  } catch (error) {
+    if (error instanceof RateLimitExceededError) throw error;
+    console.warn(
+      `[inquiry] rate limit check unavailable (${error instanceof Error ? error.name : "unknown"}); message continues`,
+    );
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     assertTrustedPublicJsonRequest(request);
-    await enforcePublicRateLimit({
-      request,
-      scope: "contact-inquiry",
-      limit: 5,
-      windowMs: 10 * 60_000,
-    });
+    await limitInquiries(request);
 
     const body = await readPublicJsonBody(request);
     const parsed = inquirySchema.safeParse(body);
@@ -144,9 +176,9 @@ export async function POST(request: Request) {
       );
     }
 
-    await sendInquiryEmail(parsed.data);
+    const { receiptSent } = await sendInquiryEmail(parsed.data);
     return NextResponse.json(
-      { ok: true },
+      { ok: true, receiptSent },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {

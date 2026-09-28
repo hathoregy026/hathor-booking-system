@@ -7,6 +7,7 @@ import {
 } from "@/lib/gastronomy-dining-media";
 import { HATHOR_MEDIA } from "@/lib/hathor-media";
 import { PAGE_SCOPED_SITE_IMAGE_ALIASES } from "@/lib/site-image-page-scope";
+import { SHIP_SPACE_IMAGE_SLOTS } from "@/lib/ship-space-images";
 
 export type SiteImageSlot = {
   name: string;
@@ -48,10 +49,23 @@ const DINING_PLATE_SLOTS: SiteImageSlot[] = DINING_PLATE_NUMBERS.map(
   }),
 );
 
+/* The ship deck plan's space photographs — one slot per space, owned by nothing else. */
+const SHIP_SPACE_SLOTS: SiteImageSlot[] = SHIP_SPACE_IMAGE_SLOTS.map(
+  (slot, displayOrder) => ({
+    name: slot.name,
+    altText: slot.altText,
+    url: slot.url,
+    category: slot.category,
+    pagePath: "/",
+    displayOrder,
+  }),
+);
+
 /** Canonical image slots — seeded to SiteImage and editable in admin → Site Images. */
 export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
   ...DINING_SCENE_SLOTS,
   ...DINING_PLATE_SLOTS,
+  ...SHIP_SPACE_SLOTS,
   // Homepage (live EX page only)
   {
     name: "home-hero-poster",

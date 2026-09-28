@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { LEGACY_HATHORCRUISE_REDIRECTS } from "./lib/seo/legacy-redirects";
 
 /*
  * Content Security Policy — enforced to block unapproved scripts, frames,
@@ -363,6 +364,12 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
+      /* Old www.hathorcruise.com URLs, so their rankings follow the domain here. */
+      ...LEGACY_HATHORCRUISE_REDIRECTS.map(([source, destination]) => ({
+        source,
+        destination,
+        permanent: true,
+      })),
     ];
   },
 };
