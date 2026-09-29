@@ -1,3 +1,4 @@
+import { CUSTOM_DOMAIN_ORIGIN } from "@/lib/public-url";
 /**
  * Hathor Terms & Conditions — single source for public copy and anchor IDs.
  * Update TERMS_LAST_UPDATED when legal approves a new effective date.
@@ -9,8 +10,7 @@ export const TERMS_LAST_UPDATED_ISO = "2026-08-29";
 
 export const TERMS_CANONICAL_PATH = "/terms-and-conditions";
 
-export const TERMS_PRODUCTION_URL =
-  "https://www.easytravegypt.com/terms-and-conditions";
+export const TERMS_PRODUCTION_URL = `${CUSTOM_DOMAIN_ORIGIN}${TERMS_CANONICAL_PATH}`;
 
 export type TermsTocItem = {
   id: string;

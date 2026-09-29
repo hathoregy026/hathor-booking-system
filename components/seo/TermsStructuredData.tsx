@@ -2,6 +2,7 @@ import {
   TERMS_CANONICAL_PATH,
   TERMS_PRODUCTION_URL,
 } from "@/lib/terms-and-conditions-content";
+import { CUSTOM_DOMAIN_ORIGIN } from "@/lib/public-url";
 
 const PAGE_TITLE = "Hathor Dahabiya Terms & Conditions | Booking Policies";
 const PAGE_DESCRIPTION =
@@ -18,8 +19,8 @@ export function TermsStructuredData() {
     inLanguage: "en",
     isPartOf: {
       "@type": "WebSite",
-      "@id": "https://www.easytravegypt.com/#website",
-      url: "https://www.easytravegypt.com/",
+      "@id": `${CUSTOM_DOMAIN_ORIGIN}/#website`,
+      url: `${CUSTOM_DOMAIN_ORIGIN}/`,
       name: "Hathor Dahabiya",
     },
   };
@@ -32,7 +33,7 @@ export function TermsStructuredData() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://www.easytravegypt.com/",
+        item: `${CUSTOM_DOMAIN_ORIGIN}/`,
       },
       {
         "@type": "ListItem",
