@@ -55,7 +55,6 @@ export const emailLayout = {
   paddingMobile: "28px",
   paddingCard: "44px 36px 52px",
   sectionGap: "28px",
-  heroHeight: 420,
   iconSize: 64,
 } as const;
 

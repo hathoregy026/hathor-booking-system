@@ -31,6 +31,9 @@ const cellReset = {
   margin: 0,
 } as const;
 
+/** The text column's width in px — the banner's width everywhere. */
+const EMAIL_HERO_WIDTH = Number.parseInt(emailLayout.contentMaxWidth, 10);
+
 export function EmailHeroBanner({
   heroImageUrl,
   alt = "Luxury Hathor Dahabiya cruise on the Nile",
@@ -41,6 +44,14 @@ export function EmailHeroBanner({
   const src = heroImageUrl?.trim() || "";
   if (!src) return null;
 
+  /*
+   * The banner sits in the text column at its own proportions. It used to be
+   * full-bleed with a fixed 420px max-height and object-fit: cover, so every
+   * client cropped it differently — Gmail's wide pane cut away the headline
+   * that is part of the artwork. No height, no crop: the whole picture shows
+   * in every client. `width` stays as an attribute for desktop Outlook, which
+   * ignores CSS widths.
+   */
   return (
     <table
       role="presentation"
@@ -52,24 +63,41 @@ export function EmailHeroBanner({
       <tbody>
         <tr>
           <td align="center" style={cellReset}>
-            <Img
-              src={src}
-              alt={alt}
-              width={1200}
-              height={emailLayout.heroHeight}
+            <table
+              role="presentation"
+              cellPadding={0}
+              cellSpacing={0}
+              width="100%"
+              className="email-content"
               style={{
-                border: 0,
-                display: "block",
-                height: "auto",
-                margin: 0,
-                maxHeight: `${emailLayout.heroHeight}px`,
-                maxWidth: "100%",
-                objectFit: "cover",
-                outline: "none",
-                textDecoration: "none",
+                borderCollapse: "collapse",
+                margin: "0 auto",
+                maxWidth: emailLayout.contentMaxWidth,
                 width: "100%",
               }}
-            />
+            >
+              <tbody>
+                <tr>
+                  <td style={cellReset}>
+                    <Img
+                      src={src}
+                      alt={alt}
+                      width={EMAIL_HERO_WIDTH}
+                      style={{
+                        border: 0,
+                        display: "block",
+                        height: "auto",
+                        margin: 0,
+                        maxWidth: "100%",
+                        outline: "none",
+                        textDecoration: "none",
+                        width: "100%",
+                      }}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </td>
         </tr>
       </tbody>
