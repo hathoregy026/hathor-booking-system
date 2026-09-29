@@ -61,7 +61,7 @@ export default function BookingError({
 
         <p className="hathor-booking-error__help">
           Still stuck? Email{" "}
-          <a href="mailto:hathoregy026@gmail.com">hathoregy026@gmail.com</a> and
+          <a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a> and
           we will complete your reservation by hand.
           {error.digest && (
             <>
