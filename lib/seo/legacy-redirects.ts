@@ -91,23 +91,13 @@ export const LEGACY_HATHORCRUISE_REDIRECTS: ReadonlyArray<readonly [source: stri
   /* Leftover WooCommerce product URL, still getting Search Console impressions. */
   ["/product/3-nights-itinerary-aswan-to-luxor-copy-copy-2", "/voyages/aswan-to-luxor"],
 
-  /* Indexed by Google on the old site with no same-slug post: nearest subject. */
-  ["/blogs/dahabiya-nile-cruise-price", "/blogs/dahabiya-cruise-cost-explained-whats-included"],
-  ["/blogs/dahabiya-nile-cruise-inclusions-exclusions", "/blogs/dahabiya-cruise-cost-explained-whats-included"],
-  ["/blogs/best-dahabiya-nile-cruise-for-families", "/blogs/what-is-the-best-dahabiya-nile-cruise"],
+  /* Indexed on the old site with no same-slug post (the rest of that list is above). */
   ["/blogs/book-luxury-nile-cruise-room", "/blogs/how-to-choose-the-right-cabin-on-a-dahabiya"],
-  ["/blogs/dahabiya-nile-cruise-itinerary", "/voyages"],
-  ["/blogs/dahabiya-nile-cruise-luxor-to-aswan-vs-aswan-to-luxor", "/voyages"],
-  ["/rooms/Dahabiya-nile", "/cruises-list"],
-  ["/rooms/Best-nile-luxury-cruise", "/cruises-list"],
-  ["/rooms/Traditional-Nile-River-boat", "/cruises-list"],
-  ["/rooms/nile-sailing-cruise", "/cruises-list"],
-  ["/page/dahabiya-hathor-deck%20plans", "/suites"],
 
   /* Renamed pages. */
   ["/luxury-cabins", "/luxury-cabins-Nile-Cruise"], // the old site's own canonical for this page
   ["/luxury-royal-suites", "/royal-suites"],
-  ["/page/dahabiya-hathor-deck%20plans", "/"], // no deck-plans page yet; repoint once one exists
+  ["/page/dahabiya-hathor-deck%20plans", "/suites"], // no deck-plans page yet; repoint once one exists
   ["/our-partners", "/partners"],
   ["/page/terms-conditions", "/terms-and-conditions"],
   ["/checkout", "/cruises-list"], // not /booking — that path is blocked in robots.txt
