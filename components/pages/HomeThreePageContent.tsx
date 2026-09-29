@@ -26,6 +26,7 @@ import { NILE_MOORINGS, NILE_TOTAL_KM } from "@/lib/nile-route";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { DeckAtlas } from "@/components/home/deck-atlas/DeckAtlas";
+import { HomeGuide } from "@/components/pages/home-three/HomeGuide";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -1080,6 +1081,12 @@ export function HomeThreePageContent({
               chapter, mosaic, display lines, two columns, the request, the
               footer. Here it carries contact, where a homepage has to end. */}
           <div className="h3-doc">
+            {/* ------------------------------ 11 · the guide · ledger + questions
+                The plain answers a searcher needs, on the page itself: what a
+                dahabiya Nile cruise is, the three voyages with their prices,
+                and the questions asked before booking. */}
+            <HomeGuide />
+
             {/* ----------------------------------- 11 · title · chapter */}
             <section
               className="h3-wrapper h3-pt-md h3-pb-sm"

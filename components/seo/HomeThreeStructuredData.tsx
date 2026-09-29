@@ -1,3 +1,4 @@
+import { GUIDE_FAQ } from "@/lib/home-guide-content";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 
 const SITE = SEO_SITE_ORIGIN;
@@ -99,32 +100,13 @@ export function HomeThreeStructuredData() {
     {
       "@type": "FAQPage",
       "@id": `${PAGE_URL}#faq`,
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "How many guests does Hathor Dahabiya carry?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "32 guests. Hathor is arranged across three decks with eight cabins of 22 sqm, two suites of 46 sqm and two Royal Suites of 56 sqm.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Where does a Hathor Nile cruise sail?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Between Luxor and Aswan, mooring at Esna, Edfu and Kom Ombo. Three-night, four-night and seven-night itineraries are available, as well as private charter.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What is a Dahabiya?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "A traditional Egyptian sailing boat. Because a Dahabiya travels under sail rather than engine and carries very few guests, it moors at quieter anchorages than a large Nile cruiser can reach.",
-          },
-        },
-      ],
+      /* The same questions the guide shows on the page (lib/home-guide-content),
+         so the markup never describes content a visitor cannot see. */
+      mainEntity: GUIDE_FAQ.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
     },
   ];
 
