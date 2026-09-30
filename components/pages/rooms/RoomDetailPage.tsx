@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import {
   useEffect,
@@ -135,7 +136,14 @@ function useSectionSpy(ids: readonly string[]): string {
   return active;
 }
 
-export function RoomDetailPage({ room }: { room: RoomShowcase }) {
+export function RoomDetailPage({
+  room,
+  reviews,
+}: {
+  room: RoomShowcase;
+  /** Server-rendered guest reviews, closing the page before the footer. */
+  reviews?: ReactNode;
+}) {
   const variant = folioVariantForRoomSlug(room.slug);
   const panels = ROOM_FOLIO_PANELS[variant];
   const collection =
@@ -545,6 +553,8 @@ export function RoomDetailPage({ room }: { room: RoomShowcase }) {
         </dialog>
 
       </main>
+
+      {reviews}
 
       {/* The site footer every public page ends on: reservations desk and links. */}
       <Footer />

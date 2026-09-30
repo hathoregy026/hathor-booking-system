@@ -1,3 +1,4 @@
+import { GuestReviews } from "@/components/public/GuestReviews";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RoomDetailPage } from "@/components/pages/rooms/RoomDetailPage";
@@ -76,7 +77,7 @@ export default async function RoomPage({
         ]}
       />
       <SiteImagesProvider images={cms.siteImages}>
-        <RoomDetailPage room={room} />
+        <RoomDetailPage room={room} reviews={<GuestReviews placement="room" />} />
       </SiteImagesProvider>
     </>
   );

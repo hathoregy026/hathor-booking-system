@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomeThreePageContent } from "@/components/pages/HomeThreePageContent";
 import { HomeThreeStructuredData } from "@/components/seo/HomeThreeStructuredData";
+import { GuestReviews } from "@/components/public/GuestReviews";
 import { PartnersCompanyStrip } from "@/components/partners/PartnersCompanyStrip";
 import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
@@ -41,6 +42,7 @@ export default async function HomePage() {
       <HomeThreePageContent
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}
+        reviews={<GuestReviews placement="home" />}
       />
       <PartnersCompanyStrip variant="teaser" />
     </HomeExperienceShell>

@@ -31,6 +31,8 @@ import { HomeGuide } from "@/components/pages/home-three/HomeGuide";
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
   heroLogoTuneMobile: HeroLogoTune;
+  /** Server-rendered guest reviews, set in the vertical document after the guide. */
+  reviews?: ReactNode;
 };
 
 /* ------------------------------------------------------------------ atoms */
@@ -363,6 +365,7 @@ const MOSAIC = [
 export function HomeThreePageContent({
   heroLogoTune,
   heroLogoTuneMobile,
+  reviews,
 }: HomeThreeProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const cabinPrices = useCabinPrices();
@@ -1086,6 +1089,8 @@ export function HomeThreePageContent({
                 dahabiya Nile cruise is, the three voyages with their prices,
                 and the questions asked before booking. */}
             <HomeGuide />
+
+            {reviews}
 
             {/* ----------------------------------- 11 · title · chapter */}
             <section
