@@ -1,0 +1,19 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && git config user.name hathoregy026 && git config user.email hathoregy026@gmail.com 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
