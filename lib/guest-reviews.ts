@@ -31,6 +31,8 @@ export const GOOGLE_REVIEWS_FALLBACK_URL =
 export type GuestReview = {
   author: string;
   authorUrl: string | null;
+  /** The reviewer's Google profile photo (googleusercontent.com only). */
+  photo: string | null;
   rating: number;
   text: string;
   when: string;
@@ -51,7 +53,7 @@ type PlacesReview = {
   originalText?: { text?: string };
   relativePublishTimeDescription?: string;
   googleMapsUri?: string;
-  authorAttribution?: { displayName?: string; uri?: string };
+  authorAttribution?: { displayName?: string; uri?: string; photoUri?: string };
 };
 
 type PlacesPlace = {
@@ -104,6 +106,17 @@ function httpsOrNull(value: string | undefined): string | null {
   return value && value.startsWith("https://") ? value : null;
 }
 
+/** Only Google's own photo host, which the site's image policy allows. */
+function googlePhotoOrNull(value: string | undefined): string | null {
+  const url = httpsOrNull(value);
+  if (!url) return null;
+  try {
+    return new URL(url).hostname === "lh3.googleusercontent.com" ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 /** The live Google rating and reviews, or null when there is no key or Google does not answer. */
 export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY?.trim();
@@ -121,6 +134,7 @@ export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
         return {
           author,
           authorUrl: httpsOrNull(review.authorAttribution?.uri),
+          photo: googlePhotoOrNull(review.authorAttribution?.photoUri),
           rating: Math.max(0, Math.min(5, Math.round(review.rating ?? 0))),
           text,
           when: review.relativePublishTimeDescription ?? "",

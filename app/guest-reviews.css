@@ -1,10 +1,16 @@
 /*
- * Guest reviews — a ledger in the house type.
+ * Guest reviews — the house type with Google's own marks as the source.
  *
- * Left: the kicker, the display title and the Google score set as a large
- * figure. Right: the reviews as numbered entries on hairlines, not cards —
- * the same paper, ink and restrained gold the editorial pages use. Night
- * remaps the tokens only; the layout never changes with the theme.
+ * Left: kicker, the Italiana title, a Google badge (the "G", the rating as a
+ * large figure, the stars and the count) and the pills. Right: the reviews on
+ * hairlines, each opening the way Google shows a review — photo, name, stars,
+ * when, and the "G" — then the guest's words in the house serif.
+ *
+ * At 950px and below the head packs tight and the reviews become one swipe
+ * row, so the section stays about a screen tall on phones.
+ *
+ * Font stacks are literal on purpose: a var() that is not defined on the page
+ * invalidates the whole font-family declaration.
  */
 
 .gr {
@@ -14,13 +20,14 @@
   --gr-gold: #b69f64;
   --gr-gold-deep: #806b35;
   --gr-hair: rgb(20 18 14 / 16%);
+  --gr-star: #b69f64;
   --gr-star-ground: rgb(20 18 14 / 14%);
-  --gr-display: "Italiana", var(--font-hathor-display), "Gamgote", Georgia, serif;
+  --gr-avatar: #ded4c6;
+  --gr-display: "Italiana", "Gamgote", Georgia, serif;
   --gr-edit: "Playfair Display", Georgia, "Times New Roman", serif;
-  --gr-support: "Rollgates Luxury Italic", "Playfair Display", Georgia, serif;
-  --gr-meta: "Piloner Thin", var(--font-hathor-body), "Plus Jakarta Sans", Arial, sans-serif;
-  /* Piloner's digits are broken ("4" renders as "±"): numbers take the body face. */
-  --gr-num: var(--font-hathor-body), "Plus Jakarta Sans", Arial, sans-serif;
+  --gr-meta: "Piloner Thin", "Plus Jakarta Sans", Arial, sans-serif;
+  /* Piloner's digits are broken ("4" renders as "±"): numbers take this face. */
+  --gr-num: "Plus Jakarta Sans", Arial, sans-serif;
   --gr-pad: clamp(1.1rem, 1.74vw, 1.6rem);
 
   position: relative;
@@ -37,7 +44,9 @@ html[data-public-theme="night"] .gr {
   --gr-gold: var(--night-gold, #e9e1d3);
   --gr-gold-deep: var(--night-text-soft, #c8bda9);
   --gr-hair: var(--night-line-soft, rgb(233 225 211 / 12%));
+  --gr-star: #cbb079;
   --gr-star-ground: rgb(233 225 211 / 16%);
+  --gr-avatar: var(--night-panel, #241d15);
 }
 
 .gr__grid {
@@ -57,7 +66,7 @@ html[data-public-theme="night"] .gr {
   top: 6rem;
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1.5rem;
   min-width: 0;
 }
 
@@ -79,52 +88,69 @@ html[data-public-theme="night"] .gr {
 
 .gr__title {
   margin: 0;
+  display: flex;
+  flex-direction: column;
   font-family: var(--gr-display);
   font-weight: 400;
-  font-size: clamp(2.5rem, 5.2vw, 5.6rem);
-  line-height: 0.96;
-  letter-spacing: -0.01em;
+  font-size: clamp(2.6rem, 5.4vw, 5.8rem);
+  line-height: 0.94;
+  letter-spacing: 0.005em;
   text-transform: uppercase;
   color: var(--gr-ink);
 }
 
-.gr__title em {
-  display: block;
-  font-family: var(--gr-support);
-  font-style: italic;
-  text-transform: none;
-  font-size: 0.62em;
-  letter-spacing: 0;
-  line-height: 1.1;
+.gr__title-accent {
   color: var(--gr-gold-deep);
 }
 
-.gr__lede {
-  margin: 0;
-  max-width: 34ch;
-  font-family: var(--gr-support);
-  font-style: italic;
-  font-size: clamp(0.98rem, 1.1vw, 1.16rem);
-  line-height: 1.55;
-  color: var(--gr-ink-soft);
+.gr__grid--solo .gr__title {
+  align-items: center;
+}
+
+/* The Google badge: source mark, then the score. */
+.gr__badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.1rem 0 1.2rem;
+  border-top: 1px solid var(--gr-hair);
+  border-bottom: 1px solid var(--gr-hair);
+}
+
+.gr__grid--solo .gr__badge {
+  align-items: center;
+  width: min(100%, 30rem);
+}
+
+.gr__badge-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--gr-num);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gr-ink);
+}
+
+.gr__g {
+  display: block;
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .gr__score {
   display: flex;
   align-items: center;
   gap: 1.1rem;
-  padding: 1.1rem 0;
-  border-top: 1px solid var(--gr-hair);
-  border-bottom: 1px solid var(--gr-hair);
 }
 
 .gr__figure {
-  font-family: var(--gr-num);
-  font-weight: 300;
-  font-size: clamp(3.2rem, 5vw, 5rem);
-  line-height: 0.9;
-  letter-spacing: -0.03em;
-  font-variant-numeric: lining-nums;
+  font-family: var(--gr-display);
+  font-size: clamp(3.4rem, 5.2vw, 5.4rem);
+  line-height: 0.85;
   color: var(--gr-ink);
 }
 
@@ -138,40 +164,66 @@ html[data-public-theme="night"] .gr {
 .gr__count {
   margin: 0;
   font-family: var(--gr-num);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gr-ink-soft);
 }
 
+.gr__lede {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--gr-edit);
+  font-style: italic;
+  font-size: clamp(0.98rem, 1.1vw, 1.12rem);
+  line-height: 1.55;
+  color: var(--gr-ink-soft);
+}
+
 .gr__actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
   gap: 0.75rem;
+}
+
+.gr__actions:has(> :only-child) {
+  grid-template-columns: minmax(0, max-content);
 }
 
 .gr__grid--solo .gr__actions {
   justify-content: center;
 }
 
-/* One peer width for the group, whatever the label length. `:not(#_)` lifts
-   the rule over the shared pill geometry, the way the button system does. */
-.gr .gr__actions .gr__btn:not(#_) {
-  min-width: 13rem !important;
+/* One peer width for the pair. The second `:not()` lifts this over the
+   shared pill geometry and the phone pill rule in button-system.css. */
+.gr .gr__actions .gr__btn:not(#_):not(#__) {
+  width: 100% !important;
+  min-width: 12.5rem !important;
 }
 
-.gr__source {
-  margin: 0;
+.gr__also {
+  align-self: flex-start;
   font-family: var(--gr-num);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: var(--gr-ink-soft);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gr-gold-deep);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 0.2rem;
+}
+
+.gr__grid--solo .gr__also {
+  align-self: center;
 }
 
 /* ----------------------------------------------------------------- stars */
 .gr__stars {
   display: inline-flex;
-  gap: 0.18rem;
+  gap: 0.16rem;
   line-height: 0;
 }
 
@@ -185,8 +237,8 @@ html[data-public-theme="night"] .gr {
 }
 
 .gr__stars--sm svg {
-  width: 0.78rem;
-  height: 0.78rem;
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .gr__star-ground {
@@ -194,7 +246,7 @@ html[data-public-theme="night"] .gr {
 }
 
 .gr__star-fill {
-  fill: var(--gr-gold);
+  fill: var(--gr-star);
 }
 
 /* ---------------------------------------------------------------- ledger */
@@ -219,22 +271,80 @@ html[data-public-theme="night"] .gr {
   grid-column: 1 / -1;
 }
 
-.gr__figure-block {
+.gr__card {
   margin: 0;
-  padding: 1.6rem 0 2.2rem;
-  display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr);
-  column-gap: 0.9rem;
-  row-gap: 1rem;
+  padding: 1.5rem 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
 }
 
-.gr__num {
-  grid-row: 1 / span 2;
+.gr__who {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.8rem;
+  min-width: 0;
+}
+
+.gr__avatar {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--gr-avatar);
+  font-family: var(--gr-display);
+  font-size: 1.15rem;
+  color: var(--gr-ink);
+}
+
+.gr__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gr__who-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.gr__author {
+  font-style: normal;
+  font-family: var(--gr-num);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gr-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gr__rating-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
+}
+
+.gr__when {
   font-family: var(--gr-num);
   font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  color: var(--gr-gold-deep);
-  padding-top: 0.35rem;
+  letter-spacing: 0.06em;
+  color: var(--gr-ink-soft);
+}
+
+.gr__g--entry {
+  width: 1rem;
+  height: 1rem;
 }
 
 .gr__quote {
@@ -245,42 +355,23 @@ html[data-public-theme="night"] .gr {
 .gr__quote p {
   margin: 0;
   font-family: var(--gr-edit);
-  font-size: clamp(1rem, 1.12vw, 1.18rem);
-  line-height: 1.6;
+  font-size: clamp(0.98rem, 1.08vw, 1.14rem);
+  line-height: 1.62;
   color: var(--gr-ink);
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 7;
-  line-clamp: 7;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
   overflow: hidden;
 }
 
 .gr__entry:first-child .gr__quote p {
-  font-family: var(--gr-support);
   font-style: italic;
-  font-size: clamp(1.25rem, 1.72vw, 1.85rem);
-  line-height: 1.42;
-  -webkit-line-clamp: 5;
-  line-clamp: 5;
-}
-
-.gr__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.9rem;
-  min-width: 0;
-  font-family: var(--gr-num);
-  font-size: 0.74rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gr-ink-soft);
-}
-
-.gr__author {
-  font-style: normal;
-  color: var(--gr-ink);
+  font-size: clamp(1.2rem, 1.6vw, 1.7rem);
+  line-height: 1.45;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
 }
 
 .gr__author a,
@@ -295,8 +386,13 @@ html[data-public-theme="night"] .gr {
 }
 
 .gr__more {
-  margin-left: auto;
+  align-self: flex-start;
+  font-family: var(--gr-num);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--gr-gold-deep);
+  padding-bottom: 0.15rem;
 }
 
 @media (hover: hover) {
@@ -306,11 +402,18 @@ html[data-public-theme="night"] .gr {
   }
 }
 
-.gr__author a:focus-visible,
-.gr__more:focus-visible {
+.gr a:focus-visible {
   outline: 2px solid var(--gr-gold);
   outline-offset: 3px;
-  background-size: 100% 1px;
+}
+
+.gr__source {
+  max-width: 100rem;
+  margin: 2.5rem auto 0;
+  font-family: var(--gr-num);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--gr-ink-soft);
 }
 
 .gr__sr {
@@ -328,50 +431,101 @@ html[data-public-theme="night"] .gr {
     grid-column: 1 / span 5;
   }
   .gr__ledger {
-    grid-column: 6 / -1;
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
-/* The structural switch the editorial pages share: one vertical document. */
+/*
+ * The structural switch the editorial pages share. The head packs into a
+ * short block and the reviews become one swipe row: the next review peeks at
+ * the edge, so the row reads as more to see without growing the page.
+ */
 @media (max-width: 950px) {
-  .gr__head,
-  .gr__ledger {
-    grid-column: 1 / -1;
+  .gr {
+    padding-top: clamp(3rem, 8vw, 4.5rem);
+    padding-bottom: clamp(2.5rem, 7vw, 4rem);
+  }
+  .gr__grid {
+    row-gap: 1.8rem;
   }
   .gr__head {
+    grid-column: 1 / -1;
     position: static;
+    gap: 1.1rem;
   }
+  .gr__title {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 0.28em;
+    font-size: clamp(2.1rem, 8.4vw, 3.6rem);
+  }
+  .gr__badge {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem 1rem;
+    padding: 0.9rem 0;
+  }
+  .gr__figure {
+    font-size: clamp(2.6rem, 11vw, 3.4rem);
+  }
+
   .gr__ledger {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 1rem;
+    margin: 0 calc(var(--gr-pad) * -1);
+    padding: 0 var(--gr-pad);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gr-pad);
+    scrollbar-width: none;
+  }
+  .gr__ledger::-webkit-scrollbar {
+    display: none;
+  }
+  .gr__entry,
+  .gr__entry:first-child {
+    flex: 0 0 min(84%, 26rem);
+    scroll-snap-align: start;
+    border-top: 0;
+    border-left: 1px solid var(--gr-hair);
+    padding-left: 1rem;
+  }
+  .gr__entry:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .gr__card {
+    padding: 0.2rem 0 0.4rem;
+    gap: 0.8rem;
+  }
+  .gr__entry:first-child .gr__quote p,
+  .gr__quote p {
+    font-style: normal;
+    font-size: 1rem;
+    line-height: 1.58;
+    -webkit-line-clamp: 7;
+    line-clamp: 7;
+  }
+  .gr__source {
+    margin-top: 1.5rem;
   }
 }
 
 @media (max-width: 640px) {
-  .gr {
-    padding-top: 3.5rem;
-    padding-bottom: 3rem;
+  .gr__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .gr__ledger {
+  .gr__actions:has(> :only-child) {
     grid-template-columns: minmax(0, 1fr);
   }
-  /* Phones stack the pills in one column sized to the longest label, so the
-     three share one width without growing wider than the site's phone pills.
-     The second `:not()` outranks the phone pill rule in button-system.css. */
-  .gr__actions {
-    display: grid;
-    grid-template-columns: minmax(0, max-content);
-    justify-content: start;
-  }
-  .gr__grid--solo .gr__actions {
-    justify-content: center;
-  }
   .gr .gr__actions .gr__btn:not(#_):not(#__) {
-    width: 100% !important;
     min-width: 0 !important;
-  }
-  .gr__more {
-    margin-left: 0;
+    max-width: none !important;
+    padding-inline: 0.6rem !important;
   }
 }
 
@@ -379,5 +533,8 @@ html[data-public-theme="night"] .gr {
   .gr__author a,
   .gr__more {
     transition: none;
+  }
+  .gr__ledger {
+    scroll-behavior: auto;
   }
 }

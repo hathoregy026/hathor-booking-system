@@ -15,7 +15,7 @@ const CSP_DIRECTIVES = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com https://lh3.googleusercontent.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https://jgkmiettciwacrpcubil.supabase.co https://images.unsplash.com https://hathor-booking-system.vercel.app https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com",
   "media-src 'self' blob: https://jgkmiettciwacrpcubil.supabase.co",
