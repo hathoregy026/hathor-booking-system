@@ -1,6 +1,6 @@
 /**
  * Tripadvisor rating and reviews for the public site, read through the
- * official Tripadvisor Content API and cached for half a day.
+ * official Tripadvisor Content API and cached for a week.
  *
  * Shown as Tripadvisor returns them: each review keeps its author, its
  * Tripadvisor bubble rating and a link back to the review on Tripadvisor.
@@ -14,7 +14,9 @@ import { tripadvisorUrl, type GuestReview, type GuestReviewsData } from "@/lib/g
 import { CUSTOM_DOMAIN_ORIGIN } from "@/lib/public-url";
 
 const CONTENT_API = "https://api.content.tripadvisor.com/api/v1";
-const CACHE_SECONDS = 60 * 60 * 12;
+/* Weekly: the free Tripadvisor allowance is one-time, not monthly, and
+   reviews there change slowly — two calls a week keeps it for years. */
+const CACHE_SECONDS = 60 * 60 * 24 * 7;
 
 type TripadvisorDetails = {
   location_id?: string;
