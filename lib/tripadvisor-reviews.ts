@@ -33,6 +33,7 @@ type TripadvisorLocation = {
 /* Review field names are read defensively: the API documents the shape
    loosely, so every likely spelling is accepted. */
 type TripadvisorReview = {
+  id?: unknown;
   rating?: unknown;
   title?: unknown;
   text?: unknown;
@@ -186,9 +187,18 @@ const MAX_PAGES = 3;
 
 type ReviewPage = { data: TripadvisorReview[]; pagination?: unknown };
 
-async function reviewPage(id: string, page: number, key: string): Promise<ReviewPage | null> {
+/* "en" returns English reviews (and English translations Tripadvisor holds);
+   "primary" returns every review in the language its guest wrote it in. */
+type ReviewLanguage = "en" | "primary";
+
+async function reviewPage(
+  id: string,
+  page: number,
+  key: string,
+  language: ReviewLanguage,
+): Promise<ReviewPage | null> {
   const body = await getJson<{ data?: unknown; pagination?: unknown }>(
-    `/locations/${id}/reviews?page=${page}&size=${REVIEW_COUNT}`,
+    `/locations/${id}/reviews?page=${page}&size=${REVIEW_COUNT}&language=${language}`,
     key,
   );
   if (!body) return null;
@@ -222,6 +232,38 @@ function morePages(pagination: unknown): { has(page: number): boolean } {
   };
 }
 
+/** Every review in one language, following further pages when Tripadvisor says there are more. */
+async function reviewsIn(id: string, key: string, language: ReviewLanguage): Promise<TripadvisorReview[]> {
+  const first = await reviewPage(id, 1, key, language);
+  const reviews = [...(first?.data ?? [])];
+  const pages = morePages(first?.pagination);
+  for (let page = 2; page <= MAX_PAGES && reviews.length < REVIEW_COUNT && pages.has(page); page += 1) {
+    const next = await reviewPage(id, page, key, language);
+    if (!next?.data?.length) break;
+    reviews.push(...next.data);
+  }
+  return reviews;
+}
+
+/** One review's identity, so the English and original-language lists can be merged. */
+function reviewKey(review: TripadvisorReview): string {
+  if (typeof review.id === "string" || typeof review.id === "number") return `id:${review.id}`;
+  const url = reviewUrl(review);
+  if (url) return `url:${url}`;
+  return `at:${String(review.publish_ts ?? review.published_date ?? review.publish_date ?? "")}:${plain(review.user?.username)}`;
+}
+
+function publishedAt(review: TripadvisorReview): number {
+  const value = review.publish_ts ?? review.published_date ?? review.publish_date;
+  if (value == null || value === "") return 0;
+  if (typeof value === "number" || /^\d+$/.test(value)) {
+    const n = Number(value);
+    return n < 1e12 ? n * 1000 : n;
+  }
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
 /** The live Tripadvisor rating and reviews, or null when there is no key or Tripadvisor does not answer. */
 export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null> {
   const key = process.env.TRIPADVISOR_API_KEY?.trim();
@@ -229,25 +271,26 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
   if (!key || !id) return null;
 
   try {
-    const [location, first] = await Promise.all([
+    const [location, english, original] = await Promise.all([
       getJson<TripadvisorLocation>(`/locations/${id}`, key),
-      reviewPage(id, 1, key),
+      reviewsIn(id, key, "en"),
+      reviewsIn(id, key, "primary"),
     ]);
     if (!location) return null;
 
-    /* Follow further pages when Tripadvisor says there are more than the first page holds. */
-    const raw = [...(first?.data ?? [])];
-    const total = morePages(first?.pagination);
-    for (let page = 2; page <= MAX_PAGES && raw.length < REVIEW_COUNT && total.has(page); page += 1) {
-      const next = await reviewPage(id, page, key);
-      if (!next?.data?.length) break;
-      raw.push(...next.data);
+    /* English where Tripadvisor has it; otherwise the guest's own words. Newest first. */
+    const merged = new Map<string, TripadvisorReview>();
+    for (const review of english) merged.set(reviewKey(review), review);
+    for (const review of original) {
+      const identity = reviewKey(review);
+      if (!merged.has(identity)) merged.set(identity, review);
     }
+    const raw = [...merged.values()].sort((a, b) => publishedAt(b) - publishedAt(a));
     const reviews = raw
       .map((review): GuestReview | null => {
         const text = plain(review.text) || plain(review.body);
         const author =
-          plain(review.user?.username) || plain(review.user?.display_name) || plain(review.user?.name);
+          plain(review.user?.display_name) || plain(review.user?.name) || plain(review.user?.username);
         if (!text || !author) return null;
         return {
           author,
@@ -262,10 +305,10 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
       })
       .filter((review): review is GuestReview => review !== null);
     console.log(
-      `[guest-reviews] Tripadvisor returned ${raw.length} reviews, showing ${reviews.length}, ` +
-        `${reviews.filter((review) => review.photo).length} with photos`,
+      `[guest-reviews] Tripadvisor returned ${english.length} English and ${original.length} original-language ` +
+        `reviews, showing ${reviews.length}, ${reviews.filter((review) => review.photo).length} with photos`,
     );
-    if (raw.length && reviews.some((review) => !review.photo)) {
+    if (raw.length) {
       console.log(`[guest-reviews] Tripadvisor review shape: ${JSON.stringify(describe(raw[0]))}`);
     }
 
