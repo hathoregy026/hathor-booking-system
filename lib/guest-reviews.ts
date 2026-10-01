@@ -69,6 +69,18 @@ export function tripadvisorUrl(): string | null {
   return raw && /^https:\/\/([a-z0-9-]+\.)*tripadvisor\.[a-z.]+\//i.test(raw) ? raw : null;
 }
 
+/** Logs Google's own error text (never the key) so a failure is visible in the deployment logs. */
+async function logPlacesFailure(res: Response): Promise<void> {
+  let message = "";
+  try {
+    const body = (await res.json()) as { error?: { status?: string; message?: string } };
+    message = [body.error?.status, body.error?.message].filter(Boolean).join(": ");
+  } catch {
+    /* not JSON */
+  }
+  console.error(`[guest-reviews] Places API ${res.status}${message ? ` — ${message}` : ""}`);
+}
+
 async function fetchPlace(key: string): Promise<PlacesPlace | null> {
   const pinned = process.env.GOOGLE_PLACE_ID?.trim();
   const init = {
@@ -84,7 +96,11 @@ async function fetchPlace(key: string): Promise<PlacesPlace | null> {
         headers: { "X-Goog-Api-Key": key, "X-Goog-FieldMask": FIELDS.join(",") },
       },
     );
-    return res.ok ? ((await res.json()) as PlacesPlace) : null;
+    if (!res.ok) {
+      await logPlacesFailure(res);
+      return null;
+    }
+    return (await res.json()) as PlacesPlace;
   }
 
   const res = await fetch(`${PLACES_ENDPOINT}/places:searchText`, {
@@ -97,8 +113,12 @@ async function fetchPlace(key: string): Promise<PlacesPlace | null> {
     },
     body: JSON.stringify({ textQuery: SEARCH_QUERY, languageCode: "en", pageSize: 1 }),
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    await logPlacesFailure(res);
+    return null;
+  }
   const body = (await res.json()) as { places?: PlacesPlace[] };
+  if (!body.places?.length) console.error("[guest-reviews] Places search found no listing");
   return body.places?.[0] ?? null;
 }
 
@@ -150,7 +170,8 @@ export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
       writeUrl: `https://search.google.com/local/writereview?placeid=${encodeURIComponent(place.id)}`,
       reviews,
     };
-  } catch {
+  } catch (error) {
+    console.error("[guest-reviews] Places request failed:", error instanceof Error ? error.message : error);
     return null;
   }
 }
