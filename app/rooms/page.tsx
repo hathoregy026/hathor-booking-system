@@ -1,3 +1,4 @@
+import { GuestReviews } from "@/components/public/GuestReviews";
 import type { Metadata } from "next";
 import { RoomCollectionEditorialPage } from "@/components/pages/rooms/RoomCollectionEditorialPage";
 import { ROOM_SHOWCASES } from "@/lib/room-showcase";
@@ -56,6 +57,7 @@ export default async function RoomsPage() {
           <RoomCollectionEditorialPage
             variant="suites"
             rooms={ROOM_SHOWCASES.filter((room) => room.slug === "luxury-suite")}
+            reviews={<GuestReviews placement="room" />}
           />
         </PublicCmsTextRuntime>
       </SiteImagesProvider>

@@ -40,6 +40,8 @@ import { resolveCmsText } from "@/lib/website-text-shared";
 type RoomCollectionEditorialPageProps = {
   variant: RoomCollectionVariant;
   rooms?: readonly RoomShowcase[];
+  /** Server-rendered guest reviews, closing the page before the footer. */
+  reviews?: ReactNode;
 };
 
 function Scene({
@@ -277,6 +279,7 @@ function CharterGrid({ room }: { room: RoomShowcase }) {
 export function RoomCollectionEditorialPage({
   variant,
   rooms: roomsProp,
+  reviews,
 }: RoomCollectionEditorialPageProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
@@ -655,6 +658,8 @@ export function RoomCollectionEditorialPage({
         </section>
         <RoomFolioAccordion variant={variant} />
         </main>
+
+        {reviews}
 
         <Footer />
       </div>
