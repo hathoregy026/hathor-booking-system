@@ -17,7 +17,7 @@ const CSP_DIRECTIVES = [
   "form-action 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://jgkmiettciwacrpcubil.supabase.co https://images.unsplash.com https://hathor-booking-system.vercel.app https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://lh3.googleusercontent.com",
+  "img-src 'self' data: blob: https://jgkmiettciwacrpcubil.supabase.co https://images.unsplash.com https://hathor-booking-system.vercel.app https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://lh3.googleusercontent.com https://media-cdn.tripadvisor.com https://dynamic-media-cdn.tripadvisor.com",
   "media-src 'self' blob: https://jgkmiettciwacrpcubil.supabase.co",
   "font-src 'self' data: https://fonts.gstatic.com",
   "connect-src 'self' https://jgkmiettciwacrpcubil.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",

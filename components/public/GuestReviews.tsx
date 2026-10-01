@@ -2,12 +2,22 @@ import {
   GOOGLE_REVIEWS_FALLBACK_URL,
   loadGuestReviews,
   tripadvisorUrl,
+  type GuestReviewsData,
 } from "@/lib/guest-reviews";
+import { loadTripadvisorReviews } from "@/lib/tripadvisor-reviews";
+import { GuestReviewsSwitch, type GuestReviewsSource } from "@/components/public/GuestReviewsSwitch";
 import "@/app/guest-reviews.css";
 
 type GuestReviewsProps = {
   /** Home sits in the editorial document; room pages close on it before the footer. */
   placement: "home" | "room";
+};
+
+type Source = GuestReviewsData["source"];
+
+const SOURCE_LABEL: Record<Source, string> = {
+  google: "Google",
+  tripadvisor: "Tripadvisor",
 };
 
 const STAR_PATH =
@@ -25,13 +35,42 @@ function GoogleMark({ className }: { className?: string }) {
   );
 }
 
-function Stars({ value, size, id }: { value: number; size: "lg" | "sm"; id: string }) {
+/** Tripadvisor's rating bubble in its green, as a small source mark beside the name. */
+function TripadvisorMark({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="10.5" fill="none" stroke="#00AA6C" strokeWidth="2" />
+      <circle cx="12" cy="12" r="6.5" fill="#00AA6C" />
+    </svg>
+  );
+}
+
+function SourceMark({ source, className }: { source: Source; className?: string }) {
+  return source === "google" ? (
+    <GoogleMark className={className} />
+  ) : (
+    <TripadvisorMark className={className} />
+  );
+}
+
+/** Google shows stars; Tripadvisor shows its five bubbles. Same reading either way. */
+function Rating({
+  value,
+  size,
+  id,
+  source,
+}: {
+  value: number;
+  size: "lg" | "sm";
+  id: string;
+  source: Source;
+}) {
   const rounded = Math.round(value * 2) / 2;
   return (
     <span
-      className={`gr__stars gr__stars--${size}`}
+      className={`gr__stars gr__stars--${size} gr__stars--${source}`}
       role="img"
-      aria-label={`Rated ${value.toFixed(1)} out of 5`}
+      aria-label={`Rated ${value.toFixed(1)} out of 5 on ${SOURCE_LABEL[source]}`}
     >
       {[0, 1, 2, 3, 4].map((index) => {
         const fill = rounded >= index + 1 ? "full" : rounded >= index + 0.5 ? "half" : "none";
@@ -45,14 +84,31 @@ function Stars({ value, size, id }: { value: number; size: "lg" | "sm"; id: stri
                 </clipPath>
               </defs>
             ) : null}
-            <path className="gr__star-ground" d={STAR_PATH} />
-            {fill !== "none" ? (
-              <path
-                className="gr__star-fill"
-                d={STAR_PATH}
-                clipPath={fill === "half" ? `url(#${clip})` : undefined}
-              />
-            ) : null}
+            {source === "google" ? (
+              <>
+                <path className="gr__star-ground" d={STAR_PATH} />
+                {fill !== "none" ? (
+                  <path
+                    className="gr__star-fill"
+                    d={STAR_PATH}
+                    clipPath={fill === "half" ? `url(#${clip})` : undefined}
+                  />
+                ) : null}
+              </>
+            ) : (
+              <>
+                <circle className="gr__bubble-ring" cx="12" cy="12" r="9.5" />
+                {fill !== "none" ? (
+                  <circle
+                    className="gr__bubble-fill"
+                    cx="12"
+                    cy="12"
+                    r="9.5"
+                    clipPath={fill === "half" ? `url(#${clip})` : undefined}
+                  />
+                ) : null}
+              </>
+            )}
           </svg>
         );
       })}
@@ -84,147 +140,214 @@ function External({
   );
 }
 
-/**
- * Guest reviews — the live Google rating and the reviews Google returns, set
- * in the house type with Google's own marks as the source, and links out to
- * read or write more on Google and Tripadvisor. Without a Places key it still
- * invites visitors to read the reviews at the source.
- */
-export async function GuestReviews({ placement }: GuestReviewsProps) {
-  const data = await loadGuestReviews();
-  const tripadvisor = tripadvisorUrl();
-  const readUrl = data?.readUrl ?? GOOGLE_REVIEWS_FALLBACK_URL;
-  const reviews = data?.reviews ?? [];
-  const headingId = `gr-title-${placement}`;
-
+function SourceHead({
+  data,
+  placement,
+  alsoTripadvisor,
+}: {
+  data: GuestReviewsData;
+  placement: string;
+  alsoTripadvisor: string | null;
+}) {
+  const label = SOURCE_LABEL[data.source];
   return (
-    <section className={`gr gr--${placement}`} aria-labelledby={headingId}>
-      <div className={`gr__grid${reviews.length ? "" : " gr__grid--solo"}`}>
-        <header className="gr__head">
-          <p className="gr__kicker">Guest reviews</p>
-          <h2 id={headingId} className="gr__title">
-            <span>In their</span>
-            <span className="gr__title-accent">own words</span>
-          </h2>
-
-          <div className="gr__badge">
-            <div className="gr__badge-source">
-              <GoogleMark className="gr__g" />
-              <span>Google Reviews</span>
+    <>
+      <div className="gr__badge">
+        <div className="gr__badge-source">
+          <SourceMark source={data.source} className="gr__g" />
+          <span>{label} reviews</span>
+        </div>
+        {data.rating != null ? (
+          <div className="gr__score">
+            <span className="gr__figure">{data.rating.toFixed(1)}</span>
+            <div className="gr__score-side">
+              <Rating
+                value={data.rating}
+                size="lg"
+                id={`${placement}-${data.source}-score`}
+                source={data.source}
+              />
+              {data.count != null ? (
+                <p className="gr__count">
+                  Based on {data.count.toLocaleString("en-GB")}{" "}
+                  {data.count === 1 ? "review" : "reviews"}
+                </p>
+              ) : null}
             </div>
-            {data?.rating != null ? (
-              <div className="gr__score">
-                <span className="gr__figure">{data.rating.toFixed(1)}</span>
-                <div className="gr__score-side">
-                  <Stars value={data.rating} size="lg" id={`${placement}-score`} />
-                  {data.count != null ? (
-                    <p className="gr__count">
-                      Based on {data.count.toLocaleString("en-GB")}{" "}
-                      {data.count === 1 ? "review" : "reviews"}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            ) : (
-              <p className="gr__lede">
-                Read what guests say after a voyage aboard Hathor, on Google
-                {tripadvisor ? " and Tripadvisor" : ""}.
-              </p>
-            )}
           </div>
-
-          <div className="gr__actions">
-            <External href={readUrl} className="room-pill gr__btn" primary>
-              Read reviews
-            </External>
-            {data?.writeUrl ? (
-              <External href={data.writeUrl} className="room-pill gr__btn">
-                Write a review
-              </External>
-            ) : null}
-          </div>
-
-          {tripadvisor ? (
-            <a
-              className="gr__also"
-              href={tripadvisor}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Also reviewed on Tripadvisor
-            </a>
-          ) : null}
-        </header>
-
-        {reviews.length ? (
-          <ol className="gr__ledger" aria-label="Recent reviews from Google">
-            {reviews.map((review, index) => (
-              <li key={`${review.author}-${index}`} className="gr__entry">
-                <figure className="gr__card">
-                  <figcaption className="gr__who">
-                    <span className="gr__avatar" aria-hidden="true">
-                      {review.photo ? (
-                        // Google's own profile photo; next/image is not configured for this host.
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={review.photo}
-                          alt=""
-                          width={40}
-                          height={40}
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                        />
-                      ) : (
-                        <span>{review.author.charAt(0).toUpperCase()}</span>
-                      )}
-                    </span>
-                    <span className="gr__who-text">
-                      <cite className="gr__author">
-                        {review.authorUrl ? (
-                          <a
-                            href={review.authorUrl}
-                            target="_blank"
-                            rel="noopener noreferrer nofollow"
-                          >
-                            {review.author}
-                          </a>
-                        ) : (
-                          review.author
-                        )}
-                      </cite>
-                      <span className="gr__rating-line">
-                        <Stars value={review.rating} size="sm" id={`${placement}-${index}`} />
-                        {review.when ? <span className="gr__when">{review.when}</span> : null}
-                      </span>
-                    </span>
-                    <GoogleMark className="gr__g gr__g--entry" />
-                  </figcaption>
-                  <blockquote className="gr__quote">
-                    <p>{review.text}</p>
-                  </blockquote>
-                  {review.url ? (
-                    <a
-                      className="gr__more"
-                      href={review.url}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                    >
-                      Read on Google
-                      <span className="gr__sr"> — review by {review.author}</span>
-                    </a>
-                  ) : null}
-                </figure>
-              </li>
-            ))}
-          </ol>
         ) : null}
       </div>
 
-      {reviews.length ? (
-        <p className="gr__source">
-          Ratings and reviews from Google Maps, shown as written by guests.
-        </p>
+      <div className="gr__actions">
+        <External href={data.readUrl} className="room-pill gr__btn" primary>
+          Read reviews
+        </External>
+        {data.writeUrl ? (
+          <External href={data.writeUrl} className="room-pill gr__btn">
+            Write a review
+          </External>
+        ) : null}
+      </div>
+
+      {alsoTripadvisor ? (
+        <a className="gr__also" href={alsoTripadvisor} target="_blank" rel="noopener noreferrer">
+          Also reviewed on Tripadvisor
+        </a>
       ) : null}
+    </>
+  );
+}
+
+function SourceLedger({ data, placement }: { data: GuestReviewsData; placement: string }) {
+  const label = SOURCE_LABEL[data.source];
+  if (!data.reviews.length) return null;
+  return (
+    <>
+      <ol className="gr__ledger" aria-label={`Recent reviews from ${label}`}>
+        {data.reviews.map((review, index) => (
+          <li key={`${review.author}-${index}`} className="gr__entry">
+            <figure className="gr__card">
+              <figcaption className="gr__who">
+                <span className="gr__avatar" aria-hidden="true">
+                  {review.photo ? (
+                    // The platform's own profile photo; next/image is not configured for these hosts.
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={review.photo}
+                      alt=""
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span>{review.author.charAt(0).toUpperCase()}</span>
+                  )}
+                </span>
+                <span className="gr__who-text">
+                  <cite className="gr__author">
+                    {review.authorUrl ? (
+                      <a href={review.authorUrl} target="_blank" rel="noopener noreferrer nofollow">
+                        {review.author}
+                      </a>
+                    ) : (
+                      review.author
+                    )}
+                  </cite>
+                  <span className="gr__rating-line">
+                    <Rating
+                      value={review.rating}
+                      size="sm"
+                      id={`${placement}-${data.source}-${index}`}
+                      source={data.source}
+                    />
+                    {review.when ? <span className="gr__when">{review.when}</span> : null}
+                  </span>
+                </span>
+                <SourceMark source={data.source} className="gr__g gr__g--entry" />
+              </figcaption>
+              <blockquote className="gr__quote">
+                {review.title ? <p className="gr__quote-title">{review.title}</p> : null}
+                <p>{review.text}</p>
+              </blockquote>
+              {review.url ? (
+                <a
+                  className="gr__more"
+                  href={review.url}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                >
+                  Read on {label}
+                  <span className="gr__sr"> — review by {review.author}</span>
+                </a>
+              ) : null}
+            </figure>
+          </li>
+        ))}
+      </ol>
+      <p className="gr__source">
+        {data.source === "google"
+          ? "Ratings and reviews from Google Maps, shown as written by guests."
+          : "Ratings and reviews from Tripadvisor, shown as written by guests."}
+      </p>
+    </>
+  );
+}
+
+/**
+ * Guest reviews — the live Google and Tripadvisor ratings and the reviews
+ * each returns, set in the house type with each platform's own marks as the
+ * source and a switch between them. Without either key it still invites
+ * visitors to read the reviews at the source.
+ */
+export async function GuestReviews({ placement }: GuestReviewsProps) {
+  const [google, tripadvisor] = await Promise.all([
+    loadGuestReviews(),
+    loadTripadvisorReviews(),
+  ]);
+  const tripadvisorLink = tripadvisorUrl();
+  const headingId = `gr-title-${placement}`;
+
+  const intro = (
+    <>
+      <p className="gr__kicker">Guest reviews</p>
+      <h2 id={headingId} className="gr__title">
+        <span>In their</span>
+        <span className="gr__title-accent">own words</span>
+      </h2>
+    </>
+  );
+
+  const sources: GuestReviewsSource[] = [google, tripadvisor]
+    .filter((data): data is GuestReviewsData => data !== null)
+    .map((data) => ({
+      id: data.source,
+      label: SOURCE_LABEL[data.source],
+      head: (
+        <SourceHead
+          data={data}
+          placement={placement}
+          alsoTripadvisor={data.source === "google" && !tripadvisor ? tripadvisorLink : null}
+        />
+      ),
+      ledger: <SourceLedger data={data} placement={placement} />,
+    }));
+
+  if (!sources.length) {
+    return (
+      <section className={`gr gr--${placement}`} aria-labelledby={headingId}>
+        <div className="gr__grid gr__grid--solo">
+          <header className="gr__head">
+            {intro}
+            <div className="gr__badge">
+              <div className="gr__badge-source">
+                <GoogleMark className="gr__g" />
+                <span>Google reviews</span>
+              </div>
+              <p className="gr__lede">
+                Read what guests say after a voyage aboard Hathor, on Google
+                {tripadvisorLink ? " and Tripadvisor" : ""}.
+              </p>
+            </div>
+            <div className="gr__actions">
+              <External href={GOOGLE_REVIEWS_FALLBACK_URL} className="room-pill gr__btn" primary>
+                Read reviews
+              </External>
+            </div>
+            {tripadvisorLink ? (
+              <a className="gr__also" href={tripadvisorLink} target="_blank" rel="noopener noreferrer">
+                Also reviewed on Tripadvisor
+              </a>
+            ) : null}
+          </header>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className={`gr gr--${placement}`} aria-labelledby={headingId}>
+      <GuestReviewsSwitch intro={intro} sources={sources} />
     </section>
   );
 }

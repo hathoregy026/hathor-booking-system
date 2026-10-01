@@ -32,15 +32,18 @@ export const GOOGLE_REVIEWS_FALLBACK_URL =
 export type GuestReview = {
   author: string;
   authorUrl: string | null;
-  /** The reviewer's Google profile photo (googleusercontent.com only). */
+  /** The reviewer's profile photo, from the review platform's own image host. */
   photo: string | null;
   rating: number;
+  /** Tripadvisor reviews carry a headline; Google's do not. */
+  title?: string;
   text: string;
   when: string;
   url: string | null;
 };
 
 export type GuestReviewsData = {
+  source: "google" | "tripadvisor";
   rating: number | null;
   count: number | null;
   readUrl: string;
@@ -174,6 +177,7 @@ export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
       .filter((review): review is GuestReview => review !== null);
 
     return {
+      source: "google",
       rating: typeof place.rating === "number" ? place.rating : null,
       count: typeof place.userRatingCount === "number" ? place.userRatingCount : null,
       readUrl: httpsOrNull(place.googleMapsUri) ?? GOOGLE_REVIEWS_FALLBACK_URL,
