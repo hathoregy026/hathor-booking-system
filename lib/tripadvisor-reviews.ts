@@ -16,7 +16,7 @@ const TERRA_API = "https://terra.tripadvisor.com/api";
 /* Weekly: the free Tripadvisor allowance is one-time, not monthly, and
    reviews there change slowly — two calls a week keeps it for years. */
 const CACHE_SECONDS = 60 * 60 * 24 * 7;
-const REVIEW_COUNT = 5;
+const REVIEW_COUNT = 10;
 
 type TripadvisorUrls = {
   main?: string;
@@ -51,10 +51,8 @@ type TripadvisorReview = {
   };
 };
 
-const TRIPADVISOR_IMAGE_HOSTS = new Set([
-  "media-cdn.tripadvisor.com",
-  "dynamic-media-cdn.tripadvisor.com",
-]);
+/** Tripadvisor's photo hosts; the site's image policy (next.config.ts) allows the same. */
+const TRIPADVISOR_IMAGE_HOST = /(^|\.)(tripadvisor\.com|tacdn\.com)$/i;
 
 function tripadvisorHttps(value: unknown, hosts?: Set<string>): string | null {
   if (typeof value !== "string" || !value.startsWith("https://")) return null;
@@ -93,10 +91,17 @@ function plain(value: unknown, depth = 0): string {
   return "";
 }
 
-/** The shape (keys and types, never the text) of a review, for the build log. */
+/** The shape (keys, types and link hosts, never the text) of a review, for the build log. */
 function describe(value: unknown, depth = 0): unknown {
+  if (typeof value === "string" && value.startsWith("https://")) {
+    try {
+      return `url:${new URL(value).hostname}`;
+    } catch {
+      return "string";
+    }
+  }
   if (value == null || typeof value !== "object") return typeof value;
-  if (depth > 2) return Array.isArray(value) ? "array" : "object";
+  if (depth > 4) return Array.isArray(value) ? "array" : "object";
   if (Array.isArray(value)) return [describe(value[0], depth + 1)];
   return Object.fromEntries(
     Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, describe(v, depth + 1)]),
@@ -142,13 +147,34 @@ async function getJson<T>(path: string, key: string): Promise<T | null> {
   return (await res.json()) as T;
 }
 
-function reviewAvatar(user: TripadvisorReview["user"]): string | null {
-  const avatar = user?.avatar;
-  const candidate =
-    typeof avatar === "string"
-      ? avatar
-      : (avatar?.small ?? avatar?.thumbnail ?? avatar?.url ?? user?.avatar_url);
-  return tripadvisorHttps(candidate, TRIPADVISOR_IMAGE_HOSTS);
+/** The reviewer's photo, wherever in the user record Tripadvisor puts it. */
+function reviewAvatar(user: unknown, depth = 0): string | null {
+  if (typeof user === "string") {
+    if (!user.startsWith("https://")) return null;
+    try {
+      return TRIPADVISOR_IMAGE_HOST.test(new URL(user).hostname) ? user : null;
+    } catch {
+      return null;
+    }
+  }
+  if (depth > 4 || user == null || typeof user !== "object") return null;
+  const entries = Array.isArray(user)
+    ? user.map((value) => ["", value] as const)
+    : Object.entries(user as Record<string, unknown>);
+  /* Prefer a small size when several are offered. */
+  const ordered = [...entries].sort(([a], [b]) => rank(a) - rank(b));
+  for (const [, value] of ordered) {
+    const found = reviewAvatar(value, depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
+
+function rank(key: string): number {
+  if (/avatar|photo|image|picture/i.test(key)) return 0;
+  if (/small|thumb|medium/i.test(key)) return 1;
+  if (/large|original/i.test(key)) return 3;
+  return 2;
 }
 
 function reviewUrl(review: TripadvisorReview): string | null {
@@ -166,7 +192,7 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
     const [location, list] = await Promise.all([
       getJson<TripadvisorLocation>(`/locations/${id}`, key),
       getJson<{ data?: TripadvisorReview[] }>(
-        `/locations/${id}/reviews?page=1&size=${REVIEW_COUNT}&locale[]=en`,
+        `/locations/${id}/reviews?page=1&size=${REVIEW_COUNT}`,
         key,
       ),
     ]);
@@ -182,7 +208,7 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
         return {
           author,
           authorUrl: null,
-          photo: reviewAvatar(review.user),
+          photo: reviewAvatar(review.user?.avatar ?? review.user?.avatar_url ?? review.user),
           rating: Math.max(0, Math.min(5, Math.round(toNumber(review.rating) ?? 0))),
           title: plain(review.title) || undefined,
           text,
@@ -191,8 +217,12 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
         };
       })
       .filter((review): review is GuestReview => review !== null);
-    if (raw.length && !reviews.length) {
-      console.error(`[guest-reviews] Tripadvisor review shape: ${JSON.stringify(describe(raw[0]))}`);
+    console.log(
+      `[guest-reviews] Tripadvisor returned ${raw.length} reviews, showing ${reviews.length}, ` +
+        `${reviews.filter((review) => review.photo).length} with photos`,
+    );
+    if (raw.length && reviews.some((review) => !review.photo)) {
+      console.log(`[guest-reviews] Tripadvisor review shape: ${JSON.stringify(describe(raw[0]))}`);
     }
 
     const overall = location.traveler_ratings?.overall;
