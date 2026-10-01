@@ -182,6 +182,46 @@ function reviewUrl(review: TripadvisorReview): string | null {
   return tripadvisorHttps(review.url ?? (typeof nested === "string" ? nested : nested?.main));
 }
 
+const MAX_PAGES = 3;
+
+type ReviewPage = { data: TripadvisorReview[]; pagination?: unknown };
+
+async function reviewPage(id: string, page: number, key: string): Promise<ReviewPage | null> {
+  const body = await getJson<{ data?: unknown; pagination?: unknown }>(
+    `/locations/${id}/reviews?page=${page}&size=${REVIEW_COUNT}`,
+    key,
+  );
+  if (!body) return null;
+  return {
+    data: Array.isArray(body.data) ? (body.data as TripadvisorReview[]) : [],
+    pagination: body.pagination,
+  };
+}
+
+/** Which later page numbers the pagination block says exist. */
+function morePages(pagination: unknown): { has(page: number): boolean } {
+  const record =
+    pagination && typeof pagination === "object" ? (pagination as Record<string, unknown>) : {};
+  const pick = (...names: string[]) => {
+    for (const name of names) {
+      const value = toNumber(record[name]);
+      if (value != null) return value;
+    }
+    return null;
+  };
+  const pages = pick("total_pages", "pages", "page_count", "last_page");
+  const items = pick("total", "total_count", "total_items", "count", "total_results");
+  const size = pick("size", "page_size", "per_page", "limit");
+  const hasNext = record.next != null && record.next !== false && record.next !== "";
+  return {
+    has(page: number) {
+      if (pages != null) return page <= pages;
+      if (items != null && size) return (page - 1) * size < items;
+      return hasNext;
+    },
+  };
+}
+
 /** The live Tripadvisor rating and reviews, or null when there is no key or Tripadvisor does not answer. */
 export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null> {
   const key = process.env.TRIPADVISOR_API_KEY?.trim();
@@ -189,16 +229,21 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
   if (!key || !id) return null;
 
   try {
-    const [location, list] = await Promise.all([
+    const [location, first] = await Promise.all([
       getJson<TripadvisorLocation>(`/locations/${id}`, key),
-      getJson<{ data?: TripadvisorReview[] }>(
-        `/locations/${id}/reviews?page=1&size=${REVIEW_COUNT}`,
-        key,
-      ),
+      reviewPage(id, 1, key),
     ]);
     if (!location) return null;
 
-    const raw = Array.isArray(list?.data) ? list.data : [];
+    /* Follow further pages when Tripadvisor says there are more than the first page holds. */
+    const raw = [...(first?.data ?? [])];
+    const total = morePages(first?.pagination);
+    console.log(`[guest-reviews] Tripadvisor pagination: ${JSON.stringify(first?.pagination ?? null)}`);
+    for (let page = 2; page <= MAX_PAGES && raw.length < REVIEW_COUNT && total.has(page); page += 1) {
+      const next = await reviewPage(id, page, key);
+      if (!next?.data?.length) break;
+      raw.push(...next.data);
+    }
     const reviews = raw
       .map((review): GuestReview | null => {
         const text = plain(review.text) || plain(review.body);
