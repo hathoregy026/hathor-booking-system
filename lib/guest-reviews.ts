@@ -18,6 +18,7 @@ const SEARCH_QUERY = "Hathor Dahabiya cruise";
 const CACHE_SECONDS = 60 * 60 * 12;
 const FIELDS = [
   "id",
+  "displayName",
   "rating",
   "userRatingCount",
   "googleMapsUri",
@@ -58,6 +59,7 @@ type PlacesReview = {
 
 type PlacesPlace = {
   id?: string;
+  displayName?: { text?: string };
   rating?: number;
   userRatingCount?: number;
   googleMapsUri?: string;
@@ -145,6 +147,11 @@ export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
   try {
     const place = await fetchPlace(key);
     if (!place?.id) return null;
+    console.info(
+      `[guest-reviews] Google listing "${place.displayName?.text ?? "?"}" (${place.id}): ` +
+        `rating ${place.rating ?? "none"}, ${place.userRatingCount ?? 0} ratings, ` +
+        `${place.reviews?.length ?? 0} reviews returned`,
+    );
 
     const reviews = (place.reviews ?? [])
       .map((review): GuestReview | null => {
