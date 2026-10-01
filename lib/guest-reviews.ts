@@ -84,7 +84,8 @@ async function logPlacesFailure(res: Response): Promise<void> {
 }
 
 async function fetchPlace(key: string): Promise<PlacesPlace | null> {
-  const pinned = process.env.GOOGLE_PLACE_ID?.trim();
+  /* Only the ID itself: a copy from Google's finder can carry the address after it. */
+  const pinned = process.env.GOOGLE_PLACE_ID?.trim().split(/\s+/)[0];
   const init = {
     signal: AbortSignal.timeout(6000),
     next: { revalidate: CACHE_SECONDS },
@@ -143,21 +144,13 @@ function googlePhotoOrNull(value: string | undefined): string | null {
 export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY?.trim();
   if (!key) {
-    console.warn("[guest-reviews] GOOGLE_PLACES_API_KEY is not available to this build");
+    console.warn("[guest-reviews] GOOGLE_PLACES_API_KEY is not set");
     return null;
   }
-  console.info(
-    `[guest-reviews] key present; ${process.env.GOOGLE_PLACE_ID?.trim() ? "pinned Place ID" : "searching by name"}`,
-  );
 
   try {
     const place = await fetchPlace(key);
     if (!place?.id) return null;
-    console.info(
-      `[guest-reviews] Google listing "${place.displayName?.text ?? "?"}" (${place.id}): ` +
-        `rating ${place.rating ?? "none"}, ${place.userRatingCount ?? 0} ratings, ` +
-        `${place.reviews?.length ?? 0} reviews returned`,
-    );
 
     const reviews = (place.reviews ?? [])
       .map((review): GuestReview | null => {
