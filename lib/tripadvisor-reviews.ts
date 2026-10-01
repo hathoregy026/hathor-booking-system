@@ -11,7 +11,7 @@
  */
 
 import { tripadvisorUrl, type GuestReview, type GuestReviewsData } from "@/lib/guest-reviews";
-import { getSiteBaseUrl } from "@/lib/public-url";
+import { CUSTOM_DOMAIN_ORIGIN } from "@/lib/public-url";
 
 const CONTENT_API = "https://api.content.tripadvisor.com/api/v1";
 const CACHE_SECONDS = 60 * 60 * 12;
@@ -72,8 +72,9 @@ async function getJson<T>(path: string, key: string): Promise<T | null> {
   const res = await fetch(url, {
     headers: {
       accept: "application/json",
-      // Keys restricted to the site's domain are checked against the referer.
-      referer: `${getSiteBaseUrl()}/`,
+      // A key restricted to hathorcruise.com is checked against the referer;
+      // test deployments ask as the live site so the same key works there.
+      referer: `${CUSTOM_DOMAIN_ORIGIN}/`,
     },
     signal: AbortSignal.timeout(6000),
     next: { revalidate: CACHE_SECONDS },
