@@ -142,7 +142,13 @@ function googlePhotoOrNull(value: string | undefined): string | null {
 /** The live Google rating and reviews, or null when there is no key or Google does not answer. */
 export async function loadGuestReviews(): Promise<GuestReviewsData | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY?.trim();
-  if (!key) return null;
+  if (!key) {
+    console.warn("[guest-reviews] GOOGLE_PLACES_API_KEY is not available to this build");
+    return null;
+  }
+  console.info(
+    `[guest-reviews] key present; ${process.env.GOOGLE_PLACE_ID?.trim() ? "pinned Place ID" : "searching by name"}`,
+  );
 
   try {
     const place = await fetchPlace(key);
