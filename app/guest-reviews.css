@@ -103,6 +103,14 @@ html[data-public-theme="night"] .gr {
   color: var(--gr-gold-deep);
 }
 
+/* The site sets every `[class*="__title"]` in its own title face at (0,2,0).
+   This section is Italiana, so the title and its accent line are lifted
+   above that rule rather than left to stylesheet order. */
+.gr h2.gr__title,
+.gr .gr__title .gr__title-accent {
+  font-family: var(--gr-display);
+}
+
 .gr__grid--solo .gr__title {
   align-items: center;
 }

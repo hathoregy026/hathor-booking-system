@@ -10,7 +10,7 @@
  * Environment:
  *   GOOGLE_PLACES_API_KEY  server-only key with the Places API (New) enabled
  *   GOOGLE_PLACE_ID        optional; pins the listing (otherwise found by name)
- *   TRIPADVISOR_URL        optional; the Hathor listing on Tripadvisor
+ *   TRIPADVISOR_URL        optional; overrides the Hathor listing on Tripadvisor
  */
 
 const PLACES_ENDPOINT = "https://places.googleapis.com/v1";
@@ -66,8 +66,12 @@ type PlacesPlace = {
   reviews?: PlacesReview[];
 };
 
+/** The Hathor listing on Tripadvisor; TRIPADVISOR_URL can replace it. */
+const TRIPADVISOR_LISTING =
+  "https://www.tripadvisor.com/Attraction_Review-g294205-d33316658-Reviews-Hathor_Dahabiya_Cruise-Luxor_Nile_River_Valley.html";
+
 export function tripadvisorUrl(): string | null {
-  const raw = process.env.TRIPADVISOR_URL?.trim();
+  const raw = process.env.TRIPADVISOR_URL?.trim() || TRIPADVISOR_LISTING;
   return raw && /^https:\/\/([a-z0-9-]+\.)*tripadvisor\.[a-z.]+\//i.test(raw) ? raw : null;
 }
 
