@@ -33,19 +33,19 @@ type TripadvisorLocation = {
 /* Review field names are read defensively: the API documents the shape
    loosely, so every likely spelling is accepted. */
 type TripadvisorReview = {
-  rating?: number | string;
-  title?: string;
-  text?: string;
-  body?: string;
+  rating?: unknown;
+  title?: unknown;
+  text?: unknown;
+  body?: unknown;
   url?: string;
   urls?: { tripadvisor?: string | { main?: string } };
   publish_ts?: number | string;
   published_date?: string;
   publish_date?: string;
   user?: {
-    username?: string;
-    display_name?: string;
-    name?: string;
+    username?: unknown;
+    display_name?: unknown;
+    name?: unknown;
     avatar?: string | { url?: string; small?: string; thumbnail?: string };
     avatar_url?: string;
   };
@@ -72,6 +72,35 @@ function locationId(): string | null {
   if (pinned && /^\d+$/.test(pinned)) return pinned;
   const fromUrl = tripadvisorUrl()?.match(/-d(\d+)-/)?.[1];
   return fromUrl ?? null;
+}
+
+/** Text that may arrive as a string, a {text|value|…} object or a list of those. */
+function plain(value: unknown, depth = 0): string {
+  if (typeof value === "string") return value.trim();
+  if (depth > 3 || value == null || typeof value !== "object") return "";
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const text = plain(item, depth + 1);
+      if (text) return text;
+    }
+    return "";
+  }
+  const record = value as Record<string, unknown>;
+  for (const field of ["text", "value", "content", "original", "translated", "en", "name", "username", "display_name"]) {
+    const text = plain(record[field], depth + 1);
+    if (text) return text;
+  }
+  return "";
+}
+
+/** The shape (keys and types, never the text) of a review, for the build log. */
+function describe(value: unknown, depth = 0): unknown {
+  if (value == null || typeof value !== "object") return typeof value;
+  if (depth > 2) return Array.isArray(value) ? "array" : "object";
+  if (Array.isArray(value)) return [describe(value[0], depth + 1)];
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, describe(v, depth + 1)]),
+  );
 }
 
 function toNumber(value: unknown): number | null {
@@ -143,28 +172,28 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
     ]);
     if (!location) return null;
 
-    const reviews = (Array.isArray(list?.data) ? list.data : [])
+    const raw = Array.isArray(list?.data) ? list.data : [];
+    const reviews = raw
       .map((review): GuestReview | null => {
-        const text = (review.text ?? review.body ?? "").trim();
-        const author = (
-          review.user?.username ??
-          review.user?.display_name ??
-          review.user?.name ??
-          ""
-        ).trim();
+        const text = plain(review.text) || plain(review.body);
+        const author =
+          plain(review.user?.username) || plain(review.user?.display_name) || plain(review.user?.name);
         if (!text || !author) return null;
         return {
           author,
           authorUrl: null,
           photo: reviewAvatar(review.user),
           rating: Math.max(0, Math.min(5, Math.round(toNumber(review.rating) ?? 0))),
-          title: review.title?.trim() || undefined,
+          title: plain(review.title) || undefined,
           text,
           when: monthYear(review.publish_ts ?? review.published_date ?? review.publish_date),
           url: reviewUrl(review),
         };
       })
       .filter((review): review is GuestReview => review !== null);
+    if (raw.length && !reviews.length) {
+      console.error(`[guest-reviews] Tripadvisor review shape: ${JSON.stringify(describe(raw[0]))}`);
+    }
 
     const overall = location.traveler_ratings?.overall;
     const count = toNumber(overall?.count);
