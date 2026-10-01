@@ -92,23 +92,6 @@ function plain(value: unknown, depth = 0): string {
   return "";
 }
 
-/** The shape (keys, types and link hosts, never the text) of a review, for the build log. */
-function describe(value: unknown, depth = 0): unknown {
-  if (typeof value === "string" && value.startsWith("https://")) {
-    try {
-      return `url:${new URL(value).hostname}`;
-    } catch {
-      return "string";
-    }
-  }
-  if (value == null || typeof value !== "object") return typeof value;
-  if (depth > 4) return Array.isArray(value) ? "array" : "object";
-  if (Array.isArray(value)) return [describe(value[0], depth + 1)];
-  return Object.fromEntries(
-    Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, describe(v, depth + 1)]),
-  );
-}
-
 function toNumber(value: unknown): number | null {
   const parsed = typeof value === "number" ? value : Number.parseFloat(String(value ?? ""));
   return Number.isFinite(parsed) ? parsed : null;
@@ -268,13 +251,6 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
         };
       })
       .filter((review): review is GuestReview => review !== null);
-    console.log(
-      `[guest-reviews] Tripadvisor returned ${raw.length} reviews, showing ${reviews.length}, ` +
-        `${reviews.filter((review) => review.photo).length} with photos`,
-    );
-    if (raw.length) {
-      console.log(`[guest-reviews] Tripadvisor reviewer fields: ${JSON.stringify(describe(raw[0].user))}`);
-    }
 
     const overall = location.traveler_ratings?.overall;
     const count = toNumber(overall?.count);
