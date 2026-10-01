@@ -8,6 +8,7 @@ import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
 import { paymentPlan, stageTitle } from "@/lib/booking-code";
+import { ReplyAttachments, readyAttachments, type ReplyAttachment } from "@/components/admin/bookings/ReplyAttachments";
 
 export type BookingActionKind =
   | "confirm"
@@ -160,6 +161,7 @@ export function BookingActionDialog({
   const [notify, setNotify] = useState(true);
   const [replySubject, setReplySubject] = useState("");
   const [replyMessage, setReplyMessage] = useState(`Dear ${booking.guestName},\n\n`);
+  const [replyFiles, setReplyFiles] = useState<ReplyAttachment[]>([]);
   const [cancelReason, setCancelReason] = useState("CANCELLATION");
   const refund = booking.status === "CANCELLED";
   const [payment, setPayment] = useState(() => ({
@@ -228,7 +230,15 @@ export function BookingActionDialog({
         report("Request declined and cabins released.", result.email);
         onDone(result.booking);
       } else if (kind === "reply") {
-        const result = await patch({ type: "message", subject: replySubject.trim() || undefined, message: replyMessage.trim() });
+        if (replyFiles.some((file) => file.status === "uploading")) throw new Error("Wait for the attachments to finish uploading.");
+        if (replyFiles.some((file) => file.status === "failed")) throw new Error("Remove the attachments that failed to upload, or attach them again.");
+        const attachments = readyAttachments(replyFiles);
+        const result = await patch({
+          type: "message",
+          subject: replySubject.trim() || undefined,
+          message: replyMessage.trim(),
+          attachments: attachments.length ? attachments : undefined,
+        });
         // A reply is only an email: keep the dialog (and the text) open if it did not go.
         if (!result.email?.sent) throw new Error(`The reply was not sent (${(result.email?.error ?? "unknown error").replace(/[.\s]+$/, "")}). Try again.`);
         report("", result.email);
@@ -392,9 +402,21 @@ export function BookingActionDialog({
             <Field label="Message">
               <textarea className="input min-h-[12rem] px-3 py-2.5 text-sm leading-relaxed" value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)} required minLength={2} maxLength={4000} />
             </Field>
+            {/* Not a <label>: a click on its empty space would open the file picker. */}
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted">Attachments</span>
+              <div className="mt-1.5">
+                <ReplyAttachments bookingId={booking.id} items={replyFiles} onChange={setReplyFiles} />
+              </div>
+              <span className="mt-1 block text-xs text-muted">Screenshots, photos, PDFs and documents. Program files cannot be attached.</span>
+            </div>
           </div>
           {errorLine}
-          <Footer busy={busy} submitLabel="Send reply" onCancel={onClose} />
+          <Footer
+            busy={busy || replyFiles.some((file) => file.status === "uploading")}
+            submitLabel={replyFiles.length ? `Send reply with ${replyFiles.length} ${replyFiles.length === 1 ? "file" : "files"}` : "Send reply"}
+            onCancel={onClose}
+          />
         </form>
       </Dialog>
     );

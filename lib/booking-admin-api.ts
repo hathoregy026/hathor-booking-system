@@ -5,6 +5,8 @@ import { assertTrustedPublicJsonRequest, PublicRequestError } from "@/lib/public
 import { administerBooking } from "@/lib/booking-engine";
 import { sendConfirmation, sendDeclined, sendInvoice, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
+import { MAX_ATTACHMENTS } from "@/lib/mail-attachment-rules";
+import { resolveAttachments } from "@/lib/mail-attachments";
 
 export function assertBookingAdmin(request: NextRequest) {
   if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) throw new PublicRequestError("Unauthorized",401);
@@ -42,7 +44,13 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     kind: z.enum(["RECEIPT","REFUND"]),
     receivedAt: z.iso.datetime().transform(s => new Date(s)).refine(d => d <= new Date(), "Payment cannot be dated in the future."),
   }).strict() }).strict(),
-  z.object({ type: z.literal("message"), subject: z.string().trim().max(200).optional(), message: teamText.min(2) }).strict(),
+  z.object({
+    type: z.literal("message"),
+    subject: z.string().trim().max(200).optional(),
+    message: teamText.min(2),
+    attachments: z.array(z.object({ path: z.string().max(400), name: z.string().trim().min(1).max(255) }).strict())
+      .max(MAX_ATTACHMENTS).optional(),
+  }).strict(),
   z.object({ type: z.literal("send-confirmation") }).strict(),
 ]);
 
@@ -57,7 +65,9 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
     : staffActionSchema.parse(body);
 
   if (action.type === "message") {
-    return { email: await sendTeamReply(id, action.message, action.subject) };
+    // Checked before sending, so a missing or oversized file stops the reply with a clear reason.
+    const attachments = await resolveAttachments(id, action.attachments ?? []);
+    return { email: await sendTeamReply(id, action.message, action.subject, attachments) };
   }
 
   if (action.type === "send-confirmation") {
