@@ -80,8 +80,8 @@ async function deliver(id: string, send: (details: BookingEmailDetails) => Promi
 }
 
 /** The invoice: the amount due now (worked out from the plan), the team's payment link and any note. */
-export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }) {
-  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice));
+export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice, attachments));
 }
 
 export function sendConfirmation(id: string) {

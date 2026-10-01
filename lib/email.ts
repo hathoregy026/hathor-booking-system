@@ -120,6 +120,7 @@ export async function sendBookingInvoiceEmail(
   guestName: string,
   bookingDetails: BookingEmailDetails,
   invoice: { paymentLink?: string; instructions?: string },
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingInvoice");
   await sendEmail({
@@ -128,7 +129,8 @@ export async function sendBookingInvoiceEmail(
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
       BookingInvoiceEmail({ guestName, details: bookingDetails, ...invoice, ...sendTheme }),
-    label: "booking invoice (guest)",
+    label: attachments.length ? `booking invoice (guest, ${attachments.length} attachments)` : "booking invoice (guest)",
+    attachments,
   });
 }
 

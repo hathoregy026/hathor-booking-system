@@ -19,6 +19,8 @@ export function bookingAdminSession(request: NextRequest) {
 }
 
 const teamText = z.string().trim().max(4000);
+const attachmentList = z.array(z.object({ path: z.string().max(400), name: z.string().trim().min(1).max(255) }).strict())
+  .max(MAX_ATTACHMENTS).optional();
 
 function isSecureLink(value: string) {
   try {
@@ -34,6 +36,7 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     type: z.literal("accept"),
     instructions: teamText.min(10).optional(),
     paymentLink: z.string().trim().max(2000).refine(isSecureLink, "Paste the full secure payment link (it starts with https://).").optional(),
+    attachments: attachmentList,
   }).strict(),
   z.object({ type: z.literal("decline"), message: teamText.optional(), notify: z.boolean().default(true) }).strict(),
   z.object({ type: z.literal("cancel"), reason: z.enum(["CANCELLATION","NO_SHOW","EARLY_DEPARTURE"]).default("CANCELLATION") }).strict(),
@@ -48,8 +51,7 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     type: z.literal("message"),
     subject: z.string().trim().max(200).optional(),
     message: teamText.min(2),
-    attachments: z.array(z.object({ path: z.string().max(400), name: z.string().trim().min(1).max(255) }).strict())
-      .max(MAX_ATTACHMENTS).optional(),
+    attachments: attachmentList,
   }).strict(),
   z.object({ type: z.literal("send-confirmation") }).strict(),
 ]);
@@ -76,9 +78,11 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
   }
 
   if (action.type === "accept") {
+    // Files are checked before the booking changes, so a bad attachment never leaves it half-confirmed.
+    const attachments = "attachments" in action ? await resolveAttachments(id, action.attachments ?? []) : [];
     await administerBooking(id, { type: "accept" });
     const invoice = "instructions" in action ? { instructions: action.instructions, paymentLink: action.paymentLink } : {};
-    return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice) } : {};
+    return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice, attachments) } : {};
   }
 
   if (action.type === "decline") {
