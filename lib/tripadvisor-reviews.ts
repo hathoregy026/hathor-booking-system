@@ -238,7 +238,6 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
     /* Follow further pages when Tripadvisor says there are more than the first page holds. */
     const raw = [...(first?.data ?? [])];
     const total = morePages(first?.pagination);
-    console.log(`[guest-reviews] Tripadvisor pagination: ${JSON.stringify(first?.pagination ?? null)}`);
     for (let page = 2; page <= MAX_PAGES && raw.length < REVIEW_COUNT && total.has(page); page += 1) {
       const next = await reviewPage(id, page, key);
       if (!next?.data?.length) break;
