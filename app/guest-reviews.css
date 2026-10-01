@@ -1,39 +1,63 @@
 /*
- * Guest reviews — the house type with Google's own marks as the source.
+ * Guest reviews — the Hathor guest book.
  *
- * Left: kicker, the Italiana title, a Google badge (the "G", the rating as a
- * large figure, the stars and the count) and the pills. Right: the reviews on
- * hairlines, each opening the way Google shows a review — photo, name, stars,
- * when, and the "G" — then the guest's words in the house serif.
+ * Desktop: the title column on the left (kicker, Italiana title, a short
+ * gold rule, the italic lede, the score, the source pills, the actions and
+ * an etching of Hathor with a handwritten line), and on the right an open
+ * guest book: the featured review written across the upper page beside a
+ * postcard, a postal stamp and a palm frond, two more reviews on the lower
+ * page either side of a lotus. More reviews turn the page.
  *
- * At 950px and below the head packs tight and the reviews become one swipe
- * row, so the section stays about a screen tall on phones.
+ * At 950px and below it becomes one journal page: the title centred, the
+ * score and pills, the reviews as paper cards to swipe with dots, the next
+ * review waiting underneath, then the etching.
+ *
+ * Primary text and actions stay in grid/flex flow; only decoration (the
+ * postcard, stamp, palm, handwriting, page edges) is positioned, inside the
+ * column the upper page reserves for it.
  *
  * Font stacks are literal on purpose: a var() that is not defined on the page
  * invalidates the whole font-family declaration.
  */
 
+@font-face {
+  font-family: "Gr Hand";
+  src: url("/fonts/BrittanySignature.woff2") format("woff2");
+  font-display: swap;
+}
+
 .gr {
-  --gr-paper: #f3ede4;
+  --gr-paper: #efe6d6;
   --gr-ink: #14120e;
   --gr-ink-soft: rgb(74 69 60 / 92%);
   --gr-gold: #b69f64;
   --gr-gold-deep: #806b35;
   --gr-hair: rgb(20 18 14 / 16%);
-  --gr-star: #b69f64;
-  --gr-star-ground: rgb(20 18 14 / 14%);
-  --gr-avatar: #ded4c6;
   --gr-display: "Italiana", "Gamgote", Georgia, serif;
   --gr-edit: "Playfair Display", Georgia, "Times New Roman", serif;
-  --gr-meta: "Piloner Thin", "Plus Jakarta Sans", Arial, sans-serif;
-  /* Piloner's digits are broken ("4" renders as "±"): numbers take this face. */
-  --gr-num: "Plus Jakarta Sans", Arial, sans-serif;
+  --gr-edit-italic: "Playfair Display Italic", "Playfair Display", Georgia, serif;
+  --gr-meta: "Plus Jakarta Sans", Arial, sans-serif;
+  --gr-hand: "Gr Hand", "Brush Script MT", cursive;
   --gr-pad: clamp(1.1rem, 1.74vw, 1.6rem);
 
+  /* The book is a paper object: it keeps its own inks in every theme. */
+  --gb-page: #f6efe1;
+  --gb-ink: #1d1a14;
+  --gb-ink-soft: #5b5244;
+  --gb-gold: #9a7f43;
+  --gb-sepia: #6a5638;
+  --gb-hair: rgb(29 26 20 / 14%);
+  --gb-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
   position: relative;
-  background: var(--gr-paper);
+  overflow: hidden;
   color: var(--gr-ink);
-  padding: clamp(4rem, 9vw, 9rem) var(--gr-pad) clamp(3rem, 6vw, 6rem);
+  background-color: var(--gr-paper);
+  background-image:
+    var(--gb-noise),
+    radial-gradient(120% 90% at 70% 40%, rgb(255 250 240 / 55%), transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, rgb(150 120 70 / 14%), transparent 70%);
+  padding: clamp(4rem, 7vw, 7rem) var(--gr-pad) clamp(3.5rem, 6vw, 6rem);
   border-top: 1px solid var(--gr-hair);
 }
 
@@ -41,478 +65,674 @@ html[data-public-theme="night"] .gr {
   --gr-paper: var(--night-canvas, #14110d);
   --gr-ink: var(--night-text, #e9e1d3);
   --gr-ink-soft: var(--night-text-soft, #c8bda9);
-  --gr-gold: var(--night-gold, #e9e1d3);
-  --gr-gold-deep: var(--night-text-soft, #c8bda9);
+  --gr-gold: #cbb079;
+  --gr-gold-deep: #cbb079;
   --gr-hair: var(--night-line-soft, rgb(233 225 211 / 12%));
-  --gr-star: #cbb079;
-  --gr-star-ground: rgb(233 225 211 / 16%);
-  --gr-avatar: var(--night-panel, #241d15);
+  background-image: var(--gb-noise);
 }
 
-.gr__grid {
+.gb,
+.gb *,
+.gb *::before,
+.gb *::after {
+  box-sizing: border-box;
+}
+
+.gb {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: 1.5rem;
-  row-gap: 3rem;
+  grid-template-columns: minmax(0, 32fr) minmax(0, 66fr);
+  column-gap: clamp(2rem, 4.5vw, 5.5rem);
   max-width: 100rem;
   margin: 0 auto;
-  align-items: start;
+  align-items: stretch;
 }
 
-/* ------------------------------------------------------------------ head */
-.gr__head {
-  grid-column: 1 / span 4;
-  position: sticky;
-  top: 6rem;
+/* ------------------------------------------------------------ title column */
+.gb__aside {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: flex-start;
   min-width: 0;
+  padding-top: clamp(0.5rem, 2vw, 2.5rem);
 }
 
-.gr__grid--solo .gr__head {
-  grid-column: 1 / -1;
-  position: static;
-  align-items: center;
-  text-align: center;
-}
-
-.gr__kicker {
-  margin: 0;
+.gb__kicker {
+  margin: 0 0 clamp(1.1rem, 1.6vw, 1.6rem);
   font-family: var(--gr-meta);
-  font-size: clamp(0.6rem, 0.716vw, 0.76rem);
+  font-size: clamp(0.6rem, 0.68vw, 0.72rem);
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--gr-gold-deep);
+  color: var(--gr-ink-soft);
 }
 
-.gr__title {
+/* The site sets every `[class*="__title"]` in its own title face at (0,2,0);
+   this title is Italiana, so it is lifted above that rule. */
+.gr h2.gb__title,
+.gr .gb__title .gb__title-accent {
+  font-family: var(--gr-display);
+}
+
+.gb__title {
   margin: 0;
   display: flex;
   flex-direction: column;
-  font-family: var(--gr-display);
   font-weight: 400;
-  font-size: clamp(2.6rem, 5.4vw, 5.8rem);
-  line-height: 0.94;
+  font-size: clamp(3rem, 5.9vw, 6.6rem);
+  line-height: 0.92;
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: var(--gr-ink);
 }
 
-.gr__title-accent {
+/* "own words" breaks as the target sets it: OWN / WORDS. */
+.gb__title-accent {
   color: var(--gr-gold-deep);
+  max-width: 5.2em;
 }
 
-/* The site sets every `[class*="__title"]` in its own title face at (0,2,0).
-   This section is Italiana, so the title and its accent line are lifted
-   above that rule rather than left to stylesheet order. */
-.gr h2.gr__title,
-.gr .gr__title .gr__title-accent {
-  font-family: var(--gr-display);
+.gb__dash {
+  display: block;
+  width: 1.9rem;
+  height: 1px;
+  margin: clamp(1.4rem, 2vw, 2rem) 0 clamp(1.1rem, 1.6vw, 1.5rem);
+  background: var(--gr-gold-deep);
 }
 
-.gr__grid--solo .gr__title {
-  align-items: center;
-}
-
-/* The Google badge: source mark, then the score. */
-.gr__badge {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  padding: 1.1rem 0 1.2rem;
-  border-top: 1px solid var(--gr-hair);
-  border-bottom: 1px solid var(--gr-hair);
-}
-
-.gr__grid--solo .gr__badge {
-  align-items: center;
-  width: min(100%, 30rem);
-}
-
-.gr__badge-source {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: var(--gr-num);
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.gb__lede {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--gr-edit-italic);
+  font-style: italic;
+  font-size: clamp(1.02rem, 1.22vw, 1.3rem);
+  line-height: 1.5;
   color: var(--gr-ink);
 }
 
-.gr__g {
-  display: block;
-  flex: 0 0 auto;
-  width: 1.15rem;
-  height: 1.15rem;
+.gb__subtitle,
+.gb__palm--head,
+.gb__deck-wrap {
+  display: none;
 }
 
-.gr__score {
+.gb__summary {
+  align-self: stretch;
+  margin-top: clamp(1.3rem, 2vw, 2rem);
+  padding-top: clamp(1.3rem, 2vw, 2rem);
+  border-top: 1px solid var(--gr-hair);
+}
+
+.gb__score {
   display: flex;
   align-items: center;
   gap: 1.1rem;
 }
 
-.gr__figure {
+.gb__figure {
   font-family: var(--gr-display);
-  font-size: clamp(3.4rem, 5.2vw, 5.4rem);
+  font-size: clamp(3.4rem, 4.6vw, 5rem);
   line-height: 0.85;
   color: var(--gr-ink);
 }
 
-.gr__score-side {
+.gb__score-side {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  min-width: 0;
+  gap: 0.5rem;
 }
 
-.gr__count {
-  margin: 0;
-  font-family: var(--gr-num);
-  font-size: 0.76rem;
-  letter-spacing: 0.1em;
+.gb__count {
+  font-family: var(--gr-meta);
+  font-size: clamp(0.72rem, 0.82vw, 0.86rem);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--gr-ink-soft);
 }
 
-.gr__lede {
+.gb__badge-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   margin: 0;
-  max-width: 34ch;
-  font-family: var(--gr-edit);
-  font-style: italic;
-  font-size: clamp(0.98rem, 1.1vw, 1.12rem);
-  line-height: 1.55;
+  font-family: var(--gr-meta);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Source pills and actions: one peer geometry, two equal columns. */
+.gb__tabs,
+.gb__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(100%, 26rem);
+}
+
+.gb__tabs {
+  margin-top: clamp(1.3rem, 2vw, 1.8rem);
+}
+
+.gb__actions--aside {
+  margin-top: clamp(1.1rem, 1.6vw, 1.5rem);
+}
+
+.gb__actions:has(> :only-child) {
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 12.75rem);
+}
+
+.gr .gb__tab:not(#_):not(#__),
+.gr .gb__btn:not(#_):not(#__) {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding-inline: 0.75rem !important;
+}
+
+.gb__tab:focus-visible,
+.gr a:focus-visible,
+.gb__turn:focus-visible,
+.gb__dot:focus-visible,
+.gb__next:focus-visible {
+  outline: 2px solid var(--gr-gold);
+  outline-offset: 3px;
+}
+
+/* The etching of Hathor, fading into the paper, with a pencilled line. */
+.gb__etching {
+  position: relative;
+  align-self: stretch;
+  margin: auto 0 0;
+  padding-top: clamp(1.5rem, 3vw, 3rem);
+  pointer-events: none;
+}
+
+.gb__etching img {
+  display: block;
+  width: 118%;
+  max-width: none;
+  height: auto;
+  margin-left: -9%;
+  mix-blend-mode: multiply;
+  opacity: 0.82;
+  -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+}
+
+html[data-public-theme="night"] .gb__etching img {
+  mix-blend-mode: screen;
+  filter: invert(1) sepia(0.4);
+  opacity: 0.5;
+}
+
+.gb__hand {
+  position: absolute;
+  font-family: var(--gr-hand);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--gb-sepia);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.gb__hand--etching {
+  top: clamp(-0.4rem, 0.4vw, 0.4rem);
+  right: 0;
+  font-size: clamp(1.3rem, 1.75vw, 1.9rem);
+  transform: rotate(-12deg);
   color: var(--gr-ink-soft);
 }
 
-.gr__actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, max-content));
-  gap: 0.75rem;
+/* ---------------------------------------------------------------- the book */
+.gb__book {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: 0.9rem;
 }
 
-.gr__actions:has(> :only-child) {
-  grid-template-columns: minmax(0, max-content);
+/* The thickness of the closed leaves along the spine. */
+.gb__book::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 3.6rem;
+  left: 0;
+  width: 1.1rem;
+  border-radius: 6px 0 0 6px;
+  background:
+    repeating-linear-gradient(90deg, rgb(110 88 54 / 22%) 0 1px, transparent 1px 3px),
+    linear-gradient(90deg, #d9ccb3, #ece2cf);
+  box-shadow: -4px 10px 18px rgb(60 44 20 / 18%);
 }
 
-.gr__grid--solo .gr__actions {
+.gb__page {
+  position: relative;
+  /* The postcard and stamp widths set the column the upper page reserves. */
+  --gb-card: clamp(9.5rem, 23%, 15rem);
+  --gb-stamp: clamp(5.2rem, 7vw, 6.8rem);
+  filter: drop-shadow(0 18px 22px rgb(60 44 20 / 16%)) drop-shadow(0 2px 3px rgb(60 44 20 / 14%));
+}
+
+.gb__page--lower {
+  margin-top: 0.55rem;
+}
+
+/* Each page is a sheet with a deckled edge, aged at the corners. */
+.gb__sheet {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+}
+
+.gb__sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--gb-page);
+  background-image:
+    var(--gb-noise),
+    radial-gradient(140% 120% at 50% 40%, transparent 55%, rgb(150 115 60 / 16%) 100%),
+    linear-gradient(180deg, rgb(255 252 244 / 60%), transparent 40%);
+  clip-path: polygon(0.00% 0.29%, 2.78% 0.14%, 5.56% 0.59%, 8.33% 0.07%, 11.11% 0.48%, 13.89% 0.33%, 16.67% 0.05%, 19.44% 0.46%, 22.22% 0.03%, 25.00% 0.39%, 27.78% 0.06%, 30.56% 0.08%, 33.33% 0.38%, 36.11% 0.74%, 38.89% 0.11%, 41.67% 0.20%, 44.44% 0.56%, 47.22% 0.85%, 50.00% 0.52%, 52.78% 0.36%, 55.56% 0.88%, 58.33% 0.04%, 61.11% 0.77%, 63.89% 0.26%, 66.67% 0.13%, 69.44% 0.11%, 72.22% 0.28%, 75.00% 0.73%, 77.78% 0.16%, 80.56% 0.52%, 83.33% 0.58%, 86.11% 0.34%, 88.89% 0.49%, 91.67% 0.06%, 94.44% 0.05%, 97.22% 0.19%, 100.00% 0.61%, 99.85% 2.78%, 99.89% 5.56%, 99.80% 8.33%, 99.84% 11.11%, 99.90% 13.89%, 99.72% 16.67%, 99.76% 19.44%, 99.91% 22.22%, 99.80% 25.00%, 99.82% 27.78%, 99.69% 30.56%, 99.74% 33.33%, 99.90% 36.11%, 99.66% 38.89%, 99.96% 41.67%, 99.85% 44.44%, 99.74% 47.22%, 99.95% 50.00%, 99.83% 52.78%, 99.99% 55.56%, 99.77% 58.33%, 99.73% 61.11%, 99.80% 63.89%, 99.69% 66.67%, 99.89% 69.44%, 99.76% 72.22%, 99.79% 75.00%, 99.80% 77.78%, 99.84% 80.56%, 99.71% 83.33%, 99.67% 86.11%, 99.83% 88.89%, 99.77% 91.67%, 99.98% 94.44%, 99.75% 97.22%, 99.77% 100.00%, 97.22% 99.11%, 94.44% 99.26%, 91.67% 99.74%, 88.89% 99.65%, 86.11% 99.40%, 83.33% 99.98%, 80.56% 99.58%, 77.78% 99.85%, 75.00% 99.89%, 72.22% 99.95%, 69.44% 99.31%, 66.67% 99.88%, 63.89% 99.78%, 61.11% 99.65%, 58.33% 99.22%, 55.56% 99.93%, 52.78% 99.60%, 50.00% 99.51%, 47.22% 99.20%, 44.44% 99.26%, 41.67% 99.22%, 38.89% 99.75%, 36.11% 99.63%, 33.33% 99.68%, 30.56% 99.20%, 27.78% 99.14%, 25.00% 99.86%, 22.22% 99.84%, 19.44% 99.79%, 16.67% 99.79%, 13.89% 99.56%, 11.11% 99.47%, 8.33% 99.76%, 5.56% 100.00%, 2.78% 99.62%, 0.00% 99.67%, 0.20% 97.22%, 0.33% 94.44%, 0.24% 91.67%, 0.18% 88.89%, 0.22% 86.11%, 0.24% 83.33%, 0.02% 80.56%, 0.31% 77.78%, 0.27% 75.00%, 0.31% 72.22%, 0.28% 69.44%, 0.14% 66.67%, 0.14% 63.89%, 0.04% 61.11%, 0.22% 58.33%, 0.02% 55.56%, 0.02% 52.78%, 0.07% 50.00%, 0.06% 47.22%, 0.12% 44.44%, 0.02% 41.67%, 0.00% 38.89%, 0.05% 36.11%, 0.04% 33.33%, 0.13% 30.56%, 0.01% 27.78%, 0.31% 25.00%, 0.21% 22.22%, 0.05% 19.44%, 0.09% 16.67%, 0.12% 13.89%, 0.13% 11.11%, 0.04% 8.33%, 0.30% 5.56%, 0.35% 2.78%);
+}
+
+.gb__page--upper .gb__sheet {
+  /* The right third is the postcard's: the featured words never reach it. */
+  padding: clamp(2.2rem, 3.4vw, 3.6rem) calc(var(--gb-card) + var(--gb-stamp) - 1rem) clamp(2.2rem, 3.2vw, 3.4rem) clamp(2.2rem, 4vw, 4.4rem);
+  min-height: clamp(26rem, 33vw, 33rem);
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
-/* One peer width for the pair. The second `:not()` lifts this over the
-   shared pill geometry and the phone pill rule in button-system.css. */
-.gr .gr__actions .gr__btn:not(#_):not(#__) {
-  width: 100% !important;
-  min-width: 12.5rem !important;
+.gb__page--lower .gb__sheet::before {
+  clip-path: polygon(0.00% 0.23%, 4.17% 0.24%, 8.33% 0.04%, 12.50% 0.05%, 16.67% 0.17%, 20.83% 0.13%, 25.00% 0.41%, 29.17% 0.08%, 33.33% 0.01%, 37.50% 0.48%, 41.67% 0.26%, 45.83% 0.07%, 50.00% 0.27%, 54.17% 0.01%, 58.33% 0.26%, 62.50% 0.49%, 66.67% 0.43%, 70.83% 0.35%, 75.00% 0.13%, 79.17% 0.18%, 83.33% 0.08%, 87.50% 0.39%, 91.67% 0.27%, 95.83% 0.39%, 100.00% 0.16%, 99.80% 4.17%, 99.27% 8.33%, 99.11% 12.50%, 99.23% 16.67%, 99.27% 20.83%, 99.26% 25.00%, 99.33% 29.17%, 99.80% 33.33%, 99.53% 37.50%, 99.68% 41.67%, 99.97% 45.83%, 99.97% 50.00%, 99.75% 54.17%, 99.77% 58.33%, 99.38% 62.50%, 99.14% 66.67%, 99.60% 70.83%, 99.16% 75.00%, 99.11% 79.17%, 99.14% 83.33%, 99.67% 87.50%, 99.80% 91.67%, 99.80% 95.83%, 99.82% 100.00%, 95.83% 99.90%, 91.67% 99.69%, 87.50% 99.55%, 83.33% 99.58%, 79.17% 99.76%, 75.00% 99.67%, 70.83% 99.60%, 66.67% 99.96%, 62.50% 99.67%, 58.33% 99.55%, 54.17% 99.61%, 50.00% 99.62%, 45.83% 99.76%, 41.67% 99.91%, 37.50% 99.61%, 33.33% 99.83%, 29.17% 99.60%, 25.00% 99.51%, 20.83% 99.80%, 16.67% 99.80%, 12.50% 99.53%, 8.33% 99.64%, 4.17% 99.91%, 0.00% 99.94%, 0.14% 95.83%, 0.81% 91.67%, 0.73% 87.50%, 0.13% 83.33%, 0.74% 79.17%, 0.88% 75.00%, 0.59% 70.83%, 0.32% 66.67%, 0.49% 62.50%, 0.12% 58.33%, 0.01% 54.17%, 0.87% 50.00%, 0.58% 45.83%, 0.47% 41.67%, 0.84% 37.50%, 0.39% 33.33%, 0.78% 29.17%, 0.74% 25.00%, 0.19% 20.83%, 0.23% 16.67%, 0.26% 12.50%, 0.22% 8.33%, 0.53% 4.17%);
 }
 
-.gr__also {
-  align-self: flex-start;
-  font-family: var(--gr-num);
-  font-size: 0.74rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gr-gold-deep);
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 100% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  padding-bottom: 0.2rem;
+.gb__sheet--split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(3rem, 6vw, 6rem);
+  padding: clamp(1.8rem, 2.8vw, 3rem) clamp(2rem, 3.6vw, 4rem);
 }
 
-.gr__grid--solo .gr__also {
-  align-self: center;
+/* The fold between the two lower entries, interrupted by the lotus. */
+.gb__sheet--split::after {
+  content: "";
+  position: absolute;
+  top: clamp(1.8rem, 2.8vw, 3rem);
+  bottom: clamp(1.8rem, 2.8vw, 3rem);
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(var(--gb-hair) 0 38%, transparent 38% 52%, var(--gb-hair) 52%);
 }
 
-/* -------------------------------------------------------- source switch */
-.gr__tabs {
-  display: inline-flex;
-  align-self: flex-start;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border: 1px solid var(--gr-hair);
-  border-radius: 999px;
+.gb__sheet--single {
+  grid-template-columns: minmax(0, 1fr);
+  padding-right: 40%;
 }
 
-.gr__grid--solo .gr__tabs {
-  align-self: center;
-}
-
-.gr__tab {
-  appearance: none;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  padding: 0.55rem 1.1rem;
-  font-family: var(--gr-num);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gr-ink-soft);
-  cursor: pointer;
-  transition: background-color 240ms ease, color 240ms ease;
-}
-
-.gr__tab[aria-selected="true"] {
-  background: var(--gr-ink);
-  color: var(--gr-paper);
-}
-
-@media (hover: hover) {
-  .gr__tab[aria-selected="false"]:hover {
-    color: var(--gr-ink);
-  }
-}
-
-.gr__tab:focus-visible {
-  outline: 2px solid var(--gr-gold);
-  outline-offset: 2px;
-}
-
-/* ----------------------------------------------------------------- stars */
-.gr__stars {
-  display: inline-flex;
-  gap: 0.16rem;
-  line-height: 0;
-}
-
-.gr__stars svg {
-  display: block;
-}
-
-.gr__stars--lg svg {
-  width: 1.15rem;
-  height: 1.15rem;
-}
-
-.gr__stars--sm svg {
-  width: 0.8rem;
-  height: 0.8rem;
-}
-
-.gr__star-ground {
-  fill: var(--gr-star-ground);
-}
-
-.gr__star-fill {
-  fill: var(--gr-star);
-}
-
-/* Tripadvisor's bubbles keep its green, the way the platform shows a score. */
-.gr__bubble-ring {
-  fill: none;
-  stroke: #00aa6c;
-  stroke-width: 2;
-}
-
-.gr__bubble-fill {
-  fill: #00aa6c;
-}
-
-/* ---------------------------------------------------------------- ledger */
-.gr__ledger-view {
-  grid-column: 6 / -1;
-  min-width: 0;
-}
-
-.gr__head-view {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  min-width: 0;
-}
-
-.gr__head-view[hidden],
-.gr__ledger-view[hidden] {
+.gb__sheet--single::after {
   display: none;
 }
 
-.gr__ledger {
-  list-style: none;
+.gb__lotus {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 1.6rem;
+  transform: translateX(-50%);
+  color: var(--gb-gold);
+}
+
+/* Postcard, stamp, palm and pencilled line live in the reserved column. */
+.gb__postcard {
+  position: absolute;
+  top: -1.4rem;
+  right: -0.4rem;
+  width: var(--gb-card);
+  padding: 0.55rem;
+  background: #fbf8f1;
+  box-shadow: 0 14px 26px rgb(50 36 14 / 26%), 0 1px 2px rgb(50 36 14 / 20%);
+  transform: rotate(4deg);
+}
+
+.gb__postcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 14 / 17;
+  object-fit: cover;
+  filter: sepia(0.18) saturate(0.95);
+}
+
+.gb__stamp {
+  position: absolute;
+  /* Pressed over the postcard's lower-left corner, clear of the words. */
+  top: calc(var(--gb-card) * 1.21 - var(--gb-stamp) * 0.75);
+  right: calc(var(--gb-card) - var(--gb-stamp) * 0.45);
+  width: var(--gb-stamp);
+  color: #4c3d26;
+  opacity: 0.85;
+  transform: rotate(-10deg);
+  pointer-events: none;
+}
+
+.gb__palm {
+  color: var(--gb-sepia);
+  pointer-events: none;
+}
+
+.gb__palm--page {
+  position: absolute;
+  right: clamp(-2.6rem, -2.4vw, -1rem);
+  bottom: -0.6rem;
+  width: clamp(6.5rem, 10vw, 10rem);
+  opacity: 0.7;
+  transform: scaleX(-1) rotate(-6deg);
+}
+
+.gb__hand--page {
+  right: clamp(4.5rem, 9vw, 9rem);
+  bottom: clamp(1.6rem, 3vw, 3rem);
+  font-size: clamp(1.25rem, 1.65vw, 1.9rem);
+  transform: rotate(-16deg);
+  transform-origin: right bottom;
+}
+
+/* ------------------------------------------------------------------ entries */
+.gb__note {
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(1.5rem, 3vw, 3.5rem);
-  min-width: 0;
-}
-
-.gr__entry {
-  min-width: 0;
-  border-top: 1px solid var(--gr-hair);
-}
-
-/* The first entry opens wide: one voice set larger before the columns. */
-.gr__entry:first-child {
-  grid-column: 1 / -1;
-}
-
-.gr__card {
-  margin: 0;
-  padding: 1.5rem 0 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   min-width: 0;
+  color: var(--gb-ink);
 }
 
-.gr__who {
+.gb__note-top {
   display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: 1.1rem;
+}
+
+.gb__mark {
+  font-family: var(--gr-edit);
+  font-weight: 700;
+  font-size: 5.6rem;
+  line-height: 0.78;
+  height: 2.6rem;
+  color: var(--gb-gold);
+}
+
+.gb__note--lead .gb__mark {
+  font-size: clamp(6.6rem, 8.4vw, 9rem);
+  height: clamp(3.4rem, 4.4vw, 4.6rem);
+}
+
+.gb__src {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  column-gap: 0.8rem;
+  gap: 0.4rem;
+  font-family: var(--gr-meta);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--gb-ink-soft);
+  text-align: center;
+}
+
+.gb__src-mark {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.gb__when {
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  a.gb__when:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.gb__words {
+  margin: clamp(1.1rem, 1.6vw, 1.6rem) 0 0;
   min-width: 0;
 }
 
-.gr__avatar {
+.gb__headline {
+  margin: 0 0 0.5rem;
+  font-family: var(--gr-meta);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gb-ink);
+}
+
+.gb__text {
+  margin: 0;
+  font-family: var(--gr-edit-italic);
+  font-style: italic;
+  font-size: clamp(1rem, 1.12vw, 1.18rem);
+  line-height: 1.55;
+  color: var(--gb-ink);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8;
+  line-clamp: 8;
+  overflow: hidden;
+}
+
+.gb__note--lead .gb__text {
+  font-size: clamp(1.25rem, 1.62vw, 1.8rem);
+  line-height: 1.48;
+  -webkit-line-clamp: 8;
+  line-clamp: 8;
+}
+
+.gb__by {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: auto;
+  padding-top: clamp(1.4rem, 2.2vw, 2.2rem);
+  min-width: 0;
+}
+
+/* The featured guest signs on a rule that runs to the page edge. */
+.gb__note--lead .gb__by::after {
+  content: "";
+  flex: 1 1 auto;
+  min-width: 2rem;
+  max-width: 9rem;
+  height: 1px;
+  margin-left: 1rem;
+  background: var(--gb-hair);
+}
+
+.gb__avatar {
   display: grid;
   place-items: center;
+  flex: 0 0 auto;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--gr-avatar);
-  font-family: var(--gr-display);
-  font-size: 1.15rem;
-  color: var(--gr-ink);
+  font-family: var(--gr-meta);
+  font-size: 1rem;
+  color: #fff;
 }
 
-.gr__avatar img {
+.gb__note--lead .gb__avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.gb__avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.gr__who-text {
+.gb__by-text {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   min-width: 0;
 }
 
-.gr__author {
+.gb__name {
   font-style: normal;
-  font-family: var(--gr-num);
-  font-size: 0.8rem;
+  font-family: var(--gr-meta);
+  font-size: 0.78rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gr-ink);
+  color: var(--gb-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.gr__rating-line {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.3rem 0.7rem;
-}
-
-.gr__when {
-  font-family: var(--gr-num);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  color: var(--gr-ink-soft);
-}
-
-.gr__g--entry {
-  width: 1rem;
-  height: 1rem;
-}
-
-.gr__quote {
-  margin: 0;
-  min-width: 0;
-}
-
-.gr__quote .gr__quote-title {
-  margin: 0 0 0.45rem;
-  font-family: var(--gr-num);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-  color: var(--gr-ink);
-  font-style: normal;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-.gr__quote p:not(.gr__quote-title) {
-  margin: 0;
-  font-family: var(--gr-edit);
-  font-size: clamp(0.98rem, 1.08vw, 1.14rem);
-  line-height: 1.62;
-  color: var(--gr-ink);
-  overflow-wrap: anywhere;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 6;
-  line-clamp: 6;
-  overflow: hidden;
-}
-
-.gr__entry:first-child .gr__quote p:not(.gr__quote-title) {
-  font-style: italic;
-  font-size: clamp(1.2rem, 1.6vw, 1.7rem);
-  line-height: 1.45;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-}
-
-.gr__author a,
-.gr__more {
+.gb__name a {
   color: inherit;
   text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.gr__more {
-  align-self: flex-start;
-  font-family: var(--gr-num);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gr-gold-deep);
-  padding-bottom: 0.15rem;
 }
 
 @media (hover: hover) {
-  .gr__author a:hover,
-  .gr__more:hover {
-    background-size: 100% 1px;
+  .gb__name a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }
 
-.gr a:focus-visible {
-  outline: 2px solid var(--gr-gold);
-  outline-offset: 3px;
+.gb__on {
+  font-family: var(--gr-meta);
+  font-size: 0.72rem;
+  color: var(--gb-ink-soft);
 }
 
-.gr__source {
-  margin: 1.5rem 0 0;
-  font-family: var(--gr-num);
+.gb__empty {
+  margin: 0;
+  max-width: 30ch;
+  font-family: var(--gr-edit-italic);
+  font-style: italic;
+  font-size: clamp(1.2rem, 1.5vw, 1.6rem);
+  line-height: 1.5;
+  color: var(--gb-ink);
+}
+
+/* Google stars in house gold; Tripadvisor keeps its green bubbles. */
+.gr .gr__stars {
+  display: inline-flex;
+  gap: 0.22rem;
+  line-height: 0;
+}
+
+.gr .gr__stars svg {
+  display: block;
+}
+
+.gr .gr__stars--lg svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.gr .gr__stars--sm svg {
+  width: 0.82rem;
+  height: 0.82rem;
+}
+
+.gr .gr__star-ground {
+  fill: rgb(154 127 67 / 22%);
+}
+
+.gr .gr__star-fill {
+  fill: var(--gb-gold);
+}
+
+html[data-public-theme="night"] .gb__score .gr__star-fill {
+  fill: #cbb079;
+}
+
+.gr .gr__bubble-ring {
+  fill: none;
+  stroke: #00aa6c;
+  stroke-width: 2;
+}
+
+.gr .gr__bubble-fill {
+  fill: #00aa6c;
+}
+
+.gb__note-top .gr__stars {
+  align-self: end;
+  padding-bottom: 0.3rem;
+}
+
+/* ------------------------------------------------------------- page turning */
+.gb__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  margin-top: 1.4rem;
+}
+
+.gb__turn {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--gr-hair);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gr-ink);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 240ms ease, opacity 240ms ease;
+}
+
+.gb__turn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .gb__turn:not(:disabled):hover {
+    border-color: var(--gr-gold-deep);
+  }
+}
+
+.gb__folio {
+  font-family: var(--gr-meta);
   font-size: 0.7rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--gr-ink-soft);
 }
 
-.gr__sr {
+.gb__source {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-family: var(--gr-meta);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--gr-ink-soft);
+}
+
+.gb__sr {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -521,121 +741,302 @@ html[data-public-theme="night"] .gr {
   white-space: nowrap;
 }
 
-/* ------------------------------------------------------------ responsive */
-@media (max-width: 1280px) {
-  .gr__head {
-    grid-column: 1 / span 5;
+/* -------------------------------------------------------------- responsive */
+@media (max-width: 1180px) {
+  .gb {
+    grid-template-columns: minmax(0, 36fr) minmax(0, 64fr);
   }
-  .gr__ledger {
-    grid-template-columns: minmax(0, 1fr);
+  .gb__sheet--split {
+    column-gap: 3rem;
   }
 }
 
 /*
- * The structural switch the editorial pages share. The head packs into a
- * short block and the reviews become one swipe row: the next review peeks at
- * the edge, so the row reads as more to see without growing the page.
+ * The structural switch the editorial pages share: one journal page.
  */
 @media (max-width: 950px) {
   .gr {
-    padding-top: clamp(3rem, 8vw, 4.5rem);
-    padding-bottom: clamp(2.5rem, 7vw, 4rem);
-  }
-  .gr__grid {
-    row-gap: 1.8rem;
-  }
-  .gr__head {
-    grid-column: 1 / -1;
-    position: static;
-    gap: 1.1rem;
-  }
-  .gr__title {
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: 0.28em;
-    font-size: clamp(2.1rem, 8.4vw, 3.6rem);
-  }
-  .gr__badge {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.7rem 1rem;
-    padding: 0.9rem 0;
-  }
-  .gr__figure {
-    font-size: clamp(2.6rem, 11vw, 3.4rem);
+    padding-top: clamp(3rem, 9vw, 4.5rem);
+    padding-bottom: clamp(2.5rem, 8vw, 4rem);
   }
 
-  .gr__ledger-view {
-    grid-column: 1 / -1;
+  .gb {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 36rem;
   }
-  .gr__head-view {
-    gap: 1.1rem;
+
+  .gb__book,
+  .gb__lede,
+  .gb__dash,
+  .gb__actions--aside,
+  .gb__aside > .gb__etching {
+    display: none;
   }
-  .gr__ledger {
+
+  .gb__aside {
+    align-items: center;
+    text-align: center;
+    padding-top: 0;
+  }
+
+  .gb__palm--head {
+    display: block;
+    position: absolute;
+    top: -1.8rem;
+    right: -1.4rem;
+    width: clamp(5rem, 22vw, 7.5rem);
+    opacity: 0.45;
+    transform: scaleX(-1);
+    z-index: 0;
+  }
+
+  .gb__kicker,
+  .gb__title,
+  .gb__subtitle {
+    position: relative;
+    z-index: 1;
+  }
+
+  .gb__kicker {
+    margin-bottom: 1rem;
+  }
+
+  .gb__title {
+    align-items: center;
+    font-size: clamp(2.3rem, 11vw, 3.7rem);
+    line-height: 0.95;
+  }
+
+  .gb__title-accent {
+    max-width: none;
+  }
+
+  .gb__subtitle {
+    display: block;
+    margin: 1rem 0 0;
+    font-family: var(--gr-edit-italic);
+    font-style: italic;
+    font-size: clamp(0.98rem, 3.8vw, 1.1rem);
+    color: var(--gr-ink);
+  }
+
+  .gb__summary {
+    margin-top: 1.4rem;
+    padding-top: 0;
+    border-top: 0;
     display: flex;
-    gap: 1rem;
+    justify-content: center;
+  }
+
+  .gb__figure {
+    font-size: clamp(3rem, 14vw, 3.8rem);
+  }
+
+  .gb__score-side {
+    align-items: flex-start;
+  }
+
+  .gb__tabs {
+    margin-top: 1.3rem;
+    width: 100%;
+  }
+
+  .gb__deck-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+    margin-top: 1.6rem;
+  }
+
+  .gb__deck {
+    list-style: none;
     margin: 0 calc(var(--gr-pad) * -1);
-    padding: 0 var(--gr-pad);
+    padding: 0.4rem var(--gr-pad) 1.8rem;
+    display: flex;
+    column-gap: 1rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--gr-pad);
     scrollbar-width: none;
   }
-  .gr__ledger::-webkit-scrollbar {
+
+  .gb__deck::-webkit-scrollbar {
     display: none;
   }
-  .gr__entry,
-  .gr__entry:first-child {
-    flex: 0 0 min(84%, 26rem);
+
+  .gb__card,
+  .gb__next {
+    position: relative;
+    isolation: isolate;
+    filter: drop-shadow(0 6px 9px rgb(60 44 20 / 13%)) drop-shadow(0 1px 2px rgb(60 44 20 / 14%));
+  }
+
+  .gb__card::before,
+  .gb__next::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--gb-page);
+    background-image:
+      var(--gb-noise),
+      radial-gradient(140% 120% at 50% 40%, transparent 55%, rgb(150 115 60 / 16%) 100%);
+    clip-path: polygon(0.00% 0.23%, 4.17% 0.24%, 8.33% 0.04%, 12.50% 0.05%, 16.67% 0.17%, 20.83% 0.13%, 25.00% 0.41%, 29.17% 0.08%, 33.33% 0.01%, 37.50% 0.48%, 41.67% 0.26%, 45.83% 0.07%, 50.00% 0.27%, 54.17% 0.01%, 58.33% 0.26%, 62.50% 0.49%, 66.67% 0.43%, 70.83% 0.35%, 75.00% 0.13%, 79.17% 0.18%, 83.33% 0.08%, 87.50% 0.39%, 91.67% 0.27%, 95.83% 0.39%, 100.00% 0.16%, 99.80% 4.17%, 99.27% 8.33%, 99.11% 12.50%, 99.23% 16.67%, 99.27% 20.83%, 99.26% 25.00%, 99.33% 29.17%, 99.80% 33.33%, 99.53% 37.50%, 99.68% 41.67%, 99.97% 45.83%, 99.97% 50.00%, 99.75% 54.17%, 99.77% 58.33%, 99.38% 62.50%, 99.14% 66.67%, 99.60% 70.83%, 99.16% 75.00%, 99.11% 79.17%, 99.14% 83.33%, 99.67% 87.50%, 99.80% 91.67%, 99.80% 95.83%, 99.82% 100.00%, 95.83% 99.90%, 91.67% 99.69%, 87.50% 99.55%, 83.33% 99.58%, 79.17% 99.76%, 75.00% 99.67%, 70.83% 99.60%, 66.67% 99.96%, 62.50% 99.67%, 58.33% 99.55%, 54.17% 99.61%, 50.00% 99.62%, 45.83% 99.76%, 41.67% 99.91%, 37.50% 99.61%, 33.33% 99.83%, 29.17% 99.60%, 25.00% 99.51%, 20.83% 99.80%, 16.67% 99.80%, 12.50% 99.53%, 8.33% 99.64%, 4.17% 99.91%, 0.00% 99.94%, 0.14% 95.83%, 0.81% 91.67%, 0.73% 87.50%, 0.13% 83.33%, 0.74% 79.17%, 0.88% 75.00%, 0.59% 70.83%, 0.32% 66.67%, 0.49% 62.50%, 0.12% 58.33%, 0.01% 54.17%, 0.87% 50.00%, 0.58% 45.83%, 0.47% 41.67%, 0.84% 37.50%, 0.39% 33.33%, 0.78% 29.17%, 0.74% 25.00%, 0.19% 20.83%, 0.23% 16.67%, 0.26% 12.50%, 0.22% 8.33%, 0.53% 4.17%);
+  }
+
+  .gb__card {
+    flex: 0 0 100%;
+    min-width: 0;
     scroll-snap-align: start;
-    border-top: 0;
-    border-left: 1px solid var(--gr-hair);
-    padding-left: 1rem;
+    padding: 1.5rem 1.4rem 1.4rem;
+    min-height: 22rem;
+    display: flex;
   }
-  .gr__entry:first-child {
-    border-left: 0;
-    padding-left: 0;
+
+  .gb__card .gb__note {
+    flex: 1 1 auto;
+    min-width: 0;
   }
-  .gr__card {
-    padding: 0.2rem 0 0.4rem;
-    gap: 0.8rem;
+
+  .gb__note--card .gb__text {
+    font-size: 1.06rem;
+    -webkit-line-clamp: 8;
+    line-clamp: 8;
   }
-  .gr__entry:first-child .gr__quote p:not(.gr__quote-title),
-  .gr__quote p:not(.gr__quote-title) {
-    font-style: normal;
-    font-size: 1rem;
-    line-height: 1.58;
-    -webkit-line-clamp: 7;
-    line-clamp: 7;
+
+  .gb__note--card .gb__mark {
+    font-size: 4.4rem;
+    height: 2.4rem;
   }
-  .gr__source {
-    margin-top: 1.2rem;
+
+  .gb__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: -0.2rem;
+  }
+
+  .gb__dot {
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+
+  .gb__dot::before {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    border: 1px solid var(--gr-ink-soft);
+    transition: background-color 200ms ease;
+  }
+
+  .gb__dot[aria-current="true"]::before {
+    background: var(--gr-ink);
+    border-color: var(--gr-ink);
+  }
+
+  /* The next review waits underneath, a smaller leaf of the same book. */
+  .gb__next {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1.15rem 1.2rem 1.1rem;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .gb__note--next .gb__mark {
+    font-size: 3.2rem;
+    height: 1.8rem;
+  }
+
+  .gb__note--next .gb__words {
+    margin-top: 0.8rem;
+  }
+
+  .gb__note--next .gb__text {
+    font-size: 0.98rem;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+
+  .gb__note--next .gb__headline {
+    display: none;
+  }
+
+  .gb__note--next .gb__by {
+    padding-top: 0.9rem;
+  }
+
+  .gb__note--next .gb__avatar {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.85rem;
+  }
+
+  .gb__actions--deck {
+    width: 100%;
+    margin-top: 1.6rem;
+  }
+
+  .gb__etching--deck {
+    margin-top: 0.4rem;
+    padding-top: 2.6rem;
+  }
+
+  .gb__etching--deck img {
+    width: 100%;
+    margin-left: 0;
+    opacity: 0.75;
+  }
+
+  .gb__hand--deck {
+    top: 0.2rem;
+    left: 0.2rem;
+    font-size: clamp(1.25rem, 5.4vw, 1.6rem);
+    transform: rotate(-8deg);
+    color: var(--gr-ink-soft);
+  }
+
+  .gb__deck-wrap > .gb__empty {
+    padding: 1.6rem;
+  }
+
+  .gb__deck-wrap > .gb__empty::before {
+    clip-path: none;
+  }
+
+  .gb__source {
+    display: none;
   }
 }
 
-@media (max-width: 640px) {
-  .gr__actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .gr__actions:has(> :only-child) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .gr .gr__actions .gr__btn:not(#_):not(#__) {
-    min-width: 0 !important;
-    max-width: none !important;
-    padding-inline: 0.6rem !important;
+@media (max-width: 400px) {
+  .gr .gb__tab:not(#_):not(#__),
+  .gr .gb__btn:not(#_):not(#__) {
+    padding-inline: 0.4rem !important;
+    letter-spacing: 0.12em !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gr__author a,
-  .gr__more {
+  .gb__turn,
+  .gb__dot::before {
     transition: none;
   }
-  .gr__ledger {
+  .gb__deck {
     scroll-behavior: auto;
   }
 }
