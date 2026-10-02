@@ -8,6 +8,7 @@ import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
 import { paymentPlan, stageTitle } from "@/lib/booking-code";
+import { ReplyAttachments, readyAttachments, type ReplyAttachment } from "@/components/admin/bookings/ReplyAttachments";
 
 export type BookingActionKind =
   | "confirm"
@@ -160,6 +161,7 @@ export function BookingActionDialog({
   const [notify, setNotify] = useState(true);
   const [replySubject, setReplySubject] = useState("");
   const [replyMessage, setReplyMessage] = useState(`Dear ${booking.guestName},\n\n`);
+  const [replyFiles, setReplyFiles] = useState<ReplyAttachment[]>([]);
   const [cancelReason, setCancelReason] = useState("CANCELLATION");
   const refund = booking.status === "CANCELLED";
   const [payment, setPayment] = useState(() => ({
@@ -168,6 +170,27 @@ export function BookingActionDialog({
     method: booking.paymentMethod === "VISA" ? "VISA" : "BANK_TRANSFER",
     receivedAt: new Date(Date.now() - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 16),
   }));
+
+  const attachmentsField = (
+    // Not a <label>: a click on its empty space would open the file picker.
+    <div>
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted">Attachments</span>
+      <div className="mt-1.5">
+        <ReplyAttachments bookingId={booking.id} items={replyFiles} onChange={setReplyFiles} />
+      </div>
+      <span className="mt-1 block text-xs text-muted">Screenshots, photos, PDFs and documents. Program files cannot be attached.</span>
+    </div>
+  );
+  const uploading = replyFiles.some((file) => file.status === "uploading");
+  const filesLabel = replyFiles.length ? ` with ${replyFiles.length} ${replyFiles.length === 1 ? "file" : "files"}` : "";
+
+  /** The uploaded files, or an error when one is still uploading or failed. */
+  function attachedFiles() {
+    if (replyFiles.some((file) => file.status === "uploading")) throw new Error("Wait for the attachments to finish uploading.");
+    if (replyFiles.some((file) => file.status === "failed")) throw new Error("Remove the attachments that failed to upload, or attach them again.");
+    const attachments = readyAttachments(replyFiles);
+    return attachments.length ? attachments : undefined;
+  }
 
   async function patch(body: unknown): Promise<{ booking: AdminBookingDto | null; email: MailResult }> {
     const response = await adminFetch(
@@ -215,7 +238,12 @@ export function BookingActionDialog({
         if (/\[paste/i.test(note)) throw new Error("Replace the [paste …] placeholder in the note first.");
         const blank = note ? /^\s*(Bank|IBAN|SWIFT[^:\n]*|Account[^:\n]*):[ \t]*$/im.exec(note) : null;
         if (blank) throw new Error(`Fill in “${blank[1]}” in the note before sending the invoice.`);
-        const result = await patch({ type: "accept", paymentLink: link || undefined, instructions: note.length >= 10 ? note : undefined });
+        const result = await patch({
+          type: "accept",
+          paymentLink: link || undefined,
+          instructions: note.length >= 10 ? note : undefined,
+          attachments: attachedFiles(),
+        });
         if (note) rememberInstructions(booking.paymentMethod, note, amountText, booking.code);
         report(
           booking.acceptedAt ? "" : "Request confirmed.",
@@ -228,7 +256,12 @@ export function BookingActionDialog({
         report("Request declined and cabins released.", result.email);
         onDone(result.booking);
       } else if (kind === "reply") {
-        const result = await patch({ type: "message", subject: replySubject.trim() || undefined, message: replyMessage.trim() });
+        const result = await patch({
+          type: "message",
+          subject: replySubject.trim() || undefined,
+          message: replyMessage.trim(),
+          attachments: attachedFiles(),
+        });
         // A reply is only an email: keep the dialog (and the text) open if it did not go.
         if (!result.email?.sent) throw new Error(`The reply was not sent (${(result.email?.error ?? "unknown error").replace(/[.\s]+$/, "")}). Try again.`);
         report("", result.email);
@@ -349,9 +382,14 @@ export function BookingActionDialog({
               />
             </Field>
           </div>
+          <div className="mt-4">{attachmentsField}</div>
           <p className="mt-3 text-xs text-muted">Sent to {booking.customerEmail}</p>
           {errorLine}
-          <Footer busy={busy} submitLabel={booking.acceptedAt ? "Send invoice again" : "Confirm & send invoice"} onCancel={onClose} />
+          <Footer
+            busy={busy || uploading}
+            submitLabel={`${booking.acceptedAt ? "Send invoice again" : "Confirm & send invoice"}${filesLabel}`}
+            onCancel={onClose}
+          />
         </form>
       </Dialog>
     );
@@ -392,9 +430,14 @@ export function BookingActionDialog({
             <Field label="Message">
               <textarea className="input min-h-[12rem] px-3 py-2.5 text-sm leading-relaxed" value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)} required minLength={2} maxLength={4000} />
             </Field>
+            {attachmentsField}
           </div>
           {errorLine}
-          <Footer busy={busy} submitLabel="Send reply" onCancel={onClose} />
+          <Footer
+            busy={busy || uploading}
+            submitLabel={`Send reply${filesLabel}`}
+            onCancel={onClose}
+          />
         </form>
       </Dialog>
     );

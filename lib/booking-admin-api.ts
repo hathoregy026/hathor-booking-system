@@ -5,6 +5,8 @@ import { assertTrustedPublicJsonRequest, PublicRequestError } from "@/lib/public
 import { administerBooking } from "@/lib/booking-engine";
 import { sendConfirmation, sendDeclined, sendInvoice, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
+import { MAX_ATTACHMENTS } from "@/lib/mail-attachment-rules";
+import { resolveAttachments } from "@/lib/mail-attachments";
 
 export function assertBookingAdmin(request: NextRequest) {
   if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) throw new PublicRequestError("Unauthorized",401);
@@ -17,6 +19,8 @@ export function bookingAdminSession(request: NextRequest) {
 }
 
 const teamText = z.string().trim().max(4000);
+const attachmentList = z.array(z.object({ path: z.string().max(400), name: z.string().trim().min(1).max(255) }).strict())
+  .max(MAX_ATTACHMENTS).optional();
 
 function isSecureLink(value: string) {
   try {
@@ -32,6 +36,7 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     type: z.literal("accept"),
     instructions: teamText.min(10).optional(),
     paymentLink: z.string().trim().max(2000).refine(isSecureLink, "Paste the full secure payment link (it starts with https://).").optional(),
+    attachments: attachmentList,
   }).strict(),
   z.object({ type: z.literal("decline"), message: teamText.optional(), notify: z.boolean().default(true) }).strict(),
   z.object({ type: z.literal("cancel"), reason: z.enum(["CANCELLATION","NO_SHOW","EARLY_DEPARTURE"]).default("CANCELLATION") }).strict(),
@@ -42,7 +47,12 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     kind: z.enum(["RECEIPT","REFUND"]),
     receivedAt: z.iso.datetime().transform(s => new Date(s)).refine(d => d <= new Date(), "Payment cannot be dated in the future."),
   }).strict() }).strict(),
-  z.object({ type: z.literal("message"), subject: z.string().trim().max(200).optional(), message: teamText.min(2) }).strict(),
+  z.object({
+    type: z.literal("message"),
+    subject: z.string().trim().max(200).optional(),
+    message: teamText.min(2),
+    attachments: attachmentList,
+  }).strict(),
   z.object({ type: z.literal("send-confirmation") }).strict(),
 ]);
 
@@ -57,7 +67,9 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
     : staffActionSchema.parse(body);
 
   if (action.type === "message") {
-    return { email: await sendTeamReply(id, action.message, action.subject) };
+    // Checked before sending, so a missing or oversized file stops the reply with a clear reason.
+    const attachments = await resolveAttachments(id, action.attachments ?? []);
+    return { email: await sendTeamReply(id, action.message, action.subject, attachments) };
   }
 
   if (action.type === "send-confirmation") {
@@ -66,9 +78,11 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
   }
 
   if (action.type === "accept") {
+    // Files are checked before the booking changes, so a bad attachment never leaves it half-confirmed.
+    const attachments = "attachments" in action ? await resolveAttachments(id, action.attachments ?? []) : [];
     await administerBooking(id, { type: "accept" });
     const invoice = "instructions" in action ? { instructions: action.instructions, paymentLink: action.paymentLink } : {};
-    return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice) } : {};
+    return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice, attachments) } : {};
   }
 
   if (action.type === "decline") {

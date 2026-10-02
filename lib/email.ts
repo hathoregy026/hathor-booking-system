@@ -15,6 +15,7 @@ import {
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { buildEmailSendTheme } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import type { ResendAttachment } from "@/lib/mail-attachments";
 import {
   getAdminNotificationEmail,
   getResendFromAddress,
@@ -55,6 +56,8 @@ async function sendEmail(input: {
   label: string;
   renderMessage: (theme: EmailTemplateOverrides) => ReactElement;
   theme: EmailTemplateOverrides;
+  /** Files the email service collects from their signed links. */
+  attachments?: ResendAttachment[];
 }) {
   const resend = getResend();
   if (!resend) {
@@ -82,6 +85,7 @@ async function sendEmail(input: {
     html,
     text,
     replyTo: process.env.RESEND_REPLY_TO?.trim() || undefined,
+    attachments: input.attachments?.length ? input.attachments : undefined,
   };
   // Retry only when the connection dropped before Resend answered; the shared
   // idempotency key makes Resend deliver the message at most once.
@@ -116,6 +120,7 @@ export async function sendBookingInvoiceEmail(
   guestName: string,
   bookingDetails: BookingEmailDetails,
   invoice: { paymentLink?: string; instructions?: string },
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingInvoice");
   await sendEmail({
@@ -124,7 +129,8 @@ export async function sendBookingInvoiceEmail(
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
       BookingInvoiceEmail({ guestName, details: bookingDetails, ...invoice, ...sendTheme }),
-    label: "booking invoice (guest)",
+    label: attachments.length ? `booking invoice (guest, ${attachments.length} attachments)` : "booking invoice (guest)",
+    attachments,
   });
 }
 
@@ -152,6 +158,7 @@ export async function sendBookingMessageEmail(
   bookingDetails: BookingEmailDetails,
   message: string,
   subject?: string,
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingMessage");
   await sendEmail({
@@ -160,7 +167,8 @@ export async function sendBookingMessageEmail(
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
       BookingMessageEmail({ guestName, details: bookingDetails, message, ...sendTheme }),
-    label: "team reply (guest)",
+    label: attachments.length ? `team reply (guest, ${attachments.length} attachments)` : "team reply (guest)",
+    attachments,
   });
 }
 

@@ -16,6 +16,8 @@ import { bookingQuery } from "@/lib/booking-database";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { getSiteBaseUrl } from "@/lib/public-url";
 
+import type { ResendAttachment } from "@/lib/mail-attachments";
+
 export type MailResult = { sent: boolean; to: string | null; error?: string };
 
 /** Read through the booking engine's own connections, which survive the pooler dropping idle ones. */
@@ -78,8 +80,8 @@ async function deliver(id: string, send: (details: BookingEmailDetails) => Promi
 }
 
 /** The invoice: the amount due now (worked out from the plan), the team's payment link and any note. */
-export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }) {
-  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice));
+export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice, attachments));
 }
 
 export function sendConfirmation(id: string) {
@@ -90,8 +92,8 @@ export function sendDeclined(id: string, message?: string) {
   return deliver(id, details => sendBookingDeclinedEmail(details.guestEmail, details.guestName, details, message));
 }
 
-export function sendTeamReply(id: string, message: string, subject?: string) {
-  return deliver(id, details => sendBookingMessageEmail(details.guestEmail, details.guestName, details, message, subject));
+export function sendTeamReply(id: string, message: string, subject?: string, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingMessageEmail(details.guestEmail, details.guestName, details, message, subject, attachments));
 }
 
 /** The request emails (guest copy with its code, team alert), recording each outcome on the booking. */
