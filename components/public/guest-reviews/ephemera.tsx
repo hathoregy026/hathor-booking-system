@@ -8,44 +8,6 @@ import { useId } from "react";
 
 const INK = "#4a3c27";
 
-/** A pen-drawn palm frond: a curving rachis with tapering leaflets either side. */
-export function PalmFrond({ className, leaflets = 26 }: { className?: string; leaflets?: number }) {
-  const strokes: string[] = [];
-  // Rachis from (20, 300) curving up to (250, 30).
-  const at = (t: number) => {
-    const x = 20 + 230 * t + Math.sin(t * Math.PI) * 26;
-    const y = 300 - 270 * t - Math.sin(t * Math.PI) * 22;
-    return { x, y };
-  };
-  for (let i = 1; i <= leaflets; i++) {
-    const t = i / (leaflets + 1);
-    const p = at(t);
-    const q = at(Math.min(1, t + 0.02));
-    const ang = Math.atan2(q.y - p.y, q.x - p.x);
-    const len = (28 + 70 * Math.sin(Math.PI * Math.min(1, t * 1.15))) * (0.85 + ((i * 37) % 10) / 40);
-    for (const side of [-1, 1]) {
-      // Leaflets sweep back toward the tip and droop slightly.
-      const a = ang + side * (1.05 - t * 0.35);
-      const ex = p.x + Math.cos(a) * len;
-      const ey = p.y + Math.sin(a) * len + len * 0.18;
-      const cx = p.x + Math.cos(a - side * 0.25) * len * 0.55;
-      const cy = p.y + Math.sin(a - side * 0.25) * len * 0.55 - side * 3;
-      strokes.push(`M${p.x.toFixed(1)} ${p.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`);
-    }
-  }
-  const rachis = Array.from({ length: 21 }, (_, i) => at(i / 20)).map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
-  return (
-    <svg className={className} viewBox="-40 -30 340 360" aria-hidden="true" focusable="false">
-      <g fill="none" stroke={INK} strokeLinecap="round">
-        <path d={rachis} strokeWidth="2.1" />
-        {strokes.map((d, i) => (
-          <path key={i} d={d} strokeWidth={i % 3 === 0 ? 1.15 : 0.8} opacity={0.65 + ((i * 13) % 7) / 20} />
-        ))}
-      </g>
-    </svg>
-  );
-}
-
 /** A sketched date palm, for the corner of the phone's journal page. */
 export function PalmTree({ className }: { className?: string }) {
   return (

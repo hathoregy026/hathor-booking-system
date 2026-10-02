@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useId, useRef, useState, type ReactNode, type UIEvent } from "react";
 import type { GuestReview, GuestReviewsData } from "@/lib/guest-reviews";
-import { HandNote, PalmFrond, PalmTree, Stamp } from "@/components/public/guest-reviews/ephemera";
+import { HandNote, PalmTree, Stamp } from "@/components/public/guest-reviews/ephemera";
 import { GoogleMark, Rating, SOURCE_LABEL, SourceMark, type ReviewSource } from "@/components/public/guest-reviews/marks";
 
 /** Three reviews to a spread: one on the upper page, two on the lower. */
@@ -269,10 +269,18 @@ export function GuestBook({
 
       {/* ------------------------------------------- the open guest book */}
       <div className="gb__book" id={`${base}-panel`} {...panelLabel}>
+        {/* The book is one photograph; each written page is laid over its page in it. */}
         <div className="gb__volume">
-        <span className="gb__block" aria-hidden="true" />
-        <div className="gb__page gb__page--upper">
-          <div className="gb__sheet">
+          <Image
+            className="gb__book-art"
+            src="/media/hathor/reviews/guest-book.webp"
+            alt=""
+            width={939}
+            height={960}
+            sizes="(max-width: 950px) 1px, 62vw"
+            aria-hidden="true"
+          />
+          <div className="gb__page gb__page--upper">
             {lead ? (
               <ReviewNote review={lead} source={data!.source} size="lead" id={`${base}-lead`} />
             ) : (
@@ -297,20 +305,13 @@ export function GuestBook({
             <span className="gb__gloss" />
           </div>
           <Stamp className="gb__stamp" />
-          <PalmFrond className="gb__palm gb__palm--page" />
-        </div>
 
-        {rest.length ? (
-          <div className="gb__page gb__page--lower">
-            <div className={`gb__sheet gb__sheet--split${rest.length === 1 ? " gb__sheet--single" : ""}`}>
-              {rest.map((review, index) => (
-                <ReviewNote key={`${spread}-${index}`} review={review} source={data!.source} size="page" id={`${base}-p${index}`} />
-              ))}
-              {rest.length > 1 ? <Lotus className="gb__lotus" /> : null}
-            </div>
+          <div className={`gb__page gb__page--lower${rest.length === 1 ? " gb__page--single" : ""}`}>
+            {rest.map((review, index) => (
+              <ReviewNote key={`${spread}-${index}`} review={review} source={data!.source} size="page" id={`${base}-p${index}`} />
+            ))}
+            {rest.length > 1 ? <Lotus className="gb__lotus" /> : null}
           </div>
-        ) : null}
-
         </div>
 
         {spreads.length > 1 ? (

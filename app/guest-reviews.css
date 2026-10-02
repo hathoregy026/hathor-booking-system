@@ -287,194 +287,115 @@ html[data-public-theme="night"] .gb__hand--deck {
 
 /* ---------------------------------------------------------------- the book */
 /*
- * Built in layers, back to front:
- *   .gb__block      the closed leaves: page thickness along the spine and foot,
- *                   carrying the book's wide shadow on the desk
- *   page ::before / ::after   two loose leaves just under each sheet, offset
- *   .gb__sheet      the written page: deckled paper as a 9-slice border image,
- *                   so the torn edge keeps its scale at any size
- *   postcard, stamp, palm     objects resting on the upper page
+ * The guest book is one photographed object (guest-book.webp, 939 × 960).
+ * The written pages are laid over its two pages at the positions measured
+ * from the artwork — the one place this section positions text, because the
+ * text belongs to the picture. Everything inside scales in container units
+ * with the book's width, so each page holds its words at any size.
  */
 .gb__book {
   position: relative;
   display: flex;
   flex-direction: column;
+  align-self: start;
+  width: 100%;
+  max-width: 64rem;
   min-width: 0;
-  padding: 0 0 0 1.35rem;
 }
 
 .gb__volume {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  isolation: isolate;
+  container-type: inline-size;
+  aspect-ratio: 939 / 960;
 }
 
-.gb__block {
+/* A soft pool of shade on the desk under the book. */
+.gb__volume::before {
+  content: "";
   position: absolute;
-  top: 1.1rem;
-  left: -1.15rem;
-  right: 0.9rem;
-  bottom: -0.9rem;
-  border: var(--gb-edge) solid transparent;
-  border-image: var(--gb-leaf) 64 fill / var(--gb-edge) round;
-  filter: brightness(0.93) var(--gb-lift);
+  z-index: -1;
+  left: 2%;
+  right: 6%;
+  bottom: -2.5%;
+  height: 16%;
+  background: radial-gradient(closest-side, rgb(96 66 28 / 30%), rgb(96 66 28 / 10%) 60%, transparent);
+  filter: blur(14px);
   pointer-events: none;
 }
 
-/* Page thickness along the spine: many fine edges, shaded where they curve in. */
-.gb__block::before {
-  content: "";
+.gb__book-art {
   position: absolute;
-  top: calc(var(--gb-edge) * -0.4);
-  bottom: calc(var(--gb-edge) * -0.25);
-  left: calc(var(--gb-edge) * -0.85);
-  width: 1.5rem;
-  border-radius: 10px 2px 2px 12px;
-  background:
-    repeating-linear-gradient(90deg, rgb(120 92 52 / 30%) 0 0.6px, transparent 0.6px 2.4px),
-    linear-gradient(90deg, #cdbd9f 0%, #ebe0ca 45%, #f2e9d6 70%, #d9c9aa 100%);
-  box-shadow: inset 3px 0 5px rgb(90 64 30 / 28%), -2px 4px 5px rgb(74 52 22 / 18%);
-}
-
-/* …and along the foot. */
-.gb__block::after {
-  content: "";
-  position: absolute;
-  left: calc(var(--gb-edge) * -0.5);
-  right: calc(var(--gb-edge) * 0.2);
-  bottom: calc(var(--gb-edge) * -0.55);
-  height: 0.75rem;
-  border-radius: 0 0 6px 10px;
-  background:
-    repeating-linear-gradient(180deg, rgb(120 92 52 / 28%) 0 0.6px, transparent 0.6px 2.2px),
-    linear-gradient(180deg, #efe5d1, #d5c4a5);
-  box-shadow: 0 3px 4px rgb(74 52 22 / 20%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Warm layered shadow: wide ambient, then the contact under the boards. */
+  filter:
+    drop-shadow(0 38px 44px rgb(74 52 22 / 15%))
+    drop-shadow(0 12px 16px rgb(74 52 22 / 13%))
+    drop-shadow(0 2px 3px rgb(74 52 22 / 22%));
+  pointer-events: none;
+  user-select: none;
 }
 
 .gb__page {
-  position: relative;
-  isolation: isolate;
+  position: absolute;
   min-width: 0;
-  /* The postcard and stamp widths set the column the upper page reserves. */
-  --gb-card: clamp(9.5rem, 23%, 15rem);
-  --gb-stamp: clamp(5.6rem, 7.6vw, 7.4rem);
 }
 
+/* Upper page (artwork x 5.6–90.4%, y 1.9–51.2%). Its right third is the
+   postcard's, so the featured words never reach it. */
 .gb__page--upper {
-  z-index: 3;
-  filter: var(--gb-lift);
-}
-
-.gb__page--lower {
-  z-index: 2;
-  margin-top: -0.35rem;
-  margin-left: 0.35rem;
-  filter: var(--gb-rest);
-}
-
-/* Two loose leaves under each written page, never quite square to it. */
-.gb__page::before,
-.gb__page::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  border: var(--gb-edge) solid transparent;
-  border-image: var(--gb-leaf) 64 fill / var(--gb-edge) round;
-  pointer-events: none;
-}
-
-.gb__page::before {
-  transform: translate(-5px, 5px) rotate(-0.35deg);
-  filter: brightness(0.97);
-}
-
-.gb__page::after {
-  z-index: -3;
-  transform: translate(-9px, 10px) rotate(0.3deg);
-  filter: brightness(0.92);
-}
-
-.gb__page--lower::before {
-  transform: translate(-4px, 6px) rotate(0.25deg);
-}
-
-.gb__page--lower::after {
-  transform: translate(-8px, 11px) rotate(-0.2deg);
-}
-
-.gb__sheet {
-  position: relative;
-  min-width: 0;
-  border: var(--gb-edge) solid transparent;
-  border-image: var(--gb-sheet) 64 fill / var(--gb-edge) round;
-}
-
-/* Where the page curves into the binding, and a little light across it. */
-.gb__sheet::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--gb-edge) * -0.55) auto calc(var(--gb-edge) * -0.55) calc(var(--gb-edge) * -0.45);
-  width: 4.5rem;
-  background: linear-gradient(90deg, rgb(96 68 30 / 17%), rgb(96 68 30 / 5%) 40%, transparent);
-  pointer-events: none;
-}
-
-.gb__sheet::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(90% 80% at 40% 30%, rgb(255 253 246 / 34%), transparent 70%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.gb__page--upper .gb__sheet {
-  /* The right third is the postcard's: the featured words never reach it. */
-  padding:
-    clamp(1rem, 2.2vw, 2.4rem)
-    calc(var(--gb-card) + var(--gb-stamp) - 2.6rem)
-    clamp(1rem, 2vw, 2.2rem)
-    clamp(1.4rem, 3.2vw, 3.6rem);
-  min-height: clamp(26rem, 33vw, 34rem);
+  left: 8.4%;
+  right: 12%;
+  top: 4.2%;
+  height: 43.4%;
+  padding: 2.4cqw 24cqw 1.6cqw 3.2cqw;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.gb__sheet--split {
+/* Lower page (artwork y 51.5–96.1%). Its right edge carries the sprig, so
+   the two columns stop short of it. */
+.gb__page--lower {
+  left: 7.2%;
+  right: 17%;
+  top: 54.6%;
+  bottom: 6.6%;
+  padding: 2.2cqw 3cqw 1.6cqw 3.4cqw;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(3rem, 6vw, 6rem);
-  padding: clamp(0.8rem, 1.6vw, 2rem) clamp(1.2rem, 2.6vw, 3rem) clamp(0.9rem, 1.6vw, 1.8rem);
+  column-gap: 7cqw;
+  align-content: center;
 }
 
 /* The rule between the two lower entries, interrupted by the lotus. */
-.gb__sheet--split > .gb__rule {
-  display: none;
-}
-
-.gb__sheet--split::after {
-  inset: clamp(0.8rem, 1.6vw, 2rem) auto clamp(0.9rem, 1.6vw, 1.8rem) 50%;
+.gb__page--lower::after {
+  content: "";
+  position: absolute;
+  top: 2.4cqw;
+  bottom: 2cqw;
+  left: calc(3.4cqw + (100% - 6.4cqw) / 2);
   width: 1px;
-  z-index: 0;
   background: linear-gradient(var(--gb-hair) 0 38%, transparent 38% 54%, var(--gb-hair) 54%);
 }
 
-.gb__sheet--single {
+.gb__page--single {
   grid-template-columns: minmax(0, 1fr);
-  padding-right: 40%;
+  padding-right: 30cqw;
 }
 
-.gb__sheet--single::after {
+.gb__page--single::after,
+.gb__page--lower:empty::after {
   display: none;
 }
 
 .gb__lotus {
   position: absolute;
-  top: 41%;
-  left: 50%;
-  width: 1.7rem;
+  top: 43%;
+  left: calc(3.4cqw + (100% - 6.4cqw) / 2);
+  width: 2cqw;
   transform: translateX(-50%);
   color: var(--gb-gold);
 }
@@ -482,18 +403,18 @@ html[data-public-theme="night"] .gb__hand--deck {
 /* ------------------------------------------------- objects on the page */
 .gb__postcard {
   position: absolute;
-  top: -2.1rem;
-  right: -1.6rem;
+  top: -2.2cqw;
+  right: 1.2cqw;
   z-index: 2;
-  width: var(--gb-card);
-  padding: 0.6rem 0.6rem 0.75rem;
+  width: 25cqw;
+  padding: 0.7cqw 0.7cqw 0.85cqw;
   background-color: #fbf7ee;
   background-image: url("/media/hathor/reviews/desk-grain.webp");
   background-size: 200px 200px;
   transform: rotate(5.5deg);
   transform-origin: 60% 30%;
   /* Light from the upper left: the print throws its shadow down and right. */
-  filter: drop-shadow(7px 14px 12px rgb(58 38 12 / 28%)) drop-shadow(1px 2px 1.5px rgb(58 38 12 / 30%));
+  filter: drop-shadow(0.8cqw 1.6cqw 1.4cqw rgb(58 38 12 / 28%)) drop-shadow(1px 2px 1.5px rgb(58 38 12 / 30%));
 }
 
 .gb__postcard img {
@@ -507,7 +428,7 @@ html[data-public-theme="night"] .gb__hand--deck {
 
 .gb__gloss {
   position: absolute;
-  inset: 0.6rem 0.6rem 0.75rem;
+  inset: 0.7cqw 0.7cqw 0.85cqw;
   background: linear-gradient(118deg, rgb(255 255 255 / 22%) 0%, rgb(255 255 255 / 6%) 28%, transparent 46%),
     linear-gradient(0deg, rgb(40 24 6 / 12%), transparent 30%);
   box-shadow: inset 0 0 0 1px rgb(40 24 6 / 10%);
@@ -518,9 +439,9 @@ html[data-public-theme="night"] .gb__hand--deck {
   position: absolute;
   z-index: 3;
   /* Pressed across the photograph's left edge, clear of the words. */
-  top: calc(var(--gb-card) * 0.5 - var(--gb-stamp) * 0.5);
-  right: calc(var(--gb-card) - var(--gb-stamp) * 0.42);
-  width: var(--gb-stamp);
+  top: 9cqw;
+  right: calc(1.2cqw + 25cqw - 13cqw * 0.42);
+  width: 13cqw;
   opacity: 0.72;
   mix-blend-mode: multiply;
   pointer-events: none;
@@ -528,16 +449,6 @@ html[data-public-theme="night"] .gb__hand--deck {
 
 .gb__palm {
   pointer-events: none;
-}
-
-.gb__palm--page {
-  position: absolute;
-  z-index: 1;
-  right: clamp(-4.6rem, -4vw, -2.4rem);
-  bottom: clamp(-2.6rem, -2vw, -1.2rem);
-  width: clamp(8.5rem, 13vw, 13.5rem);
-  opacity: 0.6;
-  transform: scaleX(-1) rotate(-18deg);
 }
 
 .gb__hand {
@@ -548,9 +459,9 @@ html[data-public-theme="night"] .gb__hand--deck {
 
 .gb__hand--page {
   z-index: 1;
-  right: clamp(3.4rem, 7vw, 7.4rem);
-  bottom: clamp(0.4rem, 1.6vw, 2rem);
-  width: clamp(8.6rem, 12vw, 12.5rem);
+  right: 7cqw;
+  bottom: 1cqw;
+  width: 16cqw;
   opacity: 0.9;
 }
 
@@ -852,13 +763,125 @@ html[data-public-theme="night"] .gb__score .gr__star-fill {
   white-space: nowrap;
 }
 
+/* ---------------------------------------- type on the book's pages */
+/* Sized to the book (container units), so the pages hold their words at any width. */
+.gb__volume .gb__note--lead .gb__mark {
+  font-size: 10cqw;
+  height: 5.2cqw;
+}
+
+.gb__volume .gb__note--page .gb__mark {
+  font-size: 6.8cqw;
+  height: 3.4cqw;
+}
+
+.gb__volume .gb__note-top {
+  column-gap: 1.6cqw;
+}
+
+.gb__volume .gb__words {
+  margin-top: 1.7cqw;
+}
+
+.gb__volume .gb__note--lead .gb__text {
+  font-size: 2.55cqw;
+  line-height: 1.46;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+.gb__volume .gb__note--page .gb__text {
+  font-size: 1.78cqw;
+  line-height: 1.55;
+  -webkit-line-clamp: 7;
+  line-clamp: 7;
+}
+
+.gb__volume .gb__headline {
+  font-size: max(0.7rem, 1.3cqw);
+}
+
+.gb__volume .gb__src,
+.gb__volume .gb__on {
+  font-size: max(0.64rem, 1.15cqw);
+}
+
+.gb__volume .gb__src-mark {
+  width: max(0.9rem, 1.9cqw);
+  height: max(0.9rem, 1.9cqw);
+}
+
+.gb__volume .gb__name {
+  font-size: max(0.68rem, 1.3cqw);
+}
+
+.gb__volume .gb__by {
+  padding-top: 2.2cqw;
+  gap: 1.4cqw;
+}
+
+.gb__volume .gb__avatar {
+  width: 4.2cqw;
+  height: 4.2cqw;
+  font-size: 1.7cqw;
+}
+
+.gb__volume .gb__note--lead .gb__avatar {
+  width: 4.8cqw;
+  height: 4.8cqw;
+}
+
+.gb__volume .gb__note--lead .gb__by::after {
+  max-width: 14cqw;
+}
+
+.gb__volume .gr__stars--sm svg {
+  width: max(0.7rem, 1.45cqw);
+  height: max(0.7rem, 1.45cqw);
+}
+
+.gb__volume .gb__empty {
+  font-size: 2.6cqw;
+}
+
 /* -------------------------------------------------------------- responsive */
-@media (max-width: 1180px) {
+/* Narrow desktops and large tablets: the title block sits above the book in
+   two columns, so the book keeps a readable size. */
+@media (min-width: 951px) and (max-width: 1180px) {
   .gb {
-    grid-template-columns: minmax(0, 36fr) minmax(0, 64fr);
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2.5rem, 5vw, 4rem);
   }
-  .gb__sheet--split {
+  .gb__aside {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "kicker ."
+      "title summary"
+      "title tabs"
+      "title actions"
+      "dash ."
+      "lede .";
     column-gap: 3rem;
+    align-items: start;
+    padding-top: 0;
+  }
+  .gb__kicker { grid-area: kicker; }
+  .gb__title { grid-area: title; }
+  .gb__dash { grid-area: dash; }
+  .gb__lede { grid-area: lede; }
+  .gb__summary {
+    grid-area: summary;
+    margin-top: 0.4rem;
+  }
+  .gb__tabs { grid-area: tabs; }
+  .gb__actions--aside { grid-area: actions; }
+  .gb__aside > .gb__etching {
+    display: none;
+  }
+  .gb__book {
+    justify-self: center;
+    max-width: 52rem;
   }
 }
 
