@@ -1,10 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useRef, useState, type ReactNode, type UIEvent } from "react";
+import { Fragment, useId, useRef, useState, type ReactNode, type UIEvent } from "react";
 import type { GuestReview, GuestReviewsData } from "@/lib/guest-reviews";
 import { HandNote, Stamp } from "@/components/public/guest-reviews/ephemera";
+import { PageCurl, type PageRect } from "@/components/public/guest-reviews/PageCurl";
 import { GoogleMark, Rating, SOURCE_LABEL, SourceMark, type ReviewSource } from "@/components/public/guest-reviews/marks";
+
+/** The book's two pages, measured from guest-book.webp (fractions of its size). */
+const UPPER_PAGE: PageRect = { x0: 0.056, y0: 0.019, x1: 0.904, y1: 0.512 };
+const LOWER_PAGE: PageRect = { x0: 0.046, y0: 0.515, x1: 0.925, y1: 0.961 };
+const WHOLE_BOOK: PageRect = { x0: 0.046, y0: 0.019, x1: 0.925, y1: 0.961 };
 
 /** The platforms' own logos, for the source switch. */
 const SOURCE_LOGO: Record<ReviewSource, { src: string; width: number; height: number }> = {
@@ -178,7 +184,8 @@ export function GuestBook({
   const [active, setActive] = useState<ReviewSource | null>(sources[0]?.source ?? null);
   const [spread, setSpread] = useState(0);
   /* While a page turns: which spread the turning leaf shows, and which way it goes. */
-  const [turn, setTurn] = useState<{ front: number; back: number; dir: "next" | "prev"; key: number } | null>(null);
+  const curlsDone = useRef(0);
+  const [turn, setTurn] = useState<{ leaf: number; base: number; dir: "next" | "prev"; key: number } | null>(null);
   const [slide, setSlide] = useState(0);
   const deck = useRef<HTMLOListElement>(null);
   const base = useId();
@@ -195,9 +202,8 @@ export function GuestBook({
     const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!still) {
       const dir = next > spread ? "next" : "prev";
-      // Forward, the current lower page lifts and carries the next upper page on its reverse;
-      // back, the earlier spread's lower page is laid down again from over the upper half.
-      setTurn({ front: dir === "next" ? spread : next, back: dir === "next" ? next : spread, dir, key: Date.now() });
+      curlsDone.current = 0;
+      setTurn({ leaf: dir === "next" ? spread : next, base: dir === "next" ? next : spread, dir, key: Date.now() });
     }
     setSpread(next);
   }
@@ -355,36 +361,27 @@ export function GuestBook({
             sizes="(max-width: 950px) 1px, 62vw"
             aria-hidden="true"
           />
+          <div className="gb__pages">{pagesFor(turn ? turn.base : spread, "now")}</div>
           {turn ? (
-            <>
-              {/* Beneath the turning leaf: the page it has not yet covered, and the page it has uncovered. */}
-              <div className="gb__pages gb__half--upper">{pagesFor(turn.front, "under-u")}</div>
-              <div className="gb__pages gb__half--lower">{pagesFor(turn.back, "under-l")}</div>
-              {/* One leaf of the book, bound along the spine between the two pages: its front
-                  is the lower page, its reverse the next upper page. */}
-              <div
-                key={turn.key}
-                className={`gb__flip gb__flip--${turn.dir}`}
-                aria-hidden="true"
-                onAnimationEnd={(event) => {
-                  if (event.target === event.currentTarget) setTurn(null);
-                }}
-              >
-                <div className="gb__face gb__face--front">
+            <Fragment key={turn.key}>
+              {([LOWER_PAGE, UPPER_PAGE] as const).map((rect, i) => (
+                <PageCurl
+                  key={i}
+                  rect={rect}
+                  bounds={WHOLE_BOOK}
+                  reverse={turn.dir === "prev"}
+                  delay={(turn.dir === "next" ? i : 1 - i) * 1100}
+                  onDone={() => {
+                    curlsDone.current += 1;
+                    if (curlsDone.current >= 2) setTurn(null);
+                  }}
+                >
                   <span className="gb__leaf-paper" />
-                  {pagesFor(turn.front, "leaf-f")}
-                  <span className="gb__face-shade" />
-                </div>
-                <div className="gb__face gb__face--back">
-                  <span className="gb__leaf-paper" />
-                  {pagesFor(turn.back, "leaf-b")}
-                  <span className="gb__face-shade" />
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="gb__pages">{pagesFor(spread, "now")}</div>
-          )}
+                  {pagesFor(turn.leaf, i ? "leaf-u" : "leaf-l")}
+                </PageCurl>
+              ))}
+            </Fragment>
+          ) : null}
           <div className="gb__postcard" aria-hidden="true">
             <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" loading="eager" />
             <span className="gb__gloss" />
