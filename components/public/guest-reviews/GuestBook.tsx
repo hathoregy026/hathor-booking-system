@@ -7,9 +7,7 @@ import { HandNote, Stamp } from "@/components/public/guest-reviews/ephemera";
 import { PageCurl, type PageRect } from "@/components/public/guest-reviews/PageCurl";
 import { GoogleMark, Rating, SOURCE_LABEL, SourceMark, type ReviewSource } from "@/components/public/guest-reviews/marks";
 
-/** The book's two pages, measured from guest-book.webp (fractions of its size). */
-const UPPER_PAGE: PageRect = { x0: 0.056, y0: 0.019, x1: 0.904, y1: 0.512 };
-const LOWER_PAGE: PageRect = { x0: 0.046, y0: 0.515, x1: 0.925, y1: 0.961 };
+/** The book's pages, measured from guest-book.webp (fractions of its size). */
 const WHOLE_BOOK: PageRect = { x0: 0.046, y0: 0.019, x1: 0.925, y1: 0.961 };
 
 /** The platforms' own logos, for the source switch. */
@@ -184,7 +182,6 @@ export function GuestBook({
   const [active, setActive] = useState<ReviewSource | null>(sources[0]?.source ?? null);
   const [spread, setSpread] = useState(0);
   /* While a page turns: which spread the turning leaf shows, and which way it goes. */
-  const curlsDone = useRef(0);
   const [turn, setTurn] = useState<{ leaf: number; base: number; dir: "next" | "prev"; key: number } | null>(null);
   const [slide, setSlide] = useState(0);
   const deck = useRef<HTMLOListElement>(null);
@@ -202,7 +199,6 @@ export function GuestBook({
     const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!still) {
       const dir = next > spread ? "next" : "prev";
-      curlsDone.current = 0;
       setTurn({ leaf: dir === "next" ? spread : next, base: dir === "next" ? next : spread, dir, key: Date.now() });
     }
     setSpread(next);
@@ -364,22 +360,17 @@ export function GuestBook({
           <div className="gb__pages">{pagesFor(turn ? turn.base : spread, "now")}</div>
           {turn ? (
             <Fragment key={turn.key}>
-              {([LOWER_PAGE, UPPER_PAGE] as const).map((rect, i) => (
-                <PageCurl
-                  key={i}
-                  rect={rect}
-                  bounds={WHOLE_BOOK}
-                  reverse={turn.dir === "prev"}
-                  delay={(turn.dir === "next" ? i : 1 - i) * 1100}
-                  onDone={() => {
-                    curlsDone.current += 1;
-                    if (curlsDone.current >= 2) setTurn(null);
-                  }}
-                >
-                  <span className="gb__leaf-paper" />
-                  {pagesFor(turn.leaf, i ? "leaf-u" : "leaf-l")}
-                </PageCurl>
-              ))}
+              {/* The whole spread turns as one leaf: lifted at the lower-left
+                  corner, folded diagonally across both pages to the top right. */}
+              <PageCurl
+                rect={WHOLE_BOOK}
+                from="bottom-left"
+                reverse={turn.dir === "prev"}
+                onDone={() => setTurn(null)}
+              >
+                <span className="gb__leaf-paper" />
+                {pagesFor(turn.leaf, "leaf")}
+              </PageCurl>
             </Fragment>
           ) : null}
           <div className="gb__postcard" aria-hidden="true">

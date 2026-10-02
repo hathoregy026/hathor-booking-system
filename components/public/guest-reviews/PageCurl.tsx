@@ -10,7 +10,8 @@ type Point = { x: number; y: number };
 /** Slow, like a hand turning a heavy page. */
 const DURATION = 2400;
 
-const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+/** Even, unhurried pace through the middle of the turn. */
+const ease = (t: number) => 0.5 - 0.5 * Math.cos(Math.PI * t);
 
 /** The part of a convex polygon on one side of a line (n · p ≥ c, or ≤ c). */
 function clipToHalfPlane(poly: Point[], n: Point, c: number, keepPositive: boolean): Point[] {
@@ -46,6 +47,7 @@ const toClip = (poly: Point[]) =>
 export function PageCurl({
   rect,
   bounds = rect,
+  from = "bottom-right",
   reverse,
   delay = 0,
   onDone,
@@ -54,6 +56,8 @@ export function PageCurl({
   rect: PageRect;
   /** Where the folded-over corner may lie: the whole book, so a page folds onto its neighbour. */
   bounds?: PageRect;
+  /** The corner the hand lifts; the fold travels to the opposite corner. */
+  from?: "bottom-right" | "bottom-left";
   reverse: boolean;
   delay?: number;
   onDone?: () => void;
@@ -86,8 +90,8 @@ export function PageCurl({
       { x: x1, y: y1 },
       { x: x0, y: y1 },
     ];
-    const corner = { x: x1, y: y1 };
-    const far = { x: x0, y: y0 };
+    const corner = from === "bottom-left" ? { x: x0, y: y1 } : { x: x1, y: y1 };
+    const far = from === "bottom-left" ? { x: x1, y: y0 } : { x: x0, y: y0 };
     const ph = y1 - y0;
 
     const draw = (p: number) => {
@@ -167,7 +171,7 @@ export function PageCurl({
     draw(reverse ? 1 : 0);
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [rect, bounds, reverse, delay]);
+  }, [rect, bounds, from, reverse, delay]);
 
   return (
     <>
