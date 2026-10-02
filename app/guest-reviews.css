@@ -440,17 +440,53 @@ html[data-public-theme="night"] .gb__hand--deck {
 }
 
 /*
- * Turning a page (PageCurl). The leaf is the page itself — the book's own
- * paper, copied from the artwork — carrying the words of the spread being
- * turned, clipped to the side of the fold away from the corner. The flap is
- * the folded-over corner: the reverse of the sheet, lit across the fold,
- * throwing a warm shadow onto the page.
+ * Turning a page. The book is bound along the spine between its two pages
+ * (51.3% down the artwork). Forward, the lower page lifts along the spine,
+ * rises towards the reader and settles on the upper half — its reverse is
+ * the next spread's upper page — uncovering the next lower page beneath.
+ * Back, the same leaf is laid down again. Each face is the full book clipped
+ * to its half, so the words sit exactly where they do on the still page.
  */
-.gb__curl {
+.gb__volume {
+  perspective: 2600px;
+  perspective-origin: 50% 51.3%;
+}
+
+.gb__half--upper {
+  clip-path: inset(0 0 48.7% 0);
+}
+
+.gb__half--lower {
+  clip-path: inset(51.3% 0 0 0);
+}
+
+.gb__flip {
   position: absolute;
   inset: 0;
   z-index: 1;
+  transform-origin: 50% 51.3%;
+  transform-style: preserve-3d;
   pointer-events: none;
+  will-change: transform;
+}
+
+.gb__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.gb__face--front {
+  clip-path: inset(51.3% 0 0 0);
+}
+
+/* Turned over in advance, so that once the leaf has crossed the spine its
+   reverse reads upright on the upper half. */
+.gb__face--back {
+  clip-path: inset(0 0 48.7% 0);
+  transform-origin: 50% 51.3%;
+  transform: rotateX(180deg);
 }
 
 .gb__leaf-paper {
@@ -459,37 +495,78 @@ html[data-public-theme="night"] .gb__hand--deck {
   background: url("/media/hathor/reviews/guest-book.webp") 0 0 / 100% 100% no-repeat;
 }
 
-.gb__flap-wrap {
+/* Light on the leaf: it darkens towards the spine as it stands on edge. */
+.gb__face-shade {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  pointer-events: none;
   opacity: 0;
-  filter: drop-shadow(-5px 7px 9px rgb(62 42 16 / 26%)) drop-shadow(-1px 1px 1.5px rgb(62 42 16 / 22%));
-}
-
-.gb__flap {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  transform-origin: 0 0;
-  /* The reverse of the sheet: bright where it rolls over at the fold, then
-     settling to the paper's tone, with the book's own grain. */
-  background:
-    radial-gradient(150% 150% at var(--gb-fold-x, 90%) var(--gb-fold-y, 90%), rgb(255 255 252 / 85%) 0%, rgb(250 244 232 / 40%) 16%, transparent 34%, rgb(200 184 156 / 30%) 100%),
-    url("/media/hathor/reviews/desk-grain.webp") 0 0 / 200px 200px,
-    #f4ecdd;
-}
-
-/* A soft shade on the page just past the fold, where the curl lifts off it. */
-.gb__curl::after {
-  content: "";
-  position: absolute;
-  inset: 0;
   pointer-events: none;
 }
+
+.gb__face--front .gb__face-shade {
+  background: linear-gradient(180deg, rgb(70 48 18 / 42%) 51.3%, rgb(70 48 18 / 12%) 80%, transparent);
+}
+
+.gb__face--back .gb__face-shade {
+  background: linear-gradient(0deg, rgb(70 48 18 / 42%) 48.7%, rgb(70 48 18 / 12%) 20%, transparent);
+}
+
+.gb__flip--next {
+  animation: gb-flip-up 2200ms cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+
+.gb__flip--prev {
+  animation: gb-flip-up 2200ms cubic-bezier(0.45, 0.05, 0.3, 1) reverse forwards;
+}
+
+.gb__flip--next .gb__face-shade,
+.gb__flip--prev .gb__face-shade {
+  animation: gb-flip-shade 2200ms ease-in-out forwards;
+}
+
+.gb__flip--prev .gb__face-shade {
+  animation-direction: reverse;
+}
+
+/* The far edge lifts first and the leaf bows a little as it rises. */
+@keyframes gb-flip-up {
+  0% { transform: rotateX(0deg); }
+  12% { transform: rotateX(14deg) skewX(-0.6deg); }
+  50% { transform: rotateX(90deg) skewX(-1deg); }
+  88% { transform: rotateX(168deg) skewX(-0.4deg); }
+  100% { transform: rotateX(180deg); }
+}
+
+@keyframes gb-flip-shade {
+  0% { opacity: 0; }
+  45%, 55% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* The pages beneath dim while the leaf stands over them. */
+.gb__volume:has(.gb__flip) .gb__pages {
+  animation: gb-under 2200ms ease-in-out forwards;
+}
+
+@keyframes gb-under {
+  0%, 100% { filter: none; }
+  50% { filter: brightness(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gb__flip,
+  .gb__flip .gb__face-shade,
+  .gb__volume:has(.gb__flip) .gb__pages {
+    animation-duration: 1ms;
+  }
+}
+
+/* Tripadvisor's owl beside the date. */
+.gr img.gb__src-mark--owl {
+  width: max(1.1rem, 2.1cqw);
+  height: max(1.1rem, 2.1cqw);
+}
+
 
 
 
