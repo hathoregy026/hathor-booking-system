@@ -236,9 +236,10 @@ export async function loadTripadvisorReviews(): Promise<GuestReviewsData | null>
     const reviews = raw
       .map((review): GuestReview | null => {
         const text = plain(review.text) || plain(review.body);
-        const author =
-          plain(review.user?.display_name) || plain(review.user?.name) || plain(review.user?.username);
-        if (!text || !author) return null;
+        /* The feed gives only the login username (e.g. "436wilfridh"), not the name
+           Tripadvisor shows; a real display name is used if the feed ever sends one. */
+        const author = plain(review.user?.display_name) || plain(review.user?.name) || "Tripadvisor traveller";
+        if (!text) return null;
         return {
           author,
           authorUrl: null,

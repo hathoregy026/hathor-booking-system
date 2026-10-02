@@ -1,518 +1,901 @@
 /*
- * Guest reviews — the house type with Google's own marks as the source.
+ * Guest reviews — the Hathor guest book.
  *
- * Left: kicker, the Italiana title, a Google badge (the "G", the rating as a
- * large figure, the stars and the count) and the pills. Right: the reviews on
- * hairlines, each opening the way Google shows a review — photo, name, stars,
- * when, and the "G" — then the guest's words in the house serif.
+ * Desktop: the title column on the left (kicker, Italiana title, a short
+ * gold rule, the italic lede, the score, the source pills, the actions and
+ * an etching of Hathor with a handwritten line), and on the right an open
+ * guest book: the featured review written across the upper page beside a
+ * postcard, a postal stamp and a palm frond, two more reviews on the lower
+ * page either side of a lotus. More reviews turn the page.
  *
- * At 950px and below the head packs tight and the reviews become one swipe
- * row, so the section stays about a screen tall on phones.
+ * At 950px and below it becomes one journal page: the title centred, the
+ * score and pills, the reviews as paper cards to swipe with dots, the next
+ * review waiting underneath, then the etching.
+ *
+ * Primary text and actions stay in grid/flex flow; only decoration (the
+ * postcard, stamp, palm, handwriting, page edges) is positioned, inside the
+ * column the upper page reserves for it.
  *
  * Font stacks are literal on purpose: a var() that is not defined on the page
  * invalidates the whole font-family declaration.
  */
 
+@font-face {
+  font-family: "Gr Hand";
+  src: url("/fonts/BrittanySignature.woff2") format("woff2");
+  font-display: swap;
+}
+
 .gr {
-  --gr-paper: #f3ede4;
-  --gr-ink: #14120e;
-  --gr-ink-soft: rgb(74 69 60 / 92%);
+  --gr-paper: var(--public-bg, #ece8df);
+  --gr-ink: #17140f;
+  --gr-ink-soft: rgb(74 66 52 / 92%);
   --gr-gold: #b69f64;
-  --gr-gold-deep: #806b35;
-  --gr-hair: rgb(20 18 14 / 16%);
-  --gr-star: #b69f64;
-  --gr-star-ground: rgb(20 18 14 / 14%);
-  --gr-avatar: #ded4c6;
+  --gr-gold-deep: #7d6a36;
+  --gr-hair: rgb(60 45 25 / 18%);
   --gr-display: "Italiana", "Gamgote", Georgia, serif;
   --gr-edit: "Playfair Display", Georgia, "Times New Roman", serif;
-  --gr-meta: "Piloner Thin", "Plus Jakarta Sans", Arial, sans-serif;
-  /* Piloner's digits are broken ("4" renders as "±"): numbers take this face. */
-  --gr-num: "Plus Jakarta Sans", Arial, sans-serif;
+  --gr-edit-italic: "Playfair Display Italic", "Playfair Display", Georgia, serif;
+  --gr-meta: "Plus Jakarta Sans", Arial, sans-serif;
   --gr-pad: clamp(1.1rem, 1.74vw, 1.6rem);
 
+  /* The book is a paper object: it keeps its own inks in every theme. */
+  --gb-ink: #1f1b14;
+  --gb-ink-soft: #5d5345;
+  --gb-gold: #94793d;
+  --gb-sepia: #5c4a30;
+  --gb-hair: rgb(60 45 25 / 16%);
+  --gb-sheet: url("/media/hathor/reviews/paper-sheet.webp");
+  --gb-leaf: url("/media/hathor/reviews/paper-leaf.webp");
+  --gb-edge: 28px;
+  /* Warm, layered shadows: a wide ambient one and a tight contact one. */
+  --gb-lift: drop-shadow(0 26px 34px rgb(74 52 22 / 13%)) drop-shadow(0 7px 10px rgb(74 52 22 / 12%)) drop-shadow(0 1px 1.5px rgb(74 52 22 / 22%));
+  --gb-rest: drop-shadow(0 5px 7px rgb(74 52 22 / 12%)) drop-shadow(0 1px 1px rgb(74 52 22 / 20%));
+
   position: relative;
-  background: var(--gr-paper);
+  overflow: hidden;
   color: var(--gr-ink);
-  padding: clamp(4rem, 9vw, 9rem) var(--gr-pad) clamp(3rem, 6vw, 6rem);
-  border-top: 1px solid var(--gr-hair);
+  /* The site's own page colour, so the section and the book sit on it seamlessly. */
+  background: var(--public-bg, #ece8df);
+  padding: clamp(4rem, 7vw, 7rem) var(--gr-pad) clamp(3.5rem, 6vw, 6rem);
 }
 
 html[data-public-theme="night"] .gr {
   --gr-paper: var(--night-canvas, #14110d);
   --gr-ink: var(--night-text, #e9e1d3);
   --gr-ink-soft: var(--night-text-soft, #c8bda9);
-  --gr-gold: var(--night-gold, #e9e1d3);
-  --gr-gold-deep: var(--night-text-soft, #c8bda9);
+  --gr-gold: #cbb079;
+  --gr-gold-deep: #cbb079;
   --gr-hair: var(--night-line-soft, rgb(233 225 211 / 12%));
-  --gr-star: #cbb079;
-  --gr-star-ground: rgb(233 225 211 / 16%);
-  --gr-avatar: var(--night-panel, #241d15);
 }
 
-.gr__grid {
+.gb,
+.gb *,
+.gb *::before,
+.gb *::after {
+  box-sizing: border-box;
+}
+
+.gb {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: 1.5rem;
-  row-gap: 3rem;
+  grid-template-columns: minmax(0, 31fr) minmax(0, 67fr);
+  column-gap: clamp(2rem, 4.5vw, 5.5rem);
   max-width: 100rem;
   margin: 0 auto;
-  align-items: start;
+  align-items: stretch;
 }
 
-/* ------------------------------------------------------------------ head */
-.gr__head {
-  grid-column: 1 / span 4;
-  position: sticky;
-  top: 6rem;
+/* ------------------------------------------------------------ title column */
+.gb__aside {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: flex-start;
   min-width: 0;
+  padding-top: clamp(0.5rem, 2vw, 2.5rem);
 }
 
-.gr__grid--solo .gr__head {
-  grid-column: 1 / -1;
-  position: static;
-  align-items: center;
-  text-align: center;
-}
-
-.gr__kicker {
-  margin: 0;
+.gb__kicker {
+  margin: 0 0 clamp(1.1rem, 1.6vw, 1.6rem);
   font-family: var(--gr-meta);
-  font-size: clamp(0.6rem, 0.716vw, 0.76rem);
+  font-size: clamp(0.6rem, 0.68vw, 0.72rem);
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--gr-gold-deep);
+  color: var(--gr-ink-soft);
 }
 
-.gr__title {
+/* The site sets every `[class*="__title"]` in its own title face at (0,2,0);
+   this title is Italiana, so it is lifted above that rule. */
+.gr h2.gb__title,
+.gr .gb__title span,
+.gr .gb__title .gb__title-accent {
+  font-family: var(--gr-display) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+.gr p.gb__kicker {
+  font-family: var(--gr-meta);
+}
+
+.gb__title {
   margin: 0;
   display: flex;
   flex-direction: column;
-  font-family: var(--gr-display);
   font-weight: 400;
-  font-size: clamp(2.6rem, 5.4vw, 5.8rem);
-  line-height: 0.94;
+  font-size: clamp(3rem, 5.9vw, 6.6rem);
+  line-height: 0.92;
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: var(--gr-ink);
 }
 
-.gr__title-accent {
+/* "own words" breaks as the target sets it: OWN / WORDS. */
+.gb__title-accent {
   color: var(--gr-gold-deep);
 }
 
-/* The site sets every `[class*="__title"]` in its own title face at (0,2,0).
-   This section is Italiana, so the title and its accent line are lifted
-   above that rule rather than left to stylesheet order. */
-.gr h2.gr__title,
-.gr .gr__title .gr__title-accent {
-  font-family: var(--gr-display);
+.gb__dash {
+  display: block;
+  width: 1.9rem;
+  height: 1px;
+  margin: clamp(1.4rem, 2vw, 2rem) 0 clamp(1.1rem, 1.6vw, 1.5rem);
+  background: var(--gr-gold-deep);
 }
 
-.gr__grid--solo .gr__title {
-  align-items: center;
-}
-
-/* The Google badge: source mark, then the score. */
-.gr__badge {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  padding: 1.1rem 0 1.2rem;
-  border-top: 1px solid var(--gr-hair);
-  border-bottom: 1px solid var(--gr-hair);
-}
-
-.gr__grid--solo .gr__badge {
-  align-items: center;
-  width: min(100%, 30rem);
-}
-
-.gr__badge-source {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: var(--gr-num);
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.gb__lede {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--gr-edit-italic);
+  font-style: italic;
+  font-size: clamp(1.02rem, 1.22vw, 1.3rem);
+  line-height: 1.5;
   color: var(--gr-ink);
 }
 
-.gr__g {
-  display: block;
-  flex: 0 0 auto;
-  width: 1.15rem;
-  height: 1.15rem;
+.gb__subtitle,
+.gb__palm--head,
+.gb__deck-wrap {
+  display: none;
 }
 
-.gr__score {
+.gb__summary {
+  align-self: stretch;
+  margin-top: clamp(1.3rem, 2vw, 2rem);
+  padding-top: clamp(1.3rem, 2vw, 2rem);
+  border-top: 1px solid var(--gr-hair);
+}
+
+.gb__score {
   display: flex;
   align-items: center;
   gap: 1.1rem;
 }
 
-.gr__figure {
+.gb__figure {
   font-family: var(--gr-display);
-  font-size: clamp(3.4rem, 5.2vw, 5.4rem);
+  font-size: clamp(3.4rem, 4.6vw, 5rem);
   line-height: 0.85;
   color: var(--gr-ink);
 }
 
-.gr__score-side {
+.gb__score-side {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  min-width: 0;
+  gap: 0.5rem;
 }
 
-.gr__count {
-  margin: 0;
-  font-family: var(--gr-num);
-  font-size: 0.76rem;
-  letter-spacing: 0.1em;
+.gb__count {
+  font-family: var(--gr-meta);
+  font-size: clamp(0.72rem, 0.82vw, 0.86rem);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--gr-ink-soft);
 }
 
-.gr__lede {
-  margin: 0;
-  max-width: 34ch;
-  font-family: var(--gr-edit);
-  font-style: italic;
-  font-size: clamp(0.98rem, 1.1vw, 1.12rem);
-  line-height: 1.55;
-  color: var(--gr-ink-soft);
-}
-
-.gr__actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, max-content));
-  gap: 0.75rem;
-}
-
-.gr__actions:has(> :only-child) {
-  grid-template-columns: minmax(0, max-content);
-}
-
-.gr__grid--solo .gr__actions {
-  justify-content: center;
-}
-
-/* One peer width for the pair. The second `:not()` lifts this over the
-   shared pill geometry and the phone pill rule in button-system.css. */
-.gr .gr__actions .gr__btn:not(#_):not(#__) {
-  width: 100% !important;
-  min-width: 12.5rem !important;
-}
-
-.gr__also {
-  align-self: flex-start;
-  font-family: var(--gr-num);
-  font-size: 0.74rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gr-gold-deep);
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 100% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  padding-bottom: 0.2rem;
-}
-
-.gr__grid--solo .gr__also {
-  align-self: center;
-}
-
-/* -------------------------------------------------------- source switch */
-.gr__tabs {
+.gb__badge-source {
   display: inline-flex;
-  align-self: flex-start;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border: 1px solid var(--gr-hair);
-  border-radius: 999px;
-}
-
-.gr__grid--solo .gr__tabs {
-  align-self: center;
-}
-
-.gr__tab {
-  appearance: none;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  padding: 0.55rem 1.1rem;
-  font-family: var(--gr-num);
-  font-size: 0.72rem;
-  font-weight: 500;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  font-family: var(--gr-meta);
+  font-size: 0.74rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gr-ink-soft);
-  cursor: pointer;
-  transition: background-color 240ms ease, color 240ms ease;
 }
 
-.gr__tab[aria-selected="true"] {
-  background: var(--gr-ink);
-  color: var(--gr-paper);
+/* Source pills and actions: one peer geometry, two equal columns. */
+.gb__tabs,
+.gb__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(100%, 26rem);
+}
+
+.gb__tabs {
+  margin-top: clamp(1.3rem, 2vw, 1.8rem);
+}
+
+.gb__tab-logo {
+  display: block;
+  width: auto;
+  height: 1.12rem;
+  transition: opacity 240ms ease, filter 240ms ease;
+}
+
+.gb__tab-logo--tripadvisor {
+  height: 1.38rem;
+}
+
+/* The chosen source is lit ivory with an ink rule; the other rests quieter. */
+.gr .gb__tab[aria-selected="true"]:not(#_):not(#__) {
+  background-color: #fffaf1 !important;
+  border-color: var(--gr-ink) !important;
+  box-shadow: inset 0 0 0 0.5px var(--gr-ink) !important;
+}
+
+.gb__tab[aria-selected="false"] .gb__tab-logo {
+  opacity: 0.5;
+  filter: grayscale(0.7);
 }
 
 @media (hover: hover) {
-  .gr__tab[aria-selected="false"]:hover {
-    color: var(--gr-ink);
+  .gb__tab[aria-selected="false"]:hover .gb__tab-logo {
+    opacity: 0.85;
+    filter: none;
   }
 }
 
-.gr__tab:focus-visible {
+/* The pills and the buttons form one 2 × 2 set: the gap between the rows
+   is the gap within them. */
+.gb__actions--aside {
+  margin-top: 0.75rem;
+}
+
+.gb__actions:has(> :only-child) {
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 12.75rem);
+}
+
+.gr .gb__tab:not(#_):not(#__),
+.gr .gb__btn:not(#_):not(#__) {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding-inline: 0.75rem !important;
+}
+
+.gb__tab:focus-visible,
+.gr a:focus-visible,
+.gb__turn:focus-visible,
+.gb__dot:focus-visible {
   outline: 2px solid var(--gr-gold);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* ----------------------------------------------------------------- stars */
-.gr__stars {
-  display: inline-flex;
-  gap: 0.16rem;
-  line-height: 0;
+/* The engraving of Hathor, dissolving into the desk, with a pencilled note. */
+.gb__etching {
+  position: relative;
+  align-self: stretch;
+  margin: auto 0 0;
+  padding-top: clamp(5rem, 8vw, 8.5rem);
+  pointer-events: none;
 }
 
-.gr__stars svg {
+.gb__etching img {
   display: block;
+  width: 128%;
+  max-width: none;
+  height: auto;
+  margin-left: -14%;
+  mix-blend-mode: multiply;
+  opacity: 0.78;
+  -webkit-mask-image: radial-gradient(closest-side, #000 50%, rgb(0 0 0 / 55%) 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 50%, rgb(0 0 0 / 55%) 72%, transparent 100%);
 }
 
-.gr__stars--lg svg {
-  width: 1.15rem;
-  height: 1.15rem;
+html[data-public-theme="night"] .gb__etching img {
+  mix-blend-mode: screen;
+  filter: invert(1) sepia(0.4);
+  opacity: 0.45;
 }
 
-.gr__stars--sm svg {
-  width: 0.8rem;
-  height: 0.8rem;
+.gb__hand--etching {
+  top: clamp(-1.2rem, -0.4vw, 0rem);
+  right: clamp(-0.6rem, -0.3vw, 0rem);
+  width: clamp(7.5rem, 10vw, 10.5rem);
+  opacity: 0.88;
 }
 
-.gr__star-ground {
-  fill: var(--gr-star-ground);
+html[data-public-theme="night"] .gb__hand--etching,
+html[data-public-theme="night"] .gb__hand--deck {
+  filter: invert(1);
 }
 
-.gr__star-fill {
-  fill: var(--gr-star);
-}
-
-/* Tripadvisor's bubbles keep its green, the way the platform shows a score. */
-.gr__bubble-ring {
-  fill: none;
-  stroke: #00aa6c;
-  stroke-width: 2;
-}
-
-.gr__bubble-fill {
-  fill: #00aa6c;
-}
-
-/* ---------------------------------------------------------------- ledger */
-.gr__ledger-view {
-  grid-column: 6 / -1;
-  min-width: 0;
-}
-
-.gr__head-view {
+/* ---------------------------------------------------------------- the book */
+/*
+ * The guest book is one photographed object (guest-book.webp, 939 × 960).
+ * The written pages are laid over its two pages at the positions measured
+ * from the artwork — the one place this section positions text, because the
+ * text belongs to the picture. Everything inside scales in container units
+ * with the book's width, so each page holds its words at any size.
+ */
+.gb__book {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-self: center;
+  justify-self: center;
+  width: 100%;
+  /* The whole book, with its page arrows, fits in one screen. */
+  max-width: min(64rem, max(36rem, calc((100svh - 10.5rem) * 939 / 960)));
   min-width: 0;
 }
 
-.gr__head-view[hidden],
-.gr__ledger-view[hidden] {
+@media (min-width: 951px) {
+  .gr {
+    padding-top: clamp(2rem, 3.5vw, 3.5rem);
+    padding-bottom: clamp(2rem, 3.5vw, 3.5rem);
+  }
+  /* The title column scales with the screen's height too, so it never
+     stands taller than the book beside it. */
+  .gb__title {
+    font-size: min(5.9vw, 9.4svh, 6.6rem);
+  }
+  .gb__lede {
+    font-size: min(1.22vw, 2.1svh, 1.3rem);
+  }
+  .gb__kicker {
+    margin-bottom: min(1.6vw, 2svh);
+  }
+  .gb__dash {
+    margin: min(2vw, 2.6svh) 0 min(1.6vw, 2svh);
+  }
+  .gb__summary {
+    margin-top: min(2vw, 2.6svh);
+    padding-top: min(2vw, 2.6svh);
+  }
+  .gb__tabs {
+    margin-top: min(2vw, 2.4svh);
+  }
+}
+
+/* On desktop the engraving rests in the corner below the actions, without
+   adding height to the column; on shorter screens there is no room for it. */
+@media (min-width: 951px) {
+  .gb__aside > .gb__etching {
+    position: absolute;
+    left: -4%;
+    right: -8%;
+    bottom: -1.5rem;
+    margin: 0;
+    padding-top: 0;
+  }
+  /* The pencilled note sits on the river beside the boat, clear of the buttons. */
+  .gb__aside > .gb__etching .gb__hand--etching {
+    top: auto;
+    bottom: 26%;
+    right: -6%;
+  }
+}
+
+@media (min-width: 951px) and (max-height: 1199px) {
+  .gb__aside > .gb__etching {
+    display: none;
+  }
+}
+
+.gb__volume {
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  aspect-ratio: 939 / 960;
+}
+
+.gb__book-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.gb__pages {
+  position: absolute;
+  inset: 0;
+}
+
+.gb__page {
+  position: absolute;
+  min-width: 0;
+}
+
+/*
+ * Turning a page (PageCurl). The leaf is the page itself — the book's own
+ * paper, copied from the artwork — carrying the words of the spread being
+ * turned, clipped to the side of the fold away from the corner. The flap is
+ * the folded-over corner: the reverse of the sheet, lit across the fold,
+ * throwing a warm shadow onto the page.
+ */
+.gb__curl {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.gb__leaf-paper {
+  position: absolute;
+  inset: 0;
+  background: url("/media/hathor/reviews/guest-book.webp") 0 0 / 100% 100% no-repeat;
+}
+
+.gb__flap-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(-5px 7px 9px rgb(62 42 16 / 26%)) drop-shadow(-1px 1px 1.5px rgb(62 42 16 / 22%));
+}
+
+.gb__flap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  /* The reverse of the sheet: bright where it rolls over at the fold, then
+     settling to the paper's tone, with the book's own grain. */
+  background:
+    radial-gradient(150% 150% at var(--gb-fold-x, 90%) var(--gb-fold-y, 90%), rgb(255 255 252 / 85%) 0%, rgb(250 244 232 / 40%) 16%, transparent 34%, rgb(200 184 156 / 30%) 100%),
+    url("/media/hathor/reviews/desk-grain.webp") 0 0 / 200px 200px,
+    #f4ecdd;
+}
+
+/* A soft shade on the page just past the fold, where the curl lifts off it. */
+.gb__curl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* The sprig cut from the book's own picture, laid over the turning page. */
+.gb__sprig {
+  position: absolute;
+  z-index: 2;
+  left: 78.06%;
+  top: 30.21%;
+  width: 21.94%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Tripadvisor's owl beside the date. */
+.gr img.gb__src-mark--owl {
+  width: max(1.1rem, 2.1cqw);
+  height: max(1.1rem, 2.1cqw);
+}
+
+
+
+
+/* Upper page (artwork x 5.6–90.4%, y 1.9–51.2%). Its right third is the
+   postcard's, so the featured words never reach it. */
+.gb__page--upper {
+  left: 8.4%;
+  right: 12%;
+  top: 4.2%;
+  height: 43.4%;
+  padding: 2.4cqw 24cqw 1.6cqw 3.2cqw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Lower page (artwork y 51.5–96.1%). Its right edge carries the sprig, so
+   the two columns stop short of it. */
+.gb__page--lower {
+  left: 7.2%;
+  right: 17%;
+  top: 54.6%;
+  bottom: 6.6%;
+  padding: 2.2cqw 3cqw 1.6cqw 3.4cqw;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 7cqw;
+  align-content: center;
+}
+
+/* The rule between the two lower entries, interrupted by the lotus. */
+.gb__page--lower::after {
+  content: "";
+  position: absolute;
+  top: 2.4cqw;
+  bottom: 2cqw;
+  left: calc(3.4cqw + (100% - 6.4cqw) / 2);
+  width: 1px;
+  background: linear-gradient(var(--gb-hair) 0 38%, transparent 38% 54%, var(--gb-hair) 54%);
+}
+
+.gb__page--single {
+  grid-template-columns: minmax(0, 1fr);
+  padding-right: 30cqw;
+}
+
+.gb__page--single::after,
+.gb__page--lower:empty::after {
   display: none;
 }
 
-.gr__ledger {
-  list-style: none;
+.gb__lotus {
+  position: absolute;
+  top: 43%;
+  left: calc(3.4cqw + (100% - 6.4cqw) / 2);
+  width: 2cqw;
+  transform: translateX(-50%);
+  color: var(--gb-gold);
+}
+
+/* ------------------------------------------------- objects on the page */
+.gb__postcard {
+  position: absolute;
+  top: -2.2cqw;
+  right: 1.2cqw;
+  z-index: 2;
+  width: 25cqw;
+  padding: 0.7cqw 0.7cqw 0.85cqw;
+  background-color: #fbf7ee;
+  background-image: url("/media/hathor/reviews/desk-grain.webp");
+  background-size: 200px 200px;
+  transform: rotate(5.5deg);
+  transform-origin: 60% 30%;
+  /* Light from the upper left: the print throws its shadow down and right. */
+  filter: drop-shadow(0.8cqw 1.6cqw 1.4cqw rgb(58 38 12 / 28%)) drop-shadow(1px 2px 1.5px rgb(58 38 12 / 30%));
+}
+
+.gb__postcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 14 / 17;
+  object-fit: cover;
+  filter: sepia(0.2) saturate(0.92) contrast(1.02);
+}
+
+.gb__gloss {
+  position: absolute;
+  inset: 0.7cqw 0.7cqw 0.85cqw;
+  background: linear-gradient(118deg, rgb(255 255 255 / 22%) 0%, rgb(255 255 255 / 6%) 28%, transparent 46%),
+    linear-gradient(0deg, rgb(40 24 6 / 12%), transparent 30%);
+  box-shadow: inset 0 0 0 1px rgb(40 24 6 / 10%);
+  pointer-events: none;
+}
+
+.gb__stamp {
+  position: absolute;
+  z-index: 3;
+  /* Pressed across the photograph's left edge, clear of the words. */
+  top: 9cqw;
+  right: calc(1.2cqw + 25cqw - 13cqw * 0.42);
+  width: 13cqw;
+  opacity: 0.72;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.gb__palm {
+  pointer-events: none;
+}
+
+.gb__hand {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+}
+
+.gb__hand--page {
+  z-index: 1;
+  right: 7cqw;
+  bottom: 1cqw;
+  width: 16cqw;
+  opacity: 0.9;
+}
+
+/* ------------------------------------------------------------------ entries */
+.gb__note {
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(1.5rem, 3vw, 3.5rem);
-  min-width: 0;
-}
-
-.gr__entry {
-  min-width: 0;
-  border-top: 1px solid var(--gr-hair);
-}
-
-/* The first entry opens wide: one voice set larger before the columns. */
-.gr__entry:first-child {
-  grid-column: 1 / -1;
-}
-
-.gr__card {
-  margin: 0;
-  padding: 1.5rem 0 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   min-width: 0;
+  color: var(--gb-ink);
 }
 
-.gr__who {
+.gb__note-top {
   display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: 1.1rem;
+}
+
+.gb__mark {
+  font-family: var(--gr-edit);
+  font-weight: 700;
+  font-size: 5.6rem;
+  line-height: 0.78;
+  height: 2.6rem;
+  color: var(--gb-gold);
+}
+
+.gb__note--lead .gb__mark {
+  font-size: clamp(6.6rem, 8.4vw, 9rem);
+  height: clamp(3.4rem, 4.4vw, 4.6rem);
+}
+
+.gb__src {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  column-gap: 0.8rem;
+  gap: 0.4rem;
+  font-family: var(--gr-meta);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--gb-ink-soft);
+  text-align: center;
+}
+
+.gb__src-mark {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.gb__when {
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  a.gb__when:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.gb__words {
+  margin: clamp(1.1rem, 1.6vw, 1.6rem) 0 0;
   min-width: 0;
 }
 
-.gr__avatar {
+.gb__headline {
+  margin: 0 0 0.5rem;
+  font-family: var(--gr-meta);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gb-ink);
+}
+
+.gb__text {
+  margin: 0;
+  font-family: var(--gr-edit-italic);
+  font-style: italic;
+  font-size: clamp(1rem, 1.12vw, 1.18rem);
+  line-height: 1.55;
+  color: var(--gb-ink);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8;
+  line-clamp: 8;
+  overflow: hidden;
+}
+
+.gb__note--lead .gb__text {
+  font-size: clamp(1.25rem, 1.62vw, 1.8rem);
+  line-height: 1.48;
+  -webkit-line-clamp: 8;
+  line-clamp: 8;
+}
+
+.gb__by {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: auto;
+  padding-top: clamp(1.4rem, 2.2vw, 2.2rem);
+  min-width: 0;
+}
+
+/* The featured guest signs on a rule that runs to the page edge. */
+.gb__note--lead .gb__by::after {
+  content: "";
+  flex: 1 1 auto;
+  min-width: 2rem;
+  max-width: clamp(2.5rem, 9vw - 3rem, 9rem);
+  height: 1px;
+  margin-left: 1rem;
+  background: var(--gb-hair);
+}
+
+.gb__avatar {
   display: grid;
   place-items: center;
+  flex: 0 0 auto;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--gr-avatar);
-  font-family: var(--gr-display);
-  font-size: 1.15rem;
-  color: var(--gr-ink);
+  font-family: var(--gr-meta);
+  font-size: 1rem;
+  color: #fff;
 }
 
-.gr__avatar img {
+.gb__note--lead .gb__avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.gb__avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.gr__who-text {
+.gb__by-text {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   min-width: 0;
 }
 
-.gr__author {
+.gb__name {
   font-style: normal;
-  font-family: var(--gr-num);
-  font-size: 0.8rem;
+  font-family: var(--gr-meta);
+  font-size: 0.78rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gr-ink);
+  color: var(--gb-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.gr__rating-line {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.3rem 0.7rem;
-}
-
-.gr__when {
-  font-family: var(--gr-num);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  color: var(--gr-ink-soft);
-}
-
-.gr__g--entry {
-  width: 1rem;
-  height: 1rem;
-}
-
-.gr__quote {
-  margin: 0;
-  min-width: 0;
-}
-
-.gr__quote .gr__quote-title {
-  margin: 0 0 0.45rem;
-  font-family: var(--gr-num);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-  color: var(--gr-ink);
-  font-style: normal;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-.gr__quote p:not(.gr__quote-title) {
-  margin: 0;
-  font-family: var(--gr-edit);
-  font-size: clamp(0.98rem, 1.08vw, 1.14rem);
-  line-height: 1.62;
-  color: var(--gr-ink);
-  overflow-wrap: anywhere;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 6;
-  line-clamp: 6;
-  overflow: hidden;
-}
-
-.gr__entry:first-child .gr__quote p:not(.gr__quote-title) {
-  font-style: italic;
-  font-size: clamp(1.2rem, 1.6vw, 1.7rem);
-  line-height: 1.45;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-}
-
-.gr__author a,
-.gr__more {
+.gb__name a {
   color: inherit;
   text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.gr__more {
-  align-self: flex-start;
-  font-family: var(--gr-num);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gr-gold-deep);
-  padding-bottom: 0.15rem;
 }
 
 @media (hover: hover) {
-  .gr__author a:hover,
-  .gr__more:hover {
-    background-size: 100% 1px;
+  .gb__name a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }
 
-.gr a:focus-visible {
-  outline: 2px solid var(--gr-gold);
-  outline-offset: 3px;
+.gb__on {
+  font-family: var(--gr-meta);
+  font-size: 0.72rem;
+  color: var(--gb-ink-soft);
 }
 
-.gr__source {
-  margin: 1.5rem 0 0;
-  font-family: var(--gr-num);
+.gb__empty {
+  margin: 0;
+  max-width: 30ch;
+  font-family: var(--gr-edit-italic);
+  font-style: italic;
+  font-size: clamp(1.2rem, 1.5vw, 1.6rem);
+  line-height: 1.5;
+  color: var(--gb-ink);
+}
+
+/* Google stars in house gold; Tripadvisor keeps its green bubbles. */
+.gr .gr__stars {
+  display: inline-flex;
+  gap: 0.22rem;
+  line-height: 0;
+}
+
+.gr .gr__stars svg {
+  display: block;
+}
+
+.gr .gr__stars--lg svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.gr .gr__stars--sm svg {
+  width: 0.82rem;
+  height: 0.82rem;
+}
+
+.gr .gr__star-ground {
+  fill: rgb(154 127 67 / 22%);
+}
+
+.gr .gr__star-fill {
+  fill: var(--gb-gold);
+}
+
+html[data-public-theme="night"] .gb__score .gr__star-fill {
+  fill: #cbb079;
+}
+
+.gr .gr__bubble-ring {
+  fill: none;
+  stroke: #00aa6c;
+  stroke-width: 2;
+}
+
+.gr .gr__bubble-fill {
+  fill: #00aa6c;
+}
+
+.gb__note-top .gr__stars {
+  align-self: end;
+  padding-bottom: 0.3rem;
+}
+
+/* ------------------------------------------------------------- page turning */
+.gb__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  margin-top: 2.2rem;
+}
+
+.gb__turn {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--gr-hair);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gr-ink);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 240ms ease, opacity 240ms ease;
+}
+
+.gb__turn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .gb__turn:not(:disabled):hover {
+    border-color: var(--gr-gold-deep);
+  }
+}
+
+.gb__folio {
+  font-family: var(--gr-meta);
   font-size: 0.7rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--gr-ink-soft);
 }
 
-.gr__sr {
+.gb__source {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-family: var(--gr-meta);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--gr-ink-soft);
+}
+
+.gb__sr {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -521,121 +904,385 @@ html[data-public-theme="night"] .gr {
   white-space: nowrap;
 }
 
-/* ------------------------------------------------------------ responsive */
-@media (max-width: 1280px) {
-  .gr__head {
-    grid-column: 1 / span 5;
-  }
-  .gr__ledger {
+/* ---------------------------------------- type on the book's pages */
+/* Sized to the book (container units), so the pages hold their words at any width. */
+.gb__volume .gb__note--lead .gb__mark {
+  font-size: 10cqw;
+  height: 5.2cqw;
+}
+
+.gb__volume .gb__note--page .gb__mark {
+  font-size: 6.8cqw;
+  height: 3.4cqw;
+}
+
+.gb__volume .gb__note-top {
+  column-gap: 1.6cqw;
+}
+
+.gb__volume .gb__words {
+  margin-top: 1.7cqw;
+}
+
+.gb__volume .gb__note--lead .gb__text {
+  font-size: 2.62cqw;
+  line-height: 1.46;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+.gb__volume .gb__note--page .gb__text {
+  font-size: 2.08cqw;
+  line-height: 1.52;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+.gb__volume .gb__headline {
+  font-size: max(0.7rem, 1.3cqw);
+}
+
+.gb__volume .gb__src,
+.gb__volume .gb__on {
+  font-size: max(0.64rem, 1.15cqw);
+}
+
+.gb__volume .gb__src-mark {
+  width: max(0.9rem, 1.9cqw);
+  height: max(0.9rem, 1.9cqw);
+}
+
+.gb__volume .gb__name {
+  font-size: max(0.68rem, 1.3cqw);
+}
+
+.gb__volume .gb__by {
+  padding-top: 2.2cqw;
+  gap: 1.4cqw;
+}
+
+.gb__volume .gb__avatar {
+  width: 4.2cqw;
+  height: 4.2cqw;
+  font-size: 1.7cqw;
+}
+
+.gb__volume .gb__note--lead .gb__avatar {
+  width: 4.8cqw;
+  height: 4.8cqw;
+}
+
+.gb__volume .gb__note--lead .gb__by::after {
+  max-width: 14cqw;
+}
+
+.gb__volume .gr__stars--sm svg {
+  width: max(0.7rem, 1.45cqw);
+  height: max(0.7rem, 1.45cqw);
+}
+
+.gb__volume .gb__empty {
+  font-size: 2.6cqw;
+}
+
+/* -------------------------------------------------------------- responsive */
+/* Narrow desktops and large tablets: the title block sits above the book in
+   two columns, so the book keeps a readable size. */
+@media (min-width: 951px) and (max-width: 1180px) {
+  .gb {
     grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  .gb__aside {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "kicker ."
+      "title summary"
+      "title tabs"
+      "title actions"
+      "dash ."
+      "lede .";
+    column-gap: 3rem;
+    align-items: start;
+    padding-top: 0;
+  }
+  .gb__kicker { grid-area: kicker; }
+  .gb__title { grid-area: title; }
+  .gb__dash { grid-area: dash; }
+  .gb__lede { grid-area: lede; }
+  .gb__summary {
+    grid-area: summary;
+    margin-top: 0.4rem;
+  }
+  .gb__tabs { grid-area: tabs; }
+  .gb__actions--aside { grid-area: actions; }
+  .gb__aside > .gb__etching {
+    display: none;
+  }
+  .gb__book {
+    justify-self: center;
+    max-width: 52rem;
   }
 }
 
 /*
- * The structural switch the editorial pages share. The head packs into a
- * short block and the reviews become one swipe row: the next review peeks at
- * the edge, so the row reads as more to see without growing the page.
+ * The structural switch the editorial pages share: one journal page.
  */
 @media (max-width: 950px) {
   .gr {
-    padding-top: clamp(3rem, 8vw, 4.5rem);
-    padding-bottom: clamp(2.5rem, 7vw, 4rem);
-  }
-  .gr__grid {
-    row-gap: 1.8rem;
-  }
-  .gr__head {
-    grid-column: 1 / -1;
-    position: static;
-    gap: 1.1rem;
-  }
-  .gr__title {
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: 0.28em;
-    font-size: clamp(2.1rem, 8.4vw, 3.6rem);
-  }
-  .gr__badge {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.7rem 1rem;
-    padding: 0.9rem 0;
-  }
-  .gr__figure {
-    font-size: clamp(2.6rem, 11vw, 3.4rem);
+    padding-top: clamp(3rem, 9vw, 4.5rem);
+    padding-bottom: clamp(2.5rem, 8vw, 4rem);
   }
 
-  .gr__ledger-view {
-    grid-column: 1 / -1;
+  .gb {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 36rem;
   }
-  .gr__head-view {
-    gap: 1.1rem;
+
+  .gb__book,
+  .gb__lede,
+  .gb__dash,
+  .gb__actions--aside,
+  .gb__aside > .gb__etching {
+    display: none;
   }
-  .gr__ledger {
+
+  .gb__aside {
+    align-items: center;
+    text-align: center;
+    padding-top: 0;
+  }
+
+  .gb__palm--head {
+    display: block;
+    position: absolute;
+    top: -1.4rem;
+    right: -0.4rem;
+    width: clamp(4.4rem, 19vw, 6.2rem);
+    height: auto;
+    opacity: 0.92;
+    z-index: 0;
+  }
+
+  .gb__kicker,
+  .gb__title,
+  .gb__subtitle {
+    position: relative;
+    z-index: 1;
+  }
+
+  .gb__kicker {
+    margin-bottom: 1rem;
+  }
+
+  .gb__title {
+    align-items: center;
+    font-size: clamp(2.3rem, 11vw, 3.7rem);
+    line-height: 0.95;
+  }
+
+  .gb__title-accent {
+    max-width: none;
+  }
+
+  .gb__subtitle {
+    display: block;
+    margin: 1rem 0 0;
+    font-family: var(--gr-edit-italic);
+    font-style: italic;
+    font-size: clamp(0.98rem, 3.8vw, 1.1rem);
+    color: var(--gr-ink);
+  }
+
+  .gb__summary {
+    margin-top: 1.4rem;
+    padding-top: 0;
+    border-top: 0;
     display: flex;
-    gap: 1rem;
+    justify-content: center;
+  }
+
+  .gb__figure {
+    font-size: clamp(3rem, 14vw, 3.8rem);
+  }
+
+  .gb__score-side {
+    align-items: flex-start;
+  }
+
+  .gb__tabs {
+    margin-top: 1.3rem;
+    width: 100%;
+  }
+
+  .gb__deck-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+    margin-top: 1.6rem;
+  }
+
+  .gb__deck {
+    list-style: none;
     margin: 0 calc(var(--gr-pad) * -1);
-    padding: 0 var(--gr-pad);
+    padding: 1rem var(--gr-pad) 2.4rem;
+    display: flex;
+    column-gap: 1rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--gr-pad);
     scrollbar-width: none;
   }
-  .gr__ledger::-webkit-scrollbar {
+
+  .gb__deck::-webkit-scrollbar {
     display: none;
   }
-  .gr__entry,
-  .gr__entry:first-child {
-    flex: 0 0 min(84%, 26rem);
-    scroll-snap-align: start;
-    border-top: 0;
-    border-left: 1px solid var(--gr-hair);
-    padding-left: 1rem;
+
+  /* Each review is its own sheet of the journal, resting on a loose leaf:
+     the leaf and the sheet are layers beneath the words. */
+  .gb__card {
+    position: relative;
+    isolation: isolate;
+    --gb-edge: 22px;
   }
-  .gr__entry:first-child {
-    border-left: 0;
-    padding-left: 0;
+
+  .gb__card::before,
+  .gb__card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--gb-edge) solid transparent;
+    pointer-events: none;
   }
-  .gr__card {
-    padding: 0.2rem 0 0.4rem;
-    gap: 0.8rem;
+
+  .gb__card::before {
+    z-index: -2;
+    border-image: var(--gb-leaf) 64 fill / var(--gb-edge) round;
+    transform: translate(-3px, 4px) rotate(-0.7deg);
+    filter: brightness(0.97);
+    opacity: 0.85;
   }
-  .gr__entry:first-child .gr__quote p:not(.gr__quote-title),
-  .gr__quote p:not(.gr__quote-title) {
-    font-style: normal;
-    font-size: 1rem;
-    line-height: 1.58;
-    -webkit-line-clamp: 7;
-    line-clamp: 7;
+
+  .gb__card::after {
+    z-index: -1;
+    border-image: var(--gb-sheet) 64 fill / var(--gb-edge) round;
   }
-  .gr__source {
-    margin-top: 1.2rem;
+
+  .gb__card {
+    flex: 0 0 calc(100% - 0.6rem);
+    min-width: 0;
+    margin-inline: 0.3rem;
+    scroll-snap-align: center;
+    padding: 1.9rem 1.7rem 1.6rem;
+    min-height: 22rem;
+    display: flex;
+  }
+
+  .gb__card:nth-child(odd) {
+    transform: rotate(-0.45deg);
+  }
+
+  .gb__card:nth-child(even) {
+    transform: rotate(0.55deg);
+  }
+
+  .gb__card .gb__note {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .gb__note--card .gb__text {
+    font-size: 1.06rem;
+    -webkit-line-clamp: 8;
+    line-clamp: 8;
+  }
+
+  .gb__note--card .gb__mark {
+    font-size: 4.4rem;
+    height: 2.4rem;
+  }
+
+  .gb__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: -0.2rem;
+  }
+
+  .gb__dot {
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+
+  .gb__dot::before {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    border: 1px solid var(--gr-ink-soft);
+    transition: background-color 200ms ease;
+  }
+
+  .gb__dot[aria-current="true"]::before {
+    background: var(--gr-ink);
+    border-color: var(--gr-ink);
+  }
+
+  .gb__actions--deck {
+    width: 100%;
+    margin-top: 2.2rem;
+  }
+
+  .gb__etching--deck {
+    margin-top: 0.6rem;
+    padding-top: 5.6rem;
+  }
+
+  .gb__etching--deck img {
+    width: 118%;
+    margin-left: -9%;
+  }
+
+  .gb__hand--deck {
+    top: 0;
+    left: 0;
+    width: clamp(10rem, 48vw, 13rem);
+    opacity: 0.88;
+  }
+
+  .gb__deck-wrap > .gb__empty {
+    padding: 1.6rem;
+  }
+
+
+  .gb__source {
+    display: none;
   }
 }
 
-@media (max-width: 640px) {
-  .gr__actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .gr__actions:has(> :only-child) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .gr .gr__actions .gr__btn:not(#_):not(#__) {
-    min-width: 0 !important;
-    max-width: none !important;
-    padding-inline: 0.6rem !important;
+@media (max-width: 400px) {
+  .gr .gb__tab:not(#_):not(#__),
+  .gr .gb__btn:not(#_):not(#__) {
+    padding-inline: 0.4rem !important;
+    letter-spacing: 0.12em !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gr__author a,
-  .gr__more {
+  .gb__turn,
+  .gb__dot::before {
     transition: none;
   }
-  .gr__ledger {
+  .gb__deck {
     scroll-behavior: auto;
   }
 }
