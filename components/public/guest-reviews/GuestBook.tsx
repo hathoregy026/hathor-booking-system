@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useId, useRef, useState, type ReactNode, type UIEvent } from "react";
 import type { GuestReview, GuestReviewsData } from "@/lib/guest-reviews";
+import { HandNote, PalmFrond, PalmTree, Stamp } from "@/components/public/guest-reviews/ephemera";
 import { GoogleMark, Rating, SOURCE_LABEL, SourceMark, type ReviewSource } from "@/components/public/guest-reviews/marks";
 
 /** Three reviews to a spread: one on the upper page, two on the lower. */
@@ -25,52 +26,6 @@ function chunk<T>(items: T[], size: number): T[][] {
 }
 
 /* ------------------------------------------------------------- decoration */
-
-/** A palm frond in sepia ink, drawn over the page edge. */
-function PalmFrond({ className }: { className?: string }) {
-  const leaves = Array.from({ length: 15 }, (_, i) => {
-    const t = i / 14;
-    const x = 18 + t * 150;
-    const y = 238 - t * 196 - Math.sin(t * Math.PI) * 18;
-    const len = 46 + Math.sin(t * Math.PI) * 30;
-    return { x, y, len, i };
-  });
-  return (
-    <svg className={className} viewBox="0 0 220 260" aria-hidden="true" focusable="false">
-      <g fill="none" stroke="currentColor" strokeLinecap="round">
-        <path d="M14 252 C 70 190, 120 110, 176 34" strokeWidth="2" />
-        {leaves.map(({ x, y, len, i }) => (
-          <g key={i}>
-            <path d={`M${x} ${y} q ${-len * 0.55} ${-len * 0.12} ${-len} ${len * 0.42}`} strokeWidth="1.1" />
-            <path d={`M${x} ${y} q ${len * 0.2} ${len * 0.5} ${len * 0.75} ${len * 0.62}`} strokeWidth="1.1" />
-          </g>
-        ))}
-      </g>
-    </svg>
-  );
-}
-
-/** The round postal stamp beside the postcard. */
-function Stamp({ className }: { className?: string }) {
-  const id = useId().replace(/:/g, "");
-  return (
-    <svg className={className} viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-      <defs>
-        <path id={`gb-stamp-${id}`} d="M60 60 m -40 0 a 40 40 0 1 1 80 0 a 40 40 0 1 1 -80 0" />
-      </defs>
-      <g fill="none" stroke="currentColor">
-        <circle cx="60" cy="60" r="55" strokeWidth="1.8" />
-        <circle cx="60" cy="60" r="31" strokeWidth="0.9" />
-        <path d="M60 80 C 60 70, 59 60, 61 48" strokeWidth="1.3" />
-        <path d="M61 48 q -9 -2 -15 6 M61 48 q 8 -4 15 3 M61 48 q -4 -8 -12 -9 M61 48 q 3 -8 11 -9 M61 48 q 0 -6 -1 -11" strokeWidth="1" />
-        <path d="M42 80 h 36" strokeWidth="0.9" />
-      </g>
-      <text fill="currentColor" fontSize="11.5" letterSpacing="3.2" fontFamily="Georgia, serif">
-        <textPath href={`#gb-stamp-${id}`}>NILE CRUISE · EGYPT · NILE CRUISE ·</textPath>
-      </text>
-    </svg>
-  );
-}
 
 /** A small lotus between the two lower-page reviews. */
 function Lotus({ className }: { className?: string }) {
@@ -269,7 +224,7 @@ export function GuestBook({
     <div className="gb">
       {/* ------------------------------------------------ title column */}
       <div className="gb__aside">
-        <PalmFrond className="gb__palm gb__palm--head" />
+        <PalmTree className="gb__palm gb__palm--head" />
         <p className="gb__kicker">Guest reviews</p>
         <h2 id={headingId} className="gb__title">
           <span>In their</span>
@@ -295,17 +250,27 @@ export function GuestBook({
         <Actions data={data} fallback={fallback} className="gb__actions--aside" />
 
         <figure className="gb__etching" aria-hidden="true">
-          <Image src="/media/hathor/reviews/hathor-etching.webp" alt="" width={1100} height={483} sizes="(max-width: 950px) 92vw, 30vw" />
-          <span className="gb__hand gb__hand--etching">
-            Different waters,
-            <br />
-            richer stories
-          </span>
+          <Image src="/media/hathor/reviews/hathor-engraving.webp" alt="" width={1100} height={470} sizes="(max-width: 950px) 92vw, 34vw" />
+          <HandNote
+            className="gb__hand gb__hand--etching"
+            width={230}
+            height={210}
+            rotate={-14}
+            underline
+            lines={[
+              { text: "Different", x: 10, y: 50 },
+              { text: "waters,", x: 44, y: 96, r: 2 },
+              { text: "richer", x: 70, y: 142, r: -1 },
+              { text: "stories", x: 92, y: 188, r: 1 },
+            ]}
+          />
         </figure>
       </div>
 
       {/* ------------------------------------------- the open guest book */}
       <div className="gb__book" id={`${base}-panel`} {...panelLabel}>
+        <div className="gb__volume">
+        <span className="gb__block" aria-hidden="true" />
         <div className="gb__page gb__page--upper">
           <div className="gb__sheet">
             {lead ? (
@@ -315,16 +280,21 @@ export function GuestBook({
                 Read what guests say after a voyage aboard Hathor, on Google{fallback.tripadvisorUrl ? " and Tripadvisor" : ""}.
               </p>
             )}
-            <span className="gb__hand gb__hand--page" aria-hidden="true">
-              Slower,
-              <br />
-              kinder,
-              <br />
-              more beautiful
-            </span>
+            <HandNote
+              className="gb__hand gb__hand--page"
+              width={300}
+              height={170}
+              rotate={-16}
+              lines={[
+                { text: "Slower", x: 12, y: 46 },
+                { text: "kinder", x: 46, y: 96, r: 2 },
+                { text: "more beautiful", x: 70, y: 148, r: -1 },
+              ]}
+            />
           </div>
           <div className="gb__postcard" aria-hidden="true">
-            <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="14rem" />
+            <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" />
+            <span className="gb__gloss" />
           </div>
           <Stamp className="gb__stamp" />
           <PalmFrond className="gb__palm gb__palm--page" />
@@ -340,6 +310,8 @@ export function GuestBook({
             </div>
           </div>
         ) : null}
+
+        </div>
 
         {spreads.length > 1 ? (
           <nav className="gb__pager" aria-label="Review pages">
@@ -421,12 +393,18 @@ export function GuestBook({
         )}
         <Actions data={data} fallback={fallback} className="gb__actions--deck" />
         <figure className="gb__etching gb__etching--deck" aria-hidden="true">
-          <Image src="/media/hathor/reviews/hathor-etching.webp" alt="" width={1100} height={483} sizes="92vw" />
-          <span className="gb__hand gb__hand--deck">
-            More than a cruise —
-            <br />
-            a story worth sharing
-          </span>
+          <Image src="/media/hathor/reviews/hathor-engraving.webp" alt="" width={1100} height={470} sizes="92vw" />
+          <HandNote
+            className="gb__hand gb__hand--deck"
+            width={420}
+            height={190}
+            rotate={-10}
+            lines={[
+              { text: "More than", x: 8, y: 44 },
+              { text: "a cruise —", x: 30, y: 92, r: 2 },
+              { text: "a story worth sharing", x: 52, y: 142, r: -1 },
+            ]}
+          />
         </figure>
       </div>
     </div>
