@@ -199,7 +199,9 @@ export function GuestBook({
     const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!still) {
       const dir = next > spread ? "next" : "prev";
-      setTurn({ leaf: dir === "next" ? spread : next, base: dir === "next" ? next : spread, dir, key: Date.now() });
+      // The current spread is always the leaf that turns, revealing the other beneath:
+      // forward it is lifted at the lower left, back it is drawn down from the top right.
+      setTurn({ leaf: spread, base: next, dir, key: Date.now() });
     }
     setSpread(next);
   }
@@ -364,8 +366,8 @@ export function GuestBook({
                   corner, folded diagonally across both pages to the top right. */}
               <PageCurl
                 rect={WHOLE_BOOK}
-                from="bottom-left"
-                reverse={turn.dir === "prev"}
+                from={turn.dir === "next" ? "bottom-left" : "top-right"}
+                reverse={false}
                 onDone={() => setTurn(null)}
               >
                 <span className="gb__leaf-paper" />
@@ -373,6 +375,9 @@ export function GuestBook({
               </PageCurl>
             </Fragment>
           ) : null}
+          {/* The sprig rests on the book, so a turning page passes beneath it. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="gb__sprig" src="/media/hathor/reviews/sprig-overlay.webp" width={206} height={400} alt="" aria-hidden="true" />
           <div className="gb__postcard" aria-hidden="true">
             <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" loading="eager" />
             <span className="gb__gloss" />

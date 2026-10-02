@@ -57,7 +57,7 @@ export function PageCurl({
   /** Where the folded-over corner may lie: the whole book, so a page folds onto its neighbour. */
   bounds?: PageRect;
   /** The corner the hand lifts; the fold travels to the opposite corner. */
-  from?: "bottom-right" | "bottom-left";
+  from?: "bottom-right" | "bottom-left" | "top-right";
   reverse: boolean;
   delay?: number;
   onDone?: () => void;
@@ -90,8 +90,14 @@ export function PageCurl({
       { x: x1, y: y1 },
       { x: x0, y: y1 },
     ];
-    const corner = from === "bottom-left" ? { x: x0, y: y1 } : { x: x1, y: y1 };
-    const far = from === "bottom-left" ? { x: x1, y: y0 } : { x: x0, y: y0 };
+    const corners = {
+      "bottom-right": [{ x: x1, y: y1 }, { x: x0, y: y0 }],
+      "bottom-left": [{ x: x0, y: y1 }, { x: x1, y: y0 }],
+      "top-right": [{ x: x1, y: y0 }, { x: x0, y: y1 }],
+    } as const;
+    const [corner, far] = corners[from];
+    // The hand's path bows: lifted corners rise, a corner brought down from the top swings out.
+    const bow = from === "top-right" ? { x: 0.6, y: 0 } : { x: 0, y: -1 };
     const ph = y1 - y0;
 
     const draw = (p: number) => {
@@ -103,8 +109,8 @@ export function PageCurl({
       // The hand draws the corner up and across, a little above the diagonal.
       const lift = Math.sin(p * Math.PI) * ph * 0.18;
       const m = {
-        x: corner.x + (far.x - corner.x) * 2.02 * p,
-        y: corner.y + (far.y - corner.y) * 2.02 * p - lift,
+        x: corner.x + (far.x - corner.x) * 2.02 * p + bow.x * lift,
+        y: corner.y + (far.y - corner.y) * 2.02 * p + bow.y * lift,
       };
       const dx = m.x - corner.x;
       const dy = m.y - corner.y;
