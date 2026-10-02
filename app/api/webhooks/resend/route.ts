@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { EmailBodyTooLargeError, readLimitedEmailBody, receivedEmailEventSchema, processReceivedBookingEmail, verifyResendWebhook } from "@/lib/resend-inbound";
+import { EmailBodyTooLargeError, readLimitedEmailBody, receivedEmailEventSchema, verifyResendWebhook } from "@/lib/resend-inbound";
+import { processReceivedDashboardEmail } from "@/lib/dashboard-inbound";
 import { enforcePublicRateLimit, RateLimitExceededError } from "@/lib/public-api-security";
 import { inboundBookingEmailEnabled } from "@/lib/booking-email-routing";
 
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid event" }, { status: 400, headers });
   try {
     await enforcePublicRateLimit({ request, scope: "booking-email-webhook", limit: 120, windowMs: 60000 });
-    await processReceivedBookingEmail(parsed.data);
+    await processReceivedDashboardEmail(parsed.data);
     return NextResponse.json({ received: true }, { headers });
   } catch (error) {
     if (error instanceof RateLimitExceededError) {

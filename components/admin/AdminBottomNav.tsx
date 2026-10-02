@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { LayoutDashboard, Menu, Ship, Ticket } from "lucide-react";
+import { Inbox, LayoutDashboard, Menu, Ship, Ticket } from "lucide-react";
 import { isAdminInventoryPath } from "@/lib/admin-nav";
 
 type AdminBottomNavProps = {
@@ -13,6 +13,7 @@ type AdminBottomNavProps = {
 const ITEMS = [
   { href: "/admin", label: "Home", icon: LayoutDashboard, exact: true },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket, exact: false },
+  { href: "/admin/inbox", label: "Inbox", icon: Inbox, exact: false },
   { href: "/admin/cruises", label: "Cruises", icon: Ship, exact: false },
 ] as const;
 

@@ -212,10 +212,26 @@ model BookingMessage {
   recordedBySession String?
   notificationSentAt DateTime?
   notificationLeaseUntil DateTime?
+  readAt DateTime?
   createdAt DateTime @default(now())
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@index([bookingId, createdAt, id])
+  @@index([direction, createdAt, id])
+}
+
+model InboxMessage {
+  id String @id @default(uuid())
+  resendEmailId String @unique
+  sender String
+  recipient String
+  subject String
+  bodyText String
+  attachments Json @default("[]")
+  readAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt, id])
 }
 
 model ApiRateLimit {

@@ -47,7 +47,7 @@ export const receivedEmailEventSchema = z.object({
   data: z.object({ email_id: z.uuid(), to: z.array(z.string().max(512)).max(100) }),
 });
 
-const incomingEmailSchema = z.object({
+export const incomingEmailSchema = z.object({
   id: z.uuid(),
   from: z.string().max(512),
   to: z.array(z.string().max(512)).max(100),
@@ -162,6 +162,7 @@ export async function processReceivedBookingEmail(
       from: getResendFromAddress(), to: [bookingReplyInbox()],
       subject: `Guest reply · ${bookingCode(message.bookingId)} · ${message.subject}`.slice(0, 240),
       reply_to: bookingReplyInbox(),
+      headers: { "Auto-Submitted": "auto-generated" },
       text: `Guest reply from ${message.sender}\nBooking: ${bookingCode(message.bookingId)}\n\n${message.bodyText}\n\n${files ? `Attachments available in dashboard: ${files}\n\n` : ""}Read and reply in your dashboard:\n${adminUrl}\n\nUse the dashboard to reply so your message is saved in the conversation.`,
     }, `booking-reply-notification/${event.data.email_id}`);
     await query(`UPDATE "BookingMessage" SET "notificationSentAt" = NOW(), "notificationLeaseUntil" = NULL WHERE id = $1`, [message.id]);

@@ -74,9 +74,23 @@ before this feature are not imported automatically.
 - Requests are bounded: webhook metadata 64 KiB, fetched email response 2 MiB,
   stored text 64,000 characters, and at most 100 attachments. Processing failures
   remain visible in Resend's webhook attempts for manual investigation/replay.
-- New replies to old emails, emails sent directly to the reservations mailbox, and
-  replies sent from that mailbox are not automatically synced into the dashboard.
-  Send a new dashboard email to establish routing, and use the dashboard to respond.
+- `/admin/inbox` lists received booking replies and general emails together, with
+  sender/subject search, unread filtering, explicit read/unread controls, pagination,
+  and authenticated attachment access. Booking replies remain in their original
+  conversation; opening the booking lets staff reply with the existing tools.
+- General emails are accepted at `reservations@reply.hathorcruise.com`. To include
+  new mail sent to `reservations@hathorcruise.com`, add a Bluehost forwarding rule
+  that sends a copy to this address while retaining the original mailbox delivery.
+  Do not replace the main domain MX records. Forwarding is an external setup step,
+  not automatically enabled by deploying the Inbox. Existing mail is not imported.
+- General replies open the staff member's mail app and are not recorded as
+  dashboard outbound messages. Old booking emails without token routing can appear
+  as general emails if forwarded. Only new token-addressed booking emails link
+  automatically to the relevant reservation. Sender addresses are not verified
+  identities. Automatic/bulk messages are ignored, including dashboard-generated
+  booking notification copies, which carry an Auto-Submitted header.
+- The additive Inbox migration enables RLS and revokes public access on
+  `InboxMessage`. Read/unread changes never alter reservation status or payments.
 - To pause inbound routing, set `RESEND_INBOUND_ENABLED=false` and redeploy. Historical
   conversation records stay available, and new booking emails use the normal inbox.
 
