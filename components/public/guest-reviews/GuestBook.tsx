@@ -1,10 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useRef, useState, type ReactNode, type UIEvent } from "react";
+import { Fragment, useId, useRef, useState, type ReactNode, type UIEvent } from "react";
 import type { GuestReview, GuestReviewsData } from "@/lib/guest-reviews";
-import { HandNote, PalmTree, Stamp } from "@/components/public/guest-reviews/ephemera";
+import { HandNote, Stamp } from "@/components/public/guest-reviews/ephemera";
+import { PageCurl, type PageRect } from "@/components/public/guest-reviews/PageCurl";
 import { GoogleMark, Rating, SOURCE_LABEL, SourceMark, type ReviewSource } from "@/components/public/guest-reviews/marks";
+
+/** The book's two pages, measured from guest-book.webp (fractions of its size). */
+const UPPER_PAGE: PageRect = { x0: 0.056, y0: 0.019, x1: 0.904, y1: 0.512 };
+const LOWER_PAGE: PageRect = { x0: 0.046, y0: 0.515, x1: 0.925, y1: 0.961 };
+
+/** The platforms' own logos, for the source switch. */
+const SOURCE_LOGO: Record<ReviewSource, { src: string; width: number; height: number }> = {
+  google: { src: "/media/hathor/reviews/logo-google.png", width: 267, height: 87 },
+  tripadvisor: { src: "/media/hathor/reviews/logo-tripadvisor.png", width: 355, height: 112 },
+};
 
 /** Three reviews to a spread: one on the upper page, two on the lower. */
 const PER_SPREAD = 3;
@@ -166,6 +177,7 @@ export function GuestBook({
   const [active, setActive] = useState<ReviewSource | null>(sources[0]?.source ?? null);
   const [spread, setSpread] = useState(0);
   /* While a page turns: which spread the turning leaf shows, and which way it goes. */
+  const curlsDone = useRef(0);
   const [turn, setTurn] = useState<{ leaf: number; base: number; dir: "next" | "prev"; key: number } | null>(null);
   const [slide, setSlide] = useState(0);
   const deck = useRef<HTMLOListElement>(null);
@@ -183,6 +195,7 @@ export function GuestBook({
     const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!still) {
       const dir = next > spread ? "next" : "prev";
+      curlsDone.current = 0;
       setTurn({ leaf: dir === "next" ? spread : next, base: dir === "next" ? next : spread, dir, key: Date.now() });
     }
     setSpread(next);
@@ -223,12 +236,19 @@ export function GuestBook({
             aria-selected={active === source.source}
             aria-controls={`${base}-panel`}
             className="room-pill gb__tab"
-            data-hathor-btn={active === source.source ? "primary" : undefined}
             aria-label={`${SOURCE_LABEL[source.source]} reviews`}
             title={`${SOURCE_LABEL[source.source]} reviews`}
             onClick={() => choose(source.source)}
           >
-            <SourceMark source={source.source} className="gb__tab-mark" />
+            {/* The platform's own logo, a static file served as is. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className={`gb__tab-logo gb__tab-logo--${source.source}`}
+              src={SOURCE_LOGO[source.source].src}
+              width={SOURCE_LOGO[source.source].width}
+              height={SOURCE_LOGO[source.source].height}
+              alt=""
+            />
           </button>
         ))}
       </div>
@@ -276,7 +296,9 @@ export function GuestBook({
     <div className="gb">
       {/* ------------------------------------------------ title column */}
       <div className="gb__aside">
-        <PalmTree className="gb__palm gb__palm--head" />
+        {/* The same sprig that rests on the book, for the phone's journal page. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="gb__palm gb__palm--head" src="/media/hathor/reviews/sprig.webp" width={206} height={377} alt="" aria-hidden="true" />
         <p className="gb__kicker">Guest reviews</p>
         <h2 id={headingId} className="gb__title">
           <span>In their</span>
@@ -334,18 +356,23 @@ export function GuestBook({
           />
           <div className="gb__pages">{pagesFor(turn ? turn.base : spread, "now")}</div>
           {turn ? (
-            <div
-              key={turn.key}
-              className={`gb__leaf gb__leaf--${turn.dir}`}
-              aria-hidden="true"
-              onAnimationEnd={(event) => {
-                if (event.target === event.currentTarget) setTurn(null);
-              }}
-            >
-              <span className="gb__leaf-paper" />
-              {pagesFor(turn.leaf, "leaf")}
-              <span className="gb__leaf-shade" />
-            </div>
+            <Fragment key={turn.key}>
+              {([LOWER_PAGE, UPPER_PAGE] as const).map((rect, i) => (
+                <PageCurl
+                  key={i}
+                  rect={rect}
+                  reverse={turn.dir === "prev"}
+                  delay={(turn.dir === "next" ? i : 1 - i) * 520}
+                  onDone={() => {
+                    curlsDone.current += 1;
+                    if (curlsDone.current >= 2) setTurn(null);
+                  }}
+                >
+                  <span className="gb__leaf-paper" />
+                  {pagesFor(turn.leaf, i ? "leaf-u" : "leaf-l")}
+                </PageCurl>
+              ))}
+            </Fragment>
           ) : null}
           <div className="gb__postcard" aria-hidden="true">
             <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" loading="eager" />
