@@ -10,6 +10,9 @@ import { useSelectionPanelOpen } from "@/components/selection/SelectionProvider"
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import type { ShipDeckId } from "@/lib/ship-experience-shared";
 import { PlanCloseUp, type AtlasState } from "./DeckAtlasPlan";
+import { localizedHref } from "@/lib/i18n/locale";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { DECK_ATLAS_COPY } from "@/lib/i18n/deck-atlas-copy";
 
 type Area = { x: number; y: number; width: number; height: number };
 
@@ -57,6 +60,8 @@ export type AtlasSheet = RoomSheet | SpaceSheet;
  * Same native <dialog> pattern as the room pages.
  */
 export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sheet: AtlasSheet | null; onClose: () => void }) {
+  const locale = usePublicLocale();
+  const tx = DECK_ATLAS_COPY[locale];
   const dialog = useRef<HTMLDialogElement>(null);
   const [photo, setPhoto] = useState(0);
   const [photoFor, setPhotoFor] = useState(sheet?.key);
@@ -98,7 +103,7 @@ export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sh
   const count = sheet?.gallery.length ?? 0;
   const step = (delta: number) => setPhoto(current => (current + delta + count) % count);
   const room = sheet?.kind === "room" ? sheet : null;
-  const saveName = room ? `${room.name}, cabin ${room.label}` : "";
+  const saveName = room ? tx.modal.saveName(room.name, room.label) : "";
 
   return (
     <dialog ref={dialog} className="da-modal" aria-labelledby="da-modal-title" data-lenis-prevent
@@ -109,10 +114,10 @@ export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sh
         if (event.key === "ArrowLeft") step(-1);
       }}>
       {sheet ? <div className="da-modal__panel" key={sheet.key} data-kind={sheet.kind}>
-        <button type="button" className="da-modal__close" aria-label={`Close ${sheet.name}`} onClick={requestClose}><X aria-hidden="true" /></button>
+        <button type="button" className="da-modal__close" aria-label={tx.modal.close(sheet.name)} onClick={requestClose}><X aria-hidden="true" /></button>
         <figure className="da-modal__media">
           {count ? <Image key={photo} className="da-modal__img" src={sheet.gallery[photo]} data-site-image={sheet.gallerySlot ?? undefined}
-            alt={count > 1 ? `${sheet.galleryAlt}, photograph ${photo + 1} of ${count}` : sheet.galleryAlt}
+            alt={count > 1 ? tx.modal.photoOf(sheet.galleryAlt, photo + 1, count) : sheet.galleryAlt}
             fill sizes="(max-width: 640px) 100vw, (max-width: 1100px) 560px, 540px" loading="eager" />
             : <PlanCloseUp className="da-closeup--hero" deck={sheet.deck} areas={sheet.areas} label={sheet.name} />}
           {room?.cabinSlug ? <div className="da-modal__save">
@@ -120,8 +125,8 @@ export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sh
             <AddToVoyageButton kind="cabin" slug={room.cabinSlug} name={saveName} variant="card" />
           </div> : null}
           {count > 1 ? <>
-            <button type="button" className="da-modal__nav da-modal__nav--prev" aria-label="Previous photograph" onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
-            <button type="button" className="da-modal__nav da-modal__nav--next" aria-label="Next photograph" onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>
+            <button type="button" className="da-modal__nav da-modal__nav--prev" aria-label={tx.modal.previous} onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
+            <button type="button" className="da-modal__nav da-modal__nav--next" aria-label={tx.modal.next} onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>
           </> : null}
           {count > 1 || sheet.galleryNote ? <figcaption className="da-modal__count">{[sheet.galleryNote, count > 1 ? `${photo + 1} / ${count}` : null].filter(Boolean).join(" · ")}</figcaption> : null}
         </figure>
@@ -134,20 +139,20 @@ export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sh
             {room.note ? <p className="da-modal__line">{room.note}</p> : null}
             <div className="da-modal__terms">
               <p className="da-status" data-state={room.state}>{room.status}</p>
-              {room.price ? <p className="da-price">{room.price}<small>per cabin · entire voyage</small></p> : null}
+              {room.price ? <p className="da-price">{room.price}<small>{tx.perCabin}</small></p> : null}
             </div>
             <div className="da-modal__act">
-              {room.checkHref ? <Link className="btn" data-hathor-btn="primary" href={room.checkHref}>{room.state === "closed" ? "See other dates" : "Check availability"}</Link>
-                : <Link className="btn" data-hathor-btn="primary" href="/contact">Contact reservations</Link>}
-              {room.viewHref ? <Link className="btn" href={room.viewHref}>View room</Link> : null}
+              {room.checkHref ? <Link className="btn" data-hathor-btn="primary" href={room.checkHref}>{room.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>
+                : <Link className="btn" data-hathor-btn="primary" href={localizedHref("/contact", locale)}>{tx.contactReservations}</Link>}
+              {room.viewHref ? <Link className="btn" href={localizedHref(room.viewHref, locale)}>{tx.viewRoom}</Link> : null}
             </div>
           </> : sheet.kind === "space" ? <>
             <p className="da-modal__line">{sheet.line}</p>
             {count ? <div className="da-modal__where">
-              <p className="da-kicker">Where it is</p>
+              <p className="da-kicker">{tx.modal.whereItIs}</p>
               <PlanCloseUp deck={sheet.deck} areas={sheet.areas} label={sheet.name} ratio={3} />
             </div> : null}
-            <button type="button" className="da-textlink da-modal__back" onClick={requestClose}><span aria-hidden="true">←</span> Back to the deck plan</button>
+            <button type="button" className="da-textlink da-modal__back" onClick={requestClose}><span aria-hidden="true">←</span> {tx.modal.back}</button>
           </> : null}
         </div>
       </div> : null}

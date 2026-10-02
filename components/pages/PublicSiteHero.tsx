@@ -29,6 +29,8 @@ import {
   type HeroPageKey,
 } from "@/lib/typography-settings-shared";
 import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 
 export type PublicSiteHeroProps = {
   lineRight: string;
@@ -91,7 +93,7 @@ export function PublicSiteHero({
   heroPage,
   lineLeftImageSrc,
   showCta = true,
-  ctaLabel = HOMEPAGE_HERO.cta,
+  ctaLabel: ctaLabelProp,
   animate = true,
   posterImageName,
   goldTint = true,
@@ -138,6 +140,8 @@ export function PublicSiteHero({
       }
     : heroTitleStyle;
   usePublicSiteHeroMotion(heroRef, animate);
+  const heroCopy = CHROME_COPY[usePublicLocale()].hero;
+  const ctaLabel = ctaLabelProp ?? heroCopy.bookNow ?? HOMEPAGE_HERO.cta;
 
   const resolved = heroPage
     ? resolveHeroPageCopy(typography, heroPage, {
@@ -495,7 +499,7 @@ export function PublicSiteHero({
             data-hathor-phone-hero={
               heroVideoSrc === HATHOR_HERO_VIDEO_PHONE_SRC ? "locked" : undefined
             }
-            aria-label={heroImage.alt || "Hathor Dahabiya sailing on the Nile"}
+            aria-label={heroImage.alt || heroCopy.filmAlt}
             onPlay={() => setHeroVideoPlaying(true)}
             onPause={() => setHeroVideoPlaying(false)}
           />
@@ -526,25 +530,25 @@ export function PublicSiteHero({
               </div>
             </div>
             <p className="hero-one-location">
-              LUXOR <span /> ASWAN
+              {heroCopy.location[0]} <span /> {heroCopy.location[1]}
             </p>
           </div>
           <a
             className="hero-responsive-video-control hero-responsive-video-control--next"
             href={responsiveVideoFrameTarget}
-            aria-label="Enter the extraordinary"
+            aria-label={heroCopy.discover}
           >
             <span className="hero-responsive-video-control__mark">
               <ArrowDown aria-hidden="true" />
             </span>
-            <span className="hero-one-discover-label">Enter the extraordinary</span>
+            <span className="hero-one-discover-label">{heroCopy.discover}</span>
           </a>
           {heroVideoSrc ? (
             <button
               className="hero-responsive-video-control hero-responsive-video-control--playback"
               type="button"
               onClick={toggleHeroVideo}
-              aria-label={heroVideoPlaying ? "Pause background film" : "Play background film"}
+              aria-label={heroVideoPlaying ? heroCopy.pauseFilm : heroCopy.playFilm}
             >
               {heroVideoPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
             </button>
@@ -599,7 +603,7 @@ export function PublicSiteHero({
       )}
 
       <div className="hero-scroll-hint" aria-hidden="true">
-        Scroll
+        {heroCopy.scrollHint}
       </div>
     </section>
   );

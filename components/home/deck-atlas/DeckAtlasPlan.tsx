@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useState, type CSSProperties } from "react";
 import { SHIP_REGIONS, shipDeckArt, type ShipDeckId, type ShipSlotId } from "@/lib/ship-experience-shared";
 import { FACILITY_BY_ID, facilityMark, isFacilityId, type Facility, type FacilityId } from "./facilities";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { DECK_ATLAS_COPY } from "@/lib/i18n/deck-atlas-copy";
 
 export type AtlasState = "open" | "closed" | "unknown" | "request";
 export type AtlasPlanRoom = { slotId: ShipSlotId; label: string; name: string; state: AtlasState };
@@ -57,6 +59,7 @@ function mergeTouching(rects: Rect[]): Rect[] {
 
 /** A close-up of the deck artwork around one or more areas (width : height = ratio), each place with the plan's crop marks. */
 export function PlanCloseUp({ deck, areas: pieces, label, ratio = 2, className }: { deck: ShipDeckId; areas: Rect[]; label: string; ratio?: number; className?: string }) {
+  const tx = DECK_ATLAS_COPY[usePublicLocale()].plan;
   const areas = mergeTouching(pieces);
   const x0 = Math.min(...areas.map(r => r.x));
   const y0 = Math.min(...areas.map(r => r.y));
@@ -69,7 +72,7 @@ export function PlanCloseUp({ deck, areas: pieces, label, ratio = 2, className }
   const top = clamp((y0 + y1) / 2 - h / 2, ART_H - h);
   const at = (offset: number, span: number) => (span > 0 ? `${((offset / span) * 100).toFixed(3)}%` : "0%");
   return (
-    <div className={`da-closeup${className ? ` ${className}` : ""}`} role="img" aria-label={`${label} on the ${deck} deck plan`}
+    <div className={`da-closeup${className ? ` ${className}` : ""}`} role="img" aria-label={tx.closeup(label, deck)}
       style={{ aspectRatio: `${ratio} / 1`, backgroundImage: `url(${shipDeckArt(deck)})`, backgroundSize: `${((ART_W / w) * 100).toFixed(3)}% auto`, backgroundPosition: `${at(left, ART_W - w)} ${at(top, ART_H - h)}` }}>
       {areas.map((area, index) => (
         <span key={index} className="da-plan__crop da-closeup__mark" aria-hidden="true"
@@ -79,18 +82,7 @@ export function PlanCloseUp({ deck, areas: pieces, label, ratio = 2, className }
   );
 }
 
-const ALT: Record<ShipDeckId, string> = {
-  lower: "Lower deck with two suites, eight rooms, reception and service areas",
-  main: "Main deck with two Royal Suites, library, gym, lounge, restaurant and outdoor terrace",
-  sun: "Sun deck with shaded lounge, circular bar, two pools, sun loungers and an outdoor terrace",
-};
-
-const STATE_WORD: Record<AtlasState, string> = {
-  open: "available",
-  closed: "booked on this departure",
-  unknown: "availability not checked yet",
-  request: "contact reservations about this room",
-};
+/* Deck alt text and the spoken room states are DECK_ATLAS_COPY[locale].plan. */
 
 /**
  * The deck at rest is printed into the paper (toned, multiplied). Focusing a
@@ -109,6 +101,7 @@ export function DeckAtlasPlan({ deck, rooms, spaces, focusId, selectedId, reveal
   onSelect: (id: ShipSlotId) => void;
   onOpenSpace: (id: FacilityId) => void;
 }) {
+  const tx = DECK_ATLAS_COPY[usePublicLocale()].plan;
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -135,12 +128,12 @@ export function DeckAtlasPlan({ deck, rooms, spaces, focusId, selectedId, reveal
     <div className="da-plan__frame" data-ready={loaded || undefined} data-revealed={revealed || undefined}
       data-focus={focusId ? "" : undefined} data-zoom={zoom ? "" : undefined}>
       {failed ? <div className="da-plan__error" role="alert">
-        <p>The deck plan could not load.</p>
-        <button type="button" onClick={() => { setFailed(false); setLoaded(false); setAttempt(value => value + 1); }}>Reload the plan</button>
+        <p>{tx.failed}</p>
+        <button type="button" onClick={() => { setFailed(false); setLoaded(false); setAttempt(value => value + 1); }}>{tx.reload}</button>
       </div> : <div className="da-plan__board">
         <div className="da-plan__sheet" style={origin}>
           <Image key={`base-${attempt}`} className="da-plan__art da-plan__art--base" src={src} width={ART_W} height={ART_H} unoptimized loading="eager"
-            alt={`${ALT[deck]}. Furnished overhead illustration.`} draggable={false}
+            alt={`${tx.alt[deck]}${tx.furnished}`} draggable={false}
             onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />
           <Image key={`lit-${attempt}`} className="da-plan__art da-plan__art--lit" src={src} width={ART_W} height={ART_H} unoptimized loading="eager"
             alt="" aria-hidden="true" draggable={false} data-on={focusId ? "" : undefined}
@@ -160,7 +153,7 @@ export function DeckAtlasPlan({ deck, rooms, spaces, focusId, selectedId, reveal
             if (!place) return <span key={`${space.id}-${part}`} {...common} data-part="" aria-hidden="true" {...pointer} />;
             return (
               <button key={`${space.id}-${part}`} type="button" {...common} {...pointer}
-                aria-label={`${mark}, ${space.name}${places > 1 ? ` (${place} of ${places})` : ""}${space.kind === "crew" ? ", crew only" : ""}. See it closer`}
+                aria-label={tx.space(mark, space.name, place, places, space.kind === "crew")}
                 onFocus={() => onFocus(space.id)} onBlur={() => onFocus(null)}>
                 <b className="da-plan__space-mark" aria-hidden="true">{mark}</b>
                 <b className="da-plan__space-name" aria-hidden="true"><small>{mark}</small>{space.name}</b>
@@ -173,17 +166,17 @@ export function DeckAtlasPlan({ deck, rooms, spaces, focusId, selectedId, reveal
               data-state={room.state} data-edge={SHIP_REGIONS[room.slotId].edge}
               data-focus={focusId === room.slotId || undefined}
               aria-pressed={selectedId === room.slotId}
-              aria-label={`${room.name}, ${room.label}, ${STATE_WORD[room.state]}`}
+              aria-label={`${room.name}, ${room.label}, ${tx.state[room.state]}`}
               onPointerEnter={() => onFocus(room.slotId)} onPointerLeave={() => onFocus(null)}
               onFocus={() => onFocus(room.slotId)} onBlur={() => onFocus(null)}
               onClick={() => onSelect(room.slotId)}>
               <span className="da-plan__num"><i aria-hidden="true" />{room.label}</span>
-              {room.state === "closed" ? <b className="da-plan__booked" aria-hidden="true">Booked</b> : null}
+              {room.state === "closed" ? <b className="da-plan__booked" aria-hidden="true">{tx.booked}</b> : null}
             </button>
           ))}
         </div>
       </div>}
-      {!loaded && !failed ? <p className="da-plan__loading" role="status">Preparing the deck plan…</p> : null}
+      {!loaded && !failed ? <p className="da-plan__loading" role="status">{tx.preparing}</p> : null}
     </div>
   );
 }

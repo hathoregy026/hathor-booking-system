@@ -6,11 +6,15 @@ import {
 } from "@/lib/guest-reviews";
 import { loadTripadvisorReviews } from "@/lib/tripadvisor-reviews";
 import { GuestReviewsSwitch, type GuestReviewsSource } from "@/components/public/GuestReviewsSwitch";
+import { REVIEWS_COPY, type ReviewsCopy } from "@/lib/i18n/reviews-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
 import "@/app/guest-reviews.css";
 
 type GuestReviewsProps = {
   /** Home sits in the editorial document; room pages close on it before the footer. */
   placement: "home" | "room";
+  /** The page's language; reviews are always shown as guests wrote them. */
+  locale?: PublicLocale;
 };
 
 type Source = GuestReviewsData["source"];
@@ -144,10 +148,12 @@ function SourceHead({
   data,
   placement,
   alsoTripadvisor,
+  copy,
 }: {
   data: GuestReviewsData;
   placement: string;
   alsoTripadvisor: string | null;
+  copy: ReviewsCopy;
 }) {
   const label = SOURCE_LABEL[data.source];
   return (
@@ -155,7 +161,7 @@ function SourceHead({
       <div className="gr__badge">
         <div className="gr__badge-source">
           <SourceMark source={data.source} className="gr__g" />
-          <span>{label} reviews</span>
+          <span>{copy.platformReviews(label)}</span>
         </div>
         {data.rating != null ? (
           <div className="gr__score">
@@ -168,10 +174,7 @@ function SourceHead({
                 source={data.source}
               />
               {data.count != null ? (
-                <p className="gr__count">
-                  Based on {data.count.toLocaleString("en-GB")}{" "}
-                  {data.count === 1 ? "review" : "reviews"}
-                </p>
+                <p className="gr__count">{copy.basedOn(data.count)}</p>
               ) : null}
             </div>
           </div>
@@ -180,30 +183,38 @@ function SourceHead({
 
       <div className="gr__actions">
         <External href={data.readUrl} className="room-pill gr__btn" primary>
-          Read reviews
+          {copy.readReviews}
         </External>
         {data.writeUrl ? (
           <External href={data.writeUrl} className="room-pill gr__btn">
-            Write a review
+            {copy.writeReview}
           </External>
         ) : null}
       </div>
 
       {alsoTripadvisor ? (
         <a className="gr__also" href={alsoTripadvisor} target="_blank" rel="noopener noreferrer">
-          Also reviewed on Tripadvisor
+          {copy.alsoTripadvisor}
         </a>
       ) : null}
     </>
   );
 }
 
-function SourceLedger({ data, placement }: { data: GuestReviewsData; placement: string }) {
+function SourceLedger({
+  data,
+  placement,
+  copy,
+}: {
+  data: GuestReviewsData;
+  placement: string;
+  copy: ReviewsCopy;
+}) {
   const label = SOURCE_LABEL[data.source];
   if (!data.reviews.length) return null;
   return (
     <>
-      <ol className="gr__ledger" aria-label={`Recent reviews from ${label}`}>
+      <ol className="gr__ledger" aria-label={copy.recentFrom(label)}>
         {data.reviews.map((review, index) => (
           <li key={`${review.author}-${index}`} className="gr__entry">
             <figure className="gr__card">
@@ -257,8 +268,8 @@ function SourceLedger({ data, placement }: { data: GuestReviewsData; placement: 
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                 >
-                  Read on {label}
-                  <span className="gr__sr"> — review by {review.author}</span>
+                  {copy.readOn(label)}
+                  <span className="gr__sr">{copy.reviewBy(review.author)}</span>
                 </a>
               ) : null}
             </figure>
@@ -266,9 +277,7 @@ function SourceLedger({ data, placement }: { data: GuestReviewsData; placement: 
         ))}
       </ol>
       <p className="gr__source">
-        {data.source === "google"
-          ? "Ratings and reviews from Google Maps, shown as written by guests."
-          : "Ratings and reviews from Tripadvisor, shown as written by guests."}
+        {data.source === "google" ? copy.googleNote : copy.tripadvisorNote}
       </p>
     </>
   );
@@ -280,7 +289,8 @@ function SourceLedger({ data, placement }: { data: GuestReviewsData; placement: 
  * source and a switch between them. Without either key it still invites
  * visitors to read the reviews at the source.
  */
-export async function GuestReviews({ placement }: GuestReviewsProps) {
+export async function GuestReviews({ placement, locale = "en" }: GuestReviewsProps) {
+  const copy = REVIEWS_COPY[locale];
   const [google, tripadvisor] = await Promise.all([
     loadGuestReviews(),
     loadTripadvisorReviews(),
@@ -290,10 +300,10 @@ export async function GuestReviews({ placement }: GuestReviewsProps) {
 
   const intro = (
     <>
-      <p className="gr__kicker">Guest reviews</p>
+      <p className="gr__kicker">{copy.kicker}</p>
       <h2 id={headingId} className="gr__title">
-        <span>In their</span>
-        <span className="gr__title-accent">own words</span>
+        <span>{copy.titleLead}</span>
+        <span className="gr__title-accent">{copy.titleAccent}</span>
       </h2>
     </>
   );
@@ -308,9 +318,10 @@ export async function GuestReviews({ placement }: GuestReviewsProps) {
           data={data}
           placement={placement}
           alsoTripadvisor={data.source === "google" && !tripadvisor ? tripadvisorLink : null}
+          copy={copy}
         />
       ),
-      ledger: <SourceLedger data={data} placement={placement} />,
+      ledger: <SourceLedger data={data} placement={placement} copy={copy} />,
     }));
 
   if (!sources.length) {
@@ -322,21 +333,18 @@ export async function GuestReviews({ placement }: GuestReviewsProps) {
             <div className="gr__badge">
               <div className="gr__badge-source">
                 <GoogleMark className="gr__g" />
-                <span>Google reviews</span>
+                <span>{copy.platformReviews("Google")}</span>
               </div>
-              <p className="gr__lede">
-                Read what guests say after a voyage aboard Hathor, on Google
-                {tripadvisorLink ? " and Tripadvisor" : ""}.
-              </p>
+              <p className="gr__lede">{copy.fallbackLede(Boolean(tripadvisorLink))}</p>
             </div>
             <div className="gr__actions">
               <External href={GOOGLE_REVIEWS_FALLBACK_URL} className="room-pill gr__btn" primary>
-                Read reviews
+                {copy.readReviews}
               </External>
             </div>
             {tripadvisorLink ? (
               <a className="gr__also" href={tripadvisorLink} target="_blank" rel="noopener noreferrer">
-                Also reviewed on Tripadvisor
+                {copy.alsoTripadvisor}
               </a>
             ) : null}
           </header>
@@ -347,7 +355,7 @@ export async function GuestReviews({ placement }: GuestReviewsProps) {
 
   return (
     <section className={`gr gr--${placement}`} aria-labelledby={headingId}>
-      <GuestReviewsSwitch intro={intro} sources={sources} />
+      <GuestReviewsSwitch intro={intro} sources={sources} switchLabel={copy.sourceSwitch} />
     </section>
   );
 }

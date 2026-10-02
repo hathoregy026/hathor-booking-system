@@ -1,3 +1,5 @@
+import { PUBLIC_LOCALES } from "@/lib/i18n/locale";
+
 export type PublicTheme = "day" | "night";
 
 export const PUBLIC_THEME_STORAGE_KEY = "hathor-public-theme";
@@ -135,7 +137,9 @@ export function getWelcomeSplashCriticalStyle(): string {
  * Home boot: tag html.ex-home, force scrollTop 0, deep-veil only if restoring mid-page.
  */
 export function getHomeScrollPendingBlockingScript(): string {
-  return `(function(){try{var p=(location.pathname||"/").replace(/\\/+$/,"")||"/";if(p!=="/"&&p!=="/home-2")return;var d=document.documentElement;d.classList.add("ex-home");if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);d.scrollTop=0;if(document.body)document.body.scrollTop=0;var y=0;try{y=Number(sessionStorage.getItem("hathor:scroll-y:"+p)||0)||0;}catch(e){}if(y>120)d.classList.add("ex-pending-deep");}catch(e){}})();`;
+  /* `/it` is the same homepage in Italian — strip the language before the check. */
+  const localePrefix = PUBLIC_LOCALES.filter((locale) => locale !== "en").join("|");
+  return `(function(){try{var p=(location.pathname||"/").replace(/\\/+$/,"")||"/";var h=p.replace(/^\\/(?:${localePrefix})(?=\\/|$)/,"")||"/";if(h!=="/"&&h!=="/home-2")return;var d=document.documentElement;d.classList.add("ex-home");if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);d.scrollTop=0;if(document.body)document.body.scrollTop=0;var y=0;try{y=Number(sessionStorage.getItem("hathor:scroll-y:"+p)||0)||0;}catch(e){}if(y>120)d.classList.add("ex-pending-deep");}catch(e){}})();`;
 }
 
 export function readPublicThemeFromDocument(): PublicTheme {

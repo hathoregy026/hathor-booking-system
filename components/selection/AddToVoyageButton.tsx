@@ -15,6 +15,8 @@ import {
 import { HathorCartIcon } from "@/components/selection/SelectionIcons";
 import { trackSelectionEvent } from "@/lib/selection-analytics";
 import { useSelectionStore, useVoyageSelection } from "@/components/selection/SelectionProvider";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import "./AddToVoyageButton.css";
 
 /**
@@ -70,6 +72,7 @@ export function AddToVoyageButton({
   const setGuests = useSelectionStore((state) => state.setGuests);
   const openVoyage = useSelectionStore((state) => state.openVoyage);
 
+  const copy = CHROME_COPY[usePublicLocale()].selection;
   const [pending, setPending] = useState<PendingChange | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
@@ -220,9 +223,7 @@ export function AddToVoyageButton({
     ],
   );
 
-  const label = selected
-    ? `${name} is in My Voyage`
-    : `Add ${name} to My Voyage`;
+  const label = selected ? copy.inVoyageLabel(name) : copy.addToVoyageLabel(name);
 
   const classes = [
     "hathor-atv",
@@ -302,7 +303,7 @@ export function AddToVoyageButton({
         <HathorCartIcon className="hathor-atv__icon" filled={selected} />
         {showText ? (
           <span className="hathor-atv__label" aria-hidden="true">
-            {selected ? "In My Voyage" : "Add to My Voyage"}
+            {selected ? copy.inVoyage : copy.addToVoyage}
           </span>
         ) : null}
       </button>

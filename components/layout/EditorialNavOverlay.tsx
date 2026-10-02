@@ -21,6 +21,8 @@ import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { BURGER_NAV_IMAGE_SLOT_NAME } from "@/lib/site-image-slots";
 import type { HeaderNavItem } from "@/lib/public-nav";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import "./EditorialNavOverlay.css";
 
 const LAYER_COLORS = ["#8b6914", "#c9a96e", "#ece8df"] as const;
@@ -44,6 +46,7 @@ export function EditorialNavOverlay({
 }: EditorialNavOverlayProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const copy = CHROME_COPY[usePublicLocale()].menu;
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
 
   const closeMenu = useCallback(() => {
@@ -88,7 +91,7 @@ export function EditorialNavOverlay({
       <button
         type="button"
         className="eno-backdrop"
-        aria-label="Close menu"
+        aria-label={copy.closeMenu}
         tabIndex={open ? 0 : -1}
         onClick={closeMenu}
       />
@@ -119,7 +122,7 @@ export function EditorialNavOverlay({
       <aside
         className="eno-panel"
         aria-hidden={!open}
-        aria-label="Site menu"
+        aria-label={copy.siteMenu}
         role="dialog"
         aria-modal={open}
       >
@@ -140,15 +143,15 @@ export function EditorialNavOverlay({
             type="button"
             className="eno-close"
             onClick={closeMenu}
-            aria-label="Close menu"
+            aria-label={copy.closeMenu}
             tabIndex={open ? 0 : -1}
           >
             <X className="eno-close__icon" aria-hidden strokeWidth={1.5} />
           </button>
-          <p className="eno-kicker">Luxury voyages on the Nile</p>
+          <p className="eno-kicker">{copy.kicker}</p>
         </header>
 
-        <nav className="eno-nav" aria-label="Primary">
+        <nav className="eno-nav" aria-label={copy.primary}>
           {navItems.map((item, index) => {
             const num = padIndex(index);
             if (item.type === "link") {
@@ -212,11 +215,11 @@ export function EditorialNavOverlay({
           <p className="eno-copy">Hathor Dahabiya © 2026</p>
           <p className="eno-legal">
             <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
-              Privacy Policy
+              {copy.privacy}
             </Link>
             <span aria-hidden="true">·</span>
             <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
-              Terms &amp; Conditions
+              {copy.terms}
             </Link>
           </p>
           <button
@@ -225,7 +228,7 @@ export function EditorialNavOverlay({
             onClick={handleBookNow}
             tabIndex={open ? 0 : -1}
           >
-            Book Now
+            {copy.bookNow}
           </button>
         </div>
       </aside>

@@ -9,6 +9,8 @@ import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 import { SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { localizedHref, splitLocalePath } from "@/lib/i18n/locale";
 
 /**
  * The site footer. One composition, every route, every viewport.
@@ -24,43 +26,6 @@ import { SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
  */
 
 const FOUNDED_YEAR = 2019;
-
-/** Column one — what a guest can book. */
-const EXPLORE_LINKS = [
-  { href: "/cruises-list", label: "Cruises" },
-  { href: "/suites", label: "Suites" },
-  { href: "/luxury-cabins-Nile-Cruise", label: "Cabins" },
-  { href: "/charter", label: "Private Charter" },
-] as const;
-
-/** Column two — what happens on board. */
-const ABOARD_LINKS = [
-  { href: "/gastronomy", label: "Gastronomy" },
-  { href: "/wellness", label: "Seneb Spa" },
-  { href: "/royal-suites", label: "Royal Suites" },
-  { href: "/about", label: "About" },
-] as const;
-
-/** Column three — where the boat actually goes. */
-const ROUTE_LINKS = [
-  { href: "/voyages", label: "All Voyages" },
-  { href: "/voyages/luxor-to-aswan", label: "Luxor to Aswan" },
-  { href: "/voyages/aswan-to-luxor", label: "Aswan to Luxor" },
-  { href: "/highlights", label: "Highlights" },
-] as const;
-
-const UTILITY_LINKS = [
-  { href: "/contact", label: "Contact" },
-  { href: "/blogs", label: "Journal" },
-  { href: "/partners", label: "Partners" },
-  { href: "/terms-and-conditions", label: "Terms" },
-] as const;
-
-const NAV_COLUMNS = [
-  { id: "explore", title: "Explore", links: EXPLORE_LINKS },
-  { id: "aboard", title: "Aboard", links: ABOARD_LINKS },
-  { id: "route", title: "Route", links: ROUTE_LINKS },
-] as const;
 
 /** HATHOR only — the viewBox trims the subtitle band off the brand mark. */
 function WordmarkGhost() {
@@ -156,6 +121,8 @@ function FooterStructuredData() {
 
 export function Footer() {
   const pathname = usePathname();
+  const locale = splitLocalePath(pathname).locale;
+  const copy = CHROME_COPY[locale].footer;
   const rootRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const year = new Date().getFullYear();
@@ -353,10 +320,10 @@ export function Footer() {
         <div className="hf__lede">
           <div className="hf__reveal">
             <h2 className="hf__title">
-              <span className="hf__title-line">YOUR NILE STORY</span>
-              <span className="hf__title-line">BEGINS HERE</span>
+              <span className="hf__title-line">{copy.titleLines[0]}</span>
+              <span className="hf__title-line">{copy.titleLines[1]}</span>
             </h2>
-            <p className="hf__script">Adventures the Nile</p>
+            <p className="hf__script">{copy.script}</p>
           </div>
 
           {/*
@@ -369,11 +336,14 @@ export function Footer() {
             className="hf__desk hf__reveal"
             style={{ "--hf-delay": "120ms" } as CSSProperties}
           >
-            <p className="hf__eyebrow">Private Reservations</p>
+            <p className="hf__eyebrow">{copy.eyebrow}</p>
             <div className="hf__actions">
-              <BookNowTrigger className="hf__cta">Book Now</BookNowTrigger>
-              <Link className="hf__cta hf__cta--line" href="/charter">
-                <span>Charter the Boat</span>
+              <BookNowTrigger className="hf__cta">{copy.bookNow}</BookNowTrigger>
+              <Link
+                className="hf__cta hf__cta--line"
+                href={localizedHref("/charter", locale)}
+              >
+                <span>{copy.charter}</span>
               </Link>
             </div>
 
@@ -387,8 +357,8 @@ export function Footer() {
               >
                 {PUBLIC_CONTACT.email}
               </a>
-              <span className="hf__fact">{PUBLIC_CONTACT.address}</span>
-              <span className="hf__fact">{PUBLIC_CONTACT.workingHours}</span>
+              <span className="hf__fact">{copy.address}</span>
+              <span className="hf__fact">{copy.workingHours}</span>
             </address>
           </div>
         </div>
@@ -397,7 +367,7 @@ export function Footer() {
           className="hf__nav hf__reveal"
           style={{ "--hf-delay": "200ms" } as CSSProperties}
         >
-          {NAV_COLUMNS.map((column) => (
+          {copy.columns.map((column) => (
             <nav
               key={column.id}
               className="hf__col"
@@ -409,7 +379,10 @@ export function Footer() {
               <ul className="hf__links">
                 {column.links.map((link) => (
                   <li key={link.href}>
-                    <Link className="hf__link cursor-hover" href={link.href}>
+                    <Link
+                      className="hf__link cursor-hover"
+                      href={localizedHref(link.href, locale)}
+                    >
                       {link.label}
                     </Link>
                   </li>
@@ -421,15 +394,15 @@ export function Footer() {
 
         <div className="hf__base">
           <p className="hf__legal">
-            © {FOUNDED_YEAR}–{year} Hathor Dahabiya · Egypt
+            © {FOUNDED_YEAR}–{year} Hathor Dahabiya · {copy.country}
           </p>
 
-          <nav className="hf__utility" aria-label="Legal and contact">
-            {UTILITY_LINKS.map((link) => (
+          <nav className="hf__utility" aria-label={copy.utilityLabel}>
+            {copy.utility.map((link) => (
               <Link
                 key={link.href}
                 className="hf__base-link cursor-hover"
-                href={link.href}
+                href={localizedHref(link.href, locale)}
               >
                 {link.label}
               </Link>
@@ -440,7 +413,7 @@ export function Footer() {
             type="button"
             className="hf__top cursor-hover"
             onClick={scrollToTop}
-            aria-label="Back to top of page"
+            aria-label={copy.backToTop}
           >
             <ArrowUpIcon />
           </button>

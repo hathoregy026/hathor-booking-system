@@ -19,9 +19,11 @@ export type GuestReviewsSource = {
 export function GuestReviewsSwitch({
   intro,
   sources,
+  switchLabel = "Review source",
 }: {
   intro: ReactNode;
   sources: GuestReviewsSource[];
+  switchLabel?: string;
 }) {
   const [active, setActive] = useState(sources[0]?.id ?? "");
   const base = useId();
@@ -32,7 +34,7 @@ export function GuestReviewsSwitch({
       <header className="gr__head">
         {intro}
         {multiple ? (
-          <div className="gr__tabs" role="tablist" aria-label="Review source">
+          <div className="gr__tabs" role="tablist" aria-label={switchLabel}>
             {sources.map((source) => (
               <button
                 key={source.id}

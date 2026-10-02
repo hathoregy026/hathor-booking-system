@@ -6397,3 +6397,10 @@ html[data-ex-experience]
 html[data-public-theme="night"] .home-three .h3-guide .h3-kicker {
   color: var(--h3-gold);
 }
+
+/* Italian: the accented letters and curly quotes Piloner lacks come from a
+   matching thin serif instead of the body sans (see hathor-fonts.css). */
+html[lang="it"] .home-three {
+  --h3-meta: "Piloner Thin", "Hathor Accent Fill", var(--font-hathor-body),
+    "Plus Jakarta Sans", Arial, sans-serif;
+}

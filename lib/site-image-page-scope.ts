@@ -1,3 +1,4 @@
+import { stripLocalePrefix } from "@/lib/i18n/locale";
 import {
   SITE_IMAGE_PAGE_ORDER,
   SITE_IMAGE_PAGE_SLOTS,
@@ -11,7 +12,8 @@ export type PageScopedSiteImageAlias = {
 };
 
 function normalizePagePath(pathname: string): string {
-  const clean = pathname.split(/[?#]/, 1)[0] || "/";
+  /* `/it/…` shows the same photographs as the English page it translates. */
+  const clean = stripLocalePrefix(pathname.split(/[?#]/, 1)[0] || "/");
   if (clean === "/") return clean;
   return clean.replace(/\/+$/, "") || "/";
 }

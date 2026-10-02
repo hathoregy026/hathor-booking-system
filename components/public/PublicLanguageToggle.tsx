@@ -1,16 +1,20 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { usePublicRoute } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { pathInLocale, type PublicLocale } from "@/lib/i18n/locale";
 
+/** `locale` marks a language the site speaks; the rest are announced as forthcoming. */
 const LANGUAGES = [
-  { name: "Arabic", code: "AR" },
-  { name: "English", code: "EN" },
-  { name: "German", code: "DE" },
-  { name: "Russian", code: "RU" },
-] as const;
-type Language = (typeof LANGUAGES)[number]["name"];
-
-const ACTIVE: Language = "English";
+  { code: "AR", locale: null },
+  { code: "EN", locale: "en" },
+  { code: "DE", locale: null },
+  { code: "IT", locale: "it" },
+  { code: "RU", locale: null },
+] as const satisfies readonly { code: string; locale: PublicLocale | null }[];
+type Language = (typeof LANGUAGES)[number];
 
 /** Fine-line meridian globe — same stroke language as the wishlist and cart marks. */
 function GlobeIcon() {
@@ -60,7 +64,8 @@ function DockCloseIcon() {
 }
 
 /**
- * English is the active language; the others are announced as forthcoming.
+ * English and Italian switch the page; the others are announced as forthcoming.
+ * A page not yet translated opens the Italian homepage instead.
  *
  * The menu stays mounted and is driven by an `is-open` class so it can animate
  * both in and out — unmounting it would make the close instant.
@@ -70,6 +75,9 @@ export function PublicLanguageToggle({
 }: {
   variant?: "header" | "dock";
 }) {
+  const router = useRouter();
+  const { locale, path } = usePublicRoute();
+  const copy = CHROME_COPY[locale].language;
   const [open, setOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -113,7 +121,17 @@ export function PublicLanguageToggle({
 
   const chooseLanguage = (language: Language) => {
     closeMenu();
-    setNotice(language === ACTIVE ? null : `${language} — coming soon`);
+    if (!language.locale) {
+      setNotice(copy.comingSoon(copy.names[language.code]));
+      return;
+    }
+    setNotice(null);
+    if (language.locale === locale) return;
+    router.push(
+      pathInLocale(path, language.locale) ??
+        pathInLocale("/", language.locale) ??
+        "/",
+    );
   };
 
   return (
@@ -127,7 +145,7 @@ export function PublicLanguageToggle({
         <button
           type="button"
           className="public-lang-backdrop"
-          aria-label="Close language menu"
+          aria-label={copy.closeMenu}
           tabIndex={open ? 0 : -1}
           onPointerDown={(event) => {
             event.preventDefault();
@@ -141,14 +159,12 @@ export function PublicLanguageToggle({
         type="button"
         className="public-lang-toggle cursor-hover"
         aria-label={
-          open && isDock
-            ? "Close language menu"
-            : `Language: ${ACTIVE}. Choose a language`
+          open && isDock ? copy.closeMenu : copy.toggleLabel(copy.activeName)
         }
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={isDock ? "public-language-menu-dock" : "public-language-menu"}
-        title={`Language: ${ACTIVE}`}
+        title={`${copy.eyebrow}: ${copy.activeName}`}
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
@@ -160,7 +176,7 @@ export function PublicLanguageToggle({
           {isDock && open ? <DockCloseIcon /> : <GlobeIcon />}
         </span>
         <span className="public-lang-toggle__code" aria-hidden="true">
-          En
+          {copy.code}
         </span>
       </button>
 
@@ -169,7 +185,7 @@ export function PublicLanguageToggle({
         aria-hidden={!open}
       >
         <p className="public-lang-menu__eyebrow" aria-hidden="true">
-          Language
+          {copy.eyebrow}
         </p>
         <ul
           id={isDock ? "public-language-menu-dock" : "public-language-menu"}
@@ -177,9 +193,9 @@ export function PublicLanguageToggle({
           role="menu"
         >
           {LANGUAGES.map((language, index) => {
-            const isActive = language.name === ACTIVE;
+            const isActive = language.locale === locale;
             return (
-              <li key={language.name} role="none" className="public-lang-menu__row">
+              <li key={language.code} role="none" className="public-lang-menu__row">
                 <button
                   type="button"
                   role="menuitem"
@@ -193,10 +209,11 @@ export function PublicLanguageToggle({
                       ? { transitionDelay: open ? `${40 + index * 35}ms` : "0ms" }
                       : undefined
                   }
-                  onClick={() => chooseLanguage(language.name)}
+                  lang={language.locale ?? undefined}
+                  onClick={() => chooseLanguage(language)}
                 >
                   <span className="public-lang-menu__code">{language.code}</span>
-                  <span className="public-lang-menu__name">{language.name}</span>
+                  <span className="public-lang-menu__name">{copy.names[language.code]}</span>
                   <span className="public-lang-menu__mark" aria-hidden="true" />
                 </button>
               </li>

@@ -1,3 +1,5 @@
+import { stripLocalePrefix } from "@/lib/i18n/locale";
+
 /**
  * Routes that receive the Suites “BEGIN YOUR NILE JOURNEY” clip-letter
  * scroll animation. Main Home 2 and booking stay on their own motion.
@@ -26,7 +28,7 @@ const ALLOW_PREFIXES = [
 ] as const;
 
 function normalizePath(pathname: string): string {
-  const trimmed = pathname.trim() || "/";
+  const trimmed = stripLocalePrefix(pathname.trim() || "/");
   if (trimmed === "/") return "/";
   return trimmed.replace(/\/+$/, "") || "/";
 }

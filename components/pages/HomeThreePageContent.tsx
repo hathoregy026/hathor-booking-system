@@ -22,11 +22,15 @@ import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { cabinSlugForListing } from "@/lib/selection-catalog";
 import type { HeroLogoTune } from "@/lib/hero-logo-tune-shared";
-import { NILE_MOORINGS, NILE_TOTAL_KM } from "@/lib/nile-route";
+import { NILE_TOTAL_KM } from "@/lib/nile-route";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { DeckAtlas } from "@/components/home/deck-atlas/DeckAtlas";
 import { HomeGuide } from "@/components/pages/home-three/HomeGuide";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { HOME_COPY } from "@/lib/i18n/home-copy";
+import { localizedHref } from "@/lib/i18n/locale";
+import { localizedMoorings } from "@/lib/i18n/route-copy";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -206,33 +210,22 @@ function Flow({ children }: { children: ReactNode }) {
 /* ------------------------------------------------------------------- data */
 
 /* 05 — the three sailings Hathor actually runs, on their own CMS slots. */
+/* Words for each (nights, route, note, alt) live in HOME_COPY.voyages.items, in this order. */
 const VOYAGES = [
   {
     slot: "home-voyage-3n-aswan-luxor",
     slug: "3-nights-aswan-luxor",
     tone: "a",
-    nights: "Three nights",
-    route: "Aswan — Luxor",
-    note: "With the current",
-    alt: "Hathor Dahabiya sailing from Aswan to Luxor",
   },
   {
     slot: "home-voyage-4n-luxor-aswan",
     slug: "4-nights-luxor-aswan",
     tone: "b",
-    nights: "Four nights",
-    route: "Luxor — Aswan",
-    note: "Under her own canvas",
-    alt: "Hathor Dahabiya sailing from Luxor to Aswan",
   },
   {
     slot: "home-voyage-7n-roundtrip",
     slug: "7-nights-luxor-aswan-luxor",
     tone: "c",
-    nights: "Seven nights",
-    route: "The round trip",
-    note: "Both banks, the whole river",
-    alt: "Hathor Dahabiya on the full Luxor to Aswan round trip",
   },
 ] as const;
 
@@ -242,13 +235,12 @@ const VOYAGES = [
    carries the CMS slot each cabin already owns. Only the cabins that have a
    slot of their own can appear — one card, one photograph — and the first
    eight of those are what the homepage shows before the door to the list. */
-const TIER_LABEL: Record<string, { tier: string; label: string }> = {
-  "Luxury Room": { tier: "room", label: "Luxury room" },
-  "Luxury Suite": { tier: "suite", label: "Luxury suite" },
-  "Luxury Royal Suite": { tier: "royal", label: "Royal suite" },
+/* The tier's label is HOME_COPY.sailings.tiers[roomType]. */
+const TIER: Record<string, string> = {
+  "Luxury Room": "room",
+  "Luxury Suite": "suite",
+  "Luxury Royal Suite": "royal",
 };
-
-const usdLabel = (cents: number) => `$${(cents / 100).toLocaleString("en-US")}`;
 
 const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
   cruise.rooms
@@ -262,33 +254,27 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
         !room.roomNumber.startsWith("TWIN"),
     )
     .map((room) => {
-      const tier = TIER_LABEL[room.roomType] ?? {
-        tier: "room",
-        label: room.roomType,
-      };
       return {
         key: `${cruise.slug}-${room.roomNumber}`,
         slot: HOME_CAROUSEL_IMAGE_BY_ROOM[
           room.roomNumber as keyof typeof HOME_CAROUSEL_IMAGE_BY_ROOM
         ],
-        alt: `${room.name} aboard Hathor, ${cruise.ports}`,
+        roomName: room.name,
+        ports: cruise.ports,
         /* the card names the voyage, not the cabin: the grade is already the
            line above it and the wall behind it, so repeating "Royal Suite"
            twice on one card only spends the display line
            ("Luxor → Aswan → Luxor" is the round trip, and reads better as
            that than as three place names on a card this narrow) */
-        name:
-          cruise.ports.split("→").length > 2
-            ? "Round trip"
-            : cruise.ports.replace("→", "—"),
-        nights: `${cruise.nights} nights`,
+        roundTrip: cruise.ports.split("→").length > 2,
+        nights: cruise.nights,
         day: cruise.departureDay,
-        price: usdLabel(room.priceCents),
+        priceCents: room.priceCents,
         /* the dashboard's price for this voyage and cabin replaces the published one */
         voyageSlug: cruise.slug,
         roomNumber: room.roomNumber,
-        tier: tier.tier,
-        tierLabel: tier.label,
+        tier: TIER[room.roomType] ?? "room",
+        roomType: room.roomType,
         /* the composite slug the selection store keys a cabin on; null when a
            cabin has no marketing residence, which hides its controls rather
            than rendering ones that cannot work */
@@ -299,65 +285,26 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
     }),
 ).slice(0, 8);
 
-/* 09 — about, as the Suites terms module reads it: three numbered principles. */
+/* 09 — about, as the Suites terms module reads it: three numbered principles.
+   Their words are HOME_COPY.terms.items, in this order. */
 const TERMS = [
-  {
-    tone: "a",
-    num: "01",
-    slot: "about-hero",
-    imageAlt: "Hathor Dahabiya under sail on the Nile",
-    title: "Twelve rooms",
-    copy: "Eight cabins, two suites and two Royal Suites. The whole boat holds fewer people than one deck of a cruise ship, which is the entire point of her.",
-    aside: "A full sailing is thirty-two guests, across twelve quiet rooms.",
-  },
-  {
-    tone: "b",
-    num: "02",
-    slot: "home-story-craft-large",
-    imageAlt: "Hand-worked detail aboard Hathor Dahabiya",
-    title: "no engine",
-    copy: "A dahabiya sails. Two lateen sails and the current do the work, and the river is the only thing you hear between the moorings.",
-  },
-  {
-    tone: "c",
-    num: "03",
-    slot: "home-story-way-of-life",
-    imageAlt: "Life aboard Hathor Dahabiya on the Nile",
-    title: "A way of life",
-    copy: "Egypt arrives without hurry: warm company, refined cabins and the river unfolding one measured bend at a time.",
-  },
+  { tone: "a", num: "01", slot: "about-hero" },
+  { tone: "b", num: "02", slot: "home-story-craft-large" },
+  { tone: "c", num: "03", slot: "home-story-way-of-life" },
 ] as const;
 
-/* 07 — the marquee, doubled in the markup so the -50% loop is seamless. */
-const MARQUEE = [
-  "Seneb Spa",
-  "Two restaurants",
-  "Shore days",
-  "Sun deck",
-  "Private charter",
-] as const;
-
-/* 08 — the rest of the site, named where a homepage has to name it. */
-const EXPLORE = [
-  { href: "/gastronomy", label: "Gastronomy" },
-  { href: "/wellness", label: "Seneb Spa" },
-  { href: "/highlights", label: "Highlights" },
-  { href: "/charter", label: "Private charter" },
-] as const;
+/* 07 — the marquee (HOME_COPY.marquee.words), doubled in the markup so the
+   -50% loop is seamless. 08 — the rest of the site, named where a homepage
+   has to name it (HOME_COPY.experiences.explore). */
 
 /* 12 — four plates in the mosaic. None appear elsewhere on the page, and none
-   are among the five the chart already spends on its moorings. */
+   are among the five the chart already spends on its moorings. Alt text is
+   HOME_COPY.doc.mosaicAlts, in this order. */
 const MOSAIC = [
-  {
-    slot: "landmark-hatshepsut",
-    alt: "The Temple of Hatshepsut at Deir el-Bahari",
-  },
-  {
-    slot: "home-voyage-nile-majesty",
-    alt: "The Nile at first light from the deck of Hathor",
-  },
-  { slot: "home-story-dining", alt: "Dinner served on deck aboard Hathor" },
-  { slot: "moving-tilted-3", alt: "A shore day from Hathor Dahabiya" },
+  "landmark-hatshepsut",
+  "home-voyage-nile-majesty",
+  "home-story-dining",
+  "moving-tilted-3",
 ] as const;
 
 /* ------------------------------------------------------------------- page */
@@ -369,6 +316,10 @@ export function HomeThreePageContent({
 }: HomeThreeProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const cabinPrices = useCabinPrices();
+  const locale = usePublicLocale();
+  const t = HOME_COPY[locale];
+  const localHref = (target: string) => localizedHref(target, locale);
+  const moorings = localizedMoorings(locale);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -391,8 +342,8 @@ export function HomeThreePageContent({
               playVideo
               /* The homepage title is set here, not from the typography
                  dashboard: "Luxury Dahabiya" with the "Nile Cruise" script. */
-              lineRight="Luxury Dahabiya"
-              lineLeft="Nile Cruise"
+              lineRight={t.hero.lineRight}
+              lineLeft={t.hero.lineLeft}
               posterImageName={EX_HERO.imageName}
               responsiveVideoFrame
               responsiveVideoFrameTarget="#home-three-story"
@@ -417,7 +368,7 @@ export function HomeThreePageContent({
               On a desktop pointer the story splits along the wrappers: the
               route pins to the chart, the claim reads vertically, the voyages
               pin to the suites wall, and the rest is a vertical document. */}
-          <section ref={runRef} className="h3-run" aria-label="Aboard Hathor">
+          <section ref={runRef} className="h3-run" aria-label={t.runLabel}>
             <div className="h3-stage">
               <div ref={trackRef} className="h3-track">
                 <Act name="route">
@@ -426,16 +377,17 @@ export function HomeThreePageContent({
                       identity: the rail stood on end in the corner, the eyebrow,
                       the display ladder, and the mark and scroll hint at the
                       foot. */}
-                  <Panel className="h3-open" label="Hathor Dahabiya">
-                    <nav className="h3-open__nav" aria-label="This page">
-                      <Link href="/cruises">Cruises</Link>
-                      <Link href="/voyages">Voyages</Link>
-                      <Link href="/suites">Suites</Link>
-                      <Link href="/contact">Contact</Link>
+                  <Panel className="h3-open" label={t.open.label}>
+                    <nav className="h3-open__nav" aria-label={t.open.navLabel}>
+                      {t.open.nav.map((item) => (
+                        <Link key={item.href} href={localHref(item.href)}>
+                          {item.label}
+                        </Link>
+                      ))}
                     </nav>
 
                     <div className="h3-open__inner">
-                      <p className="h3-open__eyebrow">Hathor Dahabiya</p>
+                      <p className="h3-open__eyebrow">{t.open.eyebrow}</p>
 
                       {/* Contact sets three SHORT lines — "Contact us / Ask any
                           / Question" — and that is what lets the ladder hold one
@@ -444,21 +396,17 @@ export function HomeThreePageContent({
                           to the same measure. */}
                       <h2 className="h3-open__title">
                         <span className="h3-open__line h3-open__line--a">
-                          <AnimaSplitLine line={0}>32</AnimaSplitLine>
+                          <AnimaSplitLine line={0}>{t.open.titleLines[0]}</AnimaSplitLine>
                         </span>
                         <span className="h3-open__line h3-open__line--b">
-                          <AnimaSplitLine line={1}>guests</AnimaSplitLine>
+                          <AnimaSplitLine line={1}>{t.open.titleLines[1]}</AnimaSplitLine>
                         </span>
                         <span className="h3-open__line h3-open__line--c">
-                          <AnimaSplitLine line={2}>One river</AnimaSplitLine>
+                          <AnimaSplitLine line={2}>{t.open.titleLines[2]}</AnimaSplitLine>
                         </span>
                       </h2>
 
-                      <p className="h3-open__body">
-                        A private sailing dahabiya on the Egyptian Nile. Eight
-                        cabins, two suites and two Royal Suites, between Luxor and
-                        Aswan.
-                      </p>
+                      <p className="h3-open__body">{t.open.body}</p>
                     </div>
 
                     <p className="h3-open__mark">
@@ -466,7 +414,7 @@ export function HomeThreePageContent({
                     </p>
                     <p className="h3-open__scroll">
                       <i />
-                      Scroll
+                      {t.open.scroll}
                     </p>
 
                     {/* Compact (≤1024): the opener and the lead become one
@@ -528,16 +476,12 @@ export function HomeThreePageContent({
                           sizes="(max-width: 1024px) 78vw, 30vw"
                         />
 
-                        <p className="h3-np__copy">
-                          A private dahabiya journey between Luxor and Aswan,
-                          shaped by stillness, history and the rhythm of the
-                          river.
-                        </p>
+                        <p className="h3-np__copy">{t.open.npCopy}</p>
 
                         <h2 className="h3-np__title">
-                          <span className="h3-np__sr">The Nile in private</span>
+                          <span className="h3-np__sr">{t.open.npTitle}</span>
                           <span aria-hidden="true">
-                            <AnimaSplitLine line={0}>The Nile in private</AnimaSplitLine>
+                            <AnimaSplitLine line={0}>{t.open.npTitle}</AnimaSplitLine>
                           </span>
                         </h2>
                       </div>
@@ -547,10 +491,10 @@ export function HomeThreePageContent({
                   {/* ------------------------------ 02 · the cruise · the lead
                       Contact's image lead: one tall plate with a second frame
                       overlapping its right edge, lifted off the centre line. */}
-                  <Panel className="h3-lead" label="The cruise">
+                  <Panel className="h3-lead" label={t.lead.label}>
                     <Media
                       slot="cruises-hero"
-                      alt="Hathor Dahabiya moored on the Nile at golden hour"
+                      alt={t.lead.mainAlt}
                       className="h3-lead__main"
                       sizes="(max-width: 1024px) 100vw, 58vw"
                     />
@@ -558,9 +502,9 @@ export function HomeThreePageContent({
                       className="h3-lead__inset"
                       variant="leftRight"
                       under="home-split-courtyard"
-                      underAlt="The pool deck aboard Hathor Dahabiya"
+                      underAlt={t.lead.insetUnderAlt}
                       over="home-cinematic-still"
-                      overAlt="Hathor Dahabiya under sail between Luxor and Aswan"
+                      overAlt={t.lead.insetOverAlt}
                       sizes="(max-width: 1024px) 78vw, 30vw"
                     />
                     {/* Contact's lead carries ONE line here and nothing else.
@@ -568,7 +512,7 @@ export function HomeThreePageContent({
                         plate's foot; the invitation lives on the sailings panel
                         that follows instead. */}
                     <p className="h3-lead__aboard">
-                      <span>Aboard</span> Luxor — Aswan
+                      <span>{t.lead.aboard}</span> {t.lead.aboardRoute}
                     </p>
                   </Panel>
 
@@ -578,23 +522,23 @@ export function HomeThreePageContent({
                       to the full list. The wall behind each card is its tier —
                       room, suite, Royal Suite — so the ladder of value is read
                       before a single price is. */}
-                  <Panel className="h3-sailings" label="Sailings">
+                  <Panel className="h3-sailings" label={t.sailings.label}>
                     <div className="h3-sailings__head">
-                      <p className="h3-kicker">02 — Sailings</p>
+                      <p className="h3-kicker">{t.sailings.kicker}</p>
                       <h2 className="h3-title h3-title--sm">
-                        Choose{" "}
+                        {t.sailings.titleLines[0]}{" "}
                         <br />
-                        your cabin
+                        {t.sailings.titleLines[1]}
                       </h2>
-                      <p className="h3-support">
-                        A five-star dahabiya where Nile history, contemporary
-                        comfort and intimate sailing come together. Three
-                        itineraries, four cabin grades, 32 guests aboard.
-                      </p>
+                      <p className="h3-support">{t.sailings.support}</p>
                     </div>
 
                     <ul className="h3-sailings__rail">
-                      {SAILINGS.map((sailing, index) => (
+                      {SAILINGS.map((sailing, index) => {
+                        const sailingName = sailing.roundTrip
+                          ? t.sailings.roundTrip
+                          : t.sailings.route(sailing.ports);
+                        return (
                         <li
                           key={sailing.key}
                           className={`h3-sail h3-sail--${sailing.tier}`}
@@ -602,7 +546,7 @@ export function HomeThreePageContent({
                         >
                           <Media
                             slot={sailing.slot}
-                            alt={sailing.alt}
+                            alt={t.sailings.alt(sailing.roomName, sailing.ports)}
                             className="h3-sail__plate"
                             /* Desktop plate is 4:3 to match the sources; compact
                                cards are ~90vw. Deliver at card width, not 2×. */
@@ -610,20 +554,22 @@ export function HomeThreePageContent({
                           />
 
                           <div className="h3-sail__body">
-                            <p className="h3-sail__tier">{sailing.tierLabel}</p>
-                            <Link href={sailing.href} className="h3-sail__name">
-                              {sailing.name}
+                            <p className="h3-sail__tier">
+                              {t.sailings.tiers[sailing.roomType] ?? sailing.roomType}
+                            </p>
+                            <Link href={localHref(sailing.href)} className="h3-sail__name">
+                              {sailingName}
                             </Link>
                             <p className="h3-sail__route">
-                              {sailing.nights}
-                              <b>{sailing.day}s</b>
+                              {t.sailings.nights(sailing.nights)}
+                              <b>{t.sailings.day(sailing.day)}</b>
                             </p>
                             <p className="h3-sail__price">
-                              <em>from</em>
-                              {(() => {
-                                const live = livePriceFor(cabinPrices, sailing.voyageSlug, sailing.roomNumber);
-                                return live === null ? sailing.price : usdLabel(live);
-                              })()}
+                              <em>{t.sailings.from}</em>
+                              {t.sailings.price(
+                                livePriceFor(cabinPrices, sailing.voyageSlug, sailing.roomNumber) ??
+                                  sailing.priceCents,
+                              )}
                             </p>
 
                             {/* The site's own pills, on the site's own store.
@@ -638,39 +584,40 @@ export function HomeThreePageContent({
                                   <FavoriteButton
                                     type="cabin"
                                     slug={sailing.cabinSlug}
-                                    name={`${sailing.cabinName}, ${sailing.name}`}
+                                    name={`${sailing.cabinName}, ${sailingName}`}
                                     variant="inline"
                                     showLabel
                                   />
                                   <AddToVoyageButton
                                     kind="cabin"
                                     slug={sailing.cabinSlug}
-                                    name={`${sailing.cabinName}, ${sailing.name}`}
+                                    name={`${sailing.cabinName}, ${sailingName}`}
                                     variant="inline"
                                   />
                                 </>
                               ) : null}
                               <BookNowTrigger className="h3-btn">
-                                Book now
+                                {t.sailings.bookNow}
                               </BookNowTrigger>
                             </div>
                           </div>
                         </li>
-                      ))}
+                        );
+                      })}
 
                       <li className="h3-sail h3-sail--more">
-                        <Link href="/cruises-list" className="h3-sail__link">
+                        <Link href={localHref("/cruises-list")} className="h3-sail__link">
                           <Media
                             slot={SAILINGS[0]?.slot ?? "cruises-hero"}
-                            alt="Hathor Dahabiya on the Nile"
+                            alt={t.sailings.moreAlt}
                             className="h3-sail__plate"
                             sizes="(max-width: 1024px) 92vw, 24vw"
                           />
                           <div className="h3-sail__body h3-sail__body--more">
-                            <p className="h3-sail__tier">The full list</p>
-                            <h3 className="h3-sail__name">View more</h3>
+                            <p className="h3-sail__tier">{t.sailings.moreTier}</p>
+                            <h3 className="h3-sail__name">{t.sailings.moreName}</h3>
                             <span className="h3-text-link" aria-hidden="true">
-                              All sailings
+                              {t.sailings.moreLink}
                             </span>
                           </div>
                         </Link>
@@ -679,20 +626,16 @@ export function HomeThreePageContent({
                   </Panel>
 
                   {/* -------------------------------- 03 · the chart (sand) */}
-                  <ChartPanel>
+                  <ChartPanel label={t.chart.panelLabel}>
                     <div className="h3-course">
                       <div className="h3-course__head">
-                        <p className="h3-kicker">The route</p>
+                        <p className="h3-kicker">{t.chart.kicker}</p>
                         <h2 className="h3-title h3-title--sm">
-                          Luxor{" "}
+                          {t.chart.titleLines[0]}{" "}
                           <br />
-                          to Aswan
+                          {t.chart.titleLines[1]}
                         </h2>
-                        <p className="h3-support">
-                          Drawn from the river&rsquo;s own coordinates. Sail it
-                          here, and see what stands at each mooring before you tie
-                          up there.
-                        </p>
+                        <p className="h3-support">{t.chart.support}</p>
                       </div>
 
                       {/* The hold. Reaching the map pins the page until Hathor
@@ -705,19 +648,17 @@ export function HomeThreePageContent({
                         <div className="h3-chart-sticky">
                           <p className="h3-course__run">
                             <span data-h3-km>0</span>
-                            <em>of {NILE_TOTAL_KM} km sailed</em>
+                            <em>{t.chart.sailed(NILE_TOTAL_KM)}</em>
                           </p>
-                          <NileHelm />
-                          <NileChart />
+                          <NileHelm heading={t.chart.heading} />
+                          <NileChart copy={t.chart} />
 
                           <div className="h3-course__berths">
-                            <p className="h3-atlas-eyebrow">
-                              A 4-night passage · Luxor to Aswan
-                            </p>
+                            <p className="h3-atlas-eyebrow">{t.chart.eyebrow}</p>
                             <div
                               className="h3-stop-buttons"
                               role="group"
-                              aria-label="Explore places on the Nile"
+                              aria-label={t.chart.stopsLabel}
                             >
                               {H4_STOPS.map((stop, i) => (
                                 <button
@@ -726,12 +667,12 @@ export function HomeThreePageContent({
                                   data-h3-tag={stop.t}
                                   aria-pressed={i === 0}
                                 >
-                                  {stop.name}
+                                  {t.chart.place(stop.name)}
                                 </button>
                               ))}
                             </div>
                             <div className="h3-berth-stack">
-                            {NILE_MOORINGS.map((m) => (
+                            {moorings.map((m) => (
                               <article
                                 key={m.name}
                                 className="h3-berth"
@@ -748,7 +689,7 @@ export function HomeThreePageContent({
                                   <span>{m.day}</span>
                                   <em>
                                     {m.legKm === 0
-                                      ? "Embarkation"
+                                      ? t.chart.embarkation
                                       : `+${m.legKm} km`}
                                   </em>
                                 </p>
@@ -761,12 +702,12 @@ export function HomeThreePageContent({
                                   {m.sites.map((s) => (
                                     <li key={s.name}>
                                       <p className="h3-berth__site">
-                                        <Link href={s.href}>{s.name}</Link>
+                                        <Link href={localHref(s.href)}>{s.name}</Link>
                                         <em>{s.era}</em>
                                       </p>
                                       <p className="h3-berth__blurb">{s.note}</p>
-                                      <Link href={s.href} className="h3-berth__more">
-                                        Read more
+                                      <Link href={localHref(s.href)} className="h3-berth__more">
+                                        {t.chart.readMore}
                                       </Link>
                                     </li>
                                   ))}
@@ -787,35 +728,27 @@ export function HomeThreePageContent({
                   <DeckAtlas />
 
                   {/* ------------------------- 04 · the claim · text (white) */}
-                  <Panel
-                    className="h3-text"
-                    label="She sails where the big ships cannot"
-                  >
+                  <Panel className="h3-text" label={t.claim.label}>
                     <div className="h3-text__wrap">
                       <div className="h3-text__inner">
                         <h2 className="h3-text__title">
                           <span className="h3-text__line">
-                            <AnimaSplitLine line={0}>She sails</AnimaSplitLine>
+                            <AnimaSplitLine line={0}>{t.claim.lines[0]}</AnimaSplitLine>
                           </span>
                           <span className="h3-text__line">
-                            <AnimaSplitLine line={1}>where the</AnimaSplitLine>
+                            <AnimaSplitLine line={1}>{t.claim.lines[1]}</AnimaSplitLine>
                           </span>
                           <span className="h3-text__line">
-                            <AnimaSplitLine line={2}>big ships</AnimaSplitLine>
+                            <AnimaSplitLine line={2}>{t.claim.lines[2]}</AnimaSplitLine>
                           </span>
                           <span className="h3-text__line h3-text__line--slide">
                             <span>
-                              <AnimaSplitLine line={3}>cannot</AnimaSplitLine>
+                              <AnimaSplitLine line={3}>{t.claim.lines[3]}</AnimaSplitLine>
                             </span>
                           </span>
                         </h2>
                         <div className="h3-text__copy h3-support">
-                          <p>
-                            A dahabiya draws little more than a metre. She moors
-                            at Esna, Edfu and Kom Ombo while the floating hotels
-                            pass by, and ties up at banks that have no dock at
-                            all.
-                          </p>
+                          <p>{t.claim.copy}</p>
                         </div>
                       </div>
                     </div>
@@ -824,21 +757,19 @@ export function HomeThreePageContent({
 
                 <Act name="aboard">
                   {/* ------------------- 05 · the voyages · projects (beige) */}
-                  <Panel className="h3-projects" label="The voyages">
+                  <Panel className="h3-projects" label={t.voyages.label}>
                     <div className="h3-projects__aside">
-                      <p className="h3-kicker">02 — The voyages</p>
-                      <p className="h3-support">
-                        Three sailings between the two cities. The river decides
-                        how long each one takes; the direction decides how it
-                        feels.
-                      </p>
-                      <Link className="h3-text-link" href="/voyages">
-                        All voyages
+                      <p className="h3-kicker">{t.voyages.kicker}</p>
+                      <p className="h3-support">{t.voyages.support}</p>
+                      <Link className="h3-text-link" href={localHref("/voyages")}>
+                        {t.voyages.link}
                       </Link>
                     </div>
 
                     <div className="h3-projects__rail">
-                    {VOYAGES.map((voyage, index) => (
+                    {VOYAGES.map((voyage, index) => {
+                      const words = t.voyages.items[index];
+                      return (
                       <article
                         key={voyage.slot}
                         className={`h3-projects__item h3-projects__item--${voyage.tone}`}
@@ -847,7 +778,7 @@ export function HomeThreePageContent({
                         <div className="h3-projects__content">
                           <Media
                             slot={voyage.slot}
-                            alt={voyage.alt}
+                            alt={words.alt}
                             className="h3-projects__image"
                             sizes="(max-width: 1024px) 100vw, 55vw"
                           />
@@ -855,91 +786,84 @@ export function HomeThreePageContent({
                           <div className="h3-projects__text">
                             <div className="h3-projects__data">
                               <div>
-                                <span>{voyage.nights}</span>
+                                <span>{words.nights}</span>
                               </div>
                               <div>
                                 <span>{`0${index + 1}`}</span>
                               </div>
                               <div>
-                                <span>{voyage.note}</span>
+                                <span>{words.note}</span>
                               </div>
                             </div>
                             <Link
-                              href="/cruises-list"
+                              href={localHref("/cruises-list")}
                               className="h3-projects__name"
                             >
-                              {voyage.route}
+                              {words.route}
                             </Link>
                             <div className="h3-pills h3-projects__acts">
                               <FavoriteButton
                                 type="voyage"
                                 slug={voyage.slug}
-                                name={voyage.route}
+                                name={words.route}
                                 variant="inline"
                                 showLabel
                               />
                               <AddToVoyageButton
                                 kind="voyage"
                                 slug={voyage.slug}
-                                name={voyage.route}
+                                name={words.route}
                                 variant="inline"
                               />
                               <BookNowTrigger className="h3-btn">
-                                Book now
+                                {t.sailings.bookNow}
                               </BookNowTrigger>
                             </div>
                           </div>
                         </div>
                       </article>
-                    ))}
+                      );
+                    })}
                     </div>
                   </Panel>
 
                   {/* ----------------- 06 · the suites · images-text (black) */}
-                  <Panel className="h3-imgtext" label="The suites">
+                  <Panel className="h3-imgtext" label={t.suites.label}>
                     <div className="h3-imgtext__wrap">
                       <Flip
                         className="h3-flip--a"
                         variant="rightLeft"
                         under="scraped-royal-4"
-                        underAlt="A Royal Suite bathroom aboard Hathor"
+                        underAlt={t.suites.royalBathAlt}
                         over="scraped-royal-1"
-                        overAlt="A Royal Suite aboard Hathor Dahabiya"
+                        overAlt={t.suites.royalAlt}
                         sizes="(max-width: 1024px) 88vw, 42vw"
                       />
                       <div className="h3-imgtext__text">
-                        <p className="h3-kicker">03 — The suites</p>
+                        <p className="h3-kicker">{t.suites.kicker}</p>
                         {/* ref 5 — the sentence is built, not lit. Every
                             character rises out of a clipped line in sequence,
                             which is the site's own title motion and is plainly
                             an animation; the column under it then lifts line by
                             line behind it. */}
                         <p className="h3-imgtext__line">
-                          <AnimaSplitLine line={0}>
-                            Twelve rooms, and the river in every one of them.
-                          </AnimaSplitLine>
+                          <AnimaSplitLine line={0}>{t.suites.line}</AnimaSplitLine>
                         </p>
                         <p className="h3-support h3-imgtext__copy">
-                          <span>
-                            Eight cabins, two suites and two Royal Suites, each with its
-                            own window on the bank.
-                          </span>{" "}
-                          <span>
-                            Hand-worked wood, linen, and a bed made for the quiet after
-                            a shore day.
-                          </span>
+                          <span>{t.suites.copy[0]}</span>{" "}
+                          <span>{t.suites.copy[1]}</span>
                         </p>
-                        <Link className="h3-text-link" href="/suites">
-                          See the suites
+                        <Link className="h3-text-link" href={localHref("/suites")}>
+                          {t.suites.link}
                         </Link>
                       </div>
                       <Flip
                         className="h3-flip--b"
                         variant="leftRight"
                         under="scraped-cabin-1"
-                        underAlt="A river-view cabin aboard Hathor Dahabiya"
+                        underAlt={t.suites.cabinAlt}
                         over="scraped-luxsuite-2"
-                        overAlt="A Luxury Suite aboard Hathor Dahabiya"
+                        overAlt={t.suites.luxurySuiteAlt}
                         sizes="(max-width: 1024px) 54vw, 24vw"
                       />
                     </div>
@@ -948,10 +872,10 @@ export function HomeThreePageContent({
 
                 <Flow>
                   {/* ------------- 07 · the experiences · carousel (the rail) */}
-                  <Panel className="h3-carousel" label="Aboard Hathor">
+                  <Panel className="h3-carousel" label={t.marquee.label}>
                     <div className="h3-carousel__content" aria-hidden="true">
                       <span>
-                        {[...MARQUEE, ...MARQUEE].map((word, index) => (
+                        {[...t.marquee.words, ...t.marquee.words].map((word, index) => (
                           <span
                             key={`${word}-${index}`}
                             className="h3-carousel__item"
@@ -967,29 +891,29 @@ export function HomeThreePageContent({
                   {/* ---------------- 08 · the experiences · images (beige) */}
                   <Panel
                     className="h3-images h3-images--secundario"
-                    label="The experiences"
+                    label={t.experiences.label}
                   >
                     <Flip
                       className="h3-flip--a"
                       variant="rightLeft"
                       under="dining-lounge"
-                      underAlt="The lounge aboard Hathor Dahabiya"
+                      underAlt={t.experiences.loungeAlt}
                       over="gastronomy-hero"
-                      overAlt="Dining aboard Hathor Dahabiya"
+                      overAlt={t.experiences.diningAlt}
                       sizes="(max-width: 1024px) 100vw, 38vw"
                     />
                     <Flip
                       className="h3-flip--b"
                       variant="leftRight"
                       under="wellness-fitness"
-                      underAlt="The fitness space aboard Hathor Dahabiya"
+                      underAlt={t.experiences.fitnessAlt}
                       over="wellness-hero"
-                      overAlt="Seneb Spa aboard Hathor Dahabiya"
+                      overAlt={t.experiences.spaAlt}
                       sizes="(max-width: 1024px) 78vw, 30vw"
                     />
-                    <nav className="h3-images__list" aria-label="Aboard Hathor">
-                      {EXPLORE.map((item) => (
-                        <Link key={item.href} href={item.href}>
+                    <nav className="h3-images__list" aria-label={t.experiences.navLabel}>
+                      {t.experiences.explore.map((item) => (
+                        <Link key={item.href} href={localHref(item.href)}>
                           {item.label}
                         </Link>
                       ))}
@@ -1001,24 +925,27 @@ export function HomeThreePageContent({
                       the wall and changes to the photograph belonging to
                       whichever principle is under the pointer — each one drawn
                       from a different part of the site. */}
-                  <Panel className="h3-terms" label="About Hathor">
+                  <Panel className="h3-terms" label={t.terms.label}>
                     <div className="h3-terms__stack" data-h3-follow-host>
-                      {TERMS.map((term, index) => (
-                        <article
-                          key={term.num}
-                          className={`h3-terms__term h3-terms__term--${term.tone}`}
-                          data-h3-term={index}
-                        >
-                          <p className="h3-terms__copy h3-support">{term.copy}</p>
-                          <div className="h3-terms__wrap-title">
-                            <span className="h3-terms__num">{term.num}</span>
-                            <h2 className="h3-terms__title">{term.title}</h2>
-                            {"aside" in term ? (
-                              <p className="h3-terms__aside">{term.aside}</p>
-                            ) : null}
-                          </div>
-                        </article>
-                      ))}
+                      {TERMS.map((term, index) => {
+                        const words = t.terms.items[index];
+                        return (
+                          <article
+                            key={term.num}
+                            className={`h3-terms__term h3-terms__term--${term.tone}`}
+                            data-h3-term={index}
+                          >
+                            <p className="h3-terms__copy h3-support">{words.copy}</p>
+                            <div className="h3-terms__wrap-title">
+                              <span className="h3-terms__num">{term.num}</span>
+                              <h2 className="h3-terms__title">{words.title}</h2>
+                              {words.aside ? (
+                                <p className="h3-terms__aside">{words.aside}</p>
+                              ) : null}
+                            </div>
+                          </article>
+                        );
+                      })}
 
                       <div
                         className="h3-terms__follow"
@@ -1029,7 +956,7 @@ export function HomeThreePageContent({
                           <TermPlate
                             key={term.num}
                             slot={term.slot}
-                            alt={term.imageAlt}
+                            alt={t.terms.items[index].imageAlt}
                             index={index}
                           />
                         ))}
@@ -1042,33 +969,30 @@ export function HomeThreePageContent({
                       act ends on the image instead of half a wall of nothing.
                       The photograph is full bleed; the invitation is cut out of
                       it and the pill draws itself open as the wall arrives. */}
-                  <Panel className="h3-cierre" label="Sail with Hathor">
+                  <Panel className="h3-cierre" label={t.close.label}>
                     <Flip
                       className="h3-cierre__image"
                       variant="upDown"
                       under="charter-hero"
-                      underAlt="Hathor Dahabiya chartered in full on the Nile"
+                      underAlt={t.close.charterAlt}
                       over="home-call-to-action"
-                      overAlt="Hathor Dahabiya at anchor at dusk"
+                      overAlt={t.close.duskAlt}
                       sizes="100vw"
                       anchor="edge"
                     />
                     <div className="h3-cierre__scrim" aria-hidden="true" />
                     <div className="h3-cierre__note">
-                      <p className="h3-kicker">Luxor · Aswan · Egypt</p>
+                      <p className="h3-kicker">{t.close.kicker}</p>
                       <h2 className="h3-cierre__title">
-                        <AnimaSplitLine line={0}>Come aboard</AnimaSplitLine>
+                        <AnimaSplitLine line={0}>{t.close.title}</AnimaSplitLine>
                       </h2>
                       {/* Everything under the title, so "Come aboard" can be
                           the exact centre of the note (and of the pool). */}
                       <div className="h3-cierre__after">
-                        <p className="h3-support">
-                          32 guests, five moorings and one river. The rest of
-                          the arrangements are ours.
-                        </p>
+                        <p className="h3-support">{t.close.support}</p>
                         <div className="h3-cierre__reveal">
                           <BookNowTrigger className="h3-btn h3-cierre__book">
-                            Check availability
+                            {t.close.cta}
                           </BookNowTrigger>
                         </div>
                       </div>
@@ -1095,33 +1019,30 @@ export function HomeThreePageContent({
             {/* ----------------------------------- 11 · title · chapter */}
             <section
               className="h3-wrapper h3-pt-md h3-pb-sm"
-              aria-label="Contact Hathor"
+              aria-label={t.doc.contactLabel}
             >
               <div className="h3-chapter__intro">
-                <p className="h3-kicker">06 — Contact</p>
-                <p className="h3-chapter__aboard h3-support">
-                  32 guests, five moorings and one river. The rest of the
-                  arrangements are ours.
-                </p>
+                <p className="h3-kicker">{t.doc.kicker}</p>
+                <p className="h3-chapter__aboard h3-support">{t.doc.support}</p>
                 <i className="h3-chapter__rule" aria-hidden="true" />
               </div>
               <h2 className="h3-chapter__title" data-anima-title>
-                <AnimaSplitLine line={0}>Begin your</AnimaSplitLine>
-                <AnimaSplitLine line={1}>Nile journey</AnimaSplitLine>
+                <AnimaSplitLine line={0}>{t.doc.titleLines[0]}</AnimaSplitLine>
+                <AnimaSplitLine line={1}>{t.doc.titleLines[1]}</AnimaSplitLine>
               </h2>
             </section>
 
             {/* ------------------------------------ 12 · media · mosaic */}
             <section
               className="h3-wrapper h3-pb-xs h3-scene"
-              aria-label="Aboard Hathor"
+              aria-label={t.doc.mosaicLabel}
             >
               <div className="h3-mosaic">
-                {MOSAIC.map((plate) => (
+                {MOSAIC.map((slot, index) => (
                   <MosaicPlate
-                    key={plate.slot}
-                    slot={plate.slot}
-                    alt={plate.alt}
+                    key={slot}
+                    slot={slot}
+                    alt={t.doc.mosaicAlts[index]}
                   />
                 ))}
               </div>
@@ -1140,12 +1061,12 @@ export function HomeThreePageContent({
  * drawing — the CMS slot resolved here and handed to CSS, so the ghost follows
  * whatever photograph the dashboard is pointing at.
  */
-function ChartPanel({ children }: { children: ReactNode }) {
+function ChartPanel({ label, children }: { label: string; children: ReactNode }) {
   const ghost = useSiteImage("home-3-animated-map-bg");
   return (
     <section
       className="h3-scene h3-chart-panel"
-      aria-label="The route between Luxor and Aswan"
+      aria-label={label}
       style={
         {
           ["--h3-chart-ghost" as string]: `url("${originSrcForNextImage(ghost.src)}")`,

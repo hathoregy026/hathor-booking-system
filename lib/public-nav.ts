@@ -1,3 +1,4 @@
+import { stripLocalePrefix } from "@/lib/i18n/locale";
 import type { PageVisibilitySettings } from "@/lib/page-visibility-shared";
 
 /** Public navigation structure — Home is a single link; four editorial dropdown groups. */
@@ -194,7 +195,10 @@ const NAV_PATH_ALIASES: Record<string, readonly string[]> = {
 };
 
 /** Whether the current pathname matches a nav href (including aliases). */
-export function navHrefMatches(pathname: string, href: string): boolean {
+export function navHrefMatches(localePathname: string, localeHref: string): boolean {
+  /* `/it/…` matches the same entries as the English page it translates. */
+  const pathname = stripLocalePrefix(localePathname);
+  const href = stripLocalePrefix(localeHref);
   if (href === "/") return pathname === "/";
   if (pathname === href || pathname.startsWith(`${href}/`)) return true;
 
@@ -210,7 +214,8 @@ export function navHrefMatches(pathname: string, href: string): boolean {
  * Left editorial overlay nav — Suites / Cruises / Experiences / About / Contact
  * and their dropdown destinations only. Homepage keeps the current header.
  */
-export function usesEditorialOverlayNav(pathname: string): boolean {
+export function usesEditorialOverlayNav(localePathname: string): boolean {
+  const pathname = localePathname ? stripLocalePrefix(localePathname) : localePathname;
   if (
     !pathname ||
     pathname === "/" ||

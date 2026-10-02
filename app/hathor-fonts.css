@@ -311,6 +311,24 @@
 }
 
 /*
+ * Italian pages only (see html[lang="it"] in home-three.css and
+ * guest-reviews.css): the Piloner DEMO files have no accented letters or curly
+ * quotes, so "Città" fell back to the body sans for one letter. This face
+ * supplies just those characters from Italiana, the closest thin serif already
+ * on the site. Drop it once the licensed Piloner (full Latin) replaces the DEMO.
+ */
+@font-face {
+  font-family: "Hathor Accent Fill";
+  src:
+    url("/fonts/more-fonts/Italiana-Regular.woff2") format("woff2"),
+    url("/fonts/more-fonts/Italiana-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+00AB, U+00BB, U+00C0-00FF, U+0152, U+2018-2019, U+201C-201D;
+}
+
+/*
  * Piloner (Thin, Thin Italic, Semibold, Semibold Italic) ships as Fontspring DEMO
  * files: the digit 4, hyphen, straight quotes, brackets, slash, plus, ampersand,
  * at, hash, percent and similar ASCII symbols draw a "DEMO" stamp. The unicode-range keeps Piloner for

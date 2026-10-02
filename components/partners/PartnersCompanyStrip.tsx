@@ -20,6 +20,9 @@ import {
   XLuxuryMark,
 } from "@/components/partners/PartnerMarks";
 import { HOMEPAGE_PARTNERS } from "@/lib/homepage-content";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { PARTNERS_STRIP_COPY } from "@/lib/i18n/home-copy";
+import { localizedHref } from "@/lib/i18n/locale";
 import "@/app/partners-company-strip.css";
 
 /* Faces matched against the original band art. The band sits below the fold. */
@@ -73,8 +76,11 @@ export function PartnersCompanyStrip({
   const frameRef = useRef<HTMLDivElement>(null);
   const journeyRef = useRef<HTMLDivElement>(null);
   const Root = variant === "intro" ? "div" : "section";
-  const ctaHref = variant === "intro" ? "#circle" : HOMEPAGE_PARTNERS.href;
-  const words = HOMEPAGE_PARTNERS.headline.split(" ");
+  const locale = usePublicLocale();
+  const copy = PARTNERS_STRIP_COPY[locale];
+  const ctaHref =
+    variant === "intro" ? "#circle" : localizedHref(HOMEPAGE_PARTNERS.href, locale);
+  const words = copy.headline.split(" ");
 
   /* Entrance plays once per part as it scrolls in; ambient loops pause off-screen. */
   useEffect(() => {
@@ -136,7 +142,7 @@ export function PartnersCompanyStrip({
             <div className="partners-company__intro">
               <p className="partners-company__eyebrow">
                 <span className="partners-company__eyebrow-text">
-                  {HOMEPAGE_PARTNERS.title}
+                  {copy.title}
                 </span>
                 <i aria-hidden="true" />
               </p>
@@ -155,21 +161,21 @@ export function PartnersCompanyStrip({
                   ))}
                 </span>
                 <span className="partners-company__phone-title">
-                  {HOMEPAGE_PARTNERS.title}
+                  {copy.title}
                 </span>
               </h2>
               <p className="partners-company__script">
                 <span className="partners-company__script-desk">
-                  {HOMEPAGE_PARTNERS.script}
+                  {copy.script}
                 </span>
                 <span className="partners-company__script-phone">
-                  Dahabiya Cruise
+                  {copy.phoneScript}
                 </span>
               </p>
             </div>
 
             <p className="partners-company__lead">
-              {HOMEPAGE_PARTNERS.leadLines.map((line, index) => (
+              {copy.leadLines.map((line, index) => (
                 <Fragment key={line}>
                   {index > 0 ? " " : null}
                   <span
@@ -186,7 +192,7 @@ export function PartnersCompanyStrip({
           <div ref={journeyRef} className="partners-company__journey">
             <div className="partners-company__track">
               <PartnersJourneyRiver />
-              <ol className="partners-company__list" aria-label="Hathor partners">
+              <ol className="partners-company__list" aria-label={copy.listLabel}>
                 {HOMEPAGE_PARTNERS.partners.map((name, index) => {
                   const Mark = PARTNER_MARKS[name];
                   return (
@@ -210,7 +216,7 @@ export function PartnersCompanyStrip({
 
         <div className="partners-company__cta">
           <Link href={ctaHref} className="pn-btn">
-            <span>{HOMEPAGE_PARTNERS.hrefLabel}</span>
+            <span>{copy.hrefLabel}</span>
           </Link>
         </div>
       </div>

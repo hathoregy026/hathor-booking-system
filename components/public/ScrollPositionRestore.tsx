@@ -13,6 +13,7 @@ import {
 import { ensureDocumentScrollUnlocked } from "@/lib/body-scroll-lock";
 import { requestScrollRefresh } from "@/lib/scroll-refresh-coordinator";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
+import { stripLocalePrefix } from "@/lib/i18n/locale";
 
 function normalizePath(pathname: string): string {
   if (!pathname || pathname === "") return "/";
@@ -48,8 +49,9 @@ export function ScrollPositionRestore() {
 
     const unbind = bindScrollPositionPersistence(pathname);
 
-    /* `/` and local Main Home 2 — persist only; GSAP owns restore after boot. */
-    if (normalizePath(pathname) === "/" || normalizePath(pathname) === "/home-2") {
+    /* `/` (in any language) and local Main Home 2 — persist only; GSAP owns restore after boot. */
+    const page = stripLocalePrefix(normalizePath(pathname));
+    if (page === "/" || page === "/home-2") {
       return () => {
         unbind();
       };
