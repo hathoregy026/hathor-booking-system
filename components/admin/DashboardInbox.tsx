@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowLeft, Inbox, Paperclip, RefreshCw, Search } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
+import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
 import { DASHBOARD_INBOX_ADDRESS, type InboxDetail, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
 
 const messageTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Cairo", dateStyle: "medium", timeStyle: "short" });
@@ -160,7 +161,7 @@ export function DashboardInbox() {
                 {detail.bookingId ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <a className="btn-primary" href={`mailto:${encodeURIComponent(detail.sender)}?subject=${encodeURIComponent(`Re: ${detail.subject}`)}`}>Reply in your mail app</a>}
               </div>
               {detail.source === "general" ? <p className="mb-6 text-xs text-muted">Replies sent from your mail app stay in that mailbox, not in this dashboard.</p> : null}
-              <div className="dashboard-inbox__body border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}>{detail.bodyText || "(No message text)"}</div>
+              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={keyOf(detail)} bodyText={detail.bodyText} formattedUrl={`/api/admin/inbox/${keyOf(detail)}/formatted`} /></div>
               {detail.attachments.length ? <div className="mt-7 border-t pt-5" style={{ borderColor: "var(--border)" }}><h3 className="mb-3 text-sm font-semibold">Attachments</h3><ul className="space-y-2">{detail.attachments.map(file => (
                 <li key={file.id}><a className="inline-flex max-w-full items-center gap-2 break-all text-sm underline underline-offset-4" target="_blank" rel="noopener noreferrer" href={detail.bookingId ? `/api/admin/bookings/${encodeURIComponent(detail.bookingId)}/messages/${detail.id}/attachments/${file.id}` : `/api/admin/inbox/general/${detail.id}/attachments/${file.id}`}><Paperclip className="h-4 w-4 shrink-0" aria-hidden />{file.filename}</a></li>
               ))}</ul><p className="mt-3 text-xs text-muted">Open only files you trust. Attachment availability follows Resend’s retention policy.</p></div> : null}

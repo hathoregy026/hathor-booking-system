@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Mail, Paperclip, RefreshCw } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
+import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
 import type { BookingMessageDto } from "@/lib/booking-message-types";
 
 const messageTime = new Intl.DateTimeFormat("en-GB", {
@@ -84,7 +85,7 @@ export function BookingConversation({ bookingId, onReply, canReply }: { bookingI
               <h3 className="mt-2 break-words text-sm font-semibold">{message.subject || "No subject"}</h3>
               <details className="mt-2 text-sm">
                 <summary className="cursor-pointer text-muted">Read message</summary>
-                <p className="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap break-words leading-relaxed">{message.bodyText || "No text content."}</p>
+                <div className="mt-2"><EmailMessageBody bodyText={message.bodyText} formattedUrl={message.direction === "INBOUND" ? `/api/admin/inbox/booking/${message.id}/formatted` : undefined} /></div>
               </details>
               {message.attachments.length ? <ul className="mt-2 flex flex-wrap gap-2">{message.attachments.map(attachment => (
                 <li key={attachment.id}><a className="inline-flex max-w-full items-center gap-1 break-all text-xs hover:underline" style={{ color: "var(--accent)" }} target="_blank" rel="noopener noreferrer"

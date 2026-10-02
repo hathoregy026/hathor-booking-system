@@ -91,6 +91,22 @@ before this feature are not imported automatically.
   booking notification copies, which carry an Auto-Submitted header.
 - The additive Inbox migration enables RLS and revokes public access on
   `InboxMessage`. Read/unread changes never alter reservation status or payments.
+- Inbox and booking conversation text is cleaned only for display. Hidden email
+  preheader padding is removed, recognizable quoted history is collapsed, and
+  inline/bottom-posted answers remain visible. Original stored text stays available
+  in a separate disclosure. No historical message rows are rewritten.
+- Received emails offer an optional formatted view. Original HTML is retrieved
+  from Resend on demand, not added to the database; old HTML may no longer be
+  available after provider retention. Server-side sanitize-html allows only safe
+  text/table markup and explicitly allowlisted inline styles. Scripts, forms,
+  embedded frames, CSS URLs, SVG, event handlers, and relative links are removed.
+- Formatted HTML is served through an authenticated, rate-limited endpoint with
+  no-store caching, a restrictive CSP including a sandbox, and an iframe without
+  script or same-origin permissions. The regular dashboard CSP stays unchanged.
+  HTTPS images, including supported CID signature images from Resend, load only
+  after explicit per-message opt-in. Images can track opens even with referrers
+  suppressed; blocking again cannot undo an earlier request. Some sender styling
+  is deliberately removed, and branding is not proof of sender identity.
 - To pause inbound routing, set `RESEND_INBOUND_ENABLED=false` and redeploy. Historical
   conversation records stay available, and new booking emails use the normal inbox.
 

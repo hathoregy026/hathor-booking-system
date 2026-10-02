@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
 import type { InboxDetail, InboxPage, InboxSource } from "@/lib/inbox-types";
+import { emailDisplayPreview } from "@/lib/email-display";
 
 export const inboxIdentitySchema = z.object({ source: z.enum(["booking", "general"]), id: z.uuid() });
 export const inboxQuerySchema = z.object({
@@ -35,7 +36,7 @@ export async function fetchDashboardInbox(input: z.infer<typeof inboxQuerySchema
      ORDER BY "createdAt" DESC, source DESC, id DESC LIMIT 26`,
     [pattern, input.filter === "unread", input.before ?? null, input.cursorSource ?? null, input.cursorId ?? null]);
   const [count] = await query<{ count: number }>(`WITH received AS (${receivedMessages}) SELECT COUNT(*)::int AS count FROM received WHERE "readAt" IS NULL`);
-  return { messages: rows.slice(0, 25).map(dates), hasOlder: rows.length > 25, unreadCount: count?.count ?? 0 };
+  return { messages: rows.slice(0, 25).map(row => ({ ...dates(row), preview: emailDisplayPreview(row.preview) })), hasOlder: rows.length > 25, unreadCount: count?.count ?? 0 };
 }
 
 export async function fetchInboxDetail(source: InboxSource, id: string, query = bookingQuery): Promise<InboxDetail | null> {
