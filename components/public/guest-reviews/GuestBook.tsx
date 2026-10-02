@@ -69,7 +69,7 @@ function ReviewNote({
 }: {
   review: GuestReview;
   source: ReviewSource;
-  size: "lead" | "page" | "card" | "next";
+  size: "lead" | "page" | "card";
   id: string;
 }) {
   const label = SOURCE_LABEL[source];
@@ -165,6 +165,8 @@ export function GuestBook({
 }) {
   const [active, setActive] = useState<ReviewSource | null>(sources[0]?.source ?? null);
   const [spread, setSpread] = useState(0);
+  /* While a page turns: which spread the turning leaf shows, and which way it goes. */
+  const [turn, setTurn] = useState<{ leaf: number; base: number; dir: "next" | "prev"; key: number } | null>(null);
   const [slide, setSlide] = useState(0);
   const deck = useRef<HTMLOListElement>(null);
   const base = useId();
@@ -172,12 +174,24 @@ export function GuestBook({
   const data = sources.find((source) => source.source === active) ?? null;
   const reviews = data?.reviews ?? [];
   const spreads = chunk(reviews, PER_SPREAD);
-  const shown = spreads[Math.min(spread, Math.max(0, spreads.length - 1))] ?? [];
-  const [lead, ...rest] = shown;
+  const spreadAt = (index: number) => spreads[Math.min(index, Math.max(0, spreads.length - 1))] ?? [];
+
+  /** Turns to another spread: forward, the old page lifts off the spine and
+      turns away; back, the earlier page turns in over the current one. */
+  function turnTo(next: number) {
+    if (next === spread || next < 0 || next >= spreads.length) return;
+    const still = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!still) {
+      const dir = next > spread ? "next" : "prev";
+      setTurn({ leaf: dir === "next" ? spread : next, base: dir === "next" ? next : spread, dir, key: Date.now() });
+    }
+    setSpread(next);
+  }
 
   function choose(source: ReviewSource) {
     setActive(source);
     setSpread(0);
+    setTurn(null);
     setSlide(0);
     deck.current?.scrollTo({ left: 0 });
   }
@@ -210,13 +224,51 @@ export function GuestBook({
             aria-controls={`${base}-panel`}
             className="room-pill gb__tab"
             data-hathor-btn={active === source.source ? "primary" : undefined}
+            aria-label={`${SOURCE_LABEL[source.source]} reviews`}
+            title={`${SOURCE_LABEL[source.source]} reviews`}
             onClick={() => choose(source.source)}
           >
-            {SOURCE_LABEL[source.source]}
+            <SourceMark source={source.source} className="gb__tab-mark" />
           </button>
         ))}
       </div>
     ) : null;
+
+  /** The written pages of one spread, laid over the book's two pages. */
+  function pagesFor(index: number, role: string) {
+    const [lead, ...rest] = spreadAt(index);
+    return (
+      <>
+          <div className="gb__page gb__page--upper">
+            {lead ? (
+              <ReviewNote review={lead} source={data!.source} size="lead" id={`${base}-${role}-lead`} />
+            ) : (
+              <p className="gb__empty">
+                Read what guests say after a voyage aboard Hathor, on Google{fallback.tripadvisorUrl ? " and Tripadvisor" : ""}.
+              </p>
+            )}
+            <HandNote
+              className="gb__hand gb__hand--page"
+              width={300}
+              height={170}
+              rotate={-16}
+              lines={[
+                { text: "Slower", x: 12, y: 46 },
+                { text: "kinder", x: 46, y: 96, r: 2 },
+                { text: "more beautiful", x: 70, y: 148, r: -1 },
+              ]}
+            />
+          </div>
+
+          <div className={`gb__page gb__page--lower${rest.length === 1 ? " gb__page--single" : ""}`}>
+            {rest.map((review, i) => (
+              <ReviewNote key={`${index}-${i}`} review={review} source={data!.source} size="page" id={`${base}-${role}-p${i}`} />
+            ))}
+            {rest.length > 1 ? <Lotus className="gb__lotus" /> : null}
+          </div>
+      </>
+    );
+  }
 
   const panelLabel = sources.length > 1 && active ? { role: "tabpanel", "aria-labelledby": `${base}-tab-${active}` } : {};
 
@@ -280,38 +332,26 @@ export function GuestBook({
             sizes="(max-width: 950px) 1px, 62vw"
             aria-hidden="true"
           />
-          <div className="gb__page gb__page--upper">
-            {lead ? (
-              <ReviewNote review={lead} source={data!.source} size="lead" id={`${base}-lead`} />
-            ) : (
-              <p className="gb__empty">
-                Read what guests say after a voyage aboard Hathor, on Google{fallback.tripadvisorUrl ? " and Tripadvisor" : ""}.
-              </p>
-            )}
-            <HandNote
-              className="gb__hand gb__hand--page"
-              width={300}
-              height={170}
-              rotate={-16}
-              lines={[
-                { text: "Slower", x: 12, y: 46 },
-                { text: "kinder", x: 46, y: 96, r: 2 },
-                { text: "more beautiful", x: 70, y: 148, r: -1 },
-              ]}
-            />
-          </div>
+          <div className="gb__pages">{pagesFor(turn ? turn.base : spread, "now")}</div>
+          {turn ? (
+            <div
+              key={turn.key}
+              className={`gb__leaf gb__leaf--${turn.dir}`}
+              aria-hidden="true"
+              onAnimationEnd={(event) => {
+                if (event.target === event.currentTarget) setTurn(null);
+              }}
+            >
+              <span className="gb__leaf-paper" />
+              {pagesFor(turn.leaf, "leaf")}
+              <span className="gb__leaf-shade" />
+            </div>
+          ) : null}
           <div className="gb__postcard" aria-hidden="true">
-            <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" />
+            <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" loading="eager" />
             <span className="gb__gloss" />
           </div>
           <Stamp className="gb__stamp" />
-
-          <div className={`gb__page gb__page--lower${rest.length === 1 ? " gb__page--single" : ""}`}>
-            {rest.map((review, index) => (
-              <ReviewNote key={`${spread}-${index}`} review={review} source={data!.source} size="page" id={`${base}-p${index}`} />
-            ))}
-            {rest.length > 1 ? <Lotus className="gb__lotus" /> : null}
-          </div>
         </div>
 
         {spreads.length > 1 ? (
@@ -319,7 +359,7 @@ export function GuestBook({
             <button
               type="button"
               className="gb__turn"
-              onClick={() => setSpread((page) => Math.max(0, page - 1))}
+              onClick={() => turnTo(spread - 1)}
               disabled={spread === 0}
               aria-label="Previous page of reviews"
             >
@@ -331,7 +371,7 @@ export function GuestBook({
             <button
               type="button"
               className="gb__turn"
-              onClick={() => setSpread((page) => Math.min(spreads.length - 1, page + 1))}
+              onClick={() => turnTo(spread + 1)}
               disabled={spread >= spreads.length - 1}
               aria-label="Next page of reviews"
             >
@@ -370,21 +410,6 @@ export function GuestBook({
                   />
                 ))}
               </div>
-            ) : null}
-            {reviews.length > 1 ? (
-              <button
-                type="button"
-                className="gb__next"
-                onClick={() => goToSlide((slide + 1) % reviews.length)}
-                aria-label={`Next review, by ${reviews[(slide + 1) % reviews.length]!.author}`}
-              >
-                <ReviewNote
-                  review={reviews[(slide + 1) % reviews.length]!}
-                  source={data!.source}
-                  size="next"
-                  id={`${base}-next`}
-                />
-              </button>
             ) : null}
           </>
         ) : (
