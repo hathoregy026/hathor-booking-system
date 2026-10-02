@@ -13,7 +13,7 @@ type AdminBottomNavProps = {
 const ITEMS = [
   { href: "/admin", label: "Home", icon: LayoutDashboard, exact: true },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket, exact: false },
-  { href: "/admin/inbox", label: "Inbox", icon: Inbox, exact: false },
+  { href: "/admin/inbox", label: "Emails", icon: Inbox, exact: false },
   { href: "/admin/cruises", label: "Cruises", icon: Ship, exact: false },
 ] as const;
 

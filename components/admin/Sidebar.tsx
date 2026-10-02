@@ -35,7 +35,7 @@ const NAV: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/bookings", label: "Bookings", icon: Ticket },
-  { href: "/admin/inbox", label: "Inbox", icon: Inbox },
+  { href: "/admin/inbox", label: "Emails", icon: Inbox },
   { href: "/admin/availability", label: "Availability", icon: CalendarOff },
   { href: "/admin/cruises", label: "Cruises", icon: Ship },
   { href: "/admin/ship-experience", label: "Ship Experience", icon: Map },

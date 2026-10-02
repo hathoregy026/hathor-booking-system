@@ -65,6 +65,8 @@ async function main() {
         return route.fulfill({ status: 404, body: "Not found" });
       });
       await page.goto("https://inbox-test.hathor.local/");
+      await page.getByRole("heading", { name: "Emails", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Refresh emails", exact: true }).waitFor();
       await page.getByRole("button", { name: /A question about our Nile voyage/ }).waitFor({ timeout: 10000 }).catch(async () => {
         await page.screenshot({ path: path.join(root, `output/inbox-qa/${width}-failure.png`), fullPage: true });
         throw new Error(`Fixture page failed: ${errors.join("; ")} ${await page.locator("body").innerText()}`);
@@ -98,7 +100,7 @@ async function main() {
       assert.equal(read, true);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `No horizontal overflow at ${width}px`);
       await page.screenshot({ path: path.join(root, `output/inbox-qa/${width}-detail.png`), fullPage: true });
-      await page.getByRole("button", { name: "Back to inbox" }).click();
+      await page.getByRole("button", { name: "Back to emails", exact: true }).click();
       await page.getByRole("button", { name: "Load older emails" }).click();
       await page.waitForFunction(() => !document.querySelector('section[aria-label="Received emails"]')?.getAttribute("aria-busy") || document.querySelector('section[aria-label="Received emails"]')?.getAttribute("aria-busy") === "false");
       assert.equal(older, 1);

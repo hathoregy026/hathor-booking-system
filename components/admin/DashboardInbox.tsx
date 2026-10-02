@@ -72,7 +72,7 @@ export function DashboardInbox() {
         if (!response.ok) throw new Error();
         const data = await response.json() as { message: InboxDetail };
         if (!controller.signal.aborted) setDetail(data.message);
-      } catch { if (!controller.signal.aborted) setDetailError("This email could not be opened. Return to the inbox and try again."); }
+      } catch { if (!controller.signal.aborted) setDetailError("This email could not be opened. Return to Emails and try again."); }
     }
     void load();
     detailRef.current?.focus();
@@ -108,12 +108,12 @@ export function DashboardInbox() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="admin-page-title">Inbox</h1>
+          <h1 className="admin-page-title">Emails</h1>
           <p className="admin-page-subtitle">Customer emails and booking replies, together in your dashboard.</p>
           <p className="mt-2 text-sm text-muted" aria-live="polite">{unread} unread · Times shown in Cairo</p>
         </div>
         <button type="button" className="btn-outline" onClick={refresh} disabled={busy}>
-          <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden />Refresh inbox
+          <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden />Refresh emails
         </button>
       </header>
       <details className="text-sm text-muted">
@@ -132,7 +132,7 @@ export function DashboardInbox() {
       {error ? <p role="alert" className="text-sm" style={{ color: "var(--danger)" }}>{error}</p> : null}
       <div className="dashboard-inbox__workspace" data-selected={Boolean(selected)}>
         <section className="card dashboard-inbox__list" aria-label="Received emails" aria-busy={busy}>
-          {!messages.length ? <div className="px-6 py-12 text-center"><Inbox className="mx-auto mb-4 h-8 w-8 text-muted" aria-hidden /><p className="font-semibold">{busy ? "Loading your inbox…" : "No emails here yet"}</p><p className="mt-2 text-sm text-muted">{query || filter === "unread" ? "Try a different search or select All received." : "New customer emails appear here once Resend receives them."}</p></div> : null}
+          {!messages.length ? <div className="px-6 py-12 text-center"><Inbox className="mx-auto mb-4 h-8 w-8 text-muted" aria-hidden /><p className="font-semibold">{busy ? "Loading your emails…" : "No emails here yet"}</p><p className="mt-2 text-sm text-muted">{query || filter === "unread" ? "Try a different search or select All received." : "New customer emails appear here once Resend receives them."}</p></div> : null}
           <ol>
             {messages.map(message => (
               <li key={keyOf(message)}>
@@ -149,7 +149,7 @@ export function DashboardInbox() {
           {hasOlder ? <div className="p-4"><button type="button" className="btn-outline w-full" disabled={busy} onClick={() => setCursor(messages[messages.length - 1] ?? null)}>Load older emails</button></div> : null}
         </section>
         <section ref={detailRef} tabIndex={-1} className="card dashboard-inbox__detail p-5 sm:p-7" aria-label="Email details">
-          {selected ? <button type="button" className="btn-outline mb-5" onClick={() => selectMessage(null)}><ArrowLeft className="h-4 w-4" aria-hidden />Back to inbox</button> : null}
+          {selected ? <button type="button" className="btn-outline mb-5" onClick={() => selectMessage(null)}><ArrowLeft className="h-4 w-4" aria-hidden />Back to emails</button> : null}
           {detailError ? <p role="alert" className="mb-4 text-sm" style={{ color: "var(--danger)" }}>{detailError}</p> : null}
           {!detail ? <p className="py-10 text-center text-sm text-muted">{selected ? detailError ? "Unable to open email." : "Opening email…" : "Select an email to read its message and attachments."}</p> : (
             <article className="min-w-0">
