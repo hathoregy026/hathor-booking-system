@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { bookingQuery } from "@/lib/booking-database";
 import { bookingReplyAddress, newBookingReplyToken, inboundBookingEmailEnabled } from "@/lib/booking-email-routing";
-import type { BookingMessageDto } from "@/lib/booking-message-types";
+import type { BookingMessageDto, BookingAttachment } from "@/lib/booking-message-types";
 
 export async function getBookingReplyAddress(bookingId: string): Promise<string | undefined> {
   if (!inboundBookingEmailEnabled()) return undefined;
@@ -16,12 +16,13 @@ export async function getBookingReplyAddress(bookingId: string): Promise<string 
 
 export async function beginOutboundBookingMessage(input: {
   bookingId: string; sender: string; recipient: string; subject: string; bodyText: string; recordedBySession?: string;
+  attachments?: BookingAttachment[];
 }): Promise<string> {
   const id = randomUUID();
   await bookingQuery(
-    `INSERT INTO "BookingMessage" (id, "bookingId", direction, status, sender, recipient, subject, "bodyText", "recordedBySession")
-     VALUES ($1, $2, 'OUTBOUND', 'PENDING', $3, $4, $5, $6, $7)`,
-    [id, input.bookingId, input.sender, input.recipient, input.subject, input.bodyText.slice(0, 64000), input.recordedBySession ?? null],
+    `INSERT INTO "BookingMessage" (id, "bookingId", direction, status, sender, recipient, subject, "bodyText", "recordedBySession", attachments)
+     VALUES ($1, $2, 'OUTBOUND', 'PENDING', $3, $4, $5, $6, $7, $8::jsonb)`,
+    [id, input.bookingId, input.sender, input.recipient, input.subject, input.bodyText.slice(0, 64000), input.recordedBySession ?? null, JSON.stringify(input.attachments ?? [])],
   );
   return id;
 }

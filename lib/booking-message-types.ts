@@ -2,6 +2,7 @@ export type BookingAttachment = {
   id: string;
   filename: string;
   contentType: string;
+  storagePath?: string;
 };
 
 export type BookingMessageDto = {

@@ -5,6 +5,7 @@ import { bookingQuery } from "@/lib/booking-database";
 import { enforcePublicRateLimit } from "@/lib/public-api-security";
 import { resendApiRequest } from "@/lib/resend-inbound";
 import type { BookingAttachment } from "@/lib/booking-message-types";
+import { attachmentDownloadUrl } from "@/lib/mail-attachments";
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string; messageId: string; attachmentId: string }> }) {
   const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
@@ -14,11 +15,16 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
   try {
     await enforcePublicRateLimit({ request, scope: "booking-attachment-read", limit: 30, windowMs: 60000 });
     const params = z.object({ id: z.string().min(1).max(128), messageId: z.uuid(), attachmentId: z.uuid() }).parse(await context.params);
-    const [message] = await bookingQuery<{ resendEmailId: string; attachments: BookingAttachment[] }>(
-      `SELECT "resendEmailId", attachments FROM "BookingMessage"
-       WHERE id = $1 AND "bookingId" = $2 AND direction = 'INBOUND'`, [params.messageId, params.id]);
+    const [message] = await bookingQuery<{ resendEmailId: string; direction: string; attachments: BookingAttachment[] }>(
+      `SELECT "resendEmailId", direction, attachments FROM "BookingMessage"
+       WHERE id = $1 AND "bookingId" = $2`, [params.messageId, params.id]);
     if (!message || !message.attachments.some(attachment => attachment.id === params.attachmentId)) {
       return NextResponse.json({ error: "Not found" }, { status: 404, headers });
+    }
+    const attachment = message.attachments.find(file => file.id === params.attachmentId)!;
+    if (message.direction === "OUTBOUND") {
+      if (!attachment.storagePath) return NextResponse.json({ error: "Not found" }, { status: 404, headers });
+      return NextResponse.redirect(await attachmentDownloadUrl(params.id, attachment.storagePath), { status: 303, headers });
     }
     const emailId = z.uuid().parse(message.resendEmailId);
     const result = z.object({ download_url: z.url() }).parse(await resendApiRequest(`/emails/receiving/${emailId}/attachments/${params.attachmentId}`));

@@ -37,6 +37,16 @@ before this feature are not imported automatically.
 
 ## Operations
 
+- Staff can use **Attach files** in both **Reply to guest** and **Confirm & send
+  invoice**. Files are uploaded to the private `mail-attachments` storage bucket,
+  validated before sending, and recorded on the outgoing conversation message.
+  Supported files are PDF, JPG, PNG, WebP, GIF, TXT, CSV, DOCX, XLSX and PPTX;
+  limits are 10 files, 10 MB per file, and 25 MB total. The server checks the
+  booking folder, actual stored size, content type and file signature. These
+  checks do not replace antivirus scanning or establish that a document is safe.
+  Opening any conversation attachment requires dashboard authentication. The
+  service-role storage key stays on the server; browser uploads use signed URLs.
+
 - Every booking gets a persistent 192-bit random reply token. Tokens are not
   published on guest pages, included in booking lookup APIs, or written to logs.
 - Sender addresses are not proof of identity. A reply from a different contact
