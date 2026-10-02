@@ -9,6 +9,7 @@ export type EmailPaymentStage = {
 
 export type BookingEmailDetails = {
   bookingId: string;
+  recordedBySession?: string;
   /** Short code guests use to track the booking; shown instead of the raw id. */
   bookingCode?: string;
   guestName: string;

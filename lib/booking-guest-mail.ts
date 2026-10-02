@@ -14,7 +14,7 @@ import {
 } from "@/lib/email";
 import { bookingQuery } from "@/lib/booking-database";
 import type { BookingEmailDetails } from "@/lib/email-types";
-import { getSiteBaseUrl } from "@/lib/public-url";
+import { BOOKING_MAIL_ORIGIN } from "@/lib/booking-email-routing";
 
 export type MailResult = { sent: boolean; to: string | null; error?: string };
 
@@ -38,7 +38,7 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
   const base = buildEmailDetailsFromConfirmBooking({
     ...booking,
     bookingTickets: [],
-    bookingUrl: `${getSiteBaseUrl()}/booking/success?bookingId=${encodeURIComponent(booking.id)}&token=${encodeURIComponent(token)}`,
+    bookingUrl: `${BOOKING_MAIL_ORIGIN}/booking/success?bookingId=${encodeURIComponent(booking.id)}&token=${encodeURIComponent(token)}`,
   });
   if (!base) return null;
 
@@ -48,7 +48,7 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
   const details: BookingEmailDetails = {
     ...base,
     bookingCode: bookingCode(booking.id),
-    adminUrl: `${getSiteBaseUrl()}/admin/bookings/${encodeURIComponent(booking.id)}`,
+    adminUrl: `${BOOKING_MAIL_ORIGIN}/admin/bookings/${encodeURIComponent(booking.id)}`,
     roomType: booking.bookingRooms
       .map(line => `${line.room.roomType ?? line.room.name} (${line.adults + line.children} guest${line.adults + line.children === 1 ? "" : "s"})`)
       .join(", ") || base.roomType,
@@ -71,9 +71,9 @@ async function deliver(id: string, send: (details: BookingEmailDetails) => Promi
     if (!loaded) return { sent: false, to: null, error: "This booking has no guest email address." };
     await send(loaded.details);
     return { sent: true, to: loaded.details.guestEmail };
-  } catch (error) {
-    console.error("[booking-mail] send failed", id, error);
-    return { sent: false, to: null, error: error instanceof Error ? error.message : "The email could not be sent." };
+  } catch {
+    console.error("[booking-mail] send failed");
+    return { sent: false, to: null, error: "The email could not be sent. Please try again." };
   }
 }
 
@@ -90,8 +90,8 @@ export function sendDeclined(id: string, message?: string) {
   return deliver(id, details => sendBookingDeclinedEmail(details.guestEmail, details.guestName, details, message));
 }
 
-export function sendTeamReply(id: string, message: string, subject?: string) {
-  return deliver(id, details => sendBookingMessageEmail(details.guestEmail, details.guestName, details, message, subject));
+export function sendTeamReply(id: string, message: string, subject?: string, recordedBySession?: string) {
+  return deliver(id, details => sendBookingMessageEmail(details.guestEmail, details.guestName, { ...details, recordedBySession }, message, subject));
 }
 
 /** The request emails (guest copy with its code, team alert), recording each outcome on the booking. */

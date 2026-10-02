@@ -179,12 +179,43 @@ model Booking {
   guests BookingGuest[]
   payments BookingPayment[]
   paymentSchedule BookingPaymentSchedule[]
+  emailThread BookingEmailThread?
+  messages BookingMessage[]
 
   @@index([cruiseScheduleId, status])
   @@unique([id, cruiseScheduleId])
   @@index([deletedAt])
   @@index([deletedAt, createdAt])
   @@index([status, deletedAt, createdAt])
+}
+
+model BookingEmailThread {
+  bookingId String @id
+  replyToken String @unique
+  createdAt DateTime @default(now())
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model BookingMessage {
+  id String @id @default(uuid())
+  bookingId String
+  direction String
+  status String
+  sender String
+  recipient String
+  subject String
+  bodyText String
+  resendEmailId String? @unique
+  internetMessageId String?
+  attachments Json @default("[]")
+  senderMatchesGuest Boolean @default(true)
+  recordedBySession String?
+  notificationSentAt DateTime?
+  notificationLeaseUntil DateTime?
+  createdAt DateTime @default(now())
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId, createdAt, id])
 }
 
 model ApiRateLimit {

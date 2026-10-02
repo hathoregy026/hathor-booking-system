@@ -57,7 +57,7 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
     : staffActionSchema.parse(body);
 
   if (action.type === "message") {
-    return { email: await sendTeamReply(id, action.message, action.subject) };
+    return { email: await sendTeamReply(id, action.message, action.subject, recordedBySession ?? undefined) };
   }
 
   if (action.type === "send-confirmation") {

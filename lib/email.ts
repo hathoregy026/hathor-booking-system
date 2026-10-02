@@ -1,4 +1,6 @@
 import { randomUUID } from "crypto";
+import { beginOutboundBookingMessage, finishOutboundBookingMessage, getBookingReplyAddress } from "@/lib/booking-messages";
+import { bookingReplyInbox } from "@/lib/booking-email-routing";
 import type { ReactElement } from "react";
 import { render } from "@react-email/render";
 import { Resend } from "resend";
@@ -55,6 +57,7 @@ async function sendEmail(input: {
   label: string;
   renderMessage: (theme: EmailTemplateOverrides) => ReactElement;
   theme: EmailTemplateOverrides;
+  bookingDetails?: BookingEmailDetails;
 }) {
   const resend = getResend();
   if (!resend) {
@@ -75,13 +78,24 @@ async function sendEmail(input: {
     render(message, { plainText: true }),
   ]);
 
+  const replyTo = input.bookingDetails
+    ? await getBookingReplyAddress(input.bookingDetails.bookingId)
+    : undefined;
+  const outgoingId = input.bookingDetails ? await beginOutboundBookingMessage({
+    bookingId: input.bookingDetails.bookingId,
+    sender: getFromAddress(),
+    recipient: input.to,
+    subject: input.subject,
+    bodyText: text,
+    recordedBySession: input.bookingDetails.recordedBySession,
+  }) : null;
   const payload = {
     from: getFromAddress(),
     to: input.to,
     subject: input.subject,
     html,
     text,
-    replyTo: process.env.RESEND_REPLY_TO?.trim() || undefined,
+    replyTo: replyTo || process.env.RESEND_REPLY_TO?.trim() || bookingReplyInbox(),
   };
   // Retry only when the connection dropped before Resend answered; the shared
   // idempotency key makes Resend deliver the message at most once.
@@ -93,15 +107,27 @@ async function sendEmail(input: {
         setTimeout(() => resolve({ data: null, error: { message: "Unable to fetch data: the email service did not answer in time." } }), SEND_TIMEOUT_MS),
       ),
     ]);
-  let result = await attempt();
-  for (let tries = 1; tries < 3 && result.error && /unable to fetch|could not be resolved|fetch failed/i.test(result.error.message); tries += 1) {
-    await new Promise((resolve) => setTimeout(resolve, 1000 * tries));
+  let result;
+  try {
     result = await attempt();
+    for (let tries = 1; tries < 3 && result.error && /unable to fetch|could not be resolved|fetch failed/i.test(result.error.message); tries += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 1000 * tries));
+      result = await attempt();
+    }
+  } catch {
+    if (outgoingId) await finishOutboundBookingMessage(outgoingId, null);
+    throw new Error("The email service could not be reached. Please try again.");
   }
 
   if (result.error) {
-    console.error(`[email] ${input.label} failed:`, result.error);
-    throw new Error(result.error.message);
+    if (outgoingId) await finishOutboundBookingMessage(outgoingId, null);
+    console.error(`[email] ${input.label} failed`);
+    throw new Error("The email service could not send the message. Please try again.");
+  }
+
+  if (outgoingId) {
+    try { await finishOutboundBookingMessage(outgoingId, result.data?.id ?? null); }
+    catch { console.error("[email] message sent but history status could not be updated"); }
   }
 
   console.log(`[email] ${input.label} sent`, result.data?.id ?? "");
@@ -120,6 +146,7 @@ export async function sendBookingInvoiceEmail(
   const template = await getEmailTemplateForSend("BookingInvoice");
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
@@ -137,6 +164,7 @@ export async function sendBookingDeclinedEmail(
   const template = await getEmailTemplateForSend("BookingDeclined");
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
@@ -156,6 +184,7 @@ export async function sendBookingMessageEmail(
   const template = await getEmailTemplateForSend("BookingMessage");
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: subject?.trim() || resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
@@ -174,6 +203,7 @@ export async function sendBookingReceivedEmail(
 
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme,
     renderMessage: (sendTheme) =>
@@ -196,6 +226,7 @@ export async function sendBookingConfirmedEmail(
 
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme,
     renderMessage: (sendTheme) =>

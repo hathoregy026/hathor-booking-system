@@ -15,6 +15,7 @@ import { stageTitle, type PaymentPlanStage } from "@/lib/booking-code";
 import { formatPrice } from "@/lib/client-dates";
 import { BookingActionDialog, actionLabel, bookingActionsFor, type BookingActionKind } from "./BookingActions";
 import { PaymentMeter, StagePill } from "./BookingCard";
+import { BookingConversation } from "./BookingConversation";
 
 type Passenger = { id: string; roomIndex: number; fullName: string; isChild: boolean };
 type Payment = { id: string; kind: string; method: string; amountCents: number; reference: string; receivedAt: string };
@@ -103,6 +104,7 @@ export function BookingDetailView({
 }) {
   const router = useRouter();
   const [dialog, setDialog] = useState<BookingActionKind | null>(null);
+  const [conversationVersion, setConversationVersion] = useState(0);
   const { primary, secondary } = bookingActionsFor(booking);
   const departure = parseISO(booking.departureTime);
   const arrival = parseISO(booking.arrivalTime);
@@ -232,6 +234,7 @@ export function BookingDetailView({
               <p className="whitespace-pre-line text-sm leading-relaxed">{booking.specialRequests}</p>
             </Panel>
           ) : null}
+          <BookingConversation key={`${booking.id}:${conversationVersion}`} bookingId={booking.id} canReply={!inBin && booking.customerEmail !== "—"} onReply={() => setDialog("reply")} />
         </div>
 
         <div className="space-y-5">
@@ -335,7 +338,10 @@ export function BookingDetailView({
           onClose={() => setDialog(null)}
           onDone={(_, removed) => {
             if (removed) router.push("/admin/bookings");
-            else router.refresh();
+            else {
+              setConversationVersion(version => version + 1);
+              router.refresh();
+            }
           }}
         />
       ) : null}
