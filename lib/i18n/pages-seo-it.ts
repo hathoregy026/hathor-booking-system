@@ -82,4 +82,12 @@ export const ITALIAN_PAGES = {
       alt: "I templi da non perdere in una crociera sul Nilo con Hathor Dahabiya",
     },
   }),
+  partners: page({
+    path: "/it/partners",
+    title: "Partner di viaggio | Hathor Dahabiya",
+    description:
+      "I partner del viaggio e dell’ospitalità che condividono gli standard di Hathor Dahabiya per crociere private sul Nilo e per la cura degli ospiti in Egitto.",
+    name: "Partner di viaggio | Hathor Dahabiya",
+    crumb: "Partner",
+  }),
 } as const;

@@ -18,6 +18,8 @@ import { HOMEPAGE_PARTNERS } from "@/lib/homepage-content";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { PARTNERS_COPY } from "@/lib/i18n/partners-copy";
 import {
   normalizeOptionalText,
   stackedHeroLines,
@@ -105,42 +107,33 @@ function Scene({
   );
 }
 
-/** Partner circle — roles describe how each name meets Hathor guests. */
+/**
+ * Partner circle — roles describe how each name meets Hathor guests. Role,
+ * region and note come from PARTNERS_COPY.circle, in this order.
+ */
 const CIRCLE = [
   {
     number: "01",
     name: "Easy Trav Tourism",
     short: "Easy Trav",
-    role: "Trade",
-    region: "Egypt",
-    note: "Destination craft and Nile itineraries shaped with local precision.",
     slot: "home-story-way-of-life",
   },
   {
     number: "02",
     name: "Booking",
     short: "Booking",
-    role: "Global",
-    region: "Reservations",
-    note: "Worldwide discovery that brings travellers to an intimate Dahabiya.",
     slot: "room-suite",
   },
   {
     number: "03",
     name: "Expedia",
     short: "Expedia",
-    role: "Worldwide",
-    region: "Discovery",
-    note: "A considered path from first search to a voyage on the river.",
     slot: "home-voyage-nile-majesty",
   },
   {
     number: "04",
     name: "X Luxury Hospitality",
     short: "X Luxury",
-    role: "Luxury",
-    region: "Concierge",
-    note: "Hospitality standards aligned with Hathor's quiet, personal care.",
     slot: "room-royal",
   },
 ] as const;
@@ -149,6 +142,8 @@ export function PartnersPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const t = PARTNERS_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const partners = pages.partners;
   const typography = useTypographySettings();
@@ -157,17 +152,16 @@ export function PartnersPageContent() {
   const lineClass = ["pn-line--a", "pn-line--b", "pn-line--c"] as const;
   usePartnersEditorialScroll({ rootRef, runRef, trackRef });
 
-  const lead =
-    normalizeOptionalText(partners.lead) ??
-    "We sail with trusted names in travel and hospitality, partners who share our care for the Nile and our guests.";
+  const lead = normalizeOptionalText(partners.lead) ?? t.leadFallback;
 
-  const circleNames =
-    HOMEPAGE_PARTNERS.partners.length > 0
-      ? CIRCLE.map((item, index) => ({
-          ...item,
-          name: HOMEPAGE_PARTNERS.partners[index] ?? item.name,
-        }))
-      : [...CIRCLE];
+  const circleNames = CIRCLE.map((item, index) => ({
+    ...item,
+    ...t.circle[index],
+    name:
+      HOMEPAGE_PARTNERS.partners.length > 0
+        ? (HOMEPAGE_PARTNERS.partners[index] ?? item.name)
+        : item.name,
+  }));
 
   return (
     <div ref={rootRef} className="partners-editorial">
@@ -179,14 +173,14 @@ export function PartnersPageContent() {
         <section
           ref={runRef}
           className="pn-run"
-          aria-label="Hathor travel and hospitality partners"
+          aria-label={t.runLabel}
         >
           <div className="pn-stage">
             <div ref={trackRef} className="pn-track">
               {/* 01 — Opening: title + edge portrait, footer strip in flow */}
               <Scene className="pn-open">
                 <div className="pn-open__grid">
-                  <ol className="pn-open__spine" aria-label="Partner index">
+                  <ol className="pn-open__spine" aria-label={t.spineLabel}>
                     {circleNames.map((item) => (
                       <li key={item.number}>
                         <span>{item.number}</span>
@@ -212,13 +206,13 @@ export function PartnersPageContent() {
                     <p className="pn-open__count pn-edit">
                       <span>0{circleNames.length}</span>
                       <i aria-hidden="true" />
-                      <span>names</span>
+                      <span>{t.names}</span>
                     </p>
                   </div>
 
                   <PartnersMedia
                     slot="about-hero"
-                    alt="Hathor Dahabiya on the Nile"
+                    alt={t.alts.portrait}
                     priority
                     className="pn-open__portrait"
                     ratio="4 / 5"
@@ -230,19 +224,19 @@ export function PartnersPageContent() {
                     Hathor Cruise <span className="pn-reg">®</span> 2026
                   </p>
                   <p className="pn-open__scroll">
-                    Scroll
+                    {t.scroll}
                     <i />
                   </p>
-                  <nav className="pn-open__nav" aria-label="Partners page sections">
-                    <a href="#circle">Circle</a>
-                    <a href="#craft">Craft</a>
-                    <a href="#converse">Converse</a>
-                    <Link href="/contact">Contact</Link>
+                  <nav className="pn-open__nav" aria-label={t.navLabel}>
+                    <a href="#circle">{t.nav[0]}</a>
+                    <a href="#craft">{t.nav[1]}</a>
+                    <a href="#converse">{t.nav[2]}</a>
+                    <Link href={localHref("/contact")}>{t.nav[3]}</Link>
                   </nav>
                 </div>
               </Scene>
 
-              <Scene className="pn-art" aria-label="In Distinguished Company">
+              <Scene className="pn-art" aria-label={t.artLabel}>
                 <PartnersCompanyStrip variant="intro" />
               </Scene>
 
@@ -254,8 +248,8 @@ export function PartnersPageContent() {
                   ratio="1279 / 860"
                   front="home-cinematic-still"
                   back="home-story-legacy-large"
-                  frontAlt="Hathor on the river"
-                  backAlt="Legacy on the Nile"
+                  frontAlt={t.alts.river}
+                  backAlt={t.alts.legacy}
                 />
                 <FlipImage
                   className="pn-gallery__inset"
@@ -263,11 +257,11 @@ export function PartnersPageContent() {
                   ratio="668 / 554"
                   front="room-luxury"
                   back="about-dining"
-                  frontAlt="Cabin aboard Hathor"
-                  backAlt="Dining aboard Hathor"
+                  frontAlt={t.alts.cabin}
+                  backAlt={t.alts.dining}
                 />
                 <p className="pn-gallery__caption">
-                  <span>Aboard</span> Luxor — Aswan
+                  <span>{t.aboard}</span> {t.route}
                 </p>
               </Scene>
 
@@ -276,18 +270,11 @@ export function PartnersPageContent() {
                 <div className="pn-covenant__copy">
                   <div className="pn-covenant__statement" data-anima-title>
                     <h2 className="pn-edit pn-edit--xl">
-                      <span className="pn-line">
-                        <AnimaSplitLine line={0}>Shared standards</AnimaSplitLine>
-                      </span>
-                      <span className="pn-line">
-                        <AnimaSplitLine line={1}>A private circle</AnimaSplitLine>
-                      </span>
-                      <span className="pn-line">
-                        <AnimaSplitLine line={2}>of trusted names</AnimaSplitLine>
-                      </span>
-                      <span className="pn-line">
-                        <AnimaSplitLine line={3}>on the Nile</AnimaSplitLine>
-                      </span>
+                      {t.covenant.map((line, index) => (
+                        <span className="pn-line" key={index}>
+                          <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                        </span>
+                      ))}
                     </h2>
                   </div>
                   <p className="pn-covenant__lead wt-page-body">{lead}</p>
@@ -298,18 +285,16 @@ export function PartnersPageContent() {
                   ratio="835 / 1100"
                   front="home-split-courtyard"
                   back="home-collage-living"
-                  frontAlt="Life on deck aboard Hathor"
-                  backAlt="Living spaces aboard Hathor"
+                  frontAlt={t.alts.deck}
+                  backAlt={t.alts.living}
                 />
               </Scene>
 
               {/* 04 — Partner constellation with portrait peeks */}
               <Scene className="pn-orbit" id="circle">
                 <header className="pn-orbit__head">
-                  <p className="pn-display pn-display--l">Trusted worldwide</p>
-                  <p className="pn-meta-copy">
-                    Four partners. One standard of care for every Hathor guest.
-                  </p>
+                  <p className="pn-display pn-display--l">{t.orbitTitle}</p>
+                  <p className="pn-meta-copy">{t.orbitBody}</p>
                 </header>
 
                 <ol className="pn-orbit__list">
@@ -325,7 +310,7 @@ export function PartnersPageContent() {
                       </div>
                       <PartnersMedia
                         slot={item.slot}
-                        alt={`${item.name} — Hathor partnership`}
+                        alt={t.partnerAlt(item.name)}
                         className="pn-star__peek"
                         ratio="4 / 5"
                       />
@@ -343,8 +328,8 @@ export function PartnersPageContent() {
                     ratio="668 / 920"
                     front="about-dining"
                     back="gastronomy-restaurant"
-                    frontAlt="Fine dining aboard Hathor"
-                    backAlt="Restaurant aboard Hathor Dahabiya"
+                    frontAlt={t.alts.fineDining}
+                    backAlt={t.alts.restaurant}
                   />
                   <FlipImage
                     className="pn-craft__wide"
@@ -352,32 +337,25 @@ export function PartnersPageContent() {
                     ratio="1090 / 720"
                     front="home-story-dining"
                     back="gastronomy-wine"
-                    frontAlt="Dining atmosphere aboard Hathor"
-                    backAlt="Wine service aboard Hathor"
+                    frontAlt={t.alts.atmosphere}
+                    backAlt={t.alts.wine}
                   />
                   <PartnersMedia
                     slot="home-amenities-1"
-                    alt="Amenity detail aboard Hathor"
+                    alt={t.alts.amenity}
                     className="pn-craft__accent"
                     ratio="1 / 1"
                   />
                 </div>
                 <div className="pn-craft__copy">
                   <p className="pn-edit pn-edit--l" data-anima-title>
-                    <span className="pn-line">
-                      <AnimaSplitLine line={0}>Hospitality craft</AnimaSplitLine>
-                    </span>
-                    <span className="pn-line">
-                      <AnimaSplitLine line={1}>Care that travels</AnimaSplitLine>
-                    </span>
-                    <span className="pn-line">
-                      <AnimaSplitLine line={2}>with every booking</AnimaSplitLine>
-                    </span>
+                    {t.craft.map((line, index) => (
+                      <span className="pn-line" key={index}>
+                        <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                      </span>
+                    ))}
                   </p>
-                  <p className="pn-meta-copy">
-                    From first enquiry to the last morning on deck, our partners
-                    uphold the same quiet precision guests meet aboard Hathor.
-                  </p>
+                  <p className="pn-meta-copy">{t.craftBody}</p>
                 </div>
               </Scene>
 
@@ -385,29 +363,29 @@ export function PartnersPageContent() {
               <Scene className="pn-datum">
                 <PartnersMedia
                   slot="home-call-to-action"
-                  alt=""
+                  alt={t.alts.wash}
                   className="pn-datum__wash"
                   ratio="16 / 10"
                 />
                 <div className="pn-datum__frame">
                   <span className="pn-datum__corner pn-datum__corner--tl">
-                    Partners
+                    {t.datum.tl}
                   </span>
                   <span className="pn-datum__corner pn-datum__corner--tr">
-                    Egypt &amp; beyond
+                    {t.datum.tr}
                   </span>
 
                   <p className="pn-datum__figure pn-edit">
                     <span>0{circleNames.length}</span>
                     <i aria-hidden="true" />
-                    <span>One</span>
+                    <span>{t.datum.one}</span>
                   </p>
 
                   <span className="pn-datum__corner pn-datum__corner--bl">
-                    Hathor circle
+                    {t.datum.bl}
                   </span>
                   <span className="pn-datum__corner pn-datum__corner--br">
-                    Shared standard
+                    {t.datum.br}
                   </span>
                 </div>
               </Scene>
@@ -417,7 +395,7 @@ export function PartnersPageContent() {
                 <div className="pn-bridge__pair">
                   <PartnersMedia
                     slot="home-story-craft-large"
-                    alt="Craft and care aboard Hathor"
+                    alt={t.alts.craft}
                     className="pn-bridge__media"
                     ratio="16 / 10"
                   />
@@ -427,14 +405,14 @@ export function PartnersPageContent() {
                     ratio="4 / 5"
                     front="home-alt-highlights"
                     back="home-wheel-image"
-                    frontAlt="Nile highlights from Hathor"
-                    backAlt="Wheel and river aboard Hathor"
+                    frontAlt={t.alts.highlights}
+                    backAlt={t.alts.wheel}
                   />
                 </div>
                 <p className="pn-bridge__phrase pn-display pn-display--l">
-                  Travel, thoughtfully
+                  {t.bridge[0]}
                   <br />
-                  connected.
+                  {t.bridge[1]}
                 </p>
               </Scene>
             </div>
@@ -444,69 +422,60 @@ export function PartnersPageContent() {
         <section className="pn-epilogue" id="converse">
           <header className="pn-epilogue__head">
             <h2 className="pn-display pn-display--l" data-anima-title>
-              <span className="pn-line">
-                <AnimaSplitLine line={0}>Begin a conversation</AnimaSplitLine>
-              </span>
-              <span className="pn-line">
-                <AnimaSplitLine line={1}>Collaborate with</AnimaSplitLine>
-              </span>
-              <span className="pn-line">
-                <AnimaSplitLine line={2}>Hathor</AnimaSplitLine>
-              </span>
+              {t.epilogue.map((line, index) => (
+                <span className="pn-line" key={index}>
+                  <AnimaSplitLine line={index}>{line}</AnimaSplitLine>
+                </span>
+              ))}
             </h2>
           </header>
 
           <div className="pn-epilogue__pair">
             <PartnersMedia
               slot="room-royal"
-              alt="Royal Suite aboard Hathor"
+              alt={t.alts.royal}
               ratio="668 / 554"
             />
             <PartnersMedia
               slot="about-dining"
-              alt="Dining aboard Hathor"
+              alt={t.alts.dining}
               ratio="668 / 720"
             />
           </div>
 
           <div className="pn-epilogue__board">
             <div className="pn-epilogue__statement">
-              <p className="pn-edit pn-edit--l">
-                For collaborations, representation, and considered travel
-                partnerships, speak with the Hathor team in Cairo.
-              </p>
+              <p className="pn-edit pn-edit--l">{t.statement}</p>
               <div className="pn-epilogue__pills">
-                <Link href="/contact" className="pn-btn pn-btn--solid">
-                  <span>Contact Hathor</span>
+                <Link href={localHref("/contact")} className="pn-btn pn-btn--solid">
+                  <span>{t.contactHathor}</span>
                 </Link>
                 <BookNowTrigger className="pn-btn">
-                  <span>Book a voyage</span>
+                  <span>{t.bookVoyage}</span>
                 </BookNowTrigger>
               </div>
-              <p className="pn-meta-copy">
-                Representation and trade enquiries · Cairo office
-              </p>
+              <p className="pn-meta-copy">{t.epilogueMeta}</p>
             </div>
 
             <aside className="pn-epilogue__card">
               <PartnersMedia
                 slot="contact-hero"
-                alt="Hathor Dahabiya on the Nile"
+                alt={t.alts.card}
                 className="pn-epilogue__card-media"
                 ratio="356 / 460"
               />
-              <h3 className="pn-display">Partner circle</h3>
+              <h3 className="pn-display">{t.cardTitle}</h3>
               <p className="pn-epilogue__card-body">
-                Trusted names who share
+                {t.cardBody[0]}
                 <br />
-                our care for every guest
+                {t.cardBody[1]}
               </p>
               <div className="pn-epilogue__card-links">
-                <Link className="pn-link" href="/about">
-                  About Hathor
+                <Link className="pn-link" href={localHref("/about")}>
+                  {t.aboutHathor}
                 </Link>
-                <Link className="pn-link" href="/contact">
-                  Write to us
+                <Link className="pn-link" href={localHref("/contact")}>
+                  {t.writeToUs}
                 </Link>
               </div>
             </aside>
