@@ -151,12 +151,30 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
 
   function chooseMailbox(value: MailboxId | "all") {
     if (draft || savingHandler) return;
+    setBusy(true);
     setMailbox(value);
+    setFilter("all");
+    setSearch("");
+    setQuery("");
     setCursor(null);
     setMessages([]);
     selectMessage(null);
     setNotice(null);
     setEditingHandler(false);
+    setVersion(current => current + 1);
+  }
+
+  function chooseFilter(value: InboxFilter) {
+    setBusy(true);
+    setCursor(null);
+    setFilter(value);
+    setMessages([]);
+    selectMessage(null);
+    if (value === "all") {
+      setSearch("");
+      setQuery("");
+    }
+    setVersion(current => current + 1);
   }
 
   async function saveHandler(event: FormEvent) {
@@ -218,7 +236,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
         <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={Boolean(draft) || savingHandler} onClick={() => chooseMailbox("all")} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">ALL MAILBOXES</span><span className="emails-mailbox__handler">Administrator overview</span><span className="emails-mailbox__count">{mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread</span></button>
         {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count">{item.unread} unread · {item.total} total</span></button>)}
       </nav>
-      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} onClick={() => { setCursor(null); setFilter(item.value); selectMessage(null); }}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
+      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} onClick={() => chooseFilter(item.value)}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
       <form onSubmit={submitSearch} className="dashboard-inbox__toolbar">
         <label className="sr-only" htmlFor="inbox-search">Search name, email, or subject</label>
         <input id="inbox-search" className="admin-input" type="search" maxLength={120} value={search} onChange={event => setSearch(event.target.value)} placeholder="Search a name, email address, or subject…" />
@@ -234,7 +252,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
         <section className="card dashboard-inbox__list" aria-label="Email list" aria-busy={busy}>
           <header className="emails-list-header"><h2>{activeMailbox?.label ?? "ALL MAILBOXES"} · {filters.find(item => item.value === filter)?.label}</h2><span>{messages.length}{hasOlder ? "+" : ""} shown</span></header>
           <div className="emails-list-scroll" tabIndex={0} role="region" aria-label="Scrollable emails">
-          {!messages.length ? <div className="emails-empty"><Inbox size={30} aria-hidden /><p>{busy ? "Loading your emails…" : "No emails here yet"}</p><span>{query || filter !== "all" ? "Try a different search or choose All emails." : "Received messages and emails sent from this dashboard appear here."}</span></div> : null}
+          {!messages.length ? <div className="emails-empty"><Inbox size={30} aria-hidden /><p>{busy ? "Loading your emails…" : query ? "No emails match your search" : filter !== "all" ? `No ${filter} emails in ${activeMailbox?.label ?? "ALL MAILBOXES"}` : "No emails here yet"}</p><span>{query || filter !== "all" ? "Show all emails in this mailbox to remove search and status filters." : "Received messages and emails sent from this dashboard appear here."}</span>{!busy && (query || filter !== "all") ? <button type="button" className="btn-outline mt-4" onClick={() => chooseFilter("all")}>Show all {activeMailbox?.label ?? "mailbox"} emails</button> : null}</div> : null}
           <ol>
             {messages.map(message => {
               const address = contactOf(message);

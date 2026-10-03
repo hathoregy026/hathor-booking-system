@@ -60,6 +60,22 @@ async function main() {
   await processReceivedDashboardEmail({ ...event, data: { ...event.data, to: ["ceo@other.example"] } }, { query, request });
   assert.equal(reads, 2, "Untrusted domains must not trigger a fetch");
 
+  for (const mailbox of EMAIL_MAILBOXES) {
+    const routed: string[] = [];
+    const deliveryId = randomUUID();
+    const singleQuery = (async (sql: string, values: unknown[]) => {
+      if (sql.startsWith("SELECT")) return routed.map(mailboxId => ({ mailboxId }));
+      assert.equal(values[1], deliveryId);
+      routed.push(values[9] as string);
+      return [];
+    }) as typeof bookingQuery;
+    const singleEvent = { type: "email.received" as const, data: { email_id: deliveryId, to: [`Hathor <${mailbox.forwardingAddress}>`] } };
+    const singleRequest = async () => ({ ...await request(), id: deliveryId, to: ["Unrelated original recipient <external@example.com>"] });
+    await processReceivedDashboardEmail(singleEvent, { query: singleQuery, request: singleRequest });
+    await processReceivedDashboardEmail(singleEvent, { query: singleQuery, request: singleRequest });
+    assert.deepEqual(routed, [mailbox.id], "Each forwarding destination must arrive only in its matching group, regardless of original headers");
+  }
+
   const messageId = randomUUID();
   const deletionQuery = (async (sql: string) => {
     assert.ok(!/DELETE FROM|TRUNCATE|UPDATE "Booking"/.test(sql));

@@ -5,6 +5,7 @@ import pg from "pg";
 import { resolveDatabaseUrl } from "../lib/database-config";
 import { deleteDashboardEmail, fetchDashboardInbox, fetchInboxDetail, inboxQuerySchema, setInboxRead } from "../lib/dashboard-inbox";
 import type { bookingQuery } from "../lib/booking-database";
+import { EMAIL_MAILBOXES } from "../lib/email-mailboxes";
 
 async function main() {
   config({ path: ".env.local", quiet: true });
@@ -78,6 +79,18 @@ async function main() {
     assert.equal(await deleteDashboardEmail("general", general[0].id, query), true);
     assert.equal((await fetchDashboardInbox(inboxQuerySchema.parse({ mailbox: "ceo" }), query)).counts.all, 0);
     assert.equal((await client.query(`SELECT id FROM pg_temp."InboxMessage" WHERE id = $1`, [general[0].id])).rows.length, 1);
+    for (const mailbox of EMAIL_MAILBOXES) {
+      const ids = [randomUUID(), randomUUID(), randomUUID()];
+      await client.query(`INSERT INTO pg_temp."InboxMessage" (id, "resendEmailId", sender, recipient, subject, "bodyText", "createdAt", "readAt", direction, status, "mailboxId")
+        VALUES ($1, $1, 'partner@example.com', $4, 'Routing fixture unread', 'Synthetic body', '2026-10-03 12:00:00', NULL, 'INBOUND', 'RECEIVED', $5),
+          ($2, $2, 'partner@example.com', $4, 'Routing fixture read', 'Synthetic body', '2026-10-03 12:00:00', '2026-10-03 13:00:00', 'INBOUND', 'RECEIVED', $5),
+          ($3, $3, $4, 'partner@example.com', 'Routing fixture sent', 'Synthetic body', '2026-10-03 12:00:00', NULL, 'OUTBOUND', 'SENT', $5)`, [...ids, mailbox.address, mailbox.id]);
+      for (const [filter, expectedIds] of [["all", ids], ["unread", ids.slice(0, 1)], ["received", ids.slice(0, 2)], ["sent", ids.slice(2)]] as const) {
+        const page = await fetchDashboardInbox(inboxQuerySchema.parse({ mailbox: mailbox.id, filter, q: "Routing fixture" }), query);
+        assert.deepEqual(new Set(page.messages.map(message => message.id)), new Set(expectedIds), `${mailbox.label}: ${filter} must return only its matching emails`);
+        assert.ok(page.messages.every(message => message.mailboxId === mailbox.id));
+      }
+    }
     console.log("Inbox PostgreSQL tests passed: union, tied-timestamp pagination, literal search, detail binding, unread counts and read toggles. Only temporary synthetic tables used.");
   } finally {
     await client.query("ROLLBACK").catch(() => {});

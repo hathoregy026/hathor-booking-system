@@ -7,6 +7,9 @@ Priority order: CEO, ACC, SALES, RESERVATIONS, RECEPTION, INFO. Each mailbox has
 uppercase role, colour, handler name, unread count, and received/sent history.
 Existing general mail and booking conversations belong to RESERVATIONS. Controls
 stay fixed while the message list and reader scroll independently.
+Selecting a mailbox resets search and status to All emails. Selecting an already
+active mailbox or status refreshes its results instead of leaving a blank list.
+All emails and the empty-state recovery button also clear an applied search.
 
 Website Contact forms are saved directly in INFO after the team notification is
 accepted, without depending on Zoho forwarding. The sender is the visitor's email,

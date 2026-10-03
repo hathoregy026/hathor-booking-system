@@ -36,9 +36,9 @@ async function main() {
       const handlers: Record<string, string> = {};
       const groupedRows = EMAIL_MAILBOXES.flatMap(mailbox => Array.from({ length: 30 }, (_, index) => ({
         id: randomUUID(), source: "general", mailboxId: mailbox.id, bookingId: null, sender: `partner-${index}@example.com`,
-        recipient: mailbox.address, correspondentName: `Nile Partner ${index + 1}`, direction: "INBOUND", status: "RECEIVED",
+        recipient: mailbox.address, correspondentName: `Nile Partner ${index + 1}`, direction: index % 3 === 2 ? "OUTBOUND" : "INBOUND", status: index % 3 === 2 ? "SENT" : "RECEIVED",
         subject: `${mailbox.label} inquiry ${index + 1}`, preview: "Please help with this inquiry.", attachmentCount: 0,
-        createdAt: "2026-10-03T12:00:00.000Z", readAt: null,
+        createdAt: "2026-10-03T12:00:00.000Z", readAt: index % 3 === 1 ? "2026-10-03T13:00:00.000Z" : null,
       })));
       let searches = 0;
       let older = 0;
@@ -60,10 +60,13 @@ async function main() {
         if (url.pathname === "/app.js") return route.fulfill({ contentType: "text/javascript", body: bundle.outputFiles[0].text });
         if (url.pathname === "/style.css") return route.fulfill({ contentType: "text/css", body: css });
         if (url.pathname === "/api/admin/inbox") {
-          const mailboxes = EMAIL_MAILBOXES.map(item => ({ ...item, handlerName: handlers[item.id] ?? "", total: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" ? sentMessage ? 2 : 1 : 0, unread: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" && !read ? 1 : 0 }));
+          const mailboxes = EMAIL_MAILBOXES.map(item => ({ ...item, handlerName: handlers[item.id] ?? "", total: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" ? sentMessage ? 2 : 1 : 0, unread: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id) && row.direction === "INBOUND" && !row.readAt).length : item.id === "reservations" && !read ? 1 : 0 }));
           if (grouped) {
             const rows = groupedRows.filter(row => !deleted.has(row.id) && (url.searchParams.get("mailbox") === "all" || row.mailboxId === url.searchParams.get("mailbox")));
-            return route.fulfill({ json: { messages: url.searchParams.get("filter") === "sent" ? [] : rows.slice(0, 25), hasOlder: false, unreadCount: rows.length, counts: { all: rows.length, unread: rows.length, received: rows.length, sent: 0 }, mailboxes } });
+            const filter = url.searchParams.get("filter");
+            const query = url.searchParams.get("q")?.toLowerCase();
+            const filtered = rows.filter(row => (!query || row.subject.toLowerCase().includes(query)) && (filter === "all" || (filter === "sent" ? row.direction === "OUTBOUND" : row.direction === "INBOUND" && (filter !== "unread" || !row.readAt))));
+            return route.fulfill({ json: { messages: filtered.slice(0, 25), hasOlder: false, unreadCount: rows.filter(row => row.direction === "INBOUND" && !row.readAt).length, counts: { all: rows.length, unread: rows.filter(row => row.direction === "INBOUND" && !row.readAt).length, received: rows.filter(row => row.direction === "INBOUND").length, sent: rows.filter(row => row.direction === "OUTBOUND").length }, mailboxes } });
           }
           if (url.searchParams.get("q")) searches += 1;
           if (url.searchParams.get("before")) older += 1;
@@ -171,7 +174,7 @@ async function main() {
       ]);
       assert.ok(searches > 0);
       await page.getByRole("group", { name: "Filter emails" }).getByRole("button", { name: /^Unread/ }).click();
-      await page.getByText("No emails here yet", { exact: true }).waitFor();
+      await page.getByText("No emails match your search", { exact: true }).waitFor();
       await page.getByRole("group", { name: "Filter emails" }).getByRole("button", { name: /^Received/ }).click();
       await page.getByRole("button", { name: /A question about our Nile voyage/ }).waitFor();
       const receivedColor = await page.locator('.dashboard-inbox__message[data-tone="received"]').evaluate(element => getComputedStyle(element).borderLeftColor);
@@ -216,8 +219,47 @@ async function main() {
         ]);
         await page.waitForFunction(() => document.querySelector('section[aria-label="Email list"]')?.getAttribute("aria-busy") === "false");
         assert.ok((await page.locator(".emails-message__top .emails-mailbox-chip").allTextContents()).every(value => value === mailbox.label));
+        const filterButtons = page.getByRole("group", { name: "Filter emails" });
+        assert.equal(await filterButtons.getByRole("button", { name: /^All emails/ }).getAttribute("aria-pressed"), "true", "Switching mailboxes must remove previous status filters");
+        assert.ok(await page.locator(".dashboard-inbox__message").count());
+        for (const filter of ["Unread", "Received", "Sent", "All emails"]) {
+          await Promise.all([
+            page.waitForResponse(response => new URL(response.url()).pathname === "/api/admin/inbox" && new URL(response.url()).searchParams.get("filter") === (filter === "All emails" ? "all" : filter.toLowerCase())),
+            filterButtons.getByRole("button", { name: new RegExp(`^${filter}`) }).click(),
+          ]);
+          await page.waitForFunction(() => document.querySelector('section[aria-label="Email list"]')?.getAttribute("aria-busy") === "false");
+          const tones = await page.locator(".dashboard-inbox__message").evaluateAll(elements => elements.map(element => element.getAttribute("data-tone")));
+          assert.ok(tones.length, `Mailbox ${mailbox.label} must have ${filter} fixture emails`);
+          if (filter === "Unread") assert.ok(tones.every(tone => tone === "unread"));
+          if (filter === "Received") assert.ok(tones.every(tone => tone === "unread" || tone === "received"));
+          if (filter === "Sent") assert.ok(tones.every(tone => tone === "sent"));
+        }
+        await Promise.all([
+          page.waitForResponse(response => new URL(response.url()).pathname === "/api/admin/inbox" && new URL(response.url()).searchParams.get("mailbox") === mailbox.id),
+          navigation.getByRole("button", { name: new RegExp(`^${mailbox.label} `) }).click(),
+        ]);
+        await page.locator(".dashboard-inbox__message").first().waitFor();
+        assert.ok(await page.locator(".dashboard-inbox__message").count(), "Clicking an already-selected mailbox must not blank the list");
+        await filterButtons.getByRole("button", { name: /^Sent/ }).click();
       }
+      await page.getByRole("searchbox", { name: "Search name, email, or subject" }).fill("no fixture matches");
+      await page.getByRole("button", { name: "Search", exact: true }).click();
+      await page.getByText("No emails match your search", { exact: true }).waitFor();
+      await page.getByRole("button", { name: "Show all INFO emails", exact: true }).click();
+      await page.getByRole("button", { name: /INFO inquiry 1/ }).first().waitFor();
+      assert.equal(await page.getByRole("searchbox", { name: "Search name, email, or subject" }).inputValue(), "");
+      await Promise.all([
+        page.waitForResponse(response => new URL(response.url()).pathname === "/api/admin/inbox" && new URL(response.url()).searchParams.get("mailbox") === "info" && new URL(response.url()).searchParams.get("filter") === "all"),
+        page.getByRole("group", { name: "Filter emails" }).getByRole("button", { name: /^All emails/ }).click(),
+      ]);
+      await page.locator(".dashboard-inbox__message").first().waitFor();
+      assert.ok(await page.locator(".dashboard-inbox__message").count(), "Clicking the current status filter must refresh, not blank the list");
+      await page.getByRole("searchbox", { name: "Search name, email, or subject" }).fill("no fixture matches");
+      await page.getByRole("button", { name: "Search", exact: true }).click();
+      await page.getByText("No emails match your search", { exact: true }).waitFor();
       await navigation.getByRole("button", { name: /^CEO / }).click();
+      await page.getByRole("button", { name: /CEO inquiry 1/ }).first().waitFor();
+      assert.equal(await page.getByRole("searchbox", { name: "Search name, email, or subject" }).inputValue(), "", "Search from a previous mailbox must not hide the newly chosen mailbox");
       await page.getByRole("button", { name: "Add handler name", exact: true }).click();
       await page.getByLabel("Who handles CEO?").fill("Nile Director");
       await page.getByRole("button", { name: "Save name", exact: true }).click();
