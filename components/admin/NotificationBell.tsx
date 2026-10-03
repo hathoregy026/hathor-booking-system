@@ -3,234 +3,140 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { Bell, Loader2, Ticket } from "lucide-react";
-import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import { Bell, Loader2, Mail, Ticket } from "lucide-react";
+import { adminFetch } from "@/lib/admin-fetch";
 import { parseBookingCustomerName } from "@/lib/booking-guest-details";
-import { formatPrice } from "@/lib/client-dates";
+import { ADMIN_ACTIVITY_EVENT, NotificationTracker, notificationHref, notificationSnapshotSchema, type NotificationSnapshot } from "@/lib/admin-notification-types";
+import { useToast } from "./ToastProvider";
 
-type NotificationItem = {
-  id: string;
-  customerName: string;
-  cruiseName: string;
-  createdAt: string;
-  totalPriceCents: number;
-};
-
-const POLL_VISIBLE_MS = 300_000;
-const POLL_HIDDEN_MS = 600_000;
-const INITIAL_DELAY_MS = 5_000;
+const POLL_VISIBLE_MS = 15_000;
+const POLL_HIDDEN_MS = 60_000;
 
 export function NotificationBell() {
+  const { showToast } = useToast();
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState<NotificationItem[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [snapshot, setSnapshot] = useState<NotificationSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [marking, setMarking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const inFlightRef = useRef(false);
-  const intervalRef = useRef<number | null>(null);
+  const requestRef = useRef<AbortController | null>(null);
+  const trackerRef = useRef(new NotificationTracker());
+  const versionRef = useRef(0);
+  const retryAtRef = useRef(0);
+  const expiredRef = useRef(false);
 
   const loadNotifications = useCallback(async () => {
-    if (inFlightRef.current) return;
-    inFlightRef.current = true;
-
+    if (requestRef.current || expiredRef.current || Date.now() < retryAtRef.current) return;
+    const controller = new AbortController();
+    requestRef.current = controller;
+    const version = versionRef.current;
     try {
-      const response = await adminFetch("/api/admin/notifications");
-      if (!response.ok) return;
-
-      const data = (await response.json()) as {
-        unreadCount: number;
-        items: NotificationItem[];
-      };
-      setUnreadCount(data.unreadCount);
-      setItems(data.items);
-    } catch (error) {
-      if (!isTransientFetchError(error)) {
-        console.error("Failed to load notifications:", error);
+      const response = await adminFetch("/api/admin/notifications", { signal: controller.signal, cache: "no-store" });
+      if (response.status === 401) {
+        expiredRef.current = true;
+        setError("Your session has expired. Sign in again to receive alerts.");
+        return;
+      }
+      if (response.status === 429) {
+        const delay = Number(response.headers.get("Retry-After"));
+        retryAtRef.current = Date.now() + Math.min(300, Math.max(15, Number.isFinite(delay) ? delay : 60)) * 1000;
+      }
+      if (!response.ok) throw new Error("Notifications unavailable");
+      const data = notificationSnapshotSchema.parse(await response.json());
+      if (controller.signal.aborted || version !== versionRef.current) return;
+      setSnapshot(data);
+      setError(null);
+      retryAtRef.current = 0;
+      const changes = trackerRef.current.update(data.activity);
+      if (changes.bookings || changes.emails) {
+        window.dispatchEvent(new CustomEvent(ADMIN_ACTIVITY_EVENT, { detail: changes }));
+        showToast("info", changes.bookings && changes.emails ? "New booking requests and emails received. Open the notification bell to view them."
+          : changes.bookings ? "New booking request received. Open the notification bell to view it." : "New email received. Open the notification bell to read it.");
+      }
+    } catch {
+      if (!controller.signal.aborted && version === versionRef.current) {
+        retryAtRef.current = Math.max(retryAtRef.current, Date.now() + POLL_VISIBLE_MS);
+        setError("Alerts are temporarily unavailable. Retrying automatically.");
       }
     } finally {
-      inFlightRef.current = false;
-      setIsLoading(false);
+      if (requestRef.current === controller) requestRef.current = null;
+      if (!controller.signal.aborted) setIsLoading(false);
     }
-  }, []);
+  }, [showToast]);
 
   useEffect(() => {
-    const initialTimer = window.setTimeout(loadNotifications, INITIAL_DELAY_MS);
-
-    const schedulePoll = () => {
-      if (intervalRef.current !== null) {
-        window.clearInterval(intervalRef.current);
-      }
-
-      const intervalMs =
-        document.visibilityState === "visible"
-          ? POLL_VISIBLE_MS
-          : POLL_HIDDEN_MS;
-
-      intervalRef.current = window.setInterval(loadNotifications, intervalMs);
+    const initial = window.setTimeout(() => void loadNotifications(), 0);
+    let interval: number;
+    const schedule = () => {
+      window.clearInterval(interval);
+      interval = window.setInterval(() => void loadNotifications(), document.visibilityState === "visible" ? POLL_VISIBLE_MS : POLL_HIDDEN_MS);
     };
-
-    schedulePoll();
-
-    const handleVisibility = () => {
-      schedulePoll();
-    };
-
-    document.addEventListener("visibilitychange", handleVisibility);
+    const wake = () => { if (document.visibilityState === "visible") void loadNotifications(); };
+    const visibility = () => { schedule(); wake(); };
+    schedule();
+    window.addEventListener("focus", wake);
+    window.addEventListener("online", wake);
+    document.addEventListener("visibilitychange", visibility);
     return () => {
-      window.clearTimeout(initialTimer);
-      document.removeEventListener("visibilitychange", handleVisibility);
-      if (intervalRef.current !== null) {
-        window.clearInterval(intervalRef.current);
-      }
+      window.clearTimeout(initial);
+      window.clearInterval(interval);
+      requestRef.current?.abort();
+      window.removeEventListener("focus", wake);
+      window.removeEventListener("online", wake);
+      document.removeEventListener("visibilitychange", visibility);
     };
   }, [loadNotifications]);
 
   useEffect(() => {
     if (!open) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    const outside = (event: MouseEvent) => { if (panelRef.current && !panelRef.current.contains(event.target as Node)) setOpen(false); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", outside);
+    document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("mousedown", outside); document.removeEventListener("keydown", escape); };
   }, [open]);
 
-  const handleToggle = async () => {
-    const nextOpen = !open;
-    setOpen(nextOpen);
+  async function markBookingsSeen() {
+    if (!snapshot || marking || !snapshot.bookingCount) return;
+    setMarking(true);
+    versionRef.current += 1;
+    try {
+      const response = await adminFetch("/api/admin/notifications", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ seenThrough: snapshot.bookingSeenThrough }),
+      });
+      if (!response.ok) throw new Error();
+      setSnapshot(current => current ? { ...current, bookingCount: 0, unreadCount: current.emailCount, items: current.items.filter(item => item.kind === "email") } : current);
+      setError(null);
+      void loadNotifications();
+    } catch { setError("Booking alerts could not be cleared. Please try again."); }
+    finally { setMarking(false); }
+  }
 
-    if (nextOpen && unreadCount > 0) {
-      try {
-        const response = await adminFetch("/api/admin/notifications", {
-          method: "POST",
-        });
-        if (response.ok) {
-          setUnreadCount(0);
-        }
-      } catch {
-        // Keep badge count if mark-read fails
-      }
-    }
-  };
-
+  const unreadCount = snapshot?.unreadCount ?? 0;
   return (
     <div className="relative" ref={panelRef}>
-      <button
-        type="button"
-        onClick={handleToggle}
+      <button type="button" onClick={() => { setOpen(current => !current); if (!open) void loadNotifications(); }}
         className="admin-header-icon-btn relative transition-colors"
-        style={{
-          borderColor: open ? "var(--glass-accent-border)" : "var(--border)",
-          background: open ? "var(--bg-glass-hover)" : "var(--bg-glass)",
-          color: "var(--text-secondary)",
-        }}
-        aria-label={
-          unreadCount > 0
-            ? `${unreadCount} new booking notifications`
-            : "Notifications"
-        }
-        aria-expanded={open}
-      >
+        style={{ borderColor: open ? "var(--glass-accent-border)" : "var(--border)", background: open ? "var(--bg-glass-hover)" : "var(--bg-glass)", color: error ? "var(--warning)" : "var(--text-secondary)" }}
+        aria-label={unreadCount ? `${unreadCount} unread booking and email notifications` : error ? "Notifications unavailable" : "Notifications"} aria-expanded={open}>
         <Bell className="h-4 w-4" aria-hidden />
-        {unreadCount > 0 && (
-          <span
-            className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white"
-            style={{
-              background: "var(--glass-accent-bg)",
-              border: "1px solid var(--glass-accent-border)",
-              boxShadow: "var(--glass-accent-shadow)",
-            }}
-          >
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
-        )}
+        {unreadCount > 0 ? <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white" style={{ background: "var(--glass-accent-bg)", border: "1px solid var(--glass-accent-border)", boxShadow: "var(--glass-accent-shadow)" }}>{unreadCount > 9 ? "9+" : unreadCount}</span> : null}
       </button>
-
-      {open && (
-        <div
-          className="admin-notification-panel fixed inset-x-4 top-[4.5rem] z-[60] mx-auto max-h-[min(70vh,32rem)] w-auto overflow-hidden p-0 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(100vw-2rem,22rem)]"
-          role="dialog"
-          aria-label="Booking notifications"
-        >
-          <div className="admin-notification-panel__header flex items-center justify-between px-4 py-3">
-            <p className="text-sm font-semibold">New bookings</p>
-            <Link
-              href="/admin/bookings"
-              className="text-xs font-medium"
-              style={{ color: "var(--accent)" }}
-              onClick={() => setOpen(false)}
-            >
-              View all
-            </Link>
-          </div>
-
-          <div className="admin-notification-panel__list max-h-80 overflow-y-auto">
-            {isLoading ? (
-              <div
-                className="flex items-center justify-center gap-2 py-10 text-sm"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                Loading...
-              </div>
-            ) : items.length === 0 ? (
-              <div className="px-4 py-10 text-center">
-                <Ticket
-                  className="mx-auto mb-2 h-8 w-8"
-                  style={{ color: "var(--text-muted)" }}
-                  aria-hidden
-                />
-                <p className="text-sm font-medium">No new bookings</p>
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  New booking requests will appear here
-                </p>
-              </div>
-            ) : (
-              <ul>
-                {items.map((item) => (
-                  <li
-                    key={item.id}
-                    style={{ borderTop: "1px solid var(--border)" }}
-                  >
-                    <Link
-                      href={`/admin/bookings/${encodeURIComponent(item.id)}`}
-                      className="block px-4 py-3 transition-colors hover:bg-[color-mix(in_srgb,var(--accent)_6%,transparent)]"
-                      onClick={() => setOpen(false)}
-                    >
-                      <p className="text-sm font-medium">
-                        {parseBookingCustomerName(item.customerName).guestName}
-                      </p>
-                      <p
-                        className="mt-0.5 text-xs"
-                        style={{ color: "var(--text-secondary)" }}
-                      >
-                        {item.cruiseName} · {formatPrice(item.totalPriceCents)}
-                      </p>
-                      <p
-                        className="mt-1 text-[11px]"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        {formatDistanceToNow(parseISO(item.createdAt), {
-                          addSuffix: true,
-                        })}
-                      </p>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+      {open ? <div className="admin-notification-panel fixed inset-x-4 top-[4.5rem] z-[60] mx-auto max-h-[min(70vh,32rem)] w-auto overflow-hidden p-0 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(100vw-2rem,24rem)]" role="dialog" aria-label="Booking and email notifications">
+        <div className="admin-notification-panel__header px-4 py-3"><p className="text-sm font-semibold">Bookings & emails</p><p className="mt-1 text-xs text-muted" aria-live="polite">{snapshot?.bookingCount ?? 0} new requests · {snapshot?.emailCount ?? 0} unread emails</p></div>
+        <div className="flex flex-wrap gap-4 border-t px-4 py-3 text-xs" style={{ borderColor: "var(--border)", color: "var(--accent)" }}><Link href="/admin/bookings" onClick={() => setOpen(false)}>View bookings</Link><Link href="/admin/inbox" onClick={() => setOpen(false)}>View emails</Link>{snapshot?.bookingCount ? <button type="button" disabled={marking} onClick={() => void markBookingsSeen()}>{marking ? "Clearing…" : "Clear booking alerts"}</button> : null}</div>
+        {error ? <p className="px-4 py-3 text-xs" role="status" style={{ color: "var(--warning)" }}>{error}</p> : null}
+        <div className="admin-notification-panel__list max-h-72 overflow-y-auto">
+          {isLoading ? <div className="flex items-center justify-center gap-2 py-10 text-sm text-muted"><Loader2 className="h-4 w-4 animate-spin" aria-hidden />Loading…</div>
+            : !snapshot?.items.length ? <div className="px-4 py-8 text-center"><Bell className="mx-auto mb-2 h-7 w-7 text-muted" aria-hidden /><p className="text-sm font-medium">{error ? "Waiting for connection" : "You’re up to date"}</p><p className="mt-1 text-xs text-muted">New booking requests and received emails appear here automatically.</p></div>
+            : <ul>{snapshot.items.map(item => <li key={`${item.kind}/${item.source}/${item.id}`} style={{ borderTop: "1px solid var(--border)" }}><Link href={notificationHref(item)} onClick={() => setOpen(false)} className="flex gap-3 px-4 py-3 transition-colors hover:bg-[color-mix(in_srgb,var(--accent)_6%,transparent)]">
+              {item.kind === "booking" ? <Ticket className="mt-1 h-4 w-4 shrink-0" style={{ color: "var(--accent)" }} aria-hidden /> : <Mail className="mt-1 h-4 w-4 shrink-0" style={{ color: "var(--success)" }} aria-hidden />}
+              <div className="min-w-0"><p className="text-[10px] text-muted">{item.kind === "booking" ? "Booking request" : item.source === "booking" ? "Booking reply" : "Received email"}</p><p className="break-words text-sm font-medium">{item.kind === "booking" ? parseBookingCustomerName(item.name).guestName : item.name}</p><p className="mt-0.5 break-words text-xs text-muted">{item.description || "(No subject)"}</p><p className="mt-1 text-[11px] text-muted">{formatDistanceToNow(parseISO(item.createdAt), { addSuffix: true })}</p></div>
+            </Link></li>)}</ul>}
         </div>
-      )}
+        <p className="border-t px-4 py-3 text-[11px] text-muted" style={{ borderColor: "var(--border)" }}>Checks every 15 seconds while visible. Emails stay unread until you mark them read.</p>
+      </div> : null}
     </div>
   );
 }

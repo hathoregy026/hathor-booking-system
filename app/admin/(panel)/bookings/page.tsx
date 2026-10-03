@@ -9,6 +9,7 @@ import { BookingActionDialog, type BookingActionKind } from "@/components/admin/
 import { useToast } from "@/components/admin/ToastProvider";
 import type { AdminBookingDto, AdminBookingStage } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
+import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
 
 type StageFilter = "all" | "new" | "invoiced" | "confirmed" | "closed" | "other";
 type ViewMode = "active" | "bin";
@@ -69,13 +70,12 @@ function AdminBookingsPageInner() {
     router.replace(qs ? `/admin/bookings?${qs}` : "/admin/bookings");
   };
 
-  const loadBookings = useCallback(async () => {
+  const loadBookings = useCallback(async (silent = false) => {
     const loadId = ++loadIdRef.current;
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
-    setIsLoading(true);
-    setLoadFailed(false);
+    if (!silent) { setIsLoading(true); setLoadFailed(false); }
 
     for (let attempt = 0; ; attempt += 1) {
       try {
@@ -84,9 +84,12 @@ function AdminBookingsPageInner() {
         if (loadId !== loadIdRef.current) return;
         const data = await response.json();
         if (!response.ok) throw new Error(data.error ?? "Failed to load bookings");
-        setBookings(Array.isArray(data.bookings) ? data.bookings : []);
+        const nextBookings: AdminBookingDto[] = Array.isArray(data.bookings) ? data.bookings : [];
+        setBookings(nextBookings);
+        setLoadFailed(false);
         setLoadedAt(Date.now());
-        setSelectedIds(new Set());
+        if (silent) setSelectedIds(current => new Set([...current].filter(id => nextBookings.some(booking => booking.id === id))));
+        else setSelectedIds(new Set());
         setIsLoading(false);
         return;
       } catch (err) {
@@ -95,9 +98,9 @@ function AdminBookingsPageInner() {
           await new Promise((resolve) => setTimeout(resolve, 800));
           continue;
         }
-        setLoadFailed(true);
+        if (!silent) setLoadFailed(true);
         setIsLoading(false);
-        showToast("error", err instanceof Error ? err.message : "Failed to load bookings");
+        if (!silent) showToast("error", err instanceof Error ? err.message : "Failed to load bookings");
         return;
       }
     }
@@ -106,6 +109,9 @@ function AdminBookingsPageInner() {
   useEffect(() => {
     void loadBookings(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
   }, [loadBookings]);
+
+  const refreshActivity = useCallback(() => { void loadBookings(loadedAt > 0); }, [loadBookings, loadedAt]);
+  useAdminActivityRefresh("bookings", refreshActivity, Boolean(dialog) || isBulkWorking || isLoading);
 
   const searched = useMemo(() => {
     const needle = query.trim().toLowerCase();

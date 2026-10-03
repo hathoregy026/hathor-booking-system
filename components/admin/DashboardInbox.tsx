@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
 import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, Inbox, Mail, Paperclip, Plus, RefreshCw, Search } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
@@ -16,7 +17,7 @@ const toneOf = (message: InboxSummary) => message.direction === "OUTBOUND" ? "se
 const contactOf = (message: InboxSummary) => message.direction === "OUTBOUND" ? message.recipient : message.sender;
 const statusOf = (message: InboxSummary) => message.direction !== "OUTBOUND" ? message.readAt ? "Received" : "Unread" : message.status === "SENT" ? "Sent" : message.status === "FAILED" ? "Not sent" : "Sending unconfirmed";
 
-export function DashboardInbox() {
+export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | null } = {}) {
   const [messages, setMessages] = useState<InboxSummary[]>([]);
   const [unread, setUnread] = useState(0);
   const [counts, setCounts] = useState<InboxCounts>({ all: 0, unread: 0, received: 0, sent: 0 });
@@ -36,8 +37,16 @@ export function DashboardInbox() {
   const [cursor, setCursor] = useState<InboxSummary | null>(null);
   const detailRef = useRef<HTMLElement>(null);
 
-  function refresh() { setCursor(null); setVersion(current => current + 1); }
+  const refresh = useCallback(() => { setCursor(null); setVersion(current => current + 1); }, []);
+  useAdminActivityRefresh("emails", refresh);
   function selectMessage(key: string | null) { setDetail(null); setDetailError(null); setSelected(key); }
+
+  useEffect(() => {
+    const [source, id] = requestedEmail?.split("/") ?? [];
+    if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) || (source !== "booking" && source !== "general")) return;
+    const timer = window.setTimeout(() => { setDetail(null); setDetailError(null); setSelected(`${source}/${id}`); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [requestedEmail]);
 
   useEffect(() => {
     const controller = new AbortController();
