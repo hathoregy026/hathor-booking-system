@@ -144,7 +144,7 @@ export function RoomDetailPage({
   const locale = usePublicLocale();
   const t = ROOMS_COPY[locale].detail;
   const localHref = useLocalizedHref();
-  const room = roomShowcaseIn(roomProp, locale);
+  const room = useMemo(() => roomShowcaseIn(roomProp, locale), [roomProp, locale]);
   const variant = folioVariantForRoomSlug(room.slug);
   const panels = roomFolioPanels(variant, locale);
   const collection =
