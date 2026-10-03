@@ -25,6 +25,8 @@ import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { stackedHeroLines } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHARTER_COPY } from "@/lib/i18n/charter-copy";
 
 /*
  * One photographic frame for the whole story: portrait 4:5 at one height
@@ -115,9 +117,10 @@ function Eyebrow({ children }: { children: ReactNode }) {
  */
 function AvailabilityButton() {
   const { openBooking } = useBookNowModal();
+  const label = CHARTER_COPY[usePublicLocale()].secondaryCta;
   return (
     <button type="button" className="chr-btn" onClick={() => openBooking()}>
-      <span>{CHARTER_PRIVATE.hero.secondaryCta}</span>
+      <span>{label}</span>
     </button>
   );
 }
@@ -171,26 +174,15 @@ function TitleLines({
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-const CHAPTERS = [
-  { href: "#charter-request", label: "Request" },
-  { href: "#vessel", label: "The vessel" },
-  { href: "#residence", label: "Residences" },
-  { href: "#passages", label: "Passages" },
-] as const;
+/* Chapter anchors; their labels come from the copy, in this order. */
+const CHAPTERS = ["#charter-request", "#vessel", "#residence", "#passages"] as const;
 
-/* What "the whole ship" means, counted. Capacity: 8 cabins × 2, 4 suites × 4. */
-const DEED = [
-  { figure: "1", label: "Private Dahabiya" },
-  { figure: "3", label: "Decks" },
-  { figure: "12", label: "Residences" },
-  { figure: "32", label: "Guests at most" },
-  { figure: "0", label: "Other guests" },
-] as const;
-
-const FREEDOM_WORDS = ["Privacy.", "Flexibility.", "Care."] as const;
-
-/* Which deck each residence category lives on (see the ship plan). */
-const RESIDENCE_DECKS = ["Lower deck", "Lower deck", "Main deck"] as const;
+/*
+ * What "the whole ship" means, counted. Capacity: 8 cabins × 2, 4 suites × 4.
+ * Labels (copy.deed) follow this order; so do the freedom words and the deck
+ * each residence category lives on (see the ship plan).
+ */
+const DEED_FIGURES = ["1", "3", "12", "32", "0"] as const;
 
 const PASSAGE_IMAGES = [
   "home-voyage-nile-majesty",
@@ -203,6 +195,8 @@ const PASSAGE_IMAGES = [
 ] as const;
 
 export function CharterPageContent() {
+  const t = CHARTER_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -244,7 +238,7 @@ export function CharterPageContent() {
 
   const requestButton = (
     <a className="chr-btn chr-btn--solid" href="#charter-request" onClick={goToHash}>
-      <span>{copy.hero.primaryCta}</span>
+      <span>{t.primaryCta}</span>
     </a>
   );
 
@@ -256,20 +250,20 @@ export function CharterPageContent() {
 
       {/* The site layout already provides <main>; this is the page's own wrapper. */}
       <div className="chr-main">
-        <section ref={runRef} className="chr-run" aria-label="Private charter aboard Hathor">
+        <section ref={runRef} className="chr-run" aria-label={t.runLabel}>
           <div className="chr-stage">
             <div ref={trackRef} className="chr-track">
               {/* 01 — The offer: the whole ship, drawn and counted */}
               <Scene className="chr-deed" aria-labelledby="charter">
                 <div className="chr-deed__top">
-                  <Eyebrow>{copy.hero.kicker}</Eyebrow>
-                  <nav className="chr-deed__chapters" aria-label="Charter chapters">
+                  <Eyebrow>{t.kicker}</Eyebrow>
+                  <nav className="chr-deed__chapters" aria-label={t.chaptersLabel}>
                     <ol>
-                      {CHAPTERS.map((item, index) => (
-                        <li key={item.href}>
-                          <a href={item.href} onClick={goToHash}>
+                      {CHAPTERS.map((href, index) => (
+                        <li key={href}>
+                          <a href={href} onClick={goToHash}>
                             <span>{pad(index + 1)}</span>
-                            {item.label}
+                            {t.chapters[index]}
                           </a>
                         </li>
                       ))}
@@ -284,41 +278,38 @@ export function CharterPageContent() {
                     className="chr-display chr-display--xl wt-page-hero"
                     lines={charterHeroLines}
                   />
-                  <p className="chr-deed__intro chr-support">
-                    Charter your own luxury Dahabiya — Hathor’s twelve cabins and suites, crew and chef —
-                    for a private Nile cruise in Egypt, from Luxor to Aswan, Dendera or Cairo.
-                  </p>
+                  <p className="chr-deed__intro chr-support">{t.deedIntro}</p>
                 </div>
 
                 <div className="chr-deed__pitch">
-                  <p className="chr-deed__lead chr-edit wt-page-body">{CHARTER_PAGE.hero.subtitle}</p>
+                  <p className="chr-deed__lead chr-edit wt-page-body">{t.lead}</p>
                   <div className="chr-actions">
                     {requestButton}
                     <AvailabilityButton />
                   </div>
                   <p className="chr-deed__cue">
                     <i />
-                    Scroll to come aboard
+                    {t.scrollCue}
                   </p>
                 </div>
 
                 <div className="chr-deed__plan">
                   <figure className="chr-deed__ship">
-                    <CharterShipProfile label="Hathor in profile: the sun deck, main deck and lower deck, all reserved for one party" />
+                    <CharterShipProfile label={t.shipLabel} />
                     <figcaption className="chr-deed__legend chr-meta">
                       <i aria-hidden="true" />
                       <span>
-                        Every deck
+                        {t.shipLegend[0]}
                         <br />
-                        reserved for your party
+                        {t.shipLegend[1]}
                       </span>
                     </figcaption>
                   </figure>
                   <dl className="chr-deed__ledger">
-                    {DEED.map((item) => (
-                      <div key={item.label}>
-                        <dt className="chr-meta">{item.label}</dt>
-                        <dd className="chr-edit">{item.figure}</dd>
+                    {DEED_FIGURES.map((figure, index) => (
+                      <div key={t.deed[index]}>
+                        <dt className="chr-meta">{t.deed[index]}</dt>
+                        <dd className="chr-edit">{figure}</dd>
                       </div>
                     ))}
                   </dl>
@@ -335,20 +326,20 @@ export function CharterPageContent() {
                     onReveal={scrollToTarget}
                   />
                   <p className="chr-request__desk">
-                    <span className="chr-meta">Prefer to talk</span>
+                    <span className="chr-meta">{t.preferToTalk}</span>
                     <a className="chr-link" href={copy.finale.phoneHref}>
                       {copy.finale.phone}
                     </a>
                     <a className="chr-link" href={copy.finale.whatsapp} target="_blank" rel="noopener noreferrer">
                       WhatsApp
                     </a>
-                    <span className="chr-meta">{copy.finale.hours}</span>
+                    <span className="chr-meta">{t.hours}</span>
                   </p>
                 </div>
                 {/* Shown only where the screen has room beside the form (see CSS). */}
                 <CharterMedia
                   slot="home-voyage-nile-majesty"
-                  alt="Hathor under way on the Nile"
+                  alt={t.requestPhotoAlt}
                   className="chr-request__photo chr-photo"
                 />
               </Scene>
@@ -360,18 +351,18 @@ export function CharterPageContent() {
                   axis="up"
                   front="charter-privacy"
                   back="home-split-courtyard"
-                  frontAlt="Private sun deck reserved for your party"
-                  backAlt="Life aboard Hathor"
+                  frontAlt={t.vow.frontAlt}
+                  backAlt={t.vow.backAlt}
                 />
                 <div className="chr-vow__copy chr-column" data-chr-reveal>
-                  <Eyebrow>Exclusive use of the Dahabiya</Eyebrow>
-                  <TitleLines id="chr-vow-title" lines={["The vessel", "is yours"]} />
-                  <p className="chr-vow__statement chr-edit">{copy.hero.subhead}</p>
-                  <p className="chr-meta">Luxor · Aswan · Dendera · Cairo</p>
+                  <Eyebrow>{t.vow.eyebrow}</Eyebrow>
+                  <TitleLines id="chr-vow-title" lines={t.vow.title} />
+                  <p className="chr-vow__statement chr-edit">{t.vow.statement}</p>
+                  <p className="chr-meta">{t.vow.places}</p>
                 </div>
                 <CharterMedia
                   slot="charter-hero"
-                  alt="Private Hathor Dahabiya charter on the Nile"
+                  alt={t.vow.photoAlt}
                   className="chr-photo"
                 />
               </Scene>
@@ -379,43 +370,44 @@ export function CharterPageContent() {
               {/* 04 — Every residence: one frame and its specification, three times */}
               <Scene className="chr-keys" id="residence" aria-labelledby="chr-keys-title">
                 <header className="chr-keys__head chr-column" data-chr-reveal>
-                  <Eyebrow>{copy.fleet.kicker}</Eyebrow>
-                  <TitleLines id="chr-keys-title" lines={["Every", "residence"]} />
-                  <p className="chr-support">{copy.fleet.intro}</p>
+                  <Eyebrow>{t.fleet.kicker}</Eyebrow>
+                  <TitleLines id="chr-keys-title" lines={t.fleet.title} />
+                  <p className="chr-support">{t.fleet.intro}</p>
                   <ul className="chr-keys__stats">
-                    {copy.fleet.stats.map((stat) => (
+                    {t.fleet.stats.map((stat) => (
                       <li key={stat} className="chr-meta">
                         {stat}
                       </li>
                     ))}
                   </ul>
-                  <p className="chr-support">{copy.fleet.outro}</p>
+                  <p className="chr-support">{t.fleet.outro}</p>
                 </header>
                 <div className="chr-keys__sheet">
                   {copy.fleet.cards.map((card, index) => {
+                    const words = t.fleet.cards[index] ?? card;
                     const count = card.capacity.match(/\d+/)?.[0] ?? "";
                     return (
                       <article key={card.title} className="chr-key">
-                        <CharterMedia slot={card.image} alt={card.title} className="chr-key__media chr-photo" />
+                        <CharterMedia slot={card.image} alt={words.title} className="chr-key__media chr-photo" />
                         <div className="chr-key__text" data-chr-reveal>
-                          <p className="chr-key__deck chr-meta">{RESIDENCE_DECKS[index]}</p>
+                          <p className="chr-key__deck chr-meta">{t.residenceDecks[index]}</p>
                           <div className="chr-key__name">
                             <span className="chr-key__count" aria-hidden="true">
                               {count}
                             </span>
-                            <h3 className="chr-display">{card.title}</h3>
+                            <h3 className="chr-display">{words.title}</h3>
                           </div>
                           <p className="chr-key__facts chr-meta">
-                            {card.capacity} · {card.detail}
+                            {words.capacity} · {words.detail}
                           </p>
-                          <p className="chr-support">{card.body}</p>
+                          <p className="chr-support">{words.body}</p>
                           <ul className="chr-key__amenities">
-                            {card.amenities.map((item) => (
+                            {words.amenities.map((item) => (
                               <li key={item}>{item}</li>
                             ))}
                           </ul>
-                          <Link className="chr-link" href={card.href}>
-                            {card.hrefLabel}
+                          <Link className="chr-link" href={localHref(card.href)}>
+                            {words.hrefLabel}
                           </Link>
                         </div>
                       </article>
@@ -427,59 +419,65 @@ export function CharterPageContent() {
               {/* 05 — Three freedoms: one frame, one word, one promise each */}
               <Scene className="chr-freedoms" id="promise" aria-labelledby="chr-freedoms-title">
                 <header className="chr-freedoms__head chr-column" data-chr-reveal>
-                  <Eyebrow>{copy.value.kicker}</Eyebrow>
+                  <Eyebrow>{t.value.kicker}</Eyebrow>
                   <h2 id="chr-freedoms-title" className="lx-sr">
-                    {copy.value.title}
+                    {t.value.title}
                   </h2>
-                  <p className="chr-support">{charter.benefitsIntro || copy.value.intro}</p>
+                  <p className="chr-support">{charter.benefitsIntro || t.value.intro}</p>
                 </header>
                 <ol className="chr-freedoms__row">
-                  {copy.value.pillars.map((pillar, index) => (
-                    <li key={pillar.title} className="chr-freedom">
-                      <CharterMedia slot={pillar.image} alt={pillar.title} className="chr-freedom__media chr-photo" />
-                      <div className="chr-freedom__caption" data-chr-reveal>
-                        <span className="chr-freedom__word chr-line" aria-hidden="true">
-                          <span className="chr-display">{FREEDOM_WORDS[index]}</span>
-                        </span>
-                        <div className="chr-freedom__copy">
-                          <span className="chr-freedom__n chr-edit">{pad(index + 1)}</span>
-                          <h3 className="chr-edit">{pillar.title}</h3>
-                          <p className="chr-support">{pillar.body}</p>
+                  {copy.value.pillars.map((pillar, index) => {
+                    const words = t.value.pillars[index] ?? pillar;
+                    return (
+                      <li key={pillar.title} className="chr-freedom">
+                        <CharterMedia slot={pillar.image} alt={words.title} className="chr-freedom__media chr-photo" />
+                        <div className="chr-freedom__caption" data-chr-reveal>
+                          <span className="chr-freedom__word chr-line" aria-hidden="true">
+                            <span className="chr-display">{t.freedomWords[index]}</span>
+                          </span>
+                          <div className="chr-freedom__copy">
+                            <span className="chr-freedom__n chr-edit">{pad(index + 1)}</span>
+                            <h3 className="chr-edit">{words.title}</h3>
+                            <p className="chr-support">{words.body}</p>
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ol>
               </Scene>
 
               {/* 06 — Days aboard: four equal frames on one line */}
               <Scene className="chr-days" aria-labelledby="chr-days-title">
                 <header className="chr-days__head chr-column" data-chr-reveal>
-                  <Eyebrow>{copy.experiences.kicker}</Eyebrow>
-                  <TitleLines id="chr-days-title" lines={["Crafted for", "your party", "alone"]} />
+                  <Eyebrow>{t.experiences.kicker}</Eyebrow>
+                  <TitleLines id="chr-days-title" lines={t.experiences.title} />
                 </header>
                 <ol className="chr-days__sheet">
-                  {copy.experiences.items.map((item, index) => (
-                    <li key={item.title} className="chr-day">
-                      <CharterMedia slot={item.image} alt={item.title} className="chr-day__media chr-photo" />
-                      <div className="chr-day__copy" data-chr-reveal>
-                        <span className="chr-meta">{pad(index + 1)}</span>
-                        <h3 className="chr-display">{item.title}</h3>
-                        <p className="chr-support">{item.body}</p>
-                      </div>
-                    </li>
-                  ))}
+                  {copy.experiences.items.map((item, index) => {
+                    const words = t.experiences.items[index] ?? item;
+                    return (
+                      <li key={item.title} className="chr-day">
+                        <CharterMedia slot={item.image} alt={words.title} className="chr-day__media chr-photo" />
+                        <div className="chr-day__copy" data-chr-reveal>
+                          <span className="chr-meta">{pad(index + 1)}</span>
+                          <h3 className="chr-display">{words.title}</h3>
+                          <p className="chr-support">{words.body}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ol>
               </Scene>
 
               {/* 07 — Choose a passage: the board fills in the request */}
               <Scene className="chr-passages" id="passages" aria-labelledby="chr-passages-title">
                 <header className="chr-passages__head chr-column" data-chr-reveal>
-                  <Eyebrow>{copy.passages.kicker}</Eyebrow>
-                  <TitleLines id="chr-passages-title" lines={["Choose", "your", "passage"]} />
-                  <p className="chr-support">{copy.passages.lead}</p>
+                  <Eyebrow>{t.passages.kicker}</Eyebrow>
+                  <TitleLines id="chr-passages-title" lines={t.passages.title} />
+                  <p className="chr-support">{t.passages.lead}</p>
                   <p className="chr-passages__pref chr-edit" aria-live="polite">
-                    Preferred · {preferredRoute}
+                    {t.preferred(t.place(preferredRoute))}
                   </p>
                 </header>
                 <div className="chr-passages__frame chr-photo" aria-hidden="true">
@@ -487,7 +485,7 @@ export function CharterPageContent() {
                     <CharterMedia
                       key={route}
                       slot={PASSAGE_IMAGES[index % PASSAGE_IMAGES.length]}
-                      alt=""
+                      alt={t.passages.imageAlt(t.place(route))}
                       className={`chr-passages__image${route === shownRoute ? " is-shown" : ""}`}
                     />
                   ))}
@@ -495,7 +493,7 @@ export function CharterPageContent() {
                 <div
                   className="chr-passages__board"
                   role="group"
-                  aria-label="Charter passages"
+                  aria-label={t.passages.label}
                   data-chr-reveal
                   onMouseLeave={() => setPreviewRoute(null)}
                 >
@@ -513,9 +511,9 @@ export function CharterPageContent() {
                         onBlur={() => setPreviewRoute(null)}
                       >
                         <span className="chr-passage__n chr-edit">{pad(index + 1)}</span>
-                        <span className="chr-passage__route chr-display">{route}</span>
+                        <span className="chr-passage__route chr-display">{t.place(route)}</span>
                         <span className="chr-passage__cta">
-                          {active ? "Selected · Request quote" : "Choose this passage"}
+                          {active ? t.passages.selected : t.passages.choose}
                         </span>
                       </button>
                     );
@@ -526,34 +524,37 @@ export function CharterPageContent() {
               {/* 08 — How it works: three steps, then the ship at work */}
               <Scene className="chr-steps" aria-labelledby="chr-steps-title">
                 <header className="chr-steps__head chr-column" data-chr-reveal>
-                  <Eyebrow>{copy.process.kicker}</Eyebrow>
-                  <TitleLines id="chr-steps-title" lines={["Three", "measured", "steps"]} />
+                  <Eyebrow>{t.process.kicker}</Eyebrow>
+                  <TitleLines id="chr-steps-title" lines={t.process.title} />
                   <div className="chr-actions">
                     <a className="chr-btn chr-btn--solid" href="#charter-request" onClick={goToHash}>
-                      <span>Begin step one</span>
+                      <span>{t.process.begin}</span>
                     </a>
                   </div>
                 </header>
                 <ol className="chr-steps__line" data-chr-reveal>
-                  {copy.process.steps.map((step) => (
-                    <li key={step.n} className="chr-step">
-                      <span className="chr-step__n chr-edit">{step.n}</span>
-                      <h3 className="chr-display">{step.title}</h3>
-                      <p className="chr-support">{step.body}</p>
-                    </li>
-                  ))}
+                  {copy.process.steps.map((step, index) => {
+                    const words = t.process.steps[index] ?? step;
+                    return (
+                      <li key={step.n} className="chr-step">
+                        <span className="chr-step__n chr-edit">{step.n}</span>
+                        <h3 className="chr-display">{words.title}</h3>
+                        <p className="chr-support">{words.body}</p>
+                      </li>
+                    );
+                  })}
                 </ol>
                 <FlipImage
                   className="chr-photo"
                   axis="right"
                   front="charter-rhythm"
                   back="charter-service"
-                  frontAlt="Unhurried sailing rhythm along the Nile"
-                  backAlt="Dedicated hospitality aboard Hathor"
+                  frontAlt={t.process.frontAlt}
+                  backAlt={t.process.backAlt}
                 />
                 <CharterMedia
                   slot="gastronomy-celebration"
-                  alt="Private celebration aboard Hathor"
+                  alt={t.process.celebrationAlt}
                   className="chr-photo"
                 />
               </Scene>
@@ -562,13 +563,13 @@ export function CharterPageContent() {
               <Scene className="chr-proof" aria-labelledby="chr-proof-title">
                 <CharterMedia
                   slot="home-story-way-of-life"
-                  alt="Life aboard a private Hathor charter"
+                  alt={t.trust.photoAlt}
                   className="chr-proof__portrait chr-photo"
                 />
                 <div className="chr-proof__voices chr-column" data-chr-reveal>
-                  <Eyebrow>{copy.trust.kicker}</Eyebrow>
-                  <TitleLines id="chr-proof-title" lines={["Quiet", "proof"]} />
-                  {copy.trust.quotes.map((item) => (
+                  <Eyebrow>{t.trust.kicker}</Eyebrow>
+                  <TitleLines id="chr-proof-title" lines={t.trust.title} />
+                  {t.trust.quotes.map((item) => (
                     <figure key={item.attribution} className="chr-quote">
                       <blockquote className="chr-edit">{item.quote}</blockquote>
                       <figcaption className="chr-meta">{item.attribution}</figcaption>
@@ -584,7 +585,7 @@ export function CharterPageContent() {
                   <div className="chr-actions">
                     {requestButton}
                     <a className="chr-btn" href={copy.finale.whatsapp} target="_blank" rel="noopener noreferrer">
-                      <span>Ask on WhatsApp</span>
+                      <span>{t.trust.askWhatsapp}</span>
                     </a>
                   </div>
                 </div>
@@ -596,22 +597,22 @@ export function CharterPageContent() {
         {/* Epilogue — a short closing: the request is already one step back */}
         <section className="chr-epilogue" aria-labelledby="chr-epilogue-title">
           <div className="chr-epilogue__copy" data-chr-reveal>
-            <Eyebrow>Private concierge</Eyebrow>
+            <Eyebrow>{t.epilogue.eyebrow}</Eyebrow>
             <h2 id="chr-epilogue-title" className="chr-display chr-display--l">
               <span className="chr-line">
-                <AnimaSplitLine line={0}>Your Journey,</AnimaSplitLine>
+                <AnimaSplitLine line={0}>{t.epilogue.lines[0]}</AnimaSplitLine>
               </span>{" "}
               <span className="chr-line">
-                <AnimaSplitLine line={1}>Redefined.</AnimaSplitLine>
+                <AnimaSplitLine line={1}>{t.epilogue.lines[1]}</AnimaSplitLine>
               </span>
             </h2>
-            <p className="chr-support">{charter.overviewIntro || copy.finale.body}</p>
+            <p className="chr-support">{charter.overviewIntro || t.epilogue.body}</p>
             <p className="chr-support">
-              Travelling as a couple or a small group? Join a{" "}
-              <Link className="chr-epilogue__voyages" href="/voyages">
-                scheduled Nile cruise
+              {t.epilogue.scheduled.before}{" "}
+              <Link className="chr-epilogue__voyages" href={localHref("/voyages")}>
+                {t.epilogue.scheduled.link}
               </Link>{" "}
-              aboard Hathor instead.
+              {t.epilogue.scheduled.after}
             </p>
             <div className="chr-actions chr-actions--grid">
               {requestButton}
@@ -620,7 +621,7 @@ export function CharterPageContent() {
                 <span>WhatsApp</span>
               </a>
               <a className="chr-btn" href={`mailto:${copy.finale.email}`}>
-                <span>Email</span>
+                <span>{t.epilogue.email}</span>
               </a>
             </div>
             <p className="chr-epilogue__desk">
@@ -630,14 +631,14 @@ export function CharterPageContent() {
               <a className="chr-link" href={`mailto:${copy.finale.email}`}>
                 {copy.finale.email}
               </a>
-              <span className="chr-meta">{copy.finale.hours}</span>
+              <span className="chr-meta">{t.hours}</span>
             </p>
           </div>
           <div className="chr-epilogue__photos">
-            <CharterMedia slot="home-story-dining" alt="Private dining aboard Hathor" className="chr-photo" />
+            <CharterMedia slot="home-story-dining" alt={t.epilogue.photoAlts[0]} className="chr-photo" />
             <CharterMedia
               slot="charter-rhythm"
-              alt="Private Hathor charter at dusk on the Nile"
+              alt={t.epilogue.photoAlts[1]}
               className="chr-photo"
             />
           </div>

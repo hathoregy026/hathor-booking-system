@@ -12,6 +12,8 @@ type HeroPages = TypographySettings["hero_pages"];
 const HERO_PAGES_IT: Partial<HeroPages> = {
   /* Three short lines, the ladder the cruises intro is drawn for. */
   cruises: { main: "Crociere\nin dahabiya", second: "sul Nilo" },
+  /* The charter page breaks each line into two-word phrases. */
+  charter: { main: "Charter privato\nin dahabiya", second: "Viaggio esclusivo" },
 };
 
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {

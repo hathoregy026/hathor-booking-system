@@ -14,6 +14,17 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  charter: {
+    benefits: [
+      "Massima privacy a bordo: nessun altro ospite, 100% privato",
+      "Equipaggio e chef dedicati",
+      "Sistemazioni e servizio di lusso",
+      "Itinerario su misura",
+    ],
+    benefitsIntro: "Prenoti l’intera dahabiya in esclusiva per il Suo gruppo e potrà contare su:",
+    overviewIntro:
+      "Noleggi la Sua dahabiya di lusso. Trasformi il Suo viaggio sul Nilo in un’esperienza privata.",
+  },
   cruises: {
     overviewTitle: "Le crociere in dahabiya",
     overviewIntro:
