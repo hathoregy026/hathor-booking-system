@@ -21,6 +21,8 @@ import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { stackedHeroLines } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { CONTACT_COPY } from "@/lib/i18n/contact-copy";
 
 function ContactMedia({
   slot,
@@ -96,49 +98,24 @@ function Eyebrow({ children }: { children: ReactNode }) {
   return <p className="ce-eyebrow">{children}</p>;
 }
 
+/*
+ * The four ways to reach the desk. Words (giant word, label, meta, call to
+ * action, and any value that is a sentence) come from CONTACT_COPY.channels,
+ * in this order; numbers, phone and email are the same in every language.
+ */
 const CHANNELS = [
-  {
-    number: "01",
-    word: "Visit",
-    label: "Company Address",
-    value: PUBLIC_CONTACT.address,
-    href: null,
-    meta: "Cairo office",
-  },
-  {
-    number: "02",
-    word: "Call",
-    label: "Call Us Hotline",
-    value: PUBLIC_CONTACT.phoneDisplay,
-    href: `tel:${PUBLIC_CONTACT.phone}`,
-    meta: "Direct line",
-    cta: "Call Now",
-  },
-  {
-    number: "03",
-    word: "Write",
-    label: "Email",
-    value: PUBLIC_CONTACT.email,
-    href: `mailto:${PUBLIC_CONTACT.email}`,
-    meta: "Reservations",
-    cta: "Email Us",
-  },
-  {
-    number: "04",
-    word: "Message",
-    label: "WhatsApp",
-    value: "Message us on WhatsApp",
-    href: PUBLIC_CONTACT.whatsappUrl,
-    meta: "Instant",
-    cta: "WhatsApp",
-    external: true,
-  },
+  { number: "01", value: null, href: null },
+  { number: "02", value: PUBLIC_CONTACT.phoneDisplay, href: `tel:${PUBLIC_CONTACT.phone}` },
+  { number: "03", value: PUBLIC_CONTACT.email, href: `mailto:${PUBLIC_CONTACT.email}` },
+  { number: "04", value: null, href: PUBLIC_CONTACT.whatsappUrl, external: true },
 ] as const;
 
 export function ContactPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const t = CONTACT_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const contact = pages.contact;
   const typography = useTypographySettings();
@@ -159,21 +136,21 @@ export function ContactPageContent() {
         <section
           ref={runRef}
           className="ce-run"
-          aria-label="Contact Hathor reservations"
+          aria-label={t.runLabel}
         >
           <div className="ce-stage">
             <div ref={trackRef} className="ce-track">
               {/* 01 — Intro panel */}
               <Scene className="ce-intro">
-                <nav className="ce-intro__nav" aria-label="Contact page sections">
-                  <a href="#write">Write</a>
-                  <a href="#channels">Reach</a>
-                  <a href="#hours">Hours</a>
-                  <Link href="/cruises-list">Cruises</Link>
+                <nav className="ce-intro__nav" aria-label={t.navLabel}>
+                  <a href="#write">{t.nav.write}</a>
+                  <a href="#channels">{t.nav.reach}</a>
+                  <a href="#hours">{t.nav.hours}</a>
+                  <Link href={localHref("/cruises-list")}>{t.nav.cruises}</Link>
                 </nav>
 
                 <div className="ce-intro__inner">
-                  <Eyebrow>Contact</Eyebrow>
+                  <Eyebrow>{t.eyebrow}</Eyebrow>
 
                   <div className="ce-intro__title" id="contact">
                     <h1 className="ce-display ce-display--xl wt-page-hero">
@@ -198,7 +175,7 @@ export function ContactPageContent() {
                 </p>
                 <p className="ce-intro__scroll">
                   <i />
-                  Scroll
+                  {t.scroll}
                 </p>
               </Scene>
 
@@ -206,7 +183,7 @@ export function ContactPageContent() {
               <Scene className="ce-lead">
                 <ContactMedia
                   slot="contact-hero"
-                  alt="Hathor reservations and Nile voyage"
+                  alt={t.alts.hero}
                   priority
                   className="ce-lead__main"
                   ratio="1279 / 960"
@@ -217,29 +194,29 @@ export function ContactPageContent() {
                   ratio="835 / 557"
                   front="about-hero"
                   back="room-royal"
-                  frontAlt="Hathor Dahabiya on the Nile"
-                  backAlt="Royal suite aboard Hathor Dahabiya"
+                  frontAlt={t.alts.boat}
+                  backAlt={t.alts.royal}
                 />
                 <p className="ce-lead__caption">
-                  <span>Aboard</span> Luxor — Aswan
+                  <span>{t.aboard}</span> {t.route}
                 </p>
               </Scene>
 
               {/* 03 — Manifesto: narrow meta column against a large lyrical statement */}
               <Scene className="ce-manifesto">
                 <div className="ce-manifesto__aside">
-                  <Eyebrow>A line open</Eyebrow>
+                  <Eyebrow>{t.manifestoEyebrow}</Eyebrow>
                 </div>
                 <div className="ce-manifesto__headline" data-anima-title>
                   <h2 className="ce-edit ce-edit--xl">
                     <span className="ce-line">
-                      <AnimaSplitLine line={0}>A private line</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>{t.manifesto[0]}</AnimaSplitLine>
                     </span>
                     <span className="ce-line">
-                      <AnimaSplitLine line={1}>that invites you</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>{t.manifesto[1]}</AnimaSplitLine>
                     </span>
                     <span className="ce-line ce-line--indent">
-                      <AnimaSplitLine line={2}>to begin the Nile</AnimaSplitLine>
+                      <AnimaSplitLine line={2}>{t.manifesto[2]}</AnimaSplitLine>
                     </span>
                   </h2>
                 </div>
@@ -248,29 +225,28 @@ export function ContactPageContent() {
               {/* 04 — Ledger: numbered channels, display word + detail */}
               <Scene className="ce-ledger" id="channels">
                 <div className="ce-ledger__head">
-                  <Eyebrow>Reach us</Eyebrow>
-                  <p className="ce-meta-copy">
-                    Four ways to begin a conversation with our reservations desk
-                    in Cairo.
-                  </p>
+                  <Eyebrow>{t.reachEyebrow}</Eyebrow>
+                  <p className="ce-meta-copy">{t.reachIntro}</p>
                 </div>
 
                 <ol className="ce-ledger__list">
-                  {CHANNELS.map((channel) => {
+                  {CHANNELS.map((channel, index) => {
                     const isExternal = "external" in channel;
-                    const cta = "cta" in channel ? channel.cta : null;
+                    const words = t.channels[index];
+                    const cta = words.cta ?? null;
+                    const value = channel.value ?? words.value ?? t.address;
 
                     return (
                       <li key={channel.number} className="ce-row">
                         <span className="ce-row__num">{channel.number}</span>
 
                         <h3 className="ce-row__word ce-display">
-                          {channel.word}
+                          {words.word}
                         </h3>
 
                         <div className="ce-row__detail">
                           <p className="ce-row__label">
-                            {channel.meta} · {channel.label}
+                            {words.meta} · {words.label}
                           </p>
                           {channel.href ? (
                             <a
@@ -279,10 +255,10 @@ export function ContactPageContent() {
                               target={isExternal ? "_blank" : undefined}
                               rel={isExternal ? "noopener noreferrer" : undefined}
                             >
-                              {channel.value}
+                              {value}
                             </a>
                           ) : (
-                            <p className="ce-row__value">{channel.value}</p>
+                            <p className="ce-row__value">{value}</p>
                           )}
                         </div>
 
@@ -308,10 +284,10 @@ export function ContactPageContent() {
               <Scene className="ce-hours" id="hours">
                 <div className="ce-hours__frame">
                   <span className="ce-hours__corner ce-hours__corner--tl">
-                    Working hours
+                    {t.hoursLabel}
                   </span>
                   <span className="ce-hours__corner ce-hours__corner--tr">
-                    Cairo · EET
+                    {t.hoursZone}
                   </span>
 
                   <p className="ce-hours__times">
@@ -321,10 +297,10 @@ export function ContactPageContent() {
                   </p>
 
                   <span className="ce-hours__corner ce-hours__corner--bl">
-                    {PUBLIC_CONTACT.workingHours}
+                    {t.workingHours}
                   </span>
                   <span className="ce-hours__corner ce-hours__corner--br">
-                    {PUBLIC_CONTACT.dayOff}
+                    {t.dayOff}
                   </span>
                 </div>
               </Scene>
@@ -337,12 +313,12 @@ export function ContactPageContent() {
                   ratio="1483 / 960"
                   front="home-voyage-nile-majesty"
                   back="home-split-courtyard"
-                  frontAlt="Sailing the Nile aboard Hathor"
-                  backAlt="Life aboard Hathor Dahabiya"
+                  frontAlt={t.alts.sailing}
+                  backAlt={t.alts.life}
                 />
                 <div className="ce-closing__copy">
-                  <Eyebrow>Next</Eyebrow>
-                  <p className="ce-display ce-display--l">Write to us</p>
+                  <Eyebrow>{t.nextEyebrow}</Eyebrow>
+                  <p className="ce-display ce-display--l">{t.nextTitle}</p>
                 </div>
               </Scene>
             </div>
@@ -352,7 +328,7 @@ export function ContactPageContent() {
         {/* Epilogue — always vertical */}
         <section className="ce-epilogue" id="write">
           <header className="ce-epilogue__head">
-            <Eyebrow>Write</Eyebrow>
+            <Eyebrow>{t.writeEyebrow}</Eyebrow>
             <h2 className="ce-display ce-display--l" data-anima-title>
               {formTitle}
             </h2>
@@ -362,25 +338,25 @@ export function ContactPageContent() {
             <div className="ce-epilogue__compose">
               <InquiryForm
                 type="contact"
-                title="Your message"
+                title={t.composeTitle}
                 intro={contact.formIntro}
-                submitLabel="Send Message"
+                submitLabel={t.submit}
                 className="ce-form"
                 submitClassName="ce-btn ce-btn--xl"
               />
             </div>
 
             <aside className="ce-epilogue__card">
-              <span className="ce-card__tag">Reservations</span>
+              <span className="ce-card__tag">{t.cardTag}</span>
               <ContactMedia
                 slot="contact-hero"
-                alt="Hathor Dahabiya on the Nile"
+                alt={t.alts.card}
                 className="ce-card__media"
                 ratio="356 / 460"
               />
-              <h3 className="ce-display">Correspondence</h3>
+              <h3 className="ce-display">{t.cardTitle}</h3>
               <p className="ce-card__body">
-                Cairo office · daily 09:00–17:00
+                {t.cardOffice}
                 <br />
                 <a className="ce-link" href={`mailto:${PUBLIC_CONTACT.email}`}>
                   {PUBLIC_CONTACT.email}
@@ -388,7 +364,7 @@ export function ContactPageContent() {
               </p>
               <div className="ce-card__pills">
                 <a className="ce-btn" href={`tel:${PUBLIC_CONTACT.phone}`}>
-                  <span>Call</span>
+                  <span>{t.call}</span>
                 </a>
                 <a
                   className="ce-btn"
@@ -399,7 +375,7 @@ export function ContactPageContent() {
                   <span>WhatsApp</span>
                 </a>
                 <BookNowTrigger className="ce-btn ce-btn--solid">
-                  <span>Book Now</span>
+                  <span>{t.bookNow}</span>
                 </BookNowTrigger>
               </div>
             </aside>

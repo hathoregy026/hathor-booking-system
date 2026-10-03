@@ -15,6 +15,8 @@ import {
   useSelectionHydrated,
   useVoyageSelection,
 } from "@/components/selection/SelectionProvider";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { INQUIRY_FORM_COPY } from "@/lib/i18n/contact-copy";
 
 type InquiryFormProps = {
   type: InquiryPayload["type"];
@@ -40,11 +42,12 @@ export function InquiryForm({
   type,
   title,
   intro,
-  submitLabel = "Send Message",
+  submitLabel,
   showCharterFields = false,
   className,
   submitClassName = "btn btn-primary",
 }: InquiryFormProps) {
+  const t = INQUIRY_FORM_COPY[usePublicLocale()];
   /*
    * My Voyage carries into the enquiry automatically — the guest never re-enters
    * what they already chose. Read-only here; opening the form does not clear the
@@ -92,13 +95,19 @@ export function InquiryForm({
 
     const form = event.currentTarget;
     const data = new FormData(form);
+    const typed = String(data.get("message") ?? "");
+    /* On a translated page the desk learns the guest's language, when it fits. */
+    const message =
+      t.languageNote && typed.trim().length + t.languageNote.length + 2 <= 4000
+        ? `${typed.trim()}\n\n${t.languageNote}`
+        : typed;
 
     const payload: InquiryPayload = {
       type,
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
       phone: String(data.get("phone") ?? "") || undefined,
-      message: String(data.get("message") ?? ""),
+      message,
       website: String(data.get("website") ?? ""),
       address: showCharterFields
         ? String(data.get("address") ?? "") || undefined
@@ -127,7 +136,7 @@ export function InquiryForm({
         const result = (await response.json().catch(() => null)) as {
           error?: string;
         } | null;
-        throw new Error(result?.error ?? "Unable to send message");
+        throw new Error((t.serverErrors ? result?.error : undefined) ?? t.unableToSend);
       }
 
       setState("success");
@@ -136,7 +145,7 @@ export function InquiryForm({
     } catch (error) {
       setState("error");
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to send message",
+        error instanceof Error && t.serverErrors ? error.message : t.unableToSend,
       );
     }
   }
@@ -162,7 +171,7 @@ export function InquiryForm({
               <button
                 type="button"
                 className="contact-success-popup__close"
-                aria-label="Close thank you message"
+                aria-label={t.close}
                 onClick={() => setState("idle")}
               >
                 ×
@@ -170,24 +179,21 @@ export function InquiryForm({
               <div className="contact-success-popup__seal" aria-hidden="true">
                 <Check strokeWidth={1.7} />
               </div>
-              <p className="contact-success-popup__eyebrow">Message sent</p>
+              <p className="contact-success-popup__eyebrow">{t.sentEyebrow}</p>
               <h2 id={titleId} className="contact-success-popup__title">
-                Thank you
+                {t.thanks}
               </h2>
-              <p className="contact-success-popup__copy">
-                Your note has reached our reservations desk. A confirmation
-                email is on its way to the address you provided.
-              </p>
+              <p className="contact-success-popup__copy">{t.sentBody}</p>
               <div className="contact-success-popup__status">
                 <span aria-hidden="true" />
-                <p>Our team will respond within 24 hours.</p>
+                <p>{t.respond}</p>
               </div>
               <button
                 type="button"
                 className="ce-btn contact-success-popup__again"
                 onClick={() => setState("idle")}
               >
-                Send another message
+                {t.again}
               </button>
             </div>
           </div>,
@@ -202,11 +208,8 @@ export function InquiryForm({
           .filter(Boolean)
           .join(" ")}
       >
-        <h2 className="section-title typo-page-title text-2xl">Thank You</h2>
-        <p className="section-body typo-body-text mt-4">
-          Your message has been received. Our reservations team will respond
-          within 24 hours.
-        </p>
+        <h2 className="section-title typo-page-title text-2xl">{t.thanksCard}</h2>
+        <p className="section-body typo-body-text mt-4">{t.receivedBody}</p>
       </div>
     );
   }
@@ -223,8 +226,8 @@ export function InquiryForm({
         ) : null}
 
         {selectionLines.length > 0 ? (
-          <section className="hathor-form-selection" aria-label="Your selection">
-            <p className="hathor-form-selection__title">Your Hathor voyage</p>
+          <section className="hathor-form-selection" aria-label={t.selectionLabel}>
+            <p className="hathor-form-selection__title">{t.selectionTitle}</p>
             <dl className="hathor-form-selection__list">
               {selectionLines.map((line) => (
                 <div key={`${line.label}-${line.value}`}>
@@ -233,9 +236,7 @@ export function InquiryForm({
                 </div>
               ))}
             </dl>
-            <p className="hathor-form-selection__note">
-              Sent with your message. Adjust it any time in My Voyage.
-            </p>
+            <p className="hathor-form-selection__note">{t.selectionNote}</p>
           </section>
         ) : null}
 
@@ -253,7 +254,7 @@ export function InquiryForm({
 
           <div>
             <label className="lux-label" htmlFor={`${type}-name`}>
-              Name
+              {t.name}
             </label>
             <input
               id={`${type}-name`}
@@ -269,7 +270,7 @@ export function InquiryForm({
 
           <div>
             <label className="lux-label" htmlFor={`${type}-email`}>
-              Email
+              {t.email}
             </label>
             <input
               id={`${type}-email`}
@@ -284,7 +285,7 @@ export function InquiryForm({
 
           <div>
             <label className="lux-label" htmlFor={`${type}-phone`}>
-              Phone
+              {t.phone}
             </label>
             <input
               id={`${type}-phone`}
@@ -300,7 +301,7 @@ export function InquiryForm({
             <>
               <div>
                 <label className="lux-label" htmlFor={`${type}-address`}>
-                  Address
+                  {t.address}
                 </label>
                 <input
                   id={`${type}-address`}
@@ -315,7 +316,7 @@ export function InquiryForm({
               <div className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <label className="lux-label" htmlFor={`${type}-checkIn`}>
-                    Check In
+                    {t.checkIn}
                   </label>
                   <input
                     id={`${type}-checkIn`}
@@ -326,7 +327,7 @@ export function InquiryForm({
                 </div>
                 <div>
                   <label className="lux-label" htmlFor={`${type}-adults`}>
-                    Adults
+                    {t.adults}
                   </label>
                   <input
                     id={`${type}-adults`}
@@ -340,7 +341,7 @@ export function InquiryForm({
                 </div>
                 <div>
                   <label className="lux-label" htmlFor={`${type}-children`}>
-                    Children
+                    {t.children}
                   </label>
                   <input
                     id={`${type}-children`}
@@ -358,7 +359,7 @@ export function InquiryForm({
 
           <div>
             <label className="lux-label" htmlFor={`${type}-message`}>
-              Message
+              {t.message}
             </label>
             <textarea
               id={`${type}-message`}
@@ -382,7 +383,7 @@ export function InquiryForm({
             className={submitClassName}
             disabled={state === "submitting"}
           >
-            {state === "submitting" ? "Sending…" : submitLabel}
+            {state === "submitting" ? t.sending : submitLabel ?? t.sendMessage}
           </button>
         </div>
       </form>

@@ -44,4 +44,12 @@ export const ITALIAN_PAGES = {
     name: "Chi siamo: Hathor Dahabiya, una navigazione privata sul Nilo",
     crumb: "Chi siamo",
   }),
+  contact: page({
+    path: "/it/contact",
+    title: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
+    description:
+      "Contatti l’ufficio prenotazioni di Hathor al Cairo per date di partenza, charter privati e disponibilità delle suite. Tutti i giorni 09:00–17:00, chiuso il venerdì.",
+    name: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
+    crumb: "Contatti",
+  }),
 } as const;

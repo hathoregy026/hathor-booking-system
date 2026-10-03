@@ -14,6 +14,13 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  contact: {
+    formIntro:
+      "Ci indichi le date, il numero di ospiti e come desidera navigare. Il nostro ufficio prenotazioni risponde entro 24 ore.",
+    formTitle: "Saremo lieti di sentirLa",
+    /* About the English length: a second line would rise into the scroll cue. */
+    heroSupport: "Il nostro team è pronto ad assisterLa.",
+  },
   about: {
     intro: [
       "Scopra l’Egitto sotto una luce del tutto nuova con la crociera sul Nilo Hathor Dahabiya, dove la tradizione senza tempo incontra il lusso moderno.",

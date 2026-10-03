@@ -43,6 +43,7 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
     "/rooms/luxury-suite",
     "/rooms/royal-suite",
     "/about",
+    "/contact",
   ],
 };
 
