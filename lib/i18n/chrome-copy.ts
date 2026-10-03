@@ -309,7 +309,7 @@ const IT: ChromeCopy = {
     closeMenu: "Chiudi il menu delle lingue",
   },
   hero: {
-    discover: "Scopri lo straordinario",
+    discover: "Scopra lo straordinario",
     scrollHint: "Scorri",
     location: ["LUXOR", "ASSUAN"],
     playFilm: "Riproduci il filmato",

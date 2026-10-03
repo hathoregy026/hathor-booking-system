@@ -55,11 +55,11 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     basedOn: (count) =>
       `Su ${count.toLocaleString("it-IT")} ${count === 1 ? "recensione" : "recensioni"}`,
     numberLocale: "it-IT",
-    readReviews: "Leggi le recensioni",
+    readReviews: "Legga le recensioni",
     writeReview: "Scrivi una recensione",
     alsoTripadvisor: "Recensito anche su Tripadvisor",
     recentFrom: (platform) => `Recensioni recenti da ${platform}`,
-    readOn: (platform) => `Leggi su ${platform}`,
+    readOn: (platform) => `Legga su ${platform}`,
     reviewBy: (author) => ` — recensione di ${author}`,
     googleNote:
       "Valutazioni e recensioni da Google Maps, riportate così come scritte dagli ospiti.",

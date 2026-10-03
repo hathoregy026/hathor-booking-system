@@ -217,7 +217,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "3 notti / 4 giorni",
         meta: "Assuan → Luxor",
         body: "Una traversata intima da sud a nord: File, Kom Ombo ed Edfu si svelano al passo senza fretta di una dahabiya, fino ai templi di Luxor.",
-        cta: "Scopri il viaggio",
+        cta: "Scopra il viaggio",
       },
       {
         slug: "4-nights-luxor-aswan",
@@ -225,7 +225,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "4 notti / 5 giorni",
         meta: "Luxor → Assuan",
         body: "Il classico viaggio sul Nilo, dalle rive monumentali di Luxor alla grazia quieta di Assuan: templi, feluche e serate illuminate dal tramonto sul fiume.",
-        cta: "Scopri il viaggio",
+        cta: "Scopra il viaggio",
       },
       {
         slug: "7-nights-luxor-aswan-luxor",
@@ -233,7 +233,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "7 notti / 8 giorni",
         meta: "Luxor → Assuan → Luxor",
         body: "Il circuito completo del Nilo tra Luxor e Assuan: tempo per i templi, per la luce del fiume e per giornate più tranquille a bordo di Hathor.",
-        cta: "Scopri il viaggio",
+        cta: "Scopra il viaggio",
       },
       {
         slug: "nile-majesty",
@@ -241,7 +241,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "Charter privato",
         meta: "Itinerario su misura",
         body: "Il charter privato riserva Hathor in esclusiva al Suo gruppo, con la libertà di modellare itinerario, cucina ed escursioni a terra su misura per Lei.",
-        cta: "Scopri il charter",
+        cta: "Scopra il charter",
       },
     ],
     charterLabel: "Charter privato",
@@ -249,7 +249,7 @@ const PAGES_IT: Partial<Pages> = {
     charterScript: "Il Suo fiume. Il Suo ritmo. Tutto per Lei.",
     charterBody:
       "Il charter privato riserva Hathor in esclusiva al Suo gruppo, con la libertà di modellare il viaggio secondo il ritmo, la cucina e le escursioni a terra che preferisce.",
-    charterCta: "Scopri il charter",
+    charterCta: "Scopra il charter",
     reserveLabel: "Inizi il Suo viaggio",
     ctaTitle: "Prenoti il Suo viaggio",
     ctaBody: "Scelga l’itinerario, selezioni la Sua suite e salga a bordo di Hathor.",

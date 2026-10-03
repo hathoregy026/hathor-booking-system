@@ -292,7 +292,7 @@ function routesIt(occupancy: string): readonly RoomFolioRoute[] {
       meta: "3 notti / 4 giorni",
       departs: "Ogni mercoledì",
       occupancy,
-      hrefLabel: "Scopri il viaggio",
+      hrefLabel: "Scopra il viaggio",
       days: ASWAN_TO_LUXOR_DAYS_IT,
     },
     {
@@ -301,7 +301,7 @@ function routesIt(occupancy: string): readonly RoomFolioRoute[] {
       meta: "4 notti / 5 giorni",
       departs: "Ogni sabato",
       occupancy,
-      hrefLabel: "Scopri il viaggio",
+      hrefLabel: "Scopra il viaggio",
       days: LUXOR_TO_ASWAN_DAYS_IT,
     },
     {
