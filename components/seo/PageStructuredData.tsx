@@ -1,6 +1,7 @@
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationNode, websiteNode } from "@/components/seo/SiteStructuredData";
 import { seoAbsoluteUrl } from "@/lib/seo/site";
+import { PUBLIC_LOCALE_HTML_LANG, splitLocalePath } from "@/lib/i18n/locale";
 
 export type BreadcrumbItem = {
   name: string;
@@ -47,7 +48,8 @@ export function PageStructuredData({
       url: pageUrl,
       name,
       description,
-      inLanguage: "en",
+      /* `/it/…` pages are Italian; everything else English. */
+      inLanguage: PUBLIC_LOCALE_HTML_LANG[splitLocalePath(path).locale],
       isPartOf: { "@id": `${origin}#website` },
       about: { "@id": `${origin}#organization` },
       breadcrumb: { "@id": `${pageUrl}#breadcrumb` },

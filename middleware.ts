@@ -7,6 +7,7 @@ import {
   TEMPORARY_DEPLOYMENT_ROBOTS_HEADER,
 } from "@/lib/temporary-deployment-seo";
 import { resolveDeployId } from "@/lib/deploy-id";
+import { PUBLIC_LOCALE_HTML_LANG, splitLocalePath } from "@/lib/i18n/locale";
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
@@ -40,6 +41,19 @@ function withTemporaryNoIndex(
 ): NextResponse {
   if (isTemporaryDeploymentHost(request.nextUrl.hostname)) {
     response.headers.set("X-Robots-Tag", TEMPORARY_DEPLOYMENT_ROBOTS_HEADER);
+  }
+  return response;
+}
+
+/**
+ * `/it/…` pages are Italian. The shared root layout renders `<html lang="en">`
+ * on the server (it must stay static), so the language is also stated here,
+ * where crawlers that read raw HTML — Bing among them — pick it up.
+ */
+function withContentLanguage(pathname: string, response: NextResponse): NextResponse {
+  const { locale } = splitLocalePath(pathname);
+  if (locale !== "en") {
+    response.headers.set("Content-Language", PUBLIC_LOCALE_HTML_LANG[locale]);
   }
   return response;
 }
@@ -221,7 +235,10 @@ export async function middleware(request: NextRequest) {
        * caching. DeployFreshness + /api/deploy-id heal already-open tabs.
        * Do not Clear-Site-Data on every visit.
        */
-      return withTemporaryNoIndex(request, withHtmlMustRevalidate(NextResponse.next()));
+      return withContentLanguage(
+        pathname,
+        withTemporaryNoIndex(request, withHtmlMustRevalidate(NextResponse.next())),
+      );
     }
 
     /*

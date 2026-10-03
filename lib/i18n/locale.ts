@@ -30,6 +30,28 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
   it: ["/"],
 };
 
+/**
+ * Search switch, one per added language. While a language is off, its pages
+ * are noindex and stay out of hreflang and the sitemap; turning it on opens
+ * every translated page of that language at once. Nothing else in the SEO
+ * code needs touching.
+ */
+export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
+  it: true,
+};
+
+/** `og:locale` value per language. */
+export const PUBLIC_LOCALE_OG: Record<PublicLocale, string> = {
+  en: "en_US",
+  it: "it_IT",
+};
+
+/** hreflang code per language. */
+export const PUBLIC_LOCALE_HREFLANG: Record<PublicLocale, string> = {
+  en: "en",
+  it: "it",
+};
+
 const PREFIXED_LOCALES = PUBLIC_LOCALES.filter(
   (locale): locale is TranslatedLocale => locale !== DEFAULT_PUBLIC_LOCALE,
 );
@@ -101,4 +123,44 @@ export function getHtmlLangBlockingScript(): string {
     PREFIXED_LOCALES.map((locale) => [locale, PUBLIC_LOCALE_HTML_LANG[locale]]),
   );
   return `(function(){try{var m=/^\\/([a-z]{2})(?=\\/|$)/.exec(location.pathname||"");var l=${JSON.stringify(langs)};if(m&&l[m[1]])document.documentElement.lang=l[m[1]];}catch(e){}})();`;
+}
+
+export function isLocaleIndexed(locale: PublicLocale): boolean {
+  return locale === "en" || LOCALE_INDEXED[locale];
+}
+
+/**
+ * Every indexed language version of a page, English first — the hreflang set.
+ * Empty when the page exists in English only, so untranslated pages carry no
+ * alternates at all.
+ */
+export function pageLanguageVersions(
+  path: string,
+): { locale: PublicLocale; path: string }[] {
+  const page = stripLocalePrefix(path);
+  const versions = PUBLIC_LOCALES.flatMap((locale) => {
+    if (!isLocaleIndexed(locale)) return [];
+    const target = pathInLocale(page, locale);
+    return target ? [{ locale, path: target }] : [];
+  });
+  return versions.length > 1 ? versions : [];
+}
+
+/** `alternates.languages` for Next metadata: each version plus x-default (English). */
+export function hreflangAlternates(path: string): Record<string, string> | undefined {
+  const versions = pageLanguageVersions(path);
+  if (!versions.length) return undefined;
+  const languages: Record<string, string> = {};
+  for (const version of versions) {
+    languages[PUBLIC_LOCALE_HREFLANG[version.locale]] = version.path;
+  }
+  languages["x-default"] = stripLocalePrefix(path);
+  return languages;
+}
+
+/** Languages open to search — the site's `inLanguage` in structured data. */
+export function indexedSiteLanguages(): string[] {
+  return PUBLIC_LOCALES.filter(isLocaleIndexed).map(
+    (locale) => PUBLIC_LOCALE_HTML_LANG[locale],
+  );
 }

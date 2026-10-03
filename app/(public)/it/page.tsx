@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HomeExperienceShell } from "@/components/pages/HomeExperienceShell";
 import { HomeThreePageContent } from "@/components/pages/HomeThreePageContent";
+import { HomeThreeStructuredData } from "@/components/seo/HomeThreeStructuredData";
 import { GuestReviews } from "@/components/public/GuestReviews";
 import { PartnersCompanyStrip } from "@/components/partners/PartnersCompanyStrip";
 import { heroPosterDelivery } from "@/lib/local-optimized-site-images";
@@ -15,9 +16,8 @@ export const revalidate = 300;
 
 /*
  * The Italian homepage: the same page as `/`, its words in Italian. The
- * components read the language from the address. Kept out of search (noindex,
- * no sitemap entry, no hreflang) until the full SEO pass translates titles,
- * structured data and alternates.
+ * components read the language from the address; search settings (hreflang,
+ * sitemap, indexing switch) come from lib/i18n/locale.ts.
  */
 export const metadata: Metadata = HOME_SEO_IT;
 
@@ -38,6 +38,7 @@ export default async function ItalianHomePage() {
           fetchPriority="high"
         />
       ) : null}
+      <HomeThreeStructuredData locale="it" />
       <HomeThreePageContent
         heroLogoTune={cms.heroLogoTune}
         heroLogoTuneMobile={cms.heroLogoTuneMobile}

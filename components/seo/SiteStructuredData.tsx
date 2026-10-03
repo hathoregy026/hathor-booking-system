@@ -1,5 +1,6 @@
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SEO_LOGO_PATH } from "@/lib/seo/site";
+import { indexedSiteLanguages } from "@/lib/i18n/locale";
 import {
   SEO_BRAND_NAME,
   SEO_CONTACT,
@@ -40,7 +41,8 @@ export function websiteNode() {
     "@id": `${origin}#website`,
     url: origin,
     name: SEO_SITE_NAME,
-    inLanguage: "en",
+    /* Every language open to search ("en" alone until one is switched on). */
+    inLanguage: indexedSiteLanguages(),
     publisher: { "@id": `${origin}#organization` },
   };
 }

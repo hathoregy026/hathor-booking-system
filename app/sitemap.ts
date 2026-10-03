@@ -3,6 +3,7 @@ import { getPublishedBlogPosts } from "@/lib/blog-posts";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { isPageLive } from "@/lib/page-visibility-shared";
+import { pageLanguageVersions, PUBLIC_LOCALE_HREFLANG } from "@/lib/i18n/locale";
 
 const STATIC_PATHS = [
   "/",
@@ -26,6 +27,31 @@ const STATIC_PATHS = [
   "/terms-and-conditions",
 ] as const;
 
+const absolute = (path: string) =>
+  path === "/" ? `${SEO_SITE_ORIGIN}/` : `${SEO_SITE_ORIGIN}${path}`;
+
+/**
+ * One entry per language version of a page, each listing every version
+ * (hreflang). Pages in English only come back exactly as before.
+ */
+function withLanguageVersions(
+  entry: MetadataRoute.Sitemap[number],
+  path: string,
+): MetadataRoute.Sitemap {
+  const versions = pageLanguageVersions(path);
+  if (!versions.length) return [entry];
+  const languages: Record<string, string> = {};
+  for (const version of versions) {
+    languages[PUBLIC_LOCALE_HREFLANG[version.locale]] = absolute(version.path);
+  }
+  languages["x-default"] = absolute(path);
+  return versions.map((version) => ({
+    ...entry,
+    url: absolute(version.path),
+    alternates: { languages },
+  }));
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
 
@@ -41,8 +67,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   const staticPaths = STATIC_PATHS.filter((path) => path !== "/suites" || suitesLive);
 
-  const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
-    url: path === "/" ? `${SEO_SITE_ORIGIN}/` : `${SEO_SITE_ORIGIN}${path}`,
+  const entries: MetadataRoute.Sitemap = staticPaths.flatMap((path) => withLanguageVersions({
+    url: absolute(path),
     lastModified,
     changeFrequency: path === "/" || path === "/voyages" ? "weekly" : "monthly",
     priority:
@@ -55,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
               path === "/luxury-cabins-Nile-Cruise"
             ? 0.85
             : 0.7,
-  }));
+  }, path));
 
   try {
     const posts = await getPublishedBlogPosts();

@@ -3,25 +3,19 @@ import { HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 /*
- * The Italian homepage stays out of search until the full SEO pass: noindex,
- * no sitemap entry, no hreflang. The canonical still names its own address.
+ * The Italian homepage. Language, hreflang, og:locale and the search switch
+ * (LOCALE_INDEXED in lib/i18n/locale.ts) all come from the shared builder.
+ * Title leads with the Italian head term, "crociera sul Nilo".
  */
-const HOME_SEO_IT_BASE = buildPageMetadata({
-  title: "Crociera di lusso sul Nilo in dahabiya | Hathor Dahabiya",
+export const HOME_SEO_IT: Metadata = buildPageMetadata({
+  title: "Crociera sul Nilo in dahabiya di lusso | Hathor Dahabiya",
   description:
-    "Navighi sul Nilo tra Luxor e Assuan a bordo di una dahabiya privata di lusso. 32 ospiti, suite vista Nilo, alta cucina e giornate tra i templi, senza fretta.",
+    "Crociera sul Nilo in dahabiya privata di lusso tra Luxor e Assuan: 32 ospiti, suite vista Nilo, alta cucina e visite ai templi senza fretta, a bordo di Hathor.",
   path: "/it",
-  index: false,
   image: {
     url: HATHOR_HERO_POSTER_SRC,
     width: 1920,
     height: 1080,
-    alt: "Hathor Dahabiya, una crociera di lusso in dahabiya sul Nilo tra Luxor e Assuan",
+    alt: "Hathor Dahabiya, crociera di lusso in dahabiya sul Nilo tra Luxor e Assuan",
   },
 });
-
-export const HOME_SEO_IT: Metadata = {
-  ...HOME_SEO_IT_BASE,
-  keywords: undefined,
-  openGraph: { ...HOME_SEO_IT_BASE.openGraph, locale: "it_IT" },
-};
