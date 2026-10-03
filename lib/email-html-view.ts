@@ -83,10 +83,11 @@ export async function receivedEmailHtmlDocument(source: InboxSource, id: string,
     : await query<{ resendEmailId: string | null; direction: string; bodyHtml: string | null }>(`SELECT "resendEmailId", direction, "bodyHtml" FROM "InboxMessage" m WHERE id = $1
       AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id)`, [id]);
   if (!message) throw new PublicRequestError("Email not found.", 404);
-  if ("direction" in message && message.direction === "OUTBOUND") {
+  if ("direction" in message && (message.direction === "OUTBOUND" || (!message.resendEmailId && "bodyHtml" in message && message.bodyHtml))) {
     if (!("bodyHtml" in message) || typeof message.bodyHtml !== "string") throw new PublicRequestError("This email has no formatted version. Please use the text view.", 404);
     return buildEmailHtmlDocument(message.bodyHtml, images);
   }
+  if (!message.resendEmailId) throw new PublicRequestError("This email has no formatted version. Please use the text view.", 404);
   const emailId = z.uuid().parse(message.resendEmailId);
   const email = z.object({ id: z.uuid(), html: z.string().nullable(), attachments: z.array(z.object({ id: z.uuid() })).max(100) }).parse(await request(`/emails/receiving/${emailId}?html_format=cid`));
   if (email.id !== emailId) throw new Error("Email mismatch");

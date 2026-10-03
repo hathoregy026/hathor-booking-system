@@ -224,6 +224,7 @@ model InboxMessage {
   id String @id @default(uuid())
   resendEmailId String?
   mailboxId String @default("reservations")
+  origin String @default("EMAIL")
   direction String @default("INBOUND")
   status String @default("RECEIVED")
   sender String

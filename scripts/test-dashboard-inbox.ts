@@ -63,7 +63,9 @@ async function main() {
   }
   const automatic = fixture({ automatic: true });
   await processReceivedDashboardEmail(automatic.event, automatic);
-  assert.equal(automatic.inserts.length, 0);
+  assert.equal(automatic.inserts.length, 1, "General mail includes automated invoices, receipts, and forwarding verification messages");
+  await processReceivedDashboardEmail(automatic.event, automatic);
+  assert.equal(automatic.inserts.length, 1, "Automated mail is stored once without generating another email");
   const unrelated = fixture();
   await processReceivedDashboardEmail({ ...unrelated.event, data: { ...unrelated.event.data, to: ["reservations@other.example"] } }, unrelated);
   assert.equal(unrelated.reads(), 0);

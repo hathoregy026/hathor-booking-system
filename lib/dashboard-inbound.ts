@@ -4,7 +4,7 @@ import { bookingQuery } from "@/lib/booking-database";
 import { bookingReplyToken, mailboxAddress } from "@/lib/booking-email-routing";
 import { EMAIL_MAILBOXES } from "@/lib/email-mailboxes";
 import { mailboxDisplayName } from "@/lib/email-correspondent";
-import { incomingBodyText, incomingEmailSchema, isAutomaticEmail, processReceivedBookingEmail, receivedEmailEventSchema, resendApiRequest } from "@/lib/resend-inbound";
+import { incomingBodyText, incomingEmailSchema, processReceivedBookingEmail, receivedEmailEventSchema, resendApiRequest } from "@/lib/resend-inbound";
 
 export async function processReceivedDashboardEmail(
   event: z.infer<typeof receivedEmailEventSchema>,
@@ -26,7 +26,6 @@ export async function processReceivedDashboardEmail(
   if (email.id !== event.data.email_id) {
     throw new Error("Incoming email routing mismatch");
   }
-  if (isAutomaticEmail(email.headers)) return;
   const sender = mailboxAddress(email.from);
   if (!sender) return;
   const attachments = email.attachments.map(file => ({ id: file.id, filename: file.filename || "Attachment", contentType: file.content_type }));

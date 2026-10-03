@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { Resend, type CreateEmailOptions, type CreateEmailResponse } from "resend";
 import { render } from "@react-email/render";
 import ContactReceivedEmail from "@/emails/ContactReceived";
 import ContactAlertEmail, { type ContactAlertLine } from "@/emails/ContactAlert";
@@ -13,6 +13,8 @@ import {
   interpolateEmailText,
 } from "@/lib/email-templates";
 import { getAdminNotificationEmail, getResendFromAddress } from "@/lib/resend-config";
+import { recordInquiryInbox } from "@/lib/inquiry-inbox";
+import { emailMailbox } from "@/lib/email-mailboxes";
 import {
   resolveSelectionSummary,
   type SelectionEnquiry,
@@ -52,13 +54,19 @@ export type InquiryPayload = {
  * it — and the caller learns whether the receipt went, so the page never
  * promises a confirmation that was not sent.
  */
-export async function sendInquiryEmail(payload: InquiryPayload): Promise<{ receiptSent: boolean }> {
+export async function sendInquiryEmail(payload: InquiryPayload, dependencies: {
+  send?: (input: CreateEmailOptions) => Promise<CreateEmailResponse>;
+  record?: typeof recordInquiryInbox;
+  template?: typeof getEmailTemplateForSend;
+} = {}): Promise<{ receiptSent: boolean }> {
   const resend = getResend();
   const adminEmail = getAdminNotificationEmail();
 
   if (!resend || !adminEmail) {
     throw new Error("Inquiry email service is not configured");
   }
+  const send = dependencies.send ?? ((input: CreateEmailOptions) => resend.emails.send(input));
+  const getTemplate = dependencies.template ?? getEmailTemplateForSend;
 
   const label = payload.type === "charter" ? "Charter request" : "Contact inquiry";
   /*
@@ -106,7 +114,7 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<{ recei
 
   const siteUrl = getSiteBaseUrl().replace(/\/$/, "");
   // The team's copy: Dashboard → Email Templates → Contact Alert.
-  const alertTemplate = await getEmailTemplateForSend("ContactAlert");
+  const alertTemplate = await getTemplate("ContactAlert");
   const alertVars = { guestName: payload.name, inquiryType: label };
   const adminHtml = await render(
     ContactAlertEmail({
@@ -119,7 +127,7 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<{ recei
     }),
   );
 
-  const template = await getEmailTemplateForSend("ContactReceived");
+  const template = await getTemplate("ContactReceived");
   const theme = buildEmailSendTheme(template);
   const guestSubject = resolveEmailSubject(template, {
     guestName: payload.name,
@@ -152,11 +160,12 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<{ recei
       "For your security, never send passwords or card details by email. Hathor will not request payment through an unverified link in response to a contact message.",
     ].join("\n");
 
-  const team = await resend.emails.send({
+  const teamSubject = resolveEmailSubject(alertTemplate, alertVars);
+  const team = await send({
     from: getResendFromAddress(),
     to: adminEmail,
     replyTo: payload.email,
-    subject: resolveEmailSubject(alertTemplate, alertVars),
+    subject: teamSubject,
     html: adminHtml,
     text: adminText,
     tags: [{ name: "message_type", value: payload.type === "charter" ? "charter_admin" : "contact_admin" }],
@@ -164,13 +173,18 @@ export async function sendInquiryEmail(payload: InquiryPayload): Promise<{ recei
   if (team.error) {
     throw new Error(team.error.message);
   }
+  if (!team.data?.id) throw new Error("Inquiry notification was not accepted");
+  await (dependencies.record ?? recordInquiryInbox)({
+    id: team.data.id, type: payload.type, name: payload.name, email: payload.email,
+    subject: teamSubject, text: adminText, html: adminHtml, createdAt: new Date(),
+  });
 
   let receiptSent = false;
   try {
-    const receipt = await resend.emails.send({
+    const receipt = await send({
       from: getResendFromAddress(),
       to: payload.email,
-      replyTo: process.env.RESEND_REPLY_TO?.trim() || PUBLIC_CONTACT.email,
+      replyTo: payload.type === "contact" ? emailMailbox("info").address : process.env.RESEND_REPLY_TO?.trim() || PUBLIC_CONTACT.email,
       subject: guestSubject,
       html: guestHtml,
       text: guestText,
