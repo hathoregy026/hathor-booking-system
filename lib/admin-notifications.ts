@@ -30,7 +30,9 @@ export async function fetchAdminNotifications(query = bookingQuery): Promise<Not
       UNION ALL
       SELECT id, 'email'::text, source, name, description, happened FROM emails WHERE "readAt" IS NULL
     ), recent AS (
-      SELECT * FROM unseen ORDER BY happened DESC, kind, source, id LIMIT 20
+      (SELECT * FROM unseen WHERE kind = 'booking' ORDER BY happened DESC, source, id LIMIT 10)
+      UNION ALL
+      (SELECT * FROM unseen WHERE kind = 'email' ORDER BY happened DESC, source, id LIMIT 10)
     ), activity AS (
       (SELECT 'booking/' || id AS key, 'booking'::text AS kind FROM requests ORDER BY happened DESC, id DESC LIMIT 50)
       UNION ALL

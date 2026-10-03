@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { build } from "esbuild";
 import { chromium } from "playwright";
-import { readFile, readdir, mkdir } from "node:fs/promises";
+import { readFile, mkdir } from "node:fs/promises";
+import postcss, { type AcceptedPlugin } from "postcss";
+import tailwindcss from "@tailwindcss/postcss";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import type { NotificationSnapshot } from "../lib/admin-notification-types";
@@ -12,15 +14,12 @@ async function main() {
     stdin: { contents: 'import React, {useCallback,useState} from "react"; import {createRoot} from "react-dom/client"; import {NotificationBell} from "./components/admin/NotificationBell"; import {DashboardInbox} from "./components/admin/DashboardInbox"; import {AdminThemeProvider} from "./components/admin/ThemeProvider"; import {ToastProvider} from "./components/admin/ToastProvider"; import {useAdminActivityRefresh} from "./hooks/useAdminActivityRefresh"; function Probe(){const[count,setCount]=useState(0);const[paused,setPaused]=useState(false);const refresh=useCallback(()=>setCount(value=>value+1),[]);useAdminActivityRefresh("bookings",refresh,paused);return <div><output aria-label="Booking refreshes">{count}</output><button onClick={()=>setPaused(value=>!value)}>{paused?"Resume updates":"Pause updates"}</button></div>} const params=new URLSearchParams(location.search); createRoot(document.getElementById("root")).render(<AdminThemeProvider><ToastProvider><NotificationBell/><Probe/><DashboardInbox requestedEmail={`${params.get("source")||""}/${params.get("message")||""}`}/></ToastProvider></AdminThemeProvider>);', resolveDir: root, loader: "tsx" },
     bundle: true, write: false, platform: "browser", format: "iife", jsx: "automatic", define: { "process.env.NODE_ENV": '"production"', "process.env": "{}" },
   });
-  const chunkDirectory = path.join(root, ".next/static/chunks");
-  const styles = await Promise.all((await readdir(chunkDirectory)).filter(file => file.endsWith(".css")).map(file => readFile(path.join(chunkDirectory, file), "utf8")));
-  const utilities = styles.find(css => css.includes("--spacing") && css.includes(".flex"));
-  assert.ok(utilities, "Compile Next first for project CSS");
+  const utilities = (await postcss([tailwindcss({ base: root }) as unknown as AcceptedPlugin]).process('@import "tailwindcss";', { from: path.join(root, "app/globals.css") })).css;
   const css = utilities + await readFile(path.join(root, "app/admin.css"), "utf8") + await readFile(path.join(root, "app/admin-shell.css"), "utf8") + await readFile(path.join(root, "app/admin/(panel)/inbox/inbox.css"), "utf8");
   const browser = await chromium.launch({ channel: "msedge", headless: true });
   try {
     await mkdir(path.join(root, "output/notification-qa"), { recursive: true });
-    for (const width of [1440, 390]) {
+    for (const width of [1440, 390, 320]) {
       const page = await browser.newPage({ viewport: { width, height: 1000 } });
       await page.clock.install({ time: new Date("2026-10-03T12:00:00.000Z") });
       const errors: string[] = [];
@@ -68,20 +67,31 @@ async function main() {
         return route.fulfill({ status: 404, body: "Not found" });
       });
       await page.goto("https://notification-test.hathor.local/");
-      await page.getByRole("button", { name: "Notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).waitFor();
+      assert.equal(await page.getByRole("group", { name: "Booking and email notifications", exact: true }).getByRole("button").count(), 2);
       await page.waitForFunction(() => document.querySelector('section[aria-label="Email list"]')?.getAttribute("aria-busy") === "false");
-      await page.getByRole("button", { name: "Notifications", exact: true }).click();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).click();
       await page.getByText("You’re up to date", { exact: true }).waitFor();
-      await page.getByRole("button", { name: "Notifications", exact: true }).click();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).click();
       await page.getByRole("button", { name: "Send new email", exact: true }).click();
       await page.getByRole("region", { name: "New email", exact: true }).getByLabel("Message", { exact: true }).fill("Keep my unsent draft while notifications arrive.");
+      await page.evaluate(() => {
+        const observed = window as unknown as { createdNotificationToasts: number };
+        observed.createdNotificationToasts = 0;
+        new MutationObserver(records => {
+          for (const record of records) for (const node of record.addedNodes) {
+            if (node instanceof HTMLElement && node.matches(".admin-toast")) observed.createdNotificationToasts++;
+          }
+        }).observe(document.querySelector(".admin-toast-viewport")!, { childList: true });
+      });
       state.bookingCount = 1; state.emailCount = 1; state.unreadCount = 2;
       state.items = [{ id: "new-booking", kind: "booking", source: "booking", name: "Nile Guest", description: "Nile voyage", createdAt: state.bookingSeenThrough }, { id: emailId, kind: "email", source: "general", name: "Nile Guest", description: "A new question", createdAt: state.bookingSeenThrough }];
       state.activity = [{ key: "booking/new-booking", kind: "booking" }, { key: `email/general/${emailId}`, kind: "email" }];
       await page.getByRole("button", { name: "Pause updates", exact: true }).click();
       await page.clock.runFor(15000);
-      await page.getByRole("button", { name: "2 unread booking and email notifications", exact: true }).waitFor();
-      await page.getByText("New booking requests and emails received. Open the notification bell to view them.", { exact: true }).waitFor();
+      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "1 unread email notifications", exact: true }).waitFor();
+      await page.getByText("New booking requests and emails received. Open Bookings or Emails notifications to view them.", { exact: true }).waitFor();
       assert.equal(acknowledgments, 0, "Opening the bell must not clear unseen requests or email read status");
       assert.equal(await page.locator(".admin-toast").count(), 1);
       assert.equal(await page.locator(".admin-toast").first().innerText().then(text => text.includes("New booking")), true);
@@ -91,18 +101,28 @@ async function main() {
       await page.waitForFunction(() => document.querySelector('output[aria-label="Booking refreshes"]')?.textContent === "1");
       await page.getByRole("button", { name: "Close new email", exact: true }).click();
       await page.getByRole("button", { name: /A new question/ }).waitFor();
+      await page.mouse.move(0, 0);
       const before = polls;
       await page.clock.runFor(15000);
-      await page.waitForFunction(() => !document.querySelector('[aria-label="Notifications"]')?.textContent?.includes("New booking requests"));
+      await page.getByRole("button", { name: "1 unread email notifications", exact: true }).waitFor();
       assert.ok(polls > before);
-      assert.equal(await page.locator(".admin-toast").count(), 0, "Repeated snapshots must not repeat alerts");
-      await page.getByRole("button", { name: "2 unread booking and email notifications", exact: true }).click();
+      await page.clock.runFor(1000);
+      assert.equal(await page.evaluate(() => (window as unknown as { createdNotificationToasts: number }).createdNotificationToasts), 1, "Repeated snapshots must not create another alert, regardless of toast auto-dismiss/hover timing");
+      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).click();
+      const bookingsPanel = page.getByRole("dialog", { name: "Booking notifications", exact: true });
+      assert.equal(await bookingsPanel.getByRole("link", { name: /Received email/ }).count(), 0, "Bookings icon must not mix in email alerts");
+      await bookingsPanel.getByRole("link", { name: /Booking request/ }).waitFor();
       await page.getByRole("button", { name: "Clear booking alerts", exact: true }).click();
-      await page.getByRole("button", { name: "1 unread booking and email notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Booking notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "1 unread email notifications", exact: true }).waitFor();
       assert.equal(acknowledgments, 1);
       assert.equal(unread, true);
       await page.screenshot({ path: path.join(root, `output/notification-qa/${width}-alerts.png`), fullPage: true });
-      const emailLink = page.getByRole("dialog", { name: "Booking and email notifications" }).getByRole("link", { name: /Received email/ });
+      await page.getByRole("button", { name: "1 unread email notifications", exact: true }).click();
+      const emailsPanel = page.getByRole("dialog", { name: "Email notifications", exact: true });
+      assert.equal(await emailsPanel.getByRole("button", { name: "Clear booking alerts", exact: true }).count(), 0);
+      assert.equal(await emailsPanel.getByRole("link", { name: /Booking request/ }).count(), 0, "Emails icon must not mix in booking alerts");
+      const emailLink = emailsPanel.getByRole("link", { name: /Received email/ });
       const href = await emailLink.getAttribute("href");
       assert.equal(href, `/admin/inbox?source=general&message=${emailId}`);
       await page.goto(`https://notification-test.hathor.local${href}`);
@@ -110,16 +130,16 @@ async function main() {
       await page.getByRole("button", { name: "Mark read", exact: true }).click();
       await page.getByRole("button", { name: "Mark unread", exact: true }).waitFor();
       await page.clock.runFor(15000);
-      await page.getByRole("button", { name: "Notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).waitFor();
       assert.equal(await page.locator(".admin-toast").count(), 0);
       failure = 503;
       await page.clock.runFor(15000);
-      await page.getByRole("button", { name: "Notifications unavailable", exact: true }).waitFor();
-      await page.getByRole("button", { name: "Notifications unavailable", exact: true }).click();
+      await page.getByRole("button", { name: "Email notifications unavailable", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Email notifications unavailable", exact: true }).click();
       await page.getByText("Alerts are temporarily unavailable. Retrying automatically.", { exact: true }).waitFor();
       failure = 0;
       await page.clock.runFor(15000);
-      await page.getByRole("button", { name: "Notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).waitFor();
       const hiddenPolls = polls;
       await page.evaluate(() => { Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" }); document.dispatchEvent(new Event("visibilitychange")); });
       await page.clock.runFor(15000);

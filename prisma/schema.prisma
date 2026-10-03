@@ -254,6 +254,15 @@ model DashboardEmailDeletion {
   @@id([source, messageId])
 }
 
+model DashboardEmailPlacement {
+  source String
+  messageId String
+  mailboxId String
+  updatedAt DateTime @default(now())
+
+  @@id([source, messageId])
+}
+
 model ApiRateLimit {
   key       String   @id
   count     Int

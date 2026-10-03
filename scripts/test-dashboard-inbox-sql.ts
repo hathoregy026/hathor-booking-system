@@ -6,6 +6,8 @@ import { resolveDatabaseUrl } from "../lib/database-config";
 import { deleteDashboardEmail, fetchDashboardInbox, fetchInboxDetail, inboxQuerySchema, setInboxRead } from "../lib/dashboard-inbox";
 import type { bookingQuery } from "../lib/booking-database";
 import { EMAIL_MAILBOXES } from "../lib/email-mailboxes";
+import { applyDashboardEmailAction } from "../lib/dashboard-email-actions";
+import { fetchAdminNotifications } from "../lib/admin-notifications";
 
 async function main() {
   config({ path: ".env.local", quiet: true });
@@ -19,6 +21,8 @@ async function main() {
   try {
     await client.query("BEGIN");
     await client.query(`CREATE TEMP TABLE "DashboardEmailDeletion" (source TEXT, "messageId" TEXT, "deletedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (source, "messageId")) ON COMMIT DROP`);
+    await client.query(`CREATE TEMP TABLE "DashboardEmailPlacement" (source TEXT, "messageId" TEXT, "mailboxId" TEXT, "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (source, "messageId")) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "SiteSetting" (key TEXT PRIMARY KEY, value TEXT, "updatedAt" TIMESTAMP(3)) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "Booking" (
@@ -44,6 +48,21 @@ async function main() {
       SELECT id, "emailId", 'customer@example.com', 'reservations@hathorcruise.com', subject, 'Synthetic body', '2026-10-02 12:00:00'::timestamp
       FROM jsonb_to_recordset($1::jsonb) AS fixture(id text, "emailId" text, subject text)`, [JSON.stringify(general)]);
     const query = (async (sql: string, values: unknown[] = []) => (await client.query(sql, values)).rows) as typeof bookingQuery;
+    for (const statement of [
+      `CREATE TEMP TABLE "AdminProfile" (id TEXT PRIMARY KEY, "lastSeenBookingAt" TIMESTAMP(3)) ON COMMIT DROP`,
+      `CREATE TEMP TABLE "Cruise" (id TEXT PRIMARY KEY, name TEXT) ON COMMIT DROP`,
+      `CREATE TEMP TABLE "CruiseSchedule" (id TEXT PRIMARY KEY, "cruiseId" TEXT) ON COMMIT DROP`,
+      `ALTER TABLE pg_temp."Booking" ADD COLUMN "cruiseScheduleId" TEXT, ADD COLUMN status TEXT,
+        ADD COLUMN "deletedAt" TIMESTAMP(3), ADD COLUMN "requestedAt" TIMESTAMP(3)`,
+      `INSERT INTO pg_temp."Cruise" VALUES ('synthetic-cruise', 'Synthetic cruise')`,
+      `INSERT INTO pg_temp."CruiseSchedule" VALUES ('synthetic-schedule', 'synthetic-cruise')`,
+      `UPDATE pg_temp."Booking" SET "cruiseScheduleId" = 'synthetic-schedule', status = 'REQUESTED', "requestedAt" = '2026-10-01 12:00:00'`,
+    ]) await client.query(statement);
+    const notifications = await fetchAdminNotifications(query);
+    assert.equal(notifications.bookingCount, 1);
+    assert.equal(notifications.emailCount, 28);
+    assert.equal(notifications.items.filter(item => item.kind === "booking").length, 1);
+    assert.equal(notifications.items.filter(item => item.kind === "email").length, 10);
     const first = await fetchDashboardInbox(inboxQuerySchema.parse({}), query);
     assert.equal(first.messages.length, 25);
     assert.equal(first.unreadCount, 28);
@@ -91,7 +110,22 @@ async function main() {
         assert.ok(page.messages.every(message => message.mailboxId === mailbox.id));
       }
     }
-    console.log("Inbox PostgreSQL tests passed: union, tied-timestamp pagination, literal search, detail binding, unread counts and read toggles. Only temporary synthetic tables used.");
+    const selected = [{ source: "booking" as const, id: bookingId }, { source: "general" as const, id: general[1].id }];
+    const originalBodies = (await client.query(`SELECT id, "bodyText" FROM pg_temp."InboxMessage" UNION ALL SELECT id, "bodyText" FROM pg_temp."BookingMessage" ORDER BY id`)).rows;
+    assert.equal((await applyDashboardEmailAction({ action: "move", messages: selected, mailboxId: "info" }, query)).affected, 2);
+    for (const message of selected) assert.equal((await fetchInboxDetail(message.source, message.id, query))?.mailboxId, "info");
+    assert.equal((await client.query(`SELECT "mailboxId" FROM pg_temp."InboxMessage" WHERE id = $1`, [general[1].id])).rows[0].mailboxId, "reservations", "Moving preserves original receiving/deduplication routing");
+    assert.equal((await applyDashboardEmailAction({ action: "move", messages: selected, mailboxId: "ceo" }, query)).affected, 2);
+    for (const message of selected) assert.equal((await fetchInboxDetail(message.source, message.id, query))?.mailboxId, "ceo");
+    await assert.rejects(applyDashboardEmailAction({ action: "move", messages: [selected[0], { source: "general", id: randomUUID() }], mailboxId: "sales" }, query));
+    assert.equal((await fetchInboxDetail("booking", bookingId, query))?.mailboxId, "ceo", "A stale batch must not partially move valid emails");
+    await client.query(`UPDATE pg_temp."BookingMessage" SET status = 'PENDING' WHERE id = $1`, [sentId]);
+    await assert.rejects(applyDashboardEmailAction({ action: "delete", messages: [selected[0], { source: "booking", id: sentId }], confirm: true }, query));
+    assert.ok(await fetchInboxDetail("booking", bookingId, query), "Pending sends must block the whole batch, not delete other selected emails");
+    assert.equal((await applyDashboardEmailAction({ action: "delete", messages: selected, confirm: true }, query)).affected, 2);
+    for (const message of selected) assert.equal(await fetchInboxDetail(message.source, message.id, query), null);
+    assert.deepEqual((await client.query(`SELECT id, "bodyText" FROM pg_temp."InboxMessage" UNION ALL SELECT id, "bodyText" FROM pg_temp."BookingMessage" ORDER BY id`)).rows, originalBodies);
+    console.log("Inbox PostgreSQL tests passed: all mailbox/status filters, safe pagination/search, bulk moves with intact origin/body/booking links, atomic stale/pending rejection, and dashboard-only deletion. Only temporary synthetic tables used.");
   } finally {
     await client.query("ROLLBACK").catch(() => {});
     await client.end();

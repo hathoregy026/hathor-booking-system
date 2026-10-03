@@ -11,6 +11,7 @@ import { render } from "@react-email/render";
 import PrivateMessageEmail from "../emails/PrivateMessage";
 import { getDefaultEmailTemplate, buildEmailSendTheme } from "../lib/email-templates";
 import { EMAIL_MAILBOXES } from "../lib/email-mailboxes";
+import { dashboardEmailActionSchema } from "../lib/dashboard-email-actions";
 
 async function main() {
   const root = process.cwd();
@@ -33,12 +34,15 @@ async function main() {
       let read = false;
       let grouped = false;
       const deleted = new Set<string>();
+      const placements = new Map<string, string>();
+      let bulkCalls = 0;
+      let rejectBulk = false;
       const handlers: Record<string, string> = {};
       const groupedRows = EMAIL_MAILBOXES.flatMap(mailbox => Array.from({ length: 30 }, (_, index) => ({
         id: randomUUID(), source: "general", mailboxId: mailbox.id, bookingId: null, sender: `partner-${index}@example.com`,
         recipient: mailbox.address, correspondentName: `Nile Partner ${index + 1}`, direction: index % 3 === 2 ? "OUTBOUND" : "INBOUND", status: index % 3 === 2 ? "SENT" : "RECEIVED",
         subject: `${mailbox.label} inquiry ${index + 1}`, preview: "Please help with this inquiry.", attachmentCount: 0,
-        createdAt: "2026-10-03T12:00:00.000Z", readAt: index % 3 === 1 ? "2026-10-03T13:00:00.000Z" : null,
+        createdAt: new Date(Date.parse("2026-10-03T12:00:00.000Z") - index * 60000).toISOString(), readAt: index % 3 === 1 ? "2026-10-03T13:00:00.000Z" : null,
       })));
       let searches = 0;
       let older = 0;
@@ -60,9 +64,10 @@ async function main() {
         if (url.pathname === "/app.js") return route.fulfill({ contentType: "text/javascript", body: bundle.outputFiles[0].text });
         if (url.pathname === "/style.css") return route.fulfill({ contentType: "text/css", body: css });
         if (url.pathname === "/api/admin/inbox") {
-          const mailboxes = EMAIL_MAILBOXES.map(item => ({ ...item, handlerName: handlers[item.id] ?? "", total: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" ? sentMessage ? 2 : 1 : 0, unread: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id) && row.direction === "INBOUND" && !row.readAt).length : item.id === "reservations" && !read ? 1 : 0 }));
+          const displayed = groupedRows.map(row => ({ ...row, mailboxId: placements.get(row.id) ?? row.mailboxId }));
+          const mailboxes = EMAIL_MAILBOXES.map(item => ({ ...item, handlerName: handlers[item.id] ?? "", total: grouped ? displayed.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" ? sentMessage ? 2 : 1 : 0, unread: grouped ? displayed.filter(row => row.mailboxId === item.id && !deleted.has(row.id) && row.direction === "INBOUND" && !row.readAt).length : item.id === "reservations" && !read ? 1 : 0 }));
           if (grouped) {
-            const rows = groupedRows.filter(row => !deleted.has(row.id) && (url.searchParams.get("mailbox") === "all" || row.mailboxId === url.searchParams.get("mailbox")));
+            const rows = displayed.filter(row => !deleted.has(row.id) && (url.searchParams.get("mailbox") === "all" || row.mailboxId === url.searchParams.get("mailbox"))).sort((first, second) => second.createdAt.localeCompare(first.createdAt) || second.id.localeCompare(first.id));
             const filter = url.searchParams.get("filter");
             const query = url.searchParams.get("q")?.toLowerCase();
             const filtered = rows.filter(row => (!query || row.subject.toLowerCase().includes(query)) && (filter === "all" || (filter === "sent" ? row.direction === "OUTBOUND" : row.direction === "INBOUND" && (filter !== "unread" || !row.readAt))));
@@ -81,6 +86,19 @@ async function main() {
           handlers[content.mailboxId] = content.handlerName;
           return route.fulfill({ json: { updated: true } });
         }
+        if (url.pathname === "/api/admin/inbox/bulk") {
+          assert.equal(route.request().method(), "POST");
+          const content = dashboardEmailActionSchema.parse(route.request().postDataJSON());
+          bulkCalls++;
+          if (rejectBulk) return route.fulfill({ status: 409, json: { error: "Unavailable selection" } });
+          for (const message of content.messages) {
+            assert.equal(message.source, "general");
+            assert.ok(groupedRows.some(row => row.id === message.id));
+            if (content.action === "move") placements.set(message.id, content.mailboxId);
+            else deleted.add(message.id);
+          }
+          return route.fulfill({ json: { affected: content.messages.length } });
+        }
         const groupedMessage = groupedRows.find(row => url.pathname === `/api/admin/inbox/general/${row.id}`);
         if (groupedMessage) {
           if (route.request().method() === "DELETE") {
@@ -88,7 +106,7 @@ async function main() {
             deleted.add(groupedMessage.id);
             return route.fulfill({ json: { deleted: true } });
           }
-          return route.fulfill({ json: { message: { ...groupedMessage, bodyText: "Private incoming message.\n\n" + "Readable details. ".repeat(200), attachments: [], senderMatchesGuest: true } } });
+          return route.fulfill({ json: { message: { ...groupedMessage, mailboxId: placements.get(groupedMessage.id) ?? groupedMessage.mailboxId, bodyText: "Private incoming message.\n\n" + "Readable details. ".repeat(200), attachments: [], senderMatchesGuest: true } } });
         }
         if (url.pathname === "/api/admin/inbox/preview") {
           assert.equal(route.request().method(), "POST");
@@ -282,6 +300,51 @@ async function main() {
       await page.getByText("Removed from dashboard Emails. Your original mailbox history is unchanged.", { exact: true }).waitFor();
       assert.equal(deleted.size, 1);
       assert.equal(groupedRows.filter(item => item.mailboxId === "ceo").length, 30, "Deletion preserves the original mailbox fixture");
+      await navigation.getByRole("button", { name: /^INFO / }).click();
+      const firstInfo = page.getByRole("checkbox", { name: "Select email: INFO inquiry 1", exact: true });
+      await firstInfo.waitFor();
+      await firstInfo.check();
+      await page.getByRole("checkbox", { name: "Select email: INFO inquiry 2", exact: true }).check();
+      await page.getByText("2 selected", { exact: true }).waitFor();
+      await page.getByLabel("Move selected emails to", { exact: true }).selectOption("ceo");
+      await page.getByRole("button", { name: "Move selected", exact: true }).click();
+      await page.getByText("2 emails moved to CEO in the dashboard. Original mailbox history is unchanged.", { exact: true }).waitFor();
+      assert.equal(placements.size, 2);
+      assert.equal(groupedRows.filter(row => row.mailboxId === "info").length, 30, "Moving does not mutate provider/original routing");
+      await navigation.getByRole("button", { name: /^CEO / }).click();
+      await page.getByRole("button", { name: /INFO inquiry 1/ }).click();
+      await page.getByRole("heading", { name: "INFO inquiry 1", exact: true }).waitFor();
+      assert.equal(await page.locator(".emails-detail-contact .emails-mailbox-chip").innerText(), "CEO");
+      await page.getByRole("button", { name: "Reply from dashboard", exact: true }).click();
+      assert.match(await page.getByRole("region", { name: "New email", exact: true }).innerText(), /ceo@hathorcruise\.com/);
+      await page.getByRole("button", { name: "Close new email", exact: true }).click();
+      await page.getByRole("checkbox", { name: "Select email: INFO inquiry 1", exact: true }).check();
+      await page.getByRole("checkbox", { name: "Select email: INFO inquiry 2", exact: true }).check();
+      const beforeCancel = bulkCalls;
+      page.once("dialog", dialog => void dialog.dismiss());
+      await page.getByRole("button", { name: "Delete selected", exact: true }).click();
+      assert.equal(bulkCalls, beforeCancel, "Canceled confirmation must not send a deletion request");
+      page.once("dialog", dialog => void dialog.accept());
+      await page.getByRole("button", { name: "Delete selected", exact: true }).click();
+      await page.getByText("2 emails removed from the dashboard only. Original mailbox history is unchanged.", { exact: true }).waitFor();
+      assert.equal(deleted.size, 3);
+      assert.equal(groupedRows.length, 180, "All original email bodies remain available in the source fixture");
+      await navigation.getByRole("button", { name: /^INFO / }).click();
+      await page.getByRole("checkbox", { name: "Select email: INFO inquiry 4", exact: true }).check();
+      await page.getByText("1 selected", { exact: true }).waitFor();
+      await page.getByLabel("Move selected emails to", { exact: true }).selectOption("sales");
+      rejectBulk = true;
+      await page.getByRole("button", { name: "Move selected", exact: true }).click();
+      await page.getByRole("alert").waitFor();
+      assert.equal(await page.getByRole("checkbox", { name: "Select email: INFO inquiry 4", exact: true }).isChecked(), true, "Rejected batches retain the selection for review");
+      rejectBulk = false;
+      await page.getByRole("button", { name: "Move selected", exact: true }).click();
+      await page.getByText("1 email moved to SALES in the dashboard. Original mailbox history is unchanged.", { exact: true }).waitFor();
+      await page.getByRole("checkbox", { name: "Select loaded emails (up to 100)", exact: true }).check();
+      await page.getByRole("group", { name: "Selected email actions", exact: true }).waitFor();
+      assert.ok(await page.locator('.emails-selectable-row[data-checked="true"]').count());
+      await page.screenshot({ path: path.join(root, `output/inbox-qa/${width}-${theme}-bulk-controls.png`), fullPage: true });
+      await page.getByRole("button", { name: "Clear selection", exact: true }).click();
       await page.screenshot({ path: path.join(root, `output/inbox-qa/${width}-${theme}-mailboxes.png`), fullPage: true });
       assert.equal(await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 1), true, "Emails must not move the dashboard header or filters off screen");
       assert.deepEqual(errors, []);

@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
-import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, FolderInput, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
 import { EmailComposer, type EmailDraft } from "@/components/admin/EmailComposer";
 import { correspondentInitials, correspondentLabel } from "@/lib/email-correspondent";
 import { type InboxCounts, type InboxDetail, type InboxFilter, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
 import { EMAIL_MAILBOXES, emailMailbox, type MailboxId, type MailboxSummary } from "@/lib/email-mailboxes";
+import { ADMIN_ACTIVITY_EVENT } from "@/lib/admin-notification-types";
 
 const messageTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Cairo", dateStyle: "medium", timeStyle: "short" });
 const keyOf = (message: { source: InboxSource; id: string }) => `${message.source}/${message.id}`;
@@ -25,6 +26,9 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const [handlerName, setHandlerName] = useState("");
   const [savingHandler, setSavingHandler] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [selection, setSelection] = useState<InboxSummary[]>([]);
+  const [batching, setBatching] = useState(false);
+  const [moveTarget, setMoveTarget] = useState<MailboxId | "">("");
   const [messages, setMessages] = useState<InboxSummary[]>([]);
   const [unread, setUnread] = useState(0);
   const [counts, setCounts] = useState<InboxCounts>({ all: 0, unread: 0, received: 0, sent: 0 });
@@ -45,7 +49,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const detailRef = useRef<HTMLElement>(null);
 
   const refresh = useCallback(() => { setCursor(null); setVersion(current => current + 1); }, []);
-  useAdminActivityRefresh("emails", refresh);
+  useAdminActivityRefresh("emails", refresh, batching || selection.length > 0);
   function selectMessage(key: string | null) { setDetail(null); setDetailError(null); setSelected(key); }
 
   useEffect(() => {
@@ -85,10 +89,10 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      if (document.visibilityState === "visible") { setCursor(null); setVersion(current => current + 1); }
+      if (document.visibilityState === "visible" && !batching && !selection.length) { setCursor(null); setVersion(current => current + 1); }
     }, 30000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [batching, selection.length]);
 
   useEffect(() => {
     if (!selected) return;
@@ -125,6 +129,8 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
 
   function submitSearch(event: FormEvent) {
     event.preventDefault();
+    if (batching) return;
+    setSelection([]);
     setCursor(null);
     setQuery(search.trim());
     selectMessage(null);
@@ -132,7 +138,8 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   }
 
   function compose(initial: EmailDraft = { to: "", recipientName: "", subject: "" }) {
-    if (draft) return;
+    if (draft || batching) return;
+    setSelection([]);
     selectMessage(null);
     setNotice(null);
     setDraft({ ...initial, mailboxId: initial.mailboxId ?? (mailbox === "all" ? "reservations" : mailbox), key: crypto.randomUUID() });
@@ -150,7 +157,9 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   }
 
   function chooseMailbox(value: MailboxId | "all") {
-    if (draft || savingHandler) return;
+    if (draft || savingHandler || batching) return;
+    setSelection([]);
+    setMoveTarget("");
     setBusy(true);
     setMailbox(value);
     setFilter("all");
@@ -165,6 +174,8 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   }
 
   function chooseFilter(value: InboxFilter) {
+    if (batching) return;
+    setSelection([]);
     setBusy(true);
     setCursor(null);
     setFilter(value);
@@ -195,7 +206,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   }
 
   async function removeMessage() {
-    if (!detail || deleting || !window.confirm("Remove this message from dashboard Emails? This does not delete it from Zoho or Resend. Booking conversation records are also kept.")) return;
+    if (!detail || deleting || batching || !window.confirm("Remove this message from dashboard Emails? This does not delete it from Zoho or Resend. Booking conversation records are also kept.")) return;
     const key = keyOf(detail);
     setDeleting(true);
     setDetailError(null);
@@ -207,13 +218,48 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       setSelected(current => current === key ? null : current);
       setDetail(current => current && keyOf(current) === key ? null : current);
       setMessages(current => current.filter(message => keyOf(message) !== key));
+      setSelection(current => current.filter(message => keyOf(message) !== key));
       setNotice("Removed from dashboard Emails. Your original mailbox history is unchanged.");
       refresh();
+      window.dispatchEvent(new CustomEvent(ADMIN_ACTIVITY_EVENT, { detail: { bookings: false, emails: true } }));
     } catch { setDetailError("This message could not be removed. Refresh and try again."); }
     finally { setDeleting(false); }
   }
 
+  function toggleSelection(message: InboxSummary) {
+    if (batching || draft || message.status === "PENDING") return;
+    setSelection(current => current.some(item => keyOf(item) === keyOf(message))
+      ? current.filter(item => keyOf(item) !== keyOf(message)) : current.length < 100 ? [...current, message] : current);
+  }
+
+  async function manageSelection(action: "move" | "delete") {
+    if (!selection.length || batching || draft || (action === "move" && !moveTarget)) return;
+    const items = selection.map(({ source, id }) => ({ source, id }));
+    if (action === "delete" && !window.confirm(`Remove ${items.length} selected email${items.length === 1 ? "" : "s"} from the dashboard only? Original Zoho and Resend emails and booking history will be kept.`)) return;
+    setBatching(true);
+    setError(null);
+    setNotice(null);
+    try {
+      const response = await adminFetch("/api/admin/inbox/bulk", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(action === "move" ? { action, messages: items, mailboxId: moveTarget } : { action, messages: items, confirm: true }),
+      });
+      if (!response.ok || (await response.json() as { affected: number }).affected !== items.length) throw new Error();
+      setSelection([]);
+      selectMessage(null);
+      setNotice(action === "move" ? `${items.length} email${items.length === 1 ? "" : "s"} moved to ${emailMailbox(moveTarget as MailboxId).label} in the dashboard. Original mailbox history is unchanged.`
+        : `${items.length} email${items.length === 1 ? "" : "s"} removed from the dashboard only. Original mailbox history is unchanged.`);
+      setMoveTarget("");
+      refresh();
+      window.dispatchEvent(new CustomEvent(ADMIN_ACTIVITY_EVENT, { detail: { bookings: false, emails: true } }));
+    } catch { setError("The selected changes could not be confirmed. Refresh to check the emails before trying again. Emails still sending cannot be moved or deleted."); }
+    finally { setBatching(false); }
+  }
+
   const activeMailbox = mailbox === "all" ? null : mailboxes.find(item => item.id === mailbox);
+  const selectedKeys = new Set(selection.map(keyOf));
+  const selectable = messages.filter(message => message.status !== "PENDING").slice(0, 100);
+  const allLoadedSelected = selectable.length > 0 && selectable.every(message => selectedKeys.has(keyOf(message)));
 
   return (
     <div className="emails-page">
@@ -226,21 +272,22 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
           <p className="emails-page__caption" aria-live="polite">{unread} unread · Times shown in Cairo</p>
         </div>
         <div className="emails-page__actions">
-        <button type="button" className="btn-outline" onClick={refresh} disabled={busy}>
+        <button type="button" className="btn-outline" onClick={() => { setSelection([]); refresh(); }} disabled={busy || batching}>
           <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden /><span>Refresh emails</span>
         </button>
-        <button type="button" className="btn-primary" onClick={() => compose()} disabled={Boolean(draft)}><Plus size={17} aria-hidden />Send new email</button>
+        <button type="button" className="btn-primary" onClick={() => compose()} disabled={Boolean(draft) || batching}><Plus size={17} aria-hidden />Send new email</button>
         </div>
       </header>
       <nav className="emails-mailboxes" aria-label="Choose mailbox">
-        <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={Boolean(draft) || savingHandler} onClick={() => chooseMailbox("all")} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">ALL MAILBOXES</span><span className="emails-mailbox__handler">Administrator overview</span><span className="emails-mailbox__count">{mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread</span></button>
-        {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count">{item.unread} unread · {item.total} total</span></button>)}
+        <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox("all")} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">ALL MAILBOXES</span><span className="emails-mailbox__handler">Administrator overview</span><span className="emails-mailbox__count">{mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread</span></button>
+        {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count">{item.unread} unread · {item.total} total</span></button>)}
       </nav>
-      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} onClick={() => chooseFilter(item.value)}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
+      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} disabled={batching} onClick={() => chooseFilter(item.value)}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
+      {selection.length ? <div className="emails-bulk-actions" role="group" aria-label="Selected email actions"><strong aria-live="polite">{selection.length} selected</strong><label className="sr-only" htmlFor="email-move-target">Move selected emails to</label><select id="email-move-target" className="admin-input" value={moveTarget} disabled={batching} onChange={event => setMoveTarget(event.target.value as MailboxId | "")}><option value="">Choose mailbox…</option>{EMAIL_MAILBOXES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><button type="button" className="btn-outline" disabled={batching || !moveTarget} onClick={() => void manageSelection("move")}><FolderInput size={15} aria-hidden />Move selected</button><button type="button" className="btn-outline emails-delete" disabled={batching} onClick={() => void manageSelection("delete")}><Trash2 size={15} aria-hidden />Delete selected</button><button type="button" className="btn-outline" disabled={batching} onClick={() => setSelection([])}>Clear selection</button>{batching ? <span role="status">Saving dashboard changes…</span> : null}</div> : null}
       <form onSubmit={submitSearch} className="dashboard-inbox__toolbar">
         <label className="sr-only" htmlFor="inbox-search">Search name, email, or subject</label>
-        <input id="inbox-search" className="admin-input" type="search" maxLength={120} value={search} onChange={event => setSearch(event.target.value)} placeholder="Search a name, email address, or subject…" />
-        <button className="btn-outline" type="submit"><Search className="h-4 w-4" aria-hidden />Search</button>
+        <input id="inbox-search" className="admin-input" type="search" maxLength={120} value={search} disabled={batching} onChange={event => setSearch(event.target.value)} placeholder="Search a name, email address, or subject…" />
+        <button className="btn-outline" type="submit" disabled={batching}><Search className="h-4 w-4" aria-hidden />Search</button>
         <details className="emails-setup"><summary>Zoho forwarding setup</summary><div className="emails-setup__panel"><p>In each Zoho mailbox’s forwarding settings, add its matching destination below, verify it, and keep the original copy. Existing history is not imported. Do not change your main MX records.</p><ul>{EMAIL_MAILBOXES.map(item => <li key={item.id}><strong>{item.address}</strong><span>→ {item.forwardingAddress}</span></li>)}</ul></div></details>
       </form>
       {activeMailbox ? <div className="emails-handler-bar"><span className="emails-mailbox-chip" style={{ "--mailbox-color": activeMailbox.color } as CSSProperties}>{activeMailbox.label}</span><span>{activeMailbox.address}</span><button type="button" className="btn-outline" disabled={Boolean(draft)} onClick={() => { setHandlerName(activeMailbox.handlerName); setEditingHandler(current => !current); }}><Pencil size={14} aria-hidden />{activeMailbox.handlerName ? "Edit handler name" : "Add handler name"}</button></div> : null}
@@ -250,7 +297,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       </div>
       <div className="dashboard-inbox__workspace" data-selected={Boolean(selected || draft)}>
         <section className="card dashboard-inbox__list" aria-label="Email list" aria-busy={busy}>
-          <header className="emails-list-header"><h2>{activeMailbox?.label ?? "ALL MAILBOXES"} · {filters.find(item => item.value === filter)?.label}</h2><span>{messages.length}{hasOlder ? "+" : ""} shown</span></header>
+          <header className="emails-list-header"><label className="emails-select-all"><input type="checkbox" aria-label="Select loaded emails (up to 100)" checked={allLoadedSelected} ref={element => { if (element) element.indeterminate = !allLoadedSelected && selectable.some(message => selectedKeys.has(keyOf(message))); }} disabled={busy || batching || Boolean(draft) || !selectable.length} onChange={() => setSelection(allLoadedSelected ? [] : selectable)} /><span>Select loaded</span></label><h2>{activeMailbox?.label ?? "ALL MAILBOXES"} · {filters.find(item => item.value === filter)?.label}</h2><span>{messages.length}{hasOlder ? "+" : ""} shown</span></header>
           <div className="emails-list-scroll" tabIndex={0} role="region" aria-label="Scrollable emails">
           {!messages.length ? <div className="emails-empty"><Inbox size={30} aria-hidden /><p>{busy ? "Loading your emails…" : query ? "No emails match your search" : filter !== "all" ? `No ${filter} emails in ${activeMailbox?.label ?? "ALL MAILBOXES"}` : "No emails here yet"}</p><span>{query || filter !== "all" ? "Show all emails in this mailbox to remove search and status filters." : "Received messages and emails sent from this dashboard appear here."}</span>{!busy && (query || filter !== "all") ? <button type="button" className="btn-outline mt-4" onClick={() => chooseFilter("all")}>Show all {activeMailbox?.label ?? "mailbox"} emails</button> : null}</div> : null}
           <ol>
@@ -258,8 +305,9 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
               const address = contactOf(message);
               const name = correspondentLabel(message.correspondentName, address);
               return (
-              <li key={keyOf(message)}>
-                <button type="button" className="dashboard-inbox__message" data-tone={toneOf(message)} aria-pressed={selected === keyOf(message)} disabled={Boolean(draft)} onClick={() => { if (selected !== keyOf(message)) selectMessage(keyOf(message)); }}>
+              <li key={keyOf(message)} className="emails-selectable-row" data-checked={selectedKeys.has(keyOf(message))}>
+                <label className="emails-row-selector" title={message.status === "PENDING" ? "Resolve sending status before selecting this email" : "Select email"}><input type="checkbox" aria-label={`Select email: ${message.subject || "(No subject)"}`} checked={selectedKeys.has(keyOf(message))} disabled={batching || Boolean(draft) || message.status === "PENDING" || (selection.length >= 100 && !selectedKeys.has(keyOf(message)))} onChange={() => toggleSelection(message)} /></label>
+                <button type="button" className="dashboard-inbox__message" data-tone={toneOf(message)} aria-pressed={selected === keyOf(message)} disabled={Boolean(draft) || batching} onClick={() => { if (selected !== keyOf(message)) selectMessage(keyOf(message)); }}>
                   <div className="emails-message__top"><span className="emails-mailbox-chip" style={{ "--mailbox-color": emailMailbox(message.mailboxId ?? "reservations").color } as CSSProperties}>{emailMailbox(message.mailboxId ?? "reservations").label}</span><span className="emails-status">{statusOf(message)}</span></div>
                   <div className="emails-message__contact"><span className="emails-avatar" aria-hidden>{correspondentInitials(name)}</span><div><p className="emails-message__name">{name}</p><p className="emails-message__address">{message.direction === "OUTBOUND" ? "TO" : "FROM"} · {address}</p></div></div>
                   <p className="emails-message__subject">{message.subject || "(No subject)"}</p>
@@ -270,7 +318,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
               </li>
             ); })}
           </ol>
-          {hasOlder ? <div className="p-4"><button type="button" className="btn-outline w-full" disabled={busy} onClick={() => setCursor(messages[messages.length - 1] ?? null)}>Load older emails</button></div> : null}
+          {hasOlder ? <div className="p-4"><button type="button" className="btn-outline w-full" disabled={busy || batching} onClick={() => setCursor(messages[messages.length - 1] ?? null)}>Load older emails</button></div> : null}
           </div>
         </section>
         <section ref={detailRef} tabIndex={-1} className="card dashboard-inbox__detail" aria-label="Email details">
@@ -286,7 +334,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
               <div className="my-6 flex flex-wrap gap-3">
                 {detail.direction !== "OUTBOUND" ? <button type="button" className="btn-outline" disabled={marking} onClick={() => void markRead()}>{marking ? "Saving…" : detail.readAt ? "Mark unread" : "Mark read"}</button> : null}
                 {detail.bookingId ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <button type="button" className="btn-primary" onClick={() => compose({ to: contactOf(detail), recipientName: detail.correspondentName ?? "", mailboxId: detail.mailboxId ?? "reservations", subject: /^re:/i.test(detail.subject) ? detail.subject : `Re: ${detail.subject}`.slice(0, 180) })}>{detail.direction === "OUTBOUND" ? "Send another email" : "Reply from dashboard"}</button>}
-                <button type="button" className="btn-outline emails-delete" disabled={deleting || detail.status === "PENDING"} onClick={() => void removeMessage()}><Trash2 size={15} aria-hidden />{deleting ? "Removing…" : "Delete from dashboard"}</button>
+                <button type="button" className="btn-outline emails-delete" disabled={deleting || batching || detail.status === "PENDING"} onClick={() => void removeMessage()}><Trash2 size={15} aria-hidden />{deleting ? "Removing…" : "Delete from dashboard"}</button>
               </div>
               {detail.direction === "OUTBOUND" && detail.status !== "SENT" ? <p className="email-composer__notice">{detail.status === "FAILED" ? "The provider did not accept this email." : "Sending has not been confirmed. Check the original send request before creating a second copy."}</p> : null}
               <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={keyOf(detail)} bodyText={detail.bodyText} formattedUrl={detail.source === "general" || detail.direction !== "OUTBOUND" ? `/api/admin/inbox/${keyOf(detail)}/formatted` : undefined} /></div>

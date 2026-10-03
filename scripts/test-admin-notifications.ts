@@ -35,6 +35,8 @@ async function main() {
   assert.match(calls[0].sql, /WHERE direction = 'INBOUND'/);
   assert.match(calls[0].sql, /FROM emails WHERE "readAt" IS NULL/);
   assert.match(calls[0].sql, /FROM emails ORDER BY happened/);
+  assert.match(calls[0].sql, /FROM unseen WHERE kind = 'booking'.*LIMIT 10/);
+  assert.match(calls[0].sql, /FROM unseen WHERE kind = 'email'.*LIMIT 10/);
   assert.match(calls[0].sql, /status IN \('REQUESTED', 'CONFIRMED'\)/);
   assert.doesNotMatch(calls[0].sql, /UPDATE|DELETE|totalPriceCents|bookingTickets/);
   await markNotificationBookingsSeen({ seenThrough: snapshot.bookingSeenThrough }, query);

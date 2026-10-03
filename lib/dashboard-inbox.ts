@@ -17,16 +17,18 @@ export const inboxQuerySchema = z.object({
 }).refine(value => [value.before, value.cursorId, value.cursorSource].filter(Boolean).length % 3 === 0, { message: "Invalid cursor" });
 
 const receivedMessages = `
-  SELECT m.id, 'booking'::text AS source, 'reservations'::text AS "mailboxId", m."bookingId", m.sender, m.recipient, m.subject, m."bodyText", m.attachments,
+  SELECT m.id, 'booking'::text AS source, COALESCE(p."mailboxId", 'reservations') AS "mailboxId", m."bookingId", m.sender, m.recipient, m.subject, m."bodyText", m.attachments,
     m."senderMatchesGuest", m."readAt", m."createdAt", m.direction, m.status,
     CASE WHEN m.direction = 'OUTBOUND' OR m."senderMatchesGuest" THEN
       COALESCE(NULLIF(TRIM(b."customerName"), ''), NULLIF(TRIM(CONCAT_WS(' ', b."firstName", b."lastName")), ''))
       ELSE NULL END AS "correspondentName"
     FROM "BookingMessage" m JOIN "Booking" b ON b.id = m."bookingId"
+    LEFT JOIN "DashboardEmailPlacement" p ON p.source = 'booking' AND p."messageId" = m.id
     WHERE NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id)
   UNION ALL
-  SELECT id, 'general'::text AS source, "mailboxId", NULL::text AS "bookingId", sender, recipient, subject, "bodyText", attachments,
-    TRUE AS "senderMatchesGuest", "readAt", "createdAt", direction, status, "correspondentName" FROM "InboxMessage" m
+  SELECT m.id, 'general'::text AS source, COALESCE(p."mailboxId", m."mailboxId") AS "mailboxId", NULL::text AS "bookingId", m.sender, m.recipient, m.subject, m."bodyText", m.attachments,
+    TRUE AS "senderMatchesGuest", m."readAt", m."createdAt", m.direction, m.status, m."correspondentName" FROM "InboxMessage" m
+    LEFT JOIN "DashboardEmailPlacement" p ON p.source = 'general' AND p."messageId" = m.id
     WHERE NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id)`;
 
 type InboxRow = Omit<InboxDetail, "createdAt" | "readAt"> & { createdAt: Date; readAt: Date | null };

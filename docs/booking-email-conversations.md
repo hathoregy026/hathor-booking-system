@@ -127,6 +127,25 @@ before this feature are not imported automatically.
 - To pause inbound routing, set `RESEND_INBOUND_ENABLED=false` and redeploy. Historical
   conversation records stay available, and new booking emails use the normal inbox.
 
+## Dashboard filing and removal
+
+- Select individual emails or use **Select loaded emails** (up to 100). Choose
+  another mailbox and **Move selected**, or confirm **Delete selected**. Pending
+  sends cannot be moved or removed. A stale or invalid selection rejects the
+  entire operation rather than partially applying it.
+- Filing changes only `DashboardEmailPlacement`, an authenticated dashboard
+  overlay with RLS and no public policies. Original sender, recipient, delivery
+  routing, content, attachments and booking associations remain untouched.
+  Provider replay cannot undo the filing or restore a dashboard-deleted email.
+- Deleted items are hidden using the existing dashboard tombstones. Nothing is
+  deleted from Zoho, Resend, or the booking conversation history.
+- Replies to general correspondence use its current dashboard mailbox. Booking
+  messages retain **Open booking & reply** and the existing booking reply flow.
+  Future incoming mail still enters the mailbox it was addressed to; filing an
+  existing message does not change forwarding rules or create a sender rule.
+- Automatic list refresh pauses during selection and resumes afterward. Filters
+  remain fixed while the email list and reader scroll independently.
+
 Official references:
 - https://resend.com/docs/receive-email
 - https://resend.com/docs/webhooks/verify-webhooks-requests
