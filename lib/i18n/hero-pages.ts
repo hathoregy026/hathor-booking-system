@@ -14,6 +14,7 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
   cruises: { main: "Crociere\nin dahabiya", second: "sul Nilo" },
   /* The charter page breaks each line into two-word phrases. */
   charter: { main: "Charter privato\nin dahabiya", second: "Viaggio esclusivo" },
+  about: { main: "Benvenuti a bordo", second: "Hathor Cruise" },
 };
 
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {

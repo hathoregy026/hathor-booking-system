@@ -18,6 +18,8 @@ import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { stackedHeroLines } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { ABOUT_COPY } from "@/lib/i18n/about-copy";
 
 function AboutMedia({
   slot,
@@ -91,38 +93,23 @@ function Scene({
   );
 }
 
-/** The numbered manifesto rows: a giant word, a number, a narrow column of copy. */
+/*
+ * The numbered manifesto rows: a giant word, a number, a narrow column of
+ * copy. Words come from ABOUT_COPY.principles, in this order.
+ */
 const PRINCIPLES = [
-  {
-    number: "01",
-    count: "08",
-    title: "Cabins",
-    text: "Eight luxury cabins of refined comfort — 22 sqm of contemporary Nile living with ensuite bathrooms and smart systems.",
-    slot: "room-luxury",
-  },
-  {
-    number: "02",
-    count: "02",
-    title: "Suites",
-    text: "Two elegant suites on the Lower Deck — 46 sqm of distinctive luxury with panoramic Nile views and private jacuzzi.",
-    slot: "room-suite",
-  },
-  {
-    number: "03",
-    count: "02",
-    title: "Royal",
-    text: "Two magnificent Royal Suites on the Main Deck — 56 sqm, the crown jewel, designed for those who seek the extraordinary.",
-    slot: "room-royal",
-  },
+  { number: "01", count: "08", slot: "room-luxury" },
+  { number: "02", count: "02", slot: "room-suite" },
+  { number: "03", count: "02", slot: "room-royal" },
 ] as const;
 
-/** Full-panel wall cards: four data points pinned to the corners of the frame. */
+/*
+ * Full-panel wall cards: four data points pinned to the corners of the frame.
+ * Words come from ABOUT_COPY.stays, in this order.
+ */
 const STAYS = [
   {
     number: "01",
-    meta: "22 sqm",
-    place: "Upper Deck",
-    title: "Cabin",
     /* The gallery views, so the wall cards do not repeat the deck panels. */
     slot: "scraped-cabin-3",
     href: "/rooms",
@@ -130,18 +117,12 @@ const STAYS = [
   },
   {
     number: "02",
-    meta: "46 sqm",
-    place: "Lower Deck",
-    title: "Suite",
     slot: "scraped-luxsuite-2",
     href: "/luxury-cabins-Nile-Cruise",
     tone: "ink",
   },
   {
     number: "03",
-    meta: "56 sqm",
-    place: "Main Deck",
-    title: "Royal",
     slot: "scraped-royal-2",
     href: "/royal-suites",
     tone: "gold",
@@ -152,6 +133,8 @@ export function AboutPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const t = ABOUT_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const about = pages.about;
   const typography = useTypographySettings();
@@ -170,16 +153,16 @@ export function AboutPageContent() {
       </div>
 
       <main>
-        <section ref={runRef} className="ab-run" aria-label="About Hathor Dahabiya">
+        <section ref={runRef} className="ab-run" aria-label={t.runLabel}>
           <div className="ab-stage">
             <div ref={trackRef} className="ab-track">
               {/* 01 — Intro: a ragged three-part display setting */}
               <Scene className="ab-intro">
-                <nav className="ab-intro__nav" aria-label="About page sections">
-                  <a href="#about">About</a>
-                  <a href="#stay">Stay</a>
-                  <Link href="/gastronomy">Dining</Link>
-                  <a href="#reserve">Reserve</a>
+                <nav className="ab-intro__nav" aria-label={t.navLabel}>
+                  <a href="#about">{t.nav.about}</a>
+                  <a href="#stay">{t.nav.stay}</a>
+                  <Link href={localHref("/gastronomy")}>{t.nav.dining}</Link>
+                  <a href="#reserve">{t.nav.reserve}</a>
                 </nav>
 
                 <div className="ab-intro__inner">
@@ -206,7 +189,7 @@ export function AboutPageContent() {
                 </p>
                 <p className="ab-intro__scroll">
                   <i />
-                  Scroll
+                  {t.scroll}
                 </p>
               </Scene>
 
@@ -214,7 +197,7 @@ export function AboutPageContent() {
               <Scene className="ab-lead">
                 <AboutMedia
                   slot="about-hero"
-                  alt="Hathor Dahabiya on the Nile"
+                  alt={t.alts.hero}
                   priority
                   className="ab-lead__main"
                 />
@@ -224,12 +207,10 @@ export function AboutPageContent() {
                   ratio="835 / 557"
                   front="room-suite"
                   back="about-dining"
-                  frontAlt="Suite aboard Hathor"
-                  backAlt="Dining aboard Hathor"
+                  frontAlt={t.alts.suite}
+                  backAlt={t.alts.dining}
                 />
-                <p className="ab-lead__caption">
-                  Aboard · Three decks · 32 guests
-                </p>
+                <p className="ab-lead__caption">{t.leadCaption}</p>
               </Scene>
 
               {/* 03 — Manifesto */}
@@ -240,16 +221,16 @@ export function AboutPageContent() {
                 <div className="ab-manifesto__headline" data-anima-title>
                   <h2 className="ab-edit ab-edit--xl">
                     <span className="ab-line">
-                      <AnimaSplitLine line={0}>The Dahabiya</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>{t.manifesto[0]}</AnimaSplitLine>
                     </span>
                     <span className="ab-line">
-                      <AnimaSplitLine line={1}>Experience Egypt</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>{t.manifesto[1]}</AnimaSplitLine>
                     </span>
                     <span className="ab-line">
-                      <AnimaSplitLine line={2}>in a whole</AnimaSplitLine>
+                      <AnimaSplitLine line={2}>{t.manifesto[2]}</AnimaSplitLine>
                     </span>
                     <span className="ab-line ab-line--indent">
-                      <AnimaSplitLine line={3}>new light</AnimaSplitLine>
+                      <AnimaSplitLine line={3}>{t.manifesto[3]}</AnimaSplitLine>
                     </span>
                   </h2>
                 </div>
@@ -263,8 +244,8 @@ export function AboutPageContent() {
                   ratio="668 / 554"
                   front="home-story-way-of-life"
                   back="home-cinematic-still"
-                  frontAlt="Life aboard Hathor"
-                  backAlt="Hathor on the river"
+                  frontAlt={t.alts.life}
+                  backAlt={t.alts.river}
                 />
                 <FlipImage
                   className="ab-collage__tile ab-collage__tile--two"
@@ -272,8 +253,8 @@ export function AboutPageContent() {
                   ratio="1090 / 960"
                   front="home-story-craft-large"
                   back="scraped-cabin-1"
-                  frontAlt="Craft aboard Hathor"
-                  backAlt="Cabin aboard Hathor"
+                  frontAlt={t.alts.craft}
+                  backAlt={t.alts.cabin}
                 />
                 <p className="ab-collage__copy ab-meta-copy">{second}</p>
               </Scene>
@@ -288,17 +269,17 @@ export function AboutPageContent() {
                 </div>
 
                 <ol className="ab-principles__list">
-                  {PRINCIPLES.map((item) => (
+                  {PRINCIPLES.map((item, index) => (
                     <li className="ab-principle" key={item.number}>
                       <span className="ab-principle__num">{item.number}</span>
                       <h3 className="ab-principle__word ab-display">
-                        {item.title}
+                        {t.principles[index].title}
                       </h3>
                       <p className="ab-principle__count ab-edit">{item.count}</p>
-                      <p className="ab-principle__copy">{item.text}</p>
+                      <p className="ab-principle__copy">{t.principles[index].text}</p>
                       <AboutMedia
                         slot={item.slot}
-                        alt={`${item.title} aboard Hathor`}
+                        alt={t.aboardAlt(t.principles[index].title)}
                         className="ab-principle__peek"
                         ratio="4 / 5"
                       />
@@ -308,7 +289,7 @@ export function AboutPageContent() {
               </Scene>
 
               {/* 06 — Wall cards: one full-panel wash each, data at the corners */}
-              {STAYS.map((stay) => (
+              {STAYS.map((stay, index) => (
                 <Scene
                   className={`ab-card ab-card--${stay.tone}`}
                   key={stay.number}
@@ -316,21 +297,21 @@ export function AboutPageContent() {
                   <div className="ab-card__frame">
                     <AboutMedia
                       slot={stay.slot}
-                      alt={`${stay.title} aboard Hathor`}
+                      alt={t.aboardAlt(t.stays[index].title)}
                       className="ab-card__media"
                       ratio="1279 / 820"
                     />
 
                     <div className="ab-card__plate">
                       <span className="ab-card__corner ab-card__corner--tl ab-edit">
-                        {stay.meta}
+                        {t.stays[index].meta}
                       </span>
                       <span className="ab-card__corner ab-card__corner--tr">
-                        {stay.place}
+                        {t.stays[index].place}
                       </span>
 
                       <h2 className="ab-card__title ab-display" data-anima-title>
-                        {stay.title}
+                        {t.stays[index].title}
                       </h2>
 
                       <span className="ab-card__corner ab-card__corner--bl">
@@ -338,9 +319,9 @@ export function AboutPageContent() {
                       </span>
                       <Link
                         className="ab-btn ab-card__corner ab-card__corner--br"
-                        href={stay.href}
+                        href={localHref(stay.href)}
                       >
-                        <span>The experience</span>
+                        <span>{t.experience}</span>
                       </Link>
                     </div>
                   </div>
@@ -352,7 +333,7 @@ export function AboutPageContent() {
                 <div className="ab-dining__media">
                   <AboutMedia
                     slot="gastronomy-restaurant"
-                    alt="Indoor restaurant aboard Hathor"
+                    alt={t.alts.restaurant}
                     className="ab-dining__main"
                     ratio="1090 / 960"
                   />
@@ -362,8 +343,8 @@ export function AboutPageContent() {
                     ratio="668 / 554"
                     front="gastronomy-wine"
                     back="about-dining"
-                    frontAlt="Bar aboard Hathor"
-                    backAlt="Fine dining aboard Hathor"
+                    frontAlt={t.alts.bar}
+                    backAlt={t.alts.fineDining}
                   />
                 </div>
 
@@ -374,21 +355,21 @@ export function AboutPageContent() {
                         <AnimaSplitLine line={0}>{about.diningTitle}</AnimaSplitLine>
                       </span>
                       <span className="ab-line">
-                        <AnimaSplitLine line={1}>Luxury dining</AnimaSplitLine>
+                        <AnimaSplitLine line={1}>{t.diningLines[0]}</AnimaSplitLine>
                       </span>
                       <span className="ab-line">
-                        <AnimaSplitLine line={2}>on Egypt&rsquo;s finest</AnimaSplitLine>
+                        <AnimaSplitLine line={2}>{t.diningLines[1]}</AnimaSplitLine>
                       </span>
                       <span className="ab-line ab-line--indent">
-                        <AnimaSplitLine line={3}>dahabiya</AnimaSplitLine>
+                        <AnimaSplitLine line={3}>{t.diningLines[2]}</AnimaSplitLine>
                       </span>
                     </h2>
                   </div>
                   <p className="ab-meta-copy wt-page-body">
                     {about.diningIntro.trim() || ABOUT_PAGE.diningPromo.body}
                   </p>
-                  <Link href="/gastronomy" className="ab-btn">
-                    <span>Explore Dining</span>
+                  <Link href={localHref("/gastronomy")} className="ab-btn">
+                    <span>{t.exploreDining}</span>
                   </Link>
                 </div>
               </Scene>
@@ -401,12 +382,12 @@ export function AboutPageContent() {
                   ratio="1483 / 960"
                   front="home-story-legacy-large"
                   back="home-split-courtyard"
-                  frontAlt="Hathor legacy on the Nile"
-                  backAlt="Hathor deck living"
+                  frontAlt={t.alts.legacy}
+                  backAlt={t.alts.deck}
                 />
                 <div className="ab-closing__copy">
                   <p className="ab-display ab-display--l wt-page-title">
-                    {about.welcomeTitle.trim() || "Welcome aboard"}
+                    {about.welcomeTitle.trim() || t.welcomeFallback}
                   </p>
                 </div>
               </Scene>
@@ -419,10 +400,10 @@ export function AboutPageContent() {
           <header className="ab-epilogue__head">
             <h2 className="ab-display ab-display--xl" data-anima-title>
               <span className="ab-line">
-                <AnimaSplitLine line={0}>Timeless luxury</AnimaSplitLine>
+                <AnimaSplitLine line={0}>{t.epilogue[0]}</AnimaSplitLine>
               </span>
               <span className="ab-line ab-line--indent">
-                <AnimaSplitLine line={1}>on the Nile</AnimaSplitLine>
+                <AnimaSplitLine line={1}>{t.epilogue[1]}</AnimaSplitLine>
               </span>
             </h2>
           </header>
@@ -430,12 +411,12 @@ export function AboutPageContent() {
           <div className="ab-epilogue__pair">
             <AboutMedia
               slot="room-royal"
-              alt="Royal Suite experience"
+              alt={t.alts.royalExperience}
               ratio="668 / 554"
             />
             <AboutMedia
               slot="about-dining"
-              alt="Dining experience"
+              alt={t.alts.diningExperience}
               ratio="668 / 720"
             />
           </div>
@@ -445,10 +426,10 @@ export function AboutPageContent() {
               <p className="ab-edit ab-edit--l">{about.welcomeBody}</p>
               <div className="ab-epilogue__pills">
                 <BookNowTrigger className="ab-btn ab-btn--solid">
-                  <span>Book Now</span>
+                  <span>{t.bookNow}</span>
                 </BookNowTrigger>
-                <Link href="/cruises-list" className="ab-btn">
-                  <span>Explore cruises</span>
+                <Link href={localHref("/cruises-list")} className="ab-btn">
+                  <span>{t.exploreCruises}</span>
                 </Link>
               </div>
               <p className="ab-meta-copy">{about.diningOutro}</p>
@@ -457,15 +438,15 @@ export function AboutPageContent() {
             <aside className="ab-epilogue__card">
               <AboutMedia
                 slot="about-hero"
-                alt="Hathor Dahabiya"
+                alt={t.alts.card}
                 className="ab-epilogue__card-media"
                 ratio="356 / 460"
               />
-              <h3 className="ab-display">Dahabiya vessel</h3>
+              <h3 className="ab-display">{t.cardTitle}</h3>
               <p className="ab-epilogue__card-body">
-                Three decks of stillness
+                {t.cardBody[0]}
                 <br />
-                on a private Nile cruise
+                {t.cardBody[1]}
               </p>
               <div className="ab-epilogue__card-links">
                 <a

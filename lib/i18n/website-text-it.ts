@@ -14,6 +14,27 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  about: {
+    intro: [
+      "Scopra l’Egitto sotto una luce del tutto nuova con la crociera sul Nilo Hathor Dahabiya, dove la tradizione senza tempo incontra il lusso moderno.",
+      "Un viaggio in dahabiya è uno dei modi più intimi di vivere il Nilo. Il ritmo più lento, le dimensioni contenute e gli approdi più tranquilli creano un legame più personale con il fiume e con i luoghi lungo le sue rive.",
+      "La dahabiya offre ogni comfort contemporaneo immaginabile per una crociera panoramica in questo paese affascinante, adatta alle esigenze di ciascuno. Fin dal primo momento, tutto è pensato per andare oltre le Sue aspettative.",
+      "Viva la più grande avventura sul Nilo con la crociera Hathor Dahabiya in Egitto: ogni alba sul fiume diventa un nuovo racconto epico.",
+    ],
+    diningIntro:
+      "Si conceda una cucina di livello internazionale e momenti di svago raffinato nei nostri spazi d’autore:",
+    diningOutro:
+      "A bordo di Hathor Dahabiya uniamo tradizione e innovazione per un viaggio fuori dall’ordinario. Che cerchi pace, avventura o immersione culturale, il Suo viaggio con noi sarà a dir poco straordinario.",
+    diningTitle: "Cucina e intrattenimento",
+    heroSupport:
+      "Scopra l’Egitto sotto una luce del tutto nuova, dove la tradizione senza tempo incontra il lusso moderno.",
+    welcomeBody:
+      "Scopra un’espressione più quieta del lusso, fatta di spazio, privacy e servizio attento.",
+    welcomeTitle: "Benvenuti a bordo della crociera Hathor Dahabiya.",
+    accommodationsIntro:
+      "Hathor Dahabiya si sviluppa su tre ponti curati in ogni dettaglio (il ponte inferiore, il ponte principale e il ponte sole) con:",
+    accommodationsTitle: "Le sistemazioni",
+  },
   cabins: {
     overviewIntro:
       "Hathor Dahabiya offre una crociera privata ed elegante in dahabiya: un’autentica esperienza boutique sul Nilo, pensata per chi desidera vivere il fiume senza tempo.",
