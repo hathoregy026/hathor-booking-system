@@ -7,13 +7,21 @@ import type { TermsTocItem } from "@/lib/terms-and-conditions-content";
 type TermsPageTocProps = {
   items: readonly TermsTocItem[];
   layout?: "sidebar" | "inline";
+  /** The index's landmark name and visible heading, in the page's language. */
+  labels?: { label: string; title: string };
 };
+
+const ENGLISH_LABELS = { label: "On this page", title: "On This Page" };
 
 /**
  * Accessible anchor index with optional active-section indicator (desktop).
  * Anchor links work without JS; observer only enhances focus styling.
  */
-export function TermsPageToc({ items, layout = "sidebar" }: TermsPageTocProps) {
+export function TermsPageToc({
+  items,
+  layout = "sidebar",
+  labels = ENGLISH_LABELS,
+}: TermsPageTocProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -101,7 +109,7 @@ export function TermsPageToc({ items, layout = "sidebar" }: TermsPageTocProps) {
 
   if (layout === "inline") {
     return (
-      <nav className={navClass} aria-label="On this page">
+      <nav className={navClass} aria-label={labels.label}>
         <button
           type="button"
           className="tc-toc__toggle"
@@ -109,7 +117,7 @@ export function TermsPageToc({ items, layout = "sidebar" }: TermsPageTocProps) {
           aria-controls="terms-toc-panel"
           onClick={() => setMobileOpen((open) => !open)}
         >
-          On This Page
+          {labels.title}
         </button>
         <div
           id="terms-toc-panel"
@@ -123,8 +131,8 @@ export function TermsPageToc({ items, layout = "sidebar" }: TermsPageTocProps) {
   }
 
   return (
-    <nav className={navClass} aria-label="On this page">
-      <p className="tc-toc__label">On This Page</p>
+    <nav className={navClass} aria-label={labels.label}>
+      <p className="tc-toc__label">{labels.title}</p>
       {list}
     </nav>
   );

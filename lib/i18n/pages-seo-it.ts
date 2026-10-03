@@ -90,4 +90,12 @@ export const ITALIAN_PAGES = {
     name: "Partner di viaggio | Hathor Dahabiya",
     crumb: "Partner",
   }),
+  terms: page({
+    path: "/it/terms-and-conditions",
+    title: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
+    description:
+      "Le condizioni di prenotazione, pagamento e cancellazione di Hathor Dahabiya, con servizi inclusi, responsabilità degli ospiti e regole di viaggio per le crociere sul Nilo tra Luxor e Assuan.",
+    name: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
+    crumb: "Termini e condizioni",
+  }),
 } as const;
