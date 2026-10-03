@@ -7,6 +7,8 @@
  * client components can all share the same rules.
  */
 
+import { TRANSLATED_BLOG_SLUGS_IT } from "./blog-slugs-it";
+
 export const PUBLIC_LOCALES = ["en", "it"] as const;
 
 export type PublicLocale = (typeof PUBLIC_LOCALES)[number];
@@ -50,6 +52,7 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
     "/partners",
     "/terms-and-conditions",
     "/blogs",
+    ...TRANSLATED_BLOG_SLUGS_IT.map((slug) => `/blogs/${slug}`),
   ],
 };
 

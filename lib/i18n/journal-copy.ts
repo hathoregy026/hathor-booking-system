@@ -7,6 +7,20 @@ import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Theme = { word: string; note: string };
 
+/* Journal photographs that carry no description of their own on the page;
+   English leaves them empty, so each keeps its image-library caption. */
+const SLOT_ALTS_IT: Record<string, string> = {
+  "highlights-hero": "I momenti salienti di una crociera Hathor sul Nilo",
+  "highlights-lifestyle": "La vita a bordo di Hathor",
+  "landmark-hatshepsut": "Il Tempio di Hatshepsut",
+  "landmark-obelisk": "L’Obelisco Incompiuto, Assuan",
+  "landmark-valley-kings": "La Valle dei Re, Luxor",
+  "gastronomy-hero": "Una tavola privata a lume di candela a bordo di Hathor Dahabiya",
+  "blog-hero": "Il journal di Hathor Dahabiya: storie dal Nilo",
+};
+
+const slotAltIt = (slot: string) => SLOT_ALTS_IT[slot] ?? "";
+
 export type JournalCopy = {
   /** Intl locale for publication dates. */
   dateLocale: string;
@@ -25,6 +39,8 @@ export type JournalCopy = {
     sailing: string;
   };
   editorialAlt: (title: string) => string;
+  /** A photograph's description where the page gives none ("" keeps the library caption). */
+  slotAlt: (slot: string) => string;
   leadStory: string;
   readStory: string;
   arrivingSoon: string;
@@ -76,6 +92,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
       sailing: "Sailing the Nile aboard Hathor",
     },
     editorialAlt: (title) => `Editorial view for ${title}`,
+    slotAlt: () => "",
     leadStory: "Lead story",
     readStory: "Read the story",
     arrivingSoon: "Arriving soon",
@@ -139,6 +156,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
       sailing: "In navigazione sul Nilo a bordo di Hathor",
     },
     editorialAlt: (title) => `Immagine per l’articolo «${title}»`,
+    slotAlt: slotAltIt,
     leadStory: "In primo piano",
     readStory: "Legga l’articolo",
     arrivingSoon: "In arrivo",
@@ -184,5 +202,121 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     cardTitle: "Note",
     cardBody: ["Templi, villaggi e viaggi più quieti", "scritti per gli ospiti di Hathor"],
     writeToUs: "Ci scriva",
+  },
+};
+
+/** A journal article's own words, around the post's text. */
+export type ArticleCopy = {
+  dateLocale: string;
+  runLabel: (title: string) => string;
+  meta: string;
+  navLabel: string;
+  read: string;
+  allDispatches: string;
+  dispatch: string;
+  publishedOn: string;
+  published: string;
+  scroll: string;
+  heroAlt: (title: string) => string;
+  /** A photograph's description where the page gives none ("" keeps the library caption). */
+  slotAlt: (slot: string) => string;
+  standfirst: string;
+  waters: string;
+  watersValue: string;
+  alts: { alongRiver: string; sailing: string; life: string; table: string };
+  captionLead: string;
+  caption: string;
+  continueEyebrow: string;
+  theNote: string;
+  readBelow: string;
+  furtherLabel: string;
+  furtherNotes: string;
+  continueReading: string;
+  closeLine: string;
+  bookNow: string;
+  fullJournal: string;
+  /** The article's link to a page that sells the voyage, by its English label. */
+  commercial: (label: string) => string;
+};
+
+const COMMERCIAL_IT: Record<string, string> = {
+  "Explore voyages": "Scopra i viaggi",
+  "See Royal Suites": "Le Royal Suite",
+  "See luxury rooms": "Le cabine di lusso",
+  "Private charter": "Charter privato",
+  "Aswan to Luxor voyage": "Da Assuan a Luxor",
+  "Luxor to Aswan voyage": "Da Luxor ad Assuan",
+};
+
+export const ARTICLE_COPY: Record<PublicLocale, ArticleCopy> = {
+  en: {
+    dateLocale: "en-US",
+    runLabel: (title) => `${title} — journal dispatch`,
+    meta: "Hathor Journal",
+    navLabel: "Article sections",
+    read: "Read",
+    allDispatches: "All dispatches",
+    dispatch: "Dispatch",
+    publishedOn: "Published",
+    published: "Published",
+    scroll: "Scroll",
+    heroAlt: (title) => `Editorial view accompanying ${title}`,
+    slotAlt: () => "",
+    standfirst: "Standfirst",
+    waters: "Waters",
+    watersValue: "Luxor — Aswan",
+    alts: {
+      alongRiver: "Along the river",
+      sailing: "Sailing the Nile aboard Hathor",
+      life: "Life aboard the dahabiya",
+      table: "The table aboard",
+    },
+    captionLead: "Along the river",
+    caption: "Temples, villages, and the slower pace of Dahabiya travel.",
+    continueEyebrow: "Continue",
+    theNote: "The note",
+    readBelow: "Read below",
+    furtherLabel: "Further dispatches",
+    furtherNotes: "Further notes",
+    continueReading: "Continue reading",
+    closeLine: "When the reading ends, the river begins.",
+    bookNow: "Book Now",
+    fullJournal: "Full journal",
+    commercial: (label) => label,
+  },
+  it: {
+    dateLocale: "it-IT",
+    runLabel: (title) => `${title}: un articolo del journal`,
+    meta: "Hathor Journal",
+    navLabel: "Sezioni dell’articolo",
+    read: "Legga",
+    allDispatches: "Tutti gli articoli",
+    dispatch: "Articolo",
+    publishedOn: "Pubblicato il",
+    published: "Pubblicazione",
+    scroll: "Scorri",
+    heroAlt: (title) => `Immagine che accompagna «${title}»`,
+    slotAlt: slotAltIt,
+    standfirst: "Sommario",
+    waters: "Acque",
+    watersValue: "Luxor — Assuan",
+    alts: {
+      alongRiver: "Lungo il fiume",
+      sailing: "In navigazione sul Nilo a bordo di Hathor",
+      life: "La vita a bordo della dahabiya",
+      table: "La tavola a bordo",
+    },
+    captionLead: "Lungo il fiume",
+    caption: "Templi, villaggi e il ritmo più lento del viaggio in dahabiya.",
+    continueEyebrow: "Prosegua",
+    theNote: "La nota",
+    readBelow: "Legga qui sotto",
+    furtherLabel: "Altri articoli",
+    furtherNotes: "Altre note",
+    continueReading: "Continui a leggere",
+    closeLine: "Quando la lettura finisce, comincia il fiume.",
+    bookNow: "Prenota ora",
+    fullJournal: "Tutto il journal",
+    commercial: (label) => COMMERCIAL_IT[label] ?? label,
   },
 };

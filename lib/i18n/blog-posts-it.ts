@@ -9,6 +9,7 @@
  * links lead to the English article.
  */
 
+import { TRANSLATED_BLOG_SLUGS_IT } from "@/lib/i18n/blog-slugs-it";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type PostWords = { title: string; excerpt: string };
@@ -237,8 +238,7 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
   },
 };
 
-/** Posts whose article reads in Italian at /it/blogs/<slug>. */
-export const TRANSLATED_BLOG_SLUGS_IT: ReadonlySet<string> = new Set<string>();
+const TRANSLATED = new Set(TRANSLATED_BLOG_SLUGS_IT);
 
 /** A post's title and excerpt in a language; English, and untranslated posts, pass through. */
 export function blogPostIn<T extends { slug: string; title: string; excerpt: string }>(
@@ -252,5 +252,5 @@ export function blogPostIn<T extends { slug: string; title: string; excerpt: str
 
 /** Where a post opens: its Italian article once translated, otherwise the English one. */
 export function blogPostHref(slug: string, locale: PublicLocale): string {
-  return locale === "it" && TRANSLATED_BLOG_SLUGS_IT.has(slug) ? `/it/blogs/${slug}` : `/blogs/${slug}`;
+  return locale === "it" && TRANSLATED.has(slug) ? `/it/blogs/${slug}` : `/blogs/${slug}`;
 }

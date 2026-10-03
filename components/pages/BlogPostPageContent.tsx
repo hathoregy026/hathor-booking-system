@@ -23,6 +23,9 @@ import {
 import { blogCommercialLink } from "@/lib/seo/blog-commercial";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { blogPostHref } from "@/lib/i18n/blog-posts-it";
+import { ARTICLE_COPY } from "@/lib/i18n/journal-copy";
 
 /* ==========================================================================
    ARTICLE — LuxuryHathor folio
@@ -154,6 +157,8 @@ type BlogPostPageContentProps = {
   related: BlogPostSummaryClient[];
   articleBlocks: ReactNode[];
   interludeSlots: string[];
+  /** The post's English title, for picking its voyage link on a translated page. */
+  sourceTitle?: string;
 };
 
 export function BlogPostPageContent({
@@ -162,20 +167,24 @@ export function BlogPostPageContent({
   related,
   articleBlocks,
   interludeSlots,
+  sourceTitle,
 }: BlogPostPageContentProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   useArticleEditorialScroll({ rootRef, runRef, trackRef });
+  const locale = usePublicLocale();
+  const t = ARTICLE_COPY[locale];
+  const localHref = useLocalizedHref();
 
-  const publishedLabel = formatBlogPublishedDate(post.publishedAt);
+  const publishedLabel = formatBlogPublishedDate(post.publishedAt, t.dateLocale);
   const supportSlot = getBlogSupportImageName(post.slug);
   /* Two dispatches side by side must not carry the same photograph. */
   const relatedImages = assignBlogImageNames([
     post.slug,
     ...related.map((item) => item.slug),
   ]);
-  const commercial = blogCommercialLink(post.slug, post.title);
+  const commercial = blogCommercialLink(post.slug, sourceTitle ?? post.title);
 
   return (
     <div ref={rootRef} className="article-editorial">
@@ -188,37 +197,37 @@ export function BlogPostPageContent({
         <section
           ref={runRef}
           className="ar-run"
-          aria-label={`${post.title} — journal dispatch`}
+          aria-label={t.runLabel(post.title)}
         >
           <div className="ar-stage">
             <div ref={trackRef} className="ar-track">
               {/* 01 — masthead: three rows on hairlines, all in flow */}
               <Scene className="ar-masthead">
                 <div className="ar-masthead__top">
-                  <p className="ar-meta">Hathor Journal</p>
-                  <nav className="ar-masthead__nav" aria-label="Article sections">
+                  <p className="ar-meta">{t.meta}</p>
+                  <nav className="ar-masthead__nav" aria-label={t.navLabel}>
                     <a className="ar-link" href="#article">
-                      Read
+                      {t.read}
                     </a>
-                    <Link className="ar-link" href="/blogs">
-                      All dispatches
+                    <Link className="ar-link" href={localHref("/blogs")}>
+                      {t.allDispatches}
                     </Link>
                   </nav>
                 </div>
 
                 <div className="ar-masthead__mid">
-                  <Eyebrow>Dispatch</Eyebrow>
+                  <Eyebrow>{t.dispatch}</Eyebrow>
                   <h1 className="ar-display ar-display--xl">{post.title}</h1>
                 </div>
 
                 <div className="ar-masthead__bot">
                   <p className="ar-meta">
-                    Published{" "}
+                    {t.publishedOn}{" "}
                     <time dateTime={post.publishedAt}>{publishedLabel}</time>
                   </p>
                   <p className="ar-meta ar-masthead__cue">
                     <i aria-hidden="true" />
-                    Scroll
+                    {t.scroll}
                   </p>
                 </div>
               </Scene>
@@ -227,7 +236,7 @@ export function BlogPostPageContent({
               <Scene className="ar-plate">
                 <ArticleMedia
                   slot={heroImageName}
-                  alt={`Editorial view accompanying ${post.title}`}
+                  alt={t.heroAlt(post.title)}
                   role="dominant"
                   priority
                   className="ar-plate__frame"
@@ -239,20 +248,20 @@ export function BlogPostPageContent({
               {/* 03 — standfirst + framed datum, both in flow */}
               <Scene className="ar-standfirst">
                 <div className="ar-standfirst__statement">
-                  <Eyebrow>Standfirst</Eyebrow>
+                  <Eyebrow>{t.standfirst}</Eyebrow>
                   <p className="ar-edit ar-standfirst__quote">{post.excerpt}</p>
                 </div>
 
                 <dl className="ar-datum">
                   <div>
-                    <dt>Published</dt>
+                    <dt>{t.published}</dt>
                     <dd>
                       <time dateTime={post.publishedAt}>{publishedLabel}</time>
                     </dd>
                   </div>
                   <div>
-                    <dt>Waters</dt>
-                    <dd>Luxor — Aswan</dd>
+                    <dt>{t.waters}</dt>
+                    <dd>{t.watersValue}</dd>
                   </div>
                 </dl>
               </Scene>
@@ -266,8 +275,8 @@ export function BlogPostPageContent({
                   ratio="4 / 5"
                   front={supportSlot}
                   back="home-voyage-nile-majesty"
-                  frontAlt="Along the river"
-                  backAlt="Sailing the Nile aboard Hathor"
+                  frontAlt={t.alts.alongRiver}
+                  backAlt={t.alts.sailing}
                   sizes="(max-width: 950px) 100vw, 40vw"
                 />
                 <div className="ar-essay__side">
@@ -278,24 +287,24 @@ export function BlogPostPageContent({
                     ratio="5 / 4"
                     front="highlights-lifestyle"
                     back="gastronomy-hero"
-                    frontAlt="Life aboard the dahabiya"
-                    backAlt="The table aboard"
+                    frontAlt={t.alts.life}
+                    backAlt={t.alts.table}
                     sizes="(max-width: 950px) 100vw, 32vw"
                   />
                   <p className="ar-caption">
-                    <span>Along the river</span>
-                    Temples, villages, and the slower pace of Dahabiya travel.
+                    <span>{t.captionLead}</span>
+                    {t.caption}
                   </p>
                 </div>
               </Scene>
 
               {/* 05 — quiet bridge into the document */}
               <Scene className="ar-turn">
-                <Eyebrow>Continue</Eyebrow>
-                <p className="ar-display ar-display--l">The note</p>
+                <Eyebrow>{t.continueEyebrow}</Eyebrow>
+                <p className="ar-display ar-display--l">{t.theNote}</p>
                 <i className="ar-turn__rule" aria-hidden="true" />
                 <a className="ar-link" href="#article">
-                  Read below
+                  {t.readBelow}
                 </a>
               </Scene>
             </div>
@@ -306,7 +315,7 @@ export function BlogPostPageContent({
         <section className="ar-read" id="article">
           <header className="ar-read__head">
             <p className="ar-meta">
-              Hathor Journal · <time dateTime={post.publishedAt}>{publishedLabel}</time>
+              {t.meta} · <time dateTime={post.publishedAt}>{publishedLabel}</time>
             </p>
             <h2 className="ar-display ar-read__title">{post.title}</h2>
           </header>
@@ -337,14 +346,14 @@ export function BlogPostPageContent({
                         <>
                           <ArticleMedia
                             slot={slot}
-                            alt=""
+                            alt={t.slotAlt(slot)}
                             role="supporting"
                             ratio="4 / 5"
                             sizes="(max-width: 950px) 100vw, 34vw"
                           />
                           <ArticleMedia
                             slot={secondSlot ?? slot}
-                            alt=""
+                            alt={t.slotAlt(secondSlot ?? slot)}
                             role="detail"
                             className="ar-interlude__second"
                             ratio="4 / 3"
@@ -354,7 +363,7 @@ export function BlogPostPageContent({
                       ) : (
                         <ArticleMedia
                           slot={slot}
-                          alt=""
+                          alt={t.slotAlt(slot)}
                           role={shape === "bleed" ? "dominant" : "supporting"}
                           ratio={shape === "bleed" ? "16 / 9" : "5 / 4"}
                           sizes={shape === "bleed" ? "100vw" : "(max-width: 950px) 100vw, 74vw"}
@@ -370,10 +379,10 @@ export function BlogPostPageContent({
 
         {/* ============ continue reading — a hairline ledger ============ */}
         {related.length > 0 ? (
-          <section className="ar-further" aria-label="Further dispatches">
+          <section className="ar-further" aria-label={t.furtherLabel}>
             <header className="ar-further__head">
-              <Eyebrow>Further notes</Eyebrow>
-              <h2 className="ar-display ar-display--l">Continue reading</h2>
+              <Eyebrow>{t.furtherNotes}</Eyebrow>
+              <h2 className="ar-display ar-display--l">{t.continueReading}</h2>
             </header>
             <ul className="ar-further__list">
               {related.map((item, index) => (
@@ -381,20 +390,20 @@ export function BlogPostPageContent({
                   <span className="ar-further__num ar-edit">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <Link href={`/blogs/${item.slug}`} className="ar-further__thumb">
+                  <Link href={blogPostHref(item.slug, locale)} className="ar-further__thumb">
                     <ArticleMedia
                       slot={relatedImages[item.slug] ?? getBlogHeroImageName(item.slug)}
-                      alt=""
+                      alt={t.slotAlt(relatedImages[item.slug] ?? getBlogHeroImageName(item.slug))}
                       role="detail"
                       ratio="5 / 4"
                       sizes="(max-width: 950px) 40vw, 14vw"
                     />
                   </Link>
                   <h3 className="ar-further__title">
-                    <Link href={`/blogs/${item.slug}`}>{item.title}</Link>
+                    <Link href={blogPostHref(item.slug, locale)}>{item.title}</Link>
                   </h3>
                   <time className="ar-meta" dateTime={item.publishedAt}>
-                    {formatBlogPublishedDate(item.publishedAt)}
+                    {formatBlogPublishedDate(item.publishedAt, t.dateLocale)}
                   </time>
                 </li>
               ))}
@@ -404,27 +413,25 @@ export function BlogPostPageContent({
 
         {/* ============ close ============ */}
         {/* A closing scene, not a footer: the site footer is the only <footer>. */}
-        <section className="ar-close" aria-label="Continue reading">
+        <section className="ar-close" aria-label={t.continueReading}>
           <ArticleMedia
             slot="blog-hero"
-            alt=""
+            alt={t.slotAlt("blog-hero")}
             role="background"
             className="ar-close__bg"
             sizes="100vw"
           />
           <div className="ar-close__inner">
-            <p className="ar-edit ar-close__line">
-              When the reading ends, the river begins.
-            </p>
+            <p className="ar-edit ar-close__line">{t.closeLine}</p>
             <div className="ar-close__actions">
               <BookNowTrigger className="ar-btn ar-btn--solid">
-                Book Now
+                {t.bookNow}
               </BookNowTrigger>
-              <Link href={commercial.href} className="ar-btn">
-                <span>{commercial.label}</span>
+              <Link href={localHref(commercial.href)} className="ar-btn">
+                <span>{t.commercial(commercial.label)}</span>
               </Link>
-              <Link href="/blogs" className="ar-btn">
-                <span>Full journal</span>
+              <Link href={localHref("/blogs")} className="ar-btn">
+                <span>{t.fullJournal}</span>
               </Link>
             </div>
           </div>

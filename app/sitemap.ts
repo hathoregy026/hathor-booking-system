@@ -86,12 +86,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const posts = await getPublishedBlogPosts();
     for (const post of posts) {
-      entries.push({
+      entries.push(...withLanguageVersions({
         url: `${SEO_SITE_ORIGIN}/blogs/${post.slug}`,
         lastModified: post.publishedAt,
         changeFrequency: "monthly",
         priority: 0.55,
-      });
+      }, `/blogs/${post.slug}`));
     }
   } catch (error) {
     console.error("[sitemap] blog posts unavailable:", error);

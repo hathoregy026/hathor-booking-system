@@ -356,7 +356,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                         >
                           <JournalMedia
                             slot={heroImageFor(post.slug)}
-                            alt=""
+                            alt={t.slotAlt(heroImageFor(post.slug))}
                             className="jn-entry__media"
                             ratio="5 / 4"
                           />
@@ -526,7 +526,7 @@ export function BlogPageContent({ posts }: BlogPageContentProps) {
                   >
                     <JournalMedia
                       slot={heroImageFor(post.slug)}
-                      alt=""
+                      alt={t.slotAlt(heroImageFor(post.slug))}
                       className="jn-archive__media"
                       ratio="5 / 4"
                     />
