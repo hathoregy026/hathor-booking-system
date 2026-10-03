@@ -112,13 +112,13 @@ const STAYS = [
     number: "01",
     /* The gallery views, so the wall cards do not repeat the deck panels. */
     slot: "scraped-cabin-3",
-    href: "/rooms",
+    href: "/luxury-cabins-Nile-Cruise",
     tone: "cream",
   },
   {
     number: "02",
     slot: "scraped-luxsuite-2",
-    href: "/luxury-cabins-Nile-Cruise",
+    href: "/rooms",
     tone: "ink",
   },
   {
