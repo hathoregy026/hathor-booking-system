@@ -4,6 +4,7 @@
  * English is the live copy, character for character.
  */
 
+import { voyageNameIn } from "@/lib/i18n/catalog-copy";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 export type VoyagesCopy = {
@@ -28,13 +29,6 @@ export type VoyagesCopy = {
   voyageName: (slug: string, fallback: string) => string;
   /** Hover photographs in "The promise": empty keeps the dashboard description. */
   slotAlt: (slot: string) => string;
-};
-
-const VOYAGE_NAMES_IT: Record<string, string> = {
-  "3-nights-aswan-luxor": "3 notti / 4 giorni — da Assuan a Luxor",
-  "4-nights-luxor-aswan": "4 notti / 5 giorni — da Luxor ad Assuan",
-  "7-nights-luxor-aswan-luxor": "7 notti / 8 giorni — da Luxor ad Assuan e ritorno",
-  "nile-majesty": "Charter privato — Nile Majesty",
 };
 
 const SLOT_ALTS_IT: Record<string, string> = {
@@ -83,7 +77,7 @@ export const VOYAGES_COPY: Record<PublicLocale, VoyagesCopy> = {
       charter: "Il charter privato di Hathor",
       nileGoldenHour: "Il Nilo all’ora dorata",
     },
-    voyageName: (slug, fallback) => VOYAGE_NAMES_IT[slug] ?? fallback,
+    voyageName: (slug, fallback) => voyageNameIn("it", slug, fallback),
     slotAlt: (slot) => SLOT_ALTS_IT[slot] ?? "",
   },
 };

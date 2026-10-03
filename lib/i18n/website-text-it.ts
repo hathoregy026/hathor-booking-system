@@ -14,6 +14,16 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  cruises: {
+    overviewTitle: "Le crociere in dahabiya",
+    overviewIntro:
+      "Scopra itinerari esclusivi: navigazioni intime, approdi leggendari e un lusso senza compromessi.",
+    continueTitle: "Continui a esplorare\na bordo di Hathor",
+    continueBody: "Scopra le Luxury Rooms, le Suite, le Royal Suite e la cucina di Hathor Flavors.",
+    ctaTitle: "Prenoti il Suo viaggio",
+    ctaBody:
+      "Scopra itinerari esclusivi: navigazioni intime, approdi leggendari e un lusso senza compromessi.",
+  },
   voyages: {
     heroLabel: "I viaggi di Hathor",
     heroSupport:

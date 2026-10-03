@@ -25,6 +25,14 @@ import {
   normalizeOptionalText,
   resolveCmsText,
 } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { CRUISES_COPY, type CruisesCopy } from "@/lib/i18n/cruises-copy";
+import {
+  amenityIn,
+  voyageNameIn,
+  weekdayIn,
+  weekdayLabelIn,
+} from "@/lib/i18n/catalog-copy";
 
 type RoomCategory = "all" | "Luxury Room" | "Luxury Suite" | "Luxury Royal Suite";
 type SortKey = "price-asc" | "price-desc" | "nights-asc" | "nights-desc";
@@ -47,20 +55,29 @@ type ListingItem = {
   detailHref: string;
 };
 
-const ROOM_TYPES: { id: RoomCategory; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "Luxury Room", label: "Rooms" },
-  { id: "Luxury Suite", label: "Suites" },
-  { id: "Luxury Royal Suite", label: "Royal" },
+const ROOM_TYPES: { id: RoomCategory; copy: keyof CruisesCopy["roomTypes"] }[] = [
+  { id: "all", copy: "all" },
+  { id: "Luxury Room", copy: "room" },
+  { id: "Luxury Suite", copy: "suite" },
+  { id: "Luxury Royal Suite", copy: "royal" },
 ];
 
+/* Matched against the catalog's English amenity lines; labels come from the copy. */
 const FEATURE_FILTERS = [
-  { id: "nile", label: "Nile View", match: /nile view/i },
-  { id: "jacuzzi", label: "Jacuzzi", match: /jacuzzi/i },
-  { id: "bathtub", label: "Bathtub", match: /bathtub/i },
-  { id: "wifi", label: "Wi-Fi", match: /wi-?fi|internet/i },
-  { id: "minibar", label: "Minibar", match: /mini\s?bar/i },
-  { id: "safe", label: "Safe", match: /safe/i },
+  { id: "nile", match: /nile view/i },
+  { id: "jacuzzi", match: /jacuzzi/i },
+  { id: "bathtub", match: /bathtub/i },
+  { id: "wifi", match: /wi-?fi|internet/i },
+  { id: "minibar", match: /mini\s?bar/i },
+  { id: "safe", match: /safe/i },
+] as const;
+
+/** "Continue exploring" cards, in order; their words come from the copy. */
+const EXPLORE_HREFS = [
+  "/luxury-cabins-Nile-Cruise",
+  "/rooms",
+  "/royal-suites",
+  "/gastronomy",
 ] as const;
 
 function roomDetailHref(roomType: string): string {
@@ -109,6 +126,7 @@ function DualRange({
   onChange,
   format,
   step = 1,
+  labels,
 }: {
   min: number;
   max: number;
@@ -117,6 +135,7 @@ function DualRange({
   onChange: (next: [number, number]) => void;
   format: (n: number) => string;
   step?: number;
+  labels: { min: string; max: string };
 }) {
   const span = Math.max(max - min, 1);
   const left = ((valueMin - min) / span) * 100;
@@ -139,7 +158,7 @@ function DualRange({
           max={max}
           step={step}
           value={valueMin}
-          aria-label="Minimum price"
+          aria-label={labels.min}
           onChange={(e) => {
             const next = Math.min(Number(e.target.value), valueMax);
             onChange([next, valueMax]);
@@ -151,7 +170,7 @@ function DualRange({
           max={max}
           step={step}
           value={valueMax}
-          aria-label="Maximum price"
+          aria-label={labels.max}
           onChange={(e) => {
             const next = Math.max(Number(e.target.value), valueMin);
             onChange([valueMin, next]);
@@ -174,6 +193,7 @@ function ListingFavouriteButton({ item }: { item: ListingItem }) {
   const cabinSlug = cabinSlugForListing(item.cruiseSlug, item.roomName);
   const toggleFavorite = useSelectionStore((state) => state.toggleFavorite);
   const favoured = useIsFavorite("cabin", cabinSlug ?? "");
+  const locale = usePublicLocale();
 
   if (!cabinSlug) return null;
 
@@ -181,11 +201,11 @@ function ListingFavouriteButton({ item }: { item: ListingItem }) {
     <button
       type="button"
       className={`mr-card__fav${favoured ? " is-active" : ""}`}
-      aria-label={
-        favoured
-          ? `Remove ${item.roomName} on ${item.cruiseName} from favourites`
-          : `Save ${item.roomName} on ${item.cruiseName} to favourites`
-      }
+      aria-label={CRUISES_COPY[locale].favourite(
+        favoured,
+        item.roomName,
+        voyageNameIn(locale, item.cruiseSlug, item.cruiseName),
+      )}
       aria-pressed={favoured}
       onClick={(event) => {
         event.preventDefault();
@@ -201,13 +221,17 @@ function ListingFavouriteButton({ item }: { item: ListingItem }) {
 /** Matching action: one click selects both the itinerary and the cabin. */
 function ListingAddButton({ item }: { item: ListingItem }) {
   const cabinSlug = cabinSlugForListing(item.cruiseSlug, item.roomName);
+  const locale = usePublicLocale();
   if (!cabinSlug) return null;
 
   return (
     <AddToVoyageButton
       kind="cabin"
       slug={cabinSlug}
-      name={`${item.roomName} on ${item.cruiseName}`}
+      name={CRUISES_COPY[locale].pairName(
+        item.roomName,
+        voyageNameIn(locale, item.cruiseSlug, item.cruiseName),
+      )}
       variant="inline"
       className="mr-btn mr-btn--outline mr-card__voyage"
     />
@@ -215,6 +239,9 @@ function ListingAddButton({ item }: { item: ListingItem }) {
 }
 
 export function MaskRevealPageContent() {
+  const locale = usePublicLocale();
+  const t = CRUISES_COPY[locale];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const cruisesText = pages.cruises;
 
@@ -225,10 +252,10 @@ export function MaskRevealPageContent() {
   const overviewIntro = normalizeOptionalText(cruisesText.overviewIntro);
   const continueTitle = resolveCmsText(
     cruisesText.continueTitle,
-    "Continue exploring\naboard Hathor",
+    t.continueTitleFallback,
   );
   const continueBody = normalizeOptionalText(cruisesText.continueBody);
-  const ctaTitle = resolveCmsText(cruisesText.ctaTitle, "Reserve your voyage");
+  const ctaTitle = resolveCmsText(cruisesText.ctaTitle, t.ctaTitleFallback);
   const ctaBody = normalizeOptionalText(cruisesText.ctaBody);
 
   const cabinPrices = useCabinPrices();
@@ -308,14 +335,7 @@ export function MaskRevealPageContent() {
     sort,
   ]);
 
-  const sortLabel =
-    sort === "price-asc"
-      ? "Lowest Price"
-      : sort === "price-desc"
-        ? "Highest Price"
-        : sort === "nights-asc"
-          ? "Shortest Voyage"
-          : "Longest Voyage";
+  const sortLabel = t.sort[sort];
 
   const toggleFeature = (id: string) => {
     setFeatures((prev) =>
@@ -340,9 +360,9 @@ export function MaskRevealPageContent() {
           type="button"
           className="mr-filters__close"
           onClick={() => setMobileFiltersOpen(false)}
-          aria-label="Close filters"
+          aria-label={t.closeFilters}
         >
-          Close
+          {t.close}
         </button>
       </div>
 
@@ -369,14 +389,7 @@ export function MaskRevealPageContent() {
         </button>
         {sortOpen ? (
           <div className="mr-sort__menu" role="listbox">
-            {(
-              [
-                ["price-asc", "Lowest Price"],
-                ["price-desc", "Highest Price"],
-                ["nights-asc", "Shortest Voyage"],
-                ["nights-desc", "Longest Voyage"],
-              ] as const
-            ).map(([key, label]) => (
+            {(["price-asc", "price-desc", "nights-asc", "nights-desc"] as const).map((key) => (
               <button
                 key={key}
                 type="button"
@@ -388,14 +401,14 @@ export function MaskRevealPageContent() {
                   setSortOpen(false);
                 }}
               >
-                {label}
+                {t.sort[key]}
               </button>
             ))}
           </div>
         ) : null}
       </div>
 
-      <div className="mr-choices" role="group" aria-label="Cabin type">
+      <div className="mr-choices" role="group" aria-label={t.cabinTypeGroup}>
         {ROOM_TYPES.map((type) => (
           <button
             key={type.id}
@@ -403,18 +416,18 @@ export function MaskRevealPageContent() {
             className={`mr-pill${roomType === type.id ? " is-active" : ""}`}
             onClick={() => setRoomType(type.id)}
           >
-            {type.label}
+            {t.roomTypes[type.copy]}
           </button>
         ))}
       </div>
 
-      <div className="mr-choices mr-choices--nights" role="group" aria-label="Duration">
+      <div className="mr-choices mr-choices--nights" role="group" aria-label={t.durationGroup}>
         <button
           type="button"
           className={`mr-pill mr-pill--round${durationFilter === "all" ? " is-active" : ""}`}
           onClick={() => setDurationFilter("all")}
         >
-          All
+          {t.all}
         </button>
         {durations.map((n) => (
           <button
@@ -423,19 +436,19 @@ export function MaskRevealPageContent() {
             className={`mr-pill mr-pill--round${durationFilter === n ? " is-active" : ""}`}
             onClick={() => setDurationFilter(n)}
           >
-            {n}N
+            {t.nightsShort(n)}
           </button>
         ))}
-        <span className="mr-choices__label">Nights</span>
+        <span className="mr-choices__label">{t.nights}</span>
       </div>
 
-      <div className="mr-choices" role="group" aria-label="Departure day">
+      <div className="mr-choices" role="group" aria-label={t.departureGroup}>
         <button
           type="button"
           className={`mr-pill${departureFilter === "all" ? " is-active" : ""}`}
           onClick={() => setDepartureFilter("all")}
         >
-          Any Day
+          {t.anyDay}
         </button>
         {departures.map((day) => (
           <button
@@ -444,13 +457,13 @@ export function MaskRevealPageContent() {
             className={`mr-pill${departureFilter === day ? " is-active" : ""}`}
             onClick={() => setDepartureFilter(day)}
           >
-            {day}
+            {weekdayLabelIn(locale, day)}
           </button>
         ))}
       </div>
 
       <div className="mr-range-block">
-        <p className="mr-range-block__label">Price</p>
+        <p className="mr-range-block__label">{t.price}</p>
         <DualRange
           min={priceBounds.min}
           max={priceBounds.max}
@@ -459,10 +472,11 @@ export function MaskRevealPageContent() {
           onChange={setPriceRange}
           step={10000}
           format={(n) => formatPrice(n)}
+          labels={{ min: t.minPrice, max: t.maxPrice }}
         />
       </div>
 
-      <div className="mr-features" role="group" aria-label="Amenities">
+      <div className="mr-features" role="group" aria-label={t.amenitiesGroup}>
         {FEATURE_FILTERS.map((feature) => (
           <button
             key={feature.id}
@@ -470,17 +484,17 @@ export function MaskRevealPageContent() {
             className={`mr-feature${features.includes(feature.id) ? " is-active" : ""}`}
             onClick={() => toggleFeature(feature.id)}
           >
-            {feature.label}
+            {t.features[feature.id]}
           </button>
         ))}
       </div>
 
       <div className="mr-filters__actions">
         <button type="button" className="mr-btn mr-btn--ghost" onClick={resetFilters}>
-          Reset
+          {t.reset}
         </button>
         <BookNowTrigger className="mr-btn mr-btn--solid">
-          Check Availability
+          {t.checkAvailability}
         </BookNowTrigger>
       </div>
     </>
@@ -496,12 +510,10 @@ export function MaskRevealPageContent() {
             className="mr-btn mr-btn--outline"
             onClick={() => setMobileFiltersOpen(true)}
           >
-            Filters
+            {t.filters}
           </button>
-          <p className="mr-mobile-bar__count">
-            {filtered.length} cabin{filtered.length === 1 ? "" : "s"}
-          </p>
-          <BookNowTrigger className="mr-btn mr-btn--solid">Book Now</BookNowTrigger>
+          <p className="mr-mobile-bar__count">{t.cabinCount(filtered.length)}</p>
+          <BookNowTrigger className="mr-btn mr-btn--solid">{t.bookNow}</BookNowTrigger>
         </div>
 
         {mobileFiltersOpen ? (
@@ -509,10 +521,10 @@ export function MaskRevealPageContent() {
             <button
               type="button"
               className="mr-filters-drawer__backdrop"
-              aria-label="Dismiss filters"
+              aria-label={t.dismissFilters}
               onClick={() => setMobileFiltersOpen(false)}
             />
-            <aside className="mr-filters" aria-label="Voyage filters">
+            <aside className="mr-filters" aria-label={t.filtersLabel}>
               {filtersBody}
             </aside>
           </div>
@@ -525,18 +537,18 @@ export function MaskRevealPageContent() {
         */}
         <div className="mr-pin-row" ref={pinRowRef}>
           <div className="mr-filters-desktop" ref={filtersRef}>
-            <aside className="mr-filters" aria-label="Voyage filters">
+            <aside className="mr-filters" aria-label={t.filtersLabel}>
               {filtersBody}
             </aside>
           </div>
 
-          <section className="mr-listings" aria-label="Cruise listings">
+          <section className="mr-listings" aria-label={t.listingsLabel}>
             {filtered.length === 0 ? (
               <div className="mr-empty">
-                <h2>No cabins match</h2>
-                <p>Adjust filters or reset to see all Hathor voyages.</p>
+                <h2>{t.emptyTitle}</h2>
+                <p>{t.emptyBody}</p>
                 <button type="button" className="mr-btn mr-btn--outline" onClick={resetFilters}>
-                  Reset filters
+                  {t.resetFilters}
                 </button>
               </div>
             ) : (
@@ -544,6 +556,8 @@ export function MaskRevealPageContent() {
                 {filtered.map((item) => {
                   const cardFeatures = item.amenities.slice(0, 3);
                   const unit = displayUnitCode(item.roomNumber);
+                  const cruiseName = voyageNameIn(locale, item.cruiseSlug, item.cruiseName);
+                  const detailHref = localHref(item.detailHref);
 
                   return (
                     <li key={item.key}>
@@ -554,9 +568,9 @@ export function MaskRevealPageContent() {
                               <span
                                 key={amenity}
                                 className="mr-card__feature"
-                                title={amenity}
+                                title={amenityIn(locale, amenity)}
                               >
-                                {resolveAmenityCaption(amenity).tight}
+                                {resolveAmenityCaption(amenity, locale).tight}
                               </span>
                             ))}
                           </div>
@@ -564,14 +578,14 @@ export function MaskRevealPageContent() {
                         </div>
 
                         <Link
-                          href={item.detailHref}
+                          href={detailHref}
                           className="mr-card__link"
-                          aria-label={`View details: ${item.roomName}`}
+                          aria-label={t.viewDetailsLabel(item.roomName)}
                         >
                           <div className="mr-card__plan">
                             <ManagedImage
                               name={item.imageName}
-                              alt={`${item.roomName} — ${item.cruiseName}`}
+                              alt={`${item.roomName} — ${cruiseName}`}
                               fill
                               className="object-cover"
                               sizes="(max-width: 768px) 100vw, 25vw"
@@ -583,20 +597,20 @@ export function MaskRevealPageContent() {
                             <div className="mr-card__price-row">
                               <div>
                                 <p className="mr-card__price-meta">
-                                  {item.nights}N / {item.days}D · {item.roomType}
+                                  {t.priceMeta(item.nights, item.days, item.roomType)}
                                 </p>
                                 <p className="mr-card__price">
                                   {formatPrice(item.priceCents)}
                                 </p>
                               </div>
-                              <p className="mr-card__finish">per cabin</p>
+                              <p className="mr-card__finish">{t.perCabin}</p>
                             </div>
 
                             <div className="mr-card__meta-row">
                               <div className="mr-card__meta">
                                 <p>{item.roomName}</p>
-                                <p>up to {item.capacity} guests</p>
-                                <p>Departs {item.departureDay}</p>
+                                <p>{t.upToGuests(item.capacity)}</p>
+                                <p>{t.departs(weekdayIn(locale, item.departureDay))}</p>
                               </div>
                               <p className="mr-card__unit">{unit}</p>
                             </div>
@@ -604,12 +618,12 @@ export function MaskRevealPageContent() {
                         </Link>
 
                         <div className="mr-card__actions">
-                          <Link href={item.detailHref} className="mr-btn mr-btn--outline">
-                            View Details
+                          <Link href={detailHref} className="mr-btn mr-btn--outline">
+                            {t.viewDetails}
                           </Link>
                           <ListingAddButton item={item} />
                           <BookNowTrigger className="mr-btn mr-btn--solid">
-                            Book Now
+                            {t.bookNow}
                           </BookNowTrigger>
                         </div>
                       </article>
@@ -622,9 +636,9 @@ export function MaskRevealPageContent() {
         </div>
 
         <div className="mr-after">
-          <nav className="mr-explore" aria-label="Continue exploring">
+          <nav className="mr-explore" aria-label={t.continueLabel}>
             <header className="mr-explore__header">
-              <p className="mr-explore__eyebrow">Onboard</p>
+              <p className="mr-explore__eyebrow">{t.onboard}</p>
               <div className="mr-explore__rule" aria-hidden="true" />
               <h2 className="mr-explore__title" data-anima-title>
                 {continueTitle.split("\n").map((line) => (
@@ -637,47 +651,25 @@ export function MaskRevealPageContent() {
             </header>
 
             <ul className="mr-explore__grid">
-              <li>
-                <Link href="/luxury-cabins-Nile-Cruise" className="mr-explore-card">
-                  <span className="mr-explore-card__index">01</span>
-                  <span className="mr-explore-card__label">Cabins</span>
-                  <span className="mr-explore-card__title">Luxury Rooms</span>
-                  <span className="mr-explore-card__hint">River-view cabins</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/rooms" className="mr-explore-card">
-                  <span className="mr-explore-card__index">02</span>
-                  <span className="mr-explore-card__label">Suites</span>
-                  <span className="mr-explore-card__title">Luxury Suites</span>
-                  <span className="mr-explore-card__hint">Spacious Nile suites</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/royal-suites"
-                  className="mr-explore-card"
-                >
-                  <span className="mr-explore-card__index">03</span>
-                  <span className="mr-explore-card__label">Royal</span>
-                  <span className="mr-explore-card__title">Royal Suites</span>
-                  <span className="mr-explore-card__hint">Highest privilege</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/gastronomy" className="mr-explore-card">
-                  <span className="mr-explore-card__index">04</span>
-                  <span className="mr-explore-card__label">Dining</span>
-                  <span className="mr-explore-card__title">Hathor Flavors</span>
-                  <span className="mr-explore-card__hint">Onboard gastronomy</span>
-                </Link>
-              </li>
+              {EXPLORE_HREFS.map((href, index) => {
+                const card = t.explore[index];
+                return (
+                  <li key={href}>
+                    <Link href={localHref(href)} className="mr-explore-card">
+                      <span className="mr-explore-card__index">0{index + 1}</span>
+                      <span className="mr-explore-card__label">{card.label}</span>
+                      <span className="mr-explore-card__title">{card.title}</span>
+                      <span className="mr-explore-card__hint">{card.hint}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
-          <section className="mr-cta" aria-label="Reserve a voyage">
+          <section className="mr-cta" aria-label={t.reserveLabel}>
             <div className="mr-cta__inner">
-              <p className="mr-cta__eyebrow">Voyages</p>
+              <p className="mr-cta__eyebrow">{t.reserveEyebrow}</p>
               {ctaTitle ? (
                 <h2 className="mr-cta__title" data-anima-title>
                   {ctaTitle}
@@ -686,13 +678,13 @@ export function MaskRevealPageContent() {
               {ctaBody ? <p className="mr-cta__body">{ctaBody}</p> : null}
               <div className="mr-cta__actions">
                 <BookNowTrigger className="mr-btn mr-btn--solid">
-                  Book Now
+                  {t.bookNow}
                 </BookNowTrigger>
                 <Link
                   className="mr-btn mr-btn--outline"
-                  href="/luxury-cabins-Nile-Cruise"
+                  href={localHref("/luxury-cabins-Nile-Cruise")}
                 >
-                  Luxury Rooms
+                  {t.luxuryRooms}
                 </Link>
               </div>
             </div>
