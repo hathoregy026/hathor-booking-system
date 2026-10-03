@@ -60,4 +60,12 @@ export const ITALIAN_PAGES = {
     name: "La cucina sul Nilo | La gastronomia di Hathor Dahabiya",
     crumb: "Cucina",
   }),
+  wellness: page({
+    path: "/it/wellness",
+    title: "Seneb Spa sul Nilo | Il benessere di Hathor Dahabiya",
+    description:
+      "La Seneb Spa e l’Historia Fitness a bordo di Hathor Dahabiya: trattamenti rigeneranti e movimento con vista sul fiume, tra Luxor e Assuan.",
+    name: "Seneb Spa sul Nilo | Il benessere di Hathor Dahabiya",
+    crumb: "Benessere",
+  }),
 } as const;

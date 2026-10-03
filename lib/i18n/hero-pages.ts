@@ -16,6 +16,7 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
   charter: { main: "Charter privato\nin dahabiya", second: "Viaggio esclusivo" },
   about: { main: "Benvenuti a bordo", second: "Hathor Cruise" },
   contact: { main: "Ci contatti", second: "Per ogni domanda" },
+  wellness: { main: "Un’oasi galleggiante", second: "Relax e allenamento" },
 };
 
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {

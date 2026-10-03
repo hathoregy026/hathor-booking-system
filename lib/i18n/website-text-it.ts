@@ -14,6 +14,21 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  wellness: {
+    heroSupport:
+      "In un mondo che raramente si ferma, Hathor crea il tempo perché il corpo si distenda. La Seneb Spa, l’Historia Fitness e suite davvero riposanti La accompagnano tra Luxor e Assuan.",
+    /* Set three words to a line in a fixed column: kept to two short lines. */
+    spaTitle: "La Seneb Spa sul Nilo",
+    spaParagraphs: [
+      "Scopra la Seneb Spa, il cuore della tranquillità a bordo della crociera Hathor Dahabiya. Un’esperienza che non dimenticherà, ispirata a oltre 7.000 anni di tradizioni egizie del benessere (Seneb significa salute e benessere): la Sua spa sul Nilo nasce da una saggezza senza tempo e da una cura olistica.",
+      "Mentre il Nilo La porta dolcemente attraverso la maestosa civiltà degli antichi Egizi, lasci che corpo e spirito si abbandonino ai ritmi rilassanti della nostra spa. Ogni momento è pensato per ritrovare l’equilibrio, calmare la mente e risvegliare la vitalità interiore.",
+      "Scelga tra una selezione curata di trattamenti esclusivi, rituali antichi e trattamenti di benessere contemporanei. Dai massaggi aromaterapici agli impacchi detox alle erbe, i nostri terapisti esperti usano ingredienti naturali e locali e tecniche tradizionali per adattare ogni trattamento alle Sue esigenze.",
+      "Che cerchi calma, una pelle luminosa, una carica di energia o serenità, la Seneb Spa sarà la scelta migliore, circondata dalla magica bellezza del Nilo.",
+    ],
+    fitnessTitle: "Allenarsi con vista",
+    fitnessBody:
+      "Porti il Suo allenamento a un livello superiore all’Historia Fitness Center della crociera Hathor Dahabiya e si alleni con vista: la Sua oasi personale affacciata sulla linfa vitale dell’Egitto, il maestoso Nilo. Palestra di riferimento tra le crociere sul Nilo, offre un panorama che ispira, che saluti l’alba o insegua le stelle. Lasci che la vista dia energia al Suo allenamento e usi attrezzature all’avanguardia nel nostro moderno santuario del fitness, dove benessere e avventura si incontrano.",
+  },
   gastronomy: {
     introChapter: "La cucina",
     introTitle: "TAVOLE\nSUL NILO",

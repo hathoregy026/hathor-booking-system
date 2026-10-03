@@ -45,6 +45,7 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
     "/about",
     "/contact",
     "/gastronomy",
+    "/wellness",
   ],
 };
 
