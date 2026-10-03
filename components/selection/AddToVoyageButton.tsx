@@ -2,10 +2,7 @@
 
 import { useCallback, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
-import {
-  describeRoomTypesOnCruise,
-  type StayDurationValue,
-} from "@/lib/booking-search-config";
+import type { StayDurationValue } from "@/lib/booking-search-config";
 import {
   findVoyage,
   isVoyageResidenceCompatible,
@@ -17,6 +14,7 @@ import { trackSelectionEvent } from "@/lib/selection-analytics";
 import { useSelectionStore, useVoyageSelection } from "@/components/selection/SelectionProvider";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { SELECTION_COPY } from "@/lib/i18n/selection-copy";
 import "./AddToVoyageButton.css";
 
 /**
@@ -72,7 +70,9 @@ export function AddToVoyageButton({
   const setGuests = useSelectionStore((state) => state.setGuests);
   const openVoyage = useSelectionStore((state) => state.openVoyage);
 
-  const copy = CHROME_COPY[usePublicLocale()].selection;
+  const locale = usePublicLocale();
+  const copy = CHROME_COPY[locale].selection;
+  const t = SELECTION_COPY[locale];
   const [pending, setPending] = useState<PendingChange | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
@@ -121,9 +121,7 @@ export function AddToVoyageButton({
             pairType,
           )
         ) {
-          setNotice(
-            `This journey offers ${describeRoomTypesOnCruise(cabinPair.voyageSlug as StayDurationValue)}.`,
-          );
+          setNotice(t.journeyOffers(cabinPair.voyageSlug as StayDurationValue));
           return;
         }
 
@@ -174,7 +172,7 @@ export function AddToVoyageButton({
         ) {
           setPending({
             voyageSlug,
-            voyageLabel: voyage.ports,
+            voyageLabel: t.ports(voyage.ports),
             residenceName: selection.residenceSlug,
           });
           return;
@@ -191,9 +189,7 @@ export function AddToVoyageButton({
         selection.voyageSlug &&
         !isVoyageResidenceCompatible(selection.voyageSlug, residenceType)
       ) {
-        setNotice(
-          `This journey offers ${describeRoomTypesOnCruise(selection.voyageSlug)}.`,
-        );
+        setNotice(t.journeyOffers(selection.voyageSlug));
         return;
       }
 
@@ -201,7 +197,7 @@ export function AddToVoyageButton({
       trackSelectionEvent("accommodation_add", { residence_slug: slug });
 
       if (!selection.voyageSlug) {
-        setNotice("Choose a voyage to complete your selection.");
+        setNotice(t.chooseVoyage);
       }
       openVoyage();
     },
@@ -219,6 +215,7 @@ export function AddToVoyageButton({
       setSailingDate,
       setVoyage,
       slug,
+      t,
       verify,
     ],
   );
@@ -243,7 +240,7 @@ export function AddToVoyageButton({
             <button
               type="button"
               className="hathor-atv-confirm__backdrop"
-              aria-label="Keep current voyage"
+              aria-label={t.keepCurrentLabel}
               onClick={() => setPending(null)}
             />
             <div
@@ -252,15 +249,9 @@ export function AddToVoyageButton({
               aria-modal="true"
               aria-labelledby="hathor-atv-confirm-title"
             >
-              <p className="hathor-atv-confirm__eyebrow">My Voyage</p>
-              <h2 id="hathor-atv-confirm-title">
-                Changing your voyage may update your selected accommodation.
-              </h2>
-              <p>
-                {pending.voyageLabel} does not offer your current accommodation.
-                Continuing will keep the new journey and clear the accommodation
-                so you can choose again.
-              </p>
+              <p className="hathor-atv-confirm__eyebrow">{copy.myVoyage}</p>
+              <h2 id="hathor-atv-confirm-title">{t.changeTitle}</h2>
+              <p>{t.changeBody(pending.voyageLabel)}</p>
               <div className="hathor-atv-confirm__actions">
                 <button
                   type="button"
@@ -271,14 +262,14 @@ export function AddToVoyageButton({
                     openVoyage();
                   }}
                 >
-                  Continue
+                  {t.continue}
                 </button>
                 <button
                   type="button"
                   className="hathor-atv-confirm__secondary"
                   onClick={() => setPending(null)}
                 >
-                  Keep Current Voyage
+                  {t.keepCurrent}
                 </button>
               </div>
             </div>
