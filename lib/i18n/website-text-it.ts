@@ -14,6 +14,27 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  cabins: {
+    overviewIntro:
+      "Hathor Dahabiya offre una crociera privata ed elegante in dahabiya: un’autentica esperienza boutique sul Nilo, pensata per chi desidera vivere il fiume senza tempo.",
+    amenitiesIntro:
+      "Ogni cabina della nostra piccola crociera di lusso sul Nilo offre uno spazio tranquillo e rilassante, con ampie vedute sul fiume in tutto comfort. L’esperienza boutique sul Nilo è un viaggio esclusivo in dahabiya, che lascia agli ospiti uno spazio privato per navigare le acque serene del Nilo senza incrociare altri viaggiatori.",
+    amenitiesTitle: "Incluso nel Suo soggiorno",
+  },
+  rooms: {
+    overviewIntro:
+      "Viva la crociera Hathor Dahabiya, che unisce autenticità e lusso in un viaggio indimenticabile sul Nilo senza tempo.\n\nChe scelga le nostre eleganti suite o le Royal Suite con vista panoramica sul Nilo, troverà un comfort impareggiabile e una privacy esclusiva.",
+    amenitiesIntro:
+      "Scopra il lusso senza sforzo della Accessible Hathor Suite: un rifugio ampio ed elegante, pensato per il comfort, la facilità di movimento e una vita raffinata. Ogni dettaglio è curato perché ciascun ospite si senta davvero a casa, senza compromessi.",
+    amenitiesTitle: "Incluso nel Suo soggiorno",
+  },
+  royal: {
+    overviewIntro:
+      "Viva un viaggio autentico e di lusso nella Royal Suite di Hathor Dahabiya: una crociera privata in dahabiya, a vela sul Nilo senza tempo, da ricordare per sempre.",
+    amenitiesIntro:
+      "Pensate per la privacy e il lusso, uniscono gli interni eleganti di Hathor, decorazioni d’ispirazione storica e comfort moderni, per un soggiorno raffinato.",
+    amenitiesTitle: "Incluso nel Suo soggiorno",
+  },
   charter: {
     benefits: [
       "Massima privacy a bordo: nessun altro ospite, 100% privato",

@@ -329,7 +329,8 @@ const IT: ChromeCopy = {
     saved: "Salvato",
     saveLabel: (name) => `Salva ${name} nei preferiti`,
     savedLabel: (name) => `Salvato — rimuovi ${name} dai preferiti`,
-    addToVoyage: "Aggiungi al mio viaggio",
+    /* Short form: it shares one button row with Save, Book now and Voyages. */
+    addToVoyage: "Aggiungi al viaggio",
     inVoyage: "Nel mio viaggio",
     addToVoyageLabel: (name) => `Aggiungi ${name} al mio viaggio`,
     inVoyageLabel: (name) => `${name} è nel mio viaggio`,

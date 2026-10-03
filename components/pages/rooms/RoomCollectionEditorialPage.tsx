@@ -27,7 +27,6 @@ import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { useRoomCollectionEditorialScroll } from "@/hooks/useRoomCollectionEditorialScroll";
 import {
-  ROOM_COLLECTION_CONFIG,
   ROOM_COLLECTION_LINKS,
   type RoomCollectionVariant,
 } from "@/lib/room-collection-editorial";
@@ -36,6 +35,14 @@ import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { resolveCmsText } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { amenityIn } from "@/lib/i18n/catalog-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
+import {
+  ROOMS_COPY,
+  roomCollectionConfig,
+  roomShowcaseIn,
+} from "@/lib/i18n/rooms-copy";
 
 type RoomCollectionEditorialPageProps = {
   variant: RoomCollectionVariant;
@@ -78,12 +85,14 @@ function Frame({
   className?: string;
 }) {
   const cms = useCmsPathImage(src);
+  /* The dashboard's image descriptions are English; other languages use the page's own. */
+  const english = usePublicLocale() === "en";
   return (
     <figure className={`ac-frame ${className}`}>
       <Image
         key={cms.src}
         src={cms.src}
-        alt={cms.alt || alt}
+        alt={english ? cms.alt || alt : alt}
         fill
         priority={priority}
         quality={SITE_IMAGE_QUALITY}
@@ -145,16 +154,17 @@ function ApertureHeroShell({
 }
 
 function BentoFive({ room }: { room: RoomShowcase }) {
+  const t = ROOMS_COPY[usePublicLocale()];
   const shots = room.images.slice(0, 5);
-  const labels = ["Primary", "Detail", "Light", "Bath", "View"];
+  const labels = t.previewLabels;
 
   return (
-    <div className="ac-bento" aria-label={`${room.name} — five preview views`}>
+    <div className="ac-bento" aria-label={t.previewGroup(room.name)}>
       {shots.map((src, index) => (
         <Frame
           key={`${room.slug}-${index}`}
           src={src}
-          alt={`${room.name} — ${labels[index] ?? "interior"} aboard Hathor`}
+          alt={t.previewAlt(room.name, labels[index] ?? t.previewFallback)}
           className={`ac-bento__cell ac-bento__cell--${index + 1}`}
           priority={index === 0}
         />
@@ -177,6 +187,8 @@ function splitResidenceTitle(name: string): { lineA: string; lineB: string } {
 }
 
 function SelectionPills({ room }: { room: RoomShowcase }) {
+  const t = ROOMS_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   return (
     <div className="ac-pills">
       <FavoriteButton
@@ -194,12 +206,12 @@ function SelectionPills({ room }: { room: RoomShowcase }) {
       />
       {/* Straight to this room’s own page. */}
       <Link
-        href={`/rooms/${room.slug}`}
+        href={localHref(`/rooms/${room.slug}`)}
         className="ac-pill ac-pill--fill ac-pill--icon"
-        aria-label={`View the ${room.name} room`}
+        aria-label={t.viewRoomLabel(room.name)}
       >
         <ArrowUpRight className="ac-pill__glyph" aria-hidden="true" />
-        <span className="ac-pill__label">View the room</span>
+        <span className="ac-pill__label">{t.viewRoom}</span>
       </Link>
     </div>
   );
@@ -216,7 +228,7 @@ function charterColumns(count: number, cap: number) {
   return Math.max(2, Math.ceil(count / Math.ceil(count / cap)));
 }
 
-function CharterGrid({ room }: { room: RoomShowcase }) {
+function CharterGrid({ room, locale }: { room: RoomShowcase; locale: PublicLocale }) {
   const count = room.amenities.length;
   const columns = {
     lg: charterColumns(count, 8),
@@ -236,7 +248,8 @@ function CharterGrid({ room }: { room: RoomShowcase }) {
       }
     >
       {room.amenities.map((item, index) => {
-        const caption = resolveAmenityCaption(item);
+        const caption = resolveAmenityCaption(item, locale);
+        const sentence = amenityIn(locale, item);
         /* A cell that opens a row drops its column hairline at that width. */
         const opens = [
           index % columns.md === 0 ? "is-row-open-md" : "",
@@ -249,7 +262,7 @@ function CharterGrid({ room }: { room: RoomShowcase }) {
           <li
             key={`${room.slug}-${item}`}
             className={`ac-charter__cell${opens ? ` ${opens}` : ""}`}
-            title={item}
+            title={sentence}
           >
             <span className="ac-charter__cube" aria-hidden="true">
               <RoomAmenityIcon label={item} />
@@ -267,7 +280,7 @@ function CharterGrid({ room }: { room: RoomShowcase }) {
               >
                 {caption.tight}
               </span>
-              <span className="ac-charter__full">{item}</span>
+              <span className="ac-charter__full">{sentence}</span>
             </p>
           </li>
         );
@@ -284,14 +297,18 @@ export function RoomCollectionEditorialPage({
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const config = ROOM_COLLECTION_CONFIG[variant];
-  const rooms =
+  const locale = usePublicLocale();
+  const t = ROOMS_COPY[locale];
+  const localHref = useLocalizedHref();
+  const config = roomCollectionConfig(variant, locale);
+  const rooms = (
     roomsProp ??
     ROOM_SHOWCASES.filter((room) => {
       if (variant === "cabins") return room.slug.includes("room");
       if (variant === "suites") return room.slug === "luxury-suite";
       return room.slug === "royal-suite";
-    });
+    })
+  ).map((room) => roomShowcaseIn(room, locale));
 
   const { pages } = useWebsiteText();
   const typography = useTypographySettings();
@@ -365,7 +382,7 @@ export function RoomCollectionEditorialPage({
         <section
           ref={runRef}
           className="ac-run"
-          aria-label={`${config.collectionLabel} aboard Hathor`}
+          aria-label={t.runLabel(config.collectionLabel)}
         >
           <div className="ac-stage">
             <div ref={trackRef} className="ac-track">
@@ -431,11 +448,11 @@ export function RoomCollectionEditorialPage({
                       ))}
                     </p>
 
-                    <ul className="rh__beds" aria-label="Configurations">
+                    <ul className="rh__beds" aria-label={t.configurations}>
                       {rooms.map((room) => (
                         <li key={room.slug}>
                           <i className="rh__tick" aria-hidden="true" />
-                          <Link href={`/rooms/${room.slug}`}>{room.name}</Link>
+                          <Link href={localHref(`/rooms/${room.slug}`)}>{room.name}</Link>
                         </li>
                       ))}
                     </ul>
@@ -457,15 +474,15 @@ export function RoomCollectionEditorialPage({
                         className="rh__act"
                       />
                       <BookNowTrigger className="rh__act rh__act--solid">
-                        <span>Book now</span>
+                        <span>{t.bookNow}</span>
                       </BookNowTrigger>
                       <Link
-                        href="/voyages"
+                        href={localHref("/voyages")}
                         className="rh__act rh__act--icon"
-                        aria-label="View voyages"
+                        aria-label={t.viewVoyages}
                       >
                         <Ship className="rh__act-glyph" aria-hidden="true" />
-                        <span className="rh__act-label">View voyages</span>
+                        <span className="rh__act-label">{t.viewVoyages}</span>
                       </Link>
                     </div>
                   </div>
@@ -519,16 +536,16 @@ export function RoomCollectionEditorialPage({
                         </h2>
                         <ul className="ac-spec-rail">
                           <li>
-                            <span>Space</span>
+                            <span>{t.space}</span>
                             <strong>{room.sizeSqm} m²</strong>
                           </li>
                           <li>
-                            <span>Guests</span>
-                            <strong>Up to {room.capacity}</strong>
+                            <span>{t.guests}</span>
+                            <strong>{t.upTo(room.capacity)}</strong>
                           </li>
                           <li>
-                            <span>Outlook</span>
-                            <strong>Panoramic Nile</strong>
+                            <span>{t.outlook}</span>
+                            <strong>{t.panoramicNile}</strong>
                           </li>
                         </ul>
                         <p className="ac-support wt-page-body">{room.description}</p>
@@ -539,11 +556,8 @@ export function RoomCollectionEditorialPage({
                     {/* B · Five preview images only — no wipe / no frame numbers */}
                     <Scene className="ac-bento-scene">
                       <div className="ac-bento-scene__head">
-                        <Kicker>Preview sequence</Kicker>
-                        <p className="ac-meta">
-                          Five composed views of {room.name} — light, proportion and
-                          river beyond the glass.
-                        </p>
+                        <Kicker>{t.previewKicker}</Kicker>
+                        <p className="ac-meta">{t.previewLead(room.name)}</p>
                       </div>
                       <BentoFive room={room} />
                     </Scene>
@@ -557,7 +571,7 @@ export function RoomCollectionEditorialPage({
                           {resolveCmsText(cms.amenitiesIntro, config.amenitiesLead)}
                         </p>
                       </div>
-                      <CharterGrid room={room} />
+                      <CharterGrid room={room} locale={locale} />
                       <SelectionPills room={room} />
                     </Scene>
                   </div>
@@ -566,12 +580,12 @@ export function RoomCollectionEditorialPage({
 
               {/* Deck bridge — other collections */}
               <Scene className="ac-bridge">
-                <Kicker>Elsewhere on board</Kicker>
+                <Kicker>{t.elsewhere}</Kicker>
                 <ul className="ac-bridge__list">
                   {ROOM_COLLECTION_LINKS.map((link, index) => (
                     <li key={link.href}>
                       <Link
-                        href={link.href}
+                        href={localHref(link.href)}
                         className={
                           link.key === variant
                             ? "ac-bridge__link is-here"
@@ -591,11 +605,9 @@ export function RoomCollectionEditorialPage({
 
               {/* Quiet hold before vertical close */}
               <Scene className="ac-hold">
-                <p className="ac-hold__line ac-edit">
-                  Your quarters await between Luxor and Aswan.
-                </p>
+                <p className="ac-hold__line ac-edit">{t.hold}</p>
                 <a className="ac-text-link" href="#reserve">
-                  Continue to reserve
+                  {t.continueToReserve}
                 </a>
               </Scene>
             </div>
@@ -624,15 +636,15 @@ export function RoomCollectionEditorialPage({
                     variant="inline"
                   />
                   <BookNowTrigger className="ac-pill ac-pill--fill">
-                    <span>Book Now</span>
+                    <span>{t.bookNowCaps}</span>
                   </BookNowTrigger>
                   <Link
-                    href="/voyages"
+                    href={localHref("/voyages")}
                     className="ac-pill ac-pill--icon"
-                    aria-label="View voyages"
+                    aria-label={t.viewVoyages}
                   >
                     <Ship className="ac-pill__glyph" aria-hidden="true" />
-                    <span className="ac-pill__label">View voyages</span>
+                    <span className="ac-pill__label">{t.viewVoyages}</span>
                   </Link>
                 </div>
               ) : null}
@@ -650,7 +662,7 @@ export function RoomCollectionEditorialPage({
                   className="ac-landing__frame"
                 />
                 <p className="ac-meta">
-                  {rooms[0].name} · {rooms[0].sizeSqm} m² · Nile
+                  {rooms[0].name} · {rooms[0].sizeSqm} m² · {t.nile}
                 </p>
               </aside>
             ) : null}

@@ -35,6 +35,9 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
     "/voyages/luxor-aswan-luxor",
     "/cruises-list",
     "/charter",
+    "/luxury-cabins-Nile-Cruise",
+    "/rooms",
+    "/royal-suites",
   ],
 };
 
