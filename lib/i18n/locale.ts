@@ -38,6 +38,10 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
     "/luxury-cabins-Nile-Cruise",
     "/rooms",
     "/royal-suites",
+    "/rooms/luxury-king-room",
+    "/rooms/luxury-twin-room",
+    "/rooms/luxury-suite",
+    "/rooms/royal-suite",
   ],
 };
 

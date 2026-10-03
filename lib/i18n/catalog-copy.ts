@@ -19,6 +19,14 @@ export function voyageNameIn(locale: PublicLocale, slug: string, fallback: strin
   return locale === "it" ? (VOYAGE_NAMES_IT[slug] ?? fallback) : fallback;
 }
 
+const PLACES_IT: Record<string, string> = { Aswan: "Assuan", Cairo: "Il Cairo" };
+
+/** Place names inside a route or sentence ("Luxor → Aswan" → "Luxor → Assuan"). */
+export function placesIn(locale: PublicLocale, text: string): string {
+  if (locale !== "it") return text;
+  return text.replace(/\b(Aswan|Cairo)\b/g, (place) => PLACES_IT[place] ?? place);
+}
+
 const WEEKDAYS_IT: Record<string, string> = {
   Monday: "lunedì",
   Tuesday: "martedì",

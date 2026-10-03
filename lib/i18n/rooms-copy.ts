@@ -428,6 +428,55 @@ export type RoomsCopy = {
   hold: string;
   continueToReserve: string;
   nile: string;
+  detail: {
+    tabs: readonly [string, string, string, string, string];
+    breadcrumb: string;
+    sections: string;
+    nightsDays: (nights: number, days: number) => string;
+    photographs: (room: string) => string;
+    openPhoto: (index: number, count: number) => string;
+    photoAlt: (room: string, index: number) => string;
+    viewerAlt: (room: string, index: number, count: number) => string;
+    children: string;
+    childrenWelcome: string;
+    childrenNo: string;
+    fareLabel: string;
+    yourVoyage: string;
+    perCabinNights: (nights: number) => string;
+    vatIncluded: string;
+    route: string;
+    chooseVoyage: string;
+    voyageOption: (ports: string, nights: number) => string;
+    departs: string;
+    every: (day: string) => string;
+    oneCabin: string;
+    upToGuests: (n: number) => string;
+    checkAvailability: string;
+    conditions: string;
+    insideKicker: string;
+    insideTitle: readonly [string, string];
+    childrenNote: (allowed: boolean) => string;
+    comfortsKicker: string;
+    comfortsTitle: string;
+    reservationKicker: string;
+    fareTitle: string;
+    portsEvery: (ports: string, day: string) => string;
+    requestDate: string;
+    ledgerHead: (nights: number | null) => readonly [string, string, string, string];
+    sizeGuests: (sqm: number, n: number) => string;
+    allInclusions: string;
+    perCabin: string;
+    cabin: string;
+    totalLine: (nights: number | null, capacity: number) => string;
+    total: string;
+    onRequest: string;
+    continueToReservation: string;
+    includedTitle: readonly [string, string];
+    goodToKnow: string;
+    closePhotos: string;
+    previousPhoto: string;
+    nextPhoto: string;
+  };
   folio: {
     label: string;
     title: string;
@@ -467,6 +516,64 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     hold: "Your quarters await between Luxor and Aswan.",
     continueToReserve: "Continue to reserve",
     nile: "Nile",
+    detail: {
+      tabs: ["Overview", "Availability", "Amenities", "Your voyage", "Good to know"],
+      breadcrumb: "Breadcrumb",
+      sections: "Sections of this room",
+      nightsDays: (nights, days) => `${nights} nights / ${days} days`,
+      photographs: (room) => `${room} photographs`,
+      openPhoto: (index, count) => `View photograph ${index} of ${count} full screen`,
+      photoAlt: (room, index) => `${room}, view ${index}`,
+      viewerAlt: (room, index, count) => `${room}, photograph ${index} of ${count}`,
+      children: "Children",
+      childrenWelcome: "Welcome",
+      childrenNo: "Not in this room",
+      fareLabel: "Fare and availability",
+      yourVoyage: "Your voyage",
+      perCabinNights: (nights) => `per cabin · ${nights} nights`,
+      vatIncluded: "VAT & service included",
+      route: "Route",
+      chooseVoyage: "Choose a voyage",
+      voyageOption: (ports, nights) => `${ports} · ${nights} nights`,
+      departs: "Departs",
+      every: (day) => `Every ${day}`,
+      oneCabin: "1 cabin",
+      upToGuests: (n) => `Up to ${n} guests`,
+      checkAvailability: "Check availability",
+      conditions: "Booking conditions",
+      insideKicker: "Inside your room",
+      insideTitle: ["A private place", "to let the Nile in"],
+      childrenNote: (allowed) =>
+        allowed
+          ? "Children are welcome in this room type."
+          : "This room type does not accommodate children.",
+      comfortsKicker: "Utilities & comforts",
+      comfortsTitle: "Everything, considered",
+      reservationKicker: "01 — Reservation",
+      fareTitle: "Your cabin & fare",
+      portsEvery: (ports, day) => `${ports} · every ${day}`,
+      requestDate: "Request a date",
+      ledgerHead: (nights) => [
+        "Accommodation",
+        "Your voyage includes",
+        nights ? `${nights}-night total` : "Total",
+        "Cabins",
+      ],
+      sizeGuests: (sqm, n) => `${sqm} m² · Up to ${n} guests`,
+      allInclusions: "See all inclusions",
+      perCabin: "per cabin",
+      cabin: "cabin",
+      totalLine: (nights, capacity) =>
+        `1 cabin · ${nights ? `${nights} nights` : "flexible dates"} · up to ${capacity} guests`,
+      total: "Total",
+      onRequest: "On request",
+      continueToReservation: "Continue to reservation",
+      includedTitle: ["Included,", "with our care"],
+      goodToKnow: "Good to know",
+      closePhotos: "Close photographs",
+      previousPhoto: "Previous photograph",
+      nextPhoto: "Next photograph",
+    },
     folio: {
       label: "Stay notes",
       title: "The voyage, in full",
@@ -504,6 +611,64 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     hold: "La Sua residenza La attende tra Luxor e Assuan.",
     continueToReserve: "Prosegua con la prenotazione",
     nile: "Nilo",
+    detail: {
+      tabs: ["Panoramica", "Disponibilità", "Dotazioni", "Il Suo viaggio", "Da sapere"],
+      breadcrumb: "Percorso di navigazione",
+      sections: "Sezioni di questa residenza",
+      nightsDays: (nights, days) => `${nights} notti / ${days} giorni`,
+      photographs: (room) => `Fotografie: ${room}`,
+      openPhoto: (index, count) => `Apri la fotografia ${index} di ${count} a schermo intero`,
+      photoAlt: (room, index) => `${room}, vista ${index}`,
+      viewerAlt: (room, index, count) => `${room}, fotografia ${index} di ${count}`,
+      children: "Bambini",
+      childrenWelcome: "Benvenuti",
+      childrenNo: "Non in questa residenza",
+      fareLabel: "Tariffa e disponibilità",
+      yourVoyage: "Il Suo viaggio",
+      perCabinNights: (nights) => `per cabina · ${nights} notti`,
+      vatIncluded: "IVA e servizio inclusi",
+      route: "Itinerario",
+      chooseVoyage: "Scelga un viaggio",
+      voyageOption: (ports, nights) => `${ports} · ${nights} notti`,
+      departs: "Partenza",
+      every: (day) => `Ogni ${day}`,
+      oneCabin: "1 cabina",
+      upToGuests: (n) => `Fino a ${n} ospiti`,
+      checkAvailability: "Verifica disponibilità",
+      conditions: "Condizioni di prenotazione",
+      insideKicker: "Dentro la Sua residenza",
+      insideTitle: ["Uno spazio privato", "dove lasciar entrare il Nilo"],
+      childrenNote: (allowed) =>
+        allowed
+          ? "I bambini sono i benvenuti in questa tipologia di residenza."
+          : "Questa tipologia di residenza non accoglie bambini.",
+      comfortsKicker: "Servizi e comfort",
+      comfortsTitle: "Tutto, con cura",
+      reservationKicker: "01 — Prenotazione",
+      fareTitle: "La Sua cabina e la tariffa",
+      portsEvery: (ports, day) => `${ports} · ogni ${day}`,
+      requestDate: "Richieda una data",
+      ledgerHead: (nights) => [
+        "Sistemazione",
+        "Il Suo viaggio include",
+        nights ? `Totale ${nights} notti` : "Totale",
+        "Cabine",
+      ],
+      sizeGuests: (sqm, n) => `${sqm} m² · Fino a ${n} ospiti`,
+      allInclusions: "Vedi tutto ciò che è incluso",
+      perCabin: "per cabina",
+      cabin: "cabina",
+      totalLine: (nights, capacity) =>
+        `1 cabina · ${nights ? `${nights} notti` : "date flessibili"} · fino a ${capacity} ospiti`,
+      total: "Totale",
+      onRequest: "Su richiesta",
+      continueToReservation: "Prosegua con la prenotazione",
+      includedTitle: ["Incluso,", "con la nostra cura"],
+      goodToKnow: "Da sapere",
+      closePhotos: "Chiudi le fotografie",
+      previousPhoto: "Fotografia precedente",
+      nextPhoto: "Fotografia successiva",
+    },
     folio: {
       label: "Note sul soggiorno",
       title: "Il viaggio, nel dettaglio",
