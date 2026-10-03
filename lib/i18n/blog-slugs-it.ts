@@ -23,4 +23,10 @@ export const TRANSLATED_BLOG_SLUGS_IT: readonly string[] = [
   "what-to-pack-for-a-dahabiya-nile-cruise",
   "is-the-nile-safe-for-sailing-today",
   "why-the-nile-was-the-most-important-trade-route-in-ancient-egypt",
+  /* Batch 4 */
+  "history-of-dahabiya-boats-in-egypt",
+  "what-is-a-dahabiya-nile-cruise-complete-beginner-guide",
+  "colossi-of-memnon",
+  "aswan-nubian-villages",
+  "luxor-temple-facts",
 ];
