@@ -28,9 +28,10 @@ export function NotificationBell() {
   const versionRef = useRef(0);
   const retryAtRef = useRef(0);
   const expiredRef = useRef(false);
+  const acknowledgingRef = useRef(false);
 
   const loadNotifications = useCallback(async () => {
-    if (requestRef.current || expiredRef.current || Date.now() < retryAtRef.current) return;
+    if (requestRef.current || acknowledgingRef.current || expiredRef.current || Date.now() < retryAtRef.current) return;
     const controller = new AbortController();
     requestRef.current = controller;
     const version = versionRef.current;
@@ -103,9 +104,12 @@ export function NotificationBell() {
   }, [open]);
 
   async function openNotification(item: NotificationItem, navigate = true) {
-    if (marking) return;
+    if (acknowledgingRef.current) return;
+    acknowledgingRef.current = true;
     setMarking(true);
     versionRef.current += 1;
+    requestRef.current?.abort();
+    requestRef.current = null;
     try {
       const response = await adminFetch("/api/admin/notifications", {
         method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
@@ -121,7 +125,7 @@ export function NotificationBell() {
       });
       setError(null);
     } catch { showToast("error", "The notification could not be cleared. Your dashboard record is still available."); }
-    finally { setMarking(false); setOpen(null); if (navigate) router.push(notificationHref(item)); }
+    finally { acknowledgingRef.current = false; setMarking(false); setOpen(null); void loadNotifications(); if (navigate) router.push(notificationHref(item)); }
   }
 
   const items = snapshot?.items.filter(item => item.kind === open) ?? [];

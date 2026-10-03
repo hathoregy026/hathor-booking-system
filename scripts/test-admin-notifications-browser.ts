@@ -39,6 +39,8 @@ async function main() {
       let unread = true;
       let failure = 0;
       let dismissFailure = false;
+      let holdAcknowledgment = false;
+      let releaseAcknowledgment: (() => void) | null = null;
       let hold = false;
       let release: (() => void) | null = null;
       const state: NotificationSnapshot = { unreadCount: 0, bookingCount: 0, emailCount: 0, bookingSeenThrough: "2026-10-03T12:00:00.000Z", items: [], activity: [] };
@@ -49,6 +51,7 @@ async function main() {
         if (url.pathname === "/style.css") return route.fulfill({ contentType: "text/css", body: css });
         if (url.pathname === "/api/admin/notifications") {
           if (route.request().method() === "POST") {
+            if (holdAcknowledgment) await new Promise<void>(resolve => { releaseAcknowledgment = resolve; });
             if (failure || dismissFailure) return route.fulfill({ status: failure || 503, json: { error: "Unavailable" } });
             acknowledgments += 1;
             const item = notificationDismissSchema.parse(route.request().postDataJSON()).notifications[0];
@@ -125,7 +128,16 @@ async function main() {
       assert.equal(await bookingsPanel.getByRole("link", { name: /Received email/ }).count(), 0, "Bookings icon must not mix in email alerts");
       await bookingsPanel.getByRole("link", { name: /Booking request First Guest/ }).waitFor();
       assert.equal(acknowledgments, 0, "Merely opening the panel must preserve both alerts");
+      holdAcknowledgment = true;
       await bookingsPanel.getByRole("link", { name: /Booking request First Guest/ }).click();
+      for (let attempt = 0; attempt < 100 && !releaseAcknowledgment; attempt += 1) await new Promise(resolve => setTimeout(resolve, 10));
+      assert.ok(releaseAcknowledgment);
+      const pollsWhileOpening = polls;
+      await page.clock.runFor(15000);
+      await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+      assert.equal(polls, pollsWhileOpening, "Polling must pause while an alert is being acknowledged, preventing stale badge resurrection");
+      holdAcknowledgment = false;
+      (releaseAcknowledgment as () => void)();
       await page.waitForURL(`**/admin/bookings/${bookingId}`);
       await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).click();
       assert.equal(await page.getByRole("dialog", { name: "Booking notifications", exact: true }).getByRole("link", { name: /First Guest/ }).count(), 0);
