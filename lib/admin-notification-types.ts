@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 export const ADMIN_ACTIVITY_EVENT = "hathor:admin-activity";
+export const notificationIdentitySchema = z.object({
+  id: z.uuid(), kind: z.enum(["booking", "email"]), source: z.enum(["booking", "general"]),
+}).strict().refine(item => item.kind !== "booking" || item.source === "booking", "Invalid booking notification source");
 export const notificationItemSchema = z.object({
   id: z.string().min(1).max(100),
   kind: z.enum(["booking", "email"]),

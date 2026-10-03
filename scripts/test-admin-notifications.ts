@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { NextRequest } from "next/server";
-import { fetchAdminNotifications, markNotificationBookingsSeen, notificationSeenSchema } from "../lib/admin-notifications";
+import { dismissNotifications, fetchAdminNotifications, markNotificationBookingsSeen, notificationDismissSchema, notificationSeenSchema } from "../lib/admin-notifications";
 import { NotificationTracker, notificationHref, notificationSnapshotSchema, type NotificationSnapshot } from "../lib/admin-notification-types";
 import { GET, POST } from "../app/api/admin/notifications/route";
 import { assertTrustedPublicJsonRequest } from "../lib/public-api-security";
@@ -46,6 +47,15 @@ async function main() {
   await assert.rejects(markNotificationBookingsSeen({ seenThrough: new Date(Date.now() + 60000).toISOString() }, query));
   assert.equal(calls.length, 2);
   assert.throws(() => notificationSeenSchema.parse({ seenThrough: snapshot.bookingSeenThrough, readEmails: true }));
+  const identity = { id: randomUUID(), kind: "email" as const, source: "general" as const };
+  await dismissNotifications({ notifications: [identity] }, query);
+  assert.match(calls[2].sql, /INSERT INTO "DashboardNotificationSeen"/);
+  assert.match(calls[2].sql, /JOIN available/);
+  assert.doesNotMatch(calls[2].sql, /UPDATE|DELETE|SET "readAt"/);
+  assert.deepEqual(JSON.parse(calls[2].values[0] as string), [identity]);
+  for (const input of [{ notifications: [] }, { notifications: [identity, identity] }, { notifications: [{ ...identity, id: "invalid" }] },
+    { notifications: [{ ...identity, kind: "booking" }] }, { notifications: [identity], readEmails: true },
+    { notifications: [{ ...identity, unsafe: true }] }]) assert.throws(() => notificationDismissSchema.parse(input));
   assert.throws(() => assertTrustedPublicJsonRequest(new Request("https://www.hathorcruise.com/api/admin/notifications", { method: "POST", headers: { "Content-Type": "application/json", Origin: "https://attacker.example" } })));
   assert.equal((await GET(new NextRequest("https://www.hathorcruise.com/api/admin/notifications"))).status, 401);
   assert.equal((await POST(new NextRequest("https://www.hathorcruise.com/api/admin/notifications", { method: "POST" }))).status, 401);

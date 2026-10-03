@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type UIEvent } from "react";
 import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
-import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, FolderInput, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, ChevronDown, ChevronUp, FolderInput, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
 import { EmailComposer, type EmailDraft } from "@/components/admin/EmailComposer";
@@ -47,6 +47,15 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const [version, setVersion] = useState(0);
   const [cursor, setCursor] = useState<InboxSummary | null>(null);
   const detailRef = useRef<HTMLElement>(null);
+  const listScrollRef = useRef<HTMLDivElement>(null);
+  const [compactControls, setCompactControls] = useState(false);
+
+  function scrollWorkspace(event: UIEvent<HTMLDivElement>) {
+    if (draft || editingHandler) return;
+    if (event.target !== listScrollRef.current && event.target !== detailRef.current) return;
+    const top = (event.target as HTMLElement).scrollTop;
+    if (top > 48) setCompactControls(true);
+  }
 
   const refresh = useCallback(() => { setCursor(null); setVersion(current => current + 1); }, []);
   useAdminActivityRefresh("emails", refresh, batching || selection.length > 0);
@@ -262,7 +271,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const allLoadedSelected = selectable.length > 0 && selectable.every(message => selectedKeys.has(keyOf(message)));
 
   return (
-    <div className="emails-page">
+    <div className="emails-page" data-compact={compactControls && !editingHandler && !draft}>
       <div className="emails-controls">
       <header className="emails-page__header">
         <div>
@@ -272,6 +281,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
           <p className="emails-page__caption" aria-live="polite">{unread} unread · Times shown in Cairo</p>
         </div>
         <div className="emails-page__actions">
+        <button type="button" className="btn-outline emails-controls-toggle" aria-label={compactControls ? "Expand email controls" : "Compact email controls"} aria-expanded={!compactControls} onClick={() => setCompactControls(current => !current)}>{compactControls ? <ChevronDown size={16} aria-hidden /> : <ChevronUp size={16} aria-hidden />}<span>{compactControls ? "Expand" : "Compact"}</span></button>
         <button type="button" className="btn-outline" onClick={() => { setSelection([]); refresh(); }} disabled={busy || batching}>
           <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden /><span>Refresh emails</span>
         </button>
@@ -280,7 +290,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       </header>
       <nav className="emails-mailboxes" aria-label="Choose mailbox">
         <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox("all")} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">ALL MAILBOXES</span><span className="emails-mailbox__handler">Administrator overview</span><span className="emails-mailbox__count">{mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread</span></button>
-        {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count">{item.unread} unread · {item.total} total</span></button>)}
+        {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count" title={`${item.total} total`}>{item.unread} unread{compactControls && !editingHandler && !draft ? "" : ` · ${item.total} total`}</span></button>)}
       </nav>
       <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} disabled={batching} onClick={() => chooseFilter(item.value)}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
       {selection.length ? <div className="emails-bulk-actions" role="group" aria-label="Selected email actions"><strong aria-live="polite">{selection.length} selected</strong><label className="sr-only" htmlFor="email-move-target">Move selected emails to</label><select id="email-move-target" className="admin-input" value={moveTarget} disabled={batching} onChange={event => setMoveTarget(event.target.value as MailboxId | "")}><option value="">Choose mailbox…</option>{EMAIL_MAILBOXES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><button type="button" className="btn-outline" disabled={batching || !moveTarget} onClick={() => void manageSelection("move")}><FolderInput size={15} aria-hidden />Move selected</button><button type="button" className="btn-outline emails-delete" disabled={batching} onClick={() => void manageSelection("delete")}><Trash2 size={15} aria-hidden />Delete selected</button><button type="button" className="btn-outline" disabled={batching} onClick={() => setSelection([])}>Clear selection</button>{batching ? <span role="status">Saving dashboard changes…</span> : null}</div> : null}
@@ -295,10 +305,10 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       {error ? <p role="alert" className="text-sm" style={{ color: "var(--danger)" }}>{error}</p> : null}
       {notice ? <p className="emails-page__notice" role="status"><CheckCheck size={17} aria-hidden />{notice}</p> : null}
       </div>
-      <div className="dashboard-inbox__workspace" data-selected={Boolean(selected || draft)}>
+      <div className="dashboard-inbox__workspace" data-selected={Boolean(selected || draft)} onScrollCapture={scrollWorkspace}>
         <section className="card dashboard-inbox__list" aria-label="Email list" aria-busy={busy}>
+          <div ref={listScrollRef} className="emails-list-scroll" tabIndex={0} role="region" aria-label="Scrollable emails">
           <header className="emails-list-header"><label className="emails-select-all"><input type="checkbox" aria-label="Select loaded emails (up to 100)" checked={allLoadedSelected} ref={element => { if (element) element.indeterminate = !allLoadedSelected && selectable.some(message => selectedKeys.has(keyOf(message))); }} disabled={busy || batching || Boolean(draft) || !selectable.length} onChange={() => setSelection(allLoadedSelected ? [] : selectable)} /><span>Select loaded</span></label><h2>{activeMailbox?.label ?? "ALL MAILBOXES"} · {filters.find(item => item.value === filter)?.label}</h2><span>{messages.length}{hasOlder ? "+" : ""} shown</span></header>
-          <div className="emails-list-scroll" tabIndex={0} role="region" aria-label="Scrollable emails">
           {!messages.length ? <div className="emails-empty"><Inbox size={30} aria-hidden /><p>{busy ? "Loading your emails…" : query ? "No emails match your search" : filter !== "all" ? `No ${filter} emails in ${activeMailbox?.label ?? "ALL MAILBOXES"}` : "No emails here yet"}</p><span>{query || filter !== "all" ? "Show all emails in this mailbox to remove search and status filters." : "Received messages and emails sent from this dashboard appear here."}</span>{!busy && (query || filter !== "all") ? <button type="button" className="btn-outline mt-4" onClick={() => chooseFilter("all")}>Show all {activeMailbox?.label ?? "mailbox"} emails</button> : null}</div> : null}
           <ol>
             {messages.map(message => {

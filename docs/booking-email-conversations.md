@@ -145,6 +145,11 @@ before this feature are not imported automatically.
   existing message does not change forwarding rules or create a sender rule.
 - Automatic list refresh pauses during selection and resumes afterward. Filters
   remain fixed while the email list and reader scroll independently.
+- Scrolling the email list or reader automatically compacts the top controls,
+  keeping mailbox choices, filters, search and compose accessible while creating
+  more reading space. **Expand** restores full labels at any time. Compaction stays
+  stable when the larger reading area changes scroll positions. Drafts and handler editing
+  keep the full controls. The select-loaded list heading scrolls with its list.
 
 Official references:
 - https://resend.com/docs/receive-email

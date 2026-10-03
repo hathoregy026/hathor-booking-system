@@ -7,10 +7,15 @@ import tailwindcss from "@tailwindcss/postcss";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import type { NotificationSnapshot } from "../lib/admin-notification-types";
+import { notificationDismissSchema } from "../lib/admin-notifications";
 
 async function main() {
   const root = process.cwd();
   const bundle = await build({
+    plugins: [{ name: "synthetic-navigation", setup(plugin) {
+      plugin.onResolve({ filter: /^next\/navigation$/ }, () => ({ path: "navigation", namespace: "synthetic" }));
+      plugin.onLoad({ filter: /.*/, namespace: "synthetic" }, () => ({ contents: 'export function useRouter(){return {push:(href)=>window.location.assign(href)}}', loader: "js" }));
+    } }],
     stdin: { contents: 'import React, {useCallback,useState} from "react"; import {createRoot} from "react-dom/client"; import {NotificationBell} from "./components/admin/NotificationBell"; import {DashboardInbox} from "./components/admin/DashboardInbox"; import {AdminThemeProvider} from "./components/admin/ThemeProvider"; import {ToastProvider} from "./components/admin/ToastProvider"; import {useAdminActivityRefresh} from "./hooks/useAdminActivityRefresh"; function Probe(){const[count,setCount]=useState(0);const[paused,setPaused]=useState(false);const refresh=useCallback(()=>setCount(value=>value+1),[]);useAdminActivityRefresh("bookings",refresh,paused);return <div><output aria-label="Booking refreshes">{count}</output><button onClick={()=>setPaused(value=>!value)}>{paused?"Resume updates":"Pause updates"}</button></div>} const params=new URLSearchParams(location.search); createRoot(document.getElementById("root")).render(<AdminThemeProvider><ToastProvider><NotificationBell/><Probe/><DashboardInbox requestedEmail={`${params.get("source")||""}/${params.get("message")||""}`}/></ToastProvider></AdminThemeProvider>);', resolveDir: root, loader: "tsx" },
     bundle: true, write: false, platform: "browser", format: "iife", jsx: "automatic", define: { "process.env.NODE_ENV": '"production"', "process.env": "{}" },
   });
@@ -26,25 +31,32 @@ async function main() {
       page.on("pageerror", error => errors.push(error.message));
       page.on("dialog", dialog => dialog.accept());
       const emailId = randomUUID();
+      const bookingId = randomUUID();
+      const secondBookingId = randomUUID();
+      const seen = new Set<string>();
       let polls = 0;
       let acknowledgments = 0;
       let unread = true;
       let failure = 0;
+      let dismissFailure = false;
       let hold = false;
       let release: (() => void) | null = null;
       const state: NotificationSnapshot = { unreadCount: 0, bookingCount: 0, emailCount: 0, bookingSeenThrough: "2026-10-03T12:00:00.000Z", items: [], activity: [] };
       await page.route("https://notification-test.hathor.local/**", async route => {
         const url = new URL(route.request().url());
-        if (url.pathname === "/" || url.pathname === "/admin/inbox") return route.fulfill({ contentType: "text/html", body: '<!doctype html><html data-theme="night"><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body class="admin-theme"><main id="root" class="admin-shell" style="padding:24px;max-width:1280px;margin:auto"></main><script src="/app.js"></script></body></html>' });
+        if (url.pathname === "/" || url.pathname === "/admin/inbox" || url.pathname.startsWith("/admin/bookings/")) return route.fulfill({ contentType: "text/html", body: '<!doctype html><html data-theme="night"><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body class="admin-theme"><main id="root" class="admin-shell" style="padding:24px;max-width:1280px;margin:auto"></main><script src="/app.js"></script></body></html>' });
         if (url.pathname === "/app.js") return route.fulfill({ contentType: "text/javascript", body: bundle.outputFiles[0].text });
         if (url.pathname === "/style.css") return route.fulfill({ contentType: "text/css", body: css });
         if (url.pathname === "/api/admin/notifications") {
           if (route.request().method() === "POST") {
+            if (failure || dismissFailure) return route.fulfill({ status: failure || 503, json: { error: "Unavailable" } });
             acknowledgments += 1;
-            assert.equal(route.request().postDataJSON().seenThrough, state.bookingSeenThrough);
-            state.bookingCount = 0;
-            state.unreadCount = state.emailCount;
-            state.items = state.items.filter(item => item.kind === "email");
+            const item = notificationDismissSchema.parse(route.request().postDataJSON()).notifications[0];
+            seen.add(`${item.kind}/${item.source}/${item.id}`);
+            if (item.kind === "booking") state.bookingCount -= 1;
+            else state.emailCount -= 1;
+            state.unreadCount = state.bookingCount + state.emailCount;
+            state.items = state.items.filter(candidate => candidate.id !== item.id || candidate.kind !== item.kind || candidate.source !== item.source);
             return route.fulfill({ json: { ok: true } });
           }
           polls += 1;
@@ -57,7 +69,7 @@ async function main() {
         if (url.pathname === `/api/admin/inbox/general/${emailId}`) {
           if (route.request().method() === "PATCH") {
             unread = !route.request().postDataJSON().read;
-            state.emailCount = unread ? 1 : 0;
+            state.emailCount = unread && !seen.has(`email/general/${emailId}`) ? 1 : 0;
             state.unreadCount = state.bookingCount + state.emailCount;
             state.items = unread ? state.items : state.items.filter(item => item.kind !== "email");
             return route.fulfill({ json: { updated: true } });
@@ -84,15 +96,15 @@ async function main() {
           }
         }).observe(document.querySelector(".admin-toast-viewport")!, { childList: true });
       });
-      state.bookingCount = 1; state.emailCount = 1; state.unreadCount = 2;
-      state.items = [{ id: "new-booking", kind: "booking", source: "booking", name: "Nile Guest", description: "Nile voyage", createdAt: state.bookingSeenThrough }, { id: emailId, kind: "email", source: "general", name: "Nile Guest", description: "A new question", createdAt: state.bookingSeenThrough }];
-      state.activity = [{ key: "booking/new-booking", kind: "booking" }, { key: `email/general/${emailId}`, kind: "email" }];
+      state.bookingCount = 2; state.emailCount = 1; state.unreadCount = 3;
+      state.items = [{ id: bookingId, kind: "booking", source: "booking", name: "First Guest", description: "Nile voyage", createdAt: state.bookingSeenThrough }, { id: secondBookingId, kind: "booking", source: "booking", name: "Second Guest", description: "Nile voyage", createdAt: state.bookingSeenThrough }, { id: emailId, kind: "email", source: "general", name: "Nile Guest", description: "A new question", createdAt: state.bookingSeenThrough }];
+      state.activity = [{ key: `booking/${bookingId}`, kind: "booking" }, { key: `booking/${secondBookingId}`, kind: "booking" }, { key: `email/general/${emailId}`, kind: "email" }];
       await page.getByRole("button", { name: "Pause updates", exact: true }).click();
       await page.clock.runFor(15000);
-      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).waitFor();
+      await page.getByRole("button", { name: "2 unread booking notifications", exact: true }).waitFor();
       await page.getByRole("button", { name: "1 unread email notifications", exact: true }).waitFor();
       await page.getByText("New booking requests and emails received. Open Bookings or Emails notifications to view them.", { exact: true }).waitFor();
-      assert.equal(acknowledgments, 0, "Opening the bell must not clear unseen requests or email read status");
+      assert.equal(acknowledgments, 0, "Opening the icon must not clear notifications or change email read status");
       assert.equal(await page.locator(".admin-toast").count(), 1);
       assert.equal(await page.locator(".admin-toast").first().innerText().then(text => text.includes("New booking")), true);
       assert.equal(await page.getByRole("region", { name: "New email", exact: true }).getByLabel("Message", { exact: true }).inputValue(), "Keep my unsent draft while notifications arrive.");
@@ -108,14 +120,20 @@ async function main() {
       assert.ok(polls > before);
       await page.clock.runFor(1000);
       assert.equal(await page.evaluate(() => (window as unknown as { createdNotificationToasts: number }).createdNotificationToasts), 1, "Repeated snapshots must not create another alert, regardless of toast auto-dismiss/hover timing");
-      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).click();
+      await page.getByRole("button", { name: "2 unread booking notifications", exact: true }).click();
       const bookingsPanel = page.getByRole("dialog", { name: "Booking notifications", exact: true });
       assert.equal(await bookingsPanel.getByRole("link", { name: /Received email/ }).count(), 0, "Bookings icon must not mix in email alerts");
-      await bookingsPanel.getByRole("link", { name: /Booking request/ }).waitFor();
-      await page.getByRole("button", { name: "Clear booking alerts", exact: true }).click();
+      await bookingsPanel.getByRole("link", { name: /Booking request First Guest/ }).waitFor();
+      assert.equal(acknowledgments, 0, "Merely opening the panel must preserve both alerts");
+      await bookingsPanel.getByRole("link", { name: /Booking request First Guest/ }).click();
+      await page.waitForURL(`**/admin/bookings/${bookingId}`);
+      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).click();
+      assert.equal(await page.getByRole("dialog", { name: "Booking notifications", exact: true }).getByRole("link", { name: /First Guest/ }).count(), 0);
+      await page.getByRole("dialog", { name: "Booking notifications", exact: true }).getByRole("link", { name: /Second Guest/ }).click();
+      await page.waitForURL(`**/admin/bookings/${secondBookingId}`);
       await page.getByRole("button", { name: "Booking notifications", exact: true }).waitFor();
       await page.getByRole("button", { name: "1 unread email notifications", exact: true }).waitFor();
-      assert.equal(acknowledgments, 1);
+      assert.equal(acknowledgments, 2);
       assert.equal(unread, true);
       await page.screenshot({ path: path.join(root, `output/notification-qa/${width}-alerts.png`), fullPage: true });
       await page.getByRole("button", { name: "1 unread email notifications", exact: true }).click();
@@ -125,13 +143,37 @@ async function main() {
       const emailLink = emailsPanel.getByRole("link", { name: /Received email/ });
       const href = await emailLink.getAttribute("href");
       assert.equal(href, `/admin/inbox?source=general&message=${emailId}`);
-      await page.goto(`https://notification-test.hathor.local${href}`);
+      await emailLink.click();
+      await page.waitForURL(`**${href}`);
       await page.getByRole("heading", { name: "A new question", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).waitFor();
+      assert.equal(unread, true, "Opening an email alert must not mark the email read");
+      assert.equal(acknowledgments, 3);
+      await page.reload();
+      await page.getByRole("heading", { name: "A new question", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Email notifications", exact: true }).waitFor();
       await page.getByRole("button", { name: "Mark read", exact: true }).click();
       await page.getByRole("button", { name: "Mark unread", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Mark unread", exact: true }).click();
+      await page.getByRole("button", { name: "Mark read", exact: true }).waitFor();
       await page.clock.runFor(15000);
       await page.getByRole("button", { name: "Email notifications", exact: true }).waitFor();
       assert.equal(await page.locator(".admin-toast").count(), 0);
+      const laterBooking = randomUUID();
+      state.bookingCount = 1; state.unreadCount = 1;
+      state.items.push({ id: laterBooking, kind: "booking", source: "booking", name: "Later Guest", description: "New voyage", createdAt: state.bookingSeenThrough });
+      state.activity.push({ key: `booking/${laterBooking}`, kind: "booking" });
+      await page.clock.runFor(15000);
+      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).click();
+      dismissFailure = true;
+      await page.getByRole("dialog", { name: "Booking notifications", exact: true }).getByRole("link", { name: /Later Guest/ }).click();
+      await page.waitForURL(`**/admin/bookings/${laterBooking}`);
+      assert.equal(seen.has(`booking/booking/${laterBooking}`), false, "Failed acknowledgment must leave the alert available");
+      dismissFailure = false;
+      await page.getByRole("button", { name: "1 unread booking notifications", exact: true }).click();
+      await page.getByRole("dialog", { name: "Booking notifications", exact: true }).getByRole("link", { name: /Later Guest/ }).click();
+      await page.getByRole("button", { name: "Booking notifications", exact: true }).waitFor();
+      assert.equal(seen.has(`booking/booking/${laterBooking}`), true);
       failure = 503;
       await page.clock.runFor(15000);
       await page.getByRole("button", { name: "Email notifications unavailable", exact: true }).waitFor();

@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Loader2, Mail, Ticket } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { parseBookingCustomerName } from "@/lib/booking-guest-details";
-import { ADMIN_ACTIVITY_EVENT, NotificationTracker, notificationHref, notificationSnapshotSchema, type NotificationSnapshot } from "@/lib/admin-notification-types";
+import { ADMIN_ACTIVITY_EVENT, NotificationTracker, notificationHref, notificationSnapshotSchema, type NotificationItem, type NotificationSnapshot } from "@/lib/admin-notification-types";
 import { useToast } from "./ToastProvider";
 
 const POLL_VISIBLE_MS = 15_000;
@@ -14,6 +15,7 @@ const POLL_HIDDEN_MS = 60_000;
 
 export function NotificationBell() {
   const { showToast } = useToast();
+  const router = useRouter();
   const [open, setOpen] = useState<"booking" | "email" | null>(null);
   const panelId = useId();
   const [snapshot, setSnapshot] = useState<NotificationSnapshot | null>(null);
@@ -100,20 +102,26 @@ export function NotificationBell() {
     return () => { document.removeEventListener("mousedown", outside); document.removeEventListener("keydown", escape); };
   }, [open]);
 
-  async function markBookingsSeen() {
-    if (!snapshot || marking || !snapshot.bookingCount) return;
+  async function openNotification(item: NotificationItem, navigate = true) {
+    if (marking) return;
     setMarking(true);
     versionRef.current += 1;
     try {
       const response = await adminFetch("/api/admin/notifications", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ seenThrough: snapshot.bookingSeenThrough }),
+        method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notifications: [{ id: item.id, kind: item.kind, source: item.source }] }),
       });
       if (!response.ok) throw new Error();
-      setSnapshot(current => current ? { ...current, bookingCount: 0, unreadCount: current.emailCount, items: current.items.filter(item => item.kind === "email") } : current);
+      setSnapshot(current => {
+        if (!current || !current.items.some(candidate => candidate.id === item.id && candidate.kind === item.kind && candidate.source === item.source)) return current;
+        const bookingCount = Math.max(0, current.bookingCount - (item.kind === "booking" ? 1 : 0));
+        const emailCount = Math.max(0, current.emailCount - (item.kind === "email" ? 1 : 0));
+        return { ...current, bookingCount, emailCount, unreadCount: bookingCount + emailCount,
+          items: current.items.filter(candidate => candidate.id !== item.id || candidate.kind !== item.kind || candidate.source !== item.source) };
+      });
       setError(null);
-      void loadNotifications();
-    } catch { setError("Booking alerts could not be cleared. Please try again."); }
-    finally { setMarking(false); }
+    } catch { showToast("error", "The notification could not be cleared. Your dashboard record is still available."); }
+    finally { setMarking(false); setOpen(null); if (navigate) router.push(notificationHref(item)); }
   }
 
   const items = snapshot?.items.filter(item => item.kind === open) ?? [];
@@ -134,17 +142,17 @@ export function NotificationBell() {
       })}
       {open ? <div id={panelId} className="admin-notification-panel fixed inset-x-4 top-[4.5rem] z-[60] mx-auto max-h-[min(70vh,32rem)] w-auto overflow-hidden p-0 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-[min(100vw-2rem,24rem)]" role="dialog" aria-label={open === "booking" ? "Booking notifications" : "Email notifications"}>
         <div className="admin-notification-panel__header px-4 py-3"><p className="text-sm font-semibold">{open === "booking" ? "Bookings" : "Emails"}</p><p className="mt-1 text-xs text-muted" aria-live="polite">{open === "booking" ? `${snapshot?.bookingCount ?? 0} new requests` : `${snapshot?.emailCount ?? 0} unread emails`}</p></div>
-        <div className="flex flex-wrap gap-4 border-t px-4 py-3 text-xs" style={{ borderColor: "var(--border)", color: "var(--accent)" }}><Link href={open === "booking" ? "/admin/bookings" : "/admin/inbox"} onClick={() => setOpen(null)}>{open === "booking" ? "View bookings" : "View emails"}</Link>{open === "booking" && snapshot?.bookingCount ? <button type="button" disabled={marking} onClick={() => void markBookingsSeen()}>{marking ? "Clearing…" : "Clear booking alerts"}</button> : null}</div>
+        <div className="flex flex-wrap gap-4 border-t px-4 py-3 text-xs" style={{ borderColor: "var(--border)", color: "var(--accent)" }}><Link href={open === "booking" ? "/admin/bookings" : "/admin/inbox"} onClick={() => setOpen(null)}>{open === "booking" ? "View bookings" : "View emails"}</Link>{marking ? <span role="status">Opening notification…</span> : null}</div>
         {error ? <p className="px-4 py-3 text-xs" role="status" style={{ color: "var(--warning)" }}>{error}</p> : null}
         <div className="admin-notification-panel__list max-h-72 overflow-y-auto">
           {isLoading ? <div className="flex items-center justify-center gap-2 py-10 text-sm text-muted"><Loader2 className="h-4 w-4 animate-spin" aria-hidden />Loading…</div>
             : !items.length ? <div className="px-4 py-8 text-center">{open === "booking" ? <Ticket className="mx-auto mb-2 h-7 w-7 text-muted" aria-hidden /> : <Mail className="mx-auto mb-2 h-7 w-7 text-muted" aria-hidden />}<p className="text-sm font-medium">{error ? "Waiting for connection" : "You’re up to date"}</p><p className="mt-1 text-xs text-muted">{open === "booking" ? "New booking requests appear here automatically." : "Unread received emails appear here automatically."}</p></div>
-            : <ul>{items.map(item => <li key={`${item.kind}/${item.source}/${item.id}`} style={{ borderTop: "1px solid var(--border)" }}><Link href={notificationHref(item)} onClick={() => setOpen(null)} className="flex gap-3 px-4 py-3 transition-colors hover:bg-[color-mix(in_srgb,var(--accent)_6%,transparent)]">
+            : <ul>{items.map(item => <li key={`${item.kind}/${item.source}/${item.id}`} style={{ borderTop: "1px solid var(--border)" }}><Link href={notificationHref(item)} aria-disabled={marking} onClick={event => { if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) { void openNotification(item, false); return; } event.preventDefault(); void openNotification(item); }} className="flex gap-3 px-4 py-3 transition-colors hover:bg-[color-mix(in_srgb,var(--accent)_6%,transparent)]">
               {item.kind === "booking" ? <Ticket className="mt-1 h-4 w-4 shrink-0" style={{ color: "var(--accent)" }} aria-hidden /> : <Mail className="mt-1 h-4 w-4 shrink-0" style={{ color: "var(--success)" }} aria-hidden />}
               <div className="min-w-0"><p className="text-[10px] text-muted">{item.kind === "booking" ? "Booking request" : item.source === "booking" ? "Booking reply" : "Received email"}</p><p className="break-words text-sm font-medium">{item.kind === "booking" ? parseBookingCustomerName(item.name).guestName : item.name}</p><p className="mt-0.5 break-words text-xs text-muted">{item.description || "(No subject)"}</p><p className="mt-1 text-[11px] text-muted">{formatDistanceToNow(parseISO(item.createdAt), { addSuffix: true })}</p></div>
             </Link></li>)}</ul>}
         </div>
-        <p className="border-t px-4 py-3 text-[11px] text-muted" style={{ borderColor: "var(--border)" }}>Checks every 15 seconds while visible. Emails stay unread until you mark them read.</p>
+        <p className="border-t px-4 py-3 text-[11px] text-muted" style={{ borderColor: "var(--border)" }}>Opening a notification clears only that alert. Dashboard records stay available; emails stay unread until you mark them read.</p>
       </div> : null}
     </div>
   );

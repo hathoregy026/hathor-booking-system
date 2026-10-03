@@ -177,6 +177,25 @@
 .emails-detail-contact > .emails-mailbox-chip { margin-left: auto; }
 .email-composer__brand { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .emails-page__notice { margin: 0; padding: 9px 12px; font-size: 12px; }
+.emails-page[data-compact="true"] { gap: 10px; }
+.emails-page[data-compact="true"] .emails-controls { gap: 7px; }
+.emails-page[data-compact="true"] .emails-eyebrow,
+.emails-page[data-compact="true"] .admin-page-subtitle,
+.emails-page[data-compact="true"] .emails-page__caption,
+.emails-page[data-compact="true"] .emails-mailbox__handler { display: none; }
+.emails-page[data-compact="true"] .emails-page__header { align-items: center; gap: 8px; }
+.emails-page[data-compact="true"] .admin-page-title { font-size: 21px; margin: 0; }
+.emails-page[data-compact="true"] .emails-page__actions { gap: 6px; }
+.emails-page[data-compact="true"] .emails-page__actions button,
+.emails-page[data-compact="true"] .emails-filters button,
+.emails-page[data-compact="true"] .dashboard-inbox__toolbar > button { min-height: 36px; font-size: 11px; padding: 7px 10px; }
+.emails-page[data-compact="true"] .emails-mailbox { display: flex; flex-basis: 145px; align-items: center; justify-content: space-between; padding: 8px; gap: 6px; min-height: 40px; }
+.emails-page[data-compact="true"] .emails-mailbox__role { font-size: 10px; letter-spacing: .03em; }
+.emails-page[data-compact="true"] .emails-mailbox__count { font-size: 9px; white-space: nowrap; }
+.emails-page[data-compact="true"] .dashboard-inbox__toolbar .admin-input { min-height: 36px; font-size: 12px; }
+.emails-page[data-compact="true"] .emails-setup summary { padding-block: 5px; font-size: 10px; }
+.emails-page[data-compact="true"] .emails-handler-bar { font-size: 10px; }
+.emails-page[data-compact="true"] .emails-handler-bar button { min-height: 30px; }
 @media (max-width: 767px) {
   .admin-shell[data-emails-workspace="true"] .admin-main { padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); padding-top: 12px; }
   .emails-controls { gap: 8px; }

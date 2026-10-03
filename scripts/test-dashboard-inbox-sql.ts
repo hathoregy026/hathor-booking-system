@@ -7,7 +7,7 @@ import { deleteDashboardEmail, fetchDashboardInbox, fetchInboxDetail, inboxQuery
 import type { bookingQuery } from "../lib/booking-database";
 import { EMAIL_MAILBOXES } from "../lib/email-mailboxes";
 import { applyDashboardEmailAction } from "../lib/dashboard-email-actions";
-import { fetchAdminNotifications } from "../lib/admin-notifications";
+import { dismissNotifications, fetchAdminNotifications } from "../lib/admin-notifications";
 
 async function main() {
   config({ path: ".env.local", quiet: true });
@@ -24,11 +24,13 @@ async function main() {
       PRIMARY KEY (source, "messageId")) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "DashboardEmailPlacement" (source TEXT, "messageId" TEXT, "mailboxId" TEXT, "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (source, "messageId")) ON COMMIT DROP`);
+    await client.query(`CREATE TEMP TABLE "DashboardNotificationSeen" (kind TEXT, source TEXT, "messageId" TEXT, "seenAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (kind, source, "messageId")) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "SiteSetting" (key TEXT PRIMARY KEY, value TEXT, "updatedAt" TIMESTAMP(3)) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "Booking" (
       id TEXT PRIMARY KEY, "customerName" TEXT, "firstName" TEXT, "lastName" TEXT
     ) ON COMMIT DROP`);
-    await client.query(`INSERT INTO pg_temp."Booking" VALUES ('synthetic-booking', 'Nile Guest', 'Nile', 'Guest')`);
+    await client.query(`INSERT INTO pg_temp."Booking" VALUES ('11111111-1111-4111-8111-111111111111', 'Nile Guest', 'Nile', 'Guest')`);
     await client.query(`CREATE TEMP TABLE "InboxMessage" (
       id TEXT PRIMARY KEY, "resendEmailId" TEXT, sender TEXT, recipient TEXT, subject TEXT, "bodyText" TEXT,
       attachments JSONB DEFAULT '[]'::jsonb, "createdAt" TIMESTAMP(3), "readAt" TIMESTAMP(3),
@@ -41,8 +43,8 @@ async function main() {
     const bookingId = randomUUID();
     const sentId = randomUUID();
     await client.query(`INSERT INTO pg_temp."BookingMessage" (id, "bookingId", direction, sender, recipient, subject, "bodyText", "senderMatchesGuest", "createdAt", status)
-      VALUES ($1, 'synthetic-booking', 'INBOUND', 'guest@example.com', 'reply@example.com', 'Booking reply', 'Synthetic body', FALSE, '2026-10-02 12:00:00', 'RECEIVED'),
-      ($2, 'synthetic-booking', 'OUTBOUND', 'team@example.com', 'guest@example.com', 'Sent booking email', 'Synthetic body', TRUE, '2026-10-02 12:00:00', 'SENT')`, [bookingId, sentId]);
+      VALUES ($1, '11111111-1111-4111-8111-111111111111', 'INBOUND', 'guest@example.com', 'reply@example.com', 'Booking reply', 'Synthetic body', FALSE, '2026-10-02 12:00:00', 'RECEIVED'),
+      ($2, '11111111-1111-4111-8111-111111111111', 'OUTBOUND', 'team@example.com', 'guest@example.com', 'Sent booking email', 'Synthetic body', TRUE, '2026-10-02 12:00:00', 'SENT')`, [bookingId, sentId]);
     const general = Array.from({ length: 27 }, (_, index) => ({ id: randomUUID(), emailId: randomUUID(), subject: index === 0 ? "Literal 100% inquiry" : `Inquiry ${index}` }));
     await client.query(`INSERT INTO pg_temp."InboxMessage" (id, "resendEmailId", sender, recipient, subject, "bodyText", "createdAt")
       SELECT id, "emailId", 'customer@example.com', 'reservations@hathorcruise.com', subject, 'Synthetic body', '2026-10-02 12:00:00'::timestamp
@@ -63,6 +65,23 @@ async function main() {
     assert.equal(notifications.emailCount, 28);
     assert.equal(notifications.items.filter(item => item.kind === "booking").length, 1);
     assert.equal(notifications.items.filter(item => item.kind === "email").length, 10);
+    const seenEmail = { notifications: [{ id: general[0].id, kind: "email" as const, source: "general" as const }] };
+    await dismissNotifications(seenEmail, query);
+    await dismissNotifications(seenEmail, query);
+    await dismissNotifications({ notifications: [{ id: "11111111-1111-4111-8111-111111111111", kind: "booking", source: "booking" }] }, query);
+    const dismissed = await fetchAdminNotifications(query);
+    assert.equal(dismissed.bookingCount, 0);
+    assert.equal(dismissed.emailCount, 27);
+    assert.equal(dismissed.items.some(item => item.id === general[0].id), false);
+    assert.equal((await fetchInboxDetail("general", general[0].id, query))?.readAt, null);
+    const lateEmail = randomUUID();
+    await client.query(`INSERT INTO pg_temp."InboxMessage" (id, sender, recipient, subject, "bodyText", "createdAt")
+      VALUES ($1, 'late@example.com', 'info@hathorcruise.com', 'Late delivery', 'Original late body', '2026-09-01 12:00:00')`, [lateEmail]);
+    assert.equal((await fetchAdminNotifications(query)).emailCount, 28, "Late forwarded email must notify even when its original date precedes acknowledgments");
+    await client.query(`DELETE FROM pg_temp."InboxMessage" WHERE id = $1`, [lateEmail]);
+    await setInboxRead("general", general[0].id, true, query);
+    await setInboxRead("general", general[0].id, false, query);
+    assert.equal((await fetchAdminNotifications(query)).emailCount, 27, "Marking an email unread must not resurrect a dismissed notification");
     const first = await fetchDashboardInbox(inboxQuerySchema.parse({}), query);
     assert.equal(first.messages.length, 25);
     assert.equal(first.unreadCount, 28);

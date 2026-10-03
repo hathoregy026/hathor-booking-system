@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
-import { fetchAdminNotifications, markNotificationBookingsSeen, notificationSeenSchema } from "@/lib/admin-notifications";
+import { dismissNotifications, fetchAdminNotifications, markNotificationBookingsSeen, notificationDismissSchema, notificationSeenSchema } from "@/lib/admin-notifications";
+import { z } from "zod";
 import { inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
 import { assertTrustedPublicJsonRequest, enforcePublicRateLimit, PublicRequestError } from "@/lib/public-api-security";
 import { readPrivateEmailJson } from "@/lib/private-email";
@@ -25,7 +26,9 @@ export async function POST(request: NextRequest) {
   try {
     await authorize(request);
     assertTrustedPublicJsonRequest(request);
-    await markNotificationBookingsSeen(notificationSeenSchema.parse(await readPrivateEmailJson(request)));
+    const input = z.union([notificationDismissSchema, notificationSeenSchema]).parse(await readPrivateEmailJson(request));
+    if ("notifications" in input) await dismissNotifications(input);
+    else await markNotificationBookingsSeen(input);
     return NextResponse.json({ ok: true }, { headers: inboxHeaders });
   } catch (error) { return inboxRouteError(error); }
 }

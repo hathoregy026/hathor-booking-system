@@ -263,6 +263,15 @@ model DashboardEmailPlacement {
   @@id([source, messageId])
 }
 
+model DashboardNotificationSeen {
+  kind      String
+  source    String
+  messageId String
+  seenAt    DateTime @default(now())
+
+  @@id([kind, source, messageId])
+}
+
 model ApiRateLimit {
   key       String   @id
   count     Int
