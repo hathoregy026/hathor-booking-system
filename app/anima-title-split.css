@@ -40,6 +40,11 @@
   will-change: transform;
 }
 
+/* A word never wraps inside itself, even when it is wider than its line. */
+.anima-title-word {
+  white-space: nowrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anima-split-char,
   .anima-split-word-unit,
