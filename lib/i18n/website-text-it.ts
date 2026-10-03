@@ -14,6 +14,68 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  gastronomy: {
+    introChapter: "La cucina",
+    introTitle: "TAVOLE\nSUL NILO",
+    introSecondTitle: "FATTE PER\nSEGUIRLA",
+    introThirdTitle: "GUSTI\nL’EGITTO",
+    introBody:
+      "I menu nascono da ingredienti egiziani e da influenze internazionali familiari, con piatti preparati secondo il ritmo e l’ambiente di ogni giornata. Cucina, movimento e riposo si fondono in un’unica esperienza continua.",
+    tableLabel: "LA TAVOLA",
+    statementChapter: "L’esperienza",
+    statementTitle: "UNA CUCINA CHE\nINVITA A RESTARE\nA MUOVERSI CON\nIL FIUME",
+    statementBody:
+      "Ogni tavola prende forma intorno a chi vi si riunisce. La colazione arriva con le prime luci; la cena segue la brezza; la palestra resta vicina al ponte; la Sua suite ricorda come ama riposare. Design, sapore e qualità della vita si incontrano in un’unica giornata Hathor.",
+    riverBody:
+      "A bordo di Hathor la cucina fa parte del viaggio, non è una pausa. Menu stagionali uniscono sapori egiziani, ingredienti freschi e un servizio attento, in ambienti plasmati dal fiume.",
+    marquee: "RITUALI",
+    coursesChapter: "Sette portate",
+    /*
+     * The Dining titles are split into letters and wrap at about eight
+     * capitals here, so every Italian line stays a whole word or two.
+     */
+    coursesTitle: "PIATTI\nCOME\nISTANTI",
+    coursesBody:
+      "Ogni portata arriva con calma, trova il suo posto e lascia alla tavola il tempo di guardare, respirare e assaporare.",
+    values: [
+      {
+        title: "TAVOLA",
+        body: "Gli ingredienti egiziani sono trattati con misura: agrumi luminosi, spezie calde, pesce di fiume e verdure raccolte lungo le rive.",
+      },
+      {
+        title: "ENERGIA",
+        body: "La palestra di bordo tiene il movimento a portata di mano: una sessione mattutina senza fretta, mentre palme e villaggi scorrono oltre il ponte.",
+      },
+      {
+        title: "RIPOSO",
+        body: "La Sua suite è il contrappunto tranquillo: ampie vedute sul fiume, dettagli curati e servizio privato ogni volta che preferisce restare in camera.",
+      },
+    ],
+    experiencesChapter: "Esperienze",
+    experiencesBody:
+      "Il lusso non ha bisogno di annunciarsi. Si avverte nei tempi perfetti, nella bevanda preferita ricordata, nello spazio per muoversi e nella libertà di cenare dove il fiume è più bello.",
+    stories: [
+      { time: "ALBA", place: "PONTE SUPERIORE", title: "COLAZIONE", cta: "Apri la storia" },
+      { time: "SERA", place: "SALA DA PRANZO", title: "DALLO CHEF", cta: "Apri la storia" },
+      { time: "ORA DORATA", place: "PONTE SUL FIUME", title: "CENA SUL NILO", cta: "Apri la storia" },
+      { time: "OGNI GIORNO", place: "PONTE FITNESS", title: "MOVIMENTO", cta: "Apri la storia" },
+      { time: "A OGNI ORA", place: "LA SUA SUITE", title: "ROOM SERVICE", cta: "Apri la storia" },
+    ],
+    closingChapter: "Oltre la tavola",
+    closingTitle: "CHI HA DETTO\nCHE IL PIACERE\nNON PUÒ ESSERE\nFUNZIONALE?",
+    closingBody:
+      "Cucina, movimento e riposo si fondono in un’unica esperienza continua. Niente è affrettato, niente è eccessivo, e ogni dettaglio è al servizio della vita a bordo.",
+    closingCta: "Prenoti il viaggio",
+    conciergeTitle: "UN VIAGGIO\nSU MISURA",
+    diningClosingTitle: "UNA CUCINA\nCHE LASCIA\nRESPIRARE",
+    conciergeBody:
+      "Ci racconti come ama viaggiare. Il nostro team può organizzare cene private, esigenze alimentari, ricorrenze, momenti di allenamento e servizio in suite secondo il ritmo naturale del Suo viaggio sul Nilo.",
+    conciergeCta: "Pianifichi il viaggio",
+    featureLabel: "LA TAVOLA DI HATHOR",
+    featureTitle: "CENE PRIVATE",
+    featureBody:
+      "Su richiesta, cene private in spazi selezionati a bordo, per chi desidera un’esperienza più personale.",
+  },
   contact: {
     formIntro:
       "Ci indichi le date, il numero di ospiti e come desidera navigare. Il nostro ufficio prenotazioni risponde entro 24 ore.",

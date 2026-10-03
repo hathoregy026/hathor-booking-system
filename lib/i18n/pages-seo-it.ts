@@ -52,4 +52,12 @@ export const ITALIAN_PAGES = {
     name: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
     crumb: "Contatti",
   }),
+  gastronomy: page({
+    path: "/it/gastronomy",
+    title: "La cucina di una crociera di lusso sul Nilo | Hathor",
+    description:
+      "L’esperienza gastronomica di una crociera di lusso sul Nilo a bordo di Hathor Dahabiya: sapori egiziani e un servizio attento, a tavola dentro e sul ponte, tra Luxor e Assuan.",
+    name: "La cucina sul Nilo | La gastronomia di Hathor Dahabiya",
+    crumb: "Cucina",
+  }),
 } as const;
