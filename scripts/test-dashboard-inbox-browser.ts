@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, readdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { build } from "esbuild";
+import postcss, { type AcceptedPlugin } from "postcss";
+import tailwindcss from "@tailwindcss/postcss";
 import { chromium } from "playwright";
 import { buildEmailHtmlDocument, emailFrameHeaders } from "../lib/email-html-view";
 import { render } from "@react-email/render";
 import PrivateMessageEmail from "../emails/PrivateMessage";
 import { getDefaultEmailTemplate, buildEmailSendTheme } from "../lib/email-templates";
+import { EMAIL_MAILBOXES } from "../lib/email-mailboxes";
 
 async function main() {
   const root = process.cwd();
@@ -15,23 +18,28 @@ async function main() {
     stdin: { contents: 'import React from "react"; import { createRoot } from "react-dom/client"; import { DashboardInbox } from "./components/admin/DashboardInbox"; createRoot(document.getElementById("root")).render(<DashboardInbox />);', resolveDir: root, loader: "tsx" },
     bundle: true, write: false, platform: "browser", format: "iife", jsx: "automatic", define: { "process.env.NODE_ENV": '"production"', "process.env": "{}" },
   });
-  const chunkDirectory = path.join(root, ".next/static/chunks");
-  const chunks = await readdir(chunkDirectory);
-  const styles = await Promise.all(chunks.filter(file => file.endsWith(".css")).map(file => readFile(path.join(chunkDirectory, file), "utf8")));
-  const utilities = styles.find(css => css.includes("--spacing") && css.includes(".flex"));
-  assert.ok(utilities, "Run a Next build once to provide existing Tailwind CSS for this isolated UI test");
-  const css = utilities + await readFile(path.join(root, "app/admin.css"), "utf8") + await readFile(path.join(root, "app/admin/(panel)/inbox/inbox.css"), "utf8");
+  const utilities = (await postcss([tailwindcss({ base: root }) as unknown as AcceptedPlugin]).process('@import "tailwindcss";', { from: path.join(root, "app/globals.css") })).css;
+  const css = utilities + await readFile(path.join(root, "app/admin.css"), "utf8") + await readFile(path.join(root, "app/admin-shell.css"), "utf8") + await readFile(path.join(root, "app/admin/(panel)/inbox/inbox.css"), "utf8");
   const browser = await chromium.launch({ channel: "msedge", headless: true });
   try {
     await mkdir(path.join(root, "output/inbox-qa"), { recursive: true });
-    for (const [width, theme] of [[1440, "night"], [1440, "day"], [768, "night"], [390, "night"], [390, "day"]] as const) {
-      const page = await browser.newPage({ viewport: { width, height: 1000 } });
+    for (const [width, theme] of [[1440, "night"], [1440, "day"], [768, "night"], [390, "night"], [390, "day"], [320, "night"]] as const) {
+      const page = await browser.newPage({ viewport: { width, height: width < 768 ? 844 : 900 } });
       const errors: string[] = [];
       page.on("pageerror", error => errors.push(error.message));
       const emailId = randomUUID();
       const messageId = randomUUID();
       const fileId = randomUUID();
       let read = false;
+      let grouped = false;
+      const deleted = new Set<string>();
+      const handlers: Record<string, string> = {};
+      const groupedRows = EMAIL_MAILBOXES.flatMap(mailbox => Array.from({ length: 30 }, (_, index) => ({
+        id: randomUUID(), source: "general", mailboxId: mailbox.id, bookingId: null, sender: `partner-${index}@example.com`,
+        recipient: mailbox.address, correspondentName: `Nile Partner ${index + 1}`, direction: "INBOUND", status: "RECEIVED",
+        subject: `${mailbox.label} inquiry ${index + 1}`, preview: "Please help with this inquiry.", attachmentCount: 0,
+        createdAt: "2026-10-03T12:00:00.000Z", readAt: null,
+      })));
       let searches = 0;
       let older = 0;
       let imageRequests = 0;
@@ -48,21 +56,42 @@ async function main() {
       const sentSummary = () => sentMessage ? ({ id: sentMessage.id, source: "general", bookingId: null, sender: "Hathor Dahabiya <reservations@hathorcruise.com>", recipient: sentMessage.to, correspondentName: sentMessage.recipientName, direction: "OUTBOUND", status: sendCalls > 1 ? "SENT" : "PENDING", subject: sentMessage.subject, preview: sentMessage.message, attachmentCount: 0, createdAt: "2026-10-03T12:00:00.000Z", readAt: null }) : null;
       await page.route("https://inbox-test.hathor.local/**", async route => {
         const url = new URL(route.request().url());
-        if (url.pathname === "/") return route.fulfill({ contentType: "text/html", headers: { "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; frame-src 'self'" }, body: `<!doctype html><html data-theme="${theme}"><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body class="admin-theme"><main id="root" class="admin-shell" style="padding:24px;max-width:1280px;margin:auto"></main><script src="/app.js"></script></body></html>` });
+        if (url.pathname === "/") return route.fulfill({ contentType: "text/html", headers: { "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; frame-src 'self'" }, body: `<!doctype html><html data-theme="${theme}"><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body class="admin-theme"><div class="admin-shell" data-theme="${theme}" data-emails-workspace="true"><div class="admin-shell__stage flex flex-col"><header class="admin-header shrink-0">Hathor dashboard</header><main id="root" class="admin-main" style="padding-inline:20px"></main></div></div><script src="/app.js"></script></body></html>` });
         if (url.pathname === "/app.js") return route.fulfill({ contentType: "text/javascript", body: bundle.outputFiles[0].text });
         if (url.pathname === "/style.css") return route.fulfill({ contentType: "text/css", body: css });
         if (url.pathname === "/api/admin/inbox") {
+          const mailboxes = EMAIL_MAILBOXES.map(item => ({ ...item, handlerName: handlers[item.id] ?? "", total: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" ? sentMessage ? 2 : 1 : 0, unread: grouped ? groupedRows.filter(row => row.mailboxId === item.id && !deleted.has(row.id)).length : item.id === "reservations" && !read ? 1 : 0 }));
+          if (grouped) {
+            const rows = groupedRows.filter(row => !deleted.has(row.id) && (url.searchParams.get("mailbox") === "all" || row.mailboxId === url.searchParams.get("mailbox")));
+            return route.fulfill({ json: { messages: url.searchParams.get("filter") === "sent" ? [] : rows.slice(0, 25), hasOlder: false, unreadCount: rows.length, counts: { all: rows.length, unread: rows.length, received: rows.length, sent: 0 }, mailboxes } });
+          }
           if (url.searchParams.get("q")) searches += 1;
           if (url.searchParams.get("before")) older += 1;
           const filter = url.searchParams.get("filter");
           const sent = sentSummary();
           const rows = filter === "sent" ? sent ? [sent] : [] : filter === "unread" && read ? [] : filter === "all" && sent ? [sent, summary()] : [summary()];
-          return route.fulfill({ json: { messages: url.searchParams.has("before") ? [] : rows, hasOlder: !url.searchParams.has("before") && filter !== "sent", unreadCount: read ? 0 : 1, counts: { all: sent ? 2 : 1, unread: read ? 0 : 1, received: 1, sent: sent ? 1 : 0 } } });
+          return route.fulfill({ json: { messages: url.searchParams.has("before") ? [] : rows, hasOlder: !url.searchParams.has("before") && filter !== "sent", unreadCount: read ? 0 : 1, counts: { all: sent ? 2 : 1, unread: read ? 0 : 1, received: 1, sent: sent ? 1 : 0 }, mailboxes } });
+        }
+        if (url.pathname === "/api/admin/inbox/mailboxes") {
+          assert.equal(route.request().method(), "PATCH");
+          const content = route.request().postDataJSON();
+          handlers[content.mailboxId] = content.handlerName;
+          return route.fulfill({ json: { updated: true } });
+        }
+        const groupedMessage = groupedRows.find(row => url.pathname === `/api/admin/inbox/general/${row.id}`);
+        if (groupedMessage) {
+          if (route.request().method() === "DELETE") {
+            assert.equal(route.request().postDataJSON().confirm, true);
+            deleted.add(groupedMessage.id);
+            return route.fulfill({ json: { deleted: true } });
+          }
+          return route.fulfill({ json: { message: { ...groupedMessage, bodyText: "Private incoming message.\n\n" + "Readable details. ".repeat(200), attachments: [], senderMatchesGuest: true } } });
         }
         if (url.pathname === "/api/admin/inbox/preview") {
           assert.equal(route.request().method(), "POST");
           const content = route.request().postDataJSON();
-          const html = await render(PrivateMessageEmail({ ...content, ...buildEmailSendTheme(getDefaultEmailTemplate("BookingMessage")) }));
+          const mailbox = EMAIL_MAILBOXES.find(item => item.id === content.mailboxId)!;
+          const html = await render(PrivateMessageEmail({ ...content, contactEmail: mailbox.address, signatureName: handlers[mailbox.id], ...buildEmailSendTheme(getDefaultEmailTemplate("BookingMessage")) }));
           return route.fulfill({ contentType: "text/html", headers: emailFrameHeaders(false), body: buildEmailHtmlDocument(html) });
         }
         if (url.pathname === "/api/admin/inbox/send") {
@@ -176,6 +205,43 @@ async function main() {
       assert.notEqual(sentColor, unreadColor);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
       await page.screenshot({ path: path.join(root, `output/inbox-qa/${width}-list.png`), fullPage: true });
+      grouped = true;
+      await page.getByRole("group", { name: "Filter emails" }).getByRole("button", { name: /^All emails/ }).click();
+      const navigation = page.getByRole("navigation", { name: "Choose mailbox" });
+      assert.deepEqual(await navigation.locator(".emails-mailbox__role").allTextContents(), ["ALL MAILBOXES", ...EMAIL_MAILBOXES.map(item => item.label)]);
+      for (const mailbox of EMAIL_MAILBOXES) {
+        await Promise.all([
+          page.waitForResponse(response => new URL(response.url()).searchParams.get("mailbox") === mailbox.id),
+          navigation.getByRole("button", { name: new RegExp(`^${mailbox.label} `) }).click(),
+        ]);
+        await page.waitForFunction(() => document.querySelector('section[aria-label="Email list"]')?.getAttribute("aria-busy") === "false");
+        assert.ok((await page.locator(".emails-message__top .emails-mailbox-chip").allTextContents()).every(value => value === mailbox.label));
+      }
+      await navigation.getByRole("button", { name: /^CEO / }).click();
+      await page.getByRole("button", { name: "Add handler name", exact: true }).click();
+      await page.getByLabel("Who handles CEO?").fill("Nile Director");
+      await page.getByRole("button", { name: "Save name", exact: true }).click();
+      await navigation.getByText("Nile Director", { exact: true }).waitFor();
+      const filtersBefore = await page.getByRole("group", { name: "Filter emails" }).boundingBox();
+      const controlsBefore = await page.locator(".emails-controls").boundingBox();
+      await page.locator(".emails-list-scroll").evaluate(element => { element.scrollTop = 800; });
+      const scrollTop = await page.locator(".emails-list-scroll").evaluate(element => element.scrollTop);
+      assert.ok(scrollTop > 0, "Only the message list must scroll");
+      assert.equal((await page.getByRole("group", { name: "Filter emails" }).boundingBox())?.y, filtersBefore?.y);
+      assert.equal((await page.locator(".emails-controls").boundingBox())?.y, controlsBefore?.y);
+      assert.equal(await page.evaluate(() => window.scrollY), 0);
+      await page.locator(".emails-list-scroll").evaluate(element => { element.scrollTop = 0; });
+      await page.locator(".dashboard-inbox__message").first().click();
+      await page.getByRole("heading", { name: "CEO inquiry 1", exact: true }).waitFor();
+      assert.equal(await page.locator(".emails-detail-metadata > div").count(), 4);
+      await page.getByText("Nile Director", { exact: true }).last().waitFor();
+      page.once("dialog", dialog => void dialog.accept());
+      await page.getByRole("button", { name: "Delete from dashboard", exact: true }).click();
+      await page.getByText("Removed from dashboard Emails. Your original mailbox history is unchanged.", { exact: true }).waitFor();
+      assert.equal(deleted.size, 1);
+      assert.equal(groupedRows.filter(item => item.mailboxId === "ceo").length, 30, "Deletion preserves the original mailbox fixture");
+      await page.screenshot({ path: path.join(root, `output/inbox-qa/${width}-${theme}-mailboxes.png`), fullPage: true });
+      assert.equal(await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 1), true, "Emails must not move the dashboard header or filters off screen");
       assert.deepEqual(errors, []);
       await page.close();
       console.log(`Emails browser QA passed at ${width}px (${theme}): clear names, distinct unread/received/sent colours, filters, branded compose preview, safe retry, sent history, protected HTML, attachments and responsive containment.`);

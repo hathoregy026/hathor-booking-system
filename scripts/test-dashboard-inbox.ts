@@ -17,7 +17,7 @@ function fixture(options: { automatic?: boolean; recipient?: string; wrongId?: b
   let reads = 0;
   const inserts: unknown[][] = [];
   const query = (async (sql: string, values: unknown[]) => {
-    if (sql.startsWith("SELECT")) return saved ? [{ id: randomUUID() }] : [];
+    if (sql.startsWith("SELECT")) return saved ? [{ mailboxId: "reservations" }] : [];
     assert.match(sql, /INSERT INTO "InboxMessage"/);
     if (options.failInsert) throw new Error("Unavailable database");
     inserts.push(values);
@@ -53,7 +53,10 @@ async function main() {
   const forwarded = fixture({ recipient: "reservations@hathorcruise.com" });
   await processReceivedDashboardEmail(forwarded.event, forwarded);
   assert.equal(forwarded.inserts.length, 1, "Forwarded original To header is supported");
-  for (const options of [{ recipient: "outside@example.com" }, { wrongId: true }, { failInsert: true }]) {
+  const bccForwarded = fixture({ recipient: "outside@example.com" });
+  await processReceivedDashboardEmail(bccForwarded.event, bccForwarded);
+  assert.equal(bccForwarded.inserts[0][9], "reservations", "Verified delivery recipient owns routing even with a preserved original To header");
+  for (const options of [{ wrongId: true }, { failInsert: true }]) {
     const invalid = fixture(options);
     await assert.rejects(processReceivedDashboardEmail(invalid.event, invalid));
     assert.equal(invalid.inserts.length, 0);
@@ -76,6 +79,8 @@ async function main() {
   const statements: { sql: string; values: unknown[] }[] = [];
   const listQuery = (async (sql: string, values: unknown[] = []) => {
     statements.push({ sql, values });
+    if (sql.includes('FROM "SiteSetting"')) return [];
+    if (sql.includes('GROUP BY "mailboxId"')) return [{ mailboxId: "reservations", total: 26, unread: 4 }];
     if (sql.includes("COUNT(*)")) return [{ all: 26, unread: 4, received: 20, sent: 6 }];
     return Array.from({ length: 26 }, () => ({ id: randomUUID(), source: "general", bookingId: null, sender: "guest@example.com", recipient: DASHBOARD_INBOX_ADDRESS, correspondentName: "Customer", direction: "INBOUND", status: "RECEIVED", subject: "Hello", preview: "Text", attachmentCount: 0, createdAt: new Date("2026-10-02T12:00:00Z"), readAt: null }));
   }) as typeof bookingQuery;
@@ -87,12 +92,13 @@ async function main() {
   assert.equal(page.messages[0].createdAt, "2026-10-02T12:00:00.000Z");
   assert.ok(!statements[0].sql.includes("OR 1=1"));
   assert.equal(statements[0].values[0], "%\\%' OR 1=1 --%");
-  assert.deepEqual(statements[0].values.slice(1), ["unread", "2026-10-02T13:00:00.000Z", "general", messageId]);
+  assert.deepEqual(statements[0].values.slice(1), ["unread", "2026-10-02T13:00:00.000Z", "general", messageId, "all"]);
   assert.match(statements[0].sql, /recipient ILIKE \$1/);
   assert.match(statements[0].sql, /"correspondentName" ILIKE \$1/);
   for (const filter of ["sent", "received"]) {
+    const index = statements.length;
     await fetchDashboardInbox(inboxQuerySchema.parse({ filter }), listQuery);
-    assert.equal(statements[statements.length - 2].values[1], filter);
+    assert.equal(statements[index].values[1], filter);
   }
   const emptyQuery = (async () => []) as typeof bookingQuery;
   assert.equal(await fetchInboxDetail("general", messageId, emptyQuery), null);

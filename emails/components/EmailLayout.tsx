@@ -23,6 +23,7 @@ type EmailLayoutProps = {
   preview: string;
   children: ReactNode;
   footerVariant?: EmailFooterVariant;
+  contactEmail?: string;
   logoWidth?: number;
 } & EmailTemplateOverrides;
 
@@ -188,9 +189,11 @@ export function GoldSectionTitle({
 export function EmailFooter({
   variant = "guest",
   primaryColor,
+  contactEmail = "reservations@hathorcruise.com",
 }: {
   variant?: EmailFooterVariant;
   primaryColor: string;
+  contactEmail?: string;
 }) {
   if (variant === "admin") {
     return (
@@ -301,13 +304,13 @@ export function EmailFooter({
               }}
             >
               <Link
-                href="mailto:reservations@hathorcruise.com"
+                href={`mailto:${contactEmail}`}
                 style={{
                   color: emailColors.copyOnDark,
                   textDecoration: "underline",
                 }}
               >
-                reservations@hathorcruise.com
+                {contactEmail}
               </Link>
             </Text>
             <Text
@@ -363,6 +366,7 @@ export function EmailLayout({
   preview,
   children,
   footerVariant = "guest",
+  contactEmail,
   logoWidth = emailLayout.iconSize,
   logoUrl,
   heroImageUrl,
@@ -505,6 +509,7 @@ export function EmailLayout({
                       <td style={cellReset}>
                         <EmailFooter
                           variant={footerVariant}
+                          contactEmail={contactEmail}
                           primaryColor={theme.primaryColor}
                         />
                       </td>

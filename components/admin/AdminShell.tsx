@@ -84,7 +84,7 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
      *
      * `clip` contains overflow without establishing a scroll container.
      */
-    <div className="admin-shell min-h-screen" data-theme={theme}>
+    <div className="admin-shell min-h-screen" data-theme={theme} data-emails-workspace={pathname === "/admin/inbox" || undefined}>
       <div className="admin-shell__glow" aria-hidden />
 
       <Sidebar

@@ -8,11 +8,15 @@ import { buildEmailSendTheme } from "@/lib/email-templates";
 import { PublicRequestError } from "@/lib/public-api-security";
 import { getResendFromAddress } from "@/lib/resend-config";
 import { mailboxAddress } from "@/lib/booking-email-routing";
+import { mailboxDisplayName } from "@/lib/email-correspondent";
+import { emailMailbox, mailboxIdSchema } from "@/lib/email-mailboxes";
+import { fetchMailboxHandlers } from "@/lib/email-mailbox-settings";
 import { EmailBodyTooLargeError, readLimitedEmailBody } from "@/lib/resend-inbound";
 
 export const PRIVATE_EMAIL_REPLY_TO = "reservations@hathorcruise.com";
 const singleLine = z.string().trim().refine(value => !/[\u0000-\u001f\u007f]/.test(value), "Use a single line without control characters");
 export const privateEmailContentSchema = z.object({
+  mailboxId: mailboxIdSchema.default("reservations"),
   to: z.email().max(254).transform(value => value.toLowerCase()),
   recipientName: singleLine.max(160).default(""),
   subject: singleLine.min(1).max(180),
@@ -23,7 +27,7 @@ export type PrivateEmailContent = z.infer<typeof privateEmailContentSchema>;
 export type PrivateEmailResult = { id: string; status: "SENT" | "PENDING" | "FAILED" };
 
 type DeliveryPayload = { from: string; to: string[]; subject: string; html: string; text: string; reply_to: string };
-type StoredEmail = { id: string; status: PrivateEmailResult["status"]; sender: string; recipient: string; subject: string; bodyText: string; bodyHtml: string; correspondentName: string | null; requestFingerprint: string; recordedBySession: string; createdAt: Date };
+type StoredEmail = { id: string; mailboxId: string; status: PrivateEmailResult["status"]; sender: string; recipient: string; subject: string; bodyText: string; bodyHtml: string; correspondentName: string | null; requestFingerprint: string; recordedBySession: string; createdAt: Date };
 
 export class PrivateEmailDeliveryError extends Error {
   constructor(readonly definitive: boolean) { super("Email delivery could not be confirmed"); }
@@ -34,9 +38,11 @@ export async function readPrivateEmailJson(request: Request): Promise<unknown> {
   catch (error) { throw new PublicRequestError(error instanceof EmailBodyTooLargeError ? "Request body is too large" : "Invalid request body", error instanceof EmailBodyTooLargeError ? 413 : 400); }
 }
 
-export async function renderPrivateEmail(input: PrivateEmailContent): Promise<string> {
+export async function renderPrivateEmail(input: PrivateEmailContent, handlerName = ""): Promise<string> {
   const template = await getEmailTemplateForSend("BookingMessage");
-  return render(PrivateMessageEmail({ recipientName: input.recipientName, subject: input.subject, message: input.message, ...buildEmailSendTheme(template) }));
+  const mailbox = emailMailbox(input.mailboxId);
+  return render(PrivateMessageEmail({ recipientName: input.recipientName, subject: input.subject, message: input.message,
+    contactEmail: mailbox.address, signatureName: handlerName || `The Hathor ${mailbox.label} team`, ...buildEmailSendTheme(template) }));
 }
 
 export async function deliverPrivateEmail(payload: DeliveryPayload, requestId: string): Promise<string> {
@@ -55,15 +61,21 @@ export async function sendPrivateEmail(input: z.infer<typeof privateEmailSendSch
 } = {}): Promise<PrivateEmailResult> {
   const parsed = privateEmailSendSchema.parse(input);
   const query = dependencies.query ?? bookingQuery;
-  const from = getResendFromAddress();
-  if (mailboxAddress(from) !== PRIVATE_EMAIL_REPLY_TO || /[\r\n\u0000]/.test(from)) throw new PublicRequestError("The Hathor sending address is not configured. Please contact your administrator.", 503);
-  const fingerprint = createHash("sha256").update(JSON.stringify([parsed.to, parsed.recipientName, parsed.subject, parsed.message])).digest("hex");
+  const configured = getResendFromAddress();
+  if (mailboxAddress(configured) !== PRIVATE_EMAIL_REPLY_TO || /[\r\n\u0000]/.test(configured)) throw new PublicRequestError("The Hathor sending address is not configured. Please contact your administrator.", 503);
+  const mailbox = emailMailbox(parsed.mailboxId);
+  const content = [parsed.to, parsed.recipientName, parsed.subject, parsed.message];
+  const fingerprint = createHash("sha256").update(JSON.stringify(parsed.mailboxId === "reservations" ? content : [...content, parsed.mailboxId])).digest("hex");
   let [stored] = await query<StoredEmail>(`SELECT * FROM "InboxMessage" WHERE id = $1 AND direction = 'OUTBOUND'`, [parsed.requestId]);
   if (!stored) {
-    const html = await (dependencies.render ?? renderPrivateEmail)(parsed);
-    await query(`INSERT INTO "InboxMessage" (id, direction, status, sender, recipient, "correspondentName", subject, "bodyText", "bodyHtml", "requestFingerprint", "recordedBySession")
-      VALUES ($1, 'OUTBOUND', 'PENDING', $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (id) DO NOTHING`,
-    [parsed.requestId, from, parsed.to, parsed.recipientName || null, parsed.subject, parsed.message, html, fingerprint, sessionId]);
+    const handlers = await fetchMailboxHandlers(query);
+    const handlerName = handlers[parsed.mailboxId];
+    const displayName = `Hathor ${mailbox.label}${handlerName ? ` · ${handlerName}` : ""}`.replace(/["\\]/g, "");
+    const from = `"${displayName}" <${mailbox.address}>`;
+    const html = await (dependencies.render ?? renderPrivateEmail)(parsed, handlerName);
+    await query(`INSERT INTO "InboxMessage" (id, direction, status, sender, recipient, "correspondentName", subject, "bodyText", "bodyHtml", "requestFingerprint", "recordedBySession", "mailboxId")
+      VALUES ($1, 'OUTBOUND', 'PENDING', $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (id) DO NOTHING`,
+    [parsed.requestId, from, parsed.to, parsed.recipientName || null, parsed.subject, parsed.message, html, fingerprint, sessionId, parsed.mailboxId]);
     [stored] = await query<StoredEmail>(`SELECT * FROM "InboxMessage" WHERE id = $1 AND direction = 'OUTBOUND'`, [parsed.requestId]);
   }
   if (!stored || stored.requestFingerprint !== fingerprint || stored.recordedBySession !== sessionId) throw new PublicRequestError("This send request does not match the original message.", 409);
@@ -72,9 +84,11 @@ export async function sendPrivateEmail(input: z.infer<typeof privateEmailSendSch
     WHERE id = $1 AND status = 'PENDING' AND ("sendLeaseUntil" IS NULL OR "sendLeaseUntil" < NOW())
       AND "createdAt" > NOW() - INTERVAL '23 hours' RETURNING id`, [stored.id]);
   if (!lease.length) return { id: stored.id, status: "PENDING" };
+  const senderName = mailboxDisplayName(stored.sender);
+  const signatureName = senderName?.startsWith(`Hathor ${mailbox.label}`) ? senderName : "The Hathor team";
   const payload: DeliveryPayload = {
-    from: stored.sender, to: [stored.recipient], subject: stored.subject, html: stored.bodyHtml, reply_to: PRIVATE_EMAIL_REPLY_TO,
-    text: `${stored.correspondentName ? `Dear ${stored.correspondentName},` : "Hello,"}\n\n${stored.bodyText}\n\nWarm regards,\nThe Hathor team\n${PRIVATE_EMAIL_REPLY_TO}\n+20 127 049 6896`,
+    from: stored.sender, to: [stored.recipient], subject: stored.subject, html: stored.bodyHtml, reply_to: mailbox.address,
+    text: `${stored.correspondentName ? `Dear ${stored.correspondentName},` : "Hello,"}\n\n${stored.bodyText}\n\nWarm regards,\n${signatureName}\n${mailbox.address}\n+20 127 049 6896`,
   };
   let emailId: string;
   try { emailId = await (dependencies.deliver ?? deliverPrivateEmail)(payload, stored.id); }

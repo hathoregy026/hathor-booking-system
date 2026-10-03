@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { config } from "dotenv";
 import pg from "pg";
 import { resolveDatabaseUrl } from "../lib/database-config";
-import { fetchDashboardInbox, fetchInboxDetail, inboxQuerySchema, setInboxRead } from "../lib/dashboard-inbox";
+import { deleteDashboardEmail, fetchDashboardInbox, fetchInboxDetail, inboxQuerySchema, setInboxRead } from "../lib/dashboard-inbox";
 import type { bookingQuery } from "../lib/booking-database";
 
 async function main() {
@@ -17,6 +17,9 @@ async function main() {
   await client.connect();
   try {
     await client.query("BEGIN");
+    await client.query(`CREATE TEMP TABLE "DashboardEmailDeletion" (source TEXT, "messageId" TEXT, "deletedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (source, "messageId")) ON COMMIT DROP`);
+    await client.query(`CREATE TEMP TABLE "SiteSetting" (key TEXT PRIMARY KEY, value TEXT, "updatedAt" TIMESTAMP(3)) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "Booking" (
       id TEXT PRIMARY KEY, "customerName" TEXT, "firstName" TEXT, "lastName" TEXT
     ) ON COMMIT DROP`);
@@ -24,7 +27,7 @@ async function main() {
     await client.query(`CREATE TEMP TABLE "InboxMessage" (
       id TEXT PRIMARY KEY, "resendEmailId" TEXT, sender TEXT, recipient TEXT, subject TEXT, "bodyText" TEXT,
       attachments JSONB DEFAULT '[]'::jsonb, "createdAt" TIMESTAMP(3), "readAt" TIMESTAMP(3),
-      direction TEXT DEFAULT 'INBOUND', status TEXT DEFAULT 'RECEIVED', "correspondentName" TEXT
+      direction TEXT DEFAULT 'INBOUND', status TEXT DEFAULT 'RECEIVED', "correspondentName" TEXT, "mailboxId" TEXT DEFAULT 'reservations'
     ) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "BookingMessage" (
       id TEXT PRIMARY KEY, "bookingId" TEXT, direction TEXT, sender TEXT, recipient TEXT, subject TEXT, "bodyText" TEXT,
@@ -67,6 +70,14 @@ async function main() {
     assert.equal(await setInboxRead("booking", bookingId, false, query), true);
     assert.equal((await fetchDashboardInbox(inboxQuerySchema.parse({}), query)).unreadCount, 28);
     assert.equal(await setInboxRead("general", bookingId, true, query), false);
+    assert.equal((await fetchDashboardInbox(inboxQuerySchema.parse({ mailbox: "ceo" }), query)).messages.length, 0);
+    await client.query(`UPDATE pg_temp."InboxMessage" SET "mailboxId" = 'ceo' WHERE id = $1`, [general[0].id]);
+    const ceo = await fetchDashboardInbox(inboxQuerySchema.parse({ mailbox: "ceo" }), query);
+    assert.equal(ceo.messages.length, 1);
+    assert.equal(ceo.counts.unread, 1);
+    assert.equal(await deleteDashboardEmail("general", general[0].id, query), true);
+    assert.equal((await fetchDashboardInbox(inboxQuerySchema.parse({ mailbox: "ceo" }), query)).counts.all, 0);
+    assert.equal((await client.query(`SELECT id FROM pg_temp."InboxMessage" WHERE id = $1`, [general[0].id])).rows.length, 1);
     console.log("Inbox PostgreSQL tests passed: union, tied-timestamp pagination, literal search, detail binding, unread counts and read toggles. Only temporary synthetic tables used.");
   } finally {
     await client.query("ROLLBACK").catch(() => {});

@@ -222,7 +222,8 @@ model BookingMessage {
 
 model InboxMessage {
   id String @id @default(uuid())
-  resendEmailId String? @unique
+  resendEmailId String?
+  mailboxId String @default("reservations")
   direction String @default("INBOUND")
   status String @default("RECEIVED")
   sender String
@@ -240,6 +241,16 @@ model InboxMessage {
 
   @@index([createdAt, id])
   @@index([direction, createdAt, id])
+  @@index([mailboxId, createdAt, id])
+  @@unique([resendEmailId, mailboxId])
+}
+
+model DashboardEmailDeletion {
+  source String
+  messageId String
+  deletedAt DateTime @default(now())
+
+  @@id([source, messageId])
 }
 
 model ApiRateLimit {
