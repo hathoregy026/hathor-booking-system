@@ -68,4 +68,18 @@ export const ITALIAN_PAGES = {
     name: "Seneb Spa sul Nilo | Il benessere di Hathor Dahabiya",
     crumb: "Benessere",
   }),
+  highlights: page({
+    path: "/it/highlights",
+    title: "Crociera sul Nilo: cosa vedere | Templi tra Luxor e Assuan",
+    description:
+      "Le giornate a terra con Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e Philae, pensate come visite senza fretta, non come una lista da spuntare.",
+    name: "Crociera sul Nilo: cosa vedere | Templi tra Luxor e Assuan",
+    crumb: "Da non perdere",
+    image: {
+      url: "/media/hathor/r2/highlights-hero.webp",
+      width: 1920,
+      height: 1280,
+      alt: "I templi da non perdere in una crociera sul Nilo con Hathor Dahabiya",
+    },
+  }),
 } as const;

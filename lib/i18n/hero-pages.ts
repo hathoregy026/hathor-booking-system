@@ -17,6 +17,7 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
   about: { main: "Benvenuti a bordo", second: "Hathor Cruise" },
   contact: { main: "Ci contatti", second: "Per ogni domanda" },
   wellness: { main: "Un’oasi galleggiante", second: "Relax e allenamento" },
+  highlights: { main: "Crociera in dahabiya", second: "Da non perdere" },
 };
 
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {

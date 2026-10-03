@@ -14,6 +14,26 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  highlights: {
+    intro: [
+      "Si immerga nel fascino misterioso del Nilo a bordo della crociera Hathor Dahabiya, una crociera di lusso in dahabiya sul Nilo, in Egitto, che offre la più maestosa esperienza di navigazione egiziana, pensata per chi cerca eleganza, comfort e un ricco tocco di storia. Spazi privati: con 8 cabine e 4 suite in tutto, di cui 2 Royal, la nostra dahabiya Hathor garantisce la massima privacy insieme a un’ospitalità calda ed elegante, ed è la scelta perfetta per una crociera in dahabiya da Assuan a Luxor. Questa nave elegante scivola dolcemente lungo il fiume, per una navigazione rilassata che permette agli ospiti di godersi panorami sereni e scoprire tesori nascosti lontano dalla folla.",
+      "Con la gastronomia di Hathor, gli ospiti assaporano piatti preparati con maestria, in cui gli autentici sapori egiziani si fondono con la cucina internazionale, tutti preparati al momento da chef esperti. Si rilassi con un drink nei lounge bar mentre il cielo si accende dei colori mozzafiato del tramonto. Il nostro attento personale di bordo Le offrirà cura e ospitalità sincere per soddisfare ogni Sua esigenza. Non c’è dettaglio, per quanto piccolo, che venga trascurato. È questa la firma del lusso che solo una crociera in dahabiya sul Nilo, in Egitto, sa offrire.",
+    ],
+    landmarks: [
+      {
+        title: "L’Obelisco Incompiuto",
+        body: "L’Obelisco Incompiuto di Assuan, straordinario esempio dei monumenti dell’antico Egitto, ha più di 3.500 anni ed è stato abbandonato in una cava di pietra di Assuan. Questo obelisco della regina Hatshepsut è grande quasi un terzo in più di qualsiasi obelisco egizio portato a termine. Se fosse stato completato, avrebbe pesato circa 1.090 tonnellate e raggiunto quasi 42 metri di altezza. I lavori si interruppero quando nel granito comparvero delle crepe, mentre i costruttori lo ricavavano dalla roccia. Potente testimonianza del genio ingegneristico dell’antico Egitto, l’Obelisco Incompiuto racconta tecniche avanzate di taglio della pietra.",
+      },
+      {
+        title: "Il complesso del tempio funerario di Hatshepsut",
+        body: "Noto anche come Djeser-Djeseru, il complesso del tempio funerario di Hatshepsut sorge ai piedi delle falesie di Deir el-Bahari, sulla riva occidentale del Nilo. Il tempio fu costruito in onore di Hatshepsut e di Amon e si trova accanto al tempio funerario di Mentuhotep. I rilievi del tempio narrano la nascita divina di una donna faraone senza precedenti.",
+      },
+      {
+        title: "La Valle dei Re",
+        body: "La Valle dei Re è una magnifica necropoli in cui, a oggi, sono state portate alla luce 63 tombe. Si va da una semplice stanza a corridoi con 120 camere, e qui trovarono riposo faraoni come Ramses II, Tutankhamon e Seti I. La valle è stata al centro di numerose campagne archeologiche; nel 1979 è diventata Patrimonio mondiale dell’UNESCO.",
+      },
+    ],
+  },
   wellness: {
     heroSupport:
       "In un mondo che raramente si ferma, Hathor crea il tempo perché il corpo si distenda. La Seneb Spa, l’Historia Fitness e suite davvero riposanti La accompagnano tra Luxor e Assuan.",

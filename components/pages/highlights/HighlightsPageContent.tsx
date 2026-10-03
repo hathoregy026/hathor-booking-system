@@ -18,9 +18,10 @@ import {
   HIGHLIGHTS_JOURNEY_LINKS,
   HIGHLIGHTS_LANDMARK_META,
   HIGHLIGHTS_MANIFESTO,
-  HIGHLIGHTS_PRINCIPLES,
   layoutHighlightsIntro,
 } from "@/lib/highlights-content";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { HIGHLIGHTS_COPY } from "@/lib/i18n/highlights-copy";
 import { HIGHLIGHTS_PAGE } from "@/lib/page-content";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
@@ -123,65 +124,25 @@ function Scene({
   );
 }
 
+/* Three beats of life aboard; words come from HIGHLIGHTS_COPY.life, in this order. */
 const LIFE_ABOARD = [
-  {
-    number: "01",
-    count: "Taste",
-    title: "Dining",
-    text: "Egyptian flavours and international craft: breakfast light, lunches that linger, candlelit dinners under the stars.",
-    slot: "gastronomy-restaurant",
-  },
-  {
-    number: "02",
-    count: "Rest",
-    title: "Suite",
-    text: "Cabins and royal suites composed for Nile light: private quarters after every day of discovery.",
-    slot: "room-royal",
-  },
-  {
-    number: "03",
-    count: "Air",
-    title: "Deck",
-    text: "Sun, soft current, and the quiet theatre of the river: a sanctuary waiting after every shore.",
-    slot: "highlights-lifestyle",
-  },
+  { number: "01", slot: "gastronomy-restaurant" },
+  { number: "02", slot: "room-royal" },
+  { number: "03", slot: "highlights-lifestyle" },
 ] as const;
 
-const RIVER_RHYTHM = [
-  {
-    number: "01",
-    word: "Dawn",
-    label: "Silver water",
-    value: "The Nile wakes slowly. Mist lifts from the banks while coffee finds the softest corner of the deck.",
-    meta: "First light",
-  },
-  {
-    number: "02",
-    word: "Noon",
-    label: "Heat held away",
-    value: "Shade, cool interiors, and unhurried passage between temples and quiet villages.",
-    meta: "Midday",
-  },
-  {
-    number: "03",
-    word: "Gold",
-    label: "Stone warmed",
-    value: "Landmarks catch amber light. The river turns copper. Time stretches.",
-    meta: "Golden hour",
-  },
-  {
-    number: "04",
-    word: "Night",
-    label: "Lanterns",
-    value: "When the shore dissolves, Hathor becomes a sealed world of soft music and slow conversation.",
-    meta: "After dark",
-  },
-] as const;
+/* Dawn to night; words come from HIGHLIGHTS_COPY.rhythm, in this order. */
+const RIVER_RHYTHM = ["01", "02", "03", "04"] as const;
+
+/* Section anchors; labels come from HIGHLIGHTS_COPY.nav, in this order. */
+const SECTIONS = ["#highlights", "#landmarks", "#aboard", "#reserve"] as const;
 
 export function HighlightsPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const t = HIGHLIGHTS_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const highlights = pages.highlights;
   const typography = useTypographySettings();
@@ -194,10 +155,11 @@ export function HighlightsPageContent() {
   useHighlightsEditorialScroll({ rootRef, runRef, trackRef });
 
   const introLayout = layoutHighlightsIntro(highlights.intro);
-  const pullQuote = extractHighlightsPullQuote(highlights.intro);
+  const introLead = t.intro?.lead ?? introLayout.lead;
+  const pullQuote = t.intro?.quote ?? extractHighlightsPullQuote(highlights.intro);
   const collageCopy =
-    introLayout.groups.flat().slice(0, 2).join(" ") ||
-    HIGHLIGHTS_PAGE.intro[1];
+    t.intro?.collage ??
+    (introLayout.groups.flat().slice(0, 2).join(" ") || HIGHLIGHTS_PAGE.intro[1]);
 
   const landmarks = highlights.landmarks.map((landmark, index) => {
     const meta = HIGHLIGHTS_LANDMARK_META[index]!;
@@ -205,6 +167,7 @@ export function HighlightsPageContent() {
     return {
       ...landmark,
       meta,
+      words: t.landmarks[index],
       tone: tones[index] ?? "cream",
       number: String(index + 1).padStart(2, "0"),
     };
@@ -220,7 +183,7 @@ export function HighlightsPageContent() {
         <section
           ref={runRef}
           className="hl-run"
-          aria-label="Hathor cruise highlights"
+          aria-label={t.runLabel}
         >
           <div className="hl-stage">
             <div ref={trackRef} className="hl-track">
@@ -228,12 +191,13 @@ export function HighlightsPageContent() {
               <Scene className="hl-intro">
                 <nav
                   className="hl-intro__nav"
-                  aria-label="Highlights page sections"
+                  aria-label={t.navLabel}
                 >
-                  <a href="#highlights">Highlights</a>
-                  <a href="#landmarks">Landmarks</a>
-                  <a href="#aboard">Aboard</a>
-                  <a href="#reserve">Reserve</a>
+                  {SECTIONS.map((href, index) => (
+                    <a key={href} href={href}>
+                      {t.nav[index]}
+                    </a>
+                  ))}
                 </nav>
 
                 <div className="hl-intro__text">
@@ -257,14 +221,14 @@ export function HighlightsPageContent() {
                   </div>
 
                   <p className="hl-intro__body wt-page-body">
-                    {introLayout.lead}
+                    {introLead}
                   </p>
                 </div>
 
                 <div className="hl-intro__hero">
                   <HighlightsMedia
                     slot="highlights-lifestyle"
-                    alt="Guests aboard the Hathor Dahabiya"
+                    alt={t.alts.guests}
                     priority
                     className="hl-intro__portrait"
                     ratio="3 / 4"
@@ -279,7 +243,7 @@ export function HighlightsPageContent() {
                   </p>
                   <p className="hl-intro__scroll">
                     <i />
-                    Scroll
+                    {t.scroll}
                   </p>
                 </div>
               </Scene>
@@ -288,7 +252,7 @@ export function HighlightsPageContent() {
               <Scene className="hl-lead">
                 <HighlightsMedia
                   slot="highlights-hero"
-                  alt="Hathor Dahabiya highlights on the Nile"
+                  alt={t.alts.lead}
                   className="hl-lead__main"
                   ratio="16 / 10"
                   objectPosition="50% 42%"
@@ -299,10 +263,10 @@ export function HighlightsPageContent() {
                   ratio="835 / 557"
                   front="landmark-hatshepsut"
                   back="landmark-obelisk"
-                  frontAlt="Temple of Hatshepsut"
-                  backAlt="Unfinished Obelisk, Aswan"
+                  frontAlt={t.alts.hatshepsut}
+                  backAlt={t.alts.obelisk}
                 />
-                <p className="hl-lead__caption">Nile · Luxor — Aswan</p>
+                <p className="hl-lead__caption">{t.leadCaption}</p>
               </Scene>
 
               {/* 03 — Manifesto */}
@@ -313,13 +277,13 @@ export function HighlightsPageContent() {
                 <div className="hl-manifesto__headline" data-anima-title>
                   <h2 className="hl-edit hl-edit--xl">
                     <span className="hl-line">
-                      <AnimaSplitLine line={0}>First light</AnimaSplitLine>
+                      <AnimaSplitLine line={0}>{t.manifesto[0]}</AnimaSplitLine>
                     </span>
                     <span className="hl-line">
-                      <AnimaSplitLine line={1}>Cruise in true elegance</AnimaSplitLine>
+                      <AnimaSplitLine line={1}>{t.manifesto[1]}</AnimaSplitLine>
                     </span>
                     <span className="hl-line hl-line--indent">
-                      <AnimaSplitLine line={2}>on the Nile</AnimaSplitLine>
+                      <AnimaSplitLine line={2}>{t.manifesto[2]}</AnimaSplitLine>
                     </span>
                   </h2>
                 </div>
@@ -333,8 +297,8 @@ export function HighlightsPageContent() {
                   ratio="668 / 554"
                   front="charter-rhythm"
                   back="charter-privacy"
-                  frontAlt="River rhythm aboard Hathor"
-                  backAlt="Private deck living"
+                  frontAlt={t.alts.rhythm}
+                  backAlt={t.alts.deck}
                 />
                 <FlipImage
                   className="hl-collage__tile hl-collage__tile--two"
@@ -342,64 +306,58 @@ export function HighlightsPageContent() {
                   ratio="1090 / 960"
                   front="landmark-obelisk"
                   back="highlights-lifestyle"
-                  frontAlt="Unfinished Obelisk, Aswan"
-                  backAlt="Life aboard Hathor"
+                  frontAlt={t.alts.obelisk}
+                  backAlt={t.alts.life}
                 />
                 <p className="hl-collage__copy hl-meta-copy">{collageCopy}</p>
               </Scene>
 
               {/* 05 — Shore slides: three landmark frames wipe as the scene travels */}
-              <Scene className="hl-slides" aria-label="Shore landmarks">
+              <Scene className="hl-slides" aria-label={t.slidesLabel}>
                 <div className="hl-slides__copy">
-                  <p className="hl-display hl-display--l">Ashore</p>
-                  <p className="hl-meta-copy">
-                    Three shores — the voyage is paced by stone: quarry, terrace,
-                    and valley — each revealed as the river gives it up.
-                  </p>
+                  <p className="hl-display hl-display--l">{t.ashore}</p>
+                  <p className="hl-meta-copy">{t.ashoreBody}</p>
                 </div>
                 <div className="hl-slides__stage">
                   <HighlightsMedia
                     slot="landmark-obelisk"
-                    alt="Unfinished Obelisk quarry, Aswan"
+                    alt={t.landmarks[0].caption}
                     className="hl-slides__layer hl-slides__layer--0"
                     ratio="4 / 5"
                     objectPosition="50% 45%"
                   />
                   <HighlightsMedia
                     slot="landmark-hatshepsut"
-                    alt="Mortuary Temple of Hatshepsut"
+                    alt={t.landmarks[1].caption}
                     className="hl-slides__layer hl-slides__layer--1"
                     ratio="4 / 5"
                     objectPosition="50% 40%"
                   />
                   <HighlightsMedia
                     slot="landmark-valley-kings"
-                    alt="Valley of the Kings, Luxor"
+                    alt={t.landmarks[2].caption}
                     className="hl-slides__layer hl-slides__layer--2"
                     ratio="4 / 5"
                     objectPosition="50% 50%"
                   />
                 </div>
                 <ol className="hl-slides__index">
-                  <li>Obelisk</li>
-                  <li>Hatshepsut</li>
-                  <li>Valley</li>
+                  <li>{t.slidesIndex[0]}</li>
+                  <li>{t.slidesIndex[1]}</li>
+                  <li>{t.slidesIndex[2]}</li>
                 </ol>
               </Scene>
 
               {/* 06 — Numbered principles (manifesto pillars) */}
               <Scene className="hl-principles" id="pillars">
                 <div className="hl-principles__head">
-                  <p className="hl-display hl-display--l">Three notes</p>
-                  <p className="hl-meta-copy">
-                    The river, the landmarks, and the return — the grammar of a
-                    Hathor voyage.
-                  </p>
+                  <p className="hl-display hl-display--l">{t.notesTitle}</p>
+                  <p className="hl-meta-copy">{t.notesBody}</p>
                 </div>
 
                 <ol className="hl-principles__list">
                   {HIGHLIGHTS_MANIFESTO.map((item, index) => {
-                    const principle = HIGHLIGHTS_PRINCIPLES[index];
+                    const note = t.notes[index] ?? { title: item.title, body: item.body };
                     const peekSlots = [
                       "highlights-lifestyle",
                       "landmark-hatshepsut",
@@ -411,17 +369,15 @@ export function HighlightsPageContent() {
                           {String(index + 1).padStart(2, "0")}
                         </span>
                         <h3 className="hl-principle__word hl-display">
-                          {item.title}
+                          {note.title}
                         </h3>
                         <p className="hl-principle__count hl-edit">
                           {item.numeral}
                         </p>
-                        <p className="hl-principle__copy">
-                          {principle?.body ?? item.body}
-                        </p>
+                        <p className="hl-principle__copy">{note.body}</p>
                         <HighlightsMedia
                           slot={peekSlots[index] ?? "highlights-lifestyle"}
-                          alt={`${item.title} aboard Hathor`}
+                          alt={t.noteAlt(note.title)}
                           className="hl-principle__peek"
                           ratio="4 / 5"
                         />
@@ -445,7 +401,7 @@ export function HighlightsPageContent() {
                   <div className="hl-card__frame">
                     <HighlightsMedia
                       slot={landmark.meta.slot}
-                      alt={landmark.meta.caption}
+                      alt={landmark.words?.caption ?? landmark.meta.caption}
                       className="hl-card__media"
                       ratio="1279 / 820"
                       objectPosition={landmark.meta.objectPosition}
@@ -453,25 +409,17 @@ export function HighlightsPageContent() {
 
                     <div className="hl-card__plate">
                       <span className="hl-card__corner hl-card__corner--tl hl-edit">
-                        {landmark.meta.category}
+                        {landmark.words?.category ?? landmark.meta.category}
                       </span>
                       <span className="hl-card__corner hl-card__corner--tr">
-                        {landmark.meta.location}
+                        {landmark.words?.location ?? landmark.meta.location}
                       </span>
 
                       <h2
                         className="hl-card__title hl-display"
                         data-anima-title
                       >
-                        {
-                          (
-                            [
-                              "Obelisk",
-                              "Hatshepsut",
-                              "Valley",
-                            ] as const
-                          )[Number(landmark.number) - 1] ?? landmark.title
-                        }
+                        {landmark.words?.title ?? landmark.title}
                       </h2>
 
                       <span className="hl-card__corner hl-card__corner--bl">
@@ -481,7 +429,7 @@ export function HighlightsPageContent() {
                         className="hl-btn hl-card__corner hl-card__corner--br"
                         href="#reserve"
                       >
-                        <span>The voyage</span>
+                        <span>{t.theVoyage}</span>
                       </a>
                     </div>
                   </div>
@@ -491,8 +439,8 @@ export function HighlightsPageContent() {
               {/* 08 — Life aboard: three staggered beats */}
               <Scene className="hl-aboard" id="aboard">
                 <div className="hl-aboard__head">
-                  <h2 className="hl-edit hl-edit--l">Life aboard</h2>
-                  <p className="hl-meta-copy">The return each day</p>
+                  <h2 className="hl-edit hl-edit--l">{t.aboardTitle}</h2>
+                  <p className="hl-meta-copy">{t.aboardBody}</p>
                 </div>
                 <div className="hl-aboard__row">
                   {LIFE_ABOARD.map((item, index) => {
@@ -503,6 +451,7 @@ export function HighlightsPageContent() {
                     ] as const;
                     const axes = ["left", "up", "right"] as const;
                     const axis = axes[index] ?? "left";
+                    const beat = t.life[index];
                     return (
                       <article className="hl-aboard__item" key={item.number}>
                         <FlipImage
@@ -511,45 +460,46 @@ export function HighlightsPageContent() {
                           ratio="4 / 5"
                           front={item.slot}
                           back={backs[index] ?? "charter-privacy"}
-                          frontAlt={`${item.title} aboard Hathor`}
+                          frontAlt={t.aboardAlt(beat.title)}
+                          backAlt={t.aboardBackAlts?.[index]}
                         />
                         <span className="hl-aboard__num">{item.number}</span>
                         <h3 className="hl-aboard__title hl-display">
-                          {item.title}
+                          {beat.title}
                         </h3>
-                        <p className="hl-aboard__copy">{item.text}</p>
+                        <p className="hl-aboard__copy">{beat.text}</p>
                       </article>
                     );
                   })}
                 </div>
-                <Link href="/gastronomy" className="hl-btn">
-                  <span>Explore dining</span>
+                <Link href={localHref("/gastronomy")} className="hl-btn">
+                  <span>{t.exploreDining}</span>
                 </Link>
               </Scene>
 
               {/* 08 — River rhythm ledger */}
               <Scene className="hl-principles" id="rhythm">
                 <div className="hl-principles__head">
-                  <p className="hl-display hl-display--l">River rhythm</p>
-                  <p className="hl-meta-copy">
-                    Light changes. The day answers — dawn to night aboard
-                    Hathor.
-                  </p>
+                  <p className="hl-display hl-display--l">{t.rhythmTitle}</p>
+                  <p className="hl-meta-copy">{t.rhythmBody}</p>
                 </div>
 
                 <ol className="hl-principles__list">
-                  {RIVER_RHYTHM.map((item) => (
-                    <li className="hl-principle" key={item.number}>
-                      <span className="hl-principle__num">{item.number}</span>
-                      <h3 className="hl-principle__word hl-display">
-                        {item.word}
-                      </h3>
-                      <p className="hl-principle__count hl-edit">{item.meta}</p>
-                      <p className="hl-principle__copy">
-                        {item.label}. {item.value}
-                      </p>
-                    </li>
-                  ))}
+                  {RIVER_RHYTHM.map((number, index) => {
+                    const item = t.rhythm[index];
+                    return (
+                      <li className="hl-principle" key={number}>
+                        <span className="hl-principle__num">{number}</span>
+                        <h3 className="hl-principle__word hl-display">
+                          {item.word}
+                        </h3>
+                        <p className="hl-principle__count hl-edit">{item.meta}</p>
+                        <p className="hl-principle__copy">
+                          {item.label}. {item.value}
+                        </p>
+                      </li>
+                    );
+                  })}
                 </ol>
               </Scene>
 
@@ -561,12 +511,12 @@ export function HighlightsPageContent() {
                   ratio="1483 / 960"
                   front="landmark-hatshepsut"
                   back="highlights-hero"
-                  frontAlt="Sailing the Nile aboard Hathor"
-                  backAlt="Sunset aboard Hathor"
+                  frontAlt={t.alts.sailing}
+                  backAlt={t.alts.sunset}
                 />
                 <div className="hl-closing__copy">
                   <p className="hl-display hl-display--l wt-page-title">
-                    Sail with Hathor
+                    {t.closing}
                   </p>
                 </div>
               </Scene>
@@ -579,10 +529,10 @@ export function HighlightsPageContent() {
           <header className="hl-epilogue__head">
             <h2 className="hl-display hl-display--xl" data-anima-title>
               <span className="hl-line">
-                <AnimaSplitLine line={0}>Continue the</AnimaSplitLine>
+                <AnimaSplitLine line={0}>{t.epilogue[0]}</AnimaSplitLine>
               </span>
               <span className="hl-line hl-line--indent">
-                <AnimaSplitLine line={1}>voyage</AnimaSplitLine>
+                <AnimaSplitLine line={1}>{t.epilogue[1]}</AnimaSplitLine>
               </span>
             </h2>
           </header>
@@ -590,38 +540,35 @@ export function HighlightsPageContent() {
           <div className="hl-epilogue__pair">
             <HighlightsMedia
               slot="landmark-valley-kings"
-              alt="Valley of the Kings"
+              alt={t.alts.valley}
               ratio="668 / 554"
             />
             <HighlightsMedia
               slot="room-royal"
-              alt="Royal suite aboard Hathor"
+              alt={t.alts.royal}
               ratio="668 / 720"
             />
           </div>
 
           <div className="hl-epilogue__board">
             <div className="hl-epilogue__statement">
-              <p className="hl-edit hl-edit--l">
-                Reserve a scheduled sailing, or charter the entire Dahabiya for
-                your party alone.
-              </p>
+              <p className="hl-edit hl-edit--l">{t.statement}</p>
               <div className="hl-epilogue__pills">
                 <BookNowTrigger className="hl-btn hl-btn--solid">
-                  <span>Book Now</span>
+                  <span>{t.bookNow}</span>
                 </BookNowTrigger>
-                <Link href="/charter" className="hl-btn">
-                  <span>Private charter</span>
+                <Link href={localHref("/charter")} className="hl-btn">
+                  <span>{t.privateCharter}</span>
                 </Link>
               </div>
               <ul className="hl-epilogue__journey">
-                {HIGHLIGHTS_JOURNEY_LINKS.map((link) => (
+                {HIGHLIGHTS_JOURNEY_LINKS.map((link, index) => (
                   <li key={link.href + link.label}>
-                    <Link className="hl-link" href={link.href}>
-                      {link.label}
+                    <Link className="hl-link" href={localHref(link.href)}>
+                      {t.journeys[index]?.label ?? link.label}
                     </Link>
                     {" — "}
-                    {link.body}
+                    {t.journeys[index]?.body ?? link.body}
                   </li>
                 ))}
               </ul>
@@ -630,19 +577,19 @@ export function HighlightsPageContent() {
             <aside className="hl-epilogue__card">
               <HighlightsMedia
                 slot="highlights-hero"
-                alt="Hathor Dahabiya on the Nile"
+                alt={t.alts.card}
                 className="hl-epilogue__card-media"
                 ratio="356 / 460"
               />
-              <h3 className="hl-display">Nile voyage</h3>
+              <h3 className="hl-display">{t.cardTitle}</h3>
               <p className="hl-epilogue__card-body">
-                Ancient landmarks
+                {t.cardBody[0]}
                 <br />
-                private river living
+                {t.cardBody[1]}
               </p>
               <div className="hl-epilogue__card-links">
-                <Link className="hl-link" href="/cruises-list">
-                  Explore cruises
+                <Link className="hl-link" href={localHref("/cruises-list")}>
+                  {t.exploreCruises}
                 </Link>
                 <a
                   className="hl-link"
