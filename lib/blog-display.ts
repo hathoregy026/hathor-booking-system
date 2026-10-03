@@ -50,9 +50,10 @@ export function serializeBlogPostDetail(post: {
   };
 }
 
-export function formatBlogPublishedDate(value: string | Date): string {
+/** `dateLocale` is an Intl locale ("en-US", the default, or "it-IT"). */
+export function formatBlogPublishedDate(value: string | Date, dateLocale = "en-US"): string {
   const date = value instanceof Date ? value : new Date(value);
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(dateLocale, {
     month: "long",
     day: "numeric",
     year: "numeric",

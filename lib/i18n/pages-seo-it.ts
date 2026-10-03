@@ -98,4 +98,18 @@ export const ITALIAN_PAGES = {
     name: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
     crumb: "Termini e condizioni",
   }),
+  blogs: page({
+    path: "/it/blogs",
+    title: "Blog crociera di lusso sul Nilo | Consigli e storie in dahabiya",
+    description:
+      "Consigli e storie per una crociera di lusso sul Nilo in Egitto: quando partire in dahabiya, i templi di Luxor e Assuan, cosa mettere in valigia, le cabine e il ritmo lento dei viaggi Hathor.",
+    name: "Blog crociera di lusso sul Nilo | Consigli e storie in dahabiya",
+    crumb: "Journal",
+    image: {
+      url: "/media/hathor/r2/blog-hero.webp",
+      width: 1920,
+      height: 1280,
+      alt: "Le storie del journal di Hathor dal Nilo, in Egitto",
+    },
+  }),
 } as const;

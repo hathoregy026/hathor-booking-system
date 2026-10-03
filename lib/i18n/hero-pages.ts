@@ -19,6 +19,7 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
   wellness: { main: "Un’oasi galleggiante", second: "Relax e allenamento" },
   highlights: { main: "Crociera in dahabiya", second: "Da non perdere" },
   partners: { main: "I nostri partner", second: "Fiducia nel mondo" },
+  blog: { main: "Navighi", second: "sul Nilo" },
 };
 
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {

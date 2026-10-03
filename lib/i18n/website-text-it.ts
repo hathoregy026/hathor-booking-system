@@ -14,6 +14,10 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  blog: {
+    intro:
+      "Il Suo viaggio in Egitto con Hathor Dahabiya, una finestra sull’anima del Nilo. Condividiamo storie di monumenti senza tempo, meraviglie antiche e viaggi lenti. Dalla cultura ai consigli di viaggio, scopra l’arte di navigare con una crociera di lusso in dahabiya sul Nilo, in Egitto. Lasci che ogni articolo ispiri la Sua prossima avventura a bordo di Hathor Dahabiya.",
+  },
   partners: {
     lead: "Navighiamo con nomi di fiducia del viaggio e dell’ospitalità: partner che condividono la nostra cura per il Nilo e per i nostri ospiti.",
   },
