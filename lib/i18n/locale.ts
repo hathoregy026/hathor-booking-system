@@ -27,7 +27,13 @@ export const PUBLIC_LOCALE_HTML_LANG: Record<PublicLocale, string> = {
  * address that does not exist and no half-translated page is reachable.
  */
 export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
-  it: ["/"],
+  it: [
+    "/",
+    "/voyages",
+    "/voyages/luxor-to-aswan",
+    "/voyages/aswan-to-luxor",
+    "/voyages/luxor-aswan-luxor",
+  ],
 };
 
 /**

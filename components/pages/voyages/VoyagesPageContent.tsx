@@ -17,6 +17,9 @@ import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useVoyagesEditorialFlow } from "@/hooks/useVoyagesEditorialFlow";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { localizedHref } from "@/lib/i18n/locale";
+import { VOYAGES_COPY } from "@/lib/i18n/voyages-copy";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
@@ -207,6 +210,9 @@ export function VoyagesPageContent({
   const itineraries = voyages.slice(0, 4);
   const { pages } = useWebsiteText();
   const copy = pages.voyages;
+  const locale = usePublicLocale();
+  const t = VOYAGES_COPY[locale];
+  const localHref = (href: string) => localizedHref(href, locale);
   const typography = useTypographySettings();
   const hero = resolveHeroPageCopy(typography, "voyages");
   const heroTitleLines =
@@ -243,7 +249,7 @@ export function VoyagesPageContent({
       <div className="vb-progress" aria-hidden="true"><i data-vb-progress /></div>
 
       <main>
-        <section ref={runRef} className="vb-run" aria-label="Hathor voyages">
+        <section ref={runRef} className="vb-run" aria-label={t.runLabel}>
           <div className="vb-stage">
             <div ref={trackRef} className="vb-track">
               <Scene className="vb-intro" id="voyages">
@@ -276,16 +282,16 @@ export function VoyagesPageContent({
                   axis="left"
                   front="cruises-hero"
                   back="about-hero"
-                  frontAlt="Hathor at golden hour"
-                  backAlt="Hathor sailing the Nile"
+                  frontAlt={t.alts.goldenHour}
+                  backAlt={t.alts.sailing}
                 />
                 <Flip
                   className="vb-principal__small"
                   axis="up"
                   front="highlights-lifestyle"
                   back="home-story-way-of-life"
-                  frontAlt="Life on deck"
-                  backAlt="Quiet life aboard Hathor"
+                  frontAlt={t.alts.deckLife}
+                  backAlt={t.alts.quietLife}
                 />
               </Scene>
 
@@ -310,16 +316,16 @@ export function VoyagesPageContent({
                   axis="right"
                   front="gastronomy-table"
                   back="gastronomy-restaurant"
-                  frontAlt="A table prepared aboard Hathor"
-                  backAlt="Hathor restaurant"
+                  frontAlt={t.alts.table}
+                  backAlt={t.alts.restaurant}
                 />
                 <Flip
                   className="vb-image-story__portrait"
                   axis="up"
                   front="room-suite"
                   back="room-royal"
-                  frontAlt="A Hathor suite"
-                  backAlt="The Royal Suite"
+                  frontAlt={t.alts.suite}
+                  backAlt={t.alts.royalSuite}
                 />
                 <div className="vb-image-story__script">
                   {resolveCmsText(
@@ -356,16 +362,16 @@ export function VoyagesPageContent({
                   axis="left"
                   front="home-story-craft-large"
                   back="home-story-legacy-large"
-                  frontAlt="The craft of Hathor"
-                  backAlt="The Nile landscape"
+                  frontAlt={t.alts.craft}
+                  backAlt={t.alts.landscape}
                 />
                 <Flip
                   className="vb-secondary__landscape"
                   axis="up"
                   front="home-split-courtyard"
                   back="home-cinematic-still"
-                  frontAlt="The river from Hathor"
-                  backAlt="A suite aboard Hathor"
+                  frontAlt={t.alts.river}
+                  backAlt={t.alts.suiteAboard}
                 />
               </Scene>
 
@@ -393,7 +399,7 @@ export function VoyagesPageContent({
                       <VoyageMedia
                         key={slot}
                         slot={slot}
-                        alt=""
+                        alt={t.slotAlt(slot)}
                         className={`vb-follow__image${active === index ? " is-active" : ""}`}
                       />
                     ))}
@@ -447,7 +453,7 @@ export function VoyagesPageContent({
                       <div className="vb-project__media-wrap">
                         <VoyageMedia
                           slot={voyage.imageName}
-                          alt={voyage.name}
+                          alt={t.voyageName(voyage.slug, voyage.name)}
                           className="vb-project__media"
                           fit="contain"
                         />
@@ -487,11 +493,11 @@ export function VoyagesPageContent({
                       {body ? <p className="vb-project__body wt-page-body">{body}</p> : null}
                       <Link
                         className="vb-project__link"
-                        href={
+                        href={localHref(
                           voyage.slug === "nile-majesty"
                             ? panel.detailsHref
-                            : (nonCharterDetailsHref ?? panel.detailsHref)
-                        }
+                            : (nonCharterDetailsHref ?? panel.detailsHref),
+                        )}
                       >
                         {detailsLabel}<span>↗</span>
                       </Link>
@@ -523,7 +529,7 @@ export function VoyagesPageContent({
                       VOYAGES_PAGE.charter.body,
                     )}
                   </p>
-                  <Link className="vb-charter__link" href={VOYAGES_PAGE.charter.cta.href}>
+                  <Link className="vb-charter__link" href={localHref(VOYAGES_PAGE.charter.cta.href)}>
                     {resolveCmsText(
                       copy.charterCta,
                       VOYAGES_PAGE.charter.cta.label,
@@ -536,8 +542,8 @@ export function VoyagesPageContent({
                   axis="right"
                   front="charter-hero"
                   back="home-call-to-action"
-                  frontAlt="Hathor private charter"
-                  backAlt="The Nile at golden hour"
+                  frontAlt={t.alts.charter}
+                  backAlt={t.alts.nileGoldenHour}
                   fit="contain"
                 />
               </Scene>
@@ -561,7 +567,7 @@ export function VoyagesPageContent({
             </BookNowTrigger>
             <Link
               className="vb-reserve__secondary public-btn-outline-gold"
-              href={VOYAGES_PAGE.cta.secondary.href}
+              href={localHref(VOYAGES_PAGE.cta.secondary.href)}
             >
               {resolveCmsText(
                 copy.ctaSecondary,
