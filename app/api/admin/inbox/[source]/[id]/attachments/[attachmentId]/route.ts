@@ -9,7 +9,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ sou
   try {
     await assertInboxAdmin(request);
     const { id, attachmentId } = z.object({ source: z.literal("general"), id: z.uuid(), attachmentId: z.uuid() }).parse(await context.params);
-    const [message] = await bookingQuery<{ resendEmailId: string; attachments: BookingAttachment[] }>(`SELECT "resendEmailId", attachments FROM "InboxMessage" WHERE id = $1`, [id]);
+    const [message] = await bookingQuery<{ resendEmailId: string; attachments: BookingAttachment[] }>(`SELECT "resendEmailId", attachments FROM "InboxMessage" WHERE id = $1 AND direction = 'INBOUND'`, [id]);
     if (!message?.attachments.some(file => file.id === attachmentId)) return NextResponse.json({ error: "Not found" }, { status: 404, headers: inboxHeaders });
     const emailId = z.uuid().parse(message.resendEmailId);
     const result = z.object({ download_url: z.url() }).parse(await resendApiRequest(`/emails/receiving/${emailId}/attachments/${attachmentId}`));

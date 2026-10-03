@@ -2,21 +2,30 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { ArrowLeft, Inbox, Paperclip, RefreshCw, Search } from "lucide-react";
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, Inbox, Mail, Paperclip, Plus, RefreshCw, Search } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
-import { DASHBOARD_INBOX_ADDRESS, type InboxDetail, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
+import { EmailComposer, type EmailDraft } from "@/components/admin/EmailComposer";
+import { correspondentInitials, correspondentLabel } from "@/lib/email-correspondent";
+import { DASHBOARD_INBOX_ADDRESS, type InboxCounts, type InboxDetail, type InboxFilter, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
 
 const messageTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Cairo", dateStyle: "medium", timeStyle: "short" });
 const keyOf = (message: { source: InboxSource; id: string }) => `${message.source}/${message.id}`;
+const filters: { value: InboxFilter; label: string }[] = [{ value: "all", label: "All emails" }, { value: "unread", label: "Unread" }, { value: "received", label: "Received" }, { value: "sent", label: "Sent" }];
+const toneOf = (message: InboxSummary) => message.direction === "OUTBOUND" ? "sent" : message.readAt ? "received" : "unread";
+const contactOf = (message: InboxSummary) => message.direction === "OUTBOUND" ? message.recipient : message.sender;
+const statusOf = (message: InboxSummary) => message.direction !== "OUTBOUND" ? message.readAt ? "Received" : "Unread" : message.status === "SENT" ? "Sent" : message.status === "FAILED" ? "Not sent" : "Sending unconfirmed";
 
 export function DashboardInbox() {
   const [messages, setMessages] = useState<InboxSummary[]>([]);
   const [unread, setUnread] = useState(0);
+  const [counts, setCounts] = useState<InboxCounts>({ all: 0, unread: 0, received: 0, sent: 0 });
+  const [draft, setDraft] = useState<(EmailDraft & { key: string }) | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [hasOlder, setHasOlder] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState<InboxFilter>("all");
   const [selected, setSelected] = useState<string | null>(null);
   const [detail, setDetail] = useState<InboxDetail | null>(null);
   const [detailError, setDetailError] = useState<string | null>(null);
@@ -49,6 +58,7 @@ export function DashboardInbox() {
         setMessages(current => cursor ? [...current, ...data.messages].filter((message, index, all) => all.findIndex(item => keyOf(item) === keyOf(message)) === index) : data.messages);
         setHasOlder(data.hasOlder);
         setUnread(data.unreadCount);
+        setCounts(data.counts ?? { all: data.messages.length, unread: data.unreadCount, received: data.messages.length, sent: 0 });
       } catch { if (!controller.signal.aborted) setError("Emails could not be loaded. Refresh to try again."); }
       finally { if (!controller.signal.aborted) setBusy(false); }
     }
@@ -80,7 +90,7 @@ export function DashboardInbox() {
   }, [selected]);
 
   async function markRead() {
-    if (!detail || marking) return;
+    if (!detail || detail.direction === "OUTBOUND" || marking) return;
     const currentKey = keyOf(detail);
     const read = !detail.readAt;
     setMarking(true);
@@ -104,69 +114,92 @@ export function DashboardInbox() {
     setVersion(current => current + 1);
   }
 
+  function compose(initial: EmailDraft = { to: "", recipientName: "", subject: "" }) {
+    if (draft) return;
+    selectMessage(null);
+    setNotice(null);
+    setDraft({ ...initial, key: crypto.randomUUID() });
+  }
+
+  function sent(id: string) {
+    setDraft(null);
+    setSearch("");
+    setQuery("");
+    setFilter("sent");
+    selectMessage(`general/${id}`);
+    setNotice("Your email was accepted by Resend. Find this request in Sent; delivery has not yet been confirmed.");
+    refresh();
+  }
+
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-start justify-between gap-4">
+    <div className="emails-page">
+      <header className="emails-page__header">
         <div>
+          <p className="emails-eyebrow">Hathor correspondence</p>
           <h1 className="admin-page-title">Emails</h1>
-          <p className="admin-page-subtitle">Customer emails and booking replies, together in your dashboard.</p>
-          <p className="mt-2 text-sm text-muted" aria-live="polite">{unread} unread · Times shown in Cairo</p>
+          <p className="admin-page-subtitle">Guest conversations and personal messages, in one place.</p>
+          <p className="emails-page__caption" aria-live="polite">{unread} unread · Times shown in Cairo</p>
         </div>
+        <div className="emails-page__actions">
         <button type="button" className="btn-outline" onClick={refresh} disabled={busy}>
-          <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden />Refresh emails
+          <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden /><span>Refresh emails</span>
         </button>
+        <button type="button" className="btn-primary" onClick={() => compose()} disabled={Boolean(draft)}><Plus size={17} aria-hidden />Send new email</button>
+        </div>
       </header>
-      <details className="text-sm text-muted">
-        <summary className="cursor-pointer">Receiving address & mailbox setup</summary>
-        <p className="mt-2 max-w-3xl break-words leading-relaxed">Booking replies arrive automatically through your reply address. To include new emails sent directly to reservations@hathorcruise.com, configure Bluehost to forward a copy to {DASHBOARD_INBOX_ADDRESS}, keeping the original in your mailbox. Existing mailbox history is not imported. Do not change your main domain’s MX records.</p>
-      </details>
+      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} onClick={() => { setCursor(null); setFilter(item.value); selectMessage(null); }}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
       <form onSubmit={submitSearch} className="dashboard-inbox__toolbar">
-        <label className="sr-only" htmlFor="inbox-search">Search sender or subject</label>
-        <input id="inbox-search" className="admin-input" type="search" maxLength={120} value={search} onChange={event => setSearch(event.target.value)} placeholder="Search sender or subject…" />
+        <label className="sr-only" htmlFor="inbox-search">Search name, email, or subject</label>
+        <input id="inbox-search" className="admin-input" type="search" maxLength={120} value={search} onChange={event => setSearch(event.target.value)} placeholder="Search a name, email address, or subject…" />
         <button className="btn-outline" type="submit"><Search className="h-4 w-4" aria-hidden />Search</button>
-        <label className="sr-only" htmlFor="inbox-filter">Filter emails</label>
-        <select id="inbox-filter" className="admin-input" value={filter} onChange={event => { setCursor(null); setFilter(event.target.value); selectMessage(null); }}>
-          <option value="all">All received</option><option value="unread">Unread</option>
-        </select>
+        <details className="emails-setup"><summary>Mailbox setup</summary><p>Booking replies arrive automatically. New private messages use your normal reservations@hathorcruise.com reply address. To show those replies and other direct emails here too, Bluehost must forward a copy to {DASHBOARD_INBOX_ADDRESS}, keeping the original. Existing history is not imported. Keep the main domain’s MX records unchanged.</p></details>
       </form>
       {error ? <p role="alert" className="text-sm" style={{ color: "var(--danger)" }}>{error}</p> : null}
-      <div className="dashboard-inbox__workspace" data-selected={Boolean(selected)}>
-        <section className="card dashboard-inbox__list" aria-label="Received emails" aria-busy={busy}>
-          {!messages.length ? <div className="px-6 py-12 text-center"><Inbox className="mx-auto mb-4 h-8 w-8 text-muted" aria-hidden /><p className="font-semibold">{busy ? "Loading your emails…" : "No emails here yet"}</p><p className="mt-2 text-sm text-muted">{query || filter === "unread" ? "Try a different search or select All received." : "New customer emails appear here once Resend receives them."}</p></div> : null}
+      {notice ? <p className="emails-page__notice" role="status"><CheckCheck size={17} aria-hidden />{notice}</p> : null}
+      <div className="dashboard-inbox__workspace" data-selected={Boolean(selected || draft)}>
+        <section className="card dashboard-inbox__list" aria-label="Email list" aria-busy={busy}>
+          <header className="emails-list-header"><h2>{filters.find(item => item.value === filter)?.label}</h2><span>{messages.length}{hasOlder ? "+" : ""} shown</span></header>
+          {!messages.length ? <div className="emails-empty"><Inbox size={30} aria-hidden /><p>{busy ? "Loading your emails…" : "No emails here yet"}</p><span>{query || filter !== "all" ? "Try a different search or choose All emails." : "Received messages and emails sent from this dashboard appear here."}</span></div> : null}
           <ol>
-            {messages.map(message => (
+            {messages.map(message => {
+              const address = contactOf(message);
+              const name = correspondentLabel(message.correspondentName, address);
+              return (
               <li key={keyOf(message)}>
-                <button type="button" className="dashboard-inbox__message" aria-pressed={selected === keyOf(message)} onClick={() => { if (selected !== keyOf(message)) selectMessage(keyOf(message)); }}>
-                  <div className="mb-2 flex items-center justify-between gap-3 text-xs text-muted"><span>{message.source === "booking" ? "Booking reply" : "General email"}{message.readAt ? "" : " · Unread"}</span>{message.attachmentCount ? <span className="flex items-center gap-1"><Paperclip className="h-3 w-3" aria-hidden />{message.attachmentCount}</span> : null}</div>
-                  <p className={`text-sm${message.readAt ? "" : " font-semibold"}`}>{message.sender}</p>
-                  <p className="mt-1 text-sm font-semibold">{message.subject || "(No subject)"}</p>
-                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted">{message.preview || "(No message text)"}</p>
-                  <time className="mt-3 block text-xs text-muted" dateTime={message.createdAt}>{messageTime.format(new Date(message.createdAt))}</time>
+                <button type="button" className="dashboard-inbox__message" data-tone={toneOf(message)} aria-pressed={selected === keyOf(message)} disabled={Boolean(draft)} onClick={() => { if (selected !== keyOf(message)) selectMessage(keyOf(message)); }}>
+                  <div className="emails-message__contact"><span className="emails-avatar" aria-hidden>{correspondentInitials(name)}</span><div><p className="emails-message__name">{name}</p><p className="emails-message__address">{message.direction === "OUTBOUND" ? "To: " : ""}{address}</p></div></div>
+                  <p className="emails-message__subject">{message.subject || "(No subject)"}</p>
+                  <p className="emails-message__preview">{message.preview || "(No message text)"}</p>
+                  <div className="emails-message__meta"><span className="emails-status" data-failed={message.status === "FAILED"}>{message.direction === "OUTBOUND" ? <ArrowUpRight size={13} aria-hidden /> : <ArrowDownLeft size={13} aria-hidden />}{statusOf(message)}</span><span>{message.source === "booking" ? "Booking" : "Personal"}</span>{message.attachmentCount ? <span><Paperclip size={12} aria-hidden />{message.attachmentCount}</span> : null}</div>
+                  <time className="emails-message__time" dateTime={message.createdAt}>{messageTime.format(new Date(message.createdAt))}</time>
                 </button>
               </li>
-            ))}
+            ); })}
           </ol>
           {hasOlder ? <div className="p-4"><button type="button" className="btn-outline w-full" disabled={busy} onClick={() => setCursor(messages[messages.length - 1] ?? null)}>Load older emails</button></div> : null}
         </section>
-        <section ref={detailRef} tabIndex={-1} className="card dashboard-inbox__detail p-5 sm:p-7" aria-label="Email details">
+        <section ref={detailRef} tabIndex={-1} className="card dashboard-inbox__detail" aria-label="Email details">
+          {draft ? <EmailComposer key={draft.key} initial={draft} onClose={() => setDraft(null)} onSent={sent} /> : <div className="emails-detail-content">
           {selected ? <button type="button" className="btn-outline mb-5" onClick={() => selectMessage(null)}><ArrowLeft className="h-4 w-4" aria-hidden />Back to emails</button> : null}
           {detailError ? <p role="alert" className="mb-4 text-sm" style={{ color: "var(--danger)" }}>{detailError}</p> : null}
-          {!detail ? <p className="py-10 text-center text-sm text-muted">{selected ? detailError ? "Unable to open email." : "Opening email…" : "Select an email to read its message and attachments."}</p> : (
+          {!detail ? <div className="emails-detail-empty"><span><Mail size={32} aria-hidden /></span><h2>{selected ? detailError ? "Unable to open email" : "Opening email…" : "Every conversation, in focus"}</h2><p>{selected ? "Your message will appear here." : "Choose a message to read its details, or write a personal note in Hathor’s signature style."}</p>{!selected ? <button type="button" className="btn-outline" onClick={() => compose()}><Plus size={16} aria-hidden />Write a new email</button> : null}</div> : (
             <article className="min-w-0">
+              <div className="emails-detail-contact" data-tone={toneOf(detail)}><span className="emails-avatar" aria-hidden>{correspondentInitials(correspondentLabel(detail.correspondentName, contactOf(detail)))}</span><div><p>{correspondentLabel(detail.correspondentName, contactOf(detail))}</p><span className="emails-status">{statusOf(detail)}{detail.direction === "OUTBOUND" ? " · From Hathor" : " · Received by Hathor"}</span></div></div>
               <h2 className="break-words text-xl font-semibold">{detail.subject || "(No subject)"}</h2>
-              <dl className="mt-5 space-y-2 break-words text-sm"><div><dt className="inline text-muted">From: </dt><dd className="inline">{detail.sender}</dd></div><div><dt className="inline text-muted">To: </dt><dd className="inline">{detail.recipient}</dd></div><div><dt className="inline text-muted">Received: </dt><dd className="inline"><time dateTime={detail.createdAt}>{messageTime.format(new Date(detail.createdAt))}</time></dd></div></dl>
+              <dl className="emails-detail-metadata"><div><dt>From</dt><dd>{detail.sender}</dd></div><div><dt>To</dt><dd>{detail.recipient}</dd></div><div><dt>{detail.direction === "OUTBOUND" ? "Recorded" : "Received"}</dt><dd><time dateTime={detail.createdAt}>{messageTime.format(new Date(detail.createdAt))}</time></dd></div></dl>
               {!detail.senderMatchesGuest ? <p className="mt-4 text-sm text-muted">This sender differs from the booking’s guest email. Verify their identity before taking action.</p> : null}
               <div className="my-6 flex flex-wrap gap-3">
-                <button type="button" className="btn-outline" disabled={marking} onClick={() => void markRead()}>{marking ? "Saving…" : detail.readAt ? "Mark unread" : "Mark read"}</button>
-                {detail.bookingId ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <a className="btn-primary" href={`mailto:${encodeURIComponent(detail.sender)}?subject=${encodeURIComponent(`Re: ${detail.subject}`)}`}>Reply in your mail app</a>}
+                {detail.direction !== "OUTBOUND" ? <button type="button" className="btn-outline" disabled={marking} onClick={() => void markRead()}>{marking ? "Saving…" : detail.readAt ? "Mark unread" : "Mark read"}</button> : null}
+                {detail.bookingId ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <button type="button" className="btn-primary" onClick={() => compose({ to: contactOf(detail), recipientName: detail.correspondentName ?? "", subject: /^re:/i.test(detail.subject) ? detail.subject : `Re: ${detail.subject}`.slice(0, 180) })}>{detail.direction === "OUTBOUND" ? "Send another email" : "Reply from dashboard"}</button>}
               </div>
-              {detail.source === "general" ? <p className="mb-6 text-xs text-muted">Replies sent from your mail app stay in that mailbox, not in this dashboard.</p> : null}
-              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={keyOf(detail)} bodyText={detail.bodyText} formattedUrl={`/api/admin/inbox/${keyOf(detail)}/formatted`} /></div>
+              {detail.direction === "OUTBOUND" && detail.status !== "SENT" ? <p className="email-composer__notice">{detail.status === "FAILED" ? "The provider did not accept this email." : "Sending has not been confirmed. Check the original send request before creating a second copy."}</p> : null}
+              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={keyOf(detail)} bodyText={detail.bodyText} formattedUrl={detail.source === "general" || detail.direction !== "OUTBOUND" ? `/api/admin/inbox/${keyOf(detail)}/formatted` : undefined} /></div>
               {detail.attachments.length ? <div className="mt-7 border-t pt-5" style={{ borderColor: "var(--border)" }}><h3 className="mb-3 text-sm font-semibold">Attachments</h3><ul className="space-y-2">{detail.attachments.map(file => (
                 <li key={file.id}><a className="inline-flex max-w-full items-center gap-2 break-all text-sm underline underline-offset-4" target="_blank" rel="noopener noreferrer" href={detail.bookingId ? `/api/admin/bookings/${encodeURIComponent(detail.bookingId)}/messages/${detail.id}/attachments/${file.id}` : `/api/admin/inbox/general/${detail.id}/attachments/${file.id}`}><Paperclip className="h-4 w-4 shrink-0" aria-hidden />{file.filename}</a></li>
               ))}</ul><p className="mt-3 text-xs text-muted">Open only files you trust. Attachment availability follows Resend’s retention policy.</p></div> : null}
             </article>
           )}
+          </div>}
         </section>
       </div>
     </div>

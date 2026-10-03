@@ -79,8 +79,12 @@ export async function receivedEmailHtmlDocument(source: InboxSource, id: string,
   const request = dependencies.request ?? resendApiRequest;
   const [message] = source === "booking"
     ? await query<{ resendEmailId: string | null }>(`SELECT "resendEmailId" FROM "BookingMessage" WHERE id = $1 AND direction = 'INBOUND'`, [id])
-    : await query<{ resendEmailId: string | null }>(`SELECT "resendEmailId" FROM "InboxMessage" WHERE id = $1`, [id]);
+    : await query<{ resendEmailId: string | null; direction: string; bodyHtml: string | null }>(`SELECT "resendEmailId", direction, "bodyHtml" FROM "InboxMessage" WHERE id = $1`, [id]);
   if (!message) throw new PublicRequestError("Email not found.", 404);
+  if ("direction" in message && message.direction === "OUTBOUND") {
+    if (!("bodyHtml" in message) || typeof message.bodyHtml !== "string") throw new PublicRequestError("This email has no formatted version. Please use the text view.", 404);
+    return buildEmailHtmlDocument(message.bodyHtml, images);
+  }
   const emailId = z.uuid().parse(message.resendEmailId);
   const email = z.object({ id: z.uuid(), html: z.string().nullable(), attachments: z.array(z.object({ id: z.uuid() })).max(100) }).parse(await request(`/emails/receiving/${emailId}?html_format=cid`));
   if (email.id !== emailId) throw new Error("Email mismatch");

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
 import { bookingReplyToken, mailboxAddress } from "@/lib/booking-email-routing";
 import { DASHBOARD_INBOX_ADDRESS } from "@/lib/inbox-types";
+import { mailboxDisplayName } from "@/lib/email-correspondent";
 import { incomingBodyText, incomingEmailSchema, isAutomaticEmail, processReceivedBookingEmail, receivedEmailEventSchema, resendApiRequest } from "@/lib/resend-inbound";
 
 export async function processReceivedDashboardEmail(
@@ -28,9 +29,9 @@ export async function processReceivedDashboardEmail(
   if (!sender) return;
   const attachments = email.attachments.map(file => ({ id: file.id, filename: file.filename || "Attachment", contentType: file.content_type }));
   await query(
-    `INSERT INTO "InboxMessage" (id, "resendEmailId", sender, recipient, subject, "bodyText", attachments, "createdAt")
-     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8) ON CONFLICT ("resendEmailId") DO NOTHING`,
+    `INSERT INTO "InboxMessage" (id, "resendEmailId", sender, recipient, subject, "bodyText", attachments, "createdAt", "correspondentName")
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9) ON CONFLICT ("resendEmailId") DO NOTHING`,
     [randomUUID(), email.id, sender, recipients.join(", "), email.subject.replace(/[\r\n\u0000]/g, " "),
-      incomingBodyText(email.text, email.html), JSON.stringify(attachments), new Date(email.created_at)],
+      incomingBodyText(email.text, email.html), JSON.stringify(attachments), new Date(email.created_at), mailboxDisplayName(email.from)],
   );
 }

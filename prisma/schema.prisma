@@ -222,16 +222,24 @@ model BookingMessage {
 
 model InboxMessage {
   id String @id @default(uuid())
-  resendEmailId String @unique
+  resendEmailId String? @unique
+  direction String @default("INBOUND")
+  status String @default("RECEIVED")
   sender String
   recipient String
+  correspondentName String?
   subject String
   bodyText String
+  bodyHtml String?
+  requestFingerprint String?
+  recordedBySession String?
+  sendLeaseUntil DateTime?
   attachments Json @default("[]")
   readAt DateTime?
   createdAt DateTime @default(now())
 
   @@index([createdAt, id])
+  @@index([direction, createdAt, id])
 }
 
 model ApiRateLimit {

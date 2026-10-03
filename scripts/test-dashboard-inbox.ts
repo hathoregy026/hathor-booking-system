@@ -46,6 +46,7 @@ async function main() {
   assert.equal(normal.reads(), 1);
   assert.equal(normal.inserts.length, 1);
   assert.equal(normal.inserts[0][2], "guest@example.com");
+  assert.equal(normal.inserts[0][8], "Customer");
   assert.equal(normal.inserts[0][4], "Nile inquiry  ");
   assert.equal(normal.inserts[0][5], "Hello & welcome");
   assert.equal(JSON.parse(normal.inserts[0][6] as string)[0].filename, "brochure.pdf");
@@ -75,17 +76,24 @@ async function main() {
   const statements: { sql: string; values: unknown[] }[] = [];
   const listQuery = (async (sql: string, values: unknown[] = []) => {
     statements.push({ sql, values });
-    if (sql.includes("COUNT(*)")) return [{ count: 4 }];
-    return Array.from({ length: 26 }, () => ({ id: randomUUID(), source: "general", bookingId: null, sender: "guest@example.com", subject: "Hello", preview: "Text", attachmentCount: 0, createdAt: new Date("2026-10-02T12:00:00Z"), readAt: null }));
+    if (sql.includes("COUNT(*)")) return [{ all: 26, unread: 4, received: 20, sent: 6 }];
+    return Array.from({ length: 26 }, () => ({ id: randomUUID(), source: "general", bookingId: null, sender: "guest@example.com", recipient: DASHBOARD_INBOX_ADDRESS, correspondentName: "Customer", direction: "INBOUND", status: "RECEIVED", subject: "Hello", preview: "Text", attachmentCount: 0, createdAt: new Date("2026-10-02T12:00:00Z"), readAt: null }));
   }) as typeof bookingQuery;
   const page = await fetchDashboardInbox(inboxQuerySchema.parse({ q: "%' OR 1=1 --", filter: "unread", before: "2026-10-02T13:00:00.000Z", cursorId: messageId, cursorSource: "general" }), listQuery);
   assert.equal(page.messages.length, 25);
   assert.equal(page.hasOlder, true);
   assert.equal(page.unreadCount, 4);
+  assert.deepEqual(page.counts, { all: 26, unread: 4, received: 20, sent: 6 });
   assert.equal(page.messages[0].createdAt, "2026-10-02T12:00:00.000Z");
   assert.ok(!statements[0].sql.includes("OR 1=1"));
   assert.equal(statements[0].values[0], "%\\%' OR 1=1 --%");
-  assert.deepEqual(statements[0].values.slice(1), [true, "2026-10-02T13:00:00.000Z", "general", messageId]);
+  assert.deepEqual(statements[0].values.slice(1), ["unread", "2026-10-02T13:00:00.000Z", "general", messageId]);
+  assert.match(statements[0].sql, /recipient ILIKE \$1/);
+  assert.match(statements[0].sql, /"correspondentName" ILIKE \$1/);
+  for (const filter of ["sent", "received"]) {
+    await fetchDashboardInbox(inboxQuerySchema.parse({ filter }), listQuery);
+    assert.equal(statements[statements.length - 2].values[1], filter);
+  }
   const emptyQuery = (async () => []) as typeof bookingQuery;
   assert.equal(await fetchInboxDetail("general", messageId, emptyQuery), null);
   assert.equal(await setInboxRead("booking", messageId, true, emptyQuery), false);
@@ -96,6 +104,7 @@ async function main() {
     return [{ id: messageId }];
   }) as typeof bookingQuery;
   assert.equal(await setInboxRead("booking", messageId, false, updateQuery), true);
+  assert.equal(await setInboxRead("general", messageId, false, updateQuery), true);
 
   const url = "https://www.hathorcruise.com/api/admin/inbox";
   const params = Promise.resolve({ source: "general", id: messageId });

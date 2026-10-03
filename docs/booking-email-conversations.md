@@ -74,17 +74,34 @@ before this feature are not imported automatically.
 - Requests are bounded: webhook metadata 64 KiB, fetched email response 2 MiB,
   stored text 64,000 characters, and at most 100 attachments. Processing failures
   remain visible in Resend's webhook attempts for manual investigation/replay.
-- `/admin/inbox` lists received booking replies and general emails together, with
-  sender/subject search, unread filtering, explicit read/unread controls, pagination,
-  and authenticated attachment access. Booking replies remain in their original
-  conversation; opening the booking lets staff reply with the existing tools.
+- `/admin/inbox` presents Emails: booking conversations and general correspondence,
+  with name/address/subject search, pagination, and authenticated attachments.
+  Gold unread, sage received, and copper sent filters have counts and text labels.
+  Only received emails can be marked read/unread. Booking replies remain in their
+  original conversation; opening the booking retains the existing reply tools.
 - General emails are accepted at `reservations@reply.hathorcruise.com`. To include
   new mail sent to `reservations@hathorcruise.com`, add a Bluehost forwarding rule
   that sends a copy to this address while retaining the original mailbox delivery.
   Do not replace the main domain MX records. Forwarding is an external setup step,
   not automatically enabled by deploying the Inbox. Existing mail is not imported.
-- General replies open the staff member's mail app and are not recorded as
-  dashboard outbound messages. Old booking emails without token routing can appear
+- Staff can compose a private email or reply to general correspondence directly
+  in the dashboard. The single recipient, optional name, subject, and plain-text
+  message are validated server-side. Hathor's existing logo, banner, colours, and
+  signature are added automatically; the protected preview does not send anything.
+  The sender and Reply-To use `reservations@hathorcruise.com`. Bluehost copy
+  forwarding is still required for these replies to appear in the dashboard.
+- Private outbound messages retain their rendered HTML snapshot and text in
+  `InboxMessage`; sent booking messages remain in `BookingMessage`. Pending and
+  failed attempts have explicit labels. Sent means accepted by the email provider,
+  not confirmed delivered. New private composition has no attachment upload;
+  existing incoming attachments and booking attachments remain available.
+- Sending requires authenticated staff, trusted same-origin JSON, bounded bodies,
+  and IP/session rate limits. A session-bound UUID, content fingerprint, database
+  lease, and stable Resend idempotency key prevent duplicate concurrent/retried
+  sends. An uncertain result locks the draft for a same-request status check;
+  unresolved requests older than 23 hours require manual provider verification
+  rather than an automatic resend. Closing a draft does not cancel delivery.
+- Old booking emails without token routing can appear
   as general emails if forwarded. Only new token-addressed booking emails link
   automatically to the relevant reservation. Sender addresses are not verified
   identities. Automatic/bulk messages are ignored, including dashboard-generated
