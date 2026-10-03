@@ -17,6 +17,7 @@ import {
 } from "@/components/selection/SelectionProvider";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { INQUIRY_FORM_COPY } from "@/lib/i18n/contact-copy";
+import { summaryLineIn } from "@/lib/i18n/selection-copy";
 
 type InquiryFormProps = {
   type: InquiryPayload["type"];
@@ -47,7 +48,8 @@ export function InquiryForm({
   className,
   submitClassName = "btn btn-primary",
 }: InquiryFormProps) {
-  const t = INQUIRY_FORM_COPY[usePublicLocale()];
+  const locale = usePublicLocale();
+  const t = INQUIRY_FORM_COPY[locale];
   /*
    * My Voyage carries into the enquiry automatically — the guest never re-enters
    * what they already chose. Read-only here; opening the form does not clear the
@@ -60,9 +62,9 @@ export function InquiryForm({
     ? buildSelectionEnquiry(voyageSelection, favorites)
     : undefined;
   /* "Reference" is an internal ids line for the reservations desk only. */
-  const selectionLines = resolveSelectionSummary(selection).filter(
-    (line) => line.label !== "Reference",
-  );
+  const selectionLines = resolveSelectionSummary(selection)
+    .filter((line) => line.label !== "Reference")
+    .map((line) => summaryLineIn(line, locale, selection?.voyageSlug));
 
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");

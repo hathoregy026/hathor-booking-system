@@ -7,7 +7,7 @@
 
 import { describeRoomTypesOnCruise, type StayDurationValue } from "@/lib/booking-search-config";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
-import { placesIn, weekdayIn } from "@/lib/i18n/catalog-copy";
+import { placesIn, voyageNameIn, weekdayIn, weekdayLabelIn } from "@/lib/i18n/catalog-copy";
 import {
   findResidence,
   findVoyage,
@@ -238,4 +238,62 @@ export function favoriteIn(item: ResolvedFavorite, locale: PublicLocale): Resolv
     meta: t.sizeCapacity(residence.sizeSqm, residence.capacity),
     href,
   };
+}
+
+const SUMMARY_LABELS_IT: Record<string, string> = {
+  "Enquiry type": "Tipo di richiesta",
+  "Selected Journey": "Viaggio scelto",
+  Route: "Itinerario",
+  Duration: "Durata",
+  "Departure day": "Giorno di partenza",
+  "Selected Accommodation": "Sistemazione scelta",
+  "Accommodation detail": "Dettagli della sistemazione",
+  Guests: "Ospiti",
+  "Guest also saved": "Ha salvato anche",
+};
+
+const GUEST_WORDS_IT: Record<string, string> = {
+  Adult: "adulto",
+  Adults: "adulti",
+  Child: "bambino",
+  Children: "bambini",
+};
+
+/**
+ * One line of the selection summary, as the guest reads it on the form. The
+ * reservations team's email keeps the English summary; this changes only
+ * what the page shows.
+ */
+export function summaryLineIn(
+  line: { label: string; value: string },
+  locale: PublicLocale,
+  voyageSlug?: string,
+): { label: string; value: string } {
+  if (locale === "en") return line;
+  const label = SUMMARY_LABELS_IT[line.label] ?? line.label;
+  let value = line.value;
+  switch (line.label) {
+    case "Selected Journey":
+      value = voyageSlug ? voyageNameIn(locale, voyageSlug, value) : value;
+      break;
+    case "Departure day":
+      value = weekdayLabelIn(locale, value);
+      break;
+    case "Selected Accommodation":
+      if (value.startsWith("Not carried over")) {
+        value = "Non riportata: la sistemazione salvata non è disponibile su questo itinerario.";
+      }
+      break;
+    default:
+      value = placesIn(
+        locale,
+        value
+          .replace(/\bPrivate Charter\b/g, "Charter privato")
+          .replace(/(\d+) Nights \/ (\d+) Days/g, "$1 notti / $2 giorni")
+          .replace(/\((\d+)N /g, "($1 notti, ")
+          .replace(/\bup to (\d+) guests\b/g, "fino a $1 ospiti")
+          .replace(/\b(\d+) (Adults?|Child(?:ren)?)\b/g, (_, n: string, word: string) => `${n} ${GUEST_WORDS_IT[word] ?? word}`),
+      );
+  }
+  return { label, value };
 }
