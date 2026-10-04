@@ -10,6 +10,7 @@ import {
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { interpolateEmailText } from "@/lib/email-templates";
 import { resolveEmailTheme } from "./theme";
+import { EmailFooter } from "./components/EmailLayout";
 import {
   emailColors,
   emailFonts,
@@ -41,6 +42,7 @@ export default function ContactReceivedEmail({
   backgroundColor,
   heroHeading,
   bodyText,
+  footer,
 }: ContactReceivedEmailProps) {
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
   const paper = theme.backgroundColor || emailColors.cream;
@@ -275,6 +277,8 @@ export default function ContactReceivedEmail({
             </tr>
           </tbody>
         </table>
+        {/* The signature every Hathor email ends with (Dashboard → Email Templates → Footer). */}
+        <EmailFooter variant="guest" primaryColor={theme.primaryColor} footer={footer} />
       </Body>
     </Html>
   );

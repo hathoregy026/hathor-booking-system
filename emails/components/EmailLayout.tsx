@@ -8,6 +8,12 @@ import {
   Text,
 } from "@react-email/components";
 import type { ReactNode } from "react";
+import {
+  DEFAULT_EMAIL_FOOTER,
+  emailFooterMailto,
+  resolveEmailFooterCopyright,
+  type EmailFooterSettings,
+} from "@/lib/email-footer";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailTheme } from "../theme";
 import {
@@ -186,15 +192,28 @@ export function GoldSectionTitle({
   );
 }
 
+/*
+ * The wording below comes from Dashboard → Email Templates → Footer (shared by
+ * every email); an emptied field leaves its line out. The HATHOR wordmark,
+ * the layout and the colours stay fixed here.
+ */
 export function EmailFooter({
   variant = "guest",
   primaryColor,
-  contactEmail = "reservations@hathorcruise.com",
+  contactEmail,
+  footer,
 }: {
   variant?: EmailFooterVariant;
   primaryColor: string;
+  /** A mailbox's own address (dashboard mailboxes); the footer email otherwise. */
   contactEmail?: string;
+  footer?: EmailFooterSettings | null;
 }) {
+  const text = footer ?? DEFAULT_EMAIL_FOOTER;
+  const copyright = resolveEmailFooterCopyright(text.copyright);
+  const email = contactEmail?.trim() || text.email;
+  const mailto = emailFooterMailto(email);
+
   if (variant === "admin") {
     return (
       <table
@@ -214,32 +233,36 @@ export function EmailFooter({
                 padding: "40px 28px",
               }}
             >
-              <Text
-                style={{
-                  color: emailColors.copyOnDark,
-                  fontFamily: emailFonts.body,
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  letterSpacing: "0.18em",
-                  lineHeight: "1.5",
-                  margin: "0 0 8px",
-                  textTransform: "uppercase",
-                }}
-              >
-                Hathor Dahabiya Admin
-              </Text>
-              <Text
-                style={{
-                  color: primaryColor,
-                  fontFamily: emailFonts.body,
-                  fontSize: "11px",
-                  letterSpacing: "0.12em",
-                  lineHeight: "1.5",
-                  margin: 0,
-                }}
-              >
-                © {new Date().getFullYear()} Hathor Cruise ®
-              </Text>
+              {text.adminTitle ? (
+                <Text
+                  style={{
+                    color: emailColors.copyOnDark,
+                    fontFamily: emailFonts.body,
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    letterSpacing: "0.18em",
+                    lineHeight: "1.5",
+                    margin: copyright ? "0 0 8px" : 0,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {text.adminTitle}
+                </Text>
+              ) : null}
+              {copyright ? (
+                <Text
+                  style={{
+                    color: primaryColor,
+                    fontFamily: emailFonts.body,
+                    fontSize: "11px",
+                    letterSpacing: "0.12em",
+                    lineHeight: "1.5",
+                    margin: 0,
+                  }}
+                >
+                  {copyright}
+                </Text>
+              ) : null}
             </td>
           </tr>
         </tbody>
@@ -279,54 +302,65 @@ export function EmailFooter({
             >
               Hathor
             </Text>
-            <Text
-              style={{
-                color: primaryColor,
-                fontFamily: emailFonts.editorial,
-                fontSize: "15px",
-                fontStyle: "italic",
-                fontWeight: 400,
-                lineHeight: "1.5",
-                margin: "0 0 28px",
-              }}
-            >
-              Luxury cruises on the Nile
-            </Text>
-
-            <Text
-              style={{
-                color: "rgba(246, 239, 223, 0.72)",
-                fontFamily: emailFonts.body,
-                fontSize: "13px",
-                fontWeight: 300,
-                lineHeight: "1.7",
-                margin: "0 0 4px",
-              }}
-            >
-              <Link
-                href={`mailto:${contactEmail}`}
+            {text.tagline ? (
+              <Text
                 style={{
-                  color: emailColors.copyOnDark,
-                  textDecoration: "underline",
+                  color: primaryColor,
+                  fontFamily: emailFonts.editorial,
+                  fontSize: "15px",
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  lineHeight: "1.5",
+                  margin: "0 0 28px",
                 }}
               >
-                {contactEmail}
-              </Link>
-            </Text>
-            <Text
-              style={{
-                color: "rgba(246, 239, 223, 0.72)",
-                fontFamily: emailFonts.body,
-                fontSize: "13px",
-                fontWeight: 300,
-                lineHeight: "1.7",
-                margin: "0 0 24px",
-              }}
-            >
-              +20 127 049 6896
-            </Text>
+                {text.tagline}
+              </Text>
+            ) : null}
 
-            {variant === "guest-reply" ? (
+            {email ? (
+              <Text
+                style={{
+                  color: "rgba(246, 239, 223, 0.72)",
+                  fontFamily: emailFonts.body,
+                  fontSize: "13px",
+                  fontWeight: 300,
+                  lineHeight: "1.7",
+                  /* the contact pair closes with the gap the phone line had */
+                  margin: text.phone ? "0 0 4px" : "0 0 24px",
+                }}
+              >
+                {mailto ? (
+                  <Link
+                    href={mailto}
+                    style={{
+                      color: emailColors.copyOnDark,
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {email}
+                  </Link>
+                ) : (
+                  <span style={{ color: emailColors.copyOnDark }}>{email}</span>
+                )}
+              </Text>
+            ) : null}
+            {text.phone ? (
+              <Text
+                style={{
+                  color: "rgba(246, 239, 223, 0.72)",
+                  fontFamily: emailFonts.body,
+                  fontSize: "13px",
+                  fontWeight: 300,
+                  lineHeight: "1.7",
+                  margin: "0 0 24px",
+                }}
+              >
+                {text.phone}
+              </Text>
+            ) : null}
+
+            {variant === "guest-reply" && text.replyNote ? (
               <Text
                 style={{
                   color: "rgba(246, 239, 223, 0.62)",
@@ -337,24 +371,26 @@ export function EmailFooter({
                   margin: "0 0 24px",
                 }}
               >
-                Questions? Reply directly to this email — we are here to help.
+                {text.replyNote}
               </Text>
             ) : null}
 
-            <Text
-              style={{
-                color: primaryColor,
-                fontFamily: emailFonts.body,
-                fontSize: "10px",
-                fontWeight: 500,
-                letterSpacing: "0.18em",
-                lineHeight: "1.5",
-                margin: 0,
-                textTransform: "uppercase",
-              }}
-            >
-              © {new Date().getFullYear()} Hathor Cruise ®
-            </Text>
+            {copyright ? (
+              <Text
+                style={{
+                  color: primaryColor,
+                  fontFamily: emailFonts.body,
+                  fontSize: "10px",
+                  fontWeight: 500,
+                  letterSpacing: "0.18em",
+                  lineHeight: "1.5",
+                  margin: 0,
+                  textTransform: "uppercase",
+                }}
+              >
+                {copyright}
+              </Text>
+            ) : null}
           </td>
         </tr>
       </tbody>
@@ -372,6 +408,7 @@ export function EmailLayout({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
 }: EmailLayoutProps) {
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
   const bannerUrl = heroImageUrl?.trim() || null;
@@ -511,6 +548,7 @@ export function EmailLayout({
                           variant={footerVariant}
                           contactEmail={contactEmail}
                           primaryColor={theme.primaryColor}
+                          footer={footer}
                         />
                       </td>
                     </tr>

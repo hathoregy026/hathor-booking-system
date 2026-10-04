@@ -32,6 +32,7 @@ export default function BookingDeclinedEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: BookingDeclinedEmailProps) {
@@ -47,6 +48,7 @@ export default function BookingDeclinedEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Booking Request</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>

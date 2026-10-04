@@ -35,6 +35,7 @@ export default function BookingInvoiceEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: BookingInvoiceEmailProps) {
@@ -52,6 +53,7 @@ export default function BookingInvoiceEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Invoice</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>

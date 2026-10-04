@@ -29,6 +29,7 @@ export default function BookingMessageEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: BookingMessageEmailProps) {
@@ -45,6 +46,7 @@ export default function BookingMessageEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Reservations</EmailEyebrow>
       <EmailHeading size="medium">{heading}</EmailHeading>

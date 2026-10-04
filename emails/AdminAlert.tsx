@@ -33,6 +33,7 @@ export default function AdminAlertEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: AdminAlertEmailProps) {
@@ -52,6 +53,7 @@ export default function AdminAlertEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Admin</EmailEyebrow>
       <EmailHeading align="left" size="medium">

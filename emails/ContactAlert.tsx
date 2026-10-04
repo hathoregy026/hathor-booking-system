@@ -45,6 +45,7 @@ export default function ContactAlertEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: ContactAlertEmailProps) {
@@ -62,6 +63,7 @@ export default function ContactAlertEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>{inquiryType}</EmailEyebrow>
       <EmailHeading align="left" size="medium">

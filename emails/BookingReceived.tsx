@@ -35,6 +35,7 @@ export default function BookingReceivedEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: BookingReceivedEmailProps) {
@@ -50,6 +51,7 @@ export default function BookingReceivedEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Booking Request</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>

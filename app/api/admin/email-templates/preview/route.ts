@@ -11,6 +11,7 @@ import {
   getDefaultEmailTemplates,
   mergeAllEmailTemplates,
 } from "@/lib/email-templates";
+import { loadEmailFooter } from "@/lib/email-footer-db";
 import { prisma } from "@/lib/prisma";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 
@@ -29,13 +30,19 @@ async function loadMergedTemplates() {
   return mergeAllEmailTemplates(rows);
 }
 
+/** Every preview ends with the saved footer, exactly as sent mail does. */
+async function withSavedFooter<T extends object>(templates: T[]) {
+  const footer = await loadEmailFooter();
+  return templates.map((template) => ({ ...template, footer }));
+}
+
 /** Saved templates from the database. */
 export async function GET() {
   const denied = await adminApiGuard();
   if (denied) return denied;
 
   try {
-    const templates = await loadMergedTemplates();
+    const templates = await withSavedFooter(await loadMergedTemplates());
     const previews = await renderAllEmailTemplatePreviews(templates);
 
     return NextResponse.json(
@@ -44,7 +51,7 @@ export async function GET() {
     );
   } catch (error) {
     logDbError("admin.email-templates.preview.GET", error);
-    const templates = getDefaultEmailTemplates();
+    const templates = await withSavedFooter(getDefaultEmailTemplates());
     const previews = await renderAllEmailTemplatePreviews(templates);
 
     return NextResponse.json(
@@ -71,6 +78,8 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as {
       shared?: EmailPreviewDraftShared;
       templates?: EmailPreviewDraftCopy[];
+      /** The form's footer wording, saved or not. */
+      footer?: Record<string, unknown>;
     };
 
     if (body.templates !== undefined && !Array.isArray(body.templates)) {
@@ -89,6 +98,8 @@ export async function POST(request: NextRequest) {
       body.shared,
       body.templates,
       baseRows,
+      body.footer,
+      await loadEmailFooter(),
     );
     const previews = await renderAllEmailTemplatePreviews(templates);
 

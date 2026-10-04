@@ -16,6 +16,13 @@ import {
   type EmailTemplateName,
   type EmailTemplateRecord,
 } from "@/lib/email-templates";
+import {
+  DEFAULT_EMAIL_FOOTER,
+  EMAIL_FOOTER_LIMITS,
+  resolveEmailFooterCopyright,
+  type EmailFooterSettings,
+} from "@/lib/email-footer";
+import { emailColors, emailFonts } from "@/emails/styles";
 
 type SharedBranding = {
   logoUrl: string | null;
@@ -73,6 +80,79 @@ const TEMPLATE_META: Record<
   },
 };
 
+/** The footer's editable lines, in the order the email shows them. */
+const FOOTER_FIELDS: {
+  key: keyof EmailFooterSettings;
+  label: string;
+  hint: string;
+  multiline?: boolean;
+}[] = [
+  { key: "tagline", label: "Tagline", hint: "The gold italic line under HATHOR." },
+  { key: "email", label: "Email address", hint: "Shown underlined; guests can tap it to write to you." },
+  { key: "phone", label: "Phone number", hint: "Shown under the email address." },
+  {
+    key: "replyNote",
+    label: "Reply note",
+    hint: "On the invoice, confirmation, decline and team-reply emails.",
+    multiline: true,
+  },
+  { key: "copyright", label: "Copyright line", hint: "Small gold capitals at the bottom. {year} becomes the current year." },
+  { key: "adminTitle", label: "Team alert title", hint: "Top line of the footer on your team's own alerts (new bookings, contact messages)." },
+];
+
+/** The footer as it appears at the end of a guest email, from the form. */
+function FooterPreview({ footer, gold }: { footer: EmailFooterSettings; gold: string }) {
+  const copyright = resolveEmailFooterCopyright(footer.copyright);
+  return (
+    <div
+      className="flex h-full flex-col items-center justify-center rounded-2xl px-6 py-10 text-center"
+      style={{ background: emailColors.dark }}
+      aria-label="Footer preview"
+    >
+      <span
+        className="text-[28px] uppercase leading-tight tracking-[0.04em]"
+        style={{ color: emailColors.copyOnDark, fontFamily: emailFonts.display }}
+      >
+        Hathor
+      </span>
+      {footer.tagline ? (
+        <span className="mt-2 text-[15px] italic" style={{ color: gold, fontFamily: emailFonts.editorial }}>
+          {footer.tagline}
+        </span>
+      ) : null}
+      {footer.email ? (
+        <span className="mt-7 text-[13px] underline" style={{ color: emailColors.copyOnDark, fontFamily: emailFonts.body }}>
+          {footer.email}
+        </span>
+      ) : null}
+      {footer.phone ? (
+        <span
+          className={`${footer.email ? "mt-1" : "mt-7"} text-[13px] font-light`}
+          style={{ color: "rgba(246, 239, 223, 0.72)", fontFamily: emailFonts.body }}
+        >
+          {footer.phone}
+        </span>
+      ) : null}
+      {footer.replyNote ? (
+        <span
+          className="mt-6 max-w-xs text-[12px] font-light leading-relaxed"
+          style={{ color: "rgba(246, 239, 223, 0.62)", fontFamily: emailFonts.body }}
+        >
+          {footer.replyNote}
+        </span>
+      ) : null}
+      {copyright ? (
+        <span
+          className="mt-6 text-[10px] font-medium uppercase tracking-[0.18em]"
+          style={{ color: gold, fontFamily: emailFonts.body }}
+        >
+          {copyright}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 /** The words each email fills in for you. */
 function variablesFor(name: EmailTemplateName): string {
   if (name === "ContactReceived") return "{guestName}";
@@ -113,6 +193,8 @@ export default function AdminEmailTemplatesPage() {
     backgroundColor: "#ece4da",
   });
   const [copies, setCopies] = useState<TemplateCopy[]>([]);
+  /* The footer wording every email shares. */
+  const [footer, setFooter] = useState<EmailFooterSettings>(DEFAULT_EMAIL_FOOTER);
 
   const activeCopy = useMemo(
     () => copies.find((entry) => entry.name === activeTab) ?? copies[0],
@@ -123,8 +205,9 @@ export default function AdminEmailTemplatesPage() {
     () => ({
       shared,
       templates: copies,
+      footer,
     }),
-    [shared, copies],
+    [shared, copies, footer],
   );
 
   const loadTemplates = useCallback(async () => {
@@ -138,6 +221,7 @@ export default function AdminEmailTemplatesPage() {
       const templates = data.templates as EmailTemplateRecord[];
       setShared(pickShared(templates));
       setCopies(templates.map(toCopy));
+      if (data.footer) setFooter(data.footer as EmailFooterSettings);
     } catch {
       showToast("error", "Failed to load email templates");
     } finally {
@@ -176,6 +260,7 @@ export default function AdminEmailTemplatesPage() {
             heroHeading: entry.heroHeading || null,
             bodyText: entry.bodyText || null,
           })),
+          footer,
         }),
       });
 
@@ -188,6 +273,7 @@ export default function AdminEmailTemplatesPage() {
       const templates = data.templates as EmailTemplateRecord[];
       setShared(pickShared(templates));
       setCopies(templates.map(toCopy));
+      if (data.footer) setFooter(data.footer as EmailFooterSettings);
     } catch (error) {
       showToast(
         "error",
@@ -399,6 +485,58 @@ export default function AdminEmailTemplatesPage() {
         </div>
       </section>
 
+      <section className="card space-y-6 p-4 sm:p-6">
+        <div>
+          <h2 className="admin-heading text-lg">Footer</h2>
+          <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
+            The signature at the bottom of every email. The HATHOR wordmark and
+            the colors stay fixed; clear a line to leave it out.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="space-y-4">
+            {FOOTER_FIELDS.map((field) => (
+              <label key={field.key} className="block text-sm">
+                <span
+                  className="mb-1 block font-medium"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {field.label}
+                </span>
+                {field.multiline ? (
+                  <textarea
+                    value={footer[field.key]}
+                    maxLength={EMAIL_FOOTER_LIMITS[field.key]}
+                    onChange={(event) =>
+                      setFooter((current) => ({ ...current, [field.key]: event.target.value }))
+                    }
+                    rows={2}
+                    className="input w-full px-3 py-2"
+                  />
+                ) : (
+                  <input
+                    value={footer[field.key]}
+                    maxLength={EMAIL_FOOTER_LIMITS[field.key]}
+                    onChange={(event) =>
+                      setFooter((current) => ({ ...current, [field.key]: event.target.value }))
+                    }
+                    className="input w-full px-3 py-2"
+                  />
+                )}
+                <span
+                  className="mt-1 block text-xs"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {field.hint}
+                </span>
+              </label>
+            ))}
+          </div>
+          <FooterPreview footer={footer} gold={shared.primaryColor} />
+        </div>
+      </section>
+
       <section className="card p-4 sm:p-6">
         <div className="mb-4 flex flex-wrap gap-2 border-b pb-4" style={{ borderColor: "var(--border)" }}>
           {EMAIL_TEMPLATE_NAMES.map((name) => (
@@ -492,8 +630,8 @@ export default function AdminEmailTemplatesPage() {
       >
         <Mail className="h-4 w-4 shrink-0" aria-hidden />
         Images upload to Supabase for the hero only. The Hathor icon is locked.
-        Click &ldquo;Save all templates&rdquo; after editing copy or colors. Use
-        Preview or Send test email to verify.
+        Click &ldquo;Save all templates&rdquo; after editing copy, colors or the
+        footer. Use Preview or Send test email to verify.
       </div>
 
       <EmailTemplatePreviewModal
