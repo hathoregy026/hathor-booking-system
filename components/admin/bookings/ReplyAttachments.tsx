@@ -29,11 +29,11 @@ function formatSize(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-async function uploadAttachment(bookingId: string, file: File): Promise<{ path: string; name: string }> {
-  const start = await adminFetch(`/api/admin/bookings/${encodeURIComponent(bookingId)}/attachments`, {
+async function uploadAttachment(bookingId: string | undefined, draftId: string | undefined, file: File): Promise<{ path: string; name: string }> {
+  const start = await adminFetch(bookingId ? `/api/admin/bookings/${encodeURIComponent(bookingId)}/attachments` : "/api/admin/inbox/attachments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: file.name, size: file.size }),
+    body: JSON.stringify({ name: file.name, size: file.size, ...(draftId ? { draftId } : {}) }),
   });
   const ticket = (await start.json().catch(() => ({}))) as { path?: string; signedUrl?: string; name?: string; contentType?: string; error?: string };
   if (!start.ok || !ticket.path || !ticket.signedUrl || !ticket.contentType) throw new Error(ticket.error ?? "The upload could not start.");
@@ -49,15 +49,15 @@ async function uploadAttachment(bookingId: string, file: File): Promise<{ path: 
 
 export function ReplyAttachments({
   bookingId,
+  draftId,
   items,
   onChange,
   disabled = false,
 }: {
-  bookingId: string;
   items: ReplyAttachment[];
   onChange: (update: (items: ReplyAttachment[]) => ReplyAttachment[]) => void;
   disabled?: boolean;
-}) {
+} & ({ bookingId: string; draftId?: never } | { draftId: string; bookingId?: never })) {
   const input = useRef<HTMLInputElement>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -80,7 +80,7 @@ export function ReplyAttachments({
 
       const key = crypto.randomUUID();
       onChange((current) => [...current, { key, name: file.name, size: file.size, status: "uploading" }]);
-      uploadAttachment(bookingId, file).then(
+      uploadAttachment(bookingId, draftId, file).then(
         ({ path, name }) => onChange((current) => current.map((item) => (item.key === key ? { ...item, name, path, status: "ready" } : item))),
         (error: unknown) =>
           onChange((current) =>

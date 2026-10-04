@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { config } from "dotenv";
-import { createAttachmentUpload, resolveAttachments, MAIL_ATTACHMENT_BUCKET } from "../lib/mail-attachments";
+import { createAttachmentUpload, privateEmailAttachmentDownloadUrl, privateEmailAttachmentScope, resolveAttachments, resolvePrivateEmailAttachments, MAIL_ATTACHMENT_BUCKET } from "../lib/mail-attachments";
 import { createSupabaseStorageAdminClient } from "../lib/supabase-server";
 
 async function main() {
@@ -34,6 +34,21 @@ async function main() {
         await assert.rejects(resolveAttachments(bookingId, [ref]), /content does not match/);
       }
     }
+    const scope = privateEmailAttachmentScope("synthetic-storage-session", randomUUID());
+    const body = new TextEncoder().encode("%PDF-1.4\n% Synthetic private email attachment\n%%EOF\n");
+    const ticket = await createAttachmentUpload(scope, { name: "qa-private-receipt.pdf", size: body.length });
+    paths.push(ticket.path);
+    const uploaded = await fetch(ticket.signedUrl, { method: "PUT", headers: { "Content-Type": ticket.contentType, "x-upsert": "false" }, body, signal: AbortSignal.timeout(20000) });
+    assert.equal(uploaded.ok, true);
+    const refs = [{ path: ticket.path, name: ticket.name }];
+    const first = await resolvePrivateEmailAttachments(scope, refs);
+    const second = await resolvePrivateEmailAttachments(scope, refs);
+    assert.equal(first[0].content, Buffer.from(body).toString("base64"));
+    assert.equal(first[0].content, second[0].content, "Provider attachment content stays stable across retries");
+    assert.equal(first[0].contentHash, second[0].contentHash);
+    await assert.rejects(resolvePrivateEmailAttachments(privateEmailAttachmentScope("another-session", randomUUID()), refs));
+    assert.ok((await privateEmailAttachmentDownloadUrl(ticket.path)).startsWith(process.env.SUPABASE_URL!));
+    await assert.rejects(privateEmailAttachmentDownloadUrl(paths[0]));
     console.log("PASS: real private storage, signed upload, stored metadata, verified download links, public-access rejection, and disguised-file rejection. No emails sent.");
   } finally {
     if (paths.length) {

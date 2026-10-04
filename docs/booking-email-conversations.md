@@ -129,6 +129,17 @@ before this feature are not imported automatically.
 
 ## Dashboard filing and removal
 
+Booking invoices, replies, recorded payments/refunds, and resent confirmations
+support attachments. Every recorded payment stage emails either the existing
+booking confirmation (when the deposit confirms the booking) or a branded payment
+receipt; refunds email a refund receipt. Attached documents remain in that email's
+booking conversation history, including failed delivery entries. Invalid files
+are rejected before recording a payment. An email failure does not roll back the
+payment: resend the documents with Reply, never record the payment a second time.
+Amounts, processor-reference validation, payment schedules, booking status rules,
+card surcharges and cabin availability continue through the unchanged booking
+engine. Existing mail and Zoho originals are not rewritten.
+
 - Select individual emails or use **Select loaded emails** (up to 100). Choose
   another mailbox and **Move selected**, or confirm **Delete selected**. Pending
   sends cannot be moved or removed. A stale or invalid selection rejects the

@@ -329,7 +329,7 @@ export function BookingActionDialog({
         report("", result.email);
         onDone(result.booking);
       } else if (kind === "send-confirmation") {
-        const result = await patch({ type: "send-confirmation" });
+        const result = await patch({ type: "send-confirmation", attachments: attachedFiles() });
         report("", result.email);
         onDone(result.booking);
       } else if (kind === "cancel") {
@@ -348,6 +348,7 @@ export function BookingActionDialog({
         }
         const result = await patch({
           type: "record-payment",
+          attachments: attachedFiles(),
           payment: {
             reference: payment.reference.trim(),
             method: payment.method,
@@ -360,7 +361,7 @@ export function BookingActionDialog({
         report(
           refund ? "Refund recorded." : nowConfirmed ? "Payment recorded — booking is now confirmed." : "Payment recorded.",
           result.email,
-          " Use “Resend confirmation” to try again.",
+          " The payment remains recorded. Use “Reply” to resend the receipt and its attachments without recording the payment again.",
         );
         onDone(result.booking);
       } else if (kind === "delete") {
@@ -562,10 +563,10 @@ export function BookingActionDialog({
         <form onSubmit={submit}>
           <p className="text-sm text-muted">
             {refund
-              ? "Records money already refunded to the guest. Nothing is charged or moved."
+              ? "Records money already refunded to the guest and emails a refund receipt with any attachments. Nothing is charged or moved."
               : booking.status === "REQUESTED" && !booking.acceptedAt
-                ? "Records money already received. Confirm the request as well — the booking is confirmed once it is accepted and the deposit is covered."
-                : "Records money already received. When the payments cover the deposit, the booking is confirmed and the guest gets the confirmation email with the remaining schedule."}
+                ? "Records money already received and emails the guest a receipt. Confirm the request as well — the booking is confirmed once it is accepted and the deposit is covered."
+                : "Records money already received and emails the guest a receipt or confirmation with any attachments. Recording a payment does not charge or move money."}
           </p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             <Fact label="Received" value={formatPrice(booking.paidCents)} />
@@ -589,8 +590,9 @@ export function BookingActionDialog({
               <input className="input h-10 px-3 text-sm" type="datetime-local" value={payment.receivedAt} onChange={(e) => setPayment({ ...payment, receivedAt: e.target.value })} required />
             </Field>
           </div>
+          <div className="mt-5">{attachmentsField}<p className="mt-2 text-xs text-muted">Emailed to the guest with this {refund ? "refund" : "payment"} record and kept in the booking’s email history. Available for deposits, installments and final payments.</p></div>
           {errorLine}
-          <Footer busy={busy} submitLabel={refund ? "Record refund" : "Record payment"} onCancel={onClose} />
+          <Footer busy={busy || uploading} submitLabel={refund ? "Record refund" : "Record payment"} onCancel={onClose} />
         </form>
       </Dialog>
     );
@@ -626,8 +628,9 @@ export function BookingActionDialog({
           <p className="text-sm text-muted">
             Emails {booking.customerEmail} the confirmation with the amount received ({formatPrice(booking.paidCents)}) and the remaining payment schedule.
           </p>
+          <div className="mt-5">{attachmentsField}</div>
           {errorLine}
-          <Footer busy={busy} submitLabel="Send confirmation" onCancel={onClose} />
+          <Footer busy={busy || uploading} submitLabel="Send confirmation" onCancel={onClose} />
         </form>
       </Dialog>
     );

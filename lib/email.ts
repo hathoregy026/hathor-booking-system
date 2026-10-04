@@ -228,6 +228,7 @@ export async function sendBookingConfirmedEmail(
   guestEmail: string,
   guestName: string,
   bookingDetails: BookingEmailDetails,
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingConfirmed");
   const theme = buildEmailSendTheme(template);
@@ -244,6 +245,7 @@ export async function sendBookingConfirmedEmail(
         ...sendTheme,
       }),
     label: "booking confirmed (guest)",
+    attachments,
   });
 }
 

@@ -93,8 +93,20 @@ export function sendInvoice(id: string, invoice: { paymentLink?: string; instruc
   return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice, attachments));
 }
 
-export function sendConfirmation(id: string) {
-  return deliver(id, details => sendBookingConfirmedEmail(details.guestEmail, details.guestName, details));
+export function sendConfirmation(id: string, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingConfirmedEmail(details.guestEmail, details.guestName, details, attachments));
+}
+
+export function paymentReceiptMessage(payment: { amountCents: number; reference: string; kind: "RECEIPT" | "REFUND"; receivedAt: Date }): string {
+  const date = format(payment.receivedAt, "MMMM d, yyyy");
+  return payment.kind === "REFUND"
+    ? `We have recorded your refund of ${formatPrice(payment.amountCents)} on ${date}.\n\nBank / processor reference: ${payment.reference}\n\nAny attached documents accompany this refund record. If you have questions, please reply to this email.`
+    : `Thank you. We have recorded your payment of ${formatPrice(payment.amountCents)} on ${date}.\n\nBank / processor reference: ${payment.reference}\n\nThis receipt acknowledges the recorded payment only. Use Track Your Booking to check your booking status and remaining payment schedule. If you have questions, please reply to this email.`;
+}
+
+export function sendPaymentReceipt(id: string, payment: Parameters<typeof paymentReceiptMessage>[0], recordedBySession?: string, attachments: ResendAttachment[] = []) {
+  const subject = `Your Hathor ${payment.kind === "REFUND" ? "refund" : "payment"} receipt — ${bookingCode(id)}`;
+  return sendTeamReply(id, paymentReceiptMessage(payment), subject, recordedBySession, attachments);
 }
 
 export function sendDeclined(id: string, message?: string) {

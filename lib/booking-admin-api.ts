@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { verifySessionToken, sessionIdFromToken, ADMIN_SESSION_COOKIE } from "@/lib/admin-auth";
 import { assertTrustedPublicJsonRequest, PublicRequestError } from "@/lib/public-api-security";
 import { administerBooking } from "@/lib/booking-engine";
-import { sendConfirmation, sendDeclined, sendInvoice, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
+import { sendConfirmation, sendDeclined, sendInvoice, sendPaymentReceipt, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
 import { mailAttachmentRefsSchema, resolveAttachments } from "@/lib/mail-attachments";
 
@@ -49,14 +49,21 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     amountCents: z.number().int().positive().max(20_000_000),
     kind: z.enum(["RECEIPT","REFUND"]),
     receivedAt: z.iso.datetime().transform(s => new Date(s)).refine(d => d <= new Date(), "Payment cannot be dated in the future."),
-  }).strict() }).strict(),
+  }).strict(), attachments: mailAttachmentRefsSchema.optional() }).strict(),
   z.object({ type: z.literal("message"), subject: z.string().trim().max(200).regex(/^[^\r\n\u0000]*$/).optional(), message: teamText.min(2), attachments: mailAttachmentRefsSchema.optional() }).strict(),
-  z.object({ type: z.literal("send-confirmation") }).strict(),
+  z.object({ type: z.literal("send-confirmation"), attachments: mailAttachmentRefsSchema.optional() }).strict(),
 ]);
 
 export type StaffActionResult = { email?: MailResult };
 
-export async function applyStaffBookingAction(id: string, body: unknown, recordedBySession: string | null = null): Promise<StaffActionResult> {
+export async function applyStaffBookingAction(id: string, body: unknown, recordedBySession: string | null = null, dependencies: {
+  resolveAttachments?: typeof resolveAttachments; administerBooking?: typeof administerBooking;
+  fetchBookingStatus?: typeof fetchBookingStatus; sendConfirmation?: typeof sendConfirmation; sendPaymentReceipt?: typeof sendPaymentReceipt;
+} = {}): Promise<StaffActionResult> {
+  const resolve = dependencies.resolveAttachments ?? resolveAttachments;
+  const administer = dependencies.administerBooking ?? administerBooking;
+  const status = dependencies.fetchBookingStatus ?? fetchBookingStatus;
+  const confirm = dependencies.sendConfirmation ?? sendConfirmation;
   // Compatibility for the bulk list actions: confirm means accept the request,
   // never bypass the recorded-payment requirement.
   const legacy = z.object({ status: z.enum(["CONFIRMED","CANCELLED"]) }).strict().safeParse(body);
@@ -65,18 +72,18 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
     : staffActionSchema.parse(body);
 
   if (action.type === "message") {
-    const attachments = await resolveAttachments(id, action.attachments ?? []);
+    const attachments = await resolve(id, action.attachments ?? []);
     return { email: await sendTeamReply(id, action.message, action.subject, recordedBySession ?? undefined, attachments) };
   }
 
   if (action.type === "send-confirmation") {
-    if ((await fetchBookingStatus(id)) !== "CONFIRMED") throw new PublicRequestError("Only a confirmed booking has a confirmation to send.", 400);
-    return { email: await sendConfirmation(id) };
+    if ((await status(id)) !== "CONFIRMED") throw new PublicRequestError("Only a confirmed booking has a confirmation to send.", 400);
+    return { email: await confirm(id, await resolve(id, action.attachments ?? [])) };
   }
 
   if (action.type === "accept") {
-    const attachments = await resolveAttachments(id, "attachments" in action ? action.attachments ?? [] : []);
-    await administerBooking(id, {
+    const attachments = await resolve(id, "attachments" in action ? action.attachments ?? [] : []);
+    await administer(id, {
       type: "accept",
       ...("paymentMethod" in action && action.paymentMethod ? { paymentMethod: action.paymentMethod } : {}),
       ...("split" in action && action.split ? { split: action.split } : {}),
@@ -86,18 +93,19 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
   }
 
   if (action.type === "decline") {
-    await administerBooking(id, { type: "decline" });
+    await administer(id, { type: "decline" });
     return action.notify ? { email: await sendDeclined(id, action.message) } : {};
   }
 
   if (action.type === "cancel") {
-    await administerBooking(id, action);
+    await administer(id, action);
     return {};
   }
 
-  const before = await fetchBookingStatus(id);
-  const after = await administerBooking(id, { ...action, payment: { ...action.payment, recordedBySession: recordedBySession ?? undefined } });
+  const attachments = await resolve(id, action.attachments ?? []);
+  const before = await status(id);
+  const after = await administer(id, { type: "record-payment", payment: { ...action.payment, recordedBySession: recordedBySession ?? undefined } });
   // The database confirms a booking once the recorded payments cover the deposit; tell the guest then.
-  if (before !== "CONFIRMED" && after?.status === "CONFIRMED") return { email: await sendConfirmation(id) };
-  return {};
+  if (before !== "CONFIRMED" && after?.status === "CONFIRMED") return { email: await confirm(id, attachments) };
+  return { email: await (dependencies.sendPaymentReceipt ?? sendPaymentReceipt)(id, action.payment, recordedBySession ?? undefined, attachments) };
 }

@@ -58,6 +58,15 @@ From ALL MAILBOXES, composing defaults to RESERVATIONS. Replies use the opened
 message's mailbox. Handler names appear in new signatures; stored content remains
 immutable during send retries.
 
+New emails and dashboard replies accept the same attachments as booking emails:
+up to 10 files, 10 MB each, 25 MB combined. Files upload to private storage under
+a session-bound draft scope. The server checks stored size, MIME type, extension
+and file signature before sending. Sent history stores file references, not file
+contents or signed download URLs; downloads require dashboard authentication.
+Uncertain sends lock the files and preserve the same request ID. Attachment bytes
+and checksums remain identical on retries even when storage URLs are refreshed.
+File-type checks are not an antivirus scan; only attach trusted documents.
+
 Delete from dashboard hides a message from Emails, counts, and notifications.
 It never calls Zoho or Resend deletion APIs. Original mail and booking
 conversation records remain intact. Persistent deletion markers prevent webhook

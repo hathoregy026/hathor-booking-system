@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { z } from "zod";
 import { PublicRequestError } from "@/lib/public-api-security";
 import { createSupabaseStorageAdminClient } from "@/lib/supabase-server";
@@ -9,6 +9,18 @@ import {
 
 export const MAIL_ATTACHMENT_BUCKET = "mail-attachments";
 export type ResendAttachment = { filename: string; path: string; storagePath: string; id: string; contentType: string };
+export type PrivateEmailAttachment = ResendAttachment & { content: string; contentHash: string };
+
+export function privateEmailAttachmentScope(sessionId: string, draftId: string): string {
+  if (!sessionId || !z.uuid().safeParse(draftId).success) throw new PublicRequestError("Invalid email draft", 400);
+  return `mail-${createHash("sha256").update(JSON.stringify([sessionId, draftId])).digest("hex").slice(0, 56)}`;
+}
+
+export async function privateEmailAttachmentDownloadUrl(path: string): Promise<string> {
+  const scope = /^bookings\/(mail-[a-f0-9]{56})\//.exec(path)?.[1];
+  if (!scope) throw new PublicRequestError("Invalid email attachment", 400);
+  return attachmentDownloadUrl(scope, path);
+}
 export const mailAttachmentRefsSchema = z.array(z.object({
   path: z.string().min(1).max(400), name: z.string().trim().min(1).max(255),
 }).strict()).max(MAX_ATTACHMENTS).refine(refs => new Set(refs.map(ref => ref.path)).size === refs.length, "An attachment cannot be added twice.");
@@ -119,4 +131,32 @@ export async function resolveAttachments(bookingId: string, input: MailAttachmen
     attachments.push({ filename: name, path: url, storagePath: ref.path, id, contentType });
   }
   return attachments;
+}
+
+export async function resolvePrivateEmailAttachments(scope: string, input: MailAttachmentRef[]): Promise<PrivateEmailAttachment[]> {
+  if (!/^mail-[a-f0-9]{56}$/.test(scope)) throw new PublicRequestError("Invalid email draft", 400);
+  const files = await resolveAttachments(scope, input);
+  const result: PrivateEmailAttachment[] = [];
+  let total = 0;
+  for (const file of files) {
+    const response = await fetch(file.path, { redirect: "error", cache: "no-store", signal: AbortSignal.timeout(15000) });
+    if (!response.ok || !response.body) throw new PublicRequestError("An attachment is unavailable. Please attach it again.", 400);
+    const reader = response.body.getReader();
+    const chunks: Buffer[] = [];
+    let size = 0;
+    try {
+      for (;;) {
+        const chunk = await reader.read();
+        if (chunk.done) break;
+        size += chunk.value.length;
+        total += chunk.value.length;
+        if (size > MAX_ATTACHMENT_BYTES || total > MAX_ATTACHMENTS_TOTAL_BYTES) throw new PublicRequestError("Attachments exceed the allowed size.", 400);
+        chunks.push(Buffer.from(chunk.value));
+      }
+    } finally { await reader.cancel(); reader.releaseLock(); }
+    const bytes = Buffer.concat(chunks);
+    if (!size || !attachmentSignatureMatches(file.filename, bytes.subarray(0, 64))) throw new PublicRequestError("The attachment content does not match its file type.", 400);
+    result.push({ ...file, content: bytes.toString("base64"), contentHash: createHash("sha256").update(bytes).digest("hex") });
+  }
+  return result;
 }
