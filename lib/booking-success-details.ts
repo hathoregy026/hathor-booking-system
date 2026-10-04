@@ -21,7 +21,9 @@ export type BookingSuccessDetails = {
   checkInDate: string;
   roomType: string | null;
   guestSummary: string;
+  /** What the guest owes: the cabin quote plus any card surcharge. */
   totalPriceCents: number;
+  cardSurchargeCents: number;
   customerEmail: string | null;
   ratePlanLabel: string;
   status: string;
@@ -90,7 +92,8 @@ export async function getBookingSuccessDetails(
 
   const durationMeta = resolveDurationMeta(cruise.slug);
 
-  const totalPriceCents = booking.totalPriceCents!;
+  const cardSurchargeCents = booking.cardSurchargeCents ?? 0;
+  const totalPriceCents = booking.totalPriceCents! + cardSurchargeCents;
 
   return {
     bookingId: booking.id,
@@ -107,6 +110,7 @@ export async function getBookingSuccessDetails(
         ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
         : parseGuestSummary(booking.customerName),
     totalPriceCents,
+    cardSurchargeCents,
     customerEmail: booking.customerEmail,
     ratePlanLabel: "Standard Hathor rate",
     status: booking.status,

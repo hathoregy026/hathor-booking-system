@@ -13,6 +13,7 @@ import {
 } from "@/lib/admin-bookings";
 import { stageTitle, type PaymentPlanStage } from "@/lib/booking-code";
 import { formatPrice } from "@/lib/client-dates";
+import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import { BookingActionDialog, actionLabel, bookingActionsFor, type BookingActionKind } from "./BookingActions";
 import { PaymentMeter, StagePill } from "./BookingCard";
 import { BookingConversation } from "./BookingConversation";
@@ -262,6 +263,11 @@ export function BookingDetailView({
 
           <Panel title="Payment" icon={CreditCard} aside={<span className="text-xs text-muted">{paymentMethodLabel(booking.paymentMethod)}</span>}>
             <p className="text-2xl font-semibold tracking-tight tabular">{formatPrice(booking.totalPriceCents)}</p>
+            {booking.cardSurchargeCents > 0 ? (
+              <p className="text-xs text-muted tabular">
+                {formatPrice(booking.totalPriceCents - booking.cardSurchargeCents)} voyage + {formatPrice(booking.cardSurchargeCents)} card surcharge ({CARD_SURCHARGE_PERCENT}%)
+              </p>
+            ) : null}
             <div className="mt-2">
               <PaymentMeter booking={booking} />
             </div>

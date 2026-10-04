@@ -3,6 +3,7 @@ import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceIm
 import Link from "next/link";
 import { getBookingSuccessDetails } from "@/lib/booking-success-details";
 import { bookingCode } from "@/lib/booking-code";
+import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -236,7 +237,11 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
         <div className="hj-total-block">
           <span className="hj-total-block__label">Total booking amount</span>
           <div className="hj-total-block__amount">{money(details.totalPriceCents)}</div>
-          <p className="hj-deposit__fine">Taxes and service charges included.</p>
+          <p className="hj-deposit__fine">
+            {details.cardSurchargeCents > 0
+              ? `Includes the ${CARD_SURCHARGE_PERCENT}% online card surcharge of ${money(details.cardSurchargeCents)}. Taxes and service charges included.`
+              : "Taxes and service charges included."}
+          </p>
         </div>
 
         <span className="hj-step-label">Payment timeline</span>

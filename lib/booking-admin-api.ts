@@ -34,6 +34,12 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     instructions: teamText.min(10).optional(),
     paymentLink: z.string().trim().max(2000).refine(isSecureLink, "Paste the full secure payment link (it starts with https://).").optional(),
     attachments: mailAttachmentRefsSchema.optional(),
+    // Before any payment: how the guest pays (Visa adds the 2.5% card surcharge), and the team's own first payment.
+    paymentMethod: z.enum(["VISA","BANK_TRANSFER"]).optional(),
+    split: z.object({
+      firstCents: z.number().int().positive().max(20_000_000),
+      balanceDueOn: z.iso.date().optional(),
+    }).strict().optional(),
   }).strict(),
   z.object({ type: z.literal("decline"), message: teamText.optional(), notify: z.boolean().default(true) }).strict(),
   z.object({ type: z.literal("cancel"), reason: z.enum(["CANCELLATION","NO_SHOW","EARLY_DEPARTURE"]).default("CANCELLATION") }).strict(),
@@ -70,7 +76,11 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
 
   if (action.type === "accept") {
     const attachments = await resolveAttachments(id, "attachments" in action ? action.attachments ?? [] : []);
-    await administerBooking(id, { type: "accept" });
+    await administerBooking(id, {
+      type: "accept",
+      ...("paymentMethod" in action && action.paymentMethod ? { paymentMethod: action.paymentMethod } : {}),
+      ...("split" in action && action.split ? { split: action.split } : {}),
+    });
     const invoice = "instructions" in action ? { instructions: action.instructions, paymentLink: action.paymentLink } : {};
     return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice, attachments) } : {};
   }

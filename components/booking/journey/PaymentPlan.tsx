@@ -23,6 +23,8 @@ export function PaymentPlan({ stages, paidCents = 0 }: { stages: PaymentStage[];
   if (stages.length === 0) return null;
   const total = stages[stages.length - 1].cumulativeCents;
   const names = INVOICE_NAMES[stages.length] ?? stages.map((_, index) => `Invoice ${index + 1}`);
+  /** Hathor set this booking's first payment and balance date itself, so no standard plan applies. */
+  const custom = stages.some(stage => stage.milestone === "BALANCE");
 
   return (
     <div className="hj-payplan">
@@ -47,11 +49,15 @@ export function PaymentPlan({ stages, paidCents = 0 }: { stages: PaymentStage[];
         })}
       </ol>
       <ul className="hj-payplan__rules" aria-label="How payment is split">
-        {PLANS.map(plan => (
-          <li key={plan.stages} aria-current={plan.stages === stages.length ? "true" : undefined}>
-            {plan.text}
-          </li>
-        ))}
+        {custom ? (
+          <li aria-current="true">Hathor set this schedule for your booking: the first invoice, then the remaining balance by the date shown.</li>
+        ) : (
+          PLANS.map(plan => (
+            <li key={plan.stages} aria-current={plan.stages === stages.length ? "true" : undefined}>
+              {plan.text}
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );

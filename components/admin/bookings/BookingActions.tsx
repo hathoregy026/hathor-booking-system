@@ -8,6 +8,7 @@ import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
 import { paymentPlan, stageTitle } from "@/lib/booking-code";
+import { CARD_SURCHARGE_PERCENT, cardSurchargeCents, rescaleSchedule } from "@/lib/card-surcharge";
 import { ReplyAttachments, readyAttachments, type ReplyAttachment } from "./ReplyAttachments";
 
 export type BookingActionKind =
@@ -57,6 +58,18 @@ function rememberInstructions(method: string | null, text: string, amount: strin
     /* private window: nothing to remember */
   }
 }
+
+/** "1234.5" → 123450 cents, or null when it is not a USD amount with at most two decimals. */
+function parseUsd(text: string): number | null {
+  const value = text.trim();
+  if (!/^\d+(\.\d{1,2})?$/.test(value)) return null;
+  const [whole, fraction = ""] = value.split(".");
+  return Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
+}
+
+const isoDay = (date: Date) => date.toISOString().slice(0, 10);
+const longDay = (day: string) =>
+  new Date(`${day}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 function dueNowCents(booking: AdminBookingDto) {
   const deposit = booking.depositCents ?? booking.totalPriceCents;
@@ -149,13 +162,63 @@ export function BookingActionDialog({
   const [error, setError] = useState<string | null>(null);
 
   const dueNow = dueNowCents(booking);
-  const amountText = formatPrice(dueNow);
-  /** Each payment with its own amount, worked out from the booking's schedule. */
-  const plan = paymentPlan(booking.paymentSchedule, booking.paidCents);
-  const duePercent = booking.totalPriceCents > 0 && dueNow > 0 ? Math.round((dueNow / booking.totalPriceCents) * 100) : null;
-  const [instructions, setInstructions] = useState(() =>
-    readInstructions(booking.paymentMethod).split("{amount}").join(amountText).split("{code}").join(booking.code),
+
+  /* The invoice. Until a payment is recorded the team may change how the guest pays
+     (Visa / card adds the surcharge) and set the first payment and balance date themselves. */
+  const invoiceEditable = booking.paidCents === 0;
+  const quoteCents = booking.totalPriceCents - booking.cardSurchargeCents;
+  const [method, setMethod] = useState<"VISA" | "BANK_TRANSFER">(booking.paymentMethod === "BANK_TRANSFER" ? "BANK_TRANSFER" : "VISA");
+  const invoiceSurcharge = invoiceEditable ? (method === "VISA" ? cardSurchargeCents(quoteCents) : 0) : booking.cardSurchargeCents;
+  const invoiceTotal = quoteCents + invoiceSurcharge;
+  const [customSplit, setCustomSplit] = useState(false);
+  const [firstPayment, setFirstPayment] = useState("");
+  const [{ today, tomorrow }] = useState(() => {
+    const now = Date.now();
+    return { today: isoDay(new Date(now)), tomorrow: isoDay(new Date(now + 86_400_000)) };
+  });
+  const departureDay = booking.departureTime.slice(0, 10);
+  const lastDueDay = [...booking.paymentSchedule].reverse().find(stage => stage.dueAt)?.dueAt?.slice(0, 10);
+  const [balanceDueOn, setBalanceDueOn] = useState(lastDueDay && lastDueDay > today ? lastDueDay : departureDay);
+  const firstCents = invoiceEditable && customSplit ? parseUsd(firstPayment) : null;
+  const splitReady = firstCents !== null && firstCents > 0 && firstCents <= invoiceTotal;
+  /** Each payment with its own amount: the team's own split, or the booking's schedule at this total. */
+  const plan = paymentPlan(
+    splitReady
+      ? firstCents < invoiceTotal
+        ? [
+            { milestone: "INITIAL", dueAt: null, cumulativeCents: firstCents },
+            { milestone: "BALANCE", dueAt: `${balanceDueOn}T00:00:00.000Z`, cumulativeCents: invoiceTotal },
+          ]
+        : [{ milestone: "INITIAL", dueAt: null, cumulativeCents: invoiceTotal }]
+      : invoiceEditable
+        ? rescaleSchedule(booking.paymentSchedule, booking.totalPriceCents, invoiceTotal)
+        : booking.paymentSchedule,
+    booking.paidCents,
   );
+  const invoiceDue = invoiceEditable
+    ? plan.find(stage => stage.state === "due")?.amountCents ?? Math.max(0, invoiceTotal - booking.paidCents)
+    : dueNow;
+  const amountText = formatPrice(invoiceDue);
+  const duePercent = invoiceTotal > 0 && invoiceDue > 0 ? Math.round((invoiceDue / invoiceTotal) * 100) : null;
+  const [instructions, setInstructions] = useState(() =>
+    readInstructions(method).split("{amount}").join(amountText).split("{code}").join(booking.code),
+  );
+  const [noteAmount, setNoteAmount] = useState(amountText);
+  const [noteTouched, setNoteTouched] = useState(false);
+  if (noteAmount !== amountText) {
+    // The note quotes the amount due now: keep it in step with the invoice being set up.
+    setNoteAmount(amountText);
+    setInstructions(text => text.split(noteAmount).join(amountText));
+  }
+  function chooseMethod(next: "VISA" | "BANK_TRANSFER") {
+    setMethod(next);
+    // An untouched note follows the method: bank details for a transfer, nothing extra for a card link.
+    if (!noteTouched) setInstructions(readInstructions(next).split("{amount}").join(noteAmount).split("{code}").join(booking.code));
+  }
+  function toggleSplit(on: boolean) {
+    setCustomSplit(on);
+    if (on && !firstPayment) setFirstPayment((invoiceDue / 100).toFixed(2));
+  }
   const [paymentLink, setPaymentLink] = useState("");
   const [declineMessage, setDeclineMessage] = useState("");
   const [notify, setNotify] = useState(true);
@@ -231,8 +294,24 @@ export function BookingActionDialog({
         if (/\[paste/i.test(note)) throw new Error("Replace the [paste …] placeholder in the note first.");
         const blank = note ? /^\s*(Bank|IBAN|SWIFT[^:\n]*|Account[^:\n]*):[ \t]*$/im.exec(note) : null;
         if (blank) throw new Error(`Fill in “${blank[1]}” in the note before sending the invoice.`);
-        const result = await patch({ type: "accept", paymentLink: link || undefined, instructions: note.length >= 10 ? note : undefined, attachments: attachedFiles() });
-        if (note) rememberInstructions(booking.paymentMethod, note, amountText, booking.code);
+        let split: { firstCents: number; balanceDueOn?: string } | undefined;
+        if (invoiceEditable && customSplit) {
+          if (firstCents === null || firstCents <= 0) throw new Error("Enter the first payment in USD, with at most two decimals.");
+          if (firstCents > invoiceTotal) throw new Error(`The first payment cannot be more than the ${formatPrice(invoiceTotal)} total.`);
+          if (firstCents < invoiceTotal && !(balanceDueOn > today && balanceDueOn <= departureDay)) {
+            throw new Error("Choose when the remaining balance is due: after today and no later than departure.");
+          }
+          split = firstCents < invoiceTotal ? { firstCents, balanceDueOn } : { firstCents };
+        }
+        const result = await patch({
+          type: "accept",
+          paymentLink: link || undefined,
+          instructions: note.length >= 10 ? note : undefined,
+          attachments: attachedFiles(),
+          ...(invoiceEditable ? { paymentMethod: method } : {}),
+          ...(split ? { split } : {}),
+        });
+        if (note) rememberInstructions(method, note, amountText, booking.code);
         report(
           booking.acceptedAt ? "" : "Request confirmed.",
           result.email,
@@ -258,15 +337,22 @@ export function BookingActionDialog({
         report("Booking cancelled and cabins released.", null);
         onDone(result.booking);
       } else if (kind === "payment") {
-        if (!/^\d+(\.\d{1,2})?$/.test(payment.amount.trim())) throw new Error("Enter the amount in USD, with at most two decimals.");
-        const [whole, fraction = ""] = payment.amount.trim().split(".");
+        const amountCents = parseUsd(payment.amount);
+        if (amountCents === null) throw new Error("Enter the amount in USD, with at most two decimals.");
+        if (amountCents <= 0) throw new Error("Enter an amount above zero.");
+        // The database refuses receipts above the booking total and refunds above what was received.
+        const owed = Math.max(0, booking.totalPriceCents - booking.paidCents);
+        if (refund && amountCents > booking.paidCents) throw new Error(`That is more than the ${formatPrice(booking.paidCents)} received for this booking.`);
+        if (!refund && amountCents > owed) {
+          throw new Error(`That is more than the ${formatPrice(owed)} still owed on this booking (total ${formatPrice(booking.totalPriceCents)}, received ${formatPrice(booking.paidCents)}).`);
+        }
         const result = await patch({
           type: "record-payment",
           payment: {
             reference: payment.reference.trim(),
             method: payment.method,
             kind: refund ? "REFUND" : "RECEIPT",
-            amountCents: Number(whole) * 100 + Number(fraction.padEnd(2, "0")),
+            amountCents,
             receivedAt: new Date(payment.receivedAt).toISOString(),
           },
         });
@@ -301,15 +387,64 @@ export function BookingActionDialog({
       <Dialog title={booking.acceptedAt ? "Send the invoice again" : "Confirm & send invoice"} kicker={who} onClose={onClose}>
         <form onSubmit={submit}>
           <p className="text-sm text-muted">
-            The amounts are already worked out from the voyage total. Paste your secure payment link: the guest&rsquo;s
+            The amounts are worked out from the voyage total, or set the first payment yourself. Paste your secure payment link: the guest&rsquo;s
             invoice shows the amount due now as a &ldquo;Pay&rdquo; button, with the full payment schedule. The booking turns{" "}
-            <strong>Confirmed</strong> automatically when you record a payment that covers the deposit.
+            <strong>Confirmed</strong> automatically when you record a payment that covers the first payment.
           </p>
           <div className="mt-4 grid grid-cols-3 gap-2">
-            <Fact label="Pays by" value={paymentMethodLabel(booking.paymentMethod)} />
+            <Fact label="Pays by" value={paymentMethodLabel(invoiceEditable ? method : booking.paymentMethod)} />
             <Fact label={duePercent ? `Due now · ${duePercent}%` : "Due now"} value={amountText} />
-            <Fact label="Total" value={formatPrice(booking.totalPriceCents)} />
+            <Fact label="Total" value={formatPrice(invoiceTotal)} />
           </div>
+          {invoiceEditable ? (
+            <div className="mt-3 space-y-3 rounded-xl border p-3" style={{ borderColor: "var(--border)" }}>
+              <Field label="Guest pays by">
+                <select className="input h-10 px-3 text-sm" value={method} onChange={(e) => chooseMethod(e.target.value === "BANK_TRANSFER" ? "BANK_TRANSFER" : "VISA")}>
+                  <option value="VISA">Visa / card · adds {CARD_SURCHARGE_PERCENT}% surcharge</option>
+                  <option value="BANK_TRANSFER">Bank transfer · no surcharge</option>
+                </select>
+              </Field>
+              {invoiceSurcharge !== booking.cardSurchargeCents ? (
+                <p className="rounded-lg px-3 py-2 text-xs" style={{ background: "var(--bg-secondary)" }}>
+                  {invoiceSurcharge > 0
+                    ? `Adds the ${CARD_SURCHARGE_PERCENT}% card surcharge (${formatPrice(invoiceSurcharge)}): the total becomes ${formatPrice(invoiceTotal)}.`
+                    : `Removes the card surcharge: the total becomes ${formatPrice(invoiceTotal)}.`}
+                </p>
+              ) : invoiceSurcharge > 0 ? (
+                <p className="text-xs text-muted">Includes the {CARD_SURCHARGE_PERCENT}% card surcharge of {formatPrice(invoiceSurcharge)}.</p>
+              ) : null}
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={customSplit} onChange={(e) => toggleSplit(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--accent)" }} />
+                Set the first payment and the remaining balance myself
+              </label>
+              {customSplit ? (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="First payment · this invoice (USD)">
+                    <input className="input h-10 px-3 text-sm tabular" inputMode="decimal" value={firstPayment} onChange={(e) => setFirstPayment(e.target.value)} required />
+                  </Field>
+                  <Field label="Remaining balance due by">
+                    <input
+                      className="input h-10 px-3 text-sm"
+                      type="date"
+                      value={balanceDueOn}
+                      min={tomorrow}
+                      max={departureDay}
+                      onChange={(e) => setBalanceDueOn(e.target.value)}
+                      disabled={splitReady && firstCents === invoiceTotal}
+                      required={!(splitReady && firstCents === invoiceTotal)}
+                    />
+                  </Field>
+                  <p className="text-xs text-muted sm:col-span-2">
+                    {!splitReady
+                      ? `Enter the first payment in USD, up to the ${formatPrice(invoiceTotal)} total.`
+                      : firstCents < invoiceTotal
+                        ? `Remaining after this invoice: ${formatPrice(invoiceTotal - firstCents)}, due by ${longDay(balanceDueOn)}. The booking is confirmed once the first payment is recorded.`
+                        : "The whole amount is due with this invoice."}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
           {plan.length > 0 ? (
             <ol className="mt-3 overflow-hidden rounded-xl border text-sm" style={{ borderColor: "var(--border)" }}>
               {plan.map(stage => (
@@ -321,7 +456,7 @@ export function BookingActionDialog({
                   <span className="min-w-0">
                     <span className="block font-medium">
                       {stageTitle(stage.milestone, plan.length)}
-                      {booking.totalPriceCents > 0 ? ` · ${Math.round((stage.amountCents / booking.totalPriceCents) * 100)}%` : ""}
+                      {invoiceTotal > 0 ? ` · ${Math.round((stage.amountCents / invoiceTotal) * 100)}%` : ""}
                     </span>
                     <span className="block text-xs text-muted">
                       {stage.state === "paid"
@@ -355,12 +490,15 @@ export function BookingActionDialog({
           <div className="mt-4">
             <Field
               label={`Note to the guest (optional)`}
-              hint={`Bank details or anything else about paying by ${paymentMethodLabel(booking.paymentMethod)}. Remembered for the next invoice with this payment method.`}
+              hint={`Bank details or anything else about paying by ${paymentMethodLabel(invoiceEditable ? method : booking.paymentMethod)}. Remembered for the next invoice with this payment method.`}
             >
               <textarea
                 className="input min-h-[7rem] px-3 py-2.5 text-sm leading-relaxed"
                 value={instructions}
-                onChange={(e) => setInstructions(e.target.value)}
+                onChange={(e) => {
+                  setInstructions(e.target.value);
+                  setNoteTouched(true);
+                }}
                 maxLength={4000}
               />
             </Field>

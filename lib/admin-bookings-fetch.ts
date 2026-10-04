@@ -32,6 +32,7 @@ type SqlRow = {
   roomTypes: string[] | null;
   cabins: AdminBookingCabin[] | null;
   totalPriceCents: number;
+  cardSurchargeCents: number;
   paidCents: number;
   depositCents: number | null;
   schedule: AdminPaymentStage[] | null;
@@ -96,7 +97,8 @@ const LIST_SQL = `
        JOIN "TicketType" tt ON tt.id = bt."ticketTypeId"
        WHERE bt."bookingId" = b.id),
       0
-    ) AS "totalPriceCents",
+    ) + b."cardSurchargeCents" AS "totalPriceCents",
+    b."cardSurchargeCents",
     COALESCE(
       (SELECT SUM(CASE WHEN p.kind = 'REFUND' THEN -p."amountCents" ELSE p."amountCents" END)::int
        FROM "BookingPayment" p
@@ -160,6 +162,7 @@ function mapRow(row: SqlRow): AdminBookingDto {
     roomTypes: row.roomTypes ?? [],
     cabins: row.cabins ?? [],
     totalPriceCents,
+    cardSurchargeCents: row.cardSurchargeCents ?? 0,
     paidCents,
     depositCents: row.depositCents,
     paymentSchedule: row.schedule ?? [],

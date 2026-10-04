@@ -167,6 +167,8 @@ model Booking {
   guestEmailStatus String @default("PENDING")
   adminEmailStatus String @default("PENDING")
   totalPriceCents  Int?
+  /// 2.5% online card surcharge, snapshotted with the request; the guest owes totalPriceCents + this.
+  cardSurchargeCents Int                @default(0)
   currency         String               @default("USD")
   priceSnapshotAt  DateTime?
   deletedAt        DateTime?

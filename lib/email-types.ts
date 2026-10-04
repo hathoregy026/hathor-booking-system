@@ -27,7 +27,11 @@ export type BookingEmailDetails = {
   /** Link to /admin/bookings/[id] for the team's copy. */
   adminUrl?: string;
   paymentMethod?: string;
+  /** The 2.5% online card surcharge, already included in totalPrice. Absent for bank transfer. */
+  cardSurcharge?: string;
   amountPaid?: string;
   balanceDue?: string;
+  /** What is still owed once the amount due now is paid, and when the next payment falls. */
+  remainingAfterDue?: { amount: string; when: string };
   paymentPlan?: EmailPaymentStage[];
 };

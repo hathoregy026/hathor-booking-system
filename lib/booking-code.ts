@@ -44,5 +44,6 @@ export function stageTitle(milestone: string, stageCount = 3): string {
   if (milestone === "INITIAL") return stageCount === 1 ? "Full payment" : "Deposit to confirm";
   if (milestone === "DAY_60") return "Second payment · 60 days before";
   if (milestone === "DAY_45") return "Final balance · 45 days before";
+  if (milestone === "BALANCE") return "Remaining balance";
   return milestone;
 }

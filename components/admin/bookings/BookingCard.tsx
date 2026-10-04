@@ -194,6 +194,9 @@ export function BookingCard({
         </Cell>
         <Cell icon={CreditCard} label={`Payment · ${paymentMethodLabel(booking.paymentMethod)}`}>
           <p className="text-lg font-semibold leading-tight tracking-tight tabular">{formatPrice(booking.totalPriceCents)}</p>
+          {booking.cardSurchargeCents > 0 ? (
+            <p className="text-xs text-muted tabular">incl. {formatPrice(booking.cardSurchargeCents)} card surcharge</p>
+          ) : null}
           <div className="mt-1.5">
             <PaymentMeter booking={booking} />
           </div>

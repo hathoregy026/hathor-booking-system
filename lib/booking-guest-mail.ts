@@ -4,6 +4,7 @@ import { bookingCode, paymentPlan, stageTitle } from "@/lib/booking-code";
 import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
 import { getBookingReservation, netPaid } from "@/lib/booking-engine";
 import { formatPrice } from "@/lib/client-dates";
+import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import {
   sendAdminAlertEmail,
   sendBookingConfirmedEmail,
@@ -44,8 +45,12 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
   if (!base) return null;
 
   const paid = netPaid(booking.payments);
-  const total = booking.totalPriceCents ?? 0;
+  // What the guest owes: the cabin quote plus the card surcharge snapshotted with the request.
+  const surcharge = booking.cardSurchargeCents ?? 0;
+  const total = (booking.totalPriceCents ?? 0) + surcharge;
   const plan = paymentPlan(booking.paymentSchedule, paid);
+  const dueIndex = plan.findIndex(stage => stage.state === "due");
+  const next = dueIndex >= 0 ? plan[dueIndex + 1] : undefined;
   const details: BookingEmailDetails = {
     ...base,
     bookingCode: bookingCode(booking.id),
@@ -53,8 +58,13 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
     roomType: booking.bookingRooms
       .map(line => `${line.room.roomType ?? line.room.name} (${line.adults + line.children} guest${line.adults + line.children === 1 ? "" : "s"})`)
       .join(", ") || base.roomType,
+    totalPrice: formatPrice(total),
+    cardSurcharge: surcharge > 0 ? `${formatPrice(surcharge)} (${CARD_SURCHARGE_PERCENT}% online card payment)` : undefined,
     amountPaid: paid > 0 ? formatPrice(paid) : undefined,
     balanceDue: formatPrice(Math.max(0, total - paid)),
+    remainingAfterDue: next
+      ? { amount: formatPrice(Math.max(0, total - plan[dueIndex]!.cumulativeCents)), when: stageWhen(next.milestone, next.dueAt, next.state) }
+      : undefined,
     paymentPlan: plan.map(stage => ({
       title: stageTitle(stage.milestone, plan.length),
       when: stageWhen(stage.milestone, stage.dueAt, stage.state),

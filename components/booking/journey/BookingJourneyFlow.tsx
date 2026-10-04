@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import { paymentSchedule } from "@/lib/payment-schedule";
+import { CARD_SURCHARGE_PERCENT, cardSurchargeCents, withCardSurcharge } from "@/lib/card-surcharge";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PhysicalRoomType, RequestedRoom } from "@/lib/physical-inventory";
 import { JourneyBand, JourneyProgress, PanelHead, ScrollCue, StepBanner, StepGuide, type JourneyStep } from "./JourneyChrome";
@@ -152,6 +153,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
   // A screen that lost its sailing (closed date, changed voyage) falls back to the journey.
   const view: JourneyStep = step > 1 && !loadingSailings && !sailing ? 1 : step;
+
+  // Step 3 is where the guest chooses how to pay: Visa / card owes the quote plus the online card surcharge.
+  const surchargeCents = view === 3 && form.paymentMethod === "VISA" && totalCents !== null ? cardSurchargeCents(totalCents) : 0;
+  const payableCents = totalCents === null ? null : totalCents + surchargeCents;
+  const payableSchedule = useMemo(
+    () => (totalCents === null ? schedule : withCardSurcharge(schedule, totalCents, surchargeCents)),
+    [schedule, totalCents, surchargeCents],
+  );
 
   const phoneToSend = internationalPhone(form.phone, findCountry(form.countryCode)?.dial ?? null);
 
@@ -616,14 +625,17 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       adults={adults}
       childCount={children}
       cabins={cabins}
-      totalCents={totalCents}
+      totalCents={payableCents}
       step={view}
       onJump={jump}
       payment={
         view === 3
           ? {
               label: form.paymentMethod === "BANK_TRANSFER" ? "Bank transfer" : "Visa / card payment",
-              sub: "Invoice and payment instructions follow by email.",
+              sub:
+                form.paymentMethod === "BANK_TRANSFER"
+                  ? "Invoice and payment instructions follow by email."
+                  : `A ${CARD_SURCHARGE_PERCENT}% card surcharge is added when you pay. Invoice and payment instructions follow by email.`,
               onEdit: () => reveal("#hj-m-payment"),
             }
           : null
@@ -645,7 +657,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       adults={adults}
       childCount={children}
       cabins={cabins}
-      totalCents={totalCents}
+      totalCents={payableCents}
       step={view}
       onJump={jump}
     />
@@ -811,7 +823,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               mobileBar={
                 <ActionBar
                   label={totalLabel}
-                  amount={totalCents === null ? "No cabin yet" : money(totalCents)}
+                  amount={payableCents === null ? "No cabin yet" : money(payableCents)}
                   sub={partySub}
                   note={issues.length > 0 && waitingCount === 0 ? issues[0] : null}
                   action={issues.length === 0 ? "Continue" : waitingCount > 0 ? "Place guests" : "Check cabins"}
@@ -832,7 +844,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
               <DetailsPaymentScreen
                 cabins={cabins}
-                schedule={schedule}
+                schedule={payableSchedule}
+                totalCents={totalCents}
                 form={form}
                 onForm={patchForm}
                 names={names}
@@ -847,8 +860,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             {rail}
             <ActionBar
               label={totalLabel}
-              amount={totalCents === null ? "—" : money(totalCents)}
-              sub={partySub}
+              amount={payableCents === null ? "—" : money(payableCents)}
+              sub={surchargeCents > 0 ? `${partySub} · incl. ${CARD_SURCHARGE_PERCENT}% card surcharge` : partySub}
               action="Confirm request"
               busy={busy}
               busyLabel="Sending your request…"
@@ -868,7 +881,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             adults={adults}
             childCount={children}
             cabins={cabins}
-            totalCents={totalCents}
+            totalCents={payableCents}
             pendingTotal={view === 1 ? (fromCents === null ? "Choose a date" : `From ${money(fromCents)}`) : "Place your guests"}
             onEdit={view > 1 ? () => jump((view - 1) as JourneyStep) : undefined}
             details={rail}

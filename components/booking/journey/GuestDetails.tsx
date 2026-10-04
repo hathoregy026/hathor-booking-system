@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
+import { CARD_SURCHARGE_PERCENT, cardSurchargeCents } from "@/lib/card-surcharge";
 import { findCountry } from "@/lib/countries";
 import { CountryPicker } from "./CountryPicker";
 import { guestLabel, type CabinView } from "./allocation";
-import { type GuestForm, type PaymentStage } from "./model";
+import { money, type GuestForm, type PaymentStage } from "./model";
 import { IconBank, IconCard } from "./icons";
 import { PaymentPlan } from "./PaymentPlan";
 
@@ -13,6 +14,7 @@ import { PaymentPlan } from "./PaymentPlan";
 export function DetailsPaymentScreen({
   cabins,
   schedule,
+  totalCents,
   form,
   onForm,
   names,
@@ -24,6 +26,7 @@ export function DetailsPaymentScreen({
 }: {
   cabins: CabinView[];
   schedule: PaymentStage[];
+  totalCents: number | null;
   form: GuestForm;
   onForm: (patch: Partial<GuestForm>) => void;
   names: Record<string, string>;
@@ -137,7 +140,7 @@ export function DetailsPaymentScreen({
             />
             <span>
               <strong><IconCard /> Visa / card payment</strong>
-              <span>Preferred method only. Hathor sends the invoice later — no card number is stored here.</span>
+              <span>Adds a {CARD_SURCHARGE_PERCENT}% online payment surcharge. Hathor sends the invoice later — no card number is stored here.</span>
             </span>
           </label>
           <label className={`hj-choice${form.paymentMethod === "BANK_TRANSFER" ? " hj-choice--on" : ""}`}>
@@ -149,9 +152,20 @@ export function DetailsPaymentScreen({
             />
             <span>
               <strong><IconBank /> Bank transfer</strong>
-              <span>Pay via international bank transfer using the instructions on your invoice.</span>
+              <span>No surcharge. Pay via international bank transfer using the instructions on your invoice.</span>
             </span>
           </label>
+        </div>
+        <div aria-live="polite">
+          {form.paymentMethod === "VISA" ? (
+            <p className="hj-note-box">
+              Online card payments carry a {CARD_SURCHARGE_PERCENT}% surcharge, already added to your total
+              {totalCents
+                ? `: ${money(totalCents)} + ${money(cardSurchargeCents(totalCents))} = ${money(totalCents + cardSurchargeCents(totalCents))}`
+                : ""}
+              . Bank transfer adds nothing.
+            </p>
+          ) : null}
         </div>
 
         <div className="hj-pay__pair">
