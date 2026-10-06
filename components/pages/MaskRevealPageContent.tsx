@@ -209,8 +209,8 @@ function ListingAddButton({ item }: { item: ListingItem }) {
       kind="cabin"
       slug={cabinSlug}
       name={`${item.roomName} on ${item.cruiseName}`}
-      variant="inline"
-      className="mr-btn mr-btn--outline mr-card__voyage"
+      variant="card"
+      className="mr-card__cart"
     />
   );
 }
@@ -561,7 +561,10 @@ export function MaskRevealPageContent() {
                               </span>
                             ))}
                           </div>
-                          <ListingFavouriteButton item={item} />
+                          <div className="mr-card__tools">
+                            <ListingAddButton item={item} />
+                            <ListingFavouriteButton item={item} />
+                          </div>
                         </div>
 
                         <Link
@@ -608,7 +611,6 @@ export function MaskRevealPageContent() {
                           <Link href={item.detailHref} className="mr-btn mr-btn--outline">
                             View Details
                           </Link>
-                          <ListingAddButton item={item} />
                           <BookNowTrigger className="mr-btn mr-btn--solid">
                             Book Now
                           </BookNowTrigger>

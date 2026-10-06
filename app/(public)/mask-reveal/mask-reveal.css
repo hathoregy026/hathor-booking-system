@@ -519,6 +519,13 @@ html[data-mask-reveal] .mask-reveal-route {
   gap: 0.25rem;
 }
 
+.mr-card__tools {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 0.35rem;
+}
+
 .mr-card__feature {
   display: inline-flex;
   align-items: center;
@@ -533,18 +540,25 @@ html[data-mask-reveal] .mask-reveal-route {
   color: var(--mr-muted);
 }
 
-.mr-card__fav {
+.mr-card__fav,
+.mr-card .mr-card__cart {
+  position: static;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
   border-radius: 50%;
   border: 1.5px solid var(--mr-line);
   background: var(--mr-cream);
-  color: var(--mr-gold);
+  color: var(--mr-ink);
   cursor: pointer;
+  box-shadow: none;
+  backdrop-filter: none;
   transition:
     background 0.3s var(--mr-ease),
     color 0.3s var(--mr-ease),
@@ -552,19 +566,38 @@ html[data-mask-reveal] .mask-reveal-route {
     transform 0.3s var(--mr-ease);
 }
 
-.mr-card__fav-icon {
+.mr-card__fav-icon,
+.mr-card__cart .hathor-atv__icon {
   display: block;
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
-.mr-card__fav:hover {
-  border-color: var(--mr-gold);
+.mr-card__fav:hover,
+.mr-card .mr-card__cart:hover {
+  border-color: var(--mr-ink);
   transform: scale(1.06);
 }
 
-.mr-card__fav.is-active {
-  background: var(--mr-gold);
-  border-color: var(--mr-gold);
+.mr-card__fav.is-active,
+.mr-card .mr-card__cart.is-selected {
+  background: var(--mr-ink);
+  border-color: var(--mr-ink);
   color: var(--mr-cream);
+}
+
+.mr-card__fav:focus-visible,
+.mr-card .mr-card__cart:focus-visible {
+  outline: 2px solid var(--mr-ink);
+  outline-offset: 3px;
+}
+
+@media (pointer: coarse) {
+  .mr-card__fav,
+  .mr-card .mr-card__cart {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
 }
 
 .mr-card__plan {
@@ -612,6 +645,10 @@ html[data-mask-reveal] .mask-reveal-route {
 }
 
 .mr-card__price {
+  --room-price-unit-font: "Playfair Display Italic", "Playfair Display", Georgia, serif;
+  --room-price-unit-size: 0.8em;
+  --room-price-unit-style: italic;
+  --room-price-unit-tracking: 0;
   margin: 0;
   font-size: clamp(0.92rem, 1.2vw, 1.05rem);
   font-weight: 650;
@@ -668,11 +705,20 @@ html[data-mask-reveal] .mask-reveal-route {
   color: var(--mr-gold);
 }
 
-.mr-card__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+.mr-card__actions:not(#_):not(#_) {
+  --hathor-btn-font-size: clamp(0.6rem, 0.72vw, 0.7rem);
+  --hathor-btn-tracking: 0.12em;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem !important;
   padding: 0 0.7rem 0.7rem;
+}
+
+.mr-card__actions .mr-btn:not(#_):not(#_) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding-inline: 0.5rem !important;
 }
 
 .mr-card .mr-btn {

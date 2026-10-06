@@ -21,7 +21,7 @@ import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { HOME_CAROUSEL_IMAGE_BY_ROOM } from "@/lib/home-carousel-images";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
-import { cabinSlugForListing } from "@/lib/selection-catalog";
+import { cabinSlugForListing, residenceSlugForCabinName } from "@/lib/selection-catalog";
 import type { HeroLogoTune } from "@/lib/hero-logo-tune-shared";
 import { NILE_MOORINGS, NILE_TOTAL_KM } from "@/lib/nile-route";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
@@ -267,6 +267,7 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
         tier: "room",
         label: room.roomType,
       };
+      const residenceSlug = residenceSlugForCabinName(room.name);
       return {
         key: `${cruise.slug}-${room.roomNumber}`,
         slot: HOME_CAROUSEL_IMAGE_BY_ROOM[
@@ -296,6 +297,7 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
            than rendering ones that cannot work */
         cabinSlug: cabinSlugForListing(cruise.slug, room.name),
         cabinName: room.name,
+        detailHref: residenceSlug ? `/rooms/${residenceSlug}` : "/cruises-list",
         href: "/cruises-list",
       };
     }),
@@ -611,6 +613,23 @@ export function HomeThreePageContent({
                             sizes="(max-width: 1024px) 92vw, 24vw"
                           />
 
+                          {sailing.cabinSlug ? (
+                            <div className="h3-sail__tools">
+                              <AddToVoyageButton
+                                kind="cabin"
+                                slug={sailing.cabinSlug}
+                                name={`${sailing.cabinName}, ${sailing.name}`}
+                                variant="card"
+                              />
+                              <FavoriteButton
+                                type="cabin"
+                                slug={sailing.cabinSlug}
+                                name={`${sailing.cabinName}, ${sailing.name}`}
+                                variant="card"
+                              />
+                            </div>
+                          ) : null}
+
                           <div className="h3-sail__body">
                             <p className="h3-sail__tier">{sailing.tierLabel}</p>
                             <Link href={sailing.href} className="h3-sail__name">
@@ -629,30 +648,10 @@ export function HomeThreePageContent({
                               <RoomPriceUnit roomType={sailing.roomType} />
                             </p>
 
-                            {/* The site's own pills, on the site's own store.
-                                `inline` is the variant the roster in
-                                app/button-system.css skins — the `card` variant
-                                is an absolutely-placed disc meant to be used
-                                alone, which is why two of them landed on top of
-                                each other. */}
                             <div className="h3-pills h3-sail__acts">
-                              {sailing.cabinSlug ? (
-                                <>
-                                  <FavoriteButton
-                                    type="cabin"
-                                    slug={sailing.cabinSlug}
-                                    name={`${sailing.cabinName}, ${sailing.name}`}
-                                    variant="inline"
-                                    showLabel
-                                  />
-                                  <AddToVoyageButton
-                                    kind="cabin"
-                                    slug={sailing.cabinSlug}
-                                    name={`${sailing.cabinName}, ${sailing.name}`}
-                                    variant="inline"
-                                  />
-                                </>
-                              ) : null}
+                              <Link href={sailing.detailHref} className="h3-btn" data-hathor-btn="outline">
+                                View details
+                              </Link>
                               <BookNowTrigger className="h3-btn">
                                 Book now
                               </BookNowTrigger>
