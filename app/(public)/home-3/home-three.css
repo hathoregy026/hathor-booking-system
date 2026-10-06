@@ -1293,7 +1293,9 @@ figure) {
   letter-spacing: 0.02em;
 }
 .home-three .h3-sail__price em,
-.home-three .h3-sail__price [data-room-price-unit] {
+.home-three .h3-sail__price [data-room-price-unit],
+.home-three .h3-sail__price > span {
+  margin-inline-start: 0;
   font-family: "Playfair Display Italic", var(--h3-edit);
   font-style: italic;
   font-size: var(--h3-t-kicker);
@@ -3019,7 +3021,8 @@ figure) {
   .home-three .h3-sail__route,
   .home-three .h3-sail__route b,
   .home-three .h3-sail__price em,
-  .home-three .h3-sail__price [data-room-price-unit] {
+  .home-three .h3-sail__price [data-room-price-unit],
+  .home-three .h3-sail__price > span {
     opacity: 1;
     color: inherit;
   }

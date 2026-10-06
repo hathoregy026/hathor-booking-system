@@ -657,6 +657,17 @@ html[data-mask-reveal] .mask-reveal-route {
   color: var(--mr-ink);
 }
 
+.mr-card__price > span {
+  margin-inline-start: 0.45em;
+  font-family: "Playfair Display Italic", "Playfair Display", Georgia, serif;
+  font-size: 0.8em;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: inherit;
+}
+
 .mr-card__finish {
   margin: 0;
   flex: none;
