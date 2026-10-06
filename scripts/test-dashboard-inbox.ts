@@ -94,7 +94,7 @@ async function main() {
   assert.equal(page.messages[0].createdAt, "2026-10-02T12:00:00.000Z");
   assert.ok(!statements[0].sql.includes("OR 1=1"));
   assert.equal(statements[0].values[0], "%\\%' OR 1=1 --%");
-  assert.deepEqual(statements[0].values.slice(1), ["unread", "2026-10-02T13:00:00.000Z", "general", messageId, "all"]);
+  assert.deepEqual(statements[0].values.slice(1), ["unread", "2026-10-02T13:00:00.000Z", "general", messageId, "all", "inbox"]);
   assert.match(statements[0].sql, /recipient ILIKE \$1/);
   assert.match(statements[0].sql, /"correspondentName" ILIKE \$1/);
   for (const filter of ["sent", "received"]) {

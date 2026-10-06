@@ -2,6 +2,7 @@
 
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties, type ReactNode } from "react";
@@ -287,6 +288,7 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
         /* the dashboard's price for this voyage and cabin replaces the published one */
         voyageSlug: cruise.slug,
         roomNumber: room.roomNumber,
+        roomType: room.roomType,
         tier: tier.tier,
         tierLabel: tier.label,
         /* the composite slug the selection store keys a cabin on; null when a
@@ -624,6 +626,7 @@ export function HomeThreePageContent({
                                 const live = livePriceFor(cabinPrices, sailing.voyageSlug, sailing.roomNumber);
                                 return live === null ? sailing.price : usdLabel(live);
                               })()}
+                              <RoomPriceUnit roomType={sailing.roomType} />
                             </p>
 
                             {/* The site's own pills, on the site's own store.

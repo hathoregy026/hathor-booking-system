@@ -1284,6 +1284,7 @@ figure) {
 }
 .home-three .h3-sail__price {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0.4rem;
   font-family: var(--h3-num);

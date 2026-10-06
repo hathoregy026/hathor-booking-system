@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
+import { roomPriceUnit } from "@/lib/room-price-unit";
 import { longDate, money, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
 import { IconInfo } from "./icons";
 import { useDesktop } from "./useDesktop";
@@ -12,6 +14,11 @@ const NEXT_DATES = 5;
 function startingPrice(sailing: Sailing): number | null {
   const prices = sailing.types.filter(type => type.status === "AVAILABLE").map(type => type.priceCents);
   return prices.length ? Math.min(...prices) : null;
+}
+
+function startingRoomType(sailing: Sailing): string | undefined {
+  const cents = startingPrice(sailing);
+  return sailing.types.find(type => type.status === "AVAILABLE" && type.priceCents === cents)?.roomType;
 }
 
 /**
@@ -149,7 +156,7 @@ export function SailingCalendar({
                 key={day}
                 type="button"
                 className={`hj-cal__day hj-cal__day--open${selectedId === sailing.scheduleId ? " hj-cal__day--picked" : ""}`}
-                aria-label={`Sailing departing ${longDate(sailing.departureTime)}${startingPrice(sailing) !== null ? `, from ${money(startingPrice(sailing)!)}` : ""}`}
+                aria-label={`Sailing departing ${longDate(sailing.departureTime)}${startingPrice(sailing) !== null ? `, from ${money(startingPrice(sailing)!)} ${roomPriceUnit(startingRoomType(sailing))}` : ""}`}
                 aria-pressed={selectedId === sailing.scheduleId}
                 onClick={() => onSelect(sailing.scheduleId)}
               >
@@ -185,7 +192,7 @@ export function SailingCalendar({
                   <span className="hj-sailing__dow">{weekdayShort(sailing.departureTime)}</span>
                 </span>
                 <span className="hj-sailing__aside">
-                  {startingPrice(sailing) !== null ? <span className="hj-sailing__price">From {money(startingPrice(sailing)!)}</span> : null}
+                  {startingPrice(sailing) !== null ? <span className="hj-sailing__price">From {money(startingPrice(sailing)!)}<RoomPriceUnit roomType={startingRoomType(sailing)} /></span> : null}
                   <span className="hj-sailing__chev" aria-hidden>›</span>
                 </span>
               </button>

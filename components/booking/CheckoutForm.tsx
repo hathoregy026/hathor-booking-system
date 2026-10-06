@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { CheckoutSummary } from "@/lib/booking-checkout-summary";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { getMaxCapacityForDbRoomType } from "@/lib/room-capacity";
 
 const COUNTRY_CODES = [
@@ -479,6 +480,7 @@ export function CheckoutForm({ summary }: CheckoutFormProps) {
             <span className="text-sm font-medium">Total</span>
             <span className="booking-serif text-2xl font-semibold">
               {formatPrice(summary.priceCents)}
+              <RoomPriceUnit roomType={summary.roomType} />
             </span>
           </div>
         </aside>

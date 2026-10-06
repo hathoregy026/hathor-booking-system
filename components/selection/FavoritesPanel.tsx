@@ -14,6 +14,7 @@ import {
 } from "@/lib/booking-search-config";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { formatPrice } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import {
   findResidence,
   findVoyage,
@@ -413,7 +414,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       {indicativeCents !== null ? (
         <section className="hfp__section hfp__section--price">
           <p className="hfp__price-label">Indicative from</p>
-          <p className="hfp__price">{formatPrice(indicativeCents)}</p>
+          <p className="hfp__price">{formatPrice(indicativeCents)}<RoomPriceUnit roomType={luxuryType} /></p>
           <p className="hfp__note">
             Indicative catalog rate per cabin. Final pricing and availability are
             confirmed by our reservations team.

@@ -403,6 +403,12 @@ export const ModelName = {
   TicketType: 'TicketType',
   SailingPrice: 'SailingPrice',
   Booking: 'Booking',
+  BookingEmailThread: 'BookingEmailThread',
+  BookingMessage: 'BookingMessage',
+  InboxMessage: 'InboxMessage',
+  DashboardEmailDeletion: 'DashboardEmailDeletion',
+  DashboardEmailPlacement: 'DashboardEmailPlacement',
+  DashboardNotificationSeen: 'DashboardNotificationSeen',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
   SailingSector: 'SailingSector',
@@ -433,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -878,6 +884,450 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BookingCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BookingCountAggregateOutputType> | number
+        }
+      }
+    }
+    BookingEmailThread: {
+      payload: Prisma.$BookingEmailThreadPayload<ExtArgs>
+      fields: Prisma.BookingEmailThreadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingEmailThreadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingEmailThreadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>
+        }
+        findFirst: {
+          args: Prisma.BookingEmailThreadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingEmailThreadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>
+        }
+        findMany: {
+          args: Prisma.BookingEmailThreadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>[]
+        }
+        create: {
+          args: Prisma.BookingEmailThreadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>
+        }
+        createMany: {
+          args: Prisma.BookingEmailThreadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingEmailThreadCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>[]
+        }
+        delete: {
+          args: Prisma.BookingEmailThreadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>
+        }
+        update: {
+          args: Prisma.BookingEmailThreadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingEmailThreadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingEmailThreadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingEmailThreadUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingEmailThreadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingEmailThreadPayload>
+        }
+        aggregate: {
+          args: Prisma.BookingEmailThreadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingEmailThread>
+        }
+        groupBy: {
+          args: Prisma.BookingEmailThreadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingEmailThreadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingEmailThreadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingEmailThreadCountAggregateOutputType> | number
+        }
+      }
+    }
+    BookingMessage: {
+      payload: Prisma.$BookingMessagePayload<ExtArgs>
+      fields: Prisma.BookingMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.BookingMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>
+        }
+        findMany: {
+          args: Prisma.BookingMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>[]
+        }
+        create: {
+          args: Prisma.BookingMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>
+        }
+        createMany: {
+          args: Prisma.BookingMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.BookingMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>
+        }
+        update: {
+          args: Prisma.BookingMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.BookingMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingMessage>
+        }
+        groupBy: {
+          args: Prisma.BookingMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingMessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    InboxMessage: {
+      payload: Prisma.$InboxMessagePayload<ExtArgs>
+      fields: Prisma.InboxMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InboxMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InboxMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.InboxMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InboxMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+        }
+        findMany: {
+          args: Prisma.InboxMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>[]
+        }
+        create: {
+          args: Prisma.InboxMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+        }
+        createMany: {
+          args: Prisma.InboxMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InboxMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.InboxMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+        }
+        update: {
+          args: Prisma.InboxMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.InboxMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InboxMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InboxMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.InboxMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InboxMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.InboxMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInboxMessage>
+        }
+        groupBy: {
+          args: Prisma.InboxMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InboxMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InboxMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InboxMessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    DashboardEmailDeletion: {
+      payload: Prisma.$DashboardEmailDeletionPayload<ExtArgs>
+      fields: Prisma.DashboardEmailDeletionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DashboardEmailDeletionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DashboardEmailDeletionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>
+        }
+        findFirst: {
+          args: Prisma.DashboardEmailDeletionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DashboardEmailDeletionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>
+        }
+        findMany: {
+          args: Prisma.DashboardEmailDeletionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>[]
+        }
+        create: {
+          args: Prisma.DashboardEmailDeletionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>
+        }
+        createMany: {
+          args: Prisma.DashboardEmailDeletionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DashboardEmailDeletionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>[]
+        }
+        delete: {
+          args: Prisma.DashboardEmailDeletionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>
+        }
+        update: {
+          args: Prisma.DashboardEmailDeletionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>
+        }
+        deleteMany: {
+          args: Prisma.DashboardEmailDeletionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DashboardEmailDeletionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DashboardEmailDeletionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>[]
+        }
+        upsert: {
+          args: Prisma.DashboardEmailDeletionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailDeletionPayload>
+        }
+        aggregate: {
+          args: Prisma.DashboardEmailDeletionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDashboardEmailDeletion>
+        }
+        groupBy: {
+          args: Prisma.DashboardEmailDeletionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DashboardEmailDeletionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DashboardEmailDeletionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DashboardEmailDeletionCountAggregateOutputType> | number
+        }
+      }
+    }
+    DashboardEmailPlacement: {
+      payload: Prisma.$DashboardEmailPlacementPayload<ExtArgs>
+      fields: Prisma.DashboardEmailPlacementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DashboardEmailPlacementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DashboardEmailPlacementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>
+        }
+        findFirst: {
+          args: Prisma.DashboardEmailPlacementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DashboardEmailPlacementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>
+        }
+        findMany: {
+          args: Prisma.DashboardEmailPlacementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>[]
+        }
+        create: {
+          args: Prisma.DashboardEmailPlacementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>
+        }
+        createMany: {
+          args: Prisma.DashboardEmailPlacementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DashboardEmailPlacementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>[]
+        }
+        delete: {
+          args: Prisma.DashboardEmailPlacementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>
+        }
+        update: {
+          args: Prisma.DashboardEmailPlacementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>
+        }
+        deleteMany: {
+          args: Prisma.DashboardEmailPlacementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DashboardEmailPlacementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DashboardEmailPlacementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>[]
+        }
+        upsert: {
+          args: Prisma.DashboardEmailPlacementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardEmailPlacementPayload>
+        }
+        aggregate: {
+          args: Prisma.DashboardEmailPlacementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDashboardEmailPlacement>
+        }
+        groupBy: {
+          args: Prisma.DashboardEmailPlacementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DashboardEmailPlacementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DashboardEmailPlacementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DashboardEmailPlacementCountAggregateOutputType> | number
+        }
+      }
+    }
+    DashboardNotificationSeen: {
+      payload: Prisma.$DashboardNotificationSeenPayload<ExtArgs>
+      fields: Prisma.DashboardNotificationSeenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DashboardNotificationSeenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DashboardNotificationSeenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>
+        }
+        findFirst: {
+          args: Prisma.DashboardNotificationSeenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DashboardNotificationSeenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>
+        }
+        findMany: {
+          args: Prisma.DashboardNotificationSeenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>[]
+        }
+        create: {
+          args: Prisma.DashboardNotificationSeenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>
+        }
+        createMany: {
+          args: Prisma.DashboardNotificationSeenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DashboardNotificationSeenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>[]
+        }
+        delete: {
+          args: Prisma.DashboardNotificationSeenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>
+        }
+        update: {
+          args: Prisma.DashboardNotificationSeenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>
+        }
+        deleteMany: {
+          args: Prisma.DashboardNotificationSeenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DashboardNotificationSeenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DashboardNotificationSeenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>[]
+        }
+        upsert: {
+          args: Prisma.DashboardNotificationSeenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DashboardNotificationSeenPayload>
+        }
+        aggregate: {
+          args: Prisma.DashboardNotificationSeenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDashboardNotificationSeen>
+        }
+        groupBy: {
+          args: Prisma.DashboardNotificationSeenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DashboardNotificationSeenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DashboardNotificationSeenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DashboardNotificationSeenCountAggregateOutputType> | number
         }
       }
     }
@@ -2131,6 +2581,7 @@ export const BookingScalarFieldEnum = {
   guestEmailStatus: 'guestEmailStatus',
   adminEmailStatus: 'adminEmailStatus',
   totalPriceCents: 'totalPriceCents',
+  cardSurchargeCents: 'cardSurchargeCents',
   currency: 'currency',
   priceSnapshotAt: 'priceSnapshotAt',
   deletedAt: 'deletedAt',
@@ -2139,6 +2590,95 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const BookingEmailThreadScalarFieldEnum = {
+  bookingId: 'bookingId',
+  replyToken: 'replyToken',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingEmailThreadScalarFieldEnum = (typeof BookingEmailThreadScalarFieldEnum)[keyof typeof BookingEmailThreadScalarFieldEnum]
+
+
+export const BookingMessageScalarFieldEnum = {
+  folder: 'folder',
+  screeningReasons: 'screeningReasons',
+  id: 'id',
+  bookingId: 'bookingId',
+  direction: 'direction',
+  status: 'status',
+  sender: 'sender',
+  recipient: 'recipient',
+  subject: 'subject',
+  bodyText: 'bodyText',
+  resendEmailId: 'resendEmailId',
+  internetMessageId: 'internetMessageId',
+  attachments: 'attachments',
+  senderMatchesGuest: 'senderMatchesGuest',
+  recordedBySession: 'recordedBySession',
+  notificationSentAt: 'notificationSentAt',
+  notificationLeaseUntil: 'notificationLeaseUntil',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingMessageScalarFieldEnum = (typeof BookingMessageScalarFieldEnum)[keyof typeof BookingMessageScalarFieldEnum]
+
+
+export const InboxMessageScalarFieldEnum = {
+  folder: 'folder',
+  screeningReasons: 'screeningReasons',
+  id: 'id',
+  resendEmailId: 'resendEmailId',
+  mailboxId: 'mailboxId',
+  origin: 'origin',
+  direction: 'direction',
+  status: 'status',
+  sender: 'sender',
+  recipient: 'recipient',
+  correspondentName: 'correspondentName',
+  subject: 'subject',
+  bodyText: 'bodyText',
+  bodyHtml: 'bodyHtml',
+  requestFingerprint: 'requestFingerprint',
+  recordedBySession: 'recordedBySession',
+  sendLeaseUntil: 'sendLeaseUntil',
+  attachments: 'attachments',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type InboxMessageScalarFieldEnum = (typeof InboxMessageScalarFieldEnum)[keyof typeof InboxMessageScalarFieldEnum]
+
+
+export const DashboardEmailDeletionScalarFieldEnum = {
+  source: 'source',
+  messageId: 'messageId',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DashboardEmailDeletionScalarFieldEnum = (typeof DashboardEmailDeletionScalarFieldEnum)[keyof typeof DashboardEmailDeletionScalarFieldEnum]
+
+
+export const DashboardEmailPlacementScalarFieldEnum = {
+  source: 'source',
+  messageId: 'messageId',
+  mailboxId: 'mailboxId',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DashboardEmailPlacementScalarFieldEnum = (typeof DashboardEmailPlacementScalarFieldEnum)[keyof typeof DashboardEmailPlacementScalarFieldEnum]
+
+
+export const DashboardNotificationSeenScalarFieldEnum = {
+  kind: 'kind',
+  source: 'source',
+  messageId: 'messageId',
+  seenAt: 'seenAt'
+} as const
+
+export type DashboardNotificationSeenScalarFieldEnum = (typeof DashboardNotificationSeenScalarFieldEnum)[keyof typeof DashboardNotificationSeenScalarFieldEnum]
 
 
 export const ApiRateLimitScalarFieldEnum = {
@@ -2340,6 +2880,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -2354,6 +2901,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -2450,6 +3006,20 @@ export type EnumBookingPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'BookingPaymentStatus[]'
  */
 export type ListEnumBookingPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingPaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -2623,6 +3193,12 @@ export type GlobalOmitConfig = {
   ticketType?: Prisma.TicketTypeOmit
   sailingPrice?: Prisma.SailingPriceOmit
   booking?: Prisma.BookingOmit
+  bookingEmailThread?: Prisma.BookingEmailThreadOmit
+  bookingMessage?: Prisma.BookingMessageOmit
+  inboxMessage?: Prisma.InboxMessageOmit
+  dashboardEmailDeletion?: Prisma.DashboardEmailDeletionOmit
+  dashboardEmailPlacement?: Prisma.DashboardEmailPlacementOmit
+  dashboardNotificationSeen?: Prisma.DashboardNotificationSeenOmit
   apiRateLimit?: Prisma.ApiRateLimitOmit
   bookingRoom?: Prisma.BookingRoomOmit
   sailingSector?: Prisma.SailingSectorOmit

@@ -16,6 +16,7 @@ import type { ShipRoom } from "@/lib/ship-experience";
 import { DEFAULT_SHIP_EXPERIENCE, SHIP_REGIONS, type ShipDeckId, type ShipExperienceConfig, type ShipSlotId } from "@/lib/ship-experience-shared";
 import { DeckAtlasPlan, type AtlasPlanRoom, type AtlasState, type SpotId } from "./DeckAtlasPlan";
 import { DeckAtlasRoomModal, type AtlasSheet, type RoomSheet } from "./DeckAtlasRoomModal";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { facilitiesWith, facilityMark, isFacilityId, type Facility, type FacilityId } from "./facilities";
 import { DeckElevation } from "./DeckElevation";
 import "./deck-atlas.css";
@@ -246,6 +247,7 @@ export function DeckAtlas() {
     gallery: pick.gallery, galleryAlt: pick.comparable ? "A comparable cabin" : pick.name, galleryNote: pick.comparable ? "A comparable cabin" : null,
     deck: deck.id, areas: [SHIP_REGIONS[pick.slotId]],
     state: pick.state, status: pickStatus, price: pickPrice !== null ? usd(pickPrice) : null,
+    roomType: pick.type,
     checkHref, viewHref: residence ? `/rooms/${residence}` : null,
     cabinSlug: residence && pickRoomId ? buildCabinSlug(duration, residence) : null,
   } : null;
@@ -393,7 +395,7 @@ export function DeckAtlas() {
             </div>
             <div className="da-detail__terms">
               <p className="da-status" data-state={pick.state}>{pickStatus}</p>
-              {sheet.price ? <p className="da-price">{sheet.price}<small>per cabin · entire voyage</small></p> : null}
+              {sheet.price ? <p className="da-price">{sheet.price}<RoomPriceUnit roomType={sheet.roomType} /><small>entire voyage</small></p> : null}
             </div>
             <div className="da-detail__act">
               {sheet.checkHref ? <Link className="btn" data-hathor-btn="primary" href={sheet.checkHref}>{pick.state === "closed" ? "See other dates" : "Check availability"}</Link>
@@ -416,7 +418,7 @@ export function DeckAtlas() {
                     <li key={group.type} className="da-group">
                       <div className="da-group__head">
                         <p className="da-group__name">{group.type}</p>
-                        {price !== null ? <p className="da-group__price">{usd(price)}</p> : null}
+                        {price !== null ? <p className="da-group__price">{usd(price)}<RoomPriceUnit roomType={group.type} /></p> : null}
                       </div>
                       <p className="da-group__spec">{group.type === REQUEST_GROUP ? "Contact us about this room." : specOf(first)}</p>
                       <div className="da-group__rooms">

@@ -11,6 +11,7 @@ import { correspondentInitials, correspondentLabel } from "@/lib/email-correspon
 import { type InboxCounts, type InboxDetail, type InboxFilter, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
 import { EMAIL_MAILBOXES, emailMailbox, type MailboxId, type MailboxSummary } from "@/lib/email-mailboxes";
 import { ADMIN_ACTIVITY_EVENT } from "@/lib/admin-notification-types";
+import { MAIL_REASON_LABELS, type MailFolder } from "@/lib/mail-folders";
 
 const messageTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Cairo", dateStyle: "medium", timeStyle: "short" });
 const keyOf = (message: { source: InboxSource; id: string }) => `${message.source}/${message.id}`;
@@ -38,6 +39,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<InboxFilter>("all");
+  const [folder, setFolder] = useState<MailFolder>("inbox");
   const [selected, setSelected] = useState<string | null>(null);
   const [detail, setDetail] = useState<InboxDetail | null>(null);
   const [detailError, setDetailError] = useState<string | null>(null);
@@ -74,7 +76,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       setBusy(true);
       setError(null);
       try {
-        const params = new URLSearchParams({ q: query, filter, mailbox });
+        const params = new URLSearchParams({ q: query, filter, mailbox, folder });
         if (cursor) {
           params.set("before", cursor.createdAt);
           params.set("cursorId", cursor.id);
@@ -94,7 +96,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
     }
     void load();
     return () => controller.abort();
-  }, [query, filter, mailbox, cursor, version]);
+  }, [query, filter, mailbox, folder, cursor, version]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -133,6 +135,19 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       setDetail(current => current && keyOf(current) === currentKey ? { ...current, readAt: read ? new Date().toISOString() : null } : current);
       refresh();
     } catch { setDetailError("Read status could not be saved. Please try again."); }
+    finally { setMarking(false); }
+  }
+
+  async function moveToFolder(nextFolder: MailFolder) {
+    if (!detail || detail.direction === "OUTBOUND" || marking || batching || draft) return;
+    setMarking(true); setDetailError(null);
+    try {
+      const response = await adminFetch(`/api/admin/inbox/${keyOf(detail)}`, { method: "PATCH",
+        headers: { "Content-Type": "application/json" }, body: JSON.stringify({ folder: nextFolder }) });
+      if (!response.ok) throw new Error();
+      setSelection([]); selectMessage(null); refresh();
+      window.dispatchEvent(new Event(ADMIN_ACTIVITY_EVENT));
+    } catch { setDetailError("This email could not be moved. Please try again."); }
     finally { setMarking(false); }
   }
 
@@ -288,6 +303,14 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
         <button type="button" className="btn-primary" onClick={() => compose()} disabled={Boolean(draft) || batching}><Plus size={17} aria-hidden />Send new email</button>
         </div>
       </header>
+      <nav className="emails-folders" aria-label="Email folders">
+        {(["inbox", "spam", "security"] as const).map(item => <button type="button" key={item} className="btn-outline"
+          aria-pressed={folder === item} disabled={Boolean(draft) || batching || marking}
+          onClick={() => { setFolder(item); setFilter("all"); setCursor(null); setSelection([]); selectMessage(null); }}>
+          {item === "inbox" ? "Inbox" : item === "spam" ? "Spam" : "Security quarantine"}
+        </button>)}
+      </nav>
+      {folder !== "inbox" ? <p className="text-sm text-muted">Held messages do not trigger normal Inbox alerts. Read the reason before restoring. Links, formatted views and attachments remain blocked until restored.</p> : null}
       <nav className="emails-mailboxes" aria-label="Choose mailbox">
         <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox("all")} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">ALL MAILBOXES</span><span className="emails-mailbox__handler">Administrator overview</span><span className="emails-mailbox__count">{mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread</span></button>
         {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count" title={`${item.total} total`}>{item.unread} unread{compactControls && !editingHandler && !draft ? "" : ` · ${item.total} total`}</span></button>)}
@@ -341,16 +364,20 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
               <h2 className="break-words text-xl font-semibold">{detail.subject || "(No subject)"}</h2>
               <dl className="emails-detail-metadata"><div><dt>From</dt><dd>{detail.sender}</dd></div><div><dt>To</dt><dd>{detail.recipient}</dd></div><div><dt>{detail.direction === "OUTBOUND" ? "Recorded" : "Received"}</dt><dd><time dateTime={detail.createdAt}>{messageTime.format(new Date(detail.createdAt))}</time></dd></div><div><dt>Handled by</dt><dd>{mailboxes.find(item => item.id === detail.mailboxId)?.handlerName || "Not assigned"}</dd></div></dl>
               {!detail.senderMatchesGuest ? <p className="mt-4 text-sm text-muted">This sender differs from the booking’s guest email. Verify their identity before taking action.</p> : null}
+              {detail.screeningReasons?.length ? <aside className="emails-screening" aria-label="Screening reasons"><p className="font-semibold">{(detail.folder ?? "inbox") === "inbox" ? "Review history" : detail.folder === "spam" ? "Why this is in Spam" : "Why this is quarantined"}</p><ul>{detail.screeningReasons.map(reason => <li key={reason}>{MAIL_REASON_LABELS[reason] ?? "Held for review."}</li>)}</ul></aside> : null}
               <div className="my-6 flex flex-wrap gap-3">
                 {detail.direction !== "OUTBOUND" ? <button type="button" className="btn-outline" disabled={marking} onClick={() => void markRead()}>{marking ? "Saving…" : detail.readAt ? "Mark unread" : "Mark read"}</button> : null}
-                {detail.bookingId ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <button type="button" className="btn-primary" onClick={() => compose({ to: contactOf(detail), recipientName: detail.correspondentName ?? "", mailboxId: detail.mailboxId ?? "reservations", subject: /^re:/i.test(detail.subject) ? detail.subject : `Re: ${detail.subject}`.slice(0, 180) })}>{detail.direction === "OUTBOUND" ? "Send another email" : "Reply from dashboard"}</button>}
+                {(detail.folder ?? "inbox") !== "inbox" ? <button type="button" className="btn-primary" disabled={marking || batching} onClick={() => void moveToFolder("inbox")}>{detail.folder === "spam" ? "Not spam · Move to Inbox" : "Restore to Inbox"}</button> : detail.bookingId ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <button type="button" className="btn-primary" onClick={() => compose({ to: contactOf(detail), recipientName: detail.correspondentName ?? "", mailboxId: detail.mailboxId ?? "reservations", subject: /^re:/i.test(detail.subject) ? detail.subject : `Re: ${detail.subject}`.slice(0, 180) })}>{detail.direction === "OUTBOUND" ? "Send another email" : "Reply from dashboard"}</button>}
+                {detail.direction === "INBOUND" && detail.folder !== "spam" ? <button type="button" className="btn-outline" disabled={marking || batching} onClick={() => void moveToFolder("spam")}>Mark as spam</button> : null}
+                {detail.direction === "INBOUND" && detail.folder !== "security" ? <button type="button" className="btn-outline" disabled={marking || batching} onClick={() => void moveToFolder("security")}>Flag security threat</button> : null}
                 <button type="button" className="btn-outline emails-delete" disabled={deleting || batching || detail.status === "PENDING"} onClick={() => void removeMessage()}><Trash2 size={15} aria-hidden />{deleting ? "Removing…" : "Delete from dashboard"}</button>
               </div>
               {detail.direction === "OUTBOUND" && detail.status !== "SENT" ? <p className="email-composer__notice">{detail.status === "FAILED" ? "The provider did not accept this email." : "Sending has not been confirmed. Check the original send request before creating a second copy."}</p> : null}
-              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={keyOf(detail)} bodyText={detail.bodyText} formattedUrl={detail.source === "general" || detail.direction !== "OUTBOUND" ? `/api/admin/inbox/${keyOf(detail)}/formatted` : undefined} /></div>
-              {detail.attachments.length ? <div className="mt-7 border-t pt-5" style={{ borderColor: "var(--border)" }}><h3 className="mb-3 text-sm font-semibold">Attachments</h3><ul className="space-y-2">{detail.attachments.map(file => (
+              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={`${keyOf(detail)}/${detail.folder}`} bodyText={detail.bodyText} formattedUrl={(detail.folder ?? "inbox") === "inbox" && (detail.source === "general" || detail.direction !== "OUTBOUND") ? `/api/admin/inbox/${keyOf(detail)}/formatted` : undefined} /></div>
+              {detail.attachments.length && (detail.folder ?? "inbox") === "inbox" ? <div className="mt-7 border-t pt-5" style={{ borderColor: "var(--border)" }}><h3 className="mb-3 text-sm font-semibold">Attachments</h3><ul className="space-y-2">{detail.attachments.map(file => (
                 <li key={file.id}><a className="inline-flex max-w-full items-center gap-2 break-all text-sm underline underline-offset-4" target="_blank" rel="noopener noreferrer" href={detail.bookingId ? `/api/admin/bookings/${encodeURIComponent(detail.bookingId)}/messages/${detail.id}/attachments/${file.id}` : `/api/admin/inbox/general/${detail.id}/attachments/${file.id}`}><Paperclip className="h-4 w-4 shrink-0" aria-hidden />{file.filename}</a></li>
               ))}</ul><p className="mt-3 text-xs text-muted">Open only files you trust. Attachment availability follows Resend’s retention policy.</p></div> : null}
+              {detail.attachments.length && (detail.folder ?? "inbox") !== "inbox" ? <p className="mt-6 text-sm text-muted">Attachments are held until this message is restored.</p> : null}
             </article>
           )}
           </div>}

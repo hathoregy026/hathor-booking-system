@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { CheckCircle2, Ship } from "lucide-react";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { trackGaEvent } from "@/lib/ga-browser";
 import { useBookingStore } from "@/store/bookingStore";
 
@@ -83,7 +84,7 @@ export function SuccessStep() {
               style={{ color: "var(--booking-muted)" }}
             >
               <span>{room.name}</span>
-              <span>{formatPrice(room.minPriceCents)}</span>
+              <span>{formatPrice(room.minPriceCents)}<RoomPriceUnit roomType={room.roomType ?? room.name} /></span>
             </li>
           ))}
         </ul>

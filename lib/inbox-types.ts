@@ -1,5 +1,6 @@
 import type { BookingAttachment } from "@/lib/booking-message-types";
 import type { MailboxId, MailboxSummary } from "@/lib/email-mailboxes";
+import type { MailFolder } from "@/lib/mail-folders";
 
 export const DASHBOARD_INBOX_ADDRESS = "reservations@reply.hathorcruise.com";
 
@@ -7,6 +8,8 @@ export type InboxSource = "booking" | "general";
 export type InboxFilter = "all" | "unread" | "received" | "sent";
 export type InboxCounts = { all: number; unread: number; received: number; sent: number };
 export type InboxSummary = {
+  folder?: MailFolder;
+  screeningReasons?: string[];
   mailboxId: MailboxId;
   id: string;
   source: InboxSource;

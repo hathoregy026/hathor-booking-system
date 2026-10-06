@@ -78,9 +78,9 @@ export async function receivedEmailHtmlDocument(source: InboxSource, id: string,
   const query = dependencies.query ?? bookingQuery;
   const request = dependencies.request ?? resendApiRequest;
   const [message] = source === "booking"
-    ? await query<{ resendEmailId: string | null }>(`SELECT "resendEmailId" FROM "BookingMessage" m WHERE id = $1 AND direction = 'INBOUND'
+    ? await query<{ resendEmailId: string | null }>(`SELECT "resendEmailId" FROM "BookingMessage" m WHERE id = $1 AND direction = 'INBOUND' AND folder = 'inbox'
       AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id)`, [id])
-    : await query<{ resendEmailId: string | null; direction: string; bodyHtml: string | null }>(`SELECT "resendEmailId", direction, "bodyHtml" FROM "InboxMessage" m WHERE id = $1
+    : await query<{ resendEmailId: string | null; direction: string; bodyHtml: string | null }>(`SELECT "resendEmailId", direction, "bodyHtml" FROM "InboxMessage" m WHERE id = $1 AND (direction = 'OUTBOUND' OR folder = 'inbox')
       AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id)`, [id]);
   if (!message) throw new PublicRequestError("Email not found.", 404);
   if ("direction" in message && (message.direction === "OUTBOUND" || (!message.resendEmailId && "bodyHtml" in message && message.bodyHtml))) {

@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { load } from "cheerio";
 import { Resend } from "resend";
 import { z } from "zod";
+import { mailAuthenticationSchema, screenMail } from "@/lib/mail-screening";
+import type { MailFolder } from "@/lib/mail-folders";
 import { bookingQuery } from "@/lib/booking-database";
 import { bookingCode } from "@/lib/booking-code";
 import { BOOKING_MAIL_ORIGIN, bookingReplyInbox, bookingReplyToken, mailboxAddress } from "@/lib/booking-email-routing";
@@ -57,6 +59,7 @@ export const incomingEmailSchema = z.object({
   message_id: z.string().max(998),
   created_at: z.iso.datetime({ offset: true }),
   headers: z.record(z.string(), z.string()).nullable(),
+  authentication: mailAuthenticationSchema,
   attachments: z.array(z.object({
     id: z.uuid(), filename: z.string().max(512).nullable(), content_type: z.string().max(255),
   })).max(100),
@@ -102,6 +105,7 @@ export async function resendApiRequest(path: string, body?: unknown, idempotency
 type StoredIncomingMessage = {
   id: string; bookingId: string; sender: string; subject: string; bodyText: string;
   attachments: BookingAttachment[]; notificationSentAt: Date | null;
+  folder: MailFolder;
 };
 
 export async function processReceivedBookingEmail(
@@ -118,7 +122,7 @@ export async function processReceivedBookingEmail(
   if (!thread) return;
 
   let [message] = await query<StoredIncomingMessage>(
-    `SELECT id, "bookingId", sender, subject, "bodyText", attachments, "notificationSentAt"
+    `SELECT id, "bookingId", sender, subject, "bodyText", attachments, "notificationSentAt", folder
      FROM "BookingMessage" WHERE "resendEmailId" = $1 AND "bookingId" = $2 AND direction = 'INBOUND'`,
     [event.data.email_id, thread.bookingId]);
 
@@ -132,27 +136,29 @@ export async function processReceivedBookingEmail(
       id: attachment.id, filename: attachment.filename || "Attachment", contentType: attachment.content_type,
     }));
     const suppressNotification = sender === bookingReplyInbox();
+    const bodyText = incomingBodyText(email.text, email.html);
+    const screening = screenMail({ subject: email.subject, text: bodyText, html: email.html, authentication: email.authentication, attachments: email.attachments });
     const rows = await query<StoredIncomingMessage>(
       `INSERT INTO "BookingMessage" (id, "bookingId", direction, status, sender, recipient, subject, "bodyText",
-        "resendEmailId", "internetMessageId", attachments, "senderMatchesGuest", "createdAt", "notificationSentAt")
-       VALUES ($1, $2, 'INBOUND', 'RECEIVED', $3, $4, $5, $6, $7, $8, $9::jsonb, $10, $11, CASE WHEN $12 THEN NOW() END)
+        "resendEmailId", "internetMessageId", attachments, "senderMatchesGuest", "createdAt", "notificationSentAt", folder, "screeningReasons")
+       VALUES ($1, $2, 'INBOUND', 'RECEIVED', $3, $4, $5, $6, $7, $8, $9::jsonb, $10, $11, CASE WHEN $12 THEN NOW() END, $13, $14::jsonb)
        ON CONFLICT ("resendEmailId") DO NOTHING
-       RETURNING id, "bookingId", sender, subject, "bodyText", attachments, "notificationSentAt"`,
+       RETURNING id, "bookingId", sender, subject, "bodyText", attachments, "notificationSentAt", folder`,
       [randomUUID(), thread.bookingId, sender, email.to.join(", "), email.subject.replace(/[\r\n\u0000]/g, " "),
-        incomingBodyText(email.text, email.html), email.id, email.message_id, JSON.stringify(attachments),
-        sender === thread.customerEmail?.toLowerCase(), new Date(email.created_at), suppressNotification]);
+        bodyText, email.id, email.message_id, JSON.stringify(attachments),
+        sender === thread.customerEmail?.toLowerCase(), new Date(email.created_at), suppressNotification, screening.folder, JSON.stringify(screening.reasons)]);
     message = rows[0];
     if (!message) {
       [message] = await query<StoredIncomingMessage>(
-        `SELECT id, "bookingId", sender, subject, "bodyText", attachments, "notificationSentAt"
+        `SELECT id, "bookingId", sender, subject, "bodyText", attachments, "notificationSentAt", folder
          FROM "BookingMessage" WHERE "resendEmailId" = $1 AND "bookingId" = $2`, [email.id, thread.bookingId]);
     }
   }
-  if (!message || message.notificationSentAt) return;
+  if (!message || message.notificationSentAt || (message.folder ?? "inbox") !== "inbox") return;
 
   const claimed = await query<{ id: string }>(
     `UPDATE "BookingMessage" SET "notificationLeaseUntil" = NOW() + INTERVAL '60 seconds'
-     WHERE id = $1 AND "notificationSentAt" IS NULL
+     WHERE id = $1 AND "notificationSentAt" IS NULL AND folder = 'inbox'
      AND ("notificationLeaseUntil" IS NULL OR "notificationLeaseUntil" < NOW()) RETURNING id`, [message.id]);
   if (!claimed.length) throw new Error("Notification is being processed");
   try {

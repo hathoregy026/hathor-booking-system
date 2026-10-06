@@ -32,6 +32,7 @@ import {
 } from "@/components/pages/rooms/RoomAmenityIcon";
 import { RoomFolioAccordion } from "@/components/pages/rooms/RoomFolioAccordion";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { ROOM_COLLECTION_LINKS } from "@/lib/room-collection-editorial";
 import {
@@ -304,9 +305,9 @@ export function RoomDetailPage({
               <p className="rf__card-kicker">Your voyage</p>
               {voyage ? (
                 <>
-                  <p className="rf__price">{fare(voyage.priceCents)}</p>
+                  <p className="rf__price">{fare(voyage.priceCents)}<RoomPriceUnit roomType={room.name} /></p>
                   <p className="rf__price-note">
-                    per cabin · {voyage.nights} nights
+                    {voyage.nights} nights
                   </p>
                   <p className="rf__price-fine">VAT &amp; service included</p>
 
@@ -444,8 +445,8 @@ export function RoomDetailPage({
                     <>
                       <p className="rf-ledger__price">
                         {fare(voyage.priceCents)}
+                        <RoomPriceUnit roomType={room.name} />
                       </p>
-                      <p>per cabin</p>
                       <p className="rf__note">VAT &amp; service included</p>
                     </>
                   ) : (
@@ -466,7 +467,7 @@ export function RoomDetailPage({
               </p>
               <p className="rf__total-sum">
                 <span>Total</span>
-                <strong>{voyage ? fare(voyage.priceCents) : "On request"}</strong>
+                <strong>{voyage ? <>{fare(voyage.priceCents)}<RoomPriceUnit roomType={room.name} /></> : "On request"}</strong>
               </p>
               <BookNowTrigger className="room-pill rf__act rf__act--wide">
                 <span>Continue to reservation</span>

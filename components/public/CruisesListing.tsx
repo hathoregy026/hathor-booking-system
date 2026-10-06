@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { formatPrice } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ScrollReveal } from "./ScrollReveal";
 
@@ -17,6 +18,7 @@ type CruiseListingItem = {
   nights: number;
   days: number;
   roomName: string;
+  roomType: string;
   description: string;
   priceCents: number;
   capacity: number;
@@ -33,6 +35,7 @@ function flattenCruises(cruises: HathorCruiseSeed[]): CruiseListingItem[] {
       nights: cruise.nights,
       days: cruise.days,
       roomName: room.name,
+      roomType: room.roomType,
       description: room.description,
       priceCents: room.priceCents,
       capacity: room.capacity,
@@ -148,9 +151,10 @@ export function CruisesListing({ cruises }: CruisesListingProps) {
                     </p>
                     <p className="lux-cruise-card__price mt-auto pt-4">
                       {formatPrice(item.priceCents)}
+                      <RoomPriceUnit roomType={item.roomType} />
                     </p>
                     <p className="text-xs text-[var(--lux-text-grey)]">
-                      per cabin · up to {item.capacity} guests
+                      up to {item.capacity} guests
                     </p>
                     <Link
                       href="/book"

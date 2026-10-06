@@ -34,11 +34,13 @@ async function main() {
     await client.query(`CREATE TEMP TABLE "InboxMessage" (
       id TEXT PRIMARY KEY, "resendEmailId" TEXT, sender TEXT, recipient TEXT, subject TEXT, "bodyText" TEXT,
       attachments JSONB DEFAULT '[]'::jsonb, "createdAt" TIMESTAMP(3), "readAt" TIMESTAMP(3),
-      direction TEXT DEFAULT 'INBOUND', status TEXT DEFAULT 'RECEIVED', "correspondentName" TEXT, "mailboxId" TEXT DEFAULT 'reservations'
+      direction TEXT DEFAULT 'INBOUND', status TEXT DEFAULT 'RECEIVED', "correspondentName" TEXT, "mailboxId" TEXT DEFAULT 'reservations',
+      folder TEXT DEFAULT 'inbox', "screeningReasons" JSONB DEFAULT '[]'::jsonb
     ) ON COMMIT DROP`);
     await client.query(`CREATE TEMP TABLE "BookingMessage" (
       id TEXT PRIMARY KEY, "bookingId" TEXT, direction TEXT, sender TEXT, recipient TEXT, subject TEXT, "bodyText" TEXT,
-      attachments JSONB DEFAULT '[]'::jsonb, "senderMatchesGuest" BOOLEAN, "createdAt" TIMESTAMP(3), "readAt" TIMESTAMP(3), status TEXT DEFAULT 'RECEIVED'
+      attachments JSONB DEFAULT '[]'::jsonb, "senderMatchesGuest" BOOLEAN, "createdAt" TIMESTAMP(3), "readAt" TIMESTAMP(3), status TEXT DEFAULT 'RECEIVED',
+      folder TEXT DEFAULT 'inbox', "screeningReasons" JSONB DEFAULT '[]'::jsonb
     ) ON COMMIT DROP`);
     const bookingId = randomUUID();
     const sentId = randomUUID();

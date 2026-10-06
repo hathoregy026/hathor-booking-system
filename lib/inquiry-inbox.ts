@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
 import { emailMailbox } from "@/lib/email-mailboxes";
+import { mailFolderSchema } from "@/lib/mail-screening";
 
 const inquiryInboxSchema = z.object({
   id: z.uuid(),
@@ -11,6 +12,8 @@ const inquiryInboxSchema = z.object({
   text: z.string().min(1).max(20000),
   html: z.string().min(1).max(512 * 1024),
   createdAt: z.date(),
+  folder: mailFolderSchema.optional(),
+  screeningReasons: z.array(z.string().max(64)).max(20).optional(),
 }).strict();
 
 export type InquiryInboxMessage = z.infer<typeof inquiryInboxSchema>;
@@ -18,8 +21,8 @@ export type InquiryInboxMessage = z.infer<typeof inquiryInboxSchema>;
 export async function recordInquiryInbox(input: InquiryInboxMessage, query = bookingQuery): Promise<void> {
   const message = inquiryInboxSchema.parse(input);
   const mailbox = emailMailbox(message.type === "contact" ? "info" : "reservations");
-  await query(`INSERT INTO "InboxMessage" (id, "mailboxId", direction, status, sender, recipient, "correspondentName", subject, "bodyText", "bodyHtml", "createdAt", origin)
-    VALUES ($1, $2, 'INBOUND', 'RECEIVED', $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (id) DO NOTHING`,
+  await query(`INSERT INTO "InboxMessage" (id, "mailboxId", direction, status, sender, recipient, "correspondentName", subject, "bodyText", "bodyHtml", "createdAt", origin, folder, "screeningReasons")
+    VALUES ($1, $2, 'INBOUND', 'RECEIVED', $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::jsonb) ON CONFLICT (id) DO NOTHING`,
   [message.id, mailbox.id, message.email, mailbox.address, message.name, message.subject, message.text, message.html, message.createdAt,
-    message.type === "contact" ? "CONTACT_FORM" : "CHARTER_FORM"]);
+    message.type === "contact" ? "CONTACT_FORM" : "CHARTER_FORM", message.folder ?? "inbox", JSON.stringify(message.screeningReasons ?? [])]);
 }

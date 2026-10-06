@@ -1,4 +1,5 @@
 "use client";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
@@ -411,8 +412,8 @@ export function GuestsSuitesScreen({
                         </button>
                       ) : null}
                       <div className="hj-cabin-card__price">
-                        <span className="hj-room__amount">{money(type.priceCents)}</span>
-                        <span className="hj-room__per">per cabin · entire voyage</span>
+                        <span className="hj-room__amount">{money(type.priceCents)}<RoomPriceUnit roomType={type.roomType} /></span>
+                        <span className="hj-room__per">entire voyage</span>
                       </div>
                     </div>
 

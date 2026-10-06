@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ sou
   try {
     await assertInboxAdmin(request);
     const { id, attachmentId } = z.object({ source: z.literal("general"), id: z.uuid(), attachmentId: z.uuid() }).parse(await context.params);
-    const [message] = await bookingQuery<{ direction: string; resendEmailId: string; attachments: BookingAttachment[] }>(`SELECT direction, "resendEmailId", attachments FROM "InboxMessage" m WHERE id = $1
+    const [message] = await bookingQuery<{ direction: string; resendEmailId: string; attachments: BookingAttachment[] }>(`SELECT direction, "resendEmailId", attachments FROM "InboxMessage" m WHERE id = $1 AND (direction = 'OUTBOUND' OR folder = 'inbox')
       AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id)`, [id]);
     const attachment = message?.attachments.find(file => file.id === attachmentId);
     if (!attachment) return NextResponse.json({ error: "Not found" }, { status: 404, headers: inboxHeaders });

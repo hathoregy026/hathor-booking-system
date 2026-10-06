@@ -16,6 +16,7 @@ import { homeCarouselImageName } from "@/lib/home-carousel-images";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
 import { formatPrice } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { withLivePrices } from "@/lib/cabin-prices-shared";
 import { resolveAmenityCaption } from "@/components/pages/rooms/RoomAmenityIcon";
@@ -587,9 +588,9 @@ export function MaskRevealPageContent() {
                                 </p>
                                 <p className="mr-card__price">
                                   {formatPrice(item.priceCents)}
+                                  <RoomPriceUnit roomType={item.roomType} />
                                 </p>
                               </div>
-                              <p className="mr-card__finish">per cabin</p>
                             </div>
 
                             <div className="mr-card__meta-row">

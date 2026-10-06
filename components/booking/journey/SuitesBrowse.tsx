@@ -1,4 +1,5 @@
 "use client";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 
 import { useRef, useState, type ReactNode } from "react";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
@@ -213,8 +214,7 @@ export function SuitesBrowse({
         </ul>
         <div className="hj-detail__price">
           <span className="hj-detail__row">
-            <span className="hj-detail__from">Per cabin</span>
-            <span className="hj-detail__amount">{money(type.priceCents)}</span>
+            <span className="hj-detail__amount">{money(type.priceCents)}<RoomPriceUnit roomType={type.roomType} /></span>
           </span>
           <span className="hj-detail__per">Entire {voyage.nights}-night voyage, all meals and soft drinks included.</span>
         </div>

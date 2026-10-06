@@ -223,3 +223,8 @@
 @media (prefers-reduced-motion: reduce) {
   .emails-mailbox { transition: none; }
 }
+.admin-shell .emails-folders { display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-shell .emails-folders button { min-height: 44px; }
+.admin-shell .emails-folders button[aria-pressed="true"] { background: var(--accent); color: var(--bg-primary); border-color: var(--accent); }
+.admin-shell .emails-screening { margin-top: 20px; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--bg-secondary); }
+.admin-shell .emails-screening ul { margin-top: 8px; padding-left: 20px; list-style: disc; }

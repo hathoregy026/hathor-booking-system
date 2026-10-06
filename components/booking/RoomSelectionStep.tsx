@@ -12,6 +12,7 @@ import {
   Wifi,
 } from "lucide-react";
 import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { getScheduleIdForSelection } from "@/lib/booking-types";
 import { buildAvailabilityQueryParams } from "@/lib/booking-search-config";
@@ -252,9 +253,7 @@ export function RoomSelectionStep({ heroImageUrl }: RoomSelectionStepProps) {
                   <div>
                     <p className="booking-serif text-2xl font-semibold">
                       {formatPrice(room.minPriceCents)}
-                    </p>
-                    <p className="text-xs" style={{ color: "var(--booking-muted)" }}>
-                      per room
+                      <RoomPriceUnit roomType={room.roomType ?? room.name} />
                     </p>
                   </div>
                   <button

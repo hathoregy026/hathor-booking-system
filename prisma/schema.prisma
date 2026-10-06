@@ -199,6 +199,8 @@ model BookingEmailThread {
 }
 
 model BookingMessage {
+  folder String @default("inbox")
+  screeningReasons Json @default("[]")
   id String @id @default(uuid())
   bookingId String
   direction String
@@ -219,10 +221,13 @@ model BookingMessage {
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@index([bookingId, createdAt, id])
+  @@index([direction, folder, createdAt, id])
   @@index([direction, createdAt, id])
 }
 
 model InboxMessage {
+  folder String @default("inbox")
+  screeningReasons Json @default("[]")
   id String @id @default(uuid())
   resendEmailId String?
   mailboxId String @default("reservations")
@@ -245,6 +250,7 @@ model InboxMessage {
   @@index([createdAt, id])
   @@index([direction, createdAt, id])
   @@index([mailboxId, createdAt, id])
+  @@index([folder, createdAt, id])
   @@unique([resendEmailId, mailboxId])
 }
 

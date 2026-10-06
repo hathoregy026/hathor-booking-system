@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
     const params = z.object({ id: z.string().min(1).max(128), messageId: z.uuid(), attachmentId: z.uuid() }).parse(await context.params);
     const [message] = await bookingQuery<{ resendEmailId: string; direction: string; attachments: BookingAttachment[] }>(
       `SELECT "resendEmailId", direction, attachments FROM "BookingMessage"
-       WHERE id = $1 AND "bookingId" = $2`, [params.messageId, params.id]);
+       WHERE id = $1 AND "bookingId" = $2 AND (direction = 'OUTBOUND' OR folder = 'inbox')`, [params.messageId, params.id]);
     if (!message || !message.attachments.some(attachment => attachment.id === params.attachmentId)) {
       return NextResponse.json({ error: "Not found" }, { status: 404, headers });
     }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { deleteDashboardEmail, fetchInboxDetail, inboxIdentitySchema, setInboxRead } from "@/lib/dashboard-inbox";
+import { deleteDashboardEmail, fetchInboxDetail, inboxIdentitySchema, inboxMutationSchema, setInboxRead, setInboxFolder } from "@/lib/dashboard-inbox";
 import { assertInboxAdmin, inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
 import { assertTrustedPublicJsonRequest, readPublicJsonBody } from "@/lib/public-api-security";
 
@@ -20,8 +20,8 @@ export async function PATCH(request: NextRequest, context: Context) {
     await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);
     const { source, id } = inboxIdentitySchema.parse(await context.params);
-    const { read } = z.object({ read: z.boolean() }).strict().parse(await readPublicJsonBody(request));
-    const updated = await setInboxRead(source, id, read);
+    const mutation = inboxMutationSchema.parse(await readPublicJsonBody(request));
+    const updated = "read" in mutation ? await setInboxRead(source, id, mutation.read) : await setInboxFolder(source, id, mutation.folder);
     return NextResponse.json(updated ? { updated } : { error: "Not found" }, { status: updated ? 200 : 404, headers: inboxHeaders });
   } catch (error) { return inboxRouteError(error); }
 }

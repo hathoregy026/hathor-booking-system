@@ -4,6 +4,7 @@ import { bookingQuery } from "@/lib/booking-database";
 import { bookingReplyToken, mailboxAddress } from "@/lib/booking-email-routing";
 import { EMAIL_MAILBOXES } from "@/lib/email-mailboxes";
 import { mailboxDisplayName } from "@/lib/email-correspondent";
+import { screenMail } from "@/lib/mail-screening";
 import { incomingBodyText, incomingEmailSchema, processReceivedBookingEmail, receivedEmailEventSchema, resendApiRequest } from "@/lib/resend-inbound";
 
 export async function processReceivedDashboardEmail(
@@ -29,10 +30,12 @@ export async function processReceivedDashboardEmail(
   const sender = mailboxAddress(email.from);
   if (!sender) return;
   const attachments = email.attachments.map(file => ({ id: file.id, filename: file.filename || "Attachment", contentType: file.content_type }));
+  const bodyText = incomingBodyText(email.text, email.html);
+  const screening = screenMail({ subject: email.subject, text: bodyText, html: email.html, authentication: email.authentication, attachments: email.attachments });
   for (const mailbox of pending) await query(
-    `INSERT INTO "InboxMessage" (id, "resendEmailId", sender, recipient, subject, "bodyText", attachments, "createdAt", "correspondentName", "mailboxId")
-     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10) ON CONFLICT ("resendEmailId", "mailboxId") DO NOTHING`,
+    `INSERT INTO "InboxMessage" (id, "resendEmailId", sender, recipient, subject, "bodyText", attachments, "createdAt", "correspondentName", "mailboxId", folder, "screeningReasons")
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, $12::jsonb) ON CONFLICT ("resendEmailId", "mailboxId") DO NOTHING`,
     [randomUUID(), email.id, sender, recipients.join(", "), email.subject.replace(/[\r\n\u0000]/g, " "),
-      incomingBodyText(email.text, email.html), JSON.stringify(attachments), new Date(email.created_at), mailboxDisplayName(email.from), mailbox.id],
+      bodyText, JSON.stringify(attachments), new Date(email.created_at), mailboxDisplayName(email.from), mailbox.id, screening.folder, JSON.stringify(screening.reasons)],
   );
 }

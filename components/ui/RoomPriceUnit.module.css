@@ -1,0 +1,13 @@
+.unit {
+  display: inline-block;
+  margin-inline-start: 0.5em;
+  font-family: var(--font-hathor-body, "Plus Jakarta Sans"), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: baseline;
+  white-space: nowrap;
+}

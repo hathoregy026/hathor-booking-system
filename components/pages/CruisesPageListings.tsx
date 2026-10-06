@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { formatPrice } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { resolveAmenityCaption } from "@/components/pages/rooms/RoomAmenityIcon";
 import { ManagedImage } from "@/components/ui/ManagedImage";
@@ -280,7 +281,7 @@ export function CruisesPageListingsGrid() {
               <span className="cruise-price-value">
                 {formatPrice(item.priceCents)}
               </span>
-              <span className="cruise-price-unit">/ cabin</span>
+              <RoomPriceUnit roomType={item.roomType} />
             </div>
             <div className="cruise-card-actions">
               <Link href={item.detailHref} className="btn btn-primary cruise-avail">

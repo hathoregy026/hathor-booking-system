@@ -36,6 +36,7 @@ export async function fetchBookingMessages(bookingId: string, before?: { created
   const rows = await bookingQuery<Omit<BookingMessageDto, "createdAt"> & { createdAt: Date }>(
     `SELECT id, direction, status, sender, subject, "bodyText", "senderMatchesGuest", attachments, "createdAt"
      FROM "BookingMessage" WHERE "bookingId" = $1
+     AND (direction = 'OUTBOUND' OR folder = 'inbox')
      AND ($2::timestamp IS NULL OR ("createdAt", id) < ($2::timestamp, $3::text))
      ORDER BY "createdAt" DESC, id DESC LIMIT 10`,
     [bookingId, before?.createdAt ?? null, before?.id ?? null],

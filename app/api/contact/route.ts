@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendInquiryEmail } from "@/lib/inquiry-email";
+import { screenInquiry } from "@/lib/mail-screening";
+import { quarantineInquiry } from "@/lib/inquiry-quarantine";
 import {
   isKnownResidenceSlug,
   isKnownVoyageSlug,
@@ -125,44 +127,16 @@ const inquirySchema = z.object({
     .optional(),
 
   // Hidden honeypot. Real visitors never fill this; simple form bots usually do.
-  website: z.literal("").optional(),
+  website: z.string().max(300).optional(),
 });
 
-/*
- * The limiter counts in the database. A guest's charter or contact message must
- * not be lost (or left spinning) because the database is slow or briefly
- * unreachable: if the count errors or takes longer than 3 s the message goes
- * through — validation and the honeypot still apply. A real over-limit answer
- * is always enforced.
- */
-const RATE_LIMIT_WAIT_MS = 3_000;
-
 async function limitInquiries(request: Request): Promise<void> {
-  const check = enforcePublicRateLimit({
+  await enforcePublicRateLimit({
     request,
     scope: "contact-inquiry",
     limit: 5,
     windowMs: 10 * 60_000,
   });
-  // A late failure after the wait below must not surface as an unhandled rejection.
-  check.catch(() => undefined);
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const waited = new Promise<"waited">((resolve) => {
-    timer = setTimeout(() => resolve("waited"), RATE_LIMIT_WAIT_MS);
-  });
-  try {
-    const outcome = await Promise.race([check.then(() => "counted" as const), waited]);
-    if (outcome === "waited") {
-      console.warn("[inquiry] rate limit check timed out; message continues");
-    }
-  } catch (error) {
-    if (error instanceof RateLimitExceededError) throw error;
-    console.warn(
-      `[inquiry] rate limit check unavailable (${error instanceof Error ? error.name : "unknown"}); message continues`,
-    );
-  } finally {
-    clearTimeout(timer);
-  }
 }
 
 export async function POST(request: Request) {
@@ -179,6 +153,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const payload = parsed.data;
+    const screening = screenInquiry(payload);
+    if (payload.website) {
+      await quarantineInquiry(payload, screening);
+      return NextResponse.json({ ok: true, receiptSent: false }, { headers: { "Cache-Control": "no-store" } });
+    }
+    if (screening.folder !== "inbox") {
+      await quarantineInquiry(payload, screening);
+      return NextResponse.json({ ok: true, receiptSent: false }, { headers: { "Cache-Control": "no-store" } });
+    }
+
     // A receipt goes to the typed-in address: cap it per recipient, not just per IP,
     // so many IPs cannot email-bomb one victim through Hathor's sending domain.
     await enforceKeyedRateLimit({
@@ -187,7 +172,7 @@ export async function POST(request: Request) {
       limit: 3,
       windowMs: 60 * 60_000,
     });
-    const { receiptSent } = await sendInquiryEmail(parsed.data);
+    const { receiptSent } = await sendInquiryEmail(payload);
     return NextResponse.json(
       { ok: true, receiptSent },
       { headers: { "Cache-Control": "no-store" } },

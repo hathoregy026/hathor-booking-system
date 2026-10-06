@@ -48,6 +48,36 @@ export type SailingPrice = Prisma.SailingPriceModel
  */
 export type Booking = Prisma.BookingModel
 /**
+ * Model BookingEmailThread
+ * 
+ */
+export type BookingEmailThread = Prisma.BookingEmailThreadModel
+/**
+ * Model BookingMessage
+ * 
+ */
+export type BookingMessage = Prisma.BookingMessageModel
+/**
+ * Model InboxMessage
+ * 
+ */
+export type InboxMessage = Prisma.InboxMessageModel
+/**
+ * Model DashboardEmailDeletion
+ * 
+ */
+export type DashboardEmailDeletion = Prisma.DashboardEmailDeletionModel
+/**
+ * Model DashboardEmailPlacement
+ * 
+ */
+export type DashboardEmailPlacement = Prisma.DashboardEmailPlacementModel
+/**
+ * Model DashboardNotificationSeen
+ * 
+ */
+export type DashboardNotificationSeen = Prisma.DashboardNotificationSeenModel
+/**
  * Model ApiRateLimit
  * 
  */

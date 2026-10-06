@@ -12,6 +12,7 @@ import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { resolveVoyagesItineraryCms } from "@/lib/voyages-page-content";
 import { resolveCmsText } from "@/lib/website-text-shared";
 import styles from "./LuxuryAccordion.module.css";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 
 export type LuxuryAccordionItem = {
   id: string;
@@ -136,7 +137,14 @@ export default function LuxuryAccordion({
                     className={`${styles.meta} typo-our-voyages-indication-hover`}
                     style={metaStyle}
                   >
-                    {item.meta}
+                    {(item.basePriceCents ?? 0) > 0
+                      ? item.meta.split(/(\$[\d,.]+)/).map((part, index) => (
+                          <span key={index}>
+                            {part}
+                            {/^\$[\d,.]+$/.test(part) ? <RoomPriceUnit roomType="luxury-rooms" /> : null}
+                          </span>
+                        ))
+                      : item.meta}
                   </p>
                 ) : null}
                 <p

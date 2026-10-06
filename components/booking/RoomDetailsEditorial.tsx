@@ -25,6 +25,7 @@ import {
   luxuryRoomTypeForDbRoomType,
 } from "@/lib/booking-search-config";
 import { formatPrice } from "@/lib/client-dates";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { useBookingStore } from "@/store/bookingStore";
 
 function amenityIcon(amenity: string): LucideIcon {
@@ -149,8 +150,8 @@ export function RoomDetailsEditorial({ details }: { details: BookingRoomDetails 
             <section className="booking-room-scene booking-room-scene--reserve">
               <div>
                 <p className="booking-room-kicker">(Reserve this room)</p>
-                <h2>{formatPrice(details.priceCents)}</h2>
-                <p>Per {details.roomType?.toLowerCase().includes("suite") ? "suite" : "cabin"} · up to {details.capacity} guests</p>
+                <h2>{formatPrice(details.priceCents)}<RoomPriceUnit roomType={details.roomType ?? details.roomName} /></h2>
+                <p>up to {details.capacity} guests</p>
               </div>
               <div className="booking-room-editorial__actions">
                 <Link href={bookNowHref} className="public-btn-outline-gold" onClick={handleBookNow}>Book Now</Link>

@@ -57,6 +57,12 @@ export const ModelName = {
   TicketType: 'TicketType',
   SailingPrice: 'SailingPrice',
   Booking: 'Booking',
+  BookingEmailThread: 'BookingEmailThread',
+  BookingMessage: 'BookingMessage',
+  InboxMessage: 'InboxMessage',
+  DashboardEmailDeletion: 'DashboardEmailDeletion',
+  DashboardEmailPlacement: 'DashboardEmailPlacement',
+  DashboardNotificationSeen: 'DashboardNotificationSeen',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
   SailingSector: 'SailingSector',
@@ -191,6 +197,7 @@ export const BookingScalarFieldEnum = {
   guestEmailStatus: 'guestEmailStatus',
   adminEmailStatus: 'adminEmailStatus',
   totalPriceCents: 'totalPriceCents',
+  cardSurchargeCents: 'cardSurchargeCents',
   currency: 'currency',
   priceSnapshotAt: 'priceSnapshotAt',
   deletedAt: 'deletedAt',
@@ -199,6 +206,95 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const BookingEmailThreadScalarFieldEnum = {
+  bookingId: 'bookingId',
+  replyToken: 'replyToken',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingEmailThreadScalarFieldEnum = (typeof BookingEmailThreadScalarFieldEnum)[keyof typeof BookingEmailThreadScalarFieldEnum]
+
+
+export const BookingMessageScalarFieldEnum = {
+  folder: 'folder',
+  screeningReasons: 'screeningReasons',
+  id: 'id',
+  bookingId: 'bookingId',
+  direction: 'direction',
+  status: 'status',
+  sender: 'sender',
+  recipient: 'recipient',
+  subject: 'subject',
+  bodyText: 'bodyText',
+  resendEmailId: 'resendEmailId',
+  internetMessageId: 'internetMessageId',
+  attachments: 'attachments',
+  senderMatchesGuest: 'senderMatchesGuest',
+  recordedBySession: 'recordedBySession',
+  notificationSentAt: 'notificationSentAt',
+  notificationLeaseUntil: 'notificationLeaseUntil',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingMessageScalarFieldEnum = (typeof BookingMessageScalarFieldEnum)[keyof typeof BookingMessageScalarFieldEnum]
+
+
+export const InboxMessageScalarFieldEnum = {
+  folder: 'folder',
+  screeningReasons: 'screeningReasons',
+  id: 'id',
+  resendEmailId: 'resendEmailId',
+  mailboxId: 'mailboxId',
+  origin: 'origin',
+  direction: 'direction',
+  status: 'status',
+  sender: 'sender',
+  recipient: 'recipient',
+  correspondentName: 'correspondentName',
+  subject: 'subject',
+  bodyText: 'bodyText',
+  bodyHtml: 'bodyHtml',
+  requestFingerprint: 'requestFingerprint',
+  recordedBySession: 'recordedBySession',
+  sendLeaseUntil: 'sendLeaseUntil',
+  attachments: 'attachments',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type InboxMessageScalarFieldEnum = (typeof InboxMessageScalarFieldEnum)[keyof typeof InboxMessageScalarFieldEnum]
+
+
+export const DashboardEmailDeletionScalarFieldEnum = {
+  source: 'source',
+  messageId: 'messageId',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DashboardEmailDeletionScalarFieldEnum = (typeof DashboardEmailDeletionScalarFieldEnum)[keyof typeof DashboardEmailDeletionScalarFieldEnum]
+
+
+export const DashboardEmailPlacementScalarFieldEnum = {
+  source: 'source',
+  messageId: 'messageId',
+  mailboxId: 'mailboxId',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DashboardEmailPlacementScalarFieldEnum = (typeof DashboardEmailPlacementScalarFieldEnum)[keyof typeof DashboardEmailPlacementScalarFieldEnum]
+
+
+export const DashboardNotificationSeenScalarFieldEnum = {
+  kind: 'kind',
+  source: 'source',
+  messageId: 'messageId',
+  seenAt: 'seenAt'
+} as const
+
+export type DashboardNotificationSeenScalarFieldEnum = (typeof DashboardNotificationSeenScalarFieldEnum)[keyof typeof DashboardNotificationSeenScalarFieldEnum]
 
 
 export const ApiRateLimitScalarFieldEnum = {
@@ -400,6 +496,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -414,4 +517,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

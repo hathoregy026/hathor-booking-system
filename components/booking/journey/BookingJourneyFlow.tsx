@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import { paymentSchedule } from "@/lib/payment-schedule";
+import { roomPriceUnit } from "@/lib/room-price-unit";
 import { CARD_SURCHARGE_PERCENT, cardSurchargeCents, withCardSurcharge } from "@/lib/card-surcharge";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PhysicalRoomType, RequestedRoom } from "@/lib/physical-inventory";
@@ -580,11 +581,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   /** The lowest open cabin rate: for the chosen sailing, or across the dates on offer. */
-  const fromCents = useMemo(() => {
+  const fromRate = useMemo(() => {
     const pool = sailing ? [sailing] : sailings;
-    const rates = pool.flatMap(entry => entry.types.filter(type => type.availableCabins > 0).map(type => type.priceCents));
-    return rates.length > 0 ? Math.min(...rates) : null;
+    const rates = pool.flatMap(entry => entry.types.filter(type => type.availableCabins > 0));
+    return rates.sort((a, b) => a.priceCents - b.priceCents)[0] ?? null;
   }, [sailing, sailings]);
+  const fromCents = fromRate?.priceCents ?? null;
   const waitingCount = unplacedGuests(arrangement, guests).length;
   const namedCount = guests.filter(guest => (names[guest.id] ?? "").trim()).length;
   const methodLabel = form.paymentMethod === "BANK_TRANSFER" ? "Bank transfer" : "Card";
@@ -769,7 +771,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             <ActionBar
               label={sailing ? `Departs ${shortDate(sailing.departureTime)}` : voyage.title}
               amount={fromCents === null ? (loadingSailings ? "Loading dates…" : "No open dates") : `From ${money(fromCents)}`}
-              sub={fromCents === null ? voyage.route : "per cabin, entire voyage"}
+              sub={fromCents === null ? voyage.route : `${roomPriceUnit(fromRate?.roomType)}, entire voyage`}
               action={scheduleId ? "Continue" : "Choose a date"}
               ariaLabel={scheduleId ? "Continue to guests & suites" : "Choose a departure date"}
               busy={busy}

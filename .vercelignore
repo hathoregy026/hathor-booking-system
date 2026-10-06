@@ -38,3 +38,14 @@ unused content/
 scripts/diagnose-*
 hathoor-booking.json
 assets/LOGOS/*.ai
+
+# Credentials, local agent state and build evidence are never deployed.
+.env*
+!.env.example
+.vercel/
+.next/
+.claude/
+.codex/
+.aws/
+*.pem
+*.tsbuildinfo

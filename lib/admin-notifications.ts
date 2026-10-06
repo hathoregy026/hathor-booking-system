@@ -19,11 +19,11 @@ export async function fetchAdminNotifications(query = bookingQuery): Promise<Not
       WHERE b.status IN ('REQUESTED', 'CONFIRMED') AND b."deletedAt" IS NULL AND b."requestedAt" IS NOT NULL
     ), emails AS (
       SELECT m.id, 'booking'::text AS source, m.sender AS name, m.subject AS description, m."createdAt" AS happened, m."readAt"
-      FROM "BookingMessage" m JOIN "Booking" b ON b.id = m."bookingId" WHERE m.direction = 'INBOUND'
+      FROM "BookingMessage" m JOIN "Booking" b ON b.id = m."bookingId" WHERE m.direction = 'INBOUND' AND m.folder = 'inbox'
         AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id)
       UNION ALL
       SELECT id, 'general'::text, COALESCE(NULLIF("correspondentName", ''), sender), subject, "createdAt", "readAt"
-      FROM "InboxMessage" m WHERE direction = 'INBOUND'
+      FROM "InboxMessage" m WHERE direction = 'INBOUND' AND m.folder = 'inbox'
         AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id)
     ), candidates AS (
       SELECT id, 'booking'::text AS kind, 'booking'::text AS source, name, description, happened
