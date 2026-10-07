@@ -5,6 +5,7 @@ import { trackGaEvent } from "@/lib/ga-browser";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
+import { InquiryVerification } from "@/components/pages/InquiryVerification";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 type TripType = (typeof CHARTER_PRIVATE.inquiry.tripTypes)[number];
@@ -56,6 +57,8 @@ export function CharterRequestForm({
   const successRef = useRef<HTMLHeadingElement>(null);
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [verificationVersion, setVerificationVersion] = useState(0);
   /* A send that failed (not a field to fix): offer the reservations desk directly. */
   const [fallbackHref, setFallbackHref] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -80,6 +83,7 @@ export function CharterRequestForm({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (state === "submitting") return;
     setState("submitting");
     setErrorMessage("");
     setFallbackHref(null);
@@ -139,6 +143,8 @@ export function CharterRequestForm({
       return;
     }
 
+    if (!turnstileToken) { setState("error"); setErrorMessage("Please complete the security check before sending."); return; }
+
     const payload: InquiryPayload = {
       type: "charter",
       name,
@@ -156,7 +162,7 @@ export function CharterRequestForm({
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, turnstileToken }),
       });
 
       const result = (await response.json().catch(() => null)) as {
@@ -188,6 +194,9 @@ export function CharterRequestForm({
       ].filter(Boolean).join("\n");
       const body = `${details}\n\n${composedMessage}`;
       setFallbackHref(`mailto:${PUBLIC_CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+    } finally {
+      setTurnstileToken("");
+      setVerificationVersion(current => current + 1);
     }
   }
 
@@ -531,10 +540,11 @@ export function CharterRequestForm({
           ) : null}
         </div>
 
+        <InquiryVerification type="charter" onToken={setTurnstileToken} resetVersion={verificationVersion} />
         <button
           type="submit"
           className="chr-btn chr-btn--solid"
-          disabled={state === "submitting"}
+          disabled={state === "submitting" || !turnstileToken}
           aria-busy={state === "submitting"}
         >
           <span>

@@ -45,6 +45,7 @@ async function main() {
     "@/lib/inquiry-email": { sendInquiryEmail: async () => { sent++; return { receiptSent: true }; } },
     "@/lib/inquiry-quarantine": { quarantineInquiry: async () => { quarantined++; } },
     "@/lib/mail-screening": { screenInquiry },
+    "@/lib/turnstile": { verifyInquiryTurnstile: async () => {} },
     "@/lib/public-api-security": { ...security, enforcePublicRateLimit: async () => {}, enforceKeyedRateLimit: async () => {} },
     "@/lib/selection-catalog": { isKnownResidenceSlug: () => false, isKnownVoyageSlug: () => false },
     "@/lib/selection-enquiry": { SELECTION_ENQUIRY_LIMITS: { maxSlugLength: 120, maxGuests: 50, maxFavorites: 10 } },

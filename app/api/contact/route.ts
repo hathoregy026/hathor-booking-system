@@ -3,6 +3,7 @@ import { z } from "zod";
 import { sendInquiryEmail } from "@/lib/inquiry-email";
 import { screenInquiry } from "@/lib/mail-screening";
 import { quarantineInquiry } from "@/lib/inquiry-quarantine";
+import { verifyInquiryTurnstile } from "@/lib/turnstile";
 import {
   isKnownResidenceSlug,
   isKnownVoyageSlug,
@@ -128,6 +129,7 @@ const inquirySchema = z.object({
 
   // Hidden honeypot. Real visitors never fill this; simple form bots usually do.
   website: z.string().max(300).optional(),
+  turnstileToken: z.string().max(2048).optional(),
 });
 
 async function limitInquiries(request: Request): Promise<void> {
@@ -153,12 +155,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const payload = parsed.data;
+    // Verification credentials never enter stored mail or branded templates.
+    const { turnstileToken, ...payload } = parsed.data;
     const screening = screenInquiry(payload);
     if (payload.website) {
       await quarantineInquiry(payload, screening);
       return NextResponse.json({ ok: true, receiptSent: false }, { headers: { "Cache-Control": "no-store" } });
     }
+    await verifyInquiryTurnstile(request, turnstileToken, payload.type);
     if (screening.folder !== "inbox") {
       await quarantineInquiry(payload, screening);
       return NextResponse.json({ ok: true, receiptSent: false }, { headers: { "Cache-Control": "no-store" } });
