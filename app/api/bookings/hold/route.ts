@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { handleRouteError } from "@/lib/api";
 import { acquireBookingHold } from "@/lib/booking-engine";
 import { holdRequestSchema } from "@/lib/booking-request-validation";
 import { assertBookingAccessTokenConfiguration, createBookingAccessToken } from "@/lib/booking-access-token";
 import { assertTrustedPublicJsonRequest, enforcePublicRateLimit, readPublicJsonBody, requireIdempotencyKey } from "@/lib/public-api-security";
 export const dynamic = "force-dynamic";
+const protectedHoldSchema = holdRequestSchema.extend({ turnstileToken: z.string().max(2048).optional() });
 export async function POST(request: NextRequest) {
   try {
     assertTrustedPublicJsonRequest(request);
     await enforcePublicRateLimit({ request, scope: "booking-hold", limit: 20, windowMs: 10 * 60_000 });
     const idempotencyKey = requireIdempotencyKey(request);
-    const parsed = holdRequestSchema.parse(await readPublicJsonBody(request));
+    const { turnstileToken, ...parsed } = protectedHoldSchema.parse(await readPublicJsonBody(request));
     /*
      * Weight by cabin count: a request count limit alone lets one call grab
      * every cabin on a sailing (the whole ship is 12 cabins). Capping total
@@ -26,6 +29,7 @@ export async function POST(request: NextRequest) {
       weight: parsed.rooms.length,
     });
     assertBookingAccessTokenConfiguration();
+    await verifyTurnstile(request, turnstileToken, "booking_hold");
     const booking = await acquireBookingHold({ ...parsed, idempotencyKey });
     return NextResponse.json({
       bookingId: booking.id, accessToken: createBookingAccessToken(booking.id),

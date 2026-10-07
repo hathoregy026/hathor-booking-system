@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { InquiryVerification } from "@/components/pages/InquiryVerification";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import { paymentSchedule } from "@/lib/payment-schedule";
 import { roomPriceUnit } from "@/lib/room-price-unit";
@@ -117,6 +118,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [alert, setAlert] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [holdVerification, setHoldVerification] = useState("");
+  const [requestVerification, setRequestVerification] = useState("");
+  const [verificationVersion, setVerificationVersion] = useState(0);
+  const confirmationInFlight = useRef(false);
   /** Phone and tablet: the date or party sheet open on the journey step. */
   const [sheet, setSheet] = useState<"dates" | "guests" | null>(null);
   const restored = useRef(false);
@@ -381,12 +386,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     }
   }
 
-  async function requestHold(key: string, requested: RequestedRoom[]): Promise<Hold> {
+  async function requestHold(key: string, requested: RequestedRoom[], turnstileToken: string): Promise<Hold> {
     return readJson<Hold>(
       await fetch("/api/bookings/hold", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": key },
-        body: JSON.stringify({ cruiseScheduleId: scheduleId, rooms: requested }),
+        body: JSON.stringify({ cruiseScheduleId: scheduleId, rooms: requested, turnstileToken }),
       }),
     );
   }
@@ -446,7 +451,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   async function confirmRequest() {
-    if (!sailing) return;
+    if (!sailing || busy || confirmationInFlight.current) return;
     if (preferredRoomId && !rooms.some(room => room.roomId === preferredRoomId)) {
       setAlert(`Place guests in the selected cabin type, or release cabin ${preferredRoomId} to choose freely.`);
       setStep(2);
@@ -465,6 +470,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       return;
     }
 
+    if (!holdVerification || !requestVerification) {
+      setAlert("Please complete the security check before sending your booking request.");
+      reveal(".hj-booking-verification", "center");
+      return;
+    }
+    confirmationInFlight.current = true;
     setBusy(true);
     setAlert(null);
     const shownTotal = totalCents;
@@ -481,7 +492,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
     try {
       // The cabins are held only now, with the guest's details already complete.
-      held = await requestHold(current.key, rooms);
+      held = await requestHold(current.key, rooms, holdVerification);
       if (["REQUESTED", "CONFIRMED"].includes(held.status)) {
         clearAttempt();
         router.push(successUrl(held.bookingId, held.accessToken));
@@ -515,6 +526,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           body: JSON.stringify({
             bookingId: held.bookingId,
             accessToken: held.accessToken,
+            turnstileToken: requestVerification,
             firstName: form.firstName.trim(),
             lastName: form.lastName.trim(),
             email: form.email.trim(),
@@ -556,6 +568,11 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         setAlert(`${reason} Nothing is being held for you, so pressing Confirm request again starts a fresh request.`);
       }
       setBusy(false);
+    } finally {
+      confirmationInFlight.current = false;
+      setHoldVerification("");
+      setRequestVerification("");
+      setVerificationVersion(current => current + 1);
     }
   }
 
@@ -856,6 +873,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
                 busy={busy}
                 onBack={() => jump(2)}
                 onConfirm={() => void confirmRequest()}
+                verification={<>
+                  <InquiryVerification action="booking_hold" onToken={setHoldVerification} resetVersion={verificationVersion} />
+                  <InquiryVerification action="booking_request" appearance="interaction-only" onToken={setRequestVerification} resetVersion={verificationVersion} />
+                </>}
               />
               {summary}
             </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
 import { CARD_SURCHARGE_PERCENT, cardSurchargeCents } from "@/lib/card-surcharge";
 import { findCountry } from "@/lib/countries";
@@ -23,6 +24,7 @@ export function DetailsPaymentScreen({
   busy,
   onBack,
   onConfirm,
+  verification,
 }: {
   cabins: CabinView[];
   schedule: PaymentStage[];
@@ -35,6 +37,7 @@ export function DetailsPaymentScreen({
   busy: boolean;
   onBack: () => void;
   onConfirm: () => void;
+  verification?: ReactNode;
 }) {
   const country = findCountry(form.countryCode);
 
@@ -202,6 +205,7 @@ export function DetailsPaymentScreen({
         </label>
       </section>
 
+      {verification ? <div className="hj-booking-verification" style={{ gridColumn: "1 / -1", minWidth: 0 }}>{verification}</div> : null}
       <div className="hj-actions" style={{ gridColumn: "1 / -1" }}>
         <button type="button" className="hj-btn hj-btn--ghost" onClick={onBack}>← Back to guests &amp; suites</button>
         <button type="button" className="hj-btn" disabled={busy} onClick={onConfirm}>

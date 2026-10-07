@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PublicRequestError } from "@/lib/public-api-security";
+import type { TurnstileAction } from "@/lib/turnstile-actions";
 
 const TEST_SECRET = "1x0000000000000000000000000000000AA";
 const responseSchema = z.object({
@@ -10,12 +11,19 @@ export async function verifyInquiryTurnstile(
   request: Request, token: string | undefined, type: "contact" | "charter",
   fetchVerification: typeof fetch = fetch,
 ): Promise<void> {
+  return verifyTurnstile(request, token, `${type}_inquiry`, fetchVerification);
+}
+
+export async function verifyTurnstile(
+  request: Request, token: string | undefined, action: TurnstileAction,
+  fetchVerification: typeof fetch = fetch,
+): Promise<void> {
   const hostname = new URL(request.url).hostname.toLowerCase();
   const local = process.env.NODE_ENV === "development" && ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
   const secret = process.env.TURNSTILE_SECRET_KEY?.trim() || (local ? TEST_SECRET : "");
   const allowed = (process.env.TURNSTILE_ALLOWED_HOSTNAMES ?? "").split(",").map(value => value.trim().toLowerCase()).filter(Boolean);
   if (!secret || (!local && (!allowed.includes(hostname) || /^[123]x0+AA$/.test(secret)))) {
-    throw new PublicRequestError("Message verification is unavailable. Please contact our reservations team directly.", 503);
+    throw new PublicRequestError("Security verification is unavailable. Please contact our reservations team directly.", 503);
   }
   if (!token || token.length > 2048) throw new PublicRequestError("Please complete the security check and try again.", 400);
   let result: z.infer<typeof responseSchema>;
@@ -42,7 +50,7 @@ export async function verifyInquiryTurnstile(
   const test = local && secret === TEST_SECRET;
   const age = result.challenge_ts ? Date.now() - Date.parse(result.challenge_ts) : Infinity;
   if (!result.success || (!test && (result.hostname?.toLowerCase() !== hostname
-    || result.action !== `${type}_inquiry` || age < -60000 || age > 300000))) {
+    || result.action !== action || age < -60000 || age > 300000))) {
     throw new PublicRequestError("The security check expired or could not be verified. Please try again.", 400);
   }
 }
