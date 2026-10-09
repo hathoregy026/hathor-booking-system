@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -18,7 +19,7 @@ if (!url) {
   process.exit(1);
 }
 
-const client = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false } });
+const client = new pg.Client({ ...pgConnectionOptions(url) });
 
 async function main() {
   await client.connect();

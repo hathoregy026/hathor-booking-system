@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 function getSessionPoolerUrl() {
   const url = process.env.DATABASE_URL;
@@ -35,8 +36,7 @@ ALTER TABLE "EmailTemplate" DROP COLUMN IF EXISTS "heroImageDataUrl";
 `;
 
 const pool = new pg.Pool({
-  connectionString: getSessionPoolerUrl(),
-  ssl: { rejectUnauthorized: false },
+  ...pgConnectionOptions(getSessionPoolerUrl()),
 });
 
 try {

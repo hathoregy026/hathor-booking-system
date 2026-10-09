@@ -1,13 +1,13 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const base = "http://localhost:3000";
 const roomId = "cm0seed0001room0000002";
 const scheduleId = "cm0seed0001schedule00001";
 
 const client = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ...pgConnectionOptions(process.env.DATABASE_URL),
 });
 await client.connect();
 

@@ -14,6 +14,7 @@
  */
 import { performance } from "node:perf_hooks";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const raw = process.env.DATABASE_URL;
 if (!raw) {
@@ -57,8 +58,7 @@ for (const [label, connectionString] of VARIANTS) {
 
   for (let i = 0; i < 2; i += 1) {
     const client = new pg.Client({
-      connectionString,
-      ssl: { rejectUnauthorized: false },
+      ...pgConnectionOptions(connectionString),
       connectionTimeoutMillis: 30000,
     });
     const t = performance.now();

@@ -6,6 +6,7 @@
 
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const LOGO_URL =
   process.env.HATHOR_EMAIL_LOGO_URL?.trim() ??
@@ -26,10 +27,7 @@ if (!connectionString) {
 }
 
 const pool = new pg.Pool({
-  connectionString,
-  ssl: connectionString.includes("localhost")
-    ? false
-    : { rejectUnauthorized: false },
+  ...pgConnectionOptions(connectionString),
 });
 
 const TEMPLATE_NAMES = [

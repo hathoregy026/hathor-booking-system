@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const statements = [
   `ALTER TABLE "Cruise" ADD COLUMN IF NOT EXISTS "deletedAt" TIMESTAMP(3)`,
@@ -9,8 +10,7 @@ const statements = [
 ];
 
 const client = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ...pgConnectionOptions(process.env.DATABASE_URL),
 });
 
 await client.connect();

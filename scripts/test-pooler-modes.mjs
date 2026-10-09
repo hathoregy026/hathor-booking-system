@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const urls = [
   {
@@ -16,8 +17,7 @@ const urls = [
 
 for (const { label, url } of urls) {
   const client = new pg.Client({
-    connectionString: url,
-    ssl: { rejectUnauthorized: false },
+    ...pgConnectionOptions(url),
   });
 
   try {

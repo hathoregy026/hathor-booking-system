@@ -11,6 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -146,8 +147,7 @@ async function compressToWebp(input, kind) {
 
 async function connectDb(databaseUrl) {
   const client = new pg.Client({
-    connectionString: databaseUrl,
-    ssl: { rejectUnauthorized: false },
+    ...pgConnectionOptions(databaseUrl),
     keepAlive: true,
   });
   client.on("error", (err) => {

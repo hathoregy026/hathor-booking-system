@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 async function test(label, url) {
   if (!url) {
@@ -9,10 +10,9 @@ async function test(label, url) {
 
   const start = Date.now();
   const pool = new pg.Pool({
-    connectionString: url,
+    ...pgConnectionOptions(url),
     max: 1,
     connectionTimeoutMillis: 20_000,
-    ssl: url.includes("localhost") ? false : { rejectUnauthorized: false },
   });
 
   try {

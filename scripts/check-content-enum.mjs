@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 function getSeedConnectionString() {
   if (process.env.DATABASE_DIRECT_URL) return process.env.DATABASE_DIRECT_URL;
@@ -11,8 +12,7 @@ function getSeedConnectionString() {
 }
 
 const pool = new pg.Pool({
-  connectionString: getSeedConnectionString(),
-  ssl: { rejectUnauthorized: false },
+  ...pgConnectionOptions(getSeedConnectionString()),
   max: 1,
 });
 

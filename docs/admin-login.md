@@ -48,8 +48,8 @@ Supabase database. The quickest option is Docker:
 docker run --name hathor-pg -e POSTGRES_PASSWORD=localdev -p 5432:5432 -d postgres:16
 ```
 
-Then in `.env` (use the host name `localhost`; that is what turns off TLS
-for local connections):
+Then in `.env` (use the host name `localhost`: local connections skip TLS,
+every other host must verify its certificate via `DATABASE_CA_CERT`):
 
 ```bash
 DATABASE_URL="postgresql://postgres:localdev@localhost:5432/postgres"
@@ -138,8 +138,14 @@ npm run verify:admin-auth                                         # offline cryp
 4. Create the real accounts against the production database with
    `npm run admin:users -- create …` **before** deploying, or nobody can
    sign in afterwards. `ADMIN_PASSWORD` no longer opens the dashboard.
-5. Remove the `git.deploymentEnabled` entry for this branch from
+5. Set `DATABASE_CA_CERT` in Vercel (Production and Preview) to the
+   Supabase CA (`prod-ca-2021.crt` from Project Settings → Database → SSL
+   Configuration). Database connections now verify the server certificate
+   and refuse to connect without it, so without this the build and every
+   page that reads the database fail. Test it locally first by pointing
+   `.env` at the Supabase database with the same value.
+6. Remove the `git.deploymentEnabled` entry for this branch from
    `vercel.json` (it stops preview builds while this is local-only).
-6. Old helper scripts that logged in with `ADMIN_PASSWORD`
+7. Old helper scripts that logged in with `ADMIN_PASSWORD`
    (`scripts/test-profile-base64.mjs`, `scripts/test-hero-logo-tune-save.mjs`,
    `scripts/test-ship-experience.cjs`) need updating to the new flow.

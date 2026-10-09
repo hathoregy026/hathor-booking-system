@@ -1,9 +1,9 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ...pgConnectionOptions(process.env.DATABASE_URL),
   max: 1,
 });
 
