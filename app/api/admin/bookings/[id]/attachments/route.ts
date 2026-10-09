@@ -13,7 +13,7 @@ const uploadSchema = z.object({ name: z.string().trim().min(1).max(255), size: z
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     await enforcePublicRateLimit({ request, scope: "booking-attachment-upload", limit: 30, windowMs: 60000 });
     const { id } = await context.params;
     const file = uploadSchema.parse(await readPublicJsonBody(request));

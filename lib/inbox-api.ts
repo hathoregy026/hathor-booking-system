@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest, type AdminIdentity } from "@/lib/admin-server-auth";
 import { enforcePublicRateLimit, PublicRequestError, RateLimitExceededError } from "@/lib/public-api-security";
 
 export const inboxHeaders = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
 
-export async function assertInboxAdmin(request: NextRequest) {
-  if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) throw new PublicRequestError("Unauthorized", 401);
+export async function assertInboxAdmin(request: NextRequest): Promise<AdminIdentity> {
+  const identity = await adminIdentityFromRequest(request);
+  if (!identity) throw new PublicRequestError("Unauthorized", 401);
   await enforcePublicRateLimit({ request, scope: "dashboard-inbox", limit: 120, windowMs: 60000 });
+  return identity;
 }
 
 export function inboxRouteError(error: unknown) {

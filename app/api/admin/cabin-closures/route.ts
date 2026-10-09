@@ -5,7 +5,7 @@ import { assertBookingAdmin } from "@/lib/booking-admin-api";
 import { bookingCode } from "@/lib/booking-code";
 import { readPublicJsonBody, requireIdempotencyKey } from "@/lib/public-api-security";
 import { handleRouteError } from "@/lib/api";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { SHIP_EXPERIENCE_KEY } from "@/lib/ship-experience";
 import { DEFAULT_SHIP_EXPERIENCE, shipRoomNames } from "@/lib/ship-experience-shared";
 import { parseShipExperience } from "@/lib/ship-experience-schema";
@@ -156,8 +156,8 @@ async function closeOnSailing(
   return { scheduleId, departure, closed: row.inserted, skipped };
 }
 
-function requireSession(request: NextRequest) {
-  return verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+async function requireSession(request: NextRequest) {
+  return (await adminIdentityFromRequest(request)) !== null;
 }
 
 function monthWindow(month: string) {
@@ -329,7 +329,7 @@ async function readDates(slug: string) {
 
 export async function GET(request: NextRequest) {
   try {
-    if (!requireSession(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!(await requireSession(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const params = request.nextUrl.searchParams;
     const headers = { "Cache-Control": "no-store" };
     if (params.get("view") === "upcoming") {
@@ -361,7 +361,7 @@ type SailingResult = {
  */
 export async function POST(request: NextRequest) {
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     const operation = requireIdempotencyKey(request);
     const input = closeSchema.parse(await readPublicJsonBody(request));
     const reason = input.note?.trim() || STATE_LABEL[input.state];
@@ -385,7 +385,7 @@ export async function POST(request: NextRequest) {
 /** Reopens a closure: all of its cabins, or only the ones named. Never a booking. */
 export async function DELETE(request: NextRequest) {
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     const input = reopenSchema.parse(await readPublicJsonBody(request));
     // One statement under the vessel lock; never touches a booking's allocation.
     const rows = await bookingQuery<{ id: string }>(`

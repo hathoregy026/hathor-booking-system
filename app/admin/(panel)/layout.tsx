@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import "../../hathor-fonts.css";
 
 /*
@@ -14,11 +15,18 @@ const inter = Inter({
   preload: false,
 });
 
-export default function AdminPanelLayout({
+export default async function AdminPanelLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  /*
+   * Database-checked session for every dashboard page. Middleware only sees
+   * the cookie's signature; this is what turns away a logged-out, revoked,
+   * idle or disabled session before any dashboard markup is rendered.
+   */
+  await requireAdminPage();
+
   return (
     <div className={inter.variable}>
       <AdminShell>{children}</AdminShell>

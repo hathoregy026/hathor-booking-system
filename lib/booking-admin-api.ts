@@ -1,20 +1,21 @@
 import { z } from "zod";
 import type { NextRequest } from "next/server";
-import { verifySessionToken, sessionIdFromToken, ADMIN_SESSION_COOKIE } from "@/lib/admin-auth";
+import { adminIdentityFromRequest, type AdminIdentity } from "@/lib/admin-server-auth";
 import { assertTrustedPublicJsonRequest, PublicRequestError } from "@/lib/public-api-security";
 import { administerBooking } from "@/lib/booking-engine";
 import { sendConfirmation, sendDeclined, sendInvoice, sendPaymentReceipt, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
 import { mailAttachmentRefsSchema, resolveAttachments } from "@/lib/mail-attachments";
 
-export function assertBookingAdmin(request: NextRequest) {
-  if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) throw new PublicRequestError("Unauthorized",401);
+/**
+ * Live, database-checked staff session plus same-origin JSON. Must be awaited:
+ * the returned identity's `sessionId` is what audit columns record.
+ */
+export async function assertBookingAdmin(request: NextRequest): Promise<AdminIdentity> {
+  const identity = await adminIdentityFromRequest(request);
+  if (!identity) throw new PublicRequestError("Unauthorized",401);
   assertTrustedPublicJsonRequest(request);
-}
-
-/** Which staff session recorded an entry — the identity this setup can prove. */
-export function bookingAdminSession(request: NextRequest) {
-  return sessionIdFromToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+  return identity;
 }
 
 const teamText = z.string().trim().max(4000);

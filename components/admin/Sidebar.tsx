@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   BarChart3,
@@ -87,14 +87,13 @@ function NavContent({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const reduceMotion = useReducedMotion();
 
   const handleLogout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
-    router.refresh();
+    await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" }).catch(() => undefined);
     onNavigate?.();
+    // Full reload: drops the client router cache so no dashboard data lingers.
+    window.location.replace("/admin/login");
   };
 
   return (

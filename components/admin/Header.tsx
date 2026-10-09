@@ -129,9 +129,9 @@ export function Header({ onMenuToggle }: HeaderProps) {
   };
 
   const handleLogout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
-    router.refresh();
+    await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" }).catch(() => undefined);
+    // Full reload: drops the client router cache so no dashboard data lingers.
+    window.location.replace("/admin/login");
   };
 
   const applyBookingsQuery = (value: string) => {

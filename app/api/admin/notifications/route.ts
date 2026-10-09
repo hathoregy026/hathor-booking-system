@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { dismissNotifications, fetchAdminNotifications, markNotificationBookingsSeen, notificationDismissSchema, notificationSeenSchema } from "@/lib/admin-notifications";
 import { z } from "zod";
 import { inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
@@ -11,7 +11,7 @@ export const revalidate = 0;
 export const runtime = "nodejs";
 
 async function authorize(request: NextRequest) {
-  if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) throw new PublicRequestError("Unauthorized", 401);
+  if (!(await adminIdentityFromRequest(request))) throw new PublicRequestError("Unauthorized", 401);
   await enforcePublicRateLimit({ request, scope: "booking-admin-notifications", limit: 90, windowMs: 60000 });
 }
 

@@ -1,28 +1,49 @@
-export const ADMIN_SESSION_COOKIE = "admin_session";
-
 /**
- * Edge twin of lib/admin-auth.ts — verifies the same token format with
- * WebCrypto so middleware can run on the edge runtime.
+ * Edge-safe half of the dashboard sign-in (middleware runs on the edge runtime
+ * and cannot reach the database).
  *
- *     v1.<base64url(payload)>.<base64url(hmac-sha256)>
- *     payload = { e: epoch, i: issuedAt, x: expiresAt, j: sessionId }
+ * Cookie format, shared with lib/admin-auth-tokens.ts:
  *
- * Any change to the token format in lib/admin-auth.ts must be mirrored here,
- * or middleware will start rejecting freshly-issued cookies.
+ *     v2.<base64url(payload)>.<base64url(hmac-sha256)>
+ *     payload = { k: kind, x: expiresAt, t: 32 random bytes }
+ *
+ * This file only answers "is this a well-formed, correctly signed, unexpired
+ * token of the right kind?". That is a cheap first gate that keeps forged and
+ * stale cookies away from every admin page. It does NOT prove the session is
+ * still live: logout, revocation, idle timeout and disabled accounts are
+ * checked against the database by lib/admin-server-auth.ts, which every admin
+ * API route and the panel layout call. Never treat a `true` from here as
+ * authorisation on its own.
  */
 
-const TOKEN_VERSION = "v1";
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
-function sessionSecret(): string | null {
-  return (
-    process.env.ADMIN_SESSION_SECRET?.trim() ||
-    process.env.ADMIN_PASSWORD ||
-    null
-  );
-}
+/*
+ * `__Host-` cookies must be Secure, Path=/ and host-only, so the browser
+ * refuses one planted by a sibling subdomain or set over plain HTTP. Local
+ * `next dev` serves plain HTTP, where Safari would drop such a cookie, so dev
+ * uses an unprefixed name instead.
+ */
+export const ADMIN_SESSION_COOKIE = IS_PRODUCTION
+  ? "__Host-hathor_admin_session"
+  : "hathor_admin_session";
 
-function sessionEpoch(): string {
-  return process.env.ADMIN_SESSION_EPOCH?.trim() || "1";
+/** Short-lived cookie that only carries a sign-in through the code step. */
+export const ADMIN_CHALLENGE_COOKIE = IS_PRODUCTION
+  ? "__Host-hathor_admin_challenge"
+  : "hathor_admin_challenge";
+
+export const ADMIN_TOKEN_VERSION = "v2";
+export const ADMIN_TOKEN_SIGNING_CONTEXT = "hathor-admin-token";
+export const ADMIN_SESSION_SECRET_MIN_LENGTH = 32;
+
+/** `s` is a signed-in session, `c` is a half-finished sign-in. */
+export type AdminTokenKind = "s" | "c";
+
+export function adminSessionSecret(): string | null {
+  const secret = process.env.ADMIN_SESSION_SECRET?.trim();
+  if (!secret || secret.length < ADMIN_SESSION_SECRET_MIN_LENGTH) return null;
+  return secret;
 }
 
 function toBase64Url(buffer: ArrayBuffer): string {
@@ -53,13 +74,11 @@ async function sign(data: string, secret: string): Promise<string> {
     false,
     ["sign"],
   );
-
   const signature = await crypto.subtle.sign(
     "HMAC",
     key,
-    new TextEncoder().encode(data),
+    new TextEncoder().encode(`${ADMIN_TOKEN_SIGNING_CONTEXT}.${data}`),
   );
-
   return toBase64Url(signature);
 }
 
@@ -73,33 +92,35 @@ function constantTimeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
-export async function verifySessionToken(
+/**
+ * Signature, kind and expiry check only — see the file comment. Fails closed
+ * when ADMIN_SESSION_SECRET is missing or too short.
+ */
+export async function hasSignedAdminToken(
   token: string | undefined,
+  kind: AdminTokenKind = "s",
 ): Promise<boolean> {
-  const secret = sessionSecret();
-  if (!token || !secret) return false;
+  const secret = adminSessionSecret();
+  if (!token || !secret || token.length > 512) return false;
 
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return false;
 
     const [version, payloadPart, signaturePart] = parts;
-    if (version !== TOKEN_VERSION) return false;
+    if (version !== ADMIN_TOKEN_VERSION) return false;
 
     const expected = await sign(`${version}.${payloadPart}`, secret);
     if (!constantTimeEqual(expected, signaturePart!)) return false;
 
     const payload = JSON.parse(fromBase64Url(payloadPart!)) as {
-      e?: string;
-      x?: number;
+      k?: unknown;
+      x?: unknown;
     };
-
-    if (payload.e !== sessionEpoch()) return false;
+    if (payload.k !== kind) return false;
 
     const now = Math.floor(Date.now() / 1000);
-    if (typeof payload.x !== "number" || payload.x <= now) return false;
-
-    return true;
+    return typeof payload.x === "number" && payload.x > now;
   } catch {
     return false;
   }

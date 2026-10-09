@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "claude/festive-cori-17uol4": false
+    }
+  },
   "buildCommand": "npx prisma migrate deploy && npm run build",
   "crons": [
     {

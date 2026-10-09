@@ -10,10 +10,20 @@ import { resolveDeployId } from "@/lib/deploy-id";
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_SESSION_COOKIE,
-  verifySessionToken,
+  hasSignedAdminToken,
 } from "@/lib/admin-auth-edge";
 
-const PUBLIC_ADMIN_PATHS = ["/admin/login", "/api/admin/login"];
+/*
+ * Reachable without a session. Each sign-in step checks its own short-lived
+ * challenge cookie, and logout must always be able to clear cookies.
+ */
+const PUBLIC_ADMIN_PATHS = [
+  "/admin/login",
+  "/api/admin/login",
+  "/api/admin/login/mfa",
+  "/api/admin/login/enroll",
+  "/api/admin/logout",
+];
 
 function redirectStaleDeploymentHost(request: NextRequest): NextResponse | null {
   const hostname = request.nextUrl.hostname;
@@ -73,6 +83,25 @@ function withHtmlMustRevalidate(response: NextResponse): NextResponse {
   return response;
 }
 
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/** Tiny no-script page that reloads `path` as a same-origin navigation. */
+function sameOriginBounce(path: string): NextResponse {
+  const target = escapeHtmlAttribute(path);
+  return withHtmlNoStore(
+    new NextResponse(
+      `<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="referrer" content="no-referrer"><meta http-equiv="refresh" content="0;url=${target}"><title>Opening dashboard</title></head><body><a href="${target}">Continue to the dashboard</a></body></html>`,
+      { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } },
+    ),
+  );
+}
+
 function withCachePurge(response: NextResponse): NextResponse {
   withHtmlNoStore(response);
   /* Forces Chromium to drop disk/memory HTTP cache + storage for this origin. */
@@ -91,7 +120,7 @@ function withCachePurge(response: NextResponse): NextResponse {
  */
 async function isPurgeAuthorised(request: NextRequest): Promise<boolean> {
   const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-  if (await verifySessionToken(session)) return true;
+  if (await hasSignedAdminToken(session)) return true;
 
   const secret = process.env.CACHE_PURGE_TOKEN?.trim();
   if (!secret) return false;
@@ -171,7 +200,7 @@ export async function middleware(request: NextRequest) {
     /* Preview/transition surfaces: admin session required in production. */
     if (isProduction && matchesPrefix(pathname, ADMIN_ONLY_PREFIXES)) {
       const previewSession = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-      if (!(await verifySessionToken(previewSession))) {
+      if (!(await hasSignedAdminToken(previewSession))) {
         const loginUrl = new URL("/admin/login", request.url);
         loginUrl.searchParams.set("from", pathname);
         return withHtmlNoStore(NextResponse.redirect(loginUrl));
@@ -258,26 +287,52 @@ export async function middleware(request: NextRequest) {
     }
 
     const session = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-    const isAuthenticated = await verifySessionToken(session);
 
+    /*
+     * A signed cookie is only a first gate. Whether the session is still live
+     * (not logged out, revoked, idle or disabled) is decided against the
+     * database by the panel layout and every /api/admin handler. For the same
+     * reason /admin/login does not bounce signed-in visitors here: a revoked
+     * cookie would loop between /admin and /admin/login. The login page does
+     * that redirect itself after a real session check.
+     */
     if (PUBLIC_ADMIN_PATHS.includes(pathname)) {
-      if (pathname === "/admin/login" && isAuthenticated) {
-        return NextResponse.redirect(new URL("/admin", request.url));
-      }
-      return NextResponse.next();
+      return pathname.startsWith("/api/")
+        ? NextResponse.next()
+        : withHtmlNoStore(NextResponse.next());
     }
 
-    if (!isAuthenticated) {
+    if (!(await hasSignedAdminToken(session))) {
       if (pathname.startsWith("/api/admin")) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401, headers: { "Cache-Control": "no-store" } },
+        );
+      }
+
+      /*
+       * The session cookie is SameSite=Strict, so a link clicked in Gmail or
+       * another site arrives without it. Re-request the same page once from
+       * our own origin, which does carry the cookie. The second request is
+       * same-origin, so this can never loop.
+       */
+      const fetchSite = request.headers.get("sec-fetch-site")?.toLowerCase();
+      if (
+        request.method === "GET" &&
+        fetchSite === "cross-site" &&
+        request.headers.get("sec-fetch-mode") === "navigate"
+      ) {
+        return sameOriginBounce(`${pathname}${request.nextUrl.search}`);
       }
 
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("from", pathname);
-      return NextResponse.redirect(loginUrl);
+      return withHtmlNoStore(NextResponse.redirect(loginUrl));
     }
 
-    return NextResponse.next();
+    return pathname.startsWith("/api/")
+      ? NextResponse.next()
+      : withHtmlNoStore(NextResponse.next());
   } catch (error) {
     console.error("Middleware error:", error);
 

@@ -138,6 +138,29 @@ export type BlogPost = Prisma.BlogPostModel
  */
 export type AdminProfile = Prisma.AdminProfileModel
 /**
+ * Model AdminUser
+ * Dashboard sign-in accounts. One row per person: there is no shared login.
+ * Accounts are created and reset only from the command line
+ * (scripts/admin-users.ts); the web app has no sign-up route.
+ */
+export type AdminUser = Prisma.AdminUserModel
+/**
+ * Model AdminSession
+ * Server-side sessions. The cookie carries a random secret; only its
+ * SHA-256 is stored, so a database leak does not hand out live sessions.
+ */
+export type AdminSession = Prisma.AdminSessionModel
+/**
+ * Model AdminRecoveryCode
+ * Single-use recovery codes, stored as keyed hashes only.
+ */
+export type AdminRecoveryCode = Prisma.AdminRecoveryCodeModel
+/**
+ * Model AdminAuthEvent
+ * Append-only sign-in audit trail. Never holds passwords, codes or tokens.
+ */
+export type AdminAuthEvent = Prisma.AdminAuthEventModel
+/**
  * Model EmailTemplate
  * 
  */

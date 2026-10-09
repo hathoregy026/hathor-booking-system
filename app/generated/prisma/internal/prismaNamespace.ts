@@ -421,6 +421,10 @@ export const ModelName = {
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
   AdminProfile: 'AdminProfile',
+  AdminUser: 'AdminUser',
+  AdminSession: 'AdminSession',
+  AdminRecoveryCode: 'AdminRecoveryCode',
+  AdminAuthEvent: 'AdminAuthEvent',
   EmailTemplate: 'EmailTemplate',
   SiteImage: 'SiteImage',
   SiteSetting: 'SiteSetting'
@@ -439,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "emailTemplate" | "siteImage" | "siteSetting"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2219,6 +2223,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AdminUser: {
+      payload: Prisma.$AdminUserPayload<ExtArgs>
+      fields: Prisma.AdminUserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminUserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminUserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        findFirst: {
+          args: Prisma.AdminUserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminUserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        findMany: {
+          args: Prisma.AdminUserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+        }
+        create: {
+          args: Prisma.AdminUserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        createMany: {
+          args: Prisma.AdminUserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminUserCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+        }
+        delete: {
+          args: Prisma.AdminUserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        update: {
+          args: Prisma.AdminUserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminUserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminUserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminUserUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminUserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminUserPayload>
+        }
+        aggregate: {
+          args: Prisma.AdminUserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminUser>
+        }
+        groupBy: {
+          args: Prisma.AdminUserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminUserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminUserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminUserCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdminSession: {
+      payload: Prisma.$AdminSessionPayload<ExtArgs>
+      fields: Prisma.AdminSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.AdminSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>
+        }
+        findMany: {
+          args: Prisma.AdminSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>[]
+        }
+        create: {
+          args: Prisma.AdminSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>
+        }
+        createMany: {
+          args: Prisma.AdminSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.AdminSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>
+        }
+        update: {
+          args: Prisma.AdminSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.AdminSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminSession>
+        }
+        groupBy: {
+          args: Prisma.AdminSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdminRecoveryCode: {
+      payload: Prisma.$AdminRecoveryCodePayload<ExtArgs>
+      fields: Prisma.AdminRecoveryCodeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminRecoveryCodeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminRecoveryCodeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>
+        }
+        findFirst: {
+          args: Prisma.AdminRecoveryCodeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminRecoveryCodeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>
+        }
+        findMany: {
+          args: Prisma.AdminRecoveryCodeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>[]
+        }
+        create: {
+          args: Prisma.AdminRecoveryCodeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>
+        }
+        createMany: {
+          args: Prisma.AdminRecoveryCodeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminRecoveryCodeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>[]
+        }
+        delete: {
+          args: Prisma.AdminRecoveryCodeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>
+        }
+        update: {
+          args: Prisma.AdminRecoveryCodeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminRecoveryCodeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminRecoveryCodeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminRecoveryCodeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminRecoveryCodeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRecoveryCodePayload>
+        }
+        aggregate: {
+          args: Prisma.AdminRecoveryCodeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminRecoveryCode>
+        }
+        groupBy: {
+          args: Prisma.AdminRecoveryCodeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminRecoveryCodeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminRecoveryCodeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminRecoveryCodeCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdminAuthEvent: {
+      payload: Prisma.$AdminAuthEventPayload<ExtArgs>
+      fields: Prisma.AdminAuthEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminAuthEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminAuthEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>
+        }
+        findFirst: {
+          args: Prisma.AdminAuthEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminAuthEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>
+        }
+        findMany: {
+          args: Prisma.AdminAuthEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>[]
+        }
+        create: {
+          args: Prisma.AdminAuthEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>
+        }
+        createMany: {
+          args: Prisma.AdminAuthEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminAuthEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>[]
+        }
+        delete: {
+          args: Prisma.AdminAuthEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>
+        }
+        update: {
+          args: Prisma.AdminAuthEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminAuthEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminAuthEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminAuthEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminAuthEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminAuthEventPayload>
+        }
+        aggregate: {
+          args: Prisma.AdminAuthEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminAuthEvent>
+        }
+        groupBy: {
+          args: Prisma.AdminAuthEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminAuthEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminAuthEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminAuthEventCountAggregateOutputType> | number
+        }
+      }
+    }
     EmailTemplate: {
       payload: Prisma.$EmailTemplatePayload<ExtArgs>
       fields: Prisma.EmailTemplateFieldRefs
@@ -2831,6 +3131,68 @@ export const AdminProfileScalarFieldEnum = {
 export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
 
 
+export const AdminUserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  displayName: 'displayName',
+  passwordHash: 'passwordHash',
+  passwordChangedAt: 'passwordChangedAt',
+  totpSecretEnc: 'totpSecretEnc',
+  totpPendingEnc: 'totpPendingEnc',
+  totpLastStep: 'totpLastStep',
+  mfaEnrolledAt: 'mfaEnrolledAt',
+  disabledAt: 'disabledAt',
+  lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
+
+
+export const AdminSessionScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  stage: 'stage',
+  createdAt: 'createdAt',
+  lastSeenAt: 'lastSeenAt',
+  idleExpiresAt: 'idleExpiresAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason',
+  mfaAttempts: 'mfaAttempts',
+  ip: 'ip',
+  userAgent: 'userAgent'
+} as const
+
+export type AdminSessionScalarFieldEnum = (typeof AdminSessionScalarFieldEnum)[keyof typeof AdminSessionScalarFieldEnum]
+
+
+export const AdminRecoveryCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminRecoveryCodeScalarFieldEnum = (typeof AdminRecoveryCodeScalarFieldEnum)[keyof typeof AdminRecoveryCodeScalarFieldEnum]
+
+
+export const AdminAuthEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  detail: 'detail',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminAuthEventScalarFieldEnum = (typeof AdminAuthEventScalarFieldEnum)[keyof typeof AdminAuthEventScalarFieldEnum]
+
+
 export const EmailTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -3036,6 +3398,20 @@ export type EnumContentSectionFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 export type ListEnumContentSectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentSection[]'>
     
 
+
+/**
+ * Reference to a field of type 'AdminSessionStage'
+ */
+export type EnumAdminSessionStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminSessionStage'>
+    
+
+
+/**
+ * Reference to a field of type 'AdminSessionStage[]'
+ */
+export type ListEnumAdminSessionStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdminSessionStage[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3211,6 +3587,10 @@ export type GlobalOmitConfig = {
   siteContent?: Prisma.SiteContentOmit
   blogPost?: Prisma.BlogPostOmit
   adminProfile?: Prisma.AdminProfileOmit
+  adminUser?: Prisma.AdminUserOmit
+  adminSession?: Prisma.AdminSessionOmit
+  adminRecoveryCode?: Prisma.AdminRecoveryCodeOmit
+  adminAuthEvent?: Prisma.AdminAuthEventOmit
   emailTemplate?: Prisma.EmailTemplateOmit
   siteImage?: Prisma.SiteImageOmit
   siteSetting?: Prisma.SiteSettingOmit
