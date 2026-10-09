@@ -1,6 +1,7 @@
 import "dotenv/config";
 import crypto from "node:crypto";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 import {
   formatRoomDescription,
   HATHOR_CRUISES,
@@ -41,8 +42,7 @@ async function query(connectionString, sql, params = []) {
   let lastError;
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     const client = new pg.Client({
-      connectionString,
-      ssl: { rejectUnauthorized: false },
+      ...pgConnectionOptions(connectionString),
       connectionTimeoutMillis: 60_000,
       application_name: "hathor-seed",
     });

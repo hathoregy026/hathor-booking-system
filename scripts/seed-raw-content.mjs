@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RAW_DATA_PATH = path.join(__dirname, "../assets/RAW_DATA.md");
@@ -31,8 +32,7 @@ async function query(sql, params = []) {
   let lastError;
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     const client = new pg.Client({
-      connectionString: getConnectionString(),
-      ssl: { rejectUnauthorized: false },
+      ...pgConnectionOptions(getConnectionString()),
       connectionTimeoutMillis: 60_000,
       application_name: "hathor-seed-raw-content",
     });

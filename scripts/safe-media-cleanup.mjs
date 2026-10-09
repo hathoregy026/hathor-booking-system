@@ -17,6 +17,7 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const WEBSITE_BUCKET = "website-images";
 const EMAIL_BUCKET = "email-images";
@@ -73,8 +74,7 @@ function dbClient() {
     process.env.DATABASE_URL?.trim() || process.env.DIRECT_URL?.trim();
   if (!connectionString) throw new Error("Missing DATABASE_URL");
   return new pg.Client({
-    connectionString,
-    ssl: { rejectUnauthorized: false },
+    ...pgConnectionOptions(connectionString),
     connectionTimeoutMillis: 20000,
     query_timeout: 90000,
   });

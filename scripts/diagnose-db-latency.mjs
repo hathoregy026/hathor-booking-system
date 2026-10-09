@@ -88,6 +88,9 @@ await tcpConnect(6);
 console.log("");
 
 // ---------------------------------------------------------------- TLS
+// Handshake timing only: the socket is closed straight away and no password
+// or query ever travels on it, so it does not verify the certificate. The
+// real connections below do (lib/database-tls.mjs).
 await new Promise((resolve) => {
   const t = performance.now();
   const socket = tls.connect(
@@ -113,11 +116,11 @@ console.log("");
 
 // ------------------------------------------------- Postgres connect + query
 const pg = (await import("pg")).default;
+const { pgConnectionOptions } = await import("../lib/database-tls.mjs");
 
 for (let i = 1; i <= 3; i += 1) {
   const client = new pg.Client({
-    connectionString: url.toString(),
-    ssl: { rejectUnauthorized: false },
+    ...pgConnectionOptions(url.toString()),
     connectionTimeoutMillis: 25000,
   });
   const tConnect = performance.now();

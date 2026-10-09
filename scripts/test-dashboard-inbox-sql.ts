@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { config } from "dotenv";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 import { resolveDatabaseUrl } from "../lib/database-config";
 import { deleteDashboardEmail, fetchDashboardInbox, fetchInboxDetail, inboxQuerySchema, setInboxRead } from "../lib/dashboard-inbox";
 import type { bookingQuery } from "../lib/booking-database";
@@ -13,7 +14,7 @@ async function main() {
   config({ path: ".env.local", quiet: true });
   config({ path: ".env", quiet: true });
   const client = new pg.Client({
-    connectionString: resolveDatabaseUrl(), ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 10000, query_timeout: 20000,
+    ...pgConnectionOptions(resolveDatabaseUrl()), connectionTimeoutMillis: 10000, query_timeout: 20000,
     types: { getTypeParser: (oid: number) => oid === 1114 ? (value: string) => new Date(value.replace(" ", "T") + "Z") : pg.types.getTypeParser(oid) },
   });
   client.on("error", () => {});

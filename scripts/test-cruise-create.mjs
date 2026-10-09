@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 import { PrismaClient } from "../app/generated/prisma/client.js";
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ...pgConnectionOptions(process.env.DATABASE_URL),
   max: 2,
 });
 

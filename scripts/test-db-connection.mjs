@@ -1,5 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const urls = {
   DATABASE_URL: process.env.DATABASE_URL,
@@ -21,10 +22,7 @@ for (const [label, connectionString] of Object.entries(urls)) {
 
   console.log(`\n=== ${label} (${host}) ===`);
   const pool = new pg.Pool({
-    connectionString,
-    ssl: connectionString.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
+    ...pgConnectionOptions(connectionString),
     connectionTimeoutMillis: 20000,
     max: 1,
   });

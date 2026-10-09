@@ -1,6 +1,7 @@
 import "dotenv/config";
 import crypto from "node:crypto";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const DEFAULTS = [
   {
@@ -55,10 +56,7 @@ if (!connectionString) {
 }
 
 const pool = new pg.Pool({
-  connectionString,
-  ssl: connectionString.includes("localhost")
-    ? false
-    : { rejectUnauthorized: false },
+  ...pgConnectionOptions(connectionString),
 });
 
 const upsertSql = `

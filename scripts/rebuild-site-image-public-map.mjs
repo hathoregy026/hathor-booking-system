@@ -12,6 +12,7 @@
  */
 import fs from "node:fs";
 import pg from "pg";
+import { pgConnectionOptions } from "../lib/database-tls.mjs";
 
 const KEY = "site-image-public-map-v2";
 const FORCE = process.argv.includes("--force");
@@ -83,11 +84,8 @@ async function main() {
   );
 
   const client = new pg.Client({
-    connectionString,
+    ...pgConnectionOptions(connectionString),
     connectionTimeoutMillis: 15_000,
-    ssl: connectionString.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
   });
   client.on("error", () => {});
   await client.connect();

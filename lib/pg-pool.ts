@@ -1,5 +1,6 @@
 import pg from "pg";
 import { getDatabasePoolConfig } from "@/lib/database-config";
+import { pgConnectionOptions } from "@/lib/database-tls.mjs";
 
 type PoolGlobal = {
   pgPool: pg.Pool | undefined;
@@ -8,11 +9,6 @@ type PoolGlobal = {
 };
 
 const globalForPool = globalThis as unknown as PoolGlobal;
-
-function poolSsl(connectionString: string): false | { rejectUnauthorized: boolean } {
-  if (connectionString.includes("localhost")) return false;
-  return { rejectUnauthorized: false };
-}
 
 /** Incremented whenever a new pool instance is created — Prisma must rebind to it. */
 export function getPgPoolGeneration(): number {
@@ -31,17 +27,18 @@ export function getSharedPgPool(connectionString: string): pg.Pool {
   }
 
   const config = getDatabasePoolConfig(connectionString);
+  // Verified TLS (see lib/database-tls.mjs); throws before connecting if the CA is missing.
+  const connection = pgConnectionOptions(connectionString);
 
   // Never call pool.end() here — other Prisma clients may still reference the old pool.
   const pool = new pg.Pool({
-    connectionString,
+    ...connection,
     max: config.connectionLimit,
     idleTimeoutMillis: config.idleTimeoutMs,
     connectionTimeoutMillis: config.connectTimeoutMs,
     maxUses: config.maxUses,
     keepAlive: true,
     allowExitOnIdle: true,
-    ssl: poolSsl(connectionString),
   });
 
   pool.on("error", (error) => {
