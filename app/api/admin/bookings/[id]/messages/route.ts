@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { fetchAdminBookingById } from "@/lib/admin-bookings-fetch";
 import { fetchBookingMessages } from "@/lib/booking-messages";
 import { enforcePublicRateLimit } from "@/lib/public-api-security";
@@ -9,7 +9,7 @@ import { handleRouteError } from "@/lib/api";
 const cursorSchema = z.object({ createdAt: z.iso.datetime(), id: z.uuid() });
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
-  if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
+  if (!(await adminIdentityFromRequest(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {

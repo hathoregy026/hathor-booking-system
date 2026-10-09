@@ -331,6 +331,23 @@ export type EnumContentSectionWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumContentSectionFilter<$PrismaModel>
 }
 
+export type EnumAdminSessionStageFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdminSessionStage | Prisma.EnumAdminSessionStageFieldRefInput<$PrismaModel>
+  in?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdminSessionStageFilter<$PrismaModel> | $Enums.AdminSessionStage
+}
+
+export type EnumAdminSessionStageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdminSessionStage | Prisma.EnumAdminSessionStageFieldRefInput<$PrismaModel>
+  in?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdminSessionStageWithAggregatesFilter<$PrismaModel> | $Enums.AdminSessionStage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAdminSessionStageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAdminSessionStageFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -621,6 +638,23 @@ export type NestedEnumContentSectionWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumContentSectionFilter<$PrismaModel>
   _max?: Prisma.NestedEnumContentSectionFilter<$PrismaModel>
+}
+
+export type NestedEnumAdminSessionStageFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdminSessionStage | Prisma.EnumAdminSessionStageFieldRefInput<$PrismaModel>
+  in?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdminSessionStageFilter<$PrismaModel> | $Enums.AdminSessionStage
+}
+
+export type NestedEnumAdminSessionStageWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdminSessionStage | Prisma.EnumAdminSessionStageFieldRefInput<$PrismaModel>
+  in?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdminSessionStage[] | Prisma.ListEnumAdminSessionStageFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdminSessionStageWithAggregatesFilter<$PrismaModel> | $Enums.AdminSessionStage
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAdminSessionStageFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAdminSessionStageFilter<$PrismaModel>
 }
 
 

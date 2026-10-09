@@ -97,6 +97,15 @@ export async function enforceKeyedRateLimit(input: {
 }
 
 /**
+ * Forget a keyed counter — e.g. after a successful sign-in, so earlier typos
+ * do not count against the next attempt.
+ */
+export async function clearKeyedRateLimit(scope: string, keyValue: string): Promise<void> {
+  const key = createHash("sha256").update(`${scope}:${keyValue}`).digest("hex");
+  await prisma.$executeRaw`DELETE FROM "ApiRateLimit" WHERE "key" = ${key}`;
+}
+
+/**
  * Atomic, durable throttling shared by every Vercel instance.
  *
  * `weight` lets one call consume more than one unit of budget — e.g. a hold

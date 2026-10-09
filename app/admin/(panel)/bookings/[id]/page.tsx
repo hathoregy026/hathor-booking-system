@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { notFound } from "next/navigation";
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { fetchAdminBookingById, fetchBookingDetailExtras } from "@/lib/admin-bookings-fetch";
 import { paymentPlan } from "@/lib/booking-code";
 import { BookingDetailView } from "@/components/admin/bookings/BookingDetailView";
@@ -8,7 +7,7 @@ import { BookingDetailView } from "@/components/admin/bookings/BookingDetailView
 export const dynamic = "force-dynamic";
 
 export default async function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  if (!verifySessionToken((await cookies()).get(ADMIN_SESSION_COOKIE)?.value)) redirect("/admin/login");
+  await requireAdminPage();
   const { id } = await params;
 
   const [booking, extras] = await Promise.all([fetchAdminBookingById(id), fetchBookingDetailExtras(id)]);

@@ -58,7 +58,7 @@ async function releaseForBin(id: string) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     const body = staffListSchema.parse(await readPublicJsonBody(request));
     if (body.id && body.status) {
       await applyStaffBookingAction(body.id, { status: body.status });

@@ -75,6 +75,10 @@ export const ModelName = {
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
   AdminProfile: 'AdminProfile',
+  AdminUser: 'AdminUser',
+  AdminSession: 'AdminSession',
+  AdminRecoveryCode: 'AdminRecoveryCode',
+  AdminAuthEvent: 'AdminAuthEvent',
   EmailTemplate: 'EmailTemplate',
   SiteImage: 'SiteImage',
   SiteSetting: 'SiteSetting'
@@ -445,6 +449,68 @@ export const AdminProfileScalarFieldEnum = {
 } as const
 
 export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
+
+
+export const AdminUserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  displayName: 'displayName',
+  passwordHash: 'passwordHash',
+  passwordChangedAt: 'passwordChangedAt',
+  totpSecretEnc: 'totpSecretEnc',
+  totpPendingEnc: 'totpPendingEnc',
+  totpLastStep: 'totpLastStep',
+  mfaEnrolledAt: 'mfaEnrolledAt',
+  disabledAt: 'disabledAt',
+  lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
+
+
+export const AdminSessionScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  stage: 'stage',
+  createdAt: 'createdAt',
+  lastSeenAt: 'lastSeenAt',
+  idleExpiresAt: 'idleExpiresAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason',
+  mfaAttempts: 'mfaAttempts',
+  ip: 'ip',
+  userAgent: 'userAgent'
+} as const
+
+export type AdminSessionScalarFieldEnum = (typeof AdminSessionScalarFieldEnum)[keyof typeof AdminSessionScalarFieldEnum]
+
+
+export const AdminRecoveryCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminRecoveryCodeScalarFieldEnum = (typeof AdminRecoveryCodeScalarFieldEnum)[keyof typeof AdminRecoveryCodeScalarFieldEnum]
+
+
+export const AdminAuthEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  detail: 'detail',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminAuthEventScalarFieldEnum = (typeof AdminAuthEventScalarFieldEnum)[keyof typeof AdminAuthEventScalarFieldEnum]
 
 
 export const EmailTemplateScalarFieldEnum = {

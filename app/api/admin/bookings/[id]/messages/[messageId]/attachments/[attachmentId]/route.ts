@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { bookingQuery } from "@/lib/booking-database";
 import { enforcePublicRateLimit } from "@/lib/public-api-security";
 import { resendApiRequest } from "@/lib/resend-inbound";
@@ -9,7 +9,7 @@ import { attachmentDownloadUrl } from "@/lib/mail-attachments";
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string; messageId: string; attachmentId: string }> }) {
   const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
-  if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
+  if (!(await adminIdentityFromRequest(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });
   }
   try {

@@ -426,6 +426,96 @@ model AdminProfile {
   updatedAt         DateTime @updatedAt
 }
 
+/// Dashboard sign-in accounts. One row per person: there is no shared login.
+/// Accounts are created and reset only from the command line
+/// (scripts/admin-users.ts); the web app has no sign-up route.
+model AdminUser {
+  id                String    @id @default(cuid())
+  /// Stored lower-cased and trimmed.
+  email             String    @unique
+  displayName       String
+  /// Argon2id PHC string. Never the password itself.
+  passwordHash      String
+  passwordChangedAt DateTime  @default(now())
+  /// Authenticator secret, AES-256-GCM encrypted. Null until set up.
+  totpSecretEnc     String?
+  /// Secret offered during set-up, kept until the first code confirms it.
+  totpPendingEnc    String?
+  /// Last accepted 30-second step, so a code can never be used twice.
+  totpLastStep      Int?
+  mfaEnrolledAt     DateTime?
+  disabledAt        DateTime?
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  sessions      AdminSession[]
+  recoveryCodes AdminRecoveryCode[]
+  authEvents    AdminAuthEvent[]
+}
+
+enum AdminSessionStage {
+  /// Password accepted; waiting for an authenticator or recovery code.
+  MFA_PENDING
+  /// Password accepted; the authenticator must be set up before first use.
+  ENROLL_PENDING
+  /// Fully signed in.
+  ACTIVE
+}
+
+/// Server-side sessions. The cookie carries a random secret; only its
+/// SHA-256 is stored, so a database leak does not hand out live sessions.
+model AdminSession {
+  /// Public identifier (audit trails, the sessions list). Not a credential.
+  id            String            @id @default(cuid())
+  tokenHash     String            @unique
+  userId        String
+  stage         AdminSessionStage
+  createdAt     DateTime          @default(now())
+  lastSeenAt    DateTime          @default(now())
+  idleExpiresAt DateTime
+  expiresAt     DateTime
+  revokedAt     DateTime?
+  revokedReason String?
+  mfaAttempts   Int               @default(0)
+  ip            String?
+  userAgent     String?
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+}
+
+/// Single-use recovery codes, stored as keyed hashes only.
+model AdminRecoveryCode {
+  id        String    @id @default(cuid())
+  userId    String
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, codeHash])
+}
+
+/// Append-only sign-in audit trail. Never holds passwords, codes or tokens.
+model AdminAuthEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  type      String
+  ip        String?
+  userAgent String?
+  detail    String?
+  createdAt DateTime @default(now())
+
+  user AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
 model EmailTemplate {
   id              String   @id @default(cuid())
   name            String   @unique
