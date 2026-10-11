@@ -15,6 +15,8 @@ assert.equal(hasAdminPermission({ isOwner: false, permissions: ["bookings.manage
 assert.equal(adminApiRequirement("/api/admin/future-route", "GET"), null);
 assert.equal(canVisitAdminPage({ isOwner: true, permissions: [] }, "/admin/future-page"), false);
 assert.equal(adminApiRequirement("/api/admin/test-email", "GET"), "templates.manage");
+assert.equal(adminApiRequirement("/api/admin/email-templates/preview", "POST"), "templates.view");
+assert.equal(adminApiRequirement("/api/admin/email-templates", "PUT"), "templates.manage");
 function files(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap(entry =>
     entry.isDirectory() ? files(path.join(dir, entry.name)) : [path.join(dir, entry.name)]);

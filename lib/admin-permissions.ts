@@ -48,6 +48,7 @@ export function adminApiRequirement(pathname: string, method: string): AdminRequ
   if (!area) return null; // New/unmapped routes fail closed.
   if (section === "notifications") return "bookings.view";
   if (section === "test-email") return "templates.manage";
+  if (pathname === "/api/admin/email-templates/preview" && method.toUpperCase() === "POST") return "templates.view";
   return `${area}.${["GET", "HEAD"].includes(method.toUpperCase()) ? "view" : "manage"}`;
 }
 const PAGE_AREAS: Record<string, AdminArea> = {

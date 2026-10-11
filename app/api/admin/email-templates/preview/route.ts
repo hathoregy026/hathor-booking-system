@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { handleRouteError, jsonError } from "@/lib/api";
+import { handleRouteError } from "@/lib/api";
 import { logDbError, withDb } from "@/lib/db-safe";
 import {
   buildDraftEmailTemplates,
   renderAllEmailTemplatePreviews,
-  type EmailPreviewDraftCopy,
-  type EmailPreviewDraftShared,
+  renderEmailTemplatePreview,
+
+
 } from "@/lib/email-preview";
 import {
   getDefaultEmailTemplates,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/email-templates";
 import { loadEmailFooter } from "@/lib/email-footer-db";
 import { prisma } from "@/lib/prisma";
+import { readEmailPreviewDraft, isCompleteEmailPreviewDraft } from "@/lib/email-preview-draft";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +42,6 @@ async function withSavedFooter<T extends object>(templates: T[]) {
 export async function GET() {
   const denied = await adminApiGuard("templates.view");
   if (denied) return denied;
-
   try {
     const templates = await withSavedFooter(await loadMergedTemplates());
     const previews = await renderAllEmailTemplatePreviews(templates);
@@ -71,24 +72,15 @@ export async function GET() {
  * on top of the latest saved branding/copy from the database.
  */
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard("templates.manage");
+  const denied = await adminApiGuard("templates.view");
   if (denied) return denied;
-
   try {
-    const body = (await request.json()) as {
-      shared?: EmailPreviewDraftShared;
-      templates?: EmailPreviewDraftCopy[];
-      /** The form's footer wording, saved or not. */
-      footer?: Record<string, unknown>;
-    };
-
-    if (body.templates !== undefined && !Array.isArray(body.templates)) {
-      return jsonError("templates must be an array", 400);
-    }
+    const body = await readEmailPreviewDraft(request);
+    const completeDraft = isCompleteEmailPreviewDraft(body);
 
     let baseRows;
     try {
-      baseRows = await loadMergedTemplates();
+      baseRows = completeDraft ? getDefaultEmailTemplates() : await loadMergedTemplates();
     } catch (error) {
       logDbError("admin.email-templates.preview.POST.base", error);
       baseRows = getDefaultEmailTemplates();
@@ -99,9 +91,10 @@ export async function POST(request: NextRequest) {
       body.templates,
       baseRows,
       body.footer,
-      await loadEmailFooter(),
+      completeDraft ? undefined : await loadEmailFooter(),
     );
-    const previews = await renderAllEmailTemplatePreviews(templates);
+    const selected = body.name ? templates.find(template => template.name === body.name) : undefined;
+    const previews = selected ? [await renderEmailTemplatePreview(selected)] : await renderAllEmailTemplatePreviews(templates);
 
     return NextResponse.json(
       {
