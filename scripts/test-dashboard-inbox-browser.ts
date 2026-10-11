@@ -51,7 +51,7 @@ async function main() {
       let sentMessage: { id: string; to: string; recipientName: string; subject: string; message: string; requestId: string } | null = null;
       let originalSend: string | null = null;
       const senderName = "Amira Nassar";
-      await page.context().addCookies([{ name: "admin_session", value: "synthetic-session", domain: "inbox-test.hathor.local", path: "/", secure: true, httpOnly: true, sameSite: "Lax" }]);
+      await page.context().addCookies([{ name: "hathor_admin_session", value: "synthetic-session", domain: "inbox-test.hathor.local", path: "/", secure: true, httpOnly: true, sameSite: "Lax" }]);
       await page.route("https://images.company.com/**", route => {
         imageRequests += 1;
         return route.fulfill({ contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=", "base64") });
@@ -134,7 +134,7 @@ async function main() {
           return route.fulfill({ json: { message: { ...summary(), resendEmailId: emailId, recipient: "reservations@hathorcruise.com", bodyText: '<script>window.inboxInjected = true</script>\nCould you help us plan our trip?\n' + "LongUnbrokenCustomerText".repeat(18) + '\n\nOn Fri, 2 Oct 2026 at 14:45, Team <team@example.com> wrote:\n> ' + '\u200c\u200b\u200d\u200e\u200f\ufeff '.repeat(50) + '\n> Previous invoice content', attachments: [{ id: fileId, filename: "itinerary.pdf", contentType: "application/pdf" }], senderMatchesGuest: true } } });
         }
         if (url.pathname === `/api/admin/inbox/general/${messageId}/formatted`) {
-          assert.ok(route.request().headers().cookie?.includes("admin_session=synthetic-session"), "The isolated iframe must authenticate using the normal session cookie");
+          assert.ok(route.request().headers().cookie?.includes("hathor_admin_session=synthetic-session"), "The isolated iframe must authenticate using the normal session cookie");
           const images = url.searchParams.get("images") === "load";
           const html = '<table style="background-color:#b69f64;color:#ffffff;width:600px"><tr><td><h2>Company signature</h2></td></tr></table><p>Company contact details</p><img src="https://images.company.com/logo.png" alt="Company logo" width="160"><script>parent.inboxInjected = true</script><p style="background-image:url(https://images.company.com/track)">Safe footer</p>';
           return route.fulfill({ headers: emailFrameHeaders(images), body: buildEmailHtmlDocument(html, images) });
