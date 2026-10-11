@@ -39,7 +39,7 @@ function mimeFromExtension(extension: string): string {
  * Logo uploads are rejected (brand icon is locked).
  */
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
  * Prefer POST multipart for new uploads.
  */
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {

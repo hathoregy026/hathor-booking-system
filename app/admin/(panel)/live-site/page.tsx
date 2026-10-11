@@ -1,8 +1,10 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { LiveSiteSettingsPanel } from "@/components/admin/LiveSiteSettingsPanel";
 import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { Globe2 } from "lucide-react";
 
-export default function AdminLiveSitePage() {
+export default async function AdminLiveSitePage() {
+  await requireAdminPage("website.view");
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <CmsPageHeader

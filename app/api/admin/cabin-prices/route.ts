@@ -51,7 +51,7 @@ async function readPrices() {
 }
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("prices.view");
   if (denied) return denied;
 
   try {
@@ -95,7 +95,7 @@ const saveSchema = z.object({
  * was sent with; new requests use the new price at once.
  */
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("prices.manage");
   if (denied) return denied;
 
   try {

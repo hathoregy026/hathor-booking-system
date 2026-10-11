@@ -11,7 +11,7 @@ import { adminApiGuard } from "@/lib/admin-server-auth";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.view");
   if (denied) return denied;
 
   try {
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.manage");
   if (denied) return denied;
 
   try {

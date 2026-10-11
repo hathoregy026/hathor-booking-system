@@ -38,7 +38,7 @@ async function withSavedFooter<T extends object>(templates: T[]) {
 
 /** Saved templates from the database. */
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.view");
   if (denied) return denied;
 
   try {
@@ -71,7 +71,7 @@ export async function GET() {
  * on top of the latest saved branding/copy from the database.
  */
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {

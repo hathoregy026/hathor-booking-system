@@ -36,7 +36,8 @@
     "compare:amenities-seam": "node scripts/compare-amenities-seam.mjs",
     "validate:availability": "tsx scripts/validate-calendar-availability.ts",
     "admin:users": "tsx scripts/admin-users.ts",
-    "verify:admin-auth": "tsx scripts/verify-admin-auth.ts"
+    "verify:admin-auth": "tsx scripts/verify-admin-auth.ts",
+    "verify:admin-permissions": "tsx scripts/verify-admin-permissions.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "2.0.2",

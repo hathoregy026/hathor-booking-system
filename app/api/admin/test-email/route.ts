@@ -19,7 +19,7 @@ export const revalidate = 0;
  * Protected by middleware (HMAC session).
  */
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   const hasResendKey = Boolean(process.env.RESEND_API_KEY?.trim());

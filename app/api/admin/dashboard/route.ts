@@ -40,7 +40,7 @@ function computeTotalCents(
 }
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("dashboard.view");
   if (denied) return denied;
 
   try {

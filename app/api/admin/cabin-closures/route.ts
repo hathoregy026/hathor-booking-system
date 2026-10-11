@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
@@ -328,6 +329,8 @@ async function readDates(slug: string) {
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("availability.view");
+  if (denied) return denied;
   try {
     if (!(await requireSession(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const params = request.nextUrl.searchParams;
@@ -360,6 +363,8 @@ type SailingResult = {
  * is left as it is and reported; it is already off sale.
  */
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("availability.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     const operation = requireIdempotencyKey(request);
@@ -384,6 +389,8 @@ export async function POST(request: NextRequest) {
 
 /** Reopens a closure: all of its cabins, or only the ones named. Never a booking. */
 export async function DELETE(request: NextRequest) {
+  const denied = await adminApiGuard("availability.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     const input = reopenSchema.parse(await readPublicJsonBody(request));

@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
@@ -9,6 +10,8 @@ import { handleRouteError } from "@/lib/api";
 const cursorSchema = z.object({ createdAt: z.iso.datetime(), id: z.uuid() });
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
   if (!(await adminIdentityFromRequest(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

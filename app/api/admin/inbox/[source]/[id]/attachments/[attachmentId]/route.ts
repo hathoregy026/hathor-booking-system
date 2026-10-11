@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
@@ -7,6 +8,8 @@ import type { BookingAttachment } from "@/lib/booking-message-types";
 import { privateEmailAttachmentDownloadUrl } from "@/lib/mail-attachments";
 
 export async function GET(request: NextRequest, context: { params: Promise<{ source: string; id: string; attachmentId: string }> }) {
+  const denied = await adminApiGuard("inbox.view");
+  if (denied) return denied;
   try {
     await assertInboxAdmin(request);
     const { id, attachmentId } = z.object({ source: z.literal("general"), id: z.uuid(), attachmentId: z.uuid() }).parse(await context.params);

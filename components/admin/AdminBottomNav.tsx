@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { Inbox, LayoutDashboard, Menu, Ship, Ticket } from "lucide-react";
+import { useAdminAccess } from "./AdminAccessProvider";
+import { canVisitAdminPage } from "@/lib/admin-permissions";
 import { isAdminInventoryPath } from "@/lib/admin-nav";
 
 type AdminBottomNavProps = {
@@ -19,6 +21,7 @@ const ITEMS = [
 
 export function AdminBottomNav({ onOpenMenu }: AdminBottomNavProps) {
   const pathname = usePathname();
+  const access = useAdminAccess();
   const reduceMotion = useReducedMotion();
 
   const isActive = (href: string, exact: boolean) => {
@@ -34,7 +37,7 @@ export function AdminBottomNav({ onOpenMenu }: AdminBottomNavProps) {
       aria-label="Mobile navigation"
     >
       <div className="admin-bottom-nav__inner mx-auto flex max-w-lg items-stretch justify-around gap-1 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2">
-        {ITEMS.map((item) => {
+        {ITEMS.filter(item => canVisitAdminPage(access, item.href)).map((item) => {
           const active = isActive(item.href, item.exact);
           const Icon = item.icon;
           return (

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/app/generated/prisma/client";
-import { assertAdminSession, AdminAuthError } from "@/lib/admin-server-auth";
+import { assertAdminSession, AdminAuthError, AdminPermissionError } from "@/lib/admin-server-auth";
 import {
   createBlogPostRecord,
   deleteBlogPostRecord,
@@ -20,6 +20,7 @@ export type BlogActionResult<T = void> =
   | { success: false; error: string };
 
 function formatActionError(error: unknown): string {
+  if (error instanceof AdminPermissionError) return "Your role cannot change blog posts.";
   if (error instanceof AdminAuthError) {
     return "Your session has expired. Please sign in again.";
   }
@@ -38,7 +39,7 @@ function formatActionError(error: unknown): string {
     if (error.message.includes("duplicate key")) {
       return "A post with this slug already exists. Choose a different slug.";
     }
-    return error.message;
+    return "Something went wrong. Please try again.";
   }
 
   return "Something went wrong. Please try again.";
@@ -48,7 +49,7 @@ export async function createBlogPost(
   formData: FormData,
 ): Promise<BlogActionResult<{ id: string }>> {
   try {
-    await assertAdminSession();
+    await assertAdminSession("blogs.manage");
 
     const input = parseBlogPostFormData(formData);
     const slug = resolveBlogSlug(input.title, input.slug);
@@ -67,7 +68,7 @@ export async function createBlogPost(
 
     return { success: true, data: { id: post.id } };
   } catch (error) {
-    console.error("[admin.blogs.create]", error);
+    console.error("[admin.blogs.create]", error instanceof Error ? error.name : "unknown");
     return { success: false, error: formatActionError(error) };
   }
 }
@@ -77,7 +78,7 @@ export async function updateBlogPost(
   formData: FormData,
 ): Promise<BlogActionResult> {
   try {
-    await assertAdminSession();
+    await assertAdminSession("blogs.manage");
 
     if (!id?.trim()) {
       return { success: false, error: "Post ID is required." };
@@ -101,7 +102,7 @@ export async function updateBlogPost(
 
     return { success: true };
   } catch (error) {
-    console.error("[admin.blogs.update]", error);
+    console.error("[admin.blogs.update]", error instanceof Error ? error.name : "unknown");
     return { success: false, error: formatActionError(error) };
   }
 }
@@ -111,7 +112,7 @@ export async function deleteBlogPost(
   confirm: boolean,
 ): Promise<BlogActionResult> {
   try {
-    await assertAdminSession();
+    await assertAdminSession("blogs.manage");
 
     if (!confirm) {
       return { success: false, error: "Deletion was not confirmed." };
@@ -133,7 +134,7 @@ export async function deleteBlogPost(
 
     return { success: true };
   } catch (error) {
-    console.error("[admin.blogs.delete]", error);
+    console.error("[admin.blogs.delete]", error instanceof Error ? error.name : "unknown");
     return { success: false, error: formatActionError(error) };
   }
 }

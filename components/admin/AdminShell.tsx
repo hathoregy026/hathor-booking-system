@@ -7,11 +7,16 @@ import { AdminBottomNav } from "./AdminBottomNav";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { ToastProvider } from "./ToastProvider";
+import { useAdminAccess } from "./AdminAccessProvider";
+import { adminPageRequirement, hasAdminPermission } from "@/lib/admin-permissions";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 function AdminShellInner({ children }: { children: React.ReactNode }) {
   const { theme } = useAdminTheme();
   const pathname = usePathname();
+  const access = useAdminAccess();
+  const requirement = adminPageRequirement(pathname);
+  const readOnly = !!requirement?.endsWith(".view") && !hasAdminPermission(access, requirement.replace(".view", ".manage") as import("@/lib/admin-permissions").AdminPermission);
   const [menuOpenForPath, setMenuOpenForPath] = useState<string | null>(null);
   const mobileMenuOpen = menuOpenForPath === pathname;
 
@@ -112,6 +117,7 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
             bottom pad that clears the phone bottom-nav *plus* the iOS home
             indicator via env(safe-area-inset-bottom). */}
         <main className="admin-main mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+          {readOnly && <p role="status" className="mb-6 rounded border border-[var(--border)] px-4 py-3 text-sm text-muted">View access · Your role can read this section but cannot save changes or send messages.</p>}
           {children}
         </main>
       </div>

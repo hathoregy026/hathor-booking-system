@@ -1,0 +1,27 @@
+.people-page { --people-gold: var(--accent); font-family: var(--font-geist-sans), sans-serif; max-width: 1180px; margin-inline: auto; }
+.people-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin-bottom:32px; }
+.people-heading h1 { font-family: Georgia, serif; font-size:clamp(2rem,4vw,3.4rem); letter-spacing:-.035em; line-height:1.1; }
+.people-kicker { color:var(--accent); text-transform:uppercase; letter-spacing:.16em; font-size:.7rem; margin-bottom:12px; }
+.people-section { padding:clamp(20px,3vw,32px); border:1px solid var(--border); border-radius:24px 4px 24px 4px; background:var(--bg-glass); margin-block:24px; }
+.people-section h2 { font-size:1.25rem; font-weight:600; margin-bottom:12px; }
+.people-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.people-page label, .people-dialog label { display:grid; gap:8px; font-size:.85rem; }
+.people-page input, .people-page select, .people-dialog input { min-height:44px; width:100%; min-width:0; }
+.people-row { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 0; border-top:1px solid var(--border); }
+.people-row > div { min-width:0; }
+.people-row p, .people-page code { overflow-wrap:anywhere; }
+.people-actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+.people-page button { min-height:44px; }
+.people-permission { display:grid; grid-template-columns:minmax(0,1fr) 140px; gap:20px; align-items:center; padding:14px 0; border-top:1px solid var(--border); }
+.people-permission small { display:block; color:var(--text-secondary); font-size:.8rem; margin-top:4px; line-height:1.5; }
+.people-dialog { width:min(540px,calc(100vw - 32px)); max-height:calc(100dvh - 48px); overflow:auto; padding:28px; border:1px solid var(--border); border-radius:24px 4px; background:var(--bg-primary); color:var(--text-primary); margin:auto; }
+.people-dialog::backdrop { background:rgba(0,0,0,.65); backdrop-filter:blur(3px); }
+.people-dialog form { display:grid; gap:20px; }
+.people-dialog h2 { font-size:1.5rem; font-family:Georgia,serif; }
+.people-link { width:100%; padding:14px; min-height:104px; resize:vertical; overflow-wrap:anywhere; background:var(--input-bg); border:1px solid var(--border); border-radius:4px; }
+.people-note { color:var(--text-secondary); line-height:1.6; font-size:.85rem; }
+.people-error { color:var(--danger); }
+.people-status { border-left:2px solid var(--accent); padding:12px 16px; background:var(--bg-glass); margin-block:16px; }
+@media(max-width:1024px) { .people-row { align-items:flex-start; flex-direction:column; } .people-actions { justify-content:flex-start; } }
+@media(max-width:480px) { .people-heading { flex-direction:column; gap:16px; } .people-grid { grid-template-columns:1fr; } .people-permission { grid-template-columns:1fr; gap:10px; } .people-section { padding:20px 16px; } .people-dialog { padding:24px 20px; } }
+@media(prefers-reduced-motion:no-preference) { .people-actions button { transition:background .2s,color .2s; } }

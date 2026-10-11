@@ -427,7 +427,9 @@ export const ModelName = {
   AdminAuthEvent: 'AdminAuthEvent',
   EmailTemplate: 'EmailTemplate',
   SiteImage: 'SiteImage',
-  SiteSetting: 'SiteSetting'
+  SiteSetting: 'SiteSetting',
+  AdminRole: 'AdminRole',
+  AdminInvitation: 'AdminInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -443,7 +445,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2741,6 +2743,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AdminRole: {
+      payload: Prisma.$AdminRolePayload<ExtArgs>
+      fields: Prisma.AdminRoleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminRoleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminRoleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>
+        }
+        findFirst: {
+          args: Prisma.AdminRoleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminRoleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>
+        }
+        findMany: {
+          args: Prisma.AdminRoleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>[]
+        }
+        create: {
+          args: Prisma.AdminRoleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>
+        }
+        createMany: {
+          args: Prisma.AdminRoleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminRoleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>[]
+        }
+        delete: {
+          args: Prisma.AdminRoleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>
+        }
+        update: {
+          args: Prisma.AdminRoleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminRoleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminRoleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminRoleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminRoleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminRolePayload>
+        }
+        aggregate: {
+          args: Prisma.AdminRoleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminRole>
+        }
+        groupBy: {
+          args: Prisma.AdminRoleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminRoleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminRoleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminRoleCountAggregateOutputType> | number
+        }
+      }
+    }
+    AdminInvitation: {
+      payload: Prisma.$AdminInvitationPayload<ExtArgs>
+      fields: Prisma.AdminInvitationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdminInvitationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdminInvitationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>
+        }
+        findFirst: {
+          args: Prisma.AdminInvitationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdminInvitationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>
+        }
+        findMany: {
+          args: Prisma.AdminInvitationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>[]
+        }
+        create: {
+          args: Prisma.AdminInvitationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>
+        }
+        createMany: {
+          args: Prisma.AdminInvitationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdminInvitationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>[]
+        }
+        delete: {
+          args: Prisma.AdminInvitationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>
+        }
+        update: {
+          args: Prisma.AdminInvitationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdminInvitationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdminInvitationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdminInvitationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdminInvitationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdminInvitationPayload>
+        }
+        aggregate: {
+          args: Prisma.AdminInvitationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdminInvitation>
+        }
+        groupBy: {
+          args: Prisma.AdminInvitationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminInvitationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdminInvitationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdminInvitationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3144,7 +3294,9 @@ export const AdminUserScalarFieldEnum = {
   disabledAt: 'disabledAt',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isOwner: 'isOwner',
+  roleId: 'roleId'
 } as const
 
 export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
@@ -3232,6 +3384,28 @@ export const SiteSettingScalarFieldEnum = {
 } as const
 
 export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[keyof typeof SiteSettingScalarFieldEnum]
+
+
+export const AdminRoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  permissions: 'permissions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminRoleScalarFieldEnum = (typeof AdminRoleScalarFieldEnum)[keyof typeof AdminRoleScalarFieldEnum]
+
+
+export const AdminInvitationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminInvitationScalarFieldEnum = (typeof AdminInvitationScalarFieldEnum)[keyof typeof AdminInvitationScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3594,6 +3768,8 @@ export type GlobalOmitConfig = {
   emailTemplate?: Prisma.EmailTemplateOmit
   siteImage?: Prisma.SiteImageOmit
   siteSetting?: Prisma.SiteSettingOmit
+  adminRole?: Prisma.AdminRoleOmit
+  adminInvitation?: Prisma.AdminInvitationOmit
 }
 
 /* Types for Logging */

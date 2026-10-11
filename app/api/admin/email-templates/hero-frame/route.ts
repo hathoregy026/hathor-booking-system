@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 /** GET — the original to frame and its saved frame. */
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.view");
   if (denied) return denied;
 
   try {
@@ -23,7 +23,7 @@ export async function GET() {
 
 /** POST { x, y, zoom } — render and apply the framed banner to every email. */
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {

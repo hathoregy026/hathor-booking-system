@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest } from "next/server";
 import { assertInboxAdmin, inboxRouteError } from "@/lib/inbox-api";
 import { assertTrustedPublicJsonRequest } from "@/lib/public-api-security";
@@ -9,6 +10,8 @@ export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("inbox.manage");
+  if (denied) return denied;
   try {
     await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);

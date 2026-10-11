@@ -7,7 +7,7 @@ import { BookingDetailView } from "@/components/admin/bookings/BookingDetailView
 export const dynamic = "force-dynamic";
 
 export default async function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdminPage();
+  await requireAdminPage("bookings.view");
   const { id } = await params;
 
   const [booking, extras] = await Promise.all([fetchAdminBookingById(id), fetchBookingDetailExtras(id)]);
