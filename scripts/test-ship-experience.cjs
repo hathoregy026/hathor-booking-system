@@ -1,27 +1,20 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Preserve the existing CommonJS test entry point. */
 /* Read-only local UI regression. Browser API fixtures never write booking/CMS data.
  * Usage: node scripts/test-ship-experience.cjs [--browser] (localhost:3000 running).
  */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const Module = require('node:module');
-const ts = require('typescript');
-
-function loadLocalTS(relative) {
-  const filename = path.resolve(relative);
-  const source = ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText;
-  const local = new Module(filename, module);
-  local.paths = Module._nodeModulePaths(path.dirname(filename));
-  local._compile(source, filename);
-  return local.exports;
-}
-const { DEFAULT_SHIP_EXPERIENCE: defaults, SHIP_REGIONS: regions, SHIP_ROOM_IDS: ids, shipExperienceSchema, parseShipExperience } = loadLocalTS('lib/ship-experience-shared.ts');
+const { require: requireTs } = require('tsx/cjs/api');
+function loadLocalTS(relative) { return requireTs(path.resolve(relative), __filename); }
+const { DEFAULT_SHIP_EXPERIENCE: defaults, SHIP_REGIONS: regions, SHIP_ROOM_IDS: ids } = loadLocalTS('lib/ship-experience-shared.ts');
+const { shipExperienceSchema, parseShipExperience } = loadLocalTS('lib/ship-experience-schema.ts');
 assert.equal(shipExperienceSchema.safeParse(defaults).success, true);
 assert.equal(defaults.rooms.length, 13);
 assert.equal(defaults.rooms.filter(room => room.roomId).length, 12);
 assert.equal(defaults.rooms.find(room => room.slotId === 'ROOM09').roomId, null);
 assert.equal(regions.R02.deck, 'main');
-assert.ok(regions.R02.y < regions.R01.y, 'Royal Suite 2 above Royal Suite 1');
+assert.ok(regions.R01.y < regions.R02.y, 'Royal Suite 1 above Royal Suite 2');
 assert.equal(Object.values(regions).filter(region => region.deck === 'sun').length, 0);
 for (const region of Object.values(regions)) {
   assert.ok(region.x >= 0 && region.y >= 0 && region.x + region.width <= 1774 && region.y + region.height <= 887);
@@ -42,16 +35,17 @@ const legacy = { eyebrow: 'Saved eyebrow', title: 'Saved title', introduction: '
 const migrated = parseShipExperience(legacy);
 assert.equal(migrated.title, legacy.title);
 assert.equal(migrated.rooms[0].visible, false);
-assert.equal(migrated.version, 2);
-assert.equal('spaces' in migrated, false);
+assert.equal(migrated.version, 3);
+assert.deepEqual(migrated.spaces, defaults.spaces);
 console.log('PASS: schema, 13 plan rooms / 12 cabins, royal suite placement, legacy upgrade and validation.');
 
 async function browserTests() {
   require('dotenv').config({ path: '.env.local', quiet: true });
   require('dotenv').config({ quiet: true });
   const { chromium } = require('playwright');
-  const { createSessionToken, ADMIN_SESSION_COOKIE } = loadLocalTS('lib/admin-auth.ts');
-  const out = path.resolve('_local/ship-plan-qa');
+  const { withLocalAdminTest } = await import('./local-admin-test.mjs');
+  await withLocalAdminTest(async ({ baseUrl, session }) => {
+  const out = path.resolve('output/ship-plan-qa');
   fs.mkdirSync(out, { recursive: true });
   const roomType = id => id.startsWith('R') ? 'Royal Suite' : id.startsWith('S') ? 'Luxury Suite' : id.startsWith('T') ? 'Luxury Twin Cabin' : 'Luxury King Cabin';
   const rooms = ids.map(id => ({ id, name: regions[id].name, roomNumber: regions[id].number, roomType: roomType(id), description: 'A private room aboard Hathor with views of the Nile.', capacity: id.startsWith('S') || id.startsWith('R') ? 4 : 2, sizeSqm: id.startsWith('R') ? 56 : id.startsWith('S') ? 46 : 22 }));
@@ -80,7 +74,7 @@ async function browserTests() {
     });
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.goto(baseUrl + '/', { waitUntil: 'domcontentloaded', timeout: 90000 });
     const section = page.locator('#explore-hathor');
     await section.waitFor({ timeout: 30000 });
     await page.waitForFunction(() => document.querySelectorAll('#explore-hathor .ship-plan__room[data-state="open"]').length === 9);
@@ -185,10 +179,10 @@ async function browserTests() {
     assert.equal(await section.locator('.ship-plan__room').count(), 2);
     console.log('PASS: illustration failure and successful retry.');
 
-    await context.addCookies([{ name: ADMIN_SESSION_COOKIE, value: createSessionToken(), domain: 'localhost', path: '/', httpOnly: true, sameSite: 'Strict' }]);
+    await context.addCookies([{ name: 'hathor_admin_session', value: session.token, domain: new URL(baseUrl).hostname, path: '/', httpOnly: true, sameSite: 'Strict' }]);
     const admin = await context.newPage();
     admin.on('pageerror', error => errors.push(error.message));
-    await admin.goto('http://localhost:3000/admin/ship-experience', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await admin.goto(baseUrl + '/admin/ship-experience', { waitUntil: 'domcontentloaded', timeout: 90000 });
     await admin.locator('.sx-admin__map').waitFor({ timeout: 30000 });
     await admin.locator('[data-slot="K01"]').click();
     await admin.getByLabel('Room name', { exact: true }).fill('Nile Room');
@@ -208,16 +202,16 @@ async function browserTests() {
     console.log('PASS: dashboard edit/save → public map name and number, using intercepted APIs (no database writes).');
     const anonymous = await browser.newContext();
     for (const method of ['get', 'put']) {
-      const response = await anonymous.request[method]('http://localhost:3000/api/admin/ship-experience', method === 'put' ? { data: {} } : {});
+      const response = await anonymous.request[method](baseUrl + '/api/admin/ship-experience', method === 'put' ? { data: {} } : {});
       assert.equal(response.status(), 401);
     }
-    console.log('PASS: unauthenticated admin GET and PUT rejected. Screenshots: _local/ship-plan-qa/');
+    console.log('PASS: unauthenticated admin GET and PUT rejected. Screenshots: output/ship-plan-qa/');
 
     const motionContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
     await motionContext.route('**/api/ship-experience?**', route => route.fulfill({ json: { config, rooms, sailings } }));
     await motionContext.route('**/api/**', route => route.request().method() === 'GET' ? route.fallback() : route.abort());
     const motionPage = await motionContext.newPage();
-    await motionPage.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await motionPage.goto(baseUrl + '/', { waitUntil: 'domcontentloaded', timeout: 90000 });
     const theatre = motionPage.locator('#explore-hathor .h3-ship__theatre');
     const plan = theatre.locator('.h3-ship__deck-reveal');
     await theatre.waitFor();
@@ -244,7 +238,7 @@ async function browserTests() {
     assert.equal(await theatre.locator('.ship-plan--compact').evaluate(element => getComputedStyle(element).animationName), 'none', 'Animation finishes without leaving a transform on room targets');
     const motionPhone = await motionContext.newPage();
     await motionPhone.setViewportSize({ width: 390, height: 844 });
-    await motionPhone.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await motionPhone.goto(baseUrl + '/', { waitUntil: 'domcontentloaded', timeout: 90000 });
     await motionPhone.waitForTimeout(4500);
     const phonePlan = motionPhone.locator('#explore-hathor .h3-ship__deck-reveal');
     await phonePlan.evaluate(element => {
@@ -259,5 +253,6 @@ async function browserTests() {
     await motionContext.close();
     console.log('PASS: ship arrives without water effects on desktop and phone.');
   } finally { await browser.close(); }
+  });
 }
-if (process.argv.includes('--browser')) browserTests().catch(error => { console.error(error); process.exitCode = 1; });
+if (process.argv.includes('--browser')) browserTests().catch(async error => { const { reportLocalAdminTestFailure } = await import('./local-admin-test.mjs'); reportLocalAdminTestFailure(error); });

@@ -18,7 +18,7 @@ are given 10 single-use recovery codes before the dashboard opens.
 | Threat | Protection |
 | --- | --- |
 | Stolen or guessed password | A code from the person's phone is also required. |
-| Password database leak | Argon2id hashes (64 MiB, 3 passes, unique salt). Authenticator secrets are AES-256-GCM encrypted with a key that is not in the database. Recovery codes and session tokens are stored only as keyed hashes. |
+| Password database leak | Argon2id hashes (64 MiB, 3 passes, unique salt). Authenticator secrets are AES-256-GCM encrypted with a key that is not in the database. Recovery codes are stored as keyed hashes; session tokens are stored as SHA-256 fingerprints. |
 | Brute force | Durable Postgres throttles: 10 password attempts per IP and 5 per account every 15 min; 5 codes per sign-in, 10 per account, 20 per IP. |
 | Finding out which emails have accounts | Same message, same status and the same Argon2 timing for unknown emails, wrong passwords and disabled accounts. |
 | Code read over a shoulder / replayed | Each 30-second code is accepted once per account. |
@@ -126,26 +126,91 @@ npm run verify:admin-auth                                         # offline cryp
 
 ## Before going live (not done yet)
 
-1. In Vercel, set `ADMIN_SESSION_SECRET` and `ADMIN_MFA_ENCRYPTION_KEY`
-   (fresh values, different for Production and Preview). Back up the MFA
-   key: losing it means every account re-scans a QR code.
-2. Set `BOOKING_ACCESS_SECRET` before you ever rotate `ADMIN_SESSION_SECRET`.
-   Guest booking links fall back to it, so rotating it without that would
-   break links already emailed to guests.
+1. In Vercel, set `ADMIN_SESSION_SECRET` and `ADMIN_MFA_ENCRYPTION_KEY`.
+   Keep an existing Production session secret if it is at least 32 characters.
+   **Environments that share a database must use the same
+   `ADMIN_MFA_ENCRYPTION_KEY`**, including a local account-management CLI
+   connected to that database. Use separate MFA keys only for separate
+   databases. Back up the key securely: losing or changing it means every
+   enrolled account needs `reset-mfa` and must re-scan a QR code.
+2. Preserve already emailed guest booking links when setting Production's
+   `ADMIN_SESSION_SECRET`. When neither `BOOKING_ACCESS_SECRET` nor
+   `BOOKING_HOLD_SECRET` is set, guest links use `ADMIN_SESSION_SECRET`.
+   If that existing value is shorter than 32 characters and must change,
+   first set `BOOKING_ACCESS_SECRET` to the **old value** in Production,
+   then replace `ADMIN_SESSION_SECRET`. If a dedicated guest signing secret
+   already exists, keep it unchanged. Do this privately in environment
+   settings; never paste secret values into a chat.
 3. The migration `20261009120000_admin_accounts_mfa` is additive (four new
-   tables, nothing changed). Vercel's build runs `prisma migrate deploy`, so
-   it applies on the first deploy that includes it.
-4. Create the real accounts against the production database with
+   tables). Vercel's build runs `prisma migrate deploy`, so it applies on the
+   first deploy that includes it. Migrations cannot build an empty database:
+   a separate preview database needs an existing baseline/schema.
+4. Create real accounts against the production database with
    `npm run admin:users -- create …` **before** deploying, or nobody can
    sign in afterwards. `ADMIN_PASSWORD` no longer opens the dashboard.
-5. Set `DATABASE_CA_CERT` in Vercel (Production and Preview) to the
-   Supabase CA (`prod-ca-2021.crt` from Project Settings → Database → SSL
-   Configuration). Database connections now verify the server certificate
-   and refuse to connect without it, so without this the build and every
-   page that reads the database fail. Test it locally first by pointing
-   `.env` at the Supabase database with the same value.
-6. Remove the `git.deploymentEnabled` entry for this branch from
-   `vercel.json` (it stops preview builds while this is local-only).
-7. Old helper scripts that logged in with `ADMIN_PASSWORD`
-   (`scripts/test-profile-base64.mjs`, `scripts/test-hero-logo-tune-save.mjs`,
-   `scripts/test-ship-experience.cjs`) need updating to the new flow.
+5. Set `DATABASE_CA_CERT` in each enabled Vercel environment to the database
+   provider's CA (Supabase: Project Settings → Database → SSL Configuration).
+   Connections verify the certificate and refuse remote connections without
+   it. See the [Supabase connection guide](https://supabase.com/docs/guides/database/connecting-to-postgres#connecting-with-ssl).
+   Local helper tests below must never target Supabase or another remote DB.
+6. Keep the `git.deploymentEnabled` block for `claude/festive-cori-17uol4`
+   in `vercel.json` until the owner explicitly says **start the preview**,
+   selects its database, and configures Preview's environment variables.
+   Removing it and pushing starts a build that runs `prisma migrate deploy`
+   against that database. Starting a preview requires separate approval.
+7. When a preview is approved, use the **branch alias URL containing `-git-`**
+   from Vercel. A per-deployment URL without `-git-` redirects to Production
+   through `lib/public-url.ts`. On a shared database, keep preview testing
+   to sign-in/security: other dashboard actions operate on real bookings
+   and can email guests.
+
+## Repeatable local regression helpers
+
+These scripts refuse Production/Vercel, remote website URLs, remote database
+hosts, database names other than `hathor_admin_auth_test`, and connection
+override parameters. They never run migrations or change booking rows.
+
+Use a disposable local database with PostgreSQL configured for UTC (Docker
+uses UTC by default). For example, use the Docker instructions
+above, then create a dedicated database:
+
+```bash
+docker exec hathor-pg createdb -U postgres hathor_admin_auth_test
+```
+
+Set these in the **isolated checkout's** `.env` (not your live checkout):
+
+```bash
+DATABASE_URL="postgresql://postgres:localdev@localhost:5432/hathor_admin_auth_test"
+DIRECT_URL="postgresql://postgres:localdev@localhost:5432/hathor_admin_auth_test"
+TEST_BASE_URL="http://localhost:3000"
+# Add fresh local ADMIN_SESSION_SECRET and ADMIN_MFA_ENCRYPTION_KEY too.
+```
+
+With only that local database selected, run `npx prisma db push`, then start
+`npm run dev`. Scripts and dev server must use the same database and auth
+secrets. Each helper creates a random, enrolled test account and a real
+database session. A security probe checks the server uses the same fixture
+before any HTTP mutation. Its own auth rows are removed in `finally`, even
+on failure. A forcibly killed process can leave fixtures: discard the
+throwaway database after testing.
+
+```bash
+node scripts/test-profile-base64.mjs
+node scripts/test-hero-logo-tune-save.mjs
+node scripts/test-ship-experience.cjs --browser
+node scripts/test-admin-login-e2e.mjs --browser
+node --test scripts/test-local-admin-test.mjs
+```
+
+The profile helper tests the remaining profile persistence module; the old
+`/api/admin/profile` endpoint no longer exists. It generates a tiny WebP
+fixture and restores the prior profile. The hero helper restores its original
+tune in `finally`. The ship helper still intercepts its save APIs, and writes
+screenshots to `output/ship-plan-qa`, never the frozen `_local` directory.
+
+The login regression exercises the real HTTP sign-in/security endpoints,
+including enrollment, token/cookie boundaries, throttling, revocation,
+password changes and recovery codes. It uses only synthetic auth rows.
+The inbox browser test remains fully mocked; its synthetic cookie is now
+named `hathor_admin_session`, matching the dev session cookie.

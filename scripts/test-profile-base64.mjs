@@ -1,34 +1,30 @@
-import "dotenv/config";
-import { readFileSync } from "fs";
-import path from "path";
+/**
+ * Local profile-storage regression. The former /api/admin/profile endpoint
+ * no longer exists; exercise the remaining persistence module instead.
+ * Usage: node scripts/test-profile-base64.mjs (see docs/admin-login.md).
+ */
+import assert from "node:assert/strict";
+import sharp from "sharp";
+import { withLocalAdminTest, reportLocalAdminTestFailure } from "./local-admin-test.mjs";
 
-const baseUrl = "http://localhost:3000";
-const password = process.env.ADMIN_PASSWORD ?? "";
-
-const loginRes = await fetch(`${baseUrl}/api/admin/login`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ password }),
-});
-
-const cookie = loginRes.headers.get("set-cookie")?.split(";")[0] ?? "";
-console.log("login:", loginRes.status);
-
-const webp = readFileSync(
-  path.join(process.cwd(), "public", "uploads", "admin-profile", "test-write.webp"),
-);
-const dataUrl = `data:image/webp;base64,${webp.toString("base64")}`;
-
-const profileRes = await fetch(`${baseUrl}/api/admin/profile`, {
-  method: "PATCH",
-  headers: {
-    "Content-Type": "application/json",
-    Cookie: cookie,
-  },
-  body: JSON.stringify({
-    displayName: "Admin",
-    avatarUrl: dataUrl,
-  }),
-});
-
-console.log("profile:", profileRes.status, (await profileRes.text()).slice(0, 120));
+withLocalAdminTest(async ({ prisma }) => {
+  const { updateAdminProfileRow } = await import("../lib/admin-profile-pg.ts");
+  const { resetDbConnectionHard } = await import("../lib/prisma.ts");
+  const previous = await prisma.adminProfile.findUnique({ where: { id: "default" } });
+  const webp = await sharp({ create: { width: 1, height: 1, channels: 3, background: "#c9a96e" } }).webp().toBuffer();
+  const avatarUrl = "data:image/webp;base64," + webp.toString("base64");
+  try {
+    await updateAdminProfileRow({ displayName: "Local test profile", avatarUrl });
+    const saved = await prisma.adminProfile.findUniqueOrThrow({ where: { id: "default" } });
+    assert.equal(saved.avatarUrl, avatarUrl);
+    assert.equal(saved.displayName, "Local test profile");
+    console.log("PASS: local profile stores a WebP data URL.");
+  } finally {
+    try {
+      if (previous) await prisma.adminProfile.update({ where: { id: previous.id }, data: previous });
+      else await prisma.adminProfile.deleteMany({ where: { id: "default" } });
+    } finally {
+      await resetDbConnectionHard();
+    }
+  }
+}).catch(reportLocalAdminTestFailure);
