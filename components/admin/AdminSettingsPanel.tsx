@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminPermission } from "./AdminAccessProvider";
 import { Bell, Lock, Moon, Sparkles, Sun } from "lucide-react";
 import { Accordion, AccordionSection } from "./Accordion";
 import { AdminSecurityPanel } from "./AdminSecurityPanel";
@@ -9,6 +10,8 @@ import { useAdminTheme } from "./ThemeProvider";
 
 export function AdminSettingsPanel() {
   const { theme } = useAdminTheme();
+  const canEditWebsite = useAdminPermission("website.view");
+  const canSeeBookings = useAdminPermission("bookings.view");
   const ThemeIcon = theme === "day" ? Sun : Moon;
 
   return (
@@ -48,7 +51,7 @@ export function AdminSettingsPanel() {
           </div>
         </AccordionSection>
 
-        <AccordionSection
+        {canEditWebsite && <AccordionSection
           title="Preload screen"
           description="Welcome splash on the public site"
           icon={Sparkles}
@@ -70,6 +73,7 @@ export function AdminSettingsPanel() {
           </p>
         </AccordionSection>
 
+        }
         <AccordionSection
           title="Security"
           description="Your sign-in, devices, password and recovery codes"
@@ -78,7 +82,7 @@ export function AdminSettingsPanel() {
           <AdminSecurityPanel />
         </AccordionSection>
 
-        <AccordionSection
+        {canSeeBookings && <AccordionSection
           title="Notifications"
           description="New booking alerts in the header"
           icon={Bell}
@@ -88,6 +92,7 @@ export function AdminSettingsPanel() {
             public site. Notifications refresh while you are logged in.
           </p>
         </AccordionSection>
+        }
       </Accordion>
     </div>
   );

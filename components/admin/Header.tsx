@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminAccess } from "./AdminAccessProvider";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronDown, ChevronRight, Eye, Menu, Search, X } from "lucide-react";
@@ -31,6 +33,8 @@ const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin/email-templates": { section: "CMS", title: "Email Templates" },
   "/admin/storage": { section: "CMS", title: "Storage" },
   "/admin/blogs": { section: "CMS", title: "Blog Posts" },
+  "/admin/people": { section: "System", title: "People & roles" },
+  "/admin/access": { section: "System", title: "Your access" },
   "/admin/settings": { section: "System", title: "Settings" },
 };
 
@@ -96,6 +100,8 @@ function bookingsSearchHref(query: string) {
 
 export function Header({ onMenuToggle }: HeaderProps) {
   const pathname = usePathname();
+  const access = useAdminAccess();
+  const canSeeBookings = hasAdminPermission(access, "bookings.view");
   const router = useRouter();
   const searchParams = useSearchParams();
   const reduceMotion = useReducedMotion();
@@ -223,15 +229,15 @@ export function Header({ onMenuToggle }: HeaderProps) {
       </p>
 
       {/* Desktop search (>=1024px) — no longer competes for the whole bar. */}
-      <form
+      {canSeeBookings && <form
         onSubmit={handleSearch}
         className="admin-search hidden w-full max-w-xs lg:block"
       >
         {searchField}
-      </form>
+      </form>}
 
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
-        <button
+        {canSeeBookings && <button
           type="button"
           onClick={() => setSearchOpen((open) => !open)}
           className="btn-ghost h-11 w-11 px-0 lg:hidden"
@@ -245,6 +251,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
           )}
         </button>
 
+        }
         <ThemeToggle compact />
         <button
           type="button"
@@ -254,7 +261,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         >
           <Eye className="h-5 w-5" aria-hidden />
         </button>
-        <NotificationBell />
+        {canSeeBookings && <NotificationBell />}
 
         <div className="relative hidden sm:block">
           <button
@@ -266,8 +273,8 @@ export function Header({ onMenuToggle }: HeaderProps) {
           >
             <span className="admin-user-avatar !h-8 !w-8 text-[11px]">H</span>
             <span className="hidden text-left leading-tight lg:block">
-              <span className="block text-sm font-medium">Admin</span>
-              <span className="block text-[11px] text-muted">Hathor</span>
+              <span className="block max-w-[10rem] truncate text-sm font-medium">{access.displayName}</span>
+              <span className="block max-w-[10rem] truncate text-[11px] text-muted">{access.isOwner ? "Administrator" : access.roleName ?? "No role"}</span>
             </span>
             <ChevronDown
               className={`hidden h-4 w-4 text-muted transition-transform lg:block ${
@@ -338,7 +345,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
       {/* Expanding search sheet for mobile/tablet. */}
       <AnimatePresence>
-        {searchOpen && (
+        {canSeeBookings && searchOpen && (
           <motion.form
             onSubmit={handleSearch}
             className="admin-search absolute inset-x-0 top-full mx-4 mt-2 lg:hidden"

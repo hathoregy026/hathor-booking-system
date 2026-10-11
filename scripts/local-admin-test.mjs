@@ -93,7 +93,7 @@ export async function withLocalAdminTest(run) {
   for (const scope of ["admin-login-ip", "admin-login-code-ip"]) rateKey(scope, ip);
   rateKey("admin-login-account", email);
   rateKey("admin-login-code-account", userId);
-  rateKey("admin-step-up", userId);
+  for (const scope of ["admin-step-up", "admin-management-proof", "admin-people-read", "admin-access-read"]) rateKey(scope, userId);
   let created = false;
   try {
     const result = await pool.query("SELECT current_database() AS name, host(inet_server_addr()) AS address, current_setting('TimeZone') AS timezone");
@@ -106,7 +106,7 @@ export async function withLocalAdminTest(run) {
     }
     await prisma.adminUser.create({
       data: {
-        id: userId, email, displayName: "Local test account",
+        id: userId, email, displayName: "Local test account", isOwner: true,
         passwordHash: await passwordTools.hashAdminPassword(password),
         totpSecretEnc: crypto.encryptMfaSecret(totpSecret, userId), mfaEnrolledAt: new Date(),
       },

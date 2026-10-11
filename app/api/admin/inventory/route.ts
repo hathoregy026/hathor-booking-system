@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -15,6 +16,8 @@ const blockSchema = z.object({
 }).strict();
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("availability.view");
+  if (denied) return denied;
   try {
     if (!(await adminIdentityFromRequest(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -56,6 +59,8 @@ export async function GET(request: NextRequest) {
   } catch (error) { return handleRouteError(error); }
 }
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("availability.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     const blockKey = requireIdempotencyKey(request);
@@ -78,6 +83,8 @@ export async function POST(request: NextRequest) {
   } catch (error) { return handleRouteError(error); }
 }
 export async function DELETE(request: NextRequest) {
+  const denied = await adminApiGuard("availability.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     const { blockKey } = z.object({ blockKey: z.string().min(16).max(128) }).strict().parse(await readPublicJsonBody(request));

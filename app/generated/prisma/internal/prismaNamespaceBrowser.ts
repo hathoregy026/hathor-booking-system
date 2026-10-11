@@ -81,7 +81,9 @@ export const ModelName = {
   AdminAuthEvent: 'AdminAuthEvent',
   EmailTemplate: 'EmailTemplate',
   SiteImage: 'SiteImage',
-  SiteSetting: 'SiteSetting'
+  SiteSetting: 'SiteSetting',
+  AdminRole: 'AdminRole',
+  AdminInvitation: 'AdminInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -464,7 +466,9 @@ export const AdminUserScalarFieldEnum = {
   disabledAt: 'disabledAt',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isOwner: 'isOwner',
+  roleId: 'roleId'
 } as const
 
 export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
@@ -552,6 +556,28 @@ export const SiteSettingScalarFieldEnum = {
 } as const
 
 export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[keyof typeof SiteSettingScalarFieldEnum]
+
+
+export const AdminRoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  permissions: 'permissions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminRoleScalarFieldEnum = (typeof AdminRoleScalarFieldEnum)[keyof typeof AdminRoleScalarFieldEnum]
+
+
+export const AdminInvitationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminInvitationScalarFieldEnum = (typeof AdminInvitationScalarFieldEnum)[keyof typeof AdminInvitationScalarFieldEnum]
 
 
 export const SortOrder = {

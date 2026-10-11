@@ -20,7 +20,7 @@ const roomSelect = {
 } as const;
 
 export async function POST(request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("cruises.manage");
   if (denied) return denied;
 
   try {

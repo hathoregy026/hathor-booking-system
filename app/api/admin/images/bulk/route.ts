@@ -31,7 +31,7 @@ const bulkSchema = z.object({
 });
 
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.manage");
   if (denied) return denied;
 
   try {

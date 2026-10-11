@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { inboxIdentitySchema } from "@/lib/dashboard-inbox";
@@ -9,6 +10,8 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function GET(request: NextRequest, context: { params: Promise<{ source: string; id: string }> }) {
+  const denied = await adminApiGuard("inbox.view");
+  if (denied) return denied;
   let images = false;
   try {
     await assertInboxAdmin(request);

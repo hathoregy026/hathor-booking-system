@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
@@ -8,6 +9,8 @@ import type { BookingAttachment } from "@/lib/booking-message-types";
 import { attachmentDownloadUrl } from "@/lib/mail-attachments";
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string; messageId: string; attachmentId: string }> }) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
   const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
   if (!(await adminIdentityFromRequest(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });

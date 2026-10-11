@@ -1,8 +1,10 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { PageVisibilityPanel } from "@/components/admin/PageVisibilityPanel";
 import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { LayoutGrid } from "lucide-react";
 
-export default function AdminPagesPage() {
+export default async function AdminPagesPage() {
+  await requireAdminPage("website.view");
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <CmsPageHeader

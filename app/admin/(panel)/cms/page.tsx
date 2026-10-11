@@ -1,4 +1,6 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import Link from "next/link";
+import { canVisitAdminPage } from "@/lib/admin-permissions";
 import {
   Aperture,
   ArrowUpRight,
@@ -30,7 +32,8 @@ const CMS_ICONS: Record<string, LucideIcon> = {
   "/admin/storage": HardDrive,
 };
 
-export default function AdminCmsHubPage() {
+export default async function AdminCmsHubPage() {
+  const identity = await requireAdminPage();
   return (
     <div className="space-y-6">
       <div>
@@ -43,7 +46,7 @@ export default function AdminCmsHubPage() {
       <div className="gold-hairline" />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {ADMIN_CMS_LINKS.map((link) => {
+        {ADMIN_CMS_LINKS.filter(link => canVisitAdminPage(identity, link.href)).map((link) => {
           const Icon = CMS_ICONS[link.href] ?? FileText;
           return (
             <Link

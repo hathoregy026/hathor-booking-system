@@ -400,6 +400,9 @@ export type AdminIdentity = {
   email: string;
   displayName: string;
   expiresAt: Date;
+  isOwner: boolean;
+  roleName: string | null;
+  permissions: string[];
 };
 
 /**
@@ -415,7 +418,7 @@ export async function getAdminIdentity(
 
   const row = await prisma.adminSession.findUnique({
     where: { tokenHash },
-    include: { user: true },
+    include: { user: { include: { role: true } } },
   });
   if (!row || row.stage !== AdminSessionStage.ACTIVE || row.revokedAt) return null;
 
@@ -452,6 +455,9 @@ export async function getAdminIdentity(
     email: row.user.email,
     displayName: row.user.displayName,
     expiresAt: row.expiresAt,
+    isOwner: row.user.isOwner,
+    roleName: row.user.role?.name ?? null,
+    permissions: row.user.role?.permissions ?? [],
   };
 }
 

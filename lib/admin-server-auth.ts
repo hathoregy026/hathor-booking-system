@@ -2,61 +2,45 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { cache } from "react";
-import {
-  ADMIN_SESSION_COOKIE,
-  getAdminIdentity,
-  type AdminIdentity,
-} from "@/lib/admin-auth";
-
+import { ADMIN_SESSION_COOKIE, getAdminIdentity, type AdminIdentity } from "@/lib/admin-auth";
+import { adminApiRequirement, hasAdminPermission, type AdminRequirement } from "@/lib/admin-permissions";
 export type { AdminIdentity };
-
 export class AdminAuthError extends Error {
-  constructor(message = "Unauthorized") {
-    super(message);
-    this.name = "AdminAuthError";
-  }
+  constructor(message = "Unauthorized") { super(message); this.name = "AdminAuthError"; }
 }
-
-const UNAUTHORIZED_HEADERS = { "Cache-Control": "no-store" };
-
-/**
- * Second lock for /api/admin route handlers. Middleware only checks the
- * cookie's signature; this checks the session itself in the database, so a
- * logged-out, revoked, idle or disabled session is refused here even though
- * its cookie still looks valid. It also keeps endpoints shut if middleware is
- * ever bypassed (the CVE-2025-29927 class).
- */
-export async function adminApiGuard(): Promise<Response | null> {
+export class AdminPermissionError extends AdminAuthError {
+  constructor() { super("Access denied"); this.name = "AdminPermissionError"; }
+}
+const NO_STORE = { "Cache-Control": "private, no-store" };
+/** Required explicit permission: omitting it is a compile error and denies at runtime. */
+export async function adminApiGuard(requirement: AdminRequirement): Promise<Response | null> {
   const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
-  if (await getAdminIdentity(token)) return null;
-  return Response.json(
-    { error: "Unauthorized" },
-    { status: 401, headers: UNAUTHORIZED_HEADERS },
-  );
+  const identity = await getAdminIdentity(token);
+  if (!identity) return Response.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE });
+  if (!requirement || !hasAdminPermission(identity, requirement)) {
+    return Response.json({ error: "Access denied" }, { status: 403, headers: NO_STORE });
+  }
+  return null;
 }
-
-/** Signed-in person for a route handler request, or null. */
-export async function adminIdentityFromRequest(
-  request: NextRequest,
-): Promise<AdminIdentity | null> {
-  return getAdminIdentity(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+/** Request-based legacy guards also enforce the central, fail-closed route map. */
+export async function adminIdentityFromRequest(request: NextRequest): Promise<AdminIdentity | null> {
+  const requirement = adminApiRequirement(request.nextUrl.pathname, request.method);
+  if (!requirement) return null;
+  const identity = await getAdminIdentity(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+  return identity && hasAdminPermission(identity, requirement) ? identity : null;
 }
-
-/** Verify the admin session — use in Server Actions and server-only loaders. */
-export async function assertAdminSession(): Promise<AdminIdentity> {
+export async function assertAdminSession(requirement: AdminRequirement): Promise<AdminIdentity> {
   const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
   const identity = await getAdminIdentity(token);
   if (!identity) throw new AdminAuthError();
+  if (!requirement || !hasAdminPermission(identity, requirement)) throw new AdminPermissionError();
   return identity;
 }
-
-/**
- * For server components: the signed-in person, or a redirect to the login
- * page. Memoised per render so the layout and page share one lookup.
- */
-export const requireAdminPage = cache(async (): Promise<AdminIdentity> => {
+/** Each page checks its own permission; layouts alone do not protect client navigation. */
+export const requireAdminPage = cache(async (requirement: AdminRequirement = "signed-in"): Promise<AdminIdentity> => {
   const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
   const identity = await getAdminIdentity(token);
   if (!identity) redirect("/admin/login");
+  if (!hasAdminPermission(identity, requirement)) redirect("/admin/access");
   return identity;
 });

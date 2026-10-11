@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { handleRouteError } from "@/lib/api";
@@ -12,6 +13,8 @@ export const dynamic = "force-dynamic";
 const uploadSchema = z.object({ name: z.string().trim().min(1).max(255), size: z.number().int().positive() }).strict();
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const denied = await adminApiGuard("bookings.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     await enforcePublicRateLimit({ request, scope: "booking-attachment-upload", limit: 30, windowMs: 60000 });

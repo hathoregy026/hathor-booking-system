@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
 import { applyStaffBookingAction, assertBookingAdmin } from "@/lib/booking-admin-api";
@@ -5,6 +6,8 @@ import { readPublicJsonBody } from "@/lib/public-api-security";
 import { fetchAdminBookingById } from "@/lib/admin-bookings-fetch";
 
 export async function PATCH(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const denied = await adminApiGuard("bookings.manage");
+  if (denied) return denied;
   try {
     const admin = await assertBookingAdmin(request);
     const { id } = await context.params;

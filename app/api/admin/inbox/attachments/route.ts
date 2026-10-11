@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { assertInboxAdmin, inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
@@ -10,6 +11,8 @@ export const runtime = "nodejs";
 const uploadSchema = z.object({ draftId: z.uuid(), name: z.string().trim().min(1).max(255), size: z.number().int().positive() }).strict();
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("inbox.manage");
+  if (denied) return denied;
   try {
     const { sessionId } = await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);

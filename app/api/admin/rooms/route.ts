@@ -7,7 +7,7 @@ import { revalidatePublicCatalog } from "@/lib/revalidate-public-catalog";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 
 export async function PATCH(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("cruises.manage");
   if (denied) return denied;
 
   try {

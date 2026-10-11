@@ -20,7 +20,10 @@ import {
   Ticket,
   Type,
   X,
+  Users,
 } from "lucide-react";
+import { useAdminAccess } from "./AdminAccessProvider";
+import { canVisitAdminPage } from "@/lib/admin-permissions";
 import type { LucideIcon } from "lucide-react";
 import { isAdminInventoryPath } from "@/lib/admin-nav";
 import { HathorLogo } from "./HathorLogo";
@@ -46,6 +49,7 @@ const NAV: NavItem[] = [
   { href: "/admin/typography", label: "Typography", icon: Type },
   { href: "/admin/content", label: "Website Images", icon: ImageIcon },
   { href: "/admin/cms", label: "CMS", icon: Layers },
+  { href: "/admin/people", label: "People & roles", icon: Users },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -89,6 +93,7 @@ function NavContent({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const access = useAdminAccess();
   const reduceMotion = useReducedMotion();
 
   const handleLogout = async () => {
@@ -104,7 +109,7 @@ function NavContent({
 
       <nav className="flex-1 space-y-1 overflow-y-auto overflow-x-visible px-3 py-4">
         <p className="admin-section-label px-3 pb-2">Menu</p>
-        {NAV.map(({ label, href, icon: Icon }) => {
+        {NAV.filter(item => canVisitAdminPage(access, item.href)).map(({ label, href, icon: Icon }) => {
           const active = isActive(pathname, href);
           return (
             <Link

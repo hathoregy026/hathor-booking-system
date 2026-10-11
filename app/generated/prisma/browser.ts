@@ -140,8 +140,8 @@ export type AdminProfile = Prisma.AdminProfileModel
 /**
  * Model AdminUser
  * Dashboard sign-in accounts. One row per person: there is no shared login.
- * Accounts are created and reset only from the command line
- * (scripts/admin-users.ts); the web app has no sign-up route.
+ * Administrators invite people; the CLI bootstraps the first administrator.
+ * There is no public sign-up route.
  */
 export type AdminUser = Prisma.AdminUserModel
 /**
@@ -176,3 +176,13 @@ export type SiteImage = Prisma.SiteImageModel
  *  * Temporary key/value store (hero logo tuner). Safe to drop later.
  */
 export type SiteSetting = Prisma.SiteSettingModel
+/**
+ * Model AdminRole
+ * Configurable dashboard section permissions. Private to the server.
+ */
+export type AdminRole = Prisma.AdminRoleModel
+/**
+ * Model AdminInvitation
+ * Single-use password setup link; only a random-token fingerprint is stored.
+ */
+export type AdminInvitation = Prisma.AdminInvitationModel

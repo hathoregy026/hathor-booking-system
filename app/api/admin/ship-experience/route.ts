@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -35,6 +36,8 @@ const saveSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("ship.view");
+  if (denied) return denied;
   try {
     if (!(await adminIdentityFromRequest(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -46,6 +49,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard("ship.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     const input = saveSchema.parse(await readPublicJsonBody(request));

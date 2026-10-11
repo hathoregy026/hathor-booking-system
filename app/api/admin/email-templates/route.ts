@@ -39,7 +39,7 @@ function resolvePersistedImageUrl(
 }
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.view");
   if (denied) return denied;
 
   try {
@@ -66,7 +66,7 @@ export async function GET() {
 
 /** Save shared branding + all template copy in one request. */
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {
@@ -199,7 +199,7 @@ export async function PUT(request: NextRequest) {
 
 /** @deprecated Use PUT to save all templates at once. */
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {

@@ -29,8 +29,12 @@ are given 10 single-use recovery codes before the dashboard opens.
 | Middleware bypass bugs | Every `/api/admin` handler and the dashboard layout re-check the session in the database. |
 | Silent misuse | `AdminAuthEvent` audit log (never stores passwords, codes or tokens), visible under **Settings → Security → Recent activity**. |
 
-There is no sign-up page and no password-reset email on purpose. Accounts are
-created and reset from the command line by someone with database access.
+There is no public sign-up page or automatic password-reset email. An
+administrator invites people from **People & roles** and privately shares a
+48-hour, single-use password setup link. The person chooses their own password,
+then signs in and enrolls an authenticator. Only the link fingerprint is stored;
+the URL keeps its secret in the fragment, never a server query string.
+The CLI remains available for first-administrator setup and emergency recovery.
 
 Until someone finishes their first sign-in (or after `reset-mfa`), their
 account is protected by the password alone, because the authenticator is
@@ -78,10 +82,10 @@ ADMIN_MFA_ENCRYPTION_KEY="<second 64-character value>"
 `.env` files are git-ignored. Sign-in refuses to run without both, and the
 server says so clearly.
 
-### 3. Create your account
+### 3. Create your first administrator
 
 ```bash
-npm run admin:users -- create --email you@hathorcruise.com --name "Your Name"
+npm run admin:users -- create --email you@hathorcruise.com --name "Your Name" --administrator
 ```
 
 You will be asked for the password twice (nothing is shown as you type). It
@@ -113,7 +117,8 @@ the QR code, enter the code, save the recovery codes, and you're in.
 
 ```bash
 npm run admin:users -- list
-npm run admin:users -- create --email you@hathorcruise.com --name "Your Name" [--generate]
+npm run admin:users -- create --email you@hathorcruise.com --name "Your Name" [--generate] [--administrator]
+npm run admin:users -- make-administrator --email you@hathorcruise.com
 npm run admin:users -- reset-password --email you@hathorcruise.com [--generate]
 npm run admin:users -- reset-mfa --email you@hathorcruise.com      # lost phone AND recovery codes
 npm run admin:users -- disable --email you@hathorcruise.com        # also signs them out
@@ -122,6 +127,7 @@ npm run admin:users -- revoke-sessions --email you@hathorcruise.com
 npm run admin:users -- revoke-sessions --all
 npm run admin:users -- unlock --email you@hathorcruise.com
 npm run verify:admin-auth                                         # offline crypto self-test
+npm run verify:admin-permissions                                  # permission coverage
 ```
 
 ## Before going live (not done yet)
@@ -145,9 +151,13 @@ npm run verify:admin-auth                                         # offline cryp
    tables). Vercel's build runs `prisma migrate deploy`, so it applies on the
    first deploy that includes it. Migrations cannot build an empty database:
    a separate preview database needs an existing baseline/schema.
-4. Create real accounts against the production database with
-   `npm run admin:users -- create …` **before** deploying, or nobody can
-   sign in afterwards. `ADMIN_PASSWORD` no longer opens the dashboard.
+4. After an explicitly approved preview applies the two additive migrations,
+   explicitly create/promote your named first administrator against the chosen
+   database using `create … --administrator` or `make-administrator --email …`.
+   Complete its MFA enrollment and save recovery codes before go-live.
+   Existing accounts receive **no business access by default**: assign their
+   roles in People & roles before release. Never automatically promote every
+   old account. `ADMIN_PASSWORD` no longer opens the dashboard.
 5. Set `DATABASE_CA_CERT` in each enabled Vercel environment to the database
    provider's CA (Supabase: Project Settings → Database → SSL Configuration).
    Connections verify the certificate and refuse remote connections without
@@ -214,3 +224,77 @@ including enrollment, token/cookie boundaries, throttling, revocation,
 password changes and recovery codes. It uses only synthetic auth rows.
 The inbox browser test remains fully mocked; its synthetic cookie is now
 named `hathor_admin_session`, matching the dev session cookie.
+
+
+## People & roles
+
+Administrators have full dashboard access, including account and role controls.
+Staff roles are configurable: each of the 12 sections can be Hidden, View or Edit.
+All sections start Hidden. Manage rights also allow reading. An account without
+a role can use only its personal Security settings and its access landing page.
+CMS links show only allowed editors. Sidebar, phone navigation, search and booking
+notifications respect the same permissions.
+
+Permissions are loaded from the database on each protected request, never from
+editable browser state or cookie role claims. Every protected API handler checks
+an explicit permission; request-based helpers also use a fail-closed route map.
+Each dashboard page checks access independently, including the server-rendered
+booking detail, and all blog Server Actions require Edit in Blog posts. New routes
+must be mapped and guarded or the coverage check fails.
+
+View-only pages show a banner. The server refuses writes even if a person tries a
+button, calls the API directly, or changes the browser. Edit in Media storage is
+also needed for generic image uploads used by website/blog editors. Dashboard
+access includes revenue and recent guest details; Availability includes guest
+names. Edit in Bookings, Emails or Email templates can send emails. Assign those
+permissions deliberately when we choose the real roles together.
+
+Every account/role mutation requires the administrator's password plus a fresh
+authenticator or recovery code, with durable throttling. Staff cannot promote
+themselves; administrators cannot change their own access in this screen. A
+transaction lock protects membership changes and the last enabled, enrolled
+administrator. An assigned role cannot be deleted. Role edits, assignments,
+disabling, password links and MFA resets revoke affected sessions. The menu
+refreshes on navigation/focus and every minute; server checks apply immediately.
+
+People & roles also offers Disable/Enable, Password link, Reset authenticator,
+Sign out and Unlock. Resetting an authenticator removes that person's old recovery
+codes, so verify their identity privately before doing it. Password links preserve
+an already enrolled authenticator. Disabling cancels pending setup links. Reissuing
+a link invalidates its predecessor and the old password. Changes are recorded in
+an access audit history containing actor/target IDs and action names, never proofs.
+Emergency recovery with the CLI requires trusted database access; keep it private.
+
+The additive migration `20261011120000_admin_roles_and_invitations` adds the roles
+and invitation tables and two account fields. Private tables enable RLS and revoke
+public/anonymous/authenticated Data API access, following the
+[Supabase RLS guidance](https://supabase.com/docs/guides/database/postgres/row-level-security).
+There are no booking-schema or booking-lifecycle changes.
+
+Local verification after the throwaway DB and server are running:
+
+```bash
+npm run verify:admin-permissions
+node scripts/test-admin-permissions.mjs --browser
+node scripts/test-admin-role-migration.mjs
+node scripts/test-admin-login-e2e.mjs --browser
+```
+
+The role regression covers direct API denials, forbidden privilege fields,
+read/edit separation, live revocation, setup-link reuse and disabling, step-up
+proofs, self/last-administrator protection, and six desktop/tablet/phone sizes.
+The migration regression applies the additive SQL only inside a rolled-back local
+test schema, checks existing-account defaults, and tests Data API role restrictions.
+
+The People & roles screen extends the existing dashboard design: gold #b69f64,
+cream #faf8f5 and the existing night surfaces, using the theme's --accent,
+--bg-primary, --bg-glass, --border and --text-secondary variables. Georgia headings
+and the existing Geist body font provide contrast; asymmetric 24px/4px corners,
+44px controls and stacked phone permission rows keep it consistent and usable.
+
+### Manual setup remains deferred
+
+We will choose the preview database and real roles together, add the Vercel secrets
+and certificate, explicitly approve a preview/migrations, bootstrap your first
+administrator, invite real people, and test their access before approving go-live.
+Do not remove the branch deployment block or run remote SQL during code testing.

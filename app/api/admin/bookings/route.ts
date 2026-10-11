@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { assertBookingAdmin, applyStaffBookingAction } from "@/lib/booking-admin-api";
@@ -19,6 +20,8 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url);
     const statusFilter = searchParams.get("status");
@@ -57,6 +60,8 @@ async function releaseForBin(id: string) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const denied = await adminApiGuard("bookings.manage");
+  if (denied) return denied;
   try {
     await assertBookingAdmin(request);
     const body = staffListSchema.parse(await readPublicJsonBody(request));

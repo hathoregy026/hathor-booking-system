@@ -1,6 +1,6 @@
 /**
- * Dashboard account management — the ONLY way to create or reset accounts.
- * There is deliberately no sign-up page and no "forgot password" email: both
+ * Dashboard account recovery and explicit administrator bootstrap.
+ * There is deliberately no public sign-up or "forgot password" email: both
  * would be a way in for an attacker. Whoever can run this script already has
  * the database credentials.
  *
@@ -24,6 +24,7 @@ import { normalizeAdminEmail } from "@/lib/admin-auth";
 import { assertAdminAuthConfigured } from "@/lib/admin-auth-crypto";
 import { hashAdminPassword, passwordPolicyError } from "@/lib/admin-password";
 import { prisma } from "@/lib/prisma";
+import { lockAdminMembership, protectLastAdministrator } from "@/lib/admin-management";
 import { clearKeyedRateLimit } from "@/lib/public-api-security";
 
 type Flags = Record<string, string | true>;
@@ -152,7 +153,7 @@ async function main() {
 
   if (!command || command === "help" || flags.help) {
     console.log(
-      "\n  Commands: list | create | reset-password | reset-mfa | disable | enable | revoke-sessions | unlock\n" +
+      "\n  Commands: list | create | reset-password | reset-mfa | disable | enable | revoke-sessions | unlock | make-administrator\n" +
         "  Example:  npm run admin:users -- create --email you@hathorcruise.com --name \"Your Name\"\n",
     );
     return;
@@ -170,9 +171,10 @@ async function main() {
       const users = await prisma.adminUser.findMany({ orderBy: { createdAt: "asc" } });
       if (users.length === 0) console.log("\n  No dashboard accounts yet.\n");
       for (const user of users) {
+        const role = user.isOwner ? "Administrator" : user.roleId ? "Staff role" : "No role";
         const status = user.disabledAt ? "DISABLED" : user.mfaEnrolledAt ? "active" : "awaiting authenticator set-up";
         console.log(
-          `  ${user.email.padEnd(36)} ${user.displayName.padEnd(24)} ${status}` +
+          `  ${user.email.padEnd(36)} ${user.displayName.padEnd(24)} ${status}  · ${role}` +
             (user.lastLoginAt ? `  · last sign-in ${user.lastLoginAt.toISOString()}` : ""),
         );
       }
@@ -188,12 +190,26 @@ async function main() {
       }
       const password = await choosePassword(email, flags);
       await prisma.adminUser.create({
-        data: { email, displayName: name, passwordHash: await hashAdminPassword(password) },
+        data: { email, displayName: name, passwordHash: await hashAdminPassword(password), isOwner: flags.administrator === true },
       });
       console.log(
         `\n  ✔ Created ${email}. On first sign-in they will be asked to scan a QR code\n` +
           "    with an authenticator app before the dashboard opens.\n",
       );
+      break;
+    }
+
+    case "make-administrator": {
+      const email = requireEmail(flags);
+      const user = await findUser(email);
+      await prisma.$transaction(async tx => {
+        await lockAdminMembership(tx);
+        await tx.adminUser.update({ where: { id: user.id }, data: { isOwner: true, roleId: null } });
+        await tx.adminSession.updateMany({ where: { userId: user.id, revokedAt: null },
+          data: { revokedAt: new Date(), revokedReason: "administrator-bootstrap" } });
+        await tx.adminAuthEvent.create({ data: { userId: user.id, type: "MANAGEMENT_CLI_ADMINISTRATOR" } });
+      });
+      console.log("\n  Administrator access assigned. Sign in again.\n");
       break;
     }
 
@@ -233,9 +249,14 @@ async function main() {
     case "enable": {
       const email = requireEmail(flags);
       const user = await findUser(email);
-      await prisma.adminUser.update({
-        where: { id: user.id },
-        data: { disabledAt: command === "disable" ? new Date() : null },
+      await prisma.$transaction(async tx => {
+        await lockAdminMembership(tx);
+        const current = await tx.adminUser.findUniqueOrThrow({ where: { id: user.id } });
+        if (command === "disable" && current.isOwner && !current.disabledAt && current.mfaEnrolledAt) {
+          await protectLastAdministrator(tx, current.id);
+        }
+        await tx.adminUser.update({ where: { id: user.id }, data: { disabledAt: command === "disable" ? new Date() : null } });
+        if (command === "disable") await tx.adminInvitation.deleteMany({ where: { userId: user.id } });
       });
       const revoked = command === "disable" ? await revokeSessions(user.id, "account-disabled") : 0;
       console.log(`\n  ✔ ${email} ${command}d.${command === "disable" ? ` ${revoked} session(s) signed out.` : ""}\n`);

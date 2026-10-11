@@ -19,6 +19,8 @@ import {
  */
 const PUBLIC_ADMIN_PATHS = [
   "/admin/login",
+  "/admin/accept-invite",
+  "/api/admin/accept-invite",
   "/api/admin/login",
   "/api/admin/login/mfa",
   "/api/admin/login/enroll",

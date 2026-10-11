@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { deleteDashboardEmail, fetchInboxDetail, inboxIdentitySchema, inboxMutationSchema, setInboxRead, setInboxFolder } from "@/lib/dashboard-inbox";
@@ -7,6 +8,8 @@ import { assertTrustedPublicJsonRequest, readPublicJsonBody } from "@/lib/public
 type Context = { params: Promise<{ source: string; id: string }> };
 
 export async function GET(request: NextRequest, context: Context) {
+  const denied = await adminApiGuard("inbox.view");
+  if (denied) return denied;
   try {
     await assertInboxAdmin(request);
     const { source, id } = inboxIdentitySchema.parse(await context.params);
@@ -16,6 +19,8 @@ export async function GET(request: NextRequest, context: Context) {
 }
 
 export async function PATCH(request: NextRequest, context: Context) {
+  const denied = await adminApiGuard("inbox.manage");
+  if (denied) return denied;
   try {
     await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);
@@ -27,6 +32,8 @@ export async function PATCH(request: NextRequest, context: Context) {
 }
 
 export async function DELETE(request: NextRequest, context: Context) {
+  const denied = await adminApiGuard("inbox.manage");
+  if (denied) return denied;
   try {
     await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);

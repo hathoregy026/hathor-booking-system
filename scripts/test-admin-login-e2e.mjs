@@ -284,7 +284,7 @@ withLocalAdminTest(async fixture => {
         mfaEnrolledAt: null, totpSecretEnc: null, totpPendingEnc: null, totpLastStep: null,
       } });
       const { chromium } = await import("playwright");
-      const browser = await chromium.launch({ channel: "msedge", headless: true });
+      const browser = await chromium.launch({ channel: process.platform === "win32" ? "msedge" : undefined, headless: true });
       try {
         const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
         const errors = [];

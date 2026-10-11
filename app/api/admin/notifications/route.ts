@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { dismissNotifications, fetchAdminNotifications, markNotificationBookingsSeen, notificationDismissSchema, notificationSeenSchema } from "@/lib/admin-notifications";
@@ -16,6 +17,8 @@ async function authorize(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
   try {
     await authorize(request);
     return NextResponse.json(await fetchAdminNotifications(), { headers: inboxHeaders });
@@ -23,6 +26,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
   try {
     await authorize(request);
     assertTrustedPublicJsonRequest(request);

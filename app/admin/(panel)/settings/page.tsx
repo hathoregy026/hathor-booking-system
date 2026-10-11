@@ -1,5 +1,7 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { AdminSettingsPanel } from "@/components/admin/AdminSettingsPanel";
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
+  await requireAdminPage();
   return <AdminSettingsPanel />;
 }
