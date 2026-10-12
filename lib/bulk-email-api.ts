@@ -58,6 +58,19 @@ export function bulkRouteError(error: unknown) {
   if (error instanceof RateLimitExceededError) return NextResponse.json({ error: "Please wait before trying again." }, { status: 429, headers: { ...bulkHeaders, "Retry-After": String(error.retryAfterSeconds) } });
   if (error instanceof PublicRequestError) return NextResponse.json({ error: error.message }, { status: error.status, headers: bulkHeaders });
   if (error instanceof ZodError) return NextResponse.json({ error: error.issues.some(issue => issue.path[0] === "template") ? "Check the template fields. Use valid colours and a valid footer email address, or leave that address empty." : "Check the subject, message and recipient list. Select between 1 and 100 unique, valid addresses." }, { status: 400, headers: bulkHeaders });
-  console.error("[bulk-email] request could not be completed");
+  // Log fixed diagnostic labels only: never include addresses, payloads, SQL,
+  // connection strings or the error's free-form message in runtime logs.
+  const failure = error instanceof Error ? error : null;
+  const code = failure && "code" in failure ? String(failure.code) : "";
+  const safeCodes = new Set(["42P01", "42501", "28P01", "53300", "57P01", "ECONNREFUSED", "ECONNRESET", "ETIMEDOUT", "ENOTFOUND", "ERR_TLS_CERT_ALTNAME_INVALID", "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "CERT_HAS_EXPIRED"]);
+  const knownMessages: Record<string, string> = {
+    "Bulk email encryption is not configured.": "encryption-configuration",
+    "Unsupported state or unable to authenticate data": "history-authentication",
+    "Invalid encrypted value.": "invalid-encrypted-record",
+    "Invalid record identifier.": "invalid-record-id",
+    "Query read timeout": "database-read-timeout",
+  };
+  const reason = safeCodes.has(code) ? code : knownMessages[failure?.message || ""] || "unclassified";
+  console.error("[bulk-email] request could not be completed", { reason });
   return NextResponse.json({ error: "Bulk emails are temporarily unavailable. Please try again." }, { status: 503, headers: bulkHeaders });
 }
