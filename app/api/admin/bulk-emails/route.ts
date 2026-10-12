@@ -6,8 +6,18 @@ import { standardBulkBannerPreviewUrl } from "@/lib/bulk-email-images";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
-  try { await requireBulkAdmin(request); const [campaigns, theme] = await Promise.all([bulkHistory(), bulkBranding()]); return NextResponse.json({ settings: bulkSettings(), campaigns, template: bulkTemplateDefaults(theme), standardBannerUrl: standardBulkBannerPreviewUrl(theme.heroImageUrl) }, { headers: bulkHeaders }); }
-  catch (error) { return bulkRouteError(error); }
+  let stage = "authorization";
+  try {
+    await requireBulkAdmin(request);
+    stage = "history";
+    const [campaigns, theme] = await Promise.all([bulkHistory(), bulkBranding()]);
+    stage = "settings";
+    return NextResponse.json({ settings: bulkSettings(), campaigns, template: bulkTemplateDefaults(theme), standardBannerUrl: standardBulkBannerPreviewUrl(theme.heroImageUrl) }, { headers: bulkHeaders });
+  } catch (error) {
+    const response = bulkRouteError(error);
+    if (response.status >= 500) console.error("[bulk-email] overview failed", { stage });
+    return response;
+  }
 }
 export async function POST(request: NextRequest) {
   try { const session = await requireBulkAdmin(request, "create"); const campaign = await createBulkCampaign(await readBulkJson(request), session, request.headers.get("origin")!); return NextResponse.json({ campaign: campaignView(campaign) }, { headers: bulkHeaders }); }

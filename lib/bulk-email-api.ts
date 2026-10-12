@@ -62,7 +62,7 @@ export function bulkRouteError(error: unknown) {
   // connection strings or the error's free-form message in runtime logs.
   const failure = error instanceof Error ? error : null;
   const code = failure && "code" in failure ? String(failure.code) : "";
-  const safeCodes = new Set(["42P01", "42501", "28P01", "53300", "57P01", "ECONNREFUSED", "ECONNRESET", "ETIMEDOUT", "ENOTFOUND", "ERR_TLS_CERT_ALTNAME_INVALID", "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "CERT_HAS_EXPIRED"]);
+  const safeCodes = new Set(["42P01", "42501", "28P01", "28000", "53300", "57P01", "08P01", "42703", "42883", "ECONNREFUSED", "ECONNRESET", "ETIMEDOUT", "ENOTFOUND", "ERR_TLS_CERT_ALTNAME_INVALID", "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "UNABLE_TO_GET_ISSUER_CERT_LOCALLY", "DEPTH_ZERO_SELF_SIGNED_CERT", "SELF_SIGNED_CERT_IN_CHAIN", "CERT_HAS_EXPIRED"]);
   const knownMessages: Record<string, string> = {
     "Bulk email encryption is not configured.": "encryption-configuration",
     "Unsupported state or unable to authenticate data": "history-authentication",
@@ -70,7 +70,7 @@ export function bulkRouteError(error: unknown) {
     "Invalid record identifier.": "invalid-record-id",
     "Query read timeout": "database-read-timeout",
   };
-  const reason = safeCodes.has(code) ? code : knownMessages[failure?.message || ""] || "unclassified";
+  const reason = safeCodes.has(code) ? code : knownMessages[failure?.message || ""] || (failure?.message.toLowerCase().includes("timeout") ? "database-timeout" : failure instanceof TypeError ? "type-error" : failure instanceof SyntaxError ? "invalid-json" : "unclassified");
   console.error("[bulk-email] request could not be completed", { reason });
   return NextResponse.json({ error: "Bulk emails are temporarily unavailable. Please try again." }, { status: 503, headers: bulkHeaders });
 }
