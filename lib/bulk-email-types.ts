@@ -33,6 +33,8 @@ export type BulkCampaign = {
   recipients: BulkRecipient[];
   createdAt: string;
   updatedAt: string;
+  /** Deleted history keeps only a minimal marker to prevent duplicate sending. */
+  deletedAt?: string;
   firstAttemptAt?: string;
   leaseUntil?: number;
   error?: string;

@@ -11,6 +11,7 @@ import { BulkEmailLivePreview, type BulkPreviewFocus } from "./BulkEmailLivePrev
 const STATUS: Record<BulkCampaignView["status"], string> = { queued: "Ready to send", sending: "Sending", accepted: "Accepted by Resend", simulated: "Preview completed", failed: "Needs attention", uncertain: "Result not confirmed", cancelled: "Cancelled" };
 const date = (value: string) => new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 const canRecover = (campaign: BulkCampaignView) => ["queued", "failed", "uncertain", "sending"].includes(campaign.status);
+const canDelete = (campaign: BulkCampaignView) => !["sending", "uncertain"].includes(campaign.status);
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await adminFetch(url, init, 45000);
@@ -27,7 +28,6 @@ export function BulkEmails() {
   const [sources, setSources] = useState<BulkRecipientSource[]>([]);
   const [removed, setRemoved] = useState<string[]>([]);
   const { emails, invalid: excluded, duplicates, warnings } = combineBulkRecipientSources(sources, removed);
-  const [manualEmail, setManualEmail] = useState("");
   const [paste, setPaste] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -49,7 +49,9 @@ export function BulkEmails() {
   const [modalHtml, setModalHtml] = useState("");
   const [samplePreview, setSamplePreview] = useState(false);
   const [historyFilter, setHistoryFilter] = useState<"all" | "send" | "preview">("all");
+  const [deleteTarget, setDeleteTarget] = useState<BulkCampaignView | null>(null);
   const previewDialog = useRef<HTMLDialogElement>(null);
+  const deleteDialog = useRef<HTMLDialogElement>(null);
   const sending = useRef(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
@@ -92,12 +94,12 @@ export function BulkEmails() {
     catch (err) { setError((err as Error).message); }
     finally { setBusy(null); importBusy.current = false; if (fileInput.current) fileInput.current.value = ""; }
   }
-  async function importPaste(single = false) {
-    const text = single ? manualEmail : paste;
+  async function importPaste() {
+    const text = paste;
     if (importBusy.current || busy || !text.trim()) return;
     importBusy.current = true;
     setBusy("Checking addresses…"); setError(null);
-    try { const result = await request<RecipientImport>("/api/admin/bulk-emails/import", jsonRequest({ text })); mergeImport(result, "manual", "Manually added addresses"); if (single) setManualEmail(""); else setPaste(""); }
+    try { const result = await request<RecipientImport>("/api/admin/bulk-emails/import", jsonRequest({ text })); mergeImport(result, "manual", "Pasted addresses"); setPaste(""); }
     catch (err) { setError((err as Error).message); } finally { setBusy(null); importBusy.current = false; }
   }
   async function preview(nextStage = stage) {
@@ -151,8 +153,23 @@ export function BulkEmails() {
     try { updateCampaign((await request<{ campaign: BulkCampaignView }>(`/api/admin/bulk-emails/${campaign.id}`, jsonRequest({ action: "cancel" }))).campaign); }
     catch (err) { setError((err as Error).message); } finally { setBusy(null); }
   }
+  function confirmDelete(campaign: BulkCampaignView) {
+    setDeleteTarget(campaign); deleteDialog.current?.showModal();
+  }
+  async function deleteHistory() {
+    if (!deleteTarget || busy) return;
+    setBusy("Deleting email history…"); setError(null);
+    try {
+      await request(`/api/admin/bulk-emails/${deleteTarget.id}`, { method: "DELETE" });
+      setCampaigns(current => current.filter(row => row.id !== deleteTarget.id));
+      if (selected?.id === deleteTarget.id) newEmail();
+      deleteDialog.current?.close(); setDeleteTarget(null);
+      await load();
+    } catch (err) { setError((err as Error).message); deleteDialog.current?.close(); }
+    finally { setBusy(null); }
+  }
   function newEmail() {
-    setSelected(null); clearRecipients(); setPaste(""); setManualEmail(""); setSubject(""); setMessage(""); setTemplate(templateDefaults); setPreviewHtml(""); setPreviewSignature(""); setStage(0); setError(null);
+    setSelected(null); clearRecipients(); setPaste(""); setSubject(""); setMessage(""); setTemplate(templateDefaults); setPreviewHtml(""); setPreviewSignature(""); setStage(0); setError(null);
   }
   function editEmail() {
     previewDialog.current?.close();
@@ -209,10 +226,12 @@ export function BulkEmails() {
             {sources.some(source => source.kind === "file") && <ul className="bulk-emails__files" aria-label="Uploaded recipient files">{sources.filter(source => source.kind === "file").map(source => <li key={source.id}><FileUp size={18} /><div><strong>{source.name}</strong><span>{source.emails.length} valid addresses</span></div><button aria-label={`Remove file ${source.name}`} disabled={!!busy} onClick={() => { setSources(current => current.filter(row => row.id !== source.id)); setConfirmed(false); setDraftId(null); }}><X size={18} /></button></li>)}</ul>}
             <p className="bulk-emails__hint">PDFs must contain selectable text. For scanned lists, use Excel or CSV. Older Excel .xls files should be saved as .xlsx.</p>
             <button className="bulk-emails__text-button" onClick={sampleFile}>Download an example list for Excel</button>
-            <form onSubmit={event => { event.preventDefault(); void importPaste(true); }}><label className="bulk-emails__label" htmlFor="bulk-manual">Enter an email address</label><div className="bulk-emails__manual"><input id="bulk-manual" className="input" type="email" maxLength={254} value={manualEmail} onChange={event => setManualEmail(event.target.value)} disabled={!!busy} placeholder="guest@example.com" /><button type="submit" className="btn-outline" disabled={!!busy || !manualEmail.trim()}><Plus size={16} />Add email</button></div></form>
-            <label className="bulk-emails__label" htmlFor="bulk-paste">Or paste email addresses</label>
-            <textarea id="bulk-paste" className="input" rows={4} maxLength={20000} value={paste} onChange={event => setPaste(event.target.value)} disabled={!!busy} placeholder="guest@example.com, partner@example.com" />
-            <button className="btn-outline" onClick={() => void importPaste()} disabled={!!busy || !paste.trim()}><Plus size={16} />Add addresses</button>
+            <form onSubmit={event => { event.preventDefault(); void importPaste(); }}>
+              <label className="bulk-emails__label" htmlFor="bulk-paste">Paste email addresses</label>
+              <textarea id="bulk-paste" className="input" rows={4} maxLength={20000} value={paste} onChange={event => setPaste(event.target.value)} disabled={!!busy} placeholder={"guest@example.com\npartner@example.com"} aria-describedby="bulk-paste-hint" />
+              <p id="bulk-paste-hint" className="bulk-emails__hint">Add one or more addresses, separated by commas, spaces or new lines.</p>
+              <button type="submit" className="btn-outline" disabled={!!busy || !paste.trim()}><Plus size={16} />Add</button>
+            </form>
           </section>
           <section className="bulk-emails__panel">
             <div className="bulk-emails__panel-heading"><div><p className="bulk-emails__eyebrow">Ready for review</p><h2>{emails.length} recipients</h2></div><Users size={24} /></div>
@@ -283,10 +302,15 @@ export function BulkEmails() {
       </section>}
       <section className="bulk-emails__history"><div className="bulk-emails__panel-heading"><div><p className="bulk-emails__eyebrow">Your correspondence</p><h2>Email history</h2></div><button className="bulk-emails__text-button" disabled={!!busy} onClick={() => { void load().catch(err => setError(err.message)); }}><RefreshCw size={16} />Refresh</button></div>
         <div className="bulk-emails__history-filters" role="group" aria-label="Filter email history">{([ ["all", "All"], ["send", "Real sends"], ["preview", "Previews"] ] as const).map(([value, label]) => <button key={value} aria-pressed={historyFilter === value} onClick={() => setHistoryFilter(value)}>{label}</button>)}</div>
-        {visibleCampaigns.length ? <ul>{visibleCampaigns.map(campaign => <li key={campaign.id}><button onClick={() => showCampaign(campaign)} disabled={!!busy}><div><strong>{campaign.subject}</strong><span>{date(campaign.createdAt)} · {campaign.recipients.length} recipients · {campaign.mode === "preview" ? "Preview · no email sent" : "Real send"}</span></div><span className="bulk-emails__history-status">{STATUS[campaign.status]}<ArrowRight size={16} /></span></button></li>)}</ul> : <p className="bulk-emails__muted">{historyFilter === "send" ? "No real sending campaigns yet." : historyFilter === "preview" ? "No simulated campaigns yet." : "Your previews and sending history will appear here."}</p>}
+        {visibleCampaigns.length ? <ul>{visibleCampaigns.map(campaign => <li key={campaign.id} className="bulk-emails__history-row"><button className="bulk-emails__history-open" onClick={() => showCampaign(campaign)} disabled={!!busy}><div><strong>{campaign.subject}</strong><span>{date(campaign.createdAt)} · {campaign.recipients.length} recipients · {campaign.mode === "preview" ? "Preview · no email sent" : "Real send"}</span></div><span className="bulk-emails__history-status">{STATUS[campaign.status]}<ArrowRight size={16} /></span></button><button className="btn-outline bulk-emails__history-delete" aria-label={`Delete history for ${campaign.subject}`} title={canDelete(campaign) ? "Delete from history" : "Resolve the sending result before deleting"} disabled={!!busy || !canDelete(campaign)} onClick={() => confirmDelete(campaign)}><Trash2 size={16} /><span>Delete</span></button></li>)}</ul> : <p className="bulk-emails__muted">{historyFilter === "send" ? "No real sending campaigns yet." : historyFilter === "preview" ? "No simulated campaigns yet." : "Your previews and sending history will appear here."}</p>}
       </section>
     </>}
     {busy && <p className="bulk-emails__busy" role="status">{busy}</p>}
+    <dialog ref={deleteDialog} className="bulk-emails__preview-dialog bulk-emails__delete-dialog" aria-labelledby="bulk-delete-title" onCancel={event => { if (busy) event.preventDefault(); }}>
+      <h2 id="bulk-delete-title">Delete from email history?</h2>
+      <p className="bulk-emails__hint">“{deleteTarget?.subject}” and its saved message and recipient list will be removed. This cannot recall emails already sent. Unsubscribe preferences are preserved.</p>
+      <div className="bulk-emails__actions"><button className="btn-outline" disabled={!!busy} onClick={() => { deleteDialog.current?.close(); setDeleteTarget(null); }}>Keep history</button><button className="btn-gold" disabled={!!busy} onClick={() => void deleteHistory()}><Trash2 size={16} />Delete history</button></div>
+    </dialog>
     <dialog ref={previewDialog} className="bulk-emails__preview-dialog" aria-labelledby="bulk-preview-title"><div className="bulk-emails__panel-heading"><h2 id="bulk-preview-title">Email template preview</h2><button aria-label="Close email preview" onClick={() => previewDialog.current?.close()}><X size={22} /></button></div>{samplePreview && <p className="bulk-emails__hint">This is sample text. Add your subject and message to preview the email you will send.</p>}<div className="bulk-emails__actions"><button className="btn-outline" onClick={editEmail}><Pencil size={16} />{selected ? "Use as new email" : "Edit this email"}</button></div><iframe title="Email template modal preview" srcDoc={modalHtml} sandbox="" referrerPolicy="no-referrer" /></dialog>
   </div>;
 }

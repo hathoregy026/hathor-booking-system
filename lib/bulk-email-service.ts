@@ -9,7 +9,8 @@ import type { EmailTemplateRecord } from "@/lib/email-templates";
 
 const uuid = z.uuid();
 export function bulkSettings(): BulkSettings {
-  const mode = process.env.BULK_EMAIL_MODE === "send" ? "send" : "preview";
+  // Simulation is opt-in for isolated QA only; the dashboard sends real mail by default.
+  const mode = z.enum(["send", "preview"]).parse(process.env.BULK_EMAIL_MODE || "send");
   return { mode, from: process.env.BULK_EMAIL_FROM_EMAIL?.trim() || getResendFromAddress(), replyTo: process.env.BULK_EMAIL_REPLY_TO?.trim() || process.env.RESEND_REPLY_TO?.trim() || "", recipientLimit: BULK_RECIPIENT_LIMIT };
 }
 export function campaignView(campaign: BulkCampaign): BulkCampaignView {
@@ -22,12 +23,12 @@ export async function bulkHistory() { return (await listBulkRecords<BulkCampaign
 export async function getBulkCampaign(id: string) {
   uuid.parse(id);
   const campaign = await readBulkRecord<BulkCampaign>(`campaign:${id}`);
-  if (!campaign) throw new PublicRequestError("Campaign not found.", 404);
+  if (!campaign || campaign.deletedAt) throw new PublicRequestError("Campaign not found.", 404);
   return campaign;
 }
 
 function unsubscribeBaseUrl(origin?: string) {
-  if (process.env.NODE_ENV === "development" && origin && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return origin;
+  if (bulkSettings().mode === "preview" && process.env.NODE_ENV === "development" && origin && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return origin;
   const value = process.env.BULK_EMAIL_BASE_URL || "https://www.hathorcruise.com";
   const url = new URL(value);
   if (url.protocol !== "https:" || url.username || url.password) throw new Error("A secure bulk email base URL is required.");
@@ -45,6 +46,7 @@ export async function createBulkCampaign(body: unknown, session: string, origin?
   }
   const existing = await readBulkRecord<BulkCampaign>(`campaign:${input.id}`);
   if (existing) {
+    if (existing.deletedAt) throw new PublicRequestError("This campaign was deleted. Start a new email.", 409);
     if (existing.subject !== input.subject || existing.message !== input.message || JSON.stringify(existing.template) !== JSON.stringify(input.template) || existing.recipients.map(row => row.email).join("\n") !== input.emails.join("\n")) throw new PublicRequestError("This campaign already exists with different content. Start a new message.", 409);
     return existing;
   }
@@ -66,6 +68,7 @@ export async function createBulkCampaign(body: unknown, session: string, origin?
   const timestamp = new Date().toISOString();
   const campaign: BulkCampaign = { id: input.id, subject: input.subject, message: input.message, ...(input.template ? { template: input.template } : {}), mode: settings.mode, status: "queued", recipients, payload, previewHtml: rendered.html.replaceAll(marker, "https://www.hathorcruise.com/bulk-email/unsubscribe"), createdAt: timestamp, updatedAt: timestamp, createdBySession: session };
   return updateBulkRecord<BulkCampaign>(`campaign:${input.id}`, current => {
+    if (current?.deletedAt) throw new PublicRequestError("This campaign was deleted. Start a new email.", 409);
     if (current && (current.subject !== campaign.subject || current.message !== campaign.message || JSON.stringify(current.template) !== JSON.stringify(campaign.template) || current.recipients.map(row => row.email).join("\n") !== input.emails.join("\n"))) throw new PublicRequestError("Campaign content has changed. Start a new message.", 409);
     return current || campaign;
   });
@@ -106,7 +109,7 @@ export async function processBulkCampaign(id: string, sender: BulkBatchSender = 
   let claimed = false;
   const campaign = await updateBulkRecord<BulkCampaign>(`campaign:${id}`, current => {
     claimed = false;
-    if (!current) throw new PublicRequestError("Campaign not found.", 404);
+    if (!current || current.deletedAt) throw new PublicRequestError("Campaign not found.", 404);
     if (["accepted", "simulated", "cancelled"].includes(current.status) || (current.leaseUntil || 0) > Date.now()) return current;
     claimed = true;
     if (!current.firstAttemptAt) {
@@ -120,7 +123,7 @@ export async function processBulkCampaign(id: string, sender: BulkBatchSender = 
   try { result = campaign.mode === "preview" || campaign.payload.length === 0 ? { kind: "accepted", ids: campaign.payload.map((_, i) => `preview-${id}-${i}`) } : await sender(campaign); }
   catch { result = { kind: "uncertain", error: "The batch result is unknown. Retry safely to recover this campaign." }; }
   return updateBulkRecord<BulkCampaign>(`campaign:${id}`, current => {
-    if (!current) throw new PublicRequestError("Campaign not found.", 404);
+    if (!current || current.deletedAt) throw new PublicRequestError("Campaign not found.", 404);
     // A delayed uncertain response must never overwrite a confirmed result
     // recorded by another recovery of the same provider idempotency key.
     if (["accepted", "simulated", "cancelled"].includes(current.status)) return current;
@@ -136,9 +139,23 @@ export async function processBulkCampaign(id: string, sender: BulkBatchSender = 
 export async function cancelBulkCampaign(id: string) {
   uuid.parse(id);
   return updateBulkRecord<BulkCampaign>(`campaign:${id}`, current => {
-    if (!current) throw new PublicRequestError("Campaign not found.", 404);
+    if (!current || current.deletedAt) throw new PublicRequestError("Campaign not found.", 404);
     if (current.firstAttemptAt) throw new PublicRequestError("This batch was already attempted and cannot be recalled.", 409);
     return { ...current, status: "cancelled", updatedAt: new Date().toISOString() };
+  });
+}
+export async function deleteBulkCampaign(id: string) {
+  uuid.parse(id);
+  await updateBulkRecord<BulkCampaign>(`campaign:${id}`, current => {
+    if (!current) throw new PublicRequestError("Campaign not found.", 404);
+    if (current.deletedAt) return current;
+    if (["sending", "uncertain"].includes(current.status) || (current.leaseUntil || 0) > Date.now()) {
+      throw new PublicRequestError("Resolve this campaign's sending result before deleting its history.", 409);
+    }
+    const deletedAt = new Date().toISOString();
+    // Remove private content, but keep the campaign UUID consumed forever.
+    // Unsubscribe records are separate and must survive history deletion.
+    return { id: current.id, mode: current.mode, status: "cancelled", subject: "", message: "", recipients: [], payload: [], createdBySession: "", createdAt: current.createdAt, updatedAt: deletedAt, deletedAt };
   });
 }
 export async function bulkUnsubscribe(token: string) {
