@@ -34,10 +34,11 @@ const BLOG_POST_DETAIL_SELECT = {
   content: true,
 } as const;
 
-/** Direct Supabase DB hosts are often unreachable locally; prefer REST for blog reads. */
+/** Supabase PostgreSQL paths can stall on larger results; use the existing
+ * HTTPS read path for both direct and pooled Supabase connections. */
 function prefersSupabaseBlogData(): boolean {
   const url = process.env.DATABASE_URL ?? "";
-  return /db\.[a-z0-9-]+\.supabase\.co(?::5432)?/i.test(url);
+  return /db\.[a-z0-9-]+\.supabase\.co(?::5432)?|[a-z\d.-]+\.pooler\.supabase\.com/i.test(url) && !!process.env.SUPABASE_URL;
 }
 
 function mapBlogPostSummary(row: BlogPostRow): BlogPostSummary {
@@ -79,7 +80,8 @@ async function getPublishedBlogPostsViaSupabase(): Promise<BlogPostSummary[]> {
   const { data, error } = await supabase
     .from("BlogPost")
     .select("slug, title, excerpt, publishedAt")
-    .order("publishedAt", { ascending: false });
+    .order("publishedAt", { ascending: false })
+    .abortSignal(AbortSignal.timeout(8000));
 
   if (error) {
     throw error;
@@ -96,6 +98,7 @@ async function getPublishedBlogPostBySlugViaSupabase(
     .from("BlogPost")
     .select("slug, title, excerpt, content, publishedAt")
     .eq("slug", slug)
+    .abortSignal(AbortSignal.timeout(8000))
     .maybeSingle();
 
   if (error) {

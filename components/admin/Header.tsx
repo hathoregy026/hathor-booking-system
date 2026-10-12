@@ -14,6 +14,7 @@ const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin/analytics": { section: "Overview", title: "Analytics" },
   "/admin/bookings": { section: "Manage", title: "Bookings" },
   "/admin/inbox": { section: "Manage", title: "Emails" },
+  "/admin/bulk-emails": { section: "Manage", title: "Bulk emails" },
   "/admin/availability": { section: "Manage", title: "Availability" },
   "/admin/cruises": { section: "Manage", title: "Cruises" },
   "/admin/prices": { section: "Manage", title: "Prices & Cabins" },

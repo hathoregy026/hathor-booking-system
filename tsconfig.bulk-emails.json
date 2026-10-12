@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["next-env.d.ts", "app/admin/(panel)/bulk-emails/**/*.tsx", "app/api/admin/bulk-emails/**/*.ts", "app/bulk-email/unsubscribe/**/*.ts", "components/admin/BulkEmails.tsx", "lib/bulk-email*.ts", "lib/bulk-email*.tsx", "emails/BulkMessage.tsx", "scripts/test-bulk-emails.ts", "scripts/test-bulk-emails-browser.ts"],
+  "exclude": ["node_modules", "output", "_local", "assets"]
+}

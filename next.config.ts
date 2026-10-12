@@ -68,6 +68,11 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
+  // Unsubscribe URLs carry opaque opt-out capabilities; never print them in dev logs.
+  logging: { incomingRequests: { ignore: [/^\/bulk-email\/unsubscribe(?:\?|$)/] } },
+  outputFileTracingIncludes: {
+    "/api/admin/bulk-emails/import": ["./scripts/bulk-email-import-worker.mjs", ...["read-excel-file", "pdfjs-dist", "yauzl", "fflate", "saxen", "unzipper-esm", "worker-f", "graceful-fs", "node-int64", "pend"].map(name => `./node_modules/${name}/**/*`), "./node_modules/@napi-rs/canvas*/**/*"],
+  },
   images: {
     loader: "custom",
     loaderFile: "./lib/image-loader.ts",

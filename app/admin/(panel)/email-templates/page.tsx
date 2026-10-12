@@ -19,10 +19,10 @@ import {
 import {
   DEFAULT_EMAIL_FOOTER,
   EMAIL_FOOTER_LIMITS,
-  resolveEmailFooterCopyright,
   type EmailFooterSettings,
 } from "@/lib/email-footer";
-import { emailColors, emailFonts } from "@/emails/styles";
+import { EmailTemplateLivePreview, type EmailPreviewFocus } from "@/components/admin/EmailTemplateLivePreview";
+import "@/components/admin/email-template-editor.css";
 
 type SharedBranding = {
   logoUrl: string | null;
@@ -100,59 +100,6 @@ const FOOTER_FIELDS: {
   { key: "adminTitle", label: "Team alert title", hint: "Top line of the footer on your team's own alerts (new bookings, contact messages)." },
 ];
 
-/** The footer as it appears at the end of a guest email, from the form. */
-function FooterPreview({ footer, gold }: { footer: EmailFooterSettings; gold: string }) {
-  const copyright = resolveEmailFooterCopyright(footer.copyright);
-  return (
-    <div
-      className="flex h-full flex-col items-center justify-center rounded-2xl px-6 py-10 text-center"
-      style={{ background: emailColors.dark }}
-      aria-label="Footer preview"
-    >
-      <span
-        className="text-[28px] uppercase leading-tight tracking-[0.04em]"
-        style={{ color: emailColors.copyOnDark, fontFamily: emailFonts.display }}
-      >
-        Hathor
-      </span>
-      {footer.tagline ? (
-        <span className="mt-2 text-[15px] italic" style={{ color: gold, fontFamily: emailFonts.editorial }}>
-          {footer.tagline}
-        </span>
-      ) : null}
-      {footer.email ? (
-        <span className="mt-7 text-[13px] underline" style={{ color: emailColors.copyOnDark, fontFamily: emailFonts.body }}>
-          {footer.email}
-        </span>
-      ) : null}
-      {footer.phone ? (
-        <span
-          className={`${footer.email ? "mt-1" : "mt-7"} text-[13px] font-light`}
-          style={{ color: "rgba(246, 239, 223, 0.72)", fontFamily: emailFonts.body }}
-        >
-          {footer.phone}
-        </span>
-      ) : null}
-      {footer.replyNote ? (
-        <span
-          className="mt-6 max-w-xs text-[12px] font-light leading-relaxed"
-          style={{ color: "rgba(246, 239, 223, 0.62)", fontFamily: emailFonts.body }}
-        >
-          {footer.replyNote}
-        </span>
-      ) : null}
-      {copyright ? (
-        <span
-          className="mt-6 text-[10px] font-medium uppercase tracking-[0.18em]"
-          style={{ color: gold, fontFamily: emailFonts.body }}
-        >
-          {copyright}
-        </span>
-      ) : null}
-    </div>
-  );
-}
-
 /** The words each email fills in for you. */
 function variablesFor(name: EmailTemplateName): string {
   if (name === "ContactReceived") return "{guestName}";
@@ -185,6 +132,7 @@ export default function AdminEmailTemplatesPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewFocus, setPreviewFocus] = useState<EmailPreviewFocus>("none");
   const [activeTab, setActiveTab] = useState<EmailTemplateName>("BookingReceived");
   const [shared, setShared] = useState<SharedBranding>({
     logoUrl: null,
@@ -316,7 +264,7 @@ export default function AdminEmailTemplatesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="email-template-editor space-y-6">
       <CmsPageHeader
         title="Email Templates"
         description="Brand and copy for booking emails and the contact-form reply"
@@ -354,7 +302,107 @@ export default function AdminEmailTemplatesPage() {
         }
       />
 
-      <section className="card space-y-6 p-4 sm:p-6">
+        <div className="email-editor-tabs" aria-label="Email templates">
+          {EMAIL_TEMPLATE_NAMES.map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => { setActiveTab(name); setPreviewFocus("none"); }}
+              className={
+                activeTab === name
+                  ? "btn-primary px-4 py-2 text-sm"
+                  : "btn-outline px-4 py-2 text-sm"
+              }
+            >
+              {TEMPLATE_META[name].label}
+            </button>
+          ))}
+        </div>
+
+
+      <div className="email-editor-workspace">
+        <div className="email-editor-fields" onFocusCapture={(event) => {
+          const element = event.target as HTMLElement;
+          setPreviewFocus(element.closest("[data-email-footer]") ? "footer"
+            : element.closest("[data-email-branding]") ? "branding"
+            : element.hasAttribute("data-email-heading") ? "heading"
+            : element.tagName === "TEXTAREA" ? "message" : "none");
+        }}>
+      <section className="card p-4 sm:p-6">
+        {activeCopy ? (
+          <div className="space-y-4">
+            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+              {TEMPLATE_META[activeCopy.name].description}
+            </p>
+
+            <label className="block text-sm">
+              <span
+                className="mb-1 block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Subject line
+              </span>
+              <input
+                maxLength={200}
+                value={activeCopy.subject}
+                onChange={(event) =>
+                  updateCopy(activeCopy.name, { subject: event.target.value })
+                }
+                className="input w-full px-3 py-2"
+              />
+              <span
+                className="mt-1 block text-xs"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                You can use {variablesFor(activeCopy.name)} in the subject, heading and text; they are filled in for each email.
+              </span>
+            </label>
+
+            <label className="block text-sm">
+              <span
+                className="mb-1 block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {activeCopy.name === "ContactReceived"
+                  ? "Thank you heading"
+                  : "Hero heading"}
+              </span>
+              <input
+                maxLength={300}
+                data-email-heading
+                value={activeCopy.heroHeading}
+                onChange={(event) =>
+                  updateCopy(activeCopy.name, { heroHeading: event.target.value })
+                }
+                className="input w-full px-3 py-2"
+                placeholder="Thank you, {guestName}"
+              />
+            </label>
+
+            <label className="block text-sm">
+              <span
+                className="mb-1 block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {activeCopy.name === "ContactReceived"
+                  ? "Thank you message"
+                  : "Body text"}
+              </span>
+              <textarea
+                maxLength={8000}
+                value={activeCopy.bodyText}
+                onChange={(event) =>
+                  updateCopy(activeCopy.name, { bodyText: event.target.value })
+                }
+                rows={5}
+                className="input w-full px-3 py-2"
+              />
+            </label>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="card space-y-6 p-4 sm:p-6" data-email-branding>
         <div>
           <h2 className="admin-heading text-lg">Shared branding</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
@@ -364,7 +412,7 @@ export default function AdminEmailTemplatesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6">
           <div className="space-y-3">
             <span
               className="block text-sm font-medium"
@@ -403,7 +451,6 @@ export default function AdminEmailTemplatesPage() {
                 "success",
                 "Hero replaced in Supabase — previous file deleted",
               );
-              void loadTemplates();
             }}
           />
         </div>
@@ -485,7 +532,7 @@ export default function AdminEmailTemplatesPage() {
         </div>
       </section>
 
-      <section className="card space-y-6 p-4 sm:p-6">
+      <section className="card space-y-6 p-4 sm:p-6" data-email-footer>
         <div>
           <h2 className="admin-heading text-lg">Footer</h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
@@ -494,7 +541,7 @@ export default function AdminEmailTemplatesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6">
           <div className="space-y-4">
             {FOOTER_FIELDS.map((field) => (
               <label key={field.key} className="block text-sm">
@@ -533,96 +580,12 @@ export default function AdminEmailTemplatesPage() {
               </label>
             ))}
           </div>
-          <FooterPreview footer={footer} gold={shared.primaryColor} />
         </div>
       </section>
 
-      <section className="card p-4 sm:p-6">
-        <div className="mb-4 flex flex-wrap gap-2 border-b pb-4" style={{ borderColor: "var(--border)" }}>
-          {EMAIL_TEMPLATE_NAMES.map((name) => (
-            <button
-              key={name}
-              type="button"
-              onClick={() => setActiveTab(name)}
-              className={
-                activeTab === name
-                  ? "btn-primary px-4 py-2 text-sm"
-                  : "btn-outline px-4 py-2 text-sm"
-              }
-            >
-              {TEMPLATE_META[name].label}
-            </button>
-          ))}
         </div>
-
-        {activeCopy ? (
-          <div className="space-y-4">
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              {TEMPLATE_META[activeCopy.name].description}
-            </p>
-
-            <label className="block text-sm">
-              <span
-                className="mb-1 block font-medium"
-                style={{ color: "var(--text-primary)" }}
-              >
-                Subject line
-              </span>
-              <input
-                value={activeCopy.subject}
-                onChange={(event) =>
-                  updateCopy(activeCopy.name, { subject: event.target.value })
-                }
-                className="input w-full px-3 py-2"
-              />
-              <span
-                className="mt-1 block text-xs"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                You can use {variablesFor(activeCopy.name)} in the subject, heading and text; they are filled in for each email.
-              </span>
-            </label>
-
-            <label className="block text-sm">
-              <span
-                className="mb-1 block font-medium"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {activeCopy.name === "ContactReceived"
-                  ? "Thank you heading"
-                  : "Hero heading"}
-              </span>
-              <input
-                value={activeCopy.heroHeading}
-                onChange={(event) =>
-                  updateCopy(activeCopy.name, { heroHeading: event.target.value })
-                }
-                className="input w-full px-3 py-2"
-                placeholder="Thank you, {guestName}"
-              />
-            </label>
-
-            <label className="block text-sm">
-              <span
-                className="mb-1 block font-medium"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {activeCopy.name === "ContactReceived"
-                  ? "Thank you message"
-                  : "Body text"}
-              </span>
-              <textarea
-                value={activeCopy.bodyText}
-                onChange={(event) =>
-                  updateCopy(activeCopy.name, { bodyText: event.target.value })
-                }
-                rows={5}
-                className="input w-full px-3 py-2"
-              />
-            </label>
-          </div>
-        ) : null}
-      </section>
+        <EmailTemplateLivePreview draft={previewDraft} name={activeTab} label={TEMPLATE_META[activeTab].label} focus={previewFocus} />
+      </div>
 
       <div
         className="card flex items-center gap-3 p-4 text-sm"

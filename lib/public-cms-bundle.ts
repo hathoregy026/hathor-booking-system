@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { logDbError } from "@/lib/db-safe";
+import { readPublicCmsOverHttps } from "@/lib/public-cms-https";
 import {
   DEFAULT_HERO_LOGO_TUNE,
   DEFAULT_HERO_LOGO_TUNE_MOBILE,
@@ -75,7 +76,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v15";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v16";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -319,6 +320,13 @@ export async function fetchPublicCmsBundleFromDb(): Promise<{
       if (value != null) rows.push({ key, value });
     }
     settingsMs = Date.now() - tSettings;
+    return rows;
+  }).catch(async () => {
+    // Read the exact saved rows over independently authenticated HTTPS when
+    // the pooler transport stalls. Build failures still throw if both paths fail.
+    const at = Date.now();
+    const rows = await readPublicCmsOverHttps(PUBLIC_CMS_KEYS);
+    settingsMs = Date.now() - at;
     return rows;
   });
 

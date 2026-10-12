@@ -41,6 +41,8 @@ assets/LOGOS/*.ai
 
 # Credentials, local agent state and build evidence are never deployed.
 .env*
+_tmp_*
+scripts/_tmp-*
 !.env.example
 .vercel/
 .next/

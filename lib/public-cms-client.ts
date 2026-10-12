@@ -1,6 +1,7 @@
 import dns from "node:dns";
 import pg from "pg";
 import { resolveDatabaseUrl } from "@/lib/database-config";
+import { verifiedDatabaseTransport } from "@/lib/database-tls";
 
 /** Prefer IPv4 to avoid multi-second Happy-Eyeballs stalls on some Windows/DNS paths. */
 try {
@@ -98,11 +99,8 @@ export async function withPublicCmsClient<T>(
 
   const connectionString = resolveDatabaseUrl();
   const client = new pg.Client({
-    connectionString,
+    ...verifiedDatabaseTransport(connectionString),
     connectionTimeoutMillis: CMS_CONNECT_TIMEOUT_MS,
-    ssl: connectionString.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
   });
   client.on("error", () => {});
 
