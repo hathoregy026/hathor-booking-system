@@ -78,6 +78,13 @@ function recordPath(id: string) {
 async function readEnvelope(id: string): Promise<RecordEnvelope | null> {
   recordPath(id);
   if (!bulkUsesLocalStorage()) {
+    // Cloud connections can read the complete encrypted row atomically. Old
+    // campaigns may be large: queuing thousands of local-network chunks would
+    // exhaust the pool's acquisition timeout before history could open.
+    if (process.env.VERCEL) {
+      const rows = await bookingQuery<RecordEnvelope>('SELECT version, payload, "updatedAt" FROM bulk_mail.records WHERE id = $1', [id]);
+      return rows[0] || null;
+    }
     // Some local TLS/pooler paths stall on large results. Read a versioned
     // snapshot in small responses; never combine parts from concurrent writes.
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -85,9 +92,14 @@ async function readEnvelope(id: string): Promise<RecordEnvelope | null> {
       const row = rows[0];
       if (!row) return null;
       if (row.size <= 2048) return row;
-      const parts = await Promise.all(Array.from({ length: Math.ceil(row.size / 2048) - 1 }, async (_, index) => {
-        const chunk = await bookingQuery<{ part: string }>('SELECT substr(payload, $2, 2048) AS part FROM bulk_mail.records WHERE id = $1 AND version = $3', [id, (index + 1) * 2048 + 1, row.version]);
-        return chunk[0]?.part;
+      const parts: Array<string | undefined> = new Array(Math.ceil(row.size / 2048) - 1);
+      let nextPart = 0;
+      await Promise.all(Array.from({ length: Math.min(3, parts.length) }, async () => {
+        while (nextPart < parts.length) {
+          const index = nextPart++;
+          const chunk = await bookingQuery<{ part: string }>('SELECT substr(payload, $2, 2048) AS part FROM bulk_mail.records WHERE id = $1 AND version = $3', [id, (index + 1) * 2048 + 1, row.version]);
+          parts[index] = chunk[0]?.part;
+        }
       }));
       if (parts.every(part => part !== undefined)) return { version: row.version, payload: row.payload + parts.join(""), updatedAt: row.updatedAt };
     }
@@ -154,7 +166,14 @@ export async function listBulkRecords<T extends { deletedAt?: string }>(): Promi
     // Deleted markers must not crowd older messages out of the 50-row history.
     for (let offset = 0; records.length < 50; offset += 50) {
       const rows = await bookingQuery<{ id: string }>('SELECT id FROM bulk_mail.records WHERE id LIKE $1 ORDER BY "updatedAt" DESC, id DESC LIMIT 50 OFFSET $2', ["campaign:%", offset]);
-      const page = await Promise.all(rows.map(row => readBulkRecord<T>(row.id)));
+      const page: Array<T | null> = new Array(rows.length);
+      let nextRecord = 0;
+      await Promise.all(Array.from({ length: Math.min(3, rows.length) }, async () => {
+        while (nextRecord < rows.length) {
+          const index = nextRecord++;
+          page[index] = await readBulkRecord<T>(rows[index].id);
+        }
+      }));
       for (const row of page) if (row && !row.deletedAt) records.push(row as T);
       if (rows.length < 50) break;
     }
