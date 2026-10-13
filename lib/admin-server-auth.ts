@@ -12,9 +12,19 @@ export class AdminPermissionError extends AdminAuthError {
   constructor() { super("Access denied"); this.name = "AdminPermissionError"; }
 }
 const NO_STORE = { "Cache-Control": "private, no-store" };
+
+async function sessionCookie(): Promise<string | undefined> {
+  try {
+    return (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("outside a request scope")) return undefined;
+    throw error;
+  }
+}
+
 /** Required explicit permission: omitting it is a compile error and denies at runtime. */
 export async function adminApiGuard(requirement: AdminRequirement): Promise<Response | null> {
-  const token = (await cookies()).get(ADMIN_SESSION_COOKIE)?.value;
+  const token = await sessionCookie();
   const identity = await getAdminIdentity(token);
   if (!identity) return Response.json({ error: "Unauthorized" }, { status: 401, headers: NO_STORE });
   if (!requirement || !hasAdminPermission(identity, requirement)) {
