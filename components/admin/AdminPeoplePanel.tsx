@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ADMIN_AREAS, type AdminPermission } from "@/lib/admin-permissions";
-import { AdminPermissionChecklist, noIndividualAccess, type IndividualAccess } from "./AdminPermissionChecklist";
+import { ADMIN_AREAS, ADMIN_PERMISSIONS, type AdminPermission } from "@/lib/admin-permissions";
+import { AdminPermissionChecklist, allIndividualAccess, editableIndividualAccess, noIndividualAccess, type IndividualAccess } from "./AdminPermissionChecklist";
 import { useAdminAccess } from "./AdminAccessProvider";
 type Role = { id: string; name: string; permissions: AdminPermission[]; _count: { users: number } };
 type Person = { id: string; email: string; displayName: string; isOwner: boolean; roleId: string | null;
@@ -60,6 +60,11 @@ export function AdminPeoplePanel() {
     setPermissions(current => [...current.filter(value => !value.startsWith(area + ".")),
       ...(level === "hidden" ? [] : [area + ".view"]), ...(level === "edit" ? [area + ".manage"] : [])] as AdminPermission[]);
   }
+  function editPerson(person: Person) {
+    setEditingPerson(person);
+    setPersonAccess(person.isOwner ? { permissions: [...allIndividualAccess.permissions], mailboxViewIds: [...allIndividualAccess.mailboxViewIds], mailboxSendIds: [...allIndividualAccess.mailboxSendIds] }
+      : editableIndividualAccess({ permissions: [...new Set([...(data?.roles.find(role => role.id === person.roleId)?.permissions ?? []), ...person.permissions])], mailboxViewIds: [...person.mailboxViewIds], mailboxSendIds: [...person.mailboxSendIds] }));
+  }
   function editRole(role: Role) { setRoleId(role.id); setRoleName(role.name); setPermissions(role.permissions); setLink(""); }
   async function submitProof(event: React.FormEvent) {
     event.preventDefault();
@@ -76,7 +81,9 @@ export function AdminPeoplePanel() {
       }
       setNotice(pending.body.action === "delete-person"
         ? "Person deleted. Their sign-in and permissions have been removed."
-        : "Saved. Changes to access sign out the affected people.");
+        : pending.body.action === "set-access"
+          ? "Permissions updated immediately. This person must sign in again to use their updated access."
+          : "Saved. Changes to access sign out the affected people.");
       if (pending.body.action === "invite") { setName(""); setEmail(""); setAssignment(""); setInviteAccess(noIndividualAccess); }
       if (["create-role", "update-role"].includes(pending.body.action)) { setRoleName(""); setRoleId(null); setPermissions([]); }
       setEditingPerson(null);
@@ -111,13 +118,13 @@ export function AdminPeoplePanel() {
       </section>
       <section className="people-section"><h2>People</h2>{data.users.map(person => {
         const self = person.id === access.userId;
-        return <article className="people-row" key={person.id}>
+        return <div key={person.id}><article className="people-row">
           <div><p className="font-semibold">{person.displayName}{self ? " · You" : ""}</p><p className="people-note">{person.email}</p>
             <p className="people-note">{person.disabledAt ? "Disabled" : person.invitation ? "Password setup pending" : person.mfaEnrolledAt ? "Authenticator enrolled" : "Authenticator setup pending"}</p></div>
           <div><label>Role for {person.displayName}<select className="input" disabled={self} value={roleValue(person)}
             onChange={event => confirm({ action: "set-access", id: person.id, ...roleChoice(event.target.value) }, "Change this person's access")}>{options}</select></label>
             <div className="people-actions mt-3">
-              <button className="btn-primary" disabled={self || person.isOwner} onClick={() => { setEditingPerson(person); setPersonAccess({ permissions: [...new Set([...(data.roles.find(role => role.id === person.roleId)?.permissions ?? []), ...person.permissions])], mailboxViewIds: person.mailboxViewIds, mailboxSendIds: person.mailboxSendIds }); }}>Choose permissions</button>
+              <button className="btn-primary" disabled={self} onClick={() => editPerson(person)}>Edit permissions</button>
               <button className="btn-outline" disabled={self} onClick={() => confirm({ action: "set-enabled", id: person.id, enabled: !!person.disabledAt }, person.disabledAt ? "Enable this account" : "Disable this account")}>{person.disabledAt ? "Enable" : "Disable"}</button>
               <button className="btn-outline" disabled={self || !!person.disabledAt} onClick={() => confirm({ action: "password-link", id: person.id }, "Reset password with a new link")}>Password link</button>
               <button className="btn-outline" disabled={self || !person.mfaEnrolledAt} onClick={() => confirm({ action: "reset-mfa", id: person.id }, "Remove this person's authenticator and recovery codes")}>Reset authenticator</button>
@@ -125,16 +132,21 @@ export function AdminPeoplePanel() {
               <button className="btn-outline" disabled={self} onClick={() => confirm({ action: "unlock", id: person.id }, "Unlock sign-in attempts")}>Unlock</button>
               <button className="btn-outline people-delete" disabled={self} onClick={() => confirm({ action: "delete-person", id: person.id, confirm: true }, "Permanently delete " + person.displayName + "?")}>Delete person</button>
             </div></div>
-        </article>;
-      })}</section>
-      {editingPerson && <section className="people-section"><h2>Permissions for {editingPerson.displayName}</h2><p className="people-note">Check the access this person should have. Saving replaces their role with these individual permissions.</p>
+        </article>
+          {editingPerson?.id === person.id && <section className="people-section" aria-label={"Permissions for " + person.displayName}><h2>Permissions for {editingPerson.displayName}</h2><p className="people-note">Add or remove access, then save. Changes apply immediately and sign this person out. Saving uses individual permissions; saved roles and other people are unchanged.</p>
+        {editingPerson.isOwner && <p className="people-note mb-4">Saving individual permissions changes this administrator to a staff account.</p>}
         <AdminPermissionChecklist value={personAccess} onChange={setPersonAccess} />
         <div className="people-actions mt-5"><button className="btn-primary" onClick={() => confirm({ action: "set-access", id: editingPerson.id, roleId: null, isOwner: false, ...personAccess }, "Save this person's permissions")}>Save permissions</button><button className="btn-outline" onClick={() => setEditingPerson(null)}>Cancel</button></div>
       </section>}
+        </div>;
+      })}</section>
+
       <section className="people-section"><h2>{roleId ? "Edit role" : "Create a role"}</h2>
         <p className="people-note mb-5">Hidden blocks the page and API. View allows reading. Edit also allows changes and, where applicable, sending emails. Media uploads require Edit in Media storage.</p>
         <form onSubmit={event => { event.preventDefault(); confirm({ action: roleId ? "update-role" : "create-role", ...(roleId ? { id: roleId } : {}), name: roleName.trim(), permissions }, roleId ? "Update this role and sign out its members" : "Create this role"); }}>
           <label className="mb-5">Role name<input className="input" required minLength={2} maxLength={64} value={roleName} onChange={event => setRoleName(event.target.value)} /></label>
+          <label className="people-select-all mb-5"><input type="checkbox" checked={ADMIN_AREAS.every(area => permissions.includes((area.id + ".manage") as AdminPermission))}
+            onChange={event => setPermissions(event.target.checked ? [...ADMIN_PERMISSIONS] : [])} />Choose all role permissions</label>
           {ADMIN_AREAS.map(area => <div className="people-permission" key={area.id}><div>{area.label}<small>{area.description}</small></div>
             <label><span className="sr-only">{area.label} access</span><select className="input" aria-label={area.label + " access"} value={permissionLevel(area.id)} onChange={event => setLevel(area.id, event.target.value)}>
               <option value="hidden">Hidden</option><option value="view">View</option><option value="edit">Edit</option>

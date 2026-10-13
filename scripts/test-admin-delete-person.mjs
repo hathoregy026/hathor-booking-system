@@ -11,15 +11,19 @@ const directory = mkdtempSync(path.join(tmpdir(), 'hathor-delete-person-'));
 let state;
 const actor = { id: 'actor', isOwner: true, disabledAt: null, mfaEnrolledAt: new Date(), passwordHash: 'fixture', passwordChangedAt: new Date(0) };
 const target = { id: 'target', email: 'fixture@example.invalid', isOwner: false, disabledAt: null, mfaEnrolledAt: new Date(), roleId: 'shared-role' };
-const reset = () => { state = { actor: { ...actor }, target: { ...target }, otherOwners: 1, passwordOk: true, codeOk: true, sessionOk: true, deleted: [], events: [], locks: 0, failAudit: false }; };
+const reset = () => { state = { actor: { ...actor }, target: { ...target }, otherOwners: 1, passwordOk: true, codeOk: true, sessionOk: true, deleted: [], events: [], revoked: [], locks: 0, failAudit: false }; };
 const tx = () => ({
   $queryRaw: async () => { state.locks++; },
-  adminSession: { findUnique: async () => state.sessionOk ? { userId: 'actor', stage: 'ACTIVE', revokedAt: null, expiresAt: new Date(Date.now() + 60_000), idleExpiresAt: new Date(Date.now() + 60_000), createdAt: new Date(), user: state.actor } : null },
+  adminSession: { findUnique: async () => state.sessionOk ? { userId: 'actor', stage: 'ACTIVE', revokedAt: null, expiresAt: new Date(Date.now() + 60_000), idleExpiresAt: new Date(Date.now() + 60_000), createdAt: new Date(), user: state.actor } : null,
+    updateMany: async ({ where, data }) => { assert.equal(where.userId, 'target'); assert.ok(data.revokedAt); state.revoked.push(where.userId); },
+  },
   adminUser: {
     findUnique: async ({ where }) => where.id === 'actor' ? state.actor : state.target,
     count: async () => state.otherOwners,
+    update: async ({ where, data }) => { assert.equal(where.id, 'target'); Object.assign(state.target, data); },
     delete: async ({ where }) => { assert.equal(where.id, 'target'); assert.ok(state.locks); state.deleted.push(where.id); state.target = null; },
   },
+  adminRole: { findUnique: async () => ({ id: "shared-role" }) },
   adminAuthEvent: { create: async ({ data }) => { if (state.failAudit) throw new Error('fixture audit failure'); state.events.push(data); } },
 });
 globalThis.__deletePersonFixture = {
@@ -76,6 +80,25 @@ try {
     assert.match(model('AdminAuthEvent'), /references: \[id\], onDelete: SetNull/);
     assert.match(model('AdminUser'), /role\s+AdminRole\?[^\n]*onDelete: SetNull/);
   });
-  console.log(`${count} deletion checks passed. No real accounts accessed.`);
+  await check('saved individual permissions replace role access and revoke old sessions immediately', async () => {
+    const value = { action: 'set-access', id: 'target', isOwner: false, roleId: null,
+      permissions: ['bookings.view', 'website.images', 'inbox.view'], mailboxViewIds: ['reservations'], mailboxSendIds: [],
+      currentPassword: 'synthetic-password', code: '123456' };
+    assert.deepEqual(await run(value), { ok: true });
+    assert.deepEqual(state.target.permissions, value.permissions); assert.equal(state.target.roleId, null);
+    assert.deepEqual(state.target.mailboxViewIds, ['reservations']); assert.deepEqual(state.target.mailboxSendIds, []);
+    assert.deepEqual(state.revoked, ['target']); assert.equal(state.actor.isOwner, true);
+    assert.deepEqual(state.events, [{ userId: 'actor', type: 'MANAGEMENT_SET_ACCESS', detail: 'target' }]);
+  });
+  await check('removing every permission still saves and revokes existing sessions', async () => {
+    await run({ action: 'set-access', id: 'target', roleId: null, isOwner: false, permissions: [], mailboxViewIds: [], mailboxSendIds: [], currentPassword: 'synthetic-password', code: '123456' });
+    assert.deepEqual(state.target.permissions, []); assert.deepEqual(state.revoked, ['target']);
+  });
+  await check('permission update rolls back if audit write fails', async () => {
+    state.failAudit = true;
+    await assert.rejects(run({ action: 'set-access', id: 'target', roleId: null, isOwner: false, permissions: ['bookings.view'], currentPassword: 'synthetic-password', code: '123456' }), /fixture audit failure/);
+    assert.equal(state.target.roleId, 'shared-role'); assert.deepEqual(state.revoked, []);
+  });
+  console.log(`${count} people management checks passed. No real accounts accessed.`);
 } finally { delete globalThis.__deletePersonFixture; rmSync(directory, { recursive: true, force: true }); }
 
