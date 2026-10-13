@@ -30,3 +30,5 @@
 .people-page .people-checklist label { display:flex; align-items:center; gap:10px; min-height:44px; }
 .people-page .people-checklist input[type="checkbox"] { width:18px; height:18px; min-height:18px; flex:0 0 18px; accent-color:var(--accent); }
 @media(max-width:680px) { .people-checklist .people-permission { grid-template-columns:1fr; gap:8px; } .people-checklist .people-actions { justify-content:flex-start; } }
+
+.people-actions .people-delete { color:var(--danger); }

@@ -27,6 +27,7 @@ export const managementActionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("reset-mfa"), id, ...credentials }).strict(),
   z.object({ action: z.literal("revoke-sessions"), id, ...credentials }).strict(),
   z.object({ action: z.literal("unlock"), id, ...credentials }).strict(),
+  z.object({ action: z.literal("delete-person"), id, confirm: z.literal(true), ...credentials }).strict(),
 ]).superRefine((body, context) => {
   if (body.action !== "invite" && body.action !== "set-access") return;
   if (body.mailboxSendIds.some(id => !body.mailboxViewIds.includes(id))) context.addIssue({ code: "custom", message: "Sending requires mailbox viewing", path: ["mailboxSendIds"] });
@@ -141,6 +142,11 @@ export async function administerPeople(identity: AdminIdentity, request: Request
       await tx.adminUser.update({ where: { id: target.id }, data: { disabledAt: body.enabled ? null : now } });
       await revoke(target.id);
       if (!body.enabled) await tx.adminInvitation.deleteMany({ where: { userId: target.id } });
+    } else if (body.action === "delete-person") {
+      if (target.isOwner && !target.disabledAt && target.mfaEnrolledAt) await protectLastAdministrator(tx, target.id);
+      // Foreign keys cascade sessions, invitations and recovery codes; audit history remains.
+      // Deleting the account also removes its credentials and individual/role access.
+      await tx.adminUser.delete({ where: { id: target.id } });
     } else if (body.action === "password-link") {
       if (target.disabledAt) throw new PublicRequestError("Enable the account before issuing a setup link.", 409);
       await tx.adminUser.update({ where: { id: target.id }, data: { passwordHash: replacementHash!, passwordChangedAt: now } });

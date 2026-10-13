@@ -74,7 +74,9 @@ export function AdminPeoplePanel() {
       if (typeof result.setupPath === "string" && /^\/admin\/accept-invite#token=[a-f0-9]{64}$/.test(result.setupPath)) {
         setLink(window.location.origin + result.setupPath);
       }
-      setNotice("Saved. Changes to access sign out the affected people.");
+      setNotice(pending.body.action === "delete-person"
+        ? "Person deleted. Their sign-in and permissions have been removed."
+        : "Saved. Changes to access sign out the affected people.");
       if (pending.body.action === "invite") { setName(""); setEmail(""); setAssignment(""); setInviteAccess(noIndividualAccess); }
       if (["create-role", "update-role"].includes(pending.body.action)) { setRoleName(""); setRoleId(null); setPermissions([]); }
       setEditingPerson(null);
@@ -121,6 +123,7 @@ export function AdminPeoplePanel() {
               <button className="btn-outline" disabled={self || !person.mfaEnrolledAt} onClick={() => confirm({ action: "reset-mfa", id: person.id }, "Remove this person's authenticator and recovery codes")}>Reset authenticator</button>
               <button className="btn-outline" disabled={self} onClick={() => confirm({ action: "revoke-sessions", id: person.id }, "Sign out this person's devices")}>Sign out</button>
               <button className="btn-outline" disabled={self} onClick={() => confirm({ action: "unlock", id: person.id }, "Unlock sign-in attempts")}>Unlock</button>
+              <button className="btn-outline people-delete" disabled={self} onClick={() => confirm({ action: "delete-person", id: person.id, confirm: true }, "Permanently delete " + person.displayName + "?")}>Delete person</button>
             </div></div>
         </article>;
       })}</section>
@@ -151,12 +154,12 @@ export function AdminPeoplePanel() {
       </section>
     </>}
     <dialog ref={dialog} className="people-dialog" onCancel={event => { event.preventDefault(); closeProof(); }}>
-      <form onSubmit={submitProof}><h2>{pending?.title}</h2><p className="people-note">Confirm this change with your own password and an authenticator or unused recovery code.</p>
+      <form onSubmit={submitProof}><h2>{pending?.title}</h2>{pending?.body.action === "delete-person" && <p className="people-note">This permanently removes this person&apos;s dashboard account, permissions, setup links, sessions, authenticator and recovery codes. It cannot be undone. Existing bookings and emails are kept.</p>}<p className="people-note">Confirm this change with your own password and an authenticator or unused recovery code.</p>
         {error && <p role="alert" className="people-error">{error}</p>}
         <label>Your password<input ref={passwordInput} type="password" className="input" value={password} onChange={event => setPassword(event.target.value)} required maxLength={128} autoComplete="current-password" disabled={busy} /></label>
         <label>Your code<input className="input" value={code} onChange={event => setCode(event.target.value)} required maxLength={32} autoComplete="one-time-code" disabled={busy} /></label>
         <div className="people-actions"><button type="button" className="btn-outline" onClick={closeProof} disabled={busy}>Cancel</button>
-          <button type="submit" className="btn-primary" disabled={busy}>{busy ? "Saving…" : "Confirm change"}</button></div>
+          <button type="submit" className="btn-primary" disabled={busy}>{busy ? "Saving…" : pending?.body.action === "delete-person" ? "Delete person" : "Confirm change"}</button></div>
       </form>
     </dialog>
   </div>;
