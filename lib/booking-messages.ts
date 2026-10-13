@@ -1,3 +1,4 @@
+import type { MailboxId } from "@/lib/email-mailboxes";
 import { randomUUID } from "node:crypto";
 import { bookingQuery } from "@/lib/booking-database";
 import { bookingReplyAddress, newBookingReplyToken, inboundBookingEmailEnabled } from "@/lib/booking-email-routing";
@@ -32,14 +33,14 @@ export async function finishOutboundBookingMessage(id: string, resendEmailId: st
     [id, resendEmailId ? "SENT" : "FAILED", resendEmailId]);
 }
 
-export async function fetchBookingMessages(bookingId: string, before?: { createdAt: string; id: string }): Promise<BookingMessageDto[]> {
+export async function fetchBookingMessages(bookingId: string, before?: { createdAt: string; id: string }, allowed: readonly MailboxId[] = []): Promise<BookingMessageDto[]> {
   const rows = await bookingQuery<Omit<BookingMessageDto, "createdAt"> & { createdAt: Date }>(
     `SELECT id, direction, status, sender, subject, "bodyText", "senderMatchesGuest", attachments, "createdAt"
-     FROM "BookingMessage" WHERE "bookingId" = $1
-     AND (direction = 'OUTBOUND' OR folder = 'inbox')
+     FROM "BookingMessage" m WHERE "bookingId" = $1
+     AND (direction = 'OUTBOUND' OR folder = 'inbox') AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'booking' AND p."messageId" = m.id), 'reservations') = ANY($4::text[]) AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id)
      AND ($2::timestamp IS NULL OR ("createdAt", id) < ($2::timestamp, $3::text))
      ORDER BY "createdAt" DESC, id DESC LIMIT 10`,
-    [bookingId, before?.createdAt ?? null, before?.id ?? null],
+    [bookingId, before?.createdAt ?? null, before?.id ?? null, allowed],
   );
   return rows.map(row => ({ ...row, createdAt: row.createdAt.toISOString() }));
 }

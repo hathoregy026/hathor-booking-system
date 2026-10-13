@@ -14,19 +14,23 @@ export const ADMIN_AREAS = [
   { id: "storage", label: "Media storage", description: "Media inventory and uploads used by other editors." },
 ] as const;
 export type AdminArea = typeof ADMIN_AREAS[number]["id"];
-export type AdminPermission = `${AdminArea}.view` | `${AdminArea}.manage`;
+export const SPECIAL_PERMISSIONS = ["bookings.accept", "inbox.send", "website.text", "website.images", "storage.upload"] as const;
+export type AdminPermission = `${AdminArea}.view` | `${AdminArea}.manage` | typeof SPECIAL_PERMISSIONS[number];
 export type AdminRequirement = AdminPermission | "administrator" | "signed-in";
-export type AdminAccess = { isOwner: boolean; permissions: readonly string[] };
-export const ADMIN_PERMISSIONS: AdminPermission[] = ADMIN_AREAS.flatMap(area => [
+export type AdminAccess = { isOwner: boolean; permissions: readonly string[]; mailboxViewIds?: readonly string[]; mailboxSendIds?: readonly string[] };
+export const ADMIN_PERMISSIONS: AdminPermission[] = [...SPECIAL_PERMISSIONS, ...ADMIN_AREAS.flatMap(area => [
   `${area.id}.view` as AdminPermission, `${area.id}.manage` as AdminPermission,
-]);
+])];
 export function hasAdminPermission(access: AdminAccess, requirement: AdminRequirement): boolean {
   if (requirement === "signed-in") return true;
   if (requirement === "administrator") return access.isOwner;
   if (!ADMIN_PERMISSIONS.includes(requirement)) return false;
   if (access.isOwner) return true;
-  return access.permissions.includes(requirement) ||
-    (requirement.endsWith(".view") && access.permissions.includes(requirement.replace(".view", ".manage")));
+  const area = requirement.split(".")[0];
+  if (access.permissions.includes(requirement) || access.permissions.includes(area + ".manage")) return true;
+  if (requirement.endsWith(".view")) return SPECIAL_PERMISSIONS.some(value => value.startsWith(area + ".") && access.permissions.includes(value));
+  if (requirement === "storage.upload") return access.permissions.includes("website.images") || access.permissions.includes("blogs.manage");
+  return false;
 }
 const API_AREAS: Record<string, AdminArea> = {
   dashboard: "dashboard", analytics: "analytics", bookings: "bookings", inbox: "inbox",
@@ -49,6 +53,14 @@ export function adminApiRequirement(pathname: string, method: string): AdminRequ
   if (section === "notifications") return "bookings.view";
   if (section === "test-email") return "templates.manage";
   if (pathname === "/api/admin/email-templates/preview" && method.toUpperCase() === "POST") return "templates.view";
+  const write = !["GET", "HEAD"].includes(method.toUpperCase());
+  if (write && /^\/api\/admin\/bookings\/[^/]+\/attachments$/.test(pathname)) return "bookings.accept";
+  if (write && section === "images") return "website.images";
+  if (write && section === "website-text") return "website.text";
+  if (write && section === "upload") return "storage.upload";
+  if (write && section === "content") return "website.view"; // Each changed field is checked separately.
+  if (write && /^\/api\/admin\/inbox\/(send|preview|attachments)$/.test(pathname)) return "inbox.send";
+  if (method.toUpperCase() === "PATCH" && /^\/api\/admin\/bookings\/[^/]+$/.test(pathname)) return "bookings.view";
   return `${area}.${["GET", "HEAD"].includes(method.toUpperCase()) ? "view" : "manage"}`;
 }
 const PAGE_AREAS: Record<string, AdminArea> = {

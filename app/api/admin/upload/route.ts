@@ -22,7 +22,7 @@ export const maxDuration = 60;
 const MAX_UPLOAD_REQUEST_BYTES = MAX_VIDEO_BYTES + 1024 * 1024;
 
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard("storage.manage");
+  const denied = await adminApiGuard("storage.upload");
   if (denied) return denied;
 
   try {

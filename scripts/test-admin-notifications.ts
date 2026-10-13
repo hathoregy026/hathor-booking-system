@@ -1,3 +1,4 @@
+import { EMAIL_MAILBOXES } from "../lib/email-mailboxes";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { NextRequest } from "next/server";
@@ -7,6 +8,7 @@ import { GET, POST } from "../app/api/admin/notifications/route";
 import { assertTrustedPublicJsonRequest } from "../lib/public-api-security";
 import type { bookingQuery } from "../lib/booking-database";
 
+const mailboxScope = EMAIL_MAILBOXES.map(mailbox => mailbox.id);
 async function main() {
   const snapshot: NotificationSnapshot = {
     unreadCount: 2, bookingCount: 1, emailCount: 1, bookingSeenThrough: "2026-10-02T12:00:00.000Z",
@@ -31,7 +33,7 @@ async function main() {
     calls.push({ sql, values });
     return sql.includes("WITH profile") ? [snapshot] : [];
   }) as typeof bookingQuery;
-  assert.deepEqual(await fetchAdminNotifications(query), snapshot);
+  assert.deepEqual(await fetchAdminNotifications(query, mailboxScope), snapshot);
   assert.equal(calls.length, 1, "Counts and rows must come from one database snapshot");
   assert.match(calls[0].sql, /WHERE direction = 'INBOUND'/);
   assert.match(calls[0].sql, /FROM emails WHERE "readAt" IS NULL/);
@@ -48,7 +50,7 @@ async function main() {
   assert.equal(calls.length, 2);
   assert.throws(() => notificationSeenSchema.parse({ seenThrough: snapshot.bookingSeenThrough, readEmails: true }));
   const identity = { id: randomUUID(), kind: "email" as const, source: "general" as const };
-  await dismissNotifications({ notifications: [identity] }, query);
+  await dismissNotifications({ notifications: [identity] }, query, mailboxScope);
   assert.match(calls[2].sql, /INSERT INTO "DashboardNotificationSeen"/);
   assert.match(calls[2].sql, /JOIN available/);
   assert.doesNotMatch(calls[2].sql, /UPDATE|DELETE|SET "readAt"/);

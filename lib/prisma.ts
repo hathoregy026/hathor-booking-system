@@ -13,7 +13,7 @@ import {
 
 export { invalidatePrismaClient } from "@/lib/prisma-state";
 
-const PRISMA_SCHEMA_VERSION = 22;
+const PRISMA_SCHEMA_VERSION = 23;
 
 function createPrismaClient(connectionString: string): PrismaClient {
   const pool = getSharedPgPool(connectionString);

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminAccess } from "../AdminAccessProvider";
+import { canAdminBookingAction } from "@/lib/admin-booking-access";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
@@ -106,7 +108,10 @@ export function BookingDetailView({
   const router = useRouter();
   const [dialog, setDialog] = useState<BookingActionKind | null>(null);
   const [conversationVersion, setConversationVersion] = useState(0);
-  const { primary, secondary } = bookingActionsFor(booking);
+  const access = useAdminAccess();
+  const available = bookingActionsFor(booking);
+  const primary = available.primary.filter(kind => canAdminBookingAction(access, kind));
+  const secondary = available.secondary.filter(kind => canAdminBookingAction(access, kind));
   const departure = parseISO(booking.departureTime);
   const arrival = parseISO(booking.arrivalTime);
   const nights = Math.max(1, differenceInCalendarDays(arrival, departure));

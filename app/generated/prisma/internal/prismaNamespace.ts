@@ -3295,6 +3295,9 @@ export const AdminUserScalarFieldEnum = {
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  permissions: 'permissions',
+  mailboxViewIds: 'mailboxViewIds',
+  mailboxSendIds: 'mailboxSendIds',
   isOwner: 'isOwner',
   roleId: 'roleId'
 } as const

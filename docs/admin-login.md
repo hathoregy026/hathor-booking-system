@@ -308,7 +308,36 @@ uses `sslmode=require`, `sslaccept=strict` and
 The existing Vercel build command is unchanged.
 
 The owner explicitly approved starting this preview. Its branch deployment
-guard is now removed. Complete the named test administrator's authenticator
-enrollment, save recovery codes privately, and test staff roles before go-live.
+guard is now removed. The named test administrator has enrolled an authenticator.
+Test individual staff permissions before go-live and keep recovery codes private.
 Production keys, the latest live-code baseline and named real accounts still
 require a separate production release review and approval.
+
+### Individual permission checkboxes
+
+Administrators can invite someone with individual permissions, or choose
+permissions on an existing staff account. Saving individual permissions removes
+the preset role and revokes only that person's sessions. Self-access and the last
+enrolled administrator remain protected. Existing owners retain full access.
+
+Email access is denied unless each mailbox is explicitly checked. CEO, ACC,
+Sales, Reservations, Reception and Info each have View/Send controls. Sending
+requires viewing the same mailbox. Organization rights apply only inside
+checked mailboxes. Lists, counts, direct messages, formatted HTML, attachment
+downloads, notifications and booking conversations share these restrictions.
+
+Bookings have View, Accept and Manage controls. Accept supports the normal
+invoice workflow; manual replies and confirmation resends additionally require
+Reservations Send. Website text and image editing are independent; image editing
+permits media uploads without granting media deletion or full website settings.
+
+The additive Prisma migration adds three allow-listed arrays to AdminUser and
+expands the role capability constraint. Existing staff default to no mailbox
+access until explicitly granted. No production migration has been run.
+
+Verification: verify:admin-auth, verify:admin-permissions, TypeScript, focused
+ESLint and full build. scripts/prepare-admin-scope-sql.ts tests action denial
+with no-side-effect stubs, validates management payloads and prepares 11 SQL
+assertions from the real application queries. Run its generated SQL only on
+the approved empty login test database; it uses synthetic emails and ROLLBACK.
+The SQL assertions were executed through Supabase on the isolated test project.

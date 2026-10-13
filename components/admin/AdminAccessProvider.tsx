@@ -3,9 +3,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { hasAdminPermission, type AdminRequirement } from "@/lib/admin-permissions";
 export type AdminAccessSnapshot = {
-  userId: string; displayName: string; isOwner: boolean; roleName: string | null; permissions: string[];
+  userId: string; displayName: string; isOwner: boolean; roleName: string | null; permissions: string[]; mailboxViewIds: string[]; mailboxSendIds: string[];
 };
-const empty: AdminAccessSnapshot = { userId: "", displayName: "", isOwner: false, roleName: null, permissions: [] };
+const empty: AdminAccessSnapshot = { userId: "", displayName: "", isOwner: false, roleName: null, permissions: [], mailboxViewIds: [], mailboxSendIds: [] };
 const AccessContext = createContext(empty);
 export const useAdminAccess = () => useContext(AccessContext);
 export function useAdminPermission(requirement: AdminRequirement) {

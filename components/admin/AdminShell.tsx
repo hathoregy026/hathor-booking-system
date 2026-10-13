@@ -16,7 +16,8 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const access = useAdminAccess();
   const requirement = adminPageRequirement(pathname);
-  const readOnly = !!requirement?.endsWith(".view") && !hasAdminPermission(access, requirement.replace(".view", ".manage") as import("@/lib/admin-permissions").AdminPermission);
+  const hasScopedWrite = (requirement === "website.view" && ((pathname === "/admin/website-text" && hasAdminPermission(access, "website.text")) || (pathname === "/admin/images" && hasAdminPermission(access, "website.images")))) || (requirement === "bookings.view" && hasAdminPermission(access, "bookings.accept")) || (requirement === "inbox.view" && hasAdminPermission(access, "inbox.send"));
+  const readOnly = !hasScopedWrite && !!requirement?.endsWith(".view") && !hasAdminPermission(access, requirement.replace(".view", ".manage") as import("@/lib/admin-permissions").AdminPermission);
   const [menuOpenForPath, setMenuOpenForPath] = useState<string | null>(null);
   const mobileMenuOpen = menuOpenForPath === pathname;
 

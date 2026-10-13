@@ -25,3 +25,8 @@
 @media(max-width:1024px) { .people-row { align-items:flex-start; flex-direction:column; } .people-actions { justify-content:flex-start; } }
 @media(max-width:480px) { .people-heading { flex-direction:column; gap:16px; } .people-grid { grid-template-columns:1fr; } .people-permission { grid-template-columns:1fr; gap:10px; } .people-section { padding:20px 16px; } .people-dialog { padding:24px 20px; } }
 @media(prefers-reduced-motion:no-preference) { .people-actions button { transition:background .2s,color .2s; } }
+
+.people-checklist .people-permission { grid-template-columns:minmax(0,1fr) minmax(240px,1fr); }
+.people-page .people-checklist label { display:flex; align-items:center; gap:10px; min-height:44px; }
+.people-page .people-checklist input[type="checkbox"] { width:18px; height:18px; min-height:18px; flex:0 0 18px; accent-color:var(--accent); }
+@media(max-width:680px) { .people-checklist .people-permission { grid-template-columns:1fr; gap:8px; } .people-checklist .people-actions { justify-content:flex-start; } }

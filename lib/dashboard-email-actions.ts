@@ -1,3 +1,4 @@
+import type { MailboxId } from "@/lib/email-mailboxes";
 import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
 import { inboxIdentitySchema } from "@/lib/dashboard-inbox";
@@ -20,11 +21,12 @@ const selectedMessages = `
   booking AS (SELECT m.id, 'booking'::text AS source, m.status FROM "BookingMessage" m
     JOIN requested r ON r.source = 'booking' AND r.id = m.id FOR UPDATE OF m),
   originals AS (SELECT * FROM general UNION ALL SELECT * FROM booking),
-  eligible AS (SELECT m.* FROM originals m WHERE m.status <> 'PENDING'
+  eligible AS (SELECT m.* FROM originals m WHERE m.status <> 'PENDING' AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = m.source AND p."messageId" = m.id), CASE WHEN m.source = 'booking' THEN 'reservations' ELSE (SELECT i."mailboxId" FROM "InboxMessage" i WHERE i.id = m.id) END) = ANY($3::text[])
     AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = m.source AND d."messageId" = m.id))`;
 
-export async function applyDashboardEmailAction(input: z.infer<typeof dashboardEmailActionSchema>, query = bookingQuery): Promise<{ affected: number }> {
+export async function applyDashboardEmailAction(input: z.infer<typeof dashboardEmailActionSchema>, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<{ affected: number }> {
   const parsed = dashboardEmailActionSchema.parse(input);
+  if (parsed.action === "move" && !allowed.includes(parsed.mailboxId)) throw new PublicRequestError("Access denied", 403);
   const operation = parsed.action === "move"
     ? `INSERT INTO "DashboardEmailPlacement" (source, "messageId", "mailboxId")
        SELECT source, id, $2 FROM eligible WHERE (SELECT COUNT(*) FROM eligible) = (SELECT COUNT(*) FROM requested)
@@ -35,7 +37,7 @@ export async function applyDashboardEmailAction(input: z.infer<typeof dashboardE
        ON CONFLICT (source, "messageId") DO UPDATE SET "deletedAt" = "DashboardEmailDeletion"."deletedAt"
        RETURNING "messageId"`;
   const [result] = await query<{ affected: number }>(`WITH ${selectedMessages}, applied AS (${operation}) SELECT COUNT(*)::int AS affected FROM applied`,
-    parsed.action === "move" ? [JSON.stringify(parsed.messages), parsed.mailboxId] : [JSON.stringify(parsed.messages)]);
+    parsed.action === "move" ? [JSON.stringify(parsed.messages), parsed.mailboxId, allowed] : [JSON.stringify(parsed.messages), null, allowed]);
   if (result?.affected !== parsed.messages.length) {
     throw new PublicRequestError("One or more selected emails are unavailable or still sending. Refresh before trying again.", 409);
   }

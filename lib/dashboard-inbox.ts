@@ -40,7 +40,7 @@ function dates(row: InboxRow): InboxDetail {
   return { ...row, createdAt: row.createdAt.toISOString(), readAt: row.readAt?.toISOString() ?? null };
 }
 
-export async function fetchDashboardInbox(input: z.infer<typeof inboxQuerySchema>, query = bookingQuery): Promise<InboxPage> {
+export async function fetchDashboardInbox(input: z.infer<typeof inboxQuerySchema>, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<InboxPage> {
   const pattern = `%${input.q.replace(/[\\%_]/g, "\\$&")}%`;
   const rows = await query<InboxRow>(
     `WITH received AS (${receivedMessages})
@@ -51,42 +51,42 @@ export async function fetchDashboardInbox(input: z.infer<typeof inboxQuerySchema
          OR ($2 = 'received' AND direction = 'INBOUND') OR ($2 = 'sent' AND direction = 'OUTBOUND'))
        AND ($3::timestamp IS NULL OR ("createdAt", source, id) < ($3::timestamp, $4::text, $5::text))
        AND ($6 = 'all' OR "mailboxId" = $6)
-       AND folder = $7
+       AND folder = $7 AND "mailboxId" = ANY($8::text[])
      ORDER BY "createdAt" DESC, source DESC, id DESC LIMIT 26`,
-    [pattern, input.filter, input.before ?? null, input.cursorSource ?? null, input.cursorId ?? null, input.mailbox, input.folder]);
+    [pattern, input.filter, input.before ?? null, input.cursorSource ?? null, input.cursorId ?? null, input.mailbox, input.folder, allowed]);
   const [count] = await query<{ all: number; unread: number; received: number; sent: number }>(`WITH received AS (${receivedMessages})
     SELECT COUNT(*)::int AS "all", COUNT(*) FILTER (WHERE direction = 'INBOUND' AND "readAt" IS NULL)::int AS unread,
       COUNT(*) FILTER (WHERE direction = 'INBOUND')::int AS received, COUNT(*) FILTER (WHERE direction = 'OUTBOUND')::int AS sent FROM received
-      WHERE ($1 = 'all' OR "mailboxId" = $1) AND folder = $2`, [input.mailbox, input.folder]);
+      WHERE ($1 = 'all' OR "mailboxId" = $1) AND folder = $2 AND "mailboxId" = ANY($3::text[])`, [input.mailbox, input.folder]);
   const counts = count ?? { all: 0, unread: 0, received: 0, sent: 0 };
   const totals = await query<{ mailboxId: MailboxId; total: number; unread: number }>(`WITH received AS (${receivedMessages})
     SELECT "mailboxId", COUNT(*)::int AS total, COUNT(*) FILTER (WHERE direction = 'INBOUND' AND "readAt" IS NULL)::int AS unread
-    FROM received WHERE folder = 'inbox' GROUP BY "mailboxId"`);
+    FROM received WHERE folder = 'inbox' AND "mailboxId" = ANY($1::text[]) GROUP BY "mailboxId"`, [allowed]);
   const handlers = await fetchMailboxHandlers(query);
-  const mailboxes = EMAIL_MAILBOXES.map(mailbox => ({
+  const mailboxes = EMAIL_MAILBOXES.filter(mailbox => allowed.includes(mailbox.id)).map(mailbox => ({
     ...mailbox, handlerName: handlers[mailbox.id], total: totals.find(row => row.mailboxId === mailbox.id)?.total ?? 0,
     unread: totals.find(row => row.mailboxId === mailbox.id)?.unread ?? 0,
   }));
   return { messages: rows.slice(0, 25).map(row => ({ ...dates(row), preview: emailDisplayPreview(row.preview) })), hasOlder: rows.length > 25, unreadCount: counts.unread, counts, mailboxes };
 }
 
-export async function fetchInboxDetail(source: InboxSource, id: string, query = bookingQuery): Promise<InboxDetail | null> {
+export async function fetchInboxDetail(source: InboxSource, id: string, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<InboxDetail | null> {
   const [row] = await query<InboxRow>(
     `WITH received AS (${receivedMessages}) SELECT *, LEFT("bodyText", 160) AS preview,
-      jsonb_array_length(attachments) AS "attachmentCount" FROM received WHERE source = $1 AND id = $2`, [source, id]);
+      jsonb_array_length(attachments) AS "attachmentCount" FROM received WHERE source = $1 AND id = $2 AND "mailboxId" = ANY($3::text[])`, [source, id, allowed]);
   return row ? dates(row) : null;
 }
 
-export async function setInboxRead(source: InboxSource, id: string, read: boolean, query = bookingQuery): Promise<boolean> {
+export async function setInboxRead(source: InboxSource, id: string, read: boolean, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<boolean> {
   const rows = source === "booking"
     ? await query(`UPDATE "BookingMessage" m SET "readAt" = CASE WHEN $2 THEN NOW() END WHERE id = $1 AND direction = 'INBOUND'
-      AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id) RETURNING id`, [id, read])
+      AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id) AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'booking' AND p."messageId" = m.id), 'reservations') = ANY($3::text[]) RETURNING id`, [id, read, allowed])
     : await query(`UPDATE "InboxMessage" m SET "readAt" = CASE WHEN $2 THEN NOW() END WHERE id = $1 AND direction = 'INBOUND'
-      AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id) RETURNING id`, [id, read]);
+      AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id) AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'general' AND p."messageId" = m.id), m."mailboxId") = ANY($3::text[]) RETURNING id`, [id, read, allowed]);
   return rows.length > 0;
 }
 
-export async function setInboxFolder(source: InboxSource, id: string, folder: MailFolder, query = bookingQuery): Promise<boolean> {
+export async function setInboxFolder(source: InboxSource, id: string, folder: MailFolder, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<boolean> {
   const table = source === "booking" ? '"BookingMessage"' : '"InboxMessage"';
   const reason = folder === "inbox" ? "manual_restore" : folder === "spam" ? "manual_spam" : "manual_security";
   const rows = await query(`UPDATE ${table} m SET folder = $2,
@@ -94,23 +94,23 @@ export async function setInboxFolder(source: InboxSource, id: string, folder: Ma
     ${source === "booking" ? ', "notificationSentAt" = CASE WHEN $2 = \'inbox\' THEN COALESCE("notificationSentAt", NOW()) ELSE "notificationSentAt" END' : ""}
     WHERE id = $1 AND direction = 'INBOUND'
     AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = $4 AND d."messageId" = m.id)
-    RETURNING id`, [id, folder, JSON.stringify([reason]), source]);
+    ${source === "booking" ? `AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'booking' AND p."messageId" = m.id), 'reservations') = ANY($5::text[])` : `AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'general' AND p."messageId" = m.id), m."mailboxId") = ANY($5::text[])`} RETURNING id`, [id, folder, JSON.stringify([reason]), source, allowed]);
   return rows.length > 0;
 }
 
-export async function deleteDashboardEmail(source: InboxSource, id: string, query = bookingQuery): Promise<boolean> {
+export async function deleteDashboardEmail(source: InboxSource, id: string, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<boolean> {
   const identity = inboxIdentitySchema.parse({ source, id });
-  const message = await fetchInboxDetail(identity.source, identity.id, query);
+  const message = await fetchInboxDetail(identity.source, identity.id, query, allowed);
   if (!message) return false;
   if (message.direction === "OUTBOUND" && message.status === "PENDING") {
     throw new PublicRequestError("Check this email's sending status before removing it.", 409);
   }
   const rows = source === "booking"
-    ? await query(`INSERT INTO "DashboardEmailDeletion" (source, "messageId") SELECT 'booking', id FROM "BookingMessage"
+    ? await query(`INSERT INTO "DashboardEmailDeletion" (source, "messageId") SELECT 'booking', id FROM "BookingMessage" m
       WHERE id = $1 AND NOT (direction = 'OUTBOUND' AND status = 'PENDING')
-      ON CONFLICT (source, "messageId") DO NOTHING RETURNING "messageId"`, [id])
-    : await query(`INSERT INTO "DashboardEmailDeletion" (source, "messageId") SELECT 'general', id FROM "InboxMessage"
+      AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'booking' AND p."messageId" = m.id), 'reservations') = ANY($2::text[]) ON CONFLICT (source, "messageId") DO NOTHING RETURNING "messageId"`, [id, allowed])
+    : await query(`INSERT INTO "DashboardEmailDeletion" (source, "messageId") SELECT 'general', id FROM "InboxMessage" m
       WHERE id = $1 AND NOT (direction = 'OUTBOUND' AND status = 'PENDING')
-      ON CONFLICT (source, "messageId") DO NOTHING RETURNING "messageId"`, [id]);
+      AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'general' AND p."messageId" = m.id), m."mailboxId") = ANY($2::text[]) ON CONFLICT (source, "messageId") DO NOTHING RETURNING "messageId"`, [id, allowed]);
   return rows.length > 0;
 }

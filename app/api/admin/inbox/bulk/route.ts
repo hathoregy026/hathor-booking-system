@@ -1,3 +1,4 @@
+import { allowedMailboxIds } from "@/lib/admin-mailbox-access";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { applyDashboardEmailAction, dashboardEmailActionSchema } from "@/lib/dashboard-email-actions";
@@ -8,9 +9,9 @@ export async function POST(request: NextRequest) {
   const denied = await adminApiGuard("inbox.manage");
   if (denied) return denied;
   try {
-    await assertInboxAdmin(request);
+    const identity = await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);
     const input = dashboardEmailActionSchema.parse(await readPublicJsonBody(request));
-    return NextResponse.json(await applyDashboardEmailAction(input), { headers: inboxHeaders });
+    return NextResponse.json(await applyDashboardEmailAction(input, undefined, allowedMailboxIds(identity)), { headers: inboxHeaders });
   } catch (error) { return inboxRouteError(error); }
 }

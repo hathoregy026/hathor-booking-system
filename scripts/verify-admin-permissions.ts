@@ -1,3 +1,5 @@
+import { allowedMailboxIds } from "../lib/admin-mailbox-access";
+import { canAdminBookingAction } from "../lib/admin-booking-access";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -17,6 +19,19 @@ assert.equal(canVisitAdminPage({ isOwner: true, permissions: [] }, "/admin/futur
 assert.equal(adminApiRequirement("/api/admin/test-email", "GET"), "templates.manage");
 assert.equal(adminApiRequirement("/api/admin/email-templates/preview", "POST"), "templates.view");
 assert.equal(adminApiRequirement("/api/admin/email-templates", "PUT"), "templates.manage");
+const scoped = { isOwner: false, permissions: ["inbox.view", "inbox.send", "bookings.accept", "website.text"], mailboxViewIds: ["reservations", "info", "sales"], mailboxSendIds: ["reservations", "sales"] };
+assert.deepEqual(allowedMailboxIds(scoped).sort(), ["info", "reservations", "sales"]);
+assert.deepEqual(allowedMailboxIds(scoped, "send").sort(), ["reservations", "sales"]);
+assert.deepEqual(allowedMailboxIds({ ...scoped, mailboxViewIds: [] }, "send"), []);
+assert.deepEqual(allowedMailboxIds({ ...scoped, permissions: [] }), []);
+assert.equal(allowedMailboxIds({ isOwner: true, permissions: [] }).length, 6);
+assert.equal(canAdminBookingAction(scoped, "accept"), true);
+for (const action of ["cancel", "record-payment", "message", "send-confirmation", "delete"]) assert.equal(canAdminBookingAction(scoped, action), false);
+assert.equal(hasAdminPermission(scoped, "website.images"), false);
+assert.equal(hasAdminPermission(scoped, "website.manage"), false);
+assert.equal(hasAdminPermission({ isOwner: false, permissions: ["website.images"] }, "website.text"), false);
+assert.equal(hasAdminPermission({ isOwner: false, permissions: ["website.images"] }, "storage.upload"), true);
+assert.equal(hasAdminPermission({ isOwner: false, permissions: ["website.images"] }, "storage.manage"), false);
 function files(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap(entry =>
     entry.isDirectory() ? files(path.join(dir, entry.name)) : [path.join(dir, entry.name)]);

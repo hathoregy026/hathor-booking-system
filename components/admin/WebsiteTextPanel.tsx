@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminPermission } from "./AdminAccessProvider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExternalLink, Loader2, RotateCcw, Save } from "lucide-react";
 import { AdminDevicePreviewToggle } from "@/components/admin/AdminDevicePreviewToggle";
@@ -288,6 +289,7 @@ function ItemCard({
 }
 
 export function WebsiteTextPanel() {
+  const canEdit = useAdminPermission("website.text");
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -584,14 +586,14 @@ export function WebsiteTextPanel() {
             onChange={setDevice}
             desktopDirty={desktopDirty}
             phoneDirty={phoneDirty}
-            disabled={saving}
+            disabled={!canEdit || saving}
           />
         </div>
         <div className="wt-topbar__actions">
           <button
             type="button"
             className="btn-ghost"
-            disabled={!dirty || saving}
+            disabled={!canEdit || !dirty || saving}
             onClick={handleDiscard}
           >
             <RotateCcw className="h-4 w-4" aria-hidden />
@@ -600,7 +602,7 @@ export function WebsiteTextPanel() {
           <button
             type="button"
             className="btn-primary"
-            disabled={!dirty || saving}
+            disabled={!canEdit || !dirty || saving}
             onClick={() => void handleSave()}
           >
             {saving ? (
@@ -2213,7 +2215,7 @@ export function WebsiteTextPanel() {
           <button
             type="button"
             className="btn-ghost"
-            disabled={!dirty || saving}
+            disabled={!canEdit || !dirty || saving}
             onClick={handleDiscard}
           >
             Discard
@@ -2221,7 +2223,7 @@ export function WebsiteTextPanel() {
           <button
             type="button"
             className="btn-primary"
-            disabled={!dirty || saving}
+            disabled={!canEdit || !dirty || saving}
             onClick={() => void handleSave()}
           >
             {saving ? (

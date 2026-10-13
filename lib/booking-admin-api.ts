@@ -1,3 +1,5 @@
+import { canAdminBookingAction } from "@/lib/admin-booking-access";
+import { type AdminAccess } from "@/lib/admin-permissions";
 import { z } from "zod";
 import type { NextRequest } from "next/server";
 import { adminIdentityFromRequest, type AdminIdentity } from "@/lib/admin-server-auth";
@@ -60,7 +62,7 @@ export type StaffActionResult = { email?: MailResult };
 export async function applyStaffBookingAction(id: string, body: unknown, recordedBySession: string | null = null, dependencies: {
   resolveAttachments?: typeof resolveAttachments; administerBooking?: typeof administerBooking;
   fetchBookingStatus?: typeof fetchBookingStatus; sendConfirmation?: typeof sendConfirmation; sendPaymentReceipt?: typeof sendPaymentReceipt;
-} = {}): Promise<StaffActionResult> {
+} = {}, access?: AdminAccess): Promise<StaffActionResult> {
   const resolve = dependencies.resolveAttachments ?? resolveAttachments;
   const administer = dependencies.administerBooking ?? administerBooking;
   const status = dependencies.fetchBookingStatus ?? fetchBookingStatus;
@@ -72,6 +74,7 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
     ? legacy.data.status === "CONFIRMED" ? { type: "accept" as const } : { type: "cancel" as const }
     : staffActionSchema.parse(body);
 
+  if (access && !canAdminBookingAction(access, action.type)) throw new PublicRequestError("Access denied", 403);
   if (action.type === "message") {
     const attachments = await resolve(id, action.attachments ?? []);
     return { email: await sendTeamReply(id, action.message, action.subject, recordedBySession ?? undefined, attachments) };
