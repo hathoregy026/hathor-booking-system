@@ -86,6 +86,9 @@ export type AdminUserCountAggregateOutputType = {
   lastLoginAt: number
   createdAt: number
   updatedAt: number
+  permissions: number
+  mailboxViewIds: number
+  mailboxSendIds: number
   isOwner: number
   roleId: number
   _all: number
@@ -150,6 +153,9 @@ export type AdminUserCountAggregateInputType = {
   lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
+  permissions?: true
+  mailboxViewIds?: true
+  mailboxSendIds?: true
   isOwner?: true
   roleId?: true
   _all?: true
@@ -255,6 +261,9 @@ export type AdminUserGroupByOutputType = {
   lastLoginAt: Date | null
   createdAt: Date
   updatedAt: Date
+  permissions: string[]
+  mailboxViewIds: string[]
+  mailboxSendIds: string[]
   isOwner: boolean
   roleId: string | null
   _count: AdminUserCountAggregateOutputType | null
@@ -296,6 +305,9 @@ export type AdminUserWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
+  permissions?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxViewIds?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxSendIds?: Prisma.StringNullableListFilter<"AdminUser">
   isOwner?: Prisma.BoolFilter<"AdminUser"> | boolean
   roleId?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   role?: Prisma.XOR<Prisma.AdminRoleNullableScalarRelationFilter, Prisma.AdminRoleWhereInput> | null
@@ -319,6 +331,9 @@ export type AdminUserOrderByWithRelationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  permissions?: Prisma.SortOrder
+  mailboxViewIds?: Prisma.SortOrder
+  mailboxSendIds?: Prisma.SortOrder
   isOwner?: Prisma.SortOrder
   roleId?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.AdminRoleOrderByWithRelationInput
@@ -345,6 +360,9 @@ export type AdminUserWhereUniqueInput = Prisma.AtLeast<{
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
+  permissions?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxViewIds?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxSendIds?: Prisma.StringNullableListFilter<"AdminUser">
   isOwner?: Prisma.BoolFilter<"AdminUser"> | boolean
   roleId?: Prisma.StringNullableFilter<"AdminUser"> | string | null
   role?: Prisma.XOR<Prisma.AdminRoleNullableScalarRelationFilter, Prisma.AdminRoleWhereInput> | null
@@ -368,6 +386,9 @@ export type AdminUserOrderByWithAggregationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  permissions?: Prisma.SortOrder
+  mailboxViewIds?: Prisma.SortOrder
+  mailboxSendIds?: Prisma.SortOrder
   isOwner?: Prisma.SortOrder
   roleId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AdminUserCountOrderByAggregateInput
@@ -394,6 +415,9 @@ export type AdminUserScalarWhereWithAggregatesInput = {
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AdminUser"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AdminUser"> | Date | string
+  permissions?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxViewIds?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxSendIds?: Prisma.StringNullableListFilter<"AdminUser">
   isOwner?: Prisma.BoolWithAggregatesFilter<"AdminUser"> | boolean
   roleId?: Prisma.StringNullableWithAggregatesFilter<"AdminUser"> | string | null
 }
@@ -412,6 +436,9 @@ export type AdminUserCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   role?: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
   invitation?: Prisma.AdminInvitationCreateNestedOneWithoutUserInput
@@ -434,6 +461,9 @@ export type AdminUserUncheckedCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   roleId?: string | null
   invitation?: Prisma.AdminInvitationUncheckedCreateNestedOneWithoutUserInput
@@ -456,6 +486,9 @@ export type AdminUserUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   role?: Prisma.AdminRoleUpdateOneWithoutUsersNestedInput
   invitation?: Prisma.AdminInvitationUpdateOneWithoutUserNestedInput
@@ -478,6 +511,9 @@ export type AdminUserUncheckedUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitation?: Prisma.AdminInvitationUncheckedUpdateOneWithoutUserNestedInput
@@ -500,6 +536,9 @@ export type AdminUserCreateManyInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   roleId?: string | null
 }
@@ -518,6 +557,9 @@ export type AdminUserUpdateManyMutationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -535,8 +577,19 @@ export type AdminUserUncheckedUpdateManyInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type AdminUserCountOrderByAggregateInput = {
@@ -553,6 +606,9 @@ export type AdminUserCountOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  permissions?: Prisma.SortOrder
+  mailboxViewIds?: Prisma.SortOrder
+  mailboxSendIds?: Prisma.SortOrder
   isOwner?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
 }
@@ -619,6 +675,33 @@ export type AdminUserListRelationFilter = {
 
 export type AdminUserOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type AdminUserCreatepermissionsInput = {
+  set: string[]
+}
+
+export type AdminUserCreatemailboxViewIdsInput = {
+  set: string[]
+}
+
+export type AdminUserCreatemailboxSendIdsInput = {
+  set: string[]
+}
+
+export type AdminUserUpdatepermissionsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type AdminUserUpdatemailboxViewIdsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type AdminUserUpdatemailboxSendIdsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type AdminUserCreateNestedOneWithoutSessionsInput = {
@@ -735,6 +818,9 @@ export type AdminUserCreateWithoutSessionsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   role?: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
   invitation?: Prisma.AdminInvitationCreateNestedOneWithoutUserInput
@@ -756,6 +842,9 @@ export type AdminUserUncheckedCreateWithoutSessionsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   roleId?: string | null
   invitation?: Prisma.AdminInvitationUncheckedCreateNestedOneWithoutUserInput
@@ -793,6 +882,9 @@ export type AdminUserUpdateWithoutSessionsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   role?: Prisma.AdminRoleUpdateOneWithoutUsersNestedInput
   invitation?: Prisma.AdminInvitationUpdateOneWithoutUserNestedInput
@@ -814,6 +906,9 @@ export type AdminUserUncheckedUpdateWithoutSessionsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitation?: Prisma.AdminInvitationUncheckedUpdateOneWithoutUserNestedInput
@@ -835,6 +930,9 @@ export type AdminUserCreateWithoutRecoveryCodesInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   role?: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
   invitation?: Prisma.AdminInvitationCreateNestedOneWithoutUserInput
@@ -856,6 +954,9 @@ export type AdminUserUncheckedCreateWithoutRecoveryCodesInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   roleId?: string | null
   invitation?: Prisma.AdminInvitationUncheckedCreateNestedOneWithoutUserInput
@@ -893,6 +994,9 @@ export type AdminUserUpdateWithoutRecoveryCodesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   role?: Prisma.AdminRoleUpdateOneWithoutUsersNestedInput
   invitation?: Prisma.AdminInvitationUpdateOneWithoutUserNestedInput
@@ -914,6 +1018,9 @@ export type AdminUserUncheckedUpdateWithoutRecoveryCodesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitation?: Prisma.AdminInvitationUncheckedUpdateOneWithoutUserNestedInput
@@ -935,6 +1042,9 @@ export type AdminUserCreateWithoutAuthEventsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   role?: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
   invitation?: Prisma.AdminInvitationCreateNestedOneWithoutUserInput
@@ -956,6 +1066,9 @@ export type AdminUserUncheckedCreateWithoutAuthEventsInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   roleId?: string | null
   invitation?: Prisma.AdminInvitationUncheckedCreateNestedOneWithoutUserInput
@@ -993,6 +1106,9 @@ export type AdminUserUpdateWithoutAuthEventsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   role?: Prisma.AdminRoleUpdateOneWithoutUsersNestedInput
   invitation?: Prisma.AdminInvitationUpdateOneWithoutUserNestedInput
@@ -1014,6 +1130,9 @@ export type AdminUserUncheckedUpdateWithoutAuthEventsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitation?: Prisma.AdminInvitationUncheckedUpdateOneWithoutUserNestedInput
@@ -1035,6 +1154,9 @@ export type AdminUserCreateWithoutRoleInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   invitation?: Prisma.AdminInvitationCreateNestedOneWithoutUserInput
   sessions?: Prisma.AdminSessionCreateNestedManyWithoutUserInput
@@ -1056,6 +1178,9 @@ export type AdminUserUncheckedCreateWithoutRoleInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   invitation?: Prisma.AdminInvitationUncheckedCreateNestedOneWithoutUserInput
   sessions?: Prisma.AdminSessionUncheckedCreateNestedManyWithoutUserInput
@@ -1106,6 +1231,9 @@ export type AdminUserScalarWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"AdminUser"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AdminUser"> | Date | string
+  permissions?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxViewIds?: Prisma.StringNullableListFilter<"AdminUser">
+  mailboxSendIds?: Prisma.StringNullableListFilter<"AdminUser">
   isOwner?: Prisma.BoolFilter<"AdminUser"> | boolean
   roleId?: Prisma.StringNullableFilter<"AdminUser"> | string | null
 }
@@ -1124,6 +1252,9 @@ export type AdminUserCreateWithoutInvitationInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   role?: Prisma.AdminRoleCreateNestedOneWithoutUsersInput
   sessions?: Prisma.AdminSessionCreateNestedManyWithoutUserInput
@@ -1145,6 +1276,9 @@ export type AdminUserUncheckedCreateWithoutInvitationInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
   roleId?: string | null
   sessions?: Prisma.AdminSessionUncheckedCreateNestedManyWithoutUserInput
@@ -1182,6 +1316,9 @@ export type AdminUserUpdateWithoutInvitationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   role?: Prisma.AdminRoleUpdateOneWithoutUsersNestedInput
   sessions?: Prisma.AdminSessionUpdateManyWithoutUserNestedInput
@@ -1203,6 +1340,9 @@ export type AdminUserUncheckedUpdateWithoutInvitationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.AdminSessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1224,6 +1364,9 @@ export type AdminUserCreateManyRoleInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  permissions?: Prisma.AdminUserCreatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserCreatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserCreatemailboxSendIdsInput | string[]
   isOwner?: boolean
 }
 
@@ -1241,6 +1384,9 @@ export type AdminUserUpdateWithoutRoleInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invitation?: Prisma.AdminInvitationUpdateOneWithoutUserNestedInput
   sessions?: Prisma.AdminSessionUpdateManyWithoutUserNestedInput
@@ -1262,6 +1408,9 @@ export type AdminUserUncheckedUpdateWithoutRoleInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invitation?: Prisma.AdminInvitationUncheckedUpdateOneWithoutUserNestedInput
   sessions?: Prisma.AdminSessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1283,6 +1432,9 @@ export type AdminUserUncheckedUpdateManyWithoutRoleInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.AdminUserUpdatepermissionsInput | string[]
+  mailboxViewIds?: Prisma.AdminUserUpdatemailboxViewIdsInput | string[]
+  mailboxSendIds?: Prisma.AdminUserUpdatemailboxSendIdsInput | string[]
   isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
@@ -1349,6 +1501,9 @@ export type AdminUserSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  permissions?: boolean
+  mailboxViewIds?: boolean
+  mailboxSendIds?: boolean
   isOwner?: boolean
   roleId?: boolean
   role?: boolean | Prisma.AdminUser$roleArgs<ExtArgs>
@@ -1373,6 +1528,9 @@ export type AdminUserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  permissions?: boolean
+  mailboxViewIds?: boolean
+  mailboxSendIds?: boolean
   isOwner?: boolean
   roleId?: boolean
   role?: boolean | Prisma.AdminUser$roleArgs<ExtArgs>
@@ -1392,6 +1550,9 @@ export type AdminUserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  permissions?: boolean
+  mailboxViewIds?: boolean
+  mailboxSendIds?: boolean
   isOwner?: boolean
   roleId?: boolean
   role?: boolean | Prisma.AdminUser$roleArgs<ExtArgs>
@@ -1411,11 +1572,14 @@ export type AdminUserSelectScalar = {
   lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  permissions?: boolean
+  mailboxViewIds?: boolean
+  mailboxSendIds?: boolean
   isOwner?: boolean
   roleId?: boolean
 }
 
-export type AdminUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "displayName" | "passwordHash" | "passwordChangedAt" | "totpSecretEnc" | "totpPendingEnc" | "totpLastStep" | "mfaEnrolledAt" | "disabledAt" | "lastLoginAt" | "createdAt" | "updatedAt" | "isOwner" | "roleId", ExtArgs["result"]["adminUser"]>
+export type AdminUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "displayName" | "passwordHash" | "passwordChangedAt" | "totpSecretEnc" | "totpPendingEnc" | "totpLastStep" | "mfaEnrolledAt" | "disabledAt" | "lastLoginAt" | "createdAt" | "updatedAt" | "permissions" | "mailboxViewIds" | "mailboxSendIds" | "isOwner" | "roleId", ExtArgs["result"]["adminUser"]>
 export type AdminUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   role?: boolean | Prisma.AdminUser$roleArgs<ExtArgs>
   invitation?: boolean | Prisma.AdminUser$invitationArgs<ExtArgs>
@@ -1469,6 +1633,9 @@ export type $AdminUserPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     lastLoginAt: Date | null
     createdAt: Date
     updatedAt: Date
+    permissions: string[]
+    mailboxViewIds: string[]
+    mailboxSendIds: string[]
     isOwner: boolean
     roleId: string | null
   }, ExtArgs["result"]["adminUser"]>
@@ -1912,6 +2079,9 @@ export interface AdminUserFieldRefs {
   readonly lastLoginAt: Prisma.FieldRef<"AdminUser", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AdminUser", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AdminUser", 'DateTime'>
+  readonly permissions: Prisma.FieldRef<"AdminUser", 'String[]'>
+  readonly mailboxViewIds: Prisma.FieldRef<"AdminUser", 'String[]'>
+  readonly mailboxSendIds: Prisma.FieldRef<"AdminUser", 'String[]'>
   readonly isOwner: Prisma.FieldRef<"AdminUser", 'Boolean'>
   readonly roleId: Prisma.FieldRef<"AdminUser", 'String'>
 }

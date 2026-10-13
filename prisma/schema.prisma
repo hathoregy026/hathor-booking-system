@@ -449,6 +449,9 @@ model AdminUser {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
+  permissions String[] @default([])
+  mailboxViewIds String[] @default([])
+  mailboxSendIds String[] @default([])
   isOwner    Boolean          @default(false)
   roleId     String?
   role       AdminRole?       @relation(fields: [roleId], references: [id], onDelete: SetNull)

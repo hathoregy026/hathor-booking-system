@@ -5,26 +5,33 @@ import { prisma } from "@/lib/prisma";
 import { adminRequestContext, verifySecondFactor, type AdminIdentity } from "@/lib/admin-auth";
 import { verifyAdminPassword, hashAdminPassword } from "@/lib/admin-password";
 import { enforceKeyedRateLimit, PublicRequestError } from "@/lib/public-api-security";
+import { mailboxIdSchema } from "@/lib/email-mailboxes";
 import { ADMIN_PERMISSIONS } from "@/lib/admin-permissions";
 
 const id = z.string().min(1).max(64);
 const credentials = { currentPassword: z.string().min(1).max(128), code: z.string().trim().min(6).max(32) };
 const permissions = z.array(z.enum(ADMIN_PERMISSIONS as [string, ...string[]])).max(ADMIN_PERMISSIONS.length)
   .refine(values => new Set(values).size === values.length, "Duplicate permissions");
+const mailboxIds = z.array(mailboxIdSchema).max(6).refine(values => new Set(values).size === values.length, "Duplicate mailboxes");
+const individualAccess = { permissions: permissions.default([]), mailboxViewIds: mailboxIds.default([]), mailboxSendIds: mailboxIds.default([]) };
 const role = { name: z.string().trim().min(2).max(64).refine(value => value.toLowerCase() !== "administrator"), permissions };
 export const managementActionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("create-role"), ...role, ...credentials }).strict(),
   z.object({ action: z.literal("update-role"), id, ...role, ...credentials }).strict(),
   z.object({ action: z.literal("delete-role"), id, ...credentials }).strict(),
   z.object({ action: z.literal("invite"), email: z.email().max(254).transform(value => value.toLowerCase()),
-    displayName: z.string().trim().min(1).max(80), roleId: id.nullable(), isOwner: z.boolean(), ...credentials }).strict(),
-  z.object({ action: z.literal("set-access"), id, roleId: id.nullable(), isOwner: z.boolean(), ...credentials }).strict(),
+    displayName: z.string().trim().min(1).max(80), roleId: id.nullable(), isOwner: z.boolean(), ...individualAccess, ...credentials }).strict(),
+  z.object({ action: z.literal("set-access"), id, roleId: id.nullable(), isOwner: z.boolean(), ...individualAccess, ...credentials }).strict(),
   z.object({ action: z.literal("set-enabled"), id, enabled: z.boolean(), ...credentials }).strict(),
   z.object({ action: z.literal("password-link"), id, ...credentials }).strict(),
   z.object({ action: z.literal("reset-mfa"), id, ...credentials }).strict(),
   z.object({ action: z.literal("revoke-sessions"), id, ...credentials }).strict(),
   z.object({ action: z.literal("unlock"), id, ...credentials }).strict(),
-]);
+]).superRefine((body, context) => {
+  if (body.action !== "invite" && body.action !== "set-access") return;
+  if (body.mailboxSendIds.some(id => !body.mailboxViewIds.includes(id))) context.addIssue({ code: "custom", message: "Sending requires mailbox viewing", path: ["mailboxSendIds"] });
+  if (body.roleId && body.permissions.length) context.addIssue({ code: "custom", message: "Choose a role or individual permissions", path: ["permissions"] });
+});
 type Transaction = Prisma.TransactionClient;
 /** All membership changes (including the CLI) share this transaction lock. */
 export async function lockAdminMembership(tx: Transaction) {
@@ -47,7 +54,7 @@ async function passwordLink(tx: Transaction, userId: string) {
   return { setupPath: "/admin/accept-invite#token=" + token, expiresAt };
 }
 const userSelection = {
-  id: true, email: true, displayName: true, isOwner: true, roleId: true,
+  id: true, email: true, displayName: true, isOwner: true, roleId: true, permissions: true, mailboxViewIds: true, mailboxSendIds: true,
   disabledAt: true, mfaEnrolledAt: true, lastLoginAt: true, createdAt: true,
   invitation: { select: { expiresAt: true } },
 } as const;
@@ -117,7 +124,7 @@ export async function administerPeople(identity: AdminIdentity, request: Request
       if (await tx.adminUser.count() >= 200) throw new PublicRequestError("Account limit reached.", 409);
       if (await tx.adminUser.findUnique({ where: { email: body.email } })) throw new PublicRequestError("An account already uses that email.", 409);
       const target = await tx.adminUser.create({ data: { email: body.email, displayName: body.displayName,
-        passwordHash: replacementHash!, roleId: body.roleId, isOwner: body.isOwner } });
+        passwordHash: replacementHash!, roleId: body.roleId, isOwner: body.isOwner, permissions: body.permissions, mailboxViewIds: body.mailboxViewIds, mailboxSendIds: body.mailboxSendIds } });
       const link = await passwordLink(tx, target.id);
       await audit(target.id); return { ok: true, ...link };
     }
@@ -127,7 +134,7 @@ export async function administerPeople(identity: AdminIdentity, request: Request
     if (body.action === "set-access") {
       await validateRole(body.roleId, body.isOwner);
       if (target.isOwner && !body.isOwner && !target.disabledAt && target.mfaEnrolledAt) await protectLastAdministrator(tx, target.id);
-      await tx.adminUser.update({ where: { id: target.id }, data: { roleId: body.roleId, isOwner: body.isOwner } });
+      await tx.adminUser.update({ where: { id: target.id }, data: { roleId: body.roleId, isOwner: body.isOwner, permissions: body.permissions, mailboxViewIds: body.mailboxViewIds, mailboxSendIds: body.mailboxSendIds } });
       await revoke(target.id);
     } else if (body.action === "set-enabled") {
       if (!body.enabled && target.isOwner && !target.disabledAt && target.mfaEnrolledAt) await protectLastAdministrator(tx, target.id);

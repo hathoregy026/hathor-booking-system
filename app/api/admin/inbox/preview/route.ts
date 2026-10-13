@@ -1,3 +1,4 @@
+import { assertMailboxAccess } from "@/lib/admin-mailbox-guard";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest } from "next/server";
 import { assertInboxAdmin, inboxRouteError } from "@/lib/inbox-api";
@@ -10,12 +11,13 @@ export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard("inbox.manage");
+  const denied = await adminApiGuard("inbox.send");
   if (denied) return denied;
   try {
-    await assertInboxAdmin(request);
+    const identity = await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);
     const input = privateEmailContentSchema.parse(await readPrivateEmailJson(request));
+    assertMailboxAccess(identity, input.mailboxId, "send");
     const handlers = await fetchMailboxHandlers();
     return new Response(buildEmailHtmlDocument(await renderPrivateEmail(input, handlers[input.mailboxId])), { headers: emailFrameHeaders(false) });
   } catch (error) { return inboxRouteError(error); }

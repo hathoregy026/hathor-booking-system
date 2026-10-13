@@ -403,6 +403,8 @@ export type AdminIdentity = {
   isOwner: boolean;
   roleName: string | null;
   permissions: string[];
+  mailboxViewIds: string[];
+  mailboxSendIds: string[];
 };
 
 /**
@@ -457,7 +459,9 @@ export async function getAdminIdentity(
     expiresAt: row.expiresAt,
     isOwner: row.user.isOwner,
     roleName: row.user.role?.name ?? null,
-    permissions: row.user.role?.permissions ?? [],
+    permissions: [...new Set([...(row.user.role?.permissions ?? []), ...row.user.permissions])],
+    mailboxViewIds: row.user.mailboxViewIds,
+    mailboxSendIds: row.user.mailboxSendIds,
   };
 }
 

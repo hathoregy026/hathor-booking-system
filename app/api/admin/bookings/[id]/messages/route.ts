@@ -1,3 +1,4 @@
+import { allowedMailboxIds } from "@/lib/admin-mailbox-access";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -12,7 +13,8 @@ const cursorSchema = z.object({ createdAt: z.iso.datetime(), id: z.uuid() });
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const denied = await adminApiGuard("bookings.view");
   if (denied) return denied;
-  if (!(await adminIdentityFromRequest(request))) {
+  const identity = await adminIdentityFromRequest(request);
+  if (!identity) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -22,6 +24,6 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
     const before = request.nextUrl.searchParams.get("before");
     const cursorId = request.nextUrl.searchParams.get("cursorId");
     const cursor = before || cursorId ? cursorSchema.parse({ createdAt: before, id: cursorId }) : undefined;
-    return NextResponse.json({ messages: await fetchBookingMessages(id, cursor) }, { headers: { "Cache-Control": "private, no-store" } });
+    return NextResponse.json({ messages: await fetchBookingMessages(id, cursor, allowedMailboxIds(identity)) }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) { return handleRouteError(error); }
 }

@@ -1,9 +1,11 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ADMIN_AREAS, type AdminPermission } from "@/lib/admin-permissions";
+import { AdminPermissionChecklist, noIndividualAccess, type IndividualAccess } from "./AdminPermissionChecklist";
 import { useAdminAccess } from "./AdminAccessProvider";
 type Role = { id: string; name: string; permissions: AdminPermission[]; _count: { users: number } };
 type Person = { id: string; email: string; displayName: string; isOwner: boolean; roleId: string | null;
+  permissions: AdminPermission[]; mailboxViewIds: IndividualAccess["mailboxViewIds"]; mailboxSendIds: IndividualAccess["mailboxSendIds"];
   disabledAt: string | null; mfaEnrolledAt: string | null; invitation: { expiresAt: string } | null };
 type ManagementEvent = { id: string; userId: string | null; type: string; detail: string | null; createdAt: string };
 type Data = { users: Person[]; roles: Role[]; events: ManagementEvent[] };
@@ -24,6 +26,9 @@ export function AdminPeoplePanel() {
   const [roleName, setRoleName] = useState("");
   const [roleId, setRoleId] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<AdminPermission[]>([]);
+  const [inviteAccess, setInviteAccess] = useState<IndividualAccess>(noIndividualAccess);
+  const [editingPerson, setEditingPerson] = useState<Person | null>(null);
+  const [personAccess, setPersonAccess] = useState<IndividualAccess>(noIndividualAccess);
   const dialog = useRef<HTMLDialogElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
   const reload = useCallback(async (signal?: AbortSignal) => {
@@ -70,13 +75,14 @@ export function AdminPeoplePanel() {
         setLink(window.location.origin + result.setupPath);
       }
       setNotice("Saved. Changes to access sign out the affected people.");
-      if (pending.body.action === "invite") { setName(""); setEmail(""); setAssignment(""); }
+      if (pending.body.action === "invite") { setName(""); setEmail(""); setAssignment(""); setInviteAccess(noIndividualAccess); }
       if (["create-role", "update-role"].includes(pending.body.action)) { setRoleName(""); setRoleId(null); setPermissions([]); }
+      setEditingPerson(null);
       await reload();
     } catch (failure) { setError(failure instanceof Error ? failure.message : "The change could not be saved."); }
     finally { setBusy(false); }
   }
-  const options = <><option value="">No role — security settings only</option><option value="administrator">Administrator — full access</option>
+  const options = <><option value="">Individual permissions</option><option value="administrator">Administrator — full access</option>
     {data?.roles.map(role => <option key={role.id} value={role.id}>{role.name}</option>)}</>;
   return <div className="people-page">
     <div className="people-heading"><div><p className="people-kicker">Access administration</p><h1>People & roles</h1></div>
@@ -92,11 +98,12 @@ export function AdminPeoplePanel() {
     </section>}
     {!data ? <p role="status">Loading people and roles…</p> : <>
       <section className="people-section"><h2>Invite a person</h2>
-        <form onSubmit={event => { event.preventDefault(); confirm({ action: "invite", email: email.trim(), displayName: name.trim(), ...roleChoice(assignment) }, "Invite this person"); }}>
+        <form onSubmit={event => { event.preventDefault(); confirm({ action: "invite", email: email.trim(), displayName: name.trim(), ...roleChoice(assignment), ...inviteAccess }, "Invite this person"); }}>
           <div className="people-grid"><label>Full name<input className="input" value={name} onChange={event => setName(event.target.value)} maxLength={80} required autoComplete="off" /></label>
           <label>Email<input className="input" type="email" value={email} onChange={event => setEmail(event.target.value)} maxLength={254} required autoComplete="off" /></label>
-          <label>Access<select className="input" value={assignment} onChange={event => setAssignment(event.target.value)}>{options}</select></label></div>
+          <label>Access<select className="input" value={assignment} onChange={event => { setAssignment(event.target.value); setInviteAccess(noIndividualAccess); }}>{options}</select></label></div>
           <p className="people-note my-4">They choose their password using the setup link, then enroll an authenticator. No role means no business data.</p>
+          {!assignment && <AdminPermissionChecklist value={inviteAccess} onChange={setInviteAccess} />}
           <button className="btn-primary" type="submit">Create setup link</button>
         </form>
       </section>
@@ -108,6 +115,7 @@ export function AdminPeoplePanel() {
           <div><label>Role for {person.displayName}<select className="input" disabled={self} value={roleValue(person)}
             onChange={event => confirm({ action: "set-access", id: person.id, ...roleChoice(event.target.value) }, "Change this person's access")}>{options}</select></label>
             <div className="people-actions mt-3">
+              <button className="btn-primary" disabled={self || person.isOwner} onClick={() => { setEditingPerson(person); setPersonAccess({ permissions: [...new Set([...(data.roles.find(role => role.id === person.roleId)?.permissions ?? []), ...person.permissions])], mailboxViewIds: person.mailboxViewIds, mailboxSendIds: person.mailboxSendIds }); }}>Choose permissions</button>
               <button className="btn-outline" disabled={self} onClick={() => confirm({ action: "set-enabled", id: person.id, enabled: !!person.disabledAt }, person.disabledAt ? "Enable this account" : "Disable this account")}>{person.disabledAt ? "Enable" : "Disable"}</button>
               <button className="btn-outline" disabled={self || !!person.disabledAt} onClick={() => confirm({ action: "password-link", id: person.id }, "Reset password with a new link")}>Password link</button>
               <button className="btn-outline" disabled={self || !person.mfaEnrolledAt} onClick={() => confirm({ action: "reset-mfa", id: person.id }, "Remove this person's authenticator and recovery codes")}>Reset authenticator</button>
@@ -116,6 +124,10 @@ export function AdminPeoplePanel() {
             </div></div>
         </article>;
       })}</section>
+      {editingPerson && <section className="people-section"><h2>Permissions for {editingPerson.displayName}</h2><p className="people-note">Check the access this person should have. Saving replaces their role with these individual permissions.</p>
+        <AdminPermissionChecklist value={personAccess} onChange={setPersonAccess} />
+        <div className="people-actions mt-5"><button className="btn-primary" onClick={() => confirm({ action: "set-access", id: editingPerson.id, roleId: null, isOwner: false, ...personAccess }, "Save this person's permissions")}>Save permissions</button><button className="btn-outline" onClick={() => setEditingPerson(null)}>Cancel</button></div>
+      </section>}
       <section className="people-section"><h2>{roleId ? "Edit role" : "Create a role"}</h2>
         <p className="people-note mb-5">Hidden blocks the page and API. View allows reading. Edit also allows changes and, where applicable, sending emails. Media uploads require Edit in Media storage.</p>
         <form onSubmit={event => { event.preventDefault(); confirm({ action: roleId ? "update-role" : "create-role", ...(roleId ? { id: roleId } : {}), name: roleName.trim(), permissions }, roleId ? "Update this role and sign out its members" : "Create this role"); }}>

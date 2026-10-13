@@ -1,7 +1,8 @@
+import { allowedMailboxIds } from "@/lib/admin-mailbox-access";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { inboxIdentitySchema } from "@/lib/dashboard-inbox";
+import { fetchInboxDetail, inboxIdentitySchema } from "@/lib/dashboard-inbox";
 import { assertInboxAdmin } from "@/lib/inbox-api";
 import { buildEmailHtmlDocument, emailFrameHeaders, receivedEmailHtmlDocument } from "@/lib/email-html-view";
 import { PublicRequestError, RateLimitExceededError } from "@/lib/public-api-security";
@@ -14,8 +15,10 @@ export async function GET(request: NextRequest, context: { params: Promise<{ sou
   if (denied) return denied;
   let images = false;
   try {
-    await assertInboxAdmin(request);
+    const identity = await assertInboxAdmin(request);
+    const allowed = allowedMailboxIds(identity);
     const { source, id } = inboxIdentitySchema.parse(await context.params);
+    if (!(await fetchInboxDetail(source, id, undefined, allowed))) throw new PublicRequestError("Not found", 404);
     const options = z.object({ images: z.enum(["blocked", "load"]).default("blocked") }).strict().parse(Object.fromEntries(request.nextUrl.searchParams));
     images = options.images === "load";
     return new Response(await receivedEmailHtmlDocument(source, id, images), { headers: emailFrameHeaders(images) });

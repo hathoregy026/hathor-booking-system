@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminAccess } from "../AdminAccessProvider";
+import { canAdminBookingAction } from "@/lib/admin-booking-access";
 import { differenceInCalendarDays, format, formatDistanceToNow, parseISO } from "date-fns";
 import {
   Ban,
@@ -112,7 +114,10 @@ export function BookingCard({
   const nights = Math.max(1, differenceInCalendarDays(arrival, departure));
   const daysAway = differenceInCalendarDays(departure, new Date());
   const receivedAt = parseISO(booking.requestedAt ?? booking.createdAt);
-  const { primary, secondary } = bookingActionsFor(booking);
+  const access = useAdminAccess();
+  const available = bookingActionsFor(booking);
+  const primary = available.primary.filter(kind => canAdminBookingAction(access, kind));
+  const secondary = available.secondary.filter(kind => canAdminBookingAction(access, kind));
   const href = `/admin/bookings/${encodeURIComponent(booking.id)}`;
   const purgeDate = booking.deletedAt ? getPermanentDeleteDate(parseISO(booking.deletedAt)) : null;
 

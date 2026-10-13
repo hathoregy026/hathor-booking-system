@@ -30,7 +30,7 @@ export default async function AdminPanelLayout({
 
   return (
     <div className={inter.variable}>
-      <AdminAccessProvider initial={{ userId: identity.userId, displayName: identity.displayName, isOwner: identity.isOwner, roleName: identity.roleName, permissions: identity.permissions }}>
+      <AdminAccessProvider initial={{ userId: identity.userId, displayName: identity.displayName, isOwner: identity.isOwner, roleName: identity.roleName, permissions: identity.permissions, mailboxViewIds: identity.mailboxViewIds, mailboxSendIds: identity.mailboxSendIds }}>
         <AdminShell>{children}</AdminShell>
       </AdminAccessProvider>
     </div>

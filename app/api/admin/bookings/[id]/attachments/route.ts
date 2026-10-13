@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 const uploadSchema = z.object({ name: z.string().trim().min(1).max(255), size: z.number().int().positive() }).strict();
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
-  const denied = await adminApiGuard("bookings.manage");
+  const denied = await adminApiGuard("bookings.accept");
   if (denied) return denied;
   try {
     await assertBookingAdmin(request);

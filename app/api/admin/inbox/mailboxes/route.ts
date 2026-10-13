@@ -1,3 +1,4 @@
+import { assertMailboxAccess } from "@/lib/admin-mailbox-guard";
 import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { assertInboxAdmin, inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
@@ -9,9 +10,10 @@ export async function PATCH(request: NextRequest) {
   const denied = await adminApiGuard("inbox.manage");
   if (denied) return denied;
   try {
-    await assertInboxAdmin(request);
+    const identity = await assertInboxAdmin(request);
     assertTrustedPublicJsonRequest(request);
     const input = mailboxSettingsSchema.parse(await readPublicJsonBody(request));
+    assertMailboxAccess(identity, input.mailboxId);
     await saveMailboxHandler(input);
     return NextResponse.json({ updated: true }, { headers: inboxHeaders });
   } catch (error) { return inboxRouteError(error); }

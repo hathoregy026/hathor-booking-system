@@ -10,6 +10,6 @@ export async function GET(request: NextRequest) {
     if (!identity) return loginJson({ error: "Unauthorized" }, 401);
     await enforceKeyedRateLimit({ scope: "admin-access-read", keyValue: identity.userId, limit: 120, windowMs: 60_000 });
     return loginJson({ userId: identity.userId, displayName: identity.displayName, isOwner: identity.isOwner,
-      roleName: identity.roleName, permissions: identity.permissions });
+      roleName: identity.roleName, permissions: identity.permissions, mailboxViewIds: identity.mailboxViewIds, mailboxSendIds: identity.mailboxSendIds });
   } catch (error) { return loginRouteError(error, "access"); }
 }

@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { ADMIN_SESSION_COOKIE, sessionIdFromToken, verifySessionToken } from "@/lib/admin-auth";
+import { ADMIN_SESSION_COOKIE, getAdminIdentity } from "@/lib/admin-auth";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { PublicRequestError, RateLimitExceededError, enforcePublicRateLimit } from "@/lib/public-api-security";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { bulkUsesLocalStorage } from "@/lib/bulk-email-store";
@@ -20,9 +21,10 @@ export function assertBulkSameOrigin(request: Request) {
   if (!trusted || request.headers.get("sec-fetch-site") === "cross-site") throw new PublicRequestError("Request origin rejected.", 403);
 }
 export async function requireBulkAdmin(request: NextRequest, action = "read") {
-  const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-  if (!verifySessionToken(token)) throw new PublicRequestError("Please sign in to the dashboard.", 401);
-  const session = sessionIdFromToken(token)!;
+  const identity = await getAdminIdentity(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+  if (!identity) throw new PublicRequestError("Please sign in to the dashboard.", 401);
+  if (!hasAdminPermission(identity, "administrator")) throw new PublicRequestError("Access denied.", 403);
+  const session = identity.sessionId;
   if (action !== "read") {
     assertBulkSameOrigin(request);
   }

@@ -294,7 +294,50 @@ and the existing Geist body font provide contrast; asymmetric 24px/4px corners,
 
 ### Manual setup remains deferred
 
-We will choose the preview database and real roles together, add the Vercel secrets
-and certificate, explicitly approve a preview/migrations, bootstrap your first
-administrator, invite real people, and test their access before approving go-live.
-Do not remove the branch deployment block or run remote SQL during code testing.
+An isolated Free test database has been prepared without production records.
+Its existing tables were built from the pre-login Prisma schema, the two login
+and role migrations were applied, and the baseline history was recorded only
+in this test database. All test tables have RLS and no public/anonymous access.
+This baseline is for login/roles testing; it is not a production database copy.
+
+The login branch has its own Preview database URLs, session/MFA keys, CA and
+Supabase URL. For Prisma's migration engine, its branch-specific DIRECT_URL
+uses `sslmode=require`, `sslaccept=strict` and
+`sslcert=prisma/certs/supabase-prod-ca-2021.crt`. The public CA is bundled under
+`prisma/certs`; runtime pools still verify against `DATABASE_CA_CERT`.
+The existing Vercel build command is unchanged.
+
+The owner explicitly approved starting this preview. Its branch deployment
+guard is now removed. The named test administrator has enrolled an authenticator.
+Test individual staff permissions before go-live and keep recovery codes private.
+Production keys, the latest live-code baseline and named real accounts still
+require a separate production release review and approval.
+
+### Individual permission checkboxes
+
+Administrators can invite someone with individual permissions, or choose
+permissions on an existing staff account. Saving individual permissions removes
+the preset role and revokes only that person's sessions. Self-access and the last
+enrolled administrator remain protected. Existing owners retain full access.
+
+Email access is denied unless each mailbox is explicitly checked. CEO, ACC,
+Sales, Reservations, Reception and Info each have View/Send controls. Sending
+requires viewing the same mailbox. Organization rights apply only inside
+checked mailboxes. Lists, counts, direct messages, formatted HTML, attachment
+downloads, notifications and booking conversations share these restrictions.
+
+Bookings have View, Accept and Manage controls. Accept supports the normal
+invoice workflow; manual replies and confirmation resends additionally require
+Reservations Send. Website text and image editing are independent; image editing
+permits media uploads without granting media deletion or full website settings.
+
+The additive Prisma migration adds three allow-listed arrays to AdminUser and
+expands the role capability constraint. Existing staff default to no mailbox
+access until explicitly granted. No production migration has been run.
+
+Verification: verify:admin-auth, verify:admin-permissions, TypeScript, focused
+ESLint and full build. scripts/prepare-admin-scope-sql.ts tests action denial
+with no-side-effect stubs, validates management payloads and prepares 11 SQL
+assertions from the real application queries. Run its generated SQL only on
+the approved empty login test database; it uses synthetic emails and ROLLBACK.
+The SQL assertions were executed through Supabase on the isolated test project.
