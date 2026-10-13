@@ -5,7 +5,7 @@ import { Loader2, Monitor, RefreshCw, Smartphone } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import type { BulkEmailTemplate } from "@/lib/bulk-email-types";
 
-export type BulkPreviewFocus = "message" | "heading" | "eyebrow" | "signature" | "footer" | "branding" | "none";
+export type BulkPreviewFocus = "message" | "heading" | "eyebrow" | "signature" | "footer" | "branding" | "hero" | "intro" | "features" | "gallery" | "journey" | "none";
 export function BulkEmailLivePreview({ subject, message, template, focus, onPreview }: {
   subject: string; message: string; template: BulkEmailTemplate | null; focus: BulkPreviewFocus;
   onPreview: (html: string, signature: string) => void;
@@ -38,14 +38,16 @@ export function BulkEmailLivePreview({ subject, message, template, focus, onPrev
   const scrollToEdit = useCallback(() => {
     const doc = frame.current?.contentDocument;
     if (!doc?.scrollingElement) return;
-    const text = focus === "signature" ? template?.signature : focus === "eyebrow" ? template?.eyebrow : focus === "heading" ? subject : message;
+    const text = focus === "signature" ? template?.signature : focus === "eyebrow" ? template?.eyebrow : focus === "heading" ? (template?.journal ? template.heading : subject) : message;
     const needle = text?.split(/\r?\n/).map(line => line.trim()).sort((a, b) => b.length - a.length)[0];
     const edited = ["message", "heading", "eyebrow", "signature"].includes(focus) && needle
       ? Array.from(doc.querySelectorAll("p,h1,h2,h3")).find(element => element.textContent?.includes(needle)) : undefined;
-    const top = focus === "footer" ? doc.scrollingElement.scrollHeight : focus === "branding" ? 0 : edited
+    const section = template?.journal && ["hero", "intro", "features", "gallery", "journey", "footer"].includes(focus)
+      ? doc.querySelector(`[data-bulk-section="${focus}"]`) : null;
+    const top = section ? section.getBoundingClientRect().top + doc.scrollingElement.scrollTop - 24 : focus === "footer" ? doc.scrollingElement.scrollHeight : focus === "branding" || focus === "hero" ? 0 : edited
       ? edited.getBoundingClientRect().top + doc.scrollingElement.scrollTop - 24 : position.current;
     doc.scrollingElement.scrollTo({ top });
-  }, [focus, message, subject, template?.eyebrow, template?.signature]);
+  }, [focus, message, subject, template]);
   useEffect(() => { scrollToEdit(); }, [scrollToEdit]);
   function loaded() {
     const doc = frame.current?.contentDocument;

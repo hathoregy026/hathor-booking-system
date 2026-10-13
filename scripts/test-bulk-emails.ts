@@ -54,13 +54,13 @@ async function main() {
   process.env.SUPABASE_SERVICE_ROLE_KEY = "synthetic-storage-key-for-local-test-only";
   const theme = getDefaultEmailTemplate("BookingMessage");
   const defaultTemplate = bulkTemplateDefaults(theme);
-  const customTemplate = { ...defaultTemplate, heading: '<script>parent.templateInjected=true</script>', eyebrow: "Invitation from Hathor", showBanner: false, primaryColor: "#9f7c41", backgroundColor: "#efe5d5", footer: { ...defaultTemplate.footer, replyNote: "A custom bulk-only footer note" } };
+  const customTemplate = { ...defaultTemplate, journal: undefined, heading: '<script>parent.templateInjected=true</script>', eyebrow: "Invitation from Hathor", showBanner: false, primaryColor: "#9f7c41", backgroundColor: "#efe5d5", footer: { ...defaultTemplate.footer, replyNote: "A custom bulk-only footer note" } };
   assert.equal(bulkTemplateSchema.safeParse({ ...customTemplate, primaryColor: "red;background:url(https://evil.test)" }).success, false);
   assert.equal(bulkTemplateSchema.safeParse({ ...customTemplate, footer: { ...customTemplate.footer, email: "javascript:alert(1)" } }).success, false);
   assert.equal(bulkTemplateSchema.safeParse({ ...customTemplate, heroImageUrl: "https://evil.test/track" }).success, false);
   const campaignImage = `https://bulk-test.supabase.co/storage/v1/object/public/email-images/bulk-campaigns/${randomUUID()}/${randomUUID()}.jpg`;
   assert.equal(bulkBannerPreviewSrc("javascript:alert(1)"), "");
-  assert.equal(bulkBannerPreviewSrc("https://evil.test/email/hathor-email-hero.jpg"), "/email/hathor-email-hero.jpg");
+  assert.equal(bulkBannerPreviewSrc("https://evil.test/email/hathor-email-hero.jpg"), "");
   assert.equal(bulkBannerPreviewSrc(campaignImage + "?tracking=1"), "");
   assert.equal(bulkBannerPreviewSrc(campaignImage), campaignImage);
   assert.equal(standardBulkBannerPreviewUrl("https://other.supabase.co/storage/v1/object/public/email-images/hero.jpg"), "");
