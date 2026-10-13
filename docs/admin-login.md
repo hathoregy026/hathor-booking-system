@@ -10,7 +10,7 @@ The first time someone signs in, they scan a QR code with an authenticator
 app (Google Authenticator, Microsoft Authenticator, 1Password, Authy, …) and
 are given 10 single-use recovery codes before the dashboard opens.
 
-> **Status: local testing only.** Nothing here has been deployed. See
+> **Status: isolated login preview approved.** Production is not enabled. See
 > "Before going live" at the bottom before it goes anywhere near Vercel.
 
 ## How it protects the dashboard
@@ -292,9 +292,23 @@ cream #faf8f5 and the existing night surfaces, using the theme's --accent,
 and the existing Geist body font provide contrast; asymmetric 24px/4px corners,
 44px controls and stacked phone permission rows keep it consistent and usable.
 
-### Manual setup remains deferred
+### Preview setup and remaining manual steps
 
-We will choose the preview database and real roles together, add the Vercel secrets
-and certificate, explicitly approve a preview/migrations, bootstrap your first
-administrator, invite real people, and test their access before approving go-live.
-Do not remove the branch deployment block or run remote SQL during code testing.
+An isolated Free test database has been prepared without production records.
+Its existing tables were built from the pre-login Prisma schema, the two login
+and role migrations were applied, and the baseline history was recorded only
+in this test database. All test tables have RLS and no public/anonymous access.
+This baseline is for login/roles testing; it is not a production database copy.
+
+The login branch has its own Preview database URLs, session/MFA keys, CA and
+Supabase URL. For Prisma's migration engine, its branch-specific DIRECT_URL
+uses `sslmode=require`, `sslaccept=strict` and
+`sslcert=prisma/certs/supabase-prod-ca-2021.crt`. The public CA is bundled under
+`prisma/certs`; runtime pools still verify against `DATABASE_CA_CERT`.
+The existing Vercel build command is unchanged.
+
+The owner explicitly approved starting this preview. Its branch deployment
+guard is now removed. Complete the named test administrator's authenticator
+enrollment, save recovery codes privately, and test staff roles before go-live.
+Production keys, the latest live-code baseline and named real accounts still
+require a separate production release review and approval.
