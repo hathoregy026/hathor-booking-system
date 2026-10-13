@@ -10,8 +10,9 @@ The first time someone signs in, they scan a QR code with an authenticator
 app (Google Authenticator, Microsoft Authenticator, 1Password, Authy, …) and
 are given 10 single-use recovery codes before the dashboard opens.
 
-> **Status: local testing only.** Nothing here has been deployed. See
-> "Before going live" at the bottom before it goes anywhere near Vercel.
+> **Status: prepared for a reviewed release.** The earlier login preview was
+> approved. Production is not enabled until the owner approves this release.
+> See "Before going live" at the bottom.
 
 ## How it protects the dashboard
 
@@ -31,9 +32,11 @@ are given 10 single-use recovery codes before the dashboard opens.
 
 There is no public sign-up page or automatic password-reset email. An
 administrator invites people from **People & roles** and privately shares a
-48-hour, single-use password setup link. The person chooses their own password,
-then signs in and enrolls an authenticator. Only the link fingerprint is stored;
-the URL keeps its secret in the fragment, never a server query string.
+48-hour, single-use password setup link. The person sees the invited email,
+chooses the name shown in the dashboard, and chooses their own password.
+They cannot change that email or grant themselves permissions. They then sign
+in and enroll an authenticator. Only the link fingerprint is stored; the URL
+keeps its secret in the fragment, never a server query string.
 The CLI remains available for first-administrator setup and emergency recovery.
 
 Until someone finishes their first sign-in (or after `reset-mfa`), their
@@ -130,6 +133,24 @@ npm run verify:admin-auth                                         # offline cryp
 npm run verify:admin-permissions                                  # permission coverage
 ```
 
+## If the only administrator cannot sign in
+
+There is no Forgot password button and no automatic reset email.
+
+The owner can recover from a private computer that is allowed to reach the
+database, without another administrator:
+
+1. Forgotten password: `npm run admin:users -- reset-password --email you@hathorcruise.com`
+2. Lost phone and lost recovery codes: `npm run admin:users -- reset-mfa --email you@hathorcruise.com`
+3. Too many sign-in attempts: `npm run admin:users -- unlock --email you@hathorcruise.com`
+
+These commands keep administrator access. A second trusted administrator is
+useful, but recovery must not depend on that person being available.
+
+Keep the database access, `ADMIN_MFA_ENCRYPTION_KEY`, and the recovery codes
+somewhere private. If the encryption key is lost, every authenticator has to
+be set up again. Do not paste passwords, codes, or keys into chat.
+
 ## Before going live (not done yet)
 
 1. In Vercel, set `ADMIN_SESSION_SECRET` and `ADMIN_MFA_ENCRYPTION_KEY`.
@@ -147,32 +168,34 @@ npm run verify:admin-permissions                                  # permission c
    then replace `ADMIN_SESSION_SECRET`. If a dedicated guest signing secret
    already exists, keep it unchanged. Do this privately in environment
    settings; never paste secret values into a chat.
-3. The migration `20261009120000_admin_accounts_mfa` is additive (four new
-   tables). Vercel's build runs `prisma migrate deploy`, so it applies on the
-   first deploy that includes it. Migrations cannot build an empty database:
-   a separate preview database needs an existing baseline/schema.
-4. After an explicitly approved preview applies the two additive migrations,
-   explicitly create/promote your named first administrator against the chosen
-   database using `create … --administrator` or `make-administrator --email …`.
-   Complete its MFA enrollment and save recovery codes before go-live.
-   Existing accounts receive **no business access by default**: assign their
-   roles in People & roles before release. Never automatically promote every
-   old account. `ADMIN_PASSWORD` no longer opens the dashboard.
+3. Three additive migrations add the accounts:
+   `20261009120000_admin_accounts_mfa`,
+   `20261011120000_admin_roles_and_invitations`, and
+   `20261013120000_individual_admin_permissions`.
+   Vercel's build runs `prisma migrate deploy`, so they apply on the first
+   deploy that includes them. Do not run a migration command that would also
+   apply unrelated changes. Migrations cannot build an empty database: the
+   isolated preview database already has its own baseline.
+4. Production still needs an explicit owner approval. Before that, confirm a
+   backup and rollback, verify the production database, and apply only these
+   additive migrations. Create or confirm the named owner with the private
+   maintenance command, then let that person choose the password and finish
+   authenticator setup. Do not copy test accounts, sessions, or recovery
+   codes. Existing staff receive no mailbox access until it is granted in
+   People & roles. `ADMIN_PASSWORD` no longer opens the dashboard.
 5. Set `DATABASE_CA_CERT` in each enabled Vercel environment to the database
    provider's CA (Supabase: Project Settings → Database → SSL Configuration).
    Connections verify the certificate and refuse remote connections without
    it. See the [Supabase connection guide](https://supabase.com/docs/guides/database/connecting-to-postgres#connecting-with-ssl).
    Local helper tests below must never target Supabase or another remote DB.
-6. Keep the `git.deploymentEnabled` block for `claude/festive-cori-17uol4`
-   in `vercel.json` until the owner explicitly says **start the preview**,
-   selects its database, and configures Preview's environment variables.
-   Removing it and pushing starts a build that runs `prisma migrate deploy`
-   against that database. Starting a preview requires separate approval.
-7. When a preview is approved, use the **branch alias URL containing `-git-`**
-   from Vercel. A per-deployment URL without `-git-` redirects to Production
-   through `lib/public-url.ts`. On a shared database, keep preview testing
-   to sign-in/security: other dashboard actions operate on real bookings
-   and can email guests.
+6. A new preview branch does not inherit the old login preview's database
+   settings. Point that branch's Preview settings at the isolated test
+   database before the first push. Do not deploy the old login branch to
+   production.
+7. Use the **branch alias URL containing `-git-`** from Vercel. A
+   per-deployment URL without `-git-` redirects to Production through
+   `lib/public-url.ts`. Keep preview testing on the isolated test database.
+   Do not send real guest emails or change real bookings to test access.
 
 ## Repeatable local regression helpers
 

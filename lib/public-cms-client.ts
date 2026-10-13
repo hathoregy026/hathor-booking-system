@@ -97,6 +97,7 @@ export async function withPublicCmsClient<T>(
 
   await previous.catch(() => {});
 
+  const connectionString = resolveDatabaseUrl();
   const client = new pg.Client({
     ...verifiedDatabaseTransport(connectionString),
     connectionTimeoutMillis: CMS_CONNECT_TIMEOUT_MS,

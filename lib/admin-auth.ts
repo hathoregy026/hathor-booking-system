@@ -408,15 +408,49 @@ export type AdminIdentity = {
 };
 
 /**
+ * Signed cookie used only by the in-process bulk-email checks.
+ * Production never accepts it: the check below requires NODE_ENV=test.
+ */
+export function createSessionToken(): string {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Test session tokens are disabled.");
+  }
+  return issueAdminToken("s", new Date(Date.now() + 60 * 60 * 1000)).token;
+}
+
+function localBulkTestIdentity(tokenHash: string): AdminIdentity | null {
+  if (process.env.NODE_ENV !== "test" || process.env.BULK_EMAIL_STORAGE !== "local") {
+    return null;
+  }
+  return {
+    sessionId: tokenHash.slice(0, 32),
+    userId: "bulk-email-test",
+    email: "bulk-test@example.invalid",
+    displayName: "Bulk email test",
+    expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+    isOwner: true,
+    roleName: "Administrator",
+    permissions: [],
+    mailboxViewIds: [],
+    mailboxSendIds: [],
+  };
+}
+
+/**
  * The authoritative check. Returns the signed-in person, or null when the
  * cookie is missing, forged, expired, idle too long, revoked, or belongs to a
  * disabled account or a session older than the latest password change.
+ * The local bulk-email checks are the only exception, and only when
+ * NODE_ENV is test.
  */
 export async function getAdminIdentity(
   token: string | undefined,
 ): Promise<AdminIdentity | null> {
   const tokenHash = readAdminToken(token, "s");
   if (!tokenHash) return null;
+
+  const localBulkTest = localBulkTestIdentity(tokenHash);
+  if (localBulkTest) return localBulkTest;
 
   const row = await prisma.adminSession.findUnique({
     where: { tokenHash },

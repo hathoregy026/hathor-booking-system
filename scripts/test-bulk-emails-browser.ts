@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { chromium, type Locator } from "playwright";
 import { mkdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-import { createSessionToken } from "../lib/admin-auth";
+import { ADMIN_SESSION_COOKIE, createSessionToken } from "../lib/admin-auth";
 import { readBulkRecord, suppressedBulkEmails } from "../lib/bulk-email-store";
 import type { BulkCampaign } from "../lib/bulk-email-types";
 import sharp from "sharp";
@@ -27,7 +27,7 @@ async function main() {
   try {
     for (const width of [1440, 390]) {
       const context = await browser.newContext({ viewport: { width, height: 960 } });
-      await context.addCookies([{ name: "admin_session", value: createSessionToken(), domain: "127.0.0.1", path: "/", httpOnly: true, sameSite: "Lax" }]);
+      await context.addCookies([{ name: ADMIN_SESSION_COOKIE, value: createSessionToken(), domain: "127.0.0.1", path: "/", httpOnly: true, sameSite: "Lax" }]);
       const page = await context.newPage();
       let cmsCalls = 0;
       const campaignImage = `https://bulk-test.supabase.co/storage/v1/object/public/email-images/bulk-campaigns/${randomUUID()}/${randomUUID()}.jpg`;
@@ -193,7 +193,7 @@ async function main() {
     assert.equal((await unauthenticated.request.get(testOrigin + "/api/admin/bulk-emails")).status(), 401);
     await unauthenticated.close();
     const confirmation = await browser.newContext();
-    await confirmation.addCookies([{ name: "admin_session", value: createSessionToken(), domain: "127.0.0.1", path: "/", httpOnly: true, sameSite: "Lax" }]);
+    await confirmation.addCookies([{ name: ADMIN_SESSION_COOKIE, value: createSessionToken(), domain: "127.0.0.1", path: "/", httpOnly: true, sameSite: "Lax" }]);
     const id = randomUUID(); const email = `unsubscribe-${id}@example.com`;
     const created = await confirmation.request.post(testOrigin + "/api/admin/bulk-emails", { headers: { Origin: testOrigin }, data: { id, emails: [email, "keep-subscribed@example.com"], subject: "Unsubscribe confirmation check", message: "Synthetic local preview only.", confirmed: true } });
     assert.equal(created.status(), 200);

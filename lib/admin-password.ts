@@ -77,6 +77,20 @@ const COMMON_FRAGMENTS = [
  * welcome; short, repetitive or guessable ones are not. Returns a message to
  * show, or null when the password is acceptable.
  */
+/** Name shown in the dashboard. The invitation email cannot be changed here. */
+export function normalizeDisplayName(value: string): string {
+  return value.trim().replace(/\s+/g, " ");
+}
+
+export function displayNameError(value: string): string | null {
+  const name = normalizeDisplayName(value);
+  if (name.length < 1 || name.length > 80) {
+    return "Enter the name you want shown in the dashboard, up to 80 characters.";
+  }
+  if (/[\u0000-\u001F\u007F<>]/.test(name)) return "That name cannot be used.";
+  return null;
+}
+
 export function passwordPolicyError(password: string, email?: string): string | null {
   if (password.length < PASSWORD_MIN_LENGTH) {
     return `Use at least ${PASSWORD_MIN_LENGTH} characters. A short sentence works well.`;

@@ -138,13 +138,20 @@ withLocalAdminTest(async fixture => {
       const newPassword = randomBytes(32).toString("base64url");
       const fingerprint = (await import("../lib/admin-management.ts")).invitationFingerprint(inviteToken);
       rateKey("admin-invitation-token", fingerprint); rateKey("admin-invitation", fixture.ip);
-      const body = JSON.stringify({ token: inviteToken, password: newPassword });
+      const rejected = await request("/api/admin/accept-invite", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: inviteToken, displayName: "Chosen dashboard name", password: newPassword, email: "other@example.invalid" }) });
+      assert.equal(rejected.status, 400);
+      const body = JSON.stringify({ token: inviteToken, displayName: "Chosen dashboard name", password: newPassword });
       const responses = await Promise.all([1, 2].map(() => request("/api/admin/accept-invite", {
         method: "POST", headers: { "Content-Type": "application/json" }, body })));
       assert.deepEqual(responses.map(response => response.status).sort(), [200, 400], "Only one concurrent redemption wins.");
       assert.ok(responses.every(response => response.headers.getSetCookie().length === 0));
       assert.equal((await request("/api/admin/accept-invite", { method: "POST", headers: { "Content-Type": "application/json" }, body })).status, 400);
       const target = await prisma.adminUser.findUniqueOrThrow({ where: { id: invitedId } });
+      assert.equal(target.displayName, "Chosen dashboard name");
+      assert.equal(target.email, "invited-" + userId + "@example.invalid");
+      assert.equal(target.roleId, roleId);
+      assert.equal(target.isOwner, false);
       assert.ok(await fixture.passwordTools.verifyAdminPassword(target.passwordHash, newPassword));
       const login = await request("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: target.email, password: newPassword }) });
@@ -158,7 +165,7 @@ withLocalAdminTest(async fixture => {
       const current = (await second.json()).setupPath.split("=")[1];
       assert.notEqual(old, current);
       const accept = token => request("/api/admin/accept-invite", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password: randomBytes(32).toString("base64url") }) });
+        body: JSON.stringify({ token, displayName: "Chosen dashboard name", password: randomBytes(32).toString("base64url") }) });
       for (const token of [old, current]) rateKey("admin-invitation-token", (await import("../lib/admin-management.ts")).invitationFingerprint(token));
       assert.equal((await accept(old)).status, 400);
       assert.equal((await manage({ action: "set-enabled", id: invitedId, enabled: false })).status, 200);
@@ -172,7 +179,7 @@ withLocalAdminTest(async fixture => {
       await prisma.adminInvitation.update({ where: { userId: invitedId }, data: { expiresAt: new Date(Date.now() - 1000) } });
       const before = await prisma.adminUser.findUniqueOrThrow({ where: { id: invitedId } });
       assert.equal((await request("/api/admin/accept-invite", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password: randomBytes(32).toString("base64url") }) })).status, 400);
+        body: JSON.stringify({ token, displayName: "Chosen dashboard name", password: randomBytes(32).toString("base64url") }) })).status, 400);
       assert.equal((await prisma.adminUser.findUniqueOrThrow({ where: { id: invitedId } })).passwordHash, before.passwordHash);
     });
     await check("disabling a person immediately closes their session", async () => {

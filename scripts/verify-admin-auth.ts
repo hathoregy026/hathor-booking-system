@@ -140,6 +140,11 @@ async function main() {
     assert.ok(password.passwordPolicyError("correct horse password battery"));
     assert.ok(password.passwordPolicyError("mohamed-likes-long-walks", "mohamed@hathorcruise.com"));
     assert.equal(password.passwordPolicyError("Nile sunsets taste of mint tea"), null);
+    assert.equal(password.displayNameError("  Khalid  "), null);
+    assert.equal(password.normalizeDisplayName("  Khalid   Nabil  "), "Khalid Nabil");
+    assert.ok(password.displayNameError(" "));
+    assert.ok(password.displayNameError("a".repeat(81)));
+    assert.ok(password.displayNameError("Khalid\n<script>"));
   });
 
   await check("Argon2id hashing, verification and rehash detection", async () => {

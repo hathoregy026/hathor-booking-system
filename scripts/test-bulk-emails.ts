@@ -6,7 +6,7 @@ import { zipSync, strToU8 } from "fflate";
 import { extractBulkRecipients, bulkCampaignSchema, bulkTemplateSchema } from "../lib/bulk-email-validation";
 import { bulkTemplateDefaults } from "../lib/bulk-email-render";
 import { importBulkRecipients } from "../lib/bulk-email-import";
-import { createSessionToken } from "../lib/admin-auth";
+import { ADMIN_SESSION_COOKIE, createSessionToken } from "../lib/admin-auth";
 import { getDefaultEmailTemplate } from "../lib/email-templates";
 import { bulkUnsubscribe, campaignView, createBulkCampaign, getBulkCampaign, processBulkCampaign, sendBulkBatch } from "../lib/bulk-email-service";
 import { readBulkRecord, suppressedBulkEmails, updateBulkRecord } from "../lib/bulk-email-store";
@@ -87,12 +87,12 @@ async function main() {
     }) as typeof fetch;
     const image = await sharp({ create: { width: 20, height: 20, channels: 3, background: "#b69f64" } }).png().toBuffer();
     const form = new FormData(); form.set("file", new File([new Uint8Array(image)], "test.png", { type: "image/png" }));
-    const response = await imageRoute(new NextRequest("http://localhost:3010/api/admin/bulk-emails/images", { method: "POST", headers: { Origin: "http://localhost:3010", Cookie: `admin_session=${createSessionToken()}` }, body: form }));
+    const response = await imageRoute(new NextRequest("http://localhost:3010/api/admin/bulk-emails/images", { method: "POST", headers: { Origin: "http://localhost:3010", Cookie: `${ADMIN_SESSION_COOKIE}=${createSessionToken()}` }, body: form }));
     assert.equal(response.status, 200); assert.equal(uploaded.length, 1);
     assert.match((await response.json()).url, /\/bulk-campaigns\/[a-f0-9-]{36}\/[a-f0-9-]{36}\.jpg$/);
   } finally { globalThis.fetch = storageFetch; }
   const badImage = new FormData(); badImage.set("file", new File(["<svg><script>bad</script></svg>"], "bad.svg", { type: "image/svg+xml" }));
-  assert.equal((await imageRoute(new NextRequest("http://localhost:3010/api/admin/bulk-emails/images", { method: "POST", headers: { Origin: "http://localhost:3010", Cookie: `admin_session=${createSessionToken()}` }, body: badImage }))).status, 400);
+  assert.equal((await imageRoute(new NextRequest("http://localhost:3010/api/admin/bulk-emails/images", { method: "POST", headers: { Origin: "http://localhost:3010", Cookie: `${ADMIN_SESSION_COOKIE}=${createSessionToken()}` }, body: badImage }))).status, 400);
   assert.equal((await imageRoute(new NextRequest("http://localhost:3010/api/admin/bulk-emails/images", { method: "POST" }))).status, 401);
   const customInput = { id: randomUUID(), subject: "Template editor preview", message: "Custom content", emails: ["template@example.com"], confirmed: true, template: customTemplate };
   const customCampaign = await createBulkCampaign(customInput, "synthetic-session", undefined, theme);
@@ -128,7 +128,7 @@ async function main() {
   assert.equal(campaign.payload[0].to, "guest0@example.com"); assert.equal(campaign.payload[1].to, "guest1@example.com"); assert.ok(!campaign.payload[0].html.includes("guest1@example.com"));
   assert.equal("payload" in campaignView(campaign), false);
   assert.equal("previewHtml" in campaignView(campaign), false);
-  const previewRequest = new NextRequest("http://localhost:3010/api/admin/bulk-emails/preview", { method: "POST", headers: { Origin: "http://localhost:3010", Cookie: `admin_session=${createSessionToken()}` } });
+  const previewRequest = new NextRequest("http://localhost:3010/api/admin/bulk-emails/preview", { method: "POST", headers: { Origin: "http://localhost:3010", Cookie: `${ADMIN_SESSION_COOKIE}=${createSessionToken()}` } });
   const savedPreview = await savedPreviewRoute(previewRequest, { params: Promise.resolve({ id }) });
   assert.equal(savedPreview.status, 200);
   const savedHtml = (await savedPreview.json()).html;
@@ -166,7 +166,7 @@ async function main() {
     globalThis.fetch = async () => { throw new Error("synthetic network loss"); }; assert.equal((await sendBulkBatch(campaign)).kind, "uncertain");
     globalThis.fetch = async () => Response.json({}, { status: 429 }); assert.equal((await sendBulkBatch(campaign)).kind, "failed");
   } finally { globalThis.fetch = originalFetch; }
-  const cookie = `admin_session=${createSessionToken()}`;
+  const cookie = `${ADMIN_SESSION_COOKIE}=${createSessionToken()}`;
   const req = (body: unknown, origin = "http://localhost:3010", withAuth = true) => new NextRequest("http://localhost:3010/api/admin/bulk-emails", { method: "POST", headers: { "Content-Type": "application/json", Origin: origin, ...(withAuth ? { Cookie: cookie } : {}) }, body: JSON.stringify(body) });
   assert.equal((await createRoute(req(input, "http://localhost:3010", false))).status, 401);
   assert.equal((await createRoute(req(input, "https://attacker.example"))).status, 403);

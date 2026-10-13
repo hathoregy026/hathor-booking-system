@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { adminRequestContext, verifySecondFactor, type AdminIdentity } from "@/lib/admin-auth";
-import { verifyAdminPassword, hashAdminPassword } from "@/lib/admin-password";
+import { verifyAdminPassword, hashAdminPassword, displayNameError } from "@/lib/admin-password";
 import { enforceKeyedRateLimit, PublicRequestError } from "@/lib/public-api-security";
 import { mailboxIdSchema } from "@/lib/email-mailboxes";
 import { ADMIN_PERMISSIONS } from "@/lib/admin-permissions";
@@ -20,7 +20,7 @@ export const managementActionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("update-role"), id, ...role, ...credentials }).strict(),
   z.object({ action: z.literal("delete-role"), id, ...credentials }).strict(),
   z.object({ action: z.literal("invite"), email: z.email().max(254).transform(value => value.toLowerCase()),
-    displayName: z.string().trim().min(1).max(80), roleId: id.nullable(), isOwner: z.boolean(), ...individualAccess, ...credentials }).strict(),
+    displayName: z.string().trim().min(1).max(80).refine(value => displayNameError(value) === null, "That name cannot be used."), roleId: id.nullable(), isOwner: z.boolean(), ...individualAccess, ...credentials }).strict(),
   z.object({ action: z.literal("set-access"), id, roleId: id.nullable(), isOwner: z.boolean(), ...individualAccess, ...credentials }).strict(),
   z.object({ action: z.literal("set-enabled"), id, enabled: z.boolean(), ...credentials }).strict(),
   z.object({ action: z.literal("password-link"), id, ...credentials }).strict(),
