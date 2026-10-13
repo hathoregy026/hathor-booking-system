@@ -33,7 +33,7 @@ const problems = [];
 /** Deletes this run's holds, so each viewport starts from the same free cabins. */
 async function cleanup() {
   if (keys.length === 0) return;
-  const { pgConnectionOptions } = await import("../lib/database-tls.mjs"); const client = new pg.Client({
+  const { pgConnectionOptions } = await import("../lib/script-database-tls.mjs"); const client = new pg.Client({
     ...pgConnectionOptions(process.env.DATABASE_URL),
     connectionTimeoutMillis: 8000,
     query_timeout: 15000,

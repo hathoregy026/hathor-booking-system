@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import {
   EMAIL_TEMPLATE_NAMES,

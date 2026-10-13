@@ -12,7 +12,7 @@
  */
 import fs from "node:fs";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 const KEY = "site-image-public-map-v2";
 const FORCE = process.argv.includes("--force");

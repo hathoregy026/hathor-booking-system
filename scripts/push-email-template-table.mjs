@@ -1,6 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 function getSessionPoolerUrl() {
   const url = process.env.DATABASE_URL;

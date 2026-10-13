@@ -4,7 +4,7 @@ const fs = require('fs');
 
 // Runs the payment lifecycle checks in one transaction and rolls them back.
 (async () => {
-  const { pgConnectionOptions } = await import("../lib/database-tls.mjs"); const client = new pg.Client({
+  const { pgConnectionOptions } = await import("../lib/script-database-tls.mjs"); const client = new pg.Client({
     ...pgConnectionOptions(process.env.DATABASE_URL),
     connectionTimeoutMillis: 8000,
     query_timeout: 40000,

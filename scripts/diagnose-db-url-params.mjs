@@ -14,7 +14,7 @@
  */
 import { performance } from "node:perf_hooks";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 const raw = process.env.DATABASE_URL;
 if (!raw) {

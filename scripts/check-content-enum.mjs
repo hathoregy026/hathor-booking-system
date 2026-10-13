@@ -1,6 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 function getSeedConnectionString() {
   if (process.env.DATABASE_DIRECT_URL) return process.env.DATABASE_DIRECT_URL;

@@ -1,6 +1,6 @@
 import "dotenv/config";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 const statements = [
   `ALTER TABLE "Cruise" ADD COLUMN IF NOT EXISTS "deletedAt" TIMESTAMP(3)`,

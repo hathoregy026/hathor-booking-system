@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { config } from "dotenv";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 import { resolveDatabaseUrl } from "../lib/database-config";
 import { deleteDashboardEmail, fetchDashboardInbox, fetchInboxDetail, inboxQuerySchema, setInboxRead } from "../lib/dashboard-inbox";
 import type { bookingQuery } from "../lib/booking-database";

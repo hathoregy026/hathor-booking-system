@@ -3,7 +3,7 @@
  * Requires a loopback dev server and disposable DB named hathor_admin_auth_test.
  */
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { isLocalDatabase } from "../lib/database-tls.mjs";
+import { isLocalDatabase } from "../lib/script-database-tls.mjs";
 
 export class LocalAdminTestError extends Error {
   constructor(message) {

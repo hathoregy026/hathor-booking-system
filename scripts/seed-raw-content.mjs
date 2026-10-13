@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RAW_DATA_PATH = path.join(__dirname, "../assets/RAW_DATA.md");

@@ -17,7 +17,7 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 import pg from "pg";
-import { pgConnectionOptions } from "../lib/database-tls.mjs";
+import { pgConnectionOptions } from "../lib/script-database-tls.mjs";
 
 const WEBSITE_BUCKET = "website-images";
 const EMAIL_BUCKET = "email-images";
