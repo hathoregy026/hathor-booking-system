@@ -318,8 +318,8 @@ and the existing Geist body font provide contrast; asymmetric 24px/4px corners,
 ### Manual setup remains deferred
 
 An isolated Free test database has been prepared without production records.
-Its existing tables were built from the pre-login Prisma schema, the two login
-and role migrations were applied, and the baseline history was recorded only
+Its existing tables were built from the pre-login Prisma schema, the three
+login migrations were applied, and the baseline history was recorded only
 in this test database. All test tables have RLS and no public/anonymous access.
 This baseline is for login/roles testing; it is not a production database copy.
 

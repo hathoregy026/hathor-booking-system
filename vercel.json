@@ -1,9 +1,4 @@
 {
-  "git": {
-    "deploymentEnabled": {
-      "release/dashboard-login": false
-    }
-  },
   "buildCommand": "npx prisma migrate deploy && npm run build",
   "crons": [
     {
