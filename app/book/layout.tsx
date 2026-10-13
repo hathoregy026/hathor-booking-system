@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
@@ -17,10 +18,13 @@ import "../nav-controls.css";
  * the public pages share, so a preload here was fetched on every public page.
  * They still load wherever this layout's text uses them.
  */
-const playfair = Playfair_Display({
-  subsets: ["latin"],
+const playfair = localFont({
+  src: "../../public/fonts/Dynalight,Playfair_Display/PlayfairDisplay-VariableFont_wght.woff2",
   variable: "--font-booking-serif",
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
+  style: "normal",
+  display: "swap",
+  adjustFontFallback: "Times New Roman",
   preload: false,
 });
 

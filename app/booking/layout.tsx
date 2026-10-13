@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
-import { Inter, Italiana, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Italiana, Plus_Jakarta_Sans } from "next/font/google";
 import { BookingPageLayout } from "@/components/booking/BookingPageLayout";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
@@ -33,10 +33,13 @@ const italiana = Italiana({
   preload: false,
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
+const playfair = localFont({
+  src: "../../public/fonts/Dynalight,Playfair_Display/PlayfairDisplay-VariableFont_wght.woff2",
   variable: "--font-booking-serif",
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
+  style: "normal",
+  display: "swap",
+  adjustFontFallback: "Times New Roman",
   preload: false,
 });
 
