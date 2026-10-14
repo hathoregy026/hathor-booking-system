@@ -82,6 +82,8 @@ async function main() {
   const messageId = randomUUID();
   const statements: { sql: string; values: unknown[] }[] = [];
   const listQuery = (async (sql: string, values: unknown[] = []) => {
+    const requiredParameters = Math.max(0, ...Array.from(sql.matchAll(/\$(\d+)/g), match => Number(match[1])));
+    assert.equal(values.length, requiredParameters, "Every inbox query must bind every SQL parameter");
     statements.push({ sql, values });
     if (sql.includes('FROM "SiteSetting"')) return [];
     if (sql.includes('GROUP BY "mailboxId"')) return [{ mailboxId: "reservations", total: 26, unread: 4 }];

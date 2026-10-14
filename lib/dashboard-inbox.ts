@@ -57,7 +57,7 @@ export async function fetchDashboardInbox(input: z.infer<typeof inboxQuerySchema
   const [count] = await query<{ all: number; unread: number; received: number; sent: number }>(`WITH received AS (${receivedMessages})
     SELECT COUNT(*)::int AS "all", COUNT(*) FILTER (WHERE direction = 'INBOUND' AND "readAt" IS NULL)::int AS unread,
       COUNT(*) FILTER (WHERE direction = 'INBOUND')::int AS received, COUNT(*) FILTER (WHERE direction = 'OUTBOUND')::int AS sent FROM received
-      WHERE ($1 = 'all' OR "mailboxId" = $1) AND folder = $2 AND "mailboxId" = ANY($3::text[])`, [input.mailbox, input.folder]);
+      WHERE ($1 = 'all' OR "mailboxId" = $1) AND folder = $2 AND "mailboxId" = ANY($3::text[])`, [input.mailbox, input.folder, allowed]);
   const counts = count ?? { all: 0, unread: 0, received: 0, sent: 0 };
   const totals = await query<{ mailboxId: MailboxId; total: number; unread: number }>(`WITH received AS (${receivedMessages})
     SELECT "mailboxId", COUNT(*)::int AS total, COUNT(*) FILTER (WHERE direction = 'INBOUND' AND "readAt" IS NULL)::int AS unread
