@@ -481,6 +481,8 @@ model AdminSession {
   tokenHash     String            @unique
   userId        String
   stage         AdminSessionStage
+  /// Chosen at the password step and carried through MFA; false for existing sessions.
+  rememberBrowser Boolean         @default(false)
   createdAt     DateTime          @default(now())
   lastSeenAt    DateTime          @default(now())
   idleExpiresAt DateTime

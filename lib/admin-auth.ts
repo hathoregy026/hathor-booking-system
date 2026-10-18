@@ -35,6 +35,8 @@ export { ADMIN_CHALLENGE_COOKIE, ADMIN_SESSION_COOKIE };
 
 export const ADMIN_SESSION_IDLE_SECONDS = 30 * 60;
 export const ADMIN_SESSION_ABSOLUTE_SECONDS = 12 * 60 * 60;
+/** Opt-in personal-browser sessions have a fixed seven-day expiry. */
+export const ADMIN_REMEMBER_BROWSER_SECONDS = 7 * 24 * 60 * 60;
 export const ADMIN_CHALLENGE_SECONDS = 5 * 60;
 export const ADMIN_ENROLL_SECONDS = 10 * 60;
 /** Wrong codes allowed per password sign-in before it must start over. */
@@ -143,6 +145,7 @@ export async function createAdminChallenge(
   userId: string,
   stage: AdminChallengeStage,
   context: AdminRequestContext,
+  rememberBrowser = false,
 ): Promise<{ token: string; expiresAt: Date }> {
   const now = Date.now();
   const expiresAt = new Date(
@@ -161,6 +164,7 @@ export async function createAdminChallenge(
         tokenHash,
         userId,
         stage,
+        rememberBrowser,
         idleExpiresAt: expiresAt,
         expiresAt,
         ip: context.ip,
@@ -175,6 +179,7 @@ export async function createAdminChallenge(
 export type AdminChallenge = {
   id: string;
   stage: AdminChallengeStage;
+  rememberBrowser: boolean;
   user: {
     id: string;
     email: string;
@@ -209,6 +214,7 @@ export async function loadAdminChallenge(
   return {
     id: row.id,
     stage: row.stage,
+    rememberBrowser: row.rememberBrowser,
     user: {
       id: row.user.id,
       email: row.user.email,
@@ -246,8 +252,12 @@ export async function promoteAdminChallenge(
   context: AdminRequestContext,
 ): Promise<{ token: string; expiresAt: Date; sessionId: string } | null> {
   const now = new Date();
-  const expiresAt = new Date(now.getTime() + ADMIN_SESSION_ABSOLUTE_SECONDS * 1000);
-  const idleExpiresAt = new Date(now.getTime() + ADMIN_SESSION_IDLE_SECONDS * 1000);
+  const expiresAt = new Date(now.getTime() + (
+    challenge.rememberBrowser ? ADMIN_REMEMBER_BROWSER_SECONDS : ADMIN_SESSION_ABSOLUTE_SECONDS
+  ) * 1000);
+  const idleExpiresAt = challenge.rememberBrowser
+    ? expiresAt
+    : new Date(now.getTime() + ADMIN_SESSION_IDLE_SECONDS * 1000);
   const { token, tokenHash } = issueAdminToken("s", expiresAt);
 
   return prisma.$transaction(async (tx) => {
@@ -262,6 +272,7 @@ export async function promoteAdminChallenge(
         tokenHash,
         userId: challenge.user.id,
         stage: AdminSessionStage.ACTIVE,
+        rememberBrowser: challenge.rememberBrowser,
         idleExpiresAt,
         expiresAt,
         ip: context.ip,
@@ -477,7 +488,7 @@ export async function getAdminIdentity(
   }
 
   if (now.getTime() - row.lastSeenAt.getTime() > SESSION_TOUCH_INTERVAL_MS) {
-    const idleExpiresAt = new Date(
+    const idleExpiresAt = row.rememberBrowser ? row.expiresAt : new Date(
       Math.min(now.getTime() + ADMIN_SESSION_IDLE_SECONDS * 1000, row.expiresAt.getTime()),
     );
     await prisma.adminSession

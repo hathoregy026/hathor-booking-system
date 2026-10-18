@@ -23,7 +23,7 @@ are given 10 single-use recovery codes before the dashboard opens.
 | Brute force | Durable Postgres throttles: 10 password attempts per IP and 5 per account every 15 min; 5 codes per sign-in, 10 per account, 20 per IP. |
 | Finding out which emails have accounts | Same message, same status and the same Argon2 timing for unknown emails, wrong passwords and disabled accounts. |
 | Code read over a shoulder / replayed | Each 30-second code is accepted once per account. |
-| Stolen session cookie | `HttpOnly`, `SameSite=Strict`, `Secure` + `__Host-` prefix in production. Sessions live in the database: logout, "sign out everywhere", password changes and disabled accounts take effect on the next request. Idle timeout 30 min, hard limit 12 h. |
+| Stolen session cookie | `HttpOnly`, `SameSite=Strict`, `Secure` + `__Host-` prefix in production. Sessions live in the database: logout, "sign out everywhere", password changes and disabled accounts take effect on the next request. Default idle timeout 30 min, hard limit 12 h; optional remembered browsers have a fixed 7-day limit. |
 | Session fixation | A brand-new token at every step; half-finished sign-ins can never open the dashboard. |
 | Cross-site request forgery | Strict cookies, plus same-origin/JSON checks on every sign-in and admin API call. |
 | Someone with a hijacked session locking the owner out | Changing the password needs the current password **and** a code; new recovery codes need a code. |
@@ -114,7 +114,39 @@ the QR code, enter the code, save the recovery codes, and you're in.
 - Copy the session cookie, sign out, put the cookie back → it no longer works.
 - Sign in from a second browser, then **Settings → Security → Sign out
   everywhere else** → the other browser is thrown out.
-- Leave the dashboard idle for 30 minutes → you're asked to sign in again.
+- Leave the dashboard idle for 30 minutes without selecting Remember this browser → you're asked to sign in again.
+
+## Remember this browser
+
+The sign-in form offers **Remember this browser for 7 days**, checked by default
+for new sign-ins. Uncheck it on shared computers. It is saved with the password challenge on the
+server and takes effect only after the authenticator or recovery-code step succeeds,
+including first-time authenticator enrollment. No passwords or tokens go into browser
+local storage.
+
+Unchecked sessions retain the 30-minute idle timeout and 12-hour absolute limit.
+Checked sessions remain valid across inactivity and browser restarts for seven days
+from completed sign-in. Activity does not extend that fixed deadline. Signing out,
+revoking a session, disabling the person, resetting MFA or changing the password
+still invalidates access. Existing password/code checks for sensitive security and
+staff changes remain in force.
+
+Apply migration `20261018120000_admin_remember_browser` before running this version;
+it adds a false-by-default flag to challenges and sessions without extending existing
+sessions. This change does not require new secrets or environment settings. Rollback
+to the previous app requires revoking remembered sessions first: the old app does not
+understand their longer idle allowance. Do not drop the column while this version is
+running. This feature is prepared locally and has not been deployed.
+
+The Vercel build command remains `npm run build`, matching the verified live
+deployment. Database changes are applied separately so publishing this feature
+cannot run unrelated pending migrations. The migration locks the session table
+briefly (5-second lock timeout) and verifies every existing session field is
+unchanged before committing.
+
+Isolated regression checks (synthetic data, no database or external services):
+`node scripts/test-admin-remember-browser.mjs` and
+`node scripts/test-admin-remember-browser-ui.mjs`.
 
 ## Command-line reference
 

@@ -72,6 +72,7 @@ function LoginFormInner({ redirectTo = "/admin" }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberBrowser, setRememberBrowser] = useState(true);
   const [code, setCode] = useState("");
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [savedCodes, setSavedCodes] = useState(false);
@@ -119,7 +120,7 @@ function LoginFormInner({ redirectTo = "/admin" }: LoginFormProps) {
     setError(null);
     setNotice(null);
     try {
-      const { ok, data } = await postJson("/api/admin/login", { email, password });
+      const { ok, data } = await postJson("/api/admin/login", { email, password, rememberBrowser });
       if (!ok) {
         setError(errorText(data, "Sign-in failed."));
         return;
@@ -312,6 +313,24 @@ function LoginFormInner({ redirectTo = "/admin" }: LoginFormProps) {
                       {showPassword ? <EyeOff className="h-4 w-4" aria-hidden /> : <Eye className="h-4 w-4" aria-hidden />}
                     </button>
                   </div>
+                </div>
+                <div>
+                  <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm">
+                    <input
+                      id="admin-remember-browser"
+                      type="checkbox"
+                      checked={rememberBrowser}
+                      onChange={(event) => setRememberBrowser(event.target.checked)}
+                      disabled={isLoading}
+                      aria-describedby="admin-remember-browser-help"
+                      className="h-4 w-4 shrink-0"
+                      style={{ accentColor: "var(--accent)" }}
+                    />
+                    Remember this browser for 7 days
+                  </label>
+                  <p id="admin-remember-browser-help" className="pl-7 text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                    Only on your personal device. Leave unchecked on shared computers.
+                  </p>
                 </div>
                 <ErrorMessage error={error} />
                 <SubmitButton isLoading={isLoading} label="Continue" busyLabel="Checking..." />

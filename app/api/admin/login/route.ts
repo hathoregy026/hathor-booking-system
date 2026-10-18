@@ -51,6 +51,7 @@ const loginSchema = z
     email: z.string().trim().min(3).max(254),
     // Not trimmed: spaces are legitimate password characters.
     password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
+    rememberBrowser: z.boolean().default(true),
   })
   .strict();
 
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
     }
 
     const stage = user.mfaEnrolledAt && user.totpSecretEnc ? "MFA_PENDING" : "ENROLL_PENDING";
-    const challenge = await createAdminChallenge(user.id, stage, context);
+    const challenge = await createAdminChallenge(user.id, stage, context, body.rememberBrowser);
     await recordAdminAuthEvent("LOGIN_PASSWORD_OK", { userId: user.id, context });
 
     const response = loginJson({ next: stage === "MFA_PENDING" ? "code" : "enroll" });

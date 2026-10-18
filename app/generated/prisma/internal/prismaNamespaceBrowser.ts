@@ -482,6 +482,7 @@ export const AdminSessionScalarFieldEnum = {
   tokenHash: 'tokenHash',
   userId: 'userId',
   stage: 'stage',
+  rememberBrowser: 'rememberBrowser',
   createdAt: 'createdAt',
   lastSeenAt: 'lastSeenAt',
   idleExpiresAt: 'idleExpiresAt',

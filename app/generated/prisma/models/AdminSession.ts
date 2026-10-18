@@ -40,6 +40,7 @@ export type AdminSessionMinAggregateOutputType = {
   tokenHash: string | null
   userId: string | null
   stage: $Enums.AdminSessionStage | null
+  rememberBrowser: boolean | null
   createdAt: Date | null
   lastSeenAt: Date | null
   idleExpiresAt: Date | null
@@ -56,6 +57,7 @@ export type AdminSessionMaxAggregateOutputType = {
   tokenHash: string | null
   userId: string | null
   stage: $Enums.AdminSessionStage | null
+  rememberBrowser: boolean | null
   createdAt: Date | null
   lastSeenAt: Date | null
   idleExpiresAt: Date | null
@@ -72,6 +74,7 @@ export type AdminSessionCountAggregateOutputType = {
   tokenHash: number
   userId: number
   stage: number
+  rememberBrowser: number
   createdAt: number
   lastSeenAt: number
   idleExpiresAt: number
@@ -98,6 +101,7 @@ export type AdminSessionMinAggregateInputType = {
   tokenHash?: true
   userId?: true
   stage?: true
+  rememberBrowser?: true
   createdAt?: true
   lastSeenAt?: true
   idleExpiresAt?: true
@@ -114,6 +118,7 @@ export type AdminSessionMaxAggregateInputType = {
   tokenHash?: true
   userId?: true
   stage?: true
+  rememberBrowser?: true
   createdAt?: true
   lastSeenAt?: true
   idleExpiresAt?: true
@@ -130,6 +135,7 @@ export type AdminSessionCountAggregateInputType = {
   tokenHash?: true
   userId?: true
   stage?: true
+  rememberBrowser?: true
   createdAt?: true
   lastSeenAt?: true
   idleExpiresAt?: true
@@ -233,6 +239,7 @@ export type AdminSessionGroupByOutputType = {
   tokenHash: string
   userId: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser: boolean
   createdAt: Date
   lastSeenAt: Date
   idleExpiresAt: Date
@@ -272,6 +279,7 @@ export type AdminSessionWhereInput = {
   tokenHash?: Prisma.StringFilter<"AdminSession"> | string
   userId?: Prisma.StringFilter<"AdminSession"> | string
   stage?: Prisma.EnumAdminSessionStageFilter<"AdminSession"> | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFilter<"AdminSession"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
   idleExpiresAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
@@ -289,6 +297,7 @@ export type AdminSessionOrderByWithRelationInput = {
   tokenHash?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   stage?: Prisma.SortOrder
+  rememberBrowser?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   idleExpiresAt?: Prisma.SortOrder
@@ -309,6 +318,7 @@ export type AdminSessionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AdminSessionWhereInput | Prisma.AdminSessionWhereInput[]
   userId?: Prisma.StringFilter<"AdminSession"> | string
   stage?: Prisma.EnumAdminSessionStageFilter<"AdminSession"> | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFilter<"AdminSession"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
   idleExpiresAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
@@ -326,6 +336,7 @@ export type AdminSessionOrderByWithAggregationInput = {
   tokenHash?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   stage?: Prisma.SortOrder
+  rememberBrowser?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   idleExpiresAt?: Prisma.SortOrder
@@ -350,6 +361,7 @@ export type AdminSessionScalarWhereWithAggregatesInput = {
   tokenHash?: Prisma.StringWithAggregatesFilter<"AdminSession"> | string
   userId?: Prisma.StringWithAggregatesFilter<"AdminSession"> | string
   stage?: Prisma.EnumAdminSessionStageWithAggregatesFilter<"AdminSession"> | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolWithAggregatesFilter<"AdminSession"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AdminSession"> | Date | string
   lastSeenAt?: Prisma.DateTimeWithAggregatesFilter<"AdminSession"> | Date | string
   idleExpiresAt?: Prisma.DateTimeWithAggregatesFilter<"AdminSession"> | Date | string
@@ -365,6 +377,7 @@ export type AdminSessionCreateInput = {
   id?: string
   tokenHash: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser?: boolean
   createdAt?: Date | string
   lastSeenAt?: Date | string
   idleExpiresAt: Date | string
@@ -382,6 +395,7 @@ export type AdminSessionUncheckedCreateInput = {
   tokenHash: string
   userId: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser?: boolean
   createdAt?: Date | string
   lastSeenAt?: Date | string
   idleExpiresAt: Date | string
@@ -397,6 +411,7 @@ export type AdminSessionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -414,6 +429,7 @@ export type AdminSessionUncheckedUpdateInput = {
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -430,6 +446,7 @@ export type AdminSessionCreateManyInput = {
   tokenHash: string
   userId: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser?: boolean
   createdAt?: Date | string
   lastSeenAt?: Date | string
   idleExpiresAt: Date | string
@@ -445,6 +462,7 @@ export type AdminSessionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -461,6 +479,7 @@ export type AdminSessionUncheckedUpdateManyInput = {
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -487,6 +506,7 @@ export type AdminSessionCountOrderByAggregateInput = {
   tokenHash?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   stage?: Prisma.SortOrder
+  rememberBrowser?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   idleExpiresAt?: Prisma.SortOrder
@@ -507,6 +527,7 @@ export type AdminSessionMaxOrderByAggregateInput = {
   tokenHash?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   stage?: Prisma.SortOrder
+  rememberBrowser?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   idleExpiresAt?: Prisma.SortOrder
@@ -523,6 +544,7 @@ export type AdminSessionMinOrderByAggregateInput = {
   tokenHash?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   stage?: Prisma.SortOrder
+  rememberBrowser?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   idleExpiresAt?: Prisma.SortOrder
@@ -588,6 +610,7 @@ export type AdminSessionCreateWithoutUserInput = {
   id?: string
   tokenHash: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser?: boolean
   createdAt?: Date | string
   lastSeenAt?: Date | string
   idleExpiresAt: Date | string
@@ -603,6 +626,7 @@ export type AdminSessionUncheckedCreateWithoutUserInput = {
   id?: string
   tokenHash: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser?: boolean
   createdAt?: Date | string
   lastSeenAt?: Date | string
   idleExpiresAt: Date | string
@@ -648,6 +672,7 @@ export type AdminSessionScalarWhereInput = {
   tokenHash?: Prisma.StringFilter<"AdminSession"> | string
   userId?: Prisma.StringFilter<"AdminSession"> | string
   stage?: Prisma.EnumAdminSessionStageFilter<"AdminSession"> | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFilter<"AdminSession"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
   idleExpiresAt?: Prisma.DateTimeFilter<"AdminSession"> | Date | string
@@ -663,6 +688,7 @@ export type AdminSessionCreateManyUserInput = {
   id?: string
   tokenHash: string
   stage: $Enums.AdminSessionStage
+  rememberBrowser?: boolean
   createdAt?: Date | string
   lastSeenAt?: Date | string
   idleExpiresAt: Date | string
@@ -678,6 +704,7 @@ export type AdminSessionUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -693,6 +720,7 @@ export type AdminSessionUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -708,6 +736,7 @@ export type AdminSessionUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
   stage?: Prisma.EnumAdminSessionStageFieldUpdateOperationsInput | $Enums.AdminSessionStage
+  rememberBrowser?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   idleExpiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -726,6 +755,7 @@ export type AdminSessionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   tokenHash?: boolean
   userId?: boolean
   stage?: boolean
+  rememberBrowser?: boolean
   createdAt?: boolean
   lastSeenAt?: boolean
   idleExpiresAt?: boolean
@@ -743,6 +773,7 @@ export type AdminSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   tokenHash?: boolean
   userId?: boolean
   stage?: boolean
+  rememberBrowser?: boolean
   createdAt?: boolean
   lastSeenAt?: boolean
   idleExpiresAt?: boolean
@@ -760,6 +791,7 @@ export type AdminSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   tokenHash?: boolean
   userId?: boolean
   stage?: boolean
+  rememberBrowser?: boolean
   createdAt?: boolean
   lastSeenAt?: boolean
   idleExpiresAt?: boolean
@@ -777,6 +809,7 @@ export type AdminSessionSelectScalar = {
   tokenHash?: boolean
   userId?: boolean
   stage?: boolean
+  rememberBrowser?: boolean
   createdAt?: boolean
   lastSeenAt?: boolean
   idleExpiresAt?: boolean
@@ -788,7 +821,7 @@ export type AdminSessionSelectScalar = {
   userAgent?: boolean
 }
 
-export type AdminSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tokenHash" | "userId" | "stage" | "createdAt" | "lastSeenAt" | "idleExpiresAt" | "expiresAt" | "revokedAt" | "revokedReason" | "mfaAttempts" | "ip" | "userAgent", ExtArgs["result"]["adminSession"]>
+export type AdminSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tokenHash" | "userId" | "stage" | "rememberBrowser" | "createdAt" | "lastSeenAt" | "idleExpiresAt" | "expiresAt" | "revokedAt" | "revokedReason" | "mfaAttempts" | "ip" | "userAgent", ExtArgs["result"]["adminSession"]>
 export type AdminSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.AdminUserDefaultArgs<ExtArgs>
 }
@@ -812,6 +845,10 @@ export type $AdminSessionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     tokenHash: string
     userId: string
     stage: $Enums.AdminSessionStage
+    /**
+     * Chosen at the password step and carried through MFA; false for existing sessions.
+     */
+    rememberBrowser: boolean
     createdAt: Date
     lastSeenAt: Date
     idleExpiresAt: Date
@@ -1249,6 +1286,7 @@ export interface AdminSessionFieldRefs {
   readonly tokenHash: Prisma.FieldRef<"AdminSession", 'String'>
   readonly userId: Prisma.FieldRef<"AdminSession", 'String'>
   readonly stage: Prisma.FieldRef<"AdminSession", 'AdminSessionStage'>
+  readonly rememberBrowser: Prisma.FieldRef<"AdminSession", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"AdminSession", 'DateTime'>
   readonly lastSeenAt: Prisma.FieldRef<"AdminSession", 'DateTime'>
   readonly idleExpiresAt: Prisma.FieldRef<"AdminSession", 'DateTime'>
