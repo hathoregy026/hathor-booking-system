@@ -5,6 +5,7 @@ import { z } from "zod";
 import { bookingQuery } from "@/lib/booking-database";
 import { assertInboxAdmin, inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
 import { resendApiRequest } from "@/lib/resend-inbound";
+import { incomingAttachmentResponse } from "@/lib/incoming-attachment-download";
 import type { BookingAttachment } from "@/lib/booking-message-types";
 import { attachmentDownloadUrl, privateEmailAttachmentDownloadUrl } from "@/lib/mail-attachments";
 
@@ -29,6 +30,6 @@ export async function GET(request: NextRequest, context: { params: Promise<{ sou
     const result = z.object({ download_url: z.url() }).parse(await resendApiRequest(`/emails/receiving/${emailId}/attachments/${attachmentId}`));
     const target = new URL(result.download_url);
     if (target.protocol !== "https:" || target.hostname !== "inbound-cdn.resend.com" || target.username || target.password) throw new Error("Invalid attachment destination");
-    return NextResponse.redirect(target, { status: 303, headers: inboxHeaders });
+    return await incomingAttachmentResponse(result.download_url, attachment);
   } catch (error) { return inboxRouteError(error); }
 }

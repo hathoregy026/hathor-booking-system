@@ -409,6 +409,7 @@ export const ModelName = {
   DashboardEmailDeletion: 'DashboardEmailDeletion',
   DashboardEmailPlacement: 'DashboardEmailPlacement',
   DashboardNotificationSeen: 'DashboardNotificationSeen',
+  MailAttachmentDownload: 'MailAttachmentDownload',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
   SailingSector: 'SailingSector',
@@ -445,7 +446,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "mailAttachmentDownload" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1334,6 +1335,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DashboardNotificationSeenCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DashboardNotificationSeenCountAggregateOutputType> | number
+        }
+      }
+    }
+    MailAttachmentDownload: {
+      payload: Prisma.$MailAttachmentDownloadPayload<ExtArgs>
+      fields: Prisma.MailAttachmentDownloadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MailAttachmentDownloadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MailAttachmentDownloadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>
+        }
+        findFirst: {
+          args: Prisma.MailAttachmentDownloadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MailAttachmentDownloadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>
+        }
+        findMany: {
+          args: Prisma.MailAttachmentDownloadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>[]
+        }
+        create: {
+          args: Prisma.MailAttachmentDownloadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>
+        }
+        createMany: {
+          args: Prisma.MailAttachmentDownloadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MailAttachmentDownloadCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>[]
+        }
+        delete: {
+          args: Prisma.MailAttachmentDownloadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>
+        }
+        update: {
+          args: Prisma.MailAttachmentDownloadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>
+        }
+        deleteMany: {
+          args: Prisma.MailAttachmentDownloadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MailAttachmentDownloadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MailAttachmentDownloadUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>[]
+        }
+        upsert: {
+          args: Prisma.MailAttachmentDownloadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MailAttachmentDownloadPayload>
+        }
+        aggregate: {
+          args: Prisma.MailAttachmentDownloadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMailAttachmentDownload>
+        }
+        groupBy: {
+          args: Prisma.MailAttachmentDownloadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MailAttachmentDownloadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MailAttachmentDownloadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MailAttachmentDownloadCountAggregateOutputType> | number
         }
       }
     }
@@ -3131,6 +3206,21 @@ export const DashboardNotificationSeenScalarFieldEnum = {
 export type DashboardNotificationSeenScalarFieldEnum = (typeof DashboardNotificationSeenScalarFieldEnum)[keyof typeof DashboardNotificationSeenScalarFieldEnum]
 
 
+export const MailAttachmentDownloadScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  messageId: 'messageId',
+  attachmentId: 'attachmentId',
+  sessionHash: 'sessionHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  removedAt: 'removedAt',
+  saveMethod: 'saveMethod'
+} as const
+
+export type MailAttachmentDownloadScalarFieldEnum = (typeof MailAttachmentDownloadScalarFieldEnum)[keyof typeof MailAttachmentDownloadScalarFieldEnum]
+
+
 export const ApiRateLimitScalarFieldEnum = {
   key: 'key',
   count: 'count',
@@ -3753,6 +3843,7 @@ export type GlobalOmitConfig = {
   dashboardEmailDeletion?: Prisma.DashboardEmailDeletionOmit
   dashboardEmailPlacement?: Prisma.DashboardEmailPlacementOmit
   dashboardNotificationSeen?: Prisma.DashboardNotificationSeenOmit
+  mailAttachmentDownload?: Prisma.MailAttachmentDownloadOmit
   apiRateLimit?: Prisma.ApiRateLimitOmit
   bookingRoom?: Prisma.BookingRoomOmit
   sailingSector?: Prisma.SailingSectorOmit

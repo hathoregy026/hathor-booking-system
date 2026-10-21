@@ -78,9 +78,9 @@ export async function receivedEmailHtmlDocument(source: InboxSource, id: string,
   const query = dependencies.query ?? bookingQuery;
   const request = dependencies.request ?? resendApiRequest;
   const [message] = source === "booking"
-    ? await query<{ resendEmailId: string | null }>(`SELECT "resendEmailId" FROM "BookingMessage" m WHERE id = $1 AND direction = 'INBOUND' AND folder = 'inbox'
+    ? await query<{ resendEmailId: string | null; attachments: Array<{ id: string }> }>(`SELECT "resendEmailId", attachments FROM "BookingMessage" m WHERE id = $1 AND direction = 'INBOUND' AND folder = 'inbox'
       AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id)`, [id])
-    : await query<{ resendEmailId: string | null; direction: string; bodyHtml: string | null }>(`SELECT "resendEmailId", direction, "bodyHtml" FROM "InboxMessage" m WHERE id = $1 AND (direction = 'OUTBOUND' OR folder = 'inbox')
+    : await query<{ resendEmailId: string | null; direction: string; bodyHtml: string | null; attachments: Array<{ id: string }> }>(`SELECT "resendEmailId", direction, "bodyHtml", attachments FROM "InboxMessage" m WHERE id = $1 AND (direction = 'OUTBOUND' OR folder = 'inbox')
       AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'general' AND d."messageId" = m.id)`, [id]);
   if (!message) throw new PublicRequestError("Email not found.", 404);
   if ("direction" in message && (message.direction === "OUTBOUND" || (!message.resendEmailId && "bodyHtml" in message && message.bodyHtml))) {
@@ -93,13 +93,14 @@ export async function receivedEmailHtmlDocument(source: InboxSource, id: string,
   if (email.id !== emailId) throw new Error("Email mismatch");
   if (!email.html) throw new PublicRequestError("This email has no formatted version. Please use the text view.", 404);
   const inlineImages = new Map<string, string>();
-  if (images && email.html.includes("cid:") && email.attachments.length) {
+  const activeAttachments = new Set(message.attachments.map(file => file.id));
+  if (images && email.html.includes("cid:") && email.attachments.length && activeAttachments.size) {
     try {
       const files = z.object({ data: z.array(z.object({ id: z.uuid(), content_id: z.string().max(998).nullable(), content_type: z.string().max(255), download_url: z.url() })).max(100) }).parse(await request(`/emails/receiving/${emailId}/attachments`));
       for (const file of files.data) {
         const url = new URL(file.download_url);
         if (file.content_id && /^(?:image\/png|image\/jpeg|image\/gif|image\/webp)$/.test(file.content_type)
-          && email.attachments.some(attachment => attachment.id === file.id) && url.hostname === "inbound-cdn.resend.com" && publicHttpsUrl(file.download_url)) inlineImages.set(file.content_id, file.download_url);
+          && activeAttachments.has(file.id) && email.attachments.some(attachment => attachment.id === file.id) && url.hostname === "inbound-cdn.resend.com" && publicHttpsUrl(file.download_url)) inlineImages.set(file.content_id, file.download_url);
       }
     } catch { console.warn("[email-view] inline images unavailable; text retained"); }
   }

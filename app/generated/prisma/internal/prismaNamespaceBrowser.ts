@@ -63,6 +63,7 @@ export const ModelName = {
   DashboardEmailDeletion: 'DashboardEmailDeletion',
   DashboardEmailPlacement: 'DashboardEmailPlacement',
   DashboardNotificationSeen: 'DashboardNotificationSeen',
+  MailAttachmentDownload: 'MailAttachmentDownload',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
   SailingSector: 'SailingSector',
@@ -301,6 +302,21 @@ export const DashboardNotificationSeenScalarFieldEnum = {
 } as const
 
 export type DashboardNotificationSeenScalarFieldEnum = (typeof DashboardNotificationSeenScalarFieldEnum)[keyof typeof DashboardNotificationSeenScalarFieldEnum]
+
+
+export const MailAttachmentDownloadScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  messageId: 'messageId',
+  attachmentId: 'attachmentId',
+  sessionHash: 'sessionHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  removedAt: 'removedAt',
+  saveMethod: 'saveMethod'
+} as const
+
+export type MailAttachmentDownloadScalarFieldEnum = (typeof MailAttachmentDownloadScalarFieldEnum)[keyof typeof MailAttachmentDownloadScalarFieldEnum]
 
 
 export const ApiRateLimitScalarFieldEnum = {

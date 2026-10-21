@@ -280,6 +280,21 @@ model DashboardNotificationSeen {
   @@id([kind, source, messageId])
 }
 
+model MailAttachmentDownload {
+  id String @id
+  source String
+  messageId String
+  attachmentId String
+  sessionHash String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  removedAt DateTime?
+  saveMethod String?
+
+  @@index([expiresAt])
+  @@index([removedAt])
+}
+
 model ApiRateLimit {
   key       String   @id
   count     Int

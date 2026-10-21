@@ -9,6 +9,7 @@ import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
 import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, ChevronDown, ChevronUp, FolderInput, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
+import { ReceivedEmailAttachment } from "@/components/admin/ReceivedEmailAttachment";
 import { EmailComposer, type EmailDraft } from "@/components/admin/EmailComposer";
 import { correspondentInitials, correspondentLabel } from "@/lib/email-correspondent";
 import { type InboxCounts, type InboxDetail, type InboxFilter, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
@@ -51,6 +52,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const [selected, setSelected] = useState<string | null>(null);
   const [detail, setDetail] = useState<InboxDetail | null>(null);
   const [detailError, setDetailError] = useState<string | null>(null);
+  const [attachmentNotice, setAttachmentNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
   const [marking, setMarking] = useState(false);
@@ -69,7 +71,15 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
 
   const refresh = useCallback(() => { setCursor(null); setVersion(current => current + 1); }, [setCursor, setVersion]);
   useAdminActivityRefresh("emails", refresh, batching || selection.length > 0);
-  function selectMessage(key: string | null) { setDetail(null); setDetailError(null); setSelected(key); }
+  function selectMessage(key: string | null) { setDetail(null); setDetailError(null); setAttachmentNotice(null); setSelected(key); }
+  function attachmentRemoved(message: InboxDetail, attachmentId: string) {
+    const key = keyOf(message);
+    setDetail(current => current && keyOf(current) === key ? { ...current,
+      attachments: current.attachments.filter(file => file.id !== attachmentId),
+      attachmentCount: current.attachments.filter(file => file.id !== attachmentId).length } : current);
+    setMessages(current => current.map(item => keyOf(item) === key ? { ...item, attachmentCount: Math.max(0, item.attachmentCount - 1) } : item));
+    setAttachmentNotice(key); refresh();
+  }
 
   useEffect(() => {
     const [source, id] = requestedEmail?.split("/") ?? [];
@@ -382,9 +392,12 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
                 <button type="button" className="btn-outline emails-delete" disabled={!canManage || deleting || batching || detail.status === "PENDING"} onClick={() => void removeMessage()}><Trash2 size={15} aria-hidden />{deleting ? "Removing…" : "Delete from dashboard"}</button>
               </div>
               {detail.direction === "OUTBOUND" && detail.status !== "SENT" ? <p className="email-composer__notice">{detail.status === "FAILED" ? "The provider did not accept this email." : "Sending has not been confirmed. Check the original send request before creating a second copy."}</p> : null}
-              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={`${keyOf(detail)}/${detail.folder}`} bodyText={detail.bodyText} formattedUrl={(detail.folder ?? "inbox") === "inbox" && (detail.source === "general" || detail.direction !== "OUTBOUND") ? `/api/admin/inbox/${keyOf(detail)}/formatted` : undefined} /></div>
+              <div className="border-t pt-6 text-sm" style={{ borderColor: "var(--border)" }}><EmailMessageBody key={`${keyOf(detail)}/${detail.folder}/${detail.attachments.map(file => file.id).join(",")}`} bodyText={detail.bodyText} formattedUrl={(detail.folder ?? "inbox") === "inbox" && (detail.source === "general" || detail.direction !== "OUTBOUND") ? `/api/admin/inbox/${keyOf(detail)}/formatted` : undefined} /></div>
+              {attachmentNotice === keyOf(detail) ? <p role="status" className="mt-5 text-sm text-muted">Attachment removed from the dashboard. The email and Zoho copy are kept. Resend’s copy remains under its retention policy.</p> : null}
               {detail.attachments.length && (detail.folder ?? "inbox") === "inbox" ? <div className="mt-7 border-t pt-5" style={{ borderColor: "var(--border)" }}><h3 className="mb-3 text-sm font-semibold">Attachments</h3><ul className="space-y-2">{detail.attachments.map(file => (
-                <li key={file.id}><a className="inline-flex max-w-full items-center gap-2 break-all text-sm underline underline-offset-4" target="_blank" rel="noopener noreferrer" href={`/api/admin/inbox/${detail.source}/${detail.id}/attachments/${file.id}`}><Paperclip className="h-4 w-4 shrink-0" aria-hidden />{file.filename}</a></li>
+                <li key={file.id}>{detail.direction === "OUTBOUND" ? <a className="inline-flex max-w-full items-center gap-2 break-all text-sm underline underline-offset-4" target="_blank" rel="noopener noreferrer" href={`/api/admin/inbox/${detail.source}/${detail.id}/attachments/${file.id}`}><Paperclip className="h-4 w-4 shrink-0" aria-hidden />{file.filename}</a> : <ReceivedEmailAttachment filename={file.filename} contentType={file.contentType}
+                  transferUrl={`/api/admin/inbox/${keyOf(detail)}/attachments/${file.id}/transfer`} disabled={!canManage}
+                  downloadOnlyHref={`/api/admin/inbox/${keyOf(detail)}/attachments/${file.id}`} onRemoved={() => attachmentRemoved(detail, file.id)} />}</li>
               ))}</ul><p className="mt-3 text-xs text-muted">Open only files you trust. Attachment availability follows Resend’s retention policy.</p></div> : null}
               {detail.attachments.length && (detail.folder ?? "inbox") !== "inbox" ? <p className="mt-6 text-sm text-muted">Attachments are held until this message is restored.</p> : null}
             </article>

@@ -102,6 +102,11 @@ export type DashboardEmailPlacement = Prisma.DashboardEmailPlacementModel
  */
 export type DashboardNotificationSeen = Prisma.DashboardNotificationSeenModel
 /**
+ * Model MailAttachmentDownload
+ * 
+ */
+export type MailAttachmentDownload = Prisma.MailAttachmentDownloadModel
+/**
  * Model ApiRateLimit
  * 
  */

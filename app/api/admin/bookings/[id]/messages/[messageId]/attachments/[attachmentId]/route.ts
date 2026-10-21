@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { bookingQuery } from "@/lib/booking-database";
-import { enforcePublicRateLimit } from "@/lib/public-api-security";
+import { enforcePublicRateLimit, PublicRequestError } from "@/lib/public-api-security";
 import { resendApiRequest } from "@/lib/resend-inbound";
+import { incomingAttachmentResponse } from "@/lib/incoming-attachment-download";
 import type { BookingAttachment } from "@/lib/booking-message-types";
 import { attachmentDownloadUrl } from "@/lib/mail-attachments";
 
@@ -37,8 +38,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
     if (target.protocol !== "https:" || target.hostname !== "inbound-cdn.resend.com" || target.username || target.password) {
       throw new Error("Invalid attachment destination");
     }
-    return NextResponse.redirect(target, { status: 303, headers });
-  } catch {
+    return await incomingAttachmentResponse(result.download_url, attachment);
+  } catch (error) {
+    if (error instanceof PublicRequestError) return NextResponse.json({ error: error.message }, { status: error.status, headers });
     console.error("[booking-inbound] attachment could not be opened");
     return NextResponse.json({ error: "Attachment is unavailable. Please try again or check Resend Receiving." }, { status: 503, headers });
   }

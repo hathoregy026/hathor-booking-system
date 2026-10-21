@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Mail, Paperclip, RefreshCw } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
+import { ReceivedEmailAttachment } from "@/components/admin/ReceivedEmailAttachment";
+import { useAdminPermission } from "../AdminAccessProvider";
 import type { BookingMessageDto } from "@/lib/booking-message-types";
 
 const messageTime = new Intl.DateTimeFormat("en-GB", {
@@ -11,6 +13,8 @@ const messageTime = new Intl.DateTimeFormat("en-GB", {
 });
 
 export function BookingConversation({ bookingId, onReply, canReply }: { bookingId: string; onReply: () => void; canReply: boolean }) {
+  const canRemoveAttachments = useAdminPermission("inbox.manage");
+  const [attachmentNotice, setAttachmentNotice] = useState<string | null>(null);
   const [messages, setMessages] = useState<BookingMessageDto[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +76,7 @@ export function BookingConversation({ bookingId, onReply, canReply }: { bookingI
       </header>
       <div className="px-5 py-4" aria-busy={busy}>
         {error ? <p role="alert" className="mb-3 text-sm" style={{ color: "var(--danger)" }}>{error}</p> : null}
+        {attachmentNotice === bookingId ? <p role="status" className="mb-3 text-sm text-muted">Attachment removed from the dashboard. The email and Zoho copy are kept. Resend’s copy remains under its retention policy.</p> : null}
         {!messages.length ? <p className="text-sm text-muted">{busy ? "Loading messages…" : "No messages recorded yet. New booking emails and guest replies appear here once email receiving is activated."}</p> : null}
         <ol className="space-y-4">
           {messages.map(message => (
@@ -85,13 +90,18 @@ export function BookingConversation({ bookingId, onReply, canReply }: { bookingI
               <h3 className="mt-2 break-words text-sm font-semibold">{message.subject || "No subject"}</h3>
               <details className="mt-2 text-sm">
                 <summary className="cursor-pointer text-muted">Read message</summary>
-                <div className="mt-2"><EmailMessageBody bodyText={message.bodyText} formattedUrl={message.direction === "INBOUND" ? `/api/admin/inbox/booking/${message.id}/formatted` : undefined} /></div>
+                <div className="mt-2"><EmailMessageBody key={message.attachments.map(file => file.id).join(",")} bodyText={message.bodyText} formattedUrl={message.direction === "INBOUND" ? `/api/admin/inbox/booking/${message.id}/formatted` : undefined} /></div>
               </details>
               {message.attachments.length ? <ul className="mt-2 flex flex-wrap gap-2">{message.attachments.map(attachment => (
-                <li key={attachment.id}><a className="inline-flex max-w-full items-center gap-1 break-all text-xs hover:underline" style={{ color: "var(--accent)" }} target="_blank" rel="noopener noreferrer"
+                <li key={attachment.id}>{message.direction === "INBOUND" ? <ReceivedEmailAttachment filename={attachment.filename} contentType={attachment.contentType}
+                  transferUrl={`/api/admin/inbox/booking/${message.id}/attachments/${attachment.id}/transfer`} disabled={!canRemoveAttachments}
+                  downloadOnlyHref={`/api/admin/bookings/${encodeURIComponent(bookingId)}/messages/${message.id}/attachments/${attachment.id}`} onRemoved={() => {
+                    setMessages(current => current.map(item => item.id === message.id ? { ...item, attachments: item.attachments.filter(file => file.id !== attachment.id) } : item));
+                    setAttachmentNotice(bookingId);
+                  }} /> : <a className="inline-flex max-w-full items-center gap-1 break-all text-xs hover:underline" style={{ color: "var(--accent)" }} target="_blank" rel="noopener noreferrer"
                   href={`/api/admin/bookings/${encodeURIComponent(bookingId)}/messages/${encodeURIComponent(message.id)}/attachments/${encodeURIComponent(attachment.id)}`}>
                   <Paperclip className="h-3 w-3 shrink-0" aria-hidden />{attachment.filename}
-                </a></li>
+                </a>}</li>
               ))}</ul> : null}
             </li>
           ))}
