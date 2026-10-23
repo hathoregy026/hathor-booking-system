@@ -228,3 +228,27 @@
 .admin-shell .emails-folders button[aria-pressed="true"] { background: var(--accent); color: var(--bg-primary); border-color: var(--accent); }
 .admin-shell .emails-screening { margin-top: 20px; padding: 16px 20px; border-left: 3px solid var(--accent); background: var(--bg-secondary); }
 .admin-shell .emails-screening ul { margin-top: 8px; padding-left: 20px; list-style: disc; }
+
+/* Phones need document scrolling: the controls can fill a short viewport. */
+@media (max-width: 480px) {
+  .admin-shell[data-emails-workspace="true"] .admin-shell__stage {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .admin-shell[data-emails-workspace="true"] .admin-main {
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .emails-page { height: auto; }
+  .dashboard-inbox__workspace { flex: none; }
+  .emails-list-scroll { flex: none; overflow: visible; }
+  .dashboard-inbox__detail {
+    overflow: visible;
+  }
+  .emails-list-scroll,
+  .dashboard-inbox__detail {
+    scroll-margin-top: calc(var(--header-h, 4rem) + 12px);
+  }
+}

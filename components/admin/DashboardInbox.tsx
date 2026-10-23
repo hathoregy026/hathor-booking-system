@@ -60,6 +60,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const [cursor, setCursor] = useState<InboxSummary | null>(null);
   const detailRef = useRef<HTMLElement>(null);
   const listScrollRef = useRef<HTMLDivElement>(null);
+  const revealPhoneList = useRef(false);
   const [compactControls, setCompactControls] = useState(false);
 
   function scrollWorkspace(event: UIEvent<HTMLDivElement>) {
@@ -139,6 +140,22 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
     return () => controller.abort();
   }, [selected]);
 
+  useEffect(() => {
+    if ((!selected && !draft?.key) || !window.matchMedia("(max-width: 480px)").matches) return;
+    const panel = detailRef.current;
+    panel?.focus({ preventScroll: true });
+    panel?.scrollIntoView({ block: "start" });
+  }, [selected, draft?.key]);
+
+  useEffect(() => {
+    if (!revealPhoneList.current || busy) return;
+    revealPhoneList.current = false;
+    if (error || selected || draft?.key || !window.matchMedia("(max-width: 480px)").matches) return;
+    const panel = listScrollRef.current;
+    panel?.focus({ preventScroll: true });
+    panel?.scrollIntoView({ block: "start" });
+  }, [busy, version, error, selected, draft?.key]);
+
   async function markRead() {
     if (!detail || detail.direction === "OUTBOUND" || marking) return;
     const currentKey = keyOf(detail);
@@ -201,6 +218,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
 
   function chooseMailbox(value: MailboxId | "all") {
     if (draft || savingHandler || batching) return;
+    revealPhoneList.current = true;
     setSelection([]);
     setMoveTarget("");
     setBusy(true);
@@ -218,6 +236,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
 
   function chooseFilter(value: InboxFilter) {
     if (batching) return;
+    revealPhoneList.current = true;
     setSelection([]);
     setBusy(true);
     setCursor(null);
