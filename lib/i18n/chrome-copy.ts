@@ -46,6 +46,17 @@ export type ChromeCopy = {
     toggleLabel: (active: string) => string;
     closeMenu: string;
   };
+  /** The day / night switch in the header: the word on the pill, then what it does. */
+  theme: {
+    day: string;
+    night: string;
+    toNight: string;
+    toDay: string;
+    dayTitle: string;
+    nightTitle: string;
+    dayStatus: string;
+    nightStatus: string;
+  };
   hero: {
     discover: string;
     scrollHint: string;
@@ -126,6 +137,16 @@ const EN: ChromeCopy = {
     comingSoon: (name) => `${name} — coming soon`,
     toggleLabel: (active) => `Language: ${active}. Choose a language`,
     closeMenu: "Close language menu",
+  },
+  theme: {
+    day: "daymode",
+    night: "nightmode",
+    toNight: "Switch to night mode",
+    toDay: "Switch to day mode",
+    dayTitle: "Day mode",
+    nightTitle: "Night mode",
+    dayStatus: "Day mode, switch to night mode",
+    nightStatus: "Night mode, switch to day mode",
   },
   hero: {
     discover: "Enter the extraordinary",
@@ -307,6 +328,16 @@ const IT: ChromeCopy = {
     comingSoon: (name) => `${name} — in arrivo`,
     toggleLabel: (active) => `Lingua: ${active}. Scelga una lingua`,
     closeMenu: "Chiudi il menu delle lingue",
+  },
+  theme: {
+    day: "giorno",
+    night: "notte",
+    toNight: "Passa alla modalità notte",
+    toDay: "Passa alla modalità giorno",
+    dayTitle: "Modalità giorno",
+    nightTitle: "Modalità notte",
+    dayStatus: "Modalità giorno, passa alla modalità notte",
+    nightStatus: "Modalità notte, passa alla modalità giorno",
   },
   hero: {
     discover: "Scopra lo straordinario",
