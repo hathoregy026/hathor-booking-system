@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { itineraryFor } from "@/lib/booking-itineraries";
 import { paymentSchedule } from "@/lib/payment-schedule";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PhysicalRoomType, RequestedRoom } from "@/lib/physical-inventory";
 import { JourneyBand, JourneyProgress, PanelHead, ScrollCue, StepBanner, StepGuide, type JourneyStep } from "./JourneyChrome";
@@ -24,7 +25,6 @@ import {
   PlanTiles,
   ReviewCards,
   SectionTabs,
-  partyLine,
   reveal,
   useRevealOnPhone,
   type SectionTab,
@@ -50,15 +50,11 @@ import {
   type Arrangement,
 } from "./allocation";
 import { findCountry } from "@/lib/countries";
+import { useBookingCopy } from "./useBookingCopy";
 import {
   STORAGE_KEY,
   emptyGuestForm,
-  folioRange,
   internationalPhone,
-  longDate,
-  money,
-  plural,
-  shortDate,
   type Attempt,
   type GuestForm,
   type Hold,
@@ -68,8 +64,6 @@ import {
 
 const PHONE = /^\+[1-9][0-9]{6,14}$/;
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-/** Opens the reminder of exactly what is missing on Details & Payment. */
-const REMIND = "Before we can send your request, please add: ";
 
 class RequestFailed extends Error {
   constructor(message: string, readonly status: number) {
@@ -77,10 +71,13 @@ class RequestFailed extends Error {
   }
 }
 
-async function readJson<T>(response: Response): Promise<T> {
+/** A failed reply's message, in the visitor's language. */
+type Translate = (message: string) => string;
+
+async function readJson<T>(response: Response, translate: Translate): Promise<T> {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new RequestFailed(data.details?.formErrors?.[0] ?? data.error ?? "Please try again.", response.status);
+    throw new RequestFailed(translate(data.details?.formErrors?.[0] ?? data.error ?? "Please try again."), response.status);
   }
   return data as T;
 }
@@ -95,11 +92,15 @@ export type JourneyStart = {
   children?: number | null;
 };
 
-const successUrl = (bookingId: string, token: string) =>
-  `/booking/success?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`;
+const successUrl = (bookingId: string, token: string, locale: PublicLocale) =>
+  localizedHref(`/booking/success?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`, locale);
 
 export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const router = useRouter();
+  const t = useBookingCopy();
+  /** Opens the reminder of exactly what is missing on Details & Payment. */
+  const REMIND = t.details.remind;
+  const translate = t.serverMessage;
   const [duration, setDuration] = useState<StayDurationValue>(start?.duration ?? "7-nights-luxor-aswan-luxor");
   const [adults, setAdults] = useState(start?.adults ?? 2);
   const [children, setChildren] = useState(start?.children ?? 0);
@@ -122,13 +123,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const pendingSailingDate = useRef(start?.sailingDate ?? null);
   const stageRef = useRef<HTMLDivElement | null>(null);
 
-  const voyage = itineraryFor(duration);
+  const voyage = bookingItinerary(duration, t.locale);
   const preferred = start?.roomType ?? null;
   const sailing = useMemo(() => sailings.find(entry => entry.scheduleId === scheduleId) ?? null, [sailings, scheduleId]);
   const offers = useMemo(() => (sailing ? offersFromTypes(sailing.types) : {}), [sailing]);
   const guests = useMemo(() => guestsFor(adults, children), [adults, children]);
-  const cabins = useMemo(() => cabinViews(arrangement, guests, offers), [arrangement, guests, offers]);
-  const issues = useMemo(() => arrangementIssues(arrangement, guests), [arrangement, guests]);
+  const cabins = useMemo(() => cabinViews(arrangement, guests, offers, t), [arrangement, guests, offers, t]);
+  const issues = useMemo(() => arrangementIssues(arrangement, guests, t), [arrangement, guests, t]);
   const rooms = useMemo(() => {
     const payload = roomsPayload(arrangement, guests);
     if (preferredRoomId && preferred) {
@@ -167,9 +168,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     const params = new URLSearchParams({ mode: "request", duration });
     const data = await readJson<{ sailings: Sailing[] }>(
       await fetch(`/api/booking/availability?${params.toString()}`, { cache: "no-store", signal }),
+      translate,
     );
     return data.sailings;
-  }, [duration]);
+  }, [duration, translate]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -187,12 +189,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           pendingSailingDate.current = null;
           const match = list.find(entry => entry.departureTime.slice(0, 10) === wanted && !entry.soldOut);
           if (!match) {
-            setAlert(`The sailing in your cart (${longDate(`${wanted}T00:00:00.000Z`)}) is no longer open. Please choose another date.`);
+            setAlert(t.alerts.cartSailingClosed(t.longDate(`${wanted}T00:00:00.000Z`)));
             return;
           }
           setScheduleId(match.scheduleId);
           if (start?.roomId && !match.types.some(type => type.freeCabins.some(cabin => cabin.id === start.roomId))) {
-            setAlert(`Cabin ${start.roomId} is no longer open for this sailing. Choose another date or release the map selection below.`);
+            setAlert(t.alerts.cartCabinClosed(start.roomId));
             return;
           }
           // The cabin chosen in the cart is the guest's own choice: place the party in that type
@@ -203,11 +205,11 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           }
           setStep(2);
         })
-        .catch(error => { if (!controller.signal.aborted) setAlert(error instanceof Error ? error.message : "Availability is unavailable."); })
+        .catch(error => { if (!controller.signal.aborted) setAlert(error instanceof Error ? error.message : t.alerts.availabilityUnavailable); })
         .finally(() => { if (!controller.signal.aborted) setLoadingSailings(false); });
     }, 150);
     return () => { controller.abort(); clearTimeout(timer); };
-  }, [loadSailings, start]);
+  }, [loadSailings, start, t]);
 
   // A reload between the hold and the request picks up exactly where it stopped.
   useEffect(() => {
@@ -225,11 +227,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             headers: { Authorization: `Bearer ${saved.hold.accessToken}` },
             cache: "no-store",
           }),
+          translate,
         );
         if (!alive) return;
         if (["REQUESTED", "CONFIRMED"].includes(current.status)) {
           clearAttempt();
-          router.replace(successUrl(saved.hold.bookingId, saved.hold.accessToken));
+          router.replace(successUrl(saved.hold.bookingId, saved.hold.accessToken, t.locale));
           return;
         }
         if (current.status !== "PENDING_HOLD") { clearAttempt(); return; }
@@ -246,7 +249,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       }
     })();
     return () => { alive = false; };
-  }, [router, clearAttempt]);
+  }, [router, clearAttempt, translate, t.locale]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -290,7 +293,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   function arrangeForMe(types: PhysicalRoomType[]): string | null {
     const next = autoArrange(guests, offers, types);
     if (!next) {
-      return `${types.length === 1 ? "That cabin type" : "Those cabin types"} cannot take all ${guests.length} guests on this date. Choose another type as well.`;
+      return t.alerts.cannotFit(types.length, guests.length);
     }
     setArrangement(next);
     return null;
@@ -308,20 +311,20 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   const trimmedMessage = (removed: PhysicalRoomType[]) =>
-    `A ${[...new Set(removed)].map(type => shortName(type)).join(" and ")} you chose was just booked by another guest. Its guests are waiting in Who Is Travelling — please place them again.`;
+    t.alerts.trimmed([...new Set(removed)].map(type => shortName(type)));
 
   async function enterGuestsSuites() {
     setBusy(true);
     setAlert(null);
     try {
-      if (!scheduleId) throw new Error("Choose one of the open sailing dates first.");
+      if (!scheduleId) throw new Error(t.alerts.chooseDateFirst);
       const result = await refreshForSailing();
-      if (!result) throw new Error("That sailing has just closed. Please choose another date.");
-      if (result.fresh.soldOut) throw new Error("This sailing is fully booked. Please choose another date.");
+      if (!result) throw new Error(t.alerts.sailingClosed);
+      if (result.fresh.soldOut) throw new Error(t.alerts.sailingFull);
       if (result.removed.length > 0) setAlert(trimmedMessage(result.removed));
       setStep(2);
     } catch (error) {
-      setAlert(error instanceof Error ? error.message : "Unable to check availability.");
+      setAlert(error instanceof Error ? error.message : t.alerts.unableToCheck);
     } finally {
       setBusy(false);
     }
@@ -336,20 +339,20 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       const result = await refreshForSailing();
       if (!result) {
         setStep(1);
-        throw new Error("That sailing has just closed. Please choose another date.");
+        throw new Error(t.alerts.sailingClosed);
       }
       if (result.removed.length > 0) throw new Error(trimmedMessage(result.removed));
       if (preferredRoomId) {
         if (!result.fresh.types.some(type => type.freeCabins.some(cabin => cabin.id === preferredRoomId))) {
-          throw new Error(`Cabin ${preferredRoomId} is no longer open. Choose another date or release the map selection.`);
+          throw new Error(t.alerts.cabinClosed(preferredRoomId));
         }
         if (!rooms.some(room => room.roomId === preferredRoomId)) {
-          throw new Error(`Place guests in the selected cabin type, or release cabin ${preferredRoomId} above to choose freely.`);
+          throw new Error(t.alerts.placeInPreferred(preferredRoomId, true));
         }
       }
       setStep(3);
     } catch (error) {
-      setAlert(error instanceof Error ? error.message : "Unable to check availability.");
+      setAlert(error instanceof Error ? error.message : t.alerts.unableToCheck);
     } finally {
       setBusy(false);
     }
@@ -361,13 +364,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       const list = await loadSailings();
       setSailings(list);
       const fresh = list.find(entry => entry.scheduleId === scheduleId);
-      if (!fresh) return "This sailing has just closed, so nothing was added to your cart.";
+      if (!fresh) return t.alerts.closedNothingAdded;
       setArrangement(current => fitToOffers(current, offersFromTypes(fresh.types)).next);
       const type = fresh.types.find(entry => entry.roomType === roomType);
-      if (!type || type.availableCabins === 0) return `${roomType} was just booked on this sailing, so it was not added to your cart.`;
+      if (!type || type.availableCabins === 0) return t.alerts.typeBooked(roomType);
       return null;
     } catch {
-      return "We could not check availability just now, so nothing was added. Please try again.";
+      return t.alerts.couldNotCheck;
     }
   }
 
@@ -378,6 +381,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         headers: { "Content-Type": "application/json", "Idempotency-Key": key },
         body: JSON.stringify({ cruiseScheduleId: scheduleId, rooms: requested }),
       }),
+      translate,
     );
   }
 
@@ -390,6 +394,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ bookingId: target.bookingId, accessToken: target.accessToken }),
         }),
+        translate,
       );
       return result.status;
     } catch {
@@ -399,37 +404,36 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
   function detailsProblems(): Record<string, string> {
     const found: Record<string, string> = {};
-    if (!form.firstName.trim()) found.firstName = "Please enter the lead guest first name.";
-    if (!form.lastName.trim()) found.lastName = "Please enter the lead guest last name.";
-    if (!EMAIL.test(form.email.trim())) found.email = "Please enter a valid email address.";
-    if (!form.countryCode) found.country = "Please choose your country.";
+    const e = t.details.errors;
+    if (!form.firstName.trim()) found.firstName = e.firstName;
+    if (!form.lastName.trim()) found.lastName = e.lastName;
+    if (!EMAIL.test(form.email.trim())) found.email = e.email;
+    if (!form.countryCode) found.country = e.country;
     if (!PHONE.test(phoneToSend)) {
-      found.phone = form.countryCode
-        ? "Please check the phone number."
-        : "Choose your country first, then enter your number.";
+      found.phone = form.countryCode ? e.phone : e.phoneNoCountry;
     }
     const unnamed = cabins.flatMap(cabin =>
-      cabin.guests.filter(guest => !(names[guest.id] ?? "").trim()).map(guest => `${guestLabel(guest)} (${cabin.label})`),
+      cabin.guests.filter(guest => !(names[guest.id] ?? "").trim()).map(guest => `${guestLabel(guest, t)} (${cabin.label})`),
     );
     if (unnamed.length > 0) {
-      const list = unnamed.length === 1 ? unnamed[0] : `${unnamed.slice(0, -1).join(", ")} and ${unnamed[unnamed.length - 1]}`;
-      found.names = `Please give the full name of ${list}, as in the passport.`;
+      found.names = e.names(t.joinAnd(unnamed));
     }
-    if (!form.termsAccepted) found.terms = "Please accept the booking and cancellation terms.";
+    if (!form.termsAccepted) found.terms = e.terms;
     return found;
   }
 
   /** The missing details in one sentence, so the guest knows exactly what to add. */
   function detailsReminder(found: Record<string, string>): string | null {
     const unnamed = guests.filter(guest => !(names[guest.id] ?? "").trim());
+    const r = t.details.reminder;
     const parts = [
-      found.firstName ? "the lead guest's first name" : "",
-      found.lastName ? "the lead guest's last name" : "",
-      found.email ? "a valid email address" : "",
-      found.country ? "your country" : "",
-      found.phone ? (form.countryCode ? "a valid phone number" : "your phone number") : "",
-      found.names ? `the full ${unnamed.length === 1 ? "name" : "names"} of ${guestList(unnamed)}` : "",
-      found.terms ? "your acceptance of the booking terms" : "",
+      found.firstName ? r.firstName : "",
+      found.lastName ? r.lastName : "",
+      found.email ? r.email : "",
+      found.country ? r.country : "",
+      found.phone ? (form.countryCode ? r.phoneValid : r.phone) : "",
+      found.names ? r.names(unnamed.length, guestList(unnamed, t)) : "",
+      found.terms ? r.terms : "",
     ].filter(Boolean);
     if (parts.length === 0) return null;
     return `${REMIND}${parts.join("; ")}.`;
@@ -438,7 +442,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   async function confirmRequest() {
     if (!sailing) return;
     if (preferredRoomId && !rooms.some(room => room.roomId === preferredRoomId)) {
-      setAlert(`Place guests in the selected cabin type, or release cabin ${preferredRoomId} to choose freely.`);
+      setAlert(t.alerts.placeInPreferred(preferredRoomId, false));
       setStep(2);
       return;
     }
@@ -474,7 +478,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       held = await requestHold(current.key, rooms);
       if (["REQUESTED", "CONFIRMED"].includes(held.status)) {
         clearAttempt();
-        router.push(successUrl(held.bookingId, held.accessToken));
+        router.push(successUrl(held.bookingId, held.accessToken, t.locale));
         return;
       }
 
@@ -487,7 +491,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         clearAttempt();
         setAttempt(null);
         await refreshForSailing().catch(() => null);
-        setAlert(`The voyage total for these cabins is now ${money(held.totalPriceCents)}. Please check it and press Confirm request again.`);
+        setAlert(t.alerts.totalChanged(t.money(held.totalPriceCents)));
         setBusy(false);
         return;
       }
@@ -517,9 +521,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             passengers: passengersPayload(arrangement, guests, names),
           }),
         }),
+        translate,
       );
       clearAttempt();
-      router.push(successUrl(result.bookingId, result.accessToken));
+      router.push(successUrl(result.bookingId, result.accessToken, t.locale));
     } catch (error) {
       if (held) {
         // Never leave cabins blocked by a request that did not go through. If the
@@ -527,7 +532,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         const status = await releaseHold(held);
         if (status === "REQUESTED" || status === "CONFIRMED") {
           clearAttempt();
-          router.push(successUrl(held.bookingId, held.accessToken));
+          router.push(successUrl(held.bookingId, held.accessToken, t.locale));
           return;
         }
         clearAttempt();
@@ -539,11 +544,11 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         setAlert(
           refreshed && refreshed.removed.length > 0
             ? trimmedMessage(refreshed.removed)
-            : "One of your cabins was just booked by another guest. Availability has been updated. Please check your cabins and try again.",
+            : t.alerts.cabinTaken,
         );
       } else {
-        const reason = error instanceof Error ? error.message : "Your request could not be sent.";
-        setAlert(`${reason} Nothing is being held for you, so pressing Confirm request again starts a fresh request.`);
+        const reason = error instanceof Error ? error.message : t.alerts.notSent;
+        setAlert(t.alerts.sendFailed(reason));
       }
       setBusy(false);
     }
@@ -578,39 +583,41 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }, [sailing, sailings]);
   const waitingCount = unplacedGuests(arrangement, guests).length;
   const namedCount = guests.filter(guest => (names[guest.id] ?? "").trim()).length;
-  const methodLabel = form.paymentMethod === "BANK_TRANSFER" ? "Bank transfer" : "Card";
+  const methodLabel = t.details.methodShort(form.paymentMethod === "BANK_TRANSFER");
+  const j = t.journey;
+  const dt = t.details;
 
   const mapTabs: SectionTab[] =
     view === 1
       ? [
-          { id: "hj-m-route", label: "Voyage", icon: <IconMap />, status: plural(voyage.nights, "night"), done: true },
-          { id: "hj-m-dates", label: "Date", icon: <IconCalendar />, status: sailing ? shortDate(sailing.departureTime) : "To choose", done: Boolean(scheduleId) },
-          { id: "hj-m-summary", label: "Review", icon: <IconReceipt />, status: "Nothing held yet", done: false },
+          { id: "hj-m-route", label: j.tabs.voyage, icon: <IconMap />, status: t.nights(voyage.nights), done: true },
+          { id: "hj-m-dates", label: j.tabs.date, icon: <IconCalendar />, status: sailing ? t.shortDate(sailing.departureTime) : j.tabs.toChoose, done: Boolean(scheduleId) },
+          { id: "hj-m-summary", label: j.tabs.review, icon: <IconReceipt />, status: j.tabs.nothingHeld, done: false },
         ]
       : view === 2
         ? [
-            { id: "hj-party", label: "Guests", icon: <IconGuests />, status: partyLine(adults, children).replace(" · ", ", "), done: guests.length > 0 },
+            { id: "hj-party", label: t.suites.tabs.guests, icon: <IconGuests />, status: t.partyLine(adults, children).replace(" · ", ", "), done: guests.length > 0 },
             {
               id: "hj-cabins",
-              label: "Cabins",
+              label: t.suites.tabs.cabins,
               icon: <IconBed />,
-              status: issues.length === 0 ? plural(cabins.length, "cabin") : waitingCount > 0 ? `${guests.length - waitingCount} of ${guests.length} placed` : "Check a cabin",
+              status: issues.length === 0 ? t.cabins(cabins.length) : waitingCount > 0 ? t.suites.tabs.placed(guests.length - waitingCount, guests.length) : t.suites.tabs.checkCabin,
               done: issues.length === 0,
             },
-            { id: "hj-m-summary", label: "Review", icon: <IconReceipt />, status: "Nothing held yet", done: false },
+            { id: "hj-m-summary", label: j.tabs.review, icon: <IconReceipt />, status: j.tabs.nothingHeld, done: false },
           ]
         : [
-            { id: "hj-m-lead", label: "Lead guest", icon: <IconLead />, status: leadDone ? "Complete" : "Your details", done: leadDone },
-            { id: "hj-m-passengers", label: "Passengers", icon: <IconGuests />, status: `${namedCount} of ${guests.length} named`, done: namesDone },
-            { id: "hj-m-payment", label: "Payment", icon: <IconCard />, status: form.termsAccepted ? `${methodLabel} · terms` : methodLabel, done: form.termsAccepted },
-            { id: "hj-m-summary", label: "Review", icon: <IconReceipt />, status: "Then confirm", done: false },
+            { id: "hj-m-lead", label: dt.tabs.lead, icon: <IconLead />, status: leadDone ? dt.tabs.complete : dt.tabs.yourDetails, done: leadDone },
+            { id: "hj-m-passengers", label: dt.tabs.passengers, icon: <IconGuests />, status: dt.tabs.named(namedCount, guests.length), done: namesDone },
+            { id: "hj-m-payment", label: dt.tabs.payment, icon: <IconCard />, status: form.termsAccepted ? dt.tabs.withTerms(methodLabel) : methodLabel, done: form.termsAccepted },
+            { id: "hj-m-summary", label: dt.tabs.review, icon: <IconReceipt />, status: dt.tabs.thenConfirm, done: false },
           ];
 
   const summary = (
     <ReviewCards
       id="hj-m-summary"
-      title={view === 3 ? "Review your voyage" : "Your voyage so far"}
-      lede={view === 3 ? "Check everything once more, then confirm your request below." : "Nothing is held until you send your request."}
+      title={view === 3 ? dt.reviewTitle : dt.soFarTitle}
+      lede={view === 3 ? dt.reviewLede : dt.soFarLede}
       duration={duration}
       sailing={sailing}
       adults={adults}
@@ -622,8 +629,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       payment={
         view === 3
           ? {
-              label: form.paymentMethod === "BANK_TRANSFER" ? "Bank transfer" : "Visa / card payment",
-              sub: "Invoice and payment instructions follow by email.",
+              label: dt.methodLong(form.paymentMethod === "BANK_TRANSFER"),
+              sub: dt.paymentSub,
               onEdit: () => reveal("#hj-m-payment"),
             }
           : null
@@ -631,8 +638,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     />
   );
 
-  const partySub = `${partyLine(adults, children)} · ${plural(voyage.nights, "night")}`;
-  const totalLabel = cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total";
+  const partySub = `${t.partyLine(adults, children)} · ${t.nights(voyage.nights)}`;
+  const totalLabel = t.rail.total(cabins.length);
   /** The bar's "Place guests" / "Check cabins": to the cabins, or to the cabin that needs an adult. */
   const showWarning = () =>
     waitingCount > 0 ? reveal("#hj-cabins") : reveal(document.querySelector(".hj-cabin-card--warn") ?? "#hj-cabins", "center");
@@ -657,19 +664,19 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         {view === 1 ? (
           <StepBanner
             step={1}
-            kicker="Journey"
-            title="Plan Your Journey"
-            lede="Three extraordinary voyages. One timeless river."
-            quote="More than a journey."
+            kicker={j.kicker}
+            title={j.title}
+            lede={j.lede}
+            quote={j.quote}
           />
         ) : null}
         {view === 3 ? (
           <StepBanner
             step={3}
-            kicker="Details & Payment"
-            title="Details & Payment"
-            lede="A few details to complete your reservation."
-            quote="A slower, richer way to see Egypt."
+            kicker={dt.kicker}
+            title={dt.title}
+            lede={dt.lede}
+            quote={dt.quote}
           />
         ) : null}
         <MobileBack step={view} onJump={jump} />
@@ -680,21 +687,21 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             items={
               view === 1
                 ? [
-                    { label: "Choose your voyage", hint: "3, 4 or 7 nights on the Nile", done: true },
-                    { label: "Pick a sailing date", hint: "Open departures are marked", done: Boolean(scheduleId) },
-                    { label: "Continue to guests & suites", hint: "Nothing is held yet", done: false },
+                    { ...j.guide[0], done: true },
+                    { ...j.guide[1], done: Boolean(scheduleId) },
+                    { ...j.guide[2], done: false },
                   ]
                 : view === 2
                   ? [
-                      { label: "Set who is travelling", hint: "Adults and children", done: guests.length > 0 },
-                      { label: "Place every guest in a cabin", hint: "Drag, tap, or use the menus", done: issues.length === 0 },
-                      { label: "Continue to details", hint: "Nothing is held yet", done: false },
+                      { ...t.suites.guide[0], done: guests.length > 0 },
+                      { ...t.suites.guide[1], done: issues.length === 0 },
+                      { ...t.suites.guide[2], done: false },
                     ]
                   : [
-                      { label: "Lead guest details", hint: "Name, email, phone, country", done: leadDone },
-                      { label: "Passenger names", hint: "As shown in passports", done: namesDone },
-                      { label: "Payment preference & terms", hint: "No card details needed", done: form.termsAccepted },
-                      { label: "Confirm request", hint: "Your cabins are reserved as you send", done: false },
+                      { ...dt.guide[0], done: leadDone },
+                      { ...dt.guide[1], done: namesDone },
+                      { ...dt.guide[2], done: form.termsAccepted },
+                      { ...dt.guide[3], done: false },
                     ]
             }
           />
@@ -705,13 +712,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           <div className="hj-stage">
             <section className="hj-panel">
               {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
-              <PanelHead step={1} title="Plan Your Journey" lede="Three extraordinary voyages. One timeless river." />
+              <PanelHead step={1} title={j.title} lede={j.lede} />
 
-              <span className="hj-step-label" id="hj-m-route">Choose your itinerary</span>
+              <span className="hj-step-label" id="hj-m-route">{t.voyage.chooseItinerary}</span>
               <VoyagePicker value={duration} onChange={next => { setDuration(next); setScheduleId(""); setPreferredRoomId(null); }} />
-              {preferredRoomId ? <div className="hj-map-choice" role="status"><span>Chosen on the ship map: cabin {preferredRoomId}. It will be rechecked and reserved exactly when you send your request; nothing is held yet.</span><button type="button" onClick={() => setPreferredRoomId(null)}>Choose freely instead</button></div> : null}
+              {preferredRoomId ? <div className="hj-map-choice" role="status"><span>{j.mapChoice(preferredRoomId)}</span><button type="button" onClick={() => setPreferredRoomId(null)}>{j.chooseFreely}</button></div> : null}
               <div className="hj-mplan" id="hj-m-dates">
-                <span className="hj-step-label">Your departure</span>
+                <span className="hj-step-label">{j.yourDeparture}</span>
                 <PlanTiles
                   sailing={sailing}
                   loading={loadingSailings}
@@ -736,32 +743,32 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               <p className="hj-dates-help">
                 <span aria-hidden>✦</span>
                 <span>
-                  Need a different date? If you cannot find your preferred sailing,{" "}
-                  <Link href="/contact">contact Hathor Reservations</Link>.
+                  {j.datesHelp}{" "}
+                  <Link href={localizedHref("/contact", t.locale)}>{j.datesHelpLink}</Link>.
                 </span>
               </p>
 
               <JourneyBand />
               <div className="hj-actions">
                 <span className="hj-actions__hint">
-                  {sailing ? `${voyage.title} · ${folioRange(sailing.departureTime, sailing.arrivalTime)}` : "Choose a sailing date to continue."}
+                  {sailing ? `${voyage.title} · ${t.folioRange(sailing.departureTime, sailing.arrivalTime)}` : j.chooseToContinue}
                 </span>
                 <button type="button" className="hj-btn" disabled={!scheduleId || busy} onClick={() => void enterGuestsSuites()}>
-                  {busy ? "Checking availability…" : "Continue to guests & suites"} <span aria-hidden>→</span>
+                  {busy ? j.checking : j.continueLong} <span aria-hidden>→</span>
                 </button>
               </div>
-              {!scheduleId ? <p className="hj-note">Choose a sailing date to continue.</p> : null}
+              {!scheduleId ? <p className="hj-note">{j.chooseToContinue}</p> : null}
             </section>
             {rail}
             {summary}
             <ActionBar
-              label={sailing ? `Departs ${shortDate(sailing.departureTime)}` : voyage.title}
-              amount={fromCents === null ? (loadingSailings ? "Loading dates…" : "No open dates") : `From ${money(fromCents)}`}
-              sub={fromCents === null ? voyage.route : "per cabin, entire voyage"}
-              action={scheduleId ? "Continue" : "Choose a date"}
-              ariaLabel={scheduleId ? "Continue to guests & suites" : "Choose a departure date"}
+              label={sailing ? j.departs(t.shortDate(sailing.departureTime)) : voyage.title}
+              amount={fromCents === null ? (loadingSailings ? j.loadingDates : j.noOpenDates) : t.calendar.from(t.money(fromCents))}
+              sub={fromCents === null ? voyage.route : j.perCabin}
+              action={scheduleId ? j.continueShort : j.chooseDate}
+              ariaLabel={scheduleId ? j.continueLong : j.chooseDepartureDate}
               busy={busy}
-              busyLabel="Checking…"
+              busyLabel={j.checkingShort}
               onAction={() => (scheduleId ? void enterGuestsSuites() : setSheet("dates"))}
             />
             <DateSheet
@@ -811,13 +818,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               mobileBar={
                 <ActionBar
                   label={totalLabel}
-                  amount={totalCents === null ? "No cabin yet" : money(totalCents)}
+                  amount={totalCents === null ? t.suites.noCabinYet : t.money(totalCents)}
                   sub={partySub}
                   note={issues.length > 0 && waitingCount === 0 ? issues[0] : null}
-                  action={issues.length === 0 ? "Continue" : waitingCount > 0 ? "Place guests" : "Check cabins"}
-                  ariaLabel={issues.length === 0 ? "Continue to details" : undefined}
+                  action={issues.length === 0 ? j.continueShort : waitingCount > 0 ? t.suites.placeGuests : t.suites.checkCabins}
+                  ariaLabel={issues.length === 0 ? t.suites.continueDetailsLabel : undefined}
                   busy={busy}
-                  busyLabel="Checking…"
+                  busyLabel={j.checkingShort}
                   onAction={() => (issues.length === 0 ? void continueToDetails() : showWarning())}
                 />
               }
@@ -828,7 +835,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         {view === 3 && sailing ? (
           <div className="hj-stage">
             <section className="hj-panel">
-              <PanelHead step={3} title="Guest Details & Payment Preference" lede="Almost there. Please provide your details and choose your preferred payment method." />
+              <PanelHead step={3} title={dt.panelTitle} lede={dt.panelLede} />
               {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
               <DetailsPaymentScreen
                 cabins={cabins}
@@ -847,11 +854,11 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             {rail}
             <ActionBar
               label={totalLabel}
-              amount={totalCents === null ? "—" : money(totalCents)}
+              amount={totalCents === null ? "—" : t.money(totalCents)}
               sub={partySub}
-              action="Confirm request"
+              action={dt.barConfirm}
               busy={busy}
-              busyLabel="Sending your request…"
+              busyLabel={dt.barSending}
               onAction={() => {
                 void confirmRequest();
                 revealMissingField();
@@ -869,32 +876,32 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             childCount={children}
             cabins={cabins}
             totalCents={totalCents}
-            pendingTotal={view === 1 ? (fromCents === null ? "Choose a date" : `From ${money(fromCents)}`) : "Place your guests"}
+            pendingTotal={view === 1 ? (fromCents === null ? j.chooseDate : t.calendar.from(t.money(fromCents))) : t.suites.placeYourGuests}
             onEdit={view > 1 ? () => jump((view - 1) as JourneyStep) : undefined}
             details={rail}
             busy={busy}
             {...(view === 1
               ? {
-                  label: "Continue",
-                  ariaLabel: "Continue to guests and suites",
-                  busyLabel: "Checking…",
-                  blocker: scheduleId ? null : "Choose a sailing date first: the open dates are marked in the calendar.",
+                  label: j.continueShort,
+                  ariaLabel: j.barContinueLabel,
+                  busyLabel: j.checkingShort,
+                  blocker: scheduleId ? null : j.blocker,
                   onContinue: () => void enterGuestsSuites(),
                   onBlocked: () => reveal(".hj-cal", "center"),
                 }
               : view === 2
                 ? {
-                    label: "Continue",
-                    ariaLabel: "Continue to guest details",
-                    busyLabel: "Checking…",
-                    blocker: placementReminder(arrangement, guests),
+                    label: j.continueShort,
+                    ariaLabel: t.suites.barContinueLabel,
+                    busyLabel: j.checkingShort,
+                    blocker: placementReminder(arrangement, guests, t),
                     onContinue: () => void continueToDetails(),
                     onBlocked: showWarning,
                   }
                 : {
-                    label: "Confirm request",
-                    ariaLabel: "Confirm request from the voyage bar",
-                    busyLabel: "Sending…",
+                    label: dt.barConfirm,
+                    ariaLabel: dt.barConfirmLabel,
+                    busyLabel: dt.sendingShort,
                     blocker: detailsReminder(detailsProblems()),
                     onContinue: () => void confirmRequest(),
                     onBlocked: () => void confirmRequest(),

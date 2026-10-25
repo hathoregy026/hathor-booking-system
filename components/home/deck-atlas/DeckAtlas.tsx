@@ -402,7 +402,7 @@ export function DeckAtlas() {
               {sheet.price ? <p className="da-price">{sheet.price}<small>{tx.perCabin}</small></p> : null}
             </div>
             <div className="da-detail__act">
-              {sheet.checkHref ? <Link className="btn" data-hathor-btn="primary" href={sheet.checkHref}>{pick.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>
+              {sheet.checkHref ? <Link className="btn" data-hathor-btn="primary" href={localizedHref(sheet.checkHref, locale)}>{pick.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>
                 : <Link className="btn" data-hathor-btn="primary" href={localizedHref("/contact", locale)}>{tx.contactReservations}</Link>}
               {sheet.viewHref ? <Link className="btn" href={localizedHref(sheet.viewHref, locale)}>{tx.viewRoom}</Link> : null}
             </div>

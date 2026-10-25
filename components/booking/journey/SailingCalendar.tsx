@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { longDate, money, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
+import { utcParts, type Sailing } from "./model";
 import { IconInfo } from "./icons";
 import { useDesktop } from "./useDesktop";
+import { useBookingCopy } from "./useBookingCopy";
 
-const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 /** How many dates the desktop list shows before "Show all". */
 const NEXT_DATES = 5;
 
@@ -34,6 +34,7 @@ export function SailingCalendar({
   /** Phone and tablet date sheet: open on the chosen date's month rather than the first. */
   openOnSelected?: boolean;
 }) {
+  const t = useBookingCopy();
   const months = useMemo(() => {
     const seen = new Map<string, { year: number; month: number }>();
     for (const sailing of sailings) {
@@ -114,22 +115,22 @@ export function SailingCalendar({
   return (
     <>
       <div className="hj-cal">
-        <p className="hj-sailings__label">Select your departure date</p>
+        <p className="hj-sailings__label">{t.calendar.selectDate}</p>
         <div className="hj-cal__head">
           <button
             type="button"
             className="hj-cal__nav"
-            aria-label="Previous month"
+            aria-label={t.calendar.previousMonth}
             disabled={monthIndex <= 0}
             onClick={() => goToMonth(monthIndex - 1)}
           >
             ‹
           </button>
-          <span className="hj-cal__title">{current ? monthLabel(current.year, current.month) : "No sailings"}</span>
+          <span className="hj-cal__title">{current ? t.monthLabel(current.year, current.month) : t.calendar.noSailings}</span>
           <button
             type="button"
             className="hj-cal__nav"
-            aria-label="Next month"
+            aria-label={t.calendar.nextMonth}
             disabled={monthIndex >= months.length - 1}
             onClick={() => goToMonth(monthIndex + 1)}
           >
@@ -138,7 +139,7 @@ export function SailingCalendar({
         </div>
 
         <div className="hj-cal__grid">
-          {DOW.map(day => <span key={day} className="hj-cal__dow">{day}</span>)}
+          {t.weekdayHeads.map(day => <span key={day} className="hj-cal__dow">{day}</span>)}
           {cells.map((day, index) => {
             if (day === 0) return <span key={`pad-${index}`} className="hj-cal__day" aria-hidden />;
             const sailing = byDay.get(day);
@@ -149,7 +150,7 @@ export function SailingCalendar({
                 key={day}
                 type="button"
                 className={`hj-cal__day hj-cal__day--open${selectedId === sailing.scheduleId ? " hj-cal__day--picked" : ""}`}
-                aria-label={`Sailing departing ${longDate(sailing.departureTime)}${startingPrice(sailing) !== null ? `, from ${money(startingPrice(sailing)!)}` : ""}`}
+                aria-label={t.calendar.dayLabel(t.longDate(sailing.departureTime), startingPrice(sailing) !== null ? t.money(startingPrice(sailing)!) : null)}
                 aria-pressed={selectedId === sailing.scheduleId}
                 onClick={() => onSelect(sailing.scheduleId)}
               >
@@ -159,19 +160,19 @@ export function SailingCalendar({
           })}
         </div>
         <p className="hj-cal__legend">
-          <span><i className="on" /> Available departure</span>
-          <span><i className="off" /> Unavailable</span>
+          <span><i className="on" /> {t.calendar.available}</span>
+          <span><i className="off" /> {t.calendar.unavailable}</span>
         </p>
       </div>
 
       <div className="hj-sailings">
-        <span className="hj-sailings__label">Available departures</span>
+        <span className="hj-sailings__label">{t.calendar.departures}</span>
         {sailings.length === 0 ? (
-          <p className="hj-sailings__empty">No sailings are open for this voyage at the moment. Choose another itinerary, or contact our reservations team.</p>
+          <p className="hj-sailings__empty">{t.calendar.empty}</p>
         ) : (
           <div className="hj-sailings__list">
             {byMonth && listed.length === 0 && current ? (
-              <p className="hj-sailings__empty">No open departures from {monthLabel(current.year, current.month)}.</p>
+              <p className="hj-sailings__empty">{t.calendar.noneFrom(t.monthLabel(current.year, current.month))}</p>
             ) : null}
             {listed.map(sailing => (
               <button
@@ -181,11 +182,11 @@ export function SailingCalendar({
                 onClick={() => onSelect(sailing.scheduleId)}
               >
                 <span>
-                  <span className="hj-sailing__when">{shortDate(sailing.departureTime)}</span>
-                  <span className="hj-sailing__dow">{weekdayShort(sailing.departureTime)}</span>
+                  <span className="hj-sailing__when">{t.shortDate(sailing.departureTime)}</span>
+                  <span className="hj-sailing__dow">{t.weekdayShort(sailing.departureTime)}</span>
                 </span>
                 <span className="hj-sailing__aside">
-                  {startingPrice(sailing) !== null ? <span className="hj-sailing__price">From {money(startingPrice(sailing)!)}</span> : null}
+                  {startingPrice(sailing) !== null ? <span className="hj-sailing__price">{t.calendar.from(t.money(startingPrice(sailing)!))}</span> : null}
                   <span className="hj-sailing__chev" aria-hidden>›</span>
                 </span>
               </button>
@@ -194,10 +195,10 @@ export function SailingCalendar({
         )}
         {desktop && (allDates || open.length > listed.length) ? (
           <button type="button" className="hj-linkbtn hj-sailings__more" aria-pressed={allDates} onClick={() => setAllDates(value => !value)}>
-            {allDates ? "Show fewer dates" : `Show all ${open.length} departures`}
+            {allDates ? t.calendar.showFewer : t.calendar.showAll(open.length)}
           </button>
         ) : null}
-        <p className="hj-sailings__note"><IconInfo /> {departureDay} departures only.</p>
+        <p className="hj-sailings__note"><IconInfo /> {t.calendar.only(departureDay)}</p>
       </div>
     </>
   );

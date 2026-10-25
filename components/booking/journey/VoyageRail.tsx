@@ -2,13 +2,14 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
-import { itineraryFor } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { folioRange, money, plural, shortDate, type Sailing } from "./model";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import type { Sailing } from "./model";
 import type { CabinView } from "./allocation";
 import { IconBed, IconCalendar, IconChevron, IconGuests, IconPencil, IconTemple } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
 import { useStickyFit } from "./useStickyFit";
+import { useBookingCopy } from "./useBookingCopy";
 
 function Row({
   icon,
@@ -23,6 +24,7 @@ function Row({
   onEdit?: () => void;
   canEdit?: boolean;
 }) {
+  const t = useBookingCopy();
   return (
     <div className="hj-rail__row">
       <span className="hj-rail__icon" aria-hidden>{icon}</span>
@@ -33,15 +35,12 @@ function Row({
       {onEdit ? (
         <button type="button" className="hj-rail__edit" disabled={!canEdit} onClick={onEdit}>
           <IconPencil className="hj-rail__pencil" />
-          <span className="hj-rail__edit-text">Edit</span>
+          <span className="hj-rail__edit-text">{t.edit}</span>
         </button>
       ) : null}
     </div>
   );
 }
-
-const partyLine = (adults: number, children: number) =>
-  [plural(adults, "Adult"), children > 0 ? plural(children, "Child", "Children") : null].filter(Boolean).join(" · ");
 
 /**
  * The running summary. Rates come from the availability read; the total is
@@ -67,31 +66,32 @@ export function VoyageRail({
   step: JourneyStep;
   onJump: (step: JourneyStep) => void;
 }) {
-  const voyage = itineraryFor(duration);
+  const t = useBookingCopy();
+  const voyage = bookingItinerary(duration, t.locale);
   const railRef = useRef<HTMLElement | null>(null);
   useStickyFit(railRef);
 
   return (
-    <aside className="hj-rail" aria-label="Your voyage summary" ref={railRef}>
+    <aside className="hj-rail" aria-label={t.rail.summaryLabel} ref={railRef}>
       <div className="hj-rail__head">
-        <h2 className="hj-rail__title">Your Voyage</h2>
+        <h2 className="hj-rail__title">{t.rail.title}</h2>
         <span className="hj-rail__ankh" aria-hidden>☥</span>
       </div>
       <div className="hj-rail__rule" />
       <Image className="hj-rail__media" src={voyage.image} alt="" width={640} height={360} sizes="340px" />
 
-      <Row icon={<IconTemple />} label="Journey" canEdit={step > 1} onEdit={() => onJump(1)}>
+      <Row icon={<IconTemple />} label={t.rail.journey} canEdit={step > 1} onEdit={() => onJump(1)}>
         {voyage.title} · {voyage.route}
       </Row>
-      <Row icon={<IconCalendar />} label="Dates" canEdit={step > 1} onEdit={() => onJump(1)}>
-        {sailing ? folioRange(sailing.departureTime, sailing.arrivalTime) : "Select your dates"}
+      <Row icon={<IconCalendar />} label={t.rail.dates} canEdit={step > 1} onEdit={() => onJump(1)}>
+        {sailing ? t.folioRange(sailing.departureTime, sailing.arrivalTime) : t.rail.selectDates}
       </Row>
-      <Row icon={<IconGuests />} label="Guests" canEdit={step > 2} onEdit={() => onJump(2)}>
-        {partyLine(adults, childCount)}
+      <Row icon={<IconGuests />} label={t.rail.guests} canEdit={step > 2} onEdit={() => onJump(2)}>
+        {t.partyLine(adults, childCount)}
       </Row>
-      <Row icon={<IconBed />} label="Accommodation" canEdit={step > 2} onEdit={() => onJump(2)}>
+      <Row icon={<IconBed />} label={t.rail.accommodation} canEdit={step > 2} onEdit={() => onJump(2)}>
         {cabins.length === 0 ? (
-          "Not selected yet"
+          t.rail.notSelected
         ) : (
           <span className="hj-rail__cabins">
             {cabins.map(cabin => (
@@ -99,8 +99,8 @@ export function VoyageRail({
                 <span>{cabin.label}</span>
                 <span className="hj-rail__cabin-guests">
                   {cabin.guests.length === 0
-                    ? "No guests yet"
-                    : partyLine(
+                    ? t.rail.noGuests
+                    : t.partyLine(
                         cabin.guests.filter(guest => guest.kind === "adult").length,
                         cabin.guests.filter(guest => guest.kind === "child").length,
                       )}
@@ -112,21 +112,19 @@ export function VoyageRail({
       </Row>
 
       <div className="hj-total-block">
-        <span className="hj-total-block__label">{cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}</span>
+        <span className="hj-total-block__label">{t.rail.total(cabins.length)}</span>
         {totalCents === null ? (
-          <p className="hj-total-block__pending">Select accommodation</p>
+          <p className="hj-total-block__pending">{t.rail.pending}</p>
         ) : (
-          <div className="hj-total-block__amount">{money(totalCents)}</div>
+          <div className="hj-total-block__amount">{t.money(totalCents)}</div>
         )}
         <p className="hj-deposit__fine">
-          {totalCents === null
-            ? "The voyage total appears once your guests have a cabin."
-            : `Entire ${voyage.nights}-night voyage, per cabin rates. Taxes and service charges included.`}
+          {totalCents === null ? t.rail.pendingFine : t.rail.fine(voyage.nights)}
         </p>
       </div>
 
       <p className="hj-rail__brand">Hathor</p>
-      <span className="hj-rail__tagline">A higher rhythm</span>
+      <span className="hj-rail__tagline">{t.rail.tagline}</span>
     </aside>
   );
 }
@@ -168,9 +166,10 @@ export function VoyageBarFrame({
   /** A reminder of what is still missing, shown above the action. */
   nudge?: string | null;
 }) {
+  const t = useBookingCopy();
   const [open, setOpen] = useState(false);
   return (
-    <section className={`hj-voyagebar${open ? " hj-voyagebar--open" : ""}${details ? "" : " hj-voyagebar--plain"}`} aria-label="Your voyage">
+    <section className={`hj-voyagebar${open ? " hj-voyagebar--open" : ""}${details ? "" : " hj-voyagebar--plain"}`} aria-label={t.rail.barLabel}>
       {open && details ? <div className="hj-voyagebar__panel" id="hj-voyagebar-panel">{details}</div> : null}
       {details ? (
         <button
@@ -180,12 +179,12 @@ export function VoyageBarFrame({
           aria-controls="hj-voyagebar-panel"
           onClick={() => setOpen(current => !current)}
         >
-          <span className="hj-voyagebar__title">Your Voyage</span>
+          <span className="hj-voyagebar__title">{t.rail.title}</span>
           <IconChevron direction={open ? "down" : "up"} />
         </button>
       ) : (
         <span className="hj-voyagebar__toggle">
-          <span className="hj-voyagebar__title">Your Voyage</span>
+          <span className="hj-voyagebar__title">{t.rail.title}</span>
         </span>
       )}
       <Image className="hj-voyagebar__img" src={image} alt="" width={240} height={140} sizes="120px" />
@@ -211,7 +210,7 @@ export function VoyageBarFrame({
         <span className="hj-voyagebar__sub">{totalLabel}</span>
         <span className="hj-voyagebar__amount">{totalValue}</span>
       </span>
-      {onEdit ? <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>Edit</button> : <span />}
+      {onEdit ? <button type="button" className="hj-voyagebar__edit" onClick={onEdit}>{t.edit}</button> : <span />}
       <span className="hj-voyagebar__act">
         {nudge ? <span className="hj-voyagebar__nudge" role="status">{nudge}</span> : null}
         {action}
@@ -263,7 +262,8 @@ export function VoyageBar({
   /** Brings the missing part into view. */
   onBlocked?: () => void;
 }) {
-  const voyage = itineraryFor(duration);
+  const t = useBookingCopy();
+  const voyage = bookingItinerary(duration, t.locale);
   const [nudge, setNudge] = useState<string | null>(null);
   const [nudgeFor, setNudgeFor] = useState(blocker);
   // A reminder goes as soon as the missing part is done (or another one takes its place).
@@ -276,12 +276,12 @@ export function VoyageBar({
       image={voyage.image}
       title={voyage.title}
       route={voyage.route}
-      dateMain={sailing ? shortDate(sailing.departureTime) : "Choose a date"}
-      dateSub={sailing ? `to ${shortDate(sailing.arrivalTime)}` : `Departs ${voyage.departureDay}`}
-      partyMain={partyLine(adults, childCount)}
-      partySub={cabins.length === 0 ? "No cabin yet" : plural(cabins.length, "Cabin")}
-      totalLabel={cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}
-      totalValue={totalCents === null ? pendingTotal : money(totalCents)}
+      dateMain={sailing ? t.shortDate(sailing.departureTime) : t.rail.chooseDate}
+      dateSub={sailing ? t.rail.to(t.shortDate(sailing.arrivalTime)) : t.voyage.departsOn(voyage.departureDay)}
+      partyMain={t.partyLine(adults, childCount)}
+      partySub={cabins.length === 0 ? t.rail.noCabin : t.cabinsTitle(cabins.length)}
+      totalLabel={t.rail.total(cabins.length)}
+      totalValue={totalCents === null ? pendingTotal : t.money(totalCents)}
       details={details}
       onEdit={onEdit}
       nudge={nudge}

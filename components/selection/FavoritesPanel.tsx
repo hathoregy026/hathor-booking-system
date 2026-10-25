@@ -269,7 +269,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
     if (selection.sailingDate) params.set("sailing", selection.sailingDate);
 
     onClose();
-    router.push(`/booking?${params.toString()}`);
+    router.push(localHref(`/booking?${params.toString()}`));
   }, [
     adults,
     children,

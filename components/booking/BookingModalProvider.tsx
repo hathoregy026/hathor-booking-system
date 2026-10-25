@@ -9,8 +9,9 @@ import {
   Suspense,
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useLocalizedHref } from "@/hooks/usePublicLocale";
 
-/** Book now opens the booking journey itself, on its first step. */
+/** Book now opens the booking journey itself, on its first step, in the visitor's language. */
 const BOOKING_HREF = "/booking";
 
 type BookingModalContextValue = {
@@ -24,17 +25,19 @@ const BookingModalContext = createContext<BookingModalContextValue | null>(null)
 function BookLinkRedirect() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const localHref = useLocalizedHref();
 
   useEffect(() => {
-    if (searchParams.get("book") === "1") router.replace(BOOKING_HREF);
-  }, [router, searchParams]);
+    if (searchParams.get("book") === "1") router.replace(localHref(BOOKING_HREF));
+  }, [router, searchParams, localHref]);
 
   return null;
 }
 
 export function BookingModalProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const openBooking = useCallback(() => router.push(BOOKING_HREF), [router]);
+  const localHref = useLocalizedHref();
+  const openBooking = useCallback(() => router.push(localHref(BOOKING_HREF)), [router, localHref]);
   const closeBooking = useCallback(() => {}, []);
 
   return (

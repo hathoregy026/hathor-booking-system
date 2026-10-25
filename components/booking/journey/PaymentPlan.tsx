@@ -1,28 +1,22 @@
-import { money, stageLabel, type PaymentStage } from "./model";
+import { BOOKING_COPY } from "@/lib/i18n/booking-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
+import type { PaymentStage } from "./model";
 
 /** The three plans (lib/payment-schedule.ts and hathor_acquire_hold decide which applies). */
-const PLANS = [
-  { stages: 3, text: "Booked more than 60 days before departure: 30% with the first invoice, 20% by 60 days before, and the last 50% by 45 days before." },
-  { stages: 2, text: "Booked 46 to 60 days before departure: 50% with the first invoice and the other 50% by 45 days before." },
-  { stages: 1, text: "Booked 45 days or less before departure: the full amount with the first invoice." },
-] as const;
-
-const INVOICE_NAMES: Record<number, string[]> = {
-  1: ["Full payment"],
-  2: ["First invoice", "Final invoice"],
-  3: ["First invoice", "Second invoice", "Final invoice"],
-};
+const PLAN_STAGES = [3, 2, 1] as const;
 
 /**
  * The whole payment map: each invoice with its own amount and share, when it
  * falls due, and the running total — plus which plan applies and why. Amounts
  * come from the stages the booking engine gives (cumulative), so they always
- * match what Hathor invoices.
+ * match what Hathor invoices. Rendered on the server (result page) and in the
+ * journey, so the language comes in as a prop.
  */
-export function PaymentPlan({ stages, paidCents = 0 }: { stages: PaymentStage[]; paidCents?: number }) {
+export function PaymentPlan({ stages, paidCents = 0, locale = "en" }: { stages: PaymentStage[]; paidCents?: number; locale?: PublicLocale }) {
   if (stages.length === 0) return null;
+  const t = BOOKING_COPY[locale];
   const total = stages[stages.length - 1].cumulativeCents;
-  const names = INVOICE_NAMES[stages.length] ?? stages.map((_, index) => `Invoice ${index + 1}`);
+  const names = t.plan.names[stages.length as 1 | 2 | 3] ?? stages.map((_, index) => t.plan.invoice(index + 1));
 
   return (
     <div className="hj-payplan">
@@ -36,20 +30,20 @@ export function PaymentPlan({ stages, paidCents = 0 }: { stages: PaymentStage[];
               <span className="hj-payplan__num" aria-hidden>{paid ? "✓" : index + 1}</span>
               <span className="hj-payplan__body">
                 <span className="hj-payplan__title">{names[index]} · {percent}%</span>
-                <span className="hj-payplan__when">{stageLabel(stage)}</span>
+                <span className="hj-payplan__when">{t.stageLabel(stage)}</span>
               </span>
               <span className="hj-payplan__amount">
-                {money(amount)}
-                <small>{paid ? "Paid" : stages.length > 1 ? `${money(stage.cumulativeCents)} paid by then` : "The whole voyage"}</small>
+                {t.money(amount)}
+                <small>{paid ? t.plan.paid : stages.length > 1 ? t.plan.paidByThen(t.money(stage.cumulativeCents)) : t.plan.whole}</small>
               </span>
             </li>
           );
         })}
       </ol>
-      <ul className="hj-payplan__rules" aria-label="How payment is split">
-        {PLANS.map(plan => (
-          <li key={plan.stages} aria-current={plan.stages === stages.length ? "true" : undefined}>
-            {plan.text}
+      <ul className="hj-payplan__rules" aria-label={t.plan.rulesLabel}>
+        {PLAN_STAGES.map(plan => (
+          <li key={plan} aria-current={plan === stages.length ? "true" : undefined}>
+            {t.plan.rules[plan]}
           </li>
         ))}
       </ul>

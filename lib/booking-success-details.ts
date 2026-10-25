@@ -21,6 +21,9 @@ export type BookingSuccessDetails = {
   checkInDate: string;
   roomType: string | null;
   guestSummary: string;
+  /** The counts behind guestSummary, so another language can word them. */
+  adultCount: number | null;
+  childCount: number | null;
   totalPriceCents: number;
   customerEmail: string | null;
   ratePlanLabel: string;
@@ -106,6 +109,8 @@ export async function getBookingSuccessDetails(
       booking.adultCount !== null && booking.childCount !== null
         ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
         : parseGuestSummary(booking.customerName),
+    adultCount: booking.adultCount,
+    childCount: booking.childCount,
     totalPriceCents,
     customerEmail: booking.customerEmail,
     ratePlanLabel: "Standard Hathor rate",

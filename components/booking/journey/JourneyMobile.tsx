@@ -4,15 +4,16 @@ import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode,
 import { createPortal } from "react-dom";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
-import { itineraryFor } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
 import { MAX_ADULTS, MAX_CHILDREN, type CabinView } from "./allocation";
-import { folioRange, money, plural, shortDate, type Sailing } from "./model";
+import type { Sailing } from "./model";
 import { IconCalendar, IconCard, IconCheck, IconChevron, IconClose, IconGuests } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
 import { SailingCalendar } from "./SailingCalendar";
 import { Counter } from "./SuitesParts";
+import { useBookingCopy } from "./useBookingCopy";
 
 /*
  * Phone and tablet only (up to 1080px). Everything here is hidden on the
@@ -32,9 +33,6 @@ export function reveal(target: Element | string | null, block: ScrollLogicalPosi
 }
 
 const scrollToId = (id: string) => reveal(document.getElementById(id));
-
-export const partyLine = (adults: number, children: number) =>
-  [plural(adults, "Adult"), children > 0 ? plural(children, "Child", "Children") : null].filter(Boolean).join(" · ");
 
 /* ---------- icons this layer adds (same 24px line style as icons.tsx) ---------- */
 
@@ -134,18 +132,17 @@ export function useRevealOnPhone(selector: string, trigger: unknown) {
 
 /* ---------- top of each step ---------- */
 
-const BACK_TO: Record<number, string> = { 2: "Journey", 3: "Guests & suites" };
-
 /** A plain way back to the previous step, above the progress line. */
 export function MobileBack({ step, onJump }: { step: JourneyStep; onJump: (step: JourneyStep) => void }) {
+  const t = useBookingCopy();
   if (step === 1) return null;
   return (
     <div className="hj-mback">
       <button type="button" className="hj-mback__btn" onClick={() => onJump((step - 1) as JourneyStep)}>
         <IconChevron direction="left" />
-        <span>{BACK_TO[step]}</span>
+        <span>{t.backTo[step]}</span>
       </button>
-      <span className="hj-mback__of">Step {step} of 4</span>
+      <span className="hj-mback__of">{t.stepOf(step, 4)}</span>
     </div>
   );
 }
@@ -164,7 +161,8 @@ export type SectionTab = {
  * marked, a tap scrolls to its part of the page, and the tab of the part on
  * screen is outlined. The page scrolls naturally; nothing here scrolls on its own.
  */
-export function SectionTabs({ items, label = "Your map for this step" }: { items: SectionTab[]; label?: string }) {
+export function SectionTabs({ items, label }: { items: SectionTab[]; label?: string }) {
+  const t = useBookingCopy();
   const [active, setActive] = useState(items[0]?.id ?? "");
   const ids = items.map(item => item.id).join("|");
   const now = items.findIndex(item => !item.done);
@@ -196,7 +194,7 @@ export function SectionTabs({ items, label = "Your map for this step" }: { items
   }, [ids]);
 
   return (
-    <nav className="hj-mtabs" aria-label={label} style={{ "--hj-mtabs-n": items.length } as CSSProperties}>
+    <nav className="hj-mtabs" aria-label={label ?? t.guideHeading} style={{ "--hj-mtabs-n": items.length } as CSSProperties}>
       {items.map((item, index) => (
         <button
           key={item.id}
@@ -214,7 +212,7 @@ export function SectionTabs({ items, label = "Your map for this step" }: { items
           </span>
           <span className="hj-mtab__label">{item.label}</span>
           {item.status ? <span className="hj-mtab__status">{item.status}</span> : null}
-          {item.done ? <span className="hj-sr">(done)</span> : index === now ? <span className="hj-sr">(next to do)</span> : null}
+          {item.done ? <span className="hj-sr">{t.done}</span> : index === now ? <span className="hj-sr">{t.nextToDo}</span> : null}
         </button>
       ))}
     </nav>
@@ -251,10 +249,11 @@ export function ActionBar({
   busyLabel?: string;
   ariaLabel?: string;
 }) {
+  const t = useBookingCopy();
   const barRef = useRef<HTMLDivElement | null>(null);
   useDockOffset(barRef);
   return (
-    <div className="hj-mbar" role="region" aria-label="Your voyage and next step" ref={barRef}>
+    <div className="hj-mbar" role="region" aria-label={t.actionBarLabel} ref={barRef}>
       {note ? <p className="hj-mbar__note" role="status">{note}</p> : null}
       <div className="hj-mbar__row">
         <span className="hj-mbar__sum">
@@ -263,7 +262,7 @@ export function ActionBar({
           {sub ? <span className="hj-mbar__sub">{sub}</span> : null}
         </span>
         <button type="button" className="hj-mbar__go" disabled={disabled || busy} aria-label={ariaLabel} onClick={onAction}>
-          <span>{busy ? busyLabel ?? "One moment…" : action}</span>
+          <span>{busy ? busyLabel ?? t.oneMoment : action}</span>
           {busy ? null : <IconChevron direction="right" />}
         </button>
       </div>
@@ -297,6 +296,7 @@ export function Sheet({
   children: ReactNode;
   footer?: ReactNode;
 }) {
+  const t = useBookingCopy();
   const titleId = useId();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -388,7 +388,7 @@ export function Sheet({
             <h2 className="hj-sheet__title" id={titleId}>{title}</h2>
             {lede ? <span className="hj-sheet__lede">{lede}</span> : null}
           </span>
-          <button ref={closeRef} type="button" className="hj-sheet__close" aria-label="Close" onClick={onClose}>
+          <button ref={closeRef} type="button" className="hj-sheet__close" aria-label={t.close} onClick={onClose}>
             <IconClose />
           </button>
         </header>
@@ -418,14 +418,15 @@ export function PlanTiles({
   onDates: () => void;
   onGuests: () => void;
 }) {
+  const t = useBookingCopy();
   return (
     <div className="hj-mtiles">
       <button type="button" className={`hj-mtile${sailing ? "" : " hj-mtile--todo"}`} onClick={onDates}>
         <span className="hj-mtile__icon" aria-hidden><IconCalendar /></span>
         <span className="hj-mtile__text">
-          <span className="hj-mtile__label">Departure</span>
+          <span className="hj-mtile__label">{t.journey.departure}</span>
           <span className="hj-mtile__value">
-            {sailing ? shortDate(sailing.departureTime) : loading ? "Loading dates…" : "Choose a date"}
+            {sailing ? t.shortDate(sailing.departureTime) : loading ? t.journey.loadingDates : t.journey.tileChoose}
           </span>
         </span>
         <IconChevron direction="right" />
@@ -433,8 +434,8 @@ export function PlanTiles({
       <button type="button" className="hj-mtile" onClick={onGuests}>
         <span className="hj-mtile__icon" aria-hidden><IconGuests /></span>
         <span className="hj-mtile__text">
-          <span className="hj-mtile__label">Guests</span>
-          <span className="hj-mtile__value">{partyLine(adults, childCount)}</span>
+          <span className="hj-mtile__label">{t.journey.guests}</span>
+          <span className="hj-mtile__value">{t.partyLine(adults, childCount)}</span>
         </span>
         <IconChevron direction="right" />
       </button>
@@ -479,6 +480,7 @@ export function DateSheet({
   selectedId: string;
   onApply: (scheduleId: string) => void;
 }) {
+  const t = useBookingCopy();
   const [draft, setDraft] = useDraft(selectedId, open);
   const chosen = sailings.find(entry => entry.scheduleId === draft) ?? null;
 
@@ -486,12 +488,12 @@ export function DateSheet({
     <Sheet
       open={open}
       onClose={onClose}
-      title="Select departure date"
+      title={t.sheets.dateTitle}
       lede={voyageTitle}
       footer={
         <>
           <p className="hj-sheet__pick" aria-live="polite">
-            {chosen ? folioRange(chosen.departureTime, chosen.arrivalTime) : "Tap one of the dates marked in gold."}
+            {chosen ? t.folioRange(chosen.departureTime, chosen.arrivalTime) : t.sheets.datePick}
           </p>
           <button
             type="button"
@@ -502,11 +504,11 @@ export function DateSheet({
               onClose();
             }}
           >
-            {draft || !selectedId ? "Apply date" : "Clear date"}
+            {draft || !selectedId ? t.sheets.applyDate : t.sheets.clearDate}
           </button>
           {draft ? (
             <button type="button" className="hj-mlink" onClick={() => setDraft("")}>
-              Clear selection
+              {t.sheets.clearSelection}
             </button>
           ) : null}
         </>
@@ -540,21 +542,22 @@ export function GuestsSheet({
   childCount: number;
   onCounts: (adults: number, children: number) => void;
 }) {
+  const t = useBookingCopy();
   return (
     <Sheet
       open={open}
       onClose={onClose}
-      title="Who is travelling"
-      lede="You place everyone in a cabin on the next step."
+      title={t.sheets.guestsTitle}
+      lede={t.sheets.guestsLede}
       footer={
         <button type="button" className="hj-mbtn" onClick={onClose}>
-          Done · {partyLine(adults, childCount)}
+          {t.sheets.done(t.partyLine(adults, childCount))}
         </button>
       }
     >
       <div className="hj-counters hj-guestsheet">
-        <Counter label="Adults" hint="12 years and over" value={adults} min={1} max={MAX_ADULTS} onChange={next => onCounts(next, childCount)} />
-        <Counter label="Children" hint="Aged 2 – 11 years" value={childCount} min={0} max={MAX_CHILDREN} onChange={next => onCounts(adults, next)} />
+        <Counter label={t.counters.adults} hint={t.counters.adultsHint} value={adults} min={1} max={MAX_ADULTS} onChange={next => onCounts(next, childCount)} />
+        <Counter label={t.counters.children} hint={t.counters.childrenHint} value={childCount} min={0} max={MAX_CHILDREN} onChange={next => onCounts(adults, next)} />
       </div>
     </Sheet>
   );
@@ -579,6 +582,7 @@ function ReviewCard({
   wide?: boolean;
   children: ReactNode;
 }) {
+  const t = useBookingCopy();
   return (
     <div className={`hj-mcard${wide ? " hj-mcard--wide" : ""}`}>
       <span className="hj-mcard__top">
@@ -586,8 +590,8 @@ function ReviewCard({
         <span className={`hj-mcard__badge${media ? " hj-mcard__badge--photo" : ""}`} aria-hidden>{media ?? icon}</span>
         <span className="hj-mcard__label">{label}</span>
         {edit ? (
-          <button type="button" className="hj-mcard__edit" aria-label={edit.label ?? `Edit ${label.toLowerCase()}`} onClick={edit.onEdit}>
-            Edit
+          <button type="button" className="hj-mcard__edit" aria-label={edit.label ?? t.editLabel(label)} onClick={edit.onEdit}>
+            {t.edit}
           </button>
         ) : null}
       </span>
@@ -629,7 +633,8 @@ export function ReviewCards({
   payment?: { label: string; sub: string; onEdit: () => void } | null;
   children?: ReactNode;
 }) {
-  const voyage = itineraryFor(duration);
+  const t = useBookingCopy();
+  const voyage = bookingItinerary(duration, t.locale);
   const toJourney: EditAction = step > 1 ? { onEdit: () => onJump(1) } : null;
   const toSuites: EditAction = step > 2 ? { onEdit: () => onJump(2) } : null;
   const cover = cabins[0] ? getBookingRoomVisuals(cabins[0].roomType, cabins[0].roomType).cover : null;
@@ -640,36 +645,36 @@ export function ReviewCards({
       {lede ? <p className="hj-msection__lede">{lede}</p> : null}
       <div className="hj-mreview__grid">
         <ReviewCard
-          label="Journey"
+          label={t.rail.journey}
           edit={toJourney}
           media={<Image className="hj-mcard__img" src={voyage.image} alt="" width={160} height={120} sizes="64px" />}
         >
           <span className="hj-mcard__value">{voyage.title}</span>
           <span className="hj-mcard__sub">{voyage.route}</span>
         </ReviewCard>
-        <ReviewCard label="Dates" icon={<IconCalendar />} edit={toJourney}>
-          <span className="hj-mcard__value">{sailing ? folioRange(sailing.departureTime, sailing.arrivalTime) : "Choose a date"}</span>
-          <span className="hj-mcard__sub">{plural(voyage.nights, "night")} · {voyage.departureDay}</span>
+        <ReviewCard label={t.rail.dates} icon={<IconCalendar />} edit={toJourney}>
+          <span className="hj-mcard__value">{sailing ? t.folioRange(sailing.departureTime, sailing.arrivalTime) : t.rail.chooseDate}</span>
+          <span className="hj-mcard__sub">{t.voyage.nightsAndDay(voyage.nights, voyage.departureDay)}</span>
         </ReviewCard>
-        <ReviewCard label="Guests" icon={<IconGuests />} edit={toSuites}>
-          <span className="hj-mcard__value">{partyLine(adults, childCount)}</span>
-          <span className="hj-mcard__sub">{cabins.length === 0 ? "No cabin yet" : plural(cabins.length, "cabin")}</span>
+        <ReviewCard label={t.rail.guests} icon={<IconGuests />} edit={toSuites}>
+          <span className="hj-mcard__value">{t.partyLine(adults, childCount)}</span>
+          <span className="hj-mcard__sub">{cabins.length === 0 ? t.rail.noCabin : t.cabins(cabins.length)}</span>
         </ReviewCard>
         <ReviewCard
-          label="Accommodation"
+          label={t.rail.accommodation}
           edit={toSuites}
           media={cover ? <Image className="hj-mcard__img" src={cover} alt="" width={160} height={120} sizes="64px" /> : undefined}
         >
           {cabins.length === 0 ? (
-            <span className="hj-mcard__value hj-mcard__value--soft">Not selected yet</span>
+            <span className="hj-mcard__value hj-mcard__value--soft">{t.rail.notSelected}</span>
           ) : (
             cabins.map(cabin => (
               <span key={cabin.id} className="hj-mcard__cabin">
                 <span className="hj-mcard__value">{cabin.label}</span>
                 <span className="hj-mcard__sub">
                   {cabin.guests.length === 0
-                    ? "No guests yet"
-                    : partyLine(
+                    ? t.rail.noGuests
+                    : t.partyLine(
                         cabin.guests.filter(guest => guest.kind === "adult").length,
                         cabin.guests.filter(guest => guest.kind === "child").length,
                       )}
@@ -679,21 +684,19 @@ export function ReviewCards({
           )}
         </ReviewCard>
         {payment ? (
-          <ReviewCard label="Payment" icon={<IconCard />} edit={{ onEdit: payment.onEdit, label: "Change payment preference" }}>
+          <ReviewCard label={t.rail.payment} icon={<IconCard />} edit={{ onEdit: payment.onEdit, label: t.details.changePayment }}>
             <span className="hj-mcard__value">{payment.label}</span>
             <span className="hj-mcard__sub">{payment.sub}</span>
           </ReviewCard>
         ) : null}
-        <ReviewCard label={cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"} icon={<IconReceipt />} wide={!payment}>
+        <ReviewCard label={t.rail.total(cabins.length)} icon={<IconReceipt />} wide={!payment}>
           {totalCents === null ? (
-            <span className="hj-mcard__value hj-mcard__value--soft">Select accommodation</span>
+            <span className="hj-mcard__value hj-mcard__value--soft">{t.rail.pending}</span>
           ) : (
-            <span className="hj-mcard__amount">{money(totalCents)}</span>
+            <span className="hj-mcard__amount">{t.money(totalCents)}</span>
           )}
           <span className="hj-mcard__sub">
-            {totalCents === null
-              ? "The voyage total appears once your guests have a cabin."
-              : `Entire ${voyage.nights}-night voyage, per cabin rates. Taxes and service charges included.`}
+            {totalCents === null ? t.rail.pendingFine : t.rail.fine(voyage.nights)}
           </span>
         </ReviewCard>
       </div>

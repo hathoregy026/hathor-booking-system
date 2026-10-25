@@ -157,6 +157,7 @@ function requiresPrivateHtml(pathname: string): boolean {
   return (
     pathname === "/book" ||
     pathname.startsWith("/booking") ||
+    pathname.startsWith("/it/booking") ||
     pathname.startsWith("/preview") ||
     pathname.startsWith("/test-scroll-reveal") ||
     pathname.startsWith("/test-slide") ||

@@ -53,6 +53,10 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
     "/terms-and-conditions",
     "/blogs",
     ...TRANSLATED_BLOG_SLUGS_IT.map((slug) => `/blogs/${slug}`),
+    /* The booking journey (noindex, never in the sitemap). */
+    "/booking",
+    "/booking/success",
+    "/booking/lookup",
   ],
 };
 

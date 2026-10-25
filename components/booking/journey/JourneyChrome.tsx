@@ -3,15 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { useBookingCopy } from "./useBookingCopy";
 
 export type JourneyStep = 1 | 2 | 3;
 
-const STEPS: { id: JourneyStep | 4; name: string }[] = [
-  { id: 1, name: "Journey" },
-  { id: 2, name: "Guests & Suites" },
-  { id: 3, name: "Details & Payment" },
-  { id: 4, name: "Request sent" },
-];
+const STEP_IDS: (JourneyStep | 4)[] = [1, 2, 3, 4];
 
 /** Fine numbered stepper shared by every booking screen. */
 export function JourneyProgress({
@@ -21,9 +17,11 @@ export function JourneyProgress({
   step: JourneyStep | 4;
   onJump?: (step: JourneyStep) => void;
 }) {
+  const t = useBookingCopy();
+  const steps = STEP_IDS.map((id, index) => ({ id, name: t.steps[index] }));
   return (
-    <nav className="hj-progress" aria-label="Booking progress">
-      {STEPS.map((entry, index) => {
+    <nav className="hj-progress" aria-label={t.progressLabel}>
+      {steps.map((entry, index) => {
         const canJump = Boolean(onJump) && entry.id < step && entry.id !== 4;
         const className = [
           "hj-progress__step",
@@ -73,9 +71,10 @@ export function PanelHead({
   titleId?: string;
   lede: string;
 }) {
+  const t = useBookingCopy();
   return (
     <header className="hj-panel__head">
-      <p className="hj-panel__kicker">Step {step} of {of}</p>
+      <p className="hj-panel__kicker">{t.stepOf(step, of)}</p>
       <h1 id={titleId}>{title}</h1>
       <p>{lede}</p>
     </header>
@@ -104,6 +103,7 @@ export function StepBanner({
   lede: string;
   quote?: string;
 }) {
+  const t = useBookingCopy();
   const photo = useSiteImage(BOOKING_BANNER_SLOT);
   return (
     <header className="hj-banner">
@@ -112,10 +112,10 @@ export function StepBanner({
       <div className="hj-banner__copy">
         <span className="hj-banner__num" aria-hidden>
           {String(step).padStart(2, "0")}
-          <span className="hj-banner__of">of 04</span>
+          <span className="hj-banner__of">{t.bannerOf}</span>
         </span>
         <span className="hj-banner__text">
-          <span className="hj-banner__kicker">Step {step} of 4 · {kicker}</span>
+          <span className="hj-banner__kicker">{t.bannerKicker(step, kicker)}</span>
           <h1 className="hj-banner__title">{title}</h1>
           <span className="hj-banner__lede">{lede}</span>
         </span>
@@ -127,14 +127,15 @@ export function StepBanner({
 
 /** The closing band of a step, as in the reference: the name, the promise, the three words. */
 export function JourneyBand() {
+  const t = useBookingCopy();
   return (
     <div className="hj-band" aria-hidden>
       <span className="hj-band__brand">
         Hathor
         <small>Dahabiya</small>
       </span>
-      <span className="hj-band__line">A slower way<br />to see a greater Egypt</span>
-      <span className="hj-band__words">Luxury. Heritage. Belonging.</span>
+      <span className="hj-band__line">{t.bandLine[0]}<br />{t.bandLine[1]}</span>
+      <span className="hj-band__words">{t.bandWords}</span>
     </div>
   );
 }
@@ -145,6 +146,7 @@ export function JourneyBand() {
  * guest starts scrolling or reaches the end.
  */
 export function ScrollCue() {
+  const t = useBookingCopy();
   const [show, setShow] = useState(false);
   useEffect(() => {
     const update = () => {
@@ -164,7 +166,7 @@ export function ScrollCue() {
   }, []);
   return (
     <span className={`hj-cue${show ? " hj-cue--on" : ""}`} aria-hidden>
-      Scroll
+      {t.scroll}
       <span className="hj-cue__line" />
     </span>
   );
@@ -176,11 +178,13 @@ export type GuideItem = { label: string; hint?: string; done: boolean };
  * A small map of what to do on this step. Items tick as the guest completes
  * them, and the first open item is marked as the one to do now.
  */
-export function StepGuide({ items, heading = "Your map for this step" }: { items: GuideItem[]; heading?: string }) {
+export function StepGuide({ items, heading }: { items: GuideItem[]; heading?: string }) {
+  const t = useBookingCopy();
+  const title = heading ?? t.guideHeading;
   const current = items.findIndex(item => !item.done);
   return (
-    <div className="hj-guide" role="group" aria-label={heading}>
-      <span className="hj-guide__heading">{heading}</span>
+    <div className="hj-guide" role="group" aria-label={title}>
+      <span className="hj-guide__heading">{title}</span>
       <ol className="hj-guide__list">
         {items.map((item, index) => {
           const state = item.done ? "done" : index === current ? "now" : "next";
@@ -191,7 +195,7 @@ export function StepGuide({ items, heading = "Your map for this step" }: { items
                 <span className="hj-guide__label">{item.label}</span>
                 {item.hint ? <span className="hj-guide__hint">{item.hint}</span> : null}
               </span>
-              {item.done ? <span className="hj-sr">(done)</span> : state === "now" ? <span className="hj-sr">(next to do)</span> : null}
+              {item.done ? <span className="hj-sr">{t.done}</span> : state === "now" ? <span className="hj-sr">{t.nextToDo}</span> : null}
             </li>
           );
         })}

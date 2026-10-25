@@ -6,6 +6,9 @@ import {
   type PhysicalRoomType,
   type RequestedRoom,
 } from "@/lib/physical-inventory";
+import { BOOKING_COPY, type BookingCopy } from "@/lib/i18n/booking-copy";
+
+const EN = BOOKING_COPY.en;
 
 /**
  * Guest-to-cabin arrangement for the Guests & Suites screen.
@@ -74,9 +77,9 @@ export function parseSlot(id: string): { roomType: PhysicalRoomType; index: numb
 }
 
 /** "King Cabin 3" — the cabin's card on screen, not a physical cabin number. */
-export function cabinLabel(cabinId: string): string {
+export function cabinLabel(cabinId: string, t: BookingCopy = EN): string {
   const slot = parseSlot(cabinId);
-  return slot ? `${SHORT_NAME[slot.roomType]} ${slot.index + 1}` : "that cabin";
+  return slot ? `${SHORT_NAME[slot.roomType]} ${slot.index + 1}` : t.arrangement.thatCabin;
 }
 
 const byTypeThenIndex = (a: Cabin, b: Cabin) =>
@@ -91,7 +94,7 @@ export function guestsFor(adults: number, children: number): Guest[] {
   ];
 }
 
-export const guestLabel = (guest: Guest) => `${guest.kind === "adult" ? "Adult" : "Child"} ${guest.number}`;
+export const guestLabel = (guest: Guest, t: BookingCopy = EN) => t.arrangement.guest(guest.kind, guest.number);
 
 export function occupants(arrangement: Arrangement, guests: Guest[], cabinId: string): Guest[] {
   return guests.filter(guest => arrangement.placement[guest.id] === cabinId);
@@ -135,12 +138,13 @@ export function placeGuest(
   guestId: string,
   target: { cabinId: string },
   offers: Offers,
+  t: BookingCopy = EN,
 ): PlaceResult {
   const guest = guests.find(entry => entry.id === guestId);
-  if (!guest) return { error: "That guest is no longer in your party." };
+  if (!guest) return { error: t.arrangement.gone };
   const { cabinId } = target;
   const slot = parseSlot(cabinId);
-  if (!slot || !isOpenSlot(offers, cabinId)) return { error: `${cabinLabel(cabinId)} is not available on this date.` };
+  if (!slot || !isOpenSlot(offers, cabinId)) return { error: t.arrangement.notAvailable(cabinLabel(cabinId, t)) };
   if (arrangement.placement[guestId] === cabinId) return { next: arrangement, cabinId };
 
   const withoutGuest: Record<string, string> = { ...arrangement.placement };
@@ -148,10 +152,10 @@ export function placeGuest(
   const inside = occupants({ ...arrangement, placement: withoutGuest }, guests, cabinId);
   const capacity = roomCapacity(slot.roomType);
   if (inside.length >= capacity) {
-    return { error: `${cabinLabel(cabinId)} is full — it takes up to ${capacity} guests.` };
+    return { error: t.arrangement.full(cabinLabel(cabinId, t), capacity) };
   }
   if (guest.kind === "child" && inside.filter(entry => entry.kind === "child").length >= MAX_CHILDREN_PER_CABIN) {
-    return { error: `${cabinLabel(cabinId)} already has ${MAX_CHILDREN_PER_CABIN} children.` };
+    return { error: t.arrangement.childLimit(cabinLabel(cabinId, t), MAX_CHILDREN_PER_CABIN) };
   }
 
   const next = normalise(withCabin({ ...arrangement, placement: { ...withoutGuest, [guestId]: cabinId } }, cabinId));
@@ -184,9 +188,10 @@ export function setCabinCount(
   kind: GuestKind,
   count: number,
   offers: Offers,
+  t: BookingCopy = EN,
 ): PlaceResult {
   const slot = parseSlot(cabinId);
-  if (!slot || !isOpenSlot(offers, cabinId)) return { error: `${cabinLabel(cabinId)} is not available on this date.` };
+  if (!slot || !isOpenSlot(offers, cabinId)) return { error: t.arrangement.notAvailable(cabinLabel(cabinId, t)) };
   const same = occupants(arrangement, guests, cabinId).filter(guest => guest.kind === kind);
   if (count === same.length) return { next: arrangement, cabinId };
 
@@ -200,21 +205,18 @@ export function setCabinCount(
 
   const options = cabinCountOptions(arrangement, guests, cabinId, kind);
   if (count > options.limit) {
-    return { error: `${cabinLabel(cabinId)} takes up to ${roomCapacity(slot.roomType)} guests.` };
+    return { error: t.arrangement.takesUpTo(cabinLabel(cabinId, t), roomCapacity(slot.roomType)) };
   }
   if (count > options.reachable) {
     const waiting = options.reachable - same.length;
-    const noun = kind === "adult" ? (waiting === 1 ? "adult is" : "adults are") : waiting === 1 ? "child is" : "children are";
     return {
-      error: waiting === 0
-        ? `No ${kind === "adult" ? "adults" : "children"} are waiting. Add them in Who Is Travelling, or take one out of another cabin.`
-        : `Only ${waiting} ${noun} waiting. Add more in Who Is Travelling first.`,
+      error: waiting === 0 ? t.arrangement.noneWaiting(kind) : t.arrangement.onlyWaiting(waiting, kind),
     };
   }
 
   let next = arrangement;
   for (const guest of unplacedGuests(arrangement, guests).filter(entry => entry.kind === kind).slice(0, count - same.length)) {
-    const result = placeGuest(next, guests, guest.id, { cabinId }, offers);
+    const result = placeGuest(next, guests, guest.id, { cabinId }, offers, t);
     if ("error" in result) return result;
     next = result.next;
   }
@@ -355,24 +357,24 @@ export function autoArrange(guests: Guest[], offers: Offers, allowed: readonly P
 /* ---------- checking and sending ---------- */
 
 /** Everything that would stop the request, worded for the guest. Empty when ready. */
-export function arrangementIssues(arrangement: Arrangement, guests: Guest[]): string[] {
+export function arrangementIssues(arrangement: Arrangement, guests: Guest[], t: BookingCopy = EN): string[] {
   const issues: string[] = [];
   const waiting = unplacedGuests(arrangement, guests).length;
-  if (waiting > 0) issues.push(`${waiting === 1 ? "1 guest still needs" : `${waiting} guests still need`} a cabin.`);
+  if (waiting > 0) issues.push(t.arrangement.stillNeed(waiting));
   for (const cabin of arrangement.cabins) {
     const inside = occupants(arrangement, guests, cabin.id);
-    const label = cabinLabel(cabin.id);
-    if (!inside.some(guest => guest.kind === "adult")) issues.push(`${label} needs at least one adult.`);
-    else if (inside.length > roomCapacity(cabin.roomType)) issues.push(`${label} takes up to ${roomCapacity(cabin.roomType)} guests.`);
+    const label = cabinLabel(cabin.id, t);
+    if (!inside.some(guest => guest.kind === "adult")) issues.push(t.arrangement.needsAdult(label));
+    else if (inside.length > roomCapacity(cabin.roomType)) issues.push(t.arrangement.takesUpTo(label, roomCapacity(cabin.roomType)));
   }
   return issues;
 }
 
-export function cabinViews(arrangement: Arrangement, guests: Guest[], offers: Offers): CabinView[] {
+export function cabinViews(arrangement: Arrangement, guests: Guest[], offers: Offers, t: BookingCopy = EN): CabinView[] {
   return arrangement.cabins.map(cabin => ({
     id: cabin.id,
     roomType: cabin.roomType,
-    label: cabinLabel(cabin.id),
+    label: cabinLabel(cabin.id, t),
     capacity: roomCapacity(cabin.roomType),
     priceCents: offers[cabin.roomType]?.priceCents ?? null,
     guests: occupants(arrangement, guests, cabin.id),
@@ -413,15 +415,13 @@ export function passengersPayload(arrangement: Arrangement, guests: Guest[], nam
 }
 
 /** Guests in a sentence: "Adult 3", "Adult 3 and Child 1", "Adult 3, Child 1 and Child 2". */
-export function guestList(list: Guest[]): string {
-  const labels = list.map(guestLabel);
-  if (labels.length <= 1) return labels[0] ?? "";
-  return `${labels.slice(0, -1).join(", ")} and ${labels[labels.length - 1]}`;
+export function guestList(list: Guest[], t: BookingCopy = EN): string {
+  return t.joinAnd(list.map(guest => guestLabel(guest, t)));
 }
 
 /** What still stops Guests & Suites from continuing, said exactly; null when nothing does. */
-export function placementReminder(arrangement: Arrangement, guests: Guest[]): string | null {
+export function placementReminder(arrangement: Arrangement, guests: Guest[], t: BookingCopy = EN): string | null {
   const waiting = unplacedGuests(arrangement, guests);
-  if (waiting.length > 0) return `${guestList(waiting)} ${waiting.length === 1 ? "still needs" : "still need"} a cabin.`;
-  return arrangementIssues(arrangement, guests)[0] ?? null;
+  if (waiting.length > 0) return t.arrangement.listStillNeeds(guestList(waiting, t), waiting.length);
+  return arrangementIssues(arrangement, guests, t)[0] ?? null;
 }

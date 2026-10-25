@@ -1,5 +1,8 @@
+import { stripLocalePrefix } from "@/lib/i18n/locale";
+
+/** The page shown, without a language prefix: /it/booking is a booking page too. */
 function pathOf(pathname: string | null): string {
-  return (pathname ?? "").toLowerCase();
+  return stripLocalePrefix(pathname ?? "").toLowerCase();
 }
 
 export function isAdminPath(pathname: string | null): boolean {
