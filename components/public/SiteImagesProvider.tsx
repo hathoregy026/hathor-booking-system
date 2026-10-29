@@ -7,7 +7,8 @@ import {
   type ReactNode,
 } from "react";
 import { usePathname } from "next/navigation";
-import { stripLocalePrefix } from "@/lib/i18n/locale";
+import { splitLocalePath, stripLocalePrefix } from "@/lib/i18n/locale";
+import { siteImageAltIn } from "@/lib/i18n/site-image-alts-it";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import type { ResolvedSiteImage, SiteImageMap } from "@/lib/resolve-site-images";
 import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";
@@ -67,6 +68,7 @@ export function SiteImagesProvider({ images, children }: SiteImagesProviderProps
         getDefaultSiteImage(selectedName);
       return {
         ...image,
+        alt: siteImageAltIn(splitLocalePath(livePathname).locale, image.alt),
         slot: selectedName,
         src: preferLocalOptimizedSiteImage(sourceName, image.src),
       };

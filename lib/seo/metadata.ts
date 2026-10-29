@@ -12,6 +12,7 @@ import {
   PUBLIC_LOCALE_OG,
   splitLocalePath,
 } from "@/lib/i18n/locale";
+import { siteImageAltIn } from "@/lib/i18n/site-image-alts-it";
 
 export type SeoOgImage = {
   url: string;
@@ -88,7 +89,7 @@ export function buildPageMetadata({
           url: image.url,
           width: image.width ?? 1920,
           height: image.height ?? 1080,
-          alt: image.alt,
+          alt: siteImageAltIn(locale, image.alt),
         },
       ],
     },
