@@ -43,10 +43,10 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
   voyages: {
     ...page(
       "/it/voyages",
-      "Crociere sul Nilo da Luxor e Assuan: gli itinerari | Hathor Dahabiya",
+      "Crociere sul Nilo tra Luxor e Assuan | Hathor Dahabiya",
       "Scelga il Suo itinerario in dahabiya tra Luxor e Assuan: tre, quattro o sette notti di navigazione privata, visite ai templi e vita a bordo tutto incluso.",
     ),
-    name: "Crociere sul Nilo da Luxor e Assuan | Hathor Dahabiya",
+    name: "Crociere sul Nilo tra Luxor e Assuan | Hathor Dahabiya",
     crumb: "Viaggi",
     trip: {
       name: "Gli itinerari di Hathor Dahabiya sul Nilo",
@@ -60,7 +60,7 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
     ...page(
       "/it/voyages/luxor-to-aswan",
       "Crociera sul Nilo da Luxor ad Assuan | Hathor Dahabiya",
-      "La classica crociera di quattro notti da Luxor ad Assuan a bordo di Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e File al ritmo di una navigazione privata.",
+      "La classica crociera di quattro notti da Luxor ad Assuan su Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e File, in navigazione privata.",
     ),
     name: "Crociera sul Nilo da Luxor ad Assuan | Hathor Dahabiya",
     crumb: "Da Luxor ad Assuan",
@@ -93,14 +93,14 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
     },
     heroLines: ["Da Assuan", "a Luxor", "sul Nilo"],
     statement:
-      "Una traversata intima da sud a nord: tre notti tra File, Kom Ombo ed Edfu al passo senza fretta di una dahabiya, fino ai templi di Luxor, a bordo di una dahabiya di lusso per 32 ospiti.",
+      "Una traversata intima da sud a nord: tre notti tra File, Kom Ombo ed Edfu al passo lento del fiume, fino ai templi di Luxor, a bordo di una dahabiya di lusso per 32 ospiti.",
     detailsHref: "/cruises-list",
   },
   "luxor-aswan-luxor": {
     ...page(
       "/it/voyages/luxor-aswan-luxor",
       "Crociera sul Nilo di 7 notti, Luxor–Assuan–Luxor | Hathor Dahabiya",
-      "Il giro completo di 7 notti e 8 giorni su Hathor Dahabiya: da Luxor ad Assuan e ritorno, con ogni tempio lungo il percorso, a bordo di una dahabiya di lusso per 32 ospiti.",
+      "Il giro completo di 7 notti e 8 giorni da Luxor ad Assuan e ritorno: ogni tempio lungo il percorso, a bordo di Hathor Dahabiya, per soli 32 ospiti.",
     ),
     name: "Crociera sul Nilo di 7 notti da Luxor ad Assuan e ritorno | Hathor Dahabiya",
     crumb: "Luxor, Assuan e Luxor",
@@ -113,7 +113,7 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
     },
     heroLines: ["Luxor, Assuan", "e Luxor", "sul Nilo"],
     statement:
-      "Il circuito completo del Nilo tra Luxor e Assuan, andata e ritorno: sette notti e otto giorni, con il tempo per ogni tempio, per la luce del fiume e per le giornate più quiete che solo un giro completo concede, a bordo di una dahabiya di lusso per 32 ospiti.",
+      "Il circuito completo del Nilo tra Luxor e Assuan, andata e ritorno: sette notti e otto giorni, con il tempo per ogni tempio, per la luce del fiume e per le giornate più quiete che solo un viaggio intero concede, a bordo di una dahabiya di lusso per 32 ospiti.",
     detailsHref: "/cruises-list",
   },
 };

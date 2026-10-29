@@ -32,17 +32,17 @@ const MOORINGS_IT: readonly MooringWords[] = [
     sites: [
       {
         name: "Tempio di Karnak",
-        era: "c. 2000 a.C.",
+        era: "ca. 2000 a.C.",
         note: "Ottanta ettari di santuari, edificati nell’arco di duemila anni.",
       },
       {
         name: "Valle dei Re",
-        era: "c. 1539 a.C.",
+        era: "ca. 1539 a.C.",
         note: "Sessantatré tombe reali scavate nella roccia della riva occidentale.",
       },
       {
         name: "Tempio di Hatshepsut",
-        era: "c. 1479 a.C.",
+        era: "ca. 1479 a.C.",
         note: "Tre terrazze colonnate addossate alla parete rocciosa di Deir el-Bahari.",
       },
     ],
@@ -55,7 +55,7 @@ const MOORINGS_IT: readonly MooringWords[] = [
     sites: [
       {
         name: "Tempio di Khnum",
-        era: "c. 180 a.C.",
+        era: "ca. 180 a.C.",
         note: "Una sala ipostila nove metri sotto il livello della città, con il soffitto dipinto ancora al suo posto.",
       },
       {
@@ -119,7 +119,7 @@ const MOORINGS_IT: readonly MooringWords[] = [
       },
       {
         name: "Isola Elefantina",
-        era: "c. 3000 a.C.",
+        era: "ca. 3000 a.C.",
         note: "La città di frontiera meridionale dell’Egitto, abitata prima ancora che sorgessero le piramidi.",
       },
     ],
