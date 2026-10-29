@@ -29,4 +29,17 @@ export const TRANSLATED_BLOG_SLUGS_IT: readonly string[] = [
   "colossi-of-memnon",
   "aswan-nubian-villages",
   "luxor-temple-facts",
+  /* Batch 5 */
+  "how-is-a-dahabiya-different-from-a-nile-cruise",
+  "what-is-the-best-dahabiya-nile-cruise",
+  "why-choose-a-dahabiya-cruise-in-egypt",
+  "discover-the-timeless-luxor-west-bank",
+  "luxury-travel-in-egypt-what-to-expect-on-a-dahabiya-cruise",
+  "sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise",
+  "spiritual-journey-to-egypt",
+  "discover-edfu-temple",
+  "discovering-the-secrets-of-philae-temple",
+  "golden-gems-of-aswan",
+  "aswan-high-dam",
+  "exploring-esna-temples-history-nile-charm",
 ];
