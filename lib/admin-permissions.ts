@@ -40,7 +40,7 @@ const API_AREAS: Record<string, AdminArea> = {
   "amenities-typography": "website", "gastronomy-typography": "website", "suites-typography": "website",
   "hero-logo-tune": "website", "hieroglyph-tune": "website", "wheel-stage": "website",
   "welcome-splash": "website", "page-visibility": "website", "live-site": "website",
-  "ship-experience": "ship", "blog-posts": "blogs", "email-templates": "templates",
+  occasions: "website", "ship-experience": "ship", "blog-posts": "blogs", "email-templates": "templates",
   "test-email": "templates", upload: "storage", "storage-analyze": "storage",
 };
 export function adminApiRequirement(pathname: string, method: string): AdminRequirement | null {
@@ -67,7 +67,7 @@ const PAGE_AREAS: Record<string, AdminArea> = {
   analytics: "analytics", bookings: "bookings", inbox: "inbox", availability: "availability",
   inventory: "cruises", cruises: "cruises", prices: "prices", "ship-experience": "ship",
   content: "website", images: "website", "website-text": "website", typography: "website",
-  pages: "website", "live-site": "website", "preload-screen": "website",
+  pages: "website", "live-site": "website", "preload-screen": "website", occasions: "website",
   "hero-logo-tune": "website", "hieroglyph-tune": "website", blogs: "blogs",
   "email-templates": "templates", storage: "storage", cms: "website",
 };

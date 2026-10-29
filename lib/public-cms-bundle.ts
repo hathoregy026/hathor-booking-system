@@ -62,6 +62,12 @@ import {
   parseWheelStageSettings,
   type WheelStageSettings,
 } from "@/lib/wheel-stage-settings-shared";
+import {
+  DEFAULT_OCCASIONS_SETTINGS,
+  OCCASIONS_SETTINGS_KEY,
+  type OccasionsSettings,
+} from "@/lib/occasions";
+import { parseOccasionsSettings } from "@/lib/occasions-schema";
 import type { Client } from "pg";
 import {
   ensureCmsWarmup,
@@ -76,7 +82,7 @@ import {
 
 export const PUBLIC_CMS_CACHE_TAG = "public-cms";
 /** Bumped so prior build-time default entries are never reused. */
-export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v16";
+export const PUBLIC_CMS_CACHE_KEY = "public-cms-bundle-v17";
 export const PUBLIC_CMS_REVALIDATE_SECONDS = 300;
 
 const PUBLIC_CMS_KEYS = [
@@ -92,6 +98,7 @@ const PUBLIC_CMS_KEYS = [
   LIVE_SITE_SETTINGS_KEY,
   WHEEL_STAGE_SETTINGS_KEY,
   PAGE_VISIBILITY_KEY,
+  OCCASIONS_SETTINGS_KEY,
 ] as const;
 
 /** Keys known to exceed ~2KB — full SELECT value hangs on some pooler paths. */
@@ -158,6 +165,7 @@ export type PublicCmsBundle = {
   liveSite: LiveSiteSettings;
   wheelStage: WheelStageSettings;
   pageVisibility: PageVisibilitySettings;
+  occasions: OccasionsSettings;
 };
 
 /** Internal only — never serialized into public HTML. */
@@ -239,6 +247,10 @@ function parseSettingMap(rows: SettingRow[]) {
     ? parsePageVisibilitySettings(readStored(byKey.get(PAGE_VISIBILITY_KEY)))
     : DEFAULT_PAGE_VISIBILITY_SETTINGS;
 
+  const occasions = byKey.has(OCCASIONS_SETTINGS_KEY)
+    ? parseOccasionsSettings(readStored(byKey.get(OCCASIONS_SETTINGS_KEY)))
+    : DEFAULT_OCCASIONS_SETTINGS;
+
   return {
     siteImages,
     typography,
@@ -252,6 +264,7 @@ function parseSettingMap(rows: SettingRow[]) {
     liveSite,
     wheelStage,
     pageVisibility,
+    occasions,
   };
 }
 
@@ -269,6 +282,7 @@ export function defaultPublicCmsBundle(): PublicCmsBundle {
     liveSite: DEFAULT_LIVE_SITE_SETTINGS,
     wheelStage: DEFAULT_WHEEL_STAGE_SETTINGS,
     pageVisibility: DEFAULT_PAGE_VISIBILITY_SETTINGS,
+    occasions: DEFAULT_OCCASIONS_SETTINGS,
   };
 }
 

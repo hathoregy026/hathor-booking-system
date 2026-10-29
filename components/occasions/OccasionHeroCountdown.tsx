@@ -25,8 +25,12 @@ export function OccasionHeroCountdown() {
   if (!active?.occasion.heroCountdown) return null;
   const left = msUntilCountdown(active.occasion, active.now);
   if (left === null || left <= 0) return null;
-  const parts = countdownParts(left);
+  return <HeroCountdownCells ms={left} />;
+}
 
+/** The cells alone, also drawn by the Admin → Occasions preview. */
+export function HeroCountdownCells({ ms }: { ms: number }) {
+  const parts = countdownParts(ms);
   return (
     <div className="occasion-hero-cd" aria-hidden="true">
       {UNITS.map(([key, label]) => (
