@@ -57,9 +57,12 @@ export async function generateMetadata({
   }
 
   const post = blogPostIn(source, "it");
+  /* Italian titles run longer than English; past 60 characters the journal
+     suffix only pushes the article's own words out of the search snippet. */
+  const titleWithBrand = `${post.title} | Hathor Journal`;
 
   return buildPageMetadata({
-    title: `${post.title} | Hathor Journal`,
+    title: titleWithBrand.length <= 60 ? titleWithBrand : post.title,
     description: clipMetaDescription(post.excerpt),
     path: `/it/blogs/${post.slug}`,
     ogType: "article",
@@ -76,11 +79,11 @@ export async function generateMetadata({
 export default async function ItalianBlogPostPage({ params }: ItalianBlogPostPageProps) {
   const { slug } = await params;
   const article = italianArticle(slug);
+  const source = await getPublishedBlogPostBySlug(slug);
+  /* An address that matches no post gets the Italian 404, not an English one. */
+  if (!source) notFound();
   /* A post not yet in Italian opens in English. */
   if (!article) redirect(`/blogs/${slug}`);
-
-  const source = await getPublishedBlogPostBySlug(slug);
-  if (!source) notFound();
 
   const post = { ...blogPostIn(source, "it"), content: article };
   const contentHtml = italianLinks(prepareBlogContentForRender(post.content, post.excerpt));
