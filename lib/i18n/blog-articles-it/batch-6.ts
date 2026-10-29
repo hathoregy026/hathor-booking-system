@@ -25,7 +25,7 @@ export const BLOG_ARTICLES_IT_6: Record<string, string> = {
 
 <h2><span class="hathor-blog-accent">Il Tempio di Luxor: una corona sacra per i re d’Egitto</span></h2>
 
-<p>Collegato al vasto complesso di Karnak dal Viale delle Sfingi, fiancheggiato da sfingi su entrambi i lati, questo sito è una delle antiche meraviglie della riva orientale. A differenza del vicino Tempio di Karnak, era il santuario della regalità: il luogo in cui i re venivano incoronati e venerati. Al tramonto la luce calda trasforma il tempio in una struttura d’oro scintillante, e le statue proiettano ombre lunghe e affascinanti, così vere da far rivivere il luogo. L’allineamento del tempio con le stelle mostra quanto fosse avanzata la civiltà egizia, capace di edifici come questo, sia nell’architettura sia nella religione. Il Tempio di Luxor è dunque un’opera di grande bellezza, che si comprende meglio come un’eterna riflessione sul passato e sul suo incontro con il presente.</p>
+<p>Collegato al vasto complesso di Karnak dal Viale delle Sfingi, fiancheggiato da sfingi su entrambi i lati, questo sito è una delle antiche meraviglie della riva orientale. A differenza del vicino Tempio di Karnak, era il santuario della regalità: il luogo in cui i re venivano incoronati e venerati. Al tramonto la luce calda trasforma il tempio in una struttura d’oro scintillante, e le statue proiettano ombre lunghe e affascinanti, così vere da far rivivere il luogo. L’allineamento del tempio con le stelle mostra quanto fosse avanzata, sia nell’architettura sia nella religione, la civiltà che costruì edifici come questo. Il Tempio di Luxor è dunque un’opera di grande bellezza, che si comprende meglio come un’eterna riflessione sul passato e sul suo incontro con il presente.</p>
 
 <p>&nbsp;</p>
 
@@ -35,7 +35,7 @@ export const BLOG_ARTICLES_IT_6: Record<string, string> = {
 
 <p>Tra le antiche meraviglie della riva orientale, la tomba di Ramses VI nella <a href="/blogs/discover-the-valley-of-the-kings">Valle dei Re</a> emerge dall’oscurità e brilla come una pietra preziosa. Le sue pareti interne sono illuminate da raffigurazioni celesti di divinità, stelle e simboli, a immagine della volta del cielo. All’interno della tomba che custodiva i resti del faraone, il racconto prende vita in immagini vivide.<br>
 <br>
-I soffitti sono ornati dalla dea celeste, la dea del cielo che si stende sull’universo con una grazia immutabile. In ogni sala la presenza di Ramses VI si percepisce in modo tangibile, tra potenza e devozione. La camera funeraria è un palcoscenico dell’immortalità, dove si avverte perfino il mormorio degli spiriti, degli dèi e dei defunti.</p>
+I soffitti sono ornati dalla figura della dea del cielo, che si stende sull’universo con una grazia immutabile. In ogni sala la presenza di Ramses VI si percepisce in modo tangibile, tra potenza e devozione. La camera funeraria è un palcoscenico dell’immortalità, dove si avverte perfino il mormorio degli spiriti, degli dèi e dei defunti.</p>
 
 <p>&nbsp;</p>
 
@@ -78,7 +78,7 @@ Potrà vedere anche attrezzi, statue e oggetti di vita quotidiana, che Le permet
 <p><br>
 La maggior parte dei turisti visita Kom Ombo di corsa, nelle ore più calde della giornata. Una crociera in dahabiya sul Nilo in Egitto, invece, Le concede il lusso di visitarlo nel momento migliore, poco prima del tramonto. L’esperienza è davvero incantevole: niente folla, una brezza fresca e leggera e la luce dorata del sole che scivola sulla pietra, ideale per foto straordinarie.<br>
 <br>
-La dahabiya permette un viaggio lento e ricco di significato. Non si limita a vedere il sito: ne percepisce la presenza. Visitare così il Tempio di Kom Ombo trasforma una tappa storica in un ricordo personale che non dimenticherà mai.</p>
+La dahabiya permette un viaggio lento e ricco di significato. Lei non si limita a vedere il sito: ne percepisce la presenza. Visitare così il Tempio di Kom Ombo trasforma una tappa storica in un ricordo personale che non dimenticherà mai.</p>
 
 <p>&nbsp;</p>
 
@@ -119,7 +119,7 @@ Le foto della luna di miele sul Nilo, con la coppia che passeggia sulle rive di 
 
 <h3><span class="hathor-blog-accent">Le rive tranquille di Esna: a tu per tu con il Nilo</span></h3>
 
-<p>A poche miglia da <a href="/blogs/exploring-esna-temples-history-nile-charm">Esna</a>, le rive appartate offrono acque calme e cieli aperti, quasi perfetti per foto romantiche e serene, senza quasi anima viva all’orizzonte.<br>
+<p>A poche miglia da <a href="/blogs/exploring-esna-temples-history-nile-charm">Esna</a>, le rive appartate offrono acque calme e cieli aperti, ideali per foto romantiche e serene, con quasi nessuno in vista.<br>
 Una luna di miele in Egitto dovrebbe concedersi qualche momento come questo: tranquillo, semplice e sognante.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/nile-cruise-lovers-17748635373CUUC.jpg" alt="" loading="lazy"></figure></p>
@@ -220,7 +220,7 @@ La vera magia comincia quando si arriva a Karnak al termine di una crociera in d
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak7876-1756883196DESix.jpg" alt="Tempio di Karnak" loading="lazy"></figure></p>
 
-<p>Il complesso del Tempio di Karnak, il Tempio degli Dèi, è molto più di una meta da visitare: è uno dei momenti culminanti dell’Alto Egitto e la Sua porta d’accesso alle credenze e al genio degli antichi egizi. Visitarlo durante la Sua crociera in dahabiya sul Nilo aggiunge una dimensione personale ed emotiva, e uno sguardo autentico nel cuore dei segreti dell’Egitto.<br>
+<p>Il complesso del Tempio di Karnak, il Tempio degli Dèi, è molto più di una meta da visitare: è uno dei momenti culminanti dell’Alto Egitto e la Sua porta d’accesso alle credenze e al genio degli antichi Egizi. Visitarlo durante la Sua crociera in dahabiya sul Nilo aggiunge una dimensione personale ed emotiva, e uno sguardo autentico nel cuore dei segreti dell’Egitto.<br>
 <br>
 Qui la storia non sta dietro una vetrina: è sotto i Suoi piedi e sopra la Sua testa. Le colonne altissime, i santuari sacri, le pareti dorate e le acque immobili intorno al tempio creano uno spazio in cui il tempo sembra fermarsi.<br>
 <br>
@@ -263,7 +263,7 @@ Se preferisce un viaggio più breve, la crociera sul Nilo <a href="https://www.h
 
 <p>L’avventura comincia a <a href="/blogs/explore-luxor-in-luxury">Luxor</a>, considerata il più grande museo a cielo aperto del mondo. Passeggiare per Luxor significa entrare in un capitolo della storia antica. Il maestoso <a href="/blogs/sailing-to-karnak-temple">Tempio di Karnak</a>, con i suoi pilastri altissimi e il lago sacro, è forse uno dei complessi religiosi più imponenti mai costruiti. A pochi chilometri di distanza, il Tempio di Luxor si staglia sotto l’ampio cielo del deserto e nelle ore serali si illumina in modo splendido.<br>
 <br>
-Attraversando il possente Nilo si raggiunge la riva occidentale, con <a href="/blogs/discover-the-valley-of-the-kings">la Valle dei Re</a>. Qui, in tombe profonde scavate nelle falesie, riposano i corpi di sovrani come Ramses II e del giovane re Tutankhamon. Sono più che semplici tombe: sono splendidi edifici ricoperti di pitture e geroglifici che descrivono l’aldilà. Vivere tutto questo con una crociera in dahabiya sul Nilo da Assuan a Luxor aggiunge al viaggio un comfort e un fascino impareggiabili.<br>
+Attraversando il possente Nilo si raggiunge la riva occidentale, con <a href="/blogs/discover-the-valley-of-the-kings">la Valle dei Re</a>. Qui, in tombe profonde scavate nelle falesie, riposano i corpi di sovrani come Ramses II e il giovane re Tutankhamon. Sono più che semplici tombe: sono splendidi edifici ricoperti di pitture e geroglifici che descrivono l’aldilà. Vivere tutto questo con una crociera in dahabiya sul Nilo da Assuan a Luxor aggiunge al viaggio un comfort e un fascino impareggiabili.<br>
 <br>
 A Luxor la storia scorre ovunque. Vista nello splendore di una crociera di lusso sul Nilo, quella storia afferma con forza la sua presenza. Il dolce sciabordio del fiume, accanto alla grandiosità austera dei templi colossali, crea un’atmosfera davvero speciale.</p>
 
@@ -452,7 +452,7 @@ Affacciato sul Nilo, il tempio offre un colpo d’occhio splendido e regala ai v
 
 <p>Tra i luoghi più spettacolari e i tesori nascosti del Nilo da visitare con una crociera di lusso in dahabiya sul Nilo, in Egitto, c’è il Tempio di Philae, dedicato alla dea Iside. Sorge sull’Isola di Agilkia, vicino ad Assuan: il complesso templare vi fu trasferito con grande cura quando la costruzione della Grande Diga di Assuan minacciò il suo sito originale.<br>
 <br>
-Sullo sfondo di un tranquillo paesaggio insulare, le gioiose memorie della storia e i rilievi minuziosi creano un’atmosfera che resterà impressa nella memoria. La Sua crociera in dahabiya Le permette di arrivare dall’acqua, con un senso di esclusività e di serenità. Le visite serali, quando l’illuminazione esalta le antiche mura, sono di una magia straordinaria.</p>
+Sullo sfondo di un tranquillo paesaggio insulare, le gioiose memorie della storia e i rilievi minuziosi creano un’atmosfera indimenticabile. La Sua crociera in dahabiya Le permette di arrivare dall’acqua, con un senso di esclusività e di serenità. Le visite serali, quando l’illuminazione esalta le antiche mura, sono di una magia straordinaria.</p>
 
 <p>&nbsp;</p>
 
