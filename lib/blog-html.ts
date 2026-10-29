@@ -99,6 +99,24 @@ function normalizeInternalHref(value: string): string {
   }
 }
 
+/**
+ * Photos uploaded to the old site's /storage folder did not move with the
+ * domain: every one answers 404 now, and the CSP blocks that host anyway. They
+ * are hidden here rather than deleted from the posts, so a recovered copy can
+ * be mapped back in and each photo returns to its place.
+ */
+function isRetiredStorageImage(src: string): boolean {
+  try {
+    const url = new URL(src, "https://www.hathorcruise.com");
+    return (
+      INTERNAL_HOSTS.has(url.hostname.toLowerCase()) &&
+      url.pathname.startsWith("/storage/")
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function isBlogHtmlContent(content: string): boolean {
   return /<\s*(p|h2|h3|h4|ul|ol|li|img|a|blockquote)\b/i.test(content);
 }
@@ -157,6 +175,12 @@ export function sanitizeBlogHtml(html: string): string {
         $(element).remove();
       }
     }
+  });
+
+  $("img").each((_, element) => {
+    if (!isRetiredStorageImage(element.attribs.src?.trim() ?? "")) return;
+    const figure = $(element).closest("figure");
+    (figure.length ? figure : $(element)).remove();
   });
 
   return $.root().html() ?? "";
