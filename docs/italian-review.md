@@ -57,3 +57,32 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 | Image descriptions (alt text) | Some English image descriptions were internal labels ("Dining — Wine pairing", "Hathor plated course 3"). The Italian alt text describes the photo instead ("Vini in abbinamento a bordo di Hathor", "Una portata servita a bordo di Hathor"). The list is in `lib/i18n/site-image-alts-it.ts`. | Please skim the list for tone. |
 | `/it` 404 page | "Pagina non trovata · L’indirizzo che ha aperto non esiste o è stato spostato. Può tornare alla pagina iniziale o scegliere il Suo viaggio sul Nilo." Buttons: "Pagina iniziale", "I viaggi". | OK? |
 | Booking pages | Titles "Richiesta di prenotazione inviata" (after sending) and "Segua la Sua prenotazione" (booking lookup) | OK? |
+| `/it/gastronomy` closing title | "UNA CUCINA / CHE LASCIA / RESPIRARE" ran off a phone screen, so it now reads "A TAVOLA / SENZA / FRETTA" (English: "Dining with room to breathe") | OK? |
+| Footer button | "Noleggia la dahabiya" overflowed on phones; it now reads "Charter privato" | OK? |
+
+## 5. Points raised by the proofreading pass (October 2026)
+
+The whole Italian site was proofread a second time. These points were left for a native speaker
+because they are choices rather than errors.
+
+| Where | Question |
+| --- | --- |
+| Buttons site-wide | Buttons mix the plain imperative ("Prenota ora", "Continua", "Seleziona", "Verifica disponibilità", "Riprova") with the Lei form used in sentences ("Scopra", "Prosegua", "Richieda un charter privato", "Riprovi"). The most visible pair is on `/it/charter`: "Richieda un charter privato" next to "Verifica disponibilità". Should all buttons use one form, and which? "Scorri" (scroll hint) is the same question. |
+| "Il Cairo" mid-sentence | The brief asks for "Il Cairo"; in running text many style guides write "il Cairo" ("Luxor, Assuan e il Cairo"). Which? |
+| Room and suite names | Menus say "Luxury Suite" / "Royal Suite" (singular); cruise cards say "Luxury Suites" / "Royal Suites"; cruise cards also show the catalog tier "Luxury Room". Keep all in English as product names, and which number? |
+| Menu wording | The header menu calls `/it/voyages` "Crociere" while the footer and breadcrumbs say "Viaggi" (the English site does the same with "Cruises"/"Voyages"). |
+| Place names | "File" (Italian) and "Philae" are both used; "El Ramady" and "Ramadi" both appear (as in English). Pick one of each. |
+| Small wording | "Drink di benvenuto" (or "aperitivo di benvenuto"?), "Prove discrete" for "Quiet proof" (or "Garanzie discrete"?), "Navigare lenti" (or "Navigare piano"?), "Champagne" capitalised, "Camera e lavanderia" for room and laundry service, the short captions "Clima" and "Phon". |
+| Photo descriptions | "Un ospite in accappatoio…" and "Un ospite legge in poltrona…" use the masculine; please check against the photos. |
+| Journal sense | discover-the-timeless-luxor-west-bank ("l’opposto della sindrome di Stendhal", "forza virile dei re"), golden-gems-of-aswan ("case colorate in stile coloniale" for Nubian houses), aswan-high-dam (the Nile "diventato… un fiume piuttosto piccolo"), why-a-dahabiya-cruise-feels-like-time-travel (the "loneliness" sentence): each is faithful to an odd English source. |
+| Long journal titles | Some Italian article titles exceed 60 characters on their own (for example "Perché il Nilo fu la via commerciale più importante dell’antico Egitto"), so search results will cut them. Shorter titles would need new wording. |
+
+## 6. Legal page: points for the legal check
+
+Beyond section 3, the proofreading pass found:
+
+- The VAT note reads "Secondo i Termini e condizioni forniti dal cliente, ciò include IVA al 14% e costo del servizio", which sounds like an internal note shown to customers (the English says "client-supplied" too), next to section 7, which says taxes are included.
+- Section 1: "i pagamenti complessivi devono essere pari al 50%" could mean exactly or at least 50%.
+- Section 5: "Formula Soft All-Inclusive" is not defined anywhere.
+- Section 13: a non-refundable credit voucher, and "I rimborsi in denaro non sono garantiti" when Hathor itself cancels, need a view under EU package-travel and Italian consumer law; so do the broad exclusions in sections 9, 12, 15 and 17.
+- The office address differs: the terms say "One Kattameya, Torre 211, 11º piano, Nasr City"; the contact page says "One Kattamiya, Torre 211, 11º piano, int. 111". The same difference exists in English.
