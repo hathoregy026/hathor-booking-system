@@ -17,6 +17,7 @@ import {
 } from "@/components/selection/SelectionProvider";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { INQUIRY_FORM_COPY } from "@/lib/i18n/contact-copy";
+import { formValidityIn } from "@/lib/i18n/form-validity-it";
 import { summaryLineIn } from "@/lib/i18n/selection-copy";
 
 type InquiryFormProps = {
@@ -221,6 +222,7 @@ export function InquiryForm({
       <form
         className={["hathor-form-card", className].filter(Boolean).join(" ")}
         onSubmit={handleSubmit}
+        {...formValidityIn(locale)}
       >
         <h2 className="section-title typo-page-title text-2xl">{title}</h2>
         {intro ? (

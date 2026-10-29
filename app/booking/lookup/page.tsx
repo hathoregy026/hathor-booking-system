@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useBookingCopy } from "@/components/booking/journey/useBookingCopy";
+import { formValidityIn } from "@/lib/i18n/form-validity-it";
 import { localizedHref } from "@/lib/i18n/locale";
 
 /** Shared by /booking/lookup and /it/booking/lookup: the language follows the address. */
@@ -38,7 +39,7 @@ export default function BookingLookupPage() {
 
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-lg items-center px-4 py-16">
-      <form onSubmit={submit} className="booking-card w-full space-y-5 p-6 sm:p-9">
+      <form onSubmit={submit} className="booking-card w-full space-y-5 p-6 sm:p-9" {...formValidityIn(copy.locale)}>
         <div>
           <p className="text-xs uppercase tracking-[0.16em]">Hathor Dahabiya</p>
           <h1 className="booking-serif mt-2 text-3xl">{t.title}</h1>
