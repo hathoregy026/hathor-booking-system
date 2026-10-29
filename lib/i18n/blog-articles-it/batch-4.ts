@@ -69,7 +69,7 @@ A bordo della dahabiya i viaggiatori trovano <a href="https://www.hathorcruise.c
 
 <p>L’atmosfera intima delle <strong>suite boutique della crociera sul Nilo</strong> permette di vivere la cultura egizia in momenti di quiete e di riflessione, che mostrano il legame profondo tra l’Egitto e il suo fiume. Gli ospiti delle nostre <strong>camere boutique per la crociera sul Nilo</strong> possono godersi viste senza interruzioni e tutta la serenità del viaggio.</p>
 
-<p>Le visite ai villaggi lungo il fiume e ai siti antichi arricchiscono i viaggiatori di conoscenza e di ispirazione spirituale. Il ritmo lento della navigazione a bordo di una delle più belle <strong>suite boutique in dahabiya d’Egitto</strong> regala un raro senso di tranquillità, che i viaggi moderni offrono di rado.</p>
+<p>Le visite ai villaggi lungo il fiume e ai siti antichi arricchiscono i viaggiatori di conoscenza e di ispirazione spirituale. Il ritmo lento della navigazione a bordo di una delle più belle <strong>suite boutique in dahabiya d’Egitto</strong> regala un senso di tranquillità che i viaggi moderni offrono di rado.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/great-view-of-the-blue-nile-in-the-city-of-aswan-in-egypt-1777384429BxDZE.webp" alt="" loading="lazy"></figure></p>
 
@@ -87,7 +87,7 @@ A bordo della dahabiya i viaggiatori trovano <a href="https://www.hathorcruise.c
 
 <p>I Colossi di Memnone sono due enormi statue di pietra sulla riva occidentale di Luxor, in Egitto. Da oltre 3.400 anni sono tra le attrazioni più famose di Luxor: custodi dell’antica civiltà egizia e straordinario esempio della sua ingegneria e della sua architettura monumentale.</p>
 
-<p>Visitatori da tutto il mondo raggiungono Tebe per vedere queste celebri statue del faraone Amenhotep III, per conoscerne la storia e il mistero e il ruolo importante che ebbero nel passato dell’antica Tebe.</p>
+<p>Visitatori da tutto il mondo raggiungono Tebe per vedere queste celebri statue del faraone Amenhotep III, per conoscerne la storia, il mistero e il ruolo importante che ebbero nel passato dell’antica Tebe.</p>
 
 <h2><span class="hathor-blog-accent">Dove si trovano i Colossi di Memnone?</span></h2>
 
@@ -99,7 +99,7 @@ In origine i Colossi sorgevano all’ingresso del grande tempio funerario del fa
 
 <p>I Colossi di Memnone, a Luxor, sono due statue gemelle che raffigurano il faraone Amenhotep III.<br>
 Furono scolpite nell’arenaria quarzitica durante il Nuovo Regno della storia egizia.<br>
-Alte circa 18 metri, appartenevano a un vasto complesso templare oggi scomparso, e sono così diventate tra le testimonianze antiche più importanti rimaste a Tebe.<br>
+Alte circa 18 metri, appartenevano a un vasto complesso templare oggi scomparso, e sono tra le testimonianze antiche più importanti rimaste a Tebe.<br>
 Oggi sono simboli possenti del passato dell’Egitto e una tappa obbligata per chi visita le attrazioni della riva occidentale di Luxor.</p>
 
 <h2><span class="hathor-blog-accent">Perché i Colossi di Memnone sono così famosi?</span></h2>
@@ -152,7 +152,7 @@ Eppure la loro cultura è sopravvissuta, e ha trovato nuova forza.</p>
 
 <h2><span class="hathor-blog-accent">Come visitare con stile i villaggi nubiani da Assuan?</span></h2>
 
-<p>Se si chiede come visitare i villaggi nubiani da Assuan, sappia che il viaggio stesso fa parte dell’esperienza. La barca a motore è il mezzo più comune, ma nulla è paragonabile all’arrivo elegante a bordo di una <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">dahabiya di lusso</a>.<br>
+<p>Se desidera sapere come visitare i villaggi nubiani da Assuan, sappia che il viaggio stesso fa parte dell’esperienza. La barca a motore è il mezzo più comune, ma nulla è paragonabile all’arrivo elegante a bordo di una <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">dahabiya di lusso</a>.<br>
 <strong>Una crociera privata in dahabiya Le permette di:</strong></p>
 
 <ul>
@@ -162,7 +162,7 @@ Eppure la loro cultura è sopravvissuta, e ha trovato nuova forza.</p>
 	<li>Vivere l’Egitto con i propri tempi</li>
 </ul>
 
-<p>Navigando oltre il <a href="/blogs/discovering-the-secrets-of-philae-temple">Tempio di Philae</a>, tra rive limpide, la Sua dahabiya Le offre un’occasione rara di incontrare davvero i nubiani.</p>
+<p>Navigando oltre il <a href="/blogs/discovering-the-secrets-of-philae-temple">Tempio di Philae</a>, lungo rive incontaminate, la Sua dahabiya Le offre un’occasione rara di incontrare davvero i nubiani.</p>
 
 <h2><span class="hathor-blog-accent">Un’esperienza culturale senza pari nei villaggi nubiani di Assuan</span></h2>
 
