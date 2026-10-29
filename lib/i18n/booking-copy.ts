@@ -1093,7 +1093,7 @@ const EN: BookingCopy = {
     link: "Explore all cabins ↗",
   },
   meta: {
-    title: "Book Your Luxury Dahabiya Cruise | Hathor",
+    title: "Book Your Luxury Dahabiya Cruise",
     description:
       "Choose your Nile voyage, sailing date and cabin aboard Hathor Dahabiya, then send your booking request to our reservations team.",
   },
@@ -1744,7 +1744,7 @@ const IT: BookingCopy = {
     link: "Scopra tutte le cabine ↗",
   },
   meta: {
-    title: "Prenoti la Sua crociera in dahabiya di lusso | Hathor",
+    title: "Prenoti la Sua crociera in dahabiya di lusso",
     description:
       "Scelga il viaggio sul Nilo, la data di partenza e la cabina a bordo di Hathor Dahabiya, poi invii la richiesta di prenotazione al nostro ufficio prenotazioni.",
   },
