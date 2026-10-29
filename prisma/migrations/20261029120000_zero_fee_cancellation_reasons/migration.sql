@@ -1,7 +1,13 @@
 -- Three cancellation reasons that carry no fee, for the full refunds the Terms promise.
--- Only the cancel block of hathor_administer_booking changes; the existing reasons keep
+-- The reason CHECK widens and only the cancel block of hathor_administer_booking changes; the existing reasons keep
 -- exactly today's fees, and unknown reasons are now refused instead of charged 100%.
 -- Rollback: prisma/rollbacks/20261029120000_zero_fee_cancellation_reasons.sql
+
+-- The column's CHECK (from 20260916140000_booking_request_stages) must accept the new words.
+ALTER TABLE "Booking" DROP CONSTRAINT "Booking_cancellationReason_check";
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_cancellationReason_check"
+  CHECK ("cancellationReason" IN ('CANCELLATION','NO_SHOW','EARLY_DEPARTURE','HATHOR_DECLINED',
+    'HATHOR_CANCELLED','UNAVOIDABLE_CIRCUMSTANCES','SIGNIFICANT_CHANGE'));
 
 CREATE OR REPLACE FUNCTION hathor_administer_booking(booking_id text, action jsonb) RETURNS jsonb LANGUAGE plpgsql SET search_path=public,pg_catalog AS $$
 DECLARE b "Booking"; p "BookingPayment"; paid bigint; required bigint; departure timestamp; days integer; fee integer; payment jsonb:=action->'payment';

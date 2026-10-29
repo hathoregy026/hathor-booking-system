@@ -1,7 +1,12 @@
 -- Rollback for 20261029120000_zero_fee_cancellation_reasons: the live hathor_administer_booking
 -- read with pg_get_functiondef on 2026-10-29 (md5 58c3e7dc5b6472e9136e4ef29edb9302), identical to
--- 20261004120000_card_surcharge_and_invoice_split. Bookings already cancelled with a new reason keep
--- their stored fee of 0; only new cancellations go back to the old rules.
+-- 20261004120000_card_surcharge_and_invoice_split, plus the original reason CHECK. Restoring that
+-- CHECK fails while any booking stores a new reason; such bookings keep their fee of 0 and need a
+-- decision (relabel or keep the wider CHECK) before the constraint part is rolled back.
+
+ALTER TABLE "Booking" DROP CONSTRAINT "Booking_cancellationReason_check";
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_cancellationReason_check"
+  CHECK ("cancellationReason" IN ('CANCELLATION','NO_SHOW','EARLY_DEPARTURE','HATHOR_DECLINED'));
 
 CREATE OR REPLACE FUNCTION hathor_administer_booking(booking_id text, action jsonb) RETURNS jsonb LANGUAGE plpgsql SET search_path=public,pg_catalog AS $$
 DECLARE b "Booking"; p "BookingPayment"; paid bigint; required bigint; departure timestamp; days integer; fee integer; payment jsonb:=action->'payment';

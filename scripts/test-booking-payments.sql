@@ -15,6 +15,11 @@ BEGIN
  BEGIN
   SELECT cs.* INTO STRICT s FROM "CruiseSchedule" cs JOIN "Cruise" c ON c.id=cs."cruiseId"
    WHERE cs."isBookable" AND cs."departureTime" > clock_timestamp() + interval '61 days'
+    -- At most four King cabins are held at once below; skip sailings already full (New Year).
+    AND (SELECT count(*) FROM "Room" r JOIN "_CruiseRooms" cr ON cr."B"=r.id
+     WHERE cr."A"=cs."cruiseId" AND r."deletedAt" IS NULL AND r."roomType"='Luxury King Cabin'
+      AND NOT EXISTS(SELECT 1 FROM "InventoryAllocation" a WHERE a."roomId"=r.id AND a.active
+       AND a."startsAt"<cs."arrivalTime" AND a."endsAt">cs."departureTime"))>=4
    ORDER BY cs."departureTime" LIMIT 1;
   days := s."departureTime"::date - (clock_timestamp() AT TIME ZONE 'UTC')::date;
 
