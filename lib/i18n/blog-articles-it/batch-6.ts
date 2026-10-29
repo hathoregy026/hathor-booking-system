@@ -33,7 +33,7 @@ export const BLOG_ARTICLES_IT_6: Record<string, string> = {
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/ramses-1757508547YK418.jpg" alt="Tomba di Ramses VI" loading="lazy"></figure></p>
 
-<p>Tra le antiche meraviglie della riva orientale, la tomba di Ramses VI nella <a href="/blogs/discover-the-valley-of-the-kings">Valle dei Re</a> emerge dall’oscurità e brilla come una pietra preziosa. Le sue pareti interne sono illuminate da raffigurazioni celesti di divinità, stelle e simboli, a immagine della volta del cielo. All’interno della tomba che custodiva i resti del faraone, il racconto prende vita in immagini vivide.<br>
+<p>Dall’altra parte del fiume, sulla riva occidentale, la tomba di Ramses VI nella <a href="/blogs/discover-the-valley-of-the-kings">Valle dei Re</a> emerge dall’oscurità e brilla come una pietra preziosa. Le sue pareti interne sono illuminate da raffigurazioni celesti di divinità, stelle e simboli, a immagine della volta del cielo. All’interno della tomba che custodiva i resti del faraone, il racconto prende vita in immagini vivide.<br>
 <br>
 I soffitti sono ornati dalla figura della dea del cielo, che si stende sull’universo con una grazia immutabile. In ogni sala la presenza di Ramses VI si percepisce in modo tangibile, tra potenza e devozione. La camera funeraria è un palcoscenico dell’immortalità, dove si avverte perfino il mormorio degli spiriti, degli dèi e dei defunti.</p>
 
@@ -61,7 +61,7 @@ Viaggiare tra le antiche meraviglie della riva orientale di Luxor è, per molti 
 Il Tempio di Kom Ombo è il tempio più singolare d’Egitto e conquista chi lo visita con la sua insolita struttura doppia. Non capita spesso di vedere un tempio come Kom Ombo, che riunisce due templi in un unico luogo. Pochissimi templi accolgono due santuari sotto lo stesso tetto, e Kom Ombo è uno di questi: onora il feroce dio coccodrillo Sobek e il vigile dio falco Horus. Questa costruzione è una rarità che rispecchia in profondità un capitolo di religione, mitologia e medicina, scritto nella storia del Tempio di Kom Ombo.<br>
 <br>
 Il progetto del tempio è perfettamente simmetrico. Di solito i templi hanno un solo ingresso, ma qui ce ne sono due, delle stesse dimensioni, come lo sono le sale e i santuari: tutto è costruito per mantenere l’equilibrio tra le due divinità. Le iscrizioni raccontano la storia di Kom Ombo e mostrano come anticamente il tempio fosse usato sia per il culto sia per la guarigione.<br>
-Questa straordinaria costruzione sorge sulla <a href="/blogs/luxors-sacred-east-bank">riva orientale di Luxor</a>, e la sua posizione sul fiume ne fece un luogo sacro per i riti e la devozione lungo la riva orientale del Nilo. Visitarlo in dahabiya permette a chi viaggia di entrare in sintonia con lo spirito del tempio, senza distrazioni.</p>
+Questa straordinaria costruzione sorge sulla riva orientale del Nilo, circa 45 km a nord di Assuan, e la sua posizione sul fiume ne fece un luogo sacro per i riti e la devozione. Visitarlo in dahabiya permette a chi viaggia di entrare in sintonia con lo spirito del tempio, senza distrazioni.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/luxor-edfu-temple-kom-ombo-temple-full-day-private-tour-1756798923fbUgY.jpeg" alt="Museo dei Coccodrilli, Assuan" loading="lazy"></figure></p>
 
@@ -345,7 +345,7 @@ Ogni momento di questo viaggio diventa un intreccio indimenticabile di comfort e
   "niles-hidden-gems-by-dahabiya": `<h2><span class="hathor-blog-accent">Le attrazioni turistiche del Nilo</span></h2>
 
 <p>Riesce a immaginare di scivolare in silenzio lungo il Nilo, con la sola brezza che accarezza la superficie dell’acqua, lontano dal rumore delle grandi navi da crociera? I templi meno visitati, i villaggi assopiti sulle rive e le minuscole isole, alcune delle attrazioni meno note del Nilo che sfuggono ancora alla folla dei turisti, restano nascosti e si svelano a bordo di una <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">dahabiya di lusso</a>.<br>
-Questi tesori nascosti, raggiungibili soltanto con piccole e raffinate imbarcazioni come la dahabiya, offrono uno sguardo sul vero spirito della Valle del Nilo. Ecco quattro meraviglie panoramiche che si possono esplorare solo a bordo di una dahabiya.<br>
+Questi tesori nascosti, raggiungibili soltanto con piccole e raffinate imbarcazioni come la dahabiya, offrono uno sguardo sul vero spirito della Valle del Nilo. Ecco tre meraviglie panoramiche che si possono esplorare solo a bordo di una dahabiya.<br>
 Esplorare questi luoghi permette a chi viaggia di vivere una cultura autentica, paesaggi incontaminati e momenti indimenticabili lungo il fiume, come il <a href="/blogs/discovering-the-secrets-of-philae-temple">Tempio di Philae</a> e molto altro.<br>
 I ricordi durano davvero tutta la vita, in un viaggio che La lega in modo inspiegabile alla storia e svela la bellezza serena della natura.<br>
 Le attrazioni turistiche del Nilo offrono un modo unico di scoprire l’Egitto al di là dei soliti itinerari.</p>
@@ -368,19 +368,19 @@ Il sito mostra l’abilità degli antichi costruttori, che realizzarono i monume
 
 <p>Le dahabiya gettano l’ancora proprio ai margini della cava: scendere a terra è facile, e si può passeggiare tra le rocce nell’ora dorata. Alcune crociere organizzano qui persino una cena privata, in un’atmosfera illuminata dalle candele e dalla storia.</p>
 
-<h2><span class="hathor-blog-accent">2. Bani Hassan: le tombe di un mondo antichissimo</span></h2>
+<h2><span class="hathor-blog-accent">2. Beni Hasan: le tombe di un mondo antichissimo</span></h2>
 
 <h3><br>
 <span class="hathor-blog-accent">Uno spaccato di vita del Medio Regno</span></h3>
 
 <p><br>
-Lontano dal solito itinerario tra Luxor e Assuan, Bani Hassan è un luogo visitato di rado, che regala un’immersione profonda nel Medio Regno. Le tombe, scavate nella falesia, appartenevano a governatori di provincia; le loro decorazioni ritraggono scene vivaci di lotta, di caccia e di vita quotidiana, un tesoro per chi viaggia e per gli storici.</p>
+Lontano dal solito itinerario tra Luxor e Assuan, Beni Hasan è un luogo visitato di rado, che regala un’immersione profonda nel Medio Regno. Le tombe, scavate nella falesia, appartenevano a governatori di provincia; le loro decorazioni ritraggono scene vivaci di lotta, di caccia e di vita quotidiana, un tesoro per chi viaggia e per gli storici.</p>
 
 <h3><br>
 <span class="hathor-blog-accent">&nbsp;Autenticità, lontano dalla folla</span></h3>
 
 <p><br>
-Raggiungere Bani Hassan richiede un tragitto lento e coinvolgente,&nbsp;perfetto per una dahabiya. La quiete del luogo, insieme alla magnificenza delle tombe, regala un’esperienza autentica e appagante. Qui&nbsp;ha la sensazione di esplorare, più che di fare turismo.</p>
+Raggiungere Beni Hasan richiede un tragitto lento e coinvolgente,&nbsp;perfetto per una dahabiya. La quiete del luogo, insieme alla magnificenza delle tombe, regala un’esperienza autentica e appagante. Qui&nbsp;ha la sensazione di esplorare, più che di fare turismo.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/04ee20c6-30b4-4497-a898-1d9a4aa379ec-day-tour-in-el-tod-temple-luxor-17748816054Pnzw.png" alt="" loading="lazy"></figure></p>
 

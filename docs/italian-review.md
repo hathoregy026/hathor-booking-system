@@ -22,20 +22,20 @@ naturally and is not misleading.
 | `sailing-to-karnak-temple` | "Probably, even dancing upon the decks of your boat, there will be that very moment when you spot the monstrous entrances" | "Probabilmente sarà ancora sul ponte della Sua imbarcazione, quasi a danzare di gioia, nel momento in cui scorgerà in lontananza gli ingressi…" | Is "quasi a danzare di gioia" natural, or too effusive? |
 | `golden-gems-of-aswan` | "The huge courtyards and innocent halls of the temple" | "Gli immensi cortili e le sale intatte del tempio" | "innocent halls" was read as "intact halls" ("sale intatte"). OK? |
 
-## 2. Factual slips copied from English (decision needed in both languages)
+## 2. Factual slips (fixed in both languages, October 2026)
 
-These errors are in the English source, and the Italian keeps them so both languages say the same
-thing. None of them has been corrected. Each needs a decision from Hathor before the English row
-(in the database) and the Italian copy (in `lib/i18n/blog-articles-it/`) are both changed.
+These errors came from the English source. Hathor approved the corrections, and both the English
+rows (database) and the Italian copy (`lib/i18n/blog-articles-it/`) now say the same, correct
+thing. No action is needed beyond reading the new Italian sentences for tone.
 
-| Article | What it says | What is correct | Italian wording today |
-| --- | --- | --- | --- |
-| `luxors-sacred-east-bank` | Lists the Tomb of Ramses VI among the East Bank wonders | The tomb is in the Valley of the Kings, on the **West** Bank | "Tra le meraviglie della riva orientale, la tomba di Ramses VI nella Valle dei Re…" |
-| `kom-ombo-temple` | "This remarkable structure sits on Luxor east bank" | Kom Ombo is about 45 km north of Assuan, far from Luxor (it does stand on the east bank of the Nile) | "Questa straordinaria costruzione sorge sulla riva orientale di Luxor" |
-| `golden-gems-of-aswan` | "As one of the top Aswan attractions, the Edfu Temple…" | Edfu lies between Luxor and Assuan, about 100 km north of Assuan | "Tra le principali attrazioni di Assuan, il Tempio di Edfu…" |
-| `niles-hidden-gems-by-dahabiya` | "Here are four scenic wonders", then lists three | Either add a fourth or say three | "Ecco quattro meraviglie panoramiche…" |
-| `discover-the-timeless-luxor-west-bank` | The Colossi of Memnon are "centuries old" | About 3,400 years old (Amenhotep III) | "…i due Colossi di Memnone, antiche di secoli." |
-| `niles-hidden-gems-by-dahabiya` | "Bani Hassan" | The usual spelling is **Beni Hasan** (Italian sources also use "Beni Hasan") | "Bani Hassan" |
+| Article | Was | Now (Italian) |
+| --- | --- | --- |
+| `luxors-sacred-east-bank` | Tomb of Ramses VI listed among the East Bank wonders | "Dall’altra parte del fiume, sulla riva occidentale, la tomba di Ramses VI nella Valle dei Re…" |
+| `kom-ombo-temple` | "sits on Luxor east bank" | "…sorge sulla riva orientale del Nilo, circa 45 km a nord di Assuan…" (the link to the Luxor East Bank article was dropped) |
+| `golden-gems-of-aswan` | Edfu called one of the top Aswan attractions (twice) | "Tra Luxor e Assuan, circa 100 km a nord di Assuan, il Tempio di Edfu…" and "…dei luoghi più belli tra Luxor e Assuan…" |
+| `niles-hidden-gems-by-dahabiya` | "four scenic wonders", three listed | "Ecco tre meraviglie panoramiche…" |
+| `discover-the-timeless-luxor-west-bank` | Colossi of Memnon "centuries old" | "…antiche di circa 3.400 anni." |
+| `niles-hidden-gems-by-dahabiya` | "Bani Hassan" | "Beni Hasan" |
 
 ## 3. Legal page
 
