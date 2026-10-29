@@ -54,6 +54,7 @@ const INTERNAL_HOSTS = new Set([
 const CANONICAL_PATH_ALIASES: Readonly<Record<string, string>> = {
   "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "/royal-suites",
   "/luxury-suites": "/rooms",
+  "/Nile-Cruise-Luxury-Suites": "/rooms",
   "/cruises": "/cruises-list",
   "/blog": "/blogs",
   "/journal": "/blogs",
