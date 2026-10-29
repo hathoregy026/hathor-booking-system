@@ -125,7 +125,8 @@ function FavoritesView({ onClose }: { onClose: () => void }) {
               */}
               {item.ref.type === "voyage" ||
               item.ref.type === "residence" ||
-              item.ref.type === "cabin" ? (
+              item.ref.type === "cabin" ||
+              item.ref.type === "charter" ? (
                 <AddToVoyageButton
                   kind={item.ref.type}
                   slug={item.ref.slug}
@@ -302,6 +303,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="hfp__voyage">
+      {voyage || !selection.charter ? (
       <section className="hfp__section">
         <h3 className="hfp__section-title">{t.journey}</h3>
         {voyage ? (
@@ -338,6 +340,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
           </div>
         )}
       </section>
+      ) : null}
 
       {residence ? (
         <section className="hfp__section">

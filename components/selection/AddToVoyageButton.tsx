@@ -30,7 +30,7 @@ import "./AddToVoyageButton.css";
  * would invalidate the chosen accommodation raises a confirmation first.
  */
 
-export type AddToVoyageKind = "voyage" | "residence" | "cabin";
+export type AddToVoyageKind = "voyage" | "residence" | "cabin" | "charter";
 export type AddToVoyageVariant = "card" | "inline" | "panel";
 
 type PendingChange = {
@@ -68,6 +68,7 @@ export function AddToVoyageButton({
   const setResidence = useSelectionStore((state) => state.setResidence);
   const setSailingDate = useSelectionStore((state) => state.setSailingDate);
   const setGuests = useSelectionStore((state) => state.setGuests);
+  const setCharter = useSelectionStore((state) => state.setCharter);
   const openVoyage = useSelectionStore((state) => state.openVoyage);
 
   const locale = usePublicLocale();
@@ -80,7 +81,9 @@ export function AddToVoyageButton({
   const cabinPair = kind === "cabin" ? parseCabinSlug(slug) : null;
 
   const selected =
-    kind === "voyage"
+    kind === "charter"
+      ? selection.charter
+      : kind === "voyage"
       ? selection.voyageSlug === slug
       : kind === "cabin"
         ? Boolean(cabinPair) &&
@@ -105,6 +108,20 @@ export function AddToVoyageButton({
       event.stopPropagation();
       setNotice(null);
       if (checking) return;
+
+      /*
+       * Private Charter is not a scheduled itinerary, so it never touches the
+       * voyage/residence pair — it is the separate `charter` flag My Voyage
+       * already renders and hands off to /charter.
+       */
+      if (kind === "charter") {
+        if (!selection.charter) {
+          setCharter(true);
+          trackSelectionEvent("voyage_add", { voyage_slug: slug });
+        }
+        openVoyage();
+        return;
+      }
 
       /*
        * A cabin listing is a cruise + cabin PAIR — one click sets both halves of
@@ -208,8 +225,10 @@ export function AddToVoyageButton({
       context,
       kind,
       openVoyage,
+      selection.charter,
       selection.residenceSlug,
       selection.voyageSlug,
+      setCharter,
       setGuests,
       setResidence,
       setSailingDate,

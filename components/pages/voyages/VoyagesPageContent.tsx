@@ -21,6 +21,7 @@ import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { localizedHref } from "@/lib/i18n/locale";
 import { VOYAGES_COPY } from "@/lib/i18n/voyages-copy";
 import type { HomepageAccordionCruise } from "@/lib/homepage-accordion-cruises";
+import { CHARTER_SLUG } from "@/lib/selection-types";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveVoyagePanelContent } from "@/lib/voyage-accordion-panels";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
@@ -442,6 +443,12 @@ export function VoyagesPageContent({
                 const meta = resolveCmsText(cms.meta, voyage.ports);
                 const detailsLabel = resolveCmsText(cms.cta, panel.detailsLabel);
                 const body = resolveCmsText(cms.body, panel.summary);
+                /*
+                  Nile Majesty is the Private Charter, not a scheduled voyage:
+                  it saves and selects through the charter slot of the store.
+                */
+                const isCharter = voyage.slug === "nile-majesty";
+                const selectionSlug = isCharter ? CHARTER_SLUG : voyage.slug;
 
                 return (
                   <Scene
@@ -464,15 +471,15 @@ export function VoyagesPageContent({
                       */}
                       <div className="hathor-select-stack vb-project__select">
                         <FavoriteButton
-                          type="voyage"
-                          slug={voyage.slug}
+                          type={isCharter ? "charter" : "voyage"}
+                          slug={selectionSlug}
                           name={title}
                           variant="card"
                           showLabel={false}
                         />
                         <AddToVoyageButton
-                          kind="voyage"
-                          slug={voyage.slug}
+                          kind={isCharter ? "charter" : "voyage"}
+                          slug={selectionSlug}
                           name={title}
                           variant="card"
                         />
