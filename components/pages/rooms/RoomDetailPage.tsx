@@ -36,7 +36,7 @@ import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { ROOM_COLLECTION_LINKS } from "@/lib/room-collection-editorial";
 import { folioVariantForRoomSlug } from "@/lib/room-folio-panels";
 import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
-import { amenityIn, placesIn, weekdayIn } from "@/lib/i18n/catalog-copy";
+import { amenityIn, placesIn, usdIn, weekdayIn } from "@/lib/i18n/catalog-copy";
 import { ROOMS_COPY, roomFolioPanels, roomShowcaseIn } from "@/lib/i18n/rooms-copy";
 import type { RoomShowcase } from "@/lib/room-showcase";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
@@ -309,7 +309,7 @@ export function RoomDetailPage({
               <p className="rf__card-kicker">{t.yourVoyage}</p>
               {voyage ? (
                 <>
-                  <p className="rf__price">{fare(voyage.priceCents)}</p>
+                  <p className="rf__price">{usdIn(locale, fare(voyage.priceCents))}</p>
                   <p className="rf__price-note">{t.perCabinNights(voyage.nights)}</p>
                   <p className="rf__price-fine">{t.vatIncluded}</p>
 
@@ -437,7 +437,7 @@ export function RoomDetailPage({
                   {voyage ? (
                     <>
                       <p className="rf-ledger__price">
-                        {fare(voyage.priceCents)}
+                        {usdIn(locale, fare(voyage.priceCents))}
                       </p>
                       <p>{t.perCabin}</p>
                       <p className="rf__note">{t.vatIncluded}</p>
@@ -459,7 +459,7 @@ export function RoomDetailPage({
               </p>
               <p className="rf__total-sum">
                 <span>{t.total}</span>
-                <strong>{voyage ? fare(voyage.priceCents) : t.onRequest}</strong>
+                <strong>{voyage ? usdIn(locale, fare(voyage.priceCents)) : t.onRequest}</strong>
               </p>
               <BookNowTrigger className="room-pill rf__act rf__act--wide">
                 <span>{t.continueToReservation}</span>

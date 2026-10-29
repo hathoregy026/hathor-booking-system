@@ -21,6 +21,16 @@ export function voyageNameIn(locale: PublicLocale, slug: string, fallback: strin
 
 const PLACES_IT: Record<string, string> = { Aswan: "Assuan", Cairo: "Il Cairo" };
 
+/**
+ * A dollar amount written US-style ("$7,000", "$3,000.00") with the reader’s
+ * separators: Italian reads "$7.000", "$3.000,00", like the home page fares.
+ * Currency and amount never change.
+ */
+export function usdIn(locale: PublicLocale, formatted: string): string {
+  if (locale !== "it") return formatted;
+  return formatted.replace(/[,.]/g, (mark) => (mark === "," ? "." : ","));
+}
+
 /** Place names inside a route or sentence ("Luxor → Aswan" → "Luxor → Assuan"). */
 export function placesIn(locale: PublicLocale, text: string): string {
   if (locale !== "it") return text;

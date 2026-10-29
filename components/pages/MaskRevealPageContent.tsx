@@ -29,6 +29,7 @@ import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
 import { CRUISES_COPY, type CruisesCopy } from "@/lib/i18n/cruises-copy";
 import {
   amenityIn,
+  usdIn,
   voyageNameIn,
   weekdayIn,
   weekdayLabelIn,
@@ -471,7 +472,7 @@ export function MaskRevealPageContent() {
           valueMax={priceRange[1]}
           onChange={setPriceRange}
           step={10000}
-          format={(n) => formatPrice(n)}
+          format={(n) => usdIn(locale, formatPrice(n))}
           labels={{ min: t.minPrice, max: t.maxPrice }}
         />
       </div>
@@ -600,7 +601,7 @@ export function MaskRevealPageContent() {
                                   {t.priceMeta(item.nights, item.days, item.roomType)}
                                 </p>
                                 <p className="mr-card__price">
-                                  {formatPrice(item.priceCents)}
+                                  {usdIn(locale, formatPrice(item.priceCents))}
                                 </p>
                               </div>
                               <p className="mr-card__finish">{t.perCabin}</p>

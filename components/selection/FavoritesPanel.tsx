@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { formatPrice } from "@/lib/client-dates";
+import { usdIn } from "@/lib/i18n/catalog-copy";
 import {
   findResidence,
   findVoyage,
@@ -204,7 +205,8 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
   const setCharter = useSelectionStore((state) => state.setCharter);
   const router = useRouter();
   const [handoffNotice, setHandoffNotice] = useState<string | null>(null);
-  const t = SELECTION_COPY[usePublicLocale()];
+  const locale = usePublicLocale();
+  const t = SELECTION_COPY[locale];
   const localHref = useLocalizedHref();
 
   const voyage = selection.voyageSlug ? findVoyage(selection.voyageSlug) : null;
@@ -415,7 +417,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       {indicativeCents !== null ? (
         <section className="hfp__section hfp__section--price">
           <p className="hfp__price-label">{t.indicativeFrom}</p>
-          <p className="hfp__price">{formatPrice(indicativeCents)}</p>
+          <p className="hfp__price">{usdIn(locale, formatPrice(indicativeCents))}</p>
           <p className="hfp__note">{t.priceNote}</p>
         </section>
       ) : null}
