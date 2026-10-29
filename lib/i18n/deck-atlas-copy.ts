@@ -262,7 +262,7 @@ const IT: DeckAtlasCopy = {
   chooseDepartureToCheck: "Scelga una partenza per verificare la disponibilità",
   comparableCabin: "Una cabina analoga",
   checkingDates: "Verifica delle date…",
-  pleaseRetry: "Riprovi",
+  pleaseRetry: "Riprova",
   noDates: "Nessuna data in programma",
   notOpenToGuests: "Non accessibile agli ospiti",
   selectToSeeCloser: "Selezioni per vedere da vicino",
@@ -273,7 +273,7 @@ const IT: DeckAtlasCopy = {
     const short = name.replace(/^ponte\s+/i, "");
     return short.charAt(0).toUpperCase() + short.slice(1);
   },
-  swipe: "Scorra lungo il ponte ↔",
+  swipe: "Scorri lungo il ponte ↔",
   spacesOnDeck: "Spazi su questo ponte",
   crewAndService: "Equipaggio e servizio",
   illustrated: "Piani dei ponti illustrati. Gli arredi sono indicativi.",

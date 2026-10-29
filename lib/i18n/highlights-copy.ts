@@ -277,7 +277,7 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
         text: "Sole, corrente leggera e il quieto spettacolo del fiume: un rifugio che La attende dopo ogni approdo.",
       },
     ],
-    exploreDining: "Scopra la cucina",
+    exploreDining: "Scopri la cucina",
     rhythmTitle: "Il ritmo del fiume",
     rhythmBody: "La luce cambia e la giornata risponde: dall’alba alla notte a bordo di Hathor.",
     rhythm: [
@@ -320,6 +320,6 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
     ],
     cardTitle: "Viaggio sul Nilo",
     cardBody: ["Monumenti antichi", "vita privata sul fiume"],
-    exploreCruises: "Scopra le crociere",
+    exploreCruises: "Scopri le crociere",
   },
 };

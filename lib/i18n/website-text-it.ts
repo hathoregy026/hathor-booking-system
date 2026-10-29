@@ -107,12 +107,12 @@ const PAGES_IT: Partial<Pages> = {
     closingTitle: "CHI HA DETTO\nCHE IL PIACERE\nNON PUÒ ESSERE\nFUNZIONALE?",
     closingBody:
       "Cucina, movimento e riposo si fondono in un’unica esperienza continua. Niente è affrettato, niente è eccessivo, e ogni dettaglio è al servizio della vita a bordo.",
-    closingCta: "Prenoti il viaggio",
+    closingCta: "Prenota il viaggio",
     conciergeTitle: "UN VIAGGIO\nSU MISURA",
     diningClosingTitle: "A TAVOLA\nSENZA\nFRETTA",
     conciergeBody:
       "Ci racconti come ama viaggiare. Il nostro team può organizzare cene private, esigenze alimentari, ricorrenze, momenti di allenamento e servizio in suite secondo il ritmo naturale del Suo viaggio sul Nilo.",
-    conciergeCta: "Pianifichi il viaggio",
+    conciergeCta: "Pianifica il viaggio",
     featureLabel: "LA TAVOLA DI HATHOR",
     featureTitle: "CENE PRIVATE",
     featureBody:
@@ -224,7 +224,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "3 notti / 4 giorni",
         meta: "Assuan → Luxor",
         body: "Una traversata intima da sud a nord: File, Kom Ombo ed Edfu si svelano al passo senza fretta di una dahabiya, fino ai templi di Luxor.",
-        cta: "Scopra il viaggio",
+        cta: "Scopri il viaggio",
       },
       {
         slug: "4-nights-luxor-aswan",
@@ -232,7 +232,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "4 notti / 5 giorni",
         meta: "Luxor → Assuan",
         body: "Il classico viaggio sul Nilo, dalle rive monumentali di Luxor alla grazia quieta di Assuan: templi, feluche e serate illuminate dal tramonto sul fiume.",
-        cta: "Scopra il viaggio",
+        cta: "Scopri il viaggio",
       },
       {
         slug: "7-nights-luxor-aswan-luxor",
@@ -240,7 +240,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "7 notti / 8 giorni",
         meta: "Luxor → Assuan → Luxor",
         body: "Il circuito completo del Nilo tra Luxor e Assuan: tempo per i templi, per la luce del fiume e per giornate più tranquille a bordo di Hathor.",
-        cta: "Scopra il viaggio",
+        cta: "Scopri il viaggio",
       },
       {
         slug: "nile-majesty",
@@ -248,7 +248,7 @@ const PAGES_IT: Partial<Pages> = {
         durationLabel: "Charter privato",
         meta: "Itinerario su misura",
         body: "Il charter privato riserva Hathor in esclusiva al Suo gruppo, con la libertà di modellare itinerario, cucina ed escursioni a terra su misura per Lei.",
-        cta: "Scopra il charter",
+        cta: "Scopri il charter",
       },
     ],
     charterLabel: "Charter privato",
@@ -256,8 +256,8 @@ const PAGES_IT: Partial<Pages> = {
     charterScript: "Il Suo fiume. Il Suo ritmo. Tutto per Lei.",
     charterBody:
       "Il charter privato riserva Hathor in esclusiva al Suo gruppo, con la libertà di modellare il viaggio secondo il ritmo, la cucina e le escursioni a terra che preferisce.",
-    charterCta: "Scopra il charter",
-    reserveLabel: "Inizi il Suo viaggio",
+    charterCta: "Scopri il charter",
+    reserveLabel: "Inizia il viaggio",
     ctaTitle: "Prenoti il Suo viaggio",
     ctaBody: "Scelga l’itinerario, selezioni la Sua suite e salga a bordo di Hathor.",
     ctaPrimary: "Prenota ora",

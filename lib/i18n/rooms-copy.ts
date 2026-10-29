@@ -292,7 +292,7 @@ function routesIt(occupancy: string): readonly RoomFolioRoute[] {
       meta: "3 notti / 4 giorni",
       departs: "Ogni mercoledì",
       occupancy,
-      hrefLabel: "Scopra il viaggio",
+      hrefLabel: "Scopri il viaggio",
       days: ASWAN_TO_LUXOR_DAYS_IT,
     },
     {
@@ -301,7 +301,7 @@ function routesIt(occupancy: string): readonly RoomFolioRoute[] {
       meta: "4 notti / 5 giorni",
       departs: "Ogni sabato",
       occupancy,
-      hrefLabel: "Scopra il viaggio",
+      hrefLabel: "Scopri il viaggio",
       days: LUXOR_TO_ASWAN_DAYS_IT,
     },
     {
@@ -609,7 +609,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     previewLead: (room) => `Cinque viste di ${room}: la luce, le proporzioni e il fiume oltre il vetro.`,
     elsewhere: "Altrove a bordo",
     hold: "La Sua residenza La attende tra Luxor e Assuan.",
-    continueToReserve: "Prosegua con la prenotazione",
+    continueToReserve: "Prosegui con la prenotazione",
     nile: "Nilo",
     detail: {
       tabs: ["Panoramica", "Disponibilità", "Dotazioni", "Il Suo viaggio", "Da sapere"],
@@ -628,7 +628,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
       perCabinNights: (nights) => `per cabina · ${nights} notti`,
       vatIncluded: "IVA e servizio inclusi",
       route: "Itinerario",
-      chooseVoyage: "Scelga un viaggio",
+      chooseVoyage: "Scegli un viaggio",
       voyageOption: (ports, nights) => `${ports} · ${nights} notti`,
       departs: "Partenza",
       every: (day) => `Ogni ${day}`,
@@ -647,7 +647,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
       reservationKicker: "01 — Prenotazione",
       fareTitle: "La Sua cabina e la tariffa",
       portsEvery: (ports, day) => `${ports} · ogni ${day}`,
-      requestDate: "Richieda una data",
+      requestDate: "Richiedi una data",
       ledgerHead: (nights) => [
         "Sistemazione",
         "Il Suo viaggio include",
@@ -662,7 +662,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
         `1 cabina · ${nights ? `${nights} notti` : "date flessibili"} · fino a ${capacity} ospiti`,
       total: "Totale",
       onRequest: "Su richiesta",
-      continueToReservation: "Prosegua con la prenotazione",
+      continueToReservation: "Prosegui con la prenotazione",
       includedTitle: ["Incluso,", "con la nostra cura"],
       goodToKnow: "Da sapere",
       closePhotos: "Chiudi le fotografie",

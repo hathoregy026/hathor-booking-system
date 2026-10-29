@@ -150,7 +150,7 @@ export const CONTACT_COPY: Record<PublicLocale, ContactCopy> = {
       "Quattro modi per iniziare una conversazione con il nostro ufficio prenotazioni al Cairo.",
     channels: [
       { word: "Visita", label: "Indirizzo", meta: "Ufficio del Cairo" },
-      { word: "Chiamata", label: "Telefono", meta: "Linea diretta", cta: "Chiami ora" },
+      { word: "Chiamata", label: "Telefono", meta: "Linea diretta", cta: "Chiama ora" },
       { word: "Email", label: "E-mail", meta: "Prenotazioni", cta: "Ci scriva" },
       {
         word: "Messaggio",
@@ -173,7 +173,7 @@ export const CONTACT_COPY: Record<PublicLocale, ContactCopy> = {
     cardTag: "Prenotazioni",
     cardTitle: "Corrispondenza",
     cardOffice: "Ufficio del Cairo · tutti i giorni 09:00–17:00",
-    call: "Chiami",
+    call: "Chiama",
     bookNow: "Prenota ora",
   },
 };
@@ -214,7 +214,7 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     sentBody:
       "Il Suo messaggio è arrivato al nostro ufficio prenotazioni. Una e-mail di conferma è in arrivo all’indirizzo indicato.",
     respond: "Il nostro team Le risponderà entro 24 ore.",
-    again: "Invii un altro messaggio",
+    again: "Invia un altro messaggio",
     thanksCard: "Grazie",
     receivedBody:
       "Abbiamo ricevuto il Suo messaggio. Il nostro ufficio prenotazioni Le risponderà entro 24 ore.",

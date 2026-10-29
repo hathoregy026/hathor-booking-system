@@ -202,7 +202,7 @@ export const CRUISES_COPY: Record<PublicLocale, CruisesCopy> = {
       { label: "Royal", title: "Royal Suites", hint: "Il massimo privilegio" },
       { label: "Cucina", title: "Hathor Flavors", hint: "La gastronomia a bordo" },
     ],
-    reserveLabel: "Prenoti un viaggio",
+    reserveLabel: "Prenota un viaggio",
     reserveEyebrow: "Viaggi",
     luxuryRooms: "Luxury Rooms",
     continueTitleFallback: "Continui a esplorare\na bordo di Hathor",

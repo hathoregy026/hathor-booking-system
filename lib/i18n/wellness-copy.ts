@@ -152,7 +152,7 @@ export const WELLNESS_COPY: Record<PublicLocale, WellnessCopy> = {
     essayLines: ["Il riposo non è", "l’assenza del", "viaggio"],
     essayBody:
       "Le suite diventano parte del rituale: la luce morbida del mattino, un sonno profondo e il raro lusso di svegliarsi ogni giorno davanti a un orizzonte diverso sul Nilo.",
-    exploreSuites: "Scopra le suite",
+    exploreSuites: "Scopri le suite",
     pauseLabel: "Una pausa quieta",
     pulse: ["Il fiume tiene il tempo:", "Lei non deve farlo."],
     nextEyebrow: "Il passo successivo",

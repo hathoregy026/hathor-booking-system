@@ -344,7 +344,7 @@ const IT: ChromeCopy = {
   },
   hero: {
     regionLabel: "Presentazione",
-    discover: "Scopra lo straordinario",
+    discover: "Scopri lo straordinario",
     scrollHint: "Scorri",
     location: ["LUXOR", "ASSUAN"],
     playFilm: "Riproduci il filmato",

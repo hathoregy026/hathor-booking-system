@@ -271,9 +271,9 @@ const IT: CharterCopy = {
   deedIntro:
     "Noleggi in esclusiva una dahabiya di lusso: le dodici cabine e suite di Hathor, l’equipaggio e lo chef, per una crociera privata sul Nilo in Egitto, da Luxor ad Assuan, a Dendera o al Cairo.",
   lead: "Il Suo Nilo privato, solo per Lei.",
-  primaryCta: "Richieda un charter privato",
+  primaryCta: "Richiedi un charter privato",
   secondaryCta: "Verifica disponibilità",
-  scrollCue: "Scorra per salire a bordo",
+  scrollCue: "Scorri per salire a bordo",
   shipLabel:
     "Il profilo di Hathor: il ponte sole, il ponte principale e il ponte inferiore, tutti riservati a un solo gruppo",
   shipLegend: ["Ogni ponte", "riservato al Suo gruppo"],
@@ -372,14 +372,14 @@ const IT: CharterCopy = {
     lead: "Selezioni l’itinerario che preferisce. Ogni approdo, orario ed escursione a terra sarà definito intorno ai Suoi ospiti.",
     label: "Itinerari del charter",
     selected: "Selezionato · Richieda un preventivo",
-    choose: "Scelga questo itinerario",
+    choose: "Scegli questo itinerario",
     imageAlt: (route) => `Hathor Dahabiya, charter privato sul Nilo: ${route}`,
   },
   preferred: (route) => `Preferenza · ${route}`,
   process: {
     kicker: "Come funziona il charter",
     title: ["Tre", "semplici", "passaggi"],
-    begin: "Inizi dal primo passo",
+    begin: "Inizia dal primo passo",
     steps: [
       {
         title: "Invii la richiesta",
@@ -486,7 +486,7 @@ const IT: CharterCopy = {
         after: ". Controlli l’indirizzo oppure scriva a",
         end: "per permetterci di contattarLa.",
       },
-      again: "Invii un’altra richiesta",
+      again: "Invia un’altra richiesta",
     },
     languageNote: "Guest language: Italian",
   },

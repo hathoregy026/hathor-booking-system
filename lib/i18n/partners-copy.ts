@@ -214,8 +214,8 @@ export const PARTNERS_COPY: Record<PublicLocale, PartnersCopy> = {
     epilogue: ["Iniziamo un dialogo", "Collabori con", "Hathor"],
     statement:
       "Per collaborazioni, rappresentanza e partnership di viaggio ben ponderate, si rivolga al team Hathor al Cairo.",
-    contactHathor: "Contatti Hathor",
-    bookVoyage: "Prenoti un viaggio",
+    contactHathor: "Contatta Hathor",
+    bookVoyage: "Prenota un viaggio",
     epilogueMeta: "Rappresentanza e richieste dal settore · Ufficio del Cairo",
     cardTitle: "La cerchia dei partner",
     cardBody: ["Nomi fidati che condividono", "la nostra cura per ogni ospite"],

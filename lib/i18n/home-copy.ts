@@ -415,7 +415,7 @@ const IT: HomeCopy = {
     eyebrow: "Una traversata di 4 notti · Da Luxor ad Assuan",
     stopsLabel: "Esplori i luoghi sul Nilo",
     embarkation: "Imbarco",
-    readMore: "Scopra di più",
+    readMore: "Scopri di più",
     mapTitle: "Il Nilo tra Luxor e Assuan",
     mapDescription:
       "Panoramica geografica orientata a nord con la posizione delle città. Le linee tratteggiate collegano i luoghi a un tracciato semplificato del fiume e non indicano gli ormeggi. La navigazione è mostrata verso sud, da Luxor ad Assuan.",
@@ -466,7 +466,7 @@ const IT: HomeCopy = {
       "Otto cabine, due suite e due Royal Suite, ciascuna con la propria finestra sulla riva.",
       "Legno lavorato a mano, lino e un letto pensato per la quiete dopo una giornata a terra.",
     ],
-    link: "Scopra le suite",
+    link: "Scopri le suite",
     royalBathAlt: "Il bagno di una Royal Suite a bordo di Hathor",
     royalAlt: "Una Royal Suite a bordo di Hathor Dahabiya",
     cabinAlt: "Una cabina vista fiume a bordo di Hathor Dahabiya",
@@ -527,7 +527,7 @@ const IT: HomeCopy = {
     cta: "Verifica la disponibilità",
   },
   doc: {
-    contactLabel: "Contatti Hathor",
+    contactLabel: "Contatta Hathor",
     kicker: "06 — Contatti",
     support: "32 ospiti, cinque ormeggi e un fiume. A tutto il resto pensiamo noi.",
     titleLines: ["Inizi il Suo", "viaggio sul Nilo"],
@@ -576,7 +576,7 @@ export const PARTNERS_STRIP_COPY: Record<PublicLocale, PartnersStripCopy> = {
       "partner del turismo e dell’ospitalità in tutto il mondo,",
       "che condividono la nostra passione per i viaggi autentici sul Nilo.",
     ],
-    hrefLabel: "Scopra i nostri partner",
+    hrefLabel: "Scopri i nostri partner",
     listLabel: "I partner di Hathor",
   },
 };

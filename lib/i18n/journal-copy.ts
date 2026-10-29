@@ -158,7 +158,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     editorialAlt: (title) => `Immagine per l’articolo «${title}»`,
     slotAlt: slotAltIt,
     leadStory: "In primo piano",
-    readStory: "Legga l’articolo",
+    readStory: "Leggi l’articolo",
     arrivingSoon: "In arrivo",
     arrivingBody: "Qui appariranno le nuove note dal Nilo.",
     issue: {
@@ -173,11 +173,11 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     contentsBody:
       "Le note più recenti: templi, villaggi sul fiume, consigli per la valigia e il ritmo più lento del viaggio in dahabiya.",
     readLabel: (title) => `Legga «${title}»`,
-    read: "Legga",
+    read: "Leggi",
     firstChapter: "Il primo capitolo è in preparazione.",
     galleryLabel: "Galleria del journal",
     openingsLabel: "Incipit delle storie",
-    openNote: "Apra la nota",
+    openNote: "Apri la nota",
     readingPaths: "Percorsi di lettura",
     themes: [
       { word: "Templi", note: "Pietra e luce" },
@@ -196,8 +196,8 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     statement:
       "Quando la lettura finisce, comincia il fiume: prenoti un viaggio privato in dahabiya tra Luxor e Assuan.",
     bookNow: "Prenota ora",
-    exploreCruises: "Scopra le crociere",
-    askConcierge: "Chieda al concierge",
+    exploreCruises: "Scopri le crociere",
+    askConcierge: "Chiedi al concierge",
     cardTag: "Journal",
     cardTitle: "Note",
     cardBody: ["Templi, villaggi e viaggi più quieti", "scritti per gli ospiti di Hathor"],
@@ -240,7 +240,7 @@ export type ArticleCopy = {
 };
 
 const COMMERCIAL_IT: Record<string, string> = {
-  "Explore voyages": "Scopra i viaggi",
+  "Explore voyages": "Scopri i viaggi",
   "See Royal Suites": "Le Royal Suite",
   "See luxury rooms": "Le cabine di lusso",
   "Private charter": "Charter privato",
@@ -289,7 +289,7 @@ export const ARTICLE_COPY: Record<PublicLocale, ArticleCopy> = {
     runLabel: (title) => `${title}: un articolo del journal`,
     meta: "Hathor Journal",
     navLabel: "Sezioni dell’articolo",
-    read: "Legga",
+    read: "Leggi",
     allDispatches: "Tutti gli articoli",
     dispatch: "Articolo",
     publishedOn: "Pubblicato il",
@@ -310,7 +310,7 @@ export const ARTICLE_COPY: Record<PublicLocale, ArticleCopy> = {
     caption: "Templi, villaggi e il ritmo più lento del viaggio in dahabiya.",
     continueEyebrow: "Prosegua",
     theNote: "La nota",
-    readBelow: "Legga qui sotto",
+    readBelow: "Leggi qui sotto",
     furtherLabel: "Altri articoli",
     furtherNotes: "Altre note",
     continueReading: "Continui a leggere",

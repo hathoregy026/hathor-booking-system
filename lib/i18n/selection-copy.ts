@@ -145,7 +145,7 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     nothingSaved: "Ancora nessun preferito",
     nothingSavedBody:
       "Scopra i viaggi, le cabine e le suite di Hathor e salvi le esperienze che La ispirano: le ritroverà qui al Suo ritorno.",
-    exploreHathor: "Scopra Hathor",
+    exploreHathor: "Scopri Hathor",
     viewDetails: "Dettagli",
     remove: "Rimuovi",
     removeLabel: (title) => `Rimuovi ${title} dai preferiti`,
@@ -159,7 +159,7 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     beginsTitle: "Il Suo viaggio inizia qui",
     beginsBody:
       "Scelga un itinerario e una sistemazione per iniziare a dare forma alla Sua esperienza a bordo di Hathor.",
-    exploreVoyages: "Scopra i viaggi",
+    exploreVoyages: "Scopri i viaggi",
     journey: "Itinerario",
     ports: (ports) => placesIn("it", ports),
     nightsDays: (nights, days) => `${nights} notti / ${days} giorni`,
@@ -179,13 +179,13 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
       "Tutto il Suo gruppo. Sceglierà le cabine proseguendo con la prenotazione.",
     privateCharter: "Charter privato",
     charterMeta: "La dahabiya, solo per Lei.",
-    viewCharter: "Scopra il charter",
+    viewCharter: "Scopri il charter",
     indicativeFrom: "Prezzo indicativo da",
     priceNote:
       "Tariffa indicativa di listino per cabina. Prezzo finale e disponibilità sono confermati dal nostro ufficio prenotazioni.",
-    requestVoyage: "Richieda questo viaggio",
-    continueBooking: "Continui la prenotazione",
-    continueExploring: "Continui a esplorare",
+    requestVoyage: "Richiedi questo viaggio",
+    continueBooking: "Continua la prenotazione",
+    continueExploring: "Continua a esplorare",
     changeTitle: "Se cambia viaggio, la sistemazione scelta potrebbe essere aggiornata.",
     changeBody: (voyage) =>
       `${voyage} non offre la Sua sistemazione attuale. Continuando, verrà mantenuto il nuovo itinerario e la sistemazione sarà azzerata, così potrà sceglierne un’altra.`,
