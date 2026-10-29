@@ -41,13 +41,13 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "Dahabiya sailing past ancient Egyptian monuments":
     "Una dahabiya naviga accanto agli antichi monumenti egizi",
   "Dedicated hospitality and service aboard Hathor":
-    "Ospitalità e servizio dedicati a bordo di Hathor",
+    "Ospitalità e servizio attento a bordo di Hathor",
   "Dining — Celebration panel": "Una cena di festa a bordo di Hathor",
   "Dining — Closing scene": "La fine di una cena a bordo di Hathor",
   "Dining — Course layers": "Le portate di un menu degustazione a bordo di Hathor",
   "Dining — First light plate": "Un piatto servito alla prima luce a bordo di Hathor",
   "Dining — Intro hero": "L’alta cucina a bordo di Hathor",
-  "Dining — Lounge panel": "Il lounge di Hathor",
+  "Dining — Lounge panel": "Il salone di Hathor",
   "Dining — Private menu panel": "Un menu privato a bordo di Hathor",
   "Dining — Wine pairing": "Vini in abbinamento a bordo di Hathor",
   "Dinner on the open deck of Hathor at dusk":
@@ -60,13 +60,13 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "Fitness and active wellness aboard Hathor":
     "Fitness e benessere attivo a bordo di Hathor",
   "Guests at the circular bar on the Hathor sun deck at sunset":
-    "Ospiti al bar circolare sul solarium di Hathor al tramonto",
+    "Ospiti al bar circolare sul ponte sole di Hathor al tramonto",
   "Guests enjoying a Nile sunset moment aboard Hathor Dahabiya":
     "Ospiti al tramonto sul Nilo a bordo di Hathor Dahabiya",
   "Guests served at breakfast in the Hathor restaurant":
     "Ospiti serviti a colazione nel ristorante di Hathor",
   "Guests under the woven pergola on the Hathor sun deck":
-    "Ospiti sotto la pergola intrecciata del solarium di Hathor",
+    "Ospiti sotto la pergola intrecciata del ponte sole di Hathor",
   "Guests welcomed at the reception desk aboard Hathor":
     "Ospiti accolti alla reception a bordo di Hathor",
   "Hathor Dahabiya blog — stories from the Nile":
@@ -131,7 +131,7 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "Luxury suite lounge aboard Hathor Dahabiya":
     "Salotto di una suite di lusso a bordo di Hathor Dahabiya",
   "Master bedroom cabin aboard Hathor Dahabiya":
-    "Cabina con camera matrimoniale a bordo di Hathor Dahabiya",
+    "Cabina matrimoniale a bordo di Hathor Dahabiya",
   "Moving tilted card — gastronomy on the Nile": "La gastronomia sul Nilo",
   "Nile Majesty voyage aboard Hathor": "Il viaggio Nile Majesty a bordo di Hathor",
   "Nile chart wallpaper aboard Hathor Dahabiya":
@@ -140,7 +140,7 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
     "Un corridoio decorato a bordo di una dahabiya di lusso",
   "Private charter on the Hathor Dahabiya": "Charter privato a bordo di Hathor Dahabiya",
   "Private sun deck reserved exclusively for your party":
-    "Il solarium privato riservato in esclusiva al Suo gruppo",
+    "Il ponte sole riservato in esclusiva al Suo gruppo",
   "Royal Suite on the 3-night Aswan to Luxor itinerary":
     "Royal Suite sull’itinerario di 3 notti da Assuan a Luxor",
   "Royal Suite on the 4-night Luxor to Aswan itinerary":
@@ -167,9 +167,9 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "The chef at work in the galley aboard Hathor":
     "Lo chef al lavoro nella cucina di bordo di Hathor",
   "The lounge aboard Hathor, sofas and bar counter beside the windows":
-    "Il lounge di Hathor, con divani e bancone bar accanto alle finestre",
+    "Il salone di Hathor, con divani e bancone bar accanto alle finestre",
   "The two pools on the Hathor sun deck at golden hour":
-    "Le due piscine sul solarium di Hathor all’ora dorata",
+    "Le due piscine sul ponte sole di Hathor all’ora dorata",
   "Treadmill, elliptical trainer and bike aboard Hathor, beside the Nile":
     "Tapis roulant, ellittica e cyclette a bordo di Hathor, accanto al Nilo",
   "Twin cabin on the 4-night Luxor to Aswan itinerary":
@@ -178,7 +178,7 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
     "Cabina Twin sull’itinerario di 7 notti andata e ritorno",
   "Twin cabin with panoramic Nile window":
     "Cabina Twin con finestra panoramica sul Nilo",
-  "Unfinished Obelisk, Aswan": "L’Obelisco Incompiuto, Assuan",
+  "Unfinished Obelisk, Aswan": "L’obelisco incompiuto, Assuan",
   "Unhurried sailing rhythm along the Nile": "Navigazione senza fretta lungo il Nilo",
   "Valley of the Kings, Luxor": "La Valle dei Re, Luxor",
   "Wheel portal — Hathor Dahabiya on the Nile at golden hour":

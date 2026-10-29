@@ -32,7 +32,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     tierSubtitle: "Rifugi sul fiume",
     tierKicker: "Cabine del ponte inferiore",
     tierStatement:
-      "Ventidue metri quadrati di calma: letto king o due letti singoli, pensati per due ospiti e ampie vetrate sul Nilo.",
+      "Ventidue metri quadrati di calma per due ospiti: letto king o due letti singoli e ampie vetrate sul Nilo.",
     eyebrow: "Ponte inferiore · Cabine sul Nilo",
     support:
       "Rifugi con letto king o due letti singoli per due ospiti: la luce panoramica del fiume, proporzioni calme e il carattere discreto, crema e oro, di Hathor.",
@@ -60,7 +60,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     epilogue: {
       eyebrow: "Prenoti la Sua cabina",
       title: "Abbini una cabina al Suo viaggio",
-      body: "Salvi la cabina che preferisce in Il mio viaggio o richieda la disponibilità: il nostro team la abbinerà alla Sua navigazione tra Luxor e Assuan.",
+      body: "Salvi la cabina che preferisce nella sezione Il mio viaggio o richieda la disponibilità: il nostro team la abbinerà alla Sua navigazione tra Luxor e Assuan.",
     },
   },
   suites: {
@@ -81,7 +81,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     manifesto: {
       label: "Suite",
       headline: ["Quarantasei", "metri quadrati", "per lasciarsi andare"],
-      body: "Più spazio, più privacy, più fiume: la Accessible Hathor Suite è pensata per chi desidera respirare senza mai lasciare il Nilo.",
+      body: "Più spazio, più privacy, più fiume: l’Accessible Hathor Suite è pensata per chi desidera respirare senza mai lasciare il Nilo.",
     },
     ledger: [
       { value: "46", label: "Metri quadrati", note: "Pianta della suite" },
@@ -97,7 +97,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     epilogue: {
       eyebrow: "Prenoti la Sua suite",
       title: "Il Suo rifugio sul ponte inferiore",
-      body: "Aggiunga la Luxury Suite a Il mio viaggio o parli con il nostro ufficio prenotazioni: abbineremo la Sua residenza all’itinerario giusto.",
+      body: "Aggiunga la Luxury Suite alla sezione Il mio viaggio o parli con il nostro ufficio prenotazioni: abbineremo la Sua residenza all’itinerario giusto.",
     },
   },
   royal: {
@@ -138,7 +138,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     epilogue: {
       eyebrow: "Prenoti la Royal Suite",
       title: "Il Nilo, tutto per Lei",
-      body: "Salvi la Royal Suite nei preferiti o la aggiunga a Il mio viaggio: il nostro concierge confermerà la Sua navigazione più riservata.",
+      body: "Salvi la Royal Suite nei preferiti o la aggiunga alla sezione Il mio viaggio: il nostro concierge confermerà la Sua navigazione più riservata.",
     },
   },
 };
@@ -209,7 +209,7 @@ const EXCLUDE_IT = [
 const ASWAN_TO_LUXOR_DAYS_IT: readonly RoomFolioDay[] = [
   {
     title: "Giorno 1 · Assuan",
-    body: "All’arrivo La accogliamo con un drink di benvenuto e sale a bordo di Hathor per un pranzo senza fretta. Visita al Tempio di File e alla Grande Diga, poi rientro per la cena e il pernottamento ad Assuan.",
+    body: "All’arrivo La accogliamo a bordo di Hathor con un drink di benvenuto e un pranzo senza fretta. Visita al Tempio di File e alla Grande Diga, poi rientro per la cena e il pernottamento ad Assuan.",
   },
   {
     title: "Giorno 2 · Kom Ombo ed Esna",
@@ -325,7 +325,7 @@ function sailingsIt(occupancy: string) {
 }
 
 const AVAILABILITY_NOTE_IT = (what: string) =>
-  `Hathor naviga secondo un calendario settimanale pubblicato. Richieda una data per confermare ${what} ancora disponibile per l’itinerario scelto.`;
+  `Hathor naviga secondo un calendario settimanale pubblicato. Richieda una data per verificare che ${what} sia ancora disponibile per l’itinerario scelto.`;
 
 const FOLIO_IT: Record<RoomCollectionVariant, RoomFolioPanels> = {
   cabins: {

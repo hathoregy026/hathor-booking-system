@@ -175,7 +175,7 @@ export const CRUISES_COPY: Record<PublicLocale, CruisesCopy> = {
     all: "Tutte",
     nightsShort: (n) => `${n}N`,
     nights: "Notti",
-    anyDay: "Ogni giorno",
+    anyDay: "Qualsiasi giorno",
     price: "Prezzo",
     reset: "Azzera",
     checkAvailability: "Verifica disponibilità",

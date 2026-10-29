@@ -52,7 +52,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
     englishPath: "/luxury-cabins-Nile-Cruise",
     title: "Cabine di lusso per la crociera sul Nilo | Hathor Dahabiya",
     description:
-      "Cabine di 22 metri quadrati con vista sul Nilo a bordo di Hathor Dahabiya: letto king o due letti singoli, proporzioni tranquille, la luce del fiume e ogni comfort curato.",
+      "Cabine di 22 m² con vista sul Nilo a bordo di Hathor Dahabiya: letto king o due singoli, proporzioni tranquille, la luce del fiume e ogni comfort curato.",
     pageLabel: "Luxury Rooms",
     name: "Cabine di lusso per la crociera sul Nilo | Hathor Dahabiya",
     crumb: "Cabine",
@@ -71,7 +71,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
     englishPath: "/rooms",
     title: "Hathor Luxury Suite | Suite di 46 m² sul Nilo",
     description:
-      "La Luxury Suite di Hathor è una residenza di 46 m² sul Nilo, con vista panoramica sul fiume, interni ricchi di carattere e una jacuzzi privata, pensata per quattro ospiti.",
+      "La Luxury Suite di Hathor: 46 m² sul Nilo, vista panoramica sul fiume, interni ricchi di carattere e jacuzzi privata, per un massimo di quattro ospiti.",
     pageLabel: "Luxury Suites",
     name: "Hathor Luxury Suite | Suite di 46 m² per la crociera sul Nilo",
     crumb: "Luxury Suite",
@@ -91,7 +91,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
     englishPath: "/royal-suites",
     title: "Royal Suite per la crociera sul Nilo | Hathor Dahabiya",
     description:
-      "La Royal Suite di Hathor è una residenza di 56 m² sul Nilo, con vista dal ponte principale, due bagni e la sistemazione più riservata di questa crociera di lusso in dahabiya.",
+      "La Royal Suite di Hathor: 56 m² con vista dal ponte principale e due bagni, la sistemazione più riservata di questa crociera di lusso in dahabiya sul Nilo.",
     pageLabel: "Royal Suites",
     name: "Royal Suite per la crociera sul Nilo | Hathor Dahabiya",
     crumb: "Royal Suite",
