@@ -40,7 +40,7 @@ export const ITALIAN_PAGES = {
     path: "/it/about",
     title: "Crociera in dahabiya sul Nilo in Egitto | Chi siamo, Hathor",
     description:
-      "Hathor è una dahabiya di lusso per 32 ospiti in crociera sul Nilo, in Egitto: otto cabine, due suite e due Royal Suite, tra Luxor e Assuan con un equipaggio dedicato.",
+      "Hathor è una dahabiya di lusso per 32 ospiti sul Nilo, in Egitto: otto cabine, due suite e due Royal Suite, tra Luxor e Assuan, con un equipaggio dedicato.",
     name: "Chi siamo: Hathor Dahabiya, una navigazione privata sul Nilo",
     crumb: "Chi siamo",
   }),
@@ -48,7 +48,7 @@ export const ITALIAN_PAGES = {
     path: "/it/contact",
     title: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
     description:
-      "Contatti l’ufficio prenotazioni di Hathor al Cairo per date di partenza, charter privati e disponibilità delle suite. Tutti i giorni 09:00–17:00, chiuso il venerdì.",
+      "Contatti l’ufficio prenotazioni di Hathor al Cairo per partenze, charter privati e disponibilità delle suite. Ogni giorno 09:00–17:00, chiuso il venerdì.",
     name: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
     crumb: "Contatti",
   }),
@@ -56,7 +56,7 @@ export const ITALIAN_PAGES = {
     path: "/it/gastronomy",
     title: "La cucina di una crociera di lusso sul Nilo | Hathor",
     description:
-      "L’esperienza gastronomica di una crociera di lusso sul Nilo a bordo di Hathor Dahabiya: sapori egiziani e un servizio attento, a tavola dentro e sul ponte, tra Luxor e Assuan.",
+      "La cucina di Hathor Dahabiya, crociera di lusso sul Nilo: sapori egiziani e un servizio attento, in sala e sul ponte, tra Luxor e Assuan.",
     name: "La cucina sul Nilo | La gastronomia di Hathor Dahabiya",
     crumb: "Cucina",
   }),
@@ -72,7 +72,7 @@ export const ITALIAN_PAGES = {
     path: "/it/highlights",
     title: "Crociera sul Nilo: cosa vedere | Templi tra Luxor e Assuan",
     description:
-      "Le giornate a terra con Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e Philae, pensate come visite senza fretta, non come una lista da spuntare.",
+      "Le giornate a terra con Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e Philae, visite senza fretta e non una lista da spuntare.",
     name: "Crociera sul Nilo: cosa vedere | Templi tra Luxor e Assuan",
     crumb: "Da non perdere",
     image: {
@@ -94,16 +94,16 @@ export const ITALIAN_PAGES = {
     path: "/it/terms-and-conditions",
     title: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
     description:
-      "Le condizioni di prenotazione, pagamento e cancellazione di Hathor Dahabiya, con servizi inclusi, responsabilità degli ospiti e regole di viaggio per le crociere sul Nilo tra Luxor e Assuan.",
+      "Condizioni di prenotazione, pagamento e cancellazione di Hathor Dahabiya: servizi inclusi, responsabilità degli ospiti e regole di viaggio sul Nilo.",
     name: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
     crumb: "Termini e condizioni",
   }),
   blogs: page({
     path: "/it/blogs",
-    title: "Blog crociera di lusso sul Nilo | Consigli e storie in dahabiya",
+    title: "Crociera di lusso sul Nilo: consigli e storie | Blog Hathor",
     description:
-      "Consigli e storie per una crociera di lusso sul Nilo in Egitto: quando partire in dahabiya, i templi di Luxor e Assuan, cosa mettere in valigia, le cabine e il ritmo lento dei viaggi Hathor.",
-    name: "Blog crociera di lusso sul Nilo | Consigli e storie in dahabiya",
+      "Consigli e storie per una crociera sul Nilo: quando partire in dahabiya, i templi di Luxor e Assuan, cosa mettere in valigia e il ritmo dei viaggi Hathor.",
+    name: "Crociera di lusso sul Nilo: consigli e storie | Blog Hathor",
     crumb: "Journal",
     image: {
       url: "/media/hathor/r2/blog-hero.webp",
