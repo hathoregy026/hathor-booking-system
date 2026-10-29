@@ -149,7 +149,7 @@ export const ABOUT_COPY: Record<PublicLocale, AboutCopy> = {
     experience: "L’esperienza",
     diningLines: ["Alta cucina", "sulla più bella", "dahabiya d’Egitto"],
     exploreDining: "Scopra la cucina",
-    welcomeFallback: "Benvenuti a bordo",
+    welcomeFallback: "Le diamo il benvenuto a bordo",
     epilogue: ["Un lusso senza tempo", "sul Nilo"],
     bookNow: "Prenota ora",
     exploreCruises: "Scopra le crociere",

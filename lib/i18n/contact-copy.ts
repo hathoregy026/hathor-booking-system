@@ -151,7 +151,7 @@ export const CONTACT_COPY: Record<PublicLocale, ContactCopy> = {
     channels: [
       { word: "Visita", label: "Indirizzo", meta: "Ufficio del Cairo" },
       { word: "Chiamata", label: "Telefono", meta: "Linea diretta", cta: "Chiami ora" },
-      { word: "E-mail", label: "E-mail", meta: "Prenotazioni", cta: "Ci scriva" },
+      { word: "Email", label: "E-mail", meta: "Prenotazioni", cta: "Ci scriva" },
       {
         word: "Messaggio",
         label: "WhatsApp",
@@ -221,7 +221,7 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     selectionLabel: "La Sua selezione",
     selectionTitle: "Il Suo viaggio con Hathor",
     selectionNote:
-      "Inviata con il Suo messaggio. Può modificarla in qualsiasi momento in Il mio viaggio.",
+      "Inviata con il Suo messaggio. Può modificarla in qualsiasi momento nella sezione Il mio viaggio.",
     name: "Nome",
     email: "E-mail",
     phone: "Telefono",

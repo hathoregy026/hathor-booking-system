@@ -23,7 +23,7 @@ const PAGES_IT: Partial<Pages> = {
   },
   highlights: {
     intro: [
-      "Si immerga nel fascino misterioso del Nilo a bordo della crociera Hathor Dahabiya, una crociera di lusso in dahabiya sul Nilo, in Egitto, che offre la più maestosa esperienza di navigazione egiziana, pensata per chi cerca eleganza, comfort e un ricco tocco di storia. Spazi privati: con 8 cabine e 4 suite in tutto, di cui 2 Royal, la nostra dahabiya Hathor garantisce la massima privacy insieme a un’ospitalità calda ed elegante, ed è la scelta perfetta per una crociera in dahabiya da Assuan a Luxor. Questa nave elegante scivola dolcemente lungo il fiume, per una navigazione rilassata che permette agli ospiti di godersi panorami sereni e scoprire tesori nascosti lontano dalla folla.",
+      "Si immerga nel fascino misterioso del Nilo a bordo di Hathor Dahabiya, una crociera di lusso in dahabiya sul Nilo, in Egitto, che offre la più maestosa esperienza di navigazione egiziana, pensata per chi cerca eleganza, comfort e un ricco tocco di storia. Spazi privati: con 8 cabine e 4 suite in tutto, di cui 2 Royal, la nostra dahabiya Hathor garantisce la massima privacy insieme a un’ospitalità calda ed elegante, ed è la scelta perfetta per una crociera in dahabiya da Assuan a Luxor. Questa nave elegante scivola dolcemente lungo il fiume, per una navigazione rilassata che permette agli ospiti di godersi panorami sereni e scoprire tesori nascosti lontano dalla folla.",
       "Con la gastronomia di Hathor, gli ospiti assaporano piatti preparati con maestria, in cui gli autentici sapori egiziani si fondono con la cucina internazionale, tutti preparati al momento da chef esperti. Si rilassi con un drink nei lounge bar mentre il cielo si accende dei colori mozzafiato del tramonto. Il nostro attento personale di bordo Le offrirà cura e ospitalità sincere per soddisfare ogni Sua esigenza. Non c’è dettaglio, per quanto piccolo, che venga trascurato. È questa la firma del lusso che solo una crociera in dahabiya sul Nilo, in Egitto, sa offrire.",
     ],
     landmarks: [
@@ -95,7 +95,7 @@ const PAGES_IT: Partial<Pages> = {
     ],
     experiencesChapter: "Esperienze",
     experiencesBody:
-      "Il lusso non ha bisogno di annunciarsi. Si avverte nei tempi perfetti, nella bevanda preferita ricordata, nello spazio per muoversi e nella libertà di cenare dove il fiume è più bello.",
+      "Il lusso non ha bisogno di annunciarsi. Si avverte nei tempi perfetti, nella bevanda preferita che l’equipaggio ricorda, nello spazio per muoversi e nella libertà di cenare dove il fiume è più bello.",
     stories: [
       { time: "ALBA", place: "PONTE SUPERIORE", title: "COLAZIONE", cta: "Apri la storia" },
       { time: "SERA", place: "SALA DA PRANZO", title: "DALLO CHEF", cta: "Apri la storia" },
@@ -141,7 +141,7 @@ const PAGES_IT: Partial<Pages> = {
       "Scopra l’Egitto sotto una luce del tutto nuova, dove la tradizione senza tempo incontra il lusso moderno.",
     welcomeBody:
       "Scopra un’espressione più quieta del lusso, fatta di spazio, privacy e servizio attento.",
-    welcomeTitle: "Benvenuti a bordo della crociera Hathor Dahabiya.",
+    welcomeTitle: "Le diamo il benvenuto a bordo di Hathor Dahabiya.",
     accommodationsIntro:
       "Hathor Dahabiya si sviluppa su tre ponti curati in ogni dettaglio (il ponte inferiore, il ponte principale e il ponte sole) con:",
     accommodationsTitle: "Le sistemazioni",
@@ -157,7 +157,7 @@ const PAGES_IT: Partial<Pages> = {
     overviewIntro:
       "Viva la crociera Hathor Dahabiya, che unisce autenticità e lusso in un viaggio indimenticabile sul Nilo senza tempo.\n\nChe scelga le nostre eleganti suite o le Royal Suite con vista panoramica sul Nilo, troverà un comfort impareggiabile e una privacy esclusiva.",
     amenitiesIntro:
-      "Scopra il lusso senza sforzo della Accessible Hathor Suite: un rifugio ampio ed elegante, pensato per il comfort, la facilità di movimento e una vita raffinata. Ogni dettaglio è curato perché ciascun ospite si senta davvero a casa, senza compromessi.",
+      "Scopra il lusso senza sforzo dell’Accessible Hathor Suite: un rifugio ampio ed elegante, pensato per il comfort, la facilità di movimento e una vita raffinata. Ogni dettaglio è curato perché ciascun ospite si senta davvero a casa, senza compromessi.",
     amenitiesTitle: "Incluso nel Suo soggiorno",
   },
   royal: {

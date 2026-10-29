@@ -191,7 +191,7 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
     nav: ["Da non perdere", "Monumenti", "A bordo", "Prenota"],
     scroll: "Scorri",
     intro: {
-      lead: "Si immerga nel fascino misterioso del Nilo a bordo della crociera Hathor Dahabiya, una crociera di lusso in dahabiya sul Nilo, in Egitto, che offre la più maestosa esperienza di navigazione egiziana, pensata per chi cerca eleganza, comfort e un ricco tocco di storia.",
+      lead: "Si immerga nel fascino misterioso del Nilo a bordo di Hathor Dahabiya, una crociera di lusso in dahabiya sul Nilo, in Egitto, che offre la più maestosa esperienza di navigazione egiziana, pensata per chi cerca eleganza, comfort e un ricco tocco di storia.",
       collage:
         "Spazi privati: con 8 cabine e 4 suite in tutto, di cui 2 Royal, la nostra dahabiya Hathor garantisce la massima privacy insieme a un’ospitalità calda ed elegante, ed è la scelta perfetta per una crociera in dahabiya da Assuan a Luxor. Questa nave elegante scivola dolcemente lungo il fiume, per una navigazione rilassata che permette agli ospiti di godersi panorami sereni e scoprire tesori nascosti lontano dalla folla.",
       quote: "Non c’è dettaglio, per quanto piccolo, che venga trascurato.",
@@ -266,7 +266,7 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
     life: [
       {
         title: "Cucina",
-        text: "Sapori egiziani e arte internazionale: colazioni leggere, pranzi senza fretta, cene a lume di candela sotto le stelle.",
+        text: "Sapori egiziani e maestria internazionale: colazioni leggere, pranzi senza fretta, cene a lume di candela sotto le stelle.",
       },
       {
         title: "Suite",

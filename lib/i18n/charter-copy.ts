@@ -269,7 +269,7 @@ const IT: CharterCopy = {
   residenceDecks: ["Ponte inferiore", "Ponte inferiore", "Ponte principale"],
   kicker: "Charter privato in dahabiya · Egitto",
   deedIntro:
-    "Noleggi in esclusiva una dahabiya di lusso: le dodici cabine e suite di Hathor, l’equipaggio e lo chef, per una crociera privata sul Nilo in Egitto, da Luxor ad Assuan, Dendera o Il Cairo.",
+    "Noleggi in esclusiva una dahabiya di lusso: le dodici cabine e suite di Hathor, l’equipaggio e lo chef, per una crociera privata sul Nilo in Egitto, da Luxor ad Assuan, a Dendera o al Cairo.",
   lead: "Il Suo Nilo privato, solo per Lei.",
   primaryCta: "Richieda un charter privato",
   secondaryCta: "Verifica disponibilità",
@@ -336,7 +336,7 @@ const IT: CharterCopy = {
       },
       {
         title: "Itinerari flessibili",
-        body: "Un itinerario su misura, con i Suoi tempi. Navighi da Luxor ad Assuan, percorra la rotta al contrario o si spinga fino a Dendera e Il Cairo: tutto pensato per Lei.",
+        body: "Un itinerario su misura, con i Suoi tempi. Navighi da Luxor ad Assuan, percorra la rotta al contrario o si spinga fino a Dendera e al Cairo: tutto pensato per Lei.",
       },
       {
         title: "Cura dedicata",
@@ -472,7 +472,7 @@ const IT: CharterCopy = {
     },
     serverErrors: false,
     fallback: {
-      lead: "I Suoi dati sono al sicuro: li invii direttamente al nostro team charter:",
+      lead: "I Suoi dati sono al sicuro. Li invii direttamente al nostro team charter:",
       link: "invii la richiesta per e-mail",
     },
     sending: "Invio in corso…",
