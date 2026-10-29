@@ -323,7 +323,7 @@ const IT: ChromeCopy = {
     activeName: "Italiano",
     names: {
       AR: "Arabo",
-      EN: "English",
+      EN: "Inglese",
       DE: "Tedesco",
       IT: "Italiano",
       RU: "Russo",
