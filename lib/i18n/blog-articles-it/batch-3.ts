@@ -123,7 +123,7 @@ Per chi è ideale la dahabiya:</p>
   "how-to-choose-the-right-cabin-on-a-dahabiya": `<p>La sistemazione che sceglie su una dahabiya definisce il modo in cui vivrà il Nilo.<br>
 Una dahabiya offre una navigazione intima, come una nave boutique: è progettata apposta per creare spazi personali che custodiscono la quiete e regalano la vista sul fiume.<br>
 Se si chiede come scegliere la cabina su una dahabiya, questa guida La aiuterà a capire le diverse opzioni, le loro caratteristiche e che cosa rende speciale ciascuna tipologia.<br>
-La guida presenta le esperienze esclusive a bordo di <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, che offre più di una possibilità di soggiorno e spazi riservati agli ospiti: la Royal Suite con terrazza privata, le <a href="https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites" target="_blank" rel="noopener noreferrer">eleganti suite della dahabiya</a>, pensate all’insegna dell’eleganza, e le cabine private.</p>
+La guida presenta le esperienze esclusive a bordo di <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, che offre più di una possibilità di soggiorno e spazi riservati agli ospiti: la Royal Suite con terrazza privata, le <a href="https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites" target="_blank" rel="noopener noreferrer">eleganti suite della dahabiya</a>, curate nei minimi dettagli, e le cabine private.</p>
 
 <h2>Come scegliere la cabina per la Sua crociera sul Nilo</h2>
 
@@ -133,7 +133,7 @@ La guida presenta le esperienze esclusive a bordo di <a href="https://www.hathor
 
 <ul>
 	<li><strong>La posizione della cabina a bordo</strong> (ponte superiore o inferiore)</li>
-	<li><strong>La dimensione delle finestre e l’orientamento della vista sul Nilo</strong></li>
+	<li><strong>Le dimensioni delle finestre e l’orientamento della vista sul Nilo</strong></li>
 	<li><strong>Il livello di riservatezza e la vicinanza agli spazi comuni</strong></li>
 	<li><strong>Le dimensioni della suite e il design degli interni</strong></li>
 	<li><strong>L’accesso all’esterno, come balconi o terrazze</strong></li>
@@ -145,7 +145,7 @@ La guida presenta le esperienze esclusive a bordo di <a href="https://www.hathor
 
 <p>Su una dahabiya, le <strong>migliori suite di lusso per una crociera sul Nilo</strong> si riconoscono dall’esclusività più che dalle dimensioni: le cabine migliori offrono ambienti spaziosi, arredi eleganti e un accesso diretto al Nilo.</p>
 
-<p>A bordo di <strong>Hathor Dahabiya</strong>, le sistemazioni più richieste sono le <a href="https://www.hathorcruise.com/luxury-cabins-Nile-Cruise" target="_blank" rel="noopener noreferrer">cabine di lusso private della dahabiya</a></p>
+<p>A bordo di <strong>Hathor Dahabiya</strong>, le sistemazioni più richieste sono le <a href="https://www.hathorcruise.com/luxury-cabins-Nile-Cruise" target="_blank" rel="noopener noreferrer">cabine di lusso private della dahabiya</a>.</p>
 
 <h3>Royal Suite con terrazza privata</h3>
 
@@ -168,11 +168,11 @@ La guida presenta le esperienze esclusive a bordo di <a href="https://www.hathor
 
 <ul>
 	<li>Elementi di design eleganti, ispirati agli stili architettonici tradizionali</li>
-	<li>Finestre panoramiche con vista naturale sul Nilo</li>
+	<li>Finestre panoramiche con vista sul Nilo</li>
 	<li>Biancheria da letto di pregio e il massimo comfort</li>
 </ul>
 
-<p>Queste suite sono ideali per coppie, amici o per chi viaggia da solo e cerca un lusso equilibrato.</p>
+<p>Queste suite sono ideali per coppie, amici o per chi viaggia in solitaria e cerca un lusso equilibrato.</p>
 
 <h2>Piccole camere di lusso per la crociera sul Nilo: che cosa aspettarsi</h2>
 
@@ -274,9 +274,9 @@ Scelga capi facili da abbinare tra loro, da indossare in più giorni del viaggio
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/unnamed-webp-1777799819Tt22V.webp" alt="" loading="lazy"></figure></h2>
 
-<p>Una crociera in dahabiya sul Nilo, in Egitto, è un’esperienza di viaggio eccezionale che unisce lusso, storia e serenità, come la nostra <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya di lusso</a>.<br>
+<p>Una crociera in dahabiya sul Nilo, in Egitto, è un’esperienza di viaggio eccezionale che unisce lusso, storia e serenità, come quella a bordo della nostra <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Luxury Dahabiya</a>.<br>
 Una valigia preparata con cura Le permetterà di vivere ogni momento, dalla visita agli antichi templi ai tramonti sul Nilo.<br>
-Bagaglio leggero, rispetto per la cultura locale e abiti comodi: è questa la combinazione per un’esperienza eccezionale.</p>`,
+Bagaglio leggero, rispetto per la cultura locale e abiti comodi: è questa la ricetta per un viaggio perfetto.</p>`,
 
   "is-the-nile-safe-for-sailing-today": `<p>Navigare sul Nilo è una delle esperienze di viaggio più celebri dell’Egitto e del mondo. Ogni anno migliaia di turisti navigano o partecipano a una <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">crociera di lusso in dahabiya sul Nilo</a> lungo questo fiume ricco di storia.<br>
 Eppure molti viaggiatori si chiedono ancora: navigare sul Nilo oggi è sicuro? Questa guida spiega tutto ciò che occorre sapere prima di organizzare un <a href="/blogs/spiritual-journey-to-egypt">viaggio dell’anima sul Nilo</a>.</p>
@@ -301,7 +301,7 @@ Le crociere sul Nilo sono un’attività turistica affidabile e molto amata, all
 Nel 2026 le crociere sul Nilo operano tutto l’anno, con servizi turistici sicuri e completi.<br>
 L’Egitto continua a impegnarsi per rafforzare la sicurezza dei turisti lungo tutto l’itinerario del Nilo.<br>
 Le imbarcazioni da crociera sono costantemente monitorate e le forze di sicurezza proteggono tutte le aree frequentate dai turisti.<br>
-Scegliendo una compagnia autorizzata e seguendo le principali indicazioni di viaggio, il Suo viaggio resterà sicuro e piacevole, e potrà godersi un indimenticabile itinerario di <a href="https://www.hathorcruise.com/rooms/dahabiya-nile-cruise-aswan-to-luxor" target="_blank" rel="noopener noreferrer">3 notti da Assuan a Luxor</a>.<br>
+Se sceglie una compagnia autorizzata e segue le principali indicazioni di viaggio, il Suo viaggio resterà sicuro e piacevole, e potrà godersi un indimenticabile itinerario di <a href="https://www.hathorcruise.com/rooms/dahabiya-nile-cruise-aswan-to-luxor" target="_blank" rel="noopener noreferrer">3 notti da Assuan a Luxor</a>.<br>
 Sul Nilo il clima è mite per gran parte dell’anno e permette di navigare comodamente.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-eslames1-27407537-1-1777394740lLgAG.webp" alt="" loading="lazy"></figure></p>
@@ -312,10 +312,10 @@ Sul Nilo il clima è mite per gran parte dell’anno e permette di navigare como
 
 <ul>
 	<li>Prenoti sempre con un operatore di crociere autorizzato</li>
-	<li>Tutti i passeggeri devono seguire le istruzioni di sicurezza dell’equipaggio</li>
+	<li>Segua sempre le istruzioni di sicurezza dell’equipaggio</li>
 	<li>Indossi il giubbotto di salvataggio quando è richiesto</li>
 	<li>Eviti le imbarcazioni che operano senza autorizzazione</li>
-	<li>Prima di partire si devono sempre verificare le condizioni meteo</li>
+	<li>Prima di partire, verifichi sempre le condizioni meteo</li>
 </ul>
 
 <p><strong>Questi piccoli accorgimenti aiutano a garantire un viaggio sicuro e piacevole sul Nilo.</strong></p>
