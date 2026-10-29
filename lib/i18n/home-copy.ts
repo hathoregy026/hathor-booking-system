@@ -360,7 +360,7 @@ const IT: HomeCopy = {
     label: "Hathor Dahabiya",
     navLabel: "In questa pagina",
     nav: [
-      { href: "/cruises", label: "Crociere" },
+      { href: "/cruises-list", label: "Crociere" },
       { href: "/voyages", label: "Viaggi" },
       { href: "/suites", label: "Suite" },
       { href: "/contact", label: "Contatti" },

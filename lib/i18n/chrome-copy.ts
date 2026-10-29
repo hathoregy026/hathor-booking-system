@@ -58,6 +58,8 @@ export type ChromeCopy = {
     nightStatus: string;
   };
   hero: {
+    /** Name of the hero region for screen readers. */
+    regionLabel: string;
     discover: string;
     scrollHint: string;
     location: readonly [string, string];
@@ -149,6 +151,7 @@ const EN: ChromeCopy = {
     nightStatus: "Night mode, switch to day mode",
   },
   hero: {
+    regionLabel: "Hero",
     discover: "Enter the extraordinary",
     scrollHint: "Scroll",
     location: ["LUXOR", "ASWAN"],
@@ -340,6 +343,7 @@ const IT: ChromeCopy = {
     nightStatus: "Modalità notte, passa alla modalità giorno",
   },
   hero: {
+    regionLabel: "Presentazione",
     discover: "Scopra lo straordinario",
     scrollHint: "Scorri",
     location: ["LUXOR", "ASSUAN"],

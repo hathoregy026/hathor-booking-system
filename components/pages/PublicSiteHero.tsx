@@ -470,7 +470,7 @@ export function PublicSiteHero({
       }${responsiveVideoFrame ? " home-hero--responsive-video-frame" : ""}${
         heroVideoPlaying ? " is-hero-video-playing" : ""
       }`}
-      aria-label="Hero"
+      aria-label={heroCopy.regionLabel}
     >
       <div className="hero-media">
         <picture>
