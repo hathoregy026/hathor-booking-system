@@ -1746,7 +1746,7 @@ const IT: BookingCopy = {
   meta: {
     title: "Prenoti la Sua crociera in dahabiya di lusso",
     description:
-      "Scelga il viaggio sul Nilo, la data di partenza e la cabina a bordo di Hathor Dahabiya, poi invii la richiesta di prenotazione al nostro ufficio prenotazioni.",
+      "Scelga il viaggio sul Nilo, la data di partenza e la cabina a bordo di Hathor Dahabiya, poi invii la richiesta al nostro ufficio prenotazioni.",
   },
 };
 

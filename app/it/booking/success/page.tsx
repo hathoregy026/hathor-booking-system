@@ -4,7 +4,7 @@ import { BookingSuccess, type BookingSuccessSearchParams } from "@/components/bo
 export const metadata: Metadata = {
   title: "Richiesta di prenotazione inviata",
   description:
-    "Crociera sul Nilo in dahabiya privata di lusso tra Luxor e Assuan: 32 ospiti, suite vista Nilo, alta cucina e visite ai templi senza fretta, a bordo di Hathor.",
+    "La Sua richiesta di prenotazione per Hathor Dahabiya è stata inviata: qui trova il riepilogo del viaggio e i prossimi passi.",
   robots: { index: false, follow: false },
 };
 

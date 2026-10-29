@@ -6,6 +6,6 @@ export { default } from "../../../booking/lookup/page";
 export const metadata: Metadata = {
   title: "Segua la Sua prenotazione",
   description:
-    "Crociera sul Nilo in dahabiya privata di lusso tra Luxor e Assuan: 32 ospiti, suite vista Nilo, alta cucina e visite ai templi senza fretta, a bordo di Hathor.",
+    "Inserisca il codice di prenotazione e l’email usata per ritrovare la Sua richiesta di viaggio a bordo di Hathor Dahabiya.",
   robots: { index: false, follow: false },
 };
