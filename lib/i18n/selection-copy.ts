@@ -62,11 +62,16 @@ export type SelectionCopy = {
   continueBooking: string;
   continueExploring: string;
   /* Add to My Voyage: the change-of-voyage dialog. */
-  keepCurrentLabel: string;
   changeTitle: string;
   changeBody: (voyage: string) => string;
   continue: string;
   keepCurrent: string;
+  /* Switching between the Private Charter and a scheduled journey. */
+  toCharterTitle: string;
+  toCharterBody: string;
+  fromCharterTitle: string;
+  fromCharterBody: string;
+  keepCharter: string;
 };
 
 export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
@@ -117,12 +122,18 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     requestVoyage: "Request This Voyage",
     continueBooking: "Continue Booking",
     continueExploring: "Continue Exploring",
-    keepCurrentLabel: "Keep current voyage",
     changeTitle: "Changing your voyage may update your selected accommodation.",
     changeBody: (voyage) =>
       `${voyage} does not offer your current accommodation. Continuing will keep the new journey and clear the accommodation so you can choose again.`,
     continue: "Continue",
     keepCurrent: "Keep Current Voyage",
+    toCharterTitle: "Switching to a private charter will clear your selected journey.",
+    toCharterBody:
+      "A private charter gives your party the whole Dahabiya on its own itinerary, so it replaces the scheduled journey and accommodation in My Voyage.",
+    fromCharterTitle: "Choosing a scheduled journey will remove your private charter.",
+    fromCharterBody:
+      "My Voyage holds either a private charter or a scheduled journey. Continuing will remove the charter and add this selection instead.",
+    keepCharter: "Keep Private Charter",
   },
   it: {
     dateLocale: "it-IT",
@@ -175,12 +186,18 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     requestVoyage: "Richieda questo viaggio",
     continueBooking: "Continui la prenotazione",
     continueExploring: "Continui a esplorare",
-    keepCurrentLabel: "Mantieni il viaggio attuale",
     changeTitle: "Se cambia viaggio, la sistemazione scelta potrebbe essere aggiornata.",
     changeBody: (voyage) =>
       `${voyage} non offre la Sua sistemazione attuale. Continuando, verrà mantenuto il nuovo itinerario e la sistemazione sarà azzerata, così potrà sceglierne un’altra.`,
     continue: "Continua",
     keepCurrent: "Mantieni il viaggio attuale",
+    toCharterTitle: "Scegliendo un charter privato, l’itinerario selezionato verrà rimosso.",
+    toCharterBody:
+      "Con un charter privato l’intera dahabiya è riservata al Suo gruppo, con un itinerario su misura: sostituisce quindi l’itinerario programmato e la sistemazione che ha scelto.",
+    fromCharterTitle: "Scegliendo un itinerario programmato, il charter privato verrà rimosso.",
+    fromCharterBody:
+      "La Sua selezione può contenere un charter privato oppure un itinerario programmato. Continuando, il charter verrà rimosso e sarà aggiunta questa scelta.",
+    keepCharter: "Mantieni il charter privato",
   },
 };
 

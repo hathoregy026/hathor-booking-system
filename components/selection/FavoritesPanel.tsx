@@ -303,7 +303,12 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="hfp__voyage">
-      {voyage || !selection.charter ? (
+      {/*
+        My Voyage holds a charter OR a scheduled journey. A charter hides any
+        journey/accommodation left over from before that rule (they reappear
+        if the charter is removed).
+      */}
+      {!selection.charter ? (
       <section className="hfp__section">
         <h3 className="hfp__section-title">{t.journey}</h3>
         {voyage ? (
@@ -342,7 +347,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       </section>
       ) : null}
 
-      {residence ? (
+      {residence && !selection.charter ? (
         <section className="hfp__section">
           <h3 className="hfp__section-title">{t.accommodation}</h3>
           <div className="hfp__item hfp__item--flush">
@@ -417,7 +422,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
         </section>
       ) : null}
 
-      {indicativeCents !== null ? (
+      {indicativeCents !== null && !selection.charter ? (
         <section className="hfp__section hfp__section--price">
           <p className="hfp__price-label">{t.indicativeFrom}</p>
           <p className="hfp__price">{usdIn(locale, formatPrice(indicativeCents))}</p>
