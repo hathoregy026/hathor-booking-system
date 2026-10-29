@@ -4,6 +4,7 @@ import { bookingQuery } from "@/lib/booking-database";
 import { BookingConflictError, InvalidBookingError } from "@/lib/booking";
 
 import type { RequestedRoom } from "@/lib/physical-inventory";
+import { ZERO_FEE_CANCEL_REASONS, type CancelReason } from "@/lib/admin-bookings";
 export const HOLD_MINUTES = 15;
 type Tx = Prisma.TransactionClient;
 const dayMs = 86_400_000;
@@ -16,7 +17,8 @@ export async function expireHolds(tx: Tx) {
   await tx.$queryRaw`SELECT hathor_expire_holds()`;
 }
 export { paymentSchedule } from "@/lib/payment-schedule";
-export function cancellationFee(total: number, departure: Date, now = new Date(), reason = "CANCELLATION") {
+export function cancellationFee(total: number, departure: Date, now = new Date(), reason: string = "CANCELLATION") {
+  if ((ZERO_FEE_CANCEL_REASONS as readonly string[]).includes(reason)) return 0;
   const days = Math.round((Date.UTC(departure.getUTCFullYear(), departure.getUTCMonth(), departure.getUTCDate()) -
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) / dayMs);
   return Math.ceil(total * (reason !== "CANCELLATION" || days <= 45 ? 1 : days <= 60 ? 0.5 : days < 90 ? 0.25 : 0));
@@ -85,7 +87,7 @@ const PAYMENT_GUARD_MESSAGES = new Map([
 
 export async function administerBooking(id: string, action: {
   type: "accept" | "decline" | "cancel" | "record-payment";
-  reason?: "CANCELLATION" | "NO_SHOW" | "EARLY_DEPARTURE";
+  reason?: CancelReason;
   /** Accept only, before any payment: the method (Visa adds the 2.5% card surcharge) and the team's own first payment. */
   paymentMethod?: "VISA" | "BANK_TRANSFER";
   split?: { firstCents: number; balanceDueOn?: string };

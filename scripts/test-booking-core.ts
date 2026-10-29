@@ -42,5 +42,7 @@ async function main(){
  const count=await prisma.cruiseSchedule.count();await getSailingAvailability({duration:'4-nights-luxor-aswan',adults:1,children:0,rooms:1});assert.equal(await prisma.cruiseSchedule.count(),count);console.log('PASS read-only availability');
  const dep=new Date('2027-01-01T00:00:00Z');for(const [days,pct] of [[61,.3],[60,.5],[46,.5],[45,1]] as const)assert.equal(paymentSchedule(100000,dep,new Date(+dep-days*86400000)).requiredCents,100000*pct);
  for(const [days,pct] of [[90,0],[89,.25],[61,.25],[60,.5],[46,.5],[45,1]] as const)assert.equal(cancellationFee(100000,dep,new Date(+dep-days*86400000)),100000*pct);console.log('PASS payment/cancellation boundaries');
+ for(const reason of ['HATHOR_CANCELLED','UNAVOIDABLE_CIRCUMSTANCES','SIGNIFICANT_CHANGE'])for(const days of [0,45,60,89,120])assert.equal(cancellationFee(100000,dep,new Date(+dep-days*86400000),reason),0);
+ for(const reason of ['NO_SHOW','EARLY_DEPARTURE'])assert.equal(cancellationFee(100000,dep,new Date(+dep-120*86400000),reason),100000);console.log('PASS zero-fee cancellation reasons; no-show and early departure still 100%');
 }
 main().finally(async()=>{await clean();await resetDbConnectionHard();}).catch(e=>{console.error(e.message);process.exitCode=1;});

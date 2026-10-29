@@ -10,6 +10,7 @@ import { ArrowLeft, BedDouble, CreditCard, Mail, MailCheck, Phone, Ship, User } 
 import { RowActions } from "@/components/admin/RowActions";
 import {
   STAGE_HINTS,
+  cancellationReasonLabel,
   paymentMethodLabel,
   type AdminBookingDto,
 } from "@/lib/admin-bookings";
@@ -306,6 +307,7 @@ export function BookingDetailView({
                 ))}
               </ol>
             ) : null}
+            {booking.status === "CANCELLED" ? <Row label="Reason">{cancellationReasonLabel(booking.cancellationReason)}</Row> : null}
             {cancellationFeeCents !== null && booking.status === "CANCELLED" ? (
               <Row label="Cancellation fee">{formatPrice(cancellationFeeCents)}</Row>
             ) : null}

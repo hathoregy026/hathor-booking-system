@@ -4,7 +4,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
-import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
+import { CANCEL_REASONS, CANCELLATION_REASON_LABELS, ZERO_FEE_CANCEL_REASONS, paymentMethodLabel, type AdminBookingDto, type CancelReason } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
 import { paymentPlan, stageTitle } from "@/lib/booking-code";
@@ -225,7 +225,7 @@ export function BookingActionDialog({
   const [replySubject, setReplySubject] = useState("");
   const [replyMessage, setReplyMessage] = useState(`Dear ${booking.guestName},\n\n`);
   const [replyFiles, setReplyFiles] = useState<ReplyAttachment[]>([]);
-  const [cancelReason, setCancelReason] = useState("CANCELLATION");
+  const [cancelReason, setCancelReason] = useState<CancelReason>("CANCELLATION");
   const refund = booking.status === "CANCELLED";
   const [payment, setPayment] = useState(() => ({
     amount: ((refund ? booking.paidCents : dueNow) / 100).toFixed(2),
@@ -603,14 +603,19 @@ export function BookingActionDialog({
       <Dialog title="Cancel this booking" kicker={who} onClose={onClose}>
         <form onSubmit={submit}>
           <p className="text-sm text-muted">
-            The cabins are released. The cancellation fee follows your policy for the reason and how close departure is; refunds are recorded separately.
+            {ZERO_FEE_CANCEL_REASONS.includes(cancelReason)
+              ? "No cancellation fee. Record a full refund of everything received within 14 days."
+              : "The cabins are released. The cancellation fee follows your policy for the reason and how close departure is; refunds are recorded separately."}
           </p>
           <div className="mt-5">
             <Field label="Reason">
-              <select className="input h-10 px-3 text-sm" value={cancelReason} onChange={(e) => setCancelReason(e.target.value)}>
-                <option value="CANCELLATION">Guest cancelled</option>
-                <option value="NO_SHOW">No-show</option>
-                <option value="EARLY_DEPARTURE">Early departure</option>
+              <select className="input h-10 px-3 text-sm" value={cancelReason} onChange={(e) => setCancelReason(e.target.value as CancelReason)}>
+                {CANCEL_REASONS.map((reason) => (
+                  <option key={reason} value={reason}>
+                    {CANCELLATION_REASON_LABELS[reason]}
+                    {ZERO_FEE_CANCEL_REASONS.includes(reason) ? " (no fee, full refund)" : ""}
+                  </option>
+                ))}
               </select>
             </Field>
           </div>

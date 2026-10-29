@@ -7,6 +7,7 @@ import { assertTrustedPublicJsonRequest, PublicRequestError } from "@/lib/public
 import { administerBooking } from "@/lib/booking-engine";
 import { sendConfirmation, sendDeclined, sendInvoice, sendPaymentReceipt, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
+import { CANCEL_REASONS } from "@/lib/admin-bookings";
 import { mailAttachmentRefsSchema, resolveAttachments } from "@/lib/mail-attachments";
 
 /**
@@ -45,7 +46,7 @@ export const staffActionSchema = z.discriminatedUnion("type", [
     }).strict().optional(),
   }).strict(),
   z.object({ type: z.literal("decline"), message: teamText.optional(), notify: z.boolean().default(true) }).strict(),
-  z.object({ type: z.literal("cancel"), reason: z.enum(["CANCELLATION","NO_SHOW","EARLY_DEPARTURE"]).default("CANCELLATION") }).strict(),
+  z.object({ type: z.literal("cancel"), reason: z.enum(CANCEL_REASONS).default("CANCELLATION") }).strict(),
   z.object({ type: z.literal("record-payment"), payment: z.object({
     reference: z.string().trim().min(6).max(128),
     method: z.enum(["VISA","BANK_TRANSFER"]),
