@@ -56,7 +56,7 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
       `Su ${count.toLocaleString("it-IT")} ${count === 1 ? "recensione" : "recensioni"}`,
     numberLocale: "it-IT",
     readReviews: "Legga le recensioni",
-    writeReview: "Scrivi una recensione",
+    writeReview: "Scriva una recensione",
     alsoTripadvisor: "Recensito anche su Tripadvisor",
     recentFrom: (platform) => `Recensioni recenti da ${platform}`,
     readOn: (platform) => `Legga su ${platform}`,
