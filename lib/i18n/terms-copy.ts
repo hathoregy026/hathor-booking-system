@@ -113,7 +113,9 @@ const SECTIONS_IT: readonly TermsSection[] = [
       "Salvo diversa indicazione nell’itinerario o nella prenotazione confermati, il pacchetto di viaggio Hathor comprende:",
     ],
     list: [
-      { text: "Formula Soft All-Inclusive." },
+      {
+        text: "Formula Soft All-Inclusive, che comprende tutti i pasti e le bevande analcoliche (tè, caffè, bibite e succhi freschi); le bevande alcoliche non sono incluse (vedere Servizi esclusi).",
+      },
       {
         text: "Tre pasti al giorno, a partire dal pranzo del giorno d’imbarco fino alla colazione del giorno di sbarco.",
       },
@@ -347,12 +349,12 @@ export const TERMS_COPY: Record<PublicLocale, TermsCopy> = {
     toc: TERMS_TOC,
     sections: TERMS_SECTIONS,
     vatNote: [
-      "The client-supplied Terms & Conditions state that this includes ",
-      "14% VAT and service charge",
+      "These include ",
+      "14% VAT and the service charge",
       ".",
     ],
     headOffice: "Head Office",
-    address: ["One Kattameya, Tower No. 211, Floor No. 11", "Ring Road, Nasr City", "Cairo, Egypt"],
+    address: ["One Kattamiya, Tower 211, Floor 11, Flat 111", "Ring Road", "Cairo, Egypt"],
     telephone: "Telephone:",
     email: "Email:",
     website: "Website:",
@@ -369,12 +371,12 @@ export const TERMS_COPY: Record<PublicLocale, TermsCopy> = {
     toc: TERMS_TOC.map((item) => ({ id: item.id, label: TOC_IT[item.id] ?? item.label })),
     sections: SECTIONS_IT,
     vatNote: [
-      "Secondo i Termini e condizioni forniti dal cliente, ciò include ",
-      "IVA al 14% e costo del servizio",
+      "Sono compresi ",
+      "l’IVA al 14% e il costo del servizio",
       ".",
     ],
     headOffice: "Sede principale",
-    address: ["One Kattameya, Torre 211, 11º piano", "Ring Road, Nasr City", "Il Cairo, Egitto"],
+    address: ["One Kattamiya, Torre 211, 11º piano, int. 111", "Ring Road", "Il Cairo, Egitto"],
     telephone: "Telefono:",
     email: "E-mail:",
     website: "Sito web:",

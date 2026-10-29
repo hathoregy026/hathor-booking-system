@@ -144,7 +144,9 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       "Unless otherwise stated in the confirmed itinerary or booking, the Hathor voyage package includes:",
     ],
     list: [
-      { text: "Soft All-Inclusive service." },
+      {
+        text: "Soft All-Inclusive service, which covers all meals and soft drinks (tea, coffee, soft drinks and fresh juices); alcoholic drinks are not included (see Exclusions).",
+      },
       {
         text: "Three meals daily, beginning with lunch on the day of embarkation and ending with breakfast on the day of disembarkation.",
       },

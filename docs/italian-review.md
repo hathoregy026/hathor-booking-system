@@ -94,10 +94,30 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 
 ## 6. Legal page: points for the legal check
 
-Beyond section 3, the proofreading pass found:
+### Fixed in both languages (wording only, October 2026)
 
-- The VAT note reads "Secondo i Termini e condizioni forniti dal cliente, ciò include IVA al 14% e costo del servizio", which sounds like an internal note shown to customers (the English says "client-supplied" too), next to section 7, which says taxes are included.
+- **VAT note:** it no longer reads like an internal comment. Section 7 now says the published price
+  includes taxes and service charges, then "These include **14% VAT and the service charge**." /
+  "Sono compresi **l’IVA al 14% e il costo del servizio**." The meaning is unchanged.
+- **Office address:** the terms now match the contact page, footer and structured data: "One Kattamiya,
+  Tower 211, Floor 11, Flat 111, Ring Road, Cairo, Egypt" / "One Kattamiya, Torre 211, 11º piano,
+  int. 111, Ring Road, Il Cairo, Egitto" ("Nasr City" dropped, as Hathor confirmed).
+- **Soft All-Inclusive (section 5)** is now defined: all meals and soft drinks (tea, coffee, soft
+  drinks and fresh juices); alcoholic drinks are not included (see section 6, Exclusions).
+
+### Still for the lawyer
+
 - Section 1: "i pagamenti complessivi devono essere pari al 50%" could mean exactly or at least 50%.
-- Section 5: "Formula Soft All-Inclusive" is not defined anywhere.
-- Section 13: a non-refundable credit voucher, and "I rimborsi in denaro non sono garantiti" when Hathor itself cancels, need a view under EU package-travel and Italian consumer law; so do the broad exclusions in sections 9, 12, 15 and 17.
-- The office address differs: the terms say "One Kattameya, Torre 211, 11º piano, Nasr City"; the contact page says "One Kattamiya, Torre 211, 11º piano, int. 111". The same difference exists in English.
+- Section 13: a non-refundable credit voucher, and "I rimborsi in denaro non sono garantiti" when
+  Hathor itself cancels, need a view under EU package-travel and Italian consumer law; so do the
+  broad exclusions in sections 9, 12, 15 and 17. These clauses have not been changed.
+- Which language prevails. A draft for the lawyer to review. It is **not published** on the site:
+
+  > **English:** These Terms & Conditions are published in English and Italian. The Italian version
+  > is provided for convenience. If the two versions differ, the English version prevails, unless
+  > the law that applies to your booking requires otherwise.
+  >
+  > **Italiano:** I presenti Termini e condizioni sono pubblicati in inglese e in italiano. La
+  > versione italiana è fornita per comodità di consultazione. In caso di differenze tra le due
+  > versioni prevale la versione inglese, salvo che la legge applicabile alla Sua prenotazione
+  > disponga diversamente.
