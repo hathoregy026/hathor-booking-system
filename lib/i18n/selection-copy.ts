@@ -176,7 +176,7 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     continueBooking: "Continui la prenotazione",
     continueExploring: "Continui a esplorare",
     keepCurrentLabel: "Mantieni il viaggio attuale",
-    changeTitle: "Cambiando viaggio, la sistemazione scelta potrebbe cambiare.",
+    changeTitle: "Se cambia viaggio, la sistemazione scelta potrebbe essere aggiornata.",
     changeBody: (voyage) =>
       `${voyage} non offre la Sua sistemazione attuale. Continuando, verrà mantenuto il nuovo itinerario e la sistemazione sarà azzerata, così potrà sceglierne un’altra.`,
     continue: "Continua",
