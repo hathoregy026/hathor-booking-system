@@ -386,7 +386,7 @@ const IT: ChromeCopy = {
     script: "Avventure sul Nilo",
     eyebrow: "Prenotazioni private",
     bookNow: "Prenota ora",
-    charter: "Noleggia la dahabiya",
+    charter: "Charter privato",
     address:
       "One Kattamiya, Torre 211, 11º piano, int. 111, Ring Road, Il Cairo, Egitto",
     workingHours: "Orari: tutti i giorni 09:00 – 17:00",

@@ -109,7 +109,7 @@ const PAGES_IT: Partial<Pages> = {
       "Cucina, movimento e riposo si fondono in un’unica esperienza continua. Niente è affrettato, niente è eccessivo, e ogni dettaglio è al servizio della vita a bordo.",
     closingCta: "Prenoti il viaggio",
     conciergeTitle: "UN VIAGGIO\nSU MISURA",
-    diningClosingTitle: "UNA CUCINA\nCHE LASCIA\nRESPIRARE",
+    diningClosingTitle: "A TAVOLA\nSENZA\nFRETTA",
     conciergeBody:
       "Ci racconti come ama viaggiare. Il nostro team può organizzare cene private, esigenze alimentari, ricorrenze, momenti di allenamento e servizio in suite secondo il ritmo naturale del Suo viaggio sul Nilo.",
     conciergeCta: "Pianifichi il viaggio",
