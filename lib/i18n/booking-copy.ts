@@ -1635,7 +1635,7 @@ const IT: BookingCopy = {
     },
     invoice: index => `Fattura ${index}`,
     paid: "Pagato",
-    paidByThen: amount => `${amount} pagati a quella data`,
+    paidByThen: amount => `${amount} pagati entro quella data`,
     whole: "L’intero viaggio",
     rulesLabel: "Come è suddiviso il pagamento",
   },
