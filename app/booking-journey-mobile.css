@@ -358,13 +358,18 @@
   .hj-mtile__icon .hj-icon { width: 1.15rem; height: 1.15rem; }
   .hj-mtile__text { display: grid; gap: 0.12rem; min-width: 0; }
   .hj .hj-mtile__label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hj-ink-soft); }
+  /* A long value ("1 Adulto · 2 Bambini") takes a second line instead of
+     an ellipsis; two lines at most. */
   .hj .hj-mtile__value {
+    display: -webkit-box;
     overflow: hidden;
     font-family: var(--hj-display);
     font-size: 1.04rem;
     line-height: 1.2;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    text-wrap: balance;
   }
   .hj .hj-mtile--todo { border-color: var(--hj-gold); box-shadow: 0 0 0 1px var(--hj-gold) inset, var(--hj-card-shadow); }
   .hj .hj-mtile--todo .hj-mtile__value { color: var(--hj-gold-deep); }
