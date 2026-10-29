@@ -62,7 +62,7 @@ export const OCCASION_ICON_LABELS: Record<OccasionIconName, string> = {
 export const OCCASION_STRIPE_MODES = ["glide", "rotate", "still"] as const;
 export const OCCASION_STRIPE_STYLES = ["ink", "paper", "gold"] as const;
 export const OCCASION_NAV_EFFECTS = ["none", "fireworks", "dust", "confetti", "petals"] as const;
-export const OCCASION_EFFECT_PALETTES = ["gold", "champagne", "midnight"] as const;
+export const OCCASION_EFFECT_PALETTES = ["festive", "jewel", "gold", "champagne", "midnight"] as const;
 export const OCCASION_HANGINGS = ["none", "lights", "lanterns", "stars"] as const;
 
 export type OccasionStripeItem = {
@@ -97,14 +97,23 @@ export type Occasion = {
   };
   navEffect: {
     type: (typeof OCCASION_NAV_EFFECTS)[number];
-    /** 0.1–1 */
+    /** 0.1–1: how bright it shows. */
     intensity: number;
     palette: (typeof OCCASION_EFFECT_PALETTES)[number];
+    /** 0.25–2: motion speed, 1 = natural. */
+    speed: number;
+    /** 0.1–1: how many bursts, specks or petals at once. */
+    density: number;
   };
   /** Decoration hanging under the nav (or under the stripe). */
   hanging: (typeof OCCASION_HANGINGS)[number];
-  /** Days / hours / minutes / seconds under the homepage title until `countdownTo`. */
+  /**
+   * Days and hours left of the menu-bar logo, minutes and seconds right of it,
+   * until `countdownTo`. Keeps the key from when it sat under the home title.
+   */
   heroCountdown: boolean;
+  /** What that countdown is for, e.g. "Until New Year"; empty reads "Until <name>". */
+  countdownLabel: string;
 };
 
 export type OccasionsSettings = {
@@ -116,6 +125,8 @@ export const OCCASION_LIMITS = {
   occasions: 30,
   items: 8,
   name: 80,
+  /** Fits one line under the logo on a 375px phone. */
+  label: 28,
   text: 160,
   url: 1024,
 } as const;
@@ -155,15 +166,31 @@ export const DEFAULT_OCCASIONS_SETTINGS: OccasionsSettings = {
           { icon: "boat", imageUrl: null, text: "Plan your 2027 Nile voyage", href: "/cruises" },
         ],
       },
-      navEffect: { type: "fireworks", intensity: 0.6, palette: "gold" },
+      navEffect: { type: "fireworks", intensity: 0.75, palette: "festive", speed: 1, density: 0.6 },
       hanging: "lights",
       heroCountdown: true,
+      countdownLabel: "Until New Year",
     },
   ],
 };
 
 export const OCCASION_PREVIEW_PARAM = "occasion";
 export const OCCASION_PREVIEW_STORAGE_KEY = "hathor-occasion-preview";
+
+/**
+ * Admin → Occasions embeds the homepage with `?occasion-frame=1` and posts the
+ * unsaved occasion into it. The frame obeys only a same-origin parent, and only
+ * after the admin API confirms a dashboard session.
+ */
+export const OCCASION_FRAME_PARAM = "occasion-frame";
+export const OCCASION_FRAME_MESSAGES = {
+  /** frame → dashboard: listening, send the draft and view. */
+  ready: "hathor-occasion-frame-ready",
+  /** dashboard → frame: `{ occasion: Occasion | null }`. */
+  draft: "hathor-occasion-draft",
+  /** dashboard → frame: `{ scrolled: boolean }` to show the compact menu bar. */
+  view: "hathor-occasion-view",
+} as const;
 export const OCCASION_DISMISS_STORAGE_PREFIX = "hathor-occasion-dismissed:";
 
 export function findOccasion(occasions: Occasion[], id: string | null): Occasion | null {
@@ -200,6 +227,10 @@ export function isOccasionExcludedPath(pathname: string | null): boolean {
 export function msUntilCountdown(occasion: Occasion, nowMs: number): number | null {
   if (!occasion.countdownTo) return null;
   return Date.parse(occasion.countdownTo) - nowMs;
+}
+
+export function countdownCaption(occasion: Occasion): string {
+  return occasion.countdownLabel.trim() || `Until ${occasion.name}`;
 }
 
 export function stripeItemsAt(occasion: Occasion, nowMs: number): OccasionStripeItem[] {

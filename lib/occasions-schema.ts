@@ -62,9 +62,14 @@ export const occasionSchema = z
       type: z.enum(OCCASION_NAV_EFFECTS),
       intensity: z.number().min(0.1).max(1),
       palette: z.enum(OCCASION_EFFECT_PALETTES),
+      /* Defaulted so occasions saved before these controls existed still load. */
+      speed: z.number().min(0.25).max(2).default(1),
+      density: z.number().min(0.1).max(1).default(0.5),
     }),
     hanging: z.enum(OCCASION_HANGINGS),
     heroCountdown: z.boolean(),
+    /* Defaulted so occasions saved before the caption existed still load. */
+    countdownLabel: z.string().trim().max(OCCASION_LIMITS.label).default(""),
   })
   .refine((occasion) => Date.parse(occasion.endsAt) > Date.parse(occasion.startsAt), {
     message: "The end must be after the start.",

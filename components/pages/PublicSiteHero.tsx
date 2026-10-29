@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDown, Pause, Play } from "lucide-react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { useHeroLogoSettings } from "@/components/public/HeroLogoSettingsProvider";
@@ -83,11 +83,6 @@ export type PublicSiteHeroProps = {
    */
   responsiveVideoFrame?: boolean;
   responsiveVideoFrameTarget?: string;
-  /**
-   * Hung under the title on every breakpoint (desktop heading and the
-   * phone/tablet film title) without joining its flow — e.g. an occasion countdown.
-   */
-  titleAddon?: ReactNode;
 };
 
 export function PublicSiteHero({
@@ -107,7 +102,6 @@ export function PublicSiteHero({
   editorial = false,
   responsiveVideoFrame = false,
   responsiveVideoFrameTarget = "#main-content",
-  titleAddon,
 }: PublicSiteHeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
@@ -529,7 +523,6 @@ export function PublicSiteHero({
                     <span>{displayLeft}</span>
                   </span>
                 ) : null}
-                {titleAddon}
               </div>
             </div>
             <p className="hero-one-location">
@@ -591,7 +584,6 @@ export function PublicSiteHero({
             </span>
           ) : null}
         </h1>
-        {titleAddon}
       </div>
 
       {showCta ? (

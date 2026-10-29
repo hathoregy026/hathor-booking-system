@@ -38,7 +38,7 @@ export async function PUT(request: NextRequest) {
     const body = (await request.json()) as { settings?: unknown };
     const saved = await saveOccasionsSettings(body.settings);
 
-    /* The header and home countdown read occasions from the public CMS bundle. */
+    /* The menu-bar layer reads occasions from the public CMS bundle. */
     revalidateTag(PUBLIC_CMS_CACHE_TAG, "max");
     revalidatePath("/", "layout");
     revalidatePath("/");

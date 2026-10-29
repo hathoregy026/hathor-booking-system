@@ -29,7 +29,6 @@ import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { DeckAtlas } from "@/components/home/deck-atlas/DeckAtlas";
 import { HomeGuide } from "@/components/pages/home-three/HomeGuide";
-import { OccasionHeroCountdown } from "@/components/occasions/OccasionHeroCountdown";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -404,7 +403,6 @@ export function HomeThreePageContent({
               responsiveVideoFrameTarget="#home-three-story"
               logoPartsVariant={heroLogoTune.partsVariant}
               mobileLogoPartsVariant={heroLogoTuneMobile.partsVariant}
-              titleAddon={<OccasionHeroCountdown />}
             />
           </div>
         </div>
