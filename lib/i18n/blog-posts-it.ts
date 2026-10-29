@@ -194,12 +194,12 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
   "discover-the-valley-of-the-kings": {
     title: "Alla scoperta della Valle dei Re",
     excerpt:
-      "Faccia un passo nell’antico Egitto con una crociera di lusso sul Nilo fino alla Valle dei Re: esplori le tombe reali e goda della bellezza serena del Nilo a bordo di un’elegante dahabiya.",
+      "Entri nell’antico Egitto con una crociera di lusso sul Nilo fino alla Valle dei Re: esplori le tombe reali e goda della bellezza serena del Nilo a bordo di un’elegante dahabiya.",
   },
   "sailing-to-karnak-temple": {
     title: "In navigazione verso il Tempio di Karnak",
     excerpt:
-      "Il complesso templare di Karnak, il tempio di Amon, Mut e Khonsu a Luxor, è un immenso tempio antico. Con le sue colonne imponenti e le statue colossali, è il cuore spirituale dell’antico Egitto in tutto il suo splendore.",
+      "Il complesso templare di Karnak, il tempio di Amon, Mut e Khonsu a Luxor, è un immenso santuario antico. Con le sue colonne imponenti e le statue colossali, è il cuore spirituale dell’antico Egitto in tutto il suo splendore.",
   },
   "exploring-luxor-and-aswan-on-a-luxury-dahabiya": {
     title: "Luxor e Assuan a bordo di una dahabiya di lusso",
@@ -234,7 +234,7 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
   "nile-cruise-or-luxury-dahabiya-which-one-to-choose": {
     title: "Crociera sul Nilo o dahabiya: quale scegliere in Egitto?",
     excerpt:
-      "Scopra le meraviglie del Nilo, dai prodigi delle civiltà antiche alla bellezza della natura, e la differenza tra una crociera tradizionale e una dahabiya. Per un viaggio autentico e meno affollato, la dahabiya di lusso Hathor è la scelta perfetta: stile, tradizione e relax lungo il Nilo.",
+      "Scopra le meraviglie del Nilo, dai prodigi delle civiltà antiche alla bellezza della natura, e la differenza tra una crociera tradizionale e una dahabiya. Per un viaggio autentico e meno affollato, Hathor Luxury Dahabiya è la scelta perfetta: stile, tradizione e relax lungo il Nilo.",
   },
 };
 
