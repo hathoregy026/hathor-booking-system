@@ -7,8 +7,10 @@
  * Validation (zod) lives in `occasions-schema.ts`, which only the server and the
  * dashboard load — this file is also part of every public page.
  *
- * Preview any occasion, even one switched off: add `?occasion=<id>` to a public
- * URL; the choice holds for the browser tab. `?occasion=off` clears it.
+ * Public pages receive switched-on occasions only. Signed-in dashboard users
+ * can preview any saved occasion, even one switched off: add `?occasion=<id>`
+ * to a public URL; the choice holds for the browser tab. `?occasion=off`
+ * clears it. Visitors with the same link see nothing.
  */
 import { isAdminPath, isBookingPath } from "@/lib/floating-actions-visibility";
 
@@ -76,7 +78,7 @@ export type Occasion = {
   /** Stable id: preview links and visitors' "hide" choices are keyed on it. */
   id: string;
   name: string;
-  /** Off keeps the occasion saved but never shows it (preview still works). */
+  /** Off keeps the occasion saved but never shows it (signed-in preview still works). */
   enabled: boolean;
   /** UTC ISO instants; the dashboard edits them as Cairo wall-clock time. */
   startsAt: string;
@@ -123,7 +125,7 @@ export const DEFAULT_OCCASIONS_SETTINGS: OccasionsSettings = {
     {
       id: "new-year-2027",
       name: "New Year's Eve",
-      enabled: true,
+      enabled: false,
       startsAt: "2026-12-25T22:00:00.000Z",
       endsAt: "2027-01-02T22:00:00.000Z",
       countdownTo: "2026-12-31T22:00:00.000Z",

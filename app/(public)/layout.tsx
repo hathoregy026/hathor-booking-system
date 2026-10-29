@@ -151,6 +151,8 @@ export default async function PublicSiteLayout({
     heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
   );
   const hieroglyphTuneCss = hieroglyphTuneToImportantCss(cms.hieroglyphTune);
+  /* Switched-off drafts never reach the page; signed-in previews fetch them from the admin API. */
+  const liveOccasions = cms.occasions.occasions.filter((occasion) => occasion.enabled);
 
   return (
     <div
@@ -198,7 +200,7 @@ export default async function PublicSiteLayout({
               <PageVisibilityProvider settings={pageVisibility}>
                 <ComingSoonGate liveSite={liveSite}>
                   {/* Dashboard → Occasions: the header stripe and the home countdown. */}
-                  <OccasionsProvider occasions={cms.occasions.occasions}>
+                  <OccasionsProvider occasions={liveOccasions}>
                     <PublicLayout
                       welcomeSplash={welcomeSplash}
                       liveSite={liveSite}

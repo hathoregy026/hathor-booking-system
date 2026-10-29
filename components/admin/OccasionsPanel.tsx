@@ -855,8 +855,9 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
               <OccasionPreview occasion={selected} />
               {savedIds.has(selected.id) ? (
                 <p className="text-xs text-muted">
-                  The site link works even before the dates or while switched off, only in the tab you open.
-                  Add <code>?occasion=off</code> to a page address to stop previewing.
+                  Only you see this. The site link works while you are signed in to the dashboard, in the tab
+                  it opens, even before the dates or while switched off. Add <code>?occasion=off</code> to a
+                  page address to stop previewing.
                 </p>
               ) : null}
             </section>
