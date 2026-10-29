@@ -227,7 +227,10 @@ export async function middleware(request: NextRequest) {
       }
 
       if (requiresPrivateHtml(pathname)) {
-        return withTemporaryNoIndex(request, withHtmlNoStore(NextResponse.next()));
+        return withContentLanguage(
+          pathname,
+          withTemporaryNoIndex(request, withHtmlNoStore(NextResponse.next())),
+        );
       }
 
       /*
