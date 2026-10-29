@@ -1526,7 +1526,7 @@ const IT: BookingCopy = {
     inclusions: [
       "Trasferimenti di andata e ritorno dagli aeroporti di Assuan o Luxor",
       "IVA e costi di servizio",
-      "Drink di benvenuto all’arrivo",
+      "Aperitivo di benvenuto all’arrivo",
       "Formula Soft All-Inclusive: pasti e bevande analcoliche",
       "Biglietti d’ingresso per le visite previste dall’itinerario",
       "Guida egittologa professionista",

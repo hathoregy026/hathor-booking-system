@@ -72,7 +72,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
     title: "Hathor Luxury Suite | Suite di 46 m² sul Nilo",
     description:
       "La Luxury Suite di Hathor: 46 m² sul Nilo, vista panoramica sul fiume, interni ricchi di carattere e jacuzzi privata, per un massimo di quattro ospiti.",
-    pageLabel: "Luxury Suites",
+    pageLabel: "Luxury Suite",
     name: "Hathor Luxury Suite | Suite di 46 m² per la crociera sul Nilo",
     crumb: "Luxury Suite",
     image: {
@@ -92,7 +92,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
     title: "Royal Suite per la crociera sul Nilo | Hathor Dahabiya",
     description:
       "La Royal Suite di Hathor: 56 m² con vista dal ponte principale e due bagni, la sistemazione più riservata di questa crociera di lusso in dahabiya sul Nilo.",
-    pageLabel: "Royal Suites",
+    pageLabel: "Royal Suite",
     name: "Royal Suite per la crociera sul Nilo | Hathor Dahabiya",
     crumb: "Royal Suite",
     image: {

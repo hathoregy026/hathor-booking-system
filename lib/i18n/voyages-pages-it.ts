@@ -60,14 +60,14 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
     ...page(
       "/it/voyages/luxor-to-aswan",
       "Crociera sul Nilo da Luxor ad Assuan | Hathor Dahabiya",
-      "La classica crociera di quattro notti da Luxor ad Assuan su Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e File, in navigazione privata.",
+      "La classica crociera di quattro notti da Luxor ad Assuan su Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e Philae, in navigazione privata.",
     ),
     name: "Crociera sul Nilo da Luxor ad Assuan | Hathor Dahabiya",
     crumb: "Da Luxor ad Assuan",
     trip: {
       name: "Crociera sul Nilo da Luxor ad Assuan a bordo di Hathor Dahabiya",
       description:
-        "La classica crociera di quattro notti da Luxor ad Assuan a bordo di Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e File al ritmo di una navigazione privata.",
+        "La classica crociera di quattro notti da Luxor ad Assuan a bordo di Hathor Dahabiya: Karnak, la Valle dei Re, Edfu, Kom Ombo e Philae al ritmo di una navigazione privata.",
       departure: "Luxor",
       arrival: "Assuan",
     },
@@ -80,20 +80,20 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
     ...page(
       "/it/voyages/aswan-to-luxor",
       "Crociera sul Nilo da Assuan a Luxor | Hathor Dahabiya",
-      "Tre notti da Assuan a Luxor su Hathor Dahabiya: File, Kom Ombo ed Edfu, poi i templi di Luxor, con soli 32 ospiti a bordo.",
+      "Tre notti da Assuan a Luxor su Hathor Dahabiya: Philae, Kom Ombo ed Edfu, poi i templi di Luxor, con soli 32 ospiti a bordo.",
     ),
     name: "Crociera sul Nilo da Assuan a Luxor | Hathor Dahabiya",
     crumb: "Da Assuan a Luxor",
     trip: {
       name: "Crociera sul Nilo da Assuan a Luxor a bordo di Hathor Dahabiya",
       description:
-        "Tre notti da Assuan a Luxor su Hathor Dahabiya: File, Kom Ombo ed Edfu, poi i templi di Luxor, con soli 32 ospiti a bordo.",
+        "Tre notti da Assuan a Luxor su Hathor Dahabiya: Philae, Kom Ombo ed Edfu, poi i templi di Luxor, con soli 32 ospiti a bordo.",
       departure: "Assuan",
       arrival: "Luxor",
     },
     heroLines: ["Da Assuan", "a Luxor", "sul Nilo"],
     statement:
-      "Una traversata intima da sud a nord: tre notti tra File, Kom Ombo ed Edfu al passo lento del fiume, fino ai templi di Luxor, a bordo di una dahabiya di lusso per 32 ospiti.",
+      "Una traversata intima da sud a nord: tre notti tra Philae, Kom Ombo ed Edfu al passo lento del fiume, fino ai templi di Luxor, a bordo di una dahabiya di lusso per 32 ospiti.",
     detailsHref: "/cruises-list",
   },
   "luxor-aswan-luxor": {

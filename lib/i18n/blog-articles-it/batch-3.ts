@@ -283,7 +283,7 @@ Eppure molti viaggiatori si chiedono ancora: navigare sul Nilo oggi è sicuro? Q
 
 <h2><span class="hathor-blog-accent">Navigare sul Nilo in Egitto oggi è sicuro?</span></h2>
 
-<p>Il Nilo, in Egitto, offre condizioni di navigazione sicure. Le imbarcazioni e le crociere turistiche collegano Luxor, Assuan e Il Cairo lungo rotte controllate.<br>
+<p>Il Nilo, in Egitto, offre condizioni di navigazione sicure. Le imbarcazioni e le crociere turistiche collegano Luxor, Assuan e il Cairo lungo rotte controllate.<br>
 Le compagnie autorizzate organizzano i viaggi nel rispetto delle norme di sicurezza e delle regole del turismo.<br>
 Nelle principali aree turistiche è presente un servizio di sicurezza che previene la maggior parte degli incidenti: il Nilo si conferma così l’esperienza di viaggio più affidabile dell’Egitto.</p>
 

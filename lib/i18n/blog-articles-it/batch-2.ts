@@ -330,7 +330,7 @@ La crociera in dahabiya offre un viaggio in cui esplorare con calma ciò che La 
 
 <h2>La magia della navigazione lenta sul Nilo</h2>
 
-<p>Una crociera in dahabiya è molto più di uno spostamento: è un viaggio lento e ricco di significato nella vita del fiume che ha sostenuto e accompagnato tutta la storia dell’Egitto. La quiete del Nilo è riempita dai suoni della vita intorno, e lascia poco spazio alla solitudine.<br>
+<p>Una crociera in dahabiya è molto più di uno spostamento: è un viaggio lento e ricco di significato nella vita del fiume che ha sostenuto e accompagnato tutta la storia dell’Egitto. La quiete del Nilo è animata dai suoni discreti della vita sulle rive: un silenzio che non è mai solitudine.<br>
 Scegliere una dahabiya significa allontanarsi dal turismo di massa e abbracciare l’intimità di un’esperienza più genuina del Nilo. Permette di vedere l’Egitto nella sua dimensione più tranquilla: il fiume con i suoi templi antichi e la vita quotidiana che si svolge sulle sue rive.<br>
 Che La attirino la storia, il relax o la scoperta, in questo viaggio senza pari vivrà da vicino la cultura del luogo e godrà di ogni comfort.<br>
 Una crociera in dahabiya regala emozioni intense e un legame molto personale con questa terra, il suo passato e la natura eterna del Nilo.</p>`,

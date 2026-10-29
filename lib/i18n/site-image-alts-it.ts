@@ -99,7 +99,7 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
     "Cabina di lusso a bordo di Hathor Dahabiya",
   "Luxury Rooms aboard Hathor Dahabiya": "Le Luxury Rooms a bordo di Hathor Dahabiya",
   "Luxury Royal Suites aboard Hathor Dahabiya":
-    "Le Luxury Royal Suites a bordo di Hathor Dahabiya",
+    "Le Royal Suite a bordo di Hathor Dahabiya",
   "Luxury Suite on the 3-night Aswan to Luxor itinerary":
     "Luxury Suite sull’itinerario di 3 notti da Assuan a Luxor",
   "Luxury Suite on the 4-night Luxor to Aswan itinerary":

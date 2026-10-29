@@ -185,7 +185,7 @@ export function roomShowcaseIn<T extends RoomShowcase>(room: T, locale: PublicLo
 const INCLUDE_IT = [
   "Trasferimenti di andata e ritorno dagli aeroporti di Assuan o Luxor con veicoli turistici moderni (limousine o van)",
   "IVA e costi di servizio",
-  "Drink di benvenuto all’arrivo",
+  "Aperitivo di benvenuto all’arrivo",
   "Uno Champagne di benvenuto in omaggio per ogni cabina e suite, servito una volta per soggiorno",
   "Sistemazione in formula Soft All-Inclusive (tutti i pasti e le bevande analcoliche durante la giornata)",
   "Biglietti d’ingresso per le visite previste dall’itinerario (visite di gruppo)",
@@ -209,7 +209,7 @@ const EXCLUDE_IT = [
 const ASWAN_TO_LUXOR_DAYS_IT: readonly RoomFolioDay[] = [
   {
     title: "Giorno 1 · Assuan",
-    body: "All’arrivo La accogliamo a bordo di Hathor con un drink di benvenuto e un pranzo senza fretta. Visita al Tempio di File e alla Grande Diga, poi rientro per la cena e il pernottamento ad Assuan.",
+    body: "All’arrivo La accogliamo a bordo di Hathor con un drink di benvenuto e un pranzo senza fretta. Visita al Tempio di Philae e alla Grande Diga, poi rientro per la cena e il pernottamento ad Assuan.",
   },
   {
     title: "Giorno 2 · Kom Ombo ed Esna",
@@ -244,7 +244,7 @@ const LUXOR_TO_ASWAN_DAYS_IT: readonly RoomFolioDay[] = [
   },
   {
     title: "Giorno 5 · Assuan",
-    body: "Su richiesta è possibile organizzare una visita mattutina ad Abu Simbel. Dopo l’ultima colazione e il check-out, visita al Tempio di File e alla Grande Diga prima dello sbarco ad Assuan.",
+    body: "Su richiesta è possibile organizzare una visita mattutina ad Abu Simbel. Dopo l’ultima colazione e il check-out, visita al Tempio di Philae e alla Grande Diga prima dello sbarco ad Assuan.",
   },
 ];
 
@@ -267,7 +267,7 @@ const ROUND_TRIP_DAYS_IT: readonly RoomFolioDay[] = [
   },
   {
     title: "Giorno 5 · Assuan",
-    body: "Su richiesta è possibile organizzare una visita mattutina ad Abu Simbel. Poi visita al Tempio di File e alla Grande Diga. Pranzo e cena a bordo; pernottamento ad Assuan.",
+    body: "Su richiesta è possibile organizzare una visita mattutina ad Abu Simbel. Poi visita al Tempio di Philae e alla Grande Diga. Pranzo e cena a bordo; pernottamento ad Assuan.",
   },
   {
     title: "Giorno 6 · In navigazione verso nord",

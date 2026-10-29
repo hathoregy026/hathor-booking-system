@@ -2,7 +2,7 @@
  * The booking journey's itineraries in Italian: the same days, routes and
  * reading links as lib/booking-itineraries.ts, worded for the /it booking
  * flow. Place names follow the rest of the Italian site (Assuan, Tempio di
- * File, Valle dei Re, Colossi di Memnone); product names stay in English.
+ * Philae, Valle dei Re, Colossi di Memnone); product names stay in English.
  *
  * The reading links still open the English journal articles they were
  * chosen for; only their labels are Italian.
@@ -17,7 +17,7 @@ import {
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
-const PHILAE: ItineraryLink = { label: "Tempio di File", href: "https://hathorcruise.com/blogs/philae-temple-aswan-attractions" };
+const PHILAE: ItineraryLink = { label: "Tempio di Philae", href: "https://hathorcruise.com/blogs/philae-temple-aswan-attractions" };
 const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Cosa vedere ad Assuan", href: "https://hathorcruise.com/blogs/top-attractions-in-aswan-egypt" };
 const ASWAN_TO_LUXOR: ItineraryLink = { label: "Da Assuan a Luxor in dahabiya", href: "https://hathorcruise.com/blogs/Sailing%20from%20Aswan%20to%20Luxor%20on%20a%20Dahabiya%20Nile%20Cruise" };
 const KOM_OMBO: ItineraryLink = { label: "Tempio di Kom Ombo", href: "https://hathorcruise.com/blogs/kom-ombo-temple-hathor-dahabiya" };
@@ -38,7 +38,7 @@ const THREE_NIGHT: ItineraryDay[] = [
   {
     day: 1,
     title: "Assuan, l’inizio del viaggio",
-    path: "Assuan, imbarco → Tempio di File → Grande Diga di Assuan → notte ad Assuan",
+    path: "Assuan, imbarco → Tempio di Philae → Grande Diga di Assuan → notte ad Assuan",
     copy: ["Arrivo con drink di benvenuto, imbarco e pranzo a bordo. Visita al ", PHILAE, " e alla Grande Diga di Assuan. Rientro a bordo di Hathor per la cena e il pernottamento ad Assuan."],
     reading: [PHILAE, ASWAN_ATTRACTIONS, ASWAN_TO_LUXOR],
   },
@@ -70,7 +70,7 @@ const FOUR_NIGHT: ItineraryDay[] = [
     day: 1,
     title: "Luxor e la riva orientale",
     path: "Luxor, imbarco → Tempio di Karnak → Tempio di Luxor → notte a Luxor",
-    copy: ["Drink di benvenuto e check-in, seguiti dal pranzo a bordo. Visita alla riva orientale, con il ", EAST_BANK, ". Rientro a bordo di Hathor per la cena e il pernottamento a Luxor."],
+    copy: ["Aperitivo di benvenuto e check-in, seguiti dal pranzo a bordo. Visita alla riva orientale, con il ", EAST_BANK, ". Rientro a bordo di Hathor per la cena e il pernottamento a Luxor."],
     reading: [EAST_BANK_READING, EXPLORING],
   },
   {
@@ -97,7 +97,7 @@ const FOUR_NIGHT: ItineraryDay[] = [
   {
     day: 5,
     title: "Arrivederci da Assuan",
-    path: "Abu Simbel (facoltativo) → colazione e check-out → Tempio di File → Grande Diga di Assuan → fine ad Assuan",
+    path: "Abu Simbel (facoltativo) → colazione e check-out → Tempio di Philae → Grande Diga di Assuan → fine ad Assuan",
     copy: ["Escursione facoltativa ad Abu Simbel al mattino presto. Colazione e check-out, poi visita al ", PHILAE, " e alla Grande Diga di Assuan."],
     reading: [PHILAE, ASWAN_ATTRACTIONS],
   },
@@ -108,7 +108,7 @@ const SEVEN_NIGHT: ItineraryDay[] = [
     day: 1,
     title: "L’imbarco a Luxor",
     path: "Luxor, imbarco → Tempio di Karnak → Tempio di Luxor → notte a Luxor",
-    copy: ["Drink di benvenuto e check-in, seguiti dal pranzo. Visita alla riva orientale di Luxor, con il ", EAST_BANK, ". Cena e pernottamento a Luxor."],
+    copy: ["Aperitivo di benvenuto e check-in, seguiti dal pranzo. Visita alla riva orientale di Luxor, con il ", EAST_BANK, ". Cena e pernottamento a Luxor."],
     reading: [EAST_BANK_READING, EXPLORING],
   },
   {
@@ -135,7 +135,7 @@ const SEVEN_NIGHT: ItineraryDay[] = [
   {
     day: 5,
     title: "Le meraviglie di Assuan",
-    path: "Abu Simbel (facoltativo) → Tempio di File → Grande Diga di Assuan → notte ad Assuan",
+    path: "Abu Simbel (facoltativo) → Tempio di Philae → Grande Diga di Assuan → notte ad Assuan",
     copy: ["Escursione facoltativa ad Abu Simbel al mattino presto. Visita al ", PHILAE, " e alla Grande Diga di Assuan. Rientro a bordo di Hathor per pranzo, cena e pernottamento ad Assuan."],
     reading: [PHILAE, ASWAN_ATTRACTIONS],
   },

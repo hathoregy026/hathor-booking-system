@@ -307,7 +307,7 @@ const IT: CharterCopy = {
         hrefLabel: "Vedi le cabine",
       },
       {
-        title: "Luxury Suites",
+        title: "Luxury Suite",
         body: "Le suite offrono più spazio agli ospiti che cercano maggiore privacy, proporzioni generose e una vista ininterrotta sul fiume.",
         capacity: "2 suite",
         detail: "46 m² · ponte inferiore · jacuzzi",
@@ -315,7 +315,7 @@ const IT: CharterCopy = {
         hrefLabel: "Tutte le caratteristiche",
       },
       {
-        title: "Luxury Royal Suites",
+        title: "Royal Suite",
         body: "Le Royal Suite sono le sistemazioni più ampie di Hathor, con spazio privato in più e un senso di riservatezza ancora maggiore.",
         capacity: "2 Royal Suite",
         detail: "56 m² · ponte principale · spazio privato",

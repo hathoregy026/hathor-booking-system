@@ -62,20 +62,35 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 
 ## 5. Points raised by the proofreading pass (October 2026)
 
-The whole Italian site was proofread a second time. These points were left for a native speaker
-because they are choices rather than errors.
+### Decided by Hathor (applied on the site)
+
+- **Buttons:** buttons, links and their screen-reader labels use the short imperative ("Prenota ora",
+  "Scopri", "Prosegui", "Richiedi un charter privato", "Contatta Hathor", "Riprova"), and so do the
+  scroll hints ("Scorri"). Sentences, headings, step lists, hints and form messages keep the formal
+  "Lei" ("Scelga il Suo paese.", "Prenoti la Sua suite").
+- **"il Cairo":** lowercase in running text ("Luxor, Assuan e il Cairo"); standalone place labels and
+  address lines keep "Il Cairo".
+- **Room and suite names:** one invariable form, "Luxury Suite" and "Royal Suite" (as in "le Royal
+  Suite"). The catalog tier "Luxury Room" stays as it is.
+- **Menus:** "Crociere" is `/it/cruises-list` (the scheduled sailings) and "Viaggi" is `/it/voyages`,
+  in the header, footer and breadcrumbs alike.
+- **Place names:** "Philae" everywhere (no more "File").
+- **Welcome drink:** "Aperitivo di benvenuto".
+- **Odd journal sentences** now say something true, in Italian only (the English rows are unchanged):
+  the Valley of the Queens is contrasted with "i grandi monumenti dei faraoni"; Medinet Habu's
+  colours "raccontano la sua storia con una chiarezza rara anche tra i grandi templi di Tebe"; the
+  Nubian houses are "in tradizionale stile nubiano"; the High Dam "ha domato il Nilo, mettendo fine
+  alle sue piene annuali"; and on the Nile "un silenzio che non è mai solitudine".
+
+### Still open for the native speaker
 
 | Where | Question |
 | --- | --- |
-| Buttons site-wide | Buttons mix the plain imperative ("Prenota ora", "Continua", "Seleziona", "Verifica disponibilità", "Riprova") with the Lei form used in sentences ("Scopra", "Prosegua", "Richieda un charter privato", "Riprovi"). The most visible pair is on `/it/charter`: "Richieda un charter privato" next to "Verifica disponibilità". Should all buttons use one form, and which? "Scorri" (scroll hint) is the same question. |
-| "Il Cairo" mid-sentence | The brief asks for "Il Cairo"; in running text many style guides write "il Cairo" ("Luxor, Assuan e il Cairo"). Which? |
-| Room and suite names | Menus say "Luxury Suite" / "Royal Suite" (singular); cruise cards say "Luxury Suites" / "Royal Suites"; cruise cards also show the catalog tier "Luxury Room". Keep all in English as product names, and which number? |
-| Menu wording | The header menu calls `/it/voyages` "Crociere" while the footer and breadcrumbs say "Viaggi" (the English site does the same with "Cruises"/"Voyages"). |
-| Place names | "File" (Italian) and "Philae" are both used; "El Ramady" and "Ramadi" both appear (as in English). Pick one of each. |
-| Small wording | "Drink di benvenuto" (or "aperitivo di benvenuto"?), "Prove discrete" for "Quiet proof" (or "Garanzie discrete"?), "Navigare lenti" (or "Navigare piano"?), "Champagne" capitalised, "Camera e lavanderia" for room and laundry service, the short captions "Clima" and "Phon". |
+| Place names | "El Ramady" and "Ramadi" both appear (as in English). Which one? |
+| Small wording | "Prove discrete" for "Quiet proof" (or "Garanzie discrete"?), "Navigare lenti" (or "Navigare piano"?), "Champagne" capitalised, "Camera e lavanderia" for room and laundry service, the short captions "Clima" and "Phon". |
 | Photo descriptions | "Un ospite in accappatoio…" and "Un ospite legge in poltrona…" use the masculine; please check against the photos. |
-| Journal sense | discover-the-timeless-luxor-west-bank ("l’opposto della sindrome di Stendhal", "forza virile dei re"), golden-gems-of-aswan ("case colorate in stile coloniale" for Nubian houses), aswan-high-dam (the Nile "diventato… un fiume piuttosto piccolo"), why-a-dahabiya-cruise-feels-like-time-travel (the "loneliness" sentence): each is faithful to an odd English source. |
 | Long journal titles | Some Italian article titles exceed 60 characters on their own (for example "Perché il Nilo fu la via commerciale più importante dell’antico Egitto"), so search results will cut them. Shorter titles would need new wording. |
+| Tone | Please read the short-imperative buttons next to the "Lei" sentences on a few pages (`/it/charter`, `/it/booking`) and say whether the mix feels natural. |
 
 ## 6. Legal page: points for the legal check
 

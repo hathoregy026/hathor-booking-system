@@ -198,8 +198,8 @@ export const CRUISES_COPY: Record<PublicLocale, CruisesCopy> = {
     continueLabel: "Continui a esplorare",
     explore: [
       { label: "Cabine", title: "Luxury Rooms", hint: "Cabine con vista sul fiume" },
-      { label: "Suite", title: "Luxury Suites", hint: "Ampie suite sul Nilo" },
-      { label: "Royal", title: "Royal Suites", hint: "Il massimo privilegio" },
+      { label: "Suite", title: "Luxury Suite", hint: "Ampie suite sul Nilo" },
+      { label: "Royal", title: "Royal Suite", hint: "Il massimo privilegio" },
       { label: "Cucina", title: "Hathor Flavors", hint: "La gastronomia a bordo" },
     ],
     reserveLabel: "Prenota un viaggio",

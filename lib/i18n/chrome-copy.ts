@@ -266,7 +266,7 @@ const IT: ChromeCopy = {
         description: "Le nostre stanze più belle sul Nilo",
       },
       "/voyages": {
-        label: "Crociere",
+        label: "Viaggi",
         description: "Itinerari privati in dahabiya sul Nilo",
       },
       "/cruises-list": {

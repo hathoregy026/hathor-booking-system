@@ -223,7 +223,7 @@ const PAGES_IT: Partial<Pages> = {
         title: "Da Assuan a Luxor",
         durationLabel: "3 notti / 4 giorni",
         meta: "Assuan → Luxor",
-        body: "Una traversata intima da sud a nord: File, Kom Ombo ed Edfu si svelano al passo senza fretta di una dahabiya, fino ai templi di Luxor.",
+        body: "Una traversata intima da sud a nord: Philae, Kom Ombo ed Edfu si svelano al passo senza fretta di una dahabiya, fino ai templi di Luxor.",
         cta: "Scopri il viaggio",
       },
       {

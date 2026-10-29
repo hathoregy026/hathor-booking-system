@@ -108,7 +108,7 @@ const MOORINGS_IT: readonly MooringWords[] = [
     note: "Isole di granito, la luce più morbida del fiume e la cava che non ha mai liberato il suo obelisco.",
     sites: [
       {
-        name: "Tempio di File",
+        name: "Tempio di Philae",
         era: "280 a.C.",
         note: "Spostato pietra dopo pietra sull’isola di Agilkia per salvarlo dall’innalzamento delle acque.",
       },
