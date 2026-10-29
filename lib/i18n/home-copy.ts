@@ -386,9 +386,9 @@ const IT: HomeCopy = {
     kicker: "02 — Partenze",
     titleLines: ["Scelga", "la Sua cabina"],
     support:
-      "Una dahabiya cinque stelle in cui la storia del Nilo, il comfort contemporaneo e una navigazione intima si incontrano. Tre itinerari, quattro categorie di cabina, 32 ospiti a bordo.",
+      "Una dahabiya a cinque stelle in cui la storia del Nilo, il comfort contemporaneo e una navigazione intima si incontrano. Tre itinerari, quattro categorie di cabina, 32 ospiti a bordo.",
     tiers: {
-      "Luxury Room": "Camera di lusso",
+      "Luxury Room": "Luxury Room",
       "Luxury Suite": "Luxury Suite",
       "Luxury Royal Suite": "Royal Suite",
     },
@@ -454,7 +454,7 @@ const IT: HomeCopy = {
         nights: "Sette notti",
         route: "Andata e ritorno",
         note: "Entrambe le rive, tutto il fiume",
-        alt: "Hathor Dahabiya sull’intero itinerario Luxor–Assuan, andata e ritorno",
+        alt: "Hathor Dahabiya sull’intero itinerario da Luxor ad Assuan, andata e ritorno",
       },
     ],
   },

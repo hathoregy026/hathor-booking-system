@@ -254,7 +254,7 @@ const IT: ChromeCopy = {
         description: "Rifugi di lusso a bordo di Hathor",
       },
       "/luxury-cabins-Nile-Cruise": {
-        label: "Camere di lusso",
+        label: "Luxury Rooms",
         description: "Cabine vista Nilo, di un’eleganza discreta",
       },
       "/rooms": {
@@ -283,7 +283,7 @@ const IT: ChromeCopy = {
       },
       "/wellness": {
         label: "Benessere e spa",
-        description: "Seneb Spa — un’oasi galleggiante",
+        description: "Seneb Spa, un’oasi galleggiante",
       },
       "/gastronomy": {
         label: "Gastronomia",
@@ -291,7 +291,7 @@ const IT: ChromeCopy = {
       },
       "/about": {
         label: "La nostra storia",
-        description: "Benvenuti a bordo di Hathor",
+        description: "L’ospitalità di Hathor sul Nilo",
       },
       "/partners": {
         label: "Partner",

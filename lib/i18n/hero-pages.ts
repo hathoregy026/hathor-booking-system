@@ -14,7 +14,7 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
   cruises: { main: "Crociere\nin dahabiya", second: "sul Nilo" },
   /* The charter page breaks each line into two-word phrases. */
   charter: { main: "Charter privato\nin dahabiya", second: "Viaggio esclusivo" },
-  about: { main: "Benvenuti a bordo", second: "Hathor Cruise" },
+  about: { main: "Salga a bordo", second: "Hathor Cruise" },
   contact: { main: "Ci contatti", second: "Per ogni domanda" },
   wellness: { main: "Un’oasi galleggiante", second: "Relax e allenamento" },
   highlights: { main: "Crociera in dahabiya", second: "Da non perdere" },

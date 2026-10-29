@@ -265,7 +265,7 @@ const IT: DeckAtlasCopy = {
   pleaseRetry: "Riprovi",
   noDates: "Nessuna data in programma",
   notOpenToGuests: "Non accessibile agli ospiti",
-  selectToSeeCloser: "Selezioni per vederlo da vicino",
+  selectToSeeCloser: "Selezioni per vedere da vicino",
   deckNumber: (number) => `Ponte ${number}`,
   roomCount: (count) => `${count} camere`,
   deckTabs: "Ponte",

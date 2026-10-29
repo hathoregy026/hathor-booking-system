@@ -10,7 +10,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 export const HOME_SEO_IT: Metadata = buildPageMetadata({
   title: "Crociera sul Nilo in dahabiya di lusso | Hathor Dahabiya",
   description:
-    "Crociera sul Nilo in dahabiya privata di lusso tra Luxor e Assuan: 32 ospiti, suite vista Nilo, alta cucina e visite ai templi senza fretta, a bordo di Hathor.",
+    "Crociera sul Nilo in dahabiya di lusso tra Luxor e Assuan: 32 ospiti, suite vista Nilo, alta cucina e visite ai templi senza fretta, a bordo di Hathor.",
   path: "/it",
   image: {
     url: HATHOR_HERO_POSTER_SRC,
