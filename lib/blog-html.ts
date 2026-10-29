@@ -60,6 +60,7 @@ const CANONICAL_PATH_ALIASES: Readonly<Record<string, string>> = {
   "/journal": "/blogs",
   "/rooms/dahabiya-nile-cruise-aswan-to-luxor": "/voyages/aswan-to-luxor",
   "/rooms/dahabiya-nile-cruise-luxor-to-aswan": "/voyages/luxor-to-aswan",
+  "/rooms/dahabiya": "/voyages/luxor-aswan-luxor",
 };
 
 const SAFE_URL_SCHEMES = new Set(["http:", "https:", "mailto:", "tel:"]);
