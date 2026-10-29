@@ -48,7 +48,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
       { emphasis: "Il 30% del valore totale della prenotazione è dovuto al momento della conferma.", text: "" },
       {
         emphasis:
-          "Entro 60 giorni prima dell’imbarco, i pagamenti complessivi devono essere pari al 50% del valore totale della prenotazione.",
+          "Entro 60 giorni prima dell’imbarco, i pagamenti complessivi devono raggiungere almeno il 50% del valore totale della prenotazione.",
         text: "",
       },
       {
@@ -89,8 +89,10 @@ const SECTIONS_IT: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Una volta iniziato il viaggio, non è previsto alcun rimborso per pasti, notti o altre parti del viaggio prenotato non usufruite.",
+      "Una volta iniziato il viaggio, non è previsto alcun rimborso per pasti, notti o altre parti del viaggio prenotato di cui l’ospite sceglie di non usufruire.",
       "Qualora sia dovuto un rimborso in base al calendario di cancellazione sopra indicato, l’importo rimborsabile sarà calcolato dopo l’applicazione della relativa penale al valore totale della prenotazione.",
+      "Non si applica alcuna penale se circostanze inevitabili e straordinarie verificatesi nel luogo di destinazione o nelle sue immediate vicinanze, come la chiusura del Nilo alla navigazione o una grave situazione di sicurezza, incidono in modo significativo sul viaggio. In tal caso Hathor Dahabiya rimborsa integralmente tutti i pagamenti effettuati entro 14 giorni, senza ulteriori indennizzi.",
+      "L’ospite può cedere la prenotazione a un’altra persona che soddisfi tutte le condizioni del viaggio, informandone Hathor Dahabiya per iscritto almeno 7 giorni prima dell’imbarco. L’ospite originario e il nuovo ospite rispondono in solido del saldo ancora dovuto e degli eventuali costi aggiuntivi ragionevoli della cessione, che Hathor Dahabiya indicherà e giustificherà.",
     ],
   },
   {
@@ -158,7 +160,10 @@ const SECTIONS_IT: readonly TermsSection[] = [
     id: "company-responsibility",
     number: 8,
     title: "Responsabilità della società",
-    paragraphs: ["Hathor Dahabiya si assume la responsabilità di:"],
+    paragraphs: [
+      "Hathor Dahabiya è responsabile dell’esecuzione di tutti i servizi turistici inclusi nella prenotazione confermata, compresi i trasferimenti e le visite, sia che siano forniti da Hathor Dahabiya sia che siano forniti dai suoi partner.",
+      "In particolare, Hathor Dahabiya si assume la responsabilità di:",
+    ],
     list: [
       {
         text: "Fornire cibi e bevande preparati nel rispetto delle norme sanitarie, igieniche e di sicurezza applicabili.",
@@ -171,7 +176,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Tale responsabilità è limitata ai servizi forniti a bordo di Hathor Dahabiya e non si estende a fattori esterni al di fuori del ragionevole controllo della società.",
+      "Tale responsabilità non si estende ai servizi che l’ospite organizza autonomamente e che non fanno parte della prenotazione confermata.",
     ],
   },
   {
@@ -195,8 +200,8 @@ const SECTIONS_IT: readonly TermsSection[] = [
     number: 10,
     title: "Condizioni meteorologiche ed eventi naturali",
     paragraphs: [
-      "Hathor Dahabiya non sarà responsabile per ritardi, modifiche dell’itinerario, cambi di rotta o cancellazioni causati da condizioni meteorologiche avverse, inclusi, a titolo esemplificativo e non esaustivo, vento, nebbia, tempeste o variazioni del livello delle acque del Nilo.",
-      "Qualsiasi disservizio derivante da circostanze naturali o ambientali qualificabili come forza maggiore non darà diritto a rimborsi, indennizzi o pretese di alcun genere, salvo ove previsto dalla legge applicabile.",
+      "Condizioni meteorologiche avverse, inclusi, a titolo esemplificativo e non esaustivo, vento, nebbia, tempeste o variazioni del livello delle acque del Nilo, possono causare ritardi, modifiche dell’itinerario, cambi di rotta o cancellazioni.",
+      "Hathor Dahabiya non corrisponde indennizzi per i disservizi causati da tali circostanze inevitabili e straordinarie. Restano salvi i diritti dell’ospite a una riduzione del prezzo o a recedere con il rimborso integrale, indicati nelle sezioni 2, 12 e 13.",
     ],
   },
   {
@@ -204,7 +209,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
     number: 11,
     title: "Normative, ispezioni e autorità governative",
     paragraphs: [
-      "Hathor Dahabiya non sarà responsabile per ritardi, interruzioni, cambi di rotta o cancellazioni derivanti da:",
+      "Ritardi, interruzioni, cambi di rotta o cancellazioni possono derivare da:",
     ],
     list: [
       { text: "Ispezioni disposte dalle autorità." },
@@ -214,7 +219,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Tali circostanze non danno diritto a rimborsi, indennizzi o pretese, salvo ove previsto dalla legge applicabile.",
+      "Hathor Dahabiya non corrisponde indennizzi per tali circostanze. Restano salvi i diritti dell’ospite indicati nelle sezioni 2, 12 e 13.",
     ],
   },
   {
@@ -222,9 +227,10 @@ const SECTIONS_IT: readonly TermsSection[] = [
     number: 12,
     title: "Modifiche all’itinerario e adeguamenti operativi",
     paragraphs: [
-      "Hathor Dahabiya si riserva il diritto di modificare itinerari, orari, punti di attracco o servizi qualora lo ritenga necessario per ragioni operative, di navigazione o di sicurezza.",
-      "A discrezione della società potranno essere offerti servizi o attività sostitutivi di valore equivalente.",
-      "Tali modifiche non costituiscono inadempimento contrattuale e non danno diritto a rimborsi o indennizzi, salvo ove previsto dalla legge applicabile.",
+      "Hathor Dahabiya può apportare modifiche di scarsa importanza a itinerari, orari, punti di attracco o servizi quando necessario per ragioni operative, di navigazione o di sicurezza. Tali modifiche non costituiscono inadempimento contrattuale e Hathor Dahabiya ne informerà l’ospite in modo chiaro e tempestivo.",
+      "Se prima della partenza Hathor Dahabiya deve modificare in modo significativo una caratteristica principale del viaggio, ne informerà l’ospite senza ingiustificato ritardo. L’ospite può accettare la modifica oppure recedere dalla prenotazione senza penali e ottenere il rimborso integrale di tutti i pagamenti effettuati entro 14 giorni.",
+      "Se durante il viaggio un servizio incluso nella prenotazione non può essere fornito come concordato, Hathor Dahabiya offrirà, ove possibile, un servizio sostitutivo di qualità equivalente o superiore senza costi aggiuntivi. Se un servizio non viene fornito, o se il servizio sostitutivo è di qualità inferiore, l’ospite ha diritto a un’adeguata riduzione del prezzo.",
+      "Non è dovuto alcun indennizzo oltre alla riduzione del prezzo quando la modifica o il disservizio sono imputabili all’ospite, a un terzo estraneo ai servizi prenotati o a circostanze inevitabili e straordinarie.",
     ],
   },
   {
@@ -232,15 +238,15 @@ const SECTIONS_IT: readonly TermsSection[] = [
     number: 13,
     title: "Cancellazioni da parte della società",
     paragraphs: [
-      "In casi eccezionali di forza maggiore o di necessità operativa, Hathor Dahabiya si riserva il diritto di cancellare il viaggio.",
-      "La società potrà, a sua esclusiva discrezione, offrire:",
+      "Hathor Dahabiya può cancellare un viaggio prima della partenza in casi eccezionali di forza maggiore o di necessità operativa.",
+      "In caso di cancellazione da parte di Hathor Dahabiya, l’ospite riceve il rimborso integrale di tutti i pagamenti effettuati entro 14 giorni dalla cancellazione. Se l’ospite lo preferisce, Hathor Dahabiya può offrire in alternativa:",
     ],
     list: [
       { text: "Una nuova data di partenza; oppure" },
-      { text: "Un voucher di credito non rimborsabile da utilizzare in futuro." },
+      { text: "Un voucher di credito per un viaggio futuro." },
     ],
     paragraphsAfterList: [
-      "I rimborsi in denaro non sono garantiti, salvo ove previsto dalla legge applicabile.",
+      "Se Hathor Dahabiya cancella il viaggio per ragioni operative e non a causa di circostanze inevitabili e straordinarie, l’ospite può avere diritto anche a un indennizzo adeguato.",
     ],
   },
   {
@@ -259,6 +265,9 @@ const SECTIONS_IT: readonly TermsSection[] = [
       {
         text: "Altre circostanze naturali, ambientali od operative al di fuori del ragionevole controllo della società.",
       },
+    ],
+    paragraphsAfterList: [
+      "Restano salvi i diritti dell’ospite al rimborso o alla riduzione del prezzo previsti dalle sezioni 2, 12 e 13.",
     ],
   },
   {
@@ -285,7 +294,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
     number: 17,
     title: "Limitazione di responsabilità",
     paragraphs: [
-      "La responsabilità di Hathor Dahabiya è limitata all’importo pagato per i servizi prenotati, salvo ove tale limitazione sia vietata dalla legge applicabile.",
+      "Salvo in caso di danni alla persona e di danni causati con dolo o colpa, la responsabilità di Hathor Dahabiya è limitata a tre volte il prezzo totale della prenotazione.",
       "Nella misura massima consentita dalla legge, Hathor Dahabiya non sarà responsabile per danni indiretti, incidentali o consequenziali.",
     ],
   },
@@ -295,7 +304,8 @@ const SECTIONS_IT: readonly TermsSection[] = [
     title: "Legge applicabile e foro competente",
     paragraphs: [
       "I presenti Termini e condizioni sono regolati e interpretati in conformità alle leggi della Repubblica Araba d’Egitto.",
-      "Qualsiasi controversia sarà soggetta alla giurisdizione esclusiva dei tribunali egiziani, salvo ove la legge applicabile disponga diversamente.",
+      "Qualsiasi controversia sarà soggetta alla giurisdizione dei tribunali egiziani.",
+      "Se l’ospite è un consumatore residente in un altro Paese, ciò non priva l’ospite della tutela delle norme imperative della legge del Paese di residenza, e l’ospite può anche agire dinanzi ai tribunali di tale Paese.",
     ],
   },
   {
@@ -305,6 +315,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
     paragraphs: [
       "Con la conferma di una prenotazione, l’ospite riconosce, accetta e si impegna a rispettare i presenti Termini e condizioni.",
       "Qualora una prenotazione sia effettuata per conto di più ospiti, la persona che effettua la prenotazione è responsabile di informare tutti i membri del gruppo di viaggio dei Termini e condizioni applicabili.",
+      "I presenti Termini e condizioni sono pubblicati in inglese e in italiano. La versione italiana è fornita per comodità di consultazione. In caso di differenze tra le due versioni prevale la versione inglese, salvo che la legge applicabile alla prenotazione disponga diversamente.",
     ],
   },
   {

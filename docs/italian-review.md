@@ -105,19 +105,38 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 - **Soft All-Inclusive (section 5)** is now defined: all meals and soft drinks (tea, coffee, soft
   drinks and fresh juices); alcoholic drinks are not included (see section 6, Exclusions).
 
+### Consumer-protection rewrite (both languages, October 2026)
+
+Hathor asked for the clauses most likely to conflict with EU package-travel and Italian consumer
+law (Directive 2015/2302, Codice del Turismo, Codice del Consumo) to be rewritten. The English and
+Italian texts say the same thing, section by section.
+
+| Section | Before | Now |
+| --- | --- | --- |
+| 1 | Payments "must equal 50%" by 60 days | "must reach at least 50%" |
+| 2 | No free cancellation; no transfer right | Free cancellation with a full refund within 14 days when unavoidable and extraordinary circumstances significantly affect the voyage; the booking can be transferred to another person (written notice, 7 days before) |
+| 2 | No refund for "unused" services | No refund for services the guest *chooses* not to use |
+| 8 | Responsibility limited to on-board services | Responsible for every service in the booking, including transfers and tours by partners |
+| 10, 11 | "No liability", no refunds for weather or authorities | No compensation for unavoidable circumstances; price reduction and full-refund rights kept (sections 2, 12, 13) |
+| 12 | Any change, no refunds, "not a breach" | Minor changes allowed; significant changes let the guest cancel with a full refund; price reduction for services not provided |
+| 13 | Rescheduled date or non-refundable voucher at Hathor's discretion; cash refunds not guaranteed | Full refund within 14 days; new date or voucher only if the guest prefers; compensation possible when Hathor cancels for operational reasons |
+| 14 | Force majeure only | Adds that refund and price-reduction rights are not affected |
+| 17 | Liability capped at the amount paid | Capped at three times the total price, never for personal injury or damage caused intentionally or negligently |
+| 18 | Exclusive Egyptian courts | Egyptian law and courts, but consumers keep their home country's mandatory protections and may sue there |
+| 19 | No language clause | English prevails if the versions differ, unless the applicable law requires otherwise |
+
+The cancellation percentages in section 2 (25% / 50% / 100%) are unchanged: they are Hathor's
+commercial terms and the admin cancellation-fee calculation uses them.
+
 ### Still for the lawyer
 
-- Section 1: "i pagamenti complessivi devono essere pari al 50%" could mean exactly or at least 50%.
-- Section 13: a non-refundable credit voucher, and "I rimborsi in denaro non sono garantiti" when
-  Hathor itself cancels, need a view under EU package-travel and Italian consumer law; so do the
-  broad exclusions in sections 9, 12, 15 and 17. These clauses have not been changed.
-- Which language prevails. A draft for the lawyer to review. It is **not published** on the site:
-
-  > **English:** These Terms & Conditions are published in English and Italian. The Italian version
-  > is provided for convenience. If the two versions differ, the English version prevails, unless
-  > the law that applies to your booking requires otherwise.
-  >
-  > **Italiano:** I presenti Termini e condizioni sono pubblicati in inglese e in italiano. La
-  > versione italiana è fornita per comodità di consultazione. In caso di differenze tra le due
-  > versioni prevale la versione inglese, salvo che la legge applicabile alla Sua prenotazione
-  > disponga diversamente.
+- Review the rewritten clauses above before relying on them.
+- Whether 100% at 45 days or less before embarkation is a "reasonable" termination fee.
+- **Insolvency protection** (Codice del Turismo art. 47): a guarantee or insurance that refunds
+  guests and brings them home if the company fails. Hathor needs an actual policy; the terms do not
+  claim one yet.
+- **Standard information form** for packages, shown before the guest books (art. 34).
+- **Admin system:** cancelling a confirmed booking offers only "Guest cancelled", "No-show" and
+  "Early departure", each with the section 2 fee, and the database refuses a refund larger than
+  what was paid minus that fee. A cancellation by Hathor, or for unavoidable circumstances, needs a
+  zero-fee reason before the full refund promised in sections 2, 12 and 13 can be recorded.
