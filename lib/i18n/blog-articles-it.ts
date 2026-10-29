@@ -7,6 +7,7 @@ import { BLOG_ARTICLES_IT_2 } from "@/lib/i18n/blog-articles-it/batch-2";
 import { BLOG_ARTICLES_IT_3 } from "@/lib/i18n/blog-articles-it/batch-3";
 import { BLOG_ARTICLES_IT_4 } from "@/lib/i18n/blog-articles-it/batch-4";
 import { BLOG_ARTICLES_IT_5 } from "@/lib/i18n/blog-articles-it/batch-5";
+import { BLOG_ARTICLES_IT_6 } from "@/lib/i18n/blog-articles-it/batch-6";
 
 export const BLOG_ARTICLES_IT: Record<string, string> = {
   ...BLOG_ARTICLES_IT_1,
@@ -14,4 +15,5 @@ export const BLOG_ARTICLES_IT: Record<string, string> = {
   ...BLOG_ARTICLES_IT_3,
   ...BLOG_ARTICLES_IT_4,
   ...BLOG_ARTICLES_IT_5,
+  ...BLOG_ARTICLES_IT_6,
 };

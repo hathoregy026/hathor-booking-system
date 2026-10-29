@@ -42,4 +42,17 @@ export const TRANSLATED_BLOG_SLUGS_IT: readonly string[] = [
   "golden-gems-of-aswan",
   "aswan-high-dam",
   "exploring-esna-temples-history-nile-charm",
+  /* Batch 6 */
+  "luxors-sacred-east-bank",
+  "kom-ombo-temple",
+  "5-quiet-nile-spots-for-stunning-honeymoon-captures",
+  "discover-the-valley-of-the-kings",
+  "sailing-to-karnak-temple",
+  "exploring-luxor-and-aswan-on-a-luxury-dahabiya",
+  "where-history-lives-the-temple-of-hatshepsut",
+  "niles-hidden-gems-by-dahabiya",
+  "best-places-to-visit-along-the-nile-with-a-dahabiya-cruise",
+  "explore-luxor-in-luxury",
+  "best-time-for-dahabiya-nile-cruise",
+  "nile-cruise-or-luxury-dahabiya-which-one-to-choose",
 ];
