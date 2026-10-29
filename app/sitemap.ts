@@ -4,6 +4,7 @@ import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { isPageLive } from "@/lib/page-visibility-shared";
 import { pageLanguageVersions, PUBLIC_LOCALE_HREFLANG } from "@/lib/i18n/locale";
+import { ROOM_SHOWCASES } from "@/lib/room-showcase";
 
 const STATIC_PATHS = [
   "/",
@@ -82,6 +83,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             ? 0.85
             : 0.7,
   }, path));
+
+  /* One page per cabin and suite type: indexable, self-canonical and paired
+     with its Italian version, so they belong here too. */
+  for (const room of ROOM_SHOWCASES) {
+    const path = `/rooms/${room.slug}`;
+    entries.push(...withLanguageVersions({
+      url: absolute(path),
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }, path));
+  }
 
   try {
     const posts = await getPublishedBlogPosts();
