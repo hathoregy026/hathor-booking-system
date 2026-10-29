@@ -9,7 +9,8 @@ import {
   MONTH_ROW_LABELS,
 } from "@/lib/booking-modal-helpers";
 import { bookingCalendarYears } from "@/lib/booking-horizon";
-import { calendarDateToUtcIso, formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { calendarDateToUtcIso, formatUtcDate } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import {
   normalizeRoomConfigsForDuration,
   type RoomSearchConfig,
@@ -38,6 +39,7 @@ export function AvailabilityCalendar({
   year,
   onYearChange,
 }: AvailabilityCalendarProps) {
+  const { formatPrice } = useCurrency();
   const [days, setDays] = useState<CruiseCalendarDay[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

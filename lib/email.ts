@@ -1,4 +1,6 @@
 import { randomUUID } from "crypto";
+import { beginOutboundBookingMessage, finishOutboundBookingMessage, getBookingReplyAddress } from "@/lib/booking-messages";
+import { bookingReplyInbox } from "@/lib/booking-email-routing";
 import type { ReactElement } from "react";
 import { render } from "@react-email/render";
 import { Resend } from "resend";
@@ -15,6 +17,7 @@ import {
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { buildEmailSendTheme } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import type { ResendAttachment } from "@/lib/mail-attachments";
 import {
   getAdminNotificationEmail,
   getResendFromAddress,
@@ -55,6 +58,8 @@ async function sendEmail(input: {
   label: string;
   renderMessage: (theme: EmailTemplateOverrides) => ReactElement;
   theme: EmailTemplateOverrides;
+  bookingDetails?: BookingEmailDetails;
+  attachments?: ResendAttachment[];
 }) {
   const resend = getResend();
   if (!resend) {
@@ -75,13 +80,26 @@ async function sendEmail(input: {
     render(message, { plainText: true }),
   ]);
 
+  const replyTo = input.bookingDetails
+    ? await getBookingReplyAddress(input.bookingDetails.bookingId)
+    : undefined;
+  const outgoingId = input.bookingDetails ? await beginOutboundBookingMessage({
+    bookingId: input.bookingDetails.bookingId,
+    sender: getFromAddress(),
+    recipient: input.to,
+    subject: input.subject,
+    bodyText: text,
+    recordedBySession: input.bookingDetails.recordedBySession,
+    attachments: input.attachments?.map(file => ({ id: file.id, filename: file.filename, contentType: file.contentType, storagePath: file.storagePath })),
+  }) : null;
   const payload = {
     from: getFromAddress(),
     to: input.to,
     subject: input.subject,
     html,
     text,
-    replyTo: process.env.RESEND_REPLY_TO?.trim() || undefined,
+    replyTo: replyTo || process.env.RESEND_REPLY_TO?.trim() || bookingReplyInbox(),
+    attachments: input.attachments?.map(file => ({ filename: file.filename, path: file.path })),
   };
   // Retry only when the connection dropped before Resend answered; the shared
   // idempotency key makes Resend deliver the message at most once.
@@ -93,15 +111,27 @@ async function sendEmail(input: {
         setTimeout(() => resolve({ data: null, error: { message: "Unable to fetch data: the email service did not answer in time." } }), SEND_TIMEOUT_MS),
       ),
     ]);
-  let result = await attempt();
-  for (let tries = 1; tries < 3 && result.error && /unable to fetch|could not be resolved|fetch failed/i.test(result.error.message); tries += 1) {
-    await new Promise((resolve) => setTimeout(resolve, 1000 * tries));
+  let result;
+  try {
     result = await attempt();
+    for (let tries = 1; tries < 3 && result.error && /unable to fetch|could not be resolved|fetch failed/i.test(result.error.message); tries += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 1000 * tries));
+      result = await attempt();
+    }
+  } catch {
+    if (outgoingId) await finishOutboundBookingMessage(outgoingId, null);
+    throw new Error("The email service could not be reached. Please try again.");
   }
 
   if (result.error) {
-    console.error(`[email] ${input.label} failed:`, result.error);
-    throw new Error(result.error.message);
+    if (outgoingId) await finishOutboundBookingMessage(outgoingId, null);
+    console.error(`[email] ${input.label} failed`);
+    throw new Error("The email service could not send the message. Please try again.");
+  }
+
+  if (outgoingId) {
+    try { await finishOutboundBookingMessage(outgoingId, result.data?.id ?? null); }
+    catch { console.error("[email] message sent but history status could not be updated"); }
   }
 
   console.log(`[email] ${input.label} sent`, result.data?.id ?? "");
@@ -116,15 +146,18 @@ export async function sendBookingInvoiceEmail(
   guestName: string,
   bookingDetails: BookingEmailDetails,
   invoice: { paymentLink?: string; instructions?: string },
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingInvoice");
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
       BookingInvoiceEmail({ guestName, details: bookingDetails, ...invoice, ...sendTheme }),
     label: "booking invoice (guest)",
+    attachments,
   });
 }
 
@@ -137,6 +170,7 @@ export async function sendBookingDeclinedEmail(
   const template = await getEmailTemplateForSend("BookingDeclined");
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
@@ -152,15 +186,18 @@ export async function sendBookingMessageEmail(
   bookingDetails: BookingEmailDetails,
   message: string,
   subject?: string,
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingMessage");
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: subject?.trim() || resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme: buildEmailSendTheme(template),
     renderMessage: (sendTheme) =>
       BookingMessageEmail({ guestName, details: bookingDetails, message, ...sendTheme }),
     label: "team reply (guest)",
+    attachments,
   });
 }
 
@@ -174,6 +211,7 @@ export async function sendBookingReceivedEmail(
 
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme,
     renderMessage: (sendTheme) =>
@@ -190,12 +228,14 @@ export async function sendBookingConfirmedEmail(
   guestEmail: string,
   guestName: string,
   bookingDetails: BookingEmailDetails,
+  attachments: ResendAttachment[] = [],
 ) {
   const template = await getEmailTemplateForSend("BookingConfirmed");
   const theme = buildEmailSendTheme(template);
 
   await sendEmail({
     to: guestEmail,
+    bookingDetails,
     subject: resolveEmailSubject(template, subjectVars(guestName, bookingDetails)),
     theme,
     renderMessage: (sendTheme) =>
@@ -205,6 +245,7 @@ export async function sendBookingConfirmedEmail(
         ...sendTheme,
       }),
     label: "booking confirmed (guest)",
+    attachments,
   });
 }
 

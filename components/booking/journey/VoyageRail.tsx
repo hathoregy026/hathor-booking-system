@@ -5,6 +5,7 @@ import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceIm
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
 import type { Sailing } from "./model";
+import { CurrencyAmount, CurrencySettlementNote } from "@/components/public/CurrencyProvider";
 import type { CabinView } from "./allocation";
 import { IconBed, IconCalendar, IconChevron, IconGuests, IconPencil, IconTemple } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
@@ -112,11 +113,12 @@ export function VoyageRail({
       </Row>
 
       <div className="hj-total-block">
+        <CurrencySettlementNote cents={totalCents ?? undefined} />
         <span className="hj-total-block__label">{t.rail.total(cabins.length)}</span>
         {totalCents === null ? (
           <p className="hj-total-block__pending">{t.rail.pending}</p>
         ) : (
-          <div className="hj-total-block__amount">{t.money(totalCents)}</div>
+          <div className="hj-total-block__amount"><CurrencyAmount cents={totalCents} /></div>
         )}
         <p className="hj-deposit__fine">
           {totalCents === null ? t.rail.pendingFine : t.rail.fine(voyage.nights)}
@@ -157,7 +159,7 @@ export function VoyageBarFrame({
   partyMain: string;
   partySub: string;
   totalLabel: string;
-  totalValue: string;
+  totalValue: ReactNode;
   /** The full voyage summary, opened from the bar. */
   details?: ReactNode;
   onEdit?: () => void;
@@ -281,7 +283,7 @@ export function VoyageBar({
       partyMain={t.partyLine(adults, childCount)}
       partySub={cabins.length === 0 ? t.rail.noCabin : t.cabinsTitle(cabins.length)}
       totalLabel={t.rail.total(cabins.length)}
-      totalValue={totalCents === null ? pendingTotal : t.money(totalCents)}
+      totalValue={totalCents === null ? pendingTotal : <CurrencyAmount cents={totalCents} />}
       details={details}
       onEdit={onEdit}
       nudge={nudge}

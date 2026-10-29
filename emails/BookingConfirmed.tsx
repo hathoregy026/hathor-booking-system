@@ -49,6 +49,7 @@ export default function BookingConfirmedEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: BookingConfirmedEmailProps) {
@@ -65,6 +66,7 @@ export default function BookingConfirmedEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Reservation</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>

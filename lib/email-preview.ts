@@ -23,6 +23,7 @@ import {
   type EmailTemplateRecord,
 } from "@/lib/email-templates";
 import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
+import { parseEmailFooter, type EmailFooterSettings } from "@/lib/email-footer";
 
 export type EmailPreviewDraftShared = {
   logoUrl?: string | null;
@@ -70,6 +71,7 @@ export function buildEmailPreviewTheme(
     backgroundColor: template.backgroundColor?.trim() || "#ece4da",
     heroHeading: template.heroHeading,
     bodyText: template.bodyText,
+    footer: template.footer ?? null,
   };
 }
 
@@ -81,7 +83,11 @@ export function buildDraftEmailTemplates(
   shared: EmailPreviewDraftShared | null | undefined,
   copies: EmailPreviewDraftCopy[] | null | undefined,
   baseRows?: EmailTemplateRecord[],
+  /** The form's footer wording; the saved footer when the draft has none. */
+  footer?: unknown,
+  savedFooter?: EmailFooterSettings,
 ): EmailTemplateRecord[] {
+  const draftFooter = footer && typeof footer === "object" ? parseEmailFooter(footer) : savedFooter;
   const byName = new Map((baseRows ?? []).map((row) => [row.name, row]));
   const now = new Date().toISOString();
 
@@ -122,6 +128,7 @@ export function buildDraftEmailTemplates(
       bodyText:
         clip(patch?.bodyText, MAX_BODY) ?? base.bodyText ?? defaults.bodyText,
       updatedAt: now,
+      footer: draftFooter,
     };
   });
 }

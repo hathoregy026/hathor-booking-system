@@ -76,9 +76,19 @@ export async function submitBookingRequest(input:GuestRequest,idempotencyKey:str
  }catch(error){rethrowDatabaseRequest(error);}
 }
 
+/** The payment guard trigger's plain RAISEs (SQLSTATE P0001), in words staff can act on instead of a 500. */
+const PAYMENT_GUARD_MESSAGES = new Map([
+  ["Invalid payment amount", "This payment is more than the balance still owed on this booking."],
+  ["Invalid payment", "This booking cannot take a payment in its current state, or the payment date is in the future."],
+  ["Refund exceeds cancellation entitlement", "This refund is more than the guest is owed after the cancellation fee."],
+]);
+
 export async function administerBooking(id: string, action: {
   type: "accept" | "decline" | "cancel" | "record-payment";
   reason?: "CANCELLATION" | "NO_SHOW" | "EARLY_DEPARTURE";
+  /** Accept only, before any payment: the method (Visa adds the 2.5% card surcharge) and the team's own first payment. */
+  paymentMethod?: "VISA" | "BANK_TRANSFER";
+  split?: { firstCents: number; balanceDueOn?: string };
   payment?: { reference: string; method: "VISA" | "BANK_TRANSFER"; amountCents: number; kind: "RECEIPT" | "REFUND"; receivedAt: Date; recordedBySession?: string };
 }) {
   try {
@@ -87,6 +97,8 @@ export async function administerBooking(id: string, action: {
   }catch(error){
     // Staff see the database's own reason ("Only a request awaiting review can be declined").
     if ((error as {code?: string})?.code === "HB400" && error instanceof Error) throw new InvalidBookingError(error.message);
+    const guard = (error as {code?: string})?.code === "P0001" && error instanceof Error ? PAYMENT_GUARD_MESSAGES.get(error.message) : undefined;
+    if (guard) throw new InvalidBookingError(guard);
     rethrowDatabaseRequest(error);
   }
 }

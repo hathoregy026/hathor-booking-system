@@ -1,27 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminPermission } from "./AdminAccessProvider";
 import { Bell, Lock, Moon, Sparkles, Sun } from "lucide-react";
 import { Accordion, AccordionSection } from "./Accordion";
+import { AdminSecurityPanel } from "./AdminSecurityPanel";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAdminTheme } from "./ThemeProvider";
 
-function CodeChip({ children }: { children: React.ReactNode }) {
-  return (
-    <code
-      className="rounded px-1.5 py-0.5 text-xs font-medium"
-      style={{
-        background: "color-mix(in srgb, var(--accent) 12%, transparent)",
-        color: "var(--accent)",
-      }}
-    >
-      {children}
-    </code>
-  );
-}
-
 export function AdminSettingsPanel() {
   const { theme } = useAdminTheme();
+  const canEditWebsite = useAdminPermission("website.view");
+  const canSeeBookings = useAdminPermission("bookings.view");
   const ThemeIcon = theme === "day" ? Sun : Moon;
 
   return (
@@ -29,7 +19,7 @@ export function AdminSettingsPanel() {
       <div>
         <h1 className="admin-page-title">Settings</h1>
         <p className="admin-page-subtitle">
-          System configuration, appearance, and admin access
+          System configuration, appearance, and account security
         </p>
       </div>
 
@@ -61,7 +51,7 @@ export function AdminSettingsPanel() {
           </div>
         </AccordionSection>
 
-        <AccordionSection
+        {canEditWebsite && <AccordionSection
           title="Preload screen"
           description="Welcome splash on the public site"
           icon={Sparkles}
@@ -83,19 +73,16 @@ export function AdminSettingsPanel() {
           </p>
         </AccordionSection>
 
+        }
         <AccordionSection
-          title="Admin access"
-          description="How the dashboard is protected"
+          title="Security"
+          description="Your sign-in, devices, password and recovery codes"
           icon={Lock}
         >
-          <p className="text-sm leading-relaxed text-muted">
-            Login is protected by the <CodeChip>ADMIN_PASSWORD</CodeChip>{" "}
-            environment variable. Update it in your <CodeChip>.env</CodeChip>{" "}
-            file and restart the server to change your password.
-          </p>
+          <AdminSecurityPanel />
         </AccordionSection>
 
-        <AccordionSection
+        {canSeeBookings && <AccordionSection
           title="Notifications"
           description="New booking alerts in the header"
           icon={Bell}
@@ -105,6 +92,7 @@ export function AdminSettingsPanel() {
             public site. Notifications refresh while you are logged in.
           </p>
         </AccordionSection>
+        }
       </Accordion>
     </div>
   );

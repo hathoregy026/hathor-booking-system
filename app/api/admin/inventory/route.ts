@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -6,7 +7,7 @@ import { lockVessel, expireHolds } from "@/lib/booking-engine";
 import { InvalidBookingError } from "@/lib/booking";
 import { readPublicJsonBody, requireIdempotencyKey } from "@/lib/public-api-security";
 import { handleRouteError } from "@/lib/api";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 const blockSchema = z.object({
   cruiseScheduleId: z.string().min(1).max(128),
   state: z.enum(["MANUAL_BLOCK","MAINTENANCE","CHARTER_BLOCK"]),
@@ -15,8 +16,10 @@ const blockSchema = z.object({
 }).strict();
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("availability.view");
+  if (denied) return denied;
   try {
-    if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
+    if (!(await adminIdentityFromRequest(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const scheduleId = z.string().min(1).max(128).parse(request.nextUrl.searchParams.get("cruiseScheduleId"));
@@ -56,8 +59,10 @@ export async function GET(request: NextRequest) {
   } catch (error) { return handleRouteError(error); }
 }
 export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("availability.manage");
+  if (denied) return denied;
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     const blockKey = requireIdempotencyKey(request);
     const input = blockSchema.parse(await readPublicJsonBody(request));
     const result = await prisma.$transaction(async tx => {
@@ -78,8 +83,10 @@ export async function POST(request: NextRequest) {
   } catch (error) { return handleRouteError(error); }
 }
 export async function DELETE(request: NextRequest) {
+  const denied = await adminApiGuard("availability.manage");
+  if (denied) return denied;
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     const { blockKey } = z.object({ blockKey: z.string().min(16).max(128) }).strict().parse(await readPublicJsonBody(request));
     const result = await prisma.$transaction(async tx => {
       await lockVessel(tx);

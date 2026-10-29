@@ -51,7 +51,7 @@ export const GUIDE_VOYAGES: GuideVoyage[] = HATHOR_CRUISES.map((cruise) => {
 const byNights = (nights: number) =>
   GUIDE_VOYAGES.find((voyage) => voyage.nights === nights);
 
-function priceAnswer(): string {
+export function guidePriceAnswer(formatPrice: (cents: number) => string = usd): string {
   const three = byNights(3);
   const four = byNights(4);
   const seven = byNights(7);
@@ -59,9 +59,9 @@ function priceAnswer(): string {
     return "Prices are per cabin for the whole voyage, with taxes and service charges included.";
   }
   return (
-    `Cabins start from ${usd(three.fromCents)} for three nights from Aswan to Luxor, ` +
-    `${usd(four.fromCents)} for four nights from Luxor to Aswan and ` +
-    `${usd(seven.fromCents)} for the seven-night round trip. Prices are per cabin for ` +
+    `Cabins start from ${formatPrice(three.fromCents)} for three nights from Aswan to Luxor, ` +
+    `${formatPrice(four.fromCents)} for four nights from Luxor to Aswan and ` +
+    `${formatPrice(seven.fromCents)} for the seven-night round trip. Prices are per cabin for ` +
     "the whole voyage, with taxes and service charges included; suites and Royal Suites are priced above the cabins."
   );
 }
@@ -70,6 +70,7 @@ export const GUIDE_INTRO =
   "A dahabiya Nile cruise travels the river the traditional way: a sailing boat, a handful of guests, and the Nile between Luxor and Aswan at an unhurried pace. Hathor carries 32 guests in twelve cabins and suites, so she moors at quiet banks the floating hotels sail past.";
 
 export type GuideQuestion = {
+  kind?: "price";
   question: string;
   answer: string;
   /** optional onward link, shown on the page only */
@@ -88,7 +89,8 @@ export const GUIDE_FAQ: GuideQuestion[] = [
   },
   {
     question: "How much does a dahabiya Nile cruise on Hathor cost?",
-    answer: priceAnswer(),
+    kind: "price",
+    answer: guidePriceAnswer(),
     link: { href: "/cruises-list", label: "Sailing dates and prices" },
   },
   {

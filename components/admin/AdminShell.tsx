@@ -7,11 +7,17 @@ import { AdminBottomNav } from "./AdminBottomNav";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { ToastProvider } from "./ToastProvider";
+import { useAdminAccess } from "./AdminAccessProvider";
+import { adminPageRequirement, hasAdminPermission } from "@/lib/admin-permissions";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 
 function AdminShellInner({ children }: { children: React.ReactNode }) {
   const { theme } = useAdminTheme();
   const pathname = usePathname();
+  const access = useAdminAccess();
+  const requirement = adminPageRequirement(pathname);
+  const hasScopedWrite = (requirement === "website.view" && ((pathname === "/admin/website-text" && hasAdminPermission(access, "website.text")) || (pathname === "/admin/images" && hasAdminPermission(access, "website.images")))) || (requirement === "bookings.view" && hasAdminPermission(access, "bookings.accept")) || (requirement === "inbox.view" && hasAdminPermission(access, "inbox.send"));
+  const readOnly = !hasScopedWrite && !!requirement?.endsWith(".view") && !hasAdminPermission(access, requirement.replace(".view", ".manage") as import("@/lib/admin-permissions").AdminPermission);
   const [menuOpenForPath, setMenuOpenForPath] = useState<string | null>(null);
   const mobileMenuOpen = menuOpenForPath === pathname;
 
@@ -84,7 +90,7 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
      *
      * `clip` contains overflow without establishing a scroll container.
      */
-    <div className="admin-shell min-h-screen" data-theme={theme}>
+    <div className="admin-shell min-h-screen" data-theme={theme} data-emails-workspace={pathname === "/admin/inbox" || undefined}>
       <div className="admin-shell__glow" aria-hidden />
 
       <Sidebar
@@ -112,6 +118,7 @@ function AdminShellInner({ children }: { children: React.ReactNode }) {
             bottom pad that clears the phone bottom-nav *plus* the iOS home
             indicator via env(safe-area-inset-bottom). */}
         <main className="admin-main mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+          {readOnly && <p role="status" className="mb-6 rounded border border-[var(--border)] px-4 py-3 text-sm text-muted">View access · Your role can read this section but cannot save changes or send messages.</p>}
           {children}
         </main>
       </div>

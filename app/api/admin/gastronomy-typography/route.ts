@@ -9,7 +9,7 @@ import { adminApiGuard } from "@/lib/admin-server-auth";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.view");
   if (denied) return denied;
 
   try {
@@ -24,7 +24,7 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.manage");
   if (denied) return denied;
 
   try {

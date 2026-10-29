@@ -57,6 +57,13 @@ export const ModelName = {
   TicketType: 'TicketType',
   SailingPrice: 'SailingPrice',
   Booking: 'Booking',
+  BookingEmailThread: 'BookingEmailThread',
+  BookingMessage: 'BookingMessage',
+  InboxMessage: 'InboxMessage',
+  DashboardEmailDeletion: 'DashboardEmailDeletion',
+  DashboardEmailPlacement: 'DashboardEmailPlacement',
+  DashboardNotificationSeen: 'DashboardNotificationSeen',
+  MailAttachmentDownload: 'MailAttachmentDownload',
   ApiRateLimit: 'ApiRateLimit',
   BookingRoom: 'BookingRoom',
   SailingSector: 'SailingSector',
@@ -69,9 +76,15 @@ export const ModelName = {
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
   AdminProfile: 'AdminProfile',
+  AdminUser: 'AdminUser',
+  AdminSession: 'AdminSession',
+  AdminRecoveryCode: 'AdminRecoveryCode',
+  AdminAuthEvent: 'AdminAuthEvent',
   EmailTemplate: 'EmailTemplate',
   SiteImage: 'SiteImage',
-  SiteSetting: 'SiteSetting'
+  SiteSetting: 'SiteSetting',
+  AdminRole: 'AdminRole',
+  AdminInvitation: 'AdminInvitation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -191,6 +204,7 @@ export const BookingScalarFieldEnum = {
   guestEmailStatus: 'guestEmailStatus',
   adminEmailStatus: 'adminEmailStatus',
   totalPriceCents: 'totalPriceCents',
+  cardSurchargeCents: 'cardSurchargeCents',
   currency: 'currency',
   priceSnapshotAt: 'priceSnapshotAt',
   deletedAt: 'deletedAt',
@@ -199,6 +213,110 @@ export const BookingScalarFieldEnum = {
 } as const
 
 export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const BookingEmailThreadScalarFieldEnum = {
+  bookingId: 'bookingId',
+  replyToken: 'replyToken',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingEmailThreadScalarFieldEnum = (typeof BookingEmailThreadScalarFieldEnum)[keyof typeof BookingEmailThreadScalarFieldEnum]
+
+
+export const BookingMessageScalarFieldEnum = {
+  folder: 'folder',
+  screeningReasons: 'screeningReasons',
+  id: 'id',
+  bookingId: 'bookingId',
+  direction: 'direction',
+  status: 'status',
+  sender: 'sender',
+  recipient: 'recipient',
+  subject: 'subject',
+  bodyText: 'bodyText',
+  resendEmailId: 'resendEmailId',
+  internetMessageId: 'internetMessageId',
+  attachments: 'attachments',
+  senderMatchesGuest: 'senderMatchesGuest',
+  recordedBySession: 'recordedBySession',
+  notificationSentAt: 'notificationSentAt',
+  notificationLeaseUntil: 'notificationLeaseUntil',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingMessageScalarFieldEnum = (typeof BookingMessageScalarFieldEnum)[keyof typeof BookingMessageScalarFieldEnum]
+
+
+export const InboxMessageScalarFieldEnum = {
+  folder: 'folder',
+  screeningReasons: 'screeningReasons',
+  id: 'id',
+  resendEmailId: 'resendEmailId',
+  mailboxId: 'mailboxId',
+  origin: 'origin',
+  direction: 'direction',
+  status: 'status',
+  sender: 'sender',
+  recipient: 'recipient',
+  correspondentName: 'correspondentName',
+  subject: 'subject',
+  bodyText: 'bodyText',
+  bodyHtml: 'bodyHtml',
+  requestFingerprint: 'requestFingerprint',
+  recordedBySession: 'recordedBySession',
+  sendLeaseUntil: 'sendLeaseUntil',
+  attachments: 'attachments',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type InboxMessageScalarFieldEnum = (typeof InboxMessageScalarFieldEnum)[keyof typeof InboxMessageScalarFieldEnum]
+
+
+export const DashboardEmailDeletionScalarFieldEnum = {
+  source: 'source',
+  messageId: 'messageId',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DashboardEmailDeletionScalarFieldEnum = (typeof DashboardEmailDeletionScalarFieldEnum)[keyof typeof DashboardEmailDeletionScalarFieldEnum]
+
+
+export const DashboardEmailPlacementScalarFieldEnum = {
+  source: 'source',
+  messageId: 'messageId',
+  mailboxId: 'mailboxId',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DashboardEmailPlacementScalarFieldEnum = (typeof DashboardEmailPlacementScalarFieldEnum)[keyof typeof DashboardEmailPlacementScalarFieldEnum]
+
+
+export const DashboardNotificationSeenScalarFieldEnum = {
+  kind: 'kind',
+  source: 'source',
+  messageId: 'messageId',
+  seenAt: 'seenAt'
+} as const
+
+export type DashboardNotificationSeenScalarFieldEnum = (typeof DashboardNotificationSeenScalarFieldEnum)[keyof typeof DashboardNotificationSeenScalarFieldEnum]
+
+
+export const MailAttachmentDownloadScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  messageId: 'messageId',
+  attachmentId: 'attachmentId',
+  sessionHash: 'sessionHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  removedAt: 'removedAt',
+  saveMethod: 'saveMethod'
+} as const
+
+export type MailAttachmentDownloadScalarFieldEnum = (typeof MailAttachmentDownloadScalarFieldEnum)[keyof typeof MailAttachmentDownloadScalarFieldEnum]
 
 
 export const ApiRateLimitScalarFieldEnum = {
@@ -351,6 +469,74 @@ export const AdminProfileScalarFieldEnum = {
 export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
 
 
+export const AdminUserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  displayName: 'displayName',
+  passwordHash: 'passwordHash',
+  passwordChangedAt: 'passwordChangedAt',
+  totpSecretEnc: 'totpSecretEnc',
+  totpPendingEnc: 'totpPendingEnc',
+  totpLastStep: 'totpLastStep',
+  mfaEnrolledAt: 'mfaEnrolledAt',
+  disabledAt: 'disabledAt',
+  lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  permissions: 'permissions',
+  mailboxViewIds: 'mailboxViewIds',
+  mailboxSendIds: 'mailboxSendIds',
+  isOwner: 'isOwner',
+  roleId: 'roleId'
+} as const
+
+export type AdminUserScalarFieldEnum = (typeof AdminUserScalarFieldEnum)[keyof typeof AdminUserScalarFieldEnum]
+
+
+export const AdminSessionScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  stage: 'stage',
+  rememberBrowser: 'rememberBrowser',
+  createdAt: 'createdAt',
+  lastSeenAt: 'lastSeenAt',
+  idleExpiresAt: 'idleExpiresAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedReason: 'revokedReason',
+  mfaAttempts: 'mfaAttempts',
+  ip: 'ip',
+  userAgent: 'userAgent'
+} as const
+
+export type AdminSessionScalarFieldEnum = (typeof AdminSessionScalarFieldEnum)[keyof typeof AdminSessionScalarFieldEnum]
+
+
+export const AdminRecoveryCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminRecoveryCodeScalarFieldEnum = (typeof AdminRecoveryCodeScalarFieldEnum)[keyof typeof AdminRecoveryCodeScalarFieldEnum]
+
+
+export const AdminAuthEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  detail: 'detail',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminAuthEventScalarFieldEnum = (typeof AdminAuthEventScalarFieldEnum)[keyof typeof AdminAuthEventScalarFieldEnum]
+
+
 export const EmailTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -392,12 +578,41 @@ export const SiteSettingScalarFieldEnum = {
 export type SiteSettingScalarFieldEnum = (typeof SiteSettingScalarFieldEnum)[keyof typeof SiteSettingScalarFieldEnum]
 
 
+export const AdminRoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  permissions: 'permissions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminRoleScalarFieldEnum = (typeof AdminRoleScalarFieldEnum)[keyof typeof AdminRoleScalarFieldEnum]
+
+
+export const AdminInvitationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AdminInvitationScalarFieldEnum = (typeof AdminInvitationScalarFieldEnum)[keyof typeof AdminInvitationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -414,4 +629,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

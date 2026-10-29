@@ -1,3 +1,5 @@
+import { z } from "zod";
+import { assertTrustedPublicJsonRequest, readPublicJsonBody } from "@/lib/public-api-security";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { PUBLIC_CMS_CACHE_TAG } from "@/lib/public-cms-bundle";
@@ -39,7 +41,7 @@ const REVALIDATE_PATHS = [
 ] as const;
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.view");
   if (denied) return denied;
 
   try {
@@ -69,14 +71,12 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.text");
   if (denied) return denied;
 
   try {
-    const body = (await request.json()) as {
-      settings?: unknown;
-      device?: unknown;
-    };
+    assertTrustedPublicJsonRequest(request);
+    const body = z.object({ settings: z.record(z.string(), z.unknown()), device: z.enum(["desktop", "phone"]).optional() }).strict().parse(await readPublicJsonBody(request));
     const device = isAdminDevicePreview(body.device) ? body.device : "desktop";
     const settings = parseWebsiteText(body.settings);
     const current =

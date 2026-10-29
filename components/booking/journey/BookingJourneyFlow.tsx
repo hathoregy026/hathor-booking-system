@@ -3,9 +3,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useCurrency } from "@/components/public/CurrencyProvider";
+import { InquiryVerification } from "@/components/pages/InquiryVerification";
 import { paymentSchedule } from "@/lib/payment-schedule";
 import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
+import { roomPriceUnit } from "@/lib/room-price-unit";
+import { cardSurchargeCents, withCardSurcharge } from "@/lib/card-surcharge";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PhysicalRoomType, RequestedRoom } from "@/lib/physical-inventory";
 import { JourneyBand, JourneyProgress, PanelHead, ScrollCue, StepBanner, StepGuide, type JourneyStep } from "./JourneyChrome";
@@ -96,6 +100,7 @@ const successUrl = (bookingId: string, token: string, locale: PublicLocale) =>
   localizedHref(`/booking/success?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`, locale);
 
 export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
+  const { money } = useCurrency();
   const router = useRouter();
   const t = useBookingCopy();
   /** Opens the reminder of exactly what is missing on Details & Payment. */
@@ -116,6 +121,10 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [alert, setAlert] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [holdVerification, setHoldVerification] = useState("");
+  const [requestVerification, setRequestVerification] = useState("");
+  const [verificationVersion, setVerificationVersion] = useState(0);
+  const confirmationInFlight = useRef(false);
   /** Phone and tablet: the date or party sheet open on the journey step. */
   const [sheet, setSheet] = useState<"dates" | "guests" | null>(null);
   const restored = useRef(false);
@@ -153,6 +162,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
   // A screen that lost its sailing (closed date, changed voyage) falls back to the journey.
   const view: JourneyStep = step > 1 && !loadingSailings && !sailing ? 1 : step;
+
+  // Step 3 is where the guest chooses how to pay: Visa / card owes the quote plus the online card surcharge.
+  const surchargeCents = view === 3 && form.paymentMethod === "VISA" && totalCents !== null ? cardSurchargeCents(totalCents) : 0;
+  const payableCents = totalCents === null ? null : totalCents + surchargeCents;
+  const payableSchedule = useMemo(
+    () => (totalCents === null ? schedule : withCardSurcharge(schedule, totalCents, surchargeCents)),
+    [schedule, totalCents, surchargeCents],
+  );
 
   const phoneToSend = internationalPhone(form.phone, findCountry(form.countryCode)?.dial ?? null);
 
@@ -374,12 +391,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     }
   }
 
-  async function requestHold(key: string, requested: RequestedRoom[]): Promise<Hold> {
+  async function requestHold(key: string, requested: RequestedRoom[], turnstileToken: string): Promise<Hold> {
     return readJson<Hold>(
       await fetch("/api/bookings/hold", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": key },
-        body: JSON.stringify({ cruiseScheduleId: scheduleId, rooms: requested }),
+        body: JSON.stringify({ cruiseScheduleId: scheduleId, rooms: requested, turnstileToken }),
       }),
       translate,
     );
@@ -440,7 +457,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   async function confirmRequest() {
-    if (!sailing) return;
+    if (!sailing || busy || confirmationInFlight.current) return;
     if (preferredRoomId && !rooms.some(room => room.roomId === preferredRoomId)) {
       setAlert(t.alerts.placeInPreferred(preferredRoomId, false));
       setStep(2);
@@ -459,6 +476,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       return;
     }
 
+    if (!holdVerification || !requestVerification) {
+      setAlert("Please complete the security check before sending your booking request.");
+      reveal(".hj-booking-verification", "center");
+      return;
+    }
+    confirmationInFlight.current = true;
     setBusy(true);
     setAlert(null);
     const shownTotal = totalCents;
@@ -475,7 +498,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
 
     try {
       // The cabins are held only now, with the guest's details already complete.
-      held = await requestHold(current.key, rooms);
+      held = await requestHold(current.key, rooms, holdVerification);
       if (["REQUESTED", "CONFIRMED"].includes(held.status)) {
         clearAttempt();
         router.push(successUrl(held.bookingId, held.accessToken, t.locale));
@@ -491,7 +514,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         clearAttempt();
         setAttempt(null);
         await refreshForSailing().catch(() => null);
-        setAlert(t.alerts.totalChanged(t.money(held.totalPriceCents)));
+        setAlert(t.alerts.totalChanged(money(held.totalPriceCents)));
         setBusy(false);
         return;
       }
@@ -509,6 +532,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           body: JSON.stringify({
             bookingId: held.bookingId,
             accessToken: held.accessToken,
+            turnstileToken: requestVerification,
             firstName: form.firstName.trim(),
             lastName: form.lastName.trim(),
             email: form.email.trim(),
@@ -551,6 +575,11 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         setAlert(t.alerts.sendFailed(reason));
       }
       setBusy(false);
+    } finally {
+      confirmationInFlight.current = false;
+      setHoldVerification("");
+      setRequestVerification("");
+      setVerificationVersion(current => current + 1);
     }
   }
 
@@ -576,11 +605,12 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
   }
 
   /** The lowest open cabin rate: for the chosen sailing, or across the dates on offer. */
-  const fromCents = useMemo(() => {
+  const fromRate = useMemo(() => {
     const pool = sailing ? [sailing] : sailings;
-    const rates = pool.flatMap(entry => entry.types.filter(type => type.availableCabins > 0).map(type => type.priceCents));
-    return rates.length > 0 ? Math.min(...rates) : null;
+    const rates = pool.flatMap(entry => entry.types.filter(type => type.availableCabins > 0));
+    return rates.sort((a, b) => a.priceCents - b.priceCents)[0] ?? null;
   }, [sailing, sailings]);
+  const fromCents = fromRate?.priceCents ?? null;
   const waitingCount = unplacedGuests(arrangement, guests).length;
   const namedCount = guests.filter(guest => (names[guest.id] ?? "").trim()).length;
   const methodLabel = t.details.methodShort(form.paymentMethod === "BANK_TRANSFER");
@@ -623,14 +653,14 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       adults={adults}
       childCount={children}
       cabins={cabins}
-      totalCents={totalCents}
+      totalCents={payableCents}
       step={view}
       onJump={jump}
       payment={
         view === 3
           ? {
               label: dt.methodLong(form.paymentMethod === "BANK_TRANSFER"),
-              sub: dt.paymentSub,
+              sub: dt.paymentSub(form.paymentMethod === "BANK_TRANSFER"),
               onEdit: () => reveal("#hj-m-payment"),
             }
           : null
@@ -652,7 +682,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       adults={adults}
       childCount={children}
       cabins={cabins}
-      totalCents={totalCents}
+      totalCents={payableCents}
       step={view}
       onJump={jump}
     />
@@ -763,8 +793,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             {summary}
             <ActionBar
               label={sailing ? j.departs(t.shortDate(sailing.departureTime)) : voyage.title}
-              amount={fromCents === null ? (loadingSailings ? j.loadingDates : j.noOpenDates) : t.calendar.from(t.money(fromCents))}
-              sub={fromCents === null ? voyage.route : j.perCabin}
+              amount={fromCents === null ? (loadingSailings ? j.loadingDates : j.noOpenDates) : t.calendar.from(money(fromCents))}
+              sub={fromCents === null ? voyage.route : j.perUnitVoyage(roomPriceUnit(fromRate?.roomType, t.locale))}
               action={scheduleId ? j.continueShort : j.chooseDate}
               ariaLabel={scheduleId ? j.continueLong : j.chooseDepartureDate}
               busy={busy}
@@ -818,7 +848,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               mobileBar={
                 <ActionBar
                   label={totalLabel}
-                  amount={totalCents === null ? t.suites.noCabinYet : t.money(totalCents)}
+                  amount={payableCents === null ? t.suites.noCabinYet : money(payableCents)}
                   sub={partySub}
                   note={issues.length > 0 && waitingCount === 0 ? issues[0] : null}
                   action={issues.length === 0 ? j.continueShort : waitingCount > 0 ? t.suites.placeGuests : t.suites.checkCabins}
@@ -839,7 +869,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
               {alert ? <p className="hj-alert" role="alert">{alert}</p> : null}
               <DetailsPaymentScreen
                 cabins={cabins}
-                schedule={schedule}
+                schedule={payableSchedule}
+                totalCents={totalCents}
                 form={form}
                 onForm={patchForm}
                 names={names}
@@ -848,14 +879,18 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
                 busy={busy}
                 onBack={() => jump(2)}
                 onConfirm={() => void confirmRequest()}
+                verification={<>
+                  <InquiryVerification action="booking_hold" onToken={setHoldVerification} resetVersion={verificationVersion} />
+                  <InquiryVerification action="booking_request" appearance="interaction-only" onToken={setRequestVerification} resetVersion={verificationVersion} />
+                </>}
               />
               {summary}
             </section>
             {rail}
             <ActionBar
               label={totalLabel}
-              amount={totalCents === null ? "—" : t.money(totalCents)}
-              sub={partySub}
+              amount={payableCents === null ? "—" : money(payableCents)}
+              sub={surchargeCents > 0 ? dt.withSurcharge(partySub) : partySub}
               action={dt.barConfirm}
               busy={busy}
               busyLabel={dt.barSending}
@@ -875,8 +910,8 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             adults={adults}
             childCount={children}
             cabins={cabins}
-            totalCents={totalCents}
-            pendingTotal={view === 1 ? (fromCents === null ? j.chooseDate : t.calendar.from(t.money(fromCents))) : t.suites.placeYourGuests}
+            totalCents={payableCents}
+            pendingTotal={view === 1 ? (fromCents === null ? j.chooseDate : t.calendar.from(money(fromCents))) : t.suites.placeYourGuests}
             onEdit={view > 1 ? () => jump((view - 1) as JourneyStep) : undefined}
             details={rail}
             busy={busy}

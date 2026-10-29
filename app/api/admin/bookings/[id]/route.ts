@@ -1,14 +1,17 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { handleRouteError } from "@/lib/api";
-import { applyStaffBookingAction, assertBookingAdmin, bookingAdminSession } from "@/lib/booking-admin-api";
+import { applyStaffBookingAction, assertBookingAdmin } from "@/lib/booking-admin-api";
 import { readPublicJsonBody } from "@/lib/public-api-security";
 import { fetchAdminBookingById } from "@/lib/admin-bookings-fetch";
 
 export async function PATCH(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
   try {
-    assertBookingAdmin(request);
+    const admin = await assertBookingAdmin(request);
     const { id } = await context.params;
-    const result = await applyStaffBookingAction(id, await readPublicJsonBody(request), bookingAdminSession(request));
+    const result = await applyStaffBookingAction(id, await readPublicJsonBody(request), admin.sessionId, {}, admin);
     const booking = await fetchAdminBookingById(id);
     return NextResponse.json({ booking, email: result.email ?? null });
   } catch (error) { return handleRouteError(error); }

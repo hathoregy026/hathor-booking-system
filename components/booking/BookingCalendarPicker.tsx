@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { addMonths, endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { DayPicker, type DateRange, type DayButtonProps } from "react-day-picker";
 import type { CruiseCalendarDay } from "@/lib/cruise-calendar";
-import { calendarDateToUtcIso, formatPrice } from "@/lib/client-dates";
+import { calendarDateToUtcIso } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
 
 type BookingCalendarPickerProps = {
@@ -31,6 +32,7 @@ function HathorCalendarDayButton({
   day,
   ...buttonProps
 }: DayButtonProps & { dayMeta: Map<string, CruiseCalendarDay> }) {
+  const { formatPrice } = useCurrency();
   const dateKey = localDateKey(day.date);
   const meta = dayMeta.get(dateKey);
 

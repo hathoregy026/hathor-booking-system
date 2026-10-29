@@ -22,6 +22,7 @@ import {
   type PaymentStage,
 } from "@/components/booking/journey/model";
 import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
+import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { COUNTRY_NAMES_IT } from "@/lib/i18n/countries-it";
@@ -155,6 +156,7 @@ export type BookingCopy = {
     loadingDates: string;
     noOpenDates: string;
     perCabin: string;
+    perUnitVoyage: (unit: string) => string;
     barContinueLabel: string;
     blocker: string;
     tabs: { voyage: string; date: string; review: string; toChoose: string; nothingHeld: string };
@@ -202,6 +204,7 @@ export type BookingCopy = {
     selected: string;
     select: string;
     perCabinVoyage: string;
+    entireVoyage: string;
     upTo: (capacity: number) => string;
     bed: Partial<Record<PhysicalRoomType, string>>;
     note: Record<PhysicalRoomType, string>;
@@ -333,6 +336,8 @@ export type BookingCopy = {
     paymentLede: string;
     card: string;
     cardNote: string;
+    /** Under the payment choice when card is selected; `breakdown` is "quote + surcharge = total". */
+    surchargeNote: (breakdown: string | null) => string;
     bank: string;
     bankNote: string;
     schedule: string;
@@ -363,7 +368,8 @@ export type BookingCopy = {
     };
     methodShort: (bank: boolean) => string;
     methodLong: (bank: boolean) => string;
-    paymentSub: string;
+    paymentSub: (bank: boolean) => string;
+    withSurcharge: (partySub: string) => string;
     changePayment: string;
     reviewTitle: string;
     reviewLede: string;
@@ -423,6 +429,8 @@ export type BookingCopy = {
   /* ---------- payment plan ---------- */
   plan: {
     rules: Record<1 | 2 | 3, string>;
+    /** Hathor set this booking's first payment and balance date itself. */
+    custom: string;
     names: Record<1 | 2 | 3, readonly string[]>;
     invoice: (index: number) => string;
     paid: string;
@@ -481,6 +489,7 @@ export type BookingCopy = {
     route: (route: string) => string;
     total: string;
     taxes: string;
+    surchargeTaxes: (amount: string) => string;
     timeline: string;
     here: string;
     concierge: string;
@@ -652,6 +661,7 @@ const EN: BookingCopy = {
     loadingDates: "Loading dates…",
     noOpenDates: "No open dates",
     perCabin: "per cabin, entire voyage",
+    perUnitVoyage: unit => `${unit}, entire voyage`,
     barContinueLabel: "Continue to guests and suites",
     blocker: "Choose a sailing date first: the open dates are marked in the calendar.",
     tabs: { voyage: "Voyage", date: "Date", review: "Review", toChoose: "To choose", nothingHeld: "Nothing held yet" },
@@ -699,6 +709,7 @@ const EN: BookingCopy = {
     selected: "Selected",
     select: "Select",
     perCabinVoyage: "per cabin · entire voyage",
+    entireVoyage: "entire voyage",
     upTo: capacity => `Up to ${capacity} guests`,
     bed: { "Luxury King Cabin": "King bed", "Luxury Twin Cabin": "Twin beds" },
     note: {
@@ -891,9 +902,11 @@ const EN: BookingCopy = {
     paymentLede:
       "Choose how you would prefer to pay. Invoice and payment instructions will follow from Hathor Reservations. No card details are collected on this website.",
     card: "Visa / card payment",
-    cardNote: "Preferred method only. Hathor sends the invoice later — no card number is stored here.",
+    cardNote: `Adds a ${CARD_SURCHARGE_PERCENT}% online payment surcharge. Hathor sends the invoice later — no card number is stored here.`,
+    surchargeNote: breakdown =>
+      `Online card payments carry a ${CARD_SURCHARGE_PERCENT}% surcharge, already added to your total${breakdown ? `: ${breakdown}` : ""}. Bank transfer adds nothing.`,
     bank: "Bank transfer",
-    bankNote: "Pay via international bank transfer using the instructions on your invoice.",
+    bankNote: "No surcharge. Pay via international bank transfer using the instructions on your invoice.",
     schedule: "Payment schedule",
     scheduleNote:
       "After sending your reservation request, Hathor Reservations will review the details and send the invoice with payment instructions. Your cabins are reserved for you the moment you send this request.",
@@ -923,7 +936,11 @@ const EN: BookingCopy = {
     },
     methodShort: bank => (bank ? "Bank transfer" : "Card"),
     methodLong: bank => (bank ? "Bank transfer" : "Visa / card payment"),
-    paymentSub: "Invoice and payment instructions follow by email.",
+    paymentSub: bank =>
+      bank
+        ? "Invoice and payment instructions follow by email."
+        : `A ${CARD_SURCHARGE_PERCENT}% card surcharge is added when you pay. Invoice and payment instructions follow by email.`,
+    withSurcharge: partySub => `${partySub} · incl. ${CARD_SURCHARGE_PERCENT}% card surcharge`,
     changePayment: "Change payment preference",
     reviewTitle: "Review your voyage",
     reviewLede: "Check everything once more, then confirm your request below.",
@@ -985,6 +1002,7 @@ const EN: BookingCopy = {
   },
 
   plan: {
+    custom: "Hathor set this schedule for your booking: the first invoice, then the remaining balance by the date shown.",
     rules: {
       3: "Booked more than 60 days before departure: 30% with the first invoice, 20% by 60 days before, and the last 50% by 45 days before.",
       2: "Booked 46 to 60 days before departure: 50% with the first invoice and the other 50% by 45 days before.",
@@ -1057,6 +1075,7 @@ const EN: BookingCopy = {
     route: route => route,
     total: "Total booking amount",
     taxes: "Taxes and service charges included.",
+    surchargeTaxes: amount => `Includes the ${CARD_SURCHARGE_PERCENT}% online card surcharge of ${amount}. Taxes and service charges included.`,
     timeline: "Payment timeline",
     here: "We are here for you",
     concierge: "Our concierge team is always happy to assist you with any questions.",
@@ -1114,6 +1133,8 @@ const itLongDate = (iso: string) => {
   return `${WEEKDAYS_IT[weekday]} ${day} ${MONTHS_IT[month]} ${year}`;
 };
 /** "USD 7.000", "USD 7.000,50": US dollars, Italian separators. */
+/** "2,5%": the card surcharge with an Italian decimal comma. */
+const SURCHARGE_IT = `${String(CARD_SURCHARGE_PERCENT).replace(".", ",")}%`;
 const itMoney = (cents: number) =>
   `USD ${new Intl.NumberFormat("en-US", {
     minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
@@ -1155,6 +1176,7 @@ const IT: BookingCopy = {
   stageLabel: stage => {
     if (stage.milestone === "INITIAL") return "All’invio della fattura da parte di Hathor";
     if (!stage.dueAt) return stage.milestone;
+    if (stage.milestone === "BALANCE") return `Entro ${itLongDate(stage.dueAt)}`;
     const days = stage.milestone === "DAY_60" ? 60 : 45;
     return `Entro ${itLongDate(stage.dueAt)} · ${days} giorni prima della partenza`;
   },
@@ -1273,6 +1295,7 @@ const IT: BookingCopy = {
     loadingDates: "Caricamento delle date…",
     noOpenDates: "Nessuna data disponibile",
     perCabin: "per cabina, intero viaggio",
+    perUnitVoyage: unit => `${unit}, intero viaggio`,
     barContinueLabel: "Prosegui con ospiti e suite",
     blocker: "Scelga prima una data di partenza: le date disponibili sono evidenziate nel calendario.",
     tabs: { voyage: "Viaggio", date: "Data", review: "Riepilogo", toChoose: "Da scegliere", nothingHeld: "Nulla di bloccato" },
@@ -1321,6 +1344,7 @@ const IT: BookingCopy = {
     selected: "Selezionata",
     select: "Seleziona",
     perCabinVoyage: "per cabina · intero viaggio",
+    entireVoyage: "intero viaggio",
     upTo: capacity => `Fino a ${capacity} ospiti`,
     bed: { "Luxury King Cabin": "Letto king size", "Luxury Twin Cabin": "Letti singoli" },
     note: {
@@ -1516,9 +1540,11 @@ const IT: BookingCopy = {
     paymentLede:
       "Scelga come preferisce pagare. Fattura e istruzioni di pagamento Le saranno inviate dal nostro ufficio prenotazioni. Su questo sito non vengono raccolti dati della carta.",
     card: "Pagamento con Visa / carta",
-    cardNote: "Solo come metodo preferito. Hathor invierà la fattura in seguito: qui non viene memorizzato alcun numero di carta.",
+    cardNote: `Prevede un supplemento del ${SURCHARGE_IT} per il pagamento online. Hathor invierà la fattura in seguito: qui non viene memorizzato alcun numero di carta.`,
+    surchargeNote: breakdown =>
+      `I pagamenti online con carta prevedono un supplemento del ${SURCHARGE_IT}, già aggiunto al totale${breakdown ? `: ${breakdown}` : ""}. Il bonifico bancario non prevede supplementi.`,
     bank: "Bonifico bancario",
-    bankNote: "Pagamento tramite bonifico internazionale, seguendo le istruzioni riportate in fattura.",
+    bankNote: "Nessun supplemento. Pagamento tramite bonifico internazionale, seguendo le istruzioni riportate in fattura.",
     schedule: "Piano dei pagamenti",
     scheduleNote:
       "Dopo l’invio della richiesta di prenotazione, il nostro ufficio prenotazioni ne verificherà i dettagli e Le invierà la fattura con le istruzioni di pagamento. Le cabine vengono riservate a Suo nome nel momento in cui invia questa richiesta.",
@@ -1529,7 +1555,7 @@ const IT: BookingCopy = {
       "Aperitivo di benvenuto all’arrivo",
       "Formula Soft All-Inclusive: pasti e bevande analcoliche",
       "Biglietti d’ingresso per le visite previste dall’itinerario",
-      "Guida egittologa professionista",
+      "Guida egittologa",
       "Servizio lavanderia e rifornimento giornaliero del minibar",
       "Wi-Fi, servizio in camera, macchina del caffè e bollitore per il tè",
     ],
@@ -1558,7 +1584,11 @@ const IT: BookingCopy = {
     },
     methodShort: bank => (bank ? "Bonifico" : "Carta"),
     methodLong: bank => (bank ? "Bonifico bancario" : "Pagamento con Visa / carta"),
-    paymentSub: "Fattura e istruzioni di pagamento Le arriveranno via email.",
+    paymentSub: bank =>
+      bank
+        ? "Fattura e istruzioni di pagamento Le arriveranno via email."
+        : `Al pagamento si aggiunge un supplemento del ${SURCHARGE_IT} per la carta. Fattura e istruzioni di pagamento Le arriveranno via email.`,
+    withSurcharge: partySub => `${partySub} · incl. supplemento carta del ${SURCHARGE_IT}`,
     changePayment: "Cambia la preferenza di pagamento",
     reviewTitle: "Riepilogo del Suo viaggio",
     reviewLede: "Controlli ancora una volta ogni dettaglio, poi confermi la richiesta qui sotto.",
@@ -1623,6 +1653,7 @@ const IT: BookingCopy = {
   },
 
   plan: {
+    custom: "Hathor ha stabilito questo piano per la Sua prenotazione: la prima fattura, poi il saldo entro la data indicata.",
     rules: {
       3: "Prenotazione a più di 60 giorni dalla partenza: 30% con la prima fattura, 20% entro 60 giorni dalla partenza e il restante 50% entro 45 giorni dalla partenza.",
       2: "Prenotazione tra 46 e 60 giorni dalla partenza: 50% con la prima fattura e il restante 50% entro 45 giorni dalla partenza.",
@@ -1708,6 +1739,7 @@ const IT: BookingCopy = {
     route: route => route.replace(/\bAswan\b/g, "Assuan"),
     total: "Importo totale della prenotazione",
     taxes: "Tasse e servizio inclusi.",
+    surchargeTaxes: amount => `Include il supplemento del ${SURCHARGE_IT} per il pagamento online con carta, pari a ${amount}. Tasse e servizio inclusi.`,
     timeline: "Tempistica dei pagamenti",
     here: "Siamo a Sua disposizione",
     concierge: "Il nostro concierge è sempre lieto di rispondere a ogni Sua domanda.",

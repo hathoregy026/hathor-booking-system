@@ -15,7 +15,8 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 import { homeCarouselImageName } from "@/lib/home-carousel-images";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { withLivePrices } from "@/lib/cabin-prices-shared";
 import { resolveAmenityCaption } from "@/components/pages/rooms/RoomAmenityIcon";
@@ -29,7 +30,6 @@ import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
 import { CRUISES_COPY, type CruisesCopy } from "@/lib/i18n/cruises-copy";
 import {
   amenityIn,
-  usdIn,
   voyageNameIn,
   weekdayIn,
   weekdayLabelIn,
@@ -233,8 +233,8 @@ function ListingAddButton({ item }: { item: ListingItem }) {
         item.roomName,
         voyageNameIn(locale, item.cruiseSlug, item.cruiseName),
       )}
-      variant="inline"
-      className="mr-btn mr-btn--outline mr-card__voyage"
+      variant="card"
+      className="mr-card__cart"
     />
   );
 }
@@ -243,6 +243,7 @@ export function MaskRevealPageContent() {
   const locale = usePublicLocale();
   const t = CRUISES_COPY[locale];
   const localHref = useLocalizedHref();
+  const { formatPrice } = useCurrency();
   const { pages } = useWebsiteText();
   const cruisesText = pages.cruises;
 
@@ -472,7 +473,7 @@ export function MaskRevealPageContent() {
           valueMax={priceRange[1]}
           onChange={setPriceRange}
           step={10000}
-          format={(n) => usdIn(locale, formatPrice(n))}
+          format={formatPrice}
           labels={{ min: t.minPrice, max: t.maxPrice }}
         />
       </div>
@@ -575,7 +576,10 @@ export function MaskRevealPageContent() {
                               </span>
                             ))}
                           </div>
-                          <ListingFavouriteButton item={item} />
+                          <div className="mr-card__tools">
+                            <ListingAddButton item={item} />
+                            <ListingFavouriteButton item={item} />
+                          </div>
                         </div>
 
                         <Link
@@ -601,10 +605,10 @@ export function MaskRevealPageContent() {
                                   {t.priceMeta(item.nights, item.days, item.roomType)}
                                 </p>
                                 <p className="mr-card__price">
-                                  {usdIn(locale, formatPrice(item.priceCents))}
+                                  {formatPrice(item.priceCents)}
+                                  <RoomPriceUnit roomType={item.roomType} locale={locale} />
                                 </p>
                               </div>
-                              <p className="mr-card__finish">{t.perCabin}</p>
                             </div>
 
                             <div className="mr-card__meta-row">
@@ -622,7 +626,6 @@ export function MaskRevealPageContent() {
                           <Link href={detailHref} className="mr-btn mr-btn--outline">
                             {t.viewDetails}
                           </Link>
-                          <ListingAddButton item={item} />
                           <BookNowTrigger className="mr-btn mr-btn--solid">
                             {t.bookNow}
                           </BookNowTrigger>

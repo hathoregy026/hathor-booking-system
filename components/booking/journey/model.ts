@@ -140,6 +140,7 @@ export function weekdayShort(iso: string): string {
 export function stageLabel(stage: PaymentStage): string {
   if (stage.milestone === "INITIAL") return "When Hathor sends your invoice";
   if (!stage.dueAt) return stage.milestone;
+  if (stage.milestone === "BALANCE") return `By ${longDate(stage.dueAt)}`;
   const days = stage.milestone === "DAY_60" ? 60 : 45;
   return `By ${longDate(stage.dueAt)} · ${days} days before departure`;
 }

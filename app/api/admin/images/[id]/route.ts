@@ -14,7 +14,7 @@ type RouteContext = { params: Promise<{ id: string }> };
 export const dynamic = "force-dynamic";
 
 export async function PUT(request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.images");
   if (denied) return denied;
 
   try {
@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.images");
   if (denied) return denied;
 
   try {
@@ -48,7 +48,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.images");
   if (denied) return denied;
 
   try {

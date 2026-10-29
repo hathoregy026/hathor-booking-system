@@ -10,6 +10,7 @@ import { BOOKING_COPY } from "@/lib/i18n/booking-copy";
 import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { JourneyProgress, StepBanner, StepGuide } from "@/components/booking/journey/JourneyChrome";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { VoyageBarFrame } from "@/components/booking/journey/VoyageRail";
 import { PaymentPlan } from "@/components/booking/journey/PaymentPlan";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
@@ -115,7 +116,7 @@ export async function BookingSuccess({ searchParams, locale }: { searchParams: B
             partyMain={guestSummary}
             partySub={details.roomType ? copy.cabinsTitle(details.roomType.split(", ").length) : t.cabinsToConfirm}
             totalLabel={t.booking(bookingCode(details.bookingId))}
-            totalValue={copy.money(details.totalPriceCents)}
+            totalValue={<CurrencyAmount cents={details.totalPriceCents} />}
             action={
               <Link href={localizedHref("/", locale)} className="hj-voyagebar__go">
                 {t.returnHome} <span aria-hidden>→</span>
@@ -234,8 +235,10 @@ export async function BookingSuccess({ searchParams, locale }: { searchParams: B
 
         <div className="hj-total-block">
           <span className="hj-total-block__label">{t.total}</span>
-          <div className="hj-total-block__amount">{copy.money(details.totalPriceCents)}</div>
-          <p className="hj-deposit__fine">{t.taxes}</p>
+          <div className="hj-total-block__amount"><CurrencyAmount cents={details.totalPriceCents} /></div>
+          <p className="hj-deposit__fine">
+            {details.cardSurchargeCents > 0 ? t.surchargeTaxes(copy.money(details.cardSurchargeCents)) : t.taxes}
+          </p>
         </div>
 
         <span className="hj-step-label">{t.timeline}</span>

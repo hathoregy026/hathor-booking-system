@@ -1,8 +1,10 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { HeroLogoTunePanel } from "@/components/admin/HeroLogoTunePanel";
 import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { Aperture } from "lucide-react";
 
-export default function AdminHeroLogoTunePage() {
+export default async function AdminHeroLogoTunePage() {
+  await requireAdminPage("website.view");
   return (
     <div className="space-y-6">
       <CmsPageHeader

@@ -6,12 +6,21 @@ import {
   type EmailTemplateRecord,
 } from "@/lib/email-templates";
 import { pickSharedEmailBrandingFromRows } from "@/lib/email-branding-shared";
+import { loadEmailFooter } from "@/lib/email-footer-db";
 import { prisma } from "@/lib/prisma";
 
-/** Fetch template for sending — always returns usable values (defaults on failure). */
+/**
+ * Fetch template for sending — always returns usable values (defaults on
+ * failure), with the footer wording every email shares.
+ */
 export async function getEmailTemplateForSend(
   name: EmailTemplateName,
 ): Promise<EmailTemplateRecord> {
+  const [template, footer] = await Promise.all([loadTemplate(name), loadEmailFooter()]);
+  return { ...template, footer };
+}
+
+async function loadTemplate(name: EmailTemplateName): Promise<EmailTemplateRecord> {
   try {
     const rows = await prisma.emailTemplate.findMany();
     const shared = pickSharedEmailBrandingFromRows(rows);

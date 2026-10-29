@@ -189,7 +189,7 @@ const INCLUDE_IT = [
   "Uno Champagne di benvenuto in omaggio per ogni cabina e suite, servito una volta per soggiorno",
   "Sistemazione in formula Soft All-Inclusive (tutti i pasti e le bevande analcoliche durante la giornata)",
   "Biglietti d’ingresso per le visite previste dall’itinerario (visite di gruppo)",
-  "Guida egittologa professionista",
+  "Guida egittologa",
   "Servizio lavanderia",
   "Rifornimento giornaliero del minibar",
   "Wi-Fi",
@@ -443,6 +443,8 @@ export type RoomsCopy = {
     fareLabel: string;
     yourVoyage: string;
     perCabinNights: (nights: number) => string;
+    /** Under a price that already shows its unit ("per suite"). */
+    nights: (nights: number) => string;
     vatIncluded: string;
     route: string;
     chooseVoyage: string;
@@ -531,6 +533,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
       fareLabel: "Fare and availability",
       yourVoyage: "Your voyage",
       perCabinNights: (nights) => `per cabin · ${nights} nights`,
+      nights: (nights) => `${nights} nights`,
       vatIncluded: "VAT & service included",
       route: "Route",
       chooseVoyage: "Choose a voyage",
@@ -626,6 +629,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
       fareLabel: "Tariffa e disponibilità",
       yourVoyage: "Il Suo viaggio",
       perCabinNights: (nights) => `per cabina · ${nights} notti`,
+      nights: (nights) => `${nights} notti`,
       vatIncluded: "IVA e servizio inclusi",
       route: "Itinerario",
       chooseVoyage: "Scegli un viaggio",

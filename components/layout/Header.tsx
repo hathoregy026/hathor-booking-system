@@ -9,11 +9,13 @@ import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import { PublicLanguageToggle } from "@/components/public/PublicLanguageToggle";
+import { CurrencySelector } from "@/components/public/CurrencySelector";
 import {
   PhoneDockBookNow,
   PhoneDockContact,
 } from "@/components/public/PhoneDockActions";
 import { SelectionHeaderControls } from "@/components/selection/SelectionHeaderControls";
+import { OccasionHeaderLayer } from "@/components/occasions/OccasionHeaderLayer";
 import { shouldShowFloatingActions } from "@/lib/floating-actions-visibility";
 
 const EditorialNavOverlay = dynamic(
@@ -606,9 +608,12 @@ export function Header() {
               <SelectionHeaderControls />
               <PublicLanguageToggle />
             </div>
+            <CurrencySelector key={pathname} />
             <PublicThemeToggle />
           </div>
         </div>
+        {/* Scheduled occasion (lib/occasions.ts): stripe, lights and nav fireworks. */}
+        <OccasionHeaderLayer />
       </header>
 
       {/*

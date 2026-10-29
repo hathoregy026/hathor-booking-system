@@ -1,3 +1,7 @@
+import { z } from "zod";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
+import { hasAdminPermission } from "@/lib/admin-permissions";
+import { assertTrustedPublicJsonRequest, readPublicJsonBody, PublicRequestError } from "@/lib/public-api-security";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { ContentSection } from "@/app/generated/prisma/enums";
@@ -12,16 +16,18 @@ import { adminApiGuard } from "@/lib/admin-server-auth";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-type ContentPayload = {
-  section: ContentSection;
-  title: string;
-  subtitle?: string | null;
-  bodyText?: string | null;
-  imageUrl?: string | null;
-};
+const payloadSchema = z.object({ sections: z.array(z.object({
+  section: z.enum(ContentSection).refine(value => SITE_CONTENT_SECTIONS.includes(value)),
+  title: z.string().max(1000), subtitle: z.string().max(4000).nullable().optional(),
+  bodyText: z.string().max(20000).nullable().optional(),
+  imageUrl: z.string().max(2048).refine(value => {
+    if (value.startsWith("/") && !value.startsWith("//") && !value.includes("\\")) return true;
+    try { const url = new URL(value); return url.protocol === "https:" && !url.username && !url.password; } catch { return false; }
+  }).nullable().optional(),
+}).strict()).min(1).max(SITE_CONTENT_SECTIONS.length).refine(rows => new Set(rows.map(row => row.section)).size === rows.length) }).strict();
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.view");
   if (denied) return denied;
 
   try {
@@ -46,60 +52,33 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.view");
   if (denied) return denied;
 
   try {
-    const body = (await request.json()) as {
-      sections?: ContentPayload[];
-    };
-
-    if (!body.sections?.length) {
-      return NextResponse.json(
-        { error: "At least one section is required" },
-        { status: 400 },
-      );
-    }
-
-    const previous = await prisma.siteContent.findMany({
-      where: { section: { in: body.sections.map((section) => section.section) } },
-      select: { section: true, imageUrl: true },
-    });
-    const previousBySection = new Map(
-      previous.map((row) => [row.section, row.imageUrl]),
-    );
-    for (const section of body.sections) {
-      const nextUrl = section.imageUrl ?? null;
-      const previousUrl = previousBySection.get(section.section) ?? null;
-      if (previousUrl !== nextUrl) {
-        await purgeReplacedWebsiteImage({
-          previousUrl,
-          nextUrl,
-        });
+    const identity = await adminIdentityFromRequest(request);
+    if (!identity) throw new PublicRequestError("Access denied", 403);
+    assertTrustedPublicJsonRequest(request);
+    const body = payloadSchema.parse(await readPublicJsonBody(request));
+    const replacements: { previousUrl: string | null; nextUrl: string | null }[] = [];
+    const updates = await prisma.$transaction(async tx => {
+      await tx.$queryRaw`SELECT 1 FROM pg_advisory_xact_lock(18423, 7322)`;
+      const previous = await tx.siteContent.findMany({ where: { section: { in: body.sections.map(row => row.section) } } });
+      const previousBySection = new Map(previous.map(row => [row.section, row]));
+      const results = [];
+      for (const row of body.sections) {
+        const old = previousBySection.get(row.section);
+        const textChanged = !old || row.title !== old.title || (row.subtitle ?? null) !== old.subtitle || (row.bodyText ?? null) !== old.bodyText;
+        const imageChanged = (row.imageUrl ?? null) !== (old?.imageUrl ?? null);
+        if (textChanged && !hasAdminPermission(identity, "website.text")) throw new PublicRequestError("Text editing is not permitted", 403);
+        if (imageChanged && !hasAdminPermission(identity, "website.images")) throw new PublicRequestError("Image editing is not permitted", 403);
+        const update = { ...(textChanged ? { title: row.title, subtitle: row.subtitle ?? null, bodyText: row.bodyText ?? null } : {}), ...(imageChanged ? { imageUrl: row.imageUrl ?? null } : {}) };
+        results.push(await tx.siteContent.upsert({ where: { section: row.section }, create: { section: row.section, title: row.title, subtitle: row.subtitle ?? null, bodyText: row.bodyText ?? null, imageUrl: row.imageUrl ?? null }, update, select: adminSiteContentSelect }));
+        if (imageChanged) replacements.push({ previousUrl: old?.imageUrl ?? null, nextUrl: row.imageUrl ?? null });
       }
-    }
-
-    const updates = await prisma.$transaction(
-      body.sections.map((section) =>
-        prisma.siteContent.upsert({
-          where: { section: section.section },
-          create: {
-            section: section.section,
-            title: section.title,
-            subtitle: section.subtitle ?? null,
-            bodyText: section.bodyText ?? null,
-            imageUrl: section.imageUrl ?? null,
-          },
-          update: {
-            title: section.title,
-            subtitle: section.subtitle ?? null,
-            bodyText: section.bodyText ?? null,
-            imageUrl: section.imageUrl ?? null,
-          },
-          select: adminSiteContentSelect,
-        }),
-      ),
-    );
+      return results;
+    });
+    for (const replacement of replacements) await purgeReplacedWebsiteImage(replacement);
 
     revalidatePath("/", "layout");
     return NextResponse.json({ content: updates });

@@ -25,6 +25,7 @@ import { Footer } from "@/components/layout/Footer";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import {
   RoomAmenityIcon,
@@ -32,24 +33,16 @@ import {
 } from "@/components/pages/rooms/RoomAmenityIcon";
 import { RoomFolioAccordion } from "@/components/pages/rooms/RoomFolioAccordion";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { ROOM_COLLECTION_LINKS } from "@/lib/room-collection-editorial";
 import { folioVariantForRoomSlug } from "@/lib/room-folio-panels";
 import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
-import { amenityIn, placesIn, usdIn, weekdayIn } from "@/lib/i18n/catalog-copy";
+import { amenityIn, placesIn, weekdayIn } from "@/lib/i18n/catalog-copy";
 import { ROOMS_COPY, roomFolioPanels, roomShowcaseIn } from "@/lib/i18n/rooms-copy";
 import type { RoomShowcase } from "@/lib/room-showcase";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
-
-/** Whole dollars, the way every other fare on the site is written. */
-function fare(cents: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-  }).format(cents / 100);
-}
 
 /** The five stops of the room folio, in the order the page tells them (labels: copy.tabs). */
 const TABS = ["overview", "fare", "amenities", "stay-notes", "notes"] as const;
@@ -145,6 +138,7 @@ export function RoomDetailPage({
   const t = ROOMS_COPY[locale].detail;
   const localHref = useLocalizedHref();
   const room = useMemo(() => roomShowcaseIn(roomProp, locale), [roomProp, locale]);
+  const { money: fare } = useCurrency();
   const variant = folioVariantForRoomSlug(room.slug);
   const panels = roomFolioPanels(variant, locale);
   const collection =
@@ -309,8 +303,8 @@ export function RoomDetailPage({
               <p className="rf__card-kicker">{t.yourVoyage}</p>
               {voyage ? (
                 <>
-                  <p className="rf__price">{usdIn(locale, fare(voyage.priceCents))}</p>
-                  <p className="rf__price-note">{t.perCabinNights(voyage.nights)}</p>
+                  <p className="rf__price">{fare(voyage.priceCents)}<RoomPriceUnit roomType={roomProp.name} locale={locale} /></p>
+                  <p className="rf__price-note">{t.nights(voyage.nights)}</p>
                   <p className="rf__price-fine">{t.vatIncluded}</p>
 
                   <dl className="rf__rows">
@@ -437,9 +431,9 @@ export function RoomDetailPage({
                   {voyage ? (
                     <>
                       <p className="rf-ledger__price">
-                        {usdIn(locale, fare(voyage.priceCents))}
+                        {fare(voyage.priceCents)}
+                        <RoomPriceUnit roomType={roomProp.name} locale={locale} />
                       </p>
-                      <p>{t.perCabin}</p>
                       <p className="rf__note">{t.vatIncluded}</p>
                     </>
                   ) : (
@@ -459,7 +453,7 @@ export function RoomDetailPage({
               </p>
               <p className="rf__total-sum">
                 <span>{t.total}</span>
-                <strong>{voyage ? usdIn(locale, fare(voyage.priceCents)) : t.onRequest}</strong>
+                <strong>{voyage ? <>{fare(voyage.priceCents)}<RoomPriceUnit roomType={roomProp.name} locale={locale} /></> : t.onRequest}</strong>
               </p>
               <BookNowTrigger className="room-pill rf__act rf__act--wide">
                 <span>{t.continueToReservation}</span>

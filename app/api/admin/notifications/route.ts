@@ -1,128 +1,42 @@
-import { NextResponse } from "next/server";
-import { BookingStatus } from "@/app/generated/prisma/client";
-import { markBookingsSeenNow } from "@/lib/admin-profile-pg";
-import { ADMIN_PROFILE_ID } from "@/lib/admin-profile-constants";
-import { logDbError, withDb } from "@/lib/db-safe";
-import { prisma } from "@/lib/prisma";
+import { allowedMailboxIds } from "@/lib/admin-mailbox-access";
 import { adminApiGuard } from "@/lib/admin-server-auth";
+import { NextRequest, NextResponse } from "next/server";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
+import { dismissNotifications, fetchAdminNotifications, markNotificationBookingsSeen, notificationDismissSchema, notificationSeenSchema } from "@/lib/admin-notifications";
+import { z } from "zod";
+import { inboxHeaders, inboxRouteError } from "@/lib/inbox-api";
+import { assertTrustedPublicJsonRequest, enforcePublicRateLimit, PublicRequestError } from "@/lib/public-api-security";
+import { readPrivateEmailJson } from "@/lib/private-email";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const runtime = "nodejs";
 
-function computeTotalCents(
-  bookingTotalPriceCents: number | null,
-  tickets: {
-    quantity: number;
-    unitPriceCents: number | null;
-    ticketType: { priceCents: number };
-  }[],
-) {
-  if (bookingTotalPriceCents !== null) return bookingTotalPriceCents;
-  return tickets.reduce(
-    (sum, ticket) =>
-      sum +
-      ticket.quantity *
-        (ticket.unitPriceCents ?? ticket.ticketType.priceCents),
-    0,
-  );
+async function authorize(request: NextRequest) {
+  const identity = await adminIdentityFromRequest(request);
+  if (!identity) throw new PublicRequestError("Unauthorized", 401);
+  await enforcePublicRateLimit({ request, scope: "booking-admin-notifications", limit: 90, windowMs: 60000 });
+  return identity;
 }
 
-/** New requests the team has not looked at yet (a request is created as a hold, then sent). */
-const NOTIFICATION_WHERE = (lastSeenBookingAt: Date) => ({
-  status: { in: [BookingStatus.REQUESTED, BookingStatus.CONFIRMED] },
-  deletedAt: null,
-  requestedAt: { gt: lastSeenBookingAt },
-});
-
-export async function GET() {
-  const denied = await adminApiGuard();
+export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("bookings.view");
   if (denied) return denied;
-
   try {
-    const profile = await withDb(() =>
-      prisma.adminProfile.findUnique({
-        where: { id: ADMIN_PROFILE_ID },
-      }),
-    );
-
-    const lastSeenBookingAt = profile?.lastSeenBookingAt ?? new Date(0);
-    const where = NOTIFICATION_WHERE(lastSeenBookingAt);
-
-    const [unreadCount, bookings] = await Promise.all([
-      withDb(() => prisma.booking.count({ where })),
-      withDb(() =>
-        prisma.booking.findMany({
-          where,
-          orderBy: { requestedAt: "desc" },
-          take: 20,
-          select: {
-            id: true,
-            totalPriceCents: true,
-            customerName: true,
-            firstName: true,
-            lastName: true,
-            createdAt: true,
-            requestedAt: true,
-            cruiseSchedule: {
-              select: {
-                cruise: { select: { name: true } },
-              },
-            },
-            bookingTickets: {
-              select: {
-                quantity: true,
-                unitPriceCents: true,
-                ticketType: { select: { priceCents: true } },
-              },
-            },
-          },
-        }),
-      ),
-    ]);
-
-    const items = bookings.map((booking) => ({
-      id: booking.id,
-      customerName:
-        [booking.firstName, booking.lastName].filter(Boolean).join(" ") ||
-        booking.customerName ||
-        "Guest",
-      cruiseName: booking.cruiseSchedule.cruise.name,
-      createdAt: (booking.requestedAt ?? booking.createdAt).toISOString(),
-      totalPriceCents: computeTotalCents(
-        booking.totalPriceCents,
-        booking.bookingTickets,
-      ),
-    }));
-
-    return NextResponse.json({
-      unreadCount,
-      items,
-    });
-  } catch (error) {
-    logDbError("admin.notifications.GET", error);
-    return NextResponse.json(
-      {
-        error: "Could not load notifications.",
-        unreadCount: 0,
-        items: [],
-      },
-      { status: 503 },
-    );
-  }
+    const identity = await authorize(request);
+    return NextResponse.json(await fetchAdminNotifications(undefined, allowedMailboxIds(identity)), { headers: inboxHeaders });
+  } catch (error) { return inboxRouteError(error); }
 }
 
-export async function POST() {
-  const denied = await adminApiGuard();
+export async function POST(request: NextRequest) {
+  const denied = await adminApiGuard("bookings.view");
   if (denied) return denied;
-
   try {
-    await markBookingsSeenNow();
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    logDbError("admin.notifications.POST", error);
-    return NextResponse.json(
-      { error: "Failed to mark notifications as read" },
-      { status: 500 },
-    );
-  }
+    const identity = await authorize(request);
+    assertTrustedPublicJsonRequest(request);
+    const input = z.union([notificationDismissSchema, notificationSeenSchema]).parse(await readPrivateEmailJson(request));
+    if ("notifications" in input) await dismissNotifications(input, undefined, allowedMailboxIds(identity));
+    else await markNotificationBookingsSeen(input);
+    return NextResponse.json({ ok: true }, { headers: inboxHeaders });
+  } catch (error) { return inboxRouteError(error); }
 }

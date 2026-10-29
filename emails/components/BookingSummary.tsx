@@ -68,6 +68,7 @@ function buildSummaryRows(
     ...(details.ratePlan
       ? [{ label: "Rate", value: details.ratePlan }]
       : []),
+    ...(details.cardSurcharge ? [{ label: "Card surcharge (included)", value: details.cardSurcharge }] : []),
     { label: "Total Price", value: details.totalPrice, bold: true, gold: true },
   );
 

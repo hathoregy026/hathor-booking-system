@@ -25,6 +25,7 @@ import { StatCard } from "@/components/admin/StatCard";
 import { adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import { formatPrice } from "@/lib/client-dates";
+import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
 
 type DashboardStats = {
   totalBookings: number;
@@ -132,11 +133,10 @@ export function DashboardView() {
   // ---------------------------------------------------------------------
   // Data fetching — unchanged from the original implementation.
   // ---------------------------------------------------------------------
-  const loadDashboard = useCallback(async () => {
+  const loadDashboard = useCallback(async (silent = false) => {
     const loadId = ++loadIdRef.current;
 
-    setIsLoading(true);
-    setError(null);
+    if (!silent) { setIsLoading(true); setError(null); }
 
     try {
       // Same policy as before: one retry, 800ms apart, transient errors only.
@@ -165,7 +165,7 @@ export function DashboardView() {
             continue;
           }
 
-          setError(
+          if (!silent) setError(
             err instanceof Error
               ? err.message
               : "Unable to load dashboard. Please try again.",
@@ -188,6 +188,9 @@ export function DashboardView() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- initial dashboard fetch on mount
     loadDashboard();
   }, [loadDashboard]);
+
+  const refreshActivity = useCallback(() => { void loadDashboard(stats !== null); }, [loadDashboard, stats]);
+  useAdminActivityRefresh("bookings", refreshActivity, isLoading);
 
   // NOTE: this sums only the CONFIRMED rows inside `recentBookings`, which the
   // API caps at the latest few. It is deliberately labelled "Recent Revenue"

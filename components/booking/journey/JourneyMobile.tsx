@@ -9,6 +9,7 @@ import type { StayDurationValue } from "@/lib/booking-search-config";
 import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
 import { MAX_ADULTS, MAX_CHILDREN, type CabinView } from "./allocation";
 import type { Sailing } from "./model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { IconCalendar, IconCard, IconCheck, IconChevron, IconClose, IconGuests } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
 import { SailingCalendar } from "./SailingCalendar";
@@ -693,7 +694,7 @@ export function ReviewCards({
           {totalCents === null ? (
             <span className="hj-mcard__value hj-mcard__value--soft">{t.rail.pending}</span>
           ) : (
-            <span className="hj-mcard__amount">{t.money(totalCents)}</span>
+            <span className="hj-mcard__amount"><CurrencyAmount cents={totalCents} /></span>
           )}
           <span className="hj-mcard__sub">
             {totalCents === null ? t.rail.pendingFine : t.rail.fine(voyage.nights)}

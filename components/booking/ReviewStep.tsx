@@ -1,12 +1,15 @@
 "use client";
 
 import { ArrowLeft, CalendarDays, Loader2, Ship } from "lucide-react";
-import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { formatUtcDate } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { useBookingStore, getSelectedRooms } from "@/store/bookingStore";
 import { getSelectedRoomIdsForCheckout } from "./BookingSearchResults";
 import { CountdownTimer } from "./CountdownTimer";
 
 export function ReviewStep() {
+  const { formatPrice } = useCurrency();
   const {
     selectedCruiseId,
     startDate,
@@ -204,6 +207,7 @@ export function ReviewStep() {
                 <span className="font-medium">{room.name}</span>
                 <span style={{ color: "var(--booking-muted)" }}>
                   {formatPrice(room.minPriceCents)}
+                  <RoomPriceUnit roomType={room.roomType ?? room.name} />
                 </span>
               </li>
             ))}

@@ -44,3 +44,12 @@ export const ContentSection = {
 } as const
 
 export type ContentSection = (typeof ContentSection)[keyof typeof ContentSection]
+
+
+export const AdminSessionStage = {
+  MFA_PENDING: 'MFA_PENDING',
+  ENROLL_PENDING: 'ENROLL_PENDING',
+  ACTIVE: 'ACTIVE'
+} as const
+
+export type AdminSessionStage = (typeof AdminSessionStage)[keyof typeof AdminSessionStage]

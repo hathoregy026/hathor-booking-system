@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { AdminAuthError, assertAdminSession } from "@/lib/admin-server-auth";
@@ -20,8 +21,10 @@ function json(body: GaRealtimeResponse, status = 200) {
 }
 
 export async function GET() {
+  const denied = await adminApiGuard("analytics.view");
+  if (denied) return denied;
   try {
-    await assertAdminSession();
+    await assertAdminSession("analytics.view");
     const report = await fetchGaRealtimeReport();
     return json({ ok: true, report });
   } catch (error) {

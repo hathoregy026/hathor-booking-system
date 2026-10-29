@@ -10,8 +10,8 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useRouter } from "next/navigation";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
-import { formatPrice } from "@/lib/client-dates";
-import { usdIn } from "@/lib/i18n/catalog-copy";
+import { useCurrency } from "@/components/public/CurrencyProvider";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import {
   findResidence,
   findVoyage,
@@ -199,6 +199,7 @@ function GuestCounter({
 }
 
 function MyVoyageView({ onClose }: { onClose: () => void }) {
+  const { formatPrice } = useCurrency();
   const selection = useVoyageSelection();
   const setVoyage = useSelectionStore((state) => state.setVoyage);
   const setResidence = useSelectionStore((state) => state.setResidence);
@@ -425,7 +426,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       {indicativeCents !== null && !selection.charter ? (
         <section className="hfp__section hfp__section--price">
           <p className="hfp__price-label">{t.indicativeFrom}</p>
-          <p className="hfp__price">{usdIn(locale, formatPrice(indicativeCents))}</p>
+          <p className="hfp__price">{formatPrice(indicativeCents)}<RoomPriceUnit roomType={luxuryType} locale={locale} /></p>
           <p className="hfp__note">{t.priceNote}</p>
         </section>
       ) : null}

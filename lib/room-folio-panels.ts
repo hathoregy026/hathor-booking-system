@@ -44,7 +44,7 @@ const SHARED_INCLUDE = [
   "One complimentary welcome Champagne for each cabin and suite, served once per stay",
   "Accommodation on a Soft All-Inclusive basis (all meals and soft drinks throughout the day)",
   "Entrance tickets for sightseeing as per the itinerary (public visits)",
-  "Professional Egyptologist guide",
+  "an Egyptologist Guide",
   "Laundry service",
   "Daily mini-bar refill",
   "Wi-Fi",

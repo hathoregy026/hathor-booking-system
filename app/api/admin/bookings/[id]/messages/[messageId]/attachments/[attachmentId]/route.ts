@@ -1,0 +1,47 @@
+import { allowedMailboxIds } from "@/lib/admin-mailbox-access";
+import { adminApiGuard } from "@/lib/admin-server-auth";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
+import { bookingQuery } from "@/lib/booking-database";
+import { enforcePublicRateLimit, PublicRequestError } from "@/lib/public-api-security";
+import { resendApiRequest } from "@/lib/resend-inbound";
+import { incomingAttachmentResponse } from "@/lib/incoming-attachment-download";
+import type { BookingAttachment } from "@/lib/booking-message-types";
+import { attachmentDownloadUrl } from "@/lib/mail-attachments";
+
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string; messageId: string; attachmentId: string }> }) {
+  const denied = await adminApiGuard("bookings.view");
+  if (denied) return denied;
+  const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
+  const identity = await adminIdentityFromRequest(request);
+  if (!identity) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers });
+  }
+  try {
+    await enforcePublicRateLimit({ request, scope: "booking-attachment-read", limit: 30, windowMs: 60000 });
+    const params = z.object({ id: z.string().min(1).max(128), messageId: z.uuid(), attachmentId: z.uuid() }).parse(await context.params);
+    const [message] = await bookingQuery<{ resendEmailId: string; direction: string; attachments: BookingAttachment[] }>(
+      `SELECT "resendEmailId", direction, attachments FROM "BookingMessage" m
+       WHERE id = $1 AND "bookingId" = $2 AND (direction = 'OUTBOUND' OR folder = 'inbox') AND COALESCE((SELECT p."mailboxId" FROM "DashboardEmailPlacement" p WHERE p.source = 'booking' AND p."messageId" = m.id), 'reservations') = ANY($3::text[]) AND NOT EXISTS (SELECT 1 FROM "DashboardEmailDeletion" d WHERE d.source = 'booking' AND d."messageId" = m.id)`, [params.messageId, params.id, allowedMailboxIds(identity)]);
+    if (!message || !message.attachments.some(attachment => attachment.id === params.attachmentId)) {
+      return NextResponse.json({ error: "Not found" }, { status: 404, headers });
+    }
+    const attachment = message.attachments.find(file => file.id === params.attachmentId)!;
+    if (message.direction === "OUTBOUND") {
+      if (!attachment.storagePath) return NextResponse.json({ error: "Not found" }, { status: 404, headers });
+      return NextResponse.redirect(await attachmentDownloadUrl(params.id, attachment.storagePath), { status: 303, headers });
+    }
+    const emailId = z.uuid().parse(message.resendEmailId);
+    const result = z.object({ download_url: z.url() }).parse(await resendApiRequest(`/emails/receiving/${emailId}/attachments/${params.attachmentId}`));
+    const target = new URL(result.download_url);
+    if (target.protocol !== "https:" || target.hostname !== "inbound-cdn.resend.com" || target.username || target.password) {
+      throw new Error("Invalid attachment destination");
+    }
+    return await incomingAttachmentResponse(result.download_url, attachment);
+  } catch (error) {
+    if (error instanceof PublicRequestError) return NextResponse.json({ error: error.message }, { status: error.status, headers });
+    console.error("[booking-inbound] attachment could not be opened");
+    return NextResponse.json({ error: "Attachment is unavailable. Please try again or check Resend Receiving." }, { status: 503, headers });
+  }
+}

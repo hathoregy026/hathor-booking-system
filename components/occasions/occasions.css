@@ -1,0 +1,464 @@
+/*
+ * Occasions layer (lib/occasions.ts). Lives inside .hathor-header, so the
+ * :not(#_) guards beat the editorial pages' `.hathor-header a/button` ink
+ * overrides and rooms' `.hathor-header * { pointer-events: auto }`.
+ */
+
+.occasion-under:not(#_) {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none !important;
+}
+
+/* ------------------------------------------------------------------ stripe */
+/* Three looks, all from the site palette: ink, paper (cream glass) and gold. */
+.occasion-stripe:not(#_) {
+  --occ-bg: #141210;
+  --occ-fg: #ece4da;
+  --occ-icon: #c9ae72;
+  --occ-line: rgb(179 155 99 / 35%);
+  --occ-sep: #b39b63;
+  --occ-stripe-h: 34px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--occ-stripe-h);
+  overflow: hidden;
+  pointer-events: auto !important;
+  background: var(--occ-bg);
+  color: var(--occ-fg);
+  border-top: 1px solid var(--occ-line);
+  border-bottom: 1px solid var(--occ-line);
+  font-family: var(--font-hathor-body), "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-shadow: none !important;
+  text-transform: none;
+}
+
+.occasion-stripe.occasion-stripe--paper:not(#_) {
+  --occ-bg: rgb(240 233 224 / 95%);
+  --occ-fg: #141210;
+  --occ-icon: #7d6738;
+  --occ-line: rgb(179 155 99 / 60%);
+  --occ-sep: #b39b63;
+}
+
+.occasion-stripe.occasion-stripe--gold:not(#_) {
+  --occ-bg: #b39b63;
+  --occ-fg: #141210;
+  --occ-icon: #141210;
+  --occ-line: rgb(20 18 16 / 25%);
+  --occ-sep: #141210;
+}
+
+@media (max-width: 640px) {
+  .occasion-stripe:not(#_) {
+    --occ-stripe-h: 30px;
+    font-size: 11px;
+  }
+}
+
+.occasion-stripe__viewport {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent);
+}
+
+.occasion-stripe__track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  will-change: transform;
+  animation: occasion-glide var(--occ-glide, 60s) linear infinite;
+}
+
+/* Moving text pauses while read or focused. */
+.occasion-stripe:hover .occasion-stripe__track,
+.occasion-stripe:focus-within .occasion-stripe__track {
+  animation-play-state: paused;
+}
+
+@keyframes occasion-glide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.occasion-stripe__group,
+.occasion-stripe__cell {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.occasion-stripe__slots {
+  position: absolute;
+  inset: 0;
+}
+
+.occasion-stripe__still {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.7s ease,
+    visibility 0s linear 0.7s;
+}
+
+.occasion-stripe__still.is-shown {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.7s ease;
+}
+
+.occasion-stripe:not(#_) .occasion-stripe__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding-inline: 22px;
+  color: var(--occ-fg) !important;
+  text-decoration: none;
+  text-shadow: none !important;
+}
+
+.occasion-stripe__item svg,
+.occasion-stripe__img {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  color: var(--occ-icon);
+  object-fit: contain;
+}
+
+.occasion-stripe__item--link > span {
+  border-bottom: 1px solid var(--occ-line);
+  padding-bottom: 2px;
+}
+
+.occasion-stripe__item--link:hover > span {
+  border-bottom-color: var(--occ-icon);
+}
+
+.occasion-stripe__item:focus-visible,
+.occasion-stripe__close:focus-visible {
+  outline: 1px solid var(--occ-icon);
+  outline-offset: -3px;
+}
+
+.occasion-stripe__count {
+  font-variant-numeric: tabular-nums;
+}
+
+.occasion-stripe__sep {
+  flex: none;
+  width: 4px;
+  height: 4px;
+  background: var(--occ-sep);
+  transform: rotate(45deg);
+}
+
+.occasion-stripe:not(#_) .occasion-stripe__close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--occ-stripe-h);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--occ-fg) !important;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.occasion-stripe:not(#_) .occasion-stripe__close:hover {
+  opacity: 1;
+}
+
+.occasion-stripe__close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* --------------------------------------- hanging: lights, lanterns, stars */
+.occasion-hang:not(#_) {
+  position: relative;
+  width: 100%;
+  margin-top: -1px;
+  pointer-events: none !important;
+}
+
+.occasion-hang svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Each drop swings from its own string, top edge fixed. */
+.occasion-hang__drop {
+  position: absolute;
+  top: 0;
+  transform-origin: 50% 0;
+  animation: occasion-sway 4.2s ease-in-out infinite alternate;
+}
+
+.occasion-hang__string {
+  width: 1px;
+  margin-inline: auto;
+  background: rgb(179 155 99 / 70%);
+}
+
+.occasion-hang__drop > div:last-child > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.occasion-hang__metal {
+  fill: #b39b63;
+}
+
+.occasion-hang__glass {
+  fill: rgb(179 155 99 / 22%);
+  stroke: #b39b63;
+  stroke-width: 1;
+}
+
+.occasion-hang__ribs {
+  fill: none;
+  stroke: #b39b63;
+  stroke-width: 0.8;
+  opacity: 0.7;
+}
+
+.occasion-hang__flame {
+  fill: #f3d48a;
+  animation: occasion-flicker 2.4s ease-in-out infinite alternate;
+}
+
+.occasion-hang__star {
+  fill: #c9ae72;
+  stroke: #8e7440;
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+
+.occasion-hang__twinkle {
+  animation: occasion-twinkle 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes occasion-sway {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes occasion-flicker {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+.occasion-lights__wire,
+.occasion-lights__cap {
+  fill: none;
+  stroke: rgb(201 174 114 / 70%);
+  stroke-width: 1;
+}
+
+.occasion-lights__glow {
+  fill: rgb(246 223 160 / 22%);
+}
+
+.occasion-lights__core {
+  fill: #f6dfa0;
+}
+
+.occasion-lights__bulb {
+  animation: occasion-twinkle 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes occasion-twinkle {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------------------- nav fireworks */
+/* Above the header glass, below its controls; faded out over the logo and tools. */
+.occasion-fireworks:not(#_) {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none !important;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 96px,
+    #000 170px,
+    #000 calc(50% - 110px),
+    transparent calc(50% - 50px),
+    transparent calc(50% + 50px),
+    #000 calc(50% + 110px),
+    #000 calc(100% - 420px),
+    transparent calc(100% - 350px)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 96px,
+    #000 170px,
+    #000 calc(50% - 110px),
+    transparent calc(50% - 50px),
+    transparent calc(50% + 50px),
+    #000 calc(50% + 110px),
+    #000 calc(100% - 420px),
+    transparent calc(100% - 350px)
+  );
+}
+
+@media (max-width: 640px) {
+  .occasion-fireworks:not(#_) {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 56px,
+      #000 86px,
+      #000 calc(50% - 46px),
+      transparent calc(50% - 22px),
+      transparent calc(50% + 22px),
+      #000 calc(50% + 46px),
+      #000 calc(100% - 116px),
+      transparent calc(100% - 96px)
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 56px,
+      #000 86px,
+      #000 calc(50% - 46px),
+      transparent calc(50% - 22px),
+      transparent calc(50% + 22px),
+      #000 calc(50% + 46px),
+      #000 calc(100% - 116px),
+      transparent calc(100% - 96px)
+    );
+  }
+}
+
+/* The explore overlay sits above the header; keep the occasion out of it. */
+.hathor-header--editorial-open .occasion-under:not(#_),
+.hathor-header--explore-open .occasion-under:not(#_),
+.hathor-header--editorial-open .occasion-fireworks:not(#_),
+.hathor-header--explore-open .occasion-fireworks:not(#_) {
+  display: none !important;
+}
+
+/* ------------------------------------------------------- hero countdown */
+/* Hangs under the homepage title without joining its flow, so the title never moves. */
+.hero-content:has(> .occasion-hero-cd),
+.hero-one-title:has(> .occasion-hero-cd) {
+  position: relative;
+}
+
+.occasion-hero-cd:not(#_) {
+  position: absolute;
+  top: calc(100% + 1.6rem);
+  left: 50%;
+  display: flex;
+  /* --occ-cd-size lets the Admin → Occasions miniature scale it down. */
+  font-size: var(--occ-cd-size, 16px);
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 35%);
+  color: #f4ebdd;
+  -webkit-text-fill-color: currentColor;
+  background: rgb(20 18 16 / 30%);
+  border-top: 1px solid rgb(201 174 114 / 60%);
+  border-bottom: 1px solid rgb(201 174 114 / 60%);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.occasion-hero-cd__cell {
+  display: grid;
+  justify-items: center;
+  gap: 0.35em;
+  width: 6.75em;
+  padding-block: 0.75em;
+}
+
+.occasion-hero-cd__cell + .occasion-hero-cd__cell {
+  border-left: 1px solid rgb(201 174 114 / 45%);
+}
+
+.occasion-hero-cd__num {
+  font-family: "Italiana", Georgia, serif;
+  font-size: 2.75em;
+  font-weight: 400;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.occasion-hero-cd__label {
+  font-family: var(--font-hathor-body), "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 0.6em;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #d9c08a;
+  -webkit-text-fill-color: currentColor;
+}
+
+@media (max-width: 1024px) {
+  .occasion-hero-cd:not(#_) {
+    top: calc(100% + 1.1rem);
+    font-size: var(--occ-cd-size, 11px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .occasion-stripe__track,
+  .occasion-lights__bulb,
+  .occasion-hang__drop,
+  .occasion-hang__flame,
+  .occasion-hang__twinkle {
+    animation: none !important;
+  }
+
+  .occasion-stripe__still {
+    transition: none;
+  }
+}

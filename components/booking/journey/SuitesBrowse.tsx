@@ -1,4 +1,5 @@
 "use client";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 
 import { useRef, useState, type ReactNode } from "react";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
@@ -8,6 +9,7 @@ import { localizedHref } from "@/lib/i18n/locale";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import { occupants, shortName, type Arrangement, type Guest } from "./allocation";
 import type { Sailing } from "./model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { RESIDENCE_SLUG } from "./SuitesParts";
 import { useStickyFit } from "./useStickyFit";
 import { useBookingCopy } from "./useBookingCopy";
@@ -181,8 +183,7 @@ export function SuitesBrowse({
         </ul>
         <div className="hj-detail__price">
           <span className="hj-detail__row">
-            <span className="hj-detail__from">{t.suites.browse.perCabin}</span>
-            <span className="hj-detail__amount">{t.money(type.priceCents)}</span>
+            <span className="hj-detail__amount"><CurrencyAmount cents={type.priceCents} /><RoomPriceUnit roomType={type.roomType} locale={t.locale} /></span>
           </span>
           <span className="hj-detail__per">{t.suites.browse.voyageMeals(voyage.nights)}</span>
         </div>

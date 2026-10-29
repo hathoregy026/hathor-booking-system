@@ -5,6 +5,7 @@ export const ADMIN_CMS_PATHS = [
   "/admin/images",
   "/admin/pages",
   "/admin/live-site",
+  "/admin/occasions",
   "/admin/preload-screen",
   "/admin/hero-logo-tune",
   "/admin/hieroglyph-tune",
@@ -45,6 +46,11 @@ export const ADMIN_CMS_LINKS: AdminCmsLink[] = [
     href: "/admin/live-site",
     label: "Live Site",
     description: "Coming Soon on the custom domain",
+  },
+  {
+    href: "/admin/occasions",
+    label: "Occasions",
+    description: "New Year, Ramadan, national days: stripe, lights and effects by date",
   },
   {
     href: "/admin/preload-screen",

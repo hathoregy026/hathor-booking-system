@@ -8,7 +8,7 @@ export const revalidate = 0;
 export const maxDuration = 60;
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("storage.view");
   if (denied) return denied;
 
   try {

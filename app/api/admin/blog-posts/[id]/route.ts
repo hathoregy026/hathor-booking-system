@@ -18,7 +18,7 @@ export const revalidate = 0;
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("blogs.view");
   if (denied) return denied;
 
   try {
@@ -40,7 +40,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("blogs.manage");
   if (denied) return denied;
 
   try {
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("blogs.manage");
   if (denied) return denied;
 
   try {

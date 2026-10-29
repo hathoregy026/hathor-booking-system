@@ -36,7 +36,7 @@ const REVALIDATE_PATHS = [
 ] as const;
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.view");
   if (denied) return denied;
 
   try {
@@ -66,7 +66,7 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("website.manage");
   if (denied) return denied;
 
   try {

@@ -87,7 +87,7 @@ async function readDateRates(input: z.infer<typeof querySchema>) {
 }
 
 export async function GET(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("prices.view");
   if (denied) return denied;
 
   try {
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("prices.manage");
   if (denied) return denied;
 
   try {

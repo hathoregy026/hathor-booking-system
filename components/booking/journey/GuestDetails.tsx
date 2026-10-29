@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { cardSurchargeCents } from "@/lib/card-surcharge";
 import { findCountry } from "@/lib/countries";
 import { localizedHref } from "@/lib/i18n/locale";
 import { CountryPicker } from "./CountryPicker";
 import { guestLabel, type CabinView } from "./allocation";
 import { type GuestForm, type PaymentStage } from "./model";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { IconBank, IconCard } from "./icons";
 import { PaymentPlan } from "./PaymentPlan";
 import { useBookingCopy } from "./useBookingCopy";
@@ -14,6 +17,7 @@ import { useBookingCopy } from "./useBookingCopy";
 export function DetailsPaymentScreen({
   cabins,
   schedule,
+  totalCents,
   form,
   onForm,
   names,
@@ -22,9 +26,11 @@ export function DetailsPaymentScreen({
   busy,
   onBack,
   onConfirm,
+  verification,
 }: {
   cabins: CabinView[];
   schedule: PaymentStage[];
+  totalCents: number | null;
   form: GuestForm;
   onForm: (patch: Partial<GuestForm>) => void;
   names: Record<string, string>;
@@ -33,12 +39,14 @@ export function DetailsPaymentScreen({
   busy: boolean;
   onBack: () => void;
   onConfirm: () => void;
+  verification?: ReactNode;
 }) {
   const t = useBookingCopy();
   const d = t.details;
   const country = findCountry(form.countryCode);
   const countryName = country ? t.countryName(country.code, country.name) : null;
 
+  const { money } = useCurrency();
   return (
     <div className="hj-details">
       <section>
@@ -157,6 +165,17 @@ export function DetailsPaymentScreen({
             </span>
           </label>
         </div>
+        <div aria-live="polite">
+          {form.paymentMethod === "VISA" ? (
+            <p className="hj-note-box">
+              {d.surchargeNote(
+                totalCents
+                  ? `${money(totalCents)} + ${money(cardSurchargeCents(totalCents))} = ${money(totalCents + cardSurchargeCents(totalCents))}`
+                  : null,
+              )}
+            </p>
+          ) : null}
+        </div>
 
         <div className="hj-pay__pair">
           <div className="hj-pay__col">
@@ -190,6 +209,7 @@ export function DetailsPaymentScreen({
         </label>
       </section>
 
+      {verification ? <div className="hj-booking-verification" style={{ gridColumn: "1 / -1", minWidth: 0 }}>{verification}</div> : null}
       <div className="hj-actions" style={{ gridColumn: "1 / -1" }}>
         <button type="button" className="hj-btn hj-btn--ghost" onClick={onBack}>{d.backToSuites}</button>
         <button type="button" className="hj-btn" disabled={busy} onClick={onConfirm}>

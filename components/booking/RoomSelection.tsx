@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { BedDouble, Loader2, Maximize2, Sparkles, Users } from "lucide-react";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { findStayDurationOption } from "@/lib/booking-search-config";
 import type { AvailableRoom } from "@/lib/booking-types";
 import type { RoomSearchConfig, StayDurationValue } from "@/lib/booking-search-config";
@@ -23,6 +24,7 @@ type RoomSelectionProps = {
 };
 
 export function RoomSelection({ duration, checkInDate, roomConfigs, availableRooms, selectedRoomIds, onBookRoom, onGoBack, isLoading, error }: RoomSelectionProps) {
+  const { formatPrice } = useCurrency();
   const durationLabel = duration
     ? findStayDurationOption(duration)?.label.replace(/^⛵\s*/, "") ?? "Hathor Cruise"
     : "Hathor Dahabiya";
@@ -87,7 +89,7 @@ export function RoomSelection({ duration, checkInDate, roomConfigs, availableRoo
                   {room.description ? <p className="historia-room-card__desc">{room.description}</p> : null}
                   <Link href={detailsHref} className="public-btn-outline-gold historia-room-card__link">View room details</Link>
 
-                  <p>{standardRateLabel(durationLabel)} — {formatPrice(standardPrice)}</p>
+                  <p>{standardRateLabel(durationLabel)} — {formatPrice(standardPrice)}<RoomPriceUnit roomType={room.roomType ?? room.name} /></p>
 
                   <button type="button" className="public-btn-outline-gold historia-room-card__book" onClick={() => onBookRoom(selectionKey, selectedRate)}>Book</button>
                 </div>

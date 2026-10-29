@@ -1,8 +1,10 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { TypographyEditorTabs } from "@/components/admin/TypographyEditorTabs";
 import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { Type } from "lucide-react";
 
-export default function AdminTypographyPage() {
+export default async function AdminTypographyPage() {
+  await requireAdminPage("website.view");
   return (
     <div className="space-y-6">
       <CmsPageHeader

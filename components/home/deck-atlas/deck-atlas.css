@@ -585,7 +585,7 @@
 .deck-atlas .da-index__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--da-rule); }
 .deck-atlas .da-index__head > span { font: 500 0.64rem/1.3 var(--da-sans); color: var(--da-muted); white-space: nowrap; }
 .deck-atlas .da-group { padding: 0.9rem 0 0.8rem; border-bottom: 1px solid var(--da-rule-soft); }
-.deck-atlas .da-group__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.deck-atlas .da-group__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.35rem 1rem; }
 .deck-atlas .da-group__name { font: 400 1.28rem/1.15 var(--da-display); }
 .deck-atlas .da-group__price { font: 500 0.8rem/1 var(--da-sans); letter-spacing: 0.02em; white-space: nowrap; }
 .deck-atlas .da-group__spec { margin-top: 0.3rem; font: 400 0.72rem/1.5 var(--da-sans); color: var(--da-muted); }

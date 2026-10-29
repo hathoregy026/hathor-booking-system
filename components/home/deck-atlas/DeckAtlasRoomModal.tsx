@@ -9,6 +9,7 @@ import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { useSelectionPanelOpen } from "@/components/selection/SelectionProvider";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import type { ShipDeckId } from "@/lib/ship-experience-shared";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { PlanCloseUp, type AtlasState } from "./DeckAtlasPlan";
 import { localizedHref } from "@/lib/i18n/locale";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
@@ -40,6 +41,7 @@ export type RoomSheet = SheetBase & {
   state: AtlasState;
   status: string;
   price: string | null;
+  roomType: string | null;
   /** Booking journey started on this cabin; null when it cannot be booked online. */
   checkHref: string | null;
   /** The room type's own page. */
@@ -139,7 +141,7 @@ export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sh
             {room.note ? <p className="da-modal__line">{room.note}</p> : null}
             <div className="da-modal__terms">
               <p className="da-status" data-state={room.state}>{room.status}</p>
-              {room.price ? <p className="da-price">{room.price}<small>{tx.perCabin}</small></p> : null}
+              {room.price ? <p className="da-price">{room.price}<RoomPriceUnit roomType={room.roomType} locale={locale} /><small>{tx.entireVoyage}</small></p> : null}
             </div>
             <div className="da-modal__act">
               {room.checkHref ? <Link className="btn" data-hathor-btn="primary" href={room.checkHref}>{room.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>

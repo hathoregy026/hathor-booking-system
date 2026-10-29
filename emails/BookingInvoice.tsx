@@ -35,6 +35,7 @@ export default function BookingInvoiceEmail({
   heroImageUrl,
   primaryColor,
   backgroundColor,
+  footer,
   heroHeading,
   bodyText,
 }: BookingInvoiceEmailProps) {
@@ -52,6 +53,7 @@ export default function BookingInvoiceEmail({
       heroImageUrl={heroImageUrl}
       primaryColor={primaryColor}
       backgroundColor={backgroundColor}
+      footer={footer}
     >
       <EmailEyebrow>Invoice</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
@@ -63,8 +65,13 @@ export default function BookingInvoiceEmail({
         <AmountCallout
           label="Due now to confirm"
           amount={due.amount}
-          note={`${due.percent ? `${due.percent}% of your ${details.totalPrice} voyage` : `Total voyage ${details.totalPrice}`} · paid by ${method}`}
+          note={`${due.percent ? `${due.percent}% of your ${details.totalPrice} voyage` : `Total voyage ${details.totalPrice}`} · paid by ${method}${details.cardSurcharge ? " · includes the card surcharge" : ""}`}
         />
+      ) : null}
+      {due && details.remainingAfterDue ? (
+        <EmailBodyText muted>
+          After this payment, {details.remainingAfterDue.amount} remains — {details.remainingAfterDue.when.charAt(0).toLowerCase()}{details.remainingAfterDue.when.slice(1)}.
+        </EmailBodyText>
       ) : null}
 
       {paymentLink ? (

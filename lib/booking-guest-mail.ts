@@ -4,6 +4,7 @@ import { bookingCode, paymentPlan, stageTitle } from "@/lib/booking-code";
 import { buildEmailDetailsFromConfirmBooking } from "@/lib/booking-email-details";
 import { getBookingReservation, netPaid } from "@/lib/booking-engine";
 import { formatPrice } from "@/lib/client-dates";
+import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import {
   sendAdminAlertEmail,
   sendBookingConfirmedEmail,
@@ -14,7 +15,8 @@ import {
 } from "@/lib/email";
 import { bookingQuery } from "@/lib/booking-database";
 import type { BookingEmailDetails } from "@/lib/email-types";
-import { getSiteBaseUrl } from "@/lib/public-url";
+import { BOOKING_MAIL_ORIGIN } from "@/lib/booking-email-routing";
+import type { ResendAttachment } from "@/lib/mail-attachments";
 
 export type MailResult = { sent: boolean; to: string | null; error?: string };
 
@@ -38,22 +40,31 @@ export async function bookingMailDetails(id: string, accessToken?: string) {
   const base = buildEmailDetailsFromConfirmBooking({
     ...booking,
     bookingTickets: [],
-    bookingUrl: `${getSiteBaseUrl()}/booking/success?bookingId=${encodeURIComponent(booking.id)}&token=${encodeURIComponent(token)}`,
+    bookingUrl: `${BOOKING_MAIL_ORIGIN}/booking/success?bookingId=${encodeURIComponent(booking.id)}&token=${encodeURIComponent(token)}`,
   });
   if (!base) return null;
 
   const paid = netPaid(booking.payments);
-  const total = booking.totalPriceCents ?? 0;
+  // What the guest owes: the cabin quote plus the card surcharge snapshotted with the request.
+  const surcharge = booking.cardSurchargeCents ?? 0;
+  const total = (booking.totalPriceCents ?? 0) + surcharge;
   const plan = paymentPlan(booking.paymentSchedule, paid);
+  const dueIndex = plan.findIndex(stage => stage.state === "due");
+  const next = dueIndex >= 0 ? plan[dueIndex + 1] : undefined;
   const details: BookingEmailDetails = {
     ...base,
     bookingCode: bookingCode(booking.id),
-    adminUrl: `${getSiteBaseUrl()}/admin/bookings/${encodeURIComponent(booking.id)}`,
+    adminUrl: `${BOOKING_MAIL_ORIGIN}/admin/bookings/${encodeURIComponent(booking.id)}`,
     roomType: booking.bookingRooms
       .map(line => `${line.room.roomType ?? line.room.name} (${line.adults + line.children} guest${line.adults + line.children === 1 ? "" : "s"})`)
       .join(", ") || base.roomType,
+    totalPrice: formatPrice(total),
+    cardSurcharge: surcharge > 0 ? `${formatPrice(surcharge)} (${CARD_SURCHARGE_PERCENT}% online card payment)` : undefined,
     amountPaid: paid > 0 ? formatPrice(paid) : undefined,
     balanceDue: formatPrice(Math.max(0, total - paid)),
+    remainingAfterDue: next
+      ? { amount: formatPrice(Math.max(0, total - plan[dueIndex]!.cumulativeCents)), when: stageWhen(next.milestone, next.dueAt, next.state) }
+      : undefined,
     paymentPlan: plan.map(stage => ({
       title: stageTitle(stage.milestone, plan.length),
       when: stageWhen(stage.milestone, stage.dueAt, stage.state),
@@ -71,27 +82,39 @@ async function deliver(id: string, send: (details: BookingEmailDetails) => Promi
     if (!loaded) return { sent: false, to: null, error: "This booking has no guest email address." };
     await send(loaded.details);
     return { sent: true, to: loaded.details.guestEmail };
-  } catch (error) {
-    console.error("[booking-mail] send failed", id, error);
-    return { sent: false, to: null, error: error instanceof Error ? error.message : "The email could not be sent." };
+  } catch {
+    console.error("[booking-mail] send failed");
+    return { sent: false, to: null, error: "The email could not be sent. Please try again." };
   }
 }
 
 /** The invoice: the amount due now (worked out from the plan), the team's payment link and any note. */
-export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }) {
-  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice));
+export function sendInvoice(id: string, invoice: { paymentLink?: string; instructions?: string }, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingInvoiceEmail(details.guestEmail, details.guestName, details, invoice, attachments));
 }
 
-export function sendConfirmation(id: string) {
-  return deliver(id, details => sendBookingConfirmedEmail(details.guestEmail, details.guestName, details));
+export function sendConfirmation(id: string, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingConfirmedEmail(details.guestEmail, details.guestName, details, attachments));
+}
+
+export function paymentReceiptMessage(payment: { amountCents: number; reference: string; kind: "RECEIPT" | "REFUND"; receivedAt: Date }): string {
+  const date = format(payment.receivedAt, "MMMM d, yyyy");
+  return payment.kind === "REFUND"
+    ? `We have recorded your refund of ${formatPrice(payment.amountCents)} on ${date}.\n\nBank / processor reference: ${payment.reference}\n\nAny attached documents accompany this refund record. If you have questions, please reply to this email.`
+    : `Thank you. We have recorded your payment of ${formatPrice(payment.amountCents)} on ${date}.\n\nBank / processor reference: ${payment.reference}\n\nThis receipt acknowledges the recorded payment only. Use Track Your Booking to check your booking status and remaining payment schedule. If you have questions, please reply to this email.`;
+}
+
+export function sendPaymentReceipt(id: string, payment: Parameters<typeof paymentReceiptMessage>[0], recordedBySession?: string, attachments: ResendAttachment[] = []) {
+  const subject = `Your Hathor ${payment.kind === "REFUND" ? "refund" : "payment"} receipt — ${bookingCode(id)}`;
+  return sendTeamReply(id, paymentReceiptMessage(payment), subject, recordedBySession, attachments);
 }
 
 export function sendDeclined(id: string, message?: string) {
   return deliver(id, details => sendBookingDeclinedEmail(details.guestEmail, details.guestName, details, message));
 }
 
-export function sendTeamReply(id: string, message: string, subject?: string) {
-  return deliver(id, details => sendBookingMessageEmail(details.guestEmail, details.guestName, details, message, subject));
+export function sendTeamReply(id: string, message: string, subject?: string, recordedBySession?: string, attachments: ResendAttachment[] = []) {
+  return deliver(id, details => sendBookingMessageEmail(details.guestEmail, details.guestName, { ...details, recordedBySession }, message, subject, attachments));
 }
 
 /** The request emails (guest copy with its code, team alert), recording each outcome on the booking. */

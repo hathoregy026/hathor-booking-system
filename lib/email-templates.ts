@@ -8,6 +8,7 @@ import {
 } from "@/lib/email-branding-urls";
 import { emailColors } from "@/emails/styles";
 import { HATHOR_LOGO_SRC } from "@/lib/branding";
+import type { EmailFooterSettings } from "@/lib/email-footer";
 
 export const EMAIL_TEMPLATE_NAMES = [
   "BookingReceived",
@@ -33,6 +34,8 @@ export type EmailTemplateRecord = {
   heroHeading: string | null;
   bodyText: string | null;
   updatedAt: string | null;
+  /** The footer wording shared by every email (not stored per template). */
+  footer?: EmailFooterSettings | null;
 };
 
 export type EmailTemplateOverrides = {
@@ -42,6 +45,8 @@ export type EmailTemplateOverrides = {
   backgroundColor?: string | null;
   heroHeading?: string | null;
   bodyText?: string | null;
+  /** Shared footer wording; the layout falls back to the defaults without it. */
+  footer?: EmailFooterSettings | null;
 };
 
 export type EmailSendTemplate = EmailTemplateRecord & {
@@ -266,6 +271,7 @@ export function toEmailThemeOverrides(
     backgroundColor: template.backgroundColor,
     heroHeading: template.heroHeading,
     bodyText: template.bodyText,
+    footer: template.footer ?? null,
   };
 }
 
@@ -290,6 +296,7 @@ export function buildEmailSendTheme(
     backgroundColor: template.backgroundColor?.trim() || emailColors.background,
     heroHeading: template.heroHeading,
     bodyText: template.bodyText,
+    footer: template.footer ?? null,
   };
 }
 

@@ -1,7 +1,9 @@
 "use client";
 
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties, type ReactNode } from "react";
@@ -20,7 +22,7 @@ import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { HOME_CAROUSEL_IMAGE_BY_ROOM } from "@/lib/home-carousel-images";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
-import { cabinSlugForListing } from "@/lib/selection-catalog";
+import { cabinSlugForListing, residenceSlugForCabinName } from "@/lib/selection-catalog";
 import type { HeroLogoTune } from "@/lib/hero-logo-tune-shared";
 import { NILE_TOTAL_KM } from "@/lib/nile-route";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
@@ -31,6 +33,7 @@ import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { HOME_COPY } from "@/lib/i18n/home-copy";
 import { localizedHref } from "@/lib/i18n/locale";
 import { localizedMoorings } from "@/lib/i18n/route-copy";
+import { OccasionHeroCountdown } from "@/components/occasions/OccasionHeroCountdown";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -254,6 +257,7 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
         !room.roomNumber.startsWith("TWIN"),
     )
     .map((room) => {
+      const residenceSlug = residenceSlugForCabinName(room.name);
       return {
         key: `${cruise.slug}-${room.roomNumber}`,
         slot: HOME_CAROUSEL_IMAGE_BY_ROOM[
@@ -280,6 +284,7 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
            than rendering ones that cannot work */
         cabinSlug: cabinSlugForListing(cruise.slug, room.name),
         cabinName: room.name,
+        detailHref: residenceSlug ? `/rooms/${residenceSlug}` : "/cruises-list",
         href: "/cruises-list",
       };
     }),
@@ -314,6 +319,7 @@ export function HomeThreePageContent({
   heroLogoTuneMobile,
   reviews,
 }: HomeThreeProps) {
+  const { money: usdLabel } = useCurrency();
   const rootRef = useRef<HTMLDivElement>(null);
   const cabinPrices = useCabinPrices();
   const locale = usePublicLocale();
@@ -349,6 +355,7 @@ export function HomeThreePageContent({
               responsiveVideoFrameTarget="#home-three-story"
               logoPartsVariant={heroLogoTune.partsVariant}
               mobileLogoPartsVariant={heroLogoTuneMobile.partsVariant}
+              titleAddon={<OccasionHeroCountdown />}
             />
           </div>
         </div>
@@ -553,6 +560,23 @@ export function HomeThreePageContent({
                             sizes="(max-width: 1024px) 92vw, 24vw"
                           />
 
+                          {sailing.cabinSlug ? (
+                            <div className="h3-sail__tools">
+                              <AddToVoyageButton
+                                kind="cabin"
+                                slug={sailing.cabinSlug}
+                                name={`${sailing.cabinName}, ${sailingName}`}
+                                variant="card"
+                              />
+                              <FavoriteButton
+                                type="cabin"
+                                slug={sailing.cabinSlug}
+                                name={`${sailing.cabinName}, ${sailingName}`}
+                                variant="card"
+                              />
+                            </div>
+                          ) : null}
+
                           <div className="h3-sail__body">
                             <p className="h3-sail__tier">
                               {t.sailings.tiers[sailing.roomType] ?? sailing.roomType}
@@ -566,36 +590,17 @@ export function HomeThreePageContent({
                             </p>
                             <p className="h3-sail__price">
                               <em>{t.sailings.from}</em>
-                              {t.sailings.price(
+                              {usdLabel(
                                 livePriceFor(cabinPrices, sailing.voyageSlug, sailing.roomNumber) ??
                                   sailing.priceCents,
                               )}
+                              <RoomPriceUnit roomType={sailing.roomType} locale={locale} />
                             </p>
 
-                            {/* The site's own pills, on the site's own store.
-                                `inline` is the variant the roster in
-                                app/button-system.css skins — the `card` variant
-                                is an absolutely-placed disc meant to be used
-                                alone, which is why two of them landed on top of
-                                each other. */}
                             <div className="h3-pills h3-sail__acts">
-                              {sailing.cabinSlug ? (
-                                <>
-                                  <FavoriteButton
-                                    type="cabin"
-                                    slug={sailing.cabinSlug}
-                                    name={`${sailing.cabinName}, ${sailingName}`}
-                                    variant="inline"
-                                    showLabel
-                                  />
-                                  <AddToVoyageButton
-                                    kind="cabin"
-                                    slug={sailing.cabinSlug}
-                                    name={`${sailing.cabinName}, ${sailingName}`}
-                                    variant="inline"
-                                  />
-                                </>
-                              ) : null}
+                              <Link href={localizedHref(sailing.detailHref, locale)} className="h3-btn" data-hathor-btn="outline">
+                                {t.sailings.viewDetails}
+                              </Link>
                               <BookNowTrigger className="h3-btn">
                                 {t.sailings.bookNow}
                               </BookNowTrigger>

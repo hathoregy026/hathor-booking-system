@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminAccess } from "../AdminAccessProvider";
+import { canAdminBookingAction } from "@/lib/admin-booking-access";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
@@ -13,8 +15,10 @@ import {
 } from "@/lib/admin-bookings";
 import { stageTitle, type PaymentPlanStage } from "@/lib/booking-code";
 import { formatPrice } from "@/lib/client-dates";
+import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import { BookingActionDialog, actionLabel, bookingActionsFor, type BookingActionKind } from "./BookingActions";
 import { PaymentMeter, StagePill } from "./BookingCard";
+import { BookingConversation } from "./BookingConversation";
 
 type Passenger = { id: string; roomIndex: number; fullName: string; isChild: boolean };
 type Payment = { id: string; kind: string; method: string; amountCents: number; reference: string; receivedAt: string };
@@ -103,7 +107,11 @@ export function BookingDetailView({
 }) {
   const router = useRouter();
   const [dialog, setDialog] = useState<BookingActionKind | null>(null);
-  const { primary, secondary } = bookingActionsFor(booking);
+  const [conversationVersion, setConversationVersion] = useState(0);
+  const access = useAdminAccess();
+  const available = bookingActionsFor(booking);
+  const primary = available.primary.filter(kind => canAdminBookingAction(access, kind));
+  const secondary = available.secondary.filter(kind => canAdminBookingAction(access, kind));
   const departure = parseISO(booking.departureTime);
   const arrival = parseISO(booking.arrivalTime);
   const nights = Math.max(1, differenceInCalendarDays(arrival, departure));
@@ -232,6 +240,7 @@ export function BookingDetailView({
               <p className="whitespace-pre-line text-sm leading-relaxed">{booking.specialRequests}</p>
             </Panel>
           ) : null}
+          <BookingConversation key={`${booking.id}:${conversationVersion}`} bookingId={booking.id} canReply={!inBin && booking.customerEmail !== "—"} onReply={() => setDialog("reply")} />
         </div>
 
         <div className="space-y-5">
@@ -259,6 +268,11 @@ export function BookingDetailView({
 
           <Panel title="Payment" icon={CreditCard} aside={<span className="text-xs text-muted">{paymentMethodLabel(booking.paymentMethod)}</span>}>
             <p className="text-2xl font-semibold tracking-tight tabular">{formatPrice(booking.totalPriceCents)}</p>
+            {booking.cardSurchargeCents > 0 ? (
+              <p className="text-xs text-muted tabular">
+                {formatPrice(booking.totalPriceCents - booking.cardSurchargeCents)} voyage + {formatPrice(booking.cardSurchargeCents)} card surcharge ({CARD_SURCHARGE_PERCENT}%)
+              </p>
+            ) : null}
             <div className="mt-2">
               <PaymentMeter booking={booking} />
             </div>
@@ -335,7 +349,10 @@ export function BookingDetailView({
           onClose={() => setDialog(null)}
           onDone={(_, removed) => {
             if (removed) router.push("/admin/bookings");
-            else router.refresh();
+            else {
+              setConversationVersion(version => version + 1);
+              router.refresh();
+            }
           }}
         />
       ) : null}

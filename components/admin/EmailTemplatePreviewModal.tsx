@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Eye, Loader2, Monitor, RefreshCw, Smartphone, X } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EMAIL_TEMPLATE_NAMES, type EmailTemplateName } from "@/lib/email-templates";
+import type { EmailFooterSettings } from "@/lib/email-footer";
 
 type EmailPreview = {
   name: EmailTemplateName;
@@ -24,6 +25,8 @@ export type EmailPreviewDraft = {
     heroHeading: string;
     bodyText: string;
   }>;
+  /** The footer wording every email shares. */
+  footer?: EmailFooterSettings;
 };
 
 const TEMPLATE_LABELS: Record<EmailTemplateName, string> = {
@@ -74,6 +77,7 @@ export function EmailTemplatePreviewModal({
             body: JSON.stringify({
               shared: draft.shared,
               templates: draft.templates,
+              footer: draft.footer,
             }),
           })
         : await adminFetch("/api/admin/email-templates/preview", {

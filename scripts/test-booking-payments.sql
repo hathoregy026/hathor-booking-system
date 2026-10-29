@@ -5,8 +5,10 @@ SET LOCAL idle_in_transaction_session_timeout='15s';
 DO $$
 DECLARE
   s "CruiseSchedule"; hold jsonb; result jsonb; b "Booking";
-  a_id text; b_id text; c_id text; total int; required int; days int;
+  a_id text; b_id text; c_id text; d_id text; e_id text; f_id text; total int; required int; days int;
+  owed_b int; required_b int; first_cents int; balance_due date;
   key_a text:=gen_random_uuid()::text; key_b text:=gen_random_uuid()::text; key_c text:=gen_random_uuid()::text;
+  key_d text:=gen_random_uuid()::text; key_e text:=gen_random_uuid()::text; key_f text:=gen_random_uuid()::text;
   ref_a text:=gen_random_uuid()::text; ref_b text:=gen_random_uuid()::text; ref_rest text:=gen_random_uuid()::text;
   failed boolean; active_allocations int;
 BEGIN
@@ -37,6 +39,22 @@ BEGIN
     'phone','+201234567890','country','Egypt','paymentMethod','BANK_TRANSFER','specialRequests','Synthetic Step 4 decline test','marketingOptIn',false,
     'passengers',jsonb_build_array(jsonb_build_object('roomIndex',0,'fullName','QA Adult','isChild',false))),'qa-step4-sql-'||key_c);
 
+  -- 15. A Visa request owes the quote plus a 2.5% card surcharge, snapshotted
+  -- with the request; each stage carries it in proportion. Bank transfer adds none.
+  owed_b := total + round(total*0.025);
+  required_b := ceil(owed_b::numeric * CASE WHEN days<=45 THEN 1 WHEN days<=60 THEN .5 ELSE .3 END);
+  SELECT * INTO b FROM "Booking" WHERE id=b_id;
+  IF b."totalPriceCents"<>total THEN RAISE EXCEPTION 'CHECK 15: the quote itself changed'; END IF;
+  IF b."cardSurchargeCents"<>owed_b-total THEN RAISE EXCEPTION 'CHECK 15: Visa surcharge is %',b."cardSurchargeCents"; END IF;
+  IF (SELECT "cardSurchargeCents" FROM "Booking" WHERE id=a_id)<>0 THEN RAISE EXCEPTION 'CHECK 15: bank transfer carries a surcharge'; END IF;
+  IF (SELECT max("cumulativeCents") FROM "BookingPaymentSchedule" WHERE "bookingId"=b_id)<>owed_b
+   THEN RAISE EXCEPTION 'CHECK 15: Visa schedule does not end at quote plus surcharge'; END IF;
+  IF (SELECT "cumulativeCents" FROM "BookingPaymentSchedule" WHERE "bookingId"=b_id AND milestone='INITIAL')<>ceil(ceil(total*.3)::numeric*owed_b/total)
+   THEN RAISE EXCEPTION 'CHECK 15: Visa deposit does not carry its share of the surcharge'; END IF;
+  IF (SELECT max("cumulativeCents") FROM "BookingPaymentSchedule" WHERE "bookingId"=a_id)<>total
+   THEN RAISE EXCEPTION 'CHECK 15: bank transfer schedule changed'; END IF;
+  RAISE NOTICE 'PASS 15. a Visa request owes the quote plus the 2.5%% card surcharge; bank transfer adds none';
+
   -- 8. Acceptance without payment must not confirm.
   IF (hathor_administer_booking(a_id,'{"type":"accept"}'::jsonb)->>'status')<>'REQUESTED'
    THEN RAISE EXCEPTION 'CHECK 8: acceptance without payment confirmed the booking'; END IF;
@@ -46,7 +64,7 @@ BEGIN
 
   -- 9. Payment without acceptance must not confirm.
   result := hathor_administer_booking(b_id, jsonb_build_object('type','record-payment','payment',
-    jsonb_build_object('reference',ref_b,'method','VISA','kind','RECEIPT','amountCents',required,
+    jsonb_build_object('reference',ref_b,'method','VISA','kind','RECEIPT','amountCents',required_b,
       'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'),'recordedBySession','qa-session')));
   IF (result->>'status')<>'REQUESTED' THEN RAISE EXCEPTION 'CHECK 9: payment without acceptance confirmed the booking'; END IF;
   IF (result->>'paymentStatus')<>'PARTIALLY_PAID' THEN RAISE EXCEPTION 'CHECK 9: payment state is %',result->>'paymentStatus'; END IF;
@@ -119,10 +137,99 @@ BEGIN
    PERFORM hathor_administer_booking(b_id, jsonb_build_object('type','record-payment','payment',
      jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','REFUND','amountCents',total,
        'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
-  EXCEPTION WHEN raise_exception THEN failed:=true;
+  EXCEPTION WHEN SQLSTATE 'HB400' OR raise_exception THEN failed:=true;
   END;
   IF NOT failed THEN RAISE EXCEPTION 'CHECK 14: a refund beyond the cancellation entitlement was accepted'; END IF;
   RAISE NOTICE 'PASS 14. declined and cancelled bookings release their cabins, and refunds stay within the policy';
+
+  -- 16. A Visa booking is paid in full at quote plus surcharge, and never beyond.
+  hold := hathor_acquire_hold(s.id,'[{"roomType":"Luxury King Cabin","adults":1,"children":0}]'::jsonb,'qa-step4-sql-'||key_d,'qa-step4-fp-d');
+  d_id := hold->>'id';
+  PERFORM hathor_submit_request(jsonb_build_object('bookingId',d_id,'firstName','QA','lastName','Card','email','qa-step4@example.invalid',
+    'phone','+201234567890','country','Egypt','paymentMethod','VISA','specialRequests','Synthetic surcharge test','marketingOptIn',false,
+    'passengers',jsonb_build_array(jsonb_build_object('roomIndex',0,'fullName','QA Adult','isChild',false))),'qa-step4-sql-'||key_d);
+  PERFORM hathor_administer_booking(d_id,'{"type":"accept"}'::jsonb);
+  result := hathor_administer_booking(d_id, jsonb_build_object('type','record-payment','payment',
+    jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','RECEIPT','amountCents',owed_b,
+      'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
+  IF (result->>'status')<>'CONFIRMED' OR (result->>'paymentStatus')<>'PAID' THEN RAISE EXCEPTION 'CHECK 16: paying quote plus surcharge left % / %',result->>'status',result->>'paymentStatus'; END IF;
+  failed:=false;
+  BEGIN
+   PERFORM hathor_administer_booking(d_id, jsonb_build_object('type','record-payment','payment',
+     jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','RECEIPT','amountCents',1,
+       'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
+  EXCEPTION WHEN raise_exception THEN failed:=true;
+  END;
+  IF NOT failed THEN RAISE EXCEPTION 'CHECK 16: a payment beyond quote plus surcharge was accepted'; END IF;
+  RAISE NOTICE 'PASS 16. a Visa booking is paid in full at quote plus surcharge, and overpayment is refused';
+
+  -- 17. Before any payment the team may change the method; the surcharge follows it.
+  hold := hathor_acquire_hold(s.id,'[{"roomType":"Luxury King Cabin","adults":1,"children":0}]'::jsonb,'qa-step4-sql-'||key_e,'qa-step4-fp-e');
+  e_id := hold->>'id';
+  PERFORM hathor_submit_request(jsonb_build_object('bookingId',e_id,'firstName','QA','lastName','Switch','email','qa-step4@example.invalid',
+    'phone','+201234567890','country','Egypt','paymentMethod','VISA','specialRequests','Synthetic method switch test','marketingOptIn',false,
+    'passengers',jsonb_build_array(jsonb_build_object('roomIndex',0,'fullName','QA Adult','isChild',false))),'qa-step4-sql-'||key_e);
+  result := hathor_administer_booking(e_id,'{"type":"accept","paymentMethod":"BANK_TRANSFER"}'::jsonb);
+  IF (result->>'cardSurchargeCents')::int<>0 OR (result->>'paymentMethod')<>'BANK_TRANSFER' OR (result->>'acceptedAt') IS NULL
+   THEN RAISE EXCEPTION 'CHECK 17: switching to bank transfer kept the surcharge'; END IF;
+  IF (SELECT max("cumulativeCents") FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id)<>total
+   OR (SELECT "cumulativeCents" FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id AND milestone='INITIAL')<>ceil(total*.3)
+   THEN RAISE EXCEPTION 'CHECK 17: bank transfer schedule still carries the surcharge'; END IF;
+  result := hathor_administer_booking(e_id,'{"type":"accept","paymentMethod":"VISA"}'::jsonb);
+  IF (result->>'cardSurchargeCents')::int<>owed_b-total OR (SELECT max("cumulativeCents") FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id)<>owed_b
+   THEN RAISE EXCEPTION 'CHECK 17: switching back to Visa did not restore the surcharge'; END IF;
+  RAISE NOTICE 'PASS 17. before any payment the method can change and the surcharge follows it';
+
+  -- 18. The team's own split: this invoice, then the rest by one date. The
+  -- booking confirms once that first payment is recorded, even below 30%%.
+  first_cents := ceil(owed_b*0.2);
+  balance_due := s."departureTime"::date - 50;
+  FOR result IN SELECT x FROM jsonb_array_elements(jsonb_build_array(
+    jsonb_build_object('firstCents',owed_b+1,'balanceDueOn',balance_due),
+    jsonb_build_object('firstCents',0,'balanceDueOn',balance_due),
+    jsonb_build_object('firstCents',first_cents),
+    jsonb_build_object('firstCents',first_cents,'balanceDueOn',(clock_timestamp() AT TIME ZONE 'UTC')::date),
+    jsonb_build_object('firstCents',first_cents,'balanceDueOn',s."departureTime"::date+1))) x LOOP
+   failed:=false;
+   BEGIN
+    PERFORM hathor_administer_booking(e_id, jsonb_build_object('type','accept','split',result));
+   EXCEPTION WHEN SQLSTATE 'HB400' THEN failed:=true;
+   END;
+   IF NOT failed THEN RAISE EXCEPTION 'CHECK 18: an invalid split was accepted: %',result; END IF;
+  END LOOP;
+  result := hathor_administer_booking(e_id, jsonb_build_object('type','accept','split',jsonb_build_object('firstCents',first_cents,'balanceDueOn',balance_due)));
+  IF (result->>'status')<>'REQUESTED' THEN RAISE EXCEPTION 'CHECK 18: a split confirmed the booking without payment'; END IF;
+  IF (SELECT count(*) FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id)<>2
+   OR (SELECT "cumulativeCents" FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id AND milestone='INITIAL')<>first_cents
+   OR (SELECT "cumulativeCents" FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id AND milestone='BALANCE')<>owed_b
+   OR (SELECT "dueAt"::date FROM "BookingPaymentSchedule" WHERE "bookingId"=e_id AND milestone='BALANCE')<>balance_due
+   THEN RAISE EXCEPTION 'CHECK 18: the split was not stored as the schedule'; END IF;
+  result := hathor_administer_booking(e_id, jsonb_build_object('type','record-payment','payment',
+    jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','RECEIPT','amountCents',first_cents,
+      'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
+  IF (result->>'status')<>'CONFIRMED' THEN RAISE EXCEPTION 'CHECK 18: paying the team''s first payment did not confirm'; END IF;
+  FOR result IN SELECT x FROM jsonb_array_elements('[{"type":"accept","paymentMethod":"BANK_TRANSFER"},{"type":"accept","split":{"firstCents":100}}]'::jsonb) x LOOP
+   failed:=false;
+   BEGIN
+    PERFORM hathor_administer_booking(e_id, result);
+   EXCEPTION WHEN SQLSTATE 'HB400' THEN failed:=true;
+   END;
+   IF NOT failed THEN RAISE EXCEPTION 'CHECK 18: invoice amounts changed after a payment: %',result; END IF;
+  END LOOP;
+  IF (hathor_administer_booking(e_id,'{"type":"accept"}'::jsonb)->>'status')<>'CONFIRMED' THEN RAISE EXCEPTION 'CHECK 18: resending the invoice failed'; END IF;
+  RAISE NOTICE 'PASS 18. the team''s first payment and balance date become the schedule, and confirm the booking';
+
+  -- 19. A one-payment split is the whole amount in a single stage.
+  hold := hathor_acquire_hold(s.id,'[{"roomType":"Luxury King Cabin","adults":1,"children":0}]'::jsonb,'qa-step4-sql-'||key_f,'qa-step4-fp-f');
+  f_id := hold->>'id';
+  PERFORM hathor_submit_request(jsonb_build_object('bookingId',f_id,'firstName','QA','lastName','Whole','email','qa-step4@example.invalid',
+    'phone','+201234567890','country','Egypt','paymentMethod','BANK_TRANSFER','specialRequests','Synthetic full split test','marketingOptIn',false,
+    'passengers',jsonb_build_array(jsonb_build_object('roomIndex',0,'fullName','QA Adult','isChild',false))),'qa-step4-sql-'||key_f);
+  PERFORM hathor_administer_booking(f_id, jsonb_build_object('type','accept','split',jsonb_build_object('firstCents',total)));
+  IF (SELECT count(*) FROM "BookingPaymentSchedule" WHERE "bookingId"=f_id)<>1
+   OR (SELECT "cumulativeCents" FROM "BookingPaymentSchedule" WHERE "bookingId"=f_id AND milestone='INITIAL')<>total
+   THEN RAISE EXCEPTION 'CHECK 19: a one-payment split is not a single stage'; END IF;
+  RAISE NOTICE 'PASS 19. a one-payment split asks for the whole amount at once';
 
   RAISE EXCEPTION USING ERRCODE='ZQ004',MESSAGE='all payment checks passed; rolling back synthetic records';
  EXCEPTION WHEN SQLSTATE 'ZQ004' THEN

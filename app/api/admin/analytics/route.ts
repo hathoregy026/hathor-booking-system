@@ -1,3 +1,4 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError, z } from "zod";
 import { AdminAuthError, assertAdminSession } from "@/lib/admin-server-auth";
@@ -32,8 +33,10 @@ function parseRange(request: NextRequest): GaAdminRangeId {
 }
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("analytics.view");
+  if (denied) return denied;
   try {
-    await assertAdminSession();
+    await assertAdminSession("analytics.view");
     const report = await fetchGaAdminReport(parseRange(request));
     return json({ ok: true, report });
   } catch (error) {

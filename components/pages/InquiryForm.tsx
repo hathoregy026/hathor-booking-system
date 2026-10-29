@@ -3,6 +3,7 @@
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
+import { InquiryVerification } from "@/components/pages/InquiryVerification";
 import "./InquiryForm.css";
 import { trackGaEvent } from "@/lib/ga-browser";
 import type { InquiryPayload } from "@/lib/inquiry-email";
@@ -69,6 +70,8 @@ export function InquiryForm({
 
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [verificationVersion, setVerificationVersion] = useState(0);
   const portalReady = useIsClient();
   const titleId = useId();
 
@@ -93,6 +96,8 @@ export function InquiryForm({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (state === "submitting") return;
+    if (!turnstileToken) { setState("error"); setErrorMessage("Please complete the security check before sending."); return; }
     setState("submitting");
     setErrorMessage("");
 
@@ -132,7 +137,7 @@ export function InquiryForm({
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, turnstileToken }),
       });
 
       if (!response.ok) {
@@ -150,6 +155,9 @@ export function InquiryForm({
       setErrorMessage(
         error instanceof Error && t.serverErrors ? error.message : t.unableToSend,
       );
+    } finally {
+      setTurnstileToken("");
+      setVerificationVersion(current => current + 1);
     }
   }
 
@@ -376,6 +384,7 @@ export function InquiryForm({
             />
           </div>
 
+          <InquiryVerification type={type} onToken={setTurnstileToken} resetVersion={verificationVersion} />
           {state === "error" && errorMessage ? (
             <p className="text-sm text-red-700" role="alert">
               {errorMessage}
@@ -385,7 +394,7 @@ export function InquiryForm({
           <button
             type="submit"
             className={submitClassName}
-            disabled={state === "submitting"}
+            disabled={state === "submitting" || !turnstileToken}
           >
             {state === "submitting" ? t.sending : submitLabel ?? t.sendMessage}
           </button>

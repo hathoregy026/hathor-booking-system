@@ -64,7 +64,7 @@ export const HATHOR_BOOKING_INCLUSIONS = [
   "Welcome drink upon arrival",
   "Soft all-inclusive meals and soft drinks",
   "Sightseeing entrance tickets according to the itinerary",
-  "Professional Egyptologist guide",
+  "an Egyptologist Guide",
   "Laundry service and daily minibar refill",
   "Wi-Fi, room service, coffee and tea facilities",
 ] as const;

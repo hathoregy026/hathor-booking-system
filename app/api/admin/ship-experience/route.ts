@@ -1,7 +1,8 @@
+import { adminApiGuard } from "@/lib/admin-server-auth";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
+import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { handleRouteError } from "@/lib/api";
 import { assertBookingAdmin } from "@/lib/booking-admin-api";
 import { prisma } from "@/lib/prisma";
@@ -35,8 +36,10 @@ const saveSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const denied = await adminApiGuard("ship.view");
+  if (denied) return denied;
   try {
-    if (!verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value)) {
+    if (!(await adminIdentityFromRequest(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     return NextResponse.json(await loadShipExperience(), { headers: { "Cache-Control": "no-store" } });
@@ -46,8 +49,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  const denied = await adminApiGuard("ship.manage");
+  if (denied) return denied;
   try {
-    assertBookingAdmin(request);
+    await assertBookingAdmin(request);
     const input = saveSchema.parse(await readPublicJsonBody(request));
     await prisma.$transaction(async tx => {
       const existing = await tx.room.findMany({

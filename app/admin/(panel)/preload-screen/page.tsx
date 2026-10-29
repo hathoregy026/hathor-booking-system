@@ -1,8 +1,10 @@
+import { requireAdminPage } from "@/lib/admin-server-auth";
 import { WelcomeSplashSettingsPanel } from "@/components/admin/WelcomeSplashSettingsPanel";
 import { CmsPageHeader } from "@/components/admin/CmsPageHeader";
 import { Sparkles } from "lucide-react";
 
-export default function AdminPreloadScreenPage() {
+export default async function AdminPreloadScreenPage() {
+  await requireAdminPage("website.view");
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <CmsPageHeader

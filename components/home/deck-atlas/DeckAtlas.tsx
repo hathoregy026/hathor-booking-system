@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { RESIDENCE_SLUG } from "@/components/booking/journey/SuitesParts";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
@@ -16,6 +17,7 @@ import type { ShipRoom } from "@/lib/ship-experience";
 import { DEFAULT_SHIP_EXPERIENCE, SHIP_REGIONS, type ShipDeckId, type ShipExperienceConfig, type ShipSlotId } from "@/lib/ship-experience-shared";
 import { DeckAtlasPlan, type AtlasPlanRoom, type AtlasState, type SpotId } from "./DeckAtlasPlan";
 import { DeckAtlasRoomModal, type AtlasSheet, type RoomSheet } from "./DeckAtlasRoomModal";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { FACILITY_BY_ID, facilitiesWith, facilityMark, isFacilityId, type FacilityId } from "./facilities";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { DECK_ATLAS_COPY, localizeShipConfig, localizeSpace, type DeckAtlasCopy } from "@/lib/i18n/deck-atlas-copy";
@@ -101,6 +103,7 @@ export function DeckAtlas() {
   const locale = usePublicLocale();
   const tx = DECK_ATLAS_COPY[locale];
   const lang = tx.dateLocale;
+  const { money: usd } = useCurrency();
   const rootRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
   const [inView, setInView] = useState(false);
@@ -251,7 +254,8 @@ export function DeckAtlas() {
     note: pick.blurb,
     gallery: pick.gallery, galleryAlt: pick.comparable ? tx.comparableCabin : pick.name, galleryNote: pick.comparable ? tx.comparableCabin : null,
     deck: deck.id, areas: [SHIP_REGIONS[pick.slotId]],
-    state: pick.state, status: pickStatus, price: pickPrice !== null ? tx.usd(pickPrice) : null,
+    state: pick.state, status: pickStatus, price: pickPrice !== null ? usd(pickPrice) : null,
+    roomType: pick.type,
     checkHref, viewHref: residence ? `/rooms/${residence}` : null,
     cabinSlug: residence && pickRoomId ? buildCabinSlug(duration, residence) : null,
   } : null;
@@ -399,7 +403,7 @@ export function DeckAtlas() {
             </div>
             <div className="da-detail__terms">
               <p className="da-status" data-state={pick.state}>{pickStatus}</p>
-              {sheet.price ? <p className="da-price">{sheet.price}<small>{tx.perCabin}</small></p> : null}
+              {sheet.price ? <p className="da-price">{sheet.price}<RoomPriceUnit roomType={sheet.roomType} locale={locale} /><small>{tx.entireVoyage}</small></p> : null}
             </div>
             <div className="da-detail__act">
               {sheet.checkHref ? <Link className="btn" data-hathor-btn="primary" href={localizedHref(sheet.checkHref, locale)}>{pick.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>
@@ -422,7 +426,7 @@ export function DeckAtlas() {
                     <li key={group.type} className="da-group">
                       <div className="da-group__head">
                         <p className="da-group__name">{group.type === REQUEST_GROUP ? tx.onRequest : group.type}</p>
-                        {price !== null ? <p className="da-group__price">{tx.usd(price)}</p> : null}
+                        {price !== null ? <p className="da-group__price">{usd(price)}<RoomPriceUnit roomType={group.type} locale={locale} /></p> : null}
                       </div>
                       <p className="da-group__spec">{group.type === REQUEST_GROUP ? tx.contactAboutRoomSentence : specOf(first, tx)}</p>
                       <div className="da-group__rooms">

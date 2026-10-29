@@ -11,7 +11,7 @@ type RouteContext = {
 };
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("cruises.manage");
   if (denied) return denied;
 
   try {

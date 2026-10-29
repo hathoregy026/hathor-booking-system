@@ -73,6 +73,8 @@ export type DeckAtlasCopy = {
   allCabins: string;
   viewPhotos: string;
   perCabin: string;
+  /** After the price and its unit ("USD 7,000 per suite · entire voyage"). */
+  entireVoyage: string;
   perCabinHead: string;
   seeOtherDates: string;
   checkAvailability: string;
@@ -181,6 +183,7 @@ const EN: DeckAtlasCopy = {
   allCabins: "All cabins on this deck",
   viewPhotos: "View the room photographs",
   perCabin: "per cabin · entire voyage",
+  entireVoyage: "entire voyage",
   perCabinHead: "Per cabin · entire voyage",
   seeOtherDates: "See other dates",
   checkAvailability: "Check availability",
@@ -304,6 +307,7 @@ const IT: DeckAtlasCopy = {
   allCabins: "Tutte le cabine di questo ponte",
   viewPhotos: "Vedi le fotografie della camera",
   perCabin: "per cabina · intero viaggio",
+  entireVoyage: "intero viaggio",
   perCabinHead: "Per cabina · intero viaggio",
   seeOtherDates: "Vedi altre date",
   checkAvailability: "Verifica la disponibilità",

@@ -50,6 +50,8 @@ export type HomeCopy = {
     day: (weekday: string) => string;
     from: string;
     price: (cents: number) => string;
+    /** The card's link to the room page. */
+    viewDetails: string;
     alt: (roomName: string, ports: string) => string;
     bookNow: string;
     moreAlt: string;
@@ -204,6 +206,7 @@ const EN: HomeCopy = {
     nights: (nights) => `${nights} nights`,
     day: (weekday) => `${weekday}s`,
     from: "from",
+    viewDetails: "View details",
     price: usd,
     alt: (roomName, ports) => `${roomName} aboard Hathor, ${ports}`,
     bookNow: "Book now",
@@ -397,6 +400,7 @@ const IT: HomeCopy = {
     nights: (nights) => `${nights} notti`,
     day: (weekday) => `ogni ${italianWeekday(weekday)}`,
     from: "da",
+    viewDetails: "Vedi i dettagli",
     price: usdIt,
     alt: (roomName, ports) => `${roomName} a bordo di Hathor, ${itPorts(ports)}`,
     bookNow: "Prenota ora",

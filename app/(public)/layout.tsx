@@ -13,6 +13,7 @@ import { WebsiteTextPageScope } from "@/components/public/WebsiteTextPageScope";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { getCabinPriceTable } from "@/lib/cabin-prices";
 import { CabinPricesProvider } from "@/components/public/CabinPricesProvider";
+import { OccasionsProvider } from "@/components/occasions/OccasionsProvider";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
@@ -150,6 +151,8 @@ export default async function PublicSiteLayout({
     heroLogoTuneToNarrowImportantCss(cms.heroLogoTuneMobile),
   );
   const hieroglyphTuneCss = hieroglyphTuneToImportantCss(cms.hieroglyphTune);
+  /* Switched-off drafts never reach the page; signed-in previews fetch them from the admin API. */
+  const liveOccasions = cms.occasions.occasions.filter((occasion) => occasion.enabled);
 
   return (
     <div
@@ -196,13 +199,16 @@ export default async function PublicSiteLayout({
               <WebsiteTextPageScope />
               <PageVisibilityProvider settings={pageVisibility}>
                 <ComingSoonGate liveSite={liveSite}>
-                  <PublicLayout
-                    welcomeSplash={welcomeSplash}
-                    liveSite={liveSite}
-                  >
-                    {/* Dashboard → Prices, for every price shown on the public pages. */}
-                    <CabinPricesProvider prices={cabinPrices}>{children}</CabinPricesProvider>
-                  </PublicLayout>
+                  {/* Dashboard → Occasions: the header stripe and the home countdown. */}
+                  <OccasionsProvider occasions={liveOccasions}>
+                    <PublicLayout
+                      welcomeSplash={welcomeSplash}
+                      liveSite={liveSite}
+                    >
+                      {/* Dashboard → Prices, for every price shown on the public pages. */}
+                      <CabinPricesProvider prices={cabinPrices}>{children}</CabinPricesProvider>
+                    </PublicLayout>
+                  </OccasionsProvider>
                 </ComingSoonGate>
               </PageVisibilityProvider>
             </WebsiteTextProvider>

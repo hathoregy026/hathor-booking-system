@@ -3,6 +3,8 @@ import { handleRouteError, jsonError } from "@/lib/api";
 import { logDbError, withDb } from "@/lib/db-safe";
 import { pickReliableEmailImageUrl } from "@/lib/email-branding-shared";
 import { HATHOR_EMAIL_LOGO_URL } from "@/lib/email-branding-urls";
+import { EMAIL_FOOTER_LIMITS, emailFooterTooLong } from "@/lib/email-footer";
+import { loadEmailFooter, saveEmailFooter } from "@/lib/email-footer-db";
 import {
   EMAIL_TEMPLATE_NAMES,
   getDefaultEmailTemplate,
@@ -17,6 +19,15 @@ import { adminApiGuard } from "@/lib/admin-server-auth";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const FOOTER_LABELS = {
+  tagline: "tagline",
+  email: "email address",
+  phone: "phone number",
+  replyNote: "reply note",
+  copyright: "copyright line",
+  adminTitle: "team alert title",
+} as const;
+
 function resolvePersistedImageUrl(
   incoming: string | null | undefined,
   previous: string | null | undefined,
@@ -28,7 +39,7 @@ function resolvePersistedImageUrl(
 }
 
 export async function GET() {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.view");
   if (denied) return denied;
 
   try {
@@ -38,6 +49,7 @@ export async function GET() {
 
     return NextResponse.json({
       templates: mergeAllEmailTemplates(rows),
+      footer: await loadEmailFooter(),
     });
   } catch (error) {
     logDbError("admin.email-templates.GET", error);
@@ -45,6 +57,7 @@ export async function GET() {
       {
         error: "Could not load email templates.",
         templates: getDefaultEmailTemplates(),
+        footer: await loadEmailFooter(),
       },
       { status: 503 },
     );
@@ -53,7 +66,7 @@ export async function GET() {
 
 /** Save shared branding + all template copy in one request. */
 export async function PUT(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {
@@ -70,6 +83,8 @@ export async function PUT(request: NextRequest) {
         heroHeading?: string | null;
         bodyText?: string | null;
       }>;
+      /** The footer wording every email shares; left as it is when absent. */
+      footer?: Record<string, unknown>;
     };
 
     const shared = body.shared ?? {};
@@ -89,6 +104,10 @@ export async function PUT(request: NextRequest) {
       if ((entry.subject?.trim().length ?? 0) > 200) return jsonError(`The subject of ${label} is longer than 200 characters.`, 400);
       if ((entry.heroHeading?.trim().length ?? 0) > 200) return jsonError(`The heading of ${label} is longer than 200 characters.`, 400);
       if ((entry.bodyText?.trim().length ?? 0) > 4000) return jsonError(`The text of ${label} is longer than 4,000 characters.`, 400);
+    }
+    const longField = emailFooterTooLong(body.footer);
+    if (longField) {
+      return jsonError(`The footer's ${FOOTER_LABELS[longField]} is longer than ${EMAIL_FOOTER_LIMITS[longField]} characters.`, 400);
     }
 
     await withDb(async () => {
@@ -158,12 +177,17 @@ export async function PUT(request: NextRequest) {
       }
     });
 
+    const footer = body.footer
+      ? await withDb(() => saveEmailFooter(body.footer))
+      : await loadEmailFooter();
+
     const rows = await withDb(() =>
       prisma.emailTemplate.findMany({ orderBy: { name: "asc" } }),
     );
 
     return NextResponse.json({
       templates: mergeAllEmailTemplates(rows),
+      footer,
     });
   } catch (error) {
     if (error instanceof Error && error.message.includes("required")) {
@@ -175,7 +199,7 @@ export async function PUT(request: NextRequest) {
 
 /** @deprecated Use PUT to save all templates at once. */
 export async function POST(request: NextRequest) {
-  const denied = await adminApiGuard();
+  const denied = await adminApiGuard("templates.manage");
   if (denied) return denied;
 
   try {

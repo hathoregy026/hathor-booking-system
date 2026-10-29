@@ -10,6 +10,7 @@ import {
   GUIDE_FAQ,
   GUIDE_INTRO,
   GUIDE_VOYAGES,
+  guidePriceAnswer,
   guideUsd,
   type GuideQuestion,
   type GuideVoyage,
@@ -165,6 +166,8 @@ export type GuideCopy = {
   departureDay: (weekday: string) => string;
   from: string;
   price: (cents: number) => string;
+  /** The FAQ's price answer, worded with the visitor's display currency. */
+  priceAnswer: (formatPrice: (cents: number) => string) => string;
   note: string;
   faqLabel: string;
   faq: readonly GuideQuestion[];
@@ -190,7 +193,7 @@ const GUIDE_VOYAGES_IT: GuideVoyage[] = GUIDE_VOYAGES.map((voyage) => {
   };
 });
 
-function italianPriceAnswer(): string {
+function italianPriceAnswer(formatPrice: (cents: number) => string = usdIt): string {
   const byNights = (nights: number) =>
     GUIDE_VOYAGES.find((voyage) => voyage.nights === nights);
   const three = byNights(3);
@@ -200,9 +203,9 @@ function italianPriceAnswer(): string {
     return "I prezzi si intendono per cabina e per l’intero viaggio, tasse e costi di servizio inclusi.";
   }
   return (
-    `Le cabine partono da ${usdIt(three.fromCents)} per tre notti da Assuan a Luxor, ` +
-    `${usdIt(four.fromCents)} per quattro notti da Luxor ad Assuan e ` +
-    `${usdIt(seven.fromCents)} per la crociera di sette notti andata e ritorno. ` +
+    `Le cabine partono da ${formatPrice(three.fromCents)} per tre notti da Assuan a Luxor, ` +
+    `${formatPrice(four.fromCents)} per quattro notti da Luxor ad Assuan e ` +
+    `${formatPrice(seven.fromCents)} per la crociera di sette notti andata e ritorno. ` +
     "I prezzi si intendono per cabina e per l’intero viaggio, tasse e costi di servizio inclusi; le suite e le Royal Suite hanno prezzi superiori a quelli delle cabine."
   );
 }
@@ -266,6 +269,7 @@ const GUIDE_BY_LOCALE: Record<PublicLocale, GuideCopy> = {
     departureDay: (weekday) => `${weekday}s`,
     from: "from",
     price: guideUsd,
+    priceAnswer: guidePriceAnswer,
     note: "Per cabin, for the whole voyage. Taxes and service charges included.",
     faqLabel: "Questions before you sail",
     faq: GUIDE_FAQ,
@@ -281,9 +285,11 @@ const GUIDE_BY_LOCALE: Record<PublicLocale, GuideCopy> = {
     departureDay: (weekday) => `ogni ${italianWeekday(weekday)}`,
     from: "da",
     price: usdIt,
+    priceAnswer: italianPriceAnswer,
     note: "Per cabina, per l’intero viaggio. Tasse e costi di servizio inclusi.",
     faqLabel: "Domande prima di salpare",
     faq: GUIDE_FAQ.map((item, index) => ({
+      kind: item.kind,
       question: FAQ_IT[index]?.question ?? item.question,
       answer: FAQ_IT[index]?.answer ?? item.answer,
       link: item.link

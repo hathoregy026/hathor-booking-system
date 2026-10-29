@@ -43,7 +43,10 @@ export type AdminBookingDto = {
   rooms: string[];
   roomTypes: string[];
   cabins: AdminBookingCabin[];
+  /** What the guest owes: the cabin quote plus any card surcharge. */
   totalPriceCents: number;
+  /** The 2.5% online card surcharge included in totalPriceCents (0 for bank transfer). */
+  cardSurchargeCents: number;
   paidCents: number;
   /** The first stage of the payment schedule: what confirms the booking. */
   depositCents: number | null;

@@ -72,6 +72,41 @@ export type SailingPrice = Prisma.SailingPriceModel
  */
 export type Booking = Prisma.BookingModel
 /**
+ * Model BookingEmailThread
+ * 
+ */
+export type BookingEmailThread = Prisma.BookingEmailThreadModel
+/**
+ * Model BookingMessage
+ * 
+ */
+export type BookingMessage = Prisma.BookingMessageModel
+/**
+ * Model InboxMessage
+ * 
+ */
+export type InboxMessage = Prisma.InboxMessageModel
+/**
+ * Model DashboardEmailDeletion
+ * 
+ */
+export type DashboardEmailDeletion = Prisma.DashboardEmailDeletionModel
+/**
+ * Model DashboardEmailPlacement
+ * 
+ */
+export type DashboardEmailPlacement = Prisma.DashboardEmailPlacementModel
+/**
+ * Model DashboardNotificationSeen
+ * 
+ */
+export type DashboardNotificationSeen = Prisma.DashboardNotificationSeenModel
+/**
+ * Model MailAttachmentDownload
+ * 
+ */
+export type MailAttachmentDownload = Prisma.MailAttachmentDownloadModel
+/**
  * Model ApiRateLimit
  * 
  */
@@ -132,6 +167,29 @@ export type BlogPost = Prisma.BlogPostModel
  */
 export type AdminProfile = Prisma.AdminProfileModel
 /**
+ * Model AdminUser
+ * Dashboard sign-in accounts. One row per person: there is no shared login.
+ * Administrators invite people; the CLI bootstraps the first administrator.
+ * There is no public sign-up route.
+ */
+export type AdminUser = Prisma.AdminUserModel
+/**
+ * Model AdminSession
+ * Server-side sessions. The cookie carries a random secret; only its
+ * SHA-256 is stored, so a database leak does not hand out live sessions.
+ */
+export type AdminSession = Prisma.AdminSessionModel
+/**
+ * Model AdminRecoveryCode
+ * Single-use recovery codes, stored as keyed hashes only.
+ */
+export type AdminRecoveryCode = Prisma.AdminRecoveryCodeModel
+/**
+ * Model AdminAuthEvent
+ * Append-only sign-in audit trail. Never holds passwords, codes or tokens.
+ */
+export type AdminAuthEvent = Prisma.AdminAuthEventModel
+/**
  * Model EmailTemplate
  * 
  */
@@ -147,3 +205,13 @@ export type SiteImage = Prisma.SiteImageModel
  *  * Temporary key/value store (hero logo tuner). Safe to drop later.
  */
 export type SiteSetting = Prisma.SiteSettingModel
+/**
+ * Model AdminRole
+ * Configurable dashboard section permissions. Private to the server.
+ */
+export type AdminRole = Prisma.AdminRoleModel
+/**
+ * Model AdminInvitation
+ * Single-use password setup link; only a random-token fingerprint is stored.
+ */
+export type AdminInvitation = Prisma.AdminInvitationModel

@@ -11,7 +11,8 @@ import {
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { CruiseCalendarDay } from "@/lib/cruise-calendar";
-import { calendarDateToUtcIso, formatPrice } from "@/lib/client-dates";
+import { calendarDateToUtcIso } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import {
   formatCheckInFromDateKey,
   formatCheckoutFromDateKey,
@@ -100,6 +101,7 @@ function MonthPanel({
   sailingPeriodKeys: Set<string>;
   onSelectDate: (dateKey: string) => void;
 }) {
+  const { formatPrice } = useCurrency();
   const cells = buildMonthCells(year, monthIndex);
   const monthLabel = format(new Date(Date.UTC(year, monthIndex, 1)), "MMMM yyyy");
 

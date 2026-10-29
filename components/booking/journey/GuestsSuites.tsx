@@ -1,4 +1,5 @@
 "use client";
+import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
@@ -36,6 +37,7 @@ import {
 } from "./allocation";
 import { useGuestDrag } from "./useGuestDrag";
 import type { Sailing } from "./model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { PanelHead } from "./JourneyChrome";
 import { IconBed, IconCheck, IconClose, IconGuests, IconOpen, IconSize, IconUndo, IconWand } from "./icons";
 
@@ -416,8 +418,8 @@ export function GuestsSuitesScreen({
                         </button>
                       ) : null}
                       <div className="hj-cabin-card__price">
-                        <span className="hj-room__amount">{t.money(type.priceCents)}</span>
-                        <span className="hj-room__per">{t.suites.perCabinVoyage}</span>
+                        <span className="hj-room__amount"><CurrencyAmount cents={type.priceCents} /><RoomPriceUnit roomType={type.roomType} locale={t.locale} /></span>
+                        <span className="hj-room__per">{t.suites.entireVoyage}</span>
                       </div>
                     </div>
 

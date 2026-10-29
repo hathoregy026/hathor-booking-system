@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminAccess } from "../AdminAccessProvider";
+import { canAdminBookingAction } from "@/lib/admin-booking-access";
 import { differenceInCalendarDays, format, formatDistanceToNow, parseISO } from "date-fns";
 import {
   Ban,
@@ -112,7 +114,10 @@ export function BookingCard({
   const nights = Math.max(1, differenceInCalendarDays(arrival, departure));
   const daysAway = differenceInCalendarDays(departure, new Date());
   const receivedAt = parseISO(booking.requestedAt ?? booking.createdAt);
-  const { primary, secondary } = bookingActionsFor(booking);
+  const access = useAdminAccess();
+  const available = bookingActionsFor(booking);
+  const primary = available.primary.filter(kind => canAdminBookingAction(access, kind));
+  const secondary = available.secondary.filter(kind => canAdminBookingAction(access, kind));
   const href = `/admin/bookings/${encodeURIComponent(booking.id)}`;
   const purgeDate = booking.deletedAt ? getPermanentDeleteDate(parseISO(booking.deletedAt)) : null;
 
@@ -194,6 +199,9 @@ export function BookingCard({
         </Cell>
         <Cell icon={CreditCard} label={`Payment · ${paymentMethodLabel(booking.paymentMethod)}`}>
           <p className="text-lg font-semibold leading-tight tracking-tight tabular">{formatPrice(booking.totalPriceCents)}</p>
+          {booking.cardSurchargeCents > 0 ? (
+            <p className="text-xs text-muted tabular">incl. {formatPrice(booking.cardSurchargeCents)} card surcharge</p>
+          ) : null}
           <div className="mt-1.5">
             <PaymentMeter booking={booking} />
           </div>
