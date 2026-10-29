@@ -15,7 +15,7 @@ import { ManagedImage } from "@/components/ui/ManagedImage";
 import { homeCarouselImageName } from "@/lib/home-carousel-images";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { useMaskRevealStickyFilters } from "@/hooks/useMaskRevealStickyFilters";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES, type HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { withLivePrices } from "@/lib/cabin-prices-shared";
@@ -216,6 +216,7 @@ function ListingAddButton({ item }: { item: ListingItem }) {
 }
 
 export function MaskRevealPageContent() {
+  const { formatPrice } = useCurrency();
   const { pages } = useWebsiteText();
   const cruisesText = pages.cruises;
 

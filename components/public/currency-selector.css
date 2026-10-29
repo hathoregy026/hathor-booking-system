@@ -1,0 +1,90 @@
+.hathor-currency {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+.hathor-currency-settlement { margin: 12px 0; color: inherit; font-size: 11px; line-height: 1.7; opacity: .8; }
+.hathor-currency__trigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 62px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--nav-lux-gold, #b69f64);
+  font-family: var(--font-hathor-body, "Plus Jakarta Sans", sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity 200ms ease;
+}
+.hathor-currency__trigger:hover { opacity: .75; }
+.hathor-currency__trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.hathor-currency__trigger:focus-visible,
+.hathor-currency-menu button:focus-visible,
+.hathor-currency-menu a:focus-visible { outline: 2px solid #b69f64; outline-offset: 3px; }
+.hathor-currency-menu {
+  position: fixed;
+  z-index: 15000;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 22px 18px 16px;
+  border: 1px solid rgb(182 159 100 / 35%);
+  border-radius: 3px 3px 20px 3px;
+  background: radial-gradient(ellipse at top right, rgb(182 159 100 / 12%), transparent 70%), #f5eacf;
+  color: #2c2824;
+  box-shadow: 0 18px 50px rgb(44 40 36 / 18%), 0 2px 8px rgb(182 159 100 / 12%);
+  font-family: var(--font-hathor-body, "Plus Jakarta Sans", sans-serif);
+  font-size: 12px;
+  line-height: 1.5;
+  animation: currency-reveal 180ms ease-out;
+}
+.hathor-currency-menu__eyebrow { margin: 0 0 14px; font-size: 9px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+.hathor-currency-menu__option {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 4px 0;
+  border: 0;
+  border-top: 1px solid rgb(182 159 100 / 20%);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.hathor-currency-menu__option:hover,
+.hathor-currency-menu__option[aria-checked="true"] { color: #79602c; }
+.hathor-currency-menu__option:disabled { opacity: .4; cursor: wait; }
+.hathor-currency-menu__symbol { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid rgb(182 159 100 / 40%); border-radius: 50%; font-family: Georgia, serif; font-size: 16px; }
+.hathor-currency-menu__name { flex: 1; }
+.hathor-currency-menu__code { font-size: 10px; letter-spacing: .08em; }
+.hathor-currency-menu__check { width: 12px; color: #79602c; }
+.hathor-currency-menu__note { margin-top: 12px; border-top: 1px solid rgb(182 159 100 / 30%); padding-top: 12px; font-size: 10px; line-height: 1.7; }
+.hathor-currency-menu__note p { margin: 0 0 6px; }
+.hathor-currency-menu__note a,
+.hathor-currency-menu__note button { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.hathor-currency-menu__note button { appearance: none; border: 0; padding: 6px; background: transparent; font: inherit; cursor: pointer; min-height: 44px; }
+html[data-public-theme="night"] .hathor-currency-menu { background: radial-gradient(ellipse at top right, rgb(182 159 100 / 12%), transparent 70%), #211d17; color: #f5eacf; }
+html[data-public-theme="night"] .hathor-currency-menu__option:hover,
+html[data-public-theme="night"] .hathor-currency-menu__option[aria-checked="true"],
+html[data-public-theme="night"] .hathor-currency-menu__check { color: #d4bf86; }
+@media (max-width: 1024px) {
+  .hathor-currency__trigger { min-width: 54px; padding-inline: 5px; font-size: 10px; gap: 4px; }
+}
+@keyframes currency-reveal { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .hathor-currency-menu { animation: none; } .hathor-currency__trigger { transition: none; } }

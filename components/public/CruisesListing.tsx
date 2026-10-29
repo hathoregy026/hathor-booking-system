@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import type { HathorCruiseSeed } from "@/lib/hathor-catalog";
 import { ScrollReveal } from "./ScrollReveal";
@@ -49,6 +49,7 @@ type CruisesListingProps = {
 };
 
 export function CruisesListing({ cruises }: CruisesListingProps) {
+  const { formatPrice } = useCurrency();
   const items = useMemo(() => flattenCruises(cruises), [cruises]);
   const durations = useMemo(
     () => [...new Set(cruises.map((c) => c.nights))].sort((a, b) => a - b),

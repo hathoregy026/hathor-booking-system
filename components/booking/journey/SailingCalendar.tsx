@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { roomPriceUnit } from "@/lib/room-price-unit";
-import { longDate, money, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
+import { longDate, monthLabel, shortDate, utcParts, weekdayShort, type Sailing } from "./model";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { IconInfo } from "./icons";
 import { useDesktop } from "./useDesktop";
 
@@ -41,6 +42,7 @@ export function SailingCalendar({
   /** Phone and tablet date sheet: open on the chosen date's month rather than the first. */
   openOnSelected?: boolean;
 }) {
+  const { money } = useCurrency();
   const months = useMemo(() => {
     const seen = new Map<string, { year: number; month: number }>();
     for (const sailing of sailings) {

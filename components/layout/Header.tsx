@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PublicThemeToggle } from "@/components/public/PublicThemeToggle";
 import { PublicLanguageToggle } from "@/components/public/PublicLanguageToggle";
+import { CurrencySelector } from "@/components/public/CurrencySelector";
 import {
   PhoneDockBookNow,
   PhoneDockContact,
@@ -599,6 +600,7 @@ export function Header() {
               <SelectionHeaderControls />
               <PublicLanguageToggle />
             </div>
+            <CurrencySelector key={pathname} />
             <PublicThemeToggle />
           </div>
         </div>

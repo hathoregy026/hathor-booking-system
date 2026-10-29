@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useBookingStore } from "@/store/bookingStore";
 import { STAY_DURATION_OPTIONS, type StayDurationValue, type RoomSearchConfig } from "@/lib/booking-search-config";
 import { PHYSICAL_ROOM_TYPES, roomCapacity, type RequestedRoom, type PhysicalRoomType } from "@/lib/physical-inventory";
-import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { formatUtcDate } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import type { getSailingAvailability } from "@/lib/availability-service";
 
@@ -35,6 +36,7 @@ function saveAttempt(attempt: Attempt) { localStorage.setItem(STORAGE, JSON.stri
 
 /** Core request flow uses existing booking styles; final visual design is a later stage. */
 export function BookingReservationFlow({ initialRoomBooking = null }: { initialRoomBooking?: RoomBookingEntry | null }) {
+  const { formatPrice } = useCurrency();
   const router = useRouter();
   const storeDuration = useBookingStore(s => s.duration);
   const storeRooms = useBookingStore(s => s.roomConfigs);

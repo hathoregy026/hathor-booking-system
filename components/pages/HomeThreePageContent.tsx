@@ -1,6 +1,7 @@
 "use client";
 
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import Image from "next/image";
@@ -249,7 +250,6 @@ const TIER_LABEL: Record<string, { tier: string; label: string }> = {
   "Luxury Royal Suite": { tier: "royal", label: "Royal suite" },
 };
 
-const usdLabel = (cents: number) => `$${(cents / 100).toLocaleString("en-US")}`;
 
 const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
   cruise.rooms
@@ -285,7 +285,7 @@ const SAILINGS = HATHOR_CRUISES.flatMap((cruise) =>
             : cruise.ports.replace("→", "—"),
         nights: `${cruise.nights} nights`,
         day: cruise.departureDay,
-        price: usdLabel(room.priceCents),
+        priceCents: room.priceCents,
         /* the dashboard's price for this voyage and cabin replaces the published one */
         voyageSlug: cruise.slug,
         roomNumber: room.roomNumber,
@@ -371,6 +371,7 @@ export function HomeThreePageContent({
   heroLogoTuneMobile,
   reviews,
 }: HomeThreeProps) {
+  const { money: usdLabel } = useCurrency();
   const rootRef = useRef<HTMLDivElement>(null);
   const cabinPrices = useCabinPrices();
   const runRef = useRef<HTMLElement>(null);
@@ -643,7 +644,7 @@ export function HomeThreePageContent({
                               <em>from</em>
                               {(() => {
                                 const live = livePriceFor(cabinPrices, sailing.voyageSlug, sailing.roomNumber);
-                                return live === null ? sailing.price : usdLabel(live);
+                                return usdLabel(live ?? sailing.priceCents);
                               })()}
                               <RoomPriceUnit roomType={sailing.roomType} />
                             </p>

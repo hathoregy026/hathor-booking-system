@@ -4,7 +4,8 @@ import { useRef, useState, type ReactNode } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { folioRange, money, plural, shortDate, type Sailing } from "./model";
+import { folioRange, plural, shortDate, type Sailing } from "./model";
+import { CurrencyAmount, CurrencySettlementNote } from "@/components/public/CurrencyProvider";
 import type { CabinView } from "./allocation";
 import { IconBed, IconCalendar, IconChevron, IconGuests, IconPencil, IconTemple } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
@@ -112,11 +113,12 @@ export function VoyageRail({
       </Row>
 
       <div className="hj-total-block">
+        <CurrencySettlementNote cents={totalCents ?? undefined} />
         <span className="hj-total-block__label">{cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}</span>
         {totalCents === null ? (
           <p className="hj-total-block__pending">Select accommodation</p>
         ) : (
-          <div className="hj-total-block__amount">{money(totalCents)}</div>
+          <div className="hj-total-block__amount"><CurrencyAmount cents={totalCents} /></div>
         )}
         <p className="hj-deposit__fine">
           {totalCents === null
@@ -159,7 +161,7 @@ export function VoyageBarFrame({
   partyMain: string;
   partySub: string;
   totalLabel: string;
-  totalValue: string;
+  totalValue: ReactNode;
   /** The full voyage summary, opened from the bar. */
   details?: ReactNode;
   onEdit?: () => void;
@@ -281,7 +283,7 @@ export function VoyageBar({
       partyMain={partyLine(adults, childCount)}
       partySub={cabins.length === 0 ? "No cabin yet" : plural(cabins.length, "Cabin")}
       totalLabel={cabins.length > 1 ? `Total · ${plural(cabins.length, "cabin")}` : "Voyage total"}
-      totalValue={totalCents === null ? pendingTotal : money(totalCents)}
+      totalValue={totalCents === null ? pendingTotal : <CurrencyAmount cents={totalCents} />}
       details={details}
       onEdit={onEdit}
       nudge={nudge}

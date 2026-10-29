@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
@@ -9,7 +10,7 @@ import {
   GUIDE_FAQ,
   GUIDE_INTRO,
   GUIDE_VOYAGES,
-  guideUsd,
+  guidePriceAnswer,
 } from "@/lib/home-guide-content";
 
 /**
@@ -19,6 +20,7 @@ import {
  * find: what it is, which voyages, how long, what it costs, what is included.
  */
 export function HomeGuide() {
+  const { money: guideUsd } = useCurrency();
   const cabinPrices = useCabinPrices();
 
   /* the dashboard's lowest cabin price for a voyage, when it has one */
@@ -91,7 +93,7 @@ export function HomeGuide() {
                 <i aria-hidden="true" />
               </summary>
               <div className="h3-guide__answer">
-                <p>{item.answer}</p>
+                <p>{item.kind === "price" ? guidePriceAnswer(guideUsd) : item.answer}</p>
                 {item.link ? (
                   <Link href={item.link.href} className="h3-text-link">
                     {item.link.label}

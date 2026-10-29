@@ -9,6 +9,7 @@ import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { JourneyProgress, StepBanner, StepGuide } from "@/components/booking/journey/JourneyChrome";
 import { folioRange, money, plural, shortDate } from "@/components/booking/journey/model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { VoyageBarFrame } from "@/components/booking/journey/VoyageRail";
 import { PaymentPlan } from "@/components/booking/journey/PaymentPlan";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
@@ -105,7 +106,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
             partyMain={details.guestSummary}
             partySub={details.roomType ? plural(details.roomType.split(", ").length, "Cabin") : "Cabins to confirm"}
             totalLabel={`Booking ${bookingCode(details.bookingId)}`}
-            totalValue={money(details.totalPriceCents)}
+            totalValue={<CurrencyAmount cents={details.totalPriceCents} />}
             action={
               <Link href="/" className="hj-voyagebar__go">
                 Return to Hathor <span aria-hidden>→</span>
@@ -236,7 +237,7 @@ export default async function BookingSuccessPage({ searchParams }: PageProps) {
 
         <div className="hj-total-block">
           <span className="hj-total-block__label">Total booking amount</span>
-          <div className="hj-total-block__amount">{money(details.totalPriceCents)}</div>
+          <div className="hj-total-block__amount"><CurrencyAmount cents={details.totalPriceCents} /></div>
           <p className="hj-deposit__fine">
             {details.cardSurchargeCents > 0
               ? `Includes the ${CARD_SURCHARGE_PERCENT}% online card surcharge of ${money(details.cardSurchargeCents)}. Taxes and service charges included.`

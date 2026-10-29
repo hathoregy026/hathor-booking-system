@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import {
   HATHOR_BRAND_NAME,
   HATHOR_HERO_ICON_SRC,
@@ -85,6 +85,7 @@ export function BookingProgressBar({
   selectedDateLabel,
   onStepNavigate,
 }: BookingProgressBarProps) {
+  const { formatPrice } = useCurrency();
   const [openRoomDropdown, setOpenRoomDropdown] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const cabinsRef = useRef<HTMLLIElement>(null);
@@ -97,7 +98,7 @@ export function BookingProgressBar({
   const hasSelectedRooms = selectedRoomIds.length > 0;
   const grandTotal = totalPrice;
   const priceLabel =
-    grandTotal > 0 ? formatPrice(grandTotal).replace("$", "$ ") : "$ 0.00";
+    formatPrice(grandTotal > 0 ? grandTotal : 0);
 
   const cabinsValue =
     hasSelectedRooms || currentStep > 3

@@ -13,7 +13,7 @@ import {
   type StayDurationValue,
 } from "@/lib/booking-search-config";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import {
   findResidence,
@@ -195,6 +195,7 @@ function GuestCounter({
 }
 
 function MyVoyageView({ onClose }: { onClose: () => void }) {
+  const { formatPrice } = useCurrency();
   const selection = useVoyageSelection();
   const setVoyage = useSelectionStore((state) => state.setVoyage);
   const setResidence = useSelectionStore((state) => state.setResidence);

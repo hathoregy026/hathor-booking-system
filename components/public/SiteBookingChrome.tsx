@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { BookingModalProvider } from "@/components/booking/BookingModalProvider";
 import { SiteFloatingActions } from "@/components/public/SiteFloatingActions";
 import { SelectionPanel } from "@/components/selection/FavoritesPanel";
+import { CurrencyProvider } from "@/components/public/CurrencyProvider";
 
 /**
  * Single site-wide booking modal host.
@@ -11,11 +12,13 @@ import { SelectionPanel } from "@/components/selection/FavoritesPanel";
  */
 export function SiteBookingChrome({ children }: { children: ReactNode }) {
   return (
-    <BookingModalProvider>
-      {children}
-      <SiteFloatingActions />
-      {/* One host for the selection sheet — every route, public and standalone. */}
-      <SelectionPanel />
-    </BookingModalProvider>
+    <CurrencyProvider>
+      <BookingModalProvider>
+        {children}
+        <SiteFloatingActions />
+        {/* One host for the selection sheet — every route, public and standalone. */}
+        <SelectionPanel />
+      </BookingModalProvider>
+    </CurrencyProvider>
   );
 }

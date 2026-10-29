@@ -34,7 +34,8 @@ import {
   type PlaceResult,
 } from "./allocation";
 import { useGuestDrag } from "./useGuestDrag";
-import { money, plural, type Sailing } from "./model";
+import { plural, type Sailing } from "./model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { PanelHead } from "./JourneyChrome";
 import { IconBed, IconCheck, IconClose, IconGuests, IconOpen, IconSize, IconUndo, IconWand } from "./icons";
 
@@ -412,7 +413,7 @@ export function GuestsSuitesScreen({
                         </button>
                       ) : null}
                       <div className="hj-cabin-card__price">
-                        <span className="hj-room__amount">{money(type.priceCents)}<RoomPriceUnit roomType={type.roomType} /></span>
+                        <span className="hj-room__amount"><CurrencyAmount cents={type.priceCents} /><RoomPriceUnit roomType={type.roomType} /></span>
                         <span className="hj-room__per">entire voyage</span>
                       </div>
                     </div>

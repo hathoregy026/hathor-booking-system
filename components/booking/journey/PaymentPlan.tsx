@@ -1,4 +1,7 @@
-import { money, stageLabel, type PaymentStage } from "./model";
+"use client";
+
+import { stageLabel, type PaymentStage } from "./model";
+import { CurrencySettlementNote, useCurrency } from "@/components/public/CurrencyProvider";
 
 /** The three plans (lib/payment-schedule.ts and hathor_acquire_hold decide which applies). */
 const PLANS = [
@@ -20,6 +23,7 @@ const INVOICE_NAMES: Record<number, string[]> = {
  * match what Hathor invoices.
  */
 export function PaymentPlan({ stages, paidCents = 0 }: { stages: PaymentStage[]; paidCents?: number }) {
+  const { money } = useCurrency();
   if (stages.length === 0) return null;
   const total = stages[stages.length - 1].cumulativeCents;
   const names = INVOICE_NAMES[stages.length] ?? stages.map((_, index) => `Invoice ${index + 1}`);
@@ -28,6 +32,7 @@ export function PaymentPlan({ stages, paidCents = 0 }: { stages: PaymentStage[];
 
   return (
     <div className="hj-payplan">
+      <CurrencySettlementNote cents={total} />
       <ol className="hj-payplan__steps">
         {stages.map((stage, index) => {
           const amount = stage.cumulativeCents - (index === 0 ? 0 : stages[index - 1].cumulativeCents);

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import { paymentSchedule } from "@/lib/payment-schedule";
@@ -59,7 +60,6 @@ import {
   folioRange,
   internationalPhone,
   longDate,
-  money,
   plural,
   shortDate,
   type Attempt,
@@ -102,6 +102,7 @@ const successUrl = (bookingId: string, token: string) =>
   `/booking/success?bookingId=${encodeURIComponent(bookingId)}&token=${encodeURIComponent(token)}`;
 
 export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
+  const { money } = useCurrency();
   const router = useRouter();
   const [duration, setDuration] = useState<StayDurationValue>(start?.duration ?? "7-nights-luxor-aswan-luxor");
   const [adults, setAdults] = useState(start?.adults ?? 2);

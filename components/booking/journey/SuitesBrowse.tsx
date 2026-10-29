@@ -7,7 +7,8 @@ import type { StayDurationValue } from "@/lib/booking-search-config";
 import { itineraryFor } from "@/lib/booking-itineraries";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import { occupants, shortName, type Arrangement, type Guest } from "./allocation";
-import { money, plural, type Sailing } from "./model";
+import { plural, type Sailing } from "./model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { RESIDENCE_SLUG } from "./SuitesParts";
 import { useStickyFit } from "./useStickyFit";
 import {
@@ -214,7 +215,7 @@ export function SuitesBrowse({
         </ul>
         <div className="hj-detail__price">
           <span className="hj-detail__row">
-            <span className="hj-detail__amount">{money(type.priceCents)}<RoomPriceUnit roomType={type.roomType} /></span>
+            <span className="hj-detail__amount"><CurrencyAmount cents={type.priceCents} /><RoomPriceUnit roomType={type.roomType} /></span>
           </span>
           <span className="hj-detail__per">Entire {voyage.nights}-night voyage, all meals and soft drinks included.</span>
         </div>

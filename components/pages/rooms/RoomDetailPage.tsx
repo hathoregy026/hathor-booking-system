@@ -25,6 +25,7 @@ import { Footer } from "@/components/layout/Footer";
 import { FavoriteButton } from "@/components/selection/FavoriteButton";
 import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { useCabinPrices } from "@/components/public/CabinPricesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import {
   RoomAmenityIcon,
@@ -42,15 +43,6 @@ import {
 import type { RoomShowcase } from "@/lib/room-showcase";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
-
-/** Whole dollars, the way every other fare on the site is written. */
-function fare(cents: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-  }).format(cents / 100);
-}
 
 /** The five stops of the room folio, in the order the page tells them. */
 const TABS = [
@@ -145,6 +137,7 @@ export function RoomDetailPage({
   /** Server-rendered guest reviews, closing the page before the footer. */
   reviews?: ReactNode;
 }) {
+  const { money: fare } = useCurrency();
   const variant = folioVariantForRoomSlug(room.slug);
   const panels = ROOM_FOLIO_PANELS[variant];
   const collection =

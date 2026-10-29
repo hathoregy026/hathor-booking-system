@@ -14,7 +14,8 @@ import {
   Users,
 } from "lucide-react";
 import type { CheckoutSummary } from "@/lib/booking-checkout-summary";
-import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { formatUtcDate } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { getMaxCapacityForDbRoomType } from "@/lib/room-capacity";
 
@@ -51,6 +52,7 @@ const inputStyle = {
 };
 
 export function CheckoutForm({ summary }: CheckoutFormProps) {
+  const { formatPrice } = useCurrency();
   const router = useRouter();
   const [form, setForm] = useState<FormState>({
     fullName: "",

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CABIN_NOTE, RESIDENCE_SLUG } from "@/components/booking/journey/SuitesParts";
 import { useSiteImage } from "@/components/public/SiteImagesProvider";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import type { SailingAvailability } from "@/lib/availability-service";
 import type { StayDurationValue } from "@/lib/booking-search-config";
@@ -63,7 +64,6 @@ const stayRange = (from: string, to: string) => {
   const head = new Intl.DateTimeFormat("en-GB", sameMonth ? { day: "numeric", ...utc } : { day: "numeric", month: "short", ...utc }).format(start);
   return `${head} – ${shortDate(to)}`;
 };
-const usd = (cents: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(cents / 100);
 
 function bookingMonths(now: Date) {
   const monthName = new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric", ...utc });
@@ -96,6 +96,7 @@ function Field({ label, wide, disabled, value, onChange, children }: {
 }
 
 export function DeckAtlas() {
+  const { money: usd } = useCurrency();
   const rootRef = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
   const [inView, setInView] = useState(false);

@@ -8,7 +8,8 @@ import { itineraryFor } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { MAX_ADULTS, MAX_CHILDREN, type CabinView } from "./allocation";
-import { folioRange, money, plural, shortDate, type Sailing } from "./model";
+import { folioRange, plural, shortDate, type Sailing } from "./model";
+import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { IconCalendar, IconCard, IconCheck, IconChevron, IconClose, IconGuests } from "./icons";
 import type { JourneyStep } from "./JourneyChrome";
 import { SailingCalendar } from "./SailingCalendar";
@@ -688,7 +689,7 @@ export function ReviewCards({
           {totalCents === null ? (
             <span className="hj-mcard__value hj-mcard__value--soft">Select accommodation</span>
           ) : (
-            <span className="hj-mcard__amount">{money(totalCents)}</span>
+            <span className="hj-mcard__amount"><CurrencyAmount cents={totalCents} /></span>
           )}
           <span className="hj-mcard__sub">
             {totalCents === null

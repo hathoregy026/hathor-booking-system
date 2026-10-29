@@ -11,7 +11,8 @@ import {
   Users,
   Wifi,
 } from "lucide-react";
-import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { formatUtcDate } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { getScheduleIdForSelection, type AvailableRoom } from "@/lib/booking-types";
@@ -65,6 +66,7 @@ export function BookingSearchResults({
   error,
   heroImageUrl = null,
 }: BookingSearchResultsProps) {
+  const { formatPrice } = useCurrency();
   if (!searchAttempted && !isLoading) {
     return null;
   }

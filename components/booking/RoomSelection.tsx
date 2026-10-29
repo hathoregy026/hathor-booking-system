@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { BedDouble, Loader2, Maximize2, Sparkles, Users } from "lucide-react";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { findStayDurationOption } from "@/lib/booking-search-config";
 import type { AvailableRoom } from "@/lib/booking-types";
@@ -24,6 +24,7 @@ type RoomSelectionProps = {
 };
 
 export function RoomSelection({ duration, checkInDate, roomConfigs, availableRooms, selectedRoomIds, onBookRoom, onGoBack, isLoading, error }: RoomSelectionProps) {
+  const { formatPrice } = useCurrency();
   const durationLabel = duration
     ? findStayDurationOption(duration)?.label.replace(/^⛵\s*/, "") ?? "Hathor Cruise"
     : "Hathor Dahabiya";

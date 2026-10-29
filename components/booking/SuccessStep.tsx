@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { CheckCircle2, Ship } from "lucide-react";
-import { formatPrice, formatUtcDate } from "@/lib/client-dates";
+import { formatUtcDate } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { trackGaEvent } from "@/lib/ga-browser";
 import { useBookingStore } from "@/store/bookingStore";
 
 export function SuccessStep() {
+  const { formatPrice } = useCurrency();
   const {
     startDate,
     endDate,

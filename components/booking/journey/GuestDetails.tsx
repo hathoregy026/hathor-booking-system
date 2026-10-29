@@ -7,7 +7,8 @@ import { CARD_SURCHARGE_PERCENT, cardSurchargeCents } from "@/lib/card-surcharge
 import { findCountry } from "@/lib/countries";
 import { CountryPicker } from "./CountryPicker";
 import { guestLabel, type CabinView } from "./allocation";
-import { money, type GuestForm, type PaymentStage } from "./model";
+import { type GuestForm, type PaymentStage } from "./model";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { IconBank, IconCard } from "./icons";
 import { PaymentPlan } from "./PaymentPlan";
 
@@ -41,6 +42,7 @@ export function DetailsPaymentScreen({
 }) {
   const country = findCountry(form.countryCode);
 
+  const { money } = useCurrency();
   return (
     <div className="hj-details">
       <section>

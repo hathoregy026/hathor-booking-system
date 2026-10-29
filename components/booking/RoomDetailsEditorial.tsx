@@ -24,7 +24,7 @@ import type { BookingRoomDetails } from "@/lib/booking-room-details";
 import {
   luxuryRoomTypeForDbRoomType,
 } from "@/lib/booking-search-config";
-import { formatPrice } from "@/lib/client-dates";
+import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { useBookingStore } from "@/store/bookingStore";
 
@@ -41,6 +41,7 @@ function amenityIcon(amenity: string): LucideIcon {
 }
 
 export function RoomDetailsEditorial({ details }: { details: BookingRoomDetails }) {
+  const { formatPrice } = useCurrency();
   const router = useRouter();
   const rootRef = useRef<HTMLElement>(null);
   const runRef = useRef<HTMLElement>(null);
