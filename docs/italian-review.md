@@ -182,7 +182,7 @@ the site. A native speaker may overrule any of them.
 | --- | --- |
 | `/it/suites` | "Suite sul Nilo", "Spazi da vivere", "Camere su misura", "Artigianato egiziano", "Bagno privato", "IN SUITE", "IN PRIVATO", "Ogni vista del Nilo è della Sua suite", "cerchia ristretta di ospiti" |
 | Selling pages | "Non fumatori", "Home" stays, "Voci discrete", "Navigare adagio", "Servizio in camera e lavanderia", "Ramadi", lowercase "champagne" |
-| Editorial pages | "Servizio in suite" on `/it/gastronomy`, "Historia" stays, the 404 wording in section 4, "A TAVOLA / SENZA / FRETTA", "I templi" for the highlights note, "Prossimamente" for the coming-soon placeholder |
+| Editorial pages | "Servizio in suite" on `/it/gastronomy`, "Historia" stays, the 404 wording in section 4, "A TAVOLA / SENZA / FRETTA", "I templi" for the highlights note, "che amano come noi i viaggi autentici sul Nilo" for the partners strip (the longer line ran past its column), "Prossimamente" for the coming-soon placeholder |
 | Journal | "Viale delle Sfingi … con le due lunghe file di statue che lo fiancheggiano", "con il cuore leggero", "sale intatte" |
 | Occasions | "Fino a Capodanno", "Conto alla rovescia" |
 | Search and photo text | Neutral "Relax in accappatoio…" and "Lettura in poltrona…", shortened titles |
