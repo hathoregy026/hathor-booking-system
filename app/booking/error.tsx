@@ -33,6 +33,10 @@ export default function BookingError({
     // some of these silently, which made them very hard to trace.
     console.error("[booking] route error:", error);
   }, [error]);
+  /* The route's own title never loaded, so the tab would show the English default. */
+  useEffect(() => {
+    if (t.pageTitle) document.title = t.pageTitle;
+  }, [t.pageTitle]);
 
   return (
     <main className="hathor-booking-error">

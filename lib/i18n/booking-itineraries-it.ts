@@ -4,8 +4,9 @@
  * flow. Place names follow the rest of the Italian site (Assuan, Tempio di
  * Philae, Valle dei Re, Colossi di Memnone); product names stay in English.
  *
- * The reading links still open the English journal articles they were
- * chosen for; only their labels are Italian.
+ * The reading links open the Italian journal articles, the same ones the
+ * English links reach through lib/seo/legacy-redirects.ts. The two whose old
+ * article now lives on the voyages page go to /it/voyages, worded to say so.
  */
 
 import {
@@ -17,29 +18,29 @@ import {
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
-const PHILAE: ItineraryLink = { label: "Tempio di Philae", href: "https://hathorcruise.com/blogs/philae-temple-aswan-attractions" };
-const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Cosa vedere ad Assuan", href: "https://hathorcruise.com/blogs/top-attractions-in-aswan-egypt" };
-const ASWAN_TO_LUXOR: ItineraryLink = { label: "Da Assuan a Luxor in dahabiya", href: "https://hathorcruise.com/blogs/Sailing%20from%20Aswan%20to%20Luxor%20on%20a%20Dahabiya%20Nile%20Cruise" };
-const KOM_OMBO: ItineraryLink = { label: "Tempio di Kom Ombo", href: "https://hathorcruise.com/blogs/kom-ombo-temple-hathor-dahabiya" };
-const DIRECTION_COMPARE: ItineraryLink = { label: "Da Luxor ad Assuan o da Assuan a Luxor", href: "https://hathorcruise.com/blogs/dahabiya-nile-cruise-luxor-to-aswan-vs-aswan-to-luxor" };
-const EAST_BANK: ItineraryLink = { label: "Tempio di Karnak e il Tempio di Luxor", href: "https://hathorcruise.com/blogs/east-bank-ancient-wonders-luxor" };
-const EAST_BANK_READING: ItineraryLink = { label: "Le meraviglie antiche della riva orientale di Luxor", href: "https://hathorcruise.com/blogs/east-bank-ancient-wonders-luxor" };
-const ITINERARY_GUIDE: ItineraryLink = { label: "Guida all’itinerario di una crociera in dahabiya sul Nilo", href: "https://hathorcruise.com/blogs/dahabiya-nile-cruise-itinerary" };
-const COLOSSI: ItineraryLink = { label: "Colossi di Memnone", href: "https://hathorcruise.com/blogs/colossi-of-memnon-luxor" };
-const GREATEST_LANDMARKS: ItineraryLink = { label: "I grandi monumenti dell’Egitto lungo il Nilo", href: "https://hathorcruise.com/blogs/egypt-greatest-landmarks-dahabiya" };
-const EXPLORING: ItineraryLink = { label: "Luxor e Assuan a bordo di una dahabiya di lusso", href: "https://www.hathorcruise.com/blogs/exploring-luxor-aswan-luxury-dahabiya" };
-const SILSILA: ItineraryLink = { label: "Gebel el-Silsila", href: "https://hathorcruise.com/blogs/hidden-gems-along-luxor-aswan" };
-const SILSILA_READING: ItineraryLink = { label: "I tesori nascosti del Nilo: Gebel el-Silsila", href: "https://hathorcruise.com/blogs/hidden-gems-along-luxor-aswan" };
-const HATHOR_BLOG: ItineraryLink = { label: "Il Journal di Hathor", href: "https://www.hathorcruise.com/blogs" };
-const SLOW_TRAVEL: ItineraryLink = { label: "Viaggiare lentamente sul Nilo", href: "https://hathorcruise.com/blogs/slow-travel-egypt-nile-cruise" };
-const HIDDEN_SPOTS: ItineraryLink = { label: "Angoli nascosti del Nilo", href: "https://hathorcruise.com/blogs/romantic-honeymoon-nile-cruise" };
+const PHILAE: ItineraryLink = { label: "Tempio di Philae", href: "/it/blogs/discovering-the-secrets-of-philae-temple" };
+const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Cosa vedere ad Assuan", href: "/it/blogs/golden-gems-of-aswan" };
+const ASWAN_TO_LUXOR: ItineraryLink = { label: "Da Assuan a Luxor in dahabiya", href: "/it/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise" };
+const KOM_OMBO: ItineraryLink = { label: "Tempio di Kom Ombo", href: "/it/blogs/kom-ombo-temple" };
+const DIRECTION_COMPARE: ItineraryLink = { label: "Confronta i viaggi da Luxor ad Assuan e da Assuan a Luxor", href: "/it/voyages" };
+const EAST_BANK: ItineraryLink = { label: "Tempio di Karnak e il Tempio di Luxor", href: "/it/blogs/luxors-sacred-east-bank" };
+const EAST_BANK_READING: ItineraryLink = { label: "Le meraviglie antiche della riva orientale di Luxor", href: "/it/blogs/luxors-sacred-east-bank" };
+const ITINERARY_GUIDE: ItineraryLink = { label: "Scopri gli itinerari dei viaggi sul Nilo", href: "/it/voyages" };
+const COLOSSI: ItineraryLink = { label: "Colossi di Memnone", href: "/it/blogs/colossi-of-memnon" };
+const GREATEST_LANDMARKS: ItineraryLink = { label: "I grandi monumenti dell’Egitto lungo il Nilo", href: "/it/blogs/best-places-to-visit-along-the-nile-with-a-dahabiya-cruise" };
+const EXPLORING: ItineraryLink = { label: "Luxor e Assuan a bordo di una dahabiya di lusso", href: "/it/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya" };
+const SILSILA: ItineraryLink = { label: "Gebel el-Silsila", href: "/it/blogs/niles-hidden-gems-by-dahabiya" };
+const SILSILA_READING: ItineraryLink = { label: "I tesori nascosti del Nilo: Gebel el-Silsila", href: "/it/blogs/niles-hidden-gems-by-dahabiya" };
+const HATHOR_BLOG: ItineraryLink = { label: "Il Journal di Hathor", href: "/it/blogs" };
+const SLOW_TRAVEL: ItineraryLink = { label: "Viaggiare lentamente sul Nilo", href: "/it/blogs/why-travelers-love-slow-travel-on-the-nile" };
+const HIDDEN_SPOTS: ItineraryLink = { label: "Angoli nascosti del Nilo", href: "/it/blogs/5-quiet-nile-spots-for-stunning-honeymoon-captures" };
 
 const THREE_NIGHT: ItineraryDay[] = [
   {
     day: 1,
     title: "Assuan, l’inizio del viaggio",
     path: "Assuan, imbarco → Tempio di Philae → Grande Diga di Assuan → notte ad Assuan",
-    copy: ["Arrivo con drink di benvenuto, imbarco e pranzo a bordo. Visita al ", PHILAE, " e alla Grande Diga di Assuan. Rientro a bordo di Hathor per la cena e il pernottamento ad Assuan."],
+    copy: ["Arrivo con aperitivo di benvenuto, imbarco e pranzo a bordo. Visita al ", PHILAE, " e alla Grande Diga di Assuan. Rientro a bordo di Hathor per la cena e il pernottamento ad Assuan."],
     reading: [PHILAE, ASWAN_ATTRACTIONS, ASWAN_TO_LUXOR],
   },
   {
@@ -82,15 +83,15 @@ const FOUR_NIGHT: ItineraryDay[] = [
   },
   {
     day: 3,
-    title: "Il Tempio di Edfu e l’isola di El Ramady",
-    path: "Esna → Edfu → Tempio di Horus → isola di El Ramady → notte a El Ramady",
-    copy: ["Colazione e navigazione verso sud fino a Edfu. Visita al Tempio di Horus, rientro per il pranzo, poi si prosegue verso l’isola di El Ramady per la cena e il pernottamento."],
+    title: "Il Tempio di Edfu e l’isola di Ramadi",
+    path: "Esna → Edfu → Tempio di Horus → isola di Ramadi → notte a Ramadi",
+    copy: ["Colazione e navigazione verso sud fino a Edfu. Visita al Tempio di Horus, rientro per il pranzo, poi si prosegue verso l’isola di Ramadi per la cena e il pernottamento."],
     reading: [ITINERARY_GUIDE, HATHOR_BLOG],
   },
   {
     day: 4,
     title: "Gebel el-Silsila, Kom Ombo e la navigazione verso Assuan",
-    path: "El Ramady → Gebel el-Silsila → Kom Ombo → Assuan → notte ad Assuan",
+    path: "Ramadi → Gebel el-Silsila → Kom Ombo → Assuan → notte ad Assuan",
     copy: ["Visita alle antiche cave e ai santuari di ", SILSILA, ", poi si prosegue verso il ", KOM_OMBO, ". Navigazione verso Assuan con pranzo a bordo. Cena e pernottamento ad Assuan."],
     reading: [SILSILA_READING, KOM_OMBO],
   },
