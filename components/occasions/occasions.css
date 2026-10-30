@@ -624,19 +624,28 @@
   display: none;
 }
 
-/* Two lines for short captions, three at the 28-character limit; flush against the days. */
+/* One line under the count and logo, centred on it; its letters spread to the count's width. */
 .occasion-nav-cd__caption {
-  max-width: 11.5em;
-  padding-right: 1.1em;
-  font-size: 0.56em;
-  letter-spacing: 0.2em;
-  line-height: 1.3;
-  text-align: right;
-  text-wrap: balance;
+  position: absolute;
+  top: 100%;
+  left: calc(var(--occ-logo-x) + var(--occ-logo-w) / 2 - var(--occ-cd-reach, 0px));
+  display: flex;
+  justify-content: space-between;
+  width: calc(var(--occ-cd-reach, 0px) * 2);
+  margin-top: 0.45em;
+  font-size: 0.68em;
+  white-space: nowrap;
 }
 
 .hathor-header--nav-compact .occasion-nav-cd:not(#_) {
   --occ-cd-size: 0.86rem;
+}
+
+/* The compact bar makes room for the caption above its bottom line. */
+@media (min-width: 641px) {
+  .hathor-header--nav-compact:has(> .occasion-nav-cd):not(#_) {
+    padding-bottom: 0.7rem;
+  }
 }
 
 /* Homepage land: white over the hero, like the burger and logo beside it. */
@@ -665,14 +674,7 @@
   }
 }
 
-/* Narrow tablets: the burger is close, so long captions take another line instead. */
-@media (max-width: 720px) {
-  .occasion-nav-cd__caption {
-    max-width: 9.5em;
-  }
-}
-
-/* Phones: short unit labels, and the caption moves under the logo. */
+/* Phones: short unit labels. */
 @media (max-width: 640px) {
   .occasion-nav-cd:not(#_),
   .hathor-header--nav-compact .occasion-nav-cd:not(#_) {
@@ -705,21 +707,8 @@
   }
 
   .occasion-nav-cd__caption {
-    position: absolute;
-    top: 100%;
-    left: calc(var(--occ-logo-x) + var(--occ-logo-w) / 2);
-    max-width: none;
     margin-top: 0.3em;
-    padding: 0;
     font-size: 0.66em;
-    letter-spacing: 0.18em;
-    line-height: 1;
-    white-space: nowrap;
-    transform: translateX(-50%);
-  }
-
-  .occasion-nav-cd__caption + .occasion-nav-cd__cell {
-    border-left: 0;
   }
 }
 

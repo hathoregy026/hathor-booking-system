@@ -18,10 +18,11 @@ const RIGHT_OF_LOGO: readonly Unit[] = [
 
 /**
  * Days and hours left of the menu-bar logo, minutes and seconds right of it,
- * captioned with what the count is for. Laid out around the logo's measured
- * box (--occ-logo-*), so it follows the logo as the nav compacts on scroll.
- * Its own edges go to the header as --occ-cd-l / --occ-cd-r, where the nav
- * effect dims behind the digits.
+ * with what the count is for on one line beneath them. Laid out around the
+ * logo's measured box (--occ-logo-*), so it follows the logo as the nav compacts
+ * on scroll. The line is centred on the logo and spaced out to the farther of
+ * the count's two ends (--occ-cd-reach). The count's edges go to the header as
+ * --occ-cd-l / --occ-cd-r, where the nav effect dims behind the digits.
  */
 export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,7 +32,8 @@ export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: str
     const header = root?.closest<HTMLElement>(".hathor-header");
     const logo = header?.querySelector(".hathor-header__logo");
     if (!root || !header || !logo) return;
-    const pieces = root.querySelectorAll(".occasion-nav-cd__cell, .occasion-nav-cd__caption");
+    const pieces = root.querySelectorAll(".occasion-nav-cd__cell");
+    const ink = root.querySelectorAll(".occasion-nav-cd__num, .occasion-nav-cd__unit");
     const place = () => {
       const bar = header.getBoundingClientRect();
       const box = logo.getBoundingClientRect();
@@ -48,6 +50,13 @@ export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: str
       }
       header.style.setProperty("--occ-cd-l", `${left - bar.left}px`);
       header.style.setProperty("--occ-cd-r", `${right - bar.left}px`);
+      const centre = box.left + box.width / 2;
+      let reach = 0;
+      for (const piece of ink) {
+        const edge = piece.getBoundingClientRect();
+        reach = Math.max(reach, centre - edge.left, edge.right - centre);
+      }
+      root.style.setProperty("--occ-cd-reach", `${reach}px`);
     };
     const observer = new ResizeObserver(place);
     observer.observe(header);
@@ -80,11 +89,15 @@ export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: str
       aria-label={`${caption}: ${parts.days} days, ${parts.hours} hours, ${parts.minutes} minutes`}
     >
       <div className="occasion-nav-cd__side occasion-nav-cd__side--start" aria-hidden="true">
-        <span className="occasion-nav-cd__caption">{caption}</span>
         {LEFT_OF_LOGO.map(cell)}
       </div>
       <div className="occasion-nav-cd__side occasion-nav-cd__side--end" aria-hidden="true">
         {RIGHT_OF_LOGO.map(cell)}
+      </div>
+      <div className="occasion-nav-cd__caption" aria-hidden="true">
+        {Array.from(caption, (letter, index) => (
+          <span key={index}>{letter === " " ? " " : letter}</span>
+        ))}
       </div>
     </div>
   );
