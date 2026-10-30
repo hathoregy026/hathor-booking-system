@@ -2,9 +2,10 @@
 
 import "./occasions.css";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
 import {
+  countdownCaption,
   formatCountdown,
   msUntilCountdown,
   OCCASION_DISMISS_STORAGE_PREFIX,
@@ -13,6 +14,8 @@ import {
   type OccasionStripeItem,
 } from "@/lib/occasions";
 import { OccasionIcon, sparkPath, starPath } from "@/components/occasions/OccasionIcon";
+import { OccasionNavCountdown } from "@/components/occasions/OccasionNavCountdown";
+import { OccasionNavEffect } from "@/components/occasions/OccasionNavEffect";
 import {
   useActiveOccasion,
   usePrefersReducedMotion,
@@ -26,58 +29,82 @@ import {
 export function OccasionHeaderLayer() {
   const active = useActiveOccasion();
   const reducedMotion = usePrefersReducedMotion();
-  const occasionId = active?.occasion.id ?? null;
-  const [dismissedId, setDismissedId] = useState<string | null>(null);
+  const occasion = active?.occasion ?? null;
+  const occasionId = occasion?.id ?? null;
+  const draft = Boolean(active?.draft);
+  /* A visitor's choice is the id; in the dashboard preview it is that one edit,
+     so the stripe returns with the next change. */
+  const [dismissed, setDismissed] = useState<string | Occasion | null>(null);
 
   useEffect(() => {
-    if (!occasionId) return;
+    if (!occasionId || draft) return;
     const read = window.setTimeout(() => {
       try {
         if (window.localStorage.getItem(OCCASION_DISMISS_STORAGE_PREFIX + occasionId)) {
-          setDismissedId(occasionId);
+          setDismissed(occasionId);
         }
       } catch {
         /* storage blocked — the stripe simply stays */
       }
     }, 0);
     return () => window.clearTimeout(read);
-  }, [occasionId]);
+  }, [occasionId, draft]);
 
   const dismiss = useCallback(() => {
-    if (!occasionId) return;
-    setDismissedId(occasionId);
+    if (!occasion) return;
+    if (draft) {
+      setDismissed(occasion);
+      return;
+    }
+    setDismissed(occasion.id);
     try {
-      window.localStorage.setItem(OCCASION_DISMISS_STORAGE_PREFIX + occasionId, "1");
+      window.localStorage.setItem(OCCASION_DISMISS_STORAGE_PREFIX + occasion.id, "1");
     } catch {
       /* storage blocked — dismissed for this page view only */
     }
-  }, [occasionId]);
+  }, [occasion, draft]);
 
-  if (!active) return null;
-  const { occasion, now } = active;
+  if (!active || !occasion) return null;
+  const { now } = active;
   const items = stripeItemsAt(occasion, now);
   const left = msUntilCountdown(occasion, now);
-  const showStripe =
-    occasion.stripe.enabled && dismissedId !== occasion.id && items.length > 0;
+  const isDismissed = draft ? dismissed === occasion : dismissed === occasion.id;
+  const showStripe = occasion.stripe.enabled && !isDismissed && items.length > 0;
+  const lights = occasion.hanging === "lights";
+  const garland = occasion.hanging === "lanterns" || occasion.hanging === "stars" ? occasion.hanging : null;
 
   return (
     <>
       {occasion.navEffect.type !== "none" && !reducedMotion ? (
         <OccasionNavEffect effect={occasion.navEffect} />
       ) : null}
-      <div className="occasion-under" data-occasion={occasion.id}>
-        {showStripe ? (
-          <OccasionStripe
-            name={occasion.name}
-            stripe={occasion.stripe}
-            items={items}
-            countdown={left !== null && left > 0 ? formatCountdown(left) : ""}
-            reducedMotion={reducedMotion}
-            onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
-          />
-        ) : null}
-        {occasion.hanging !== "none" ? <OccasionHanging kind={occasion.hanging} /> : null}
-      </div>
+      {occasion.heroCountdown && left !== null && left > 0 ? (
+        <OccasionNavCountdown ms={left} caption={countdownCaption(occasion)} />
+      ) : null}
+      {/* Top of the screen: the header makes room for the stripe, and the
+          lights hang from it across the top of the menu bar. */}
+      {showStripe || lights ? (
+        <div className="occasion-top" data-occasion={occasion.id}>
+          {showStripe ? (
+            <OccasionStripe
+              name={occasion.name}
+              stripe={occasion.stripe}
+              items={items}
+              countdown={left !== null && left > 0 ? formatCountdown(left) : ""}
+              reducedMotion={reducedMotion}
+              onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
+            />
+          ) : null}
+          {lights ? <OccasionHanging kind="lights" /> : null}
+        </div>
+      ) : null}
+      {/* Lanterns and stars are too tall to cross the bar's controls; they
+          hang from its bottom edge over the page. */}
+      {garland ? (
+        <div className="occasion-under" data-occasion={occasion.id}>
+          <OccasionHanging kind={garland} />
+        </div>
+      ) : null}
     </>
   );
 }
@@ -260,7 +287,7 @@ function RotateSlots({
   );
 }
 
-export function OccasionStripe({
+function OccasionStripe({
   name,
   stripe,
   items,
@@ -327,14 +354,19 @@ function mirrored(width: number, fromEdge: number[]): number[] {
   return [...fromEdge, ...fromEdge.map((x) => width - x).reverse()];
 }
 
+/* Festive bulb colours, repeating along the wire: warm gold, red, green, blue, amber, violet. */
+const BULB_COLOURS = ["#ffd36b", "#ff5a5f", "#4fe0a0", "#5cb8ff", "#ff9a3c", "#d88bff"];
+
 function StringLights({ width }: { width: number }) {
+  const id = useId().replace(/:/g, "");
   const phone = width <= 640;
   const seg = phone ? 56 : 96;
   const sag = phone ? 6 : 10;
-  const height = sag + 12;
+  const glow = phone ? 6 : 8;
+  const height = sag + 8 + glow;
   const stops = phone ? [0.5] : [0.25, 0.5, 0.75];
   let wire = "M0 1";
-  const bulbs: { x: number; y: number; delay: number; duration: number }[] = [];
+  const bulbs: { x: number; y: number; colour: number; delay: number; duration: number }[] = [];
   for (let x = 0; x < width; x += seg) {
     wire += `Q${x + seg / 2} ${1 + sag * 2} ${x + seg} 1`;
     for (const t of stops) {
@@ -342,13 +374,23 @@ function StringLights({ width }: { width: number }) {
       bulbs.push({
         x: x + seg * t,
         y: 1 + 4 * sag * t * (1 - t),
+        colour: n % BULB_COLOURS.length,
         delay: -((n * 0.37) % 2.6),
-        duration: 2 + (n % 3) * 0.5,
+        duration: 1.8 + (n % 4) * 0.45,
       });
     }
   }
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} focusable="false">
+      <defs>
+        {BULB_COLOURS.map((colour, index) => (
+          <radialGradient key={colour} id={`${id}-bulb-${index}`}>
+            <stop offset="0%" stopColor={colour} stopOpacity={0.95} />
+            <stop offset="35%" stopColor={colour} stopOpacity={0.55} />
+            <stop offset="100%" stopColor={colour} stopOpacity={0} />
+          </radialGradient>
+        ))}
+      </defs>
       <path className="occasion-lights__wire" d={wire} />
       {bulbs.map((bulb, index) => (
         <g key={index}>
@@ -360,8 +402,9 @@ function StringLights({ width }: { width: number }) {
               animationDuration: `${bulb.duration}s`,
             }}
           >
-            <circle className="occasion-lights__glow" cx={bulb.x} cy={bulb.y + 4.5} r={4.6} />
-            <circle className="occasion-lights__core" cx={bulb.x} cy={bulb.y + 4.5} r={2} />
+            <circle cx={bulb.x} cy={bulb.y + 5} r={glow} fill={`url(#${id}-bulb-${bulb.colour})`} />
+            <circle cx={bulb.x} cy={bulb.y + 5} r={phone ? 2 : 2.4} fill={BULB_COLOURS[bulb.colour]} />
+            <circle className="occasion-lights__shine" cx={bulb.x - 0.6} cy={bulb.y + 4.3} r={0.8} />
           </g>
         </g>
       ))}
@@ -446,7 +489,7 @@ function Garland({ kind, width }: { kind: "lanterns" | "stars"; width: number })
   );
 }
 
-export function OccasionHanging({ kind }: { kind: Exclude<Occasion["hanging"], "none"> }) {
+function OccasionHanging({ kind }: { kind: Exclude<Occasion["hanging"], "none"> }) {
   const [ref, width] = useHostWidth();
   return (
     <div ref={ref} className={`occasion-hang occasion-hang--${kind}`} aria-hidden="true">
@@ -461,289 +504,3 @@ export function OccasionHanging({ kind }: { kind: Exclude<Occasion["hanging"], "
   );
 }
 
-/* --------------------------------------------------------- nav atmosphere */
-
-type Particle = {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  max: number;
-  gravity: number;
-  trail: number;
-  color: number;
-  size: number;
-  rot: number;
-  spin: number;
-  phase: number;
-};
-
-const PALETTES: Record<Occasion["navEffect"]["palette"], { day: string[]; night: string[] }> = {
-  gold: {
-    day: ["#b39b63", "#8e7440", "#c9ae72", "#6b5a3a"],
-    night: ["#d9c08a", "#ece4da", "#b39b63", "#f3dfa8"],
-  },
-  champagne: {
-    day: ["#a68e5c", "#8d8a82", "#bfa571", "#6f6c66"],
-    night: ["#f1e6cc", "#c9c6be", "#d9c08a", "#ffffff"],
-  },
-  midnight: {
-    day: ["#9c8450", "#2f3d6b", "#b39b63", "#4f5f94"],
-    night: ["#d9c08a", "#7f93d1", "#b39b63", "#afc0ee"],
-  },
-};
-const PETALS = ["#d9a49a", "#e7c3b8", "#c9ae72", "#b98b84"];
-const rand = (a: number, b: number) => a + Math.random() * (b - a);
-
-function makeParticle(partial: Partial<Particle>): Particle {
-  return {
-    x: 0,
-    y: 0,
-    vx: 0,
-    vy: 0,
-    life: 1,
-    max: 1,
-    gravity: 0,
-    trail: 0,
-    color: 0,
-    size: 1,
-    rot: 0,
-    spin: 0,
-    phase: rand(0, Math.PI * 2),
-    ...partial,
-  };
-}
-
-/** One burst: classic peony, an even ring, or a gold willow with drooping trails. */
-function burst(list: Particle[], x: number, y: number, colorCount: number, size: number) {
-  const shape = ["classic", "ring", "willow"][Math.floor(Math.random() * 3)];
-  const base = Math.floor(Math.random() * colorCount);
-  const count = shape === "willow" ? 40 : shape === "ring" ? 30 : Math.round(rand(20, 34));
-  for (let i = 0; i < count; i += 1) {
-    const angle = (i / count) * Math.PI * 2 + (shape === "ring" ? 0 : rand(-0.1, 0.1));
-    const speed =
-      (shape === "ring" ? rand(54, 58) : shape === "willow" ? rand(18, 52) : rand(28, 74)) * size;
-    const life = shape === "willow" ? rand(1.8, 2.6) : rand(1, 1.6);
-    list.push(
-      makeParticle({
-        x,
-        y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life,
-        max: life,
-        gravity: (shape === "willow" ? 30 : 22) * size,
-        trail: shape === "willow" ? 0.14 : 0.05,
-        color:
-          shape === "willow"
-            ? 0
-            : Math.random() < 0.25
-              ? Math.floor(Math.random() * colorCount)
-              : base,
-      }),
-    );
-  }
-}
-
-/** Ambient effects keep a steady population scaled to the bar's width. */
-function seed(type: Occasion["navEffect"]["type"], width: number, height: number, intensity: number) {
-  const share = Math.max(0.25, width / 1440);
-  const list: Particle[] = [];
-  if (type === "dust") {
-    const n = Math.round((20 + 90 * intensity) * share);
-    for (let i = 0; i < n; i += 1) {
-      list.push(
-        makeParticle({
-          x: rand(0, width),
-          y: rand(4, height - 4),
-          vx: rand(4, 14),
-          vy: rand(-2, 2),
-          size: rand(0.6, 1.7),
-          spin: rand(1, 3),
-          color: i,
-        }),
-      );
-    }
-  } else if (type === "confetti") {
-    const n = Math.round((14 + 40 * intensity) * share);
-    for (let i = 0; i < n; i += 1) {
-      list.push(
-        makeParticle({
-          x: rand(0, width),
-          y: rand(-6, height),
-          vx: rand(-5, 5),
-          vy: rand(8, 18),
-          size: rand(3, 5.5),
-          rot: rand(0, 6.3),
-          spin: rand(-3, 3),
-          color: i,
-        }),
-      );
-    }
-  } else if (type === "petals") {
-    const n = Math.round((6 + 22 * intensity) * share);
-    for (let i = 0; i < n; i += 1) {
-      list.push(
-        makeParticle({
-          x: rand(0, width),
-          y: rand(8, height - 8),
-          vx: rand(14, 34),
-          size: rand(4, 7) * (width <= 640 ? 0.75 : 1),
-          rot: rand(0, 6.3),
-          spin: rand(-1, 1),
-          color: i,
-        }),
-      );
-    }
-  }
-  return list;
-}
-
-/**
- * Faded atmosphere painted between the header's glass and its controls
- * (z-index -1 inside the header's stacking context), masked away from the
- * logo and tools. Stops while the tab is hidden.
- */
-export function OccasionNavEffect({ effect }: { effect: Occasion["navEffect"] }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { type, intensity, palette } = effect;
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const host = canvas?.parentElement;
-    const ctx = canvas?.getContext("2d");
-    if (!canvas || !host || !ctx || type === "none") return;
-
-    let particles: Particle[] = [];
-    let width = 0;
-    let height = 0;
-    let scale = 1;
-    let raf = 0;
-    let last = 0;
-    let wait = 0;
-    let clock = 0;
-
-    const resize = () => {
-      const rect = host.getBoundingClientRect();
-      const widthChanged = Math.abs(rect.width - width) > 40;
-      width = rect.width;
-      height = rect.height;
-      scale = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.round(width * scale);
-      canvas.height = Math.round(height * scale);
-      if (type !== "fireworks" && (widthChanged || particles.length === 0)) {
-        particles = seed(type, width, height, intensity);
-      }
-    };
-    const observer = new ResizeObserver(resize);
-    observer.observe(host);
-    resize();
-
-    const fade = 0.25 + 0.5 * intensity;
-    const frame = (now: number) => {
-      raf = 0;
-      const dt = Math.min(0.05, (now - (last || now)) / 1000);
-      last = now;
-      clock += dt;
-      const night = document.documentElement.getAttribute("data-public-theme") === "night";
-      const colors = type === "petals" ? PETALS : PALETTES[palette][night ? "night" : "day"];
-      ctx.setTransform(scale, 0, 0, scale, 0, 0);
-      ctx.clearRect(0, 0, width, height);
-
-      if (type === "fireworks") {
-        wait -= dt;
-        if (wait <= 0 && height > 24) {
-          burst(particles, rand(30, width - 30), rand(12, height - 12), colors.length, width <= 640 ? 0.6 : 1);
-          wait = (1.7 - 1.25 * intensity) * rand(0.6, 1.4);
-        }
-        for (let i = particles.length - 1; i >= 0; i -= 1) {
-          const p = particles[i];
-          p.life -= dt;
-          if (p.life <= 0) {
-            particles.splice(i, 1);
-            continue;
-          }
-          p.vx *= 0.985;
-          p.vy = p.vy * 0.985 + p.gravity * dt;
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          ctx.globalAlpha = (p.life / p.max) * fade;
-          ctx.strokeStyle = colors[p.color % colors.length];
-          ctx.lineWidth = 1.1;
-          ctx.beginPath();
-          ctx.moveTo(p.x - p.vx * p.trail, p.y - p.vy * p.trail);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-        }
-      } else if (type === "dust") {
-        for (const p of particles) {
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          if (p.x > width + 4) p.x = -4;
-          if (p.y < 2 || p.y > height - 2) p.vy *= -1;
-          ctx.globalAlpha = (0.25 + 0.75 * (Math.sin(clock * p.spin + p.phase) * 0.5 + 0.5)) * fade;
-          ctx.fillStyle = colors[p.color % colors.length];
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      } else if (type === "confetti") {
-        for (const p of particles) {
-          p.y += p.vy * dt;
-          p.x += (p.vx + Math.sin(clock * 1.4 + p.phase) * 10) * dt;
-          p.rot += p.spin * dt;
-          if (p.y > height + 6) {
-            p.y = -6;
-            p.x = rand(0, width);
-          }
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-          ctx.scale(Math.cos(clock * 3 + p.phase), 1);
-          ctx.globalAlpha = 0.55 * fade + 0.2;
-          ctx.fillStyle = colors[p.color % colors.length];
-          ctx.fillRect(-p.size / 2, -p.size * 0.22, p.size, p.size * 0.44);
-          ctx.restore();
-        }
-      } else if (type === "petals") {
-        for (const p of particles) {
-          p.x += p.vx * dt;
-          p.rot += p.spin * dt;
-          if (p.x > width + 10) {
-            p.x = -10;
-            p.y = rand(8, height - 8);
-          }
-          ctx.save();
-          ctx.translate(p.x, p.y + Math.sin(clock * 0.9 + p.phase) * 5);
-          ctx.rotate(p.rot);
-          ctx.globalAlpha = 0.7 * fade + 0.15;
-          ctx.fillStyle = colors[p.color % colors.length];
-          ctx.beginPath();
-          ctx.ellipse(0, 0, p.size, p.size * 0.42, 0, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-      }
-      ctx.globalAlpha = 1;
-      if (!document.hidden) raf = window.requestAnimationFrame(frame);
-    };
-
-    const onVisibility = () => {
-      if (!document.hidden && !raf) {
-        last = 0;
-        raf = window.requestAnimationFrame(frame);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    raf = window.requestAnimationFrame(frame);
-
-    return () => {
-      window.cancelAnimationFrame(raf);
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, [type, intensity, palette]);
-
-  return <canvas ref={canvasRef} className="occasion-fireworks" aria-hidden="true" />;
-}

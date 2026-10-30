@@ -199,7 +199,7 @@ export default async function PublicSiteLayout({
               <WebsiteTextPageScope />
               <PageVisibilityProvider settings={pageVisibility}>
                 <ComingSoonGate liveSite={liveSite}>
-                  {/* Dashboard → Occasions: the header stripe and the home countdown. */}
+                  {/* Dashboard → Occasions: the stripe, effects and countdown in the menu bar. */}
                   <OccasionsProvider occasions={liveOccasions}>
                     <PublicLayout
                       welcomeSplash={welcomeSplash}

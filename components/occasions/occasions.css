@@ -4,6 +4,7 @@
  * overrides and rooms' `.hathor-header * { pointer-events: auto }`.
  */
 
+/* Lanterns and stars hang from the bar's bottom edge over the page. */
 .occasion-under:not(#_) {
   position: absolute;
   top: 100%;
@@ -12,6 +13,32 @@
   display: flex;
   flex-direction: column;
   pointer-events: none !important;
+}
+
+/*
+ * The stripe sits at the very top of the screen with the string lights hanging
+ * from it across the bar. The header makes room with top padding, so the menu
+ * bar moves down beneath the stripe instead of being covered by it. Overlaid
+ * pages keep their layout; scripts that measure the header see the stripe.
+ */
+.occasion-top:not(#_) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none !important;
+}
+
+.hathor-header:has(> .occasion-top > .occasion-stripe):not(#_) {
+  padding-top: 34px;
+}
+
+@media (max-width: 640px) {
+  .hathor-header:has(> .occasion-top > .occasion-stripe):not(#_) {
+    padding-top: 30px;
+  }
 }
 
 /* ------------------------------------------------------------------ stripe */
@@ -293,16 +320,92 @@
   stroke-width: 1;
 }
 
-.occasion-lights__glow {
-  fill: rgb(246 223 160 / 22%);
-}
-
-.occasion-lights__core {
-  fill: #f6dfa0;
+.occasion-lights__shine {
+  fill: rgb(255 255 255 / 85%);
 }
 
 .occasion-lights__bulb {
-  animation: occasion-twinkle 2.4s ease-in-out infinite alternate;
+  animation: occasion-glow 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes occasion-glow {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Across the bar the lights part around the logo… */
+.occasion-top > .occasion-hang--lights:not(#_) {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 calc(50% - 86px),
+    transparent calc(50% - 52px),
+    transparent calc(50% + 52px),
+    #000 calc(50% + 86px)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 calc(50% - 86px),
+    transparent calc(50% - 52px),
+    transparent calc(50% + 52px),
+    #000 calc(50% + 86px)
+  );
+}
+
+/*
+ * …and, once the bar compacts on scroll and its controls rise to meet them,
+ * around the menu button, the countdown (--occ-cd-l / --occ-cd-r) and the tools too.
+ */
+.hathor-header--nav-compact > .occasion-top > .occasion-hang--lights:not(#_) {
+  --occ-gap-l: min(var(--occ-cd-l, 50%), 50% - 52px);
+  --occ-gap-r: max(var(--occ-cd-r, 50%), 50% + 52px);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 92px,
+    #000 124px,
+    #000 calc(var(--occ-gap-l) - 34px),
+    transparent var(--occ-gap-l),
+    transparent var(--occ-gap-r),
+    #000 calc(var(--occ-gap-r) + 34px),
+    #000 calc(100% - 372px),
+    transparent calc(100% - 340px)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 92px,
+    #000 124px,
+    #000 calc(var(--occ-gap-l) - 34px),
+    transparent var(--occ-gap-l),
+    transparent var(--occ-gap-r),
+    #000 calc(var(--occ-gap-r) + 34px),
+    #000 calc(100% - 372px),
+    transparent calc(100% - 340px)
+  );
+}
+
+@media (max-width: 640px) {
+  .occasion-top > .occasion-hang--lights:not(#_),
+  .hathor-header--nav-compact > .occasion-top > .occasion-hang--lights:not(#_) {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      #000 calc(50% - 40px),
+      transparent calc(50% - 24px),
+      transparent calc(50% + 24px),
+      #000 calc(50% + 40px)
+    );
+    mask-image: linear-gradient(
+      90deg,
+      #000 calc(50% - 40px),
+      transparent calc(50% - 24px),
+      transparent calc(50% + 24px),
+      #000 calc(50% + 40px)
+    );
+  }
 }
 
 @keyframes occasion-twinkle {
@@ -315,55 +418,59 @@
 }
 
 /* ----------------------------------------------------------- nav fireworks */
-/* Above the header glass, below its controls; faded out over the logo and tools. */
+/*
+ * Above the header glass, below its controls. Two mask layers: across the bar
+ * (--occ-bar-h tall, set by the effect) it fades out over the logo and tools;
+ * below the bar — the top of the homepage hero, where rockets launch — it is
+ * open and fades away at its lower edge.
+ */
 .occasion-fireworks:not(#_) {
+  --occ-bar-mask: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 96px,
+    #000 170px,
+    #000 calc(50% - 110px),
+    transparent calc(50% - 50px),
+    transparent calc(50% + 50px),
+    #000 calc(50% + 110px),
+    #000 calc(100% - 360px),
+    transparent calc(100% - 300px)
+  );
+  --occ-fall-mask: linear-gradient(#000, #000 calc(100% - 110px), transparent);
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   z-index: -1;
   width: 100%;
   height: 100%;
   pointer-events: none !important;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 96px,
-    #000 170px,
-    #000 calc(50% - 110px),
-    transparent calc(50% - 50px),
-    transparent calc(50% + 50px),
-    #000 calc(50% + 110px),
-    #000 calc(100% - 420px),
-    transparent calc(100% - 350px)
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 96px,
-    #000 170px,
-    #000 calc(50% - 110px),
-    transparent calc(50% - 50px),
-    transparent calc(50% + 50px),
-    #000 calc(50% + 110px),
-    #000 calc(100% - 420px),
-    transparent calc(100% - 350px)
-  );
+  -webkit-mask-image: var(--occ-bar-mask), var(--occ-fall-mask);
+  mask-image: var(--occ-bar-mask), var(--occ-fall-mask);
+  -webkit-mask-size:
+    100% var(--occ-bar-h, 100%),
+    100% calc(100% - var(--occ-bar-h, 100%));
+  mask-size:
+    100% var(--occ-bar-h, 100%),
+    100% calc(100% - var(--occ-bar-h, 100%));
+  -webkit-mask-position:
+    0 0,
+    0 var(--occ-bar-h, 100%);
+  mask-position:
+    0 0,
+    0 var(--occ-bar-h, 100%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Over the homepage hero, before the bar compacts, the sky reaches into the hero. */
+.hathor-header--home:not(.hathor-header--nav-compact) > .occasion-fireworks:not(#_) {
+  height: calc(100% + 240px);
 }
 
 @media (max-width: 640px) {
   .occasion-fireworks:not(#_) {
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 56px,
-      #000 86px,
-      #000 calc(50% - 46px),
-      transparent calc(50% - 22px),
-      transparent calc(50% + 22px),
-      #000 calc(50% + 46px),
-      #000 calc(100% - 116px),
-      transparent calc(100% - 96px)
-    );
-    mask-image: linear-gradient(
+    --occ-bar-mask: linear-gradient(
       90deg,
       transparent 0,
       transparent 56px,
@@ -376,76 +483,251 @@
       transparent calc(100% - 96px)
     );
   }
+
+  .hathor-header--home:not(.hathor-header--nav-compact) > .occasion-fireworks:not(#_) {
+    height: calc(100% + 180px);
+  }
+}
+
+/*
+ * With the menu-bar countdown on, the effect dims behind its digits
+ * (edges measured into --occ-cd-l / --occ-cd-r) and stays clear of the logo.
+ */
+.hathor-header:has(> .occasion-nav-cd) > .occasion-fireworks:not(#_) {
+  --occ-bar-mask: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 96px,
+    #000 170px,
+    #000 calc(var(--occ-cd-l, 50%) - 36px),
+    rgb(0 0 0 / 36%) var(--occ-cd-l, 50%),
+    rgb(0 0 0 / 36%) calc(50% - 64px),
+    transparent calc(50% - 44px),
+    transparent calc(50% + 44px),
+    rgb(0 0 0 / 36%) calc(50% + 64px),
+    rgb(0 0 0 / 36%) var(--occ-cd-r, 50%),
+    #000 calc(var(--occ-cd-r, 50%) + 36px),
+    #000 calc(100% - 360px),
+    transparent calc(100% - 300px)
+  );
+}
+
+/* Phones: the countdown spans the whole bar between burger and tools. */
+@media (max-width: 640px) {
+  .hathor-header:has(> .occasion-nav-cd) > .occasion-fireworks:not(#_) {
+    --occ-bar-mask: linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 56px,
+      rgb(0 0 0 / 36%) 86px,
+      rgb(0 0 0 / 36%) calc(50% - 46px),
+      transparent calc(50% - 22px),
+      transparent calc(50% + 22px),
+      rgb(0 0 0 / 36%) calc(50% + 46px),
+      rgb(0 0 0 / 36%) calc(100% - 116px),
+      transparent calc(100% - 96px)
+    );
+  }
 }
 
 /* The explore overlay sits above the header; keep the occasion out of it. */
 .hathor-header--editorial-open .occasion-under:not(#_),
 .hathor-header--explore-open .occasion-under:not(#_),
+.hathor-header--editorial-open .occasion-top:not(#_),
+.hathor-header--explore-open .occasion-top:not(#_),
 .hathor-header--editorial-open .occasion-fireworks:not(#_),
-.hathor-header--explore-open .occasion-fireworks:not(#_) {
+.hathor-header--explore-open .occasion-fireworks:not(#_),
+.hathor-header--editorial-open .occasion-nav-cd:not(#_),
+.hathor-header--explore-open .occasion-nav-cd:not(#_) {
   display: none !important;
 }
 
-/* ------------------------------------------------------- hero countdown */
-/* Hangs under the homepage title without joining its flow, so the title never moves. */
-.hero-content:has(> .occasion-hero-cd),
-.hero-one-title:has(> .occasion-hero-cd) {
-  position: relative;
-}
-
-.occasion-hero-cd:not(#_) {
+/* ---------------------------------------------------- menu-bar countdown */
+/*
+ * Overlays the bar across the logo's own band: three columns — everything left
+ * of the logo, the logo (measured into --occ-logo-*), everything right of it.
+ * Ink comes from the header, so day, night and the suites tones all match;
+ * the gold is mixed from that ink so it reads on cream and on dark alike.
+ */
+.occasion-nav-cd:not(#_) {
+  --occ-logo-w: 3rem;
+  --occ-logo-x: calc(50% - var(--occ-logo-w) / 2);
+  --occ-logo-y: 0px;
+  --occ-logo-h: 100%;
+  --occ-cd-gap: 1.35rem;
+  --occ-cd-accent: color-mix(in srgb, currentColor 30%, #b39b63);
+  --occ-cd-line: rgb(179 155 99 / 45%);
   position: absolute;
-  top: calc(100% + 1.6rem);
-  left: 50%;
-  display: flex;
-  /* --occ-cd-size lets the Admin → Occasions miniature scale it down. */
-  font-size: var(--occ-cd-size, 16px);
+  top: var(--occ-logo-y);
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: var(--occ-logo-x) var(--occ-logo-w) minmax(0, 1fr);
+  align-items: center;
+  height: var(--occ-logo-h);
+  font-size: var(--occ-cd-size, 1rem);
+  color: inherit;
   letter-spacing: 0;
+  text-shadow: none;
   text-transform: none;
-  text-shadow: 0 1px 12px rgb(0 0 0 / 35%);
-  color: #f4ebdd;
-  -webkit-text-fill-color: currentColor;
-  background: rgb(20 18 16 / 30%);
-  border-top: 1px solid rgb(201 174 114 / 60%);
-  border-bottom: 1px solid rgb(201 174 114 / 60%);
-  transform: translateX(-50%);
-  pointer-events: none;
+  pointer-events: none !important;
+  transition: font-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.occasion-hero-cd__cell {
+.occasion-nav-cd__side {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.occasion-nav-cd__side--start {
+  grid-column: 1;
+  justify-content: flex-end;
+  padding-right: var(--occ-cd-gap);
+}
+
+.occasion-nav-cd__side--end {
+  grid-column: 3;
+  justify-content: flex-start;
+  padding-left: var(--occ-cd-gap);
+}
+
+.occasion-nav-cd__side > * + * {
+  border-left: 1px solid var(--occ-cd-line);
+}
+
+.occasion-nav-cd__cell {
   display: grid;
   justify-items: center;
-  gap: 0.35em;
-  width: 6.75em;
-  padding-block: 0.75em;
+  gap: 0.34em;
+  min-width: 4.1em;
+  padding-inline: 0.55em;
 }
 
-.occasion-hero-cd__cell + .occasion-hero-cd__cell {
-  border-left: 1px solid rgb(201 174 114 / 45%);
-}
-
-.occasion-hero-cd__num {
+.occasion-nav-cd__num {
   font-family: "Italiana", Georgia, serif;
-  font-size: 2.75em;
+  font-size: 1.6em;
   font-weight: 400;
-  line-height: 1;
+  line-height: 0.9;
   font-variant-numeric: tabular-nums;
 }
 
-.occasion-hero-cd__label {
+.occasion-nav-cd__unit,
+.occasion-nav-cd__caption {
   font-family: var(--font-hathor-body), "Plus Jakarta Sans", system-ui, sans-serif;
-  font-size: 0.6em;
   font-weight: 600;
-  letter-spacing: 0.28em;
+  line-height: 1;
   text-transform: uppercase;
-  color: #d9c08a;
-  -webkit-text-fill-color: currentColor;
+}
+
+.occasion-nav-cd__unit {
+  /* Trailing tracking trimmed so the label centres under its number. */
+  margin-right: -0.24em;
+  font-size: 0.5em;
+  letter-spacing: 0.24em;
+  color: var(--occ-cd-accent);
+}
+
+.occasion-nav-cd__short {
+  display: none;
+}
+
+/* Two lines for short captions, three at the 28-character limit; flush against the days. */
+.occasion-nav-cd__caption {
+  max-width: 11.5em;
+  padding-right: 1.1em;
+  font-size: 0.56em;
+  letter-spacing: 0.2em;
+  line-height: 1.3;
+  text-align: right;
+  text-wrap: balance;
+}
+
+.hathor-header--nav-compact .occasion-nav-cd:not(#_) {
+  --occ-cd-size: 0.86rem;
+}
+
+/* Homepage land: white over the hero, like the burger and logo beside it. */
+.public-site
+  .hathor-header--chrome.hathor-header--home:not(.hathor-header--nav-compact):not(
+    .hathor-header--explore-open
+  ):not(.hathor-header--editorial-open)
+  .occasion-nav-cd:not(#_) {
+  color: #ffffff;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 35%);
 }
 
 @media (max-width: 1024px) {
-  .occasion-hero-cd:not(#_) {
-    top: calc(100% + 1.1rem);
-    font-size: var(--occ-cd-size, 11px);
+  .occasion-nav-cd:not(#_) {
+    --occ-cd-size: 0.92rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .occasion-nav-cd:not(#_) {
+    --occ-cd-size: 0.82rem;
+  }
+
+  .hathor-header--nav-compact .occasion-nav-cd:not(#_) {
+    --occ-cd-size: 0.78rem;
+  }
+}
+
+/* Narrow tablets: the burger is close, so long captions take another line instead. */
+@media (max-width: 720px) {
+  .occasion-nav-cd__caption {
+    max-width: 9.5em;
+  }
+}
+
+/* Phones: short unit labels, and the caption moves under the logo. */
+@media (max-width: 640px) {
+  .occasion-nav-cd:not(#_),
+  .hathor-header--nav-compact .occasion-nav-cd:not(#_) {
+    --occ-cd-size: 0.66rem;
+    --occ-cd-gap: 0.5rem;
+  }
+
+  .occasion-nav-cd__cell {
+    gap: 0.3em;
+    min-width: 0;
+    padding-inline: 0.45em;
+  }
+
+  .occasion-nav-cd__num {
+    font-size: 1.5em;
+  }
+
+  .occasion-nav-cd__unit {
+    margin-right: -0.16em;
+    font-size: 0.6em;
+    letter-spacing: 0.16em;
+  }
+
+  .occasion-nav-cd__long {
+    display: none;
+  }
+
+  .occasion-nav-cd__short {
+    display: inline;
+  }
+
+  .occasion-nav-cd__caption {
+    position: absolute;
+    top: 100%;
+    left: calc(var(--occ-logo-x) + var(--occ-logo-w) / 2);
+    max-width: none;
+    margin-top: 0.3em;
+    padding: 0;
+    font-size: 0.66em;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  .occasion-nav-cd__caption + .occasion-nav-cd__cell {
+    border-left: 0;
   }
 }
 
@@ -458,7 +740,8 @@
     animation: none !important;
   }
 
-  .occasion-stripe__still {
+  .occasion-stripe__still,
+  .occasion-nav-cd:not(#_) {
     transition: none;
   }
 }

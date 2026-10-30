@@ -7,7 +7,7 @@ import { OccasionsPanel } from "@/components/admin/OccasionsPanel";
 export default async function AdminOccasionsPage() {
   const identity = await requireAdminPage("website.view");
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-[100rem] space-y-6">
       <CmsPageHeader
         title="Occasions"
         description="Dress the public site for a date — New Year, Christmas, Ramadan, a guest country's national day — and it removes itself afterward."

@@ -1,6 +1,5 @@
 "use client";
 
-import "@/components/occasions/occasions.css";
 import {
   useCallback,
   useEffect,
@@ -27,14 +26,13 @@ import {
   cairoLocalToIso,
   DEFAULT_OCCASIONS_SETTINGS,
   formatCairoDate,
-  formatCountdown,
   isoToCairoLocal,
-  msUntilCountdown,
+  OCCASION_FRAME_MESSAGES,
+  OCCASION_FRAME_PARAM,
   OCCASION_ICON_LABELS,
   OCCASION_ICON_NAMES,
   OCCASION_LIMITS,
   occasionStatus,
-  stripeItemsAt,
   type Occasion,
   type OccasionIconName,
   type OccasionStatus,
@@ -42,13 +40,6 @@ import {
   type OccasionsSettings,
 } from "@/lib/occasions";
 import { OccasionIcon } from "@/components/occasions/OccasionIcon";
-import {
-  OccasionHanging,
-  OccasionNavEffect,
-  OccasionStripe,
-} from "@/components/occasions/OccasionHeaderLayer";
-import { HeroCountdownCells } from "@/components/occasions/OccasionHeroCountdown";
-import { usePrefersReducedMotion } from "@/components/occasions/useActiveOccasion";
 
 /* ------------------------------------------------------------ templates */
 
@@ -109,9 +100,10 @@ function buildTemplate(key: TemplateKey, taken: Set<string>): Occasion {
       items: [],
       itemsAfterCountdown: [],
     },
-    navEffect: { type: "none", intensity: 0.5, palette: "gold" },
+    navEffect: { type: "none", intensity: 0.5, palette: "gold", speed: 1, density: 0.5 },
     hanging: "none",
     heroCountdown: false,
+    countdownLabel: "",
   };
   let start = shiftLocal(isoToCairoLocal(new Date().toISOString()).slice(0, 10) + "T00:00", 7);
   let end = shiftLocal(start, 7);
@@ -132,9 +124,10 @@ function buildTemplate(key: TemplateKey, taken: Set<string>): Occasion {
         item("sparkle", `Happy New Year ${year} from everyone aboard Hathor`),
         item("boat", `Plan your ${year} Nile voyage`, "/cruises"),
       ];
-      base.navEffect = { type: "fireworks", intensity: 0.6, palette: "gold" };
+      base.navEffect = { ...base.navEffect, type: "fireworks", intensity: 0.75, palette: "festive", density: 0.6 };
       base.hanging = "lights";
       base.heroCountdown = true;
+      base.countdownLabel = "Until New Year";
       break;
     }
     case "christmas":
@@ -146,7 +139,7 @@ function buildTemplate(key: TemplateKey, taken: Set<string>): Occasion {
         item("tree", "Merry Christmas from the crew of Hathor"),
         item("bauble", "Coptic Christmas, 7 January, celebrated in Luxor"),
       ];
-      base.navEffect = { type: "dust", intensity: 0.55, palette: "gold" };
+      base.navEffect = { ...base.navEffect, type: "dust", intensity: 0.55 };
       base.hanging = "stars";
       break;
     case "ramadan":
@@ -162,7 +155,7 @@ function buildTemplate(key: TemplateKey, taken: Set<string>): Occasion {
     case "national-day":
       base.stripe.style = "paper";
       base.stripe.items = [item("flag", "Happy National Day")];
-      base.navEffect = { type: "fireworks", intensity: 0.4, palette: "gold" };
+      base.navEffect = { ...base.navEffect, type: "fireworks", intensity: 0.6, palette: "festive" };
       break;
     case "sun-festival":
       moment = nextDate(2, 22, "06:00");
@@ -175,14 +168,15 @@ function buildTemplate(key: TemplateKey, taken: Set<string>): Occasion {
         item("sun", "Twice a year, on 22 February and 22 October"),
       ];
       base.stripe.itemsAfterCountdown = [item("sun", "Today the sun lights the sanctuary of Abu Simbel")];
-      base.navEffect = { type: "dust", intensity: 0.5, palette: "gold" };
+      base.countdownLabel = "Until the sun festival";
+      base.navEffect = { ...base.navEffect, type: "dust" };
       break;
     case "valentine":
       start = nextDate(2, 10);
       end = shiftLocal(start, 5);
       base.stripe.style = "paper";
       base.stripe.items = [item("heart", "Honeymoon on the Nile"), item("lotus", "Celebrate together aboard Hathor")];
-      base.navEffect = { type: "petals", intensity: 0.55, palette: "gold" };
+      base.navEffect = { ...base.navEffect, type: "petals", intensity: 0.55 };
       break;
     case "blank":
       base.name = "New occasion";
@@ -392,10 +386,11 @@ function MessagesEditor({
       {items.map((entry, index) => (
         <div
           key={index}
-          className="grid gap-2.5 rounded-xl p-3"
+          className="grid gap-2 rounded-xl p-2.5"
           style={{ border: "1px solid var(--border)", background: "var(--bg-secondary, transparent)" }}
         >
-          <div className="flex flex-wrap items-center gap-2">
+          {/* what it says, and where it sits */}
+          <div className="flex items-center gap-2">
             <span
               className="grid h-9 w-9 shrink-0 place-items-center rounded-lg"
               style={{ border: "1px solid var(--border)", color: "var(--accent)" }}
@@ -410,8 +405,49 @@ function MessagesEditor({
                 </span>
               )}
             </span>
+            <input
+              className="input min-w-0 flex-1"
+              aria-label={`Message ${index + 1}`}
+              value={entry.text}
+              maxLength={OCCASION_LIMITS.text}
+              disabled={disabled}
+              placeholder="Message text"
+              onChange={(event) => update(index, { text: event.target.value })}
+            />
+            <span className="flex shrink-0">
+              <button
+                type="button"
+                className="btn-ghost p-2"
+                aria-label={`Move message ${index + 1} up`}
+                disabled={disabled || index === 0}
+                onClick={() => move(index, -1)}
+              >
+                <ArrowUp className="h-3.5 w-3.5" aria-hidden />
+              </button>
+              <button
+                type="button"
+                className="btn-ghost p-2"
+                aria-label={`Move message ${index + 1} down`}
+                disabled={disabled || index === items.length - 1}
+                onClick={() => move(index, 1)}
+              >
+                <ArrowDown className="h-3.5 w-3.5" aria-hidden />
+              </button>
+              <button
+                type="button"
+                className="btn-ghost p-2"
+                aria-label={`Remove message ${index + 1}`}
+                disabled={disabled}
+                onClick={() => onChange(items.filter((_, i) => i !== index))}
+              >
+                <X className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </span>
+          </div>
+          {/* its icon and link */}
+          <div className="flex flex-wrap items-center gap-2">
             <select
-              className="input min-w-0 flex-1 sm:max-w-[11rem]"
+              className="input min-w-0 flex-1 sm:max-w-[10rem]"
               aria-label={`Icon for message ${index + 1}`}
               value={entry.imageUrl ? "__image" : entry.icon}
               disabled={disabled}
@@ -463,54 +499,16 @@ function MessagesEditor({
                 Use a drawn icon
               </button>
             ) : null}
-            <span className="ml-auto flex gap-1">
-              <button
-                type="button"
-                className="btn-ghost p-2"
-                aria-label={`Move message ${index + 1} up`}
-                disabled={disabled || index === 0}
-                onClick={() => move(index, -1)}
-              >
-                <ArrowUp className="h-3.5 w-3.5" aria-hidden />
-              </button>
-              <button
-                type="button"
-                className="btn-ghost p-2"
-                aria-label={`Move message ${index + 1} down`}
-                disabled={disabled || index === items.length - 1}
-                onClick={() => move(index, 1)}
-              >
-                <ArrowDown className="h-3.5 w-3.5" aria-hidden />
-              </button>
-              <button
-                type="button"
-                className="btn-ghost p-2"
-                aria-label={`Remove message ${index + 1}`}
-                disabled={disabled}
-                onClick={() => onChange(items.filter((_, i) => i !== index))}
-              >
-                <X className="h-3.5 w-3.5" aria-hidden />
-              </button>
-            </span>
+            <input
+              className="input min-w-[9rem] flex-[1_1_9rem]"
+              aria-label={`Link for message ${index + 1}`}
+              value={entry.href ?? ""}
+              maxLength={OCCASION_LIMITS.url}
+              disabled={disabled}
+              placeholder="Optional link, e.g. /cruises"
+              onChange={(event) => update(index, { href: event.target.value.trim() ? event.target.value : null })}
+            />
           </div>
-          <input
-            className="input w-full"
-            aria-label={`Message ${index + 1}`}
-            value={entry.text}
-            maxLength={OCCASION_LIMITS.text}
-            disabled={disabled}
-            placeholder="Message text"
-            onChange={(event) => update(index, { text: event.target.value })}
-          />
-          <input
-            className="input w-full"
-            aria-label={`Link for message ${index + 1}`}
-            value={entry.href ?? ""}
-            maxLength={OCCASION_LIMITS.url}
-            disabled={disabled}
-            placeholder="Optional link, e.g. /cruises"
-            onChange={(event) => update(index, { href: event.target.value.trim() ? event.target.value : null })}
-          />
         </div>
       ))}
       <button
@@ -526,58 +524,305 @@ function MessagesEditor({
   );
 }
 
-/* --------------------------------------------------------------- preview */
+/* ---------------------------------------------------------- live preview */
 
-/** A miniature of the site's header and home hero, drawn with the real components. */
-function OccasionPreview({ occasion }: { occasion: Occasion }) {
-  const now = useNow();
-  const reducedMotion = usePrefersReducedMotion();
-  const items = stripeItemsAt(occasion, now);
-  const left = msUntilCountdown(occasion, now);
-  const countdown = left !== null && left > 0 ? formatCountdown(left) : "";
-  const showStripe = occasion.stripe.enabled && items.length > 0 && items.every((entry) => entry.text.trim());
+type Device = "desktop" | "phone";
+
+const PREVIEW_FRAMES: Record<Device, { width: number; height: number }> = {
+  desktop: { width: 1280, height: 800 },
+  phone: { width: 390, height: 760 },
+};
+const PREVIEW_SRC = `/?${OCCASION_FRAME_PARAM}=1`;
+/* Matches the panel grid's `xl:` columns: preview beside the editor from here up. */
+const WIDE_LAYOUT_QUERY = "(min-width: 1280px)";
+
+function PillSwitch<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="inline-flex rounded-full p-0.5"
+      style={{ border: "1px solid var(--border)" }}
+    >
+      {options.map((option) => {
+        const on = option.value === value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={on}
+            onClick={() => onChange(option.value)}
+            className="rounded-full px-3 py-1 text-xs font-semibold transition-colors"
+            style={{
+              background: on ? "color-mix(in srgb, var(--accent) 18%, transparent)" : "transparent",
+              color: on ? "var(--text-primary)" : "var(--text-secondary)",
+            }}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * The real homepage in a scaled frame, dressed with the occasion being edited,
+ * unsaved changes included. The frame only listens to this page, and only
+ * after the admin API confirms the session (lib/occasions.ts, OCCASION_FRAME_PARAM).
+ */
+function LivePreview({ occasion }: { occasion: Occasion | null }) {
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const latest = useRef<{ occasion: Occasion | null; scrolled: boolean }>({ occasion, scrolled: false });
+  /* Mounts after the occasions load (client only), so the phone check never meets server HTML. */
+  const [device, setDevice] = useState<Device>(() =>
+    window.matchMedia("(max-width: 639px)").matches ? "phone" : "desktop",
+  );
+  const [scrolled, setScrolled] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [boxWidth, setBoxWidth] = useState(0);
+  const [maxHeight, setMaxHeight] = useState(360);
+
+  const post = useCallback((message: object) => {
+    frameRef.current?.contentWindow?.postMessage(message, window.location.origin);
+  }, []);
+
+  useEffect(() => {
+    latest.current.occasion = occasion;
+    post({ type: OCCASION_FRAME_MESSAGES.draft, occasion });
+  }, [occasion, post]);
+
+  useEffect(() => {
+    latest.current.scrolled = scrolled;
+    post({ type: OCCASION_FRAME_MESSAGES.view, scrolled });
+  }, [scrolled, post]);
+
+  /* The frame announces itself on load, and again after a link is followed inside it. */
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || event.source !== frameRef.current?.contentWindow) return;
+      if ((event.data as { type?: unknown } | null)?.type !== OCCASION_FRAME_MESSAGES.ready) return;
+      setReady(true);
+      post({ type: OCCASION_FRAME_MESSAGES.draft, occasion: latest.current.occasion });
+      post({ type: OCCASION_FRAME_MESSAGES.view, scrolled: latest.current.scrolled });
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [post]);
+
+  /*
+   * Beside the editor the whole card, save bar included, fits on screen from
+   * where it rests before it pins; stacked above the editor it keeps to a band.
+   */
+  useEffect(() => {
+    const box = boxRef.current;
+    const card = box?.closest("aside");
+    const grid = card?.parentElement;
+    if (!box || !card || !grid) return;
+    const measure = () => {
+      setBoxWidth(box.clientWidth);
+      if (!window.matchMedia(WIDE_LAYOUT_QUERY).matches) {
+        const share = window.matchMedia("(max-width: 639px)").matches ? 0.26 : 0.34;
+        setMaxHeight(Math.max(170, Math.round(window.innerHeight * share)));
+        return;
+      }
+      const cardBox = card.getBoundingClientRect();
+      const frameBox = box.getBoundingClientRect();
+      const restTop = grid.getBoundingClientRect().top + window.scrollY + (frameBox.top - cardBox.top);
+      const below = cardBox.bottom - frameBox.bottom;
+      setMaxHeight(Math.max(240, Math.floor(window.innerHeight - restTop - below - 12)));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+    if (grid.parentElement) observer.observe(grid.parentElement);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const frame = PREVIEW_FRAMES[device];
+  const scale = boxWidth ? Math.min(boxWidth / frame.width, maxHeight / frame.height) : 0;
+  const shownWidth = Math.round(frame.width * scale);
+  const shownHeight = Math.round(frame.height * scale);
 
   return (
-    <div className="overflow-hidden rounded-xl" style={{ border: "1px solid var(--border)" }}>
-      <div
-        className="relative isolate z-10 flex h-14 items-center justify-center"
-        style={{ background: "rgb(236 228 218 / 94%)", color: "#141210" }}
-      >
-        {occasion.navEffect.type !== "none" && !reducedMotion ? (
-          <OccasionNavEffect effect={occasion.navEffect} />
-        ) : null}
-        <span style={{ fontFamily: '"Italiana", Georgia, serif', fontSize: 20, letterSpacing: "0.3em" }}>
-          HATHOR
-        </span>
-        <div className="occasion-under">
-          {showStripe ? (
-            <OccasionStripe
-              name={occasion.name}
-              stripe={occasion.stripe}
-              items={items}
-              countdown={countdown}
-              reducedMotion={reducedMotion}
-              onDismiss={occasion.stripe.dismissible ? () => undefined : undefined}
-            />
-          ) : null}
-          {occasion.hanging !== "none" ? <OccasionHanging kind={occasion.hanging} /> : null}
+    <div>
+      <div className="px-4 pb-3 pt-3.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="mr-auto hidden text-base font-semibold tracking-tight sm:block">Live preview</h2>
+          <PillSwitch
+            label="Screen"
+            value={device}
+            options={[
+              { value: "desktop", label: "Desktop" },
+              { value: "phone", label: "Phone" },
+            ]}
+            onChange={setDevice}
+          />
+          <PillSwitch
+            label="Page position"
+            value={scrolled ? "scrolled" : "top"}
+            options={[
+              { value: "top", label: "Top" },
+              { value: "scrolled", label: "Scrolled" },
+            ]}
+            onChange={(view) => setScrolled(view === "scrolled")}
+          />
         </div>
+        <p className="mt-1 hidden text-xs text-muted sm:block">
+          The real homepage with your unsaved edits. Only you see it.
+        </p>
       </div>
-      <div
-        className="relative flex h-56 justify-center pt-20"
-        style={{ background: "linear-gradient(180deg, #2a241d, #14110e)" }}
-      >
-        <div
-          className="relative h-fit text-center"
-          style={{ color: "#f4ebdd", "--occ-cd-size": "8px" } as CSSProperties}
-        >
-          <span style={{ fontFamily: '"Italiana", Georgia, serif', fontSize: 30 }}>Luxury Dahabiya</span>
-          {occasion.heroCountdown && left !== null && left > 0 ? <HeroCountdownCells ms={left} /> : null}
+      <div className="px-4 pb-4">
+        <div ref={boxRef} className="relative w-full" style={{ height: shownHeight || Math.round(maxHeight * 0.6) }}>
+          {scale > 0 ? (
+            <div
+              className="absolute top-0 overflow-hidden"
+              style={{
+                left: `calc(50% - ${shownWidth / 2}px)`,
+                width: shownWidth,
+                height: shownHeight,
+                borderRadius: device === "phone" ? 18 : 10,
+                border: "1px solid var(--border)",
+                background: "#14110e",
+              }}
+            >
+              <iframe
+                ref={frameRef}
+                src={PREVIEW_SRC}
+                title="Live preview of the homepage"
+                style={{
+                  display: "block",
+                  width: frame.width,
+                  height: frame.height,
+                  border: 0,
+                  transform: `scale(${scale})`,
+                  transformOrigin: "0 0",
+                }}
+              />
+              {!ready ? (
+                <div
+                  className="absolute inset-0 grid place-items-center text-xs"
+                  style={{ background: "#14110e", color: "#d9c08a" }}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                    Loading the homepage…
+                  </span>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
   );
 }
+
+/* ------------------------------------------------------------------ tabs */
+
+type TabKey = "when" | "countdown" | "stripe" | "messages" | "effects";
+
+const TABS: { key: TabKey; label: string }[] = [
+  { key: "when", label: "When" },
+  { key: "countdown", label: "Countdown" },
+  { key: "stripe", label: "Stripe" },
+  { key: "messages", label: "Messages" },
+  { key: "effects", label: "Effects" },
+];
+
+/** One row of equal tabs; a gold dot marks the parts that are switched on. */
+function EditorTabs({
+  value,
+  onChange,
+  on: active,
+}: {
+  value: TabKey;
+  onChange: (key: TabKey) => void;
+  on: Partial<Record<TabKey, boolean>>;
+}) {
+  const refs = useRef<Partial<Record<TabKey, HTMLButtonElement | null>>>({});
+  const focusAt = (index: number) => {
+    const key = TABS[(index + TABS.length) % TABS.length].key;
+    onChange(key);
+    refs.current[key]?.focus();
+  };
+  return (
+    <div
+      role="tablist"
+      aria-label="Occasion settings"
+      className="grid grid-cols-3 @sm:grid-cols-5"
+      style={{ borderBottom: "1px solid var(--border)" }}
+    >
+      {TABS.map((tab, index) => {
+        const on = tab.key === value;
+        return (
+          <button
+            key={tab.key}
+            ref={(node) => {
+              refs.current[tab.key] = node;
+            }}
+            id={`occ-tab-${tab.key}`}
+            type="button"
+            role="tab"
+            aria-selected={on}
+            aria-controls={`occ-panel-${tab.key}`}
+            tabIndex={on ? 0 : -1}
+            onClick={() => onChange(tab.key)}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                focusAt(index + 1);
+              } else if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                focusAt(index - 1);
+              }
+            }}
+            className="-mb-px inline-flex min-w-0 items-center justify-center gap-1 px-1 py-2.5 text-[13px] font-semibold transition-colors"
+            style={{
+              color: on ? "var(--text-primary)" : "var(--text-muted)",
+              borderBottom: `2px solid ${on ? "var(--accent)" : "transparent"}`,
+            }}
+          >
+            {tab.label}
+            {active[tab.key] ? (
+              <>
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: "var(--accent)" }}
+                  aria-hidden
+                />
+                <span className="sr-only">(on)</span>
+              </>
+            ) : null}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+const PALETTE_OPTIONS: { value: Occasion["navEffect"]["palette"]; label: string }[] = [
+  { value: "festive", label: "Festive colours" },
+  { value: "jewel", label: "Jewel tones" },
+  { value: "gold", label: "Gold" },
+  { value: "champagne", label: "Champagne" },
+  { value: "midnight", label: "Midnight" },
+];
 
 /* ----------------------------------------------------------------- panel */
 
@@ -591,6 +836,26 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [template, setTemplate] = useState<TemplateKey>("new-year");
+  const [tab, setTab] = useState<TabKey>("when");
+  const [afterMoment, setAfterMoment] = useState(false);
+  const [previewCard, setPreviewCard] = useState<HTMLElement | null>(null);
+  const [previewCover, setPreviewCover] = useState(0);
+
+  /* Stacked layouts pin the preview over the editor; fields scroll into view below it. */
+  useEffect(() => {
+    if (!previewCard) return;
+    const measure = () =>
+      setPreviewCover(
+        window.matchMedia(WIDE_LAYOUT_QUERY).matches ? 0 : Math.round(previewCard.getBoundingClientRect().height),
+      );
+    const observer = new ResizeObserver(measure);
+    observer.observe(previewCard);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [previewCard]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -646,19 +911,23 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
       return { occasions: next };
     });
 
+  const selectOccasion = (id: string | null) => {
+    setSelectedId(id);
+    setConfirmDelete(false);
+  };
+
   const addOccasion = () => {
     const created = buildTemplate(template, new Set(occasions.map((occasion) => occasion.id)));
     setSettings((current) => ({ occasions: [...current.occasions, created] }));
-    setSelectedId(created.id);
-    setConfirmDelete(false);
+    selectOccasion(created.id);
+    setTab("when");
   };
 
   const deleteSelected = () => {
     if (!selected) return;
     const remaining = occasions.filter((occasion) => occasion.id !== selected.id);
     setSettings({ occasions: remaining });
-    setSelectedId(remaining[Math.max(0, selectedIndex - 1)]?.id ?? null);
-    setConfirmDelete(false);
+    selectOccasion(remaining[Math.max(0, selectedIndex - 1)]?.id ?? null);
   };
 
   const save = async () => {
@@ -694,444 +963,563 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
     selected && Date.parse(selected.endsAt) <= Date.parse(selected.startsAt)
       ? "The end must be after the start."
       : null;
+  const saveStatus = !canManage
+    ? "You can view occasions. Ask an administrator for website editing rights to change them."
+    : dirty
+      ? "Unsaved changes. Visitors see the last saved version."
+      : "All changes saved.";
+
+  const siteLink =
+    selected && savedIds.has(selected.id) ? (
+      <a
+        href={`/?occasion=${encodeURIComponent(selected.id)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="admin-inline-link inline-flex items-center gap-1.5 text-xs"
+        title="Opens the saved version on the site in a new tab. It works while you are signed in to the dashboard, in that tab, even before the dates or while switched off. Add ?occasion=off to a page address to stop previewing."
+      >
+        Open on the site
+        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+      </a>
+    ) : selected ? (
+      <span className="text-xs text-muted">Save to open it on the site.</span>
+    ) : null;
 
   return (
-    <div className="space-y-6">
-      {/* save bar */}
-      <div
-        className="sticky top-2 z-10 flex flex-wrap items-center gap-3 rounded-xl px-4 py-3"
-        style={{ border: "1px solid var(--border)", background: "var(--bg-primary)" }}
-      >
-        <button
-          type="button"
-          className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
-          disabled={!canManage || saving || !dirty}
-          onClick={() => void save()}
-        >
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Save className="h-4 w-4" aria-hidden />}
-          Save changes
-        </button>
-        {dirty ? (
-          <button
-            type="button"
-            className="btn-ghost px-3 py-2 text-sm"
-            disabled={saving}
-            onClick={() => {
-              setSettings(saved);
-              setSelectedId((id) => (saved.occasions.some((o) => o.id === id) ? id : saved.occasions[0]?.id ?? null));
-            }}
-          >
-            Discard changes
-          </button>
-        ) : null}
-        <span className="text-sm text-muted">
-          {!canManage
-            ? "You can view occasions. Ask an administrator for website editing rights to change them."
-            : dirty
-              ? "Unsaved changes. Visitors see the last saved version."
-              : "All changes saved."}
-        </span>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-        {/* list */}
-        <section className="card space-y-4 p-4 sm:p-5" aria-label="Occasions">
-          <div>
-            <h2 className="text-base font-semibold tracking-tight">Occasions</h2>
-            <p className="mt-0.5 text-xs text-muted">
-              When two overlap, the higher one in this list shows. Times are Cairo time.
-            </p>
-          </div>
-          <ul className="space-y-2">
-            {occasions.map((occasion, index) => {
-              const on = occasion.id === selectedId;
-              return (
-                <li key={occasion.id}>
-                  <div
-                    className="flex items-stretch gap-1 rounded-xl"
-                    style={{
-                      border: `1px solid ${on ? "var(--accent)" : "var(--border)"}`,
-                      background: on ? "color-mix(in srgb, var(--accent) 10%, transparent)" : "transparent",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      className="min-w-0 flex-1 px-3 py-2.5 text-left"
-                      aria-current={on || undefined}
-                      onClick={() => {
-                        setSelectedId(occasion.id);
-                        setConfirmDelete(false);
-                      }}
-                    >
-                      <span className="block truncate text-sm font-semibold">{occasion.name || "Untitled"}</span>
-                      <span className="mt-0.5 block truncate text-xs text-muted">
-                        {formatCairoDate(occasion.startsAt)} → {formatCairoDate(occasion.endsAt)}
-                      </span>
-                      <span className="mt-1.5 block">
-                        <StatusChip status={occasionStatus(occasion, now)} />
-                      </span>
-                    </button>
-                    <span className="flex flex-col justify-center gap-0.5 pr-1.5">
-                      <button
-                        type="button"
-                        className="btn-ghost p-1.5"
-                        aria-label={`Move ${occasion.name} up`}
-                        disabled={disabled || index === 0}
-                        onClick={() => moveOccasion(index, -1)}
-                      >
-                        <ArrowUp className="h-3.5 w-3.5" aria-hidden />
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-ghost p-1.5"
-                        aria-label={`Move ${occasion.name} down`}
-                        disabled={disabled || index === occasions.length - 1}
-                        onClick={() => moveOccasion(index, 1)}
-                      >
-                        <ArrowDown className="h-3.5 w-3.5" aria-hidden />
-                      </button>
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+    <div className="space-y-5">
+      {/* occasions: pick one, or start a new one from a template */}
+      <section className="card px-4 py-3.5 sm:px-5" aria-label="Occasions">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {occasions.map((occasion) => {
+            const on = occasion.id === selectedId;
+            return (
+              <button
+                key={occasion.id}
+                type="button"
+                aria-current={on || undefined}
+                onClick={() => selectOccasion(occasion.id)}
+                className="flex max-w-full items-center gap-3 rounded-xl px-3.5 py-2 text-left transition-colors"
+                style={{
+                  border: `1px solid ${on ? "var(--accent)" : "var(--border)"}`,
+                  background: on ? "color-mix(in srgb, var(--accent) 10%, transparent)" : "transparent",
+                }}
+              >
+                <span className="min-w-0">
+                  <span className="block max-w-[14rem] truncate text-sm font-semibold">
+                    {occasion.name || "Untitled"}
+                  </span>
+                  <span className="block max-w-[14rem] truncate text-[11px] text-muted">
+                    {formatCairoDate(occasion.startsAt)} → {formatCairoDate(occasion.endsAt)}
+                  </span>
+                </span>
+                <StatusChip status={occasionStatus(occasion, now)} />
+              </button>
+            );
+          })}
           {occasions.length === 0 ? (
-            <p className="text-sm text-muted">No occasions yet. Start from a template below.</p>
+            <span className="text-sm text-muted">No occasions yet. Start from a template.</span>
           ) : null}
           {canManage ? (
-            <div className="space-y-2 pt-1">
-              <div className="gold-hairline" />
-              <Field label="Start from">
-                <select
-                  className="input w-full"
-                  value={template}
-                  onChange={(event) => setTemplate(event.target.value as TemplateKey)}
-                >
-                  {(Object.keys(TEMPLATE_LABELS) as TemplateKey[]).map((key) => (
-                    <option key={key} value={key}>
-                      {TEMPLATE_LABELS[key]}
-                    </option>
-                  ))}
-                </select>
-              </Field>
+            <div className="ml-auto flex flex-wrap items-center gap-2">
+              <label htmlFor="occ-template" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">
+                Start from
+              </label>
+              <select
+                id="occ-template"
+                className="input"
+                style={{ width: "auto", minWidth: "12rem" }}
+                value={template}
+                onChange={(event) => setTemplate(event.target.value as TemplateKey)}
+              >
+                {(Object.keys(TEMPLATE_LABELS) as TemplateKey[]).map((key) => (
+                  <option key={key} value={key}>
+                    {TEMPLATE_LABELS[key]}
+                  </option>
+                ))}
+              </select>
               <button
                 type="button"
-                className="btn-ghost inline-flex w-full items-center justify-center gap-1.5 px-3 py-2.5 text-sm"
+                className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
                 disabled={disabled || occasions.length >= OCCASION_LIMITS.occasions}
                 onClick={addOccasion}
               >
                 <Plus className="h-4 w-4" aria-hidden />
                 Add occasion
               </button>
-              <p className="text-xs text-muted">New occasions start switched off, so nothing shows until you turn one on and save.</p>
             </div>
           ) : null}
-        </section>
+        </div>
+        <p className="mt-2.5 text-xs text-muted">
+          Times are Cairo time. When two overlap, the first one in this row shows.
+          {canManage ? " New occasions start switched off, so nothing shows until you turn one on and save." : ""}
+        </p>
+      </section>
 
-        {/* editor */}
-        {selected ? (
-          <div className="min-w-0 space-y-6">
-            <section className="card space-y-4 p-4 sm:p-6" aria-label="Preview">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-base font-semibold tracking-tight">Preview</h2>
-                  <p className="mt-0.5 text-xs text-muted">Live as you edit. The real site uses the saved version.</p>
-                </div>
-                {savedIds.has(selected.id) ? (
-                  <a
-                    href={`/?occasion=${encodeURIComponent(selected.id)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="admin-inline-link inline-flex items-center gap-1.5 text-sm"
-                  >
-                    See it on the site
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                  </a>
-                ) : (
-                  <span className="text-xs text-muted">Save to see it on the site.</span>
-                )}
-              </div>
-              <OccasionPreview occasion={selected} />
-              {savedIds.has(selected.id) ? (
-                <p className="text-xs text-muted">
-                  Only you see this. The site link works while you are signed in to the dashboard, in the tab
-                  it opens, even before the dates or while switched off. Add <code>?occasion=off</code> to a
-                  page address to stop previewing.
-                </p>
-              ) : null}
-            </section>
-
-            <section className="card space-y-5 p-4 sm:p-6" aria-label="When">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <h2 className="text-base font-semibold tracking-tight">When</h2>
-                <StatusChip status={occasionStatus(selected, now)} />
-              </div>
-              <Field label="Name">
-                <input
-                  className="input w-full"
-                  value={selected.name}
-                  maxLength={OCCASION_LIMITS.name}
-                  disabled={disabled}
-                  onChange={(event) => patch((o) => ({ ...o, name: event.target.value }))}
-                />
-              </Field>
+      {selected ? (
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(24rem,28rem)_minmax(0,1fr)] 2xl:grid-cols-[minmax(26rem,30rem)_minmax(0,1fr)]">
+          {/* editor */}
+          <section
+            className="card @container order-2 min-w-0 p-4 sm:p-5 xl:order-1 [&_:is(input,select,textarea,button)]:scroll-mt-[calc(var(--header-h)+var(--occ-cover)+0.75rem)] max-md:[&_:is(input,select,textarea,button)]:scroll-mb-[calc(5.5rem+env(safe-area-inset-bottom))]"
+            style={{ "--occ-cover": `${previewCover}px` } as CSSProperties}
+            aria-label="Edit occasion"
+          >
+            <Field label="Name">
+              <input
+                className="input w-full"
+                value={selected.name}
+                maxLength={OCCASION_LIMITS.name}
+                disabled={disabled}
+                onChange={(event) => patch((o) => ({ ...o, name: event.target.value }))}
+              />
+            </Field>
+            <div
+              className="mt-3 flex items-start justify-between gap-3 rounded-xl px-3.5 py-2.5"
+              style={{
+                border: `1px solid ${selected.enabled ? "var(--accent)" : "var(--border)"}`,
+                background: selected.enabled ? "color-mix(in srgb, var(--accent) 8%, transparent)" : "transparent",
+              }}
+            >
               <Toggle
                 label="Show on the site during these dates"
-                hint="Off keeps the occasion saved without showing it."
+                hint="Off keeps it hidden from visitors. The preview still shows it."
                 checked={selected.enabled}
                 disabled={disabled}
                 onChange={(enabled) => patch((o) => ({ ...o, enabled }))}
               />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Starts (Cairo time)">
-                  <input
-                    type="datetime-local"
-                    className="input w-full"
-                    value={isoToCairoLocal(selected.startsAt)}
-                    disabled={disabled}
-                    onChange={(event) => {
-                      const iso = cairoLocalToIso(event.target.value);
-                      if (iso) patch((o) => ({ ...o, startsAt: iso }));
-                    }}
-                  />
-                </Field>
-                <Field label="Ends (Cairo time)">
-                  <input
-                    type="datetime-local"
-                    className="input w-full"
-                    value={isoToCairoLocal(selected.endsAt)}
-                    disabled={disabled}
-                    onChange={(event) => {
-                      const iso = cairoLocalToIso(event.target.value);
-                      if (iso) patch((o) => ({ ...o, endsAt: iso }));
-                    }}
-                  />
-                </Field>
-              </div>
-              {dateError ? (
-                <p className="text-sm" style={{ color: "var(--danger)" }} role="alert">
-                  {dateError}
-                </p>
-              ) : null}
-              <Toggle
-                label="Count down to a moment"
-                hint="Type {countdown} in a message to show the time left, e.g. midnight on New Year's Eve."
-                checked={selected.countdownTo !== null}
-                disabled={disabled}
-                onChange={(on) =>
-                  patch((o) => ({
-                    ...o,
-                    countdownTo: on ? o.countdownTo ?? o.startsAt : null,
-                    heroCountdown: on ? o.heroCountdown : false,
-                  }))
-                }
-              />
-              {selected.countdownTo !== null ? (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Counting down to (Cairo time)">
-                    <input
-                      type="datetime-local"
-                      className="input w-full"
-                      value={isoToCairoLocal(selected.countdownTo)}
-                      disabled={disabled}
-                      onChange={(event) => {
-                        const iso = cairoLocalToIso(event.target.value);
-                        if (iso) patch((o) => ({ ...o, countdownTo: iso }));
-                      }}
-                    />
-                  </Field>
-                  <div className="self-end pb-1">
-                    <Toggle
-                      label="Countdown under the home page title"
-                      hint="Days, hours, minutes and seconds. Gone at the moment itself."
-                      checked={selected.heroCountdown}
-                      disabled={disabled}
-                      onChange={(heroCountdown) => patch((o) => ({ ...o, heroCountdown }))}
-                    />
-                  </div>
-                </div>
-              ) : null}
-            </section>
+              <span className="shrink-0">
+                <StatusChip status={occasionStatus(selected, now)} />
+              </span>
+            </div>
 
-            <section className="card space-y-5 p-4 sm:p-6" aria-label="Stripe">
-              <div>
-                <h2 className="text-base font-semibold tracking-tight">Stripe under the menu</h2>
-                <p className="mt-0.5 text-xs text-muted">A thin band on every page except booking and admin.</p>
-              </div>
-              <Toggle
-                label="Show the stripe"
-                checked={selected.stripe.enabled}
-                disabled={disabled}
-                onChange={(enabled) => patchStripe({ enabled })}
+            <div className="mt-4">
+              <EditorTabs
+                value={tab}
+                onChange={setTab}
+                on={{
+                  countdown: selected.countdownTo !== null,
+                  stripe: selected.stripe.enabled,
+                  effects: selected.navEffect.type !== "none" || selected.hanging !== "none",
+                }}
               />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Segmented
-                  label="Look"
-                  value={selected.stripe.style}
-                  disabled={disabled}
-                  options={[
-                    { value: "ink", label: "Ink" },
-                    { value: "paper", label: "Paper" },
-                    { value: "gold", label: "Gold" },
-                  ]}
-                  onChange={(style) => patchStripe({ style })}
-                />
-                <Segmented
-                  label="Movement"
-                  value={selected.stripe.mode}
-                  disabled={disabled}
-                  options={[
-                    { value: "glide", label: "Glide" },
-                    { value: "rotate", label: "One at a time" },
-                    { value: "still", label: "Still" },
-                  ]}
-                  onChange={(mode) => patchStripe({ mode })}
-                />
-              </div>
-              {selected.stripe.mode !== "still" ? (
-                <Field label={`Speed · ${selected.stripe.speed}`}>
-                  <input
-                    type="range"
-                    min={20}
-                    max={120}
-                    step={5}
-                    className="w-full accent-[var(--accent)]"
-                    value={selected.stripe.speed}
-                    disabled={disabled}
-                    onChange={(event) => patchStripe({ speed: Number(event.target.value) })}
-                  />
-                </Field>
-              ) : null}
-              <Toggle
-                label="Visitors can hide it"
-                hint="A small × on the stripe. Their choice is remembered for this occasion."
-                checked={selected.stripe.dismissible}
-                disabled={disabled}
-                onChange={(dismissible) => patchStripe({ dismissible })}
-              />
-              <div className="gold-hairline" />
-              <MessagesEditor
-                title="Messages"
-                hint="Up to 8. Each can have its own icon or uploaded image, and a link."
-                items={selected.stripe.items}
-                disabled={disabled}
-                onChange={(items) => patchStripe({ items })}
-              />
-              {selected.countdownTo !== null ? (
+            </div>
+
+            <div
+              role="tabpanel"
+              id={`occ-panel-${tab}`}
+              aria-labelledby={`occ-tab-${tab}`}
+              className="space-y-5 pt-5"
+            >
+              {tab === "when" ? (
                 <>
+                  <div className="grid gap-4 @md:grid-cols-2">
+                    <Field label="Starts (Cairo time)">
+                      <input
+                        type="datetime-local"
+                        className="input w-full"
+                        value={isoToCairoLocal(selected.startsAt)}
+                        disabled={disabled}
+                        onChange={(event) => {
+                          const iso = cairoLocalToIso(event.target.value);
+                          if (iso) patch((o) => ({ ...o, startsAt: iso }));
+                        }}
+                      />
+                    </Field>
+                    <Field label="Ends (Cairo time)">
+                      <input
+                        type="datetime-local"
+                        className="input w-full"
+                        value={isoToCairoLocal(selected.endsAt)}
+                        disabled={disabled}
+                        onChange={(event) => {
+                          const iso = cairoLocalToIso(event.target.value);
+                          if (iso) patch((o) => ({ ...o, endsAt: iso }));
+                        }}
+                      />
+                    </Field>
+                  </div>
+                  {dateError ? (
+                    <p className="text-sm" style={{ color: "var(--danger)" }} role="alert">
+                      {dateError}
+                    </p>
+                  ) : null}
                   <div className="gold-hairline" />
-                  <MessagesEditor
-                    title="After the countdown"
-                    hint="Replaces the messages above once the moment passes, e.g. Happy New Year."
-                    items={selected.stripe.itemsAfterCountdown}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium">
+                        Priority {selectedIndex + 1} of {occasions.length}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted">When dates overlap, the earlier one shows.</p>
+                    </div>
+                    <span className="flex gap-1">
+                      <button
+                        type="button"
+                        className="btn-ghost p-2"
+                        aria-label={`Move ${selected.name} earlier`}
+                        disabled={disabled || selectedIndex === 0}
+                        onClick={() => moveOccasion(selectedIndex, -1)}
+                      >
+                        <ArrowUp className="h-3.5 w-3.5" aria-hidden />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-ghost p-2"
+                        aria-label={`Move ${selected.name} later`}
+                        disabled={disabled || selectedIndex === occasions.length - 1}
+                        onClick={() => moveOccasion(selectedIndex, 1)}
+                      >
+                        <ArrowDown className="h-3.5 w-3.5" aria-hidden />
+                      </button>
+                    </span>
+                  </div>
+                  {canManage ? (
+                    <>
+                      <div className="gold-hairline" />
+                      <div className="flex flex-wrap items-center gap-3">
+                        {confirmDelete ? (
+                          <>
+                            <span className="text-sm">Delete “{selected.name}”? This takes effect when you save.</span>
+                            <button
+                              type="button"
+                              className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
+                              style={{ color: "var(--danger)" }}
+                              onClick={deleteSelected}
+                            >
+                              <Trash2 className="h-4 w-4" aria-hidden />
+                              Delete
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-ghost px-3 py-2 text-sm"
+                              onClick={() => setConfirmDelete(false)}
+                            >
+                              Keep it
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
+                            disabled={disabled}
+                            onClick={() => setConfirmDelete(true)}
+                          >
+                            <Trash2 className="h-4 w-4" aria-hidden />
+                            Delete this occasion
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+
+              {tab === "countdown" ? (
+                <>
+                  <Toggle
+                    label="Count down to a moment"
+                    hint="Type {countdown} in a message to show the time left, e.g. midnight on New Year's Eve."
+                    checked={selected.countdownTo !== null}
                     disabled={disabled}
-                    allowEmpty
-                    onChange={(itemsAfterCountdown) => patchStripe({ itemsAfterCountdown })}
+                    onChange={(on) =>
+                      patch((o) => ({
+                        ...o,
+                        countdownTo: on ? o.countdownTo ?? o.startsAt : null,
+                        heroCountdown: on ? o.heroCountdown : false,
+                      }))
+                    }
+                  />
+                  {selected.countdownTo !== null ? (
+                    <>
+                      <Field label="Counting down to (Cairo time)">
+                        <input
+                          type="datetime-local"
+                          className="input w-full"
+                          value={isoToCairoLocal(selected.countdownTo)}
+                          disabled={disabled}
+                          onChange={(event) => {
+                            const iso = cairoLocalToIso(event.target.value);
+                            if (iso) patch((o) => ({ ...o, countdownTo: iso }));
+                          }}
+                        />
+                      </Field>
+                      <div className="gold-hairline" />
+                      <Toggle
+                        label="Countdown in the menu bar"
+                        hint="Days and hours left of the logo, minutes and seconds right of it, on every page. Gone at the moment itself."
+                        checked={selected.heroCountdown}
+                        disabled={disabled}
+                        onChange={(heroCountdown) => patch((o) => ({ ...o, heroCountdown }))}
+                      />
+                      {selected.heroCountdown ? (
+                        <Field
+                          label="Countdown caption"
+                          hint={`Says what it counts to. Left empty it reads "Until ${selected.name}".`}
+                        >
+                          <input
+                            className="input w-full"
+                            value={selected.countdownLabel}
+                            maxLength={OCCASION_LIMITS.label}
+                            placeholder={`Until ${selected.name}`}
+                            disabled={disabled}
+                            onChange={(event) => patch((o) => ({ ...o, countdownLabel: event.target.value }))}
+                          />
+                        </Field>
+                      ) : null}
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+
+              {tab === "stripe" ? (
+                <>
+                  <Toggle
+                    label="Show the stripe"
+                    hint="A thin band at the very top of the screen, above the menu, on every page except booking and admin."
+                    checked={selected.stripe.enabled}
+                    disabled={disabled}
+                    onChange={(enabled) => patchStripe({ enabled })}
+                  />
+                  <Segmented
+                    label="Look"
+                    value={selected.stripe.style}
+                    disabled={disabled}
+                    options={[
+                      { value: "ink", label: "Ink" },
+                      { value: "paper", label: "Paper" },
+                      { value: "gold", label: "Gold" },
+                    ]}
+                    onChange={(style) => patchStripe({ style })}
+                  />
+                  <Segmented
+                    label="Movement"
+                    value={selected.stripe.mode}
+                    disabled={disabled}
+                    options={[
+                      { value: "glide", label: "Glide" },
+                      { value: "rotate", label: "One at a time" },
+                      { value: "still", label: "Still" },
+                    ]}
+                    onChange={(mode) => patchStripe({ mode })}
+                  />
+                  {selected.stripe.mode !== "still" ? (
+                    <Field label={`Speed · ${selected.stripe.speed}`}>
+                      <input
+                        type="range"
+                        min={20}
+                        max={120}
+                        step={5}
+                        className="w-full accent-[var(--accent)]"
+                        value={selected.stripe.speed}
+                        disabled={disabled}
+                        onChange={(event) => patchStripe({ speed: Number(event.target.value) })}
+                      />
+                    </Field>
+                  ) : null}
+                  <Toggle
+                    label="Visitors can hide it"
+                    hint="A small × on the stripe. Their choice is remembered for this occasion."
+                    checked={selected.stripe.dismissible}
+                    disabled={disabled}
+                    onChange={(dismissible) => patchStripe({ dismissible })}
                   />
                 </>
               ) : null}
-            </section>
 
-            <section className="card space-y-5 p-4 sm:p-6" aria-label="Decoration">
-              <div>
-                <h2 className="text-base font-semibold tracking-tight">Decoration</h2>
-                <p className="mt-0.5 text-xs text-muted">
-                  Kept faint and away from the logo and buttons. Visitors who ask for less motion see no effects.
-                </p>
-              </div>
-              <Segmented
-                label="Inside the menu bar"
-                value={selected.navEffect.type}
-                disabled={disabled}
-                options={[
-                  { value: "none", label: "None" },
-                  { value: "fireworks", label: "Fireworks" },
-                  { value: "dust", label: "Gold dust" },
-                  { value: "confetti", label: "Confetti" },
-                  { value: "petals", label: "Petals" },
-                ]}
-                onChange={(type) => patchEffect({ type })}
-              />
-              {selected.navEffect.type !== "none" ? (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {selected.navEffect.type !== "petals" ? (
-                    <Segmented
-                      label="Colors"
-                      value={selected.navEffect.palette}
-                      disabled={disabled}
+              {tab === "messages" ? (
+                <>
+                  {selected.countdownTo !== null ? (
+                    <PillSwitch
+                      label="Which messages"
+                      value={afterMoment ? "after" : "during"}
                       options={[
-                        { value: "gold", label: "Gold" },
-                        { value: "champagne", label: "Champagne" },
-                        { value: "midnight", label: "Midnight" },
+                        { value: "during", label: `Until the moment · ${selected.stripe.items.length}` },
+                        { value: "after", label: `After it · ${selected.stripe.itemsAfterCountdown.length}` },
                       ]}
-                      onChange={(palette) => patchEffect({ palette })}
+                      onChange={(which) => setAfterMoment(which === "after")}
                     />
                   ) : null}
-                  <Field label={`Intensity · ${Math.round(selected.navEffect.intensity * 100)}%`}>
-                    <input
-                      type="range"
-                      min={0.1}
-                      max={1}
-                      step={0.05}
-                      className="w-full accent-[var(--accent)]"
-                      value={selected.navEffect.intensity}
+                  {selected.countdownTo !== null && afterMoment ? (
+                    <MessagesEditor
+                      title="After the countdown"
+                      hint="Replaces the other messages once the moment passes, e.g. Happy New Year."
+                      items={selected.stripe.itemsAfterCountdown}
                       disabled={disabled}
-                      onChange={(event) => patchEffect({ intensity: Number(event.target.value) })}
+                      allowEmpty
+                      onChange={(itemsAfterCountdown) => patchStripe({ itemsAfterCountdown })}
                     />
-                  </Field>
-                </div>
+                  ) : (
+                    <MessagesEditor
+                      title="Messages"
+                      hint="Up to 8. Each can have its own icon or uploaded image, and a link."
+                      items={selected.stripe.items}
+                      disabled={disabled}
+                      onChange={(items) => patchStripe({ items })}
+                    />
+                  )}
+                  {selected.countdownTo === null ? (
+                    <p className="text-xs text-muted">
+                      Turn on a countdown to add messages for after the moment, such as Happy New Year.
+                    </p>
+                  ) : null}
+                </>
               ) : null}
-              <Segmented
-                label="Hanging under the menu"
-                value={selected.hanging}
-                disabled={disabled}
-                options={[
-                  { value: "none", label: "None" },
-                  { value: "lights", label: "String lights" },
-                  { value: "lanterns", label: "Lanterns" },
-                  { value: "stars", label: "Star garland" },
-                ]}
-                onChange={(hanging) => patch((o) => ({ ...o, hanging }))}
-              />
-            </section>
 
-            {canManage ? (
-              <section className="card flex flex-wrap items-center gap-3 p-4 sm:p-6" aria-label="Delete">
-                {confirmDelete ? (
-                  <>
-                    <span className="text-sm">Delete “{selected.name}”? This takes effect when you save.</span>
-                    <button
-                      type="button"
-                      className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
-                      style={{ color: "var(--danger)" }}
-                      onClick={deleteSelected}
-                    >
-                      <Trash2 className="h-4 w-4" aria-hidden />
-                      Delete
-                    </button>
-                    <button type="button" className="btn-ghost px-3 py-2 text-sm" onClick={() => setConfirmDelete(false)}>
-                      Keep it
-                    </button>
-                  </>
-                ) : (
+              {tab === "effects" ? (
+                <>
+                  <Segmented
+                    label="Effect"
+                    value={selected.navEffect.type}
+                    disabled={disabled}
+                    options={[
+                      { value: "none", label: "None" },
+                      { value: "fireworks", label: "Fireworks" },
+                      { value: "dust", label: "Gold dust" },
+                      { value: "confetti", label: "Confetti" },
+                      { value: "petals", label: "Petals" },
+                    ]}
+                    onChange={(type) => patchEffect({ type })}
+                  />
+                  {selected.navEffect.type !== "none" ? (
+                    <div className="space-y-4 rounded-xl p-3.5" style={{ border: "1px solid var(--border)" }}>
+                      {selected.navEffect.type !== "petals" ? (
+                        <Segmented
+                          label="Colours"
+                          value={selected.navEffect.palette}
+                          disabled={disabled}
+                          options={PALETTE_OPTIONS}
+                          onChange={(palette) => patchEffect({ palette })}
+                        />
+                      ) : null}
+                      <Field label={`Speed · ${selected.navEffect.speed.toFixed(2).replace(/0$/, "")}×`}>
+                        <input
+                          type="range"
+                          min={0.25}
+                          max={2}
+                          step={0.05}
+                          className="w-full accent-[var(--accent)]"
+                          value={selected.navEffect.speed}
+                          disabled={disabled}
+                          onChange={(event) => patchEffect({ speed: Number(event.target.value) })}
+                        />
+                      </Field>
+                      <Field
+                        label={`How many · ${Math.round(selected.navEffect.density * 100)}%`}
+                        hint={
+                          selected.navEffect.type === "fireworks"
+                            ? "How often fireworks go up, and how full each burst is."
+                            : "How much is in the air at once."
+                        }
+                      >
+                        <input
+                          type="range"
+                          min={0.1}
+                          max={1}
+                          step={0.05}
+                          className="w-full accent-[var(--accent)]"
+                          value={selected.navEffect.density}
+                          disabled={disabled}
+                          onChange={(event) => patchEffect({ density: Number(event.target.value) })}
+                        />
+                      </Field>
+                      <Field label={`Brightness · ${Math.round(selected.navEffect.intensity * 100)}%`}>
+                        <input
+                          type="range"
+                          min={0.1}
+                          max={1}
+                          step={0.05}
+                          className="w-full accent-[var(--accent)]"
+                          value={selected.navEffect.intensity}
+                          disabled={disabled}
+                          onChange={(event) => patchEffect({ intensity: Number(event.target.value) })}
+                        />
+                      </Field>
+                    </div>
+                  ) : null}
+                  <Segmented
+                    label="Hanging decoration"
+                    value={selected.hanging}
+                    disabled={disabled}
+                    options={[
+                      { value: "none", label: "None" },
+                      { value: "lights", label: "String lights" },
+                      { value: "lanterns", label: "Lanterns" },
+                      { value: "stars", label: "Star garland" },
+                    ]}
+                    onChange={(hanging) => patch((o) => ({ ...o, hanging }))}
+                  />
+                  <p className="text-xs text-muted">
+                    On the homepage, fireworks rise from the top of the hero. String lights hang from the stripe;
+                    lanterns and stars hang below the menu. All of it stays clear of the logo and buttons, and
+                    visitors who ask for less motion see no effects.
+                  </p>
+                </>
+              ) : null}
+            </div>
+          </section>
+
+          {/* preview, pinned while the editor scrolls */}
+          <aside
+            ref={setPreviewCard}
+            className="sticky top-[var(--header-h)] z-20 order-1 min-w-0 xl:order-2 xl:top-[calc(var(--header-h)+1rem)]"
+            aria-label="Live preview"
+          >
+            <div className="card overflow-hidden">
+              <LivePreview occasion={selected} />
+              <div
+                className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3"
+                style={{ borderTop: "1px solid var(--border)" }}
+              >
+                <span className="mr-auto min-w-0 text-xs text-muted" role="status">
+                  {saveStatus}
+                </span>
+                {siteLink}
+                {dirty ? (
                   <button
                     type="button"
-                    className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
-                    disabled={disabled}
-                    onClick={() => setConfirmDelete(true)}
+                    className="btn-ghost px-3 py-2 text-sm"
+                    disabled={saving}
+                    onClick={() => {
+                      setSettings(saved);
+                      setSelectedId((id) =>
+                        saved.occasions.some((o) => o.id === id) ? id : saved.occasions[0]?.id ?? null,
+                      );
+                    }}
                   >
-                    <Trash2 className="h-4 w-4" aria-hidden />
-                    Delete this occasion
+                    Discard changes
                   </button>
-                )}
-              </section>
-            ) : null}
-          </div>
-        ) : (
-          <section className="card p-6 text-sm text-muted">Pick an occasion, or add one from a template.</section>
-        )}
-      </div>
+                ) : null}
+                <button
+                  type="button"
+                  className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
+                  disabled={!canManage || saving || !dirty}
+                  onClick={() => void save()}
+                >
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  ) : (
+                    <Save className="h-4 w-4" aria-hidden />
+                  )}
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      ) : (
+        <section className="card flex flex-wrap items-center gap-3 p-6 text-sm text-muted">
+          <span className="mr-auto">Pick an occasion, or add one from a template.</span>
+          {dirty ? (
+            <button
+              type="button"
+              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm disabled:opacity-60"
+              disabled={!canManage || saving}
+              onClick={() => void save()}
+            >
+              <Save className="h-4 w-4" aria-hidden />
+              Save changes
+            </button>
+          ) : null}
+        </section>
+      )}
     </div>
   );
 }

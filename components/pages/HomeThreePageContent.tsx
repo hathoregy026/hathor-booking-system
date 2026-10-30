@@ -33,7 +33,6 @@ import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { HOME_COPY } from "@/lib/i18n/home-copy";
 import { localizedHref } from "@/lib/i18n/locale";
 import { localizedMoorings } from "@/lib/i18n/route-copy";
-import { OccasionHeroCountdown } from "@/components/occasions/OccasionHeroCountdown";
 
 type HomeThreeProps = {
   heroLogoTune: HeroLogoTune;
@@ -355,7 +354,6 @@ export function HomeThreePageContent({
               responsiveVideoFrameTarget="#home-three-story"
               logoPartsVariant={heroLogoTune.partsVariant}
               mobileLogoPartsVariant={heroLogoTuneMobile.partsVariant}
-              titleAddon={<OccasionHeroCountdown />}
             />
           </div>
         </div>
