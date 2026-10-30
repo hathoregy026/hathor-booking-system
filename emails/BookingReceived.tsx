@@ -1,6 +1,7 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
 import { BookingCodeCard } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
@@ -24,10 +25,6 @@ export const PreviewProps: BookingReceivedEmailProps = {
   details: sampleBookingDetails,
 };
 
-const DEFAULT_HERO = "Thank You";
-const DEFAULT_BODY =
-  "Your booking request has been sent. Hathor reservations will contact you with the invoice and payment instructions. No payment has been collected.";
-
 export default function BookingReceivedEmail({
   guestName = sampleGuestName,
   details = sampleBookingDetails,
@@ -39,13 +36,17 @@ export default function BookingReceivedEmail({
   heroHeading,
   bodyText,
 }: BookingReceivedEmailProps) {
+  const locale = details.locale ?? "en";
+  const shared = EMAIL_COPY[locale];
+  const copy = shared.received;
   const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
-  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
-  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, copy.hero, vars);
+  const body = resolveEmailBody(bodyText, copy.body, vars);
 
   return (
     <EmailLayout
-      preview="Your Hathor cruise booking request has been received"
+      preview={copy.preview}
+      locale={locale}
       footerVariant="guest"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
@@ -53,17 +54,15 @@ export default function BookingReceivedEmail({
       backgroundColor={backgroundColor}
       footer={footer}
     >
-      <EmailEyebrow>Booking Request</EmailEyebrow>
+      <EmailEyebrow>{copy.eyebrow}</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
+      {namesGuest ? null : <EmailBodyText>{shared.forGuestPrefix}{guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
-      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
+      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} locale={locale} /> : null}
       <BookingSummary details={details} />
-      <EmailInfoCard title="What happens next?">
-        Our reservations team will review your request and email you an invoice for your chosen payment method. Once your deposit is received, we send your confirmation with the rest of the payment schedule.
-      </EmailInfoCard>
-      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label="Track Your Booking" /> : null}
+      <EmailInfoCard title={copy.nextTitle}>{copy.next}</EmailInfoCard>
+      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label={shared.trackLabel} /> : null}
     </EmailLayout>
   );
 }

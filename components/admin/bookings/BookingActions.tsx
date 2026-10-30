@@ -29,12 +29,26 @@ const INSTRUCTION_DEFAULTS: Record<string, string> = {
   VISA: "",
 };
 
-const storageKey = (method: string | null) => `hathor-invoice-instructions:${method ?? "ANY"}`;
+/* The same note for a guest who booked in Italian; their invoice is in Italian. */
+const INSTRUCTION_DEFAULTS_IT: Record<string, string> = {
+  BANK_TRANSFER:
+    "La preghiamo di versare {amount} sul seguente conto:\n\nBanca: \nIntestatario: Hathor Cruise\nIBAN: \nSWIFT / BIC: \n\nIndichi il codice di prenotazione {code} come causale del bonifico e risponda a questa email allegando la ricevuta.",
+  VISA: "",
+};
 
-function readInstructions(method: string | null): string {
-  const fallback = INSTRUCTION_DEFAULTS[method ?? ""] ?? INSTRUCTION_DEFAULTS.BANK_TRANSFER!;
+/** "USD 2.100", as the guest's Italian invoice writes it. */
+const italianAmount = (cents: number) =>
+  `USD ${new Intl.NumberFormat("en-US", { minimumFractionDigits: cents % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 })
+    .format(cents / 100)
+    .replace(/[,.]/g, mark => (mark === "," ? "." : ","))}`;
+
+const storageKey = (method: string | null, italian: boolean) => `hathor-invoice-instructions:${italian ? "it:" : ""}${method ?? "ANY"}`;
+
+function readInstructions(method: string | null, italian: boolean): string {
+  const defaults = italian ? INSTRUCTION_DEFAULTS_IT : INSTRUCTION_DEFAULTS;
+  const fallback = defaults[method ?? ""] ?? defaults.BANK_TRANSFER!;
   try {
-    const saved = localStorage.getItem(storageKey(method));
+    const saved = localStorage.getItem(storageKey(method, italian));
     // Older notes carried a "[paste …link]" placeholder; the link has its own field now.
     return saved && !/\[paste/i.test(saved) ? saved : fallback;
   } catch {
@@ -51,9 +65,9 @@ function isSecureLink(value: string) {
 }
 
 /** Remember the team's wording per method, with this booking's amount and code turned back into placeholders. */
-function rememberInstructions(method: string | null, text: string, amount: string, code: string) {
+function rememberInstructions(method: string | null, italian: boolean, text: string, amount: string, code: string) {
   try {
-    localStorage.setItem(storageKey(method), text.split(amount).join("{amount}").split(code).join("{code}"));
+    localStorage.setItem(storageKey(method, italian), text.split(amount).join("{amount}").split(code).join("{code}"));
   } catch {
     /* private window: nothing to remember */
   }
@@ -200,20 +214,23 @@ export function BookingActionDialog({
     : dueNow;
   const amountText = formatPrice(invoiceDue);
   const duePercent = invoiceTotal > 0 && invoiceDue > 0 ? Math.round((invoiceDue / invoiceTotal) * 100) : null;
+  const italianGuest = booking.guestLocale === "it";
+  // The note goes into the guest's email, so it writes the amount the way that email does.
+  const noteAmountText = italianGuest ? italianAmount(invoiceDue) : amountText;
   const [instructions, setInstructions] = useState(() =>
-    readInstructions(method).split("{amount}").join(amountText).split("{code}").join(booking.code),
+    readInstructions(method, italianGuest).split("{amount}").join(noteAmountText).split("{code}").join(booking.code),
   );
-  const [noteAmount, setNoteAmount] = useState(amountText);
+  const [noteAmount, setNoteAmount] = useState(noteAmountText);
   const [noteTouched, setNoteTouched] = useState(false);
-  if (noteAmount !== amountText) {
+  if (noteAmount !== noteAmountText) {
     // The note quotes the amount due now: keep it in step with the invoice being set up.
-    setNoteAmount(amountText);
-    setInstructions(text => text.split(noteAmount).join(amountText));
+    setNoteAmount(noteAmountText);
+    setInstructions(text => text.split(noteAmount).join(noteAmountText));
   }
   function chooseMethod(next: "VISA" | "BANK_TRANSFER") {
     setMethod(next);
     // An untouched note follows the method: bank details for a transfer, nothing extra for a card link.
-    if (!noteTouched) setInstructions(readInstructions(next).split("{amount}").join(noteAmount).split("{code}").join(booking.code));
+    if (!noteTouched) setInstructions(readInstructions(next, italianGuest).split("{amount}").join(noteAmount).split("{code}").join(booking.code));
   }
   function toggleSplit(on: boolean) {
     setCustomSplit(on);
@@ -223,7 +240,7 @@ export function BookingActionDialog({
   const [declineMessage, setDeclineMessage] = useState("");
   const [notify, setNotify] = useState(true);
   const [replySubject, setReplySubject] = useState("");
-  const [replyMessage, setReplyMessage] = useState(`Dear ${booking.guestName},\n\n`);
+  const [replyMessage, setReplyMessage] = useState(`${italianGuest ? "Gentile" : "Dear"} ${booking.guestName},\n\n`);
   const [replyFiles, setReplyFiles] = useState<ReplyAttachment[]>([]);
   const [cancelReason, setCancelReason] = useState<CancelReason>("CANCELLATION");
   const refund = booking.status === "CANCELLED";
@@ -311,7 +328,7 @@ export function BookingActionDialog({
           ...(invoiceEditable ? { paymentMethod: method } : {}),
           ...(split ? { split } : {}),
         });
-        if (note) rememberInstructions(method, note, amountText, booking.code);
+        if (note) rememberInstructions(method, italianGuest, note, noteAmountText, booking.code);
         report(
           booking.acceptedAt ? "" : "Request confirmed.",
           result.email,

@@ -1,3 +1,5 @@
+import type { PublicLocale } from "@/lib/i18n/locale";
+
 export type EmailPaymentStage = {
   title: string;
   when: string;
@@ -8,6 +10,10 @@ export type EmailPaymentStage = {
 };
 
 export type BookingEmailDetails = {
+  /** The language this email is written in; English when absent. */
+  locale?: PublicLocale;
+  /** For the team's alert only: the guest's language, when it is not English. */
+  guestLanguage?: string;
   bookingId: string;
   recordedBySession?: string;
   /** Short code guests use to track the booking; shown instead of the raw id. */

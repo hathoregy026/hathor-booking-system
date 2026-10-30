@@ -15,6 +15,8 @@ import {
   type EmailFooterSettings,
 } from "@/lib/email-footer";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
 import { resolveEmailTheme } from "../theme";
 import {
   emailColors,
@@ -31,6 +33,7 @@ type EmailLayoutProps = {
   footerVariant?: EmailFooterVariant;
   contactEmail?: string;
   logoWidth?: number;
+  locale?: PublicLocale;
 } & EmailTemplateOverrides;
 
 const cellReset = {
@@ -404,6 +407,7 @@ export function EmailLayout({
   footerVariant = "guest",
   contactEmail,
   logoWidth = emailLayout.iconSize,
+  locale = "en",
   logoUrl,
   heroImageUrl,
   primaryColor,
@@ -415,7 +419,7 @@ export function EmailLayout({
   const paper = theme.backgroundColor || emailColors.cream;
 
   return (
-    <Html lang="en" dir="ltr">
+    <Html lang={EMAIL_COPY[locale].htmlLang} dir="ltr">
       <Head>
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -501,7 +505,7 @@ export function EmailLayout({
                     {bannerUrl ? (
                       <tr>
                         <td style={cellReset}>
-                          <EmailHeroBanner heroImageUrl={bannerUrl} />
+                          <EmailHeroBanner heroImageUrl={bannerUrl} alt={EMAIL_COPY[locale].heroAlt} />
                         </td>
                       </tr>
                     ) : null}

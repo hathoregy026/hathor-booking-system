@@ -169,6 +169,8 @@ model Booking {
   totalPriceCents  Int?
   /// 2.5% online card surcharge, snapshotted with the request; the guest owes totalPriceCents + this.
   cardSurchargeCents Int                @default(0)
+  /// The language the guest booked in ("it"); NULL is English. Written and read with raw SQL only, so @ignore keeps it out of the generated client.
+  locale           String?              @ignore
   currency         String               @default("USD")
   priceSnapshotAt  DateTime?
   deletedAt        DateTime?

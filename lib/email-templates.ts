@@ -9,6 +9,8 @@ import {
 import { emailColors } from "@/emails/styles";
 import { HATHOR_LOGO_SRC } from "@/lib/branding";
 import type { EmailFooterSettings } from "@/lib/email-footer";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
 
 export const EMAIL_TEMPLATE_NAMES = [
   "BookingReceived",
@@ -249,6 +251,38 @@ export function mergeAllEmailTemplates(
       shared,
     );
   });
+}
+
+/**
+ * A guest template in the guest's language. The dashboard's rows hold English
+ * wording, so a translated email takes its subject, heading and body from the
+ * language's copy and keeps the rows' colours. The dashboard's hero artwork has
+ * English lettering drawn into it, so a translated email uses the text-free
+ * site hero instead. In the footer, an emptied line stays empty and the contact
+ * details and copyright stay as saved. English returns the template untouched.
+ */
+export function localizeEmailTemplate(
+  template: EmailTemplateRecord,
+  locale: PublicLocale = "en",
+): EmailTemplateRecord {
+  const copy = EMAIL_COPY[locale];
+  const text = copy.templates[template.name];
+  if (locale === "en" || !text) return template;
+
+  return {
+    ...template,
+    subject: text.subject,
+    heroHeading: text.heading,
+    bodyText: text.body,
+    heroImageUrl: HATHOR_EMAIL_HERO_URL,
+    footer: template.footer
+      ? {
+          ...template.footer,
+          tagline: template.footer.tagline ? copy.footer.tagline : "",
+          replyNote: template.footer.replyNote ? copy.footer.replyNote : "",
+        }
+      : template.footer,
+  };
 }
 
 export function interpolateEmailText(

@@ -1,6 +1,8 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
+import { localizedHref } from "@/lib/i18n/locale";
 import { TeamMessage } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
@@ -20,10 +22,6 @@ export const PreviewProps: BookingDeclinedEmailProps = {
   message: "The dates you chose are fully reserved for a private charter. We would be delighted to welcome you on the following Saturday sailing instead.",
 };
 
-const DEFAULT_HERO = "We're Sorry";
-const DEFAULT_BODY =
-  "Thank you for your interest in sailing with Hathor. Unfortunately we are unable to accept this booking request, and the cabins held for it have been released. No payment has been taken.";
-
 export default function BookingDeclinedEmail({
   guestName = sampleGuestName,
   details = sampleBookingDetails,
@@ -36,13 +34,17 @@ export default function BookingDeclinedEmail({
   heroHeading,
   bodyText,
 }: BookingDeclinedEmailProps) {
+  const locale = details.locale ?? "en";
+  const shared = EMAIL_COPY[locale];
+  const copy = shared.declined;
   const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
-  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
-  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, copy.hero, vars);
+  const body = resolveEmailBody(bodyText, copy.body, vars);
 
   return (
     <EmailLayout
-      preview="An update on your Hathor booking request"
+      preview={copy.preview}
+      locale={locale}
       footerVariant="guest-reply"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
@@ -50,14 +52,14 @@ export default function BookingDeclinedEmail({
       backgroundColor={backgroundColor}
       footer={footer}
     >
-      <EmailEyebrow>Booking Request</EmailEyebrow>
+      <EmailEyebrow>{copy.eyebrow}</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
+      {namesGuest ? null : <EmailBodyText>{shared.forGuestPrefix}{guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
-      {message?.trim() ? <TeamMessage title="A note from our reservations team" text={message} /> : null}
-      <BookingSummary details={details} showBookingReference sectionTitle="The Request" spaceAfter />
-      <EmailCtaButton href={`${SITE_URL}/booking`} label="Explore Other Dates" />
+      {message?.trim() ? <TeamMessage title={copy.note} text={message} /> : null}
+      <BookingSummary details={details} showBookingReference sectionTitle={copy.section} spaceAfter />
+      <EmailCtaButton href={`${SITE_URL}${localizedHref("/booking", locale)}`} label={copy.cta} />
     </EmailLayout>
   );
 }

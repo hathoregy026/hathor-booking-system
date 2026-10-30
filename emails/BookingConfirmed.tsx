@@ -1,6 +1,7 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
 import { AmountCallout, BookingCodeCard, PaymentPlanTable } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
@@ -31,17 +32,6 @@ export const PreviewProps: BookingConfirmedEmailProps = {
   },
 };
 
-const DEFAULT_HERO = "Reservation Confirmed";
-const DEFAULT_BODY =
-  "Hathor has accepted your reservation and the required initial payment has been recorded. Please follow the payment schedule for any remaining balance.";
-
-const HIGHLIGHTS = [
-  "Luxury cabin with panoramic Nile views",
-  "Gourmet meals prepared by our private chef",
-  "Guided excursions to ancient temples",
-  "Personalized service throughout your voyage",
-] as const;
-
 export default function BookingConfirmedEmail({
   guestName = sampleGuestName,
   details = sampleBookingDetails,
@@ -53,14 +43,18 @@ export default function BookingConfirmedEmail({
   heroHeading,
   bodyText,
 }: BookingConfirmedEmailProps) {
+  const locale = details.locale ?? "en";
+  const shared = EMAIL_COPY[locale];
+  const copy = shared.confirmed;
   const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
-  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
-  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, copy.hero, vars);
+  const body = resolveEmailBody(bodyText, copy.body, vars);
   const remaining = details.paymentPlan?.filter(stage => stage.state !== "paid") ?? [];
 
   return (
     <EmailLayout
-      preview="Your Hathor reservation is confirmed — payment received"
+      preview={copy.preview}
+      locale={locale}
       footerVariant="guest-reply"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
@@ -68,27 +62,27 @@ export default function BookingConfirmedEmail({
       backgroundColor={backgroundColor}
       footer={footer}
     >
-      <EmailEyebrow>Reservation</EmailEyebrow>
+      <EmailEyebrow>{copy.eyebrow}</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
+      {namesGuest ? null : <EmailBodyText>{shared.forGuestPrefix}{guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
 
       {details.amountPaid ? (
         <AmountCallout
-          label="Payment received"
+          label={copy.paidLabel}
           amount={details.amountPaid}
           note={
             remaining.length > 0 && details.balanceDue
-              ? `Remaining balance ${details.balanceDue} · see the schedule below`
-              : "Your voyage is paid in full"
+              ? copy.paidBalance(details.balanceDue)
+              : copy.paidFull
           }
         />
       ) : null}
 
-      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
+      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} locale={locale} /> : null}
       {details.paymentPlan && remaining.length > 0 ? (
-        <PaymentPlanTable stages={details.paymentPlan} title="Your Payment Schedule" />
+        <PaymentPlanTable stages={details.paymentPlan} title={copy.schedule} locale={locale} />
       ) : null}
       <BookingSummary details={details} showBookingReference spaceAfter />
 
@@ -129,24 +123,21 @@ export default function BookingConfirmedEmail({
                         textAlign: "center",
                       }}
                     >
-                      Your journey awaits
+                      {copy.awaits}
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <EmailBulletList items={HIGHLIGHTS} />
+              <EmailBulletList items={copy.highlights} />
             </td>
           </tr>
         </tbody>
       </table>
 
-      <EmailBodyText muted>
-        Security note: Hathor will never ask you to send card details, passwords,
-        or verification codes by email or messaging apps.
-      </EmailBodyText>
+      <EmailBodyText muted>{copy.security}</EmailBodyText>
 
       {details.bookingUrl ? (
-        <EmailCtaButton href={details.bookingUrl} label="View Your Reservation" />
+        <EmailCtaButton href={details.bookingUrl} label={copy.cta} />
       ) : null}
     </EmailLayout>
   );
