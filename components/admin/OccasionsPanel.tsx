@@ -1273,7 +1273,7 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
                 <>
                   <Toggle
                     label="Show the stripe"
-                    hint="A thin band under the menu on every page except booking and admin."
+                    hint="A thin band at the very top of the screen, above the menu, on every page except booking and admin."
                     checked={selected.stripe.enabled}
                     disabled={disabled}
                     onChange={(enabled) => patchStripe({ enabled })}
@@ -1366,7 +1366,7 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
               {tab === "effects" ? (
                 <>
                   <Segmented
-                    label="Inside the menu bar"
+                    label="Effect"
                     value={selected.navEffect.type}
                     disabled={disabled}
                     options={[
@@ -1435,7 +1435,7 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
                     </div>
                   ) : null}
                   <Segmented
-                    label="Hanging under the menu"
+                    label="Hanging decoration"
                     value={selected.hanging}
                     disabled={disabled}
                     options={[
@@ -1447,8 +1447,9 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
                     onChange={(hanging) => patch((o) => ({ ...o, hanging }))}
                   />
                   <p className="text-xs text-muted">
-                    Kept clear of the logo and buttons, and faint behind the countdown. Visitors who ask for less
-                    motion see no effects.
+                    On the homepage, fireworks rise from the top of the hero. String lights hang from the stripe;
+                    lanterns and stars hang below the menu. All of it stays clear of the logo and buttons, and
+                    visitors who ask for less motion see no effects.
                   </p>
                 </>
               ) : null}

@@ -2,7 +2,7 @@
 
 import "./occasions.css";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
 import {
   countdownCaption,
@@ -70,6 +70,8 @@ export function OccasionHeaderLayer() {
   const left = msUntilCountdown(occasion, now);
   const isDismissed = draft ? dismissed === occasion : dismissed === occasion.id;
   const showStripe = occasion.stripe.enabled && !isDismissed && items.length > 0;
+  const lights = occasion.hanging === "lights";
+  const garland = occasion.hanging === "lanterns" || occasion.hanging === "stars" ? occasion.hanging : null;
 
   return (
     <>
@@ -79,19 +81,30 @@ export function OccasionHeaderLayer() {
       {occasion.heroCountdown && left !== null && left > 0 ? (
         <OccasionNavCountdown ms={left} caption={countdownCaption(occasion)} />
       ) : null}
-      <div className="occasion-under" data-occasion={occasion.id}>
-        {showStripe ? (
-          <OccasionStripe
-            name={occasion.name}
-            stripe={occasion.stripe}
-            items={items}
-            countdown={left !== null && left > 0 ? formatCountdown(left) : ""}
-            reducedMotion={reducedMotion}
-            onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
-          />
-        ) : null}
-        {occasion.hanging !== "none" ? <OccasionHanging kind={occasion.hanging} /> : null}
-      </div>
+      {/* Top of the screen: the header makes room for the stripe, and the
+          lights hang from it across the top of the menu bar. */}
+      {showStripe || lights ? (
+        <div className="occasion-top" data-occasion={occasion.id}>
+          {showStripe ? (
+            <OccasionStripe
+              name={occasion.name}
+              stripe={occasion.stripe}
+              items={items}
+              countdown={left !== null && left > 0 ? formatCountdown(left) : ""}
+              reducedMotion={reducedMotion}
+              onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
+            />
+          ) : null}
+          {lights ? <OccasionHanging kind="lights" /> : null}
+        </div>
+      ) : null}
+      {/* Lanterns and stars are too tall to cross the bar's controls; they
+          hang from its bottom edge over the page. */}
+      {garland ? (
+        <div className="occasion-under" data-occasion={occasion.id}>
+          <OccasionHanging kind={garland} />
+        </div>
+      ) : null}
     </>
   );
 }
@@ -341,14 +354,19 @@ function mirrored(width: number, fromEdge: number[]): number[] {
   return [...fromEdge, ...fromEdge.map((x) => width - x).reverse()];
 }
 
+/* Festive bulb colours, repeating along the wire: warm gold, red, green, blue, amber, violet. */
+const BULB_COLOURS = ["#ffd36b", "#ff5a5f", "#4fe0a0", "#5cb8ff", "#ff9a3c", "#d88bff"];
+
 function StringLights({ width }: { width: number }) {
+  const id = useId().replace(/:/g, "");
   const phone = width <= 640;
   const seg = phone ? 56 : 96;
   const sag = phone ? 6 : 10;
-  const height = sag + 12;
+  const glow = phone ? 6 : 8;
+  const height = sag + 8 + glow;
   const stops = phone ? [0.5] : [0.25, 0.5, 0.75];
   let wire = "M0 1";
-  const bulbs: { x: number; y: number; delay: number; duration: number }[] = [];
+  const bulbs: { x: number; y: number; colour: number; delay: number; duration: number }[] = [];
   for (let x = 0; x < width; x += seg) {
     wire += `Q${x + seg / 2} ${1 + sag * 2} ${x + seg} 1`;
     for (const t of stops) {
@@ -356,13 +374,23 @@ function StringLights({ width }: { width: number }) {
       bulbs.push({
         x: x + seg * t,
         y: 1 + 4 * sag * t * (1 - t),
+        colour: n % BULB_COLOURS.length,
         delay: -((n * 0.37) % 2.6),
-        duration: 2 + (n % 3) * 0.5,
+        duration: 1.8 + (n % 4) * 0.45,
       });
     }
   }
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} focusable="false">
+      <defs>
+        {BULB_COLOURS.map((colour, index) => (
+          <radialGradient key={colour} id={`${id}-bulb-${index}`}>
+            <stop offset="0%" stopColor={colour} stopOpacity={0.95} />
+            <stop offset="35%" stopColor={colour} stopOpacity={0.55} />
+            <stop offset="100%" stopColor={colour} stopOpacity={0} />
+          </radialGradient>
+        ))}
+      </defs>
       <path className="occasion-lights__wire" d={wire} />
       {bulbs.map((bulb, index) => (
         <g key={index}>
@@ -374,8 +402,9 @@ function StringLights({ width }: { width: number }) {
               animationDuration: `${bulb.duration}s`,
             }}
           >
-            <circle className="occasion-lights__glow" cx={bulb.x} cy={bulb.y + 4.5} r={4.6} />
-            <circle className="occasion-lights__core" cx={bulb.x} cy={bulb.y + 4.5} r={2} />
+            <circle cx={bulb.x} cy={bulb.y + 5} r={glow} fill={`url(#${id}-bulb-${bulb.colour})`} />
+            <circle cx={bulb.x} cy={bulb.y + 5} r={phone ? 2 : 2.4} fill={BULB_COLOURS[bulb.colour]} />
+            <circle className="occasion-lights__shine" cx={bulb.x - 0.6} cy={bulb.y + 4.3} r={0.8} />
           </g>
         </g>
       ))}

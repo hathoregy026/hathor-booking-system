@@ -26,6 +26,8 @@ type Particle = {
   targetY: number;
   /** Flickers as it fades, like crackle. */
   twinkle: boolean;
+  /** The bright bloom at the heart of a burst, gone in a blink. */
+  flash: boolean;
 };
 
 /* Day colours are deep enough for the cream bar; night ones glow on dark. */
@@ -74,8 +76,29 @@ function makeParticle(partial: Partial<Particle>): Particle {
     rocket: false,
     targetY: 0,
     twinkle: false,
+    flash: false,
     ...partial,
   };
+}
+
+/** Soft radial halo per colour, drawn behind each spark so bursts glow without per-draw blur. */
+function glowSprite(cache: Map<string, HTMLCanvasElement>, colour: string): HTMLCanvasElement {
+  let sprite = cache.get(colour);
+  if (sprite) return sprite;
+  sprite = document.createElement("canvas");
+  sprite.width = sprite.height = 32;
+  const ctx = sprite.getContext("2d");
+  if (ctx) {
+    const glow = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    glow.addColorStop(0, `${colour}d9`);
+    glow.addColorStop(0.22, `${colour}73`);
+    glow.addColorStop(0.55, `${colour}21`);
+    glow.addColorStop(1, `${colour}00`);
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, 32, 32);
+  }
+  cache.set(colour, sprite);
+  return sprite;
 }
 
 /**
@@ -98,6 +121,8 @@ function burst(
   const count = Math.round(
     (shape === "willow" ? 40 : shape === "ring" ? 30 : rand(22, 36)) * fullness,
   );
+  const bloom = rand(0.28, 0.36);
+  list.push(makeParticle({ x, y, life: bloom, max: bloom, size, color: base, flash: true }));
   for (let i = 0; i < count; i += 1) {
     const angle = (i / count) * Math.PI * 2 + (shape === "ring" ? 0 : rand(-0.1, 0.1));
     const speed =
@@ -188,6 +213,8 @@ function seed(type: Effect["type"], width: number, height: number, density: numb
 /**
  * Atmosphere painted between the header's glass and its controls (z-index -1
  * inside the header's stacking context), masked away from the logo and tools.
+ * Over the homepage hero the canvas also reaches below the bar (see CSS), and
+ * fireworks launch from there; dust, confetti and petals stay in the bar.
  * `speed` scales motion, `density` how much is in the air, `intensity` how
  * bright. Stops while the tab is hidden.
  */
@@ -202,8 +229,11 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
     if (!canvas || !host || !ctx || type === "none") return;
 
     let particles: Particle[] = [];
+    const sprites = new Map<string, HTMLCanvasElement>();
     let width = 0;
+    /* The canvas can reach below the bar into the hero (CSS); `bar` is the bar alone. */
     let height = 0;
+    let bar = 0;
     let scale = 1;
     let raf = 0;
     let last = 0;
@@ -211,19 +241,22 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
     let clock = 0;
 
     const resize = () => {
-      const rect = host.getBoundingClientRect();
+      const rect = canvas.getBoundingClientRect();
       const widthChanged = Math.abs(rect.width - width) > 40;
       width = rect.width;
       height = rect.height;
+      bar = Math.min(height, host.getBoundingClientRect().height);
+      canvas.style.setProperty("--occ-bar-h", `${Math.round(bar)}px`);
       scale = Math.min(2, window.devicePixelRatio || 1);
       canvas.width = Math.round(width * scale);
       canvas.height = Math.round(height * scale);
       if (type !== "fireworks" && (widthChanged || particles.length === 0)) {
-        particles = seed(type, width, height, density);
+        particles = seed(type, width, bar, density);
       }
     };
     const observer = new ResizeObserver(resize);
     observer.observe(host);
+    observer.observe(canvas);
     resize();
 
     const fade = 0.35 + 0.65 * intensity;
@@ -272,24 +305,31 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
       ctx.globalCompositeOperation = dark ? "lighter" : "source-over";
 
       if (type === "fireworks") {
+        /* Over the homepage hero the canvas reaches into it: rockets rise from
+           the top of the hero and burst large across it and the bar. */
+        const sky = height > bar + 20;
+        const burstSize = sky ? (phone ? 0.95 : 1.5) : phone ? 0.7 : 1.15;
+        const halo = (phone ? 6 : 8.5) * (sky ? 1.25 : 1);
         wait -= dt;
-        if (wait <= 0 && height > 24 && particles.length < MAX_PARTICLES) {
+        if (wait <= 0 && bar > 24 && particles.length < MAX_PARTICLES) {
           const launches = density > 0.75 && Math.random() < 0.35 ? 2 : 1;
           for (let k = 0; k < launches; k += 1) {
             particles.push(
               makeParticle({
                 x: launchX(),
                 y: height + 2,
-                vx: rand(-6, 6),
-                vy: -rand(70, 105) * (phone ? 0.75 : 1),
+                vx: rand(-8, 8),
+                vy: -(sky ? rand(170, 235) : rand(70, 105)) * (phone ? 0.8 : 1),
                 rocket: true,
-                targetY: rand(10, Math.max(14, height * 0.5)),
+                targetY: sky
+                  ? rand(bar * 0.45, bar + (height - bar) * 0.42)
+                  : rand(10, Math.max(14, bar * 0.5)),
               }),
             );
           }
           wait = (2 - 1.75 * density) * rand(0.6, 1.4);
         }
-        ctx.lineWidth = 1.6;
+        ctx.lineWidth = 1.8;
         for (let i = particles.length - 1; i >= 0; i -= 1) {
           const p = particles[i];
           if (p.rocket) {
@@ -298,13 +338,15 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
             p.vy += 18 * step;
             if (p.y <= p.targetY || p.vy >= -12) {
               particles.splice(i, 1);
-              burst(particles, p.x, p.y, colors.length, phone ? 0.6 : 1, density, colourful);
+              burst(particles, p.x, p.y, colors.length, burstSize, density, colourful);
               continue;
             }
-            ctx.globalAlpha = 0.85 * fade;
+            ctx.globalAlpha = 0.6 * fade;
+            ctx.drawImage(glowSprite(sprites, gold), p.x - 4, p.y - 4, 8, 8);
+            ctx.globalAlpha = 0.9 * fade;
             ctx.strokeStyle = gold;
             ctx.beginPath();
-            ctx.moveTo(p.x - p.vx * 0.06, p.y - p.vy * 0.06);
+            ctx.moveTo(p.x - p.vx * 0.08, p.y - p.vy * 0.08);
             ctx.lineTo(p.x, p.y);
             ctx.stroke();
             continue;
@@ -314,28 +356,39 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
             particles.splice(i, 1);
             continue;
           }
+          const color = p.color < 0 ? gold : colors[p.color % colors.length];
+          if (p.flash) {
+            const left = p.life / p.max;
+            const r = 40 * p.size * (0.7 + 0.3 * left);
+            ctx.globalAlpha = left * left * fade * 0.6;
+            ctx.drawImage(glowSprite(sprites, color), p.x - r, p.y - r, r * 2, r * 2);
+            continue;
+          }
           p.vx *= drag;
           p.vy = p.vy * drag + p.gravity * step;
           p.x += p.vx * step;
           p.y += p.vy * step;
           let alpha = (p.life / p.max) * fade;
           if (p.twinkle && p.life < p.max * 0.5) alpha *= 0.55 + 0.45 * Math.sin(clock * 40 + p.phase);
-          const color = p.color < 0 ? gold : colors[p.color % colors.length];
-          ctx.globalAlpha = Math.max(0, alpha);
+          alpha = Math.max(0, alpha);
+          /* Sparks start stacked on one point: halos come up as they spread, so they never pile into a white disc. */
+          ctx.globalAlpha = alpha * 0.95 * Math.min(1, (p.max - p.life) / 0.25);
+          ctx.drawImage(glowSprite(sprites, color), p.x - halo, p.y - halo, halo * 2, halo * 2);
+          ctx.globalAlpha = alpha;
           ctx.strokeStyle = color;
           ctx.beginPath();
           ctx.moveTo(p.x - p.vx * p.trail, p.y - p.vy * p.trail);
           ctx.lineTo(p.x, p.y);
           ctx.stroke();
           ctx.fillStyle = color;
-          ctx.fillRect(p.x - 1.1, p.y - 1.1, 2.2, 2.2);
+          ctx.fillRect(p.x - 1.3, p.y - 1.3, 2.6, 2.6);
         }
       } else if (type === "dust") {
         for (const p of particles) {
           p.x += p.vx * step;
           p.y += p.vy * step;
           if (p.x > width + 4) p.x = -4;
-          if (p.y < 2 || p.y > height - 2) p.vy *= -1;
+          if (p.y < 2 || p.y > bar - 2) p.vy *= -1;
           ctx.globalAlpha = (0.25 + 0.75 * (Math.sin(clock * p.spin + p.phase) * 0.5 + 0.5)) * fade;
           ctx.fillStyle = colors[p.color % colors.length];
           ctx.beginPath();
@@ -347,7 +400,7 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
           p.y += p.vy * step;
           p.x += (p.vx + Math.sin(clock * 1.4 + p.phase) * 10) * step;
           p.rot += p.spin * step;
-          if (p.y > height + 6) {
+          if (p.y > bar + 6) {
             p.y = -6;
             p.x = rand(0, width);
           }
@@ -366,7 +419,7 @@ export function OccasionNavEffect({ effect }: { effect: Effect }) {
           p.rot += p.spin * step;
           if (p.x > width + 10) {
             p.x = -10;
-            p.y = rand(8, height - 8);
+            p.y = rand(8, bar - 8);
           }
           ctx.save();
           ctx.translate(p.x, p.y + Math.sin(clock * 0.9 + p.phase) * 5);

@@ -4,6 +4,7 @@
  * overrides and rooms' `.hathor-header * { pointer-events: auto }`.
  */
 
+/* Lanterns and stars hang from the bar's bottom edge over the page. */
 .occasion-under:not(#_) {
   position: absolute;
   top: 100%;
@@ -12,6 +13,32 @@
   display: flex;
   flex-direction: column;
   pointer-events: none !important;
+}
+
+/*
+ * The stripe sits at the very top of the screen with the string lights hanging
+ * from it across the bar. The header makes room with top padding, so the menu
+ * bar moves down beneath the stripe instead of being covered by it. Overlaid
+ * pages keep their layout; scripts that measure the header see the stripe.
+ */
+.occasion-top:not(#_) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none !important;
+}
+
+.hathor-header:has(> .occasion-top > .occasion-stripe):not(#_) {
+  padding-top: 34px;
+}
+
+@media (max-width: 640px) {
+  .hathor-header:has(> .occasion-top > .occasion-stripe):not(#_) {
+    padding-top: 30px;
+  }
 }
 
 /* ------------------------------------------------------------------ stripe */
@@ -293,16 +320,92 @@
   stroke-width: 1;
 }
 
-.occasion-lights__glow {
-  fill: rgb(246 223 160 / 22%);
-}
-
-.occasion-lights__core {
-  fill: #f6dfa0;
+.occasion-lights__shine {
+  fill: rgb(255 255 255 / 85%);
 }
 
 .occasion-lights__bulb {
-  animation: occasion-twinkle 2.4s ease-in-out infinite alternate;
+  animation: occasion-glow 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes occasion-glow {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Across the bar the lights part around the logo… */
+.occasion-top > .occasion-hang--lights:not(#_) {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 calc(50% - 86px),
+    transparent calc(50% - 52px),
+    transparent calc(50% + 52px),
+    #000 calc(50% + 86px)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 calc(50% - 86px),
+    transparent calc(50% - 52px),
+    transparent calc(50% + 52px),
+    #000 calc(50% + 86px)
+  );
+}
+
+/*
+ * …and, once the bar compacts on scroll and its controls rise to meet them,
+ * around the menu button, the countdown (--occ-cd-l / --occ-cd-r) and the tools too.
+ */
+.hathor-header--nav-compact > .occasion-top > .occasion-hang--lights:not(#_) {
+  --occ-gap-l: min(var(--occ-cd-l, 50%), 50% - 52px);
+  --occ-gap-r: max(var(--occ-cd-r, 50%), 50% + 52px);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 92px,
+    #000 124px,
+    #000 calc(var(--occ-gap-l) - 34px),
+    transparent var(--occ-gap-l),
+    transparent var(--occ-gap-r),
+    #000 calc(var(--occ-gap-r) + 34px),
+    #000 calc(100% - 372px),
+    transparent calc(100% - 340px)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 92px,
+    #000 124px,
+    #000 calc(var(--occ-gap-l) - 34px),
+    transparent var(--occ-gap-l),
+    transparent var(--occ-gap-r),
+    #000 calc(var(--occ-gap-r) + 34px),
+    #000 calc(100% - 372px),
+    transparent calc(100% - 340px)
+  );
+}
+
+@media (max-width: 640px) {
+  .occasion-top > .occasion-hang--lights:not(#_),
+  .hathor-header--nav-compact > .occasion-top > .occasion-hang--lights:not(#_) {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      #000 calc(50% - 40px),
+      transparent calc(50% - 24px),
+      transparent calc(50% + 24px),
+      #000 calc(50% + 40px)
+    );
+    mask-image: linear-gradient(
+      90deg,
+      #000 calc(50% - 40px),
+      transparent calc(50% - 24px),
+      transparent calc(50% + 24px),
+      #000 calc(50% + 40px)
+    );
+  }
 }
 
 @keyframes occasion-twinkle {
@@ -315,55 +418,59 @@
 }
 
 /* ----------------------------------------------------------- nav fireworks */
-/* Above the header glass, below its controls; faded out over the logo and tools. */
+/*
+ * Above the header glass, below its controls. Two mask layers: across the bar
+ * (--occ-bar-h tall, set by the effect) it fades out over the logo and tools;
+ * below the bar — the top of the homepage hero, where rockets launch — it is
+ * open and fades away at its lower edge.
+ */
 .occasion-fireworks:not(#_) {
+  --occ-bar-mask: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 96px,
+    #000 170px,
+    #000 calc(50% - 110px),
+    transparent calc(50% - 50px),
+    transparent calc(50% + 50px),
+    #000 calc(50% + 110px),
+    #000 calc(100% - 360px),
+    transparent calc(100% - 300px)
+  );
+  --occ-fall-mask: linear-gradient(#000, #000 calc(100% - 110px), transparent);
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   z-index: -1;
   width: 100%;
   height: 100%;
   pointer-events: none !important;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 96px,
-    #000 170px,
-    #000 calc(50% - 110px),
-    transparent calc(50% - 50px),
-    transparent calc(50% + 50px),
-    #000 calc(50% + 110px),
-    #000 calc(100% - 360px),
-    transparent calc(100% - 300px)
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 96px,
-    #000 170px,
-    #000 calc(50% - 110px),
-    transparent calc(50% - 50px),
-    transparent calc(50% + 50px),
-    #000 calc(50% + 110px),
-    #000 calc(100% - 360px),
-    transparent calc(100% - 300px)
-  );
+  -webkit-mask-image: var(--occ-bar-mask), var(--occ-fall-mask);
+  mask-image: var(--occ-bar-mask), var(--occ-fall-mask);
+  -webkit-mask-size:
+    100% var(--occ-bar-h, 100%),
+    100% calc(100% - var(--occ-bar-h, 100%));
+  mask-size:
+    100% var(--occ-bar-h, 100%),
+    100% calc(100% - var(--occ-bar-h, 100%));
+  -webkit-mask-position:
+    0 0,
+    0 var(--occ-bar-h, 100%);
+  mask-position:
+    0 0,
+    0 var(--occ-bar-h, 100%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Over the homepage hero, before the bar compacts, the sky reaches into the hero. */
+.hathor-header--home:not(.hathor-header--nav-compact) > .occasion-fireworks:not(#_) {
+  height: calc(100% + 240px);
 }
 
 @media (max-width: 640px) {
   .occasion-fireworks:not(#_) {
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 56px,
-      #000 86px,
-      #000 calc(50% - 46px),
-      transparent calc(50% - 22px),
-      transparent calc(50% + 22px),
-      #000 calc(50% + 46px),
-      #000 calc(100% - 116px),
-      transparent calc(100% - 96px)
-    );
-    mask-image: linear-gradient(
+    --occ-bar-mask: linear-gradient(
       90deg,
       transparent 0,
       transparent 56px,
@@ -376,6 +483,10 @@
       transparent calc(100% - 96px)
     );
   }
+
+  .hathor-header--home:not(.hathor-header--nav-compact) > .occasion-fireworks:not(#_) {
+    height: calc(100% + 180px);
+  }
 }
 
 /*
@@ -383,23 +494,7 @@
  * (edges measured into --occ-cd-l / --occ-cd-r) and stays clear of the logo.
  */
 .hathor-header:has(> .occasion-nav-cd) > .occasion-fireworks:not(#_) {
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    transparent 96px,
-    #000 170px,
-    #000 calc(var(--occ-cd-l, 50%) - 36px),
-    rgb(0 0 0 / 36%) var(--occ-cd-l, 50%),
-    rgb(0 0 0 / 36%) calc(50% - 64px),
-    transparent calc(50% - 44px),
-    transparent calc(50% + 44px),
-    rgb(0 0 0 / 36%) calc(50% + 64px),
-    rgb(0 0 0 / 36%) var(--occ-cd-r, 50%),
-    #000 calc(var(--occ-cd-r, 50%) + 36px),
-    #000 calc(100% - 360px),
-    transparent calc(100% - 300px)
-  );
-  mask-image: linear-gradient(
+  --occ-bar-mask: linear-gradient(
     90deg,
     transparent 0,
     transparent 96px,
@@ -420,19 +515,7 @@
 /* Phones: the countdown spans the whole bar between burger and tools. */
 @media (max-width: 640px) {
   .hathor-header:has(> .occasion-nav-cd) > .occasion-fireworks:not(#_) {
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 56px,
-      rgb(0 0 0 / 36%) 86px,
-      rgb(0 0 0 / 36%) calc(50% - 46px),
-      transparent calc(50% - 22px),
-      transparent calc(50% + 22px),
-      rgb(0 0 0 / 36%) calc(50% + 46px),
-      rgb(0 0 0 / 36%) calc(100% - 116px),
-      transparent calc(100% - 96px)
-    );
-    mask-image: linear-gradient(
+    --occ-bar-mask: linear-gradient(
       90deg,
       transparent 0,
       transparent 56px,
@@ -450,6 +533,8 @@
 /* The explore overlay sits above the header; keep the occasion out of it. */
 .hathor-header--editorial-open .occasion-under:not(#_),
 .hathor-header--explore-open .occasion-under:not(#_),
+.hathor-header--editorial-open .occasion-top:not(#_),
+.hathor-header--explore-open .occasion-top:not(#_),
 .hathor-header--editorial-open .occasion-fireworks:not(#_),
 .hathor-header--explore-open .occasion-fireworks:not(#_),
 .hathor-header--editorial-open .occasion-nav-cd:not(#_),
