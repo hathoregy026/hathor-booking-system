@@ -389,7 +389,7 @@ function MessagesEditor({
           className="grid gap-2 rounded-xl p-2.5"
           style={{ border: "1px solid var(--border)", background: "var(--bg-secondary, transparent)" }}
         >
-          {/* what it says, and where it sits */}
+          {/* what it says */}
           <div className="flex items-center gap-2">
             <span
               className="grid h-9 w-9 shrink-0 place-items-center rounded-lg"
@@ -414,40 +414,12 @@ function MessagesEditor({
               placeholder="Message text"
               onChange={(event) => update(index, { text: event.target.value })}
             />
-            <span className="flex shrink-0">
-              <button
-                type="button"
-                className="btn-ghost p-2"
-                aria-label={`Move message ${index + 1} up`}
-                disabled={disabled || index === 0}
-                onClick={() => move(index, -1)}
-              >
-                <ArrowUp className="h-3.5 w-3.5" aria-hidden />
-              </button>
-              <button
-                type="button"
-                className="btn-ghost p-2"
-                aria-label={`Move message ${index + 1} down`}
-                disabled={disabled || index === items.length - 1}
-                onClick={() => move(index, 1)}
-              >
-                <ArrowDown className="h-3.5 w-3.5" aria-hidden />
-              </button>
-              <button
-                type="button"
-                className="btn-ghost p-2"
-                aria-label={`Remove message ${index + 1}`}
-                disabled={disabled}
-                onClick={() => onChange(items.filter((_, i) => i !== index))}
-              >
-                <X className="h-3.5 w-3.5" aria-hidden />
-              </button>
-            </span>
           </div>
-          {/* its icon and link */}
+          {/* its icon */}
           <div className="flex flex-wrap items-center gap-2">
             <select
-              className="input min-w-0 flex-1 sm:max-w-[10rem]"
+              className="input"
+              style={{ flex: "none", width: "10rem" }}
               aria-label={`Icon for message ${index + 1}`}
               value={entry.imageUrl ? "__image" : entry.icon}
               disabled={disabled}
@@ -499,8 +471,11 @@ function MessagesEditor({
                 Use a drawn icon
               </button>
             ) : null}
+          </div>
+          {/* where it goes, and its place in the list */}
+          <div className="flex items-center gap-2">
             <input
-              className="input min-w-[9rem] flex-[1_1_9rem]"
+              className="input min-w-0 flex-1"
               aria-label={`Link for message ${index + 1}`}
               value={entry.href ?? ""}
               maxLength={OCCASION_LIMITS.url}
@@ -508,6 +483,35 @@ function MessagesEditor({
               placeholder="Optional link, e.g. /cruises"
               onChange={(event) => update(index, { href: event.target.value.trim() ? event.target.value : null })}
             />
+            <span className="flex shrink-0">
+              <button
+                type="button"
+                className="btn-ghost p-2"
+                aria-label={`Move message ${index + 1} up`}
+                disabled={disabled || index === 0}
+                onClick={() => move(index, -1)}
+              >
+                <ArrowUp className="h-3.5 w-3.5" aria-hidden />
+              </button>
+              <button
+                type="button"
+                className="btn-ghost p-2"
+                aria-label={`Move message ${index + 1} down`}
+                disabled={disabled || index === items.length - 1}
+                onClick={() => move(index, 1)}
+              >
+                <ArrowDown className="h-3.5 w-3.5" aria-hidden />
+              </button>
+              <button
+                type="button"
+                className="btn-ghost p-2"
+                aria-label={`Remove message ${index + 1}`}
+                disabled={disabled}
+                onClick={() => onChange(items.filter((_, i) => i !== index))}
+              >
+                <X className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </span>
           </div>
         </div>
       ))}
@@ -528,6 +532,7 @@ function MessagesEditor({
 
 type Device = "desktop" | "phone";
 
+/* Stacked above the editor the desktop view keeps this shape; beside it, it takes the column's. */
 const PREVIEW_FRAMES: Record<Device, { width: number; height: number }> = {
   desktop: { width: 1280, height: 800 },
   phone: { width: 390, height: 760 },
@@ -582,7 +587,7 @@ function PillSwitch<T extends string>({
  * unsaved changes included. The frame only listens to this page, and only
  * after the admin API confirms the session (lib/occasions.ts, OCCASION_FRAME_PARAM).
  */
-function LivePreview({ occasion }: { occasion: Occasion | null }) {
+function LivePreview({ occasion, note }: { occasion: Occasion | null; note?: ReactNode }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const latest = useRef<{ occasion: Occasion | null; scrolled: boolean }>({ occasion, scrolled: false });
@@ -594,6 +599,7 @@ function LivePreview({ occasion }: { occasion: Occasion | null }) {
   const [ready, setReady] = useState(false);
   const [boxWidth, setBoxWidth] = useState(0);
   const [maxHeight, setMaxHeight] = useState(360);
+  const [wide, setWide] = useState(false);
 
   const post = useCallback((message: object) => {
     frameRef.current?.contentWindow?.postMessage(message, window.location.origin);
@@ -623,30 +629,29 @@ function LivePreview({ occasion }: { occasion: Occasion | null }) {
   }, [post]);
 
   /*
-   * Beside the editor the whole card, save bar included, fits on screen from
-   * where it rests before it pins; stacked above the editor it keeps to a band.
+   * Beside the editor the card fills the screen below the dashboard's top bar
+   * once it pins, save bar included; stacked above the editor it keeps to a band.
    */
   useEffect(() => {
     const box = boxRef.current;
     const card = box?.closest("aside");
-    const grid = card?.parentElement;
-    if (!box || !card || !grid) return;
+    if (!box || !card) return;
     const measure = () => {
       setBoxWidth(box.clientWidth);
-      if (!window.matchMedia(WIDE_LAYOUT_QUERY).matches) {
+      const beside = window.matchMedia(WIDE_LAYOUT_QUERY).matches;
+      setWide(beside);
+      if (!beside) {
         const share = window.matchMedia("(max-width: 639px)").matches ? 0.26 : 0.34;
         setMaxHeight(Math.max(170, Math.round(window.innerHeight * share)));
         return;
       }
-      const cardBox = card.getBoundingClientRect();
-      const frameBox = box.getBoundingClientRect();
-      const restTop = grid.getBoundingClientRect().top + window.scrollY + (frameBox.top - cardBox.top);
-      const below = cardBox.bottom - frameBox.bottom;
-      setMaxHeight(Math.max(240, Math.floor(window.innerHeight - restTop - below - 12)));
+      const pinnedTop = parseFloat(window.getComputedStyle(card).top) || 0;
+      const chrome = card.getBoundingClientRect().height - box.getBoundingClientRect().height;
+      setMaxHeight(Math.max(360, Math.floor(window.innerHeight - pinnedTop - chrome - 12)));
     };
     const observer = new ResizeObserver(measure);
     observer.observe(box);
-    if (grid.parentElement) observer.observe(grid.parentElement);
+    observer.observe(card);
     window.addEventListener("resize", measure);
     return () => {
       observer.disconnect();
@@ -654,8 +659,22 @@ function LivePreview({ occasion }: { occasion: Occasion | null }) {
     };
   }, []);
 
-  const frame = PREVIEW_FRAMES[device];
-  const scale = boxWidth ? Math.min(boxWidth / frame.width, maxHeight / frame.height) : 0;
+  /*
+   * Beside the editor the desktop view fills the column: full width, as tall as
+   * the screen allows, up to 4:3 so a narrow column still shows a desktop page.
+   */
+  const fill = device === "desktop" && wide && boxWidth > 0;
+  const base = PREVIEW_FRAMES[device];
+  const frameWidth = fill ? Math.max(base.width, boxWidth) : base.width;
+  const scale = !boxWidth
+    ? 0
+    : fill
+      ? boxWidth / frameWidth
+      : Math.min(boxWidth / base.width, maxHeight / base.height);
+  const frame = {
+    width: frameWidth,
+    height: fill ? Math.min(Math.round(maxHeight / scale), Math.round(frameWidth * 0.75)) : base.height,
+  };
   const shownWidth = Math.round(frame.width * scale);
   const shownHeight = Math.round(frame.height * scale);
 
@@ -683,9 +702,11 @@ function LivePreview({ occasion }: { occasion: Occasion | null }) {
             onChange={(view) => setScrolled(view === "scrolled")}
           />
         </div>
-        <p className="mt-1 hidden text-xs text-muted sm:block">
-          The real homepage with your unsaved edits. Only you see it.
-        </p>
+        {note ?? (
+          <p className="mt-1 hidden text-xs text-muted sm:block">
+            The real homepage with your unsaved edits. Only you see it.
+          </p>
+        )}
       </div>
       <div className="px-4 pb-4">
         <div ref={boxRef} className="relative w-full" style={{ height: shownHeight || Math.round(maxHeight * 0.6) }}>
@@ -835,7 +856,9 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [template, setTemplate] = useState<TemplateKey>("new-year");
+  /* The template being tried on: shown in the preview, nothing saved until Add occasion. */
+  const [template, setTemplate] = useState<TemplateKey | "">("");
+  const [templatePreview, setTemplatePreview] = useState<Occasion | null>(null);
   const [tab, setTab] = useState<TabKey>("when");
   const [afterMoment, setAfterMoment] = useState(false);
   const [previewCard, setPreviewCard] = useState<HTMLElement | null>(null);
@@ -892,8 +915,19 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
   const savedIds = new Set(saved.occasions.map((occasion) => occasion.id));
   const disabled = !canManage || saving;
 
+  const clearTemplate = () => {
+    setTemplate("");
+    setTemplatePreview(null);
+  };
+
+  const pickTemplate = (key: TemplateKey | "") => {
+    setTemplate(key);
+    setTemplatePreview(key ? buildTemplate(key, new Set(occasions.map((occasion) => occasion.id))) : null);
+  };
+
   const patch = (change: (occasion: Occasion) => Occasion) => {
     if (selectedIndex < 0) return;
+    clearTemplate();
     setSettings((current) => ({
       occasions: current.occasions.map((occasion, i) => (i === selectedIndex ? change(occasion) : occasion)),
     }));
@@ -912,12 +946,14 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
     });
 
   const selectOccasion = (id: string | null) => {
+    clearTemplate();
     setSelectedId(id);
     setConfirmDelete(false);
   };
 
   const addOccasion = () => {
-    const created = buildTemplate(template, new Set(occasions.map((occasion) => occasion.id)));
+    if (!templatePreview) return;
+    const created = templatePreview;
     setSettings((current) => ({ occasions: [...current.occasions, created] }));
     selectOccasion(created.id);
     setTab("when");
@@ -968,6 +1004,22 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
     : dirty
       ? "Unsaved changes. Visitors see the last saved version."
       : "All changes saved.";
+
+  const templateNote =
+    template && templatePreview ? (
+      <p className="mt-1 text-xs" role="status" style={{ color: "var(--accent)" }}>
+        Trying the {TEMPLATE_LABELS[template]} template. Press Add occasion to keep it
+        {selected ? (
+          <>
+            , or{" "}
+            <button type="button" className="admin-inline-link" onClick={() => selectOccasion(selected.id)}>
+              go back to {selected.name || "your occasion"}
+            </button>
+          </>
+        ) : null}
+        .
+      </p>
+    ) : undefined;
 
   const siteLink =
     selected && savedIds.has(selected.id) ? (
@@ -1027,10 +1079,11 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
               <select
                 id="occ-template"
                 className="input"
-                style={{ width: "auto", minWidth: "12rem" }}
+                style={{ width: "auto", minWidth: "15rem" }}
                 value={template}
-                onChange={(event) => setTemplate(event.target.value as TemplateKey)}
+                onChange={(event) => pickTemplate(event.target.value as TemplateKey | "")}
               >
+                <option value="">Choose a template…</option>
                 {(Object.keys(TEMPLATE_LABELS) as TemplateKey[]).map((key) => (
                   <option key={key} value={key}>
                     {TEMPLATE_LABELS[key]}
@@ -1040,7 +1093,7 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
               <button
                 type="button"
                 className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-sm"
-                disabled={disabled || occasions.length >= OCCASION_LIMITS.occasions}
+                disabled={disabled || !templatePreview || occasions.length >= OCCASION_LIMITS.occasions}
                 onClick={addOccasion}
               >
                 <Plus className="h-4 w-4" aria-hidden />
@@ -1051,7 +1104,9 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
         </div>
         <p className="mt-2.5 text-xs text-muted">
           Times are Cairo time. When two overlap, the first one in this row shows.
-          {canManage ? " New occasions start switched off, so nothing shows until you turn one on and save." : ""}
+          {canManage
+            ? " Pick a template to try it in the preview. New occasions start switched off, so nothing shows until you turn one on and save."
+            : ""}
         </p>
       </section>
 
@@ -1447,9 +1502,8 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
                     onChange={(hanging) => patch((o) => ({ ...o, hanging }))}
                   />
                   <p className="text-xs text-muted">
-                    On the homepage, fireworks rise from the top of the hero. String lights hang from the stripe;
-                    lanterns and stars hang below the menu. All of it stays clear of the logo and buttons, and
-                    visitors who ask for less motion see no effects.
+                    On the homepage, fireworks rise from the top of the hero. Decorations hang from the top of the
+                    screen and stay clear of the logo and buttons. Visitors who ask for less motion see no effects.
                   </p>
                 </>
               ) : null}
@@ -1463,7 +1517,7 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
             aria-label="Live preview"
           >
             <div className="card overflow-hidden">
-              <LivePreview occasion={selected} />
+              <LivePreview occasion={templatePreview ?? selected} note={templateNote} />
               <div
                 className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3"
                 style={{ borderTop: "1px solid var(--border)" }}
@@ -1504,6 +1558,12 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
             </div>
           </aside>
         </div>
+      ) : templatePreview ? (
+        <aside aria-label="Live preview">
+          <div className="card overflow-hidden">
+            <LivePreview occasion={templatePreview} note={templateNote} />
+          </div>
+        </aside>
       ) : (
         <section className="card flex flex-wrap items-center gap-3 p-6 text-sm text-muted">
           <span className="mr-auto">Pick an occasion, or add one from a template.</span>

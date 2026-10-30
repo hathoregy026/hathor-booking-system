@@ -15,6 +15,11 @@ BEGIN
  BEGIN
   SELECT cs.* INTO STRICT s FROM "CruiseSchedule" cs JOIN "Cruise" c ON c.id=cs."cruiseId"
    WHERE cs."isBookable" AND cs."departureTime" > clock_timestamp() + interval '61 days'
+    -- At most four King cabins are held at once below; skip sailings already full (New Year).
+    AND (SELECT count(*) FROM "Room" r JOIN "_CruiseRooms" cr ON cr."B"=r.id
+     WHERE cr."A"=cs."cruiseId" AND r."deletedAt" IS NULL AND r."roomType"='Luxury King Cabin'
+      AND NOT EXISTS(SELECT 1 FROM "InventoryAllocation" a WHERE a."roomId"=r.id AND a.active
+       AND a."startsAt"<cs."arrivalTime" AND a."endsAt">cs."departureTime"))>=4
    ORDER BY cs."departureTime" LIMIT 1;
   days := s."departureTime"::date - (clock_timestamp() AT TIME ZONE 'UTC')::date;
 
@@ -230,6 +235,42 @@ BEGIN
    OR (SELECT "cumulativeCents" FROM "BookingPaymentSchedule" WHERE "bookingId"=f_id AND milestone='INITIAL')<>total
    THEN RAISE EXCEPTION 'CHECK 19: a one-payment split is not a single stage'; END IF;
   RAISE NOTICE 'PASS 19. a one-payment split asks for the whole amount at once';
+
+  -- 20. Hathor cancelling (Terms 13), unavoidable circumstances (2) and a significant
+  -- change (12) carry no fee, so everything received comes back, card surcharge included,
+  -- and never more. Unknown reasons are refused and leave the booking as it was.
+  failed:=false;
+  BEGIN
+   PERFORM hathor_administer_booking(f_id,'{"type":"cancel","reason":"GOODWILL"}'::jsonb);
+  EXCEPTION WHEN SQLSTATE 'HB400' THEN failed:=true;
+  END;
+  IF NOT failed THEN RAISE EXCEPTION 'CHECK 20: an unknown cancellation reason was accepted'; END IF;
+  IF (SELECT status FROM "Booking" WHERE id=f_id)<>'REQUESTED' THEN RAISE EXCEPTION 'CHECK 20: a refused reason changed the booking'; END IF;
+  result := hathor_administer_booking(d_id,'{"type":"cancel","reason":"HATHOR_CANCELLED"}'::jsonb);
+  IF (result->>'status')<>'CANCELLED' OR (result->>'cancellationReason')<>'HATHOR_CANCELLED' OR (result->>'cancellationFeeCents')::int<>0
+   THEN RAISE EXCEPTION 'CHECK 20: Hathor cancelling left % / % / fee %',result->>'status',result->>'cancellationReason',result->>'cancellationFeeCents'; END IF;
+  IF (SELECT "totalPriceCents" FROM "Booking" WHERE id=d_id)<>total THEN RAISE EXCEPTION 'CHECK 20: cancelling changed the quote'; END IF;
+  failed:=false;
+  BEGIN
+   PERFORM hathor_administer_booking(d_id, jsonb_build_object('type','record-payment','payment',
+     jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','REFUND','amountCents',owed_b+1,
+       'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
+  EXCEPTION WHEN SQLSTATE 'HB400' OR raise_exception THEN failed:=true;
+  END;
+  IF NOT failed THEN RAISE EXCEPTION 'CHECK 20: a refund above what was received was accepted'; END IF;
+  result := hathor_administer_booking(d_id, jsonb_build_object('type','record-payment','payment',
+    jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','REFUND','amountCents',owed_b,
+      'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
+  IF (SELECT coalesce(sum(CASE WHEN kind='RECEIPT' THEN "amountCents" ELSE -"amountCents" END),0) FROM "BookingPayment" WHERE "bookingId"=d_id)<>0
+   THEN RAISE EXCEPTION 'CHECK 20: the full refund did not bring the balance to zero'; END IF;
+  result := hathor_administer_booking(e_id,'{"type":"cancel","reason":"UNAVOIDABLE_CIRCUMSTANCES"}'::jsonb);
+  IF (result->>'cancellationFeeCents')::int<>0 THEN RAISE EXCEPTION 'CHECK 20: unavoidable circumstances charged a fee'; END IF;
+  PERFORM hathor_administer_booking(e_id, jsonb_build_object('type','record-payment','payment',
+    jsonb_build_object('reference',gen_random_uuid()::text,'method','VISA','kind','REFUND','amountCents',first_cents,
+      'receivedAt',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS"Z"'))));
+  result := hathor_administer_booking(f_id,'{"type":"cancel","reason":"SIGNIFICANT_CHANGE"}'::jsonb);
+  IF (result->>'cancellationFeeCents')::int<>0 THEN RAISE EXCEPTION 'CHECK 20: a significant change charged a fee'; END IF;
+  RAISE NOTICE 'PASS 20. the three no-fee reasons refund everything received and no more; unknown reasons are refused';
 
   RAISE EXCEPTION USING ERRCODE='ZQ004',MESSAGE='all payment checks passed; rolling back synthetic records';
  EXCEPTION WHEN SQLSTATE 'ZQ004' THEN
