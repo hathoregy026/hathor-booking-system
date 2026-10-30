@@ -21,7 +21,7 @@ import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { BURGER_NAV_IMAGE_SLOT_NAME } from "@/lib/site-image-slots";
 import type { HeaderNavItem } from "@/lib/public-nav";
 import { ManagedImage } from "@/components/ui/ManagedImage";
-import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import "./EditorialNavOverlay.css";
 
@@ -47,6 +47,7 @@ export function EditorialNavOverlay({
   const pathname = usePathname();
   const router = useRouter();
   const copy = CHROME_COPY[usePublicLocale()].menu;
+  const localHref = useLocalizedHref();
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
 
   const closeMenu = useCallback(() => {
@@ -214,11 +215,11 @@ export function EditorialNavOverlay({
         <div className="eno-foot" data-eno-chrome>
           <p className="eno-copy">Hathor Dahabiya © 2026</p>
           <p className="eno-legal">
-            <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
+            <Link href={localHref(copy.privacyHref)} tabIndex={open ? 0 : -1} onClick={onClose}>
               {copy.privacy}
             </Link>
             <span aria-hidden="true">·</span>
-            <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
+            <Link href={localHref(copy.termsHref)} tabIndex={open ? 0 : -1} onClick={onClose}>
               {copy.terms}
             </Link>
           </p>

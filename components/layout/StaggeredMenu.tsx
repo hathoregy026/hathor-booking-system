@@ -19,6 +19,8 @@ import gsap from "gsap";
 import { ChevronDown, X } from "lucide-react";
 import type { HeaderNavItem } from "@/lib/public-nav";
 import type { SocialLink } from "@/lib/public-social";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import "./StaggeredMenu.css";
 
 export type StaggeredMenuSocialItem = SocialLink & {
@@ -52,6 +54,7 @@ export function StaggeredMenu({
   className,
 }: StaggeredMenuProps) {
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
+  const chrome = CHROME_COPY[usePublicLocale()];
 
   const handleNavClick = (
     event: MouseEvent<HTMLAnchorElement>,
@@ -191,7 +194,7 @@ export function StaggeredMenu({
         ref={backdropRef}
         type="button"
         className="sm-backdrop"
-        aria-label="Close menu"
+        aria-label={chrome.menu.closeMenu}
         tabIndex={open ? 0 : -1}
         onClick={onClose}
       />
@@ -211,23 +214,23 @@ export function StaggeredMenu({
         id="staggered-menu-panel"
         className="staggered-menu-panel"
         aria-hidden={!open}
-        aria-label="Explore"
+        aria-label={chrome.header.exploreLabel}
       >
         <div className="sm-panel-inner">
           <div className="sm-panel-top">
-            <p className="sm-panel-kicker">Explore</p>
+            <p className="sm-panel-kicker">{chrome.header.exploreLabel}</p>
             <button
               type="button"
               className="sm-panel-close"
               onClick={onClose}
-              aria-label="Close menu"
+              aria-label={chrome.menu.closeMenu}
               tabIndex={open ? 0 : -1}
             >
               <X className="sm-panel-close-icon" aria-hidden />
             </button>
           </div>
 
-          <nav className="sm-panel-nav" aria-label="Primary">
+          <nav className="sm-panel-nav" aria-label={chrome.menu.primary}>
             {navItems.map((item) => {
               if (item.type === "link") {
                 return (
@@ -298,8 +301,8 @@ export function StaggeredMenu({
           </nav>
 
           {displaySocials && socialItems.length > 0 ? (
-            <div className="sm-socials" aria-label="Social links">
-              <h3 className="sm-socials-title">Follow the Voyage</h3>
+            <div className="sm-socials" aria-label={chrome.header.socialLinks}>
+              <h3 className="sm-socials-title">{chrome.header.followVoyage}</h3>
               <ul className="sm-socials-list" role="list">
                 {socialItems.map((social) => (
                   <li key={social.key} className="sm-socials-item">

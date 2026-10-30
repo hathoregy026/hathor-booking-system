@@ -44,7 +44,11 @@ import {
 } from "@/lib/body-scroll-lock";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { localizedHref, splitLocalePath } from "@/lib/i18n/locale";
-import { CHROME_COPY, localizeNavItems } from "@/lib/i18n/chrome-copy";
+import {
+  CHROME_COPY,
+  localizeNavItems,
+  type ChromeCopy,
+} from "@/lib/i18n/chrome-copy";
 
 const EXPLORE_LOCK_OWNER = "explore-panel" as const;
 
@@ -53,30 +57,32 @@ function ExplorePanel({
   onClose,
   onNavigate,
   navItems,
+  copy,
 }: {
   open: boolean;
   onClose: () => void;
   onNavigate: (href: string) => void;
   navItems: HeaderNavItem[];
+  copy: ChromeCopy["header"];
 }) {
   if (!open) return null;
 
   return (
-    <div className="hathor-explore" role="dialog" aria-modal="true" aria-label="Explore menu">
+    <div className="hathor-explore" role="dialog" aria-modal="true" aria-label={copy.exploreMenu}>
       <button
         type="button"
         className="hathor-explore__backdrop"
-        aria-label="Close explore menu"
+        aria-label={copy.closeExplore}
         onClick={onClose}
       />
       <div className="hathor-explore__panel">
         <div className="hathor-explore__header">
-          <p className="hathor-explore__label">Explore</p>
+          <p className="hathor-explore__label">{copy.exploreLabel}</p>
           <button
             type="button"
             className="hathor-header-icon-btn"
             onClick={onClose}
-            aria-label="Close menu"
+            aria-label={copy.closeMenu}
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
@@ -135,7 +141,7 @@ function ExplorePanel({
         </div>
 
         <div className="hathor-explore__footer">
-          <p className="hathor-explore__follow">Follow Us</p>
+          <p className="hathor-explore__follow">{copy.followUs}</p>
           <div className="flex flex-wrap gap-4 text-sm">
             <a
               href={`mailto:${PUBLIC_CONTACT.email}`}
@@ -554,7 +560,7 @@ export function Header() {
             {chromeNav ? null : (
               <nav
                 className="hathor-header__col hathor-header__col--nav-left"
-                aria-label="Primary navigation left"
+                aria-label={copy.navLeft}
               >
                 <ul className="hathor-header__nav hathor-header__nav--left">
                   {navLeft.map(renderNavItem)}
@@ -582,7 +588,7 @@ export function Header() {
             {chromeNav ? null : (
               <nav
                 className="hathor-header__col hathor-header__col--nav-right"
-                aria-label="Primary navigation right"
+                aria-label={copy.navRight}
               >
                 <ul className="hathor-header__nav hathor-header__nav--right">
                   {navRight.map(renderNavItem)}
@@ -655,6 +661,7 @@ export function Header() {
           onClose={closeExploreSync}
           onNavigate={navigateFromExplore}
           navItems={navItems}
+          copy={copy}
         />
       )}
     </>

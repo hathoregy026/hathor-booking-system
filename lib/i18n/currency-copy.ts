@@ -16,6 +16,8 @@ export type CurrencyCopy = {
   retry: string;
   estimates: string;
   dailyRates: string;
+  /** A rate's date, which arrives as YYYY-MM-DD. */
+  rateDate: (iso: string) => string;
   /** Under a converted total: the amount actually booked and invoiced, in USD. */
   settlement: (currency: Currency, usdTotal: string | null) => string;
 };
@@ -31,6 +33,7 @@ export const CURRENCY_COPY: Record<PublicLocale, CurrencyCopy> = {
     retry: "Try again",
     estimates: "Converted prices are estimates. Bookings and invoices are in USD.",
     dailyRates: "Daily rates",
+    rateDate: (iso) => iso,
     settlement: (currency, usdTotal) =>
       `${currency} amounts are estimates. ${usdTotal === null ? "Bookings and invoices are in USD." : `Booking and invoice total: ${usdTotal}.`}`,
   },
@@ -44,6 +47,7 @@ export const CURRENCY_COPY: Record<PublicLocale, CurrencyCopy> = {
     retry: "Riprova",
     estimates: "I prezzi convertiti sono indicativi. Prenotazioni e fatture sono in USD.",
     dailyRates: "Tassi giornalieri",
+    rateDate: (iso) => iso.split("-").reverse().join("/"),
     settlement: (currency, usdTotal) =>
       `Gli importi in ${currency} sono indicativi. ${usdTotal === null ? "Prenotazioni e fatture sono in USD." : `Totale di prenotazione e fattura: ${usdTotal}.`}`,
   },
