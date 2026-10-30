@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const TITLE = "Pagina non trovata | Hathor Dahabiya";
 const DESCRIPTION =
-  "L’indirizzo che ha aperto non esiste o è stato spostato. Torni alla pagina iniziale di Hathor Dahabiya o scelga il Suo viaggio sul Nilo.";
+  "La pagina che cerca non esiste o è stata spostata. Torni alla pagina iniziale di Hathor Dahabiya o scelga il Suo viaggio sul Nilo.";
 
 /**
  * Metadata for the Italian 404. Used by the 404 itself and by the /it

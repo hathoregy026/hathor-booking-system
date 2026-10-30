@@ -225,14 +225,15 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
       "Tre approdi: il viaggio segue il ritmo della pietra (la cava, la terrazza, la valle), ognuno svelato quando il fiume lo concede.",
     slidesIndex: ["Obelisco", "Hatshepsut", "Valle"],
     notesTitle: "Tre note",
-    notesBody: "Il fiume, i monumenti e il ritorno: la grammatica di un viaggio con Hathor.",
+    notesBody: "Il fiume, i templi e il ritorno: la grammatica di un viaggio con Hathor.",
     notes: [
       {
         title: "Il fiume",
         body: "Una navigazione intima in dahabiya, con cabine e suite pensate per la luce del Nilo e un’ospitalità senza fretta.",
       },
       {
-        title: "I monumenti",
+        /* "I monumenti" broke after the "I" and spilled out of its column. */
+        title: "I templi",
         body: "Le meraviglie antiche visitate con calma, seguite dalla quiete del fiume a bordo di Hathor.",
       },
       {

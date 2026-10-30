@@ -138,3 +138,12 @@
     text-align: center;
   }
 }
+
+/* "PROSSIMAMENTE" is one long word: it must fit a phone on a single line. */
+@media (max-width: 480px) {
+  .site-coming-soon__label[lang="it"]:not(#_) {
+    font-size: 1.65rem;
+    letter-spacing: 0.14em;
+    text-indent: 0.14em;
+  }
+}

@@ -220,6 +220,6 @@ export const PARTNERS_COPY: Record<PublicLocale, PartnersCopy> = {
     cardTitle: "La cerchia dei partner",
     cardBody: ["Nomi fidati che condividono", "la nostra cura per ogni ospite"],
     aboutHathor: "Chi è Hathor",
-    writeToUs: "Ci scriva",
+    writeToUs: "Scrivici",
   },
 };

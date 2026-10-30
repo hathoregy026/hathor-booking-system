@@ -127,7 +127,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
       { text: "Tasse e costi di servizio applicabili." },
       { text: "Personale di crociera professionale." },
       {
-        text: "Un calice di Champagne di benvenuto in omaggio per ogni cabina e suite, servito una sola volta per soggiorno.",
+        text: "Un calice di champagne di benvenuto in omaggio per ogni cabina e suite, servito una sola volta per soggiorno.",
       },
     ],
   },
@@ -143,7 +143,7 @@ const SECTIONS_IT: readonly TermsSection[] = [
       { text: "Spese personali." },
       { text: "Mance." },
       {
-        text: "Bevande alcoliche, locali o internazionali, a eccezione del calice di Champagne di benvenuto in omaggio, servito una sola volta per soggiorno per ogni cabina e suite.",
+        text: "Bevande alcoliche, locali o internazionali, a eccezione del calice di champagne di benvenuto in omaggio, servito una sola volta per soggiorno per ogni cabina e suite.",
       },
     ],
   },
