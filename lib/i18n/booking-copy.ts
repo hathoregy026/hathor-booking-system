@@ -413,6 +413,7 @@ export type BookingCopy = {
     cannotFit: (types: number, guests: number) => string;
     trimmed: (names: string[]) => string;
     chooseDateFirst: string;
+    securityCheck: string;
     sailingClosed: string;
     sailingFull: string;
     unableToCheck: string;
@@ -985,6 +986,7 @@ const EN: BookingCopy = {
     trimmed: names =>
       `A ${names.join(" and ")} you chose was just booked by another guest. Its guests are waiting in Who Is Travelling — please place them again.`,
     chooseDateFirst: "Choose one of the open sailing dates first.",
+    securityCheck: "Please complete the security check before sending your booking request.",
     sailingClosed: "That sailing has just closed. Please choose another date.",
     sailingFull: "This sailing is fully booked. Please choose another date.",
     unableToCheck: "Unable to check availability.",
@@ -1635,6 +1637,7 @@ const IT: BookingCopy = {
     trimmed: names =>
       `Una ${names.join(" e una ")} che aveva scelto è appena stata prenotata da un altro ospite. I suoi ospiti attendono in «Chi viaggia»: li sistemi di nuovo.`,
     chooseDateFirst: "Scelga prima una delle date di partenza disponibili.",
+    securityCheck: "Completi il controllo di sicurezza prima di inviare la richiesta di prenotazione.",
     sailingClosed: "Questa partenza è appena stata chiusa. Scelga un’altra data.",
     sailingFull: "Questa partenza è al completo. Scelga un’altra data.",
     unableToCheck: "Impossibile verificare la disponibilità.",

@@ -11,7 +11,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
   chaptersLabel: "Kapitel zum Charter",
   chapters: ["Anfrage", "Das Schiff", "Residenzen", "Routen"],
   deed: ["Private Dahabiya", "Decks", "Residenzen", "Gäste maximal", "Andere Gäste"],
-  freedomWords: ["Privatsphäre.", "Freiheit.", "Fürsorge."],
+  freedomWords: ["Privatsphäre.", "Flexibilität.", "Fürsorge."],
   residenceDecks: ["Unterdeck", "Unterdeck", "Hauptdeck"],
   kicker: "Privater Dahabiya-Charter · Ägypten",
   deedIntro:
@@ -36,13 +36,13 @@ export const CHARTER_COPY_DE: CharterCopy = {
     photoAlt: "Privatcharter der Hathor Dahabiya auf dem Nil",
   },
   fleet: {
-    kicker: "Die Residenzen",
+    kicker: "Die Residenz",
     title: ["Jede", "Residenz"],
     intro:
       "Die Hathor erstreckt sich über drei Decks und nimmt eine begrenzte Zahl von Gästen in acht Kabinen, zwei Suiten und zwei Royal Suites auf.",
     stats: ["8 Kabinen", "2 Suiten", "2 Royal Suites"],
     outro:
-      "Einige Kabinen sind miteinander verbunden, für mehr Privatsphäre. Jeder Raum verfügt über Smart-Systeme: schlüssellosen Zugang, Smart-TV, automatisierte Beleuchtung und Vorhänge.",
+      "Ausgewählte Kabinen lassen sich für mehr Privatsphäre verbinden. Jeder Raum verfügt über Smart-Systeme wie schlüssellosen Zugang, Smart-TV, automatisierte Beleuchtung und Vorhangsteuerung.",
     cards: [
       {
         title: "Luxury Rooms",
@@ -61,7 +61,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
         hrefLabel: "Alle Merkmale",
       },
       {
-        title: "Royal Suites",
+        title: "Luxury Royal Suites",
         body: "Die Royal Suites sind die größten Unterkünfte der Hathor, mit zusätzlichem privatem Raum und noch mehr Abgeschiedenheit.",
         capacity: "2 Royal Suites",
         detail: "56 m² · Hauptdeck · privater Raum",
@@ -72,7 +72,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
   },
   value: {
     kicker: "Warum die Hathor chartern",
-    title: "Privatsphäre. Freiheit. Fürsorge.",
+    title: "Privatsphäre. Flexibilität. Fürsorge.",
     intro:
       "Unser Team gestaltet mit Ihnen eine private Nilreise nach Maß für Ihre Termine, Ihre Gruppe und Ihre Prioritäten. Darauf können Sie zählen:",
     pillars: [
@@ -124,7 +124,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
   preferred: (route) => `Wunschroute · ${route}`,
   process: {
     kicker: "So funktioniert der Charter",
-    title: ["Drei", "einfache", "Schritte"],
+    title: ["Drei", "bedachte", "Schritte"],
     begin: "Mit Schritt eins beginnen",
     steps: [
       {
@@ -185,7 +185,8 @@ export const CHARTER_COPY_DE: CharterCopy = {
   place: (name) => name.replace(/\b(Aswan|Cairo)\b/g, (stop) => PLACES_DE[stop] ?? stop),
   form: {
     eyebrow: "Privater Concierge",
-    title: "Privater Dahabiya-Charter",
+    /* A heading in the display font, which has no hyphen. */
+    title: "Dahabiya Kreuzfahrt im Charter",
     lead: "Fragen Sie einen Privatcharter an: Wir melden uns mit einem Angebot nach Maß.",
     tripTypes: { "One-Way": "Einfache Fahrt", "Round-Trip": "Hin und zurück", "Multi-Stop": "Mehrere Stopps" },
     name: "Name",

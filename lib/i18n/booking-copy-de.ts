@@ -40,7 +40,7 @@ const deJoin = (items: string[]) =>
 const SERVER_DE: Record<string, string> = {
   "Too many requests. Please wait and try again.": "Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
   "The requested rooms or hold are no longer available. Start a new selection.":
-    "Die angefragten Kabinen sind nicht mehr verfügbar. Bitte beginnen Sie eine neue Auswahl.",
+    "Die angefragten Kabinen oder die Reservierung sind nicht mehr verfügbar. Bitte beginnen Sie eine neue Auswahl.",
   "The booking request is invalid or does not match this checkout attempt.":
     "Die Buchungsanfrage ist ungültig oder passt nicht zu diesem Vorgang.",
   "Please enter a name without web addresses.": "Bitte geben Sie einen Namen ohne Webadressen ein.",
@@ -50,6 +50,19 @@ const SERVER_DE: Record<string, string> = {
   "Booking code and email did not match": "Buchungscode und E-Mail-Adresse stimmen nicht überein.",
   "Reservation acknowledgement is required": "Bitte bestätigen Sie die Buchungsbedingungen.",
   "Please try again.": "Bitte versuchen Sie es erneut.",
+  "Please complete the security check and try again.": "Bitte schließen Sie die Sicherheitsprüfung ab und versuchen Sie es erneut.",
+  "Security verification is unavailable. Please contact our reservations team directly.":
+    "Die Sicherheitsprüfung ist nicht verfügbar. Bitte kontaktieren Sie direkt unsere Reservierung.",
+  "The security check is temporarily unavailable. Please try again.":
+    "Die Sicherheitsprüfung ist vorübergehend nicht verfügbar. Bitte versuchen Sie es erneut.",
+  "The security check expired or could not be verified. Please try again.":
+    "Die Sicherheitsprüfung ist abgelaufen oder konnte nicht bestätigt werden. Bitte versuchen Sie es erneut.",
+  "Database is busy. Please wait a moment and try again.":
+    "Die Datenbank ist ausgelastet. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+  "Invalid booking authorization": "Die Berechtigung für diese Buchung ist ungültig.",
+  "Invalid email address": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+  "Validation failed": "Die Prüfung der Angaben ist fehlgeschlagen.",
+  "Internal server error": "Interner Serverfehler.",
 };
 const SERVER_FALLBACK_DE = "Der Vorgang konnte nicht abgeschlossen werden.";
 
@@ -62,7 +75,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
   weekdayShort: iso => WEEKDAYS_DE[utcParts(iso).weekday].slice(0, 2).toUpperCase(),
   folioRange: (fromIso, toIso) => `${deShortDate(fromIso)} – ${deShortDate(toIso)}`,
   stageLabel: stage => {
-    if (stage.milestone === "INITIAL") return "Mit Zugang der Rechnung von Hathor";
+    if (stage.milestone === "INITIAL") return "Wenn Hathor Ihnen die Rechnung sendet";
     if (!stage.dueAt) return stage.milestone;
     if (stage.milestone === "BALANCE") return `Bis ${deLongDate(stage.dueAt)}`;
     const days = stage.milestone === "DAY_60" ? 60 : 45;
@@ -253,7 +266,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
     notIncluded: "Nicht inklusive",
     placeIn: (guest, cabin) => `${guest} in die ${cabin} setzen`,
     placeHere: "Hier platzieren",
-    more: (count, shortName) => (count === 1 ? `Eine weitere ${shortName}` : `${count} weitere ${shortName}`),
+    more: (count, shortName) => (count === 1 ? `Eine weitere ${shortName}` : `${count} weitere ${shortName}s`),
     free: count => `${count} frei`,
     party: "Wer reist mit",
     partyLede:
@@ -351,7 +364,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
       perCabin: "Pro Kabine",
       voyageMeals: nights => `Gesamte Reise mit ${nights} Nächten, alle Mahlzeiten und alkoholfreien Getränke inklusive.`,
       fullyBooked: "An diesem Termin ausgebucht",
-      showType: (count, shortName, free) => `${count} ${shortName} anzeigen · ${free} frei`,
+      showType: (count, shortName, free) => `${count} ${shortName}${count === 1 ? "" : "s"} anzeigen · ${free} frei`,
       fullDetails: "Alle Details der Kabine",
     },
     tabs: {
@@ -394,7 +407,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
   details: {
     kicker: "Daten und Zahlung",
     title: "Daten und Zahlung",
-    lede: "Nur noch wenige Angaben bis zu Ihrer Buchungsanfrage.",
+    lede: "Nur noch wenige Angaben, um Ihre Reservierung abzuschließen.",
     quote: "Ein langsamerer, reicherer Weg, Ägypten zu entdecken.",
     panelTitle: "Gästedaten und Zahlungswunsch",
     panelLede: "Fast geschafft. Tragen Sie Ihre Daten ein und wählen Sie Ihre bevorzugte Zahlungsart.",
@@ -444,7 +457,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
       "Eintrittskarten für die Besichtigungen laut Route",
       "Ägyptologischer Reiseleiter",
       "Wäscheservice und täglich aufgefüllte Minibar",
-      "WLAN, Zimmerservice, Kaffeemaschine und Wasserkocher",
+      "WLAN, Zimmerservice, Kaffee- und Teezubereitung",
     ],
     terms: "Bedingungen",
     termsBefore: "Ich habe die",
@@ -521,6 +534,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
     trimmed: names =>
       `Eine von Ihnen gewählte ${names.join(" und eine ")} wurde soeben von einem anderen Gast gebucht. Ihre Gäste warten unter „Wer reist mit“: Bitte verteilen Sie sie neu.`,
     chooseDateFirst: "Wählen Sie zuerst einen der verfügbaren Abfahrtstermine.",
+    securityCheck: "Bitte schließen Sie die Sicherheitsprüfung ab, bevor Sie Ihre Buchungsanfrage senden.",
     sailingClosed: "Diese Abfahrt wurde soeben geschlossen. Bitte wählen Sie einen anderen Termin.",
     sailingFull: "Diese Abfahrt ist ausgebucht. Bitte wählen Sie einen anderen Termin.",
     unableToCheck: "Die Verfügbarkeit konnte nicht geprüft werden.",
@@ -629,7 +643,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
     surchargeTaxes: amount => `Enthält den Aufschlag von ${SURCHARGE_DE} für die Online-Kartenzahlung in Höhe von ${amount}. Steuern und Service inklusive.`,
     timeline: "Zeitplan der Zahlungen",
     here: "Wir sind für Sie da",
-    concierge: "Unser Concierge beantwortet gern jede Ihrer Fragen.",
+    concierge: "Unser Concierge-Team hilft Ihnen immer gern bei allen Fragen.",
     hours: "Täglich erreichbar: 09:00 – 17:00 Uhr. Ruhetag: Freitag.",
     reply: "Oder antworten Sie direkt auf Ihre Bestätigungs-E-Mail.",
     viewRequest: "Meine Anfrage ansehen",
@@ -653,7 +667,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
     tryAgain: "Erneut versuchen",
     home: "Zur Startseite",
     helpBefore: "Weiterhin Probleme? Schreiben Sie an",
-    helpAfter: "und wir schließen die Buchung für Sie ab.",
+    helpAfter: "und wir schließen Ihre Buchung von Hand ab.",
     reference: "Referenz:",
   },
   unverified: {

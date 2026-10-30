@@ -87,7 +87,7 @@ export const GERMAN_PAGES = {
     path: "/de/blogs",
     title: "Luxuskreuzfahrt auf dem Nil: Tipps und Geschichten | Hathor",
     description:
-      "Tipps und Geschichten für Ihre Nilkreuzfahrt: die beste Reisezeit für die Dahabiya, die Tempel von Luxor und Assuan, das Packen und der Rhythmus der Hathor.",
+      "Tipps und Geschichten für Ihre Nilkreuzfahrt: beste Reisezeit für die Dahabiya, Tempel von Luxor und Assuan, Packen, Kabinen und der ruhigere Rhythmus der Hathor.",
     name: "Luxuskreuzfahrt auf dem Nil: Tipps und Geschichten | Hathor",
     crumb: "Journal",
     image: {

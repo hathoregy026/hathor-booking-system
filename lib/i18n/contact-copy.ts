@@ -5,8 +5,12 @@
  * the reservations desk (the guest's receipt does not include the message).
  */
 
-import { CONTACT_COPY_DE, INQUIRY_FORM_COPY_DE } from "@/lib/i18n/contact-copy-de";
-import type { PublicLocale } from "@/lib/i18n/locale";
+import {
+  CONTACT_COPY_DE,
+  INQUIRY_FORM_COPY_DE,
+  INQUIRY_REFUSALS_DE,
+} from "@/lib/i18n/contact-copy-de";
+import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
 type Channel = { word: string; label: string; meta: string; value?: string; cta?: string };
@@ -73,6 +77,10 @@ export type InquiryFormCopy = {
   sending: string;
   sendMessage: string;
   unableToSend: string;
+  /** Shown when the guest sends before the security check has finished. */
+  securityCheck: string;
+  /** Shown when the security check cannot load (the booking journey uses it too). */
+  verificationUnavailable: string;
   /** Use the server's own refusal text (English) or always this language's. */
   serverErrors: boolean;
   /** Added to the team's copy of the message on translated pages. */
@@ -206,6 +214,9 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     sending: "Sending…",
     sendMessage: "Send Message",
     unableToSend: "Unable to send message",
+    securityCheck: "Please complete the security check before sending.",
+    verificationUnavailable:
+      "Security verification is unavailable. Refresh this page or contact our reservations team directly.",
     serverErrors: true,
     languageNote: null,
   },
@@ -235,8 +246,42 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     sending: "Invio in corso…",
     sendMessage: "Invia il messaggio",
     unableToSend: "Non è stato possibile inviare il messaggio.",
+    securityCheck: "Completi il controllo di sicurezza prima dell’invio.",
+    verificationUnavailable:
+      "La verifica di sicurezza non è disponibile. Ricarichi la pagina o contatti direttamente il nostro ufficio prenotazioni.",
     serverErrors: false,
     languageNote: "Guest language: Italian",
   },
   de: INQUIRY_FORM_COPY_DE,
 };
+
+/** What /api/contact can say to a guest, by its English wording. */
+const INQUIRY_REFUSALS_IT: Record<string, string> = {
+  "Please check your form and try again.": "Controlli il modulo e riprovi.",
+  "Too many messages. Please wait and try again.": "Troppi messaggi. Attenda e riprovi.",
+  "Unable to send your message. Please try again later.":
+    "Non è stato possibile inviare il messaggio. Riprovi più tardi.",
+  "Security verification is unavailable. Please contact our reservations team directly.":
+    "La verifica di sicurezza non è disponibile. Contatti direttamente il nostro ufficio prenotazioni.",
+  "Please complete the security check and try again.":
+    "Completi il controllo di sicurezza e riprovi.",
+  "The security check is temporarily unavailable. Please try again.":
+    "Il controllo di sicurezza non è momentaneamente disponibile. Riprovi.",
+  "The security check expired or could not be verified. Please try again.":
+    "Il controllo di sicurezza è scaduto o non è stato possibile verificarlo. Riprovi.",
+};
+
+const INQUIRY_REFUSALS: Record<TranslatedLocale, Record<string, string>> = {
+  it: INQUIRY_REFUSALS_IT,
+  de: INQUIRY_REFUSALS_DE,
+};
+
+/** The server's refusal in the page's language; a technical one becomes `fallback`. */
+export function inquiryRefusalIn(
+  locale: PublicLocale,
+  refusal: string | undefined,
+  fallback: string,
+): string {
+  if (locale === "en") return refusal ?? fallback;
+  return (refusal ? INQUIRY_REFUSALS[locale][refusal] : undefined) ?? fallback;
+}

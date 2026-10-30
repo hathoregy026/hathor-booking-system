@@ -7,6 +7,7 @@ import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHARTER_COPY } from "@/lib/i18n/charter-copy";
+import { INQUIRY_FORM_COPY, inquiryRefusalIn } from "@/lib/i18n/contact-copy";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -54,7 +55,8 @@ export function CharterRequestForm({
   compact = false,
   onReveal = revealByDefault,
 }: CharterRequestFormProps) {
-  const copy = CHARTER_COPY[usePublicLocale()];
+  const locale = usePublicLocale();
+  const copy = CHARTER_COPY[locale];
   const t = copy.form;
   const formId = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -152,7 +154,7 @@ export function CharterRequestForm({
       return;
     }
 
-    if (!turnstileToken) { setState("error"); setErrorMessage("Please complete the security check before sending."); return; }
+    if (!turnstileToken) { setState("error"); setErrorMessage(INQUIRY_FORM_COPY[locale].securityCheck); return; }
 
     const payload: InquiryPayload = {
       type: "charter",
@@ -167,6 +169,8 @@ export function CharterRequestForm({
       ...(chosenRoute ? { preferredRoute: chosenRoute } : {}),
     };
 
+    /* The server's refusal, in the page's language. */
+    let refusal: string | null = null;
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -179,7 +183,8 @@ export function CharterRequestForm({
         receiptSent?: boolean;
       } | null;
       if (!response.ok) {
-        throw new Error((t.serverErrors ? result?.error : undefined) ?? t.errors.send);
+        refusal = inquiryRefusalIn(locale, result?.error, t.errors.send);
+        throw new Error(refusal);
       }
 
       setSentTo(email);
@@ -189,7 +194,7 @@ export function CharterRequestForm({
       form.reset();
     } catch (error) {
       setState("error");
-      setErrorMessage(error instanceof Error && t.serverErrors ? error.message : t.errors.send);
+      setErrorMessage(refusal ?? (error instanceof Error && t.serverErrors ? error.message : t.errors.send));
       /* The request must never be lost: the same details, ready to send from the guest's own mail. */
       const subject = `Private charter request — ${name}`;
       const details = [

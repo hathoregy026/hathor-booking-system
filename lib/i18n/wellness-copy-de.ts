@@ -44,7 +44,7 @@ export const WELLNESS_COPY_DE: WellnessCopy = {
     {
       word: "Botanik",
       detail: "Ägyptische Pflanzentherapien für Haut und Ruhe",
-      meta: "Signatur · täglich",
+      meta: "Signature · täglich",
     },
     {
       word: "Erholung",

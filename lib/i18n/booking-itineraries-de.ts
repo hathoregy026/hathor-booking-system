@@ -1,8 +1,9 @@
 /**
  * The booking journey's itineraries in German: the same days, routes and
- * reading links as lib/booking-itineraries.ts. Paths open with the place, then
- * a comma (see placeFromPath in booking-copy-de.ts). The reading links still
- * open the English journal articles they were chosen for; only labels change.
+ * reading links as lib/booking-itineraries.ts. Paths open with the place; a
+ * detail after it follows a comma (see placeFromPath in booking-copy-de.ts).
+ * The reading links still open the English journal articles they were chosen
+ * for; only labels change.
  */
 
 import {
@@ -14,6 +15,8 @@ import {
 import type { StayDurationValue } from "@/lib/booking-search-config";
 
 const PHILAE: ItineraryLink = { label: "Philae-Tempel", href: "https://hathorcruise.com/blogs/philae-temple-aswan-attractions" };
+/** The same link inside a sentence, where German grammar changes the ending. */
+const PHILAE_GENITIVE: ItineraryLink = { ...PHILAE, label: "Philae-Tempels" };
 const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Sehenswertes in Assuan", href: "https://hathorcruise.com/blogs/top-attractions-in-aswan-egypt" };
 const ASWAN_TO_LUXOR: ItineraryLink = { label: "Von Assuan nach Luxor mit der Dahabiya", href: "https://hathorcruise.com/blogs/Sailing%20from%20Aswan%20to%20Luxor%20on%20a%20Dahabiya%20Nile%20Cruise" };
 const KOM_OMBO: ItineraryLink = { label: "Tempel von Kom Ombo", href: "https://hathorcruise.com/blogs/kom-ombo-temple-hathor-dahabiya" };
@@ -22,6 +25,7 @@ const EAST_BANK: ItineraryLink = { label: "Karnak-Tempel und Luxor-Tempel", href
 const EAST_BANK_READING: ItineraryLink = { label: "Die antiken Wunder am Ostufer von Luxor", href: "https://hathorcruise.com/blogs/east-bank-ancient-wonders-luxor" };
 const ITINERARY_GUIDE: ItineraryLink = { label: "Routenführer für eine Dahabiya-Kreuzfahrt auf dem Nil", href: "https://hathorcruise.com/blogs/dahabiya-nile-cruise-itinerary" };
 const COLOSSI: ItineraryLink = { label: "Memnonkolosse", href: "https://hathorcruise.com/blogs/colossi-of-memnon-luxor" };
+const COLOSSI_DATIVE: ItineraryLink = { ...COLOSSI, label: "Memnonkolossen" };
 const GREATEST_LANDMARKS: ItineraryLink = { label: "Ägyptens große Monumente am Nil", href: "https://hathorcruise.com/blogs/egypt-greatest-landmarks-dahabiya" };
 const EXPLORING: ItineraryLink = { label: "Luxor und Assuan an Bord einer Luxus-Dahabiya", href: "https://www.hathorcruise.com/blogs/exploring-luxor-aswan-luxury-dahabiya" };
 const SILSILA: ItineraryLink = { label: "Gebel el-Silsila", href: "https://hathorcruise.com/blogs/hidden-gems-along-luxor-aswan" };
@@ -33,14 +37,14 @@ const HIDDEN_SPOTS: ItineraryLink = { label: "Verborgene Winkel am Nil", href: "
 const THREE_NIGHT: ItineraryDay[] = [
   {
     day: 1,
-    title: "Assuan, der Beginn der Reise",
+    title: "Assuan, der Beginn Ihrer Reise",
     path: "Assuan, Einschiffung → Philae-Tempel → Assuan-Hochdamm → Nacht in Assuan",
-    copy: ["Ankunft mit Willkommensgetränk, Einschiffung und Mittagessen an Bord. Besuch des ", PHILAE, " und des Assuan-Hochdamms. Rückkehr an Bord der Hathor zu Abendessen und Übernachtung in Assuan."],
+    copy: ["Ankunft mit Willkommensgetränk, Einschiffung und Mittagessen an Bord. Besuch des ", PHILAE_GENITIVE, " und des Assuan-Hochdamms. Rückkehr an Bord der Hathor zu Abendessen und Übernachtung in Assuan."],
     reading: [PHILAE, ASWAN_ATTRACTIONS, ASWAN_TO_LUXOR],
   },
   {
     day: 2,
-    title: "Kom Ombo und Esna",
+    title: "Kom Ombo und Esna entdecken",
     path: "Assuan → Kom Ombo → Esna → Nacht in Esna",
     copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Frühstück an Bord, dann Fahrt nach Norden zum ", KOM_OMBO, ". Weiter nach Esna zu Abendessen und Übernachtung."],
     reading: [KOM_OMBO, DIRECTION_COMPARE],
@@ -48,7 +52,7 @@ const THREE_NIGHT: ItineraryDay[] = [
   {
     day: 3,
     title: "Esna und das Ostufer von Luxor",
-    path: "Esna, Tempel → Fahrt Esna → Luxor → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
+    path: "Esna-Tempel → Fahrt Esna → Luxor → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
     copy: ["Frühstück und Besuch des Esna-Tempels. Fahrt nach Luxor mit Mittagessen an Bord, dann Besuch des Ostufers mit ", EAST_BANK, ". Abendessen und Übernachtung in Luxor."],
     reading: [EAST_BANK_READING, ITINERARY_GUIDE],
   },
@@ -56,7 +60,7 @@ const THREE_NIGHT: ItineraryDay[] = [
     day: 4,
     title: "Abschied in Luxor",
     path: "Luxor, Ausschiffung → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse",
-    copy: ["Frühstück und Check-out. Besuch des Westufers von Luxor mit dem Tal der Könige, dem Hatschepsut-Tempel und den ", COLOSSI, "."],
+    copy: ["Frühstück und Check-out. Besuch des Westufers von Luxor mit dem Tal der Könige, dem Hatschepsut-Tempel und den ", COLOSSI_DATIVE, "."],
     reading: [COLOSSI, GREATEST_LANDMARKS],
   },
 ];
@@ -64,7 +68,7 @@ const THREE_NIGHT: ItineraryDay[] = [
 const FOUR_NIGHT: ItineraryDay[] = [
   {
     day: 1,
-    title: "Luxor und das Ostufer",
+    title: "Willkommen in Luxor und am Ostufer",
     path: "Luxor, Einschiffung → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
     copy: ["Willkommensgetränk und Check-in, gefolgt vom Mittagessen an Bord. Besuch des Ostufers mit ", EAST_BANK, ". Rückkehr an Bord der Hathor zu Abendessen und Übernachtung in Luxor."],
     reading: [EAST_BANK_READING, EXPLORING],
@@ -72,7 +76,7 @@ const FOUR_NIGHT: ItineraryDay[] = [
   {
     day: 2,
     title: "Das Westufer von Luxor und die Fahrt nach Esna",
-    path: "Luxor, Westufer → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse → Fahrt Luxor → Esna → Nacht in Esna",
+    path: "Westufer von Luxor → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse → Fahrt Luxor → Esna → Nacht in Esna",
     copy: ["Frühstück, dann Besuch des Westufers: Tal der Könige, Hatschepsut-Tempel und ", COLOSSI, ". Rückkehr zum Mittagessen, während die Hathor nach Esna fährt. Abendessen und Übernachtung in Esna."],
     reading: [COLOSSI, GREATEST_LANDMARKS],
   },
@@ -94,7 +98,7 @@ const FOUR_NIGHT: ItineraryDay[] = [
     day: 5,
     title: "Abschied in Assuan",
     path: "Abu Simbel (optional) → Frühstück und Check-out → Philae-Tempel → Assuan-Hochdamm → Ende in Assuan",
-    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Frühstück und Check-out, dann Besuch des ", PHILAE, " und des Assuan-Hochdamms."],
+    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Frühstück und Check-out, dann Besuch des ", PHILAE_GENITIVE, " und des Assuan-Hochdamms."],
     reading: [PHILAE, ASWAN_ATTRACTIONS],
   },
 ];
@@ -102,7 +106,7 @@ const FOUR_NIGHT: ItineraryDay[] = [
 const SEVEN_NIGHT: ItineraryDay[] = [
   {
     day: 1,
-    title: "Einschiffung in Luxor",
+    title: "Willkommen an Bord in Luxor",
     path: "Luxor, Einschiffung → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
     copy: ["Willkommensgetränk und Check-in, gefolgt vom Mittagessen. Besuch des Ostufers von Luxor mit ", EAST_BANK, ". Abendessen und Übernachtung in Luxor."],
     reading: [EAST_BANK_READING, EXPLORING],
@@ -132,7 +136,7 @@ const SEVEN_NIGHT: ItineraryDay[] = [
     day: 5,
     title: "Die Wunder von Assuan",
     path: "Abu Simbel (optional) → Philae-Tempel → Assuan-Hochdamm → Nacht in Assuan",
-    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Besuch des ", PHILAE, " und des Assuan-Hochdamms. Rückkehr an Bord der Hathor zu Mittagessen, Abendessen und Übernachtung in Assuan."],
+    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Besuch des ", PHILAE_GENITIVE, " und des Assuan-Hochdamms. Rückkehr an Bord der Hathor zu Mittagessen, Abendessen und Übernachtung in Assuan."],
     reading: [PHILAE, ASWAN_ATTRACTIONS],
   },
   {
@@ -145,7 +149,7 @@ const SEVEN_NIGHT: ItineraryDay[] = [
   {
     day: 7,
     title: "Von Esna zu den zeitlosen Tempeln von Luxor",
-    path: "Esna, Tempel → Fahrt Esna → Luxor → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse → Nacht in Luxor",
+    path: "Esna-Tempel → Fahrt Esna → Luxor → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse → Nacht in Luxor",
     copy: ["Besuch des Esna-Tempels, dann Rückfahrt nach Luxor mit Mittagessen an Bord. Besuch des Westufers: Tal der Könige, Hatschepsut-Tempel und ", COLOSSI, ". Abendessen und Übernachtung in Luxor."],
     reading: [COLOSSI, GREATEST_LANDMARKS],
   },

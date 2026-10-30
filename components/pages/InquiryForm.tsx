@@ -17,7 +17,7 @@ import {
   useVoyageSelection,
 } from "@/components/selection/SelectionProvider";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
-import { INQUIRY_FORM_COPY } from "@/lib/i18n/contact-copy";
+import { INQUIRY_FORM_COPY, inquiryRefusalIn } from "@/lib/i18n/contact-copy";
 import { formValidityIn } from "@/lib/i18n/form-validity";
 import { summaryLineIn } from "@/lib/i18n/selection-copy";
 
@@ -97,7 +97,7 @@ export function InquiryForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (state === "submitting") return;
-    if (!turnstileToken) { setState("error"); setErrorMessage("Please complete the security check before sending."); return; }
+    if (!turnstileToken) { setState("error"); setErrorMessage(t.securityCheck); return; }
     setState("submitting");
     setErrorMessage("");
 
@@ -133,6 +133,8 @@ export function InquiryForm({
       selection,
     };
 
+    /* The server's refusal, in the page's language. */
+    let refusal: string | null = null;
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -144,7 +146,8 @@ export function InquiryForm({
         const result = (await response.json().catch(() => null)) as {
           error?: string;
         } | null;
-        throw new Error((t.serverErrors ? result?.error : undefined) ?? t.unableToSend);
+        refusal = inquiryRefusalIn(locale, result?.error, t.unableToSend);
+        throw new Error(refusal);
       }
 
       setState("success");
@@ -153,7 +156,7 @@ export function InquiryForm({
     } catch (error) {
       setState("error");
       setErrorMessage(
-        error instanceof Error && t.serverErrors ? error.message : t.unableToSend,
+        refusal ?? (error instanceof Error && t.serverErrors ? error.message : t.unableToSend),
       );
     } finally {
       setTurnstileToken("");

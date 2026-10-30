@@ -102,11 +102,11 @@ function ReviewNote({
           )}
           {review.url ? (
             <a href={review.url} target="_blank" rel="noopener noreferrer nofollow" className="gb__when">
-              {review.when || t.onPlatform(label)}
+              {review.when ? t.when(review.when) : t.onPlatform(label)}
               <span className="gb__sr">{t.readThisReview(review.author, label)}</span>
             </a>
           ) : (
-            <span className="gb__when">{review.when}</span>
+            <span className="gb__when">{t.when(review.when)}</span>
           )}
         </span>
       </div>
@@ -391,7 +391,7 @@ export function GuestBook({
               ←
             </button>
             <span className="gb__folio" aria-live="polite">
-              Page {spread + 1} of {spreads.length}
+              {t.folio(spread + 1, spreads.length)}
             </span>
             <button
               type="button"
@@ -406,7 +406,7 @@ export function GuestBook({
         ) : null}
         {data ? (
           <p className="gb__source">
-            Ratings and reviews from {SOURCE_LABEL[data.source]}, shown as written by guests.
+            {t.sourceNote(SOURCE_LABEL[data.source])}
           </p>
         ) : null}
       </div>

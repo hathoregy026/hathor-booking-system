@@ -54,7 +54,8 @@ const SUITES_CLONE_COPY: Partial<Record<PublicLocale, SuitesCloneCopy>> = {
     kicker: {
       /* Sits left of the main photo: longer lines run across it. */
       desk: ["Dahabiya", "Suiten"],
-      phone: "Dahabiya-Suiten auf dem Nil",
+      /* The display font has no hyphen. */
+      phone: "Dahabiya Suiten auf dem Nil",
     },
     actionsLabel: "Aktionen der Suiten-Seite",
     requestCta: "Verfügbarkeit anfragen",

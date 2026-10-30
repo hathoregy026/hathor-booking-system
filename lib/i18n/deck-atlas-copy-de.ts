@@ -10,6 +10,9 @@ const DE_DECK_WORD: Record<ShipDeckId, string> = {
   sun: "Sonnendeck",
 };
 
+/* The page lowers a deck's name for the English sentence; German nouns keep their capital. */
+const deckNoun = (deck: string) => deck.charAt(0).toUpperCase() + deck.slice(1);
+
 export const DECK_ATLAS_COPY_DE: DeckAtlasCopy = {
   dateLocale: "de-DE",
   usd: usdDe,
@@ -57,7 +60,7 @@ export const DECK_ATLAS_COPY_DE: DeckAtlasCopy = {
   available: "Verfügbar",
   bookedOnDate: "An diesem Termin gebucht",
   yourChoice: "Ihre Wahl",
-  makeItYours: "Ganz nach Ihrem Wunsch",
+  makeItYours: "Machen Sie daraus Ihre Reise",
   findDeparture: "Finden Sie Ihre Abfahrt",
   fieldVoyage: "Reise",
   fieldMonth: "Ab Monat",
@@ -71,7 +74,7 @@ export const DECK_ATLAS_COPY_DE: DeckAtlasCopy = {
     ".",
   ],
   freeSummary: (total, deck, date) =>
-    ` von ${total} Kabinen frei auf dem ${deck} für die Abfahrt am ${date}.`,
+    ` von ${total} Kabinen frei auf dem ${deckNoun(deck)} für die Abfahrt am ${date}.`,
   departing: (date) => `Abfahrt am ${date}.`,
   allCabins: "Alle Kabinen auf diesem Deck",
   viewPhotos: "Fotos der Kabine ansehen",
@@ -89,7 +92,7 @@ export const DECK_ATLAS_COPY_DE: DeckAtlasCopy = {
   cabinsFailed: "Die Kabinen konnten gerade nicht geladen werden. Bitte versuchen Sie es gleich noch einmal.",
   closerToSky: "Ein wenig näher am Himmel.",
   exploreLowerMain: "Erkunden Sie Unter- und Hauptdeck, um Ihre Kabine zu wählen.",
-  viewDeck: (deck) => `${deck} ansehen`,
+  viewDeck: (deck) => `${deckNoun(deck)} ansehen`,
   liveUnavailable:
     "Die Live-Verfügbarkeit ist derzeit nicht abrufbar. Die Decks können Sie trotzdem erkunden.",
   couldNotLoad: "Die Verfügbarkeit konnte nicht geladen werden.",
@@ -165,11 +168,11 @@ export const CONFIG_DE: ConfigWords = {
     "fac-library": { name: "Bibliothek", line: "Bücherregale und Lesesessel: die stille Ecke des Schiffes." },
     "fac-main-stairs": { name: "Treppen", line: "Zum Unter- und Sonnendeck, zu beiden Seiten der Bibliothek und am Heck." },
     "fac-gym": { name: "Fitnessraum", line: "Laufband, Ergometer und Gewichte, für das Morgentraining mit dem Nil an Ihrer Seite." },
-    "fac-restroom": { name: "Toiletten", line: "Gästetoiletten neben der Bibliothek, nahe der Lounge." },
+    "fac-restroom": { name: "Toilette", line: "Eine Gästetoilette neben der Bibliothek, nahe der Lounge." },
     "fac-lounge": { name: "Lounge", line: "Tiefe Sofas, eine Bar und große Fenster zum Nil." },
     "fac-restaurant": { name: "Restaurant", line: "Vom Frühstück bis zum Abendessen bei Kerzenlicht, serviert an Panoramafenstern." },
     "fac-terrace": { name: "Außenterrasse", line: "Tische unter freiem Himmel am Bug, für lange Mittagessen und Abende auf dem Fluss." },
-    "fac-shade": { name: "Schattige Lounge", line: "Sofas und Liegen unter der Pergola, im Schatten der heißesten Stunden." },
+    "fac-shade": { name: "Schattige Lounge", line: "Sofas und Tagesbetten unter der Pergola, schattig auch in der Mittagshitze." },
     "fac-sun-stairs": { name: "Treppen", line: "Zum Hauptdeck, neben der schattigen Lounge." },
     "fac-bar": { name: "Runde Bar", line: "Drinks bei Sonnenuntergang, rund um die runde Theke serviert." },
     "fac-pools": { name: "Zwei Pools", line: "Zwei ins Deck eingelassene Pools mit Liegen auf beiden Seiten." },

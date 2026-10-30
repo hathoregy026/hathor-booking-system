@@ -23,15 +23,15 @@ export const CHROME_COPY_DE: ChromeCopy = {
         description: "Kabinen mit Nilblick und stiller Eleganz",
       },
       "/rooms": {
-        label: "Luxury Suite",
-        description: "Großzügige Räume an Bord",
+        label: "Luxury Suites",
+        description: "Großzügige Räume an Deck",
       },
       "/royal-suites": {
-        label: "Royal Suite",
+        label: "Royal Suites",
         description: "Unsere schönsten Räume auf dem Nil",
       },
       "/voyages": {
-        label: "Reisen",
+        label: "Kreuzfahrten",
         description: "Private Dahabiya-Routen auf dem Nil",
       },
       "/cruises-list": {
@@ -56,11 +56,11 @@ export const CHROME_COPY_DE: ChromeCopy = {
       },
       "/about": {
         label: "Unsere Geschichte",
-        description: "Gastfreundschaft der Hathor auf dem Nil",
+        description: "Willkommen an Bord der Hathor",
       },
       "/partners": {
         label: "Partner",
-        description: "Wer mit uns reist",
+        description: "Mit wem wir reisen",
       },
       "/blogs": { label: "Journal" },
       "/contact": { label: "Kontakt" },
@@ -150,7 +150,7 @@ export const CHROME_COPY_DE: ChromeCopy = {
     script: "Abenteuer auf dem Nil",
     eyebrow: "Private Reservierungen",
     bookNow: "Jetzt buchen",
-    charter: "Privatcharter",
+    charter: "Das Boot chartern",
     address:
       "One Kattamiya, Tower 211, 11. Etage, Flat 111, Ring Road, Kairo, Ägypten",
     workingHours: "Täglich erreichbar: 09:00 – 17:00 Uhr",
@@ -195,5 +195,19 @@ export const CHROME_COPY_DE: ChromeCopy = {
     utilityLabel: "Rechtliches und Kontakt",
     country: "Ägypten",
     backToTop: "Zurück zum Seitenanfang",
+  },
+  comingSoon: "Demnächst",
+  occasion: {
+    hide: (name) => `Hinweis „${name}“ ausblenden`,
+    until: (name) => `Bis ${name}`,
+    units: {
+      days: ["Tage", "Tage"],
+      hours: ["Stunden", "Std"],
+      minutes: ["Minuten", "Min"],
+      seconds: ["Sekunden", "Sek"],
+    },
+    timer: (caption, days, hours, minutes) =>
+      `${caption}: ${days} ${days === 1 ? "Tag" : "Tage"}, ${hours} ${hours === 1 ? "Stunde" : "Stunden"}, ${minutes} ${minutes === 1 ? "Minute" : "Minuten"}`,
+    stripeUnits: { days: " T", hours: " Std", minutes: " Min", seconds: " Sek" },
   },
 };

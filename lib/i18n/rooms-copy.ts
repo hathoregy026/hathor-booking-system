@@ -450,6 +450,7 @@ export type RoomsCopy = {
   continueToReserve: string;
   nile: string;
   detail: {
+    home: string;
     tabs: readonly [string, string, string, string, string];
     breadcrumb: string;
     sections: string;
@@ -540,6 +541,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     continueToReserve: "Continue to reserve",
     nile: "Nile",
     detail: {
+      home: "Home",
       tabs: ["Overview", "Availability", "Amenities", "Your voyage", "Good to know"],
       breadcrumb: "Breadcrumb",
       sections: "Sections of this room",
@@ -636,6 +638,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     continueToReserve: "Prosegui con la prenotazione",
     nile: "Nilo",
     detail: {
+      home: "Home",
       tabs: ["Panoramica", "Disponibilità", "Dotazioni", "Il Suo viaggio", "Da sapere"],
       breadcrumb: "Percorso di navigazione",
       sections: "Sezioni di questa residenza",

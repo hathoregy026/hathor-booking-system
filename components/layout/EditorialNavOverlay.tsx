@@ -23,6 +23,7 @@ import type { HeaderNavItem } from "@/lib/public-nav";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { localizedHref } from "@/lib/i18n/locale";
 import "./EditorialNavOverlay.css";
 
 const LAYER_COLORS = ["#8b6914", "#c9a96e", "#ece8df"] as const;
@@ -46,7 +47,8 @@ export function EditorialNavOverlay({
 }: EditorialNavOverlayProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const copy = CHROME_COPY[usePublicLocale()].menu;
+  const locale = usePublicLocale();
+  const copy = CHROME_COPY[locale].menu;
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
 
   const closeMenu = useCallback(() => {
@@ -214,11 +216,11 @@ export function EditorialNavOverlay({
         <div className="eno-foot" data-eno-chrome>
           <p className="eno-copy">Hathor Dahabiya © 2026</p>
           <p className="eno-legal">
-            <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
+            <Link href={localizedHref("/contact", locale)} tabIndex={open ? 0 : -1} onClick={onClose}>
               {copy.privacy}
             </Link>
             <span aria-hidden="true">·</span>
-            <Link href="/contact" tabIndex={open ? 0 : -1} onClick={onClose}>
+            <Link href={localizedHref("/contact", locale)} tabIndex={open ? 0 : -1} onClick={onClose}>
               {copy.terms}
             </Link>
           </p>

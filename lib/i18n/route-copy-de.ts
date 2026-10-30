@@ -11,7 +11,7 @@ export const MOORINGS_DE: readonly MooringWords[] = [
     name: "Luxor",
     day: "Tag eins",
     imageAlt: "Das Tal der Könige am Westufer von Luxor",
-    note: "Die Hathor empfängt ihre 32 Gäste bei Sonnenuntergang, während Karnak am Ostufer noch im Licht liegt.",
+    note: "Die Hathor empfängt ihre 32 Gäste in der Abenddämmerung, während Karnak am Ostufer noch im Licht liegt.",
     sites: [
       {
         name: "Karnak-Tempel",
@@ -174,7 +174,7 @@ const FAQ_DE = [
       "Ein Nil-Kreuzfahrtschiff nimmt meist hundert Gäste oder mehr auf, die Hathor 32. Eine Dahabiya hat nur wenig mehr als einen Meter Tiefgang und kann deshalb an Ufern ohne Anleger festmachen und Liegeplätze erreichen, an denen große Schiffe nur vorbeifahren.",
   },
   {
-    question: "Kann man die ganze Dahabiya chartern?",
+    question: "Können wir die ganze Dahabiya chartern?",
     answer:
       "Ja. Beim Privatcharter hat Ihre Gruppe die Hathor für sich allein, mit Route, Küche und Landausflügen nach Maß.",
   },

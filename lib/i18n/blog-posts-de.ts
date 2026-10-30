@@ -161,7 +161,7 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
   "aswan-high-dam": {
     title: "Der Hochdamm von Assuan",
     excerpt:
-      "Entdecken Sie den Assuan-Hochdamm, ein Symbol ägyptischer Ingenieurskunst und moderner Zivilisation: seine faszinierende Geschichte, seinen Bau und wie er den Nil regelt, die Landwirtschaft trägt und Ägypten selbst prägt.",
+      "Entdecken Sie den Assuan-Hochdamm, das Hightech-Symbol ägyptischer Ingenieurskunst und ein Wahrzeichen moderner Zivilisation: seine faszinierende Geschichte, seinen Bau und wie er den Nil regelt, die Landwirtschaft trägt und Ägypten selbst prägt.",
   },
   "exploring-esna-temples-history-nile-charm": {
     title: "Esna entdecken: Tempel, Geschichte und Zauber des Nils",

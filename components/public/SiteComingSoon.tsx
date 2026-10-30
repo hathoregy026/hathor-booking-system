@@ -1,6 +1,10 @@
+"use client";
+
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { freshMediaSrc } from "@/lib/fresh-media-src";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import { DEFAULT_LIVE_SITE_BG_SRC } from "@/lib/live-site-settings-shared";
 
 type SiteComingSoonProps = {
@@ -13,6 +17,7 @@ type SiteComingSoonProps = {
 export function SiteComingSoon({
   backgroundImageUrl = DEFAULT_LIVE_SITE_BG_SRC,
 }: SiteComingSoonProps) {
+  const label = CHROME_COPY[usePublicLocale()].comingSoon;
   return (
     <div className="public-site hathor-site site-coming-soon-shell">
       <PublicNavbar />
@@ -32,7 +37,7 @@ export function SiteComingSoon({
           height={220}
           decoding="async"
         />
-        <p className="site-coming-soon__label">Coming Soon</p>
+        <p className="site-coming-soon__label">{label}</p>
       </div>
     </div>
     </div>

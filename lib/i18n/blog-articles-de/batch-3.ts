@@ -13,8 +13,8 @@ Dieser Leitfaden erklärt einfach und klar, was Sie für Ihr Geld wirklich bekom
 <p><strong>Eine Dahabiya-Kreuzfahrt in Ägypten kostet in der Regel:</strong></p>
 
 <ul>
-	<li>300 bis 800 USD pro Person und Nacht</li>
-	<li>Insgesamt für einen Aufenthalt von etwa 3–5 Nächten 900 bis über 4.000 USD pro Person</li>
+	<li>300 bis 800 $ pro Person und Nacht</li>
+	<li>Insgesamt für einen Aufenthalt von etwa 3 bis 5 Nächten 900 bis über 4.000 $ pro Person</li>
 </ul>
 
 <p>Der Endpreis hängt von einigen Faktoren ab: dem Luxusniveau, der Saison, dem Kabinentyp und der Wahl zwischen gemeinsamer und privater Kreuzfahrt.</p>

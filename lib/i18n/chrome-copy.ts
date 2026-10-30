@@ -105,6 +105,19 @@ export type ChromeCopy = {
     country: string;
     backToTop: string;
   };
+  /** Shown while the whole site or a page is closed to visitors. */
+  comingSoon: string;
+  /** The fixed words around a scheduled occasion; its messages come from the dashboard. */
+  occasion: {
+    hide: (name: string) => string;
+    /** The countdown's caption when the dashboard gives none. */
+    until: (name: string) => string;
+    /** [full label, phone label] beside each digit pair. */
+    units: Record<"days" | "hours" | "minutes" | "seconds", readonly [string, string]>;
+    timer: (caption: string, days: number, hours: number, minutes: number) => string;
+    /** Follows each number in the stripe's "{countdown}". */
+    stripeUnits: Record<"days" | "hours" | "minutes" | "seconds", string>;
+  };
 };
 
 const EN: ChromeCopy = {
@@ -237,6 +250,20 @@ const EN: ChromeCopy = {
     utilityLabel: "Legal and contact",
     country: "Egypt",
     backToTop: "Back to top of page",
+  },
+  comingSoon: "Coming Soon",
+  occasion: {
+    hide: (name) => `Hide the ${name} message`,
+    until: (name) => `Until ${name}`,
+    units: {
+      days: ["Days", "Days"],
+      hours: ["Hours", "Hrs"],
+      minutes: ["Minutes", "Min"],
+      seconds: ["Seconds", "Sec"],
+    },
+    timer: (caption, days, hours, minutes) =>
+      `${caption}: ${days} days, ${hours} hours, ${minutes} minutes`,
+    stripeUnits: { days: "d", hours: "h", minutes: "m", seconds: "s" },
   },
 };
 
@@ -432,6 +459,20 @@ const IT: ChromeCopy = {
     utilityLabel: "Note legali e contatti",
     country: "Egitto",
     backToTop: "Torna all’inizio della pagina",
+  },
+  comingSoon: "Prossimamente",
+  occasion: {
+    hide: (name) => `Nascondi il messaggio ${name}`,
+    until: (name) => `Fino a ${name}`,
+    units: {
+      days: ["Giorni", "Gg"],
+      hours: ["Ore", "Ore"],
+      minutes: ["Minuti", "Min"],
+      seconds: ["Secondi", "Sec"],
+    },
+    timer: (caption, days, hours, minutes) =>
+      `${caption}: ${days} giorni, ${hours} ore, ${minutes} minuti`,
+    stripeUnits: { days: "g", hours: "h", minutes: "m", seconds: "s" },
   },
 };
 

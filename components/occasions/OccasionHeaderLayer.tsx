@@ -4,11 +4,14 @@ import "./occasions.css";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY, type ChromeCopy } from "@/lib/i18n/chrome-copy";
+import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import {
-  countdownCaption,
-  formatCountdown,
+  countdownParts,
   msUntilCountdown,
   OCCASION_DISMISS_STORAGE_PREFIX,
+  padCountdownUnit,
   stripeItemsAt,
   type Occasion,
   type OccasionStripeItem,
@@ -21,6 +24,17 @@ import {
   usePrefersReducedMotion,
 } from "@/components/occasions/useActiveOccasion";
 
+function stripeCountdown(ms: number, units: ChromeCopy["occasion"]["stripeUnits"]): string {
+  const { days, hours, minutes, seconds } = countdownParts(ms);
+  return `${days}${units.days} ${padCountdownUnit(hours)}${units.hours} ${padCountdownUnit(minutes)}${units.minutes} ${padCountdownUnit(seconds)}${units.seconds}`;
+}
+
+/* A dashboard link stays in the visitor's language; "/cruises" only exists as an English redirect. */
+function stripeHref(href: string, locale: PublicLocale): string {
+  if (locale === "en") return href;
+  return localizedHref(href === "/cruises" ? "/cruises-list" : href, locale);
+}
+
 /**
  * Lives inside the fixed header (components/layout/Header.tsx), so it follows
  * the nav as it compacts. Everything here overlays the page — nothing pushes
@@ -28,6 +42,7 @@ import {
  */
 export function OccasionHeaderLayer() {
   const active = useActiveOccasion();
+  const copy = CHROME_COPY[usePublicLocale()].occasion;
   const reducedMotion = usePrefersReducedMotion();
   const occasion = active?.occasion ?? null;
   const occasionId = occasion?.id ?? null;
@@ -79,7 +94,10 @@ export function OccasionHeaderLayer() {
         <OccasionNavEffect effect={occasion.navEffect} />
       ) : null}
       {occasion.heroCountdown && left !== null && left > 0 ? (
-        <OccasionNavCountdown ms={left} caption={countdownCaption(occasion)} />
+        <OccasionNavCountdown
+          ms={left}
+          caption={occasion.countdownLabel.trim() || copy.until(occasion.name)}
+        />
       ) : null}
       {/* Top of the screen: the header makes room for the stripe, and the
           lights hang from it across the top of the menu bar. */}
@@ -90,7 +108,7 @@ export function OccasionHeaderLayer() {
               name={occasion.name}
               stripe={occasion.stripe}
               items={items}
-              countdown={left !== null && left > 0 ? formatCountdown(left) : ""}
+              countdown={left !== null && left > 0 ? stripeCountdown(left, copy.stripeUnits) : ""}
               reducedMotion={reducedMotion}
               onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
             />
@@ -121,6 +139,7 @@ function StripeItem({
   /** Repeats that only fill the marquee: hidden from assistive tech and tab order. */
   copy: boolean;
 }) {
+  const locale = usePublicLocale();
   const [before, after] = item.text.split("{countdown}");
   const text =
     after === undefined ? (
@@ -146,7 +165,7 @@ function StripeItem({
   if (item.href) {
     return (
       <Link
-        href={item.href}
+        href={stripeHref(item.href, locale)}
         className="occasion-stripe__item occasion-stripe__item--link"
         tabIndex={copy ? -1 : undefined}
         aria-hidden={copy || undefined}
@@ -302,6 +321,7 @@ function OccasionStripe({
   reducedMotion: boolean;
   onDismiss?: () => void;
 }) {
+  const copy = CHROME_COPY[usePublicLocale()].occasion;
   const mode = reducedMotion ? "still" : stripe.mode;
   return (
     <div
@@ -325,7 +345,7 @@ function OccasionStripe({
           type="button"
           className="occasion-stripe__close"
           onClick={onDismiss}
-          aria-label={`Hide the ${name} message`}
+          aria-label={copy.hide(name)}
         >
           <X aria-hidden="true" />
         </button>

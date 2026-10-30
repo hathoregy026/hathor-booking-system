@@ -36,12 +36,12 @@ export const PAGES_DE: Partial<Pages> = {
     qualityThreeTitle: "ÄGYPTISCHES HANDWERK",
     qualityThreeBody:
       "Ägyptischer Charakter, warme Naturmaterialien und durchdachte moderne Details geben jeder Kabine und Suite eine bleibende Verbindung zu diesem Ort.",
-    collectionLabel: "Die Suiten-Kollektion",
+    collectionLabel: "Die Suitenkollektion",
     collectionBody:
       "Drei Ausdrucksformen des Lebens an Bord der Hathor, von den behaglichen Kabinen bis zu unseren größten Royal Suites: jede rund um Privatsphäre, Proportion und freien Blick auf den Nil gestaltet.",
     cabinMeta: "8 KABINEN",
     cabinDeck: "OBERDECK",
-    cabinTitle: "Luxury Rooms",
+    cabinTitle: "Luxury Cabins",
     suiteMeta: "2 SUITEN",
     suiteDeck: "UNTERDECK",
     suiteTitle: "Luxury Suites",
@@ -137,7 +137,7 @@ export const PAGES_DE: Partial<Pages> = {
         body: "Ägyptische Zutaten werden mit Maß behandelt: leuchtende Zitrusfrüchte, warme Gewürze, Flussfisch und Gemüse von den Ufern.",
       },
       {
-        title: "ENERGIE",
+        title: "BEWEGUNG",
         body: "Der Fitnessraum an Bord hält Bewegung in Reichweite: eine Morgeneinheit ohne Eile, während Palmen und Dörfer am Deck vorbeiziehen.",
       },
       {
@@ -231,7 +231,7 @@ export const PAGES_DE: Partial<Pages> = {
       "Chartern Sie Ihre eigene Luxus-Dahabiya. Machen Sie aus Ihrer Nilreise ein privates Erlebnis.",
   },
   cruises: {
-    overviewTitle: "Die Dahabiya-Kreuzfahrten",
+    overviewTitle: "Die Dahabiya Kreuzfahrten",
     overviewIntro:
       "Entdecken Sie exklusive Routen: intime Fahrten, legendäre Anlegestellen und Luxus ohne Kompromisse.",
     continueTitle: "Entdecken Sie mehr\nan Bord der Hathor",

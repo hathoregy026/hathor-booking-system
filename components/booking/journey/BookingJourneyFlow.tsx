@@ -477,7 +477,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
     }
 
     if (!holdVerification || !requestVerification) {
-      setAlert("Please complete the security check before sending your booking request.");
+      setAlert(t.alerts.securityCheck);
       reveal(".hj-booking-verification", "center");
       return;
     }

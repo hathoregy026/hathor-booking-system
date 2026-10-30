@@ -205,7 +205,7 @@ export function RoomDetailPage({
       <main className="rf">
         <div className="rf__wrap">
           <nav className="rf__crumbs" aria-label={t.breadcrumb}>
-            <Link href={localHref("/")}>Home</Link>
+            <Link href={localHref("/")}>{t.home}</Link>
             <span aria-hidden="true">/</span>
             <Link href={localHref(collection.href)}>{collection.label}</Link>
             <span aria-hidden="true">/</span>

@@ -119,7 +119,7 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
       word: "Nacht",
       label: "Laternen",
       value: "Wenn das Ufer verschwindet, wird die Hathor zu einer Welt für sich, aus leiser Musik und langsamen Gesprächen.",
-      meta: "Nach Einbruch",
+      meta: "Nach Sonnenuntergang",
     },
   ],
   closing: "Reisen Sie mit der Hathor",

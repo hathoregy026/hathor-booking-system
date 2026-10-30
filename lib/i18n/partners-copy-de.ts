@@ -12,7 +12,7 @@ export const PARTNERS_COPY_DE: PartnersCopy = {
   alts: {
     portrait: "Die Hathor Dahabiya auf dem Nil",
     river: "Die Hathor auf dem Fluss",
-    legacy: "Eine Geschichte auf dem Nil",
+    legacy: "Das Erbe auf dem Nil",
     cabin: "Eine Kabine an Bord der Hathor",
     dining: "Speisen an Bord der Hathor",
     deck: "Das Leben auf dem Deck der Hathor",
@@ -46,7 +46,7 @@ export const PARTNERS_COPY_DE: PartnersCopy = {
     {
       role: "Global",
       region: "Reservierung",
-      note: "Eine weltweite Bühne, die Reisende an Bord einer intimen Dahabiya bringt.",
+      note: "Weltweites Entdecken, das Reisende an Bord einer intimen Dahabiya bringt.",
     },
     {
       role: "Weltweit",

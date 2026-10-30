@@ -1,6 +1,32 @@
 /** The guest book's frame in German; the reviews stay as the guests wrote them. */
 import type { ReviewsCopy } from "@/lib/i18n/reviews-copy";
 
+const AGO: Record<string, readonly [string, string]> = {
+  minute: ["einer Minute", "Minuten"],
+  hour: ["einer Stunde", "Stunden"],
+  day: ["einem Tag", "Tagen"],
+  week: ["einer Woche", "Wochen"],
+  month: ["einem Monat", "Monaten"],
+  year: ["einem Jahr", "Jahren"],
+};
+const MONTHS: Record<string, string> = {
+  January: "Januar", February: "Februar", March: "März", April: "April",
+  May: "Mai", June: "Juni", July: "Juli", August: "August",
+  September: "September", October: "Oktober", November: "November", December: "Dezember",
+};
+
+/* The date Google or Tripadvisor sends, in German; anything else stays as sent. */
+function whenDe(text: string): string {
+  if (/^in the last week$/i.test(text.trim())) return "in der letzten Woche";
+  const ago = /^(a|an|\d+) (minute|hour|day|week|month|year)s? ago$/i.exec(text.trim());
+  if (ago) {
+    const unit = AGO[ago[2].toLowerCase()];
+    return /\d/.test(ago[1]) ? `vor ${ago[1]} ${unit[1]}` : `vor ${unit[0]}`;
+  }
+  const month = /^([A-Z][a-z]+) (\d{4})$/.exec(text.trim());
+  return month && MONTHS[month[1]] ? `${MONTHS[month[1]]} ${month[2]}` : text;
+}
+
 export const REVIEWS_COPY_DE: ReviewsCopy = {
   kicker: "Gästestimmen",
   titleLead: "In ihren",
@@ -24,6 +50,9 @@ export const REVIEWS_COPY_DE: ReviewsCopy = {
   nextPage: "Nächste Seite der Bewertungen",
   chooseReview: "Bewertung wählen",
   reviewOf: (index, total) => `Bewertung ${index} von ${total}`,
+  folio: (page, total) => `Seite ${page} von ${total}`,
+  sourceNote: (platform) => `Bewertungen und Rezensionen von ${platform}, so wiedergegeben, wie die Gäste sie geschrieben haben.`,
+  when: whenDe,
   fallbackLede: (withTripadvisor) =>
     `Lesen Sie, was Gäste nach einer Reise an Bord der Hathor berichten, auf Google${withTripadvisor ? " und Tripadvisor" : ""}.`,
   handPage: [
@@ -42,5 +71,5 @@ export const REVIEWS_COPY_DE: ReviewsCopy = {
     { text: "eine Kreuzfahrt:", x: 30, y: 92, r: 2 },
     { text: "eine Geschichte zum Teilen", x: 40, y: 142, r: -1 },
   ],
-  stamp: "NILKREUZFAHRT · ÄGYPTEN · LUXOR · ASSUAN ·",
+  stamp: "NILREISE · ÄGYPTEN · NILREISE · ÄGYPTEN ·",
 };

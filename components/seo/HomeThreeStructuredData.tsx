@@ -63,7 +63,7 @@ const PAGE_WORDS: Record<
     url: `${SITE}/de`,
     name: "Hathor Dahabiya — Luxuskreuzfahrt auf dem Nil von Luxor nach Assuan",
     description:
-      "Die Hathor ist eine private Luxus-Dahabiya für 32 Gäste auf dem Nil zwischen Luxor und Assuan: acht Kabinen, zwei Suiten, zwei Royal Suites, Seneb Spa, zwei Restaurants und Landgänge in Esna, Edfu und Kom Ombo.",
+      "Die Hathor ist eine private Luxus-Dahabiya für 32 Gäste auf dem Nil zwischen Luxor und Assuan: acht Kabinen, zwei Suiten, zwei Royal Suites, Seneb Spa, zwei Restaurants und Landausflüge in Esna, Edfu und Kom Ombo.",
     caption: "Die Hathor Dahabiya unter Segeln auf dem Nil",
     home: "Startseite",
     trip: "Hathor Dahabiya — private Nilkreuzfahrt von Luxor nach Assuan",
@@ -73,7 +73,7 @@ const PAGE_WORDS: Record<
     voyages: [
       "Drei Nächte — von Assuan nach Luxor",
       "Vier Nächte — von Luxor nach Assuan",
-      "Sieben Nächte — Hin- und Rückfahrt",
+      "Sieben Nächte — Rundreise",
     ],
   },
 };

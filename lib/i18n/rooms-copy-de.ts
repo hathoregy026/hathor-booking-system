@@ -163,22 +163,22 @@ const INCLUDE_DE = [
   "Hin- und Rücktransfers ab den Flughäfen Assuan oder Luxor in modernen Touristenfahrzeugen (Limousine oder Van)",
   "Mehrwertsteuer und Servicegebühren",
   "Willkommensgetränk bei der Ankunft",
-  "Ein Begrüßungs-Champagner pro Kabine und Suite, einmal pro Aufenthalt serviert",
+  "Ein kostenloser Begrüßungs-Champagner pro Kabine und Suite, einmal pro Aufenthalt serviert",
   "Unterkunft mit Soft All-Inclusive (alle Mahlzeiten und alkoholfreien Getränke tagsüber)",
-  "Eintrittskarten für die Besichtigungen laut Route (Gruppenbesichtigungen)",
+  "Eintrittskarten für die Besichtigungen laut Route (öffentliche Besichtigungen)",
   "Ägyptologischer Reiseleiter",
   "Wäscheservice",
   "Täglich aufgefüllte Minibar",
   "WLAN",
   "Zimmerservice",
-  "Kaffeemaschine und Wasserkocher, täglich aufgefüllt",
+  "Kaffeemaschine und Teekocher, täglich aufgefüllt",
   "Safe in jeder Kabine und Suite",
 ] as const;
 
 const EXCLUDE_DE = [
   "Inlands- oder internationale Flüge",
   "Reiseversicherung",
-  "Alkoholische Getränke, außer dem einmal pro Aufenthalt servierten Begrüßungs-Champagner",
+  "Alkoholische Getränke, außer dem einmal pro Aufenthalt servierten kostenlosen Begrüßungs-Champagner",
   "Optionale Ausflüge oder Aktivitäten, die nicht zur Route gehören",
   "Trinkgelder und persönliche Ausgaben",
 ] as const;
@@ -190,7 +190,7 @@ const ASWAN_TO_LUXOR_DAYS_DE: readonly RoomFolioDay[] = [
   },
   {
     title: "Tag 2 · Kom Ombo und Esna",
-    body: "Auf Wunsch lässt sich ein Ausflug am Morgen nach Abu Simbel organisieren. Das Frühstück wird an Bord serviert oder für Frühaufbrecher als Lunchpaket. Fahrt nach Kom Ombo zum Tempel des Sobek und Horus, dann weiter nach Esna zu Abendessen und Übernachtung.",
+    body: "Auf Wunsch lässt sich ein Ausflug am Morgen nach Abu Simbel organisieren. Das Frühstück wird an Bord serviert oder für Frühaufsteher als Frühstücksbox. Fahrt nach Kom Ombo zum Tempel des Sobek und Horus, dann weiter nach Esna zu Abendessen und Übernachtung.",
   },
   {
     title: "Tag 3 · Esna und Ostufer von Luxor",
@@ -236,7 +236,7 @@ const ROUND_TRIP_DAYS_DE: readonly RoomFolioDay[] = [
   },
   {
     title: "Tag 3 · Edfu und die Insel Ramadi",
-    body: "Durchfahrt der Schleuse von Esna und weiter nach Edfu zum Horus-Tempel. Mittagessen an Bord, dann Fahrt zur Insel Ramadi zu einem Grillabend und zur Übernachtung am stillen Ufer.",
+    body: "Durchfahrt der Schleuse von Esna und weiter nach Edfu zum Horus-Tempel. Mittagessen an Bord, dann Fahrt zur Insel Ramadi zu einem Abendessen vom Holzkohlegrill und zur Übernachtung am stillen Ufer.",
   },
   {
     title: "Tag 4 · Gebel el-Silsila, Kom Ombo und Assuan",
@@ -352,7 +352,7 @@ export const FOLIO_DE: Record<RoomCollectionVariant, RoomFolioPanels> = {
   },
   royal: {
     overview: {
-      lead: "Luxury Royal Suite · 56 Quadratmeter · Panoramablick auf den Nil",
+      lead: "Luxury Royal Suites · 56 Quadratmeter · Panoramablick auf den Nil",
       paragraphs: [
         "Die Royal Suites sind die größten Unterkünfte der Hathor, mit zusätzlichem privatem Raum und noch mehr Abgeschiedenheit auf dem Hauptdeck.",
         "Panoramafenster und ein privater Balkon öffnen sich zum Fluss, während Sie zwischen Luxor und Assuan unterwegs sind. Traditionelles Handwerk und zeitgemäßer Komfort treffen sich in einem Rahmen für eine stillere, persönlichere Reise.",
@@ -398,6 +398,7 @@ export const ROOMS_COPY_DE: RoomsCopy = {
   continueToReserve: "Weiter zur Buchung",
   nile: "Nil",
   detail: {
+    home: "Startseite",
     tabs: ["Überblick", "Verfügbarkeit", "Ausstattung", "Ihre Reise", "Gut zu wissen"],
     breadcrumb: "Brotkrumennavigation",
     sections: "Bereiche dieser Residenz",

@@ -75,6 +75,26 @@ export const INQUIRY_FORM_COPY_DE: InquiryFormCopy = {
   sending: "Wird gesendet…",
   sendMessage: "Nachricht senden",
   unableToSend: "Die Nachricht konnte nicht gesendet werden.",
+  securityCheck: "Bitte schließen Sie vor dem Senden die Sicherheitsprüfung ab.",
+  verificationUnavailable:
+    "Die Sicherheitsprüfung ist nicht verfügbar. Laden Sie diese Seite neu oder kontaktieren Sie direkt unsere Reservierung.",
   serverErrors: false,
   languageNote: "Guest language: German",
+};
+
+/** What /api/contact can say to a guest, by its English wording. */
+export const INQUIRY_REFUSALS_DE: Record<string, string> = {
+  "Please check your form and try again.": "Bitte prüfen Sie das Formular und versuchen Sie es erneut.",
+  "Too many messages. Please wait and try again.":
+    "Zu viele Nachrichten. Bitte warten Sie und versuchen Sie es erneut.",
+  "Unable to send your message. Please try again later.":
+    "Ihre Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
+  "Security verification is unavailable. Please contact our reservations team directly.":
+    "Die Sicherheitsprüfung ist nicht verfügbar. Bitte kontaktieren Sie direkt unsere Reservierung.",
+  "Please complete the security check and try again.":
+    "Bitte schließen Sie die Sicherheitsprüfung ab und versuchen Sie es erneut.",
+  "The security check is temporarily unavailable. Please try again.":
+    "Die Sicherheitsprüfung ist vorübergehend nicht verfügbar. Bitte versuchen Sie es erneut.",
+  "The security check expired or could not be verified. Please try again.":
+    "Die Sicherheitsprüfung ist abgelaufen oder konnte nicht bestätigt werden. Bitte versuchen Sie es erneut.",
 };
