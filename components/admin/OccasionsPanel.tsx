@@ -35,11 +35,18 @@ import {
   occasionStatus,
   type Occasion,
   type OccasionIconName,
+  type OccasionLocaleText,
   type OccasionStatus,
   type OccasionStripeItem,
   type OccasionsSettings,
 } from "@/lib/occasions";
 import { OccasionIcon } from "@/components/occasions/OccasionIcon";
+import type { TranslatedLocale } from "@/lib/i18n/locale";
+import {
+  builtInOccasionText,
+  OCCASION_LOCALE_LABELS,
+  OCCASION_TEXT_LOCALES,
+} from "@/lib/i18n/occasions-copy";
 
 /* ------------------------------------------------------------ templates */
 
@@ -330,6 +337,63 @@ function Toggle({
   );
 }
 
+/** A language's text set or emptied; an emptied one leaves no key, as on rows saved before these fields. */
+function withLocaleText(
+  current: OccasionLocaleText | undefined,
+  locale: TranslatedLocale,
+  value: string,
+): OccasionLocaleText | undefined {
+  const next = { ...current };
+  if (value) next[locale] = value;
+  else delete next[locale];
+  return Object.keys(next).length > 0 ? next : undefined;
+}
+
+/** One input for each added language, with its code where the icon sits above. */
+function LocaleTextInputs({
+  what,
+  english,
+  values,
+  maxLength,
+  emptyNote,
+  disabled,
+  onChange,
+}: {
+  what: string;
+  english: string;
+  values: OccasionLocaleText | undefined;
+  maxLength: number;
+  /** Placeholder when no built-in text exists for this English. */
+  emptyNote: string;
+  disabled: boolean;
+  onChange: (values: OccasionLocaleText | undefined) => void;
+}) {
+  return (
+    <>
+      {OCCASION_TEXT_LOCALES.map((locale) => (
+        <div key={locale} className="flex items-center gap-2">
+          <span
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[11px] font-semibold uppercase tracking-[0.12em] text-muted"
+            style={{ border: "1px solid var(--border)" }}
+            aria-hidden
+          >
+            {locale}
+          </span>
+          <input
+            className="input min-w-0 flex-1"
+            aria-label={`${what} in ${OCCASION_LOCALE_LABELS[locale]}`}
+            value={values?.[locale] ?? ""}
+            maxLength={maxLength}
+            disabled={disabled}
+            placeholder={builtInOccasionText(english, locale) ?? emptyNote}
+            onChange={(event) => onChange(withLocaleText(values, locale, event.target.value))}
+          />
+        </div>
+      ))}
+    </>
+  );
+}
+
 /* ------------------------------------------------------ messages editor */
 
 function MessagesEditor({
@@ -377,6 +441,10 @@ function MessagesEditor({
       <div>
         <p className="text-sm font-semibold">{title}</p>
         <p className="mt-0.5 text-xs text-muted">{hint}</p>
+        <p className="mt-0.5 text-xs text-muted">
+          The IT line is for Italian pages. Grey text there is the built-in Italian, used until you type your own. A
+          message with neither is not shown on Italian pages.
+        </p>
       </div>
       {items.length === 0 ? (
         <p className="rounded-lg px-3 py-2.5 text-xs text-muted" style={{ border: "1px dashed var(--border)" }}>
@@ -415,6 +483,15 @@ function MessagesEditor({
               onChange={(event) => update(index, { text: event.target.value })}
             />
           </div>
+          <LocaleTextInputs
+            what={`Message ${index + 1}`}
+            english={entry.text}
+            values={entry.textByLocale}
+            maxLength={OCCASION_LIMITS.text}
+            emptyNote="Not shown on Italian pages until typed"
+            disabled={disabled}
+            onChange={(textByLocale) => update(index, { textByLocale })}
+          />
           {/* its icon */}
           <div className="flex flex-wrap items-center gap-2">
             <select
@@ -1023,16 +1100,30 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
 
   const siteLink =
     selected && savedIds.has(selected.id) ? (
-      <a
-        href={`/?occasion=${encodeURIComponent(selected.id)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="admin-inline-link inline-flex items-center gap-1.5 text-xs"
-        title="Opens the saved version on the site in a new tab. It works while you are signed in to the dashboard, in that tab, even before the dates or while switched off. Add ?occasion=off to a page address to stop previewing."
-      >
-        Open on the site
-        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-      </a>
+      <>
+        <a
+          href={`/?occasion=${encodeURIComponent(selected.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="admin-inline-link inline-flex items-center gap-1.5 text-xs"
+          title="Opens the saved version on the site in a new tab. It works while you are signed in to the dashboard, in that tab, even before the dates or while switched off. Add ?occasion=off to a page address to stop previewing."
+        >
+          Open on the site
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+        </a>
+        {OCCASION_TEXT_LOCALES.map((locale) => (
+          <a
+            key={locale}
+            href={`/${locale}?occasion=${encodeURIComponent(selected.id)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="admin-inline-link inline-flex items-center gap-1.5 text-xs"
+          >
+            {OCCASION_LOCALE_LABELS[locale]} page
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+          </a>
+        ))}
+      </>
     ) : selected ? (
       <span className="text-xs text-muted">Save to open it on the site.</span>
     ) : null;
@@ -1127,6 +1218,17 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
                 onChange={(event) => patch((o) => ({ ...o, name: event.target.value }))}
               />
             </Field>
+            <div className="mt-2">
+              <LocaleTextInputs
+                what="Name"
+                english={selected.name}
+                values={selected.nameByLocale}
+                maxLength={OCCASION_LIMITS.name}
+                emptyNote="Name for Italian screen readers"
+                disabled={disabled}
+                onChange={(nameByLocale) => patch((o) => ({ ...o, nameByLocale }))}
+              />
+            </div>
             <div
               className="mt-3 flex items-start justify-between gap-3 rounded-xl px-3.5 py-2.5"
               style={{
@@ -1318,6 +1420,17 @@ export function OccasionsPanel({ canManage }: { canManage: boolean }) {
                             onChange={(event) => patch((o) => ({ ...o, countdownLabel: event.target.value }))}
                           />
                         </Field>
+                      ) : null}
+                      {selected.heroCountdown ? (
+                        <LocaleTextInputs
+                          what="Countdown caption"
+                          english={selected.countdownLabel}
+                          values={selected.countdownLabelByLocale}
+                          maxLength={OCCASION_LIMITS.label}
+                          emptyNote="Conto alla rovescia"
+                          disabled={disabled}
+                          onChange={(countdownLabelByLocale) => patch((o) => ({ ...o, countdownLabelByLocale }))}
+                        />
                       ) : null}
                     </>
                   ) : null}

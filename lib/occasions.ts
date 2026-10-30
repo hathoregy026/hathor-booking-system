@@ -13,6 +13,7 @@
  * clears it. Visitors with the same link see nothing.
  */
 import { isAdminPath, isBookingPath } from "@/lib/floating-actions-visibility";
+import type { TranslatedLocale } from "@/lib/i18n/locale";
 
 export const OCCASIONS_SETTINGS_KEY = "occasions";
 
@@ -65,12 +66,17 @@ export const OCCASION_NAV_EFFECTS = ["none", "fireworks", "dust", "confetti", "p
 export const OCCASION_EFFECT_PALETTES = ["festive", "jewel", "gold", "champagne", "midnight"] as const;
 export const OCCASION_HANGINGS = ["none", "lights", "lanterns", "stars"] as const;
 
+/** Words typed in the dashboard for other languages. Absent on anything saved before this existed. */
+export type OccasionLocaleText = Partial<Record<TranslatedLocale, string>>;
+
 export type OccasionStripeItem = {
   icon: OccasionIconName;
   /** Uploaded image shown instead of `icon`. */
   imageUrl: string | null;
   /** `{countdown}` becomes the live time left to `countdownTo`. */
   text: string;
+  /** `text` in other languages (lib/i18n/occasions-copy.ts). */
+  textByLocale?: OccasionLocaleText;
   href: string | null;
 };
 
@@ -78,6 +84,7 @@ export type Occasion = {
   /** Stable id: preview links and visitors' "hide" choices are keyed on it. */
   id: string;
   name: string;
+  nameByLocale?: OccasionLocaleText;
   /** Off keeps the occasion saved but never shows it (signed-in preview still works). */
   enabled: boolean;
   /** UTC ISO instants; the dashboard edits them as Cairo wall-clock time. */
@@ -114,6 +121,7 @@ export type Occasion = {
   heroCountdown: boolean;
   /** What that countdown is for, e.g. "Until New Year"; empty reads "Until <name>". */
   countdownLabel: string;
+  countdownLabelByLocale?: OccasionLocaleText;
 };
 
 export type OccasionsSettings = {
@@ -252,9 +260,9 @@ export function countdownParts(ms: number) {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function formatCountdown(ms: number): string {
+export function formatCountdown(ms: number, dayLetter = "d"): string {
   const { days, hours, minutes, seconds } = countdownParts(ms);
-  return `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+  return `${days}${dayLetter} ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
 }
 
 export function padCountdownUnit(n: number): string {

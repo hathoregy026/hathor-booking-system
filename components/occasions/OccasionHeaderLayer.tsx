@@ -13,6 +13,9 @@ import {
   type Occasion,
   type OccasionStripeItem,
 } from "@/lib/occasions";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { localizedStripeItems, occasionWords } from "@/lib/i18n/occasions-copy";
 import { OccasionIcon, sparkPath, starPath } from "@/components/occasions/OccasionIcon";
 import { OccasionNavCountdown } from "@/components/occasions/OccasionNavCountdown";
 import { OccasionNavEffect } from "@/components/occasions/OccasionNavEffect";
@@ -28,6 +31,8 @@ import {
  */
 export function OccasionHeaderLayer() {
   const active = useActiveOccasion();
+  const locale = usePublicLocale();
+  const copy = CHROME_COPY[locale].occasion;
   const reducedMotion = usePrefersReducedMotion();
   const occasion = active?.occasion ?? null;
   const occasionId = occasion?.id ?? null;
@@ -66,7 +71,9 @@ export function OccasionHeaderLayer() {
 
   if (!active || !occasion) return null;
   const { now } = active;
-  const items = stripeItemsAt(occasion, now);
+  /* Dashboard wording in the visitor's language. */
+  const items = localizedStripeItems(stripeItemsAt(occasion, now), locale);
+  const words = occasionWords(occasion, countdownCaption(occasion), locale);
   const left = msUntilCountdown(occasion, now);
   const isDismissed = draft ? dismissed === occasion : dismissed === occasion.id;
   const showStripe = occasion.stripe.enabled && !isDismissed && items.length > 0;
@@ -78,7 +85,7 @@ export function OccasionHeaderLayer() {
         <OccasionNavEffect effect={occasion.navEffect} />
       ) : null}
       {occasion.heroCountdown && left !== null && left > 0 ? (
-        <OccasionNavCountdown ms={left} caption={countdownCaption(occasion)} />
+        <OccasionNavCountdown ms={left} caption={words.caption} />
       ) : null}
       {/* Top of the screen: the header makes room for the stripe, and every
           decoration hangs from it (or from the screen's edge without one). */}
@@ -86,10 +93,10 @@ export function OccasionHeaderLayer() {
         <div className="occasion-top" data-occasion={occasion.id}>
           {showStripe ? (
             <OccasionStripe
-              name={occasion.name}
+              name={words.name}
               stripe={occasion.stripe}
               items={items}
-              countdown={left !== null && left > 0 ? formatCountdown(left) : ""}
+              countdown={left !== null && left > 0 ? formatCountdown(left, copy.dayMark) : ""}
               reducedMotion={reducedMotion}
               onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
             />
@@ -295,6 +302,7 @@ function OccasionStripe({
   onDismiss?: () => void;
 }) {
   const mode = reducedMotion ? "still" : stripe.mode;
+  const hideLabel = CHROME_COPY[usePublicLocale()].occasion.hide(name);
   return (
     <div
       className={`occasion-stripe occasion-stripe--${stripe.style}`}
@@ -317,7 +325,7 @@ function OccasionStripe({
           type="button"
           className="occasion-stripe__close"
           onClick={onDismiss}
-          aria-label={`Hide the ${name} message`}
+          aria-label={hideLabel}
         >
           <X aria-hidden="true" />
         </button>
