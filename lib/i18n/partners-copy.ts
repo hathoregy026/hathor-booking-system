@@ -5,6 +5,7 @@
  */
 
 import type { PublicLocale } from "@/lib/i18n/locale";
+import { PARTNERS_COPY_DE } from "@/lib/i18n/partners-copy-de";
 
 type Circle = { role: string; region: string; note: string };
 
@@ -222,4 +223,5 @@ export const PARTNERS_COPY: Record<PublicLocale, PartnersCopy> = {
     aboutHathor: "Chi è Hathor",
     writeToUs: "Ci scriva",
   },
+  de: PARTNERS_COPY_DE,
 };

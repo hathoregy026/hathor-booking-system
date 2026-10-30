@@ -4,9 +4,7 @@
  * the dashboard to a sentence not listed here stays as written.
  */
 
-import type { PublicLocale } from "@/lib/i18n/locale";
-
-const SITE_IMAGE_ALTS_IT: Record<string, string> = {
+export const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "3 Nights / 4 Days Aswan to Luxor voyage aboard Hathor":
     "Viaggio di 3 notti e 4 giorni da Assuan a Luxor a bordo di Hathor",
   "4 Nights / 5 Days Luxor to Aswan voyage aboard Hathor":
@@ -195,9 +193,3 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "Hathor luxury suite aboard the Nile dahabiya":
     "Luxury Suite di Hathor a bordo della dahabiya sul Nilo",
 };
-
-/** A site-image alt in the visitor's language; unknown alts pass through. */
-export function siteImageAltIn(locale: PublicLocale, alt: string): string {
-  if (locale !== "it") return alt;
-  return SITE_IMAGE_ALTS_IT[alt.trim()] ?? alt;
-}

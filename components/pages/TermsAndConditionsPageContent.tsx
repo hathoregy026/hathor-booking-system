@@ -107,6 +107,11 @@ export function TermsAndConditionsPageContent({
             <h1 className="tc-title ce-display ce-display--l">{t.title}</h1>
           </div>
           <div className="tc-intro">
+            {t.draftNotice ? (
+              <p className="tc-intro__p ce-meta-copy" role="note">
+                <strong>{t.draftNotice}</strong>
+              </p>
+            ) : null}
             {t.intro.map((paragraph) => (
               <p key={paragraph} className="tc-intro__p ce-meta-copy">
                 {paragraph}

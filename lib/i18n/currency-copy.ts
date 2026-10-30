@@ -47,4 +47,17 @@ export const CURRENCY_COPY: Record<PublicLocale, CurrencyCopy> = {
     settlement: (currency, usdTotal) =>
       `Gli importi in ${currency} sono indicativi. ${usdTotal === null ? "Prenotazioni e fatture sono in USD." : `Totale di prenotazione e fattura: ${usdTotal}.`}`,
   },
+  de: {
+    trigger: (currency) => `Währung: ${currency}. Währung wählen`,
+    eyebrow: "Ihre bevorzugte Währung",
+    menuLabel: "Anzeigewährung wählen",
+    names: { EUR: "Euro", USD: "US-Dollar", GBP: "Britisches Pfund", EGP: "Ägyptisches Pfund", RUB: "Russischer Rubel" },
+    loading: "Wechselkurse werden geladen…",
+    unavailable: (preferred) => `Die Kurse sind nicht verfügbar. Preise werden in USD angezeigt${preferred ? `, bis ${preferred} verfügbar ist` : ""}.`,
+    retry: "Erneut versuchen",
+    estimates: "Umgerechnete Preise sind Richtwerte. Buchungen und Rechnungen lauten auf USD.",
+    dailyRates: "Tageskurse",
+    settlement: (currency, usdTotal) =>
+      `Beträge in ${currency} sind Richtwerte. ${usdTotal === null ? "Buchungen und Rechnungen lauten auf USD." : `Gesamtbetrag von Buchung und Rechnung: ${usdTotal}.`}`,
+  },
 };

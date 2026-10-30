@@ -1800,6 +1800,28 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     content: "Lingua";
   }
 
+  /* German pages (/de/…): the same captions, short enough for the dock. */
+  html[lang="de"] .hathor-phone-dock > .hsc:not(#_):first-of-type::after {
+    content: "Favoriten";
+  }
+
+  html[lang="de"] .hathor-phone-dock > .hsc--voyage:not(#_)::after,
+  html[lang="de"] .hathor-phone-dock > .hsc.hsc--voyage:not(#_)::after {
+    content: "Reise";
+  }
+
+  html[lang="de"] .hathor-phone-dock > .hpd-book:not(#_)::after {
+    content: "Buchen";
+  }
+
+  html[lang="de"] .hathor-phone-dock .hpd-contact__toggle:not(#_)::after {
+    content: "Kontakt";
+  }
+
+  html[lang="de"] .hathor-phone-dock .public-lang-toggle:not(#_)::after {
+    content: "Sprache";
+  }
+
   .hathor-phone-dock > .hsc:not(#_)::after,
   .hathor-phone-dock > .hpd-book:not(#_)::after,
   .hathor-phone-dock .hpd-contact__toggle:not(#_)::after,

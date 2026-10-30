@@ -5,6 +5,7 @@
  * the reservations desk (the guest's receipt does not include the message).
  */
 
+import { CONTACT_COPY_DE, INQUIRY_FORM_COPY_DE } from "@/lib/i18n/contact-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 
@@ -176,6 +177,7 @@ export const CONTACT_COPY: Record<PublicLocale, ContactCopy> = {
     call: "Chiama",
     bookNow: "Prenota ora",
   },
+  de: CONTACT_COPY_DE,
 };
 
 export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
@@ -236,4 +238,5 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     serverErrors: false,
     languageNote: "Guest language: Italian",
   },
+  de: INQUIRY_FORM_COPY_DE,
 };

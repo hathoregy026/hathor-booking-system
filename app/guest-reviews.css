@@ -1288,6 +1288,7 @@ html[data-public-theme="night"] .gb__score .gr__star-fill {
 }
 
 /* Italian: accented letters Piloner lacks take a matching thin serif (see hathor-fonts.css). */
-html[lang="it"] .gr {
+html[lang="it"] .gr,
+html[lang="de"] .gr {
   --gr-meta: "Piloner Thin", "Hathor Accent Fill", "Plus Jakarta Sans", Arial, sans-serif;
 }

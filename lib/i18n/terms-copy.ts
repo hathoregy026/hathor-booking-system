@@ -9,6 +9,7 @@
  */
 
 import type { PublicLocale } from "@/lib/i18n/locale";
+import { TERMS_COPY_DE } from "@/lib/i18n/terms-copy-de";
 import {
   TERMS_INTRO,
   TERMS_SECTIONS,
@@ -20,6 +21,8 @@ import {
 export type TermsCopy = {
   eyebrow: string;
   title: string;
+  /** Shown above the text while a translation has not had a legal review. */
+  draftNotice?: string;
   intro: readonly string[];
   toc: readonly TermsTocItem[];
   sections: readonly TermsSection[];
@@ -394,4 +397,5 @@ export const TERMS_COPY: Record<PublicLocale, TermsCopy> = {
     tocLabel: "In questa pagina",
     tocTitle: "In questa pagina",
   },
+  de: TERMS_COPY_DE,
 };

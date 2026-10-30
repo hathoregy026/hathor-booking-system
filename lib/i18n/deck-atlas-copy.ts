@@ -8,6 +8,7 @@
  * replaced by a translation of the old one.
  */
 
+import { CONFIG_DE, DECK_ATLAS_COPY_DE } from "@/lib/i18n/deck-atlas-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import type { StayDurationValue } from "@/lib/booking-search-config";
@@ -357,11 +358,11 @@ const IT: DeckAtlasCopy = {
   chooseDeck: "Scelga un ponte",
 };
 
-export const DECK_ATLAS_COPY: Record<PublicLocale, DeckAtlasCopy> = { en: EN, it: IT };
+export const DECK_ATLAS_COPY: Record<PublicLocale, DeckAtlasCopy> = { en: EN, it: IT, de: DECK_ATLAS_COPY_DE };
 
 /* ------------------------------------------------- the plan's own wording */
 
-type ConfigWords = {
+export type ConfigWords = {
   kicker: string;
   eyebrow: string;
   title: string;
@@ -424,7 +425,7 @@ const CONFIG_IT: ConfigWords = {
   roomName: (name) => name.replace(/^Room\b/, "Camera"),
 };
 
-const CONFIG_WORDS: Partial<Record<PublicLocale, ConfigWords>> = { it: CONFIG_IT };
+const CONFIG_WORDS: Partial<Record<PublicLocale, ConfigWords>> = { it: CONFIG_IT, de: CONFIG_DE };
 
 /** Translated text for a field still at its default; the dashboard's own text otherwise. */
 function overDefault(value: string, fallback: string, translated: string): string {

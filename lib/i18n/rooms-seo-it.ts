@@ -1,54 +1,13 @@
-import type { Metadata } from "next";
 import type { RoomCollectionVariant } from "@/lib/room-collection-editorial";
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import { roomCollection, type LocaleRoomCollection } from "@/lib/i18n/rooms-seo";
 
 /**
  * The Italian room collection pages: search settings and structured-data
  * words. Language, hreflang and the search switch come from the shared
  * builder. Server-only.
  */
-type ItalianRoomCollection = {
-  /** The English address: same page switch in the dashboard, same rooms. */
-  englishPath: string;
-  path: string;
-  pageLabel: string;
-  metadata: Metadata;
-  name: string;
-  crumb: string;
-  image: string;
-  room: { name: string; description: string; occupancy: number; floorSizeSqm: number };
-};
-
-const collection = (input: {
-  englishPath: string;
-  title: string;
-  description: string;
-  pageLabel: string;
-  name: string;
-  crumb: string;
-  image: { url: string; alt: string };
-  room: ItalianRoomCollection["room"];
-}): ItalianRoomCollection => {
-  const path = `/it${input.englishPath}`;
-  return {
-    englishPath: input.englishPath,
-    path,
-    pageLabel: input.pageLabel,
-    name: input.name,
-    crumb: input.crumb,
-    image: input.image.url,
-    room: input.room,
-    metadata: buildPageMetadata({
-      title: input.title,
-      description: input.description,
-      path,
-      image: { ...input.image, width: 1920, height: 1280 },
-    }),
-  };
-};
-
-export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoomCollection> = {
-  cabins: collection({
+export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, LocaleRoomCollection> = {
+  cabins: roomCollection("it", {
     englishPath: "/luxury-cabins-Nile-Cruise",
     title: "Cabine di lusso per la crociera sul Nilo | Hathor Dahabiya",
     description:
@@ -67,7 +26,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
       floorSizeSqm: 22,
     },
   }),
-  suites: collection({
+  suites: roomCollection("it", {
     englishPath: "/rooms",
     title: "Hathor Luxury Suite | Suite di 46 m² sul Nilo",
     description:
@@ -87,7 +46,7 @@ export const ITALIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, ItalianRoom
       floorSizeSqm: 46,
     },
   }),
-  royal: collection({
+  royal: roomCollection("it", {
     englishPath: "/royal-suites",
     title: "Royal Suite per la crociera sul Nilo | Hathor Dahabiya",
     description:

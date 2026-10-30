@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { ItalianRoomCollectionPage } from "@/components/pages/rooms/ItalianRoomCollectionPage";
-import { ITALIAN_ROOM_COLLECTIONS } from "@/lib/i18n/rooms-seo-it";
+import { LocaleRoomCollectionPage } from "@/components/pages/rooms/LocaleRoomCollectionPage";
+import { LOCALE_ROOM_COLLECTIONS } from "@/lib/i18n/locale-pages";
 import "../../page-visibility.css";
 import "../../site-coming-soon.css";
 
-export const metadata: Metadata = ITALIAN_ROOM_COLLECTIONS.suites.metadata;
+export const metadata: Metadata = LOCALE_ROOM_COLLECTIONS.it.suites.metadata;
 
 export default function ItalianRoomCollectionRoute() {
-  return <ItalianRoomCollectionPage variant="suites" />;
+  return <LocaleRoomCollectionPage locale="it" variant="suites" />;
 }

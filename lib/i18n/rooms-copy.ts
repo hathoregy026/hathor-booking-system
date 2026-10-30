@@ -7,7 +7,13 @@
  * English; sizes, guests, images and links are unchanged.
  */
 
-import type { PublicLocale } from "@/lib/i18n/locale";
+import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
+import {
+  CONFIG_DE,
+  FOLIO_DE,
+  ROOMS_COPY_DE,
+  SHOWCASE_DE,
+} from "@/lib/i18n/rooms-copy-de";
 import {
   ROOM_COLLECTION_CONFIG,
   type RoomCollectionEditorialConfig,
@@ -143,11 +149,16 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
   },
 };
 
+const CONFIGS: Record<
+  TranslatedLocale,
+  Record<RoomCollectionVariant, RoomCollectionEditorialConfig>
+> = { it: CONFIG_IT, de: CONFIG_DE };
+
 export function roomCollectionConfig(
   variant: RoomCollectionVariant,
   locale: PublicLocale,
 ): RoomCollectionEditorialConfig {
-  return locale === "it" ? CONFIG_IT[variant] : EN_CONFIG[variant];
+  return locale === "en" ? EN_CONFIG[variant] : CONFIGS[locale][variant];
 }
 
 /* ---------- Rooms: eyebrow and description (names stay English) ---------- */
@@ -175,8 +186,13 @@ const SHOWCASE_IT: Record<string, { eyebrow: string; description: string }> = {
   },
 };
 
+const SHOWCASES: Record<
+  TranslatedLocale,
+  Record<string, { eyebrow: string; description: string }>
+> = { it: SHOWCASE_IT, de: SHOWCASE_DE };
+
 export function roomShowcaseIn<T extends RoomShowcase>(room: T, locale: PublicLocale): T {
-  const words = locale === "it" ? SHOWCASE_IT[room.slug] : undefined;
+  const words = locale === "en" ? undefined : SHOWCASES[locale][room.slug];
   return words ? { ...room, ...words } : room;
 }
 
@@ -396,11 +412,16 @@ const FOLIO_IT: Record<RoomCollectionVariant, RoomFolioPanels> = {
   },
 };
 
+const FOLIOS: Record<TranslatedLocale, Record<RoomCollectionVariant, RoomFolioPanels>> = {
+  it: FOLIO_IT,
+  de: FOLIO_DE,
+};
+
 export function roomFolioPanels(
   variant: RoomCollectionVariant,
   locale: PublicLocale,
 ): RoomFolioPanels {
-  return locale === "it" ? FOLIO_IT[variant] : ROOM_FOLIO_PANELS[variant];
+  return locale === "en" ? ROOM_FOLIO_PANELS[variant] : FOLIOS[locale][variant];
 }
 
 /* ---------- Page words ---------- */
@@ -686,4 +707,5 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
       scheduledSailings: "Vedi le partenze programmate",
     },
   },
+  de: ROOMS_COPY_DE,
 };

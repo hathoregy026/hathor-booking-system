@@ -17,9 +17,10 @@ import {
 } from "@/lib/home-guide-content";
 import { italianWeekday } from "@/lib/i18n/home-copy";
 import type { PublicLocale } from "@/lib/i18n/locale";
+import { GUIDE_COPY_DE, MOORINGS_DE } from "@/lib/i18n/route-copy-de";
 import { NILE_MOORINGS, type Mooring } from "@/lib/nile-route";
 
-type MooringWords = Pick<Mooring, "name" | "day" | "imageAlt" | "note"> & {
+export type MooringWords = Pick<Mooring, "name" | "day" | "imageAlt" | "note"> & {
   sites: readonly { name: string; era: string; note: string }[];
 };
 
@@ -148,6 +149,7 @@ function overlayMoorings(words: readonly MooringWords[]): readonly Mooring[] {
 const MOORINGS_BY_LOCALE: Record<PublicLocale, readonly Mooring[]> = {
   en: NILE_MOORINGS,
   it: overlayMoorings(MOORINGS_IT),
+  de: overlayMoorings(MOORINGS_DE),
 };
 
 export function localizedMoorings(locale: PublicLocale): readonly Mooring[] {
@@ -297,6 +299,7 @@ const GUIDE_BY_LOCALE: Record<PublicLocale, GuideCopy> = {
         : undefined,
     })),
   },
+  de: GUIDE_COPY_DE,
 };
 
 export function localizedGuide(locale: PublicLocale): GuideCopy {

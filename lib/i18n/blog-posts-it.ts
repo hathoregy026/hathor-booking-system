@@ -9,10 +9,7 @@
  * links lead to the English article.
  */
 
-import { TRANSLATED_BLOG_SLUGS_IT } from "@/lib/i18n/blog-slugs-it";
-import type { PublicLocale } from "@/lib/i18n/locale";
-
-type PostWords = { title: string; excerpt: string };
+export type PostWords = { title: string; excerpt: string };
 
 export const BLOG_POSTS_IT: Record<string, PostWords> = {
   "unplugged-travel-no-wifi-experience-on-a-dahabiya": {
@@ -237,20 +234,3 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
       "Scopra le meraviglie del Nilo, dai prodigi delle civiltà antiche alla bellezza della natura, e la differenza tra una crociera tradizionale e una dahabiya. Per un viaggio autentico e meno affollato, Hathor Luxury Dahabiya è la scelta perfetta: stile, tradizione e relax lungo il Nilo.",
   },
 };
-
-const TRANSLATED = new Set(TRANSLATED_BLOG_SLUGS_IT);
-
-/** A post's title and excerpt in a language; English, and untranslated posts, pass through. */
-export function blogPostIn<T extends { slug: string; title: string; excerpt: string }>(
-  post: T,
-  locale: PublicLocale,
-): T {
-  if (locale !== "it") return post;
-  const words = BLOG_POSTS_IT[post.slug];
-  return words ? { ...post, title: words.title, excerpt: words.excerpt } : post;
-}
-
-/** Where a post opens: its Italian article once translated, otherwise the English one. */
-export function blogPostHref(slug: string, locale: PublicLocale): string {
-  return locale === "it" && TRANSLATED.has(slug) ? `/it/blogs/${slug}` : `/blogs/${slug}`;
-}

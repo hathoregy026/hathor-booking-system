@@ -5,7 +5,18 @@
  * names and stay in English in every language.
  */
 
-import type { PublicLocale } from "@/lib/i18n/locale";
+import {
+  AMENITIES_DE,
+  AMENITY_CAPTION_OVERRIDES_DE,
+  AMENITY_KIND_CAPTIONS_DE,
+  PLACES_DE,
+  VOYAGE_NAMES_DE,
+  WEEKDAYS_DE,
+} from "@/lib/i18n/catalog-copy-de";
+import { usdTextDe } from "@/lib/i18n/format-de";
+import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
+
+type Words = Record<string, string>;
 
 /** Voyage names by catalog slug. English keeps the catalog's own name. */
 const VOYAGE_NAMES_IT: Record<string, string> = {
@@ -15,26 +26,30 @@ const VOYAGE_NAMES_IT: Record<string, string> = {
   "nile-majesty": "Charter privato — Nile Majesty",
 };
 
+const VOYAGE_NAMES: Record<TranslatedLocale, Words> = { it: VOYAGE_NAMES_IT, de: VOYAGE_NAMES_DE };
+
 export function voyageNameIn(locale: PublicLocale, slug: string, fallback: string): string {
-  return locale === "it" ? (VOYAGE_NAMES_IT[slug] ?? fallback) : fallback;
+  return locale === "en" ? fallback : (VOYAGE_NAMES[locale][slug] ?? fallback);
 }
 
 const PLACES_IT: Record<string, string> = { Aswan: "Assuan", Cairo: "Il Cairo" };
+const PLACES: Record<TranslatedLocale, Words> = { it: PLACES_IT, de: PLACES_DE };
 
 /**
  * A dollar amount written US-style ("$7,000", "$3,000.00") with the reader’s
- * separators: Italian reads "$7.000", "$3.000,00", like the home page fares.
- * Currency and amount never change.
+ * separators: Italian reads "$7.000", "$3.000,00", like the home page fares;
+ * German puts the currency last ("7.000 $"). Currency and amount never change.
  */
 export function usdIn(locale: PublicLocale, formatted: string): string {
-  if (locale !== "it") return formatted;
+  if (locale === "en") return formatted;
+  if (locale === "de") return usdTextDe(formatted);
   return formatted.replace(/[,.]/g, (mark) => (mark === "," ? "." : ","));
 }
 
 /** Place names inside a route or sentence ("Luxor → Aswan" → "Luxor → Assuan"). */
 export function placesIn(locale: PublicLocale, text: string): string {
-  if (locale !== "it") return text;
-  return text.replace(/\b(Aswan|Cairo)\b/g, (place) => PLACES_IT[place] ?? place);
+  if (locale === "en") return text;
+  return text.replace(/\b(Aswan|Cairo)\b/g, (place) => PLACES[locale][place] ?? place);
 }
 
 const WEEKDAYS_IT: Record<string, string> = {
@@ -47,9 +62,11 @@ const WEEKDAYS_IT: Record<string, string> = {
   Sunday: "domenica",
 };
 
+const WEEKDAYS: Record<TranslatedLocale, Words> = { it: WEEKDAYS_IT, de: WEEKDAYS_DE };
+
 /** A departure day as a word inside a sentence ("sabato"; English "Saturday"). */
 export function weekdayIn(locale: PublicLocale, day: string): string {
-  return locale === "it" ? (WEEKDAYS_IT[day] ?? day) : day;
+  return locale === "en" ? day : (WEEKDAYS[locale][day] ?? day);
 }
 
 /** A departure day on its own, as a label ("Sabato"). */
@@ -84,15 +101,17 @@ const AMENITIES_IT: Record<string, string> = {
   "Coffee machine, mini bar, air conditioning": "Macchina del caffè, minibar, aria condizionata",
 };
 
+const AMENITIES: Record<TranslatedLocale, Words> = { it: AMENITIES_IT, de: AMENITIES_DE };
+
 /** An amenity sentence in this language (the hover title and screen-reader text). */
 export function amenityIn(locale: PublicLocale, label: string): string {
-  return locale === "it" ? (AMENITIES_IT[label.trim()] ?? label) : label;
+  return locale === "en" ? label : (AMENITIES[locale][label.trim()] ?? label);
 }
 
 export type AmenityCaption = { wide: string; tight: string };
 
 /** Short captions by amenity kind (see RoomAmenityIcon), Italian. */
-export const AMENITY_KIND_CAPTIONS_IT: Record<string, AmenityCaption> = {
+const AMENITY_KIND_CAPTIONS_IT: Record<string, AmenityCaption> = {
   screen: { wide: "TV", tight: "TV" },
   bath: { wide: "Vasca / Doccia", tight: "Bagno" },
   safe: { wide: "Cassaforte", tight: "Cassaforte" },
@@ -114,7 +133,7 @@ export const AMENITY_KIND_CAPTIONS_IT: Record<string, AmenityCaption> = {
 };
 
 /** Captions for the bundled suite / royal amenity lines, Italian. */
-export const AMENITY_CAPTION_OVERRIDES_IT: Record<string, AmenityCaption> = {
+const AMENITY_CAPTION_OVERRIDES_IT: Record<string, AmenityCaption> = {
   "jacuzzi & dual toilets": { wide: "Jacuzzi e doppio WC", tight: "Jacuzzi e WC" },
   "jacuzzi & two luxurious bathrooms": { wide: "Jacuzzi e bagni", tight: "Jacuzzi e bagni" },
   "hair dryer & mini bar": { wide: "Phon e minibar", tight: "Phon e bar" },
@@ -125,4 +144,13 @@ export const AMENITY_CAPTION_OVERRIDES_IT: Record<string, AmenityCaption> = {
     wide: "Caffè · Bar · Clima",
     tight: "Caffè e bar",
   },
+};
+
+/** Each added language's captions; English keeps its own in RoomAmenityIcon. */
+export const AMENITY_CAPTIONS: Record<
+  TranslatedLocale,
+  { kinds: Record<string, AmenityCaption>; overrides: Record<string, AmenityCaption> }
+> = {
+  it: { kinds: AMENITY_KIND_CAPTIONS_IT, overrides: AMENITY_CAPTION_OVERRIDES_IT },
+  de: { kinds: AMENITY_KIND_CAPTIONS_DE, overrides: AMENITY_CAPTION_OVERRIDES_DE },
 };

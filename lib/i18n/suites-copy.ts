@@ -1,8 +1,8 @@
 /**
  * The words of the `/suites` iframe that the dashboard does not hold: hero
  * labels, carousel captions, the closing button and the footer. The dashboard
- * sections are in `website-text-it.ts` and the photo descriptions in
- * `site-image-alts-it.ts`. The English page ships these words in its own markup
+ * sections are in `website-text-*.ts` and the photo descriptions in
+ * `site-image-alts-*.ts`. The English page ships these words in its own markup
  * and never passes through here.
  */
 
@@ -12,7 +12,7 @@ import {
   stripLocalePrefix,
   type PublicLocale,
 } from "@/lib/i18n/locale";
-import { siteImageAltIn } from "@/lib/i18n/site-image-alts-it";
+import { siteImageAltIn } from "@/lib/i18n/site-image-alts";
 
 /** The React page around the iframe, in every language. */
 export const SUITES_PAGE_LABELS: Record<
@@ -21,6 +21,7 @@ export const SUITES_PAGE_LABELS: Record<
 > = {
   en: { heading: "Nile Dahabiya Suites", frameTitle: "Hathor Suites" },
   it: { heading: "Suite in dahabiya sul Nilo", frameTitle: "Suite di Hathor" },
+  de: { heading: "Dahabiya-Suiten auf dem Nil", frameTitle: "Suiten der Hathor" },
 };
 
 type SuitesCloneCopy = {
@@ -46,6 +47,22 @@ const SUITES_CLONE_COPY: Partial<Record<PublicLocale, SuitesCloneCopy>> = {
       "secundario-river": { title: "Luce del fiume" },
       "secundario-calm": { title: "Quiete privata" },
       "images-text-craft": { kicker: "Arte", title: "Vivere il Nilo" },
+    },
+  },
+  de: {
+    documentTitle: "Suiten der Hathor auf dem Nil",
+    kicker: {
+      /* Sits left of the main photo: longer lines run across it. */
+      desk: ["Dahabiya", "Suiten"],
+      phone: "Dahabiya-Suiten auf dem Nil",
+    },
+    actionsLabel: "Aktionen der Suiten-Seite",
+    requestCta: "Verfügbarkeit anfragen",
+    captions: {
+      "principal-aboard": { kicker: "An Bord der Hathor", title: "Räume für Stille" },
+      "secundario-river": { title: "Flusslicht" },
+      "secundario-calm": { title: "Private Ruhe" },
+      "images-text-craft": { kicker: "Handwerk", title: "Leben am Nil" },
     },
   },
 };

@@ -3,6 +3,7 @@
  * public language. English is the live copy, character for character.
  */
 
+import { ARTICLE_COPY_DE, JOURNAL_COPY_DE } from "@/lib/i18n/journal-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Theme = { word: string; note: string };
@@ -203,6 +204,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     cardBody: ["Templi, villaggi e viaggi più quieti", "scritti per gli ospiti di Hathor"],
     writeToUs: "Ci scriva",
   },
+  de: JOURNAL_COPY_DE,
 };
 
 /** A journal article's own words, around the post's text. */
@@ -319,4 +321,5 @@ export const ARTICLE_COPY: Record<PublicLocale, ArticleCopy> = {
     fullJournal: "Tutto il journal",
     commercial: (label) => COMMERCIAL_IT[label] ?? label,
   },
+  de: ARTICLE_COPY_DE,
 };

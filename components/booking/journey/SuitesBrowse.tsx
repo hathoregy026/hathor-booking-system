@@ -4,7 +4,7 @@ import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { useRef, useState, type ReactNode } from "react";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries";
 import { localizedHref } from "@/lib/i18n/locale";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import { occupants, shortName, type Arrangement, type Guest } from "./allocation";

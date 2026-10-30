@@ -25,6 +25,7 @@ import { HATHOR_BOOKING_INCLUSIONS } from "@/lib/booking-room-media";
 import { CARD_SURCHARGE_PERCENT } from "@/lib/card-surcharge";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import type { PublicLocale } from "@/lib/i18n/locale";
+import { BOOKING_COPY_DE } from "@/lib/i18n/booking-copy-de";
 import { COUNTRY_NAMES_IT } from "@/lib/i18n/countries-it";
 
 type Kind = "adult" | "child";
@@ -1782,4 +1783,4 @@ const IT: BookingCopy = {
   },
 };
 
-export const BOOKING_COPY: Record<PublicLocale, BookingCopy> = { en: EN, it: IT };
+export const BOOKING_COPY: Record<PublicLocale, BookingCopy> = { en: EN, it: IT, de: BOOKING_COPY_DE };

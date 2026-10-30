@@ -1,7 +1,6 @@
 import type { ReactElement } from "react";
 import {
-  AMENITY_CAPTION_OVERRIDES_IT,
-  AMENITY_KIND_CAPTIONS_IT,
+  AMENITY_CAPTIONS,
   amenityIn,
 } from "@/lib/i18n/catalog-copy";
 import type { PublicLocale } from "@/lib/i18n/locale";
@@ -262,10 +261,10 @@ export function resolveAmenityCaption(
   locale: PublicLocale = "en",
 ): AmenityCaption {
   const key = label.trim().toLowerCase();
-  const italian = locale === "it";
-  const override = (italian ? AMENITY_CAPTION_OVERRIDES_IT : CAPTION_OVERRIDES)[key];
+  const local = locale === "en" ? null : AMENITY_CAPTIONS[locale];
+  const override = (local ? local.overrides : CAPTION_OVERRIDES)[key];
   if (override) return override;
-  const caption = (italian ? AMENITY_KIND_CAPTIONS_IT : KIND_CAPTIONS)[resolveAmenityIcon(label)];
+  const caption = (local ? local.kinds : KIND_CAPTIONS)[resolveAmenityIcon(label)];
   if (caption?.wide) return caption;
   const text = amenityIn(locale, label);
   return { wide: text, tight: text };

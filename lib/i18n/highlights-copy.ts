@@ -15,6 +15,7 @@ import {
   HIGHLIGHTS_MANIFESTO,
   HIGHLIGHTS_PRINCIPLES,
 } from "@/lib/highlights-content";
+import { HIGHLIGHTS_COPY_DE } from "@/lib/i18n/highlights-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Landmark = { category: string; location: string; caption: string; title: string };
@@ -322,4 +323,5 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
     cardBody: ["Monumenti antichi", "vita privata sul fiume"],
     exploreCruises: "Scopri le crociere",
   },
+  de: HIGHLIGHTS_COPY_DE,
 };

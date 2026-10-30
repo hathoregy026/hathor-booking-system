@@ -4,8 +4,9 @@ import { PublicCmsTextRuntime } from "@/components/public/PublicCmsTextRuntime";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { StandalonePageVisibilityShell } from "@/components/public/StandalonePageVisibilityShell";
 import { PageStructuredData, hotelRoomNode } from "@/components/seo/PageStructuredData";
-import { ITALIAN_ROOM_COLLECTIONS } from "@/lib/i18n/rooms-seo-it";
-import { localizeWebsiteText } from "@/lib/i18n/website-text-it";
+import type { TranslatedLocale } from "@/lib/i18n/locale";
+import { LOCALE_CRUMBS, LOCALE_ROOM_COLLECTIONS } from "@/lib/i18n/locale-pages";
+import { localizeWebsiteText } from "@/lib/i18n/website-text";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import type { RoomCollectionVariant } from "@/lib/room-collection-editorial";
 import { ROOM_SHOWCASES } from "@/lib/room-showcase";
@@ -17,12 +18,18 @@ const ROOMS_FOR: Record<RoomCollectionVariant, (slug: string) => boolean> = {
 };
 
 /**
- * An Italian room collection page: the English page's stage and rooms, with
- * Italian search settings, structured data and dashboard text. The dashboard
- * page switch is the English page's, so one switch shows or hides both.
+ * A translated room collection page: the English page's stage and rooms, with
+ * this language's search settings, structured data and dashboard text. The
+ * dashboard page switch is the English page's, so one switch shows or hides all.
  */
-export async function ItalianRoomCollectionPage({ variant }: { variant: RoomCollectionVariant }) {
-  const page = ITALIAN_ROOM_COLLECTIONS[variant];
+export async function LocaleRoomCollectionPage({
+  locale,
+  variant,
+}: {
+  locale: TranslatedLocale;
+  variant: RoomCollectionVariant;
+}) {
+  const page = LOCALE_ROOM_COLLECTIONS[locale][variant];
   const cms = await loadPublicCmsBundle();
   const description =
     typeof page.metadata.description === "string" ? page.metadata.description : "";
@@ -39,7 +46,7 @@ export async function ItalianRoomCollectionPage({ variant }: { variant: RoomColl
         name={page.name}
         description={description}
         breadcrumbs={[
-          { name: "Home", path: "/it" },
+          { name: LOCALE_CRUMBS[locale].home, path: `/${locale}` },
           { name: page.crumb, path: page.path },
         ]}
         image={page.image}
@@ -47,15 +54,15 @@ export async function ItalianRoomCollectionPage({ variant }: { variant: RoomColl
       />
       <SiteImagesProvider images={cms.siteImages}>
         <PublicCmsTextRuntime
-          websiteText={localizeWebsiteText(cms.websiteText, "it")}
-          websiteTextMobile={localizeWebsiteText(cms.websiteTextMobile, "it")}
+          websiteText={localizeWebsiteText(cms.websiteText, locale)}
+          websiteTextMobile={localizeWebsiteText(cms.websiteTextMobile, locale)}
           typography={cms.typography}
           typographyMobile={cms.typographyMobile}
         >
           <RoomCollectionEditorialPage
             variant={variant}
             rooms={ROOM_SHOWCASES.filter((room) => ROOMS_FOR[variant](room.slug))}
-            reviews={<GuestReviews placement="room" locale="it" />}
+            reviews={<GuestReviews placement="room" locale={locale} />}
           />
         </PublicCmsTextRuntime>
       </SiteImagesProvider>

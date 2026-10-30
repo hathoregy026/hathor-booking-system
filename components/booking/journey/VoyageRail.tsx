@@ -3,7 +3,7 @@
 import { useRef, useState, type ReactNode } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries";
 import type { Sailing } from "./model";
 import { CurrencyAmount, CurrencySettlementNote } from "@/components/public/CurrencyProvider";
 import type { CabinView } from "./allocation";
