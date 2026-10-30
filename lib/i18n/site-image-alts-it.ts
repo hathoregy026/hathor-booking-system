@@ -185,6 +185,15 @@ const SITE_IMAGE_ALTS_IT: Record<string, string> = {
     "Hathor Dahabiya sul Nilo all’ora dorata",
   "Wine and crystal in warm light aboard Hathor":
     "Vino e cristalli nella luce calda a bordo di Hathor",
+  /* Written into the /suites iframe, not dashboard slots. */
+  "Guest enjoying panoramic Nile views from a Hathor suite":
+    "Vista panoramica sul Nilo da una suite di Hathor",
+  "Hathor suite bedroom with warm timber, soft seating, and private bath":
+    "Camera di una suite di Hathor con legni caldi, sedute morbide e bagno privato",
+  "Hathor suite bed prepared for a restful night on the Nile":
+    "Letto di una suite di Hathor pronto per una notte di riposo sul Nilo",
+  "Hathor luxury suite aboard the Nile dahabiya":
+    "Luxury Suite di Hathor a bordo della dahabiya sul Nilo",
 };
 
 /** A site-image alt in the visitor's language; unknown alts pass through. */

@@ -140,3 +140,35 @@ commercial terms and the admin cancellation-fee calculation uses them.
   "Early departure", each with the section 2 fee, and the database refuses a refund larger than
   what was paid minus that fee. A cancellation by Hathor, or for unavoidable circumstances, needs a
   zero-fee reason before the full refund promised in sections 2, 12 and 13 can be recorded.
+
+## 7. `/it/suites` (machine-drafted, October 2026)
+
+This page was added after the rest of the Italian site, at Hathor's request. **All the Italian below
+is a machine draft and no native speaker has read it yet.** Please read the whole page once for tone
+at both desktop and phone width, then answer the questions. The English page's words are unchanged.
+
+The words live in `lib/i18n/website-text-it.ts` (section `suites`, translated from the live dashboard
+text, not the code defaults), `lib/i18n/suites-copy.ts` (hero labels and carousel captions),
+`lib/i18n/pages-seo-it.ts` (title and description) and `lib/i18n/site-image-alts-it.ts` (four photo
+descriptions). The footer reuses the site footer's wording.
+
+| Where | English | Italian draft | Question |
+| --- | --- | --- | --- |
+| Hero title | "River Suites" | "Suite sul fiume" | OK? |
+| Hero label | "Made for living" | "Pensate per viverle" | Natural? |
+| Hero label above the photo | "Nile dahabiya suites" | "Suite in dahabiya" (phone: "Suite in dahabiya sul Nilo") | "sul Nilo" is dropped on desktop because a longer line ran across the photo. OK? |
+| Hero sentence | "Quiet, crafted comfort; river light; the Nile just beyond the glass." | "Comfort discreto e curato; luce del fiume; il Nilo appena oltre il vetro." | OK? |
+| Story title | "Rooms composed for quiet with the Nile always near" | "Camere pensate per la quiete con il Nilo sempre vicino" | "Rooms composed" also appears as a caption. Is "Camere pensate" enough on its own? |
+| Quality titles | "River Light", "Private Calm", "Egyptian Craft" | "Luce del fiume", "Quiete privata", "Arte egiziana" | "Arte egiziana" for craft, or "Artigianato egiziano" (longer, may wrap)? |
+| Carousel caption | "Craft / Nile living" | "Arte / Vivere il Nilo" | OK? |
+| Collection cards | "Luxury Cabins", "Ensuite Calm", "Nile at Night" | "Luxury Rooms" (the menu's product name), "Bagno di quiete", "Il Nilo di notte" | "Bagno di quiete" is a free rendering. OK, or something plainer? |
+| Card labels | "EN SUITE", "PRIVATE" | "BAGNO PRIVATO", "PRIVATO" | OK? |
+| Collection closing title | "Where every Nile horizon belongs to your suite" | "Ogni vista del Nilo appartiene alla suite" | The card fits about ten capitals per line, so "orizzonte" and "Sua" did not fit. Does the meaning hold? |
+| Reservations title | "Your Nile residence awaits" | "La Sua suite La attende" | "Residenza" broke in two on phones and "Nilo" was dropped for room. OK? |
+| Closing | "Begin Your Journey" and "Join our exclusive circle…" | "Inizi il Suo viaggio" and "Entri nella nostra cerchia esclusiva…" | "Cerchia esclusiva" natural? |
+| Button | "Request Suite Availability" | "Richiedi la disponibilità" | OK? |
+| Search result | "Luxury Nile Cruise Suites \| Hathor Dahabiya" | "Suite di lusso per la crociera sul Nilo \| Hathor Dahabiya" | OK? |
+
+One point in the English source to check, carried into the Italian as it stands: the Luxury Cabins card
+says "UPPER DECK" ("PONTE SUPERIORE"), but the deck plan and About page put the cabins and suites on
+the lower deck. Which is correct?

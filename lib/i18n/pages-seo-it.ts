@@ -60,6 +60,20 @@ export const ITALIAN_PAGES = {
     name: "La cucina sul Nilo | La gastronomia di Hathor Dahabiya",
     crumb: "Cucina",
   }),
+  suites: page({
+    path: "/it/suites",
+    title: "Suite di lusso per la crociera sul Nilo | Hathor Dahabiya",
+    description:
+      "Le suite di Hathor sul Nilo: ampie residenze con vetrate panoramiche, comfort riservato e la dimensione raccolta di una dahabiya per 32 ospiti.",
+    name: "Suite di lusso per la crociera sul Nilo | Hathor Dahabiya",
+    crumb: "Suite",
+    image: {
+      url: "/media/hathor/optimized/scraped-suites-hero.webp",
+      width: 1920,
+      height: 1280,
+      alt: "Suite di lusso a bordo di Hathor Dahabiya",
+    },
+  }),
   wellness: page({
     path: "/it/wellness",
     title: "Seneb Spa sul Nilo | Il benessere di Hathor Dahabiya",

@@ -14,6 +14,64 @@ import type { WebsiteText } from "@/lib/website-text-shared";
 type Pages = WebsiteText["pages"];
 
 const PAGES_IT: Partial<Pages> = {
+  /*
+   * The iframe fills titles line by line, so each one keeps its English line
+   * count and each line stays about as long as the English one.
+   */
+  suites: {
+    heroTitle: "Suite\nsul fiume",
+    heroKicker: "Pensate\nper viverle",
+    heroBody: "Comfort discreto e curato; luce del fiume;\nil Nilo appena oltre il vetro.",
+    heroCabinsCta: "Scopri le cabine",
+    heroSuitesCta: "Scopri le suite",
+    heroBookCta: "Prenota ora",
+    heroVoyagesCta: "Scopri i viaggi",
+    storyLabel: "A bordo di Hathor",
+    storyTitle: "Camere pensate\nper la quiete\ncon il Nilo\nsempre vicino",
+    storyBody:
+      "Legni caldi, tessuti morbidi, finestre panoramiche e un servizio attento fanno di ogni residenza un mondo privato tra Luxor e Assuan.",
+    storySecondBody:
+      "L’arte tradizionale della dahabiya incontra il comfort contemporaneo in suite pensate per il riposo, la privacy e il ritmo senza fretta del fiume.",
+    qualityOneTitle: "LUCE DEL FIUME",
+    qualityOneBody:
+      "Ampie finestre affacciate sul fiume portano il Nilo in ogni momento, dalle prime luci sulle rive all’oro quieto del tramonto.",
+    qualityTwoTitle: "QUIETE PRIVATA",
+    qualityTwoBody:
+      "Interni sereni, biancheria raffinata, bagni privati e un servizio attento creano un rifugio profondamente personale a bordo di Hathor.",
+    qualityThreeTitle: "ARTE EGIZIANA",
+    qualityThreeBody:
+      "Carattere egiziano, materiali naturali e caldi e dettagli moderni ben ponderati danno a ogni cabina e suite un legame duraturo con il luogo.",
+    collectionLabel: "La collezione di suite",
+    collectionBody:
+      "Tre espressioni della vita a bordo di Hathor, dalle cabine raccolte alle nostre Royal Suite, le più ampie: ciascuna pensata intorno a privacy, proporzioni e viste ininterrotte sul Nilo.",
+    cabinMeta: "8 CABINE",
+    cabinDeck: "PONTE SUPERIORE",
+    cabinTitle: "Luxury Rooms",
+    suiteMeta: "2 SUITE",
+    suiteDeck: "PONTE INFERIORE",
+    suiteTitle: "Luxury Suite",
+    royalMeta: "2 ROYAL",
+    royalDeck: "PONTE PRINCIPALE",
+    royalTitle: "Royal Suite",
+    ensuiteMeta: "BAGNO PRIVATO",
+    ensuiteDeck: "A BORDO DI HATHOR",
+    ensuiteTitle: "Bagno di quiete",
+    nightMeta: "PRIVATO",
+    nightDeck: "LUXOR–ASSUAN",
+    nightTitle: "Il Nilo di notte",
+    residenceCta: "Scopri la residenza",
+    discoverCta: "Scopri di più",
+    viewAllCta: "Scopri tutte le suite",
+    collectionClosingTitle: "Ogni vista\nDel Nilo\nAppartiene\nAlla suite",
+    collectionClosingBody:
+      "Spazi per il riposo, la conversazione, le cene private e le viste ininterrotte, mentre Hathor scivola tra le antiche rive dell’Egitto.",
+    reservationsLabel: "Prenotazioni",
+    /* "RESIDENZA" broke in two on a phone. */
+    reservationsTitle: "LA SUA SUITE\nLA ATTENDE",
+    closingTitle: "Inizi il Suo viaggio",
+    closingBody:
+      "Un viaggio su misura per Lei. Entri nella nostra cerchia esclusiva per itinerari privati e accesso anticipato a viaggi rari.",
+  },
   blog: {
     intro:
       "Il Suo viaggio in Egitto con Hathor Dahabiya, una finestra sull’anima del Nilo. Condividiamo storie di monumenti senza tempo, meraviglie antiche e viaggi lenti. Dalla cultura ai consigli di viaggio, scopra l’arte di navigare con una crociera di lusso in dahabiya sul Nilo, in Egitto. Lasci che ogni articolo ispiri la Sua prossima avventura a bordo di Hathor Dahabiya.",

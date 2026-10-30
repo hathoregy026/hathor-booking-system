@@ -357,7 +357,7 @@ export function Header() {
     cleanups.push(() =>
       window.removeEventListener("hathor:suites-scroll", onSuitesScroll),
     );
-    if (!(pathname === "/suites" || pathname.startsWith("/suites/"))) {
+    if (!(routePath === "/suites" || routePath.startsWith("/suites/"))) {
       setSuitesNavTone(null);
     }
 
@@ -396,7 +396,7 @@ export function Header() {
     return () => {
       cleanups.forEach((fn) => fn());
     };
-  }, [pathname]);
+  }, [pathname, routePath]);
 
   useEffect(() => {
     if (!openDropdown) return;
