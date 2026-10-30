@@ -79,7 +79,7 @@ const MOORINGS_IT: readonly MooringWords[] = [
       },
       {
         name: "Gebel el-Silsila",
-        era: "c. 1500 a.C.",
+        era: "ca. 1500 a.C.",
         note: "La cava di arenaria da cui nacquero Karnak, Luxor ed Edfu.",
       },
     ],
@@ -115,7 +115,7 @@ const MOORINGS_IT: readonly MooringWords[] = [
       },
       {
         name: "L’obelisco incompiuto",
-        era: "c. 1500 a.C.",
+        era: "ca. 1500 a.C.",
         note: "Ancora adagiato nella roccia madre: completato, sarebbe stato alto quarantadue metri.",
       },
       {

@@ -10,6 +10,7 @@
 import type { PublicLocale } from "@/lib/i18n/locale";
 import {
   ROOM_COLLECTION_CONFIG,
+  ROOM_COLLECTION_LINKS,
   type RoomCollectionEditorialConfig,
   type RoomCollectionVariant,
 } from "@/lib/room-collection-editorial";
@@ -65,6 +66,8 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
   },
   suites: {
     ...EN_CONFIG.suites,
+    /* "Suite" does not take a plural in Italian. */
+    titleLines: ["Luxury", "Suite"],
     collectionLabel: "Le residenze · Suite",
     tierSubtitle: "La suite del ponte inferiore",
     tierKicker: "La suite",
@@ -102,6 +105,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
   },
   royal: {
     ...EN_CONFIG.royal,
+    titleLines: ["Royal", "Suite"],
     collectionLabel: "Le residenze · Royal",
     tierSubtitle: "Il gioiello del ponte principale",
     tierKicker: "La residenza Royal",
@@ -142,6 +146,19 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     },
   },
 };
+
+/** The collection names as menus and breadcrumbs print them ("Suite" has no plural in Italian). */
+const COLLECTION_LABELS_IT: Record<RoomCollectionVariant, string> = {
+  cabins: "Luxury Rooms",
+  suites: "Luxury Suite",
+  royal: "Royal Suite",
+};
+
+export function roomCollectionLinks(locale: PublicLocale) {
+  return ROOM_COLLECTION_LINKS.map((link) =>
+    locale === "it" ? { ...link, label: COLLECTION_LABELS_IT[link.key] } : link,
+  );
+}
 
 export function roomCollectionConfig(
   variant: RoomCollectionVariant,
@@ -186,7 +203,7 @@ const INCLUDE_IT = [
   "Trasferimenti di andata e ritorno dagli aeroporti di Assuan o Luxor con veicoli turistici moderni (limousine o van)",
   "IVA e costi di servizio",
   "Aperitivo di benvenuto all’arrivo",
-  "Uno Champagne di benvenuto in omaggio per ogni cabina e suite, servito una volta per soggiorno",
+  "Uno champagne di benvenuto in omaggio per ogni cabina e suite, servito una volta per soggiorno",
   "Sistemazione in formula Soft All-Inclusive (tutti i pasti e le bevande analcoliche durante la giornata)",
   "Biglietti d’ingresso per le visite previste dall’itinerario (visite di gruppo)",
   "Guida egittologa",
@@ -201,7 +218,7 @@ const INCLUDE_IT = [
 const EXCLUDE_IT = [
   "Voli nazionali o internazionali",
   "Assicurazione di viaggio",
-  "Bevande alcoliche, eccetto lo Champagne di benvenuto in omaggio servito una volta per soggiorno",
+  "Bevande alcoliche, eccetto lo champagne di benvenuto in omaggio servito una volta per soggiorno",
   "Escursioni o attività facoltative non incluse nell’itinerario",
   "Mance e spese personali",
 ] as const;
@@ -209,7 +226,7 @@ const EXCLUDE_IT = [
 const ASWAN_TO_LUXOR_DAYS_IT: readonly RoomFolioDay[] = [
   {
     title: "Giorno 1 · Assuan",
-    body: "All’arrivo La accogliamo a bordo di Hathor con un drink di benvenuto e un pranzo senza fretta. Visita al Tempio di Philae e alla Grande Diga, poi rientro per la cena e il pernottamento ad Assuan.",
+    body: "All’arrivo La accogliamo a bordo di Hathor con un aperitivo di benvenuto e un pranzo senza fretta. Visita al Tempio di Philae e alla Grande Diga, poi rientro per la cena e il pernottamento ad Assuan.",
   },
   {
     title: "Giorno 2 · Kom Ombo ed Esna",
@@ -228,15 +245,15 @@ const ASWAN_TO_LUXOR_DAYS_IT: readonly RoomFolioDay[] = [
 const LUXOR_TO_ASWAN_DAYS_IT: readonly RoomFolioDay[] = [
   {
     title: "Giorno 1 · La riva orientale di Luxor",
-    body: "Un drink di benvenuto e il check-in aprono il viaggio. Dopo pranzo, visita al Tempio di Karnak e al Tempio di Luxor. Cena e pernottamento a Luxor.",
+    body: "Un aperitivo di benvenuto e il check-in aprono il viaggio. Dopo pranzo, visita al Tempio di Karnak e al Tempio di Luxor. Cena e pernottamento a Luxor.",
   },
   {
     title: "Giorno 2 · Riva occidentale ed Esna",
     body: "Dopo la colazione, visita alla Valle dei Re, al Tempio di Hatshepsut e ai Colossi di Memnone. Rientro per il pranzo mentre Hathor naviga verso Esna. Cena e pernottamento a Esna.",
   },
   {
-    title: "Giorno 3 · Edfu ed El Ramady",
-    body: "Colazione, poi le tombe rupestri di El Kab e il Tempio di Horus a Edfu. Pranzo a bordo e navigazione verso l’isola di El Ramady per la cena e il pernottamento.",
+    title: "Giorno 3 · Edfu e l’isola di Ramadi",
+    body: "Colazione, poi le tombe rupestri di El Kab e il Tempio di Horus a Edfu. Pranzo a bordo e navigazione verso l’isola di Ramadi per la cena e il pernottamento.",
   },
   {
     title: "Giorno 4 · Gebel el-Silsila, Kom Ombo e Assuan",
@@ -251,7 +268,7 @@ const LUXOR_TO_ASWAN_DAYS_IT: readonly RoomFolioDay[] = [
 const ROUND_TRIP_DAYS_IT: readonly RoomFolioDay[] = [
   {
     title: "Giorno 1 · La riva orientale di Luxor",
-    body: "Un drink di benvenuto e il check-in aprono il viaggio di andata e ritorno. Dopo pranzo, visita al Tempio di Karnak e al Tempio di Luxor. Cena e pernottamento a Luxor.",
+    body: "Un aperitivo di benvenuto e il check-in aprono il viaggio di andata e ritorno. Dopo pranzo, visita al Tempio di Karnak e al Tempio di Luxor. Cena e pernottamento a Luxor.",
   },
   {
     title: "Giorno 2 · In navigazione verso Esna",
@@ -492,6 +509,32 @@ export type RoomsCopy = {
     scheduledSailings: string;
   };
 };
+
+/**
+ * The room page's words for this kind of room. English keeps its one wording;
+ * Italian says "suite" on the suite pages, where "cabina" would read as wrong.
+ */
+export function roomDetailCopy(
+  locale: PublicLocale,
+  variant: RoomCollectionVariant,
+): RoomsCopy["detail"] {
+  const detail = ROOMS_COPY[locale].detail;
+  if (locale !== "it" || variant === "cabins") return detail;
+  return {
+    ...detail,
+    oneCabin: "1 suite",
+    cabin: "suite",
+    fareTitle: "La Sua suite e la tariffa",
+    ledgerHead: (nights) => [
+      "Sistemazione",
+      "Il Suo viaggio include",
+      nights ? `Totale ${nights} notti` : "Totale",
+      "Suite",
+    ],
+    totalLine: (nights, capacity) =>
+      `1 suite · ${nights ? `${nights} notti` : "date flessibili"} · fino a ${capacity} ospiti`,
+  };
+}
 
 export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
   en: {

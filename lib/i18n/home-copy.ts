@@ -16,6 +16,8 @@ type Pair = readonly [string, string];
 export type HomeCopy = {
   hero: { lineRight: string; lineLeft: string };
   runLabel: string;
+  campaign: { label: string; cta: string };
+  amenitiesStoriesLabel: string;
   open: {
     label: string;
     navLabel: string;
@@ -165,6 +167,8 @@ const EN: HomeCopy = {
     lineLeft: "Nile Cruise",
   },
   runLabel: "Aboard Hathor",
+  campaign: { label: "Campaign call to action", cta: "Book Now" },
+  amenitiesStoriesLabel: "Amenities-style Nile stories",
   open: {
     label: "Hathor Dahabiya",
     navLabel: "This page",
@@ -359,6 +363,8 @@ const IT: HomeCopy = {
     lineLeft: "Crociera sul Nilo",
   },
   runLabel: "A bordo di Hathor",
+  campaign: { label: "Invito a prenotare", cta: "Prenota ora" },
+  amenitiesStoriesLabel: "Storie dal Nilo",
   open: {
     label: "Hathor Dahabiya",
     navLabel: "In questa pagina",
@@ -578,7 +584,7 @@ export const PARTNERS_STRIP_COPY: Record<PublicLocale, PartnersStripCopy> = {
     leadLines: [
       "Siamo orgogliosi del riconoscimento di importanti",
       "partner del turismo e dell’ospitalità in tutto il mondo,",
-      "che condividono la nostra passione per i viaggi autentici sul Nilo.",
+      "che amano come noi i viaggi autentici sul Nilo.",
     ],
     hrefLabel: "Scopri i nostri partner",
     listLabel: "I partner di Hathor",

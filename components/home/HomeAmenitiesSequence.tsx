@@ -8,6 +8,8 @@ import { useSiteImage } from "@/components/public/SiteImagesProvider";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useTypographyInlineStyle } from "@/components/public/TypographySettingsProvider";
 import { useHomeAmenitiesSequence } from "@/hooks/useHomeAmenitiesSequence";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { HOME_COPY } from "@/lib/i18n/home-copy";
 import {
   amenitiesCopy,
   amenitiesHasCopy,
@@ -234,6 +236,7 @@ export function HomeAmenitiesSequence({
   amenitiesTypography = DEFAULT_AMENITIES_TYPOGRAPHY,
   voyages,
 }: HomeAmenitiesSequenceProps) {
+  const locale = usePublicLocale();
   const rootRef = useRef<HTMLElement>(null);
   const images = resolveImages(imagesProp);
 
@@ -441,7 +444,7 @@ export function HomeAmenitiesSequence({
     <section
       ref={rootRef}
       className="home-am-sequence"
-      aria-label="Amenities-style Nile stories"
+      aria-label={HOME_COPY[locale].amenitiesStoriesLabel}
       style={
         {
           "--am-typo-title-on-image": amenitiesTypography.title.colorOnImage,

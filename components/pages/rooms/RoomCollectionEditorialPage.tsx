@@ -27,7 +27,6 @@ import { useCmsPathImage } from "@/hooks/useCmsPathImage";
 import { freshMediaSrc } from "@/lib/fresh-media-src";
 import { useRoomCollectionEditorialScroll } from "@/hooks/useRoomCollectionEditorialScroll";
 import {
-  ROOM_COLLECTION_LINKS,
   type RoomCollectionVariant,
 } from "@/lib/room-collection-editorial";
 import { ROOM_SHOWCASES, type RoomShowcase } from "@/lib/room-showcase";
@@ -41,6 +40,7 @@ import type { PublicLocale } from "@/lib/i18n/locale";
 import {
   ROOMS_COPY,
   roomCollectionConfig,
+  roomCollectionLinks,
   roomShowcaseIn,
 } from "@/lib/i18n/rooms-copy";
 
@@ -350,7 +350,8 @@ export function RoomCollectionEditorialPage({
    * gutters rather than wrap.
    */
   const [titlePrimary, titleSecondary] =
-    cmsTitleWords.length === 2
+    /* The dashboard title is English; other languages keep their own config. */
+    locale === "en" && cmsTitleWords.length === 2
       ? [
           cmsTitleWords.slice(0, -1).join(" "),
           cmsTitleWords[cmsTitleWords.length - 1],
@@ -582,7 +583,7 @@ export function RoomCollectionEditorialPage({
               <Scene className="ac-bridge">
                 <Kicker>{t.elsewhere}</Kicker>
                 <ul className="ac-bridge__list">
-                  {ROOM_COLLECTION_LINKS.map((link, index) => (
+                  {roomCollectionLinks(locale).map((link, index) => (
                     <li key={link.href}>
                       <Link
                         href={localHref(link.href)}

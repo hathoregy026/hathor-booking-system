@@ -171,7 +171,7 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     sizeCapacity: (sizeSqm, capacity) => `${sizeSqm} m² · Fino a ${capacity} ospiti`,
     voyageType: "Viaggio",
     charterType: "Charter",
-    viewSuite: "Dettagli della suite",
+    viewSuite: "Vedi i dettagli",
     guests: "Ospiti",
     adults: "Adulti",
     children: "Bambini",

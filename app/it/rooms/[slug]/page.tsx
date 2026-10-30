@@ -4,6 +4,7 @@ import { RoomDetailPage } from "@/components/pages/rooms/RoomDetailPage";
 import { GuestReviews } from "@/components/public/GuestReviews";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
 import { PageStructuredData, hotelRoomNode } from "@/components/seo/PageStructuredData";
+import { NOT_FOUND_METADATA_IT } from "@/lib/i18n/not-found-it";
 import { roomShowcaseIn } from "@/lib/i18n/rooms-copy";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import { findRoomShowcase, ROOM_SHOWCASES } from "@/lib/room-showcase";
@@ -23,7 +24,7 @@ const ROOM_KIND_IT: Record<string, string> = {
   "luxury-king-room": "cabina con vista sul Nilo",
   "luxury-twin-room": "cabina con vista sul Nilo",
   "luxury-suite": "suite con vista sul Nilo",
-  "royal-suite": "suite sul ponte principale",
+  "royal-suite": "sul ponte principale",
 };
 
 const roomTitle = (room: { slug: string; name: string }) =>
@@ -44,7 +45,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const room = italianRoom((await params).slug);
-  if (!room) return { robots: { index: false, follow: false } };
+  if (!room) return NOT_FOUND_METADATA_IT;
 
   return buildPageMetadata({
     title: roomTitle(room),

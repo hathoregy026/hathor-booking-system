@@ -104,11 +104,11 @@ export const AMENITY_KIND_CAPTIONS_IT: Record<string, AmenityCaption> = {
   smart: { wide: "Controlli smart", tight: "Smart" },
   doctor: { wide: "Medico", tight: "Medico" },
   service: { wide: "Servizio in camera", tight: "Servizio" },
-  ac: { wide: "Clima", tight: "Clima" },
+  ac: { wide: "Aria condizionata", tight: "Clima" },
   hair: { wide: "Asciugacapelli", tight: "Phon" },
   view: { wide: "Vista Nilo", tight: "Vista Nilo" },
   jacuzzi: { wide: "Jacuzzi", tight: "Jacuzzi" },
-  smoke: { wide: "Non fumatori", tight: "No fumo" },
+  smoke: { wide: "Non fumatori", tight: "Non fumatori" },
   space: { wide: "Metratura", tight: "Metratura" },
   default: { wide: "", tight: "" },
 };
@@ -117,12 +117,12 @@ export const AMENITY_KIND_CAPTIONS_IT: Record<string, AmenityCaption> = {
 export const AMENITY_CAPTION_OVERRIDES_IT: Record<string, AmenityCaption> = {
   "jacuzzi & dual toilets": { wide: "Jacuzzi e doppio WC", tight: "Jacuzzi e WC" },
   "jacuzzi & two luxurious bathrooms": { wide: "Jacuzzi e bagni", tight: "Jacuzzi e bagni" },
-  "hair dryer & mini bar": { wide: "Phon e minibar", tight: "Phon e bar" },
+  "hair dryer & mini bar": { wide: "Phon e minibar", tight: "Phon e minibar" },
   "smart entertainment system": { wide: "Sistema smart", tight: "Smart" },
-  "room & laundry service": { wide: "Camera e lavanderia", tight: "Lavanderia" },
+  "room & laundry service": { wide: "Servizio in camera e lavanderia", tight: "Lavanderia" },
   "air conditioning & high-speed wi-fi": { wide: "Clima e Wi-Fi", tight: "Clima e Wi-Fi" },
   "coffee machine, mini bar, air conditioning": {
-    wide: "Caffè · Bar · Clima",
-    tight: "Caffè e bar",
+    wide: "Caffè · Minibar · Clima",
+    tight: "Caffè e minibar",
   },
 };
