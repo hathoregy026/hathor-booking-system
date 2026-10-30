@@ -105,7 +105,7 @@ export type Occasion = {
     /** 0.1–1: how many bursts, specks or petals at once. */
     density: number;
   };
-  /** Lights hang from the top stripe across the nav; lanterns and stars from the nav's bottom edge. */
+  /** Hangs from the top stripe: lights across the nav, lanterns and stars on strings down through it. */
   hanging: (typeof OCCASION_HANGINGS)[number];
   /**
    * Days and hours left of the menu-bar logo, minutes and seconds right of it,
