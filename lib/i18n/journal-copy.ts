@@ -172,7 +172,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     contents: "Indice",
     contentsBody:
       "Le note più recenti: templi, villaggi sul fiume, consigli per la valigia e il ritmo più lento del viaggio in dahabiya.",
-    readLabel: (title) => `Legga «${title}»`,
+    readLabel: (title) => `Leggi «${title}»`,
     read: "Leggi",
     firstChapter: "Il primo capitolo è in preparazione.",
     galleryLabel: "Galleria del journal",
@@ -201,7 +201,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     cardTag: "Journal",
     cardTitle: "Note",
     cardBody: ["Templi, villaggi e viaggi più quieti", "scritti per gli ospiti di Hathor"],
-    writeToUs: "Ci scriva",
+    writeToUs: "Scrivici",
   },
 };
 
@@ -308,7 +308,7 @@ export const ARTICLE_COPY: Record<PublicLocale, ArticleCopy> = {
     },
     captionLead: "Lungo il fiume",
     caption: "Templi, villaggi e il ritmo più lento del viaggio in dahabiya.",
-    continueEyebrow: "Prosegua",
+    continueEyebrow: "Prosegui",
     theNote: "La nota",
     readBelow: "Leggi qui sotto",
     furtherLabel: "Altri articoli",

@@ -124,7 +124,7 @@ Gli antichi Egizi viaggiavano tra le città navigando lentamente sul Nilo, propr
 	<li>L’accesso ai templi più iconici d’Egitto</li>
 </ul>
 
-<p>Ecco perché molti viaggiatori la considerano <strong>il modo migliore di scoprire l’Egitto: in crociera sul Nilo</strong>.</p>
+<p>Ecco perché molti viaggiatori la considerano <strong>il modo migliore di scoprire l’Egitto</strong>.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/hathor-d-1777384046YRwYc.webp" alt="" loading="lazy"></figure></h2>
 
@@ -197,7 +197,7 @@ Non si visitano solo templi, ma si viaggia sullo stesso fiume che ha sostenuto u
 	<li><strong>Coppie</strong> → navigazioni romantiche al tramonto e cabine di lusso</li>
 	<li><strong>Famiglie</strong> → un viaggio istruttivo e confortevole</li>
 	<li><strong>Appassionati di storia</strong> → accesso diretto ai templi antichi</li>
-	<li><strong>Viaggiatori del lusso</strong> → imbarcazioni di alto livello con servizi esclusivi</li>
+	<li><strong>Chi viaggia nel lusso</strong> → imbarcazioni di alto livello con servizi esclusivi</li>
 </ul>
 
 <p>Che visiti l’Egitto per la prima volta o vi ritorni, questa esperienza offre ogni volta una prospettiva nuova.</p>
@@ -211,7 +211,7 @@ Per il Suo prossimo viaggio, cominci da una crociera sul Nilo tra Luxor e Assuan
 <h2>Perché servono consigli prima di una crociera sul Nilo</h2>
 
 <p>Conoscere i consigli giusti per la crociera sul Nilo prima del Suo <a href="/blogs/spiritual-journey-to-egypt">viaggio dell’anima in Egitto</a> Le permetterà di evitare gli errori più comuni e di vivere al meglio l’esperienza.<br>
-La crociera sul Nilo non è un semplice mezzo di trasporto: è un viaggio galleggiante tra <a href="/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise">Assuan e Luxor</a> attraverso la storia antica, tra templi, villaggi e paesaggi che scorrono intorno a Lei.<br>
+La crociera sul Nilo non è un semplice mezzo di trasporto: è un viaggio sull’acqua tra <a href="/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise">Assuan e Luxor</a>, attraverso la storia antica, tra templi, villaggi e paesaggi che scorrono intorno a Lei.<br>
 Dalla scelta del periodo giusto a quella della crociera più adatta, una buona preparazione fa tutta la differenza.</p>
 
 <h2>Consigli per chi naviga sul Nilo per la prima volta</h2>
@@ -283,7 +283,7 @@ Una buona <a href="/blogs/what-to-pack-for-a-dahabiya-nile-cruise">lista di cosa
 
 <p>Piccoli accorgimenti che possono migliorare molto la Sua esperienza di viaggio.</p>
 
-<p>Una crociera sul Nilo è molto più di un viaggio: è un percorso attraverso migliaia di anni di storia, tra templi iconici come il <a href="/blogs/sailing-to-karnak-temple">Tempio di Karnak</a> e molti altri. Con questi consigli, la lista per la valigia e i suggerimenti per chi parte per la prima volta, la Sua crociera filerà liscia.<br>
+<p>Una crociera sul Nilo è molto più di un viaggio: è un percorso attraverso migliaia di anni di storia, tra templi iconici come il <a href="/blogs/sailing-to-karnak-temple">Tempio di Karnak</a> e molti altri. Con questi consigli, la lista per la valigia e i suggerimenti per chi parte per la prima volta, la Sua crociera procederà senza intoppi.<br>
 In fondo, che si tratti di un viaggio classico o di un’esperienza di gran lusso, la magia del Nilo resterà con Lei per sempre.</p>`,
 
   "why-a-dahabiya-cruise-feels-like-time-travel": `<p>Una crociera in dahabiya in Egitto è uno dei modi più eleganti e sereni di scoprire il Nilo.<br>

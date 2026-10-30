@@ -19,7 +19,7 @@ import {
   getPublishedBlogPosts,
 } from "@/lib/blog-posts";
 import { BLOG_ARTICLES_IT } from "@/lib/i18n/blog-articles-it";
-import { blogPostIn } from "@/lib/i18n/blog-posts-it";
+import { blogPostIn, blogPostsListedIn } from "@/lib/i18n/blog-posts-it";
 import { TRANSLATED_BLOG_SLUGS_IT } from "@/lib/i18n/blog-slugs-it";
 import { localizedHref } from "@/lib/i18n/locale";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -82,8 +82,8 @@ export default async function ItalianBlogPostPage({ params }: ItalianBlogPostPag
   const source = await getPublishedBlogPostBySlug(slug);
   /* An address that matches no post gets the Italian 404, not an English one. */
   if (!source) notFound();
-  /* A post not yet in Italian opens in English. */
-  if (!article) redirect(`/blogs/${slug}`);
+  /* A post not yet in Italian: back to the Italian journal, never to English. */
+  if (!article) redirect("/it/blogs");
 
   const post = { ...blogPostIn(source, "it"), content: article };
   const contentHtml = italianLinks(prepareBlogContentForRender(post.content, post.excerpt));
@@ -96,7 +96,7 @@ export default async function ItalianBlogPostPage({ params }: ItalianBlogPostPag
   );
 
   const related = serializeBlogPostSummaries(
-    (await getPublishedBlogPosts())
+    blogPostsListedIn(await getPublishedBlogPosts(), "it")
       .filter((entry) => entry.slug !== post.slug)
       .slice(0, 3),
   ).map((entry) => blogPostIn(entry, "it"));

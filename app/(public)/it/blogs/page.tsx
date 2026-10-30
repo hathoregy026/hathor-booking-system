@@ -4,7 +4,7 @@ import { LocaleWebsiteText } from "@/components/public/LocaleWebsiteText";
 import { PageStructuredData } from "@/components/seo/PageStructuredData";
 import { serializeBlogPostSummaries } from "@/lib/blog-display";
 import { getPublishedBlogPosts } from "@/lib/blog-posts";
-import { blogPostIn } from "@/lib/i18n/blog-posts-it";
+import { blogPostIn, blogPostsListedIn } from "@/lib/i18n/blog-posts-it";
 import { ITALIAN_PAGES } from "@/lib/i18n/pages-seo-it";
 import "../../../journal-editorial.css";
 import "../../../editorial-chrome.css";
@@ -16,9 +16,9 @@ export const metadata: Metadata = PAGE.metadata;
 export const dynamic = "force-dynamic";
 
 export default async function ItalianBlogsPage() {
-  const posts = serializeBlogPostSummaries(await getPublishedBlogPosts()).map(
-    (post) => blogPostIn(post, "it"),
-  );
+  const posts = serializeBlogPostSummaries(
+    blogPostsListedIn(await getPublishedBlogPosts(), "it"),
+  ).map((post) => blogPostIn(post, "it"));
   return (
     <>
       <PageStructuredData
