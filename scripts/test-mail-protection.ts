@@ -45,6 +45,7 @@ async function main() {
     "@/lib/inquiry-email": { sendInquiryEmail: async () => { sent++; return { receiptSent: true }; } },
     "@/lib/inquiry-quarantine": { quarantineInquiry: async () => { quarantined++; } },
     "@/lib/mail-screening": { screenInquiry },
+    "@/lib/i18n/locale": { PUBLIC_LOCALES: ["en", "it"] },
     "@/lib/turnstile": { verifyInquiryTurnstile: async () => {} },
     "@/lib/public-api-security": { ...security, enforcePublicRateLimit: async () => {}, enforceKeyedRateLimit: async () => {} },
     "@/lib/selection-catalog": { isKnownResidenceSlug: () => false, isKnownVoyageSlug: () => false },

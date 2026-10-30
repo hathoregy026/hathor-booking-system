@@ -16,10 +16,24 @@ function italianMessage(field: Field): string {
   const { validity } = field;
   if (validity.valueMissing) return "Compili questo campo.";
   if (validity.typeMismatch && field.type === "email") {
-    return "Inserisca un indirizzo email valido.";
+    return "Inserisca un indirizzo e-mail valido.";
   }
   if (validity.tooShort && "minLength" in field) {
     return `Inserisca almeno ${field.minLength} caratteri.`;
+  }
+  if (validity.tooLong && "maxLength" in field) {
+    return `Inserisca al massimo ${field.maxLength} caratteri.`;
+  }
+  if ("min" in field && validity.rangeUnderflow) {
+    return field.type === "date"
+      ? "Scelga una data a partire da quella indicata."
+      : `Inserisca un valore non inferiore a ${field.min}.`;
+  }
+  if ("max" in field && validity.rangeOverflow) {
+    return `Inserisca un valore non superiore a ${field.max}.`;
+  }
+  if (field.type === "number" && (validity.badInput || validity.stepMismatch)) {
+    return "Inserisca un numero intero.";
   }
   return "Controlli il valore inserito.";
 }

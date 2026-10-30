@@ -15,6 +15,8 @@ import {
 import { getAdminNotificationEmail, getResendFromAddress } from "@/lib/resend-config";
 import { recordInquiryInbox } from "@/lib/inquiry-inbox";
 import { emailMailbox } from "@/lib/email-mailboxes";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
+import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import {
   resolveSelectionSummary,
   type SelectionEnquiry,
@@ -45,6 +47,8 @@ export type InquiryPayload = {
   website?: string;
   /** Bounded My Voyage selection. Slugs and integers only — never a price. */
   selection?: SelectionEnquiry;
+  /** The language of the page the guest wrote from; their receipt follows it. */
+  locale?: PublicLocale;
 };
 
 /*
@@ -127,13 +131,16 @@ export async function sendInquiryEmail(payload: InquiryPayload, dependencies: {
     }),
   );
 
-  const template = await getTemplate("ContactReceived");
+  const locale = payload.locale ?? "en";
+  const copy = EMAIL_COPY[locale].contact;
+  const template = await getTemplate("ContactReceived", locale);
   const theme = buildEmailSendTheme(template);
   const guestSubject = resolveEmailSubject(template, {
     guestName: payload.name,
   });
   const guestMessage = ContactReceivedEmail({
     guestName: payload.name,
+    locale,
     ...theme,
   });
   const [guestHtml, guestPlain] = await Promise.all([
@@ -144,20 +151,19 @@ export async function sendInquiryEmail(payload: InquiryPayload, dependencies: {
     guestPlain.trim() ||
     [
       interpolateEmailText(
-        template.heroHeading || "Thank you, {guestName}",
+        template.heroHeading || copy.hero,
         { guestName: payload.name },
       ),
       "",
       interpolateEmailText(
-        template.bodyText ||
-          "Your note has reached the Hathor reservations desk. We will reply within 24 hours.",
+        template.bodyText || copy.body,
         { guestName: payload.name },
       ),
-      "You can reply directly to this email if you need to add anything.",
+      copy.replyFallback,
       "",
-      `Visit Dahabiya: ${siteUrl}/`,
+      `${copy.cta}: ${siteUrl}${localizedHref("/", locale)}`,
       "",
-      "For your security, never send passwords or card details by email. Hathor will not request payment through an unverified link in response to a contact message.",
+      copy.security,
     ].join("\n");
 
   const teamSubject = resolveEmailSubject(alertTemplate, alertVars);

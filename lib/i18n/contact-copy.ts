@@ -72,8 +72,11 @@ export type InquiryFormCopy = {
   sending: string;
   sendMessage: string;
   unableToSend: string;
-  /** Use the server's own refusal text (English) or always this language's. */
-  serverErrors: boolean;
+  securityCheck: string;
+  /** The security widget could not load, here and on the booking journey. */
+  verificationUnavailable: string;
+  /** The hidden spam trap's label: people never see it. */
+  website: string;
   /** Added to the team's copy of the message on translated pages. */
   languageNote: string | null;
 };
@@ -130,7 +133,7 @@ export const CONTACT_COPY: Record<PublicLocale, ContactCopy> = {
   it: {
     runLabel: "Contatti dell’ufficio prenotazioni Hathor",
     navLabel: "Sezioni della pagina",
-    nav: { write: "Ci scriva", reach: "Recapiti", hours: "Orari", cruises: "Crociere" },
+    nav: { write: "Scrivici", reach: "Recapiti", hours: "Orari", cruises: "Crociere" },
     eyebrow: "Contatti",
     scroll: "Scorri",
     alts: {
@@ -151,12 +154,12 @@ export const CONTACT_COPY: Record<PublicLocale, ContactCopy> = {
     channels: [
       { word: "Visita", label: "Indirizzo", meta: "Ufficio del Cairo" },
       { word: "Chiamata", label: "Telefono", meta: "Linea diretta", cta: "Chiama ora" },
-      { word: "Email", label: "E-mail", meta: "Prenotazioni", cta: "Ci scriva" },
+      { word: "Email", label: "E-mail", meta: "Prenotazioni", cta: "Scrivici" },
       {
         word: "Messaggio",
         label: "WhatsApp",
         meta: "Risposta immediata",
-        value: "Ci scriva su WhatsApp",
+        value: "Scrivici su WhatsApp",
         cta: "WhatsApp",
       },
     ],
@@ -204,7 +207,10 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     sending: "Sending…",
     sendMessage: "Send Message",
     unableToSend: "Unable to send message",
-    serverErrors: true,
+    securityCheck: "Please complete the security check before sending.",
+    verificationUnavailable:
+      "Security verification is unavailable. Refresh this page or contact our reservations team directly.",
+    website: "Website",
     languageNote: null,
   },
   it: {
@@ -233,7 +239,10 @@ export const INQUIRY_FORM_COPY: Record<PublicLocale, InquiryFormCopy> = {
     sending: "Invio in corso…",
     sendMessage: "Invia il messaggio",
     unableToSend: "Non è stato possibile inviare il messaggio.",
-    serverErrors: false,
+    securityCheck: "Completi la verifica di sicurezza prima di inviare.",
+    verificationUnavailable:
+      "La verifica di sicurezza non è disponibile. Ricarichi la pagina o contatti direttamente il nostro ufficio prenotazioni.",
+    website: "Sito web",
     languageNote: "Guest language: Italian",
   },
 };

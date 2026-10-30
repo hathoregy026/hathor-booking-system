@@ -18,6 +18,7 @@ import {
 } from "@/components/selection/SelectionProvider";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { INQUIRY_FORM_COPY } from "@/lib/i18n/contact-copy";
+import { sendFailureIn } from "@/lib/i18n/form-errors-it";
 import { formValidityIn } from "@/lib/i18n/form-validity-it";
 import { summaryLineIn } from "@/lib/i18n/selection-copy";
 
@@ -97,7 +98,7 @@ export function InquiryForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (state === "submitting") return;
-    if (!turnstileToken) { setState("error"); setErrorMessage("Please complete the security check before sending."); return; }
+    if (!turnstileToken) { setState("error"); setErrorMessage(t.securityCheck); return; }
     setState("submitting");
     setErrorMessage("");
 
@@ -137,14 +138,14 @@ export function InquiryForm({
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, turnstileToken }),
+        body: JSON.stringify({ ...payload, turnstileToken, locale }),
       });
 
       if (!response.ok) {
         const result = (await response.json().catch(() => null)) as {
           error?: string;
         } | null;
-        throw new Error((t.serverErrors ? result?.error : undefined) ?? t.unableToSend);
+        throw new Error(result?.error ?? t.unableToSend);
       }
 
       setState("success");
@@ -152,9 +153,7 @@ export function InquiryForm({
       form.reset();
     } catch (error) {
       setState("error");
-      setErrorMessage(
-        error instanceof Error && t.serverErrors ? error.message : t.unableToSend,
-      );
+      setErrorMessage(sendFailureIn(locale, error, t.unableToSend));
     } finally {
       setTurnstileToken("");
       setVerificationVersion(current => current + 1);
@@ -254,7 +253,7 @@ export function InquiryForm({
 
         <div className="mt-8 space-y-4">
           <div hidden aria-hidden="true" style={{ display: "none" }}>
-            <label htmlFor={`${type}-website`}>Website</label>
+            <label htmlFor={`${type}-website`}>{t.website}</label>
             <input
               id={`${type}-website`}
               name="website"
