@@ -85,11 +85,11 @@ export const PAGES_DE: Partial<Pages> = {
       },
       {
         title: "Der Totentempel der Hatschepsut",
-        body: "Der Totentempel der Hatschepsut, auch als Djeser-Djeseru bekannt, liegt am Fuß der Felswände von Deir el-Bahari am Westufer des Nils. Der Tempel wurde zu Ehren der Hatschepsut und des Amun errichtet und liegt neben dem Totentempel des Mentuhotep. Seine Reliefs erzählen von der göttlichen Geburt einer Pharaonin ohne Vorbild.",
+        body: "Der Totentempelkomplex der Hatschepsut, auch als Djeser-Djeseru bekannt, liegt am Fuß der Felswände von Deir el-Bahari am Westufer des Nils. Der Tempel wurde zu Ehren der Hatschepsut und des Amun errichtet und liegt neben dem Totentempel des Mentuhotep. Seine Reliefs erzählen von der göttlichen Geburt einer Pharaonin ohne Vorbild.",
       },
       {
         title: "Das Tal der Könige",
-        body: "Das Tal der Könige ist eine prächtige Nekropole, in der bis heute 63 Gräber freigelegt wurden. Sie reichen von einer einzelnen Kammer bis zu Gängen mit 120 Räumen, und hier fanden Pharaonen wie Ramses II., Tutanchamun und Sethos I. ihre letzte Ruhe. Das Tal stand im Mittelpunkt zahlreicher Ausgrabungen; 1979 wurde es UNESCO-Welterbe.",
+        body: "Das Tal der Könige ist eine prächtige Nekropole, in der bis heute 63 Gräber freigelegt wurden. Sie reichen von einer einzelnen Kammer bis zu Gängen mit 120 Räumen, und hier fanden Pharaonen wie Ramses II., Tutanchamun und Sethos I. ihre letzte Ruhe. Das Tal stand im Mittelpunkt mehrerer Ausgrabungen; 1979 wurde es UNESCO-Welterbe.",
       },
     ],
   },
@@ -97,10 +97,10 @@ export const PAGES_DE: Partial<Pages> = {
     heroSupport:
       "In einer Welt, die selten innehält, schenkt die Hathor dem Körper Zeit zum Loslassen. Seneb Spa, Historia Fitness und wahrhaft erholsame Suiten begleiten Sie zwischen Luxor und Assuan.",
     /* Set three words to a line in a fixed column: kept to two short lines. */
-    spaTitle: "Das Seneb Spa am Nil",
+    spaTitle: "Das Seneb Spa auf dem Nil",
     spaParagraphs: [
-      "Entdecken Sie das Seneb Spa, das Herz der Ruhe an Bord der Kreuzfahrt Hathor Dahabiya. Ein unvergessliches Erlebnis, inspiriert von über 7.000 Jahren ägyptischer Wellnesstradition (Seneb bedeutet Gesundheit und Wohlbefinden): Ihr Spa auf dem Nil entspringt zeitloser Weisheit und ganzheitlicher Fürsorge.",
-      "Während der Nil Sie sanft durch die majestätische Kultur der alten Ägypter trägt, überlassen Sie Körper und Geist den entspannenden Rhythmen unseres Spas. Jeder Moment ist darauf ausgerichtet, das Gleichgewicht wiederzufinden, den Geist zu beruhigen und die innere Lebenskraft zu wecken.",
+      "Entdecken Sie das Seneb Spa, das Herz der Ruhe an Bord der Kreuzfahrt Hathor Dahabiya. Ein Erlebnis, das Sie nie bereuen werden, inspiriert von über 7.000 Jahren ägyptischer Wellnesstradition (Seneb bedeutet Gesundheit und Wohlbefinden): Ihr Spa auf dem Nil entspringt zeitloser Weisheit und ganzheitlicher Fürsorge.",
+      "Während der Nil Sie sanft durch die majestätische Kultur der alten Ägypter trägt, überlassen Sie Körper und Geist den entspannenden Rhythmen unseres sorgfältig gestalteten Spa-Erlebnisses auf dem Nil. Jeder Moment ist darauf ausgerichtet, das Gleichgewicht wiederzufinden, den Geist zu beruhigen und die innere Lebenskraft zu wecken.",
       "Wählen Sie aus einer erlesenen Auswahl exklusiver Behandlungen, alter Rituale und zeitgemäßer Wellnessanwendungen. Von Aromatherapie-Massagen bis zu entgiftenden Kräuterwickeln verwenden unsere erfahrenen Therapeuten natürliche, lokale Zutaten und traditionelle Techniken und passen jede Behandlung Ihren Bedürfnissen an.",
       "Ob Sie Ruhe, strahlende Haut, neue Energie oder Gelassenheit suchen: Das Seneb Spa ist die beste Wahl, umgeben von der magischen Schönheit des Nils.",
     ],
@@ -111,7 +111,7 @@ export const PAGES_DE: Partial<Pages> = {
   gastronomy: {
     introChapter: "Die Küche",
     introTitle: "TAFELN\nAM NIL",
-    introSecondTitle: "GEMACHT\nFÜR SIE",
+    introSecondTitle: "UNTERWEGS\nMIT IHNEN",
     introThirdTitle: "KOSTEN SIE\nÄGYPTEN",
     introBody:
       "Die Menüs entstehen aus ägyptischen Zutaten und vertrauten internationalen Einflüssen, mit Gerichten, die dem Rhythmus und der Umgebung jedes Tages folgen. Küche, Bewegung und Ruhe verschmelzen zu einem einzigen, fortlaufenden Erlebnis.",
@@ -149,11 +149,11 @@ export const PAGES_DE: Partial<Pages> = {
     experiencesBody:
       "Luxus muss sich nicht ankündigen. Man spürt ihn im perfekten Timing, im Lieblingsgetränk, an das sich die Crew erinnert, im Raum zur Bewegung und in der Freiheit, dort zu speisen, wo der Fluss am schönsten ist.",
     stories: [
-      { time: "MORGEN", place: "OBERDECK", title: "FRÜHSTÜCK", cta: "Geschichte öffnen" },
-      { time: "ABEND", place: "SPEISESAAL", title: "VOM KÜCHENCHEF", cta: "Geschichte öffnen" },
+      { time: "SONNENAUFGANG", place: "OBERDECK", title: "FRÜHSTÜCK", cta: "Geschichte öffnen" },
+      { time: "ABEND", place: "SPEISESAAL", title: "CHEF'S TABLE", cta: "Geschichte öffnen" },
       { time: "GOLDENE STUNDE", place: "FLUSSDECK", title: "DINNER AM NIL", cta: "Geschichte öffnen" },
       { time: "TÄGLICH", place: "FITNESSDECK", title: "BEWEGUNG", cta: "Geschichte öffnen" },
-      { time: "JEDERZEIT", place: "IHRE SUITE", title: "ZIMMERSERVICE", cta: "Geschichte öffnen" },
+      { time: "JEDERZEIT", place: "IHRE SUITE", title: "SUITENSERVICE", cta: "Geschichte öffnen" },
     ],
     closingChapter: "Jenseits der Tafel",
     closingTitle: "WER SAGT,\nGENUSS KÖNNE\nNICHT AUCH\nNÜTZLICH SEIN?",
@@ -163,7 +163,7 @@ export const PAGES_DE: Partial<Pages> = {
     conciergeTitle: "EINE REISE\nNACH MASS",
     diningClosingTitle: "TAFELN\nOHNE\nEILE",
     conciergeBody:
-      "Erzählen Sie uns, wie Sie gern reisen. Unser Team organisiert private Dinner, Ernährungswünsche, Anlässe, Trainingszeiten und Service in der Suite nach dem natürlichen Rhythmus Ihrer Nilreise.",
+      "Erzählen Sie uns, wie Sie gern reisen. Unser Team organisiert private Dinner, Ernährungswünsche, Feiern, Trainingszeiten und Service in der Suite nach dem natürlichen Rhythmus Ihrer Nilreise.",
     conciergeCta: "Reise planen",
     featureLabel: "DIE TAFEL DER HATHOR",
     featureTitle: "PRIVATE DINNER",

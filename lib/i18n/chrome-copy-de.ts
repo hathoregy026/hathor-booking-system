@@ -8,7 +8,7 @@ export const CHROME_COPY_DE: ChromeCopy = {
   nav: {
     groups: {
       suites: "Suiten",
-      cruises: "Kreuzfahrten",
+      cruises: "Nilreisen",
       experiences: "Erlebnisse",
       about: "Über uns",
     },

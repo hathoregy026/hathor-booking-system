@@ -76,7 +76,7 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
  */
 export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
   it: false,
-  /* Off until the native and legal reviews in docs/german-review.md are done. */
+  /* Off until Hathor opens German to search; see docs/german-review.md. */
   de: false,
 };
 

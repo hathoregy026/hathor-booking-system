@@ -1,6 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 import { getBookingRoomDetails } from "@/lib/booking-room-details";
+import { notFoundMetadata } from "@/lib/i18n/not-found";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
+
+/* A known address redirects, so this page only ever renders as the German 404. */
+export const metadata = notFoundMetadata("de");
 
 const ROOM_PAGE: Record<PhysicalRoomType, string> = {
   "Luxury King Cabin": "/de/rooms/luxury-king-room",

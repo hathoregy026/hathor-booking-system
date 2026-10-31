@@ -241,7 +241,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
     everyCabin: "Alle Kabinen dieser Abfahrt · Gäste verteilen",
     filterLabel: "Kabinen nach Typ filtern",
     allRooms: "Alle Kabinen",
-    cabinCount: count => `${count} Kabinen`,
+    cabinCount: count => `${count} ${count === 1 ? "Kabine" : "Kabinen"}`,
     showing: (cabins, free) => `Angezeigte Kabinen: ${cabins} · ${free} frei an diesem Termin`,
     hiddenByFilter: count =>
       count === 1 ? "1 Kabine mit Ihren Gästen ist durch den Filter ausgeblendet." : `${count} Kabinen mit Ihren Gästen sind durch den Filter ausgeblendet.`,

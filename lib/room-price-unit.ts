@@ -13,7 +13,7 @@ const PRICE_UNITS: Record<PublicLocale, Record<LuxuryRoomTypeValue, string>> = {
     "luxury-royal-suites": "per Royal Suite",
   },
   de: {
-    "luxury-rooms": "pro Zimmer",
+    "luxury-rooms": "pro Kabine",
     "luxury-suites": "pro Suite",
     "luxury-royal-suites": "pro Royal Suite",
   },
