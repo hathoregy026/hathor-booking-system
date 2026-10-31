@@ -54,8 +54,7 @@ export type ChromeCopy = {
     /** The two-letter mark on the toggle. */
     code: string;
     activeName: string;
-    names: Record<"AR" | "EN" | "DE" | "IT" | "RU", string>;
-    comingSoon: (name: string) => string;
+    names: Record<PublicLocale, string>;
     toggleLabel: (active: string) => string;
     closeMenu: string;
   };
@@ -161,14 +160,11 @@ const EN: ChromeCopy = {
     code: "En",
     activeName: "English",
     names: {
-      AR: "Arabic",
-      EN: "English",
+      en: "English",
       /* A live language is always named in itself, so its speakers find it. */
-      DE: "Deutsch",
-      IT: "Italiano",
-      RU: "Russian",
+      it: "Italiano",
+      de: "Deutsch",
     },
-    comingSoon: (name) => `${name} — coming soon`,
     toggleLabel: (active) => `Language: ${active}. Choose a language`,
     closeMenu: "Close language menu",
   },
@@ -377,13 +373,10 @@ const IT: ChromeCopy = {
     code: "It",
     activeName: "Italiano",
     names: {
-      AR: "Arabo",
-      EN: "Inglese",
-      DE: "Deutsch",
-      IT: "Italiano",
-      RU: "Russo",
+      en: "Inglese",
+      it: "Italiano",
+      de: "Deutsch",
     },
-    comingSoon: (name) => `${name} — in arrivo`,
     toggleLabel: (active) => `Lingua: ${active}. Scelga una lingua`,
     closeMenu: "Chiudi il menu delle lingue",
   },

@@ -6,6 +6,7 @@ import { hasAdminPermission } from "@/lib/admin-permissions";
 import { PublicRequestError, RateLimitExceededError, enforcePublicRateLimit } from "@/lib/public-api-security";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { bulkUsesLocalStorage } from "@/lib/bulk-email-store";
+import { bulkFieldIssues } from "@/lib/bulk-email-validation";
 
 export const bulkHeaders = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff" };
 export function assertBulkSameOrigin(request: Request) {
@@ -59,7 +60,10 @@ export async function readBulkJson(request: Request): Promise<unknown> {
 export function bulkRouteError(error: unknown) {
   if (error instanceof RateLimitExceededError) return NextResponse.json({ error: "Please wait before trying again." }, { status: 429, headers: { ...bulkHeaders, "Retry-After": String(error.retryAfterSeconds) } });
   if (error instanceof PublicRequestError) return NextResponse.json({ error: error.message }, { status: error.status, headers: bulkHeaders });
-  if (error instanceof ZodError) return NextResponse.json({ error: error.issues.some(issue => issue.path[0] === "template") ? "Check the template fields. Use valid colours and a valid footer email address, or leave that address empty." : "Check the subject, message and recipient list. Select between 1 and 100 unique, valid addresses." }, { status: 400, headers: bulkHeaders });
+  if (error instanceof ZodError) {
+    const fields = bulkFieldIssues(error.issues).filter(issue => issue.id);
+    return NextResponse.json({ error: fields.length ? `Check these fields. ${fields.map(issue => `${issue.label}: ${issue.message}`).join(" ")}` : "Check the subject, message and recipient list. Select between 1 and 100 unique, valid addresses." }, { status: 400, headers: bulkHeaders });
+  }
   // Log fixed diagnostic labels only: never include addresses, payloads, SQL,
   // connection strings or the error's free-form message in runtime logs.
   const failure = error instanceof Error ? error : null;
