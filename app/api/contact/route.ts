@@ -10,6 +10,7 @@ import {
 } from "@/lib/selection-catalog";
 import { SELECTION_ENQUIRY_LIMITS } from "@/lib/selection-enquiry";
 import { CHARTER_PAGE } from "@/lib/page-content";
+import { PUBLIC_LOCALES } from "@/lib/i18n/locale";
 import {
   assertTrustedPublicJsonRequest,
   enforceKeyedRateLimit,
@@ -130,6 +131,8 @@ const inquirySchema = z.object({
   // Hidden honeypot. Real visitors never fill this; simple form bots usually do.
   website: z.string().max(300).optional(),
   turnstileToken: z.string().max(2048).optional(),
+  // The language of the page the guest wrote from, for their receipt.
+  locale: z.enum(PUBLIC_LOCALES).optional(),
 });
 
 async function limitInquiries(request: Request): Promise<void> {
@@ -156,7 +159,7 @@ export async function POST(request: Request) {
     }
 
     // Verification credentials never enter stored mail or branded templates.
-    const { turnstileToken, ...payload } = parsed.data;
+    const { turnstileToken, locale, ...payload } = parsed.data;
     const screening = screenInquiry(payload);
     if (payload.website) {
       await quarantineInquiry(payload, screening);
@@ -176,7 +179,7 @@ export async function POST(request: Request) {
       limit: 3,
       windowMs: 60 * 60_000,
     });
-    const { receiptSent } = await sendInquiryEmail(payload);
+    const { receiptSent } = await sendInquiryEmail({ ...payload, locale });
     return NextResponse.json(
       { ok: true, receiptSent },
       { headers: { "Cache-Control": "no-store" } },

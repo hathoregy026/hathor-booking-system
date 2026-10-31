@@ -5,7 +5,7 @@ import {
   PUBLIC_LOCALE_HTML_LANG,
   type PublicLocale,
 } from "@/lib/i18n/locale";
-import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
+import { SEO_PLACE_WORDS, SEO_SITE_ORIGIN } from "@/lib/seo/site";
 
 const SITE = SEO_SITE_ORIGIN;
 
@@ -131,12 +131,11 @@ export function HomeThreeStructuredData({ locale = "en" }: { locale?: PublicLoca
       telephone: "+201270496896",
       address: {
         "@type": "PostalAddress",
-        streetAddress:
-          "One Kattamiya, Tower 211, Floor 11, Flat 111, Ring Road",
-        addressLocality: "Cairo",
+        streetAddress: SEO_PLACE_WORDS[locale].streetAddress,
+        addressLocality: SEO_PLACE_WORDS[locale].addressLocality,
         addressCountry: "EG",
       },
-      areaServed: { "@type": "Country", name: "Egypt" },
+      areaServed: { "@type": "Country", name: SEO_PLACE_WORDS[locale].country },
       openingHours: "Sa-Th 09:00-17:00",
     },
     {

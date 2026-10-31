@@ -15,12 +15,12 @@ export const NOT_FOUND_COPY: Record<TranslatedLocale, NotFoundCopy> = {
   it: {
     metaTitle: "Pagina non trovata | Hathor Dahabiya",
     metaDescription:
-      "L’indirizzo che ha aperto non esiste o è stato spostato. Torni alla pagina iniziale di Hathor Dahabiya o scelga il Suo viaggio sul Nilo.",
+      "La pagina che cerca non esiste o è stata spostata. Torni alla pagina iniziale di Hathor Dahabiya o scelga il Suo viaggio sul Nilo.",
     eyebrow: "Errore 404",
     title: "Pagina non trovata",
-    lede: "L’indirizzo che ha aperto non esiste o è stato spostato. Può tornare alla pagina iniziale o scegliere il Suo viaggio sul Nilo.",
-    home: "Pagina iniziale",
-    voyages: "I viaggi",
+    lede: "La pagina che cerca non esiste o è stata spostata. Può tornare alla pagina iniziale o scegliere il Suo viaggio sul Nilo.",
+    home: "Torna alla home",
+    voyages: "Scopri i viaggi",
   },
   de: {
     metaTitle: "Seite nicht gefunden | Hathor Dahabiya",

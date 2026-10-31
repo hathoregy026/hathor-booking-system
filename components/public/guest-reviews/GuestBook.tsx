@@ -102,7 +102,7 @@ function ReviewNote({
           )}
           {review.url ? (
             <a href={review.url} target="_blank" rel="noopener noreferrer nofollow" className="gb__when">
-              {review.when ? t.when(review.when) : t.onPlatform(label)}
+              {t.when(review.when) || t.onPlatform(label)}
               <span className="gb__sr">{t.readThisReview(review.author, label)}</span>
             </a>
           ) : (
@@ -137,7 +137,7 @@ function Score({ data, t }: { data: GuestReviewsData; t: ReviewsCopy }) {
   if (data.rating == null) return null;
   return (
     <div className="gb__score">
-      <span className="gb__figure">{data.rating.toFixed(1)}</span>
+      <span className="gb__figure">{t.figure(data.rating)}</span>
       <span className="gb__score-side">
         <Rating value={data.rating} size="lg" id={`gb-score-${data.source}`} source={data.source} label={t.rated(data.rating.toFixed(1), SOURCE_LABEL[data.source])} />
         {data.count != null ? (
@@ -406,7 +406,7 @@ export function GuestBook({
         ) : null}
         {data ? (
           <p className="gb__source">
-            {t.sourceNote(SOURCE_LABEL[data.source])}
+            {t.attribution(SOURCE_LABEL[data.source])}
           </p>
         ) : null}
       </div>

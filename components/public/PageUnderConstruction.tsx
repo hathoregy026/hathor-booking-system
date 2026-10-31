@@ -1,10 +1,11 @@
 "use client";
 
-import { usePublicLocale } from "@/hooks/usePublicLocale";
-import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { usePathname } from "next/navigation";
+import { COMING_SOON_COPY } from "@/lib/i18n/system-pages-copy";
+import { splitLocalePath } from "@/lib/i18n/locale";
 
 export function PageUnderConstruction() {
-  const label = CHROME_COPY[usePublicLocale()].comingSoon;
+  const label = COMING_SOON_COPY[splitLocalePath(usePathname()).locale];
   return (
     <section
       className="hathor-page-construction"

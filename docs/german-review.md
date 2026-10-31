@@ -66,7 +66,7 @@ Please check in particular:
 - Whether the site needs a German-law legal notice (Impressum, § 5 DDG) and privacy notice before
   it opens to German visitors. Neither has been added.
 
-Guest emails stay in English, as for Italian.
+Guest emails are in German too (`lib/i18n/email-copy-de.ts`, also a machine draft). Dashboard-edited email wording stays English: German emails use built-in text with the dashboard's colours, as Italian does.
 
 ## 5. To resolve later
 
@@ -81,9 +81,7 @@ here was guessed: the German keeps the English meaning until someone decides.
   The English needs updating before German opens.
 - **Price format in the booking journey.** It shows "7.000 USD", mirroring the English "USD 7,000",
   while the rest of the site shows "7.000 $" (`lib/currency.ts`, `deMoney` in `booking-copy-de.ts:29`).
-- **Occasions text.** New Year's Eve (name, stripe messages, "Until New Year") is English in the
-  database, in the `occasions` setting. It is off today but runs 25 Dec to 2 Jan, so German and Italian
-  visitors would see English if it is switched on. It needs a per-language field.
+- **Occasions text.** Standard occasions now read in German from built-in text (`lib/i18n/occasions-copy.ts`), and the dashboard has a German field for custom messages. A custom message with neither is left off German pages rather than shown in English.
 - **Dashboard edits do not reach German.** German overlays live in `lib/i18n/website-text-de.ts` and
   replace whole sections, so a dashboard change to the English needs a matching change there until the
   planned SEO section exists.

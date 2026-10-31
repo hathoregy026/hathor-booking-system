@@ -32,6 +32,8 @@ export type AdminBookingDto = {
   specialRequests: string | null;
   customerEmail: string;
   country: string | null;
+  /** Set when the guest booked in a language other than English. */
+  guestLocale?: "it" | "de";
   status: string;
   cruiseName: string;
   /** The voyage's slug (e.g. "4-nights-luxor-aswan"); the ship map opens on it. */
@@ -63,6 +65,36 @@ export type AdminBookingDto = {
   createdAt: string;
   deletedAt: string | null;
 };
+
+/** Reasons staff may give when cancelling; hathor_administer_booking refuses any other. */
+export const CANCEL_REASONS = [
+  "CANCELLATION",
+  "NO_SHOW",
+  "EARLY_DEPARTURE",
+  "HATHOR_CANCELLED",
+  "UNAVOIDABLE_CIRCUMSTANCES",
+  "SIGNIFICANT_CHANGE",
+] as const;
+export type CancelReason = (typeof CANCEL_REASONS)[number];
+
+/** No cancellation fee: the Terms owe a full refund (sections 13, 2 and 12). */
+export const ZERO_FEE_CANCEL_REASONS: readonly CancelReason[] = ["HATHOR_CANCELLED", "UNAVOIDABLE_CIRCUMSTANCES", "SIGNIFICANT_CHANGE"];
+
+/** Every stored cancellationReason in words, the decline included. */
+export const CANCELLATION_REASON_LABELS: Record<CancelReason | "HATHOR_DECLINED", string> = {
+  CANCELLATION: "Guest cancelled",
+  NO_SHOW: "No-show",
+  EARLY_DEPARTURE: "Early departure",
+  HATHOR_CANCELLED: "Hathor cancelled the voyage",
+  UNAVOIDABLE_CIRCUMSTANCES: "Guest cancelled: unavoidable circumstances",
+  SIGNIFICANT_CHANGE: "Guest cancelled after a significant change",
+  HATHOR_DECLINED: "Request declined by Hathor",
+};
+
+export function cancellationReasonLabel(reason: string | null): string {
+  if (!reason) return "—";
+  return CANCELLATION_REASON_LABELS[reason as keyof typeof CANCELLATION_REASON_LABELS] ?? reason;
+}
 
 export function bookingStage(input: {
   status: string;

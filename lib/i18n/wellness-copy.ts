@@ -163,7 +163,7 @@ export const WELLNESS_COPY: Record<PublicLocale, WellnessCopy> = {
     statement:
       "Costruisca un viaggio privato con il tempo per la Seneb Spa, l’Historia Fitness, i rituali rigeneranti in suite e i templi d’Egitto.",
     bookNow: "Prenota ora",
-    enquire: "Ci scriva",
+    enquire: "Scrivici",
     cardTag: "Oasi galleggiante",
     cardBody: ["Spa · Fitness · Riposo in suite", "tra Luxor e Assuan"],
     suites: "Suite",

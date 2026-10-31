@@ -8,9 +8,9 @@ import { HATHOR_FOOTER_VIDEO_SRC } from "@/lib/branding";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
+import { SEO_PLACE_WORDS, SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
-import { localizedHref, splitLocalePath } from "@/lib/i18n/locale";
+import { localizedHref, splitLocalePath, type PublicLocale } from "@/lib/i18n/locale";
 
 /**
  * The site footer. One composition, every route, every viewport.
@@ -83,7 +83,7 @@ function ArrowUpIcon() {
  * so a crawler merges the two rather than seeing a second company: this adds
  * the profiles, logo and reservations channel that every page can assert.
  */
-function FooterStructuredData() {
+function FooterStructuredData({ locale }: { locale: PublicLocale }) {
   const graph = {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
@@ -95,8 +95,8 @@ function FooterStructuredData() {
     telephone: PUBLIC_CONTACT.phone,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "One Kattamiya, Tower 211, Floor 11, Flat 111, Ring Road",
-      addressLocality: "Cairo",
+      streetAddress: SEO_PLACE_WORDS[locale].streetAddress,
+      addressLocality: SEO_PLACE_WORDS[locale].addressLocality,
       addressCountry: "EG",
     },
     contactPoint: {
@@ -296,7 +296,7 @@ export function Footer() {
 
   return (
     <footer ref={rootRef} className="hf" role="contentinfo">
-      <FooterStructuredData />
+      <FooterStructuredData locale={locale} />
 
       <div className="hf__ghost" aria-hidden>
         <WordmarkGhost />

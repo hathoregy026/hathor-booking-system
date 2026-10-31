@@ -105,7 +105,7 @@ export const LOCALE_ROOM_PAGE_WORDS: Record<TranslatedLocale, RoomPageWords> = {
       "luxury-king-room": "cabina con vista sul Nilo",
       "luxury-twin-room": "cabina con vista sul Nilo",
       "luxury-suite": "suite con vista sul Nilo",
-      "royal-suite": "suite sul ponte principale",
+      "royal-suite": "sul ponte principale",
     },
     fallbackKind: "a bordo",
     imageAlt: (room) => `${room} a bordo di Hathor Dahabiya`,

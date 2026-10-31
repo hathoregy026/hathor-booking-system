@@ -38,6 +38,7 @@ export const REVIEWS_COPY_DE: ReviewsCopy = {
   reviewsFrom: (platform) => `Bewertungen von ${platform}`,
   basedOn: (count) =>
     `Basierend auf ${count.toLocaleString("de-DE")} ${count === 1 ? "Bewertung" : "Bewertungen"}`,
+  figure: (value) => value.toFixed(1).replace(".", ","),
   rated: (value, platform) => `Mit ${value.replace(".", ",")} von 5 auf ${platform} bewertet`,
   readReviews: "Bewertungen lesen",
   writeReview: "Bewertung schreiben",
@@ -51,7 +52,7 @@ export const REVIEWS_COPY_DE: ReviewsCopy = {
   chooseReview: "Bewertung wählen",
   reviewOf: (index, total) => `Bewertung ${index} von ${total}`,
   folio: (page, total) => `Seite ${page} von ${total}`,
-  sourceNote: (platform) => `Bewertungen und Rezensionen von ${platform}, so wiedergegeben, wie die Gäste sie geschrieben haben.`,
+  attribution: (platform) => `Bewertungen und Rezensionen von ${platform}, so wiedergegeben, wie die Gäste sie geschrieben haben.`,
   when: whenDe,
   fallbackLede: (withTripadvisor) =>
     `Lesen Sie, was Gäste nach einer Reise an Bord der Hathor berichten, auf Google${withTripadvisor ? " und Tripadvisor" : ""}.`,

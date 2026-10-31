@@ -106,10 +106,28 @@ export type CharterCopy = {
       children: string;
       check: string;
       send: string;
+      security: string;
     };
-    /** Use the server's own refusal text (English) or always this language's. */
-    serverErrors: boolean;
     fallback: { lead: string; link: string };
+    /** The words of the request: English goes to the team, this language to the guest's own mail draft. */
+    draft: {
+      subject: (name: string) => string;
+      inquiry: string;
+      tripType: string;
+      departure: string;
+      destination: string;
+      time: string;
+      special: string;
+      name: string;
+      email: string;
+      phone: string;
+      route: string;
+      startDate: string;
+      adults: string;
+      children: string;
+    };
+    /** The hidden spam trap's label: people never see it. */
+    website: string;
     sending: string;
     send: string;
     success: {
@@ -239,9 +257,26 @@ const EN: CharterCopy = {
       children: "Please enter 0 to 50 children.",
       check: "Please check the highlighted fields.",
       send: "Unable to send your request.",
+      security: "Please complete the security check before sending.",
     },
-    serverErrors: true,
     fallback: { lead: "Your details are safe — send them straight to our charter team:", link: "email the request" },
+    draft: {
+      subject: (name) => `Private charter request — ${name}`,
+      inquiry: "Private charter inquiry.",
+      tripType: "Trip type",
+      departure: "Departure",
+      destination: "Destination",
+      time: "Preferred time",
+      special: "Special requirements",
+      name: "Name",
+      email: "Email",
+      phone: "Phone",
+      route: "Preferred route",
+      startDate: "Preferred start date",
+      adults: "Adults",
+      children: "Children",
+    },
+    website: "Website",
     sending: "Sending…",
     send: "Send Request",
     success: {
@@ -401,7 +436,7 @@ const IT: CharterCopy = {
   },
   trust: {
     kicker: "Fiducia e riservatezza",
-    title: ["Prove", "discrete"],
+    title: ["Voci", "discrete"],
     facts: [
       "Nessun altro ospite a bordo, privacy al 100%",
       "Equipaggio dedicato e chef privato",
@@ -421,7 +456,7 @@ const IT: CharterCopy = {
       },
     ],
     photoAlt: "La vita a bordo di un charter privato di Hathor",
-    askWhatsapp: "Ci scriva su WhatsApp",
+    askWhatsapp: "Scrivici su WhatsApp",
   },
   epilogue: {
     eyebrow: "Concierge privato",
@@ -470,12 +505,29 @@ const IT: CharterCopy = {
       children: "Indichi da 0 a 50 bambini.",
       check: "Controlli i campi evidenziati.",
       send: "Non è stato possibile inviare la richiesta.",
+      security: "Completi la verifica di sicurezza prima di inviare.",
     },
-    serverErrors: false,
     fallback: {
       lead: "I Suoi dati sono al sicuro. Li invii direttamente al nostro team charter:",
-      link: "invii la richiesta per e-mail",
+      link: "invia la richiesta per e-mail",
     },
+    draft: {
+      subject: (name) => `Richiesta di charter privato: ${name}`,
+      inquiry: "Richiesta di charter privato.",
+      tripType: "Tipo di viaggio",
+      departure: "Partenza",
+      destination: "Destinazione",
+      time: "Orario preferito",
+      special: "Esigenze particolari",
+      name: "Nome",
+      email: "E-mail",
+      phone: "Telefono",
+      route: "Itinerario preferito",
+      startDate: "Data di partenza preferita",
+      adults: "Adulti",
+      children: "Bambini",
+    },
+    website: "Sito web",
     sending: "Invio in corso…",
     send: "Invia la richiesta",
     success: {

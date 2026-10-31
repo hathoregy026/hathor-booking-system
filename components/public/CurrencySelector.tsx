@@ -85,7 +85,7 @@ export function CurrencySelector() {
             {status === "loading" && !rates ? <p>{t.loading}</p> : null}
             {status === "error" ? <p>{t.unavailable(preferred !== "USD" ? preferred : null)} <button type="button" onClick={() => void retry()}>{t.retry}</button></p> : null}
             <p>{t.estimates}</p>
-            {rates ? <p>{t.dailyRates} · {rateDates[0]}{rateDates[0] !== rateDates[rateDates.length - 1] ? ` – ${rateDates[rateDates.length - 1]}` : ""} · <a href="https://frankfurter.dev/" target="_blank" rel="noopener noreferrer">Frankfurter</a></p> : null}
+            {rates ? <p>{t.dailyRates} · {t.rateDate(rateDates[0])}{rateDates[0] !== rateDates[rateDates.length - 1] ? ` – ${t.rateDate(rateDates[rateDates.length - 1])}` : ""} · <a href="https://frankfurter.dev/" target="_blank" rel="noopener noreferrer">Frankfurter</a></p> : null}
           </div>
         </div>, document.body,
       )}

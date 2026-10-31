@@ -4,18 +4,18 @@ import "./occasions.css";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
-import { usePublicLocale } from "@/hooks/usePublicLocale";
-import { CHROME_COPY, type ChromeCopy } from "@/lib/i18n/chrome-copy";
-import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import {
-  countdownParts,
+  countdownCaption,
+  formatCountdown,
   msUntilCountdown,
   OCCASION_DISMISS_STORAGE_PREFIX,
-  padCountdownUnit,
   stripeItemsAt,
   type Occasion,
   type OccasionStripeItem,
 } from "@/lib/occasions";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { localizedStripeItems, occasionWords } from "@/lib/i18n/occasions-copy";
 import { OccasionIcon, sparkPath, starPath } from "@/components/occasions/OccasionIcon";
 import { OccasionNavCountdown } from "@/components/occasions/OccasionNavCountdown";
 import { OccasionNavEffect } from "@/components/occasions/OccasionNavEffect";
@@ -24,17 +24,6 @@ import {
   usePrefersReducedMotion,
 } from "@/components/occasions/useActiveOccasion";
 
-function stripeCountdown(ms: number, units: ChromeCopy["occasion"]["stripeUnits"]): string {
-  const { days, hours, minutes, seconds } = countdownParts(ms);
-  return `${days}${units.days} ${padCountdownUnit(hours)}${units.hours} ${padCountdownUnit(minutes)}${units.minutes} ${padCountdownUnit(seconds)}${units.seconds}`;
-}
-
-/* A dashboard link stays in the visitor's language; "/cruises" only exists as an English redirect. */
-function stripeHref(href: string, locale: PublicLocale): string {
-  if (locale === "en") return href;
-  return localizedHref(href === "/cruises" ? "/cruises-list" : href, locale);
-}
-
 /**
  * Lives inside the fixed header (components/layout/Header.tsx), so it follows
  * the nav as it compacts. Everything here overlays the page — nothing pushes
@@ -42,7 +31,8 @@ function stripeHref(href: string, locale: PublicLocale): string {
  */
 export function OccasionHeaderLayer() {
   const active = useActiveOccasion();
-  const copy = CHROME_COPY[usePublicLocale()].occasion;
+  const locale = usePublicLocale();
+  const copy = CHROME_COPY[locale].occasion;
   const reducedMotion = usePrefersReducedMotion();
   const occasion = active?.occasion ?? null;
   const occasionId = occasion?.id ?? null;
@@ -81,12 +71,13 @@ export function OccasionHeaderLayer() {
 
   if (!active || !occasion) return null;
   const { now } = active;
-  const items = stripeItemsAt(occasion, now);
+  /* Dashboard wording in the visitor's language. */
+  const items = localizedStripeItems(stripeItemsAt(occasion, now), locale);
+  const words = occasionWords(occasion, countdownCaption(occasion), locale);
   const left = msUntilCountdown(occasion, now);
   const isDismissed = draft ? dismissed === occasion : dismissed === occasion.id;
   const showStripe = occasion.stripe.enabled && !isDismissed && items.length > 0;
-  const lights = occasion.hanging === "lights";
-  const garland = occasion.hanging === "lanterns" || occasion.hanging === "stars" ? occasion.hanging : null;
+  const { hanging } = occasion;
 
   return (
     <>
@@ -94,33 +85,23 @@ export function OccasionHeaderLayer() {
         <OccasionNavEffect effect={occasion.navEffect} />
       ) : null}
       {occasion.heroCountdown && left !== null && left > 0 ? (
-        <OccasionNavCountdown
-          ms={left}
-          caption={occasion.countdownLabel.trim() || copy.until(occasion.name)}
-        />
+        <OccasionNavCountdown ms={left} caption={words.caption} />
       ) : null}
-      {/* Top of the screen: the header makes room for the stripe, and the
-          lights hang from it across the top of the menu bar. */}
-      {showStripe || lights ? (
+      {/* Top of the screen: the header makes room for the stripe, and every
+          decoration hangs from it (or from the screen's edge without one). */}
+      {showStripe || hanging !== "none" ? (
         <div className="occasion-top" data-occasion={occasion.id}>
           {showStripe ? (
             <OccasionStripe
-              name={occasion.name}
+              name={words.name}
               stripe={occasion.stripe}
               items={items}
-              countdown={left !== null && left > 0 ? stripeCountdown(left, copy.stripeUnits) : ""}
+              countdown={left !== null && left > 0 ? formatCountdown(left, copy.dayMark) : ""}
               reducedMotion={reducedMotion}
               onDismiss={occasion.stripe.dismissible ? dismiss : undefined}
             />
           ) : null}
-          {lights ? <OccasionHanging kind="lights" /> : null}
-        </div>
-      ) : null}
-      {/* Lanterns and stars are too tall to cross the bar's controls; they
-          hang from its bottom edge over the page. */}
-      {garland ? (
-        <div className="occasion-under" data-occasion={occasion.id}>
-          <OccasionHanging kind={garland} />
+          {hanging !== "none" ? <OccasionHanging kind={hanging} /> : null}
         </div>
       ) : null}
     </>
@@ -139,7 +120,6 @@ function StripeItem({
   /** Repeats that only fill the marquee: hidden from assistive tech and tab order. */
   copy: boolean;
 }) {
-  const locale = usePublicLocale();
   const [before, after] = item.text.split("{countdown}");
   const text =
     after === undefined ? (
@@ -165,7 +145,7 @@ function StripeItem({
   if (item.href) {
     return (
       <Link
-        href={stripeHref(item.href, locale)}
+        href={item.href}
         className="occasion-stripe__item occasion-stripe__item--link"
         tabIndex={copy ? -1 : undefined}
         aria-hidden={copy || undefined}
@@ -321,8 +301,8 @@ function OccasionStripe({
   reducedMotion: boolean;
   onDismiss?: () => void;
 }) {
-  const copy = CHROME_COPY[usePublicLocale()].occasion;
   const mode = reducedMotion ? "still" : stripe.mode;
+  const hideLabel = CHROME_COPY[usePublicLocale()].occasion.hide(name);
   return (
     <div
       className={`occasion-stripe occasion-stripe--${stripe.style}`}
@@ -345,7 +325,7 @@ function OccasionStripe({
           type="button"
           className="occasion-stripe__close"
           onClick={onDismiss}
-          aria-label={copy.hide(name)}
+          aria-label={hideLabel}
         >
           <X aria-hidden="true" />
         </button>
@@ -354,24 +334,71 @@ function OccasionStripe({
   );
 }
 
-/* --------------------------------------------- hanging decorations under the nav */
+/* --------------------------------------------- decorations hanging from the top */
 
-function useHostWidth() {
+type BarLayout = {
+  width: number;
+  /** From where the decorations start down to the menu bar's bottom edge. */
+  drop: number;
+  /** Open stretches of the bar, as [from, to] px, clear of its controls. */
+  spans: [number, number][];
+};
+
+/**
+ * Measures the live menu bar: strings run down through it, so they need its
+ * height and the gaps between the menu button, logo, countdown and tools. The
+ * countdown reports its edges on the header's style (OccasionNavCountdown).
+ */
+function useBarLayout() {
   const ref = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(0);
+  const [layout, setLayout] = useState<BarLayout>({ width: 0, drop: 0, spans: [] });
+
   useEffect(() => {
     const host = ref.current;
-    if (!host) return;
-    const observer = new ResizeObserver(() => setWidth(Math.round(host.clientWidth)));
-    observer.observe(host);
-    return () => observer.disconnect();
+    const header = host?.closest<HTMLElement>(".hathor-header");
+    if (!host || !header) return;
+    const box = (selector: string) => header.querySelector(selector)?.getBoundingClientRect();
+    const measure = () => {
+      const width = Math.round(host.clientWidth);
+      const logo = box(".hathor-header__logo");
+      const countdownLeft = parseFloat(header.style.getPropertyValue("--occ-cd-l"));
+      const countdownRight = parseFloat(header.style.getPropertyValue("--occ-cd-r"));
+      const middleLeft = Math.min(logo?.left ?? width / 2, countdownLeft || Infinity);
+      const middleRight = Math.max(logo?.right ?? width / 2, countdownRight || 0);
+      const gap = width <= 640 ? 10 : 28;
+      const spans: [number, number][] = [
+        [(box(".hathor-header__menu-btn--left")?.right ?? 0) + gap, middleLeft - gap],
+        [middleRight + gap, (box(".hathor-header__col--right")?.left ?? width) - gap],
+      ];
+      const next: BarLayout = {
+        width,
+        drop: Math.round(header.getBoundingClientRect().bottom - host.getBoundingClientRect().top),
+        spans: spans.map(([from, to]) => [Math.round(from), Math.round(to)]),
+      };
+      setLayout((current) => (JSON.stringify(current) === JSON.stringify(next) ? current : next));
+    };
+    const resizes = new ResizeObserver(measure);
+    resizes.observe(host);
+    resizes.observe(header);
+    const edges = new MutationObserver(measure);
+    edges.observe(header, { attributes: true, attributeFilter: ["style"] });
+    measure();
+    return () => {
+      resizes.disconnect();
+      edges.disconnect();
+    };
   }, []);
-  return [ref, width] as const;
+
+  return [ref, layout] as const;
 }
 
-/** Distances from each side edge, mirrored, so decorations stay clear of the centred logo. */
-function mirrored(width: number, fromEdge: number[]): number[] {
-  return [...fromEdge, ...fromEdge.map((x) => width - x).reverse()];
+/** Evenly along an open stretch, as many as fit at `spacing`; none if it has no room. */
+function spread([from, to]: [number, number], most: number, spacing: number): number[] {
+  const room = to - from;
+  if (room < 0) return [];
+  const count = Math.min(most, Math.floor(room / spacing) + 1);
+  if (count === 1) return [(from + to) / 2];
+  return Array.from({ length: count }, (_, i) => from + (room * i) / (count - 1));
 }
 
 /* Festive bulb colours, repeating along the wire: warm gold, red, green, blue, amber, violet. */
@@ -454,20 +481,20 @@ function Lantern() {
 const LANTERN_STRINGS = [30, 52, 18];
 const STAR_STRINGS = [16, 40, 26, 54, 20, 34];
 
-function Garland({ kind, width }: { kind: "lanterns" | "stars"; width: number }) {
-  const phone = width <= 640;
+/** Each string starts at the top and runs down an open stretch of the bar; what it carries hangs below. */
+function Garland({ kind, layout }: { kind: "lanterns" | "stars"; layout: BarLayout }) {
+  const phone = layout.width <= 640;
   const scale = phone ? 0.62 : 1;
-  const positions =
-    kind === "lanterns"
-      ? mirrored(width, phone ? [26, 64] : [150, 212, 272])
-      : mirrored(width, phone ? [22, 46, 72, 98] : [96, 148, 204, 258, 314, 366]);
-  const strings = kind === "lanterns" ? LANTERN_STRINGS : STAR_STRINGS;
+  const lanterns = kind === "lanterns";
+  const positions = layout.spans.flatMap((span) =>
+    spread(span, lanterns ? 3 : 6, (lanterns ? 70 : 46) * scale),
+  );
+  const strings = lanterns ? LANTERN_STRINGS : STAR_STRINGS;
 
   return (
     <>
       {positions.map((x, i) => {
-        const size =
-          kind === "lanterns" ? 24 * scale * (i % 2 ? 0.85 : 1) : (i % 3 === 1 ? 17 : 12) * scale;
+        const size = lanterns ? 24 * scale * (i % 2 ? 0.85 : 1) : (i % 3 === 1 ? 17 : 12) * scale;
         return (
           <div
             key={i}
@@ -481,9 +508,9 @@ function Garland({ kind, width }: { kind: "lanterns" | "stars"; width: number })
           >
             <div
               className="occasion-hang__string"
-              style={{ height: strings[i % strings.length] * scale }}
+              style={{ height: layout.drop + strings[i % strings.length] * scale }}
             />
-            {kind === "lanterns" ? (
+            {lanterns ? (
               <div style={{ width: size, height: (size * 44) / 24 }}>
                 <Lantern />
               </div>
@@ -510,14 +537,14 @@ function Garland({ kind, width }: { kind: "lanterns" | "stars"; width: number })
 }
 
 function OccasionHanging({ kind }: { kind: Exclude<Occasion["hanging"], "none"> }) {
-  const [ref, width] = useHostWidth();
+  const [ref, layout] = useBarLayout();
   return (
     <div ref={ref} className={`occasion-hang occasion-hang--${kind}`} aria-hidden="true">
-      {width > 0 ? (
+      {layout.width > 0 ? (
         kind === "lights" ? (
-          <StringLights width={width} />
+          <StringLights width={layout.width} />
         ) : (
-          <Garland kind={kind} width={width} />
+          <Garland kind={kind} layout={layout} />
         )
       ) : null}
     </div>

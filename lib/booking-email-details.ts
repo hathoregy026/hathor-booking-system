@@ -2,7 +2,15 @@ import { format } from "date-fns";
 import { parseBookingCustomerName } from "@/lib/booking-guest-details";
 import type { BookingEmailDetails } from "@/lib/email-types";
 import { formatPrice } from "@/lib/client-dates";
+import { BOOKING_COPY } from "@/lib/i18n/booking-copy";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
 import type { CheckoutBooking } from "@/lib/validations";
+
+/** An amount as the guest's language writes it; every price is in USD. */
+export function emailMoney(cents: number, locale: PublicLocale = "en"): string {
+  return locale === "en" ? formatPrice(cents) : BOOKING_COPY[locale].money(cents);
+}
 
 export function parseGuestFromCustomerName(customerName: string) {
   const parsed = parseBookingCustomerName(customerName);
@@ -63,11 +71,14 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
   totalPriceCents: number | null;
   bookingUrl: string;
   paymentMethod?: string | null;
+  locale?: PublicLocale;
 }): BookingEmailDetails | null {
   const email = booking.customerEmail?.trim();
   if (!email) return null;
 
-  const parsed = parseGuestFromCustomerName(booking.customerName ?? "Guest");
+  const locale = booking.locale ?? "en";
+  const copy = EMAIL_COPY[locale];
+  const parsed = parseGuestFromCustomerName(booking.customerName ?? copy.guestFallback);
   const roomLabel = booking.bookingRooms.map(r => r.room.roomType ?? r.room.name).join(", ");
   const ticketFallbackCents = booking.bookingTickets.reduce(
     (sum, ticket) =>
@@ -79,22 +90,23 @@ export function buildEmailDetailsFromConfirmBooking(booking: {
   const totalPriceCents = booking.totalPriceCents ?? ticketFallbackCents;
 
   return {
+    ...(locale === "en" ? {} : { locale }),
     bookingId: booking.id,
     guestName: parsed.guestName,
     guestEmail: email,
     guestPhone: booking.customerPhone ?? parsed.guestPhone,
-    cruiseName: booking.cruiseSchedule.cruise.name,
-    checkInDate: format(booking.cruiseSchedule.departureTime, "MMMM d, yyyy"),
-    checkOutDate: format(booking.cruiseSchedule.arrivalTime, "MMMM d, yyyy"),
+    cruiseName: copy.cruiseName(booking.cruiseSchedule.cruise.name),
+    checkInDate: copy.date(booking.cruiseSchedule.departureTime),
+    checkOutDate: copy.date(booking.cruiseSchedule.arrivalTime),
     roomType: roomLabel,
     guests:
       booking.adultCount !== null && booking.childCount !== null
-        ? `${booking.adultCount} adult${booking.adultCount === 1 ? "" : "s"}, ${booking.childCount} child${booking.childCount === 1 ? "" : "ren"}`
-        : parsed.guests,
-    totalPrice: formatPrice(totalPriceCents),
-    ratePlan: "Standard Hathor rate",
+        ? copy.party(booking.adultCount, booking.childCount)
+        : locale === "en" ? parsed.guests : copy.notSpecified,
+    totalPrice: emailMoney(totalPriceCents, locale),
+    ratePlan: copy.ratePlan,
     specialRequests: booking.specialRequests ?? undefined,
     bookingUrl: booking.bookingUrl,
-    paymentMethod: booking.paymentMethod === "BANK_TRANSFER" ? "Bank Transfer" : "Visa",
+    paymentMethod: copy.paymentMethod(booking.paymentMethod === "BANK_TRANSFER"),
   };
 }

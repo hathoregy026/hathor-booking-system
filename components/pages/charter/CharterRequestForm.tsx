@@ -7,7 +7,7 @@ import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHARTER_COPY } from "@/lib/i18n/charter-copy";
-import { INQUIRY_FORM_COPY, inquiryRefusalIn } from "@/lib/i18n/contact-copy";
+import { sendFailureIn } from "@/lib/i18n/form-errors";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -128,18 +128,20 @@ export function CharterRequestForm({
     if (!Number.isInteger(adults) || adults < 1 || adults > 50) nextErrors.adults = t.errors.adults;
     if (!Number.isInteger(children) || children < 0 || children > 50) nextErrors.children = t.errors.children;
 
-    const composedMessage = [
-      notes || "Private charter inquiry.",
+    /* The team always reads English labels and values; the guest's mail draft reads the page's language. */
+    const composeMessage = (words: typeof t.draft, shownTripType: string, closing: string) => [
+      notes || words.inquiry,
       "",
-      tripType ? `Trip type: ${tripType}` : "",
-      departure ? `Departure: ${departure}` : "",
-      destination ? `Destination: ${destination}` : "",
-      preferredTime ? `Preferred time: ${preferredTime}` : "",
-      special ? `Special requirements: ${special}` : "",
-      t.languageNote ?? "",
+      tripType ? `${words.tripType}: ${shownTripType}` : "",
+      departure ? `${words.departure}: ${departure}` : "",
+      destination ? `${words.destination}: ${destination}` : "",
+      preferredTime ? `${words.time}: ${preferredTime}` : "",
+      special ? `${words.special}: ${special}` : "",
+      closing,
     ]
       .filter(Boolean)
       .join("\n");
+    const composedMessage = composeMessage(CHARTER_COPY.en.form.draft, tripType, t.languageNote ?? "");
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -154,7 +156,7 @@ export function CharterRequestForm({
       return;
     }
 
-    if (!turnstileToken) { setState("error"); setErrorMessage(INQUIRY_FORM_COPY[locale].securityCheck); return; }
+    if (!turnstileToken) { setState("error"); setErrorMessage(t.errors.security); return; }
 
     const payload: InquiryPayload = {
       type: "charter",
@@ -169,13 +171,11 @@ export function CharterRequestForm({
       ...(chosenRoute ? { preferredRoute: chosenRoute } : {}),
     };
 
-    /* The server's refusal, in the page's language. */
-    let refusal: string | null = null;
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, turnstileToken }),
+        body: JSON.stringify({ ...payload, turnstileToken, locale }),
       });
 
       const result = (await response.json().catch(() => null)) as {
@@ -183,8 +183,7 @@ export function CharterRequestForm({
         receiptSent?: boolean;
       } | null;
       if (!response.ok) {
-        refusal = inquiryRefusalIn(locale, result?.error, t.errors.send);
-        throw new Error(refusal);
+        throw new Error(result?.error ?? t.errors.send);
       }
 
       setSentTo(email);
@@ -194,19 +193,20 @@ export function CharterRequestForm({
       form.reset();
     } catch (error) {
       setState("error");
-      setErrorMessage(refusal ?? (error instanceof Error && t.serverErrors ? error.message : t.errors.send));
+      setErrorMessage(sendFailureIn(locale, error, t.errors.send));
       /* The request must never be lost: the same details, ready to send from the guest's own mail. */
-      const subject = `Private charter request — ${name}`;
+      const words = t.draft;
+      const subject = words.subject(name);
       const details = [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        phone ? `Phone: ${phone}` : "",
-        chosenRoute ? `Preferred route: ${chosenRoute}` : "",
-        checkIn ? `Preferred start date: ${checkIn}` : "",
-        `Adults: ${adults}`,
-        `Children: ${children}`,
+        `${words.name}: ${name}`,
+        `${words.email}: ${email}`,
+        phone ? `${words.phone}: ${phone}` : "",
+        chosenRoute ? `${words.route}: ${copy.place(chosenRoute)}` : "",
+        checkIn ? `${words.startDate}: ${checkIn}` : "",
+        `${words.adults}: ${adults}`,
+        `${words.children}: ${children}`,
       ].filter(Boolean).join("\n");
-      const body = `${details}\n\n${composedMessage}`;
+      const body = `${details}\n\n${composeMessage(words, t.tripTypes[tripType as TripType] ?? tripType, "")}`;
       setFallbackHref(`mailto:${PUBLIC_CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
     } finally {
       setTurnstileToken("");
@@ -290,7 +290,7 @@ export function CharterRequestForm({
       >
         {/* Spam trap, as on the contact form: people never see or fill it. */}
         <div hidden aria-hidden="true" style={{ display: "none" }}>
-          <label htmlFor={`${formId}-website`}>Website</label>
+          <label htmlFor={`${formId}-website`}>{t.website}</label>
           <input id={`${formId}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
 

@@ -21,7 +21,7 @@ import {
   getPublishedBlogPosts,
 } from "@/lib/blog-posts";
 import { BLOG_ARTICLES } from "@/lib/i18n/blog-articles";
-import { blogPostIn } from "@/lib/i18n/blog-posts";
+import { blogPostIn, blogPostsListedIn } from "@/lib/i18n/blog-posts";
 import {
   isTranslatedPath,
   localizedHref,
@@ -44,9 +44,9 @@ function localizeLinks(html: string, locale: TranslatedLocale): string {
 
 /** The journal index in a translated language. */
 export async function LocaleBlogIndexPage({ locale }: { locale: TranslatedLocale }) {
-  const posts = serializeBlogPostSummaries(await getPublishedBlogPosts()).map(
-    (post) => blogPostIn(post, locale),
-  );
+  const posts = serializeBlogPostSummaries(
+    blogPostsListedIn(await getPublishedBlogPosts(), locale),
+  ).map((post) => blogPostIn(post, locale));
   return (
     <LocaleContentPage
       locale={locale}
@@ -103,8 +103,8 @@ export async function LocaleBlogPostPage({
   const source = await getPublishedBlogPostBySlug(slug);
   /* An address that matches no post gets this language's 404, not an English one. */
   if (!source) notFound();
-  /* A post not yet translated opens in English. */
-  if (!article) redirect(`/blogs/${slug}`);
+  /* A post not yet translated: back to this language's journal, never to English. */
+  if (!article) redirect(`/${locale}/blogs`);
 
   const post = { ...blogPostIn(source, locale), content: article };
   const contentHtml = localizeLinks(prepareBlogContentForRender(post.content, post.excerpt), locale);
@@ -117,7 +117,7 @@ export async function LocaleBlogPostPage({
   );
 
   const related = serializeBlogPostSummaries(
-    (await getPublishedBlogPosts())
+    blogPostsListedIn(await getPublishedBlogPosts(), locale)
       .filter((entry) => entry.slug !== post.slug)
       .slice(0, 3),
   ).map((entry) => blogPostIn(entry, locale));

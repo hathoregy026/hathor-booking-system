@@ -37,6 +37,7 @@ async function main() {
     let submitted = false;
     const overrides: Record<string, unknown> = {
       "@/lib/public-api-security": { ...security, enforcePublicRateLimit: async () => {}, enforceKeyedRateLimit: async () => {} },
+      "@/lib/i18n/locale": { PUBLIC_LOCALES: ["en", "it"] },
       "@/lib/turnstile": { verifyTurnstile: (req: Request, token: string, action: TurnstileAction) => verifyTurnstile(req, token, action, fakeVerification) },
       "@/lib/booking-access-token": { assertBookingAccessTokenConfiguration: () => {}, createBookingAccessToken: () => "fixture-capability", verifyBookingAccessToken: (id: string, token: string) => id === "fixture-booking" && token === "fixture-capability" },
       "@/lib/booking-engine": {

@@ -24,6 +24,15 @@ export function blogPostIn<T extends { slug: string; title: string; excerpt: str
   return words ? { ...post, title: words.title, excerpt: words.excerpt } : post;
 }
 
+/** The posts a language's journal lists: in a translated language, only the translated ones. */
+export function blogPostsListedIn<T extends { slug: string }>(
+  posts: readonly T[],
+  locale: PublicLocale,
+): T[] {
+  if (locale === "en") return [...posts];
+  return posts.filter((post) => TRANSLATED[locale].has(post.slug) && BLOG_POSTS[locale][post.slug]);
+}
+
 /** Where a post opens: its article in this language once translated, otherwise the English one. */
 export function blogPostHref(slug: string, locale: PublicLocale): string {
   return locale !== "en" && TRANSLATED[locale].has(slug)

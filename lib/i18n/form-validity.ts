@@ -15,20 +15,35 @@ type ValidityWords = {
   missing: string;
   email: string;
   tooShort: (length: number) => string;
+  tooLong: (length: number) => string;
+  dateTooEarly: string;
+  tooLow: (min: string) => string;
+  tooHigh: (max: string) => string;
+  wholeNumber: string;
   other: string;
 };
 
 const VALIDITY_WORDS: Record<TranslatedLocale, ValidityWords> = {
   it: {
     missing: "Compili questo campo.",
-    email: "Inserisca un indirizzo email valido.",
+    email: "Inserisca un indirizzo e-mail valido.",
     tooShort: (length) => `Inserisca almeno ${length} caratteri.`,
+    tooLong: (length) => `Inserisca al massimo ${length} caratteri.`,
+    dateTooEarly: "Scelga una data a partire da quella indicata.",
+    tooLow: (min) => `Inserisca un valore non inferiore a ${min}.`,
+    tooHigh: (max) => `Inserisca un valore non superiore a ${max}.`,
+    wholeNumber: "Inserisca un numero intero.",
     other: "Controlli il valore inserito.",
   },
   de: {
     missing: "Bitte füllen Sie dieses Feld aus.",
     email: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
     tooShort: (length) => `Bitte geben Sie mindestens ${length} Zeichen ein.`,
+    tooLong: (length) => `Bitte geben Sie höchstens ${length} Zeichen ein.`,
+    dateTooEarly: "Bitte wählen Sie ein Datum ab dem angegebenen Tag.",
+    tooLow: (min) => `Bitte geben Sie einen Wert von mindestens ${min} ein.`,
+    tooHigh: (max) => `Bitte geben Sie einen Wert von höchstens ${max} ein.`,
+    wholeNumber: "Bitte geben Sie eine ganze Zahl ein.",
     other: "Bitte prüfen Sie Ihre Eingabe.",
   },
 };
@@ -39,6 +54,14 @@ function validityMessage(field: Field, words: ValidityWords): string {
   if (validity.valueMissing) return words.missing;
   if (validity.typeMismatch && field.type === "email") return words.email;
   if (validity.tooShort && "minLength" in field) return words.tooShort(field.minLength);
+  if (validity.tooLong && "maxLength" in field) return words.tooLong(field.maxLength);
+  if ("min" in field && validity.rangeUnderflow) {
+    return field.type === "date" ? words.dateTooEarly : words.tooLow(field.min);
+  }
+  if ("max" in field && validity.rangeOverflow) return words.tooHigh(field.max);
+  if (field.type === "number" && (validity.badInput || validity.stepMismatch)) {
+    return words.wholeNumber;
+  }
   return words.other;
 }
 

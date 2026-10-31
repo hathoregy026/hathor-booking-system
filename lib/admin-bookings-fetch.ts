@@ -13,6 +13,7 @@ type SqlRow = {
   childCount: number | null;
   specialRequests: string | null;
   country: string | null;
+  guestLocale: string | null;
   paymentMethod: string | null;
   status: string;
   requestedAt: Date | null;
@@ -48,6 +49,7 @@ const LIST_SQL = `
     b."childCount",
     b."specialRequests",
     b.country,
+    to_jsonb(b)->>'locale' AS "guestLocale",
     b."paymentMethod",
     b.status::text AS status,
     b."requestedAt",
@@ -151,6 +153,7 @@ function mapRow(row: SqlRow): AdminBookingDto {
     specialRequests: row.specialRequests ?? parsed.specialRequests,
     customerEmail: row.customerEmail ?? "—",
     country: row.country,
+    ...(row.guestLocale === "it" || row.guestLocale === "de" ? { guestLocale: row.guestLocale } : {}),
     status: row.status,
     cruiseName: row.cruiseName,
     cruiseSlug: row.cruiseSlug,

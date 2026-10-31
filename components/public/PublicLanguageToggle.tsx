@@ -127,10 +127,12 @@ export function PublicLanguageToggle({
     }
     setNotice(null);
     if (language.locale === locale) return;
+    const target = pathInLocale(path, language.locale);
+    /* Same page, same state: a booking link's token and a filter survive the switch. */
     router.push(
-      pathInLocale(path, language.locale) ??
-        pathInLocale("/", language.locale) ??
-        "/",
+      target
+        ? `${target}${window.location.search}${window.location.hash}`
+        : (pathInLocale("/", language.locale) ?? "/"),
     );
   };
 

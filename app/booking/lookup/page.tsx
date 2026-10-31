@@ -31,7 +31,7 @@ export default function BookingLookupPage() {
       if (!response.ok) throw new Error(result.error ? copy.serverMessage(result.error) : t.notFound);
       router.push(localizedHref(`/booking/success?bookingId=${encodeURIComponent(result.bookingId)}&token=${encodeURIComponent(result.accessToken)}`, copy.locale));
     } catch (lookupError) {
-      setError(lookupError instanceof Error ? lookupError.message : t.notFound);
+      setError(copy.caught(lookupError, t.notFound));
     } finally {
       setLoading(false);
     }

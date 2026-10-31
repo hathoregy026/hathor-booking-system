@@ -12,9 +12,9 @@ export const SITE_IMAGE_ALTS_IT: Record<string, string> = {
   "7 Nights / 8 Days Luxor to Aswan to Luxor voyage aboard Hathor":
     "Viaggio di 7 notti e 8 giorni da Luxor ad Assuan e ritorno a bordo di Hathor",
   "A guest in a robe by the window, unwinding aboard Hathor":
-    "Un ospite in accappatoio accanto alla finestra, in pieno relax a bordo di Hathor",
+    "Relax in accappatoio accanto alla finestra, a bordo di Hathor",
   "A guest reading in an armchair beside the Nile window":
-    "Un ospite legge in poltrona accanto alla finestra sul Nilo",
+    "Lettura in poltrona accanto alla finestra sul Nilo",
   "A table for two on the open deck of Hathor at sunset":
     "Un tavolo per due sul ponte aperto di Hathor al tramonto",
   "A voyage composed around your itinerary":
@@ -104,7 +104,7 @@ export const SITE_IMAGE_ALTS_IT: Record<string, string> = {
     "Luxury Suite sull’itinerario di 4 notti da Luxor ad Assuan",
   "Luxury Suite on the 7-night round-trip itinerary":
     "Luxury Suite sull’itinerario di 7 notti andata e ritorno",
-  "Luxury Suites aboard Hathor Dahabiya": "Le Luxury Suites a bordo di Hathor Dahabiya",
+  "Luxury Suites aboard Hathor Dahabiya": "Le Luxury Suite a bordo di Hathor Dahabiya",
   "Luxury Twin Bed cabin aboard Hathor Dahabiya":
     "Cabina Luxury Twin Bed a bordo di Hathor Dahabiya",
   "Luxury Twin cabin on the 3-night Aswan to Luxor itinerary":
@@ -183,6 +183,49 @@ export const SITE_IMAGE_ALTS_IT: Record<string, string> = {
     "Hathor Dahabiya sul Nilo all’ora dorata",
   "Wine and crystal in warm light aboard Hathor":
     "Vino e cristalli nella luce calda a bordo di Hathor",
+  /* Stored in the dashboard's image rows, not among the slot defaults. */
+  "Amenities sequence — Way of Life photo and card": "La vita a bordo di Hathor",
+  "Dedicated service at the dining table aboard Hathor":
+    "Servizio attento a tavola a bordo di Hathor",
+  "Dining — Course thumbnail 1": "Una portata servita a bordo di Hathor",
+  "Dining — Course thumbnail 2": "Una portata servita a bordo di Hathor",
+  "Dining — Course thumbnail 3": "Una portata servita a bordo di Hathor",
+  "Dining — Courses backdrop": "Le portate di un menu a bordo di Hathor",
+  "Dining — Dessert course": "Il dessert a bordo di Hathor",
+  "Dining — Dessert hour": "L’ora del dessert a bordo di Hathor",
+  "Dining — Gallery left": "Un momento a tavola a bordo di Hathor",
+  "Dining — Gallery right": "Un momento a tavola a bordo di Hathor",
+  "Dining — Image story end": "La conclusione di un pasto a bordo di Hathor",
+  "Dining — Image story start": "L’inizio di un pasto a bordo di Hathor",
+  "Dining — Main course": "La portata principale a bordo di Hathor",
+  "Dining — Spiral bridge": "La tavola di Hathor",
+  "Dining — Welcome course": "La portata di benvenuto a bordo di Hathor",
+  "Hathor Dahabiya blog - stories from the Nile":
+    "Il journal di Hathor Dahabiya, storie dal Nilo",
+  "Hathor Dahabiya sailing on the Nile at sunset":
+    "Hathor Dahabiya in navigazione sul Nilo al tramonto",
+  "Hathor Dahabiya ship on the Nile at golden hour":
+    "Hathor Dahabiya sul Nilo all’ora dorata",
+  "Private charter aboard Hathor Dahabiya": "Charter privato a bordo di Hathor Dahabiya",
+  "Private chef plating aboard Hathor Dahabiya":
+    "Lo chef privato compone un piatto a bordo di Hathor Dahabiya",
+  "Suite interiors aboard Hathor Dahabiya":
+    "Gli interni delle suite a bordo di Hathor Dahabiya",
+  "Tasting menu courses aboard Hathor Dahabiya":
+    "Le portate del menu degustazione a bordo di Hathor Dahabiya",
+  "cruises-hero-cruises": "Le crociere di Hathor Dahabiya sul Nilo",
+  "homepage-amenities-sequence-2-rising-full-bleed-photo":
+    "La vita a bordo di Hathor Dahabiya sul Nilo",
+  "homepage-ornate-interior-corridor-aboard-a-luxury-dahabiya":
+    "Un corridoio decorato a bordo di una dahabiya di lusso",
+  "luxury-rooms-luxury-cabin-aboard-hathor-dahabiya":
+    "Cabina di lusso a bordo di Hathor Dahabiya",
+  "luxury-rooms-luxury-suite-aboard-hathor-dahabiya":
+    "Suite di lusso a bordo di Hathor Dahabiya",
+  "luxury-rooms-luxury-suite-interior-aboard-hathor-dahabiya":
+    "Interno di una suite di lusso a bordo di Hathor Dahabiya",
+  "luxury-rooms-royal-suite-aboard-hathor-dahabiya":
+    "Royal Suite a bordo di Hathor Dahabiya",
   /* Written into the /suites iframe, not dashboard slots. */
   "Guest enjoying panoramic Nile views from a Hathor suite":
     "Vista panoramica sul Nilo da una suite di Hathor",

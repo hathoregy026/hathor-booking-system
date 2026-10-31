@@ -17,10 +17,10 @@ naturally and is not misleading.
 
 | Article (`/it/blogs/…`) | English source | Italian as published | Question |
 | --- | --- | --- | --- |
-| `luxors-sacred-east-bank` | "Connected to the sprawling Karnak complex by the Avenue of the Sino-Japanese Peace Bell and lined with Sphinxes on both sides" | "Collegato al vasto complesso di Karnak dal Viale delle Sfingi, fiancheggiato da sfingi su entrambi i lati" | "Sino-Japanese Peace Bell" is a spinning error for the Avenue of Sphinxes. Is "Viale delle Sfingi" the right Italian name, and does "Viale delle Sfingi … fiancheggiato da sfingi" sound repetitive? |
+| `luxors-sacred-east-bank` | "Connected to the sprawling Karnak complex by the Avenue of the Sino-Japanese Peace Bell and lined with Sphinxes on both sides" | "Collegato al vasto complesso di Karnak dal Viale delle Sfingi, con le due lunghe file di statue che lo fiancheggiano…" | Decided: "Viale delle Sfingi" is the name; the rest avoids repeating "sfingi". |
 | `discover-the-valley-of-the-kings` | Several spun sentences throughout | Rendered by meaning | Please read the whole article once for sense and tone. |
-| `sailing-to-karnak-temple` | "Probably, even dancing upon the decks of your boat, there will be that very moment when you spot the monstrous entrances" | "Probabilmente sarà ancora sul ponte della Sua imbarcazione, quasi a danzare di gioia, nel momento in cui scorgerà in lontananza gli ingressi…" | Is "quasi a danzare di gioia" natural, or too effusive? |
-| `golden-gems-of-aswan` | "The huge courtyards and innocent halls of the temple" | "Gli immensi cortili e le sale intatte del tempio" | "innocent halls" was read as "intact halls" ("sale intatte"). OK? |
+| `sailing-to-karnak-temple` | "Probably, even dancing upon the decks of your boat, there will be that very moment when you spot the monstrous entrances" | "…con il cuore leggero…" | Decided: "quasi a danzare di gioia" was too effusive. |
+| `golden-gems-of-aswan` | "The huge courtyards and innocent halls of the temple" | "Gli immensi cortili e le sale intatte del tempio" | Decided: "sale intatte" stands. |
 
 ## 2. Factual slips (fixed in both languages, October 2026)
 
@@ -42,7 +42,7 @@ thing. No action is needed beyond reading the new Italian sentences for tone.
 `/it/terms-and-conditions` is a full translation of the English terms. A legal check by someone
 qualified in Italian consumer law is needed before relying on it. In particular, please confirm:
 
-- which text prevails if the English and Italian versions differ (the page does not say yet);
+- the prevailing-language clause in section 19 (English prevails unless the applicable law requires otherwise);
 - the payment, cancellation and refund sections;
 - the limitation of liability and governing law sections.
 
@@ -50,14 +50,14 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 
 | Where | Choice | Question |
 | --- | --- | --- |
-| Amenity captions on `/it/cruises-list`, `/it/luxury-cabins-Nile-Cruise`, `/it/royal-suites` | The short caption under the no-smoking icon reads "No fumo" (the long form is "Non fumatori") | The short slot has room for about 8 characters. Is "No fumo" acceptable, or is "Non fumatori" better even if it wraps? |
-| Breadcrumbs and menus | "Home" is kept as the first breadcrumb | Common on Italian sites. OK, or "Pagina iniziale"? |
-| `/it/gastronomy` | "Room service" kept in English | OK? |
-| `/it/wellness` | "Historia" is the fitness room's name and stays as is | OK? |
+| Amenity captions on `/it/cruises-list`, `/it/luxury-cabins-Nile-Cruise`, `/it/royal-suites` | Decided: "Non fumatori" in both the short and long slots | Closed. |
+| Breadcrumbs and menus | Decided: "Home" stays as the first breadcrumb | Closed. |
+| `/it/gastronomy` | Decided: "Servizio in suite" on the story card and in the concierge text, because the card is set in the guest's suite. Amenity lists keep "Servizio in camera". | Closed. |
+| `/it/wellness` | Decided: "Historia" stays, as part of the product name Historia Fitness | Closed. |
 | Image descriptions (alt text) | Some English image descriptions were internal labels ("Dining — Wine pairing", "Hathor plated course 3"). The Italian alt text describes the photo instead ("Vini in abbinamento a bordo di Hathor", "Una portata servita a bordo di Hathor"). The list is in `lib/i18n/site-image-alts-it.ts`. | Please skim the list for tone. |
-| `/it` 404 page | "Pagina non trovata · L’indirizzo che ha aperto non esiste o è stato spostato. Può tornare alla pagina iniziale o scegliere il Suo viaggio sul Nilo." Buttons: "Pagina iniziale", "I viaggi". | OK? |
+| `/it` 404 page | Decided: "Pagina non trovata · La pagina che cerca non esiste o è stata spostata. Può tornare alla pagina iniziale o scegliere il Suo viaggio sul Nilo." Buttons: "Torna alla home", "Scopri i viaggi". | Closed. |
 | Booking pages | Titles "Richiesta di prenotazione inviata" (after sending) and "Segua la Sua prenotazione" (booking lookup) | OK? |
-| `/it/gastronomy` closing title | "UNA CUCINA / CHE LASCIA / RESPIRARE" ran off a phone screen, so it now reads "A TAVOLA / SENZA / FRETTA" (English: "Dining with room to breathe") | OK? |
+| `/it/gastronomy` closing title | Decided: "A TAVOLA / SENZA / FRETTA" stands (English: "Dining with room to breathe"). The longer "Una cucina che lascia respirare" ran off a phone screen. | Closed. |
 | Footer button | "Noleggia la dahabiya" overflowed on phones; it now reads "Charter privato" | OK? |
 
 ## 5. Points raised by the proofreading pass (October 2026)
@@ -86,10 +86,10 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 
 | Where | Question |
 | --- | --- |
-| Place names | "El Ramady" and "Ramadi" both appear (as in English). Which one? |
-| Small wording | "Prove discrete" for "Quiet proof" (or "Garanzie discrete"?), "Navigare lenti" (or "Navigare piano"?), "Champagne" capitalised, "Camera e lavanderia" for room and laundry service, the short captions "Clima" and "Phon". |
-| Photo descriptions | "Un ospite in accappatoio…" and "Un ospite legge in poltrona…" use the masculine; please check against the photos. |
-| Long journal titles | Some Italian article titles exceed 60 characters on their own (for example "Perché il Nilo fu la via commerciale più importante dell’antico Egitto"), so search results will cut them. Shorter titles would need new wording. |
+| Place names | Decided: "Ramadi" in the Italian text. "El Ramady" remains only in English pages. |
+| Small wording | Decided: "Voci discrete" for "Quiet proof", "Navigare adagio", lowercase "champagne", "Servizio in camera e lavanderia". The short captions "Clima" and "Phon" stay. |
+| Photo descriptions | Decided: neutral "Relax in accappatoio…" and "Lettura in poltrona…", so no gender is assumed. |
+| Long journal titles | Decided: the search titles were shortened where they ran past what search results show. |
 | Tone | Please read the short-imperative buttons next to the "Lei" sentences on a few pages (`/it/charter`, `/it/booking`) and say whether the mix feels natural. |
 
 ## 6. Legal page: points for the legal check
@@ -143,32 +143,48 @@ commercial terms and the admin cancellation-fee calculation uses them.
 
 ## 7. `/it/suites` (machine-drafted, October 2026)
 
-This page was added after the rest of the Italian site, at Hathor's request. **All the Italian below
-is a machine draft and no native speaker has read it yet.** Please read the whole page once for tone
-at both desktop and phone width, then answer the questions. The English page's words are unchanged.
+This page was added after the rest of the Italian site, at Hathor's request. **The Italian below was machine-drafted and
+then revised by AI; no native speaker has read it yet.** A read of the whole page at desktop and phone width is still welcome.
+The English page's words are unchanged.
 
 The words live in `lib/i18n/website-text-it.ts` (section `suites`, translated from the live dashboard
 text, not the code defaults), `lib/i18n/suites-copy.ts` (hero labels and carousel captions),
 `lib/i18n/pages-seo-it.ts` (title and description) and `lib/i18n/site-image-alts-it.ts` (four photo
 descriptions). The footer reuses the site footer's wording.
 
-| Where | English | Italian draft | Question |
+| Where | English | Italian | Status |
 | --- | --- | --- | --- |
-| Hero title | "River Suites" | "Suite sul fiume" | OK? |
-| Hero label | "Made for living" | "Pensate per viverle" | Natural? |
+| Hero title | "River Suites" | "Suite sul Nilo" | Decided |
+| Hero label | "Made for living" | "Spazi da vivere" | Decided |
 | Hero label above the photo | "Nile dahabiya suites" | "Suite in dahabiya" (phone: "Suite in dahabiya sul Nilo") | "sul Nilo" is dropped on desktop because a longer line ran across the photo. OK? |
-| Hero sentence | "Quiet, crafted comfort; river light; the Nile just beyond the glass." | "Comfort discreto e curato; luce del fiume; il Nilo appena oltre il vetro." | OK? |
-| Story title | "Rooms composed for quiet with the Nile always near" | "Camere pensate per la quiete con il Nilo sempre vicino" | "Rooms composed" also appears as a caption. Is "Camere pensate" enough on its own? |
-| Quality titles | "River Light", "Private Calm", "Egyptian Craft" | "Luce del fiume", "Quiete privata", "Arte egiziana" | "Arte egiziana" for craft, or "Artigianato egiziano" (longer, may wrap)? |
-| Carousel caption | "Craft / Nile living" | "Arte / Vivere il Nilo" | OK? |
-| Collection cards | "Luxury Cabins", "Ensuite Calm", "Nile at Night" | "Luxury Rooms" (the menu's product name), "Bagno di quiete", "Il Nilo di notte" | "Bagno di quiete" is a free rendering. OK, or something plainer? |
-| Card labels | "EN SUITE", "PRIVATE" | "BAGNO PRIVATO", "PRIVATO" | OK? |
-| Collection closing title | "Where every Nile horizon belongs to your suite" | "Ogni vista del Nilo appartiene alla suite" | The card fits about ten capitals per line, so "orizzonte" and "Sua" did not fit. Does the meaning hold? |
-| Reservations title | "Your Nile residence awaits" | "La Sua suite La attende" | "Residenza" broke in two on phones and "Nilo" was dropped for room. OK? |
-| Closing | "Begin Your Journey" and "Join our exclusive circle…" | "Inizi il Suo viaggio" and "Entri nella nostra cerchia esclusiva…" | "Cerchia esclusiva" natural? |
-| Button | "Request Suite Availability" | "Richiedi la disponibilità" | OK? |
-| Search result | "Luxury Nile Cruise Suites \| Hathor Dahabiya" | "Suite di lusso per la crociera sul Nilo \| Hathor Dahabiya" | OK? |
+| Hero sentence | "Quiet, crafted comfort; river light; the Nile just beyond the glass." | "Comfort discreto e curato, luce del fiume, il Nilo appena oltre il vetro." | Decided |
+| Story title | "Rooms composed for quiet with the Nile always near" | "Camere pensate per la quiete con il Nilo sempre vicino"; the caption reads "Camere su misura" | Decided |
+| Quality titles | "River Light", "Private Calm", "Egyptian Craft" | "Luce del fiume", "Quiete privata", "Artigianato egiziano" | Decided |
+| Carousel caption | "Craft / Nile living" | "Artigianato / Vivere il Nilo" | Decided |
+| Collection cards | "Luxury Cabins", "Ensuite Calm", "Nile at Night" | "Luxury Rooms" (the menu's product name), "Bagno privato", "Il Nilo di notte" | Decided |
+| Card labels | "EN SUITE", "PRIVATE" | "IN SUITE", "IN PRIVATO" | Decided |
+| Collection closing title | "Where every Nile horizon belongs to your suite" | "Ogni vista del Nilo è della Sua suite" | Decided |
+| Reservations title | "Your Nile residence awaits" | "La Sua suite La attende" | Decided: "Residenza" broke in two on phones. |
+| Closing | "Begin Your Journey" and "Join our exclusive circle…" | "Inizi il Suo viaggio" and "Entri nella nostra cerchia ristretta di ospiti…" | Decided |
+| Button | "Request Suite Availability" | "Richiedi la disponibilità" | Decided |
+| Search result | "Luxury Nile Cruise Suites \| Hathor Dahabiya" | "Suite di lusso per la crociera sul Nilo \| Hathor Dahabiya" | Decided |
 
 One point in the English source to check, carried into the Italian as it stands: the Luxury Cabins card
 says "UPPER DECK" ("PONTE SUPERIORE"), but the deck plan and About page put the cabins and suites on
 the lower deck. Which is correct?
+
+## 8. Wording decisions (October 2026)
+
+These were decided by AI to finish the site, in place of the open questions above. They are applied on
+the site. A native speaker may overrule any of them.
+
+| Area | Decision |
+| --- | --- |
+| `/it/suites` | "Suite sul Nilo", "Spazi da vivere", "Camere su misura", "Artigianato egiziano", "Bagno privato", "IN SUITE", "IN PRIVATO", "Ogni vista del Nilo è della Sua suite", "cerchia ristretta di ospiti" |
+| Selling pages | "Non fumatori", "Home" stays, "Voci discrete", "Navigare adagio", "Servizio in camera e lavanderia", "Ramadi", lowercase "champagne" |
+| Editorial pages | "Servizio in suite" on `/it/gastronomy`, "Historia" stays, the 404 wording in section 4, "A TAVOLA / SENZA / FRETTA", "I templi" for the highlights note, "che amano come noi i viaggi autentici sul Nilo" for the partners strip (the longer line ran past its column), "Prossimamente" for the coming-soon placeholder |
+| Journal | "Viale delle Sfingi … con le due lunghe file di statue che lo fiancheggiano", "con il cuore leggero", "sale intatte" |
+| Occasions | "Fino a Capodanno", "Conto alla rovescia" |
+| Search and photo text | Neutral "Relax in accappatoio…" and "Lettura in poltrona…", shortened titles |
+| Reviews | Ratings use the Italian comma ("4,9"). The platforms' dates are put in Italian ("2 mesi fa", "marzo 2026"); the reviews themselves stay as the guests wrote them. |
+| Links | Links use "Scrivici"; headings and sentences keep "Ci scriva". |

@@ -78,7 +78,7 @@ export const INQUIRY_FORM_COPY_DE: InquiryFormCopy = {
   securityCheck: "Bitte schließen Sie vor dem Senden die Sicherheitsprüfung ab.",
   verificationUnavailable:
     "Die Sicherheitsprüfung ist nicht verfügbar. Laden Sie diese Seite neu oder kontaktieren Sie direkt unsere Reservierung.",
-  serverErrors: false,
+  website: "Website",
   languageNote: "Guest language: German",
 };
 

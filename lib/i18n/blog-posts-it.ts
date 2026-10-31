@@ -1,12 +1,15 @@
 /**
  * Journal posts in Italian, keyed by slug. The posts themselves live in the
  * database (BlogPost); a translation is kept here so the English rows stay
- * exactly as the team writes them. A post with no entry, or one added later
- * in the dashboard, shows its English text on Italian pages.
+ * exactly as the team writes them.
  *
- * `title` and `excerpt` serve the journal index. A post's article opens in
- * Italian only once its slug is in TRANSLATED_BLOG_SLUGS_IT; until then its
- * links lead to the English article.
+ * A post added later in the dashboard stays out of the Italian journal (index
+ * and "further notes") until it has an entry here, its article in
+ * lib/i18n/blog-articles-it and its slug in TRANSLATED_BLOG_SLUGS_IT. Its /it
+ * address returns to the Italian index, so a visitor never lands on English.
+ *
+ * Titles fit 60 characters so search results show them whole; the page adds
+ * "| Hathor Journal" only when that still fits.
  */
 
 export type PostWords = { title: string; excerpt: string };
@@ -16,7 +19,7 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
     /* No "Wi-Fi" in the title: large type breaks it at the hyphen. */
     title: "Senza connessione: viaggiare offline in dahabiya",
     excerpt:
-      "Viva un viaggio offline in Egitto a bordo di una crociera di lusso in dahabiya: slow travel, una disintossicazione digitale senza Wi-Fi e un viaggio sereno lungo il Nilo, tra esperienze culturali autentiche e paesaggi senza tempo.",
+      "Scopra un viaggio offline in Egitto a bordo di una crociera di lusso in dahabiya: slow travel, una disintossicazione digitale senza Wi-Fi e un viaggio sereno lungo il Nilo, tra esperienze culturali autentiche e paesaggi senza tempo.",
   },
   "the-magic-of-sleeping-on-the-nile-river": {
     title: "La magia di dormire sul Nilo",
@@ -44,7 +47,7 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
       "Scopra la bellezza dello slow travel sul Nilo con una crociera rilassante in Egitto da Luxor ad Assuan, tra templi antichi, panorami sul fiume ed esperienze culturali indimenticabili.",
   },
   "the-most-relaxing-way-to-explore-egypt-sailing-the-nile": {
-    title: "Il modo più rilassante di scoprire l’Egitto: navigare sul Nilo",
+    title: "Navigare sul Nilo: il modo più rilassante di vedere l’Egitto",
     excerpt:
       "Scopra l’Egitto nel modo più rilassante con una crociera sul Nilo da Luxor ad Assuan, tra templi antichi, splendidi panorami sul fiume ed esperienze di lusso indimenticabili.",
   },
@@ -64,12 +67,12 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
       "Scopra cosa indossare in crociera sul Nilo, in Egitto, con semplici consigli per il giorno e la sera: i capi migliori e come vestirsi comodamente per il clima di Luxor e Assuan.",
   },
   "dahabiya-cruise-cost-explained-whats-included": {
-    title: "Quanto costa una crociera in dahabiya in Egitto: cosa è incluso",
+    title: "Crociera in dahabiya in Egitto: quanto costa e cosa include",
     excerpt:
       "Il costo reale di una crociera in dahabiya in Egitto: il prezzo nel dettaglio, cosa è incluso e cosa no, i fattori che lo influenzano e perché questa navigazione di lusso tra Luxor e Assuan è uno dei modi più sereni ed esclusivi di scoprire il Nilo.",
   },
   "what-to-pack-for-a-dahabiya-nile-cruise": {
-    title: "Cosa mettere in valigia per una crociera in dahabiya sul Nilo",
+    title: "Cosa mettere in valigia per una crociera in dahabiya",
     excerpt:
       "Una guida semplice a cosa mettere in valigia per una crociera in dahabiya sul Nilo, in Egitto: l’abbigliamento essenziale, le regole di abbigliamento locali e i consigli per chi parte per la prima volta, per un viaggio comodo e indimenticabile.",
   },
@@ -84,12 +87,12 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
       "La storia delle dahabiya in Egitto: come queste eleganti barche a vela siano passate dagli antichi viaggi sul Nilo all’odierna crociera in dahabiya. Le radici culturali, il design unico e il lusso.",
   },
   "why-the-nile-was-the-most-important-trade-route-in-ancient-egypt": {
-    title: "Perché il Nilo fu la via commerciale più importante dell’antico Egitto",
+    title: "Il Nilo, principale via commerciale dell’antico Egitto",
     excerpt:
       "Il commercio sul Nilo nell’antico Egitto fu essenziale per i trasporti, l’economia e gli scambi: collegò le diverse regioni e sostenne una delle più grandi civiltà della storia.",
   },
   "what-is-a-dahabiya-nile-cruise-complete-beginner-guide": {
-    title: "Che cos’è una crociera in dahabiya sul Nilo? La guida completa",
+    title: "Cos’è una crociera in dahabiya sul Nilo? La guida completa",
     excerpt:
       "Una crociera in dahabiya sul Nilo, in Egitto, si svolge su una piccola barca a vela tradizionale: un viaggio di lusso sereno lungo il fiume, con un’esperienza culturale e autentica.",
   },
@@ -134,7 +137,7 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
       "Navighi verso la riva occidentale di Luxor a bordo di una crociera di lusso in dahabiya e scopra l’Egitto nella sua bellezza elegante e senza tempo. Una crociera privata in dahabiya Le permette di visitare in modo autentico luoghi come la Valle dei Re, con un servizio personalizzato e ogni comfort.",
   },
   "luxury-travel-in-egypt-what-to-expect-on-a-dahabiya-cruise": {
-    title: "Viaggi di lusso in Egitto: cosa aspettarsi da una crociera in dahabiya",
+    title: "Viaggi di lusso in Egitto: cosa aspettarsi da una dahabiya",
     excerpt:
       "Per un viaggio di lusso in Egitto, poche esperienze sono paragonabili a una crociera in dahabiya sul Nilo. Unendo eleganza, privacy e una navigazione autentica, la dahabiya offre un modo unico di scoprire i tesori del Nilo nel comfort e nell’esclusività.",
   },
@@ -214,7 +217,7 @@ export const BLOG_POSTS_IT: Record<string, PostWords> = {
       "Vada oltre il solito itinerario delle crociere sul Nilo e scopra templi isolati, rive tranquille e siti storici raggiungibili solo in dahabiya. Questo articolo racconta le esperienze esclusive che rendono indimenticabile navigare sul Nilo in dahabiya.",
   },
   "best-places-to-visit-along-the-nile-with-a-dahabiya-cruise": {
-    title: "I luoghi più belli da visitare sul Nilo in crociera in dahabiya",
+    title: "I luoghi più belli da visitare sul Nilo in dahabiya",
     excerpt:
       "Navighi con stile a bordo di una crociera di lusso in dahabiya e scopra i luoghi più iconici del Nilo, dai templi antichi ai tesori storici. La attende un viaggio esclusivo tra eleganza e storia, con esperienze culturali indimenticabili e panorami mozzafiato.",
   },

@@ -20,6 +20,12 @@ export type ReviewsCopy = {
   reviewsFrom: (platform: string) => string;
   basedOn: (count: number) => string;
   rated: (value: string, platform: string) => string;
+  /** The big score: 4.9 in English, 4,9 in Italian. */
+  figure: (value: number) => string;
+  /** The platforms date reviews in English: "2 months ago", "March 2026". */
+  when: (when: string) => string;
+  /** The source line the review platforms ask for. */
+  attribution: (platform: string) => string;
   readReviews: string;
   writeReview: string;
   /** A review's date link when the platform gives no date. */
@@ -34,10 +40,6 @@ export type ReviewsCopy = {
   reviewOf: (index: number, total: number) => string;
   /** The open spread in the pager. */
   folio: (page: number, total: number) => string;
-  /** The attribution under the book. */
-  sourceNote: (platform: string) => string;
-  /** A review's date as the platform wrote it ("3 weeks ago", "October 2025"). */
-  when: (text: string) => string;
   fallbackLede: (withTripadvisor: boolean) => string;
   /** Pencilled notes, placed line by line inside fixed boxes (see ephemera.tsx). */
   handPage: HandLine[];
@@ -47,30 +49,29 @@ export type ReviewsCopy = {
   stamp: string;
 };
 
-const AGO_IT: Record<string, readonly [string, string]> = {
-  minute: ["un minuto", "minuti"],
-  hour: ["un’ora", "ore"],
-  day: ["un giorno", "giorni"],
-  week: ["una settimana", "settimane"],
-  month: ["un mese", "mesi"],
-  year: ["un anno", "anni"],
-};
 const MONTHS_IT: Record<string, string> = {
-  January: "gennaio", February: "febbraio", March: "marzo", April: "aprile",
-  May: "maggio", June: "giugno", July: "luglio", August: "agosto",
-  September: "settembre", October: "ottobre", November: "novembre", December: "dicembre",
+  January: "gennaio", February: "febbraio", March: "marzo", April: "aprile", May: "maggio", June: "giugno",
+  July: "luglio", August: "agosto", September: "settembre", October: "ottobre", November: "novembre", December: "dicembre",
 };
 
-/* The date Google or Tripadvisor sends, in Italian; anything else stays as sent. */
-function whenIt(text: string): string {
-  if (/^in the last week$/i.test(text.trim())) return "nell’ultima settimana";
-  const ago = /^(a|an|\d+) (minute|hour|day|week|month|year)s? ago$/i.exec(text.trim());
-  if (ago) {
-    const unit = AGO_IT[ago[2].toLowerCase()];
-    return /\d/.test(ago[1]) ? `${ago[1]} ${unit[1]} fa` : `${unit[0]} fa`;
-  }
-  const month = /^([A-Z][a-z]+) (\d{4})$/.exec(text.trim());
-  return month && MONTHS_IT[month[1]] ? `${MONTHS_IT[month[1]]} ${month[2]}` : text;
+const AGO_IT: Record<string, readonly [string, string]> = {
+  minute: ["un minuto fa", "minuti fa"],
+  hour: ["un’ora fa", "ore fa"],
+  day: ["un giorno fa", "giorni fa"],
+  week: ["una settimana fa", "settimane fa"],
+  month: ["un mese fa", "mesi fa"],
+  year: ["un anno fa", "anni fa"],
+};
+
+/** A wording it does not know is left as the platform gave it. */
+function reviewWhenIt(when: string): string {
+  if (/^in the last week$/i.test(when.trim())) return "nell’ultima settimana";
+  const date = /^(\w+) (\d{4})$/.exec(when);
+  if (date && MONTHS_IT[date[1]]) return `${MONTHS_IT[date[1]]} ${date[2]}`;
+  const ago = /^(a|an|\d+) (minute|hour|day|week|month|year)s? ago$/.exec(when);
+  if (!ago) return when;
+  const [one, many] = AGO_IT[ago[2]];
+  return ago[1] === "a" || ago[1] === "an" || ago[1] === "1" ? one : `${ago[1]} ${many}`;
 }
 
 export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
@@ -86,6 +87,9 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     basedOn: (count) =>
       `Based on ${count.toLocaleString("en-GB")} ${count === 1 ? "review" : "reviews"}`,
     rated: (value, platform) => `Rated ${value} out of 5 on ${platform}`,
+    figure: (value) => value.toFixed(1),
+    when: (when) => when,
+    attribution: (platform) => `Ratings and reviews from ${platform}, shown as written by guests.`,
     readReviews: "Read reviews",
     writeReview: "Write a review",
     onPlatform: (platform) => `On ${platform}`,
@@ -98,8 +102,6 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     chooseReview: "Choose a review",
     reviewOf: (index, total) => `Review ${index} of ${total}`,
     folio: (page, total) => `Page ${page} of ${total}`,
-    sourceNote: (platform) => `Ratings and reviews from ${platform}, shown as written by guests.`,
-    when: (text) => text,
     fallbackLede: (withTripadvisor) =>
       `Read what guests say after a voyage aboard Hathor, on Google${withTripadvisor ? " and Tripadvisor" : ""}.`,
     handPage: [
@@ -132,6 +134,9 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     basedOn: (count) =>
       `Su ${count.toLocaleString("it-IT")} ${count === 1 ? "recensione" : "recensioni"}`,
     rated: (value, platform) => `Valutazione ${value.replace(".", ",")} su 5 su ${platform}`,
+    figure: (value) => value.toFixed(1).replace(".", ","),
+    when: reviewWhenIt,
+    attribution: (platform) => `Valutazioni e recensioni da ${platform}, riportate come scritte dagli ospiti.`,
     readReviews: "Leggi le recensioni",
     writeReview: "Scrivi una recensione",
     onPlatform: (platform) => `Su ${platform}`,
@@ -144,8 +149,6 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     chooseReview: "Scegli una recensione",
     reviewOf: (index, total) => `Recensione ${index} di ${total}`,
     folio: (page, total) => `Pagina ${page} di ${total}`,
-    sourceNote: (platform) => `Valutazioni e recensioni da ${platform}, riportate come scritte dagli ospiti.`,
-    when: whenIt,
     fallbackLede: (withTripadvisor) =>
       `Legga che cosa raccontano gli ospiti dopo un viaggio a bordo di Hathor, su Google${withTripadvisor ? " e Tripadvisor" : ""}.`,
     handPage: [

@@ -64,11 +64,22 @@ const SERVER_DE: Record<string, string> = {
   "Validation failed": "Die Prüfung der Angaben ist fehlgeschlagen.",
   "Internal server error": "Interner Serverfehler.",
 };
+const NETWORK_DE = "Die Verbindung ist fehlgeschlagen. Bitte prüfen Sie Ihr Netzwerk und versuchen Sie es erneut.";
 const SERVER_FALLBACK_DE = "Der Vorgang konnte nicht abgeschlossen werden.";
 
 export const BOOKING_COPY_DE: BookingCopy = {
   locale: "de",
   money: deMoney,
+  caught: (error, fallback) => {
+    if (error instanceof TypeError || error instanceof SyntaxError) return NETWORK_DE;
+    if (error instanceof Error && error.name === "AbortError") return NETWORK_DE;
+    return error instanceof Error ? error.message : fallback;
+  },
+  roomGone: {
+    title: "Kabine nicht gefunden",
+    text: "Diese Abfahrt oder Kabine ist nicht mehr verfügbar. Bitte starten Sie eine neue Suche.",
+    link: "Zurück zur Suche",
+  },
   monthLabel: (year, month) => `${MONTHS_DE[month]} ${year}`,
   shortDate: deShortDate,
   longDate: deLongDate,

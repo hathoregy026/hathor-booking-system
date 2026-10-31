@@ -18,9 +18,9 @@ export const PAGES_IT: Partial<Pages> = {
    * count and each line stays about as long as the English one.
    */
   suites: {
-    heroTitle: "Suite\nsul fiume",
-    heroKicker: "Pensate\nper viverle",
-    heroBody: "Comfort discreto e curato; luce del fiume;\nil Nilo appena oltre il vetro.",
+    heroTitle: "Suite\nsul Nilo",
+    heroKicker: "Spazi\nda vivere",
+    heroBody: "Comfort discreto e curato, luce del fiume,\nil Nilo appena oltre il vetro.",
     heroCabinsCta: "Scopri le cabine",
     heroSuitesCta: "Scopri le suite",
     heroBookCta: "Prenota ora",
@@ -30,19 +30,19 @@ export const PAGES_IT: Partial<Pages> = {
     storyBody:
       "Legni caldi, tessuti morbidi, finestre panoramiche e un servizio attento fanno di ogni residenza un mondo privato tra Luxor e Assuan.",
     storySecondBody:
-      "L’arte tradizionale della dahabiya incontra il comfort contemporaneo in suite pensate per il riposo, la privacy e il ritmo senza fretta del fiume.",
+      "La tradizione artigiana della dahabiya incontra il comfort contemporaneo in suite dedicate al riposo, alla privacy e al ritmo lento del fiume.",
     qualityOneTitle: "LUCE DEL FIUME",
     qualityOneBody:
-      "Ampie finestre affacciate sul fiume portano il Nilo in ogni momento, dalle prime luci sulle rive all’oro quieto del tramonto.",
+      "Ampie finestre affacciate sul fiume fanno entrare il Nilo in ogni momento della giornata, dalle prime luci sulle rive all’oro quieto del tramonto.",
     qualityTwoTitle: "QUIETE PRIVATA",
     qualityTwoBody:
-      "Interni sereni, biancheria raffinata, bagni privati e un servizio attento creano un rifugio profondamente personale a bordo di Hathor.",
-    qualityThreeTitle: "ARTE EGIZIANA",
+      "Interni sereni, biancheria raffinata, bagni privati e un servizio attento creano un rifugio tutto Suo a bordo di Hathor.",
+    qualityThreeTitle: "ARTIGIANATO EGIZIANO",
     qualityThreeBody:
-      "Carattere egiziano, materiali naturali e caldi e dettagli moderni ben ponderati danno a ogni cabina e suite un legame duraturo con il luogo.",
+      "Carattere egiziano, materiali caldi e naturali e dettagli moderni scelti con cura danno a ogni cabina e a ogni suite un legame profondo con il luogo.",
     collectionLabel: "La collezione di suite",
     collectionBody:
-      "Tre espressioni della vita a bordo di Hathor, dalle cabine raccolte alle nostre Royal Suite, le più ampie: ciascuna pensata intorno a privacy, proporzioni e viste ininterrotte sul Nilo.",
+      "Tre modi di vivere a bordo di Hathor, dalle cabine raccolte alle nostre Royal Suite, le più ampie: ciascuno concepito intorno alla privacy, alle proporzioni e alle viste aperte sul Nilo.",
     cabinMeta: "8 CABINE",
     cabinDeck: "PONTE SUPERIORE",
     cabinTitle: "Luxury Rooms",
@@ -52,24 +52,24 @@ export const PAGES_IT: Partial<Pages> = {
     royalMeta: "2 ROYAL",
     royalDeck: "PONTE PRINCIPALE",
     royalTitle: "Royal Suite",
-    ensuiteMeta: "BAGNO PRIVATO",
+    ensuiteMeta: "IN SUITE",
     ensuiteDeck: "A BORDO DI HATHOR",
-    ensuiteTitle: "Bagno di quiete",
-    nightMeta: "PRIVATO",
+    ensuiteTitle: "Bagno privato",
+    nightMeta: "IN PRIVATO",
     nightDeck: "LUXOR–ASSUAN",
     nightTitle: "Il Nilo di notte",
     residenceCta: "Scopri la residenza",
     discoverCta: "Scopri di più",
     viewAllCta: "Scopri tutte le suite",
-    collectionClosingTitle: "Ogni vista\nDel Nilo\nAppartiene\nAlla suite",
+    collectionClosingTitle: "Ogni vista\nDel Nilo\nÈ della\nSua suite",
     collectionClosingBody:
-      "Spazi per il riposo, la conversazione, le cene private e le viste ininterrotte, mentre Hathor scivola tra le antiche rive dell’Egitto.",
+      "Spazi per il riposo, la conversazione, le cene private e le viste aperte, mentre Hathor scivola tra le antiche rive dell’Egitto.",
     reservationsLabel: "Prenotazioni",
     /* "RESIDENZA" broke in two on a phone. */
     reservationsTitle: "LA SUA SUITE\nLA ATTENDE",
     closingTitle: "Inizi il Suo viaggio",
     closingBody:
-      "Un viaggio su misura per Lei. Entri nella nostra cerchia esclusiva per itinerari privati e accesso anticipato a viaggi rari.",
+      "Un viaggio su misura per Lei. Entri nella nostra cerchia ristretta di ospiti: itinerari privati e accesso anticipato alle partenze più rare.",
   },
   blog: {
     intro:
@@ -158,7 +158,7 @@ export const PAGES_IT: Partial<Pages> = {
       { time: "SERA", place: "SALA DA PRANZO", title: "DALLO CHEF", cta: "Apri la storia" },
       { time: "ORA DORATA", place: "PONTE SUL FIUME", title: "CENA SUL NILO", cta: "Apri la storia" },
       { time: "OGNI GIORNO", place: "PONTE FITNESS", title: "MOVIMENTO", cta: "Apri la storia" },
-      { time: "A OGNI ORA", place: "LA SUA SUITE", title: "ROOM SERVICE", cta: "Apri la storia" },
+      { time: "A OGNI ORA", place: "LA SUA SUITE", title: "SERVIZIO IN SUITE", cta: "Apri la storia" },
     ],
     closingChapter: "Oltre la tavola",
     closingTitle: "CHI HA DETTO\nCHE IL PIACERE\nNON PUÒ ESSERE\nFUNZIONALE?",
@@ -187,7 +187,7 @@ export const PAGES_IT: Partial<Pages> = {
       "Scopra l’Egitto sotto una luce del tutto nuova con la crociera sul Nilo Hathor Dahabiya, dove la tradizione senza tempo incontra il lusso moderno.",
       "Un viaggio in dahabiya è uno dei modi più intimi di vivere il Nilo. Il ritmo più lento, le dimensioni contenute e gli approdi più tranquilli creano un legame più personale con il fiume e con i luoghi lungo le sue rive.",
       "La dahabiya offre ogni comfort contemporaneo immaginabile per una crociera panoramica in questo paese affascinante, adatta alle esigenze di ciascuno. Fin dal primo momento, tutto è pensato per andare oltre le Sue aspettative.",
-      "Viva la più grande avventura sul Nilo con la crociera Hathor Dahabiya in Egitto: ogni alba sul fiume diventa un nuovo racconto epico.",
+      "Intraprenda la più grande avventura sul Nilo con la crociera Hathor Dahabiya in Egitto: ogni alba sul fiume diventa un nuovo racconto epico.",
     ],
     diningIntro:
       "Si conceda una cucina di livello internazionale e momenti di svago raffinato nei nostri spazi d’autore:",
@@ -212,14 +212,14 @@ export const PAGES_IT: Partial<Pages> = {
   },
   rooms: {
     overviewIntro:
-      "Viva la crociera Hathor Dahabiya, che unisce autenticità e lusso in un viaggio indimenticabile sul Nilo senza tempo.\n\nChe scelga le nostre eleganti suite o le Royal Suite con vista panoramica sul Nilo, troverà un comfort impareggiabile e una privacy esclusiva.",
+      "Scopra la crociera Hathor Dahabiya, che unisce autenticità e lusso in un viaggio indimenticabile sul Nilo senza tempo.\n\nChe scelga le nostre eleganti suite o le Royal Suite con vista panoramica sul Nilo, troverà un comfort impareggiabile e una privacy esclusiva.",
     amenitiesIntro:
       "Scopra il lusso senza sforzo dell’Accessible Hathor Suite: un rifugio ampio ed elegante, pensato per il comfort, la facilità di movimento e una vita raffinata. Ogni dettaglio è curato perché ciascun ospite si senta davvero a casa, senza compromessi.",
     amenitiesTitle: "Incluso nel Suo soggiorno",
   },
   royal: {
     overviewIntro:
-      "Viva un viaggio autentico e di lusso nella Royal Suite di Hathor Dahabiya: una crociera privata in dahabiya, a vela sul Nilo senza tempo, da ricordare per sempre.",
+      "Si conceda un viaggio autentico e di lusso nella Royal Suite di Hathor Dahabiya: una crociera privata in dahabiya, a vela sul Nilo senza tempo, da ricordare per sempre.",
     amenitiesIntro:
       "Pensate per la privacy e il lusso, uniscono gli interni eleganti di Hathor, decorazioni d’ispirazione storica e comfort moderni, per un soggiorno raffinato.",
     amenitiesTitle: "Incluso nel Suo soggiorno",
@@ -251,7 +251,7 @@ export const PAGES_IT: Partial<Pages> = {
       "Itinerari privati in dahabiya: navigazioni intime, approdi leggendari e il ritmo senza fretta del fiume.",
     scrollHint: "Scorri per salpare",
     statementLabel: "Lo stile Hathor",
-    statementTitle: "Navigare lenti\nScoprire a fondo\nRicordare per sempre",
+    statementTitle: "Navigare adagio\nScoprire a fondo\nRicordare per sempre",
     statementBody:
       "Ogni viaggio di Hathor è pensato per scoprire senza fretta: templi all’ora dorata, serate illuminate dal tramonto sul fiume ed escursioni a terra su misura per il Suo gruppo.",
     openingScript: "Quattro giorni sul Nilo. Una vita di luce dorata.",

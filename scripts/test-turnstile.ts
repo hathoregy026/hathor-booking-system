@@ -70,6 +70,7 @@ async function main() {
       } },
       "@/lib/inquiry-quarantine": { quarantineInquiry: async (payload: Record<string, unknown>) => { assert.equal("turnstileToken" in payload, false); quarantined++; } },
       "@/lib/mail-screening": { screenInquiry: (payload: Record<string, unknown>) => ({ folder: payload.website ? "spam" : "inbox", reasons: [] }) },
+      "@/lib/i18n/locale": { PUBLIC_LOCALES: ["en", "it"] },
       "@/lib/turnstile": { verifyInquiryTurnstile: (req: Request, token: string, type: "contact" | "charter") => verifyInquiryTurnstile(req, token, type, fakeFetch) },
       "@/lib/public-api-security": { ...security, enforcePublicRateLimit: async () => {}, enforceKeyedRateLimit: async () => {} },
       "@/lib/selection-catalog": { isKnownResidenceSlug: () => false, isKnownVoyageSlug: () => false },

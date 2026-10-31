@@ -61,6 +61,8 @@ export type BookingCopy = {
   countryName: (code: string, english: string) => string;
   /** A message from the booking server, in the visitor's language. */
   serverMessage: (message: string) => string;
+  /** What a caught failure says: a dropped connection never shows the browser's own English. */
+  caught: (error: unknown, fallback: string) => string;
 
   /* ---------- chrome shared by every step ---------- */
   steps: readonly [string, string, string, string];
@@ -413,7 +415,6 @@ export type BookingCopy = {
     cannotFit: (types: number, guests: number) => string;
     trimmed: (names: string[]) => string;
     chooseDateFirst: string;
-    securityCheck: string;
     sailingClosed: string;
     sailingFull: string;
     unableToCheck: string;
@@ -426,6 +427,7 @@ export type BookingCopy = {
     cabinTaken: string;
     notSent: string;
     sendFailed: (reason: string) => string;
+    securityCheck: string;
   };
 
   /* ---------- payment plan ---------- */
@@ -512,6 +514,8 @@ export type BookingCopy = {
     notFound: string;
   };
   error: {
+    /** The browser tab while this screen shows. English keeps the page's own. */
+    pageTitle?: string;
     title: string;
     bodyBefore: string;
     bodyStrong: string;
@@ -528,6 +532,8 @@ export type BookingCopy = {
     text: string;
     link: string;
   };
+  /** /booking/cruise/[id] when the room no longer exists. */
+  roomGone: { title: string; text: string; link: string };
   meta: { title: string; description: string };
 };
 
@@ -561,6 +567,7 @@ const EN: BookingCopy = {
   joinAnd: enJoin,
   countryName: (_code, english) => english,
   serverMessage: message => message,
+  caught: (error, fallback) => (error instanceof Error ? error.message : fallback),
 
   steps: ["Journey", "Guests & Suites", "Details & Payment", "Request sent"],
   backTo: { 2: "Journey", 3: "Guests & suites" },
@@ -986,7 +993,6 @@ const EN: BookingCopy = {
     trimmed: names =>
       `A ${names.join(" and ")} you chose was just booked by another guest. Its guests are waiting in Who Is Travelling — please place them again.`,
     chooseDateFirst: "Choose one of the open sailing dates first.",
-    securityCheck: "Please complete the security check before sending your booking request.",
     sailingClosed: "That sailing has just closed. Please choose another date.",
     sailingFull: "This sailing is fully booked. Please choose another date.",
     unableToCheck: "Unable to check availability.",
@@ -1002,6 +1008,7 @@ const EN: BookingCopy = {
       "One of your cabins was just booked by another guest. Availability has been updated. Please check your cabins and try again.",
     notSent: "Your request could not be sent.",
     sendFailed: reason => `${reason} Nothing is being held for you, so pressing Confirm request again starts a fresh request.`,
+    securityCheck: "Please complete the security check before sending your booking request.",
   },
 
   plan: {
@@ -1114,6 +1121,11 @@ const EN: BookingCopy = {
     text: "Your booking has not been started. Refresh to check again, or choose another cabin.",
     link: "Explore all cabins ↗",
   },
+  roomGone: {
+    title: "Cruise not found",
+    text: "This sailing or room is no longer available. Try a new search.",
+    link: "Back to search",
+  },
   meta: {
     title: "Book Your Luxury Dahabiya Cruise",
     description:
@@ -1165,8 +1177,30 @@ const SERVER_IT: Record<string, string> = {
   "Booking code and email did not match": "Il codice di prenotazione e l’email non corrispondono.",
   "Reservation acknowledgement is required": "È necessario accettare le condizioni della prenotazione.",
   "Please try again.": "La preghiamo di riprovare.",
+  "Validation failed": "Verifichi i dati inseriti e riprovi.",
+  "Invalid email address": "Inserisca un indirizzo email valido.",
+  "Invalid booking authorization": "Il link di questa prenotazione non è più valido. La ritrovi con il codice di prenotazione.",
+  Unauthorized: "Il link di questa prenotazione non è più valido. La ritrovi con il codice di prenotazione.",
+  "Not found": "Prenotazione non trovata.",
+  "Database is busy. Please wait a moment and try again.": "Il sistema è momentaneamente occupato. Attenda qualche istante e riprovi.",
+  "Internal server error": "Si è verificato un problema da parte nostra. Riprovi tra qualche istante.",
+  "Security verification is unavailable. Please contact our reservations team directly.":
+    "La verifica di sicurezza non è disponibile. Contatti direttamente il nostro ufficio prenotazioni.",
+  "Please complete the security check and try again.": "Completi la verifica di sicurezza e riprovi.",
+  "The security check is temporarily unavailable. Please try again.":
+    "La verifica di sicurezza non è momentaneamente disponibile. La preghiamo di riprovare.",
+  "The security check expired or could not be verified. Please try again.":
+    "La verifica di sicurezza è scaduta o non è andata a buon fine. La preghiamo di riprovare.",
+  "Content-Type must be application/json": "La richiesta non è valida. Aggiorni la pagina e riprovi.",
+  "Request body is too large": "La richiesta è troppo lunga. Abbrevi il testo inserito e riprovi.",
+  "Invalid request body": "La richiesta non è valida. Aggiorni la pagina e riprovi.",
+  "Invalid request origin": "La richiesta non è valida. Aggiorni la pagina e riprovi.",
+  "Cross-site request rejected": "La richiesta non è valida. Aggiorni la pagina e riprovi.",
+  "Cross-origin request rejected": "La richiesta non è valida. Aggiorni la pagina e riprovi.",
+  "A valid Idempotency-Key header is required": "La richiesta non è valida. Aggiorni la pagina e riprovi.",
 };
 const SERVER_FALLBACK_IT = "Non è stato possibile completare l’operazione.";
+const NETWORK_IT = "Connessione non riuscita. Verifichi la rete e riprovi.";
 
 const IT: BookingCopy = {
   locale: "it",
@@ -1200,6 +1234,13 @@ const IT: BookingCopy = {
     // Validation messages arrive as "Field: message".
     const detail = message.split(": ").slice(1).join(": ");
     return SERVER_IT[detail] ?? SERVER_FALLBACK_IT;
+  },
+  // A failed fetch or an unreadable reply carries the browser's own English;
+  // every other error here was already worded by this file.
+  caught: (error, fallback) => {
+    if (error instanceof TypeError || error instanceof SyntaxError) return NETWORK_IT;
+    if (error instanceof Error && error.name === "AbortError") return NETWORK_IT;
+    return error instanceof Error ? error.message : fallback;
   },
 
   steps: ["Viaggio", "Ospiti e suite", "Dati e pagamento", "Richiesta inviata"],
@@ -1258,7 +1299,7 @@ const IT: BookingCopy = {
     accommodation: "Sistemazione",
     payment: "Pagamento",
     selectDates: "Selezioni le date",
-    chooseDate: "Scegli una data",
+    chooseDate: "Scelga una data",
     notSelected: "Non ancora selezionata",
     noGuests: "Ancora nessun ospite",
     noCabin: "Ancora nessuna cabina",
@@ -1337,7 +1378,7 @@ const IT: BookingCopy = {
     hiddenByFilter: count =>
       count === 1 ? "1 cabina con i Suoi ospiti è nascosta dal filtro." : `${count} cabine con i Suoi ospiti sono nascoste dal filtro.`,
     showAllRooms: "Mostra tutte le cabine",
-    cabinAria: (roomType, index, inside, capacity) => `${roomType}, cabina ${index}, ${inside} ospiti su ${capacity}`,
+    cabinAria: (roomType, index, inside, capacity) => `${roomType}, cabina ${index}, ${inside} ${inside === 1 ? "ospite" : "ospiti"} su ${capacity}`,
     cabinOutAria: (roomType, index) => `${roomType}, cabina ${index}, non disponibile in questa data`,
     saveName: (roomType, voyage) => `${roomType}, viaggio di ${voyage}`,
     inCart: roomType => `La ${roomType} per questa partenza è nel Suo carrello.`,
@@ -1359,7 +1400,7 @@ const IT: BookingCopy = {
     viewRoomLabel: roomType => `Visualizza la ${roomType} (si apre in una nuova scheda)`,
     viewRoom: "Vedi la cabina",
     unavailableDate: "Non disponibile in questa data",
-    seatsTaken: (inside, capacity) => `${inside} posti occupati su ${capacity}`,
+    seatsTaken: (inside, capacity) => `${inside} ${inside === 1 ? "posto occupato" : "posti occupati"} su ${capacity}`,
     menuLabel: (label, cabin) => `${label} nella ${cabin}`,
     empty: label => `Svuota la ${label}`,
     needsAdult: "Ogni cabina deve ospitare almeno un adulto.",
@@ -1407,7 +1448,7 @@ const IT: BookingCopy = {
       lede: guests =>
         guests === 1
           ? "Scelga una o più tipologie. Sistemeremo l’ospite nel rispetto dei limiti di ogni cabina."
-          : `Scelga una o più tipologie. Sistemeremo tutti i ${guests} ospiti nel rispetto dei limiti di ogni cabina.`,
+          : `Scelga una o più tipologie. Sistemeremo tutti e ${guests} gli ospiti nel rispetto dei limiti di ogni cabina.`,
       freeEach: (free, capacity) => `${free} ${free === 1 ? "libera" : "libere"} · fino a ${capacity} ospiti ciascuna`,
       go: "Sistema i miei ospiti",
       cancel: "Annulla",
@@ -1476,7 +1517,7 @@ const IT: BookingCopy = {
       placed: (placed, total) => `${placed}/${total} in cabina`,
       checkCabin: "Controlli una cabina",
     },
-    placeGuests: "Sistemi gli ospiti",
+    placeGuests: "Sistema gli ospiti",
     checkCabins: "Controlla le cabine",
     // The phone bar's amount, in its large display face: kept short.
     noCabinYet: "Da definire",
@@ -1632,12 +1673,11 @@ const IT: BookingCopy = {
     availabilityUnavailable: "Al momento non è possibile consultare la disponibilità.",
     cannotFit: (types, guests) =>
       types === 1
-        ? `Questa tipologia di cabina non può accogliere tutti i ${guests} ospiti in questa data. Scelga anche un’altra tipologia.`
-        : `Queste tipologie di cabina non possono accogliere tutti i ${guests} ospiti in questa data. Scelga anche un’altra tipologia.`,
+        ? `Questa tipologia di cabina non può accogliere tutti e ${guests} gli ospiti in questa data. Scelga anche un’altra tipologia.`
+        : `Queste tipologie di cabina non possono accogliere tutti e ${guests} gli ospiti in questa data. Scelga anche un’altra tipologia.`,
     trimmed: names =>
       `Una ${names.join(" e una ")} che aveva scelto è appena stata prenotata da un altro ospite. I suoi ospiti attendono in «Chi viaggia»: li sistemi di nuovo.`,
     chooseDateFirst: "Scelga prima una delle date di partenza disponibili.",
-    securityCheck: "Completi il controllo di sicurezza prima di inviare la richiesta di prenotazione.",
     sailingClosed: "Questa partenza è appena stata chiusa. Scelga un’altra data.",
     sailingFull: "Questa partenza è al completo. Scelga un’altra data.",
     unableToCheck: "Impossibile verificare la disponibilità.",
@@ -1654,13 +1694,14 @@ const IT: BookingCopy = {
     notSent: "Non è stato possibile inviare la richiesta.",
     sendFailed: reason =>
       `${reason} Nessuna cabina è bloccata a Suo nome: premendo di nuovo «Conferma la richiesta» si avvia una nuova richiesta.`,
+    securityCheck: "Completi la verifica di sicurezza prima di inviare la richiesta di prenotazione.",
   },
 
   plan: {
     custom: "Hathor ha stabilito questo piano per la Sua prenotazione: la prima fattura, poi il saldo entro la data indicata.",
     rules: {
-      3: "Prenotazione a più di 60 giorni dalla partenza: 30% con la prima fattura, 20% entro 60 giorni dalla partenza e il restante 50% entro 45 giorni dalla partenza.",
-      2: "Prenotazione tra 46 e 60 giorni dalla partenza: 50% con la prima fattura e il restante 50% entro 45 giorni dalla partenza.",
+      3: "Prenotazione a più di 60 giorni dalla partenza: 30% con la prima fattura, 20% entro il 60º giorno prima della partenza e il restante 50% entro il 45º giorno prima della partenza.",
+      2: "Prenotazione tra 46 e 60 giorni dalla partenza: 50% con la prima fattura e il restante 50% entro il 45º giorno prima della partenza.",
       1: "Prenotazione a 45 giorni o meno dalla partenza: l’intero importo con la prima fattura.",
     },
     names: {
@@ -1763,6 +1804,7 @@ const IT: BookingCopy = {
     notFound: "Impossibile trovare la prenotazione",
   },
   error: {
+    pageTitle: "Si è verificato un problema | Hathor Dahabiya",
     title: "Qualcosa ha interrotto la Sua prenotazione",
     bodyBefore: "Si è verificato un problema nel caricamento di questa pagina.",
     bodyStrong: "Se aveva già raggiunto il passo di conferma, la Sua prenotazione potrebbe essere già stata inviata",
@@ -1779,8 +1821,13 @@ const IT: BookingCopy = {
     text: "La prenotazione non è stata avviata. Aggiorni la pagina per verificare di nuovo, oppure scelga un’altra cabina.",
     link: "Scopri tutte le cabine ↗",
   },
+  roomGone: {
+    title: "Cabina non trovata",
+    text: "Questa partenza o questa cabina non è più disponibile. Inizi una nuova ricerca.",
+    link: "Torna alla ricerca",
+  },
   meta: {
-    title: "Prenoti la Sua crociera in dahabiya di lusso",
+    title: "Prenoti la Sua crociera in dahabiya",
     description:
       "Scelga il viaggio sul Nilo, la data di partenza e la cabina a bordo di Hathor Dahabiya, poi invii la richiesta al nostro ufficio prenotazioni.",
   },

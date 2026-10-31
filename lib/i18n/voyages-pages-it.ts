@@ -83,7 +83,7 @@ export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
   "luxor-aswan-luxor": {
     ...page(
       "/it/voyages/luxor-aswan-luxor",
-      "Crociera sul Nilo di 7 notti, Luxor–Assuan–Luxor | Hathor Dahabiya",
+      "Crociera sul Nilo di 7 notti da Luxor | Hathor Dahabiya",
       "Il giro completo di 7 notti e 8 giorni da Luxor ad Assuan e ritorno: ogni tempio lungo il percorso, a bordo di Hathor Dahabiya, per soli 32 ospiti.",
     ),
     name: "Crociera sul Nilo di 7 notti da Luxor ad Assuan e ritorno | Hathor Dahabiya",

@@ -10,6 +10,7 @@ import { ArrowLeft, BedDouble, CreditCard, Mail, MailCheck, Phone, Ship, User } 
 import { RowActions } from "@/components/admin/RowActions";
 import {
   STAGE_HINTS,
+  cancellationReasonLabel,
   paymentMethodLabel,
   type AdminBookingDto,
 } from "@/lib/admin-bookings";
@@ -263,6 +264,7 @@ export function BookingDetailView({
               ) : "—"}
             </Row>
             <Row label="Country">{booking.country ?? "—"}</Row>
+            {booking.guestLocale ? <Row label="Guest language">{booking.guestLocale === "it" ? "Italian: automatic emails go in Italian" : "German: automatic emails go in German"}</Row> : null}
             <Row label="Marketing emails">{marketingOptIn ? "Yes" : "No"}</Row>
           </Panel>
 
@@ -306,6 +308,7 @@ export function BookingDetailView({
                 ))}
               </ol>
             ) : null}
+            {booking.status === "CANCELLED" ? <Row label="Reason">{cancellationReasonLabel(booking.cancellationReason)}</Row> : null}
             {cancellationFeeCents !== null && booking.status === "CANCELLED" ? (
               <Row label="Cancellation fee">{formatPrice(cancellationFeeCents)}</Row>
             ) : null}

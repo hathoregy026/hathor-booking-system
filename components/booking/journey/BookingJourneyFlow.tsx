@@ -222,7 +222,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
           }
           setStep(2);
         })
-        .catch(error => { if (!controller.signal.aborted) setAlert(error instanceof Error ? error.message : t.alerts.availabilityUnavailable); })
+        .catch(error => { if (!controller.signal.aborted) setAlert(t.caught(error, t.alerts.availabilityUnavailable)); })
         .finally(() => { if (!controller.signal.aborted) setLoadingSailings(false); });
     }, 150);
     return () => { controller.abort(); clearTimeout(timer); };
@@ -341,7 +341,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       if (result.removed.length > 0) setAlert(trimmedMessage(result.removed));
       setStep(2);
     } catch (error) {
-      setAlert(error instanceof Error ? error.message : t.alerts.unableToCheck);
+      setAlert(t.caught(error, t.alerts.unableToCheck));
     } finally {
       setBusy(false);
     }
@@ -369,7 +369,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       }
       setStep(3);
     } catch (error) {
-      setAlert(error instanceof Error ? error.message : t.alerts.unableToCheck);
+      setAlert(t.caught(error, t.alerts.unableToCheck));
     } finally {
       setBusy(false);
     }
@@ -533,6 +533,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             bookingId: held.bookingId,
             accessToken: held.accessToken,
             turnstileToken: requestVerification,
+            locale: t.locale,
             firstName: form.firstName.trim(),
             lastName: form.lastName.trim(),
             email: form.email.trim(),
@@ -571,7 +572,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             : t.alerts.cabinTaken,
         );
       } else {
-        const reason = error instanceof Error ? error.message : t.alerts.notSent;
+        const reason = t.caught(error, t.alerts.notSent);
         setAlert(t.alerts.sendFailed(reason));
       }
       setBusy(false);

@@ -129,7 +129,9 @@ export function stripLocalePrefix(pathname: string | null | undefined): string {
 
 export function isTranslatedPath(path: string, locale: PublicLocale): boolean {
   if (locale === "en") return true;
-  return TRANSLATED_PATHS[locale].includes(cleanPath(path));
+  const page = cleanPath(path);
+  /* Old cabin addresses: /it/booking/cruise/<id> leads to the Italian room page. */
+  return TRANSLATED_PATHS[locale].includes(page) || /^\/booking\/cruise\/[^/]+$/.test(page);
 }
 
 /** The address of `path` in `locale`, or null when that page is not translated yet. */
@@ -139,6 +141,29 @@ export function pathInLocale(path: string, locale: PublicLocale): string | null 
   if (locale === DEFAULT_PUBLIC_LOCALE) return page;
   return page === "/" ? `/${locale}` : `/${locale}${page}`;
 }
+
+/**
+ * Old addresses that only redirect to an English page (next.config.ts), so a
+ * link still using one, such as a dashboard-typed "/cruises", stays in the
+ * visitor's language instead of landing on English.
+ */
+const LEGACY_PATHS: Readonly<Record<string, string>> = {
+  "/cruises": "/cruises-list",
+  "/mask-reveal": "/cruises-list",
+  "/book": "/booking",
+  "/booking/checkout": "/booking",
+  "/blog": "/blogs",
+  "/journal": "/blogs",
+  "/contact-us": "/contact",
+  "/dining": "/gastronomy",
+  "/accommodation": "/luxury-cabins-Nile-Cruise",
+  "/accommodations": "/luxury-cabins-Nile-Cruise",
+  "/luxury-suites": "/rooms",
+  "/Nile-Cruise-Luxury-Suites": "/rooms",
+  "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "/royal-suites",
+  "/rooms/dahabiya-nile-cruise-aswan-to-luxor": "/voyages/aswan-to-luxor",
+  "/rooms/dahabiya-nile-cruise-luxor-to-aswan": "/voyages/luxor-to-aswan",
+};
 
 /**
  * Point an internal link at the visitor's language when that page exists in
@@ -152,7 +177,7 @@ export function localizedHref(href: string, locale: PublicLocale): string {
   const page = match?.[1] || "/";
   const rest = match?.[2] ?? "";
   if (splitLocalePath(page).locale !== DEFAULT_PUBLIC_LOCALE) return href;
-  const target = pathInLocale(page, locale);
+  const target = pathInLocale(LEGACY_PATHS[cleanPath(page)] ?? page, locale);
   return target ? `${target}${rest}` : href;
 }
 

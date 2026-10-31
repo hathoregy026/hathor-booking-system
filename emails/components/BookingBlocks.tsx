@@ -1,29 +1,33 @@
 import { Link, Text } from "@react-email/components";
 import type { EmailPaymentStage } from "@/lib/email-types";
+import { EMAIL_COPY } from "@/lib/i18n/email-copy";
+import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { emailColors, emailFonts, SITE_URL } from "../styles";
 import { GoldSectionTitle } from "./EmailLayout";
 
 const reset = { padding: 0, margin: 0 } as const;
 
 /** The booking code, large, with how to track the booking with it. */
-export function BookingCodeCard({ code, trackUrl }: { code: string; trackUrl?: string }) {
+export function BookingCodeCard({ code, trackUrl, locale = "en" }: { code: string; trackUrl?: string; locale?: PublicLocale }) {
+  const copy = EMAIL_COPY[locale].codeCard;
+  const lookup = `${SITE_URL}${localizedHref("/booking/lookup", locale)}`;
   return (
     <table role="presentation" cellPadding={0} cellSpacing={0} width="100%" style={{ borderCollapse: "collapse", margin: "8px 0 0" }}>
       <tbody>
         <tr>
           <td align="center" style={{ border: `1px solid ${emailColors.borderGold}`, backgroundColor: emailColors.paperWarm, padding: "24px 20px" }}>
             <Text style={{ color: emailColors.goldDark, fontFamily: emailFonts.body, fontSize: "10px", fontWeight: 600, letterSpacing: "0.2em", lineHeight: "1.4", margin: "0 0 8px", textTransform: "uppercase" }}>
-              Your booking code
+              {copy.label}
             </Text>
             <Text style={{ color: emailColors.ink, fontFamily: emailFonts.body, fontSize: "28px", fontWeight: 500, fontVariantNumeric: "lining-nums tabular-nums", letterSpacing: "0.12em", lineHeight: "1.2", margin: "0 0 10px" }}>
               {code}
             </Text>
             <Text style={{ color: emailColors.textSecondary, fontFamily: emailFonts.body, fontSize: "13px", fontWeight: 300, lineHeight: "1.6", margin: 0 }}>
-              Track your booking any time at{" "}
-              <Link href={trackUrl ?? `${SITE_URL}/booking/lookup`} style={{ color: emailColors.goldDark, textDecoration: "underline" }}>
-                {`${SITE_URL.replace(/^https?:\/\//, "")}/booking/lookup`}
+              {copy.trackBefore}{" "}
+              <Link href={trackUrl ?? lookup} style={{ color: emailColors.goldDark, textDecoration: "underline" }}>
+                {lookup.replace(/^https?:\/\//, "")}
               </Link>{" "}
-              with this code and your email.
+              {copy.trackAfter}
             </Text>
           </td>
         </tr>
@@ -32,17 +36,16 @@ export function BookingCodeCard({ code, trackUrl }: { code: string; trackUrl?: s
   );
 }
 
-const STATE_LABEL: Record<EmailPaymentStage["state"], string> = { paid: "Received", due: "Due now", upcoming: "Upcoming" };
-
 /** Each payment stage with its amount and whether it is received, due or still to come. */
-export function PaymentPlanTable({ stages, title = "Payment Schedule" }: { stages: EmailPaymentStage[]; title?: string }) {
+export function PaymentPlanTable({ stages, title, locale = "en" }: { stages: EmailPaymentStage[]; title?: string; locale?: PublicLocale }) {
+  const copy = EMAIL_COPY[locale];
   if (stages.length === 0) return null;
   return (
     <table role="presentation" cellPadding={0} cellSpacing={0} width="100%" style={{ borderCollapse: "collapse", margin: "32px 0 0" }}>
       <tbody>
         <tr>
           <td style={reset}>
-            <GoldSectionTitle>{title}</GoldSectionTitle>
+            <GoldSectionTitle>{title ?? copy.schedule}</GoldSectionTitle>
             <table role="presentation" cellPadding={0} cellSpacing={0} width="100%" style={{ border: `1px solid ${emailColors.borderSolid}`, borderCollapse: "collapse" }}>
               <tbody>
                 {stages.map((stage, index) => {
@@ -57,7 +60,7 @@ export function PaymentPlanTable({ stages, title = "Payment Schedule" }: { stage
                       <td align="right" style={{ backgroundColor: background, borderBottom: `1px solid ${emailColors.borderSolid}`, padding: "14px 16px", verticalAlign: "top", whiteSpace: "nowrap" }}>
                         <Text style={{ color: highlight ? emailColors.ink : emailColors.goldDark, fontFamily: emailFonts.editorial, fontSize: "17px", fontWeight: 500, lineHeight: "1.3", margin: "0 0 2px" }}>{stage.amount}</Text>
                         <Text style={{ color: stage.state === "paid" ? emailColors.goldDark : emailColors.textMuted, fontFamily: emailFonts.body, fontSize: "10px", fontWeight: 600, letterSpacing: "0.14em", lineHeight: "1.4", margin: 0, textTransform: "uppercase" }}>
-                          {STATE_LABEL[stage.state]}
+                          {copy.stageState[stage.state]}
                         </Text>
                       </td>
                     </tr>

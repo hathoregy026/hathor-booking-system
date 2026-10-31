@@ -19,12 +19,12 @@ type VerificationProps = ({ type: "contact" | "charter"; action?: never } | { ac
 };
 
 export function InquiryVerification({ type, action, onToken, resetVersion = 0, appearance = "always" }: VerificationProps) {
+  const locale = usePublicLocale();
   const container = useRef<HTMLDivElement>(null);
   const widgetId = useId();
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const siteKey = publicTurnstileSiteKey();
-  const locale = usePublicLocale();
   const expectedAction = action ?? `${type}_inquiry`;
   useEffect(() => {
     if (!ready || !container.current || !window.turnstile || !siteKey) return;

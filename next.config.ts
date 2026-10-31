@@ -15,14 +15,14 @@ const CSP_DIRECTIVES = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://www.googletagmanager.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https://jgkmiettciwacrpcubil.supabase.co https://images.unsplash.com https://hathor-booking-system.vercel.app https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://lh3.googleusercontent.com https://*.tripadvisor.com https://*.tacdn.com",
   "media-src 'self' blob: https://jgkmiettciwacrpcubil.supabase.co",
   "font-src 'self' data: https://fonts.gstatic.com",
   "connect-src 'self' https://jgkmiettciwacrpcubil.supabase.co https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
   "worker-src 'self' blob:",
-  "frame-src 'self'",
+  "frame-src 'self' https://challenges.cloudflare.com",
   "manifest-src 'self'",
   "upgrade-insecure-requests",
 ].join("; ");
@@ -68,6 +68,11 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
+  // Unsubscribe URLs carry opaque opt-out capabilities; never print them in dev logs.
+  logging: { incomingRequests: { ignore: [/^\/bulk-email\/unsubscribe(?:\?|$)/] } },
+  outputFileTracingIncludes: {
+    "/api/admin/bulk-emails/import": ["./scripts/bulk-email-import-worker.mjs", ...["read-excel-file", "pdfjs-dist", "yauzl", "fflate", "saxen", "unzipper-esm", "worker-f", "graceful-fs", "node-int64", "pend"].map(name => `./node_modules/${name}/**/*`), "./node_modules/@napi-rs/canvas*/**/*"],
+  },
   images: {
     loader: "custom",
     loaderFile: "./lib/image-loader.ts",

@@ -72,6 +72,15 @@ export const CHROME_COPY_DE: ChromeCopy = {
     phoneTools: "Werkzeuge",
     showGroupPages: (group) => `Seiten zu ${group} anzeigen`,
     groupPages: (group) => `Seiten zu ${group}`,
+    exploreLabel: "Entdecken",
+    exploreMenu: "Navigationsmenü",
+    closeExplore: "Navigationsmenü schließen",
+    followUs: "Folgen Sie uns",
+    followVoyage: "Folgen Sie der Reise",
+    socialLinks: "Soziale Netzwerke",
+    navLeft: "Hauptnavigation links",
+    navRight: "Hauptnavigation rechts",
+    siteLogo: "Logo der Website",
   },
   menu: {
     kicker: "Luxusreisen auf dem Nil",
@@ -80,6 +89,8 @@ export const CHROME_COPY_DE: ChromeCopy = {
     closeMenu: "Menü schließen",
     privacy: "Datenschutz",
     terms: "AGB",
+    privacyHref: "/contact",
+    termsHref: "/terms-and-conditions",
     bookNow: "Jetzt buchen",
   },
   language: {
@@ -196,10 +207,8 @@ export const CHROME_COPY_DE: ChromeCopy = {
     country: "Ägypten",
     backToTop: "Zurück zum Seitenanfang",
   },
-  comingSoon: "Demnächst",
   occasion: {
     hide: (name) => `Hinweis „${name}“ ausblenden`,
-    until: (name) => `Bis ${name}`,
     units: {
       days: ["Tage", "Tage"],
       hours: ["Stunden", "Std"],
@@ -208,6 +217,6 @@ export const CHROME_COPY_DE: ChromeCopy = {
     },
     timer: (caption, days, hours, minutes) =>
       `${caption}: ${days} ${days === 1 ? "Tag" : "Tage"}, ${hours} ${hours === 1 ? "Stunde" : "Stunden"}, ${minutes} ${minutes === 1 ? "Minute" : "Minuten"}`,
-    stripeUnits: { days: " T", hours: " Std", minutes: " Min", seconds: " Sek" },
+    dayMark: "T",
   },
 };

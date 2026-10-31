@@ -58,3 +58,22 @@ export const SEO_CONTACT = {
   addressLocality: "Cairo",
   addressCountry: "EG",
 } as const;
+
+/** The address and country in each language's words, for structured data. */
+export const SEO_PLACE_WORDS = {
+  en: {
+    streetAddress: SEO_CONTACT.streetAddress,
+    addressLocality: SEO_CONTACT.addressLocality,
+    country: "Egypt",
+  },
+  it: {
+    streetAddress: "One Kattamiya, Torre 211, 11º piano, int. 111, Ring Road",
+    addressLocality: "Il Cairo",
+    country: "Egitto",
+  },
+  de: {
+    streetAddress: "One Kattamiya, Tower 211, 11. Etage, Flat 111, Ring Road",
+    addressLocality: "Kairo",
+    country: "Ägypten",
+  },
+} as const;

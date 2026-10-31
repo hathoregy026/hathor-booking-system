@@ -27,6 +27,15 @@ export type ChromeCopy = {
     phoneTools: string;
     showGroupPages: (group: string) => string;
     groupPages: (group: string) => string;
+    exploreLabel: string;
+    exploreMenu: string;
+    closeExplore: string;
+    followUs: string;
+    followVoyage: string;
+    socialLinks: string;
+    navLeft: string;
+    navRight: string;
+    siteLogo: string;
   };
   menu: {
     kicker: string;
@@ -35,6 +44,9 @@ export type ChromeCopy = {
     closeMenu: string;
     privacy: string;
     terms: string;
+    /** Where the two legal lines at the foot of the menu lead, in English page form. */
+    privacyHref: string;
+    termsHref: string;
     bookNow: string;
   };
   language: {
@@ -46,6 +58,14 @@ export type ChromeCopy = {
     comingSoon: (name: string) => string;
     toggleLabel: (active: string) => string;
     closeMenu: string;
+  };
+  /** The occasion stripe and countdown under the header. */
+  occasion: {
+    hide: (name: string) => string;
+    timer: (caption: string, days: number, hours: number, minutes: number) => string;
+    units: Record<"days" | "hours" | "minutes" | "seconds", readonly [string, string]>;
+    /** The day mark in the stripe's running count ("12d 03h 04m 05s"). */
+    dayMark: string;
   };
   /** The day / night switch in the header: the word on the pill, then what it does. */
   theme: {
@@ -105,19 +125,6 @@ export type ChromeCopy = {
     country: string;
     backToTop: string;
   };
-  /** Shown while the whole site or a page is closed to visitors. */
-  comingSoon: string;
-  /** The fixed words around a scheduled occasion; its messages come from the dashboard. */
-  occasion: {
-    hide: (name: string) => string;
-    /** The countdown's caption when the dashboard gives none. */
-    until: (name: string) => string;
-    /** [full label, phone label] beside each digit pair. */
-    units: Record<"days" | "hours" | "minutes" | "seconds", readonly [string, string]>;
-    timer: (caption: string, days: number, hours: number, minutes: number) => string;
-    /** Follows each number in the stripe's "{countdown}". */
-    stripeUnits: Record<"days" | "hours" | "minutes" | "seconds", string>;
-  };
 };
 
 const EN: ChromeCopy = {
@@ -128,6 +135,15 @@ const EN: ChromeCopy = {
     phoneTools: "Phone tools",
     showGroupPages: (group) => `Show ${group} pages`,
     groupPages: (group) => `${group} pages`,
+    exploreLabel: "Explore",
+    exploreMenu: "Explore menu",
+    closeExplore: "Close explore menu",
+    followUs: "Follow Us",
+    followVoyage: "Follow the Voyage",
+    socialLinks: "Social links",
+    navLeft: "Primary navigation left",
+    navRight: "Primary navigation right",
+    siteLogo: "Site logo",
   },
   menu: {
     kicker: "Luxury voyages on the Nile",
@@ -136,6 +152,8 @@ const EN: ChromeCopy = {
     closeMenu: "Close menu",
     privacy: "Privacy Policy",
     terms: "Terms & Conditions",
+    privacyHref: "/contact",
+    termsHref: "/contact",
     bookNow: "Book Now",
   },
   language: {
@@ -153,6 +171,18 @@ const EN: ChromeCopy = {
     comingSoon: (name) => `${name} — coming soon`,
     toggleLabel: (active) => `Language: ${active}. Choose a language`,
     closeMenu: "Close language menu",
+  },
+  occasion: {
+    hide: (name) => `Hide the ${name} message`,
+    timer: (caption, days, hours, minutes) =>
+      `${caption}: ${days} days, ${hours} hours, ${minutes} minutes`,
+    units: {
+      days: ["Days", "Days"],
+      hours: ["Hours", "Hrs"],
+      minutes: ["Minutes", "Min"],
+      seconds: ["Seconds", "Sec"],
+    },
+    dayMark: "d",
   },
   theme: {
     day: "daymode",
@@ -251,20 +281,6 @@ const EN: ChromeCopy = {
     country: "Egypt",
     backToTop: "Back to top of page",
   },
-  comingSoon: "Coming Soon",
-  occasion: {
-    hide: (name) => `Hide the ${name} message`,
-    until: (name) => `Until ${name}`,
-    units: {
-      days: ["Days", "Days"],
-      hours: ["Hours", "Hrs"],
-      minutes: ["Minutes", "Min"],
-      seconds: ["Seconds", "Sec"],
-    },
-    timer: (caption, days, hours, minutes) =>
-      `${caption}: ${days} days, ${hours} hours, ${minutes} minutes`,
-    stripeUnits: { days: "d", hours: "h", minutes: "m", seconds: "s" },
-  },
 };
 
 const IT: ChromeCopy = {
@@ -298,7 +314,7 @@ const IT: ChromeCopy = {
         description: "Itinerari privati in dahabiya sul Nilo",
       },
       "/cruises-list": {
-        label: "Partenze programmate",
+        label: "Crociere",
         description: "Si unisca a una navigazione sul Nilo",
       },
       "/charter": {
@@ -335,6 +351,15 @@ const IT: ChromeCopy = {
     phoneTools: "Strumenti",
     showGroupPages: (group) => `Mostra le pagine ${group}`,
     groupPages: (group) => `Pagine ${group}`,
+    exploreLabel: "Esplora",
+    exploreMenu: "Menu di navigazione",
+    closeExplore: "Chiudi il menu di navigazione",
+    followUs: "Ci segua",
+    followVoyage: "Segua il viaggio",
+    socialLinks: "Profili social",
+    navLeft: "Navigazione principale, sinistra",
+    navRight: "Navigazione principale, destra",
+    siteLogo: "Logo del sito",
   },
   menu: {
     kicker: "Viaggi di lusso sul Nilo",
@@ -343,6 +368,8 @@ const IT: ChromeCopy = {
     closeMenu: "Chiudi il menu",
     privacy: "Privacy",
     terms: "Termini e condizioni",
+    privacyHref: "/contact",
+    termsHref: "/terms-and-conditions",
     bookNow: "Prenota ora",
   },
   language: {
@@ -359,6 +386,18 @@ const IT: ChromeCopy = {
     comingSoon: (name) => `${name} — in arrivo`,
     toggleLabel: (active) => `Lingua: ${active}. Scelga una lingua`,
     closeMenu: "Chiudi il menu delle lingue",
+  },
+  occasion: {
+    hide: (name) => `Nascondi il messaggio: ${name}`,
+    timer: (caption, days, hours, minutes) =>
+      `${caption}: ${days} ${days === 1 ? "giorno" : "giorni"}, ${hours} ${hours === 1 ? "ora" : "ore"}, ${minutes} ${minutes === 1 ? "minuto" : "minuti"}`,
+    units: {
+      days: ["Giorni", "Giorni"],
+      hours: ["Ore", "Ore"],
+      minutes: ["Minuti", "Min"],
+      seconds: ["Secondi", "Sec"],
+    },
+    dayMark: "g",
   },
   theme: {
     day: "giorno",
@@ -459,20 +498,6 @@ const IT: ChromeCopy = {
     utilityLabel: "Note legali e contatti",
     country: "Egitto",
     backToTop: "Torna all’inizio della pagina",
-  },
-  comingSoon: "Prossimamente",
-  occasion: {
-    hide: (name) => `Nascondi il messaggio ${name}`,
-    until: (name) => `Fino a ${name}`,
-    units: {
-      days: ["Giorni", "Gg"],
-      hours: ["Ore", "Ore"],
-      minutes: ["Minuti", "Min"],
-      seconds: ["Secondi", "Sec"],
-    },
-    timer: (caption, days, hours, minutes) =>
-      `${caption}: ${days} giorni, ${hours} ore, ${minutes} minuti`,
-    stripeUnits: { days: "g", hours: "h", minutes: "m", seconds: "s" },
   },
 };
 

@@ -14,6 +14,8 @@ const dePorts = (ports: string) =>
     .join("");
 
 export const HOME_COPY_DE: HomeCopy = {
+  campaign: { label: "Einladung zur Buchung", cta: "Jetzt buchen" },
+  amenitiesStoriesLabel: "Geschichten vom Nil",
   hero: {
     lineRight: "Luxus Dahabiya",
     lineLeft: "Nilkreuzfahrt",

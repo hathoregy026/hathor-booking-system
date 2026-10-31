@@ -4,7 +4,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Loader2, X } from "lucide-react";
 import { useToast } from "@/components/admin/ToastProvider";
-import { paymentMethodLabel, type AdminBookingDto } from "@/lib/admin-bookings";
+import { CANCEL_REASONS, CANCELLATION_REASON_LABELS, ZERO_FEE_CANCEL_REASONS, paymentMethodLabel, type AdminBookingDto, type CancelReason } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
 import { paymentPlan, stageTitle } from "@/lib/booking-code";
@@ -29,12 +29,47 @@ const INSTRUCTION_DEFAULTS: Record<string, string> = {
   VISA: "",
 };
 
-const storageKey = (method: string | null) => `hathor-invoice-instructions:${method ?? "ANY"}`;
+/* The same note for a guest who booked in Italian; their invoice is in Italian. */
+const INSTRUCTION_DEFAULTS_IT: Record<string, string> = {
+  BANK_TRANSFER:
+    "La preghiamo di versare {amount} sul seguente conto:\n\nBanca: \nIntestatario: Hathor Cruise\nIBAN: \nSWIFT / BIC: \n\nIndichi il codice di prenotazione {code} come causale del bonifico e risponda a questa email allegando la ricevuta.",
+  VISA: "",
+};
 
-function readInstructions(method: string | null): string {
-  const fallback = INSTRUCTION_DEFAULTS[method ?? ""] ?? INSTRUCTION_DEFAULTS.BANK_TRANSFER!;
+/* The same note for a guest who booked in German; their invoice is in German. */
+const INSTRUCTION_DEFAULTS_DE: Record<string, string> = {
+  BANK_TRANSFER:
+    "Bitte überweisen Sie {amount} auf folgendes Konto:\n\nBank: \nKontoinhaber: Hathor Cruise\nIBAN: \nSWIFT / BIC: \n\nGeben Sie Ihren Buchungscode {code} als Verwendungszweck an und antworten Sie auf diese E-Mail mit dem Überweisungsbeleg.",
+  VISA: "",
+};
+
+type GuestLanguage = "en" | "it" | "de";
+
+const INSTRUCTION_DEFAULTS_BY: Record<GuestLanguage, Record<string, string>> = {
+  en: INSTRUCTION_DEFAULTS,
+  it: INSTRUCTION_DEFAULTS_IT,
+  de: INSTRUCTION_DEFAULTS_DE,
+};
+
+const REPLY_GREETING: Record<GuestLanguage, string> = { en: "Dear", it: "Gentile", de: "Guten Tag" };
+
+/** "USD 2.100", as the guest's Italian invoice writes it. */
+const italianAmount = (cents: number) =>
+  `USD ${new Intl.NumberFormat("en-US", { minimumFractionDigits: cents % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 })
+    .format(cents / 100)
+    .replace(/[,.]/g, mark => (mark === "," ? "." : ","))}`;
+
+/** "2.100 USD", as the guest's German invoice writes it. */
+const germanAmount = (cents: number) =>
+  `${italianAmount(cents).slice(4)} USD`;
+
+const storageKey = (method: string | null, language: GuestLanguage) => `hathor-invoice-instructions:${language === "en" ? "" : `${language}:`}${method ?? "ANY"}`;
+
+function readInstructions(method: string | null, language: GuestLanguage): string {
+  const defaults = INSTRUCTION_DEFAULTS_BY[language];
+  const fallback = defaults[method ?? ""] ?? defaults.BANK_TRANSFER!;
   try {
-    const saved = localStorage.getItem(storageKey(method));
+    const saved = localStorage.getItem(storageKey(method, language));
     // Older notes carried a "[paste …link]" placeholder; the link has its own field now.
     return saved && !/\[paste/i.test(saved) ? saved : fallback;
   } catch {
@@ -51,9 +86,9 @@ function isSecureLink(value: string) {
 }
 
 /** Remember the team's wording per method, with this booking's amount and code turned back into placeholders. */
-function rememberInstructions(method: string | null, text: string, amount: string, code: string) {
+function rememberInstructions(method: string | null, language: GuestLanguage, text: string, amount: string, code: string) {
   try {
-    localStorage.setItem(storageKey(method), text.split(amount).join("{amount}").split(code).join("{code}"));
+    localStorage.setItem(storageKey(method, language), text.split(amount).join("{amount}").split(code).join("{code}"));
   } catch {
     /* private window: nothing to remember */
   }
@@ -200,20 +235,23 @@ export function BookingActionDialog({
     : dueNow;
   const amountText = formatPrice(invoiceDue);
   const duePercent = invoiceTotal > 0 && invoiceDue > 0 ? Math.round((invoiceDue / invoiceTotal) * 100) : null;
+  const guestLanguage: GuestLanguage = booking.guestLocale ?? "en";
+  // The note goes into the guest's email, so it writes the amount the way that email does.
+  const noteAmountText = guestLanguage === "it" ? italianAmount(invoiceDue) : guestLanguage === "de" ? germanAmount(invoiceDue) : amountText;
   const [instructions, setInstructions] = useState(() =>
-    readInstructions(method).split("{amount}").join(amountText).split("{code}").join(booking.code),
+    readInstructions(method, guestLanguage).split("{amount}").join(noteAmountText).split("{code}").join(booking.code),
   );
-  const [noteAmount, setNoteAmount] = useState(amountText);
+  const [noteAmount, setNoteAmount] = useState(noteAmountText);
   const [noteTouched, setNoteTouched] = useState(false);
-  if (noteAmount !== amountText) {
+  if (noteAmount !== noteAmountText) {
     // The note quotes the amount due now: keep it in step with the invoice being set up.
-    setNoteAmount(amountText);
-    setInstructions(text => text.split(noteAmount).join(amountText));
+    setNoteAmount(noteAmountText);
+    setInstructions(text => text.split(noteAmount).join(noteAmountText));
   }
   function chooseMethod(next: "VISA" | "BANK_TRANSFER") {
     setMethod(next);
     // An untouched note follows the method: bank details for a transfer, nothing extra for a card link.
-    if (!noteTouched) setInstructions(readInstructions(next).split("{amount}").join(noteAmount).split("{code}").join(booking.code));
+    if (!noteTouched) setInstructions(readInstructions(next, guestLanguage).split("{amount}").join(noteAmount).split("{code}").join(booking.code));
   }
   function toggleSplit(on: boolean) {
     setCustomSplit(on);
@@ -223,9 +261,9 @@ export function BookingActionDialog({
   const [declineMessage, setDeclineMessage] = useState("");
   const [notify, setNotify] = useState(true);
   const [replySubject, setReplySubject] = useState("");
-  const [replyMessage, setReplyMessage] = useState(`Dear ${booking.guestName},\n\n`);
+  const [replyMessage, setReplyMessage] = useState(`${REPLY_GREETING[guestLanguage]} ${booking.guestName},\n\n`);
   const [replyFiles, setReplyFiles] = useState<ReplyAttachment[]>([]);
-  const [cancelReason, setCancelReason] = useState("CANCELLATION");
+  const [cancelReason, setCancelReason] = useState<CancelReason>("CANCELLATION");
   const refund = booking.status === "CANCELLED";
   const [payment, setPayment] = useState(() => ({
     amount: ((refund ? booking.paidCents : dueNow) / 100).toFixed(2),
@@ -311,7 +349,7 @@ export function BookingActionDialog({
           ...(invoiceEditable ? { paymentMethod: method } : {}),
           ...(split ? { split } : {}),
         });
-        if (note) rememberInstructions(method, note, amountText, booking.code);
+        if (note) rememberInstructions(method, guestLanguage, note, noteAmountText, booking.code);
         report(
           booking.acceptedAt ? "" : "Request confirmed.",
           result.email,
@@ -603,14 +641,19 @@ export function BookingActionDialog({
       <Dialog title="Cancel this booking" kicker={who} onClose={onClose}>
         <form onSubmit={submit}>
           <p className="text-sm text-muted">
-            The cabins are released. The cancellation fee follows your policy for the reason and how close departure is; refunds are recorded separately.
+            {ZERO_FEE_CANCEL_REASONS.includes(cancelReason)
+              ? "No cancellation fee. Record a full refund of everything received within 14 days."
+              : "The cabins are released. The cancellation fee follows your policy for the reason and how close departure is; refunds are recorded separately."}
           </p>
           <div className="mt-5">
             <Field label="Reason">
-              <select className="input h-10 px-3 text-sm" value={cancelReason} onChange={(e) => setCancelReason(e.target.value)}>
-                <option value="CANCELLATION">Guest cancelled</option>
-                <option value="NO_SHOW">No-show</option>
-                <option value="EARLY_DEPARTURE">Early departure</option>
+              <select className="input h-10 px-3 text-sm" value={cancelReason} onChange={(e) => setCancelReason(e.target.value as CancelReason)}>
+                {CANCEL_REASONS.map((reason) => (
+                  <option key={reason} value={reason}>
+                    {CANCELLATION_REASON_LABELS[reason]}
+                    {ZERO_FEE_CANCEL_REASONS.includes(reason) ? " (no fee, full refund)" : ""}
+                  </option>
+                ))}
               </select>
             </Field>
           </div>

@@ -7,15 +7,16 @@ import { bookingRequestSchema } from "@/lib/booking-request-validation";
 import { verifyBookingAccessToken } from "@/lib/booking-access-token";
 import { assertTrustedPublicJsonRequest, enforceKeyedRateLimit, enforcePublicRateLimit, readPublicJsonBody, requireIdempotencyKey, PublicRequestError } from "@/lib/public-api-security";
 import { sendRequestEmails } from "@/lib/booking-guest-mail";
+import { PUBLIC_LOCALES } from "@/lib/i18n/locale";
 export const dynamic = "force-dynamic";
-const protectedRequestSchema = bookingRequestSchema.extend({ turnstileToken: z.string().max(2048).optional() });
+const protectedRequestSchema = bookingRequestSchema.extend({ turnstileToken: z.string().max(2048).optional(), locale: z.enum(PUBLIC_LOCALES).optional() });
 /** Submit a request only. Acceptance and payments are staff operations. */
 export async function POST(request: NextRequest) {
   try {
     assertTrustedPublicJsonRequest(request);
     await enforcePublicRateLimit({ request, scope: "booking-request", limit: 20, windowMs: 10 * 60_000 });
     const key = requireIdempotencyKey(request);
-    const { turnstileToken, ...parsed } = protectedRequestSchema.parse(await readPublicJsonBody(request));
+    const { turnstileToken, locale, ...parsed } = protectedRequestSchema.parse(await readPublicJsonBody(request));
     if (!verifyBookingAccessToken(parsed.bookingId, parsed.accessToken)) throw new PublicRequestError("Invalid booking authorization", 401);
     await verifyTurnstile(request, turnstileToken, "booking_request");
     // The request receipt is emailed to the typed-in address: cap per recipient too.
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
     const { booking, replay } = await submitBookingRequest(parsed, key);
     if (!replay) {
       try {
-        await sendRequestEmails(booking.id, parsed.accessToken);
+        await sendRequestEmails(booking.id, parsed.accessToken, locale);
       } catch { console.error("[booking] request notification status unavailable"); }
     }
     return NextResponse.json({ bookingId: booking.id, accessToken: parsed.accessToken, status: booking.status,

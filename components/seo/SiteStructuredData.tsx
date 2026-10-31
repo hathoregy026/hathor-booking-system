@@ -1,58 +1,18 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SEO_LOGO_PATH } from "@/lib/seo/site";
-import { indexedSiteLanguages } from "@/lib/i18n/locale";
-import {
-  SEO_BRAND_NAME,
-  SEO_CONTACT,
-  SEO_LEGAL_NAME,
-  SEO_SITE_NAME,
-  SEO_SOCIAL_URLS,
-  seoAbsoluteUrl,
-} from "@/lib/seo/site";
+import { organizationNode, websiteNode } from "@/components/seo/siteNodes";
+import { splitLocalePath } from "@/lib/i18n/locale";
 
-export function organizationNode() {
-  const origin = seoAbsoluteUrl("/");
-  return {
-    "@type": ["Organization", "TravelAgency"],
-    "@id": `${origin}#organization`,
-    name: SEO_BRAND_NAME,
-    legalName: SEO_LEGAL_NAME,
-    alternateName: ["Hathor Cruise", SEO_LEGAL_NAME],
-    url: origin,
-    email: SEO_CONTACT.email,
-    telephone: SEO_CONTACT.telephone,
-    logo: seoAbsoluteUrl(SEO_LOGO_PATH),
-    image: seoAbsoluteUrl("/media/hathor/home-hero-poster.webp"),
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: SEO_CONTACT.streetAddress,
-      addressLocality: SEO_CONTACT.addressLocality,
-      addressCountry: SEO_CONTACT.addressCountry,
-    },
-    areaServed: { "@type": "Country", name: "Egypt" },
-    sameAs: SEO_SOCIAL_URLS,
-  };
-}
-
-export function websiteNode() {
-  const origin = seoAbsoluteUrl("/");
-  return {
-    "@type": "WebSite",
-    "@id": `${origin}#website`,
-    url: origin,
-    name: SEO_SITE_NAME,
-    /* Every language open to search ("en" alone until one is switched on). */
-    inLanguage: indexedSiteLanguages(),
-    publisher: { "@id": `${origin}#organization` },
-  };
-}
-
+/* Rendered by the shared root layout, so the language comes from the address. */
 export function SiteStructuredData() {
+  const { locale } = splitLocalePath(usePathname());
   return (
     <JsonLd
       data={{
         "@context": "https://schema.org",
-        "@graph": [organizationNode(), websiteNode()],
+        "@graph": [organizationNode(locale), websiteNode()],
       }}
     />
   );

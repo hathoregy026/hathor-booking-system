@@ -1,6 +1,7 @@
 import { Text } from "@react-email/components";
-import { differenceInCalendarDays, parse } from "date-fns";
+import { differenceInCalendarDays } from "date-fns";
 import type { BookingEmailDetails } from "@/lib/email-types";
+import { EMAIL_COPY, type EmailCopy } from "@/lib/i18n/email-copy";
 import { emailColors, emailFonts } from "../styles";
 import { GoldSectionTitle } from "./EmailLayout";
 
@@ -19,20 +20,20 @@ type SummaryRow = {
 
 function parseGuestCounts(guests: string): { adults: string; children: string } {
   const adultsMatch = guests.match(/(\d+)\s+adult/i);
-  const childrenMatch = guests.match(/(\d+)\s+child/i);
+  const childrenMatch = guests.match(/(\d+)\s+(?:child|bambin)/i);
   return {
     adults: adultsMatch?.[1] ?? guests,
     children: childrenMatch?.[1] ?? "0",
   };
 }
 
-function computeDuration(checkIn: string, checkOut: string): string {
+function computeDuration(checkIn: string, checkOut: string, copy: EmailCopy): string {
   try {
-    const start = parse(checkIn, "MMMM d, yyyy", new Date());
-    const end = parse(checkOut, "MMMM d, yyyy", new Date());
+    const start = copy.parseDate(checkIn);
+    const end = copy.parseDate(checkOut);
     const nights = differenceInCalendarDays(end, start);
     if (nights <= 0) return "—";
-    return `${nights} night${nights === 1 ? "" : "s"}`;
+    return copy.nights(nights);
   } catch {
     return "—";
   }
@@ -42,34 +43,36 @@ function buildSummaryRows(
   details: BookingEmailDetails,
   showBookingReference: boolean,
 ): SummaryRow[] {
+  const copy = EMAIL_COPY[details.locale ?? "en"];
+  const labels = copy.summary;
   const { adults, children } = parseGuestCounts(details.guests);
   const rows: SummaryRow[] = [];
 
   if (showBookingReference && details.bookingId) {
     rows.push({
-      label: "Booking Code",
+      label: labels.code,
       value: details.bookingCode ?? details.bookingId,
       bold: true,
     });
   }
 
   rows.push(
-    { label: "Cruise Name", value: details.cruiseName },
-    { label: "Departure Date", value: details.checkInDate },
-    { label: "Return Date", value: details.checkOutDate },
+    { label: labels.cruise, value: details.cruiseName },
+    { label: labels.departure, value: details.checkInDate },
+    { label: labels.returnDate, value: details.checkOutDate },
     {
-      label: "Duration",
-      value: computeDuration(details.checkInDate, details.checkOutDate),
+      label: labels.duration,
+      value: computeDuration(details.checkInDate, details.checkOutDate, copy),
     },
-    { label: "Room Type", value: details.roomType },
-    { label: "Adults", value: adults },
-    { label: "Children", value: children },
-    ...(details.paymentMethod ? [{ label: "Preferred payment method", value: details.paymentMethod }] : []),
+    { label: labels.room, value: details.roomType },
+    { label: labels.adults, value: adults },
+    { label: labels.children, value: children },
+    ...(details.paymentMethod ? [{ label: labels.method, value: details.paymentMethod }] : []),
     ...(details.ratePlan
-      ? [{ label: "Rate", value: details.ratePlan }]
+      ? [{ label: labels.rate, value: details.ratePlan }]
       : []),
-    ...(details.cardSurcharge ? [{ label: "Card surcharge (included)", value: details.cardSurcharge }] : []),
-    { label: "Total Price", value: details.totalPrice, bold: true, gold: true },
+    ...(details.cardSurcharge ? [{ label: labels.surcharge, value: details.cardSurcharge }] : []),
+    { label: labels.total, value: details.totalPrice, bold: true, gold: true },
   );
 
   return rows;
@@ -98,7 +101,7 @@ function valueCell(isAlt: boolean) {
 export function BookingSummary({
   details,
   showBookingReference = false,
-  sectionTitle = "Your Reservation Details",
+  sectionTitle,
   spaceAfter = false,
 }: BookingSummaryProps & { spaceAfter?: boolean }) {
   if (!details) {
@@ -118,7 +121,7 @@ export function BookingSummary({
       <tbody>
         <tr>
           <td style={{ padding: 0 }}>
-            <GoldSectionTitle>{sectionTitle}</GoldSectionTitle>
+            <GoldSectionTitle>{sectionTitle ?? EMAIL_COPY[details.locale ?? "en"].summary.title}</GoldSectionTitle>
             <table
               role="presentation"
               cellPadding={0}
@@ -213,6 +216,7 @@ export function GuestInfoTable({
     { label: "Email", value: details.guestEmail },
     { label: "Phone Number", value: details.guestPhone ?? "—" },
     { label: "Special Requests", value: details.specialRequests || "None" },
+    ...(details.guestLanguage ? [{ label: "Guest language", value: details.guestLanguage }] : []),
   ];
 
   return (

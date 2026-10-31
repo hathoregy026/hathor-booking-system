@@ -35,11 +35,16 @@ import { RoomFolioAccordion } from "@/components/pages/rooms/RoomFolioAccordion"
 import { livePriceFor } from "@/lib/cabin-prices-shared";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
-import { ROOM_COLLECTION_LINKS } from "@/lib/room-collection-editorial";
 import { folioVariantForRoomSlug } from "@/lib/room-folio-panels";
 import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
 import { amenityIn, placesIn, weekdayIn } from "@/lib/i18n/catalog-copy";
-import { ROOMS_COPY, roomFolioPanels, roomShowcaseIn } from "@/lib/i18n/rooms-copy";
+import {
+  ROOMS_COPY,
+  roomCollectionLinks,
+  roomDetailCopy,
+  roomFolioPanels,
+  roomShowcaseIn,
+} from "@/lib/i18n/rooms-copy";
 import type { RoomShowcase } from "@/lib/room-showcase";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
@@ -135,15 +140,15 @@ export function RoomDetailPage({
   reviews?: ReactNode;
 }) {
   const locale = usePublicLocale();
-  const t = ROOMS_COPY[locale].detail;
   const localHref = useLocalizedHref();
   const room = useMemo(() => roomShowcaseIn(roomProp, locale), [roomProp, locale]);
   const { money: fare } = useCurrency();
   const variant = folioVariantForRoomSlug(room.slug);
+  const t = roomDetailCopy(locale, variant);
   const panels = roomFolioPanels(variant, locale);
+  const collectionLinks = roomCollectionLinks(locale);
   const collection =
-    ROOM_COLLECTION_LINKS.find((link) => link.key === variant) ??
-    ROOM_COLLECTION_LINKS[0];
+    collectionLinks.find((link) => link.key === variant) ?? collectionLinks[0];
   const prices = useCabinPrices();
   const words = ROOMS_COPY[locale];
 
