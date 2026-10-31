@@ -14,7 +14,7 @@ export const VOYAGES_COPY_DE: VoyagesCopy = {
     goldenHour: "Die Hathor in der goldenen Stunde",
     sailing: "Die Hathor auf dem Nil",
     deckLife: "Das Leben an Deck",
-    quietLife: "Ruhiges Leben an Bord der Hathor",
+    quietLife: "Das ruhige Leben an Bord der Hathor",
     table: "Ein gedeckter Tisch an Bord der Hathor",
     restaurant: "Das Restaurant der Hathor",
     suite: "Eine Suite der Hathor",

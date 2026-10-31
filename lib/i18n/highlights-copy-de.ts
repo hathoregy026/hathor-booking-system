@@ -7,10 +7,10 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
   nav: ["Höhepunkte", "Monumente", "An Bord", "Buchen"],
   scroll: "Scrollen",
   intro: {
-    lead: "Tauchen Sie ein in den geheimnisvollen Zauber des Nils an Bord der Hathor Dahabiya, einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil in Ägypten, die das majestätischste Segelerlebnis des Landes bietet, gemacht für alle, die Eleganz, Komfort und einen reichen Hauch Geschichte suchen.",
+    lead: "Tauchen Sie ein in den geheimnisvollen Zauber des Nils mit der Hathor Dahabiya, einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil in Ägypten, die das majestätischste Segelerlebnis des Landes bietet, gemacht für alle, die Eleganz, Komfort und einen Hauch reicher Geschichte suchen.",
     collage:
-      "Private Räume: Mit insgesamt 8 Kabinen und 4 Suiten, davon 2 Royal Suites, garantiert unsere Dahabiya Hathor größte Privatsphäre bei herzlicher, eleganter Gastfreundschaft und ist die perfekte Wahl für eine Dahabiya-Kreuzfahrt von Assuan nach Luxor. Das elegante Schiff gleitet sanft den Fluss entlang und schenkt eine entspannte Fahrt, bei der die Gäste heitere Ausblicke genießen und verborgene Schätze abseits der Menge entdecken.",
-    quote: "Kein Detail ist zu klein, um nicht beachtet zu werden.",
+      "Private Räume: Mit insgesamt 8 Kabinen und 4 Suiten, davon 2 Royal Suites, garantiert unsere Dahabiya Hathor größte Privatsphäre bei herzlicher, eleganter Gastfreundschaft und ist die perfekte Wahl für eine Dahabiya-Kreuzfahrt von Assuan nach Luxor. Das elegante Schiff gleitet sanft den Fluss entlang und schenkt eine entspannte Fahrt, bei der die Gäste ruhige Ausblicke genießen und verborgene Schätze abseits der Menge entdecken.",
+    quote: "Kein Detail ist zu klein, um beachtet zu werden.",
   },
   alts: {
     guests: "Gäste an Bord der Hathor Dahabiya",
@@ -27,7 +27,7 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
     card: "Die Hathor Dahabiya auf dem Nil",
   },
   aboardAlt: (title) => `${title} an Bord der Hathor`,
-  noteAlt: (title) => `${title}: eine Reise mit der Hathor`,
+  noteAlt: (title) => `${title}, erlebt mit der Hathor`,
   aboardBackAlts: [
     "Das private Deck, für Ihre Gruppe reserviert",
     "Eine Luxury Suite an Bord der Hathor Dahabiya",
@@ -45,7 +45,7 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
   notes: [
     {
       title: "Der Fluss",
-      body: "Eine intime Dahabiya-Fahrt mit Kabinen und Suiten für das Licht des Nils und Gastfreundschaft ohne Eile.",
+      body: "Eine intime Dahabiya-Fahrt mit Kabinen und Suiten, ganz auf das Licht des Nils abgestimmt, und Gastfreundschaft ohne Eile.",
     },
     {
       title: "Die Monumente",
@@ -82,11 +82,11 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
   life: [
     {
       title: "Küche",
-      text: "Ägyptische Aromen und internationales Können: leichte Frühstücke, Mittagessen ohne Eile, Abendessen bei Kerzenlicht unter den Sternen.",
+      text: "Ägyptische Aromen und internationales Können: leichtes Frühstück, ausgedehnte Mittagessen, Abendessen bei Kerzenlicht unter den Sternen.",
     },
     {
       title: "Suite",
-      text: "Kabinen und Royal Suites für das Licht des Nils: private Räume nach jedem Tag voller Entdeckungen.",
+      text: "Kabinen und Royal Suites, ganz auf das Licht des Nils abgestimmt: private Räume nach jedem Tag voller Entdeckungen.",
     },
     {
       title: "Deck",
@@ -100,7 +100,7 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
     {
       word: "Morgen",
       label: "Silbernes Wasser",
-      value: "Der Nil erwacht langsam. Dunst steigt von den Ufern auf, während der Kaffee die sanfteste Ecke des Decks findet.",
+      value: "Der Nil erwacht langsam. Dunst steigt von den Ufern auf, während der Kaffee die behaglichste Ecke des Decks findet.",
       meta: "Erstes Licht",
     },
     {
@@ -112,13 +112,13 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
     {
       word: "Gold",
       label: "Warmer Stein",
-      value: "Die Monumente fangen bernsteinfarbenes Licht ein. Der Fluss wird kupfern. Die Zeit dehnt sich.",
+      value: "Die Monumente fangen bernsteinfarbenes Licht ein. Der Fluss färbt sich kupfern. Die Zeit dehnt sich.",
       meta: "Goldene Stunde",
     },
     {
       word: "Nacht",
       label: "Laternen",
-      value: "Wenn das Ufer verschwindet, wird die Hathor zu einer Welt für sich, aus leiser Musik und langsamen Gesprächen.",
+      value: "Wenn das Ufer verschwindet, wird die Hathor zu einer Welt für sich, aus leiser Musik und gemächlichen Gesprächen.",
       meta: "Nach Sonnenuntergang",
     },
   ],
@@ -131,7 +131,7 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
   journeys: [
     { label: "Luxor → Assuan", body: "Antike Monumente und stille Dörfer am Fluss." },
     { label: "Assuan → Luxor", body: "Eine Passage von Süden nach Norden durch die lebendige Geschichte des Nils." },
-    { label: "Privatcharter", body: "Eine Route, die sich um Ihre Gruppe dreht." },
+    { label: "Privatcharter", body: "Eine Route, ganz auf Ihre Gruppe zugeschnitten." },
   ],
   cardTitle: "Nilreise",
   cardBody: ["Antike Monumente", "privates Leben auf dem Fluss"],

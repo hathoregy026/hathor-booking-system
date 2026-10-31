@@ -25,12 +25,12 @@ export const NOT_FOUND_COPY: Record<TranslatedLocale, NotFoundCopy> = {
   de: {
     metaTitle: "Seite nicht gefunden | Hathor Dahabiya",
     metaDescription:
-      "Die aufgerufene Adresse existiert nicht oder wurde verschoben. Kehren Sie zur Startseite der Hathor Dahabiya zurück oder wählen Sie Ihre Nilreise.",
+      "Die aufgerufene Seite existiert nicht oder wurde verschoben. Kehren Sie zur Startseite der Hathor Dahabiya zurück oder wählen Sie Ihre Nilreise.",
     eyebrow: "Fehler 404",
     title: "Seite nicht gefunden",
-    lede: "Die aufgerufene Adresse existiert nicht oder wurde verschoben. Sie können zur Startseite zurückkehren oder Ihre Nilreise wählen.",
+    lede: "Die aufgerufene Seite existiert nicht oder wurde verschoben. Sie können zur Startseite zurückkehren oder Ihre Nilreise wählen.",
     home: "Startseite",
-    voyages: "Die Reisen",
+    voyages: "Zu den Reisen",
   },
 };
 

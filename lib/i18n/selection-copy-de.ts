@@ -56,15 +56,15 @@ export const SELECTION_COPY_DE: SelectionCopy = {
   continueExploring: "Weiter entdecken",
   changeTitle: "Wenn Sie die Reise ändern, kann sich Ihre gewählte Unterkunft ändern.",
   changeBody: (voyage) =>
-    `${voyage} bietet Ihre aktuelle Unterkunft nicht an. Wenn Sie fortfahren, bleibt die neue Route bestehen und die Unterkunft wird zurückgesetzt, damit Sie neu wählen können.`,
+    `${voyage} bietet Ihre aktuelle Unterkunft nicht an. Wenn Sie fortfahren, wird die neue Route übernommen und die Unterkunft zurückgesetzt, damit Sie neu wählen können.`,
   continue: "Fortfahren",
   keepCurrent: "Aktuelle Reise behalten",
   toCharterTitle: "Mit dem Wechsel zum Privatcharter wird Ihre gewählte Route gelöscht.",
   toCharterBody:
-    "Beim Privatcharter gehört Ihrer Gruppe die ganze Dahabiya mit eigener Route. Er ersetzt daher die geplante Route und die Unterkunft in Meine Reise.",
-  fromCharterTitle: "Mit einer geplanten Route wird Ihr Privatcharter entfernt.",
+    "Beim Privatcharter gehört Ihrer Gruppe die ganze Dahabiya mit eigener Route. Er ersetzt daher die Reise mit festem Termin und die Unterkunft in Meiner Reise.",
+  fromCharterTitle: "Mit einer Reise mit festem Termin entfällt Ihr Privatcharter.",
   fromCharterBody:
-    "Meine Reise enthält entweder einen Privatcharter oder eine geplante Route. Wenn Sie fortfahren, wird der Charter entfernt und stattdessen diese Auswahl hinzugefügt.",
+    "Meine Reise enthält entweder einen Privatcharter oder eine Reise mit festem Termin. Wenn Sie fortfahren, wird der Charter entfernt und stattdessen diese Auswahl hinzugefügt.",
   keepCharter: "Privatcharter behalten",
 };
 

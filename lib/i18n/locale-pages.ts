@@ -171,7 +171,7 @@ export const LOCALE_BOOKING_META: Record<
     lookup: {
       title: "Verfolgen Sie Ihre Buchung",
       description:
-        "Geben Sie Buchungscode und E-Mail-Adresse ein, um Ihre Reiseanfrage an Bord der Hathor Dahabiya wiederzufinden.",
+        "Geben Sie Buchungscode und E-Mail-Adresse ein, um Ihre Reiseanfrage für die Hathor Dahabiya wiederzufinden.",
     },
     success: {
       title: "Buchungsanfrage gesendet",

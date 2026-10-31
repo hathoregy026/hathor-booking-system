@@ -16,9 +16,9 @@ export const SITE_IMAGE_ALTS_DE: Record<string, string> = {
     "Ein Gast liest im Sessel am Fenster zum Nil",
   "A table for two on the open deck of Hathor at sunset":
     "Ein Tisch für zwei auf dem offenen Deck der Hathor bei Sonnenuntergang",
-  "A voyage composed around your itinerary": "Eine Reise rund um Ihre Route",
+  "A voyage composed around your itinerary": "Eine Reise, ganz auf Ihre Route abgestimmt",
   "Accessible Hathor Suite aboard Hathor Dahabiya":
-    "Barrierefreundliche Suite an Bord der Hathor Dahabiya",
+    "Barrierearme Suite an Bord der Hathor Dahabiya",
   "Amenities sequence — fullscreen intro aboard Hathor": "Die Ausstattung an Bord der Hathor",
   "Amenities sequence — opening card, fourth photo": "Ein Moment des Komforts an Bord der Hathor",
   "Ancient landmarks along the Nile": "Antike Monumente entlang des Nils",
@@ -38,7 +38,7 @@ export const SITE_IMAGE_ALTS_DE: Record<string, string> = {
   "Dining — Celebration panel": "Ein festliches Abendessen an Bord der Hathor",
   "Dining — Closing scene": "Der Ausklang eines Abendessens an Bord der Hathor",
   "Dining — Course layers": "Die Gänge eines Degustationsmenüs an Bord der Hathor",
-  "Dining — First light plate": "Ein im ersten Licht servierter Teller an Bord der Hathor",
+  "Dining — First light plate": "Ein im ersten Licht servierter Gang an Bord der Hathor",
   "Dining — Intro hero": "Feine Küche an Bord der Hathor",
   "Dining — Lounge panel": "Die Lounge der Hathor",
   "Dining — Private menu panel": "Ein privates Menü an Bord der Hathor",
@@ -145,12 +145,12 @@ export const SITE_IMAGE_ALTS_DE: Record<string, string> = {
     "Wohnbereich der Royal Suite an Bord der Hathor Dahabiya",
   "Royal suite lounge aboard Hathor Dahabiya":
     "Lounge der Royal Suite an Bord der Hathor Dahabiya",
-  "Scenic Nile views from Hathor Dahabiya": "Ausblicke auf den Nil von der Hathor Dahabiya",
+  "Scenic Nile views from Hathor Dahabiya": "Ausblicke auf den Nil von der Hathor Dahabiya aus",
   "Seneb Spa wellness aboard Hathor Dahabiya":
     "Wellness im Seneb Spa an Bord der Hathor Dahabiya",
   "Sun loungers and parasols on the Hathor deck at sunset":
     "Liegen und Sonnenschirme auf dem Deck der Hathor bei Sonnenuntergang",
-  "Sunset Nile view from a Royal Suite": "Der Nil bei Sonnenuntergang aus einer Royal Suite",
+  "Sunset Nile view from a Royal Suite": "Der Nil bei Sonnenuntergang, aus einer Royal Suite gesehen",
   "Temple of Hatshepsut": "Hatschepsut-Tempel",
   "The chef at work in the galley aboard Hathor":
     "Der Küchenchef bei der Arbeit in der Bordküche der Hathor",

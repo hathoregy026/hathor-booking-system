@@ -11,7 +11,7 @@ export const GERMAN_PAGES = {
     path: "/de/about",
     title: "Dahabiya-Kreuzfahrt auf dem Nil | Über die Hathor",
     description:
-      "Die Hathor ist eine Luxus-Dahabiya für 32 Gäste auf dem Nil in Ägypten: acht Kabinen, zwei Suiten und zwei Royal Suites zwischen Luxor und Assuan, mit eigener Crew.",
+      "Die Hathor ist eine Luxus-Dahabiya für 32 Gäste auf dem Nil: acht Kabinen, zwei Suiten und zwei Royal Suites zwischen Luxor und Assuan, mit eigener Crew.",
     name: "Über uns: Hathor Dahabiya, eine private Fahrt auf dem Nil",
     crumb: "Über uns",
   }),
@@ -25,9 +25,9 @@ export const GERMAN_PAGES = {
   }),
   gastronomy: localePage({
     path: "/de/gastronomy",
-    title: "Die Küche einer Luxuskreuzfahrt auf dem Nil | Hathor",
+    title: "Küche an Bord der Nilkreuzfahrt | Hathor Dahabiya",
     description:
-      "Die Küche der Hathor Dahabiya, einer Luxuskreuzfahrt auf dem Nil: ägyptische Aromen und aufmerksamer Service, im Saal und an Deck, zwischen Luxor und Assuan.",
+      "Die Küche der Hathor Dahabiya, einer Luxuskreuzfahrt auf dem Nil: ägyptische Aromen und aufmerksamer Service im Saal und an Deck zwischen Luxor und Assuan.",
     name: "Küche auf dem Nil | Die Gastronomie der Hathor Dahabiya",
     crumb: "Küche",
   }),
@@ -55,10 +55,10 @@ export const GERMAN_PAGES = {
   }),
   highlights: localePage({
     path: "/de/highlights",
-    title: "Nilkreuzfahrt: Sehenswertes | Tempel von Luxor bis Assuan",
+    title: "Nilkreuzfahrt: Tempel von Luxor bis Assuan | Hathor Dahabiya",
     description:
       "Die Tage an Land mit der Hathor Dahabiya: Karnak, das Tal der Könige, Edfu, Kom Ombo und Philae, in Ruhe besucht und nicht als Liste zum Abhaken.",
-    name: "Nilkreuzfahrt: Sehenswertes | Tempel von Luxor bis Assuan",
+    name: "Nilkreuzfahrt: Tempel von Luxor bis Assuan | Hathor Dahabiya",
     crumb: "Höhepunkte",
     image: {
       url: "/media/hathor/r2/highlights-hero.webp",
@@ -85,10 +85,10 @@ export const GERMAN_PAGES = {
   }),
   blogs: localePage({
     path: "/de/blogs",
-    title: "Luxuskreuzfahrt auf dem Nil: Tipps und Geschichten | Hathor",
+    title: "Nilkreuzfahrt: Tipps und Geschichten | Hathor Dahabiya",
     description:
-      "Tipps und Geschichten für Ihre Nilkreuzfahrt: beste Reisezeit für die Dahabiya, Tempel von Luxor und Assuan, Packen, Kabinen und der ruhigere Rhythmus der Hathor.",
-    name: "Luxuskreuzfahrt auf dem Nil: Tipps und Geschichten | Hathor",
+      "Tipps und Geschichten für Ihre Nilkreuzfahrt: beste Reisezeit, Tempel von Luxor und Assuan, Packen, Kabinen und der ruhigere Rhythmus der Dahabiya Hathor.",
+    name: "Nilkreuzfahrt: Tipps und Geschichten | Hathor Dahabiya",
     crumb: "Journal",
     image: {
       url: "/media/hathor/r2/blog-hero.webp",

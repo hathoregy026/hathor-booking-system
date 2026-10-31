@@ -63,7 +63,7 @@ export const INQUIRY_FORM_COPY_DE: InquiryFormCopy = {
     "Wir haben Ihre Nachricht erhalten. Unsere Reservierung antwortet Ihnen innerhalb von 24 Stunden.",
   selectionLabel: "Ihre Auswahl",
   selectionTitle: "Ihre Reise mit der Hathor",
-  selectionNote: "Wird mit Ihrer Nachricht gesendet. Sie können sie jederzeit in Meine Reise ändern.",
+  selectionNote: "Wird mit Ihrer Nachricht gesendet. Sie können sie jederzeit in Meiner Reise ändern.",
   name: "Name",
   email: "E-Mail",
   phone: "Telefon",

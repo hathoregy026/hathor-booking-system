@@ -118,7 +118,7 @@ const SUITES_CLONE_COPY: Partial<Record<PublicLocale, SuitesCloneCopy>> = {
       "Aboard Hathor": "An Bord der Hathor",
       "Nile Evenings": "Abende am Nil",
       "Luxor–Aswan": "Luxor–Assuan",
-      Reservations: "Reservierungen",
+      Reservations: "Reservierung",
     },
   },
 };

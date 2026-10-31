@@ -25,7 +25,7 @@ export const CHARTER_SEO_TITLE_DE = "Privater Dahabiya-Charter auf dem Nil | Hat
 export const CHARTER_SEO_DE: Metadata = buildPageMetadata({
   title: CHARTER_SEO_TITLE_DE,
   description:
-    "Chartern Sie die Hathor exklusiv, eine Luxus-Dahabiya für bis zu 32 Gäste, mit eigener Crew und eigenem Küchenchef: eine private Nilkreuzfahrt von Luxor nach Assuan.",
+    "Chartern Sie die Hathor exklusiv, eine Luxus-Dahabiya für bis zu 32 Gäste, mit Crew und Küchenchef: eine private Nilkreuzfahrt von Luxor nach Assuan.",
   path: "/de/charter",
   image: {
     url: "/media/hathor/r2/charter-hero.webp",

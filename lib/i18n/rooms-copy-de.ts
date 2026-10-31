@@ -53,7 +53,7 @@ export const CONFIG_DE: Record<RoomCollectionVariant, RoomCollectionEditorialCon
     epilogue: {
       eyebrow: "Buchen Sie Ihre Kabine",
       title: "Finden Sie die Kabine zu Ihrer Reise",
-      body: "Merken Sie sich Ihre Wunschkabine in Meine Reise oder fragen Sie die Verfügbarkeit an: Unser Team stimmt sie auf Ihre Fahrt zwischen Luxor und Assuan ab.",
+      body: "Speichern Sie Ihre Wunschkabine unter „Meine Reise“ oder fragen Sie die Verfügbarkeit an: Unser Team stimmt sie auf Ihre Fahrt zwischen Luxor und Assuan ab.",
     },
   },
   suites: {
@@ -90,7 +90,7 @@ export const CONFIG_DE: Record<RoomCollectionVariant, RoomCollectionEditorialCon
     epilogue: {
       eyebrow: "Buchen Sie Ihre Suite",
       title: "Ihr Rückzugsort auf dem Unterdeck",
-      body: "Fügen Sie die Luxury Suite zu Meine Reise hinzu oder sprechen Sie mit unserer Reservierung: Wir stimmen Ihre Residenz auf die passende Route ab.",
+      body: "Fügen Sie die Luxury Suite zu „Meine Reise“ hinzu oder sprechen Sie mit unserer Reservierung: Wir stimmen Ihre Residenz auf die passende Route ab.",
     },
   },
   royal: {
@@ -126,12 +126,12 @@ export const CONFIG_DE: Record<RoomCollectionVariant, RoomCollectionEditorialCon
     aperture: { ...EN_CONFIG.royal.aperture, caption: "Hauptdeck", sub: "Die exklusivste Residenz" },
     amenitiesTitle: "Die Royal-Ausstattung",
     amenitiesLead:
-      "Das Höchstmaß an Luxus an Bord der Hathor: Jacuzzi, zwei Badezimmer und jeder feine Komfort für Ihre private Nilkreuzfahrt.",
+      "Das Höchstmaß an Luxus an Bord der Hathor: Jacuzzi, zwei Badezimmer und feinster Komfort für Ihre private Nilkreuzfahrt.",
     crosslinksEyebrow: "Entdecken Sie die Kollektion",
     epilogue: {
       eyebrow: "Buchen Sie die Royal Suite",
       title: "Der Nil ganz für Sie",
-      body: "Merken Sie sich die Royal Suite in den Favoriten oder fügen Sie sie zu Meine Reise hinzu: Unser Concierge bestätigt Ihre privateste Fahrt.",
+      body: "Speichern Sie die Royal Suite in den Favoriten oder fügen Sie sie zu „Meine Reise“ hinzu: Unser Concierge bestätigt Ihre privateste Fahrt.",
     },
   },
 };
@@ -143,7 +143,7 @@ export const SHOWCASE_DE: Record<string, { eyebrow: string; description: string 
       "Ein großzügiges Kingsize-Bett, warme ägyptische Materialien und ein weiter Blick auf den Fluss machen diese Kabine zu einem privaten, stillen Ort für zwei.",
   },
   "luxury-twin-room": {
-    eyebrow: "Feiner Komfort, zum Teilen",
+    eyebrow: "Feiner Komfort zu zweit",
     description:
       "Zwei Einzelbetten und dieselbe Aufmerksamkeit wie in jeder Kabine: eine elegante Basis für alle, die gemeinsam reisen.",
   },
@@ -160,12 +160,12 @@ export const SHOWCASE_DE: Record<string, { eyebrow: string; description: string 
 };
 
 const INCLUDE_DE = [
-  "Hin- und Rücktransfers ab den Flughäfen Assuan oder Luxor in modernen Touristenfahrzeugen (Limousine oder Van)",
+  "Hin- und Rücktransfer ab den Flughäfen Assuan oder Luxor in modernen Touristenfahrzeugen (Limousine oder Van)",
   "Mehrwertsteuer und Servicegebühren",
   "Willkommensgetränk bei der Ankunft",
   "Ein kostenloser Begrüßungs-Champagner pro Kabine und Suite, einmal pro Aufenthalt serviert",
-  "Unterkunft mit Soft All-Inclusive (alle Mahlzeiten und alkoholfreien Getränke tagsüber)",
-  "Eintrittskarten für die Besichtigungen laut Route (öffentliche Besichtigungen)",
+  "Unterkunft mit Soft All-Inclusive (alle Mahlzeiten und alkoholfreien Getränke den ganzen Tag über)",
+  "Eintrittskarten für die Besichtigungen laut Route (regulärer öffentlicher Zutritt)",
   "Ägyptologischer Reiseleiter",
   "Wäscheservice",
   "Täglich aufgefüllte Minibar",
@@ -176,7 +176,7 @@ const INCLUDE_DE = [
 ] as const;
 
 const EXCLUDE_DE = [
-  "Inlands- oder internationale Flüge",
+  "Inlands- oder Auslandsflüge",
   "Reiseversicherung",
   "Alkoholische Getränke, außer dem einmal pro Aufenthalt servierten kostenlosen Begrüßungs-Champagner",
   "Optionale Ausflüge oder Aktivitäten, die nicht zur Route gehören",
@@ -190,7 +190,7 @@ const ASWAN_TO_LUXOR_DAYS_DE: readonly RoomFolioDay[] = [
   },
   {
     title: "Tag 2 · Kom Ombo und Esna",
-    body: "Auf Wunsch lässt sich ein Ausflug am Morgen nach Abu Simbel organisieren. Das Frühstück wird an Bord serviert oder für Frühaufsteher als Frühstücksbox. Fahrt nach Kom Ombo zum Tempel des Sobek und Horus, dann weiter nach Esna zu Abendessen und Übernachtung.",
+    body: "Auf Wunsch lässt sich am frühen Morgen ein Ausflug nach Abu Simbel organisieren. Das Frühstück wird an Bord serviert oder für Frühaufsteher als Frühstücksbox. Fahrt nach Kom Ombo zum Tempel des Sobek und Horus, dann weiter nach Esna zu Abendessen und Übernachtung.",
   },
   {
     title: "Tag 3 · Esna und Ostufer von Luxor",
@@ -221,7 +221,7 @@ const LUXOR_TO_ASWAN_DAYS_DE: readonly RoomFolioDay[] = [
   },
   {
     title: "Tag 5 · Assuan",
-    body: "Auf Wunsch lässt sich ein Ausflug am Morgen nach Abu Simbel organisieren. Nach dem letzten Frühstück und dem Check-out Besuch des Philae-Tempels und des Hochdamms vor der Ausschiffung in Assuan.",
+    body: "Auf Wunsch lässt sich am frühen Morgen ein Ausflug nach Abu Simbel organisieren. Nach dem letzten Frühstück und dem Check-out Besuch des Philae-Tempels und des Hochdamms vor der Ausschiffung in Assuan.",
   },
 ];
 
@@ -244,7 +244,7 @@ const ROUND_TRIP_DAYS_DE: readonly RoomFolioDay[] = [
   },
   {
     title: "Tag 5 · Assuan",
-    body: "Auf Wunsch lässt sich ein Ausflug am Morgen nach Abu Simbel organisieren. Danach Besuch des Philae-Tempels und des Hochdamms. Mittag- und Abendessen an Bord, Übernachtung in Assuan.",
+    body: "Auf Wunsch lässt sich am frühen Morgen ein Ausflug nach Abu Simbel organisieren. Danach Besuch des Philae-Tempels und des Hochdamms. Mittag- und Abendessen an Bord, Übernachtung in Assuan.",
   },
   {
     title: "Tag 6 · Fahrt nach Norden",
@@ -331,7 +331,7 @@ export const FOLIO_DE: Record<RoomCollectionVariant, RoomFolioPanels> = {
     overview: {
       lead: "Accessible Hathor Suite · 46 Quadratmeter · Panoramablick auf den Nil",
       paragraphs: [
-        "Die barrierefreundlichen Kabinen und Suiten der Hathor haben die Eleganz eines bernsteinfarbenen Sonnenuntergangs, mit durchdachter Zugänglichkeit und müheloser Bequemlichkeit: ein privater Rückzugsort auf dem Nil für alle, die sich gern leicht bewegen.",
+        "Die barrierearmen Kabinen und Suiten der Hathor haben die Eleganz eines bernsteinfarbenen Sonnenuntergangs, ergänzt durch durchdachte Zugänglichkeit und mühelosen Komfort: ein privater Rückzugsort auf dem Nil für alle, die feine Bewegungsfreiheit schätzen.",
         "Weitläufig und gestaltet wie ein Kunstwerk, bietet die Suite offene Räume, natürliche Materialien, breite Durchgänge und Panoramafenster. Jedes Detail ist vom ägyptischen Erbe inspiriert und lädt dazu ein, zu entspannen oder einfach den langsamen Rhythmus des Flusses zu genießen.",
         "Die Luxury Suite bietet mehr Raum für Gäste, die mehr Privatsphäre, großzügige Proportionen und einen freien Blick auf den Fluss suchen: eine Residenz auf dem Unterdeck mit privatem Jacuzzi.",
       ],
@@ -392,7 +392,7 @@ export const ROOMS_COPY_DE: RoomsCopy = {
   outlook: "Aussicht",
   panoramicNile: "Nilpanorama",
   previewKicker: "Ansichten",
-  previewLead: (room) => `Fünf Ansichten der ${room}: das Licht, die Proportionen und der Fluss hinter dem Glas.`,
+  previewLead: (room) => `Fünf Ansichten von ${room}: das Licht, die Proportionen und der Fluss hinter dem Glas.`,
   elsewhere: "Mehr an Bord",
   hold: "Ihre Residenz erwartet Sie zwischen Luxor und Assuan.",
   continueToReserve: "Weiter zur Buchung",
@@ -400,7 +400,7 @@ export const ROOMS_COPY_DE: RoomsCopy = {
   detail: {
     home: "Startseite",
     tabs: ["Überblick", "Verfügbarkeit", "Ausstattung", "Ihre Reise", "Gut zu wissen"],
-    breadcrumb: "Brotkrumennavigation",
+    breadcrumb: "Brotkrümelnavigation",
     sections: "Bereiche dieser Residenz",
     nightsDays: (nights, days) => `${nights} Nächte / ${days} Tage`,
     photographs: (room) => `Fotos: ${room}`,
@@ -462,7 +462,7 @@ export const ROOMS_COPY_DE: RoomsCopy = {
     title: "Die Reise im Detail",
     overview: "Überblick",
     itinerary: "Route",
-    includeExclude: "Inklusive und exklusive",
+    includeExclude: "Leistungen",
     availability: "Verfügbarkeit der Kreuzfahrt",
     included: "Inklusive",
     notIncluded: "Nicht inklusive",

@@ -16,7 +16,7 @@ export const MOORINGS_DE: readonly MooringWords[] = [
       {
         name: "Karnak-Tempel",
         era: "ca. 2000 v. Chr.",
-        note: "Achtzig Hektar Heiligtümer, erbaut über zwei Jahrtausende hinweg.",
+        note: "Rund achtzig Hektar Heiligtümer, erbaut über zwei Jahrtausende hinweg.",
       },
       {
         name: "Tal der Könige",
@@ -57,7 +57,7 @@ export const MOORINGS_DE: readonly MooringWords[] = [
       {
         name: "Horus-Tempel",
         era: "237 v. Chr.",
-        note: "Der vollständigste Tempel Ägyptens, sein Dach steht noch.",
+        note: "Der am vollständigsten erhaltene Tempel Ägyptens, sein Dach steht noch.",
       },
       {
         name: "Gebel el-Silsila",
@@ -137,7 +137,7 @@ function germanPriceAnswer(formatPrice: (cents: number) => string = usdDe): stri
   return (
     `Kabinen gibt es ab ${formatPrice(three.fromCents)} für drei Nächte von Assuan nach Luxor, ` +
     `ab ${formatPrice(four.fromCents)} für vier Nächte von Luxor nach Assuan und ` +
-    `ab ${formatPrice(seven.fromCents)} für die siebennächtige Rundreise. ` +
+    `ab ${formatPrice(seven.fromCents)} für die Rundreise mit sieben Nächten. ` +
     "Die Preise gelten pro Kabine und für die gesamte Reise, einschließlich Steuern und Servicegebühren; Suiten und Royal Suites liegen über den Kabinenpreisen."
   );
 }
@@ -161,7 +161,7 @@ const FAQ_DE = [
   {
     question: "Wo fährt die Hathor und wie lange?",
     answer:
-      "Zwischen Luxor und Assuan, mit Halten in Esna, Edfu und Kom Ombo. Sie wählen drei Nächte von Assuan nach Luxor mit Abfahrt am Mittwoch, vier Nächte von Luxor nach Assuan mit Abfahrt am Samstag oder die siebennächtige Rundreise ab Luxor mit Abfahrt am Samstag.",
+      "Zwischen Luxor und Assuan, mit Halten in Esna, Edfu und Kom Ombo. Sie wählen drei Nächte von Assuan nach Luxor mit Abfahrt am Mittwoch, vier Nächte von Luxor nach Assuan mit Abfahrt am Samstag oder die Rundreise mit sieben Nächten ab Luxor mit Abfahrt am Samstag.",
   },
   {
     question: "Wie viele Gäste nimmt die Hathor auf?",

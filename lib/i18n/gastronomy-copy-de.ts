@@ -19,10 +19,10 @@ export const GASTRONOMY_COPY_DE: GastronomyCopy = {
   },
   storyAlts: [
     "Frühstück an Bord der Hathor im Morgenlicht des Nils",
-    "Der Küchenchef der Hathor richtet einen Abendgang an",
+    "Der Küchenchef der Hathor richtet einen Gang zum Abendessen an",
     "Ein intimes Abendessen mit Blick auf den Nil",
     "Gäste beim Training im Fitnessbereich der Hathor",
-    "Privater Service in einer Nilsuite der Hathor",
+    "Privater Service in einer Suite der Hathor auf dem Nil",
   ],
   plateAlt: "Ein Gang aus der Küche der Hathor",
 };

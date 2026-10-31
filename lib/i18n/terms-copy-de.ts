@@ -1,9 +1,14 @@
 /**
- * Terms & Conditions in German: a faithful translation of the English terms,
- * section by section, with the same ids. MACHINE DRAFT, NO LEGAL REVIEW. The
- * page shows `draftNotice` until a German lawyer has approved the text; see
- * docs/german-review.md section 4. No wording, company detail or registration
- * number has been added that the English terms do not contain.
+ * Terms & Conditions in German: an exact translation of the live English terms,
+ * section by section, with the same ids. By the owner's decision of 31 October
+ * 2026 there is no lawyer review: the text must say what the English says, with
+ * nothing softened, added, omitted, explained or improved, and no German-law
+ * wording. Change it only when the English changes.
+ *
+ * One German word per English term, for example: itinerary = Reiseverlauf,
+ * route = Route, reservation = Reservierung, booking = Buchung, cancellation =
+ * Stornierung, applicable = anwendbar, liable = haftet, responsible =
+ * verantwortlich, departure = Abreise, voyage = Kreuzfahrt, journey = Reise.
  */
 
 import type { TermsCopy } from "@/lib/i18n/terms-copy";
@@ -16,23 +21,23 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 1,
     title: "Buchung und Zahlung",
     paragraphs: [
-      "Buchungen müssen im Voraus vorgenommen werden und werden nach folgendem Zahlungsplan bestätigt:",
+      "Buchungen müssen im Voraus vorgenommen werden und werden gemäß dem folgenden Zahlungsplan bestätigt:",
     ],
     list: [
-      { emphasis: "30 % des Gesamtbuchungswerts sind bei der Bestätigung fällig.", text: "" },
+      { emphasis: "30 % des Gesamtbuchungswerts sind bei Bestätigung fällig.", text: "" },
       {
         emphasis:
-          "Bis 60 Tage vor der Einschiffung müssen die Zahlungen insgesamt 50 % des Gesamtbuchungswerts betragen.",
+          "Bis 60 Tage vor der Einschiffung müssen die Gesamtzahlungen 50 % des Gesamtbuchungswerts entsprechen.",
         text: "",
       },
       {
-        emphasis: "Die restlichen 50 % sind 45 Tage vor der Einschiffung fällig.",
+        emphasis: "Der verbleibende Restbetrag von 50 % ist 45 Tage vor der Einschiffung fällig.",
         text: "",
       },
     ],
     paragraphsAfterList: [
-      "Eine Buchung gilt erst dann als bestätigt, wenn die erforderliche Anfangszahlung eingegangen ist und Hathor Dahabiya die Buchung angenommen hat.",
-      "Werden die erforderlichen Zahlungen nicht fristgerecht geleistet, kann dies zur Stornierung der Buchung gemäß den nachstehenden Stornobedingungen führen.",
+      "Eine Buchung gilt nur dann als bestätigt, wenn die erforderliche Anfangszahlung eingegangen ist und die Reservierung von Hathor Dahabiya angenommen wurde.",
+      "Werden die erforderlichen Zahlungen nicht bis zu den anwendbaren Fristen vollständig geleistet, kann dies zur Stornierung der Reservierung führen, vorbehaltlich der nachstehenden Stornobedingungen.",
     ],
   },
   {
@@ -40,11 +45,11 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 2,
     title: "Stornierung, Nichterscheinen und Erstattungen",
     paragraphs: [
-      "Alle Stornierungen müssen schriftlich mitgeteilt werden.",
+      "Alle Stornierungen müssen schriftlich eingereicht werden.",
       "Es gelten die folgenden Stornogebühren:",
     ],
     list: [
-      { emphasis: "90 Tage oder mehr vor der Einschiffung:", text: " keine Gebühr." },
+      { emphasis: "90 Tage oder mehr vor der Einschiffung:", text: " keine Stornogebühr." },
       {
         emphasis: "61 bis 89 Tage vor der Einschiffung:",
         text: " 25 % des Gesamtbuchungswerts.",
@@ -63,57 +68,57 @@ const SECTIONS_DE: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Nach Beginn der Reise erfolgt keine Erstattung für nicht in Anspruch genommene Mahlzeiten, Nächte oder andere nicht genutzte Teile der gebuchten Reise.",
-      "Ist nach dem obigen Stornoplan eine Erstattung fällig, wird der erstattungsfähige Betrag nach Anwendung der jeweiligen Gebühr auf den Gesamtbuchungswert berechnet.",
+      "Für nicht genutzte Mahlzeiten, nicht genutzte Nächte oder andere nicht genutzte Teile der gebuchten Kreuzfahrt wird nach Beginn der Reise keine Erstattung geleistet.",
+      "Ist nach dem obigen Stornoplan eine Erstattung fällig, wird der erstattungsfähige Betrag nach Anwendung der jeweiligen Stornogebühr auf den Gesamtbuchungswert berechnet.",
     ],
   },
   {
     id: "children-policy",
     number: 3,
-    title: "Regelung für Kinder",
-    paragraphs: ["Für Kinder gilt der Erwachsenenpreis."],
+    title: "Richtlinie für Kinder",
+    paragraphs: ["Für Kinder wird der Erwachsenentarif berechnet."],
   },
   {
     id: "pets-policy",
     number: 4,
-    title: "Regelung für Haustiere",
+    title: "Richtlinie für Haustiere",
     paragraphs: ["Haustiere sind an Bord der Hathor Dahabiya nicht erlaubt."],
   },
   {
     id: "inclusions",
     number: 5,
-    title: "Inklusivleistungen",
+    title: "Enthaltene Leistungen",
     paragraphs: [
-      "Sofern in der bestätigten Route oder Buchung nicht anders angegeben, umfasst das Hathor-Reisepaket:",
+      "Sofern im bestätigten Reiseverlauf oder in der bestätigten Buchung nicht anders angegeben, enthält das Hathor-Kreuzfahrtpaket:",
     ],
     list: [
       { text: "Soft-All-Inclusive-Service." },
       {
-        text: "Drei Mahlzeiten täglich, vom Mittagessen am Tag der Einschiffung bis zum Frühstück am Tag der Ausschiffung.",
+        text: "Drei Mahlzeiten täglich, beginnend mit dem Mittagessen am Tag der Einschiffung und endend mit dem Frühstück am Tag der Ausschiffung.",
       },
       { text: "Tee, Kaffee, Softdrinks und frische Säfte." },
-      { text: "Die in der gewählten Route enthaltenen Besichtigungen." },
-      { text: "Die im gewählten Paket enthaltenen Beförderungen und Transfers." },
-      { text: "Anfallende Steuern und Servicegebühren." },
+      { text: "Im ausgewählten Reiseverlauf enthaltene Besichtigungstouren." },
+      { text: "Im ausgewählten Paket enthaltene Beförderung und Transfers." },
+      { text: "Anwendbare Steuern und Servicegebühren." },
       { text: "Professionelles Kreuzfahrtpersonal." },
       {
-        text: "Ein Glas Begrüßungs-Champagner pro Kabine und Suite, einmal pro Aufenthalt serviert.",
+        text: "Ein kostenloses Champagner-Begrüßungsgetränk für jede Kabine und Suite, einmal pro Aufenthalt serviert.",
       },
     ],
   },
   {
     id: "exclusions",
     number: 6,
-    title: "Nicht enthaltene Leistungen",
+    title: "Ausgeschlossene Leistungen",
     paragraphs: [
-      "Sofern in der bestätigten Route oder Buchung nicht ausdrücklich enthalten, sind ausgeschlossen:",
+      "Sofern nicht ausdrücklich im bestätigten Reiseverlauf oder in der bestätigten Buchung enthalten, ist Folgendes ausgeschlossen:",
     ],
     list: [
-      { text: "Optionale Ausflüge, die nicht zur Route gehören." },
+      { text: "Optionale Ausflüge, die nicht im Reiseverlauf enthalten sind." },
       { text: "Persönliche Ausgaben." },
       { text: "Trinkgelder." },
       {
-        text: "Alkoholische Getränke, einheimische wie internationale, mit Ausnahme des einmal pro Aufenthalt je Kabine und Suite servierten Glases Begrüßungs-Champagner.",
+        text: "Alkoholische Getränke, ob einheimisch oder international, mit Ausnahme des kostenlosen Champagner-Begrüßungsgetränks, das einmal pro Aufenthalt für jede Kabine und Suite serviert wird.",
       },
     ],
   },
@@ -122,7 +127,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 7,
     title: "Steuern und Servicegebühren",
     paragraphs: [
-      "Der veröffentlichte Preis der Dahabiya enthält die anfallenden Steuern und Servicegebühren.",
+      "Der veröffentlichte Dahabiya-Preis enthält die anwendbaren Steuern und Servicegebühren.",
     ],
     variant: "vat-note",
   },
@@ -130,89 +135,89 @@ const SECTIONS_DE: readonly TermsSection[] = [
     id: "company-responsibility",
     number: 8,
     title: "Verantwortung des Unternehmens",
-    paragraphs: ["Hathor Dahabiya übernimmt die Verantwortung dafür:"],
+    paragraphs: ["Hathor Dahabiya übernimmt die Verantwortung für:"],
     list: [
       {
-        text: "Speisen und Getränke bereitzustellen, die nach den geltenden Gesundheits-, Hygiene- und Sicherheitsvorschriften zubereitet sind.",
+        text: "Die Bereitstellung von Speisen und Getränken, die gemäß den anwendbaren Gesundheits-, Hygiene- und Sicherheitsstandards zubereitet sind.",
       },
       {
-        text: "Sauberkeit und Hygiene der Kabinen, Gemeinschaftsbereiche und Einrichtungen an Bord aufrechtzuerhalten.",
+        text: "Die Aufrechterhaltung von Sauberkeit und Hygiene der Kabinen, Gemeinschaftsbereiche und Einrichtungen an Bord.",
       },
       {
-        text: "Die Dahabiya im Einklang mit den geltenden ägyptischen Schifffahrts-, Tourismus- und Gesundheitsvorschriften zu betreiben.",
+        text: "Den Betrieb der Dahabiya in Übereinstimmung mit den anwendbaren ägyptischen maritimen, touristischen und gesundheitsbezogenen Vorschriften.",
       },
     ],
     paragraphsAfterList: [
-      "Diese Verantwortung ist auf die an Bord der Hathor Dahabiya erbrachten Leistungen beschränkt und erstreckt sich nicht auf äußere Umstände außerhalb der angemessenen Kontrolle des Unternehmens.",
+      "Diese Verantwortung ist auf die an Bord der Hathor Dahabiya erbrachten Leistungen beschränkt und erstreckt sich nicht auf externe Faktoren außerhalb der angemessenen Kontrolle des Unternehmens.",
     ],
   },
   {
     id: "health-medical-dietary",
     number: 9,
-    title: "Gesundheit, medizinische Umstände und Ernährung",
+    title: "Offenlegung gesundheitlicher, medizinischer und ernährungsbezogener Angaben",
     paragraphs: [
-      "Gäste sind verpflichtet, vor der Abreise etwaige medizinische Umstände, Allergien, Ernährungseinschränkungen oder besondere gesundheitliche Bedürfnisse mitzuteilen.",
-      "Hathor Dahabiya haftet nicht für Krankheiten, Verletzungen oder medizinische Komplikationen, die zurückzuführen sind auf:",
+      "Gäste sind dafür verantwortlich, vor der Abreise etwaige medizinische Zustände, Allergien, Ernährungseinschränkungen oder besondere gesundheitliche Anforderungen offenzulegen.",
+      "Hathor Dahabiya haftet nicht für Krankheit, Verletzung oder medizinische Komplikationen, die sich ergeben aus:",
     ],
     list: [
-      { text: "Nicht mitgeteilte medizinische Umstände." },
-      { text: "Die Nichtbeachtung von Sicherheitsanweisungen oder Anweisungen der Crew." },
+      { text: "Nicht offengelegten medizinischen Zuständen." },
+      { text: "Der Nichtbeachtung von Sicherheitsanweisungen oder Anleitungen der Crew." },
     ],
     paragraphsAfterList: [
-      "Hathor Dahabiya behält sich das Recht vor, die Teilnahme an Aktivitäten oder Leistungen zu verweigern, wenn der Zustand eines Gastes ein Risiko für ihn selbst, für andere Gäste oder für die Crew darstellen könnte, ohne Anspruch auf Erstattung oder Entschädigung.",
+      "Hathor Dahabiya behält sich das Recht vor, die Teilnahme an Aktivitäten oder Leistungen zu verweigern, wenn der Zustand eines Gastes ein Risiko für ihn selbst, andere Gäste oder Crewmitglieder darstellen kann, ohne Anspruch auf Erstattung oder Entschädigung.",
     ],
   },
   {
     id: "weather-natural-events",
     number: 10,
-    title: "Wetter und Naturereignisse",
+    title: "Wetterbedingungen und Naturereignisse",
     paragraphs: [
-      "Hathor Dahabiya haftet nicht für Verzögerungen, Routenänderungen, Umleitungen oder Absagen infolge ungünstiger Wetterbedingungen, unter anderem Wind, Nebel, Stürme oder Schwankungen des Nilwasserstands.",
-      "Beeinträchtigungen durch natürliche oder umweltbedingte Umstände, die als höhere Gewalt gelten, begründen keinerlei Ansprüche auf Erstattung, Entschädigung oder sonstige Forderungen, sofern das anwendbare Recht nichts anderes vorschreibt.",
+      "Hathor Dahabiya trägt keine Haftung für Verzögerungen, Änderungen des Reiseverlaufs, Routenänderungen oder Stornierungen, die durch ungünstige Wetterbedingungen verursacht werden, einschließlich, aber nicht beschränkt auf Wind, Nebel, Stürme oder Schwankungen des Nilwasserstands.",
+      "Jede Störung infolge natürlicher oder umweltbedingter Umstände, die als höhere Gewalt eingestuft werden, stellt keinen Grund für Erstattungen, Entschädigungen oder Ansprüche jeglicher Art dar, außer wenn dies nach anwendbarem Recht erforderlich ist.",
     ],
   },
   {
     id: "government-regulations",
     number: 11,
-    title: "Vorschriften, Inspektionen und Behörden",
+    title: "Staatliche Vorschriften, Inspektionen und Behörden",
     paragraphs: [
-      "Hathor Dahabiya ist nicht verantwortlich für Verzögerungen, Unterbrechungen, Umleitungen oder Absagen infolge von:",
+      "Hathor Dahabiya ist nicht verantwortlich für Verzögerungen, Unterbrechungen, Routenänderungen oder Stornierungen infolge von:",
     ],
     list: [
-      { text: "Behördlich angeordnete Inspektionen." },
+      { text: "Staatlich angeordneten Inspektionen." },
       { text: "Sicherheitskontrollen." },
       {
-        text: "Entscheidungen, Beschränkungen oder Anordnungen ägyptischer Regierungs- oder Aufsichtsbehörden.",
+        text: "Entscheidungen, Beschränkungen oder Anordnungen, die von ägyptischen staatlichen Behörden oder Aufsichtsbehörden auferlegt werden.",
       },
     ],
     paragraphsAfterList: [
-      "Solche Umstände begründen keinen Anspruch der Gäste auf Erstattung, Entschädigung oder sonstige Forderungen, sofern das anwendbare Recht nichts anderes vorschreibt.",
+      "Solche Umstände berechtigen Gäste nicht zu Erstattung, Entschädigung oder Anspruch, außer wenn dies nach anwendbarem Recht erforderlich ist.",
     ],
   },
   {
     id: "itinerary-changes",
     number: 12,
-    title: "Routenänderungen und betriebliche Anpassungen",
+    title: "Änderungen des Reiseverlaufs und betriebliche Anpassungen",
     paragraphs: [
-      "Hathor Dahabiya behält sich das Recht vor, Routen, Zeiten, Anlegestellen oder Leistungen zu ändern, wenn dies aus betrieblichen, nautischen oder Sicherheitsgründen für erforderlich gehalten wird.",
-      "Nach Ermessen des Unternehmens können gleichwertige Ersatzleistungen oder Ersatzaktivitäten angeboten werden.",
-      "Solche Änderungen gelten nicht als Vertragsverletzung und begründen keinen Anspruch auf Erstattung oder Entschädigung, sofern das anwendbare Recht nichts anderes vorschreibt.",
+      "Hathor Dahabiya behält sich das Recht vor, Reiseverläufe, Zeitpläne, Anlegestellen oder Leistungen zu ändern, wenn dies aus betrieblichen, nautischen oder Sicherheitsgründen als notwendig erachtet wird.",
+      "Ersatzleistungen oder Ersatzaktivitäten von vergleichbarem Wert können nach Ermessen des Unternehmens erbracht werden.",
+      "Solche Änderungen gelten nicht als Vertragsbruch und rechtfertigen keine Erstattungen oder Entschädigungen, außer wenn dies nach anwendbarem Recht erforderlich ist.",
     ],
   },
   {
     id: "company-cancellations",
     number: 13,
-    title: "Absagen durch das Unternehmen",
+    title: "Vom Unternehmen veranlasste Stornierungen",
     paragraphs: [
-      "In Ausnahmefällen höherer Gewalt oder betrieblicher Notwendigkeit behält sich Hathor Dahabiya das Recht vor, die Reise abzusagen.",
-      "Das Unternehmen kann nach eigenem alleinigem Ermessen anbieten:",
+      "In Ausnahmefällen höherer Gewalt oder betrieblicher Notwendigkeit behält sich Hathor Dahabiya das Recht vor, die Reise zu stornieren.",
+      "Das Unternehmen kann nach seinem alleinigen Ermessen anbieten:",
     ],
     list: [
-      { text: "Einen neuen Abreisetermin; oder" },
-      { text: "Einen nicht erstattungsfähigen Gutschein zur späteren Verwendung." },
+      { text: "Einen neu angesetzten Abreisetermin; oder" },
+      { text: "Einen nicht erstattungsfähigen Guthabengutschein zur künftigen Verwendung." },
     ],
     paragraphsAfterList: [
-      "Barerstattungen sind nicht garantiert, sofern das anwendbare Recht nichts anderes vorschreibt.",
+      "Barerstattungen sind nicht garantiert, außer wenn dies nach anwendbarem Recht erforderlich ist.",
     ],
   },
   {
@@ -220,11 +225,11 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 14,
     title: "Höhere Gewalt",
     paragraphs: [
-      "Hathor Dahabiya haftet nicht für die Nichterfüllung oder verspätete Erfüllung ihrer Pflichten aufgrund von Ereignissen außerhalb ihrer angemessenen Kontrolle, unter anderem:",
+      "Hathor Dahabiya haftet nicht für die Nichterfüllung oder verzögerte Erfüllung ihrer Pflichten aufgrund von Ereignissen außerhalb ihrer angemessenen Kontrolle, einschließlich, aber nicht beschränkt auf:",
     ],
     list: [
-      { text: "Naturkatastrophen." },
-      { text: "Behördliche Anordnungen oder Beschränkungen." },
+      { text: "Elementarereignisse." },
+      { text: "Staatliche Maßnahmen oder Beschränkungen." },
       { text: "Epidemien oder Pandemien." },
       { text: "Sperrungen der Flussschifffahrt." },
       { text: "Sicherheitslagen." },
@@ -236,20 +241,20 @@ const SECTIONS_DE: readonly TermsSection[] = [
   {
     id: "guest-conduct",
     number: 15,
-    title: "Verhalten und Verantwortung der Gäste",
+    title: "Verhalten und Haftung der Gäste",
     paragraphs: [
-      "Gäste sind verpflichtet, alle Bordregeln, die Crew, andere Gäste und das Eigentum an Bord zu respektieren.",
-      "Von einem Gast verursachte Schäden, Verluste oder Fehlverhalten können dem Verantwortlichen in Rechnung gestellt werden.",
-      "Hathor Dahabiya behält sich das Recht vor, die Reise jedes Gastes zu beenden, dessen Verhalten als gefährlich, störend oder unangemessen eingestuft wird, ohne Erstattung oder Entschädigung.",
+      "Gäste sind verpflichtet, alle Bordregeln einzuhalten und Crewmitglieder, andere Gäste und Eigentum zu respektieren.",
+      "Von einem Gast verursachte Schäden, Verluste oder Fehlverhalten können der verantwortlichen Partei in Rechnung gestellt werden.",
+      "Hathor Dahabiya behält sich das Recht vor, die Reise jedes Gastes zu beenden, dessen Verhalten als unsicher, störend oder unangemessen erachtet wird, ohne Erstattung oder Entschädigung.",
     ],
   },
   {
     id: "personal-property",
     number: 16,
-    title: "Persönliche Gegenstände",
+    title: "Persönliches Eigentum",
     paragraphs: [
-      "Hathor Dahabiya übernimmt keine Haftung für Verlust, Diebstahl oder Beschädigung persönlicher Gegenstände an Bord oder während der Ausflüge, außer in Fällen, in denen die Haftung gesetzlich nicht ausgeschlossen werden kann.",
-      "Gästen wird empfohlen, ihre Wertsachen stets sorgfältig aufzubewahren.",
+      "Hathor Dahabiya übernimmt keine Verantwortung für Verlust, Diebstahl oder Beschädigung persönlicher Gegenstände an Bord oder während Ausflügen, außer wenn die Haftung rechtlich nicht ausgeschlossen werden kann.",
+      "Gästen wird geraten, Wertsachen jederzeit zu sichern.",
     ],
   },
   {
@@ -257,17 +262,17 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 17,
     title: "Haftungsbeschränkung",
     paragraphs: [
-      "Die Haftung von Hathor Dahabiya ist auf den für die gebuchten Leistungen gezahlten Betrag begrenzt, soweit eine solche Beschränkung nach anwendbarem Recht nicht unzulässig ist.",
-      "Soweit gesetzlich zulässig, haftet Hathor Dahabiya nicht für indirekte, beiläufige oder Folgeschäden.",
+      "Die Haftung von Hathor Dahabiya ist auf den für die gebuchten Leistungen gezahlten Betrag beschränkt, außer wenn eine solche Beschränkung nach anwendbarem Recht verboten ist.",
+      "Im größtmöglichen gesetzlich zulässigen Umfang haftet Hathor Dahabiya nicht für indirekte, beiläufige oder Folgeschäden.",
     ],
   },
   {
     id: "governing-law",
     number: 18,
-    title: "Anwendbares Recht und Gerichtsstand",
+    title: "Anwendbares Recht und gerichtliche Zuständigkeit",
     paragraphs: [
-      "Diese Allgemeinen Geschäftsbedingungen unterliegen den Gesetzen der Arabischen Republik Ägypten und werden nach diesen ausgelegt.",
-      "Alle Streitigkeiten unterliegen der ausschließlichen Zuständigkeit der ägyptischen Gerichte, sofern das anwendbare Recht nichts anderes vorschreibt.",
+      "Diese Allgemeinen Geschäftsbedingungen unterliegen den Gesetzen der Arabischen Republik Ägypten und werden in Übereinstimmung mit diesen ausgelegt.",
+      "Alle Streitigkeiten unterliegen der ausschließlichen Zuständigkeit der ägyptischen Gerichte, sofern das anwendbare Recht nichts anderes verlangt.",
     ],
   },
   {
@@ -275,8 +280,8 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 19,
     title: "Annahme der Bedingungen",
     paragraphs: [
-      "Mit der Bestätigung einer Buchung erkennt der Gast diese Allgemeinen Geschäftsbedingungen an, nimmt sie an und verpflichtet sich, sie einzuhalten.",
-      "Wird eine Buchung für mehrere Gäste vorgenommen, ist die buchende Person dafür verantwortlich, alle Mitglieder der Reisegruppe über die geltenden Allgemeinen Geschäftsbedingungen zu informieren.",
+      "Mit der Bestätigung einer Buchung erkennt der Gast diese Allgemeinen Geschäftsbedingungen an, nimmt sie an und erklärt sich damit einverstanden, an sie gebunden zu sein.",
+      "Wird eine Reservierung im Namen von mehr als einem Gast vorgenommen, ist die Person, die die Reservierung vornimmt, dafür verantwortlich, sicherzustellen, dass alle Mitglieder der Reisegruppe von den anwendbaren Allgemeinen Geschäftsbedingungen in Kenntnis gesetzt werden.",
     ],
   },
   {
@@ -284,7 +289,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 20,
     title: "Kontakt",
     paragraphs: [
-      "Bei Fragen zu einer Buchung oder zu diesen Allgemeinen Geschäftsbedingungen wenden Sie sich bitte an Hathor Dahabiya.",
+      "Bei Fragen zu einer Reservierung oder zu diesen Allgemeinen Geschäftsbedingungen wenden Sie sich bitte an Hathor Dahabiya.",
     ],
     variant: "contact",
   },
@@ -295,39 +300,37 @@ const TOC_DE: Record<string, string> = {
   "cancellation-refunds": "Stornierung, Nichterscheinen und Erstattungen",
   "children-policy": "Kinder",
   "pets-policy": "Haustiere",
-  inclusions: "Inklusivleistungen",
-  exclusions: "Nicht enthaltene Leistungen",
+  inclusions: "Enthaltene Leistungen",
+  exclusions: "Ausgeschlossene Leistungen",
   "taxes-service": "Steuern und Servicegebühren",
   "company-responsibility": "Verantwortung des Unternehmens",
-  "health-medical-dietary": "Gesundheit, medizinische Umstände und Ernährung",
-  "weather-natural-events": "Wetter und Naturereignisse",
-  "government-regulations": "Vorschriften, Inspektionen und Behörden",
-  "itinerary-changes": "Routenänderungen und betriebliche Anpassungen",
-  "company-cancellations": "Absagen durch das Unternehmen",
+  "health-medical-dietary": "Offenlegung gesundheitlicher, medizinischer und ernährungsbezogener Angaben",
+  "weather-natural-events": "Wetterbedingungen und Naturereignisse",
+  "government-regulations": "Staatliche Vorschriften, Inspektionen und Behörden",
+  "itinerary-changes": "Änderungen des Reiseverlaufs und betriebliche Anpassungen",
+  "company-cancellations": "Vom Unternehmen veranlasste Stornierungen",
   "force-majeure": "Höhere Gewalt",
-  "guest-conduct": "Verhalten und Verantwortung der Gäste",
-  "personal-property": "Persönliche Gegenstände",
+  "guest-conduct": "Verhalten und Haftung der Gäste",
+  "personal-property": "Persönliches Eigentum",
   "limitation-liability": "Haftungsbeschränkung",
-  "governing-law": "Anwendbares Recht und Gerichtsstand",
+  "governing-law": "Anwendbares Recht und gerichtliche Zuständigkeit",
   acceptance: "Annahme der Bedingungen",
   contact: "Kontakt",
 };
 
 export const TERMS_COPY_DE: TermsCopy = {
-  eyebrow: "Informationen für Gäste",
+  eyebrow: "Gästeinformationen",
   title: "Allgemeine Geschäftsbedingungen",
-  draftNotice:
-    "Entwurf: Diese deutsche Fassung ist eine noch nicht rechtlich geprüfte Übersetzung der englischen Bedingungen. Sie ist kein geprüfter Rechtstext.",
   intro: [
-    "Diese Allgemeinen Geschäftsbedingungen legen die Regeln für Buchung, Zahlung, Reise und Aufenthalt an Bord sowie die Richtlinien für Gäste fest, die für Reisen an Bord der Hathor Dahabiya gelten.",
-    "Hathor veranstaltet Luxuskreuzfahrten auf dem Nil zwischen Luxor und Assuan, einschließlich Privatcharter und Reisen mit gemeinsamen Abfahrten. Mit der Bestätigung einer Buchung erkennt jeder Gast an und erklärt sich damit einverstanden, an die nachstehenden geltenden Allgemeinen Geschäftsbedingungen gebunden zu sein.",
+    "Diese Allgemeinen Geschäftsbedingungen legen die Buchungs-, Zahlungs-, Reise-, Bord- und Gästerichtlinien fest, die für Reisen an Bord der Hathor Dahabiya gelten.",
+    "Hathor betreibt Luxuskreuzfahrten auf dem Nil zwischen Luxor und Assuan, einschließlich Privatcharter-Erlebnissen und Erlebnissen mit gemeinsamer Abreise. Mit der Bestätigung einer Buchung erkennt jeder Gast an und erklärt sich damit einverstanden, an die nachstehend aufgeführten anwendbaren Allgemeinen Geschäftsbedingungen gebunden zu sein.",
   ],
   toc: TERMS_TOC.map((item) => ({ id: item.id, label: TOC_DE[item.id] ?? item.label })),
   sections: SECTIONS_DE,
   vatNote: [
-    "Die vom Kunden bereitgestellten Allgemeinen Geschäftsbedingungen besagen, dass darin ",
-    "14 % Mehrwertsteuer und die Servicegebühr",
-    " enthalten sind.",
+    "Die vom Kunden bereitgestellten Allgemeinen Geschäftsbedingungen besagen, dass dies ",
+    "14 % Mehrwertsteuer und Servicegebühr",
+    " enthält.",
   ],
   headOffice: "Hauptsitz",
   address: ["One Kattameya, Tower Nr. 211, Etage Nr. 11", "Ring Road, Nasr City", "Kairo, Ägypten"],

@@ -49,7 +49,7 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
       "Die wichtigsten Tipps für Ihre erste Nilkreuzfahrt in Ägypten: Ratschläge von Fachleuten, eine vollständige Packliste und was Sie von einer Luxuskreuzfahrt auf dem Nil erwarten dürfen.",
   },
   "why-a-dahabiya-cruise-feels-like-time-travel": {
-    title: "Warum eine Dahabiya sich wie eine Zeitreise anfühlt",
+    title: "Warum sich eine Dahabiya wie eine Zeitreise anfühlt",
     excerpt:
       "Entdecken Sie den Reiz einer Dahabiya-Kreuzfahrt in Ägypten und erleben Sie den Nil authentisch auf der Fahrt zwischen Luxor und Assuan. Die zeitlose Schönheit Ägyptens, in traditionellem, ruhigem Luxus.",
   },
@@ -79,12 +79,12 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
       "Die Geschichte der Dahabiyas in Ägypten: wie diese eleganten Segelschiffe von den alten Nilreisen zur heutigen Dahabiya-Kreuzfahrt wurden. Ihre kulturellen Wurzeln, ihr einzigartiges Design und ihr Luxus.",
   },
   "why-the-nile-was-the-most-important-trade-route-in-ancient-egypt": {
-    title: "Warum der Nil die wichtigste Handelsroute des alten Ägypten war",
+    title: "Der Nil, wichtigste Handelsroute des alten Ägypten",
     excerpt:
       "Der Handel auf dem Nil war im alten Ägypten entscheidend für Transport, Wirtschaft und Austausch: Er verband die Regionen des Landes und trug eine der größten Zivilisationen der Geschichte.",
   },
   "what-is-a-dahabiya-nile-cruise-complete-beginner-guide": {
-    title: "Was ist eine Dahabiya auf dem Nil? Der vollständige Leitfaden",
+    title: "Was ist eine Dahabiya? Der vollständige Leitfaden",
     excerpt:
       "Eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten findet auf einem kleinen traditionellen Segelschiff statt: eine ruhige Luxusreise auf dem Fluss mit einem kulturellen, authentischen Erlebnis.",
   },
@@ -96,7 +96,7 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
   "colossi-of-memnon": {
     title: "Die Memnonkolosse",
     excerpt:
-      "Die Memnonkolosse in Luxor sind die berühmten antiken Statuen des Pharaos Amenhotep III., bekannt für ihre gewaltige Größe, ihre reiche Geschichte und die geheimnisvolle Legende vom Klang, der bei Sonnenaufgang „sang“.",
+      "Die Memnonkolosse in Luxor sind die berühmten antiken Statuen des Pharaos Amenhotep III., bekannt für ihre gewaltige Größe, ihre reiche Geschichte und die geheimnisvolle Legende vom „Gesang“ bei Sonnenaufgang.",
   },
   "aswan-nubian-villages": {
     title: "Die nubischen Dörfer von Assuan",
@@ -161,7 +161,7 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
   "aswan-high-dam": {
     title: "Der Hochdamm von Assuan",
     excerpt:
-      "Entdecken Sie den Assuan-Hochdamm, das Hightech-Symbol ägyptischer Ingenieurskunst und ein Wahrzeichen moderner Zivilisation: seine faszinierende Geschichte, seinen Bau und wie er den Nil regelt, die Landwirtschaft trägt und Ägypten selbst prägt.",
+      "Entdecken Sie den Assuan-Hochdamm, das Symbol ägyptischer Ingenieurskunst und ein Wahrzeichen moderner Zivilisation: seine faszinierende Geschichte, seinen Bau und wie er den Nil reguliert, die Landwirtschaft stützt und Ägypten selbst prägt.",
   },
   "exploring-esna-temples-history-nile-charm": {
     title: "Esna entdecken: Tempel, Geschichte und Zauber des Nils",
@@ -201,12 +201,12 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
   "where-history-lives-the-temple-of-hatshepsut": {
     title: "Wo Geschichte lebt: der Tempel der Hatschepsut",
     excerpt:
-      "Reisen Sie zurück in die Geschichte des antiken Totentempels der Hatschepsut, eines eindrucksvollen Wunders am Fuß der Felsen von Luxor, und genießen Sie seine Erzählung auf einer ruhigen, luxuriösen Dahabiya auf dem Nil.",
+      "Reisen Sie zurück in die Zeit des antiken Totentempels der Hatschepsut, eines eindrucksvollen Wunders am Fuß der Felsen von Luxor, und genießen Sie seine Geschichte auf einer ruhigen, luxuriösen Dahabiya auf dem Nil.",
   },
   "niles-hidden-gems-by-dahabiya": {
     title: "Die verborgenen Schätze des Nils mit der Dahabiya",
     excerpt:
-      "Gehen Sie über die übliche Nilroute hinaus und entdecken Sie abgelegene Tempel, stille Ufer und historische Stätten, die nur die Dahabiya erreicht. Dieser Artikel erzählt von den exklusiven Erlebnissen, die eine Dahabiya-Fahrt auf dem Nil unvergesslich machen.",
+      "Verlassen Sie die übliche Nilroute und entdecken Sie abgelegene Tempel, stille Ufer und historische Stätten, die nur die Dahabiya erreicht. Dieser Artikel erzählt von den exklusiven Erlebnissen, die eine Dahabiya-Fahrt auf dem Nil unvergesslich machen.",
   },
   "best-places-to-visit-along-the-nile-with-a-dahabiya-cruise": {
     title: "Die schönsten Orte am Nil auf einer Reise mit der Dahabiya",
@@ -221,10 +221,10 @@ export const BLOG_POSTS_DE: Record<string, PostWords> = {
   "best-time-for-dahabiya-nile-cruise": {
     title: "Die beste Reisezeit für die Dahabiya auf dem Nil",
     excerpt:
-      "Eine Fahrt auf dem Nil mit der Dahabiya gehört zu den einzigartigsten und luxuriösesten Arten, Ägypten zu erleben. Mit ihren majestätischen Segeln und ihrer intensiven Atmosphäre wirkt die Dahabiya-Kreuzfahrt fast zeitlos, ganz anders als die großen Flussschiffe neuer Generation.",
+      "Eine Fahrt auf dem Nil mit der Dahabiya gehört zu den außergewöhnlichsten und luxuriösesten Arten, Ägypten zu erleben. Mit ihren majestätischen Segeln und ihrer intensiven Atmosphäre wirkt die Dahabiya-Kreuzfahrt fast zeitlos, ganz anders als die großen Flussschiffe neuer Generation.",
   },
   "nile-cruise-or-luxury-dahabiya-which-one-to-choose": {
-    title: "Nilkreuzfahrt oder Dahabiya: was wählen in Ägypten?",
+    title: "Nilkreuzfahrt oder Dahabiya: Was wählen Sie in Ägypten?",
     excerpt:
       "Entdecken Sie die Wunder des Nils, von den Leistungen alter Kulturen bis zur Schönheit der Natur, und den Unterschied zwischen einer klassischen Kreuzfahrt und einer Dahabiya. Für eine authentische Reise ohne Gedränge ist die Hathor Luxury Dahabiya die perfekte Wahl: Stil, Tradition und Entspannung auf dem Nil.",
   },

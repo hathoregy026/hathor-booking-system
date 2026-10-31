@@ -4,7 +4,7 @@ import type { WellnessCopy } from "@/lib/i18n/wellness-copy";
 const ALTS_DE: Record<string, string> = {
   "Seneb Spa aboard Hathor Dahabiya": "Das Seneb Spa an Bord der Hathor Dahabiya",
   "Seneb Spa aboard Hathor": "Das Seneb Spa an Bord der Hathor",
-  "Open-air calm on the Nile deck": "Ruhe unter freiem Himmel auf dem Deck am Nil",
+  "Open-air calm on the Nile deck": "Ruhe unter freiem Himmel auf dem Deck über dem Nil",
   "Restorative spa treatments aboard Hathor": "Wohltuende Spa-Behandlungen an Bord der Hathor",
   "Suite rest aboard Hathor": "Erholung in der Suite an Bord der Hathor",
   "Historia Fitness overlooking the Nile": "Historia Fitness mit Blick auf den Nil",
@@ -16,12 +16,12 @@ const ALTS_DE: Record<string, string> = {
   "Deck living aboard Hathor": "Das Leben auf dem Deck der Hathor",
   "Historia Fitness Center with panoramic Nile views":
     "Das Historia Fitness Center mit Panoramablick auf den Nil",
-  "River light from the fitness deck": "Flusslicht vom Fitnessdeck aus",
+  "River light from the fitness deck": "Das Licht des Flusses, vom Fitnessdeck aus gesehen",
   "Movement aboard Hathor": "Bewegung an Bord der Hathor",
   "Sailing the Nile aboard Hathor": "Auf dem Nil an Bord der Hathor",
   "Royal Suite repose aboard Hathor": "Erholung in der Royal Suite an Bord der Hathor",
   "Crafted detail aboard Hathor": "Handwerkliche Details an Bord der Hathor",
-  "Quiet river light aboard Hathor": "Stilles Flusslicht an Bord der Hathor",
+  "Quiet river light aboard Hathor": "Das stille Licht des Flusses an Bord der Hathor",
   "Seneb Spa calm aboard Hathor": "Die Ruhe des Seneb Spa an Bord der Hathor",
 };
 
@@ -63,9 +63,9 @@ export const WELLNESS_COPY_DE: WellnessCopy = {
   galleryLabel: "Bilder zu Wellness",
   historia: { tl: "Fitness", tr: "Nilblick", bl: "Täglich · geöffnet", br: "Bewegung" },
   essayEyebrow: "Nach der Bewegung",
-  essayLines: ["Ruhe ist nicht", "die Abwesenheit", "der Reise"],
+  essayLines: ["Auch die Ruhe", "ist ein Teil", "der Reise"],
   essayBody:
-    "Die Suiten werden Teil des Rituals: weiches Morgenlicht, tiefer Schlaf und der seltene Luxus, an einem neuen Horizont am Nil zu erwachen.",
+    "Die Suiten werden Teil des Rituals: weiches Morgenlicht, tiefer Schlaf und der seltene Luxus, vor einem neuen Horizont am Nil zu erwachen.",
   exploreSuites: "Suiten entdecken",
   pauseLabel: "Stille Pause",
   pulse: ["Der Fluss hält den Takt,", "damit Sie es nicht müssen."],

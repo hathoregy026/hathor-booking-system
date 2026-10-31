@@ -11,7 +11,7 @@ export const GERMAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, LocaleRoomCo
     englishPath: "/luxury-cabins-Nile-Cruise",
     title: "Luxuskabinen für die Nilkreuzfahrt | Hathor Dahabiya",
     description:
-      "Kabinen mit 22 m² und Nilblick an Bord der Hathor Dahabiya: Kingsize-Bett oder zwei Einzelbetten, ruhige Proportionen, das Licht des Flusses und jeder Komfort.",
+      "Kabinen mit 22 m² und Nilblick auf der Hathor Dahabiya: Kingsize-Bett oder zwei Einzelbetten, ruhige Proportionen, das Licht des Flusses und jeder Komfort.",
     pageLabel: "Luxury Rooms",
     name: "Luxuskabinen für die Nilkreuzfahrt | Hathor Dahabiya",
     crumb: "Kabinen",
@@ -28,7 +28,7 @@ export const GERMAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, LocaleRoomCo
   }),
   suites: roomCollection("de", {
     englishPath: "/rooms",
-    title: "Hathor Luxury Suite | Suite mit 46 m² auf dem Nil",
+    title: "Hathor Luxury Suite | Suite mit 46 m² für die Nilkreuzfahrt",
     description:
       "Die Luxury Suite der Hathor: 46 m² auf dem Nil, Panoramablick auf den Fluss, charaktervolle Interieurs und privater Jacuzzi, für bis zu vier Gäste.",
     pageLabel: "Luxury Suite",
@@ -61,7 +61,7 @@ export const GERMAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, LocaleRoomCo
     room: {
       name: "Hathor Royal Suite",
       description:
-        "Die Royal Suite der Hathor ist eine Residenz mit 56 m² auf dem Nil, mit Blick vom Hauptdeck, zwei Badezimmern und der privatesten Unterkunft dieser Luxus-Dahabiya-Kreuzfahrt.",
+        "Die Royal Suite der Hathor ist die privateste Unterkunft dieser Luxus-Dahabiya-Kreuzfahrt: eine Residenz mit 56 m² auf dem Nil, mit Blick vom Hauptdeck und zwei Badezimmern.",
       occupancy: 4,
       floorSizeSqm: 56,
     },

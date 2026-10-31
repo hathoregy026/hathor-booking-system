@@ -104,7 +104,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
       },
       {
         title: "Ihr Rhythmus",
-        body: "Wachen, fahren und speisen Sie, wann Sie möchten. Stille Decks oder Feste: Das Schiff wechselt die Stimmung mit Ihnen.",
+        body: "Stehen Sie auf, fahren und speisen Sie, wann Sie möchten. Stille Decks oder Feste: Das Schiff wechselt die Stimmung mit Ihnen.",
       },
       {
         title: "Wellness auf dem Nil",
@@ -115,7 +115,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
   passages: {
     kicker: "Private Routen auf dem Nil",
     title: ["Wählen", "Sie Ihre", "Route"],
-    lead: "Wählen Sie Ihre bevorzugte Route. Jeder Halt, jede Zeit und jeder Landausflug wird rund um Ihre Gäste geplant.",
+    lead: "Wählen Sie Ihre bevorzugte Route. Jeder Halt, jeder Zeitpunkt und jeder Landausflug wird ganz auf Ihre Gäste abgestimmt.",
     label: "Charter-Routen",
     selected: "Ausgewählt · Angebot anfragen",
     choose: "Diese Route wählen",
@@ -137,7 +137,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
       },
       {
         title: "Kommen Sie an Bord und entspannen Sie",
-        body: "Sie kommen auf einer privaten Dahabiya an, die allein für Sie vorbereitet ist. Vom ersten Kaffee bis zur letzten Anlegestelle ist jedes Detail geregelt.",
+        body: "Sie kommen an Bord einer privaten Dahabiya, die allein für Sie vorbereitet ist. Vom ersten Kaffee bis zur letzten Anlegestelle ist jedes Detail geregelt.",
       },
     ],
     frontAlt: "Der gemächliche Rhythmus der Fahrt auf dem Nil",
@@ -161,7 +161,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
       },
       {
         quote:
-          "Die Route bewegte sich, wann wir es wollten. Tempel im ersten Licht, Abendessen, wenn der Fluss abkühlte: makellos von der Anfrage bis zur Einschiffung.",
+          "Wir fuhren weiter, wann wir es wollten. Tempel im ersten Licht, Abendessen, wenn der Fluss abkühlte: makellos von der Anfrage bis zur Einschiffung.",
         attribution: "R.K. · Firmenretreat",
       },
     ],
@@ -186,7 +186,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
   form: {
     eyebrow: "Privater Concierge",
     /* A heading in the display font, which has no hyphen. */
-    title: "Dahabiya Kreuzfahrt im Charter",
+    title: "Dahabiya Kreuzfahrt chartern",
     lead: "Fragen Sie einen Privatcharter an: Wir melden uns mit einem Angebot nach Maß.",
     tripTypes: { "One-Way": "Einfache Fahrt", "Round-Trip": "Hin und zurück", "Multi-Stop": "Mehrere Stopps" },
     name: "Name",
@@ -228,13 +228,13 @@ export const CHARTER_COPY_DE: CharterCopy = {
       tripType: "Art der Reise",
       departure: "Abfahrt",
       destination: "Ziel",
-      time: "Bevorzugte Zeit",
+      time: "Gewünschte Uhrzeit",
       special: "Besondere Wünsche",
       name: "Name",
       email: "E-Mail",
       phone: "Telefon",
-      route: "Bevorzugte Route",
-      startDate: "Bevorzugtes Abreisedatum",
+      route: "Gewünschte Route",
+      startDate: "Gewünschtes Startdatum",
       adults: "Erwachsene",
       children: "Kinder",
     },
@@ -248,7 +248,7 @@ export const CHARTER_COPY_DE: CharterCopy = {
       noReceipt: {
         before: "Unser Team hat Ihre Anfrage erhalten, wir konnten aber keine Bestätigung senden an",
         after: ". Bitte prüfen Sie die Adresse oder schreiben Sie an",
-        end: "damit wir Sie erreichen können.",
+        end: "– so können wir Sie erreichen.",
       },
       again: "Weitere Anfrage senden",
     },

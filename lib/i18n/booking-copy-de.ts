@@ -40,7 +40,7 @@ const deJoin = (items: string[]) =>
 const SERVER_DE: Record<string, string> = {
   "Too many requests. Please wait and try again.": "Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
   "The requested rooms or hold are no longer available. Start a new selection.":
-    "Die angefragten Kabinen oder die Reservierung sind nicht mehr verfügbar. Bitte beginnen Sie eine neue Auswahl.",
+    "Die gewünschten Kabinen sind nicht mehr verfügbar oder Ihre vorläufige Reservierung besteht nicht mehr. Bitte treffen Sie eine neue Auswahl.",
   "The booking request is invalid or does not match this checkout attempt.":
     "Die Buchungsanfrage ist ungültig oder passt nicht zu diesem Vorgang.",
   "Please enter a name without web addresses.": "Bitte geben Sie einen Namen ohne Webadressen ein.",
@@ -58,13 +58,13 @@ const SERVER_DE: Record<string, string> = {
   "The security check expired or could not be verified. Please try again.":
     "Die Sicherheitsprüfung ist abgelaufen oder konnte nicht bestätigt werden. Bitte versuchen Sie es erneut.",
   "Database is busy. Please wait a moment and try again.":
-    "Die Datenbank ist ausgelastet. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+    "Unser System ist gerade stark ausgelastet. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
   "Invalid booking authorization": "Die Berechtigung für diese Buchung ist ungültig.",
   "Invalid email address": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-  "Validation failed": "Die Prüfung der Angaben ist fehlgeschlagen.",
-  "Internal server error": "Interner Serverfehler.",
+  "Validation failed": "Bitte prüfen Sie Ihre Angaben.",
+  "Internal server error": "Es ist ein technischer Fehler aufgetreten.",
 };
-const NETWORK_DE = "Die Verbindung ist fehlgeschlagen. Bitte prüfen Sie Ihr Netzwerk und versuchen Sie es erneut.";
+const NETWORK_DE = "Die Verbindung konnte nicht hergestellt werden. Bitte prüfen Sie Ihren Internetzugang und versuchen Sie es erneut.";
 const SERVER_FALLBACK_DE = "Der Vorgang konnte nicht abgeschlossen werden.";
 
 export const BOOKING_COPY_DE: BookingCopy = {
@@ -76,7 +76,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
     return error instanceof Error ? error.message : fallback;
   },
   roomGone: {
-    title: "Kabine nicht gefunden",
+    title: "Reise nicht gefunden",
     text: "Diese Abfahrt oder Kabine ist nicht mehr verfügbar. Bitte starten Sie eine neue Suche.",
     link: "Zurück zur Suche",
   },
@@ -117,8 +117,8 @@ export const BOOKING_COPY_DE: BookingCopy = {
   stepOf: (step, of) => `Schritt ${step} von ${of}`,
   bannerOf: "von 04",
   bannerKicker: (step, kicker) => `Schritt ${step} von 4 · ${kicker}`,
-  bandLine: ["Ein langsamerer Weg", "zu einem größeren Ägypten"],
-  bandWords: "Luxus. Erbe. Zugehörigkeit.",
+  bandLine: ["Langsamer reisen,", "mehr von Ägypten sehen"],
+  bandWords: "Luxus. Erbe. Geborgenheit.",
   scroll: "Scrollen",
   guideHeading: "Ihr Wegweiser für diesen Schritt",
   done: "(erledigt)",
@@ -175,8 +175,8 @@ export const BOOKING_COPY_DE: BookingCopy = {
     total: cabins => (cabins > 1 ? `Gesamt · ${deCount(cabins, "Kabine", "Kabinen")}` : "Reisepreis gesamt"),
     pending: "Unterkunft wählen",
     pendingFine: "Der Gesamtpreis erscheint, sobald alle Gäste eine Kabine haben.",
-    fine: nights => `Gesamte Reise mit ${nights} Nächten, Preise pro Kabine. Steuern und Service inklusive.`,
-    tagline: "Ein höherer Rhythmus",
+    fine: nights => `Gesamte Reise mit ${nights} Nächten, Preise pro Kabine. Steuern und Servicegebühren inklusive.`,
+    tagline: "Ein anderer Rhythmus",
   },
 
   journey: {
@@ -216,7 +216,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
   },
   sheets: {
     dateTitle: "Wählen Sie Ihren Abfahrtstermin",
-    datePick: "Tippen Sie auf eines der goldenen Daten.",
+    datePick: "Tippen Sie auf einen der golden markierten Termine.",
     applyDate: "Datum übernehmen",
     clearDate: "Datum löschen",
     clearSelection: "Auswahl löschen",
@@ -235,7 +235,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
 
   suites: {
     title: "Wählen Sie Ihre Kabine oder Suite",
-    lede: "Alle Kabinen des Schiffes für den gewählten Termin. Verteilen Sie Ihre Gäste nach Wunsch: per Drag-and-drop oder indem Sie an der Kabine angeben, wie viele Erwachsene und Kinder dort wohnen.",
+    lede: "Alle Kabinen des Schiffes für den gewählten Termin. Verteilen Sie Ihre Gäste nach Wunsch: per Drag-and-drop oder indem Sie an der Kabine angeben, wie viele Erwachsene und Kinder dort übernachten.",
     mapChoice: roomId =>
       `Aus dem Schiffsplan: Kabine ${roomId}. Verteilen Sie Ihre Gäste auf diesen Kabinentyp. Die genaue Kabine wird beim Absenden Ihrer Anfrage erneut geprüft; noch ist sie nicht reserviert.`,
     everyCabin: "Alle Kabinen dieser Abfahrt · Gäste verteilen",
@@ -271,26 +271,26 @@ export const BOOKING_COPY_DE: BookingCopy = {
     seatsTaken: (inside, capacity) => `${inside} von ${capacity} Plätzen belegt`,
     menuLabel: (label, cabin) => `${label} in der ${cabin}`,
     empty: label => `${label} leeren`,
-    needsAdult: "In jeder Kabine muss mindestens ein Erwachsener wohnen.",
+    needsAdult: "Jede Kabine braucht mindestens einen Erwachsenen.",
     inclusions: "Was inklusive ist und was nicht",
     included: "Inklusive",
     notIncluded: "Nicht inklusive",
-    placeIn: (guest, cabin) => `${guest} in die ${cabin} setzen`,
+    placeIn: (guest, cabin) => `${guest} in der ${cabin} unterbringen`,
     placeHere: "Hier platzieren",
     more: (count, shortName) => (count === 1 ? `Eine weitere ${shortName}` : `${count} weitere ${shortName}s`),
     free: count => `${count} frei`,
     party: "Wer reist mit",
     partyLede:
-      "Fügen Sie hier Ihre Gäste hinzu und verteilen Sie sie dann auf die Kabinen: per Drag-and-drop, indem Sie erst einen Gast und dann eine Kabine antippen, oder über die Menüs Erwachsene und Kinder an der Kabine.",
+      "Fügen Sie hier Ihre Gäste hinzu und verteilen Sie sie dann auf die Kabinen: per Drag-and-drop, indem Sie erst einen Gast und dann eine Kabine antippen, oder über die Menüs „Erwachsene“ und „Kinder“ an der Kabine.",
     choosing: guest => `Wählen Sie eine Kabine für ${guest}. Mit Esc abbrechen.`,
-    arrangeForMe: "Für mich verteilen",
+    arrangeForMe: "Automatisch verteilen",
     undoArrangement: "Verteilung aufheben",
     undoTitle: "Gesamte Verteilung aufheben?",
     undoText:
       "Die gesamte Verteilung wird aufgehoben: Jeder Gast verlässt seine Kabine und wartet wieder unter „Wer reist mit“, und keine Kabine bleibt gewählt. Die Zahl der Erwachsenen und Kinder bleibt gleich.",
     keep: "Verteilung behalten",
     undoAll: "Alles aufheben",
-    noteBox: "Jede Kabine zeigt, wie viele Gäste sie aufnehmen kann. In jeder Kabine wohnt mindestens ein Erwachsener. Die Preise gelten pro Kabine und für die gesamte Reise.",
+    noteBox: "An jeder Kabine sehen Sie, wie viele Gäste sie aufnimmt. Jede Kabine braucht einen Erwachsenen. Die Preise gelten pro Kabine für die gesamte Reise.",
     trayLabel: "Noch zu verteilende Gäste",
     tapCabinFor: guest => `Tippen Sie jetzt auf eine Kabine für ${guest}.`,
     howTo: "Tippen Sie auf einen Gast und dann auf eine Kabine oder ziehen Sie ihn hinein.",
@@ -305,7 +305,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
       placed: (guest, cabin) => `${guest} ist in der ${cabin}.`,
       counted: (cabin, count) => `${cabin}: ${count}.`,
       emptied: cabin => `Die ${cabin} ist leer. Ihre Gäste warten unter „Wer reist mit“.`,
-      arranged: "Ihre Gäste sind in ihren Kabinen. Sie können jeden nach Wunsch umsetzen.",
+      arranged: "Ihre Gäste sind in ihren Kabinen. Sie können jeden Gast nach Wunsch umsetzen.",
       undone: "Die gesamte Verteilung wurde aufgehoben. Ihre Gäste warten unter „Wer reist mit“.",
     },
     tile: (guest, where) =>
@@ -315,8 +315,8 @@ export const BOOKING_COPY_DE: BookingCopy = {
       title: "Welche Kabinen wünschen Sie?",
       lede: guests =>
         guests === 1
-          ? "Wählen Sie einen oder mehrere Typen. Wir platzieren den Gast unter Beachtung der Grenzen jeder Kabine."
-          : `Wählen Sie einen oder mehrere Typen. Wir verteilen alle ${guests} Gäste unter Beachtung der Grenzen jeder Kabine.`,
+          ? "Wählen Sie einen oder mehrere Typen. Wir bringen den Gast im Rahmen der Kapazität jeder Kabine unter."
+          : `Wählen Sie einen oder mehrere Typen. Wir verteilen alle ${guests} Gäste im Rahmen der Kapazität jeder Kabine.`,
       freeEach: (free, capacity) => `${free} frei · bis zu ${capacity} Gäste pro Kabine`,
       go: "Meine Gäste verteilen",
       cancel: "Abbrechen",
@@ -350,11 +350,11 @@ export const BOOKING_COPY_DE: BookingCopy = {
           `${size} m² mit separatem Wohnbereich`,
           "Panoramablick auf den Nil",
           "Bis zu 4 Gäste",
-          "Breite Durchgänge für bequemes Bewegen",
+          "Breite Durchgänge für mehr Bewegungsfreiheit",
           "WLAN, Zimmerservice und täglich aufgefüllte Minibar",
         ],
         "Royal Suite": size => [
-          "Privater Balkon auf dem Main Deck",
+          "Privater Balkon auf dem Hauptdeck",
           "Zwei Badezimmer",
           `${size} m² mit privatem Wohnbereich`,
           "Bis zu 4 Gäste",
@@ -403,22 +403,22 @@ export const BOOKING_COPY_DE: BookingCopy = {
     thatCabin: "Kabine",
     gone: "Dieser Gast gehört nicht mehr zur Gruppe.",
     notAvailable: cabin => `Die ${cabin} ist an diesem Termin nicht verfügbar.`,
-    full: (cabin, capacity) => `Die ${cabin} ist voll: Sie nimmt bis zu ${capacity} Gäste auf.`,
-    childLimit: (cabin, max) => `In der ${cabin} wohnen bereits ${max} Kinder.`,
+    full: (cabin, capacity) => `Die ${cabin} ist voll belegt: Sie nimmt bis zu ${capacity} Gäste auf.`,
+    childLimit: (cabin, max) => `In der ${cabin} sind bereits ${max} Kinder.`,
     takesUpTo: (cabin, capacity) => `Die ${cabin} nimmt bis zu ${capacity} Gäste auf.`,
     noneWaiting: kind =>
       `Kein ${kind === "adult" ? "Erwachsener" : "Kind"} wartet. Fügen Sie unter „Wer reist mit“ jemanden hinzu oder nehmen Sie jemanden aus einer anderen Kabine.`,
     onlyWaiting: (count, kind) =>
       `Nur ${count} ${kind === "adult" ? (count === 1 ? "Erwachsener wartet" : "Erwachsene warten") : count === 1 ? "Kind wartet" : "Kinder warten"}. Fügen Sie zuerst weitere unter „Wer reist mit“ hinzu.`,
     stillNeed: count => (count === 1 ? "1 Gast braucht noch eine Kabine." : `${count} Gäste brauchen noch eine Kabine.`),
-    needsAdult: cabin => `In der ${cabin} muss mindestens ein Erwachsener wohnen.`,
+    needsAdult: cabin => `Die ${cabin} braucht mindestens einen Erwachsenen.`,
     listStillNeeds: (list, count) => `${list} ${count === 1 ? "braucht" : "brauchen"} noch eine Kabine.`,
   },
 
   details: {
     kicker: "Daten und Zahlung",
     title: "Daten und Zahlung",
-    lede: "Nur noch wenige Angaben, um Ihre Reservierung abzuschließen.",
+    lede: "Nur noch wenige Angaben für Ihre Buchungsanfrage.",
     quote: "Ein langsamerer, reicherer Weg, Ägypten zu entdecken.",
     panelTitle: "Gästedaten und Zahlungswunsch",
     panelLede: "Fast geschafft. Tragen Sie Ihre Daten ein und wählen Sie Ihre bevorzugte Zahlungsart.",
@@ -446,14 +446,14 @@ export const BOOKING_COPY_DE: BookingCopy = {
     passengersLede: "Geben Sie jeden Gast so an, wie er im Reisepass steht, Kabine für Kabine.",
     fullName: guest => `${guest}: vollständiger Name *`,
     requests: "Besondere Wünsche (optional)",
-    requestsPlaceholder: "Anlässe, Verbindungskabinen oder alles, was wir wissen sollten.",
+    requestsPlaceholder: "Besondere Anlässe, Verbindungskabinen oder alles, was wir wissen sollten.",
     paymentTitle: "Zahlungswunsch",
     paymentLede:
       "Wählen Sie, wie Sie bevorzugt zahlen möchten. Rechnung und Zahlungsanweisungen erhalten Sie von unserer Reservierung. Auf dieser Website werden keine Kartendaten erfasst.",
     card: "Zahlung mit Visa / Karte",
     cardNote: `Für die Online-Zahlung fällt ein Aufschlag von ${SURCHARGE_DE} an. Hathor sendet Ihnen die Rechnung später: Hier wird keine Kartennummer gespeichert.`,
     surchargeNote: breakdown =>
-      `Für Online-Kartenzahlungen fällt ein Aufschlag von ${SURCHARGE_DE} an, der bereits im Gesamtbetrag enthalten ist${breakdown ? `: ${breakdown}` : ""}. Die Banküberweisung ist ohne Aufschlag.`,
+      `Für Online-Kartenzahlungen fällt ein Aufschlag von ${SURCHARGE_DE} an, der bereits im Gesamtbetrag enthalten ist${breakdown ? `: ${breakdown}` : ""}. Bei Banküberweisung fällt kein Aufschlag an.`,
     bank: "Banküberweisung",
     bankNote: "Kein Aufschlag. Zahlung per internationaler Überweisung nach den Anweisungen auf der Rechnung.",
     schedule: "Zahlungsplan",
@@ -556,12 +556,12 @@ export const BOOKING_COPY_DE: BookingCopy = {
     typeBooked: roomType => `Die ${roomType} wurde für diese Abfahrt soeben gebucht und deshalb nicht in Ihren Warenkorb gelegt.`,
     couldNotCheck: "Die Verfügbarkeit konnte gerade nicht geprüft werden, deshalb wurde nichts hinzugefügt. Bitte versuchen Sie es erneut.",
     totalChanged: amount =>
-      `Der Reisepreis für diese Kabinen beträgt jetzt ${amount}. Bitte prüfen Sie ihn und klicken Sie erneut auf „Anfrage bestätigen“.`,
+      `Der Reisepreis für diese Kabinen beträgt jetzt ${amount}. Bitte prüfen Sie ihn und bestätigen Sie Ihre Anfrage erneut.`,
     cabinTaken:
       "Eine Ihrer Kabinen wurde soeben von einem anderen Gast gebucht. Die Verfügbarkeit wurde aktualisiert. Bitte prüfen Sie die Kabinen und versuchen Sie es erneut.",
     notSent: "Die Anfrage konnte nicht gesendet werden.",
     sendFailed: reason =>
-      `${reason} Für Sie ist keine Kabine reserviert: Ein erneuter Klick auf „Anfrage bestätigen“ startet eine neue Anfrage.`,
+      `${reason} Für Sie ist keine Kabine reserviert. Wenn Sie erneut bestätigen, senden Sie eine neue Anfrage.`,
   },
 
   plan: {
@@ -584,7 +584,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
   },
 
   result: {
-    reservation: "Reservierung",
+    reservation: "Buchung",
     newSearch: "Neue Suche starten",
     contact: "Hathor kontaktieren",
     notFound: "Buchung nicht gefunden",
@@ -607,7 +607,7 @@ export const BOOKING_COPY_DE: BookingCopy = {
       { label: "Anfrage gesendet", hint: "Noch keine Belastung" },
       { label: "Hathor prüft sie", hint: "Wir bestätigen Kabinen und Gesamtpreis" },
       { label: "Rechnung und Zahlung", hint: "Per E-Mail, für Ihre gewählte Zahlungsart" },
-      { label: "Buchung bestätigt", hint: "Nach Erfassung der Zahlung" },
+      { label: "Buchung bestätigt", hint: "Nach Zahlungseingang" },
     ],
     cabinsToConfirm: "Zu bestätigende Kabinen",
     // The voyage bar's total label: short, so the code stays on one line.
@@ -617,17 +617,17 @@ export const BOOKING_COPY_DE: BookingCopy = {
     titleSent: "Anfrage gesendet",
     titleConfirmed: "Buchung bestätigt",
     titleOther: "Ihre Buchung",
-    ledeSent: "Danke, dass Sie sich für Hathor entschieden haben. Wir melden uns mit der Rechnung bei Ihnen.",
+    ledeSent: "Vielen Dank, dass Sie sich für Hathor entschieden haben. Wir melden uns mit der Rechnung bei Ihnen.",
     ledeOther: "Der aktuelle Stand Ihrer Nilreise.",
-    quote: "Luxus. Erbe. Zugehörigkeit.",
+    quote: "Luxus. Erbe. Geborgenheit.",
     submitted: "Ihre Buchungsanfrage wurde erfolgreich gesendet.",
-    confirmedText: "Hathor hat Ihre Buchung angenommen und die erforderliche Zahlung erfasst.",
+    confirmedText: "Hathor hat Ihre Buchung angenommen und die erforderliche Zahlung verbucht.",
     currentStatus: "Dies ist der aktuelle Stand Ihrer Buchung.",
     headingSent: "Ihre Buchungsanfrage wurde gesendet",
     headingConfirmed: "Ihre Buchung ist bestätigt.",
     headingOther: "Ihre Buchung.",
     sentNote:
-      "Danke, dass Sie sich für Hathor entschieden haben. Unsere Reservierung prüft Ihre Anfrage und meldet sich mit der Rechnung und den Zahlungsanweisungen. Dies ist noch keine bestätigte Buchung, und auf dieser Website wurde keine Zahlung geleistet.",
+      "Vielen Dank, dass Sie sich für Hathor entschieden haben. Unsere Reservierung prüft Ihre Anfrage und meldet sich mit der Rechnung und den Zahlungsanweisungen. Dies ist noch keine bestätigte Buchung, und auf dieser Website wurde keine Zahlung geleistet.",
     code: "Buchungscode · damit verfolgen Sie diese Buchung",
     emailed: email => `Eine Kopie dieser Anfrage wurde per E-Mail an ${email} gesendet.`,
     emailFailed:
@@ -635,14 +635,14 @@ export const BOOKING_COPY_DE: BookingCopy = {
     emailPending: "Die Anfrage ist gespeichert. Die Bestätigungs-E-Mail ist unterwegs.",
     preferredMethod: "Bevorzugte Zahlungsart",
     next: "Wie geht es weiter?",
-    reviewTitle: "Die Reservierung prüft Ihre Anfrage",
+    reviewTitle: "Unsere Reservierung prüft Ihre Anfrage",
     reviewText: "Wir prüfen die Kabine und den endgültigen Reisepreis.",
     invoiceSent: "Die Rechnung wurde gesendet",
     invoiceComing: "Sie erhalten Rechnung und Zahlungsanweisungen",
     invoiceCheck: email => `Prüfen Sie ${email ?? "Ihre E-Mails"} auf den fälligen Betrag und die Zahlungsmodalitäten.`,
     invoiceBy: "Per E-Mail, für Ihre bevorzugte Zahlungsart.",
-    confirmedTitle: "Buchung bestätigt nach Erfassung der Zahlung",
-    confirmedTextNext: "Sobald Hathor die Anfrage annimmt und die erforderliche Zahlung erfasst ist.",
+    confirmedTitle: "Buchungsbestätigung nach Zahlungseingang",
+    confirmedTextNext: "Sobald Hathor die Anfrage annimmt und die erforderliche Zahlung verbucht ist.",
     summary: "Zusammenfassung der Buchung",
     guestSummary: (adults, children, fallback) =>
       adults !== null && children !== null
@@ -650,8 +650,8 @@ export const BOOKING_COPY_DE: BookingCopy = {
         : fallback,
     route: route => route.replace(/\bAswan\b/g, "Assuan"),
     total: "Gesamtbetrag der Buchung",
-    taxes: "Steuern und Service inklusive.",
-    surchargeTaxes: amount => `Enthält den Aufschlag von ${SURCHARGE_DE} für die Online-Kartenzahlung in Höhe von ${amount}. Steuern und Service inklusive.`,
+    taxes: "Steuern und Servicegebühren inklusive.",
+    surchargeTaxes: amount => `Enthält den Aufschlag von ${SURCHARGE_DE} für die Online-Kartenzahlung in Höhe von ${amount}. Steuern und Servicegebühren inklusive.`,
     timeline: "Zeitplan der Zahlungen",
     here: "Wir sind für Sie da",
     concierge: "Unser Concierge-Team hilft Ihnen immer gern bei allen Fragen.",
@@ -671,14 +671,14 @@ export const BOOKING_COPY_DE: BookingCopy = {
     notFound: "Buchung konnte nicht gefunden werden",
   },
   error: {
-    title: "Etwas hat Ihre Buchung unterbrochen",
+    title: "Ihre Buchung wurde unterbrochen",
     bodyBefore: "Beim Laden dieser Seite ist ein Problem aufgetreten.",
     bodyStrong: "Wenn Sie bereits beim Bestätigen waren, wurde Ihre Buchung möglicherweise schon gesendet",
     bodyAfter: ": Bitte prüfen Sie Ihre E-Mails, bevor Sie erneut buchen.",
     tryAgain: "Erneut versuchen",
     home: "Zur Startseite",
     helpBefore: "Weiterhin Probleme? Schreiben Sie an",
-    helpAfter: "und wir schließen Ihre Buchung von Hand ab.",
+    helpAfter: "und wir schließen Ihre Buchung persönlich ab.",
     reference: "Referenz:",
   },
   unverified: {

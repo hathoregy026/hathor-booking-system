@@ -32,13 +32,13 @@ export const PAGES_DE: Partial<Pages> = {
       "Weite Fenster zum Fluss holen den Nil in jeden Moment, vom ersten Licht an den Ufern bis zum stillen Gold des Sonnenuntergangs.",
     qualityTwoTitle: "PRIVATE RUHE",
     qualityTwoBody:
-      "Heitere Interieurs, feine Bettwäsche, eigene Bäder und aufmerksamer Service schaffen an Bord der Hathor einen ganz persönlichen Rückzugsort.",
+      "Ruhige Interieurs, feine Bettwäsche, eigene Bäder und aufmerksamer Service schaffen an Bord der Hathor einen ganz persönlichen Rückzugsort.",
     qualityThreeTitle: "ÄGYPTISCHES HANDWERK",
     qualityThreeBody:
       "Ägyptischer Charakter, warme Naturmaterialien und durchdachte moderne Details geben jeder Kabine und Suite eine bleibende Verbindung zu diesem Ort.",
     collectionLabel: "Die Suitenkollektion",
     collectionBody:
-      "Drei Ausdrucksformen des Lebens an Bord der Hathor, von den behaglichen Kabinen bis zu unseren größten Royal Suites: jede rund um Privatsphäre, Proportion und freien Blick auf den Nil gestaltet.",
+      "Drei Ausdrucksformen des Lebens an Bord der Hathor, von den behaglichen Kabinen bis zu unseren größten Royal Suites: jede ganz auf Privatsphäre, stimmige Proportionen und freien Blick auf den Nil ausgerichtet.",
     cabinMeta: "8 KABINEN",
     cabinDeck: "UNTERDECK",
     cabinTitle: "Luxury Cabins",
@@ -57,26 +57,26 @@ export const PAGES_DE: Partial<Pages> = {
     residenceCta: "Residenz entdecken",
     discoverCta: "Mehr erfahren",
     viewAllCta: "Alle Suiten entdecken",
-    collectionClosingTitle: "Jeder Blick\nAuf den Nil\nGehört\nIhrer Suite",
+    collectionClosingTitle: "Jeder Blick\nauf den Nil\ngehört\nIhrer Suite",
     collectionClosingBody:
       "Räume für Ruhe, Gespräche, private Dinner und freie Ausblicke, während die Hathor zwischen den alten Ufern Ägyptens dahingleitet.",
     reservationsLabel: "Reservierung",
-    reservationsTitle: "IHRE SUITE\nWARTET",
+    reservationsTitle: "IHRE SUITE\nERWARTET SIE",
     closingTitle: "Beginnen Sie Ihre Reise",
     closingBody:
       "Eine Reise nach Ihren Wünschen. Treten Sie in unseren exklusiven Kreis ein, für private Routen und frühen Zugang zu seltenen Reisen.",
   },
   blog: {
     intro:
-      "Ihre Reise nach Ägypten mit der Hathor Dahabiya, ein Fenster zur Seele des Nils. Wir teilen Geschichten über zeitlose Monumente, antike Wunder und langsames Reisen. Von Kultur bis zu Reisetipps: Entdecken Sie die Kunst des Segelns auf einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil in Ägypten. Lassen Sie sich von jedem Beitrag zu Ihrem nächsten Abenteuer an Bord der Hathor Dahabiya inspirieren.",
+      "Ihre Reise nach Ägypten mit der Hathor Dahabiya: ein Fenster zur Seele des Nils. Wir teilen Geschichten über zeitlose Monumente, antike Wunder und langsames Reisen. Von Kultur bis zu Reisetipps: Entdecken Sie die Kunst des Segelns auf einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil in Ägypten. Lassen Sie sich von jedem Beitrag zu Ihrem nächsten Abenteuer an Bord der Hathor Dahabiya inspirieren.",
   },
   partners: {
-    lead: "Wir fahren mit vertrauten Namen aus Reise und Gastgewerbe: Partnern, die unsere Sorgfalt für den Nil und unsere Gäste teilen.",
+    lead: "Wir segeln mit vertrauten Namen aus Reisebranche und Gastgewerbe: Partnern, die unsere Fürsorge für den Nil und unsere Gäste teilen.",
   },
   highlights: {
     intro: [
-      "Tauchen Sie ein in den geheimnisvollen Zauber des Nils an Bord der Hathor Dahabiya, einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil in Ägypten, die das majestätischste Segelerlebnis des Landes bietet, gemacht für alle, die Eleganz, Komfort und einen reichen Hauch Geschichte suchen. Private Räume: Mit insgesamt 8 Kabinen und 4 Suiten, davon 2 Royal Suites, garantiert unsere Dahabiya Hathor größte Privatsphäre bei herzlicher, eleganter Gastfreundschaft und ist die perfekte Wahl für eine Dahabiya-Kreuzfahrt von Assuan nach Luxor. Das elegante Schiff gleitet sanft den Fluss entlang und schenkt eine entspannte Fahrt, bei der die Gäste heitere Ausblicke genießen und verborgene Schätze abseits der Menge entdecken.",
-      "Mit der Gastronomie der Hathor genießen die Gäste kunstvoll zubereitete Gerichte, in denen authentische ägyptische Aromen auf internationale Küche treffen, alles frisch von erfahrenen Köchen zubereitet. Entspannen Sie bei einem Drink in den Lounge-Bars, während sich der Himmel in die atemberaubenden Farben des Sonnenuntergangs taucht. Unsere aufmerksame Crew umsorgt Sie mit aufrichtiger Gastfreundschaft und erfüllt jeden Ihrer Wünsche. Kein Detail ist zu klein, um nicht beachtet zu werden. Das ist die Handschrift des Luxus, die nur eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten bieten kann.",
+      "Tauchen Sie ein in den geheimnisvollen Zauber des Nils mit der Hathor Dahabiya, einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil in Ägypten, die das majestätischste Segelerlebnis des Landes bietet, gemacht für alle, die Eleganz, Komfort und einen Hauch reicher Geschichte suchen. Private Räume: Mit insgesamt 8 Kabinen und 4 Suiten, davon 2 Royal Suites, garantiert unsere Dahabiya Hathor größte Privatsphäre bei herzlicher, eleganter Gastfreundschaft und ist die perfekte Wahl für eine Dahabiya-Kreuzfahrt von Assuan nach Luxor. Das elegante Schiff gleitet sanft den Fluss entlang und schenkt eine entspannte Fahrt, bei der die Gäste ruhige Ausblicke genießen und verborgene Schätze abseits der Menge entdecken.",
+      "Die Gastronomie der Hathor verwöhnt die Gäste mit kunstvollen Gerichten, in denen authentische ägyptische Aromen auf internationale Küche treffen, alles frisch von erfahrenen Köchen zubereitet. Entspannen Sie bei einem Drink in den Lounge-Bars, während sich der Himmel in die atemberaubenden Farben des Sonnenuntergangs kleidet. Unsere aufmerksame Crew umsorgt Sie mit aufrichtiger Gastfreundschaft und erfüllt jeden Ihrer Wünsche. Kein Detail ist zu klein, um beachtet zu werden. Das ist die Handschrift des Luxus, die nur eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten bieten kann.",
     ],
     landmarks: [
       {
@@ -117,7 +117,7 @@ export const PAGES_DE: Partial<Pages> = {
       "Die Menüs entstehen aus ägyptischen Zutaten und vertrauten internationalen Einflüssen, mit Gerichten, die dem Rhythmus und der Umgebung jedes Tages folgen. Küche, Bewegung und Ruhe verschmelzen zu einem einzigen, fortlaufenden Erlebnis.",
     tableLabel: "DIE TAFEL",
     statementChapter: "Das Erlebnis",
-    statementTitle: "EINE KÜCHE, DIE\nZUM BLEIBEN LÄDT\nUND SICH MIT DEM\nFLUSS BEWEGT",
+    statementTitle: "EINE KÜCHE ZUM\nBLEIBEN, DIE SICH\nMIT DEM FLUSS\nBEWEGT",
     statementBody:
       "Jede Tafel entsteht rund um die Menschen, die sich an ihr versammeln. Das Frühstück kommt mit dem ersten Licht, das Abendessen folgt der Brise, der Fitnessraum bleibt nah am Deck, und Ihre Suite weiß, wie Sie gern ruhen. Design, Geschmack und Lebensqualität treffen sich in einem einzigen Tag auf der Hathor.",
     riverBody:
@@ -142,7 +142,7 @@ export const PAGES_DE: Partial<Pages> = {
       },
       {
         title: "RUHE",
-        body: "Ihre Suite ist der stille Gegenpol: weite Blicke auf den Fluss, gepflegte Details und privater Service, wann immer Sie lieber im Zimmer bleiben.",
+        body: "Ihre Suite ist der stille Gegenpol: weite Blicke auf den Fluss, gepflegte Details und privater Service, wann immer Sie lieber in der Suite bleiben.",
       },
     ],
     experiencesChapter: "Erlebnisse",
@@ -192,7 +192,7 @@ export const PAGES_DE: Partial<Pages> = {
     heroSupport:
       "Entdecken Sie Ägypten in einem ganz neuen Licht, wo zeitlose Tradition auf modernen Luxus trifft.",
     welcomeBody:
-      "Entdecken Sie eine stillere Form des Luxus, aus Raum, Privatsphäre und aufmerksamem Service.",
+      "Entdecken Sie eine stillere Form des Luxus: Raum, Privatsphäre und aufmerksamer Service.",
     welcomeTitle: "Willkommen an Bord der Hathor Dahabiya.",
     accommodationsIntro:
       "Die Hathor Dahabiya erstreckt sich über drei bis ins Detail gestaltete Decks (Unterdeck, Hauptdeck und Sonnendeck) mit:",
@@ -209,14 +209,14 @@ export const PAGES_DE: Partial<Pages> = {
     overviewIntro:
       "Erleben Sie die Kreuzfahrt Hathor Dahabiya, die Authentizität und Luxus zu einer unvergesslichen Reise auf dem zeitlosen Nil verbindet.\n\nOb Sie unsere eleganten Suiten oder die Royal Suites mit Panoramablick auf den Nil wählen: Sie finden unvergleichlichen Komfort und exklusive Privatsphäre.",
     amenitiesIntro:
-      "Entdecken Sie den mühelosen Luxus der Accessible Hathor Suite: ein weiter, eleganter Rückzugsort für Komfort, leichte Bewegung und feines Wohnen. Jedes Detail ist darauf ausgerichtet, dass sich jeder Gast ohne Kompromisse wie zu Hause fühlt.",
+      "Entdecken Sie den mühelosen Luxus der Accessible Hathor Suite: ein weiter, eleganter Rückzugsort für Komfort, Bewegungsfreiheit und feines Wohnen. Jedes Detail ist darauf ausgerichtet, dass sich jeder Gast ohne Kompromisse wie zu Hause fühlt.",
     amenitiesTitle: "In Ihrem Aufenthalt inklusive",
   },
   royal: {
     overviewIntro:
       "Erleben Sie eine authentische Luxusreise in der Royal Suite der Hathor Dahabiya: eine private Dahabiya-Kreuzfahrt unter Segeln auf dem zeitlosen Nil, die in Erinnerung bleibt.",
     amenitiesIntro:
-      "Gestaltet für Privatsphäre und Luxus, vereinen sie die eleganten Interieurs der Hathor, historisch inspirierte Dekorationen und modernen Komfort zu einem feinen Aufenthalt.",
+      "Gestaltet für Privatsphäre und Luxus, vereinen die Royal Suites die eleganten Interieurs der Hathor, historisch inspirierte Dekorationen und modernen Komfort zu einem feinen Aufenthalt.",
     amenitiesTitle: "In Ihrem Aufenthalt inklusive",
   },
   charter: {
@@ -246,10 +246,10 @@ export const PAGES_DE: Partial<Pages> = {
       "Private Dahabiya-Routen: intime Fahrten, legendäre Anlegestellen und der gemächliche Rhythmus des Flusses.",
     scrollHint: "Scrollen und ablegen",
     statementLabel: "Der Stil der Hathor",
-    statementTitle: "Langsam reisen\nTief entdecken\nFür immer erinnern",
+    statementTitle: "Langsam reisen\nTief entdecken\nFür immer bewahren",
     statementBody:
-      "Jede Reise der Hathor ist für Entdeckungen ohne Eile gemacht: Tempel in der goldenen Stunde, Abende im Sonnenuntergang auf dem Fluss und Landausflüge nach Maß für Ihre Gruppe.",
-    openingScript: "Vier Tage auf dem Nil. Ein Leben voller goldenem Licht.",
+      "Jede Reise der Hathor ist für Entdeckungen ohne Eile gemacht: Tempel in der goldenen Stunde, Sonnenuntergänge auf dem Fluss und Landausflüge nach Maß für Ihre Gruppe.",
+    openingScript: "Vier Tage auf dem Nil. Ein Leben lang goldenes Licht.",
     promiseLabel: "Das Versprechen",
     manifesto: [
       {
@@ -283,7 +283,7 @@ export const PAGES_DE: Partial<Pages> = {
         title: "Von Luxor nach Assuan",
         durationLabel: "4 Nächte / 5 Tage",
         meta: "Luxor → Assuan",
-        body: "Die klassische Nilreise, von den monumentalen Ufern Luxors zur stillen Anmut Assuans: Tempel, Feluken und Abende im Sonnenuntergang auf dem Fluss.",
+        body: "Die klassische Nilreise, von den monumentalen Ufern Luxors zur stillen Anmut Assuans: Tempel, Feluken und Sonnenuntergänge auf dem Fluss.",
         cta: "Reise entdecken",
       },
       {
@@ -291,7 +291,7 @@ export const PAGES_DE: Partial<Pages> = {
         title: "Von Luxor nach Assuan und zurück",
         durationLabel: "7 Nächte / 8 Tage",
         meta: "Luxor → Assuan → Luxor",
-        body: "Die ganze Nilrunde zwischen Luxor und Assuan: Zeit für die Tempel, das Licht des Flusses und stillere Tage an Bord der Hathor.",
+        body: "Die ganze Rundreise zwischen Luxor und Assuan: Zeit für die Tempel, das Licht des Flusses und stillere Tage an Bord der Hathor.",
         cta: "Reise entdecken",
       },
       {

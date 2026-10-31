@@ -51,7 +51,7 @@ export const HOME_COPY_DE: HomeCopy = {
     kicker: "02 — Abfahrten",
     titleLines: ["Wählen Sie", "Ihre Kabine"],
     support:
-      "Eine Fünf-Sterne-Dahabiya, in der die Geschichte des Nils, zeitgemäßer Komfort und intimes Segeln zusammenfinden. Drei Routen, vier Kabinenkategorien, 32 Gäste an Bord.",
+      "Eine Fünf-Sterne-Dahabiya, auf der die Geschichte des Nils, zeitgemäßer Komfort und Segeln im kleinen Kreis zusammenfinden. Drei Routen, vier Kabinenkategorien, 32 Gäste an Bord.",
     tiers: {
       "Luxury Room": "Luxury Room",
       "Luxury Suite": "Luxury Suite",
@@ -84,17 +84,17 @@ export const HOME_COPY_DE: HomeCopy = {
     readMore: "Mehr erfahren",
     mapTitle: "Der Nil zwischen Luxor und Assuan",
     mapDescription:
-      "Geografische Übersicht, nach Norden ausgerichtet, mit der Lage der Städte. Gepunktete Linien verbinden die Orte mit einem vereinfachten Flusslauf und markieren keine Liegeplätze. Die Fahrt ist nach Süden dargestellt, von Luxor nach Assuan.",
+      "Geografische Übersicht, nach Norden ausgerichtet, mit der Lage der Städte. Gepunktete Linien verbinden die Orte mit einem vereinfachten Flusslauf und markieren keine Liegeplätze. Die Fahrt ist in Richtung Süden dargestellt, von Luxor nach Assuan.",
     heading: "Kurs",
     westernDesert: "WESTLICHE WÜSTE",
     easternDesert: "ÖSTLICHE WÜSTE",
     caption: "Geografische Übersicht · ungefähre Lage der Städte",
-    notNavigation: "· keine Seekarte",
+    notNavigation: "· keine Navigationskarte",
     place: dePlace,
   },
   claim: {
-    label: "Sie fährt, wo große Schiffe nicht hinkommen",
-    lines: ["Sie fährt,", "wo große", "Schiffe nicht", "hinkommen"],
+    label: "Sie segelt, wo große Schiffe nicht hinkommen",
+    lines: ["Sie segelt,", "wo große", "Schiffe nicht", "hinkommen"],
     copy: "Eine Dahabiya hat nur wenig mehr als einen Meter Tiefgang. Sie legt in Esna, Edfu und Kom Ombo an, während die schwimmenden Hotels vorbeiziehen, und macht an Ufern fest, die gar keinen Anleger haben.",
   },
   voyages: {
@@ -130,7 +130,7 @@ export const HOME_COPY_DE: HomeCopy = {
     line: "Zwölf Räume, und in jedem von ihnen der Fluss.",
     copy: [
       "Acht Kabinen, zwei Suiten und zwei Royal Suites, jede mit eigenem Fenster zum Ufer.",
-      "Handgearbeitetes Holz, Leinen und ein Bett für die Stille nach einem Tag an Land.",
+      "Handbearbeitetes Holz, Leinen und ein Bett für die Stille nach einem Tag an Land.",
     ],
     link: "Suiten ansehen",
     royalBathAlt: "Das Bad einer Royal Suite an Bord der Hathor",
@@ -185,7 +185,7 @@ export const HOME_COPY_DE: HomeCopy = {
   },
   close: {
     label: "Reisen Sie mit der Hathor",
-    charterAlt: "Die Hathor Dahabiya, ganz gechartert, auf dem Nil",
+    charterAlt: "Die exklusiv gecharterte Hathor Dahabiya auf dem Nil",
     duskAlt: "Die Hathor Dahabiya vor Anker in der Abenddämmerung",
     kicker: "Luxor · Assuan · Ägypten",
     title: "Kommen Sie an Bord",
@@ -210,7 +210,7 @@ export const HOME_COPY_DE: HomeCopy = {
 export const PARTNERS_STRIP_COPY_DE: PartnersStripCopy = {
   title: "Unsere Partner",
   headline: "In bester Gesellschaft",
-  script: "vertrauensvoll auf der Reise",
+  script: "vertrauensvoll unterwegs",
   phoneScript: "Dahabiya Kreuzfahrt",
   /* Three measured lines, like the English band. */
   leadLines: [

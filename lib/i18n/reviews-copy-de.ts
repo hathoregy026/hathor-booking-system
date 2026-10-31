@@ -31,7 +31,7 @@ export const REVIEWS_COPY_DE: ReviewsCopy = {
   kicker: "Gästestimmen",
   titleLead: "In ihren",
   titleAccent: "eigenen Worten",
-  lede: "Mehr als eine Reise, eine Sammlung von Erinnerungen. Das sind die Worte unserer Gäste, von Herzen geschrieben.",
+  lede: "Mehr als eine Reise: eine Sammlung von Erinnerungen. Das sind die Worte unserer Gäste, von Herzen geschrieben.",
   subtitle: "Echte Reisen. Wahre Geschichten.",
   googleReviews: "Google-Bewertungen",
   platformReviews: (platform) => `${platform}-Bewertungen`,

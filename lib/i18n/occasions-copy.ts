@@ -71,12 +71,12 @@ const BUILT_IN_TEXT: Record<TranslatedLocale, ReadonlyMap<string, string>> = {
     ["Until the sun festival", "Bis zum Sonnenfest"],
     /* New Year */
     ["2027 begins in {countdown}", "2027 beginnt in {countdown}"],
-    ["Season's greetings from everyone aboard Hathor", "Festliche Grüße von allen an Bord der Hathor"],
+    ["Season's greetings from everyone aboard Hathor", "Frohe Festtage von allen an Bord der Hathor"],
     ["Plan your 2027 Nile voyage", "Planen Sie Ihre Nilreise 2027"],
-    ["Happy New Year 2027 from everyone aboard Hathor", "Ein gutes neues Jahr 2027 von allen an Bord der Hathor"],
+    ["Happy New Year 2027 from everyone aboard Hathor", "Frohes neues Jahr 2027 von allen an Bord der Hathor"],
     /* Christmas */
     ["Merry Christmas from the crew of Hathor", "Frohe Weihnachten von der Crew der Hathor"],
-    ["Coptic Christmas, 7 January, celebrated in Luxor", "Koptische Weihnachten, am 7. Januar, gefeiert in Luxor"],
+    ["Coptic Christmas, 7 January, celebrated in Luxor", "Das koptische Weihnachtsfest am 7. Januar wird in Luxor gefeiert"],
     /* Ramadan & Eid: the greetings are the same in German */
     ["Ramadan Kareem · رمضان كريم", "Ramadan Kareem · رمضان كريم"],
     ["Eid Mubarak · عيد مبارك", "Eid Mubarak · عيد مبارك"],

@@ -69,7 +69,7 @@ export const CHROME_COPY_DE: ChromeCopy = {
   header: {
     openMenu: "Menü öffnen",
     closeMenu: "Menü schließen",
-    phoneTools: "Werkzeuge",
+    phoneTools: "Schnellzugriff",
     showGroupPages: (group) => `Seiten zu ${group} anzeigen`,
     groupPages: (group) => `Seiten zu ${group}`,
     exploreLabel: "Entdecken",
@@ -98,7 +98,7 @@ export const CHROME_COPY_DE: ChromeCopy = {
     code: "De",
     activeName: "Deutsch",
     names: {
-      en: "Englisch",
+      en: "English",
       it: "Italiano",
       de: "Deutsch",
     },
@@ -188,8 +188,8 @@ export const CHROME_COPY_DE: ChromeCopy = {
         title: "Route",
         links: [
           { href: "/voyages", label: "Alle Reisen" },
-          { href: "/voyages/luxor-to-aswan", label: "Luxor nach Assuan" },
-          { href: "/voyages/aswan-to-luxor", label: "Assuan nach Luxor" },
+          { href: "/voyages/luxor-to-aswan", label: "Von Luxor nach Assuan" },
+          { href: "/voyages/aswan-to-luxor", label: "Von Assuan nach Luxor" },
           { href: "/highlights", label: "Höhepunkte" },
         ],
       },

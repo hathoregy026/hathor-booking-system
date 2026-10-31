@@ -134,7 +134,7 @@ export const CONFIG_DE: ConfigWords = {
   eyebrow: "Die Kunst des Lebens an Bord",
   title: "Ihr Platz auf dem Nil",
   introduction:
-    "Drei Decks. Eine Welt für sich. Kommen Sie an Bord der Hathor, erkunden Sie jeden Raum und finden Sie den, der sich nach Ihnen anfühlt.",
+    "Drei Decks. Eine Welt für sich. Kommen Sie an Bord der Hathor, erkunden Sie jeden Raum und finden Sie den, der zu Ihnen passt.",
   decks: {
     lower: {
       name: "Unterdeck",
@@ -174,7 +174,7 @@ export const CONFIG_DE: ConfigWords = {
     "fac-terrace": { name: "Außenterrasse", line: "Tische unter freiem Himmel am Bug, für lange Mittagessen und Abende auf dem Fluss." },
     "fac-shade": { name: "Schattige Lounge", line: "Sofas und Tagesbetten unter der Pergola, schattig auch in der Mittagshitze." },
     "fac-sun-stairs": { name: "Treppen", line: "Zum Hauptdeck, neben der schattigen Lounge." },
-    "fac-bar": { name: "Runde Bar", line: "Drinks bei Sonnenuntergang, rund um die runde Theke serviert." },
+    "fac-bar": { name: "Runde Bar", line: "Drinks bei Sonnenuntergang, an der runden Theke serviert." },
     "fac-pools": { name: "Zwei Pools", line: "Zwei ins Deck eingelassene Pools mit Liegen auf beiden Seiten." },
     "fac-loungers": { name: "Liegen", line: "Liegenreihen an den Pools und neben der Terrasse, für lange Nachmittage in der Sonne." },
     "fac-sun-terrace": { name: "Außenterrasse", line: "Tische unter Sonnenschirmen am Bug, mit Blick flussaufwärts." },

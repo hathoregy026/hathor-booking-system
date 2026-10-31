@@ -9,7 +9,7 @@ export const BLOG_ARTICLES_DE_6: Record<string, string> = {
 
 <p>Das Ostufer von Luxor ist ein faszinierender Ort, den viele wegen seines architektonischen, historischen und kulturellen Reichtums für ein lebendiges, pulsierendes Museum halten. An den Ufern des berühmten Nils erheben sich Tempel wie strenge Wächter in den Himmel, und in ihrem Inneren öffnen sich Räume für die Pharaonen, die Gottheiten und ihre heiligen Zeremonien. Unter den antiken Wundern des Ostufers, wo einst die große Stadt Theben lag, finden sich Stätten, in denen das goldene Zeitalter Ägyptens noch immer widerhallt. Hier sind die schönsten Tempel am Ostufer von Luxor für alle, die die Größe und das Geheimnis dieses zeitlosen Landes entdecken möchten.</p>
 
-<p>Diesen heiligen Boden zu betreten ist, als würde man in eine vor Tausenden von Jahren verfasste Legende versetzt. Die Architektur lebt in der Skulptur selbst, und die Stimmen der gemeißelten Figuren scheinen noch in der Luft zu hängen. Zwischen Sonnenaufgang und Sonnenuntergang steht das Ostufer da wie ein lebendiges Wandbild, in dem die Wirklichkeit verschwimmt und die Mythen lebendig werden.</p>
+<p>Diesen heiligen Boden zu betreten ist, als würde man in eine vor Tausenden von Jahren verfasste Legende versetzt. Die Architektur lebt in der Skulptur selbst, und die Stimmen der gemeißelten Figuren scheinen noch in der Luft zu hängen. Zwischen Sonnenaufgang und Sonnenuntergang steht das Ostufer da wie ein lebendiges Wandbild, in dem die Wirklichkeit verschwimmt und die Mythen zum Leben erwachen.</p>
 
 <p>&nbsp;</p>
 
@@ -17,13 +17,13 @@ export const BLOG_ARTICLES_DE_6: Record<string, string> = {
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak-temple88-1757512619ARqOV.jpg" alt="Karnak-Tempel" loading="lazy"></figure></p>
 
-<p>Die antiken Wunder des Ostufers lassen sich nicht erkunden, ohne den <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempel</a> zu besuchen, eines der prachtvollsten Heiligtümer der Welt. Mit den aus Stein gemeißelten Säulen seiner Hypostylhalle behauptet er sich als das große Bauwerk des Amun-Re. Über zweitausend Jahre lang erweiterten mehr als achtzehn Pharaonen das Reich des Amun-Re und errichteten Mauern voller Inschriften, die ihre Treue und ihre Erfolge feierten. Mit dem Tod jedes Königs begann das Streben nach Herrschaft von Neuem, und Karnak blieb eine mächtige befestigte Zitadelle, eines der ältesten Bauwerke Ägyptens.</p>
+<p>Die antiken Wunder des Ostufers lassen sich nicht erkunden, ohne den <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempel</a> zu besuchen, eines der prachtvollsten Heiligtümer der Welt. Mit den aus Stein gemeißelten Säulen seiner Hypostylhalle behauptet er sich als das große Heiligtum des Amun-Re. Über zweitausend Jahre lang erweiterten mehr als achtzehn Pharaonen das Reich des Amun-Re und errichteten Mauern voller Inschriften, die ihre Treue und ihre Erfolge feierten. Mit dem Tod jedes Königs begann das Streben nach Herrschaft von Neuem, und Karnak blieb eine mächtige befestigte Zitadelle, eines der ältesten Bauwerke Ägyptens.</p>
 
 <p>&nbsp;</p>
 
 <h2><span class="hathor-blog-accent">Der Tempel von Luxor: eine heilige Krone für die Könige Ägyptens</span></h2>
 
-<p>Durch die Sphingenallee, die zu beiden Seiten von Sphingen gesäumt ist, mit dem weitläufigen Komplex von Karnak verbunden, gehört diese Stätte zu den antiken Wundern des Ostufers. Anders als der nahe Karnak-Tempel war sie das Heiligtum des Königtums: der Ort, an dem die Könige gekrönt und verehrt wurden. Bei Sonnenuntergang verwandelt das warme Licht den Tempel in ein schimmerndes goldenes Bauwerk, und die Statuen werfen lange, faszinierende Schatten, so wirklich, dass der Ort wieder auflebt. Die Ausrichtung des Tempels nach den Sternen zeigt, wie fortgeschritten die Zivilisation, die solche Bauten errichtete, in Architektur wie Religion war. Der Luxor-Tempel ist also ein Werk von großer Schönheit, das sich am besten als ewige Betrachtung der Vergangenheit und ihrer Begegnung mit der Gegenwart verstehen lässt.</p>
+<p>Durch die Sphingenallee, die zwei lange Statuenreihen säumen, mit dem weitläufigen Komplex von Karnak verbunden, gehört diese Stätte zu den antiken Wundern des Ostufers. Anders als der nahe Karnak-Tempel war sie das Heiligtum des Königtums: der Ort, an dem die Könige gekrönt und verehrt wurden. Bei Sonnenuntergang verwandelt das warme Licht den Tempel in ein schimmerndes goldenes Bauwerk, und die Statuen werfen lange, faszinierende Schatten, so wirklich, dass der Ort wieder auflebt. Die Ausrichtung des Tempels nach den Sternen zeigt, wie fortgeschritten die Zivilisation, die solche Bauten errichtete, in Architektur wie Religion war. Der Luxor-Tempel ist also ein Werk von großer Schönheit, das sich am besten als ewige Betrachtung der Vergangenheit und ihrer Begegnung mit der Gegenwart verstehen lässt.</p>
 
 <p>&nbsp;</p>
 
@@ -47,7 +47,7 @@ Zwischen den antiken Wundern am Ostufer von Luxor zu reisen ist in vielerlei Hin
 
 <p>&nbsp;</p>
 
-<p>Auf einer Dahabiya-Kreuzfahrt auf dem Nil in&nbsp;Ägypten gehört der Tempel von Kom Ombo zu den eindrücklichsten Halten, ein außergewöhnlicher Tempel am Fluss, der Geschichten alter Götter flüstert. Direkt am Nil gelegen, bietet diese antike Stätte ein ruhiges, intensives Erlebnis, besonders bei Sonnenuntergang. Reich an Geschichte, ist der Tempel von Kom Ombo ein Zeugnis des spirituellen und architektonischen Erbes Ägyptens.</p>
+<p>Auf einer Dahabiya-Kreuzfahrt auf dem Nil in&nbsp;Ägypten gehört der Tempel von Kom Ombo zu den eindrucksvollsten Stationen, ein außergewöhnlicher Tempel am Fluss, der Geschichten von alten Göttern flüstert. Direkt am Nil gelegen, bietet diese antike Stätte ein ruhiges, intensives Erlebnis, besonders bei Sonnenuntergang. Der geschichtsreiche Tempel von Kom Ombo ist ein Zeugnis des spirituellen und architektonischen Erbes Ägyptens.</p>
 
 <p>Anders als große Kreuzfahrtschiffe bietet Ihnen eine Dahabiya die Möglichkeit, diesen Tempel in ruhiger Atmosphäre zu erkunden, fern der Menge. Während das goldene Sonnenlicht hinter den Steinmauern verblasst, erstrahlt der Tempel, und die Geschichte scheint lebendig zu werden.</p>
 
@@ -56,7 +56,7 @@ Zwischen den antiken Wundern am Ostufer von Luxor zu reisen ist in vielerlei Hin
 <h2><span style="color:#e67e22">Ein einzigartiger Tempel für zwei Gottheiten</span></h2>
 
 <p><br>
-Der Tempel von Kom Ombo ist der ungewöhnlichste Tempel Ägyptens und begeistert seine Besucher mit seiner außergewöhnlichen Doppelanlage. Einen Tempel wie Kom Ombo, der zwei Tempel an einem Ort vereint, sieht man nicht oft. Nur sehr wenige Tempel beherbergen zwei Heiligtümer unter einem Dach, und Kom Ombo ist einer davon: Er ehrt den wilden Krokodilgott Sobek und den wachsamen Falkengott Horus. Dieser Bau ist eine Seltenheit, die ein Kapitel aus Religion, Mythologie und Medizin in der Geschichte des Tempels von Kom Ombo tief widerspiegelt.<br>
+Der Tempel von Kom Ombo ist der ungewöhnlichste Tempel Ägyptens und begeistert seine Besucher mit seiner außergewöhnlichen Doppelanlage. Einen Tempel wie Kom Ombo, der zwei Tempel an einem Ort vereint, sieht man nicht oft. Nur sehr wenige Tempel beherbergen zwei Heiligtümer unter einem Dach, und Kom Ombo ist einer davon: Er ehrt den wilden Krokodilgott Sobek und den wachsamen Falkengott Horus. Diese Seltenheit spiegelt ein ganzes Kapitel aus Religion, Mythologie und Medizin wider.<br>
 <br>
 Der Grundriss des Tempels ist vollkommen symmetrisch. Meist haben Tempel nur einen Eingang, hier aber gibt es zwei gleich große, ebenso wie die Hallen und Heiligtümer: Alles ist darauf ausgelegt, das Gleichgewicht zwischen den beiden Gottheiten zu wahren. Die Inschriften erzählen die Geschichte von Kom Ombo und zeigen, dass der Tempel einst sowohl der Verehrung als auch der Heilung diente.<br>
 Dieser außergewöhnliche Bau liegt am Ostufer des Nils, etwa 45 km nördlich von Assuan, und seine Lage am Fluss machte ihn zu einem heiligen Ort für Riten und Andacht. Der Besuch mit der Dahabiya lässt die Reisenden ohne Ablenkung mit dem Geist des Tempels in Einklang kommen.</p>
@@ -66,7 +66,7 @@ Dieser außergewöhnliche Bau liegt am Ostufer des Nils, etwa 45 km nördlich vo
 <h2><span style="color:#e67e22">Entdecken Sie das Krokodilmuseum</span></h2>
 
 <p><br>
-Direkt neben dem Tempel liegt das Krokodilmuseum, ein Halt, den Sie sich wirklich nicht entgehen lassen sollten. Das Museum bewahrt Dutzende mumifizierter Krokodile, die einst alle als heilige Tiere des Sobek verehrt wurden. Diese erhaltenen Exemplare helfen zu verstehen, mit wie viel Respekt die alten Ägypter den Nil und seine Tierwelt behandelten.<br>
+Direkt neben dem Tempel liegt das Krokodilmuseum, eine Station, die Sie sich wirklich nicht entgehen lassen sollten. Das Museum bewahrt Dutzende mumifizierter Krokodile, die einst alle als heilige Tiere des Sobek verehrt wurden. Diese erhaltenen Exemplare helfen zu verstehen, mit wie viel Respekt die alten Ägypter den Nil und seine Tierwelt behandelten.<br>
 <br>
 Sie sehen auch Werkzeuge, Statuen und Gegenstände des Alltags, die Ihnen den Tempel von Kom Ombo und seine Rolle in der altägyptischen Kultur noch näherbringen.</p>
 
@@ -74,13 +74,13 @@ Sie sehen auch Werkzeuge, Statuen und Gegenstände des Alltags, die Ihnen den Te
 <span style="color:#e67e22">Warum die Dahabiya die beste Art ist, Kom Ombo zu besuchen&nbsp;</span></h2>
 
 <p><br>
-Die meisten Touristen besuchen Kom Ombo in Eile, in den heißesten Stunden des Tages. Eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten gönnt Ihnen dagegen den Luxus, ihn im besten Moment zu besuchen, kurz vor Sonnenuntergang. Das Erlebnis ist wirklich zauberhaft: keine Menschenmenge, eine leichte, kühle Brise und das goldene Sonnenlicht, das über den Stein gleitet, ideal für außergewöhnliche Fotos.<br>
+Die meisten Touristen besuchen Kom Ombo in Eile, in den heißesten Stunden des Tages. Eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten gönnt Ihnen dagegen den Luxus, den Tempel im besten Moment zu besuchen, kurz vor Sonnenuntergang. Das Erlebnis ist wirklich zauberhaft: keine Menschenmenge, eine leichte, kühle Brise und das goldene Sonnenlicht, das über den Stein gleitet, ideal für außergewöhnliche Fotos.<br>
 <br>
-Die Dahabiya ermöglicht eine langsame, bedeutungsvolle Reise. Sie sehen die Stätte nicht nur: Sie spüren ihre Gegenwart. So besucht, wird der Tempel von Kom Ombo von einem historischen Halt zu einer persönlichen Erinnerung, die Sie nie vergessen werden.</p>
+Die Dahabiya ermöglicht eine langsame, bedeutungsvolle Reise. Sie sehen die Stätte nicht nur: Sie spüren ihre Gegenwart. So besucht, wird der Tempel von Kom Ombo von einer historischen Station zu einer persönlichen Erinnerung, die Sie nie vergessen werden.</p>
 
 <p>&nbsp;</p>
 
-<p>Die Nilkreuzfahrt der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> in Ägypten bietet die ideale Art, die Stille&nbsp;zu erleben und die Geschichte des Tempels von Kom Ombo zu entdecken. Während Sie über das ruhige Wasser des Nils gleiten, reisen Sie in der Zeit zurück und entdecken die außergewöhnliche Geschichte des Tempels. Diese ruhige Reise voller Echos alter Erzählungen und heiliger Orte bringt Sie dem Frieden nahe, den nur das Reisen schenkt, und schafft Erinnerungen fürs Leben. Ägypten mit der Dahabiya zu entdecken verbindet Sie wirklich mit der Seele des Nils und seinen zeitlosen Schätzen.</p>`,
+<p>Die Nilkreuzfahrt der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> in Ägypten bietet die ideale Art, die Stille&nbsp;zu erleben und die Geschichte des Tempels von Kom Ombo zu entdecken. Während Sie über das ruhige Wasser des Nils gleiten, reisen Sie in der Zeit zurück. Diese ruhige Reise voller Echos alter Erzählungen und heiliger Orte bringt Sie dem Frieden nahe, den nur das Reisen schenkt, und schafft Erinnerungen fürs Leben. Ägypten mit der Dahabiya zu entdecken verbindet Sie wirklich mit der Seele des Nils und seinen zeitlosen Schätzen.</p>`,
 
   "5-quiet-nile-spots-for-stunning-honeymoon-captures": `<h2><span class="hathor-blog-accent">Erleben Sie eine romantische Luxuskreuzfahrt mit der Dahabiya in Ägypten</span></h2>
 
@@ -90,7 +90,7 @@ Die Dahabiya ermöglicht eine langsame, bedeutungsvolle Reise. Sie sehen die St�
 
 <p>Stellen Sie sich vor, Sie erwachen mit den sanften Klängen des Nils, genießen Ihren Morgenkaffee auf dem Sonnendeck und erkunden Hand in Hand antike Tempel. Eine Dahabiya-Kreuzfahrt enthüllt verborgene Schätze des Nils und Orte abseits der üblichen Wege, die große Kreuzfahrtschiffe nicht erreichen. Ihre Flitterwochen werden zu einem wahrhaft einzigartigen, unvergesslichen Erlebnis.</p>
 
-<p>An Bord einer <strong>Nilkreuzfahrt in der VIP-Suite</strong> entdecken Paare ruhige, abgeschiedene Winkel am Fluss, perfekt, um romantische Momente festzuhalten und gemeinsam bleibende Erinnerungen zu schaffen.</p>
+<p>Auf einer <strong>Nilkreuzfahrt in der VIP-Suite</strong> entdecken Paare ruhige, abgeschiedene Winkel am Fluss, perfekt, um romantische Momente festzuhalten und gemeinsam bleibende Erinnerungen zu schaffen.</p>
 
 <h2><span class="hathor-blog-accent">5 geheime Orte, die Ihre Hochzeitsreisefotos unvergesslich machen</span></h2>
 
@@ -98,18 +98,18 @@ Die Dahabiya ermöglicht eine langsame, bedeutungsvolle Reise. Sie sehen die St�
 
 <h3><span class="hathor-blog-accent">Die Insel Elephantine, das stille Paradies von Assuan</span></h3>
 
-<p>Palmen, nubische Dörfer und antike Ruinen unterstreichen den exotischen Reiz dieser Insel. Die ruhige Atmosphäre und die wenig besuchte Umgebung machen sie perfekt zum Entspannen oder für romantische Fotos. Die Gäste der <strong>Honeymoon-Suite auf dem Nil</strong> genießen diese heitere Landschaft und schaffen unvergessliche Erinnerungen.</p>
+<p>Palmen, nubische Dörfer und antike Ruinen unterstreichen den exotischen Reiz dieser Insel. Die ruhige Atmosphäre und die wenig besuchte Umgebung machen sie perfekt zum Entspannen oder für romantische Fotos. Die Gäste der <strong>Honeymoon-Suite auf dem Nil</strong> genießen diese friedliche Landschaft und schaffen unvergessliche Erinnerungen.</p>
 
 <h3><span class="hathor-blog-accent">Die Gräber der Noblen: der Luxus einer verborgenen Geschichte</span></h3>
 
-<p>Lassen Sie die übliche Menge hinter sich und besuchen Sie die Gräber der Noblen in Luxor. Diese weniger bekannten Gräber bieten eine heitere, faszinierende Atmosphäre, bereichert durch außergewöhnliche Wandmalereien, die eine herrliche historische Kulisse für Ihre Hochzeitsreisefotos bilden. Zurück in ihrer <strong>Honeymoon-Suite auf dem Nil</strong> genießen die Gäste weiter die Ruhe und Exklusivität dieser einzigartigen Reise.</p>
+<p>Lassen Sie die üblichen Menschenmassen hinter sich und besuchen Sie die Gräber der Noblen in Luxor. Diese weniger bekannten Gräber bieten eine ruhige, faszinierende Atmosphäre, bereichert durch außergewöhnliche Wandmalereien, die eine herrliche historische Kulisse für Ihre Hochzeitsreisefotos bilden. Zurück in ihrer <strong>Honeymoon-Suite auf dem Nil</strong> genießen die Gäste weiter die Ruhe und Exklusivität dieser einzigartigen Reise.</p>
 
-<p>Fern vom Lärm der meistbesuchten Touristenstätten bietet dieser verborgene Schatz ein intimes Erlebnis, das Komfort und Privatsphäre einer <strong>Nilkreuzfahrt in der VIP-Suite</strong> perfekt ergänzt und jeden Moment Ihrer Flitterwochen noch eindrücklicher macht.</p>
+<p>Fern vom Lärm der meistbesuchten Touristenstätten bietet dieser verborgene Schatz ein intimes Erlebnis, das Komfort und Privatsphäre einer <strong>Nilkreuzfahrt in der VIP-Suite</strong> perfekt ergänzt und jeden Moment Ihrer Flitterwochen noch eindrucksvoller macht.</p>
 
 <h3><span class="hathor-blog-accent">Kom Ombo,&nbsp;ein romantisches Leuchten</span></h3>
 
 <p>Der Tempel von Kom Ombo am Fluss ist eine der romantischsten Kulissen für Fotos bei Sonnenuntergang. Am späten Nachmittag hüllt ein goldenes Leuchten den <a href="/blogs/kom-ombo-temple">Tempel von Kom Ombo</a> ein, während der Fluss in vollem Glanz funkelt.<br>
-Die Hochzeitsreisefotos auf dem Nil, mit dem Paar am weißen Sandufer des Flusses, wirken wie aus einem romantischen Film.</p>
+Die Hochzeitsreisefotos auf dem Nil, mit dem Paar beim Spaziergang am weißen Sandufer des Flusses, wirken wie aus einem romantischen Film.</p>
 
 <h3><span class="hathor-blog-accent">Die Gartenwege von Edfu: grün und ruhig</span></h3>
 
@@ -117,16 +117,16 @@ Die Hochzeitsreisefotos auf dem Nil, mit dem Paar am weißen Sandufer des Flusse
 
 <h3><span class="hathor-blog-accent">Die stillen Ufer von Esna: allein mit dem Nil</span></h3>
 
-<p>Wenige Meilen von <a href="/blogs/exploring-esna-temples-history-nile-charm">Esna</a> entfernt bieten abgeschiedene Ufer ruhiges Wasser und weiten Himmel, ideal für romantische, heitere Fotos, mit kaum einem Menschen in Sicht.<br>
-Flitterwochen in Ägypten sollten sich einige solcher Momente gönnen: ruhig, einfach und traumhaft.</p>
+<p>Wenige Meilen von <a href="/blogs/exploring-esna-temples-history-nile-charm">Esna</a> entfernt bieten abgeschiedene Ufer ruhiges Wasser und weiten Himmel, ideal für romantische, friedliche Fotos, und kaum ein Mensch ist in Sicht.<br>
+Zu Flitterwochen in Ägypten sollten einige solcher Momente gehören: ruhig, einfach und traumhaft.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/nile-cruise-lovers-17748635373CUUC.jpg" alt="" loading="lazy"></figure></p>
 
 <h2><span class="hathor-blog-accent">Die Flitterwochen Ihrer Träume erwarten Sie auf dem Nil</span></h2>
 
-<p>Die Flitterwochen sind eine der kostbarsten Reisen des Lebens. Warum sie nicht an Bord einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil erleben, dem idealen Ziel für Paare, die zugleich Romantik und Geschichte suchen, die <a href="/blogs/niles-hidden-gems-by-dahabiya">verborgenen Schätze des Nils</a> erkunden, die Flitterwochen-Orte am Fluss, und ihre Liebesgeschichte in unvergesslichen Fotos erzählen?</p>
+<p>Die Flitterwochen sind eine der kostbarsten Reisen des Lebens. Warum sie nicht auf einer Luxus-Dahabiya-Kreuzfahrt auf dem Nil erleben? Sie ist die ideale Wahl für Paare, die zugleich Romantik und Geschichte suchen: Man erkundet die <a href="/blogs/niles-hidden-gems-by-dahabiya">verborgenen Schätze des Nils</a>, entdeckt die romantischsten Winkel am Fluss und erzählt die eigene Liebesgeschichte in unvergesslichen Fotos.</p>
 
-<p>Ob Sie einen goldenen Sonnenuntergang in Kom Ombo oder einen heiteren Morgen auf der Insel Elephantine festhalten: Ihre Flitterwochen in Ägypten werden reich an malerischen, romantischen und unvergesslichen Momenten sein.</p>
+<p>Ob Sie einen goldenen Sonnenuntergang in Kom Ombo oder einen ruhigen Morgen auf der Insel Elephantine festhalten: Ihre Flitterwochen in Ägypten werden reich an malerischen, romantischen und unvergesslichen Momenten sein.</p>
 
 <p>Ist es Zeit für die Hochzeitsreise auf dem Nil, von der Sie immer geträumt haben? Treten Sie mit einem Luxuserlebnis auf der Dahabiya in eine Welt der Eleganz ein, in der jeder Moment für Liebe, Entspannung und bleibende Erinnerungen gestaltet ist. Entspannen Sie in der <strong>Honeymoon-Suite auf dem Nil</strong> und genießen Sie während der ganzen Reise außergewöhnlichen Komfort und atemberaubende Blicke auf den Nil.</p>
 

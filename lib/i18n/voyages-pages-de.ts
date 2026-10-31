@@ -44,7 +44,7 @@ export const GERMAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
     ...page(
       "/de/voyages/luxor-to-aswan",
       "Nilkreuzfahrt von Luxor nach Assuan | Hathor Dahabiya",
-      "Die klassische Kreuzfahrt mit vier Nächten von Luxor nach Assuan auf der Hathor Dahabiya: Karnak, das Tal der Könige, Edfu, Kom Ombo und Philae, ganz privat.",
+      "Klassische Kreuzfahrt mit vier Nächten von Luxor nach Assuan auf der Hathor Dahabiya: Karnak, das Tal der Könige, Edfu, Kom Ombo und Philae, ganz privat.",
     ),
     name: "Nilkreuzfahrt von Luxor nach Assuan | Hathor Dahabiya",
     crumb: "Von Luxor nach Assuan",
@@ -57,7 +57,7 @@ export const GERMAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
     },
     heroLines: ["Von Luxor", "nach Assuan", "auf dem Nil"],
     statement:
-      "Die klassische Nilreise, von den monumentalen Ufern Luxors zur stillen Anmut Assuans: vier Nächte mit Tempeln, Feluken und Abenden im Sonnenuntergang auf dem Fluss, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+      "Die klassische Nilreise, von den monumentalen Ufern Luxors zur stillen Anmut Assuans: vier Nächte mit Tempeln, Feluken und Sonnenuntergängen auf dem Fluss, an Bord einer Luxus-Dahabiya für 32 Gäste.",
     detailsHref: "/cruises-list",
   },
   "aswan-to-luxor": {
@@ -83,21 +83,21 @@ export const GERMAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
   "luxor-aswan-luxor": {
     ...page(
       "/de/voyages/luxor-aswan-luxor",
-      "Nilkreuzfahrt mit 7 Nächten, Luxor–Assuan–Luxor | Hathor",
-      "Die ganze Runde mit 7 Nächten und 8 Tagen von Luxor nach Assuan und zurück: jeder Tempel entlang der Strecke, an Bord der Hathor Dahabiya, für nur 32 Gäste.",
+      "7 Nächte Nilkreuzfahrt Luxor–Assuan–Luxor | Hathor Dahabiya",
+      "Die Rundreise mit 7 Nächten und 8 Tagen von Luxor nach Assuan und zurück: jeder Tempel entlang der Strecke, an Bord der Hathor Dahabiya, für nur 32 Gäste.",
     ),
     name: "Nilkreuzfahrt mit 7 Nächten von Luxor nach Assuan und zurück | Hathor Dahabiya",
     crumb: "Luxor, Assuan und Luxor",
     trip: {
       name: "Nilkreuzfahrt mit 7 Nächten von Luxor nach Assuan und zurück an Bord der Hathor Dahabiya",
       description:
-        "Die ganze Runde mit 7 Nächten und 8 Tagen auf der Hathor Dahabiya: von Luxor nach Assuan und zurück, mit jedem Tempel entlang der Strecke, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+        "Die ganze Rundreise mit 7 Nächten und 8 Tagen auf der Hathor Dahabiya: von Luxor nach Assuan und zurück, mit jedem Tempel entlang der Strecke, an Bord einer Luxus-Dahabiya für 32 Gäste.",
       departure: "Luxor",
       arrival: "Luxor",
     },
     heroLines: ["Luxor, Assuan", "und Luxor", "auf dem Nil"],
     statement:
-      "Die ganze Nilrunde zwischen Luxor und Assuan, hin und zurück: sieben Nächte und acht Tage, mit Zeit für jeden Tempel, für das Licht des Flusses und für die stilleren Tage, die nur eine ganze Reise schenkt, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+      "Die ganze Nilreise zwischen Luxor und Assuan, hin und zurück: sieben Nächte und acht Tage, mit Zeit für jeden Tempel, für das Licht des Flusses und für die stilleren Tage, die nur eine ganze Reise schenkt, an Bord einer Luxus-Dahabiya für 32 Gäste.",
     detailsHref: "/cruises-list",
   },
 };

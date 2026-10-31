@@ -2,8 +2,10 @@
  * The booking journey's itineraries in German: the same days, routes and
  * reading links as lib/booking-itineraries.ts. Paths open with the place; a
  * detail after it follows a comma (see placeFromPath in booking-copy-de.ts).
- * The reading links still open the English journal articles they were chosen
- * for; only labels change.
+ * The reading links open the German journal articles, the same ones the English
+ * links reach through lib/seo/legacy-redirects.ts. ItineraryPanel renders each
+ * href as it stands, so they carry /de themselves. DIRECTION_COMPARE and
+ * ITINERARY_GUIDE have no German article, so they open the German voyages page.
  */
 
 import {
@@ -14,25 +16,25 @@ import {
 } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 
-const PHILAE: ItineraryLink = { label: "Philae-Tempel", href: "https://hathorcruise.com/blogs/philae-temple-aswan-attractions" };
+const PHILAE: ItineraryLink = { label: "Philae-Tempel", href: "/de/blogs/discovering-the-secrets-of-philae-temple" };
 /** The same link inside a sentence, where German grammar changes the ending. */
 const PHILAE_GENITIVE: ItineraryLink = { ...PHILAE, label: "Philae-Tempels" };
-const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Sehenswertes in Assuan", href: "https://hathorcruise.com/blogs/top-attractions-in-aswan-egypt" };
-const ASWAN_TO_LUXOR: ItineraryLink = { label: "Von Assuan nach Luxor mit der Dahabiya", href: "https://hathorcruise.com/blogs/Sailing%20from%20Aswan%20to%20Luxor%20on%20a%20Dahabiya%20Nile%20Cruise" };
-const KOM_OMBO: ItineraryLink = { label: "Tempel von Kom Ombo", href: "https://hathorcruise.com/blogs/kom-ombo-temple-hathor-dahabiya" };
-const DIRECTION_COMPARE: ItineraryLink = { label: "Von Luxor nach Assuan oder von Assuan nach Luxor", href: "https://hathorcruise.com/blogs/dahabiya-nile-cruise-luxor-to-aswan-vs-aswan-to-luxor" };
-const EAST_BANK: ItineraryLink = { label: "Karnak-Tempel und Luxor-Tempel", href: "https://hathorcruise.com/blogs/east-bank-ancient-wonders-luxor" };
-const EAST_BANK_READING: ItineraryLink = { label: "Die antiken Wunder am Ostufer von Luxor", href: "https://hathorcruise.com/blogs/east-bank-ancient-wonders-luxor" };
-const ITINERARY_GUIDE: ItineraryLink = { label: "Routenführer für eine Dahabiya-Kreuzfahrt auf dem Nil", href: "https://hathorcruise.com/blogs/dahabiya-nile-cruise-itinerary" };
-const COLOSSI: ItineraryLink = { label: "Memnonkolosse", href: "https://hathorcruise.com/blogs/colossi-of-memnon-luxor" };
+const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Sehenswertes in Assuan", href: "/de/blogs/golden-gems-of-aswan" };
+const ASWAN_TO_LUXOR: ItineraryLink = { label: "Von Assuan nach Luxor mit der Dahabiya", href: "/de/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise" };
+const KOM_OMBO: ItineraryLink = { label: "Tempel von Kom Ombo", href: "/de/blogs/kom-ombo-temple" };
+const DIRECTION_COMPARE: ItineraryLink = { label: "Die Reisen in beide Richtungen vergleichen", href: "/de/voyages" };
+const EAST_BANK: ItineraryLink = { label: "Karnak-Tempel und Luxor-Tempel", href: "/de/blogs/luxors-sacred-east-bank" };
+const EAST_BANK_READING: ItineraryLink = { label: "Die antiken Wunder am Ostufer von Luxor", href: "/de/blogs/luxors-sacred-east-bank" };
+const ITINERARY_GUIDE: ItineraryLink = { label: "Die Routen unserer Nilreisen entdecken", href: "/de/voyages" };
+const COLOSSI: ItineraryLink = { label: "Memnonkolosse", href: "/de/blogs/colossi-of-memnon" };
 const COLOSSI_DATIVE: ItineraryLink = { ...COLOSSI, label: "Memnonkolossen" };
-const GREATEST_LANDMARKS: ItineraryLink = { label: "Ägyptens große Monumente am Nil", href: "https://hathorcruise.com/blogs/egypt-greatest-landmarks-dahabiya" };
-const EXPLORING: ItineraryLink = { label: "Luxor und Assuan an Bord einer Luxus-Dahabiya", href: "https://www.hathorcruise.com/blogs/exploring-luxor-aswan-luxury-dahabiya" };
-const SILSILA: ItineraryLink = { label: "Gebel el-Silsila", href: "https://hathorcruise.com/blogs/hidden-gems-along-luxor-aswan" };
-const SILSILA_READING: ItineraryLink = { label: "Verborgene Schätze am Nil: Gebel el-Silsila", href: "https://hathorcruise.com/blogs/hidden-gems-along-luxor-aswan" };
-const HATHOR_BLOG: ItineraryLink = { label: "Das Journal der Hathor", href: "https://www.hathorcruise.com/blogs" };
-const SLOW_TRAVEL: ItineraryLink = { label: "Langsam reisen auf dem Nil", href: "https://hathorcruise.com/blogs/slow-travel-egypt-nile-cruise" };
-const HIDDEN_SPOTS: ItineraryLink = { label: "Verborgene Winkel am Nil", href: "https://hathorcruise.com/blogs/romantic-honeymoon-nile-cruise" };
+const GREATEST_LANDMARKS: ItineraryLink = { label: "Ägyptens große Monumente am Nil", href: "/de/blogs/best-places-to-visit-along-the-nile-with-a-dahabiya-cruise" };
+const EXPLORING: ItineraryLink = { label: "Luxor und Assuan an Bord einer Luxus-Dahabiya", href: "/de/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya" };
+const SILSILA: ItineraryLink = { label: "Gebel el-Silsila", href: "/de/blogs/niles-hidden-gems-by-dahabiya" };
+const SILSILA_READING: ItineraryLink = { label: "Verborgene Schätze am Nil: Gebel el-Silsila", href: "/de/blogs/niles-hidden-gems-by-dahabiya" };
+const HATHOR_BLOG: ItineraryLink = { label: "Das Journal der Hathor", href: "/de/blogs" };
+const SLOW_TRAVEL: ItineraryLink = { label: "Langsam reisen auf dem Nil", href: "/de/blogs/why-travelers-love-slow-travel-on-the-nile" };
+const HIDDEN_SPOTS: ItineraryLink = { label: "Verborgene Winkel am Nil", href: "/de/blogs/5-quiet-nile-spots-for-stunning-honeymoon-captures" };
 
 const THREE_NIGHT: ItineraryDay[] = [
   {

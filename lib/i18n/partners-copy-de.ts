@@ -34,7 +34,7 @@ export const PARTNERS_COPY_DE: PartnersCopy = {
   route: "Luxor — Assuan",
   covenant: ["Gemeinsame Standards", "Ein privater Kreis", "vertrauter Namen", "auf dem Nil"],
   leadFallback:
-    "Wir fahren mit vertrauten Namen aus Reise und Gastgewerbe: Partnern, die unsere Sorgfalt für den Nil und unsere Gäste teilen.",
+    "Wir segeln mit vertrauten Namen aus Reisebranche und Gastgewerbe: Partnern, die unsere Fürsorge für den Nil und unsere Gäste teilen.",
   orbitTitle: "Weltweites Vertrauen",
   orbitBody: "Vier Partner. Ein Standard der Fürsorge für jeden Gast der Hathor.",
   circle: [
@@ -62,7 +62,7 @@ export const PARTNERS_COPY_DE: PartnersCopy = {
   /* Kept short: longer lines spill out of the scene at 1920. */
   craft: ["Die Kunst der Gastlichkeit", "Fürsorge, die jede", "Buchung begleitet"],
   craftBody:
-    "Von der ersten Anfrage bis zum letzten Morgen an Deck halten unsere Partner dieselbe stille Präzision, die Gäste an Bord der Hathor erleben.",
+    "Von der ersten Anfrage bis zum letzten Morgen an Deck wahren unsere Partner dieselbe stille Präzision, die Gäste an Bord der Hathor erleben.",
   datum: {
     tl: "Partner",
     tr: "Ägypten und mehr",
