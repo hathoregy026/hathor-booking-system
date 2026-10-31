@@ -1,26 +1,23 @@
 import {
   getDefaultEmailTemplate,
   interpolateEmailText,
-  localizeEmailTemplate,
   mergeEmailTemplate,
   type EmailTemplateName,
   type EmailTemplateRecord,
 } from "@/lib/email-templates";
 import { pickSharedEmailBrandingFromRows } from "@/lib/email-branding-shared";
 import { loadEmailFooter } from "@/lib/email-footer-db";
-import type { PublicLocale } from "@/lib/i18n/locale";
 import { prisma } from "@/lib/prisma";
 
 /**
  * Fetch template for sending — always returns usable values (defaults on
- * failure), with the footer wording every email shares, in the guest's language.
+ * failure), with the footer wording every email shares.
  */
 export async function getEmailTemplateForSend(
   name: EmailTemplateName,
-  locale: PublicLocale = "en",
 ): Promise<EmailTemplateRecord> {
   const [template, footer] = await Promise.all([loadTemplate(name), loadEmailFooter()]);
-  return localizeEmailTemplate({ ...template, footer }, locale);
+  return { ...template, footer };
 }
 
 async function loadTemplate(name: EmailTemplateName): Promise<EmailTemplateRecord> {

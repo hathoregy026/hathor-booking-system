@@ -1,7 +1,6 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
-import { EMAIL_COPY } from "@/lib/i18n/email-copy";
 import { AmountCallout, BookingCodeCard, PaymentPlanTable, TeamMessage } from "./components/BookingBlocks";
 import { BookingSummary } from "./components/BookingSummary";
 import { EmailLayout } from "./components/EmailLayout";
@@ -23,6 +22,10 @@ export const PreviewProps: BookingInvoiceEmailProps = {
   paymentLink: sampleInvoicePaymentLink,
 };
 
+const DEFAULT_HERO = "Your Invoice";
+const DEFAULT_BODY =
+  "Thank you for choosing Hathor. We have reviewed your request and your cabins are reserved for you. To confirm your booking, please pay the deposit below using your chosen payment method.";
+
 export default function BookingInvoiceEmail({
   guestName = sampleGuestName,
   details = sampleBookingDetails,
@@ -36,19 +39,15 @@ export default function BookingInvoiceEmail({
   heroHeading,
   bodyText,
 }: BookingInvoiceEmailProps) {
-  const locale = details.locale ?? "en";
-  const shared = EMAIL_COPY[locale];
-  const copy = shared.invoice;
   const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
-  const { heading, namesGuest } = resolveEmailHeading(heroHeading, copy.hero, vars);
-  const body = resolveEmailBody(bodyText, copy.body, vars);
+  const { heading, namesGuest } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
   const due = details.paymentPlan?.find(stage => stage.state === "due");
-  const method = copy.method(details.paymentMethod);
+  const method = details.paymentMethod ?? "your chosen method";
 
   return (
     <EmailLayout
-      preview={copy.preview(due?.amount)}
-      locale={locale}
+      preview={`Your Hathor invoice — ${due ? `${due.amount} due to confirm` : "payment instructions inside"}`}
       footerVariant="guest-reply"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
@@ -56,43 +55,46 @@ export default function BookingInvoiceEmail({
       backgroundColor={backgroundColor}
       footer={footer}
     >
-      <EmailEyebrow>{copy.eyebrow}</EmailEyebrow>
+      <EmailEyebrow>Invoice</EmailEyebrow>
       <EmailHeading>{heading}</EmailHeading>
-      {namesGuest ? null : <EmailBodyText>{shared.forGuestPrefix}{guestName}</EmailBodyText>}
+      {namesGuest ? null : <EmailBodyText>For {guestName}</EmailBodyText>}
       <GoldDivider />
       <EmailBodyText>{body}</EmailBodyText>
 
       {due ? (
         <AmountCallout
-          label={copy.dueLabel}
+          label="Due now to confirm"
           amount={due.amount}
-          note={copy.dueNote({ percent: due.percent, total: details.totalPrice, method, surcharge: Boolean(details.cardSurcharge) })}
+          note={`${due.percent ? `${due.percent}% of your ${details.totalPrice} voyage` : `Total voyage ${details.totalPrice}`} · paid by ${method}${details.cardSurcharge ? " · includes the card surcharge" : ""}`}
         />
       ) : null}
       {due && details.remainingAfterDue ? (
         <EmailBodyText muted>
-          {copy.afterParts[0]}{details.remainingAfterDue.amount}{copy.afterParts[1]}{details.remainingAfterDue.when.charAt(0).toLowerCase()}{details.remainingAfterDue.when.slice(1)}{copy.afterParts[2]}
+          After this payment, {details.remainingAfterDue.amount} remains — {details.remainingAfterDue.when.charAt(0).toLowerCase()}{details.remainingAfterDue.when.slice(1)}.
         </EmailBodyText>
       ) : null}
 
       {paymentLink ? (
         <>
-          <EmailCtaButton href={paymentLink} label={copy.pay(due?.amount)} />
+          <EmailCtaButton href={paymentLink} label={due ? `Pay ${due.amount} securely` : "Pay securely"} />
           <EmailBodyText muted>
-            {copy.linkFallback}{paymentLink}
+            If the button does not open, copy this secure payment link into your browser: {paymentLink}
           </EmailBodyText>
         </>
       ) : null}
 
-      {instructions?.trim() ? <TeamMessage title={copy.howToPay(method)} text={instructions} /> : null}
+      {instructions?.trim() ? <TeamMessage title={`How to pay by ${method}`} text={instructions} /> : null}
 
-      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} locale={locale} /> : null}
-      {details.paymentPlan ? <PaymentPlanTable stages={details.paymentPlan} locale={locale} /> : null}
+      {details.bookingCode ? <BookingCodeCard code={details.bookingCode} trackUrl={details.bookingUrl} /> : null}
+      {details.paymentPlan ? <PaymentPlanTable stages={details.paymentPlan} /> : null}
       <BookingSummary details={details} showBookingReference spaceAfter />
 
-      <EmailBodyText muted>{copy.closing}</EmailBodyText>
+      <EmailBodyText muted>
+        Your booking is confirmed once your payment is received and recorded — we will email you as soon as it is.
+        Hathor will never ask for card numbers, passwords or verification codes by email or messaging apps.
+      </EmailBodyText>
 
-      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label={shared.trackLabel} /> : null}
+      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label="Track Your Booking" /> : null}
     </EmailLayout>
   );
 }
