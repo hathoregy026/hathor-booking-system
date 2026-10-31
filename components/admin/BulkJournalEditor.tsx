@@ -29,10 +29,17 @@ export function BulkGrowingTextarea(props: TextareaHTMLAttributes<HTMLTextAreaEl
   return <textarea {...props} ref={field} className={`input bulk-emails__growing-field ${props.className || ""}`} />;
 }
 
-export function BulkJournalEditor({ template, message, disabled, onTemplate, onMessage, onUpload, onReset }: {
+export type BulkFieldIssues = Record<string, string>;
+export const bulkInvalidProps = (issues: BulkFieldIssues, id: string) => issues[id] ? { "aria-invalid": true, "aria-describedby": `${id}-issue` } : {};
+export function BulkFieldMessage({ issues, id }: { issues: BulkFieldIssues; id: string }) {
+  return issues[id] ? <p className="bulk-emails__field-issue" id={`${id}-issue`}>{issues[id]}</p> : null;
+}
+
+export function BulkJournalEditor({ template, message, disabled, issues, onTemplate, onMessage, onUpload, onReset }: {
   template: BulkEmailTemplate & { journal: BulkJournalTemplate };
   message: string;
   disabled: boolean;
+  issues: BulkFieldIssues;
   onTemplate: (changes: Partial<BulkEmailTemplate>) => void;
   onMessage: (value: string) => void;
   onUpload: (file: File, slot: BulkJournalImageSlot) => void;
@@ -40,8 +47,8 @@ export function BulkJournalEditor({ template, message, disabled, onTemplate, onM
 }) {
   const journal = template.journal;
   function update(changes: Partial<BulkJournalTemplate>) { onTemplate({ journal: { ...journal, ...changes } }); }
-  function text(id: string, label: string, value: string, maximum: number, onChange: (value: string) => void, rows = 1) {
-    return <div key={id}><label className="bulk-emails__label" htmlFor={id}>{label}</label><BulkGrowingTextarea id={id} rows={rows} maxLength={maximum} value={value} disabled={disabled} onChange={event => onChange(event.target.value)} /></div>;
+  function text(id: string, label: string, value: string, maximum: number, onChange: (value: string) => void, rows = 1, required = false) {
+    return <div key={id}><label className={`bulk-emails__label${required ? " bulk-emails__label--required" : ""}`} htmlFor={id}>{label}</label><BulkGrowingTextarea id={id} rows={rows} maxLength={maximum} value={value} disabled={disabled} required={required} {...bulkInvalidProps(issues, id)} onChange={event => onChange(event.target.value)} /><BulkFieldMessage issues={issues} id={id} /></div>;
   }
   function image(slot: BulkJournalImageSlot, label: string) {
     const hero = slot === "hero";
@@ -63,7 +70,7 @@ export function BulkJournalEditor({ template, message, disabled, onTemplate, onM
     const button = journal[key];
     return <fieldset className="bulk-emails__journal-button"><legend>{title}</legend>
       {text(`bulk-${key}-label`, "Button label", button.label, 500, label => update({ [key]: { ...button, label } }))}
-      <label className="bulk-emails__label" htmlFor={`bulk-${key}-url`}>Button destination</label><input id={`bulk-${key}-url`} className="input" type="url" maxLength={4096} value={button.url} placeholder="https://hathorcruise.com/" disabled={disabled} onChange={event => update({ [key]: { ...button, url: event.target.value } })} />
+      <label className="bulk-emails__label" htmlFor={`bulk-${key}-url`}>Button destination</label><input id={`bulk-${key}-url`} className="input" type="url" maxLength={4096} value={button.url} placeholder="https://hathorcruise.com/" disabled={disabled} {...bulkInvalidProps(issues, `bulk-${key}-url`)} onChange={event => update({ [key]: { ...button, url: event.target.value } })} /><BulkFieldMessage issues={issues} id={`bulk-${key}-url`} />
       <p className="bulk-emails__hint">Enter a full HTTPS link. Leave the destination empty to hide this button.</p>
     </fieldset>;
   }
@@ -77,7 +84,7 @@ export function BulkJournalEditor({ template, message, disabled, onTemplate, onM
     <section className="bulk-emails__journal-section" data-bulk-focus="intro"><h3>The Nile, in private</h3>
       {text("bulk-eyebrow", "Small introduction line", template.eyebrow, 500, eyebrow => onTemplate({ eyebrow }))}
       {text("bulk-heading", "Introduction heading", template.heading, 500, heading => onTemplate({ heading }), 2)}
-      {text("bulk-message", "Introduction message", message, 12000, onMessage, 5)}
+      {text("bulk-message", "Introduction message", message, 12000, onMessage, 5, true)}
       <p className="bulk-emails__hint">{message.length.toLocaleString()} / 12,000 characters · Your line breaks are preserved.</p>
       {button("discoverButton", "Discover button")}
       {image("introImage", "Dining image")}
@@ -107,7 +114,7 @@ export function BulkJournalEditor({ template, message, disabled, onTemplate, onM
       {([ ["tagline", "Footer tagline", 120], ["email", "Footer email address", 120], ["phone", "Footer phone", 60], ["replyNote", "Footer reply note", 300], ["copyright", "Footer copyright", 120] ] as const).map(([key, label, maximum]) => text(`bulk-footer-${key}`, label, template.footer[key], maximum, value => onTemplate({ footer: { ...template.footer, [key]: value } })))}
       {text("bulk-footer-address", "Postal address", journal.address, 2000, address => update({ address }), 3)}
       {text("bulk-preferences-label", "Email preferences label", journal.preferencesLabel, 500, preferencesLabel => update({ preferencesLabel }))}
-      <label className="bulk-emails__label" htmlFor="bulk-preferences-url">Email preferences destination</label><input id="bulk-preferences-url" className="input" type="url" maxLength={4096} value={journal.preferencesUrl} disabled={disabled} placeholder="https://hathorcruise.com/" onChange={event => update({ preferencesUrl: event.target.value })} />
+      <label className="bulk-emails__label" htmlFor="bulk-preferences-url">Email preferences destination</label><input id="bulk-preferences-url" className="input" type="url" maxLength={4096} value={journal.preferencesUrl} disabled={disabled} placeholder="https://hathorcruise.com/" {...bulkInvalidProps(issues, "bulk-preferences-url")} onChange={event => update({ preferencesUrl: event.target.value })} /><BulkFieldMessage issues={issues} id="bulk-preferences-url" />
       <p className="bulk-emails__hint">Enter a full HTTPS link, or leave empty to hide preferences. The unsubscribe link remains available. Use {"{year}"} for the current year.</p>
     </section>
     <button className="bulk-emails__text-button" type="button" disabled={disabled} onClick={onReset}>Reset template to Hathor defaults</button>

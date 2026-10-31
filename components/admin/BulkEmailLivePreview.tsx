@@ -11,7 +11,7 @@ export function BulkEmailLivePreview({ subject, message, template, focus, onPrev
   onPreview: (html: string, signature: string) => void;
 }) {
   const [result, setResult] = useState<{ html: string; input: string } | null>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
   const [width, setWidth] = useState<"desktop" | "phone">("desktop");
   const frame = useRef<HTMLIFrameElement>(null);
@@ -28,9 +28,9 @@ export function BulkEmailLivePreview({ subject, message, template, focus, onPrev
           body: JSON.stringify({ subject: draftSubject.trim() || "A note from Hathor", message: draftMessage.trim() || "Your message will appear here.", ...(draftTemplate ? { template: draftTemplate } : {}) }),
         });
         const body = await response.json();
-        if (!response.ok || typeof body.html !== "string") throw new Error("Preview unavailable");
-        if (!controller.signal.aborted) { setResult({ html: body.html, input }); setError(false); onPreview(body.html, input); }
-      } catch { if (!controller.signal.aborted) setError(true); }
+        if (!response.ok || typeof body.html !== "string") throw new Error(body.error || "Check your fields and retry.");
+        if (!controller.signal.aborted) { setResult({ html: body.html, input }); setError(null); onPreview(body.html, input); }
+      } catch (err) { if (!controller.signal.aborted) setError((err as Error).message); }
     }, 450);
     return () => { clearTimeout(timer); controller.abort(); };
   }, [input, onPreview, retry]);
@@ -67,7 +67,7 @@ export function BulkEmailLivePreview({ subject, message, template, focus, onPrev
     </div></div>
     <p className="bulk-emails__hint">Updates as you edit. This design belongs to this bulk message only.</p>
     <div className="bulk-emails__live-subject"><span>Email subject</span><p>{subject.trim() || "A note from Hathor"}</p></div>
-    <p className="bulk-emails__preview-status" role="status" aria-live="polite">{error ? "Could not update the preview. Check your fields and retry; the previous preview may be out of date." : current ? "Bulk preview up to date" : <><Loader2 size={14} className="animate-spin" /> Updating bulk preview…</>}</p>
+    <p className="bulk-emails__preview-status" role="status" aria-live="polite">{error ? `Could not update the preview. ${error} The previous preview may be out of date.` : current ? "Bulk preview up to date" : <><Loader2 size={14} className="animate-spin" /> Updating bulk preview…</>}</p>
     <div className="bulk-emails__preview-canvas" aria-busy={!current && !error}>{result ? <iframe ref={frame} title="Branded bulk email preview" srcDoc={result.html} sandbox="allow-same-origin" referrerPolicy="no-referrer" data-width={width} onLoad={loaded} /> : <div className="bulk-emails__empty"><p>Preparing your email…</p></div>}</div>
   </section>;
 }

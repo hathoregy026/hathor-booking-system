@@ -8,7 +8,8 @@ import { bulkBannerPreviewSrc } from "@/lib/bulk-email-images";
 import { combineBulkRecipientSources, type BulkRecipientSource } from "@/lib/bulk-email-recipient-sources";
 import { BulkEmailLivePreview, type BulkPreviewFocus } from "./BulkEmailLivePreview";
 import { BULK_JOURNAL_MESSAGE } from "@/lib/bulk-email-journal";
-import { BulkGrowingTextarea, BulkJournalEditor, type BulkJournalImageSlot } from "./BulkJournalEditor";
+import { bulkDraftIssues, type BulkFieldIssue } from "@/lib/bulk-email-validation";
+import { BulkFieldMessage, BulkGrowingTextarea, BulkJournalEditor, bulkInvalidProps, type BulkFieldIssues, type BulkJournalImageSlot } from "./BulkJournalEditor";
 
 const STATUS: Record<BulkCampaignView["status"], string> = { queued: "Ready to send", sending: "Sending", accepted: "Accepted by Resend", simulated: "Preview completed", failed: "Needs attention", uncertain: "Result not confirmed", cancelled: "Cancelled" };
 const date = (value: string) => new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
@@ -22,6 +23,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 const jsonRequest = (body: unknown): RequestInit => ({ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+type BulkBlocker = BulkFieldIssue & { stage: number };
 type BulkOverview = { settings: BulkSettings; campaigns: BulkCampaignView[]; template: BulkEmailTemplate; standardBannerUrl?: string };
 
 export function BulkEmails() {
@@ -41,6 +43,7 @@ export function BulkEmails() {
   const [previewHtml, setPreviewHtml] = useState("");
   const [previewSignature, setPreviewSignature] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const [warned, setWarned] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<BulkCampaignView | null>(null);
@@ -57,8 +60,38 @@ export function BulkEmails() {
   const sending = useRef(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
+  const warningRef = useRef<HTMLDivElement>(null);
   const importBusy = useRef(false);
   const acceptLivePreview = useCallback((html: string, signature: string) => { setPreviewHtml(html); setPreviewSignature(signature); }, []);
+
+  const previewIsCurrent = previewSignature === JSON.stringify([subject, message, template]);
+  const recipientBlockers: BulkBlocker[] = !emails.length
+    ? [{ id: "bulk-paste", label: "Recipients", stage: 0, message: paste.trim() ? "Select Add to include the addresses you pasted." : "Upload a list or add at least one email address." }]
+    : emails.length > BULK_RECIPIENT_LIMIT ? [{ id: "bulk-search", label: "Recipients", stage: 0, message: `Remove ${emails.length - BULK_RECIPIENT_LIMIT} of ${emails.length} addresses. One email can go to no more than ${BULK_RECIPIENT_LIMIT} recipients.` }] : [];
+  const messageBlockers: BulkBlocker[] = bulkDraftIssues(subject, message, template).map(issue => ({ ...issue, stage: 1 }));
+  const reviewBlockers: BulkBlocker[] = [
+    ...(confirmed ? [] : [{ id: "bulk-confirm", label: "Permission", stage: 2, message: "Tick the box to confirm you reviewed this list and may email these recipients." }]),
+    ...(previewIsCurrent || messageBlockers.length ? [] : [{ id: "bulk-subject", label: "Email preview", stage: 1, message: "This email changed after its preview. Select Review email to refresh it." }]),
+  ];
+  const blockers = [...recipientBlockers, ...(stage > 0 ? messageBlockers : []), ...(stage > 1 ? reviewBlockers : [])];
+  const fieldIssues: BulkFieldIssues = warned ? Object.fromEntries(blockers.map(blocker => [blocker.id, blocker.message])) : {};
+  function goToStage(next: number) { setStage(next); setWarned(false); }
+  function showBlockers() { setWarned(true); requestAnimationFrame(() => warningRef.current?.focus()); }
+  function goToField(blocker: BulkBlocker) {
+    setStage(blocker.stage);
+    requestAnimationFrame(() => {
+      const field = document.getElementById(blocker.id);
+      if (!field) return;
+      const section = field.closest("details"); if (section) section.open = true;
+      field.scrollIntoView({ block: "center" }); field.focus({ preventScroll: true });
+    });
+  }
+  function continueFlow() {
+    if (stage === 0) { if (blockers.length) showBlockers(); else goToStage(1); return; }
+    if (messageBlockers.length || emails.length > BULK_RECIPIENT_LIMIT) { showBlockers(); return; }
+    if (!emails.length) { setStage(0); setWarned(true); return; }
+    if (previewIsCurrent) goToStage(2); else void preview(2);
+  }
 
   async function load() {
     const result = await request<BulkOverview>("/api/admin/bulk-emails");
@@ -108,7 +141,7 @@ export function BulkEmails() {
   async function preview(nextStage = stage) {
     if (busy || !subject.trim() || !message.trim()) return;
     setBusy("Preparing your branded email…"); setError(null);
-    try { const result = await request<{ html: string }>("/api/admin/bulk-emails/preview", jsonRequest({ subject, message, ...(template ? { template } : {}) })); setPreviewHtml(result.html); setPreviewSignature(JSON.stringify([subject, message, template])); setStage(nextStage); }
+    try { const result = await request<{ html: string }>("/api/admin/bulk-emails/preview", jsonRequest({ subject, message, ...(template ? { template } : {}) })); setPreviewHtml(result.html); setPreviewSignature(JSON.stringify([subject, message, template])); goToStage(nextStage); }
     catch (err) { setError((err as Error).message); } finally { setBusy(null); }
   }
   async function openTemplatePreview() {
@@ -134,7 +167,8 @@ export function BulkEmails() {
     updateCampaign(result.campaign);
   }
   async function send() {
-    if (sending.current || busy || !confirmed || !settings || !emails.length || emails.length > BULK_RECIPIENT_LIMIT || previewSignature !== JSON.stringify([subject, message, template])) return;
+    if (sending.current || busy || !settings) return;
+    if (blockers.length) { showBlockers(); return; }
     sending.current = true; setBusy(settings.mode === "preview" ? "Running preview…" : "Sending your email…"); setError(null);
     const id = draftId || crypto.randomUUID(); setDraftId(id);
     try {
@@ -172,7 +206,7 @@ export function BulkEmails() {
     finally { setBusy(null); }
   }
   function newEmail() {
-    setSelected(null); clearRecipients(); setPaste(""); setSubject(""); setMessage(templateDefaults?.journal ? BULK_JOURNAL_MESSAGE : ""); setTemplate(templateDefaults); setPreviewHtml(""); setPreviewSignature(""); setStage(0); setError(null);
+    setSelected(null); clearRecipients(); setPaste(""); setSubject(""); setMessage(templateDefaults?.journal ? BULK_JOURNAL_MESSAGE : ""); setTemplate(templateDefaults); setPreviewHtml(""); setPreviewSignature(""); goToStage(0); setError(null);
   }
   function editEmail() {
     previewDialog.current?.close();
@@ -182,7 +216,7 @@ export function BulkEmails() {
       setSources([{ id: crypto.randomUUID(), kind: "manual", name: "Copied campaign recipients", emails: selected.recipients.map(row => row.email), duplicates: 0, invalid: [], warnings: [] }]);
       setRemoved([]); setSelected(null); setPreviewHtml(""); setPreviewSignature(""); setDraftId(null);
     }
-    setConfirmed(false); setError(null); setStage(1);
+    setConfirmed(false); setError(null); goToStage(1);
   }
   function changeTemplate(changes: Partial<BulkEmailTemplate>) {
     setTemplate(current => current ? { ...current, ...changes } : current); setConfirmed(false); setDraftId(null);
@@ -203,10 +237,14 @@ export function BulkEmails() {
     const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = "hathor-recipient-template.csv"; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   const visibleEmails = emails.filter(email => email.includes(search.toLowerCase()));
-  const previewIsCurrent = previewSignature === JSON.stringify([subject, message, template]);
   const complete = selected?.recipients.filter(row => row.status === "accepted" || row.status === "simulated").length || 0;
   const skipped = selected?.recipients.filter(row => row.status === "skipped").length || 0;
   const visibleCampaigns = campaigns.filter(campaign => historyFilter === "all" || campaign.mode === historyFilter);
+
+  const blockerList = warned && blockers.length > 0 && <div className="bulk-emails__blockers" role="alert" tabIndex={-1} ref={warningRef}>
+    <strong>{blockers.length === 1 ? "One thing is needed before you can continue." : `${blockers.length} things are needed before you can continue.`}</strong>
+    <ul>{blockers.map(blocker => <li key={`${blocker.id}-${blocker.label}`}><button type="button" onClick={() => goToField(blocker)}><b>{blocker.label}</b><span>{blocker.message}</span></button></li>)}</ul>
+  </div>;
 
   return <div className="bulk-emails">
     <header className="bulk-emails__heading">
@@ -218,7 +256,7 @@ export function BulkEmails() {
     {!loaded ? <p role="status">Opening Bulk emails…</p> : !settings ? <button className="btn-outline" onClick={() => { void load().catch(err => setError(err.message)); }}>Try again</button> : <>
       {!selected ? <>
         <nav className="bulk-emails__steps" aria-label="Email preparation">
-          {["Recipients", "Message", "Review and send"].map((label, index) => <button key={label} aria-current={stage === index ? "step" : undefined} disabled={!!busy || index > stage} onClick={() => { setStage(index); setError(null); }}><span>{index < stage ? <Check size={16} /> : `0${index + 1}`}</span>{label}</button>)}
+          {["Recipients", "Message", "Review and send"].map((label, index) => <button key={label} aria-current={stage === index ? "step" : undefined} disabled={!!busy || index > stage} onClick={() => { goToStage(index); setError(null); }}><span>{index < stage ? <Check size={16} /> : `0${index + 1}`}</span>{label}</button>)}
         </nav>
         {stage === 0 && <div className="bulk-emails__workspace">
           <section className="bulk-emails__panel">
@@ -232,7 +270,8 @@ export function BulkEmails() {
             <button className="bulk-emails__text-button" onClick={sampleFile}>Download an example list for Excel</button>
             <form onSubmit={event => { event.preventDefault(); void importPaste(); }}>
               <label className="bulk-emails__label" htmlFor="bulk-paste">Paste email addresses</label>
-              <textarea id="bulk-paste" className="input" rows={4} maxLength={20000} value={paste} onChange={event => setPaste(event.target.value)} disabled={!!busy} placeholder={"guest@example.com\npartner@example.com"} aria-describedby="bulk-paste-hint" />
+              <textarea id="bulk-paste" className="input" rows={4} maxLength={20000} value={paste} onChange={event => setPaste(event.target.value)} disabled={!!busy} placeholder={"guest@example.com\npartner@example.com"} aria-invalid={Boolean(fieldIssues["bulk-paste"])} aria-describedby={fieldIssues["bulk-paste"] ? "bulk-paste-issue bulk-paste-hint" : "bulk-paste-hint"} />
+              <BulkFieldMessage issues={fieldIssues} id="bulk-paste" />
               <p id="bulk-paste-hint" className="bulk-emails__hint">Add one or more addresses, separated by commas, spaces or new lines.</p>
               <button type="submit" className="btn-outline" disabled={!!busy || !paste.trim()}><Plus size={16} />Add</button>
             </form>
@@ -258,20 +297,21 @@ export function BulkEmails() {
           }}>
             <p className="bulk-emails__eyebrow">02 / Your message</p><h2>Write from Hathor.</h2>
             <div className="bulk-emails__sender"><span>From</span><strong>{settings.from}</strong>{settings.replyTo && <><span>Replies to</span><strong>{settings.replyTo}</strong></>}</div>
-            <label className="bulk-emails__label" htmlFor="bulk-subject">Email subject</label><input id="bulk-subject" className="input" maxLength={180} value={subject} onChange={event => { setSubject(event.target.value); setConfirmed(false); setDraftId(null); }} disabled={!!busy} placeholder="A note from Hathor" />
-            {!template?.journal && <><label className="bulk-emails__label" htmlFor="bulk-message">Message</label><BulkGrowingTextarea id="bulk-message" rows={12} maxLength={12000} value={message} onChange={event => { setMessage(event.target.value); setConfirmed(false); setDraftId(null); }} disabled={!!busy} placeholder="Write your message here. Your Hathor logo, banner and footer are added automatically." />
+            <p className="bulk-emails__hint">{template?.journal ? "Only the email subject and introduction message are required." : "Only the email subject and message are required."} Other fields can stay empty, and their lines are hidden from the email.</p>
+            <label className="bulk-emails__label bulk-emails__label--required" htmlFor="bulk-subject">Email subject</label><input id="bulk-subject" className="input" maxLength={180} required value={subject} {...bulkInvalidProps(fieldIssues, "bulk-subject")} onChange={event => { setSubject(event.target.value); setConfirmed(false); setDraftId(null); }} disabled={!!busy} placeholder="A note from Hathor" /><BulkFieldMessage issues={fieldIssues} id="bulk-subject" />
+            {!template?.journal && <><label className="bulk-emails__label bulk-emails__label--required" htmlFor="bulk-message">Message</label><BulkGrowingTextarea id="bulk-message" rows={12} maxLength={12000} required value={message} {...bulkInvalidProps(fieldIssues, "bulk-message")} onChange={event => { setMessage(event.target.value); setConfirmed(false); setDraftId(null); }} disabled={!!busy} placeholder="Write your message here. Your Hathor logo, banner and footer are added automatically." /><BulkFieldMessage issues={fieldIssues} id="bulk-message" />
             <p className="bulk-emails__hint">{message.length.toLocaleString()} / 12,000 characters · Plain text with your original line breaks. The uploaded list is not attached to your email.</p>
             </>}
-            {template?.journal ? <BulkJournalEditor template={{ ...template, journal: template.journal }} message={message} disabled={!!busy} onTemplate={changeTemplate} onMessage={value => { setMessage(value); setConfirmed(false); setDraftId(null); }} onUpload={(file, slot) => void uploadBanner(file, slot)} onReset={() => { setTemplate(templateDefaults); setConfirmed(false); setDraftId(null); }} /> : template && <details className="bulk-emails__template-editor" open><summary>Customize this email template</summary><p className="bulk-emails__hint">These changes apply to this bulk email. Your booking and contact templates keep their existing settings.</p>
-              <label className="bulk-emails__label" htmlFor="bulk-eyebrow">Small line above the subject</label><input id="bulk-eyebrow" className="input" maxLength={120} value={template.eyebrow} onChange={event => changeTemplate({ eyebrow: event.target.value })} disabled={!!busy} />
+            {template?.journal ? <BulkJournalEditor template={{ ...template, journal: template.journal }} message={message} disabled={!!busy} issues={fieldIssues} onTemplate={changeTemplate} onMessage={value => { setMessage(value); setConfirmed(false); setDraftId(null); }} onUpload={(file, slot) => void uploadBanner(file, slot)} onReset={() => { setTemplate(templateDefaults); setConfirmed(false); setDraftId(null); }} /> : template && <details className="bulk-emails__template-editor" open><summary>Customize this email template</summary><p className="bulk-emails__hint">These changes apply to this bulk email. Your booking and contact templates keep their existing settings.</p>
+              <label className="bulk-emails__label" htmlFor="bulk-eyebrow">Small line above the subject</label><input id="bulk-eyebrow" className="input" maxLength={120} value={template.eyebrow} {...bulkInvalidProps(fieldIssues, "bulk-eyebrow")} onChange={event => changeTemplate({ eyebrow: event.target.value })} disabled={!!busy} /><BulkFieldMessage issues={fieldIssues} id="bulk-eyebrow" />
               <label className="bulk-emails__confirmation"><input type="checkbox" checked={template.showBanner} onChange={event => changeTemplate({ showBanner: event.target.checked })} disabled={!!busy} /><span>Show Hathor banner</span></label>
               <div className="bulk-emails__banner">{template.showBanner && bulkBannerPreviewSrc(template.heroImageUrl || standardBannerUrl) ? <img src={bulkBannerPreviewSrc(template.heroImageUrl || standardBannerUrl)} alt="" /> : <p className="bulk-emails__hint">This email will be sent without a banner.</p>}<div className="bulk-emails__banner-change"><label className="btn-outline" htmlFor="bulk-banner">Change banner</label><input id="bulk-banner" aria-label="Banner image for this email" type="file" accept="image/jpeg,image/png,image/webp" disabled={!!busy} onChange={event => { const file = event.target.files?.[0]; if (file) void uploadBanner(file); event.target.value = ""; }} /></div></div>
               <p className="bulk-emails__hint">JPG, PNG or WebP, up to 2 MB. Changing the banner updates only this email.</p>
               {template.heroImageUrl && <button className="bulk-emails__text-button" disabled={!!busy} onClick={() => { const { heroImageUrl: _image, ...rest } = template; void _image; setTemplate({ ...rest, showBanner: true }); setConfirmed(false); setDraftId(null); }}>Use the standard Hathor banner</button>}
               <div className="bulk-emails__colour-fields"><label htmlFor="bulk-accent">Accent colour<input id="bulk-accent" type="color" value={template.primaryColor} onChange={event => changeTemplate({ primaryColor: event.target.value })} disabled={!!busy} /></label><label htmlFor="bulk-background">Background colour<input id="bulk-background" type="color" value={template.backgroundColor} onChange={event => changeTemplate({ backgroundColor: event.target.value })} disabled={!!busy} /></label></div>
-              <label className="bulk-emails__label" htmlFor="bulk-signature">Signature</label><BulkGrowingTextarea id="bulk-signature" rows={4} maxLength={2000} value={template.signature || ""} onChange={event => changeTemplate({ signature: event.target.value })} disabled={!!busy} placeholder={"Warm regards,\nYour name\nThe Hathor team"} /><p className="bulk-emails__hint">Optional. Your line breaks appear exactly as typed.</p>
+              <label className="bulk-emails__label" htmlFor="bulk-signature">Signature</label><BulkGrowingTextarea id="bulk-signature" rows={4} maxLength={2000} value={template.signature || ""} onChange={event => changeTemplate({ signature: event.target.value })} disabled={!!busy} placeholder={"Warm regards,\nYour name\nThe Hathor team"} {...bulkInvalidProps(fieldIssues, "bulk-signature")} /><BulkFieldMessage issues={fieldIssues} id="bulk-signature" /><p className="bulk-emails__hint">Optional. Your line breaks appear exactly as typed.</p>
               <p className="bulk-emails__eyebrow bulk-emails__footer-label">Footer wording</p>
-              {([ ["tagline", "Footer tagline", 120], ["email", "Footer email address", 120], ["phone", "Footer phone", 60], ["replyNote", "Footer reply note", 300], ["copyright", "Footer copyright", 120] ] as const).map(([key, label, maximum]) => <div key={key}><label className="bulk-emails__label" htmlFor={`bulk-footer-${key}`}>{label}</label><input id={`bulk-footer-${key}`} className="input" type={key === "email" ? "email" : "text"} maxLength={maximum} value={template.footer[key]} disabled={!!busy} onChange={event => changeTemplate({ footer: { ...template.footer, [key]: event.target.value } })} /></div>)}
+              {([ ["tagline", "Footer tagline", 120], ["email", "Footer email address", 120], ["phone", "Footer phone", 60], ["replyNote", "Footer reply note", 300], ["copyright", "Footer copyright", 120] ] as const).map(([key, label, maximum]) => <div key={key}><label className="bulk-emails__label" htmlFor={`bulk-footer-${key}`}>{label}</label><input id={`bulk-footer-${key}`} className="input" type={key === "email" ? "email" : "text"} maxLength={maximum} value={template.footer[key]} disabled={!!busy} {...bulkInvalidProps(fieldIssues, `bulk-footer-${key}`)} onChange={event => changeTemplate({ footer: { ...template.footer, [key]: event.target.value } })} /><BulkFieldMessage issues={fieldIssues} id={`bulk-footer-${key}`} /></div>)}
               <p className="bulk-emails__hint">An empty footer field hides its line. Use {"{year}"} for the current year.</p><button className="bulk-emails__text-button" disabled={!!busy} onClick={() => { setTemplate(templateDefaults); setConfirmed(false); setDraftId(null); }}>Reset template to Hathor defaults</button>
             </details>}
           </section>
@@ -283,15 +323,17 @@ export function BulkEmails() {
             <dl className="bulk-emails__summary"><div><dt>Recipients</dt><dd>{emails.length} separate emails</dd></div><div><dt>Subject</dt><dd>{subject}</dd></div><div><dt>From</dt><dd>{settings.from}</dd></div></dl>
             <details className="bulk-emails__details"><summary>Review all {emails.length} recipients</summary><ul>{emails.map(email => <li key={email}>{email}</li>)}</ul></details>
             <p className="bulk-emails__muted">Each address receives its own copy. Unsubscribed recipients are skipped automatically. Your normal booking and inbox emails stay separate.</p>
-            <label className="bulk-emails__confirmation"><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} disabled={!!busy} /><span>I have reviewed this list and have permission to email these recipients.</span></label>
-            <button className="btn-gold bulk-emails__send" disabled={!!busy || !confirmed || !emails.length || emails.length > BULK_RECIPIENT_LIMIT || !previewIsCurrent} onClick={() => void send()}><Send size={18} />{settings.mode === "preview" ? `Run preview for ${emails.length} recipients` : `Send to ${emails.length} recipients`}</button>
+            <label className="bulk-emails__confirmation" data-invalid={Boolean(fieldIssues["bulk-confirm"])}><input id="bulk-confirm" type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} disabled={!!busy} /><span>I have reviewed this list and have permission to email these recipients.</span></label>
+            {blockerList}
+            <button className="btn-gold bulk-emails__send" disabled={!!busy} onClick={() => void send()}><Send size={18} />{settings.mode === "preview" ? `Run preview for ${emails.length} recipients` : `Send to ${emails.length} recipients`}</button>
             {settings.mode === "preview" && <p className="bulk-emails__hint">This records a simulated campaign. Nobody receives an email.</p>}
           </section>
           <section className="bulk-emails__panel bulk-emails__preview-panel"><p className="bulk-emails__eyebrow">Your branded email</p><iframe title="Final branded email preview" srcDoc={previewHtml} sandbox="" referrerPolicy="no-referrer" /></section>
         </div>}
+        {stage < 2 && blockerList}
         <div className="bulk-emails__footer">
-          {stage > 0 ? <button className="btn-outline" disabled={!!busy} onClick={() => setStage(current => current - 1)}><ArrowLeft size={16} />Back</button> : <span />}
-          {stage < 2 && <button className="btn-gold" disabled={!!busy || (stage === 0 && !emails.length) || emails.length > BULK_RECIPIENT_LIMIT || (stage === 1 && (!subject.trim() || !message.trim()))} onClick={() => { if (stage === 0) setStage(1); else if (!emails.length) setStage(0); else if (previewIsCurrent) setStage(2); else void preview(2); }}>{stage === 0 ? "Write your message" : !emails.length ? "Add recipients" : "Review email"}<ArrowRight size={16} /></button>}
+          {stage > 0 ? <button className="btn-outline" disabled={!!busy} onClick={() => goToStage(stage - 1)}><ArrowLeft size={16} />Back</button> : <span />}
+          {stage < 2 && <button className="btn-gold" disabled={!!busy} onClick={continueFlow}>{stage === 0 ? "Write your message" : !emails.length ? "Add recipients" : "Review email"}<ArrowRight size={16} /></button>}
         </div>
       </> : <section className="bulk-emails__panel bulk-emails__result" aria-live="polite">
         <p className="bulk-emails__eyebrow">{selected.mode === "preview" ? "Simulated campaign" : "Campaign history"}</p><h2>{STATUS[selected.status]}</h2><h3>{selected.subject}</h3>
