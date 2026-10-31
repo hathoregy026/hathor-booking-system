@@ -10,7 +10,7 @@ import { pathInLocale, type PublicLocale } from "@/lib/i18n/locale";
 const LANGUAGES = [
   { code: "AR", locale: null },
   { code: "EN", locale: "en" },
-  { code: "DE", locale: null },
+  { code: "DE", locale: "de" },
   { code: "IT", locale: "it" },
   { code: "RU", locale: null },
 ] as const satisfies readonly { code: string; locale: PublicLocale | null }[];
@@ -64,8 +64,8 @@ function DockCloseIcon() {
 }
 
 /**
- * English and Italian switch the page; the others are announced as forthcoming.
- * A page not yet translated opens the Italian homepage instead.
+ * Live languages switch the page; the others are announced as forthcoming. A
+ * page not yet translated opens that language's homepage instead.
  *
  * The menu stays mounted and is driven by an `is-open` class so it can animate
  * both in and out — unmounting it would make the close instant.

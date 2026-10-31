@@ -11,6 +11,7 @@ import type { PublicLocale } from "@/lib/i18n/locale";
 const SILK_ROWS: Record<PublicLocale, readonly string[]> = {
   en: ["TAKE YOUR", "VOYAGE", "TODAY"],
   it: ["PRENOTI IL", "SUO VIAGGIO", "OGGI"],
+  de: ["BUCHEN SIE", "IHRE REISE", "NOCH HEUTE"],
 };
 
 /*

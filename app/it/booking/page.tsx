@@ -7,7 +7,7 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-/** The booking journey in Italian: the same journey and booking engine as /booking. */
+/** The booking journey in this language: the same journey and booking engine as /booking. */
 export default function ItalianBookingPage({ searchParams }: { searchParams: BookingSearchParams }) {
   return <BookingRoute searchParams={searchParams} locale="it" />;
 }

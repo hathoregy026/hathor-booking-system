@@ -7,9 +7,10 @@
  * client components can all share the same rules.
  */
 
+import { TRANSLATED_BLOG_SLUGS_DE } from "./blog-slugs-de";
 import { TRANSLATED_BLOG_SLUGS_IT } from "./blog-slugs-it";
 
-export const PUBLIC_LOCALES = ["en", "it"] as const;
+export const PUBLIC_LOCALES = ["en", "it", "de"] as const;
 
 export type PublicLocale = (typeof PUBLIC_LOCALES)[number];
 
@@ -21,7 +22,41 @@ export const DEFAULT_PUBLIC_LOCALE: PublicLocale = "en";
 export const PUBLIC_LOCALE_HTML_LANG: Record<PublicLocale, string> = {
   en: "en",
   it: "it",
+  de: "de",
 };
+
+/** Every page but the journal articles, shared by all the added languages. */
+const TRANSLATED_SITE_PATHS: readonly string[] = [
+  "/",
+  "/voyages",
+  "/voyages/luxor-to-aswan",
+  "/voyages/aswan-to-luxor",
+  "/voyages/luxor-aswan-luxor",
+  "/cruises-list",
+  "/charter",
+  "/suites",
+  "/luxury-cabins-Nile-Cruise",
+  "/rooms",
+  "/royal-suites",
+  "/rooms/luxury-king-room",
+  "/rooms/luxury-twin-room",
+  "/rooms/luxury-suite",
+  "/rooms/royal-suite",
+  "/about",
+  "/contact",
+  "/gastronomy",
+  "/wellness",
+  "/highlights",
+  "/partners",
+  "/terms-and-conditions",
+  "/blogs",
+  /* The booking journey (noindex, never in the sitemap). */
+  "/booking",
+  "/booking/success",
+  "/booking/lookup",
+];
+
+const blogPaths = (slugs: readonly string[]) => slugs.map((slug) => `/blogs/${slug}`);
 
 /**
  * Pages that exist in each added language. English is every page; another
@@ -29,36 +64,8 @@ export const PUBLIC_LOCALE_HTML_LANG: Record<PublicLocale, string> = {
  * address that does not exist and no half-translated page is reachable.
  */
 export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
-  it: [
-    "/",
-    "/voyages",
-    "/voyages/luxor-to-aswan",
-    "/voyages/aswan-to-luxor",
-    "/voyages/luxor-aswan-luxor",
-    "/cruises-list",
-    "/charter",
-    "/suites",
-    "/luxury-cabins-Nile-Cruise",
-    "/rooms",
-    "/royal-suites",
-    "/rooms/luxury-king-room",
-    "/rooms/luxury-twin-room",
-    "/rooms/luxury-suite",
-    "/rooms/royal-suite",
-    "/about",
-    "/contact",
-    "/gastronomy",
-    "/wellness",
-    "/highlights",
-    "/partners",
-    "/terms-and-conditions",
-    "/blogs",
-    ...TRANSLATED_BLOG_SLUGS_IT.map((slug) => `/blogs/${slug}`),
-    /* The booking journey (noindex, never in the sitemap). */
-    "/booking",
-    "/booking/success",
-    "/booking/lookup",
-  ],
+  it: [...TRANSLATED_SITE_PATHS, ...blogPaths(TRANSLATED_BLOG_SLUGS_IT)],
+  de: [...TRANSLATED_SITE_PATHS, ...blogPaths(TRANSLATED_BLOG_SLUGS_DE)],
 };
 
 /**
@@ -69,18 +76,22 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
  */
 export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
   it: false,
+  /* Off until the native and legal reviews in docs/german-review.md are done. */
+  de: false,
 };
 
 /** `og:locale` value per language. */
 export const PUBLIC_LOCALE_OG: Record<PublicLocale, string> = {
   en: "en_US",
   it: "it_IT",
+  de: "de_DE",
 };
 
 /** hreflang code per language. */
 export const PUBLIC_LOCALE_HREFLANG: Record<PublicLocale, string> = {
   en: "en",
   it: "it",
+  de: "de",
 };
 
 const PREFIXED_LOCALES = PUBLIC_LOCALES.filter(

@@ -7,7 +7,7 @@ import { HATHOR_ITINERARIES } from "@/lib/booking-itineraries";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { BOOKING_COPY } from "@/lib/i18n/booking-copy";
-import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { JourneyProgress, StepBanner, StepGuide } from "@/components/booking/journey/JourneyChrome";
 import { CurrencyAmount } from "@/components/public/CurrencyProvider";

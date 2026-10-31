@@ -23,6 +23,7 @@ import type { HeaderNavItem } from "@/lib/public-nav";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { localizedHref } from "@/lib/i18n/locale";
 import "./EditorialNavOverlay.css";
 
 const LAYER_COLORS = ["#8b6914", "#c9a96e", "#ece8df"] as const;

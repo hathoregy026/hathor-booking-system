@@ -71,4 +71,9 @@ export const SEO_PLACE_WORDS = {
     addressLocality: "Il Cairo",
     country: "Egitto",
   },
+  de: {
+    streetAddress: "One Kattamiya, Tower 211, 11. Etage, Flat 111, Ring Road",
+    addressLocality: "Kairo",
+    country: "Ägypten",
+  },
 } as const;

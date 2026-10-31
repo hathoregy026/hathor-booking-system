@@ -391,7 +391,7 @@ export function GuestBook({
               ←
             </button>
             <span className="gb__folio" aria-live="polite">
-              Page {spread + 1} of {spreads.length}
+              {t.folio(spread + 1, spreads.length)}
             </span>
             <button
               type="button"

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { ItalianNotFoundScreen } from "@/components/public/ItalianSystemScreens";
-import { NOT_FOUND_METADATA_IT } from "@/lib/i18n/not-found-it";
-import "../../it-not-found.css";
+import { LocaleNotFound } from "@/components/pages/locale/LocaleNotFound";
+import { notFoundMetadata } from "@/lib/i18n/not-found";
+import "../../locale-not-found.css";
 
-export const metadata: Metadata = NOT_FOUND_METADATA_IT;
+export const metadata: Metadata = notFoundMetadata("it");
 
-/** Italian 404 for every /it address that has no page, inside the public site chrome. */
 export default function ItalianNotFound() {
-  return <ItalianNotFoundScreen />;
+  return <LocaleNotFound locale="it" />;
 }

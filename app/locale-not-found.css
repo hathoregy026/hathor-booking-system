@@ -1,0 +1,48 @@
+/* Italian 404 (app/(public)/it/not-found.tsx). */
+.locale-404 {
+  min-height: 70svh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.25rem;
+  padding: 8rem 1rem 5rem;
+  text-align: center;
+}
+
+.locale-404__eyebrow {
+  margin: 0;
+  font-family: var(--public-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--public-muted);
+}
+
+.locale-404__title {
+  margin: 0;
+  font-family: var(--public-serif);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.locale-404__lede {
+  max-width: 32rem;
+  margin: 0;
+  color: var(--public-muted);
+}
+
+.locale-404__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Peer pills share one width; the button system otherwise sizes phone pills
+   to their label. Two ids outrank its (1,1,0) roster. */
+.locale-404__actions :is(.public-btn-outline-gold, .public-btn-dark):not(#_):not(#_) {
+  width: var(--hathor-btn-width, 12.5rem) !important;
+  min-width: var(--hathor-btn-width, 12.5rem) !important;
+}

@@ -5,6 +5,7 @@
  * dates and availability are untouched; only their labels change.
  */
 
+import { CRUISES_COPY_DE } from "@/lib/i18n/cruises-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 export type CruisesSortKey = "price-asc" | "price-desc" | "nights-asc" | "nights-desc";
@@ -218,4 +219,5 @@ export const CRUISES_COPY: Record<PublicLocale, CruisesCopy> = {
       route: "Luxor — Assuan",
     },
   },
+  de: CRUISES_COPY_DE,
 };

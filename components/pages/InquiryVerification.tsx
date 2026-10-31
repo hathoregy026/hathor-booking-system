@@ -2,10 +2,10 @@
 
 import Script from "next/script";
 import { useEffect, useId, useRef, useState } from "react";
-import { publicTurnstileSiteKey } from "@/lib/turnstile-public";
-import type { TurnstileAction } from "@/lib/turnstile-actions";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { INQUIRY_FORM_COPY } from "@/lib/i18n/contact-copy";
+import { publicTurnstileSiteKey } from "@/lib/turnstile-public";
+import type { TurnstileAction } from "@/lib/turnstile-actions";
 
 type TurnstileApi = {
   render: (container: HTMLElement, options: Record<string, unknown>) => string;
@@ -32,7 +32,7 @@ export function InquiryVerification({ type, action, onToken, resetVersion = 0, a
     let active = true;
     const id = api.render(container.current, {
       sitekey: siteKey, action: expectedAction, theme: "light", appearance,
-      /* The widget otherwise follows the browser, so an Italian page could show its English wording. */
+      /* Translated pages name their language; English keeps the browser's own choice. */
       ...(locale === "en" ? {} : { language: locale }),
       size: container.current.clientWidth < 300 ? "compact" : "flexible",
       callback: (token: string) => { if (active) { setFailed(false); onToken(token); } },

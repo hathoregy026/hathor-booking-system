@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { LocaleVoyagePage, VoyagePageKey } from "@/lib/i18n/voyages-pages";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { SEO_DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
@@ -7,23 +8,6 @@ import { SEO_DEFAULT_OG_IMAGE } from "@/lib/seo/site";
  * the page-specific hero / statement. Keyword-led titles use the Italian head
  * terms ("crociera sul Nilo", "Luxor", "Assuan"). Server-only.
  */
-
-export type VoyagePageKey = "voyages" | "luxor-to-aswan" | "aswan-to-luxor" | "luxor-aswan-luxor";
-
-type ItalianVoyagePage = {
-  path: string;
-  metadata: Metadata;
-  /** WebPage name and breadcrumb label in structured data. */
-  name: string;
-  crumb: string;
-  trip: { name: string; description: string; departure: string; arrival: string };
-  /** Three lines; the third is the gold, most indented one and never wraps, so it stays short. */
-  heroLines: readonly string[];
-  /** Shown only while the dashboard statement is empty, as in English. */
-  statement?: string;
-  /** Itinerary links go to the scheduled sailings, as on the English route pages. */
-  detailsHref?: string;
-};
 
 const image = {
   ...SEO_DEFAULT_OG_IMAGE,
@@ -39,7 +23,7 @@ const page = (
   metadata: buildPageMetadata({ title, description, path, image }),
 });
 
-export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, ItalianVoyagePage> = {
+export const ITALIAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
   voyages: {
     ...page(
       "/it/voyages",

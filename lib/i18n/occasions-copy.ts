@@ -1,9 +1,9 @@
 /**
  * Words of the occasions layer (lib/occasions.ts) that come from the dashboard,
  * in other languages. The built-in text below is looked up by the exact English
- * the dashboard's templates write, so a standard occasion is in Italian the
+ * the dashboard's templates write, so a standard occasion is in that language the
  * moment it is switched on. A custom message with no line here is left off
- * Italian pages rather than shown in English. The layer's fixed labels live in
+ * translated pages rather than shown in English. The layer's fixed labels live in
  * chrome-copy.ts.
  */
 import type { Occasion, OccasionStripeItem } from "@/lib/occasions";
@@ -56,6 +56,51 @@ const BUILT_IN_TEXT: Record<TranslatedLocale, ReadonlyMap<string, string>> = {
     /* Blank occasion */
     ["Your message here", "Il Suo messaggio qui"],
   ]),
+  de: new Map([
+    /* Occasion names */
+    ["New Year's Eve", "Silvester"],
+    ["Christmas", "Weihnachten"],
+    ["Ramadan & Eid", "Ramadan und Eid"],
+    ["National day", "Nationalfeiertag"],
+    ["Abu Simbel Sun Festival", "Sonnenfest von Abu Simbel"],
+    ["Valentine's & honeymoon", "Valentinstag und Flitterwochen"],
+    ["New occasion", "Neuer Anlass"],
+    /* Countdown captions */
+    ["Until New Year", "Bis Neujahr"],
+    ["Until New Year's Eve", "Bis Silvester"],
+    ["Until the sun festival", "Bis zum Sonnenfest"],
+    /* New Year */
+    ["2027 begins in {countdown}", "2027 beginnt in {countdown}"],
+    ["Season's greetings from everyone aboard Hathor", "Festliche Grüße von allen an Bord der Hathor"],
+    ["Plan your 2027 Nile voyage", "Planen Sie Ihre Nilreise 2027"],
+    ["Happy New Year 2027 from everyone aboard Hathor", "Ein gutes neues Jahr 2027 von allen an Bord der Hathor"],
+    /* Christmas */
+    ["Merry Christmas from the crew of Hathor", "Frohe Weihnachten von der Crew der Hathor"],
+    ["Coptic Christmas, 7 January, celebrated in Luxor", "Koptische Weihnachten, am 7. Januar, gefeiert in Luxor"],
+    /* Ramadan & Eid: the greetings are the same in German */
+    ["Ramadan Kareem · رمضان كريم", "Ramadan Kareem · رمضان كريم"],
+    ["Eid Mubarak · عيد مبارك", "Eid Mubarak · عيد مبارك"],
+    /* National day */
+    ["Happy National Day", "Einen schönen Nationalfeiertag"],
+    /* Abu Simbel Sun Festival */
+    [
+      "The sun reaches the inner sanctuary of Abu Simbel in {countdown}",
+      "Die Sonne erreicht das innere Heiligtum von Abu Simbel in {countdown}",
+    ],
+    ["Twice a year, on 22 February and 22 October", "Zweimal im Jahr, am 22. Februar und am 22. Oktober"],
+    ["Today the sun lights the sanctuary of Abu Simbel", "Heute erhellt die Sonne das Heiligtum von Abu Simbel"],
+    /* Valentine's & honeymoon */
+    ["Honeymoon on the Nile", "Flitterwochen auf dem Nil"],
+    ["Celebrate together aboard Hathor", "Gemeinsam feiern an Bord der Hathor"],
+    /* Blank occasion */
+    ["Your message here", "Ihre Nachricht hier"],
+  ]),
+};
+
+/** The countdown's caption when neither the dashboard nor the table above has one. */
+const COUNTDOWN_FALLBACK: Record<TranslatedLocale, string> = {
+  it: "Conto alla rovescia",
+  de: "Countdown",
 };
 
 /** The built-in text for this English, in any year; null when there is none. */
@@ -102,6 +147,6 @@ export function occasionWords(
   if (locale === "en") return { name: occasion.name, caption: englishCaption };
   return {
     name: builtInOccasionText(occasion.name, locale) ?? "Hathor",
-    caption: builtInOccasionText(englishCaption, locale) ?? "Conto alla rovescia",
+    caption: builtInOccasionText(englishCaption, locale) ?? COUNTDOWN_FALLBACK[locale],
   };
 }

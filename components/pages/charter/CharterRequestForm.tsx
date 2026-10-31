@@ -7,7 +7,7 @@ import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { CHARTER_COPY } from "@/lib/i18n/charter-copy";
-import { sendFailureIn } from "@/lib/i18n/form-errors-it";
+import { sendFailureIn } from "@/lib/i18n/form-errors";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 
 type FormState = "idle" | "submitting" | "success" | "error";

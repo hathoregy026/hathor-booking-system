@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import "@/app/editorial-chrome.css";
 import "@/app/voyages-editorial.css";
-import { ItalianVoyagesPage } from "@/components/pages/voyages/ItalianVoyagesPage";
-import { ITALIAN_VOYAGE_PAGES } from "@/lib/i18n/voyages-pages-it";
+import { LocaleVoyagesPage } from "@/components/pages/voyages/LocaleVoyagesPage";
+import { LOCALE_VOYAGE_PAGES } from "@/lib/i18n/locale-pages";
 
-export const metadata: Metadata = ITALIAN_VOYAGE_PAGES["luxor-aswan-luxor"].metadata;
+export const metadata: Metadata = LOCALE_VOYAGE_PAGES.it["luxor-aswan-luxor"].metadata;
 
 export default function ItalianLuxorAswanLuxorPage() {
-  return <ItalianVoyagesPage page="luxor-aswan-luxor" />;
+  return <LocaleVoyagesPage locale="it" page="luxor-aswan-luxor" />;
 }

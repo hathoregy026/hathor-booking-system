@@ -16,7 +16,6 @@ import {
   type VoyageItinerary,
 } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import type { PublicLocale } from "@/lib/i18n/locale";
 
 const PHILAE: ItineraryLink = { label: "Tempio di Philae", href: "/it/blogs/discovering-the-secrets-of-philae-temple" };
 const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Cosa vedere ad Assuan", href: "/it/blogs/golden-gems-of-aswan" };
@@ -164,7 +163,7 @@ const SEVEN_NIGHT: ItineraryDay[] = [
 ];
 
 /** `departureDay` is the weekday alone; the copy says "ogni mercoledì" where a sentence needs it. */
-const HATHOR_ITINERARIES_IT: Record<StayDurationValue, VoyageItinerary> = {
+export const HATHOR_ITINERARIES_IT: Record<StayDurationValue, VoyageItinerary> = {
   "3-nights-aswan-luxor": {
     ...HATHOR_ITINERARIES["3-nights-aswan-luxor"],
     title: "3 notti / 4 giorni",
@@ -187,15 +186,3 @@ const HATHOR_ITINERARIES_IT: Record<StayDurationValue, VoyageItinerary> = {
     days_: SEVEN_NIGHT,
   },
 };
-
-const VOYAGE_ORDER: StayDurationValue[] = ["3-nights-aswan-luxor", "4-nights-luxor-aswan", "7-nights-luxor-aswan-luxor"];
-
-/** The voyage's itinerary in the visitor's language. */
-export function bookingItinerary(duration: StayDurationValue, locale: PublicLocale): VoyageItinerary {
-  return locale === "it" ? HATHOR_ITINERARIES_IT[duration] : HATHOR_ITINERARIES[duration];
-}
-
-/** The three voyages, in the order the journey offers them. */
-export function bookingVoyages(locale: PublicLocale): VoyageItinerary[] {
-  return VOYAGE_ORDER.map((duration) => bookingItinerary(duration, locale));
-}

@@ -6,8 +6,9 @@
  */
 
 import { describeRoomTypesOnCruise, type StayDurationValue } from "@/lib/booking-search-config";
-import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
+import { localizedHref, type PublicLocale, type TranslatedLocale } from "@/lib/i18n/locale";
 import { placesIn, voyageNameIn, weekdayIn, weekdayLabelIn } from "@/lib/i18n/catalog-copy";
+import { SELECTION_COPY_DE, SUMMARY_WORDS_DE } from "@/lib/i18n/selection-copy-de";
 import {
   findResidence,
   findVoyage,
@@ -199,6 +200,7 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
       "La Sua selezione può contenere un charter privato oppure un itinerario programmato. Continuando, il charter verrà rimosso e sarà aggiunta questa scelta.",
     keepCharter: "Mantieni il charter privato",
   },
+  de: SELECTION_COPY_DE,
 };
 
 /**
@@ -257,23 +259,38 @@ export function favoriteIn(item: ResolvedFavorite, locale: PublicLocale): Resolv
   };
 }
 
-const SUMMARY_LABELS_IT: Record<string, string> = {
-  "Enquiry type": "Tipo di richiesta",
-  "Selected Journey": "Viaggio scelto",
-  Route: "Itinerario",
-  Duration: "Durata",
-  "Departure day": "Giorno di partenza",
-  "Selected Accommodation": "Sistemazione scelta",
-  "Accommodation detail": "Dettagli della sistemazione",
-  Guests: "Ospiti",
-  "Guest also saved": "Ha salvato anche",
+/** How a language rewrites the English selection summary; `$1` and `$2` are the numbers. */
+export type SummaryWords = {
+  labels: Record<string, string>;
+  notCarriedOver: string;
+  privateCharter: string;
+  nightsDays: string;
+  nightsShort: string;
+  upToGuests: string;
+  guestWords: Record<string, string>;
 };
 
-const GUEST_WORDS_IT: Record<string, string> = {
-  Adult: "adulto",
-  Adults: "adulti",
-  Child: "bambino",
-  Children: "bambini",
+const SUMMARY_WORDS: Record<TranslatedLocale, SummaryWords> = {
+  it: {
+    labels: {
+      "Enquiry type": "Tipo di richiesta",
+      "Selected Journey": "Viaggio scelto",
+      Route: "Itinerario",
+      Duration: "Durata",
+      "Departure day": "Giorno di partenza",
+      "Selected Accommodation": "Sistemazione scelta",
+      "Accommodation detail": "Dettagli della sistemazione",
+      Guests: "Ospiti",
+      "Guest also saved": "Ha salvato anche",
+    },
+    notCarriedOver: "Non riportata: la sistemazione salvata non è disponibile su questo itinerario.",
+    privateCharter: "Charter privato",
+    nightsDays: "$1 notti / $2 giorni",
+    nightsShort: "($1 notti, ",
+    upToGuests: "fino a $1 ospiti",
+    guestWords: { Adult: "adulto", Adults: "adulti", Child: "bambino", Children: "bambini" },
+  },
+  de: SUMMARY_WORDS_DE,
 };
 
 /**
@@ -287,7 +304,8 @@ export function summaryLineIn(
   voyageSlug?: string,
 ): { label: string; value: string } {
   if (locale === "en") return line;
-  const label = SUMMARY_LABELS_IT[line.label] ?? line.label;
+  const words = SUMMARY_WORDS[locale];
+  const label = words.labels[line.label] ?? line.label;
   let value = line.value;
   switch (line.label) {
     case "Selected Journey":
@@ -298,18 +316,18 @@ export function summaryLineIn(
       break;
     case "Selected Accommodation":
       if (value.startsWith("Not carried over")) {
-        value = "Non riportata: la sistemazione salvata non è disponibile su questo itinerario.";
+        value = words.notCarriedOver;
       }
       break;
     default:
       value = placesIn(
         locale,
         value
-          .replace(/\bPrivate Charter\b/g, "Charter privato")
-          .replace(/(\d+) Nights \/ (\d+) Days/g, "$1 notti / $2 giorni")
-          .replace(/\((\d+)N /g, "($1 notti, ")
-          .replace(/\bup to (\d+) guests\b/g, "fino a $1 ospiti")
-          .replace(/\b(\d+) (Adults?|Child(?:ren)?)\b/g, (_, n: string, word: string) => `${n} ${GUEST_WORDS_IT[word] ?? word}`),
+          .replace(/\bPrivate Charter\b/g, words.privateCharter)
+          .replace(/(\d+) Nights \/ (\d+) Days/g, words.nightsDays)
+          .replace(/\((\d+)N /g, words.nightsShort)
+          .replace(/\bup to (\d+) guests\b/g, words.upToGuests)
+          .replace(/\b(\d+) (Adults?|Child(?:ren)?)\b/g, (_, n: string, word: string) => `${n} ${words.guestWords[word] ?? word}`),
       );
   }
   return { label, value };

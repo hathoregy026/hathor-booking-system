@@ -6,7 +6,7 @@ import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceIm
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries";
 import { MAX_ADULTS, MAX_CHILDREN, type CabinView } from "./allocation";
 import type { Sailing } from "./model";
 import { CurrencyAmount } from "@/components/public/CurrencyProvider";

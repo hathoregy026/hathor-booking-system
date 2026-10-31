@@ -9,6 +9,7 @@
  */
 
 import { HOMEPAGE_PARTNERS } from "@/lib/homepage-content";
+import { HOME_COPY_DE, PARTNERS_STRIP_COPY_DE } from "@/lib/i18n/home-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Pair = readonly [string, string];
@@ -551,7 +552,7 @@ const IT: HomeCopy = {
   },
 };
 
-export const HOME_COPY: Record<PublicLocale, HomeCopy> = { en: EN, it: IT };
+export const HOME_COPY: Record<PublicLocale, HomeCopy> = { en: EN, it: IT, de: HOME_COPY_DE };
 
 /* ------------------------------------------------------ partners strip */
 
@@ -589,4 +590,5 @@ export const PARTNERS_STRIP_COPY: Record<PublicLocale, PartnersStripCopy> = {
     hrefLabel: "Scopri i nostri partner",
     listLabel: "I partner di Hathor",
   },
+  de: PARTNERS_STRIP_COPY_DE,
 };
