@@ -68,7 +68,7 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
  * code needs touching.
  */
 export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
-  it: true,
+  it: false,
 };
 
 /** `og:locale` value per language. */
