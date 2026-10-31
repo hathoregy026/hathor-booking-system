@@ -175,8 +175,12 @@ export function Header() {
     [navItems],
   );
   const editorialNav = usesEditorialOverlayNav(pathname);
+  /* The cached homepage HTML renders as /index; hydration keeps its class until a re-render. */
   const isHome =
-    pathname === "/" || pathname === "/ex" || pathname === "/home-2";
+    pathname === "/" ||
+    pathname === "/index" ||
+    pathname === "/ex" ||
+    pathname === "/home-2";
   const [exploreOpen, setExploreOpen] = useState(false);
   const chromeNav = true;
   const phoneViewportRef = useRef(false);
