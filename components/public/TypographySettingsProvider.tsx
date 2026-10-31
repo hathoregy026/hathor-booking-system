@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -19,6 +20,8 @@ import {
   type TypographyTextStyle,
 } from "@/lib/typography-settings-shared";
 import { shouldSoftRefreshCms } from "@/lib/cms-soft-refresh";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { localizeTypography } from "@/lib/i18n/hero-pages";
 
 const STYLE_ID = "hathor-typography-live";
 
@@ -138,8 +141,11 @@ export function TypographySettingsProvider({
   );
 }
 
+/** The live settings, with translated hero titles on a translated page's address. */
 export function useTypographySettings(): TypographySettings {
-  return useContext(TypographySettingsContext);
+  const settings = useContext(TypographySettingsContext);
+  const locale = usePublicLocale();
+  return useMemo(() => localizeTypography(settings, locale), [settings, locale]);
 }
 
 export function useTypographyStyle(role: TypographyRole): TypographyTextStyle {

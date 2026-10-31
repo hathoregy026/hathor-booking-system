@@ -6,6 +6,8 @@ import { useBookNowModal } from "@/components/booking/BookingModalProvider";
 import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 
 /** Thin-stroke calendar — same line language as the dock heart, cart, and globe. */
 function DockCalendarIcon() {
@@ -77,13 +79,14 @@ function DockCloseIcon() {
 
 export function PhoneDockBookNow() {
   const { openBooking } = useBookNowModal();
+  const copy = CHROME_COPY[usePublicLocale()].contact;
 
   return (
     <button
       type="button"
       className="hpd-book"
-      aria-label="Book now"
-      title="Book now"
+      aria-label={copy.bookNow}
+      title={copy.bookNow}
       onClick={openBooking}
     >
       <span className="hsc__mark" aria-hidden="true">
@@ -94,6 +97,7 @@ export function PhoneDockBookNow() {
 }
 
 export function PhoneDockContact() {
+  const copy = CHROME_COPY[usePublicLocale()].contact;
   const [open, setOpen] = useState(false);
   const [layerHost, setLayerHost] = useState<HTMLElement | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -141,7 +145,7 @@ export function PhoneDockContact() {
       <button
         type="button"
         className="hpd-contact__backdrop"
-        aria-label="Close contact links"
+        aria-label={copy.closeLinks}
         tabIndex={open ? 0 : -1}
         onPointerDown={(event) => {
           event.preventDefault();
@@ -196,7 +200,7 @@ export function PhoneDockContact() {
           href={`tel:${PUBLIC_CONTACT.phone}`}
           className="hpd-contact__link"
           role="menuitem"
-          aria-label={`Call ${PUBLIC_CONTACT.phoneDisplay}`}
+          aria-label={copy.call(PUBLIC_CONTACT.phoneDisplay)}
           tabIndex={open ? 0 : -1}
           style={{
             transitionDelay: open
@@ -235,8 +239,8 @@ export function PhoneDockContact() {
         className="hpd-contact__toggle"
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label={open ? "Close contact links" : "Open contact links"}
-        title="Contact"
+        aria-label={open ? copy.closeLinks : copy.openLinks}
+        title={copy.contact}
         onClick={() => {
           if (closingRef.current) return;
           setOpen((current) => !current);

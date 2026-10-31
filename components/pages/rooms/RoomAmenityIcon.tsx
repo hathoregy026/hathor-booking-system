@@ -1,4 +1,10 @@
 import type { ReactElement } from "react";
+import {
+  AMENITY_CAPTION_OVERRIDES_IT,
+  AMENITY_KIND_CAPTIONS_IT,
+  amenityIn,
+} from "@/lib/i18n/catalog-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
 
 type AmenityIconKind =
   | "screen"
@@ -251,11 +257,18 @@ const CAPTION_OVERRIDES: Record<string, AmenityCaption> = {
   },
 };
 
-export function resolveAmenityCaption(label: string): AmenityCaption {
-  const override = CAPTION_OVERRIDES[label.trim().toLowerCase()];
+export function resolveAmenityCaption(
+  label: string,
+  locale: PublicLocale = "en",
+): AmenityCaption {
+  const key = label.trim().toLowerCase();
+  const italian = locale === "it";
+  const override = (italian ? AMENITY_CAPTION_OVERRIDES_IT : CAPTION_OVERRIDES)[key];
   if (override) return override;
-  const caption = KIND_CAPTIONS[resolveAmenityIcon(label)];
-  return caption.wide ? caption : { wide: label, tight: label };
+  const caption = (italian ? AMENITY_KIND_CAPTIONS_IT : KIND_CAPTIONS)[resolveAmenityIcon(label)];
+  if (caption?.wide) return caption;
+  const text = amenityIn(locale, label);
+  return { wide: text, tight: text };
 }
 
 export function RoomAmenityIcon({ label }: { label: string }) {

@@ -19,6 +19,8 @@ import {
   getBithoTitleReadyCriticalStyle,
 } from "@/lib/public-theme";
 import { getTouchDeviceBlockingScript } from "@/lib/touch-device";
+import { getHtmlLangBlockingScript } from "@/lib/i18n/locale";
+import { HtmlLangSync } from "@/components/public/HtmlLangSync";
 import { TouchDeviceBootstrap } from "@/components/public/TouchDeviceBootstrap";
 import { DeployBoot } from "@/components/public/DeployBoot";
 import { SiteBookingChrome } from "@/components/public/SiteBookingChrome";
@@ -90,6 +92,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* `/it/…` pages are Italian; the shared root stays static, so set lang before paint. */}
+        <script
+          dangerouslySetInnerHTML={{ __html: getHtmlLangBlockingScript() }}
+        />
         <script
           dangerouslySetInnerHTML={{ __html: getPublicThemeBlockingScript() }}
         />
@@ -179,6 +185,7 @@ gtag('js', new Date());
         suppressHydrationWarning
       >
         <TouchDeviceBootstrap />
+        <HtmlLangSync />
         {/* Dashboard “View on site” links (?viewImage=slot) work on every page. */}
         <SiteImagePreviewScroll />
         <DeployBoot />

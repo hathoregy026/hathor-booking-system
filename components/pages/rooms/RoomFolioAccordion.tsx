@@ -3,10 +3,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
-import {
-  ROOM_FOLIO_PANELS,
-  type RoomFolioPanels,
-} from "@/lib/room-folio-panels";
+import type { RoomFolioPanels } from "@/lib/room-folio-panels";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { ROOMS_COPY, roomFolioPanels, type RoomsCopy } from "@/lib/i18n/rooms-copy";
 import type { RoomCollectionVariant } from "@/lib/room-collection-editorial";
 
 type RoomFolioAccordionProps = {
@@ -53,6 +52,7 @@ function OverviewBlock({ panels }: { panels: RoomFolioPanels }) {
 }
 
 function ItineraryBlock({ panels }: { panels: RoomFolioPanels }) {
+  const localHref = useLocalizedHref();
   return (
     <div className="ac-folio__routes">
       {panels.itineraries.map((route) => (
@@ -72,7 +72,7 @@ function ItineraryBlock({ panels }: { panels: RoomFolioPanels }) {
               </li>
             ))}
           </ol>
-          <Link href={route.href} className="ac-folio__text-link">
+          <Link href={localHref(route.href)} className="ac-folio__text-link">
             {route.hrefLabel}
           </Link>
         </details>
@@ -81,11 +81,11 @@ function ItineraryBlock({ panels }: { panels: RoomFolioPanels }) {
   );
 }
 
-function IncludeBlock({ panels }: { panels: RoomFolioPanels }) {
+function IncludeBlock({ panels, t }: { panels: RoomFolioPanels; t: RoomsCopy["folio"] }) {
   return (
     <div className="ac-folio__split">
       <div>
-        <h3>Included</h3>
+        <h3>{t.included}</h3>
         <ul>
           {panels.include.map((item) => (
             <li key={item}>{item}</li>
@@ -93,7 +93,7 @@ function IncludeBlock({ panels }: { panels: RoomFolioPanels }) {
         </ul>
       </div>
       <div>
-        <h3>Not included</h3>
+        <h3>{t.notIncluded}</h3>
         <ul>
           {panels.exclude.map((item) => (
             <li key={item}>{item}</li>
@@ -104,7 +104,8 @@ function IncludeBlock({ panels }: { panels: RoomFolioPanels }) {
   );
 }
 
-function AvailabilityBlock({ panels }: { panels: RoomFolioPanels }) {
+function AvailabilityBlock({ panels, t }: { panels: RoomFolioPanels; t: RoomsCopy["folio"] }) {
+  const localHref = useLocalizedHref();
   return (
     <>
       <p>{panels.availability.note}</p>
@@ -119,10 +120,10 @@ function AvailabilityBlock({ panels }: { panels: RoomFolioPanels }) {
       </ul>
       <div className="ac-folio__actions">
         <BookNowTrigger className="ac-pill ac-pill--fill">
-          <span>Check availability</span>
+          <span>{t.checkAvailability}</span>
         </BookNowTrigger>
-        <Link href="/cruises-list" className="ac-folio__text-link">
-          View scheduled sailings
+        <Link href={localHref("/cruises-list")} className="ac-folio__text-link">
+          {t.scheduledSailings}
         </Link>
       </div>
     </>
@@ -133,28 +134,30 @@ export function RoomFolioAccordion({
   variant,
   className = "",
 }: RoomFolioAccordionProps) {
-  const panels = ROOM_FOLIO_PANELS[variant];
+  const locale = usePublicLocale();
+  const panels = roomFolioPanels(variant, locale);
+  const t = ROOMS_COPY[locale].folio;
 
   return (
     <section
       className={`ac-folio ${className}`.trim()}
-      aria-label="Stay notes"
+      aria-label={t.label}
       id="stay-notes"
     >
-      <p className="ac-kicker">Stay notes</p>
-      <h2 className="ac-folio__title">The voyage, in full</h2>
+      <p className="ac-kicker">{t.label}</p>
+      <h2 className="ac-folio__title">{t.title}</h2>
       <div className="ac-folio__stack">
-        <Panel id="folio-overview" title="Overview">
+        <Panel id="folio-overview" title={t.overview}>
           <OverviewBlock panels={panels} />
         </Panel>
-        <Panel id="folio-itinerary" title="Itinerary">
+        <Panel id="folio-itinerary" title={t.itinerary}>
           <ItineraryBlock panels={panels} />
         </Panel>
-        <Panel id="folio-include" title="Include & Exclude">
-          <IncludeBlock panels={panels} />
+        <Panel id="folio-include" title={t.includeExclude}>
+          <IncludeBlock panels={panels} t={t} />
         </Panel>
-        <Panel id="folio-availability" title="Cruise Availability">
-          <AvailabilityBlock panels={panels} />
+        <Panel id="folio-availability" title={t.availability}>
+          <AvailabilityBlock panels={panels} t={t} />
         </Panel>
       </div>
     </section>

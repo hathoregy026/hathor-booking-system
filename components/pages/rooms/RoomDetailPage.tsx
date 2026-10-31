@@ -35,23 +35,22 @@ import { RoomFolioAccordion } from "@/components/pages/rooms/RoomFolioAccordion"
 import { livePriceFor } from "@/lib/cabin-prices-shared";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
-import { ROOM_COLLECTION_LINKS } from "@/lib/room-collection-editorial";
+import { folioVariantForRoomSlug } from "@/lib/room-folio-panels";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { amenityIn, placesIn, weekdayIn } from "@/lib/i18n/catalog-copy";
 import {
-  ROOM_FOLIO_PANELS,
-  folioVariantForRoomSlug,
-} from "@/lib/room-folio-panels";
+  ROOMS_COPY,
+  roomCollectionLinks,
+  roomDetailCopy,
+  roomFolioPanels,
+  roomShowcaseIn,
+} from "@/lib/i18n/rooms-copy";
 import type { RoomShowcase } from "@/lib/room-showcase";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 
-/** The five stops of the room folio, in the order the page tells them. */
-const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "fare", label: "Availability" },
-  { id: "amenities", label: "Amenities" },
-  { id: "stay-notes", label: "Your voyage" },
-  { id: "notes", label: "Good to know" },
-] as const;
+/** The five stops of the room folio, in the order the page tells them (labels: copy.tabs). */
+const TABS = ["overview", "fare", "amenities", "stay-notes", "notes"] as const;
 
 function RoomCmsImage({
   path,
@@ -67,11 +66,13 @@ function RoomCmsImage({
   className?: string;
 }) {
   const cms = useCmsPathImage(path);
+  /* The dashboard's image descriptions are English; other languages use the page's own. */
+  const english = usePublicLocale() === "en";
   return (
     <Image
       key={cms.src}
       src={cms.src}
-      alt={cms.alt || alt}
+      alt={english ? cms.alt || alt : alt}
       fill
       priority={priority}
       quality={SITE_IMAGE_QUALITY}
@@ -86,12 +87,13 @@ function RoomCmsImage({
 /** A small square of the room, used inside the fare ledger. */
 function RoomThumb({ path, alt }: { path: string; alt: string }) {
   const cms = useCmsPathImage(path);
+  const english = usePublicLocale() === "en";
   return (
     <span className="rf-ledger__thumb">
       <Image
         key={cms.src}
         src={cms.src}
-        alt={cms.alt || alt}
+        alt={english ? cms.alt || alt : alt}
         fill
         quality={SITE_IMAGE_QUALITY}
         sizes="140px"
@@ -130,20 +132,25 @@ function useSectionSpy(ids: readonly string[]): string {
 }
 
 export function RoomDetailPage({
-  room,
+  room: roomProp,
   reviews,
 }: {
   room: RoomShowcase;
   /** Server-rendered guest reviews, closing the page before the footer. */
   reviews?: ReactNode;
 }) {
+  const locale = usePublicLocale();
+  const localHref = useLocalizedHref();
+  const room = useMemo(() => roomShowcaseIn(roomProp, locale), [roomProp, locale]);
   const { money: fare } = useCurrency();
   const variant = folioVariantForRoomSlug(room.slug);
-  const panels = ROOM_FOLIO_PANELS[variant];
+  const t = roomDetailCopy(locale, variant);
+  const panels = roomFolioPanels(variant, locale);
+  const collectionLinks = roomCollectionLinks(locale);
   const collection =
-    ROOM_COLLECTION_LINKS.find((link) => link.key === variant) ??
-    ROOM_COLLECTION_LINKS[0];
+    collectionLinks.find((link) => link.key === variant) ?? collectionLinks[0];
   const prices = useCabinPrices();
+  const words = ROOMS_COPY[locale];
 
   /* Every sailing this room is sold on, with the price the booking charges. */
   const voyages = useMemo(
@@ -190,7 +197,10 @@ export function RoomDetailPage({
   const tail = Math.max(0, photoCount - 3);
   const tailSpan = tail > 0 ? Math.max(2, Math.floor(12 / tail)) : 12;
 
-  const activeTab = useSectionSpy(TABS.map((tab) => tab.id));
+  const activeTab = useSectionSpy(TABS);
+  /* Route and departure day in the page language; prices and choices are unchanged. */
+  const ports = (value: string) => placesIn(locale, value);
+  const day = (value: string) => weekdayIn(locale, value);
   const inclusionHighlights = panels.include.slice(0, 4);
 
   return (
@@ -199,10 +209,10 @@ export function RoomDetailPage({
 
       <main className="rf">
         <div className="rf__wrap">
-          <nav className="rf__crumbs" aria-label="Breadcrumb">
-            <Link href="/">Home</Link>
+          <nav className="rf__crumbs" aria-label={t.breadcrumb}>
+            <Link href={localHref("/")}>Home</Link>
             <span aria-hidden="true">/</span>
-            <Link href={collection.href}>{collection.label}</Link>
+            <Link href={localHref(collection.href)}>{collection.label}</Link>
             <span aria-hidden="true">/</span>
             <span aria-current="page">{room.name}</span>
           </nav>
@@ -214,7 +224,7 @@ export function RoomDetailPage({
               <p className="rf__script">{room.eyebrow}</p>
               {voyage ? (
                 <p className="rf__meta">
-                  {voyage.ports} · {voyage.nights} nights / {voyage.days} days
+                  {ports(voyage.ports)} · {t.nightsDays(voyage.nights, voyage.days)}
                 </p>
               ) : null}
             </div>
@@ -235,20 +245,20 @@ export function RoomDetailPage({
             </div>
           </header>
 
-          <nav className="rf__tabs" aria-label="Sections of this room">
-            {TABS.map((tab) => (
+          <nav className="rf__tabs" aria-label={t.sections}>
+            {TABS.map((id, index) => (
               <a
-                key={tab.id}
-                href={`#${tab.id}`}
-                className={`rf__tab${activeTab === tab.id ? " is-active" : ""}`}
-                aria-current={activeTab === tab.id ? "true" : undefined}
+                key={id}
+                href={`#${id}`}
+                className={`rf__tab${activeTab === id ? " is-active" : ""}`}
+                aria-current={activeTab === id ? "true" : undefined}
               >
-                {tab.label}
+                {t.tabs[index]}
               </a>
             ))}
           </nav>
 
-          <section className="rf__stage" aria-label={`${room.name} photographs`}>
+          <section className="rf__stage" aria-label={t.photographs(room.name)}>
             {/* Desktop reads the set as one plate and two; a phone swipes it. */}
             <div
               className="rf__frames"
@@ -260,11 +270,11 @@ export function RoomDetailPage({
                   type="button"
                   className="rf__frame"
                   onClick={() => openPhoto(index)}
-                  aria-label={`View photograph ${index + 1} of ${photoCount} full screen`}
+                  aria-label={t.openPhoto(index + 1, photoCount)}
                 >
                   <RoomCmsImage
                     path={src}
-                    alt={`${room.name}, view ${index + 1}`}
+                    alt={t.photoAlt(room.name, index + 1)}
                     priority={index === 0}
                     sizes={
                       index === 0
@@ -278,47 +288,45 @@ export function RoomDetailPage({
 
             <ul className="rf__specs">
               <li>
-                <span>Space</span>
+                <span>{words.space}</span>
                 <strong>{room.sizeSqm} m²</strong>
               </li>
               <li>
-                <span>Guests</span>
-                <strong>Up to {room.capacity}</strong>
+                <span>{words.guests}</span>
+                <strong>{words.upTo(room.capacity)}</strong>
               </li>
               <li>
-                <span>Outlook</span>
-                <strong>Panoramic Nile</strong>
+                <span>{words.outlook}</span>
+                <strong>{words.panoramicNile}</strong>
               </li>
               <li>
-                <span>Children</span>
-                <strong>{room.childrenAllowed ? "Welcome" : "Not in this room"}</strong>
+                <span>{t.children}</span>
+                <strong>{room.childrenAllowed ? t.childrenWelcome : t.childrenNo}</strong>
               </li>
             </ul>
-            <aside className="rf__card" aria-label="Fare and availability">
-              <p className="rf__card-kicker">Your voyage</p>
+            <aside className="rf__card" aria-label={t.fareLabel}>
+              <p className="rf__card-kicker">{t.yourVoyage}</p>
               {voyage ? (
                 <>
-                  <p className="rf__price">{fare(voyage.priceCents)}<RoomPriceUnit roomType={room.name} /></p>
-                  <p className="rf__price-note">
-                    {voyage.nights} nights
-                  </p>
-                  <p className="rf__price-fine">VAT &amp; service included</p>
+                  <p className="rf__price">{fare(voyage.priceCents)}<RoomPriceUnit roomType={roomProp.name} locale={locale} /></p>
+                  <p className="rf__price-note">{t.nights(voyage.nights)}</p>
+                  <p className="rf__price-fine">{t.vatIncluded}</p>
 
                   <dl className="rf__rows">
                     <div className="rf__row">
                       <dt>
-                        <MapPin aria-hidden="true" /> Route
+                        <MapPin aria-hidden="true" /> {t.route}
                       </dt>
                       <dd>
                         <label className="rf__select">
-                          <span className="sr-only">Choose a voyage</span>
+                          <span className="sr-only">{t.chooseVoyage}</span>
                           <select
                             value={voyage.slug}
                             onChange={(event) => setVoyageSlug(event.target.value)}
                           >
                             {voyages.map((entry) => (
                               <option key={entry.slug} value={entry.slug}>
-                                {entry.ports} · {entry.nights} nights
+                                {t.voyageOption(ports(entry.ports), entry.nights)}
                               </option>
                             ))}
                           </select>
@@ -327,22 +335,20 @@ export function RoomDetailPage({
                     </div>
                     <div className="rf__row">
                       <dt>
-                        <Calendar aria-hidden="true" /> Departs
+                        <Calendar aria-hidden="true" /> {t.departs}
                       </dt>
                       <dd>
-                        Every {voyage.departureDay}
-                        <small>
-                          {voyage.nights} nights / {voyage.days} days
-                        </small>
+                        {t.every(day(voyage.departureDay))}
+                        <small>{t.nightsDays(voyage.nights, voyage.days)}</small>
                       </dd>
                     </div>
                     <div className="rf__row">
                       <dt>
-                        <Users aria-hidden="true" /> Guests
+                        <Users aria-hidden="true" /> {words.guests}
                       </dt>
                       <dd>
-                        1 cabin
-                        <small>Up to {room.capacity} guests</small>
+                        {t.oneCabin}
+                        <small>{t.upToGuests(room.capacity)}</small>
                       </dd>
                     </div>
                   </dl>
@@ -350,11 +356,11 @@ export function RoomDetailPage({
               ) : null}
 
               <BookNowTrigger className="room-pill rf__act">
-                <span>Check availability</span>
+                <span>{t.checkAvailability}</span>
                 <ArrowRight aria-hidden="true" />
               </BookNowTrigger>
               <a className="rf__card-link" href="#notes">
-                Booking conditions
+                {t.conditions}
               </a>
             </aside>
           </section>
@@ -362,31 +368,27 @@ export function RoomDetailPage({
 
           <section className="rf__story" id="overview">
             <div className="rf__story-title">
-              <p className="rf__kicker">Inside your room</p>
+              <p className="rf__kicker">{t.insideKicker}</p>
               <h2 className="rf__display">
-                <span>A private place</span>
-                <em>to let the Nile in</em>
+                <span>{t.insideTitle[0]}</span>
+                <em>{t.insideTitle[1]}</em>
               </h2>
             </div>
             <div className="rf__story-body">
               <p className="rf__lead">{room.description}</p>
-              <p className="rf__note">
-                {room.childrenAllowed
-                  ? "Children are welcome in this room type."
-                  : "This room type does not accommodate children."}
-              </p>
+              <p className="rf__note">{t.childrenNote(room.childrenAllowed)}</p>
               <div className="rf__amenities-head">
-                <p className="rf__kicker">Utilities &amp; comforts</p>
-                <h3 className="rf__amenities-title">Everything, considered</h3>
+                <p className="rf__kicker">{t.comfortsKicker}</p>
+                <h3 className="rf__amenities-title">{t.comfortsTitle}</h3>
               </div>
               <ul className="rf__amenities" id="amenities">
                 {room.amenities.map((amenity) => (
-                  <li key={amenity} title={amenity}>
+                  <li key={amenity} title={amenityIn(locale, amenity)}>
                     <span className="rf__amenity-glyph" aria-hidden="true">
                       <RoomAmenityIcon label={amenity} />
                     </span>
                     <span className="rf__amenity-label">
-                      {resolveAmenityCaption(amenity).wide}
+                      {resolveAmenityCaption(amenity, locale).wide}
                     </span>
                   </li>
                 ))}
@@ -396,41 +398,38 @@ export function RoomDetailPage({
 
           <section className="rf__fare" id="fare">
             <header className="rf__fare-head">
-              <p className="rf__kicker">01 — Reservation</p>
-              <h2 className="rf__display rf__display--row">Your cabin &amp; fare</h2>
+              <p className="rf__kicker">{t.reservationKicker}</p>
+              <h2 className="rf__display rf__display--row">{t.fareTitle}</h2>
               <p className="rf__meta">
                 {voyage
-                  ? `${voyage.ports} · every ${voyage.departureDay}`
-                  : "Request a date"}
+                  ? t.portsEvery(ports(voyage.ports), day(voyage.departureDay))
+                  : t.requestDate}
               </p>
             </header>
 
             <div className="rf-ledger">
               <div className="rf-ledger__row rf-ledger__row--head" aria-hidden="true">
-                <span>Accommodation</span>
-                <span>Your voyage includes</span>
-                <span>{voyage ? `${voyage.nights}-night total` : "Total"}</span>
-                <span>Cabins</span>
+                {t.ledgerHead(voyage ? voyage.nights : null).map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
               </div>
               <div className="rf-ledger__row">
                 <div className="rf-ledger__cell rf-ledger__cell--room">
                   <RoomThumb path={room.images[0] ?? ""} alt={room.name} />
                   <div>
                     <h3>{room.name}</h3>
-                    <p>
-                      {room.sizeSqm} m² · Up to {room.capacity} guests
-                    </p>
+                    <p>{t.sizeGuests(room.sizeSqm, room.capacity)}</p>
                     <p>{room.eyebrow}</p>
                   </div>
                 </div>
                 <div className="rf-ledger__cell">
                   <ul className="rf-ledger__ticks">
                     {inclusionHighlights.map((item) => (
-                      <li key={item}>{resolveAmenityCaption(item).tight}</li>
+                      <li key={item}>{resolveAmenityCaption(item, locale).tight}</li>
                     ))}
                   </ul>
                   <a className="rf__text-link" href="#notes">
-                    See all inclusions
+                    {t.allInclusions}
                   </a>
                 </div>
                 <div className="rf-ledger__cell rf-ledger__cell--price">
@@ -438,32 +437,31 @@ export function RoomDetailPage({
                     <>
                       <p className="rf-ledger__price">
                         {fare(voyage.priceCents)}
-                        <RoomPriceUnit roomType={room.name} />
+                        <RoomPriceUnit roomType={roomProp.name} locale={locale} />
                       </p>
-                      <p className="rf__note">VAT &amp; service included</p>
+                      <p className="rf__note">{t.vatIncluded}</p>
                     </>
                   ) : (
-                    <p className="rf__note">Request a date</p>
+                    <p className="rf__note">{t.requestDate}</p>
                   )}
                 </div>
                 <div className="rf-ledger__cell rf-ledger__cell--count">
                   <p className="rf-ledger__count">1</p>
-                  <p className="rf__note">cabin</p>
+                  <p className="rf__note">{t.cabin}</p>
                 </div>
               </div>
             </div>
 
             <div className="rf__total">
               <p className="rf__total-line">
-                1 cabin · {voyage ? `${voyage.nights} nights` : "flexible dates"} ·
-                up to {room.capacity} guests
+                {t.totalLine(voyage ? voyage.nights : null, room.capacity)}
               </p>
               <p className="rf__total-sum">
-                <span>Total</span>
-                <strong>{voyage ? <>{fare(voyage.priceCents)}<RoomPriceUnit roomType={room.name} /></> : "On request"}</strong>
+                <span>{t.total}</span>
+                <strong>{voyage ? <>{fare(voyage.priceCents)}<RoomPriceUnit roomType={roomProp.name} locale={locale} /></> : t.onRequest}</strong>
               </p>
               <BookNowTrigger className="room-pill rf__act rf__act--wide">
-                <span>Continue to reservation</span>
+                <span>{t.continueToReservation}</span>
                 <ArrowRight aria-hidden="true" />
               </BookNowTrigger>
             </div>
@@ -472,8 +470,8 @@ export function RoomDetailPage({
           <section className="rf__notes" id="notes">
             <div className="rf__included">
               <h2 className="rf__display rf__display--sm">
-                <span>Included,</span>
-                <em>with our care</em>
+                <span>{t.includedTitle[0]}</span>
+                <em>{t.includedTitle[1]}</em>
               </h2>
               <ul className="rf__included-list">
                 {panels.include.map((item) => (
@@ -482,7 +480,7 @@ export function RoomDetailPage({
               </ul>
             </div>
             <div className="rf__know">
-              <h2 className="rf__display rf__display--sm">Good to know</h2>
+              <h2 className="rf__display rf__display--sm">{t.goodToKnow}</h2>
               <ul className="rf__know-list">
                 {panels.exclude.map((item) => (
                   <li key={item}>{item}</li>
@@ -499,7 +497,7 @@ export function RoomDetailPage({
         <dialog
           className="rf-view"
           ref={viewer}
-          aria-label={`${room.name} photographs`}
+          aria-label={t.photographs(room.name)}
           onKeyDown={(event) => {
             if (event.key === "ArrowRight") stepPhoto(1);
             if (event.key === "ArrowLeft") stepPhoto(-1);
@@ -512,7 +510,7 @@ export function RoomDetailPage({
           <div className="rf-view__stage">
             <RoomCmsImage
               path={room.images[photo] ?? ""}
-              alt={`${room.name}, photograph ${photo + 1} of ${photoCount}`}
+              alt={t.viewerAlt(room.name, photo + 1, photoCount)}
               sizes="100vw"
               className="rf-view__img"
             />
@@ -520,7 +518,7 @@ export function RoomDetailPage({
           <button
             type="button"
             className="rf-view__close"
-            aria-label="Close photographs"
+            aria-label={t.closePhotos}
             onClick={() => viewer.current?.close()}
           >
             <X aria-hidden="true" />
@@ -528,7 +526,7 @@ export function RoomDetailPage({
           <button
             type="button"
             className="rf-view__nav rf-view__nav--prev"
-            aria-label="Previous photograph"
+            aria-label={t.previousPhoto}
             onClick={() => stepPhoto(-1)}
           >
             <ChevronLeft aria-hidden="true" />
@@ -536,7 +534,7 @@ export function RoomDetailPage({
           <button
             type="button"
             className="rf-view__nav rf-view__nav--next"
-            aria-label="Next photograph"
+            aria-label={t.nextPhoto}
             onClick={() => stepPhoto(1)}
           >
             <ChevronRight aria-hidden="true" />

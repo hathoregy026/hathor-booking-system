@@ -4,8 +4,14 @@ import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import { BookNowTrigger } from "@/components/public/BookNowTrigger";
 import { ManagedImage } from "@/components/ui/ManagedImage";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { HOME_COPY } from "@/lib/i18n/home-copy";
+import type { PublicLocale } from "@/lib/i18n/locale";
 
-const SILK_ROWS = ["TAKE YOUR", "VOYAGE", "TODAY"] as const;
+const SILK_ROWS: Record<PublicLocale, readonly string[]> = {
+  en: ["TAKE YOUR", "VOYAGE", "TODAY"],
+  it: ["PRENOTI IL", "SUO VIAGGIO", "OGGI"],
+};
 
 /*
  * One linear scroll sequence:
@@ -69,6 +75,8 @@ export function HomeCampaignSection({
   titleStyle,
   previewAnchor = true,
 }: HomeCampaignSectionProps) {
+  const locale = usePublicLocale();
+  const words = HOME_COPY[locale].campaign;
   const trackRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -169,14 +177,14 @@ export function HomeCampaignSection({
       ref={trackRef}
       className="hcta-track signature-fog-rise"
       id="campaign"
-      aria-label="Campaign call to action"
+      aria-label={words.label}
       data-hcta-track
       data-mobile-fog-rise=""
     >
       <div className="hcta-frame" data-hcta-frame>
         <div className="hcta-silk" data-hcta-silk>
           <div className="hcta-silk-copy" aria-hidden="true">
-            {SILK_ROWS.map((row) => (
+            {SILK_ROWS[locale].map((row) => (
               <div className="hcta-silk-row" key={row}>
                 {Array.from(row).map((character, index) => (
                   <span className="hcta-silk-letter" key={`${row}-${index}`}>
@@ -222,7 +230,7 @@ export function HomeCampaignSection({
               </span>
             ))}
           </h2>
-          <BookNowTrigger className="btn hcta-book">Book Now</BookNowTrigger>
+          <BookNowTrigger className="btn hcta-book">{words.cta}</BookNowTrigger>
         </div>
       </div>
     </section>

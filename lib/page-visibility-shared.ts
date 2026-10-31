@@ -1,3 +1,5 @@
+import { stripLocalePrefix } from "@/lib/i18n/locale";
+
 
 export const PAGE_VISIBILITY_KEY = "page-visibility";
 
@@ -121,7 +123,8 @@ function buildPathLookup(): Map<string, ManagedPublicPage> {
 }
 
 export function normalizePublicPath(pathname: string): string {
-  const raw = pathname.split("?")[0]?.split("#")[0] ?? "/";
+  /* A translated page follows the dashboard toggle of the page it translates. */
+  const raw = stripLocalePrefix(pathname.split("?")[0]?.split("#")[0] ?? "/");
   if (raw === "") return "/";
   const trimmed = raw.replace(/\/+$/, "");
   return trimmed === "" ? "/" : trimmed;

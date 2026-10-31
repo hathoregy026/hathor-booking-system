@@ -181,9 +181,13 @@ function playPreparedLines(
   };
 }
 
+/*
+ * Letters always sit inside word spans: with bare letters the browser may wrap
+ * a line between any two of them, breaking a title mid-word ("T / HAT").
+ */
 function splitUnits(el: HTMLElement, light: boolean) {
   return new SplitType(el, {
-    types: light ? "words" : "chars",
+    types: light ? "words" : "words,chars",
     tagName: "span",
     wordClass: "anima-title-word",
     charClass: "anima-title-char",
@@ -225,7 +229,7 @@ function collectLines(el: HTMLElement, light: boolean): HTMLElement[] {
   }
 
   const split = new SplitType(el, {
-    types: light ? "lines,words" : "lines,chars",
+    types: light ? "lines,words" : "lines,words,chars",
     tagName: "span",
     lineClass: "anima-title-line",
     wordClass: "anima-title-word",

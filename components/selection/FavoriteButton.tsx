@@ -8,6 +8,8 @@ import {
   useSelectionStore,
 } from "@/components/selection/SelectionProvider";
 import type { FavoriteType } from "@/lib/selection-types";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import "./FavoriteButton.css";
 
 /**
@@ -58,6 +60,7 @@ export function FavoriteButton({
   onToggle,
 }: FavoriteButtonProps) {
   const saved = useIsFavorite(type, slug);
+  const copy = CHROME_COPY[usePublicLocale()].selection;
   const toggleFavorite = useSelectionStore((state) => state.toggleFavorite);
 
   const [pulsing, setPulsing] = useState(false);
@@ -104,9 +107,7 @@ export function FavoriteButton({
    * so WCAG 2.5.3 Label in Name holds when the text label is shown — a voice
    * user can say "click Saved" and hit the right control.
    */
-  const accessibleLabel = saved
-    ? `Saved — remove ${name} from Favorites`
-    : `Save ${name} to Favorites`;
+  const accessibleLabel = saved ? copy.savedLabel(name) : copy.saveLabel(name);
 
   const classes = [
     "hathor-fav",
@@ -133,7 +134,7 @@ export function FavoriteButton({
       {withLabel ? (
         /* Decorative: the accessible name comes from aria-label above. */
         <span className="hathor-fav__label" aria-hidden="true">
-          {saved ? "Saved" : "Save"}
+          {saved ? copy.saved : copy.save}
         </span>
       ) : null}
     </button>

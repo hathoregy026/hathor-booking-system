@@ -1,5 +1,7 @@
 "use client";
 
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import { usePublicTheme } from "./PublicThemeProvider";
 
 /** Ref sun: solid core, eight even rays. */
@@ -55,6 +57,7 @@ function RefMoonIcon() {
 
 export function PublicThemeToggle() {
   const { theme, toggleTheme } = usePublicTheme();
+  const t = CHROME_COPY[usePublicLocale()].theme;
   const isDay = theme === "day";
 
   return (
@@ -68,20 +71,20 @@ export function PublicThemeToggle() {
         event.stopPropagation();
         toggleTheme();
       }}
-      aria-label={isDay ? "Switch to night mode" : "Switch to day mode"}
+      aria-label={isDay ? t.toNight : t.toDay}
       aria-pressed={!isDay}
-      title={isDay ? "Day mode" : "Night mode"}
+      title={isDay ? t.dayTitle : t.nightTitle}
     >
       <span className="public-theme-toggle__track">
         <span className="public-theme-toggle__thumb">
           {isDay ? <RefSunIcon /> : <RefMoonIcon />}
         </span>
         <span className="public-theme-toggle__label" aria-hidden="true">
-          {isDay ? "daymode" : "nightmode"}
+          {isDay ? t.day : t.night}
         </span>
       </span>
       <span className="sr-only">
-        {isDay ? "Day mode, switch to night mode" : "Night mode, switch to day mode"}
+        {isDay ? t.dayStatus : t.nightStatus}
       </span>
     </button>
   );

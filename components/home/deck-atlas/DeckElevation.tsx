@@ -1,6 +1,8 @@
 "use client";
 
 import type { ShipDeckId } from "@/lib/ship-experience-shared";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { DECK_ATLAS_COPY } from "@/lib/i18n/deck-atlas-copy";
 
 type DeckOption = { id: ShipDeckId; name: string; subtitle: string; visible: boolean };
 
@@ -31,19 +33,20 @@ export function DeckElevation({ decks, active, onChange }: {
   active: ShipDeckId;
   onChange: (id: ShipDeckId) => void;
 }) {
+  const tx = DECK_ATLAS_COPY[usePublicLocale()];
   const shown = new Set(decks.filter(deck => deck.visible).map(deck => deck.id));
   const pick = (id: ShipDeckId) => { if (shown.has(id)) onChange(id); };
 
   return (
     <div className="da-elev" data-active={active}>
-      <div className="da-elev__decks" role="group" aria-label="Choose a deck">
+      <div className="da-elev__decks" role="group" aria-label={tx.chooseDeck}>
         {ORDER.map(id => {
           const deck = decks.find(item => item.id === id);
           if (!deck) return null;
           return (
             <button key={id} type="button" className="da-deckpill" data-deck={id} aria-pressed={active === id}
               title={`${deck.name} · ${deck.subtitle}`} aria-label={deck.name} disabled={!deck.visible} onClick={() => pick(id)}>
-              <small>{NUMBER[id]}</small><span>{deck.name.replace(/\s*deck$/i, "")}</span>
+              <small>{NUMBER[id]}</small><span>{tx.deckTab(deck.name)}</span>
             </button>
           );
         })}

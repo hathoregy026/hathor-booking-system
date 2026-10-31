@@ -5,6 +5,9 @@ import { trackGaEvent } from "@/lib/ga-browser";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHARTER_COPY } from "@/lib/i18n/charter-copy";
+import { sendFailureIn } from "@/lib/i18n/form-errors-it";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -52,6 +55,9 @@ export function CharterRequestForm({
   compact = false,
   onReveal = revealByDefault,
 }: CharterRequestFormProps) {
+  const locale = usePublicLocale();
+  const copy = CHARTER_COPY[locale];
+  const t = copy.form;
   const formId = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
@@ -68,11 +74,15 @@ export function CharterRequestForm({
   const [minDate] = useState(todayIso);
 
   /* Route-derived fields follow the chosen route and stay editable until it changes again. */
+  const tripFor = (chosen: string) => {
+    const details = routeDetails(chosen);
+    return { ...details, departure: copy.place(details.departure), destination: copy.place(details.destination) };
+  };
   const [route, setRoute] = useState(preferredRoute);
-  const [trip, setTrip] = useState(() => routeDetails(preferredRoute));
+  const [trip, setTrip] = useState(() => tripFor(preferredRoute));
   if (preferredRoute !== route) {
     setRoute(preferredRoute);
-    setTrip(routeDetails(preferredRoute));
+    setTrip(tripFor(preferredRoute));
   }
 
   useEffect(() => {
@@ -110,30 +120,33 @@ export function CharterRequestForm({
     const children = childrenRaw === "" ? 0 : Number(childrenRaw);
 
     const nextErrors: Record<string, string> = {};
-    if (name.length < 2) nextErrors.name = "Please enter your name.";
-    else if (!NAME_PATTERN.test(name)) nextErrors.name = "Please use letters, spaces, hyphens or apostrophes only.";
-    if (!email || !EMAIL_PATTERN.test(email)) nextErrors.email = "Please enter a valid email.";
-    if (phone && !PHONE_PATTERN.test(phone)) nextErrors.phone = "Please use digits, spaces and + ( ) - only.";
-    if (checkIn && checkIn < minDate) nextErrors.checkIn = "Please choose a date from today onwards.";
-    if (!Number.isInteger(adults) || adults < 1 || adults > 50) nextErrors.adults = "Please enter 1 to 50 adults.";
-    if (!Number.isInteger(children) || children < 0 || children > 50) nextErrors.children = "Please enter 0 to 50 children.";
+    if (name.length < 2) nextErrors.name = t.errors.name;
+    else if (!NAME_PATTERN.test(name)) nextErrors.name = t.errors.nameChars;
+    if (!email || !EMAIL_PATTERN.test(email)) nextErrors.email = t.errors.email;
+    if (phone && !PHONE_PATTERN.test(phone)) nextErrors.phone = t.errors.phone;
+    if (checkIn && checkIn < minDate) nextErrors.checkIn = t.errors.date;
+    if (!Number.isInteger(adults) || adults < 1 || adults > 50) nextErrors.adults = t.errors.adults;
+    if (!Number.isInteger(children) || children < 0 || children > 50) nextErrors.children = t.errors.children;
 
-    const composedMessage = [
-      notes || "Private charter inquiry.",
+    /* The team always reads English labels and values; the guest's mail draft reads the page's language. */
+    const composeMessage = (words: typeof t.draft, shownTripType: string, closing: string) => [
+      notes || words.inquiry,
       "",
-      tripType ? `Trip type: ${tripType}` : "",
-      departure ? `Departure: ${departure}` : "",
-      destination ? `Destination: ${destination}` : "",
-      preferredTime ? `Preferred time: ${preferredTime}` : "",
-      special ? `Special requirements: ${special}` : "",
+      tripType ? `${words.tripType}: ${shownTripType}` : "",
+      departure ? `${words.departure}: ${departure}` : "",
+      destination ? `${words.destination}: ${destination}` : "",
+      preferredTime ? `${words.time}: ${preferredTime}` : "",
+      special ? `${words.special}: ${special}` : "",
+      closing,
     ]
       .filter(Boolean)
       .join("\n");
+    const composedMessage = composeMessage(CHARTER_COPY.en.form.draft, tripType, t.languageNote ?? "");
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
       setState("error");
-      setErrorMessage("Please check the highlighted fields.");
+      setErrorMessage(t.errors.check);
       const firstKey = FIELD_ORDER.find(key => nextErrors[key]) ?? Object.keys(nextErrors)[0];
       const el = form.querySelector<HTMLElement>(`[name="${firstKey}"]`);
       if (el) {
@@ -143,7 +156,7 @@ export function CharterRequestForm({
       return;
     }
 
-    if (!turnstileToken) { setState("error"); setErrorMessage("Please complete the security check before sending."); return; }
+    if (!turnstileToken) { setState("error"); setErrorMessage(t.errors.security); return; }
 
     const payload: InquiryPayload = {
       type: "charter",
@@ -170,7 +183,7 @@ export function CharterRequestForm({
         receiptSent?: boolean;
       } | null;
       if (!response.ok) {
-        throw new Error(result?.error ?? "Unable to send your request.");
+        throw new Error(result?.error ?? t.errors.send);
       }
 
       setSentTo(email);
@@ -180,19 +193,20 @@ export function CharterRequestForm({
       form.reset();
     } catch (error) {
       setState("error");
-      setErrorMessage(error instanceof Error ? error.message : "Unable to send your request.");
+      setErrorMessage(sendFailureIn(locale, error, t.errors.send));
       /* The request must never be lost: the same details, ready to send from the guest's own mail. */
-      const subject = `Private charter request — ${name}`;
+      const words = t.draft;
+      const subject = words.subject(name);
       const details = [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        phone ? `Phone: ${phone}` : "",
-        chosenRoute ? `Preferred route: ${chosenRoute}` : "",
-        checkIn ? `Preferred start date: ${checkIn}` : "",
-        `Adults: ${adults}`,
-        `Children: ${children}`,
+        `${words.name}: ${name}`,
+        `${words.email}: ${email}`,
+        phone ? `${words.phone}: ${phone}` : "",
+        chosenRoute ? `${words.route}: ${copy.place(chosenRoute)}` : "",
+        checkIn ? `${words.startDate}: ${checkIn}` : "",
+        `${words.adults}: ${adults}`,
+        `${words.children}: ${children}`,
       ].filter(Boolean).join("\n");
-      const body = `${details}\n\n${composedMessage}`;
+      const body = `${details}\n\n${composeMessage(words, t.tripTypes[tripType as TripType] ?? tripType, "")}`;
       setFallbackHref(`mailto:${PUBLIC_CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
     } finally {
       setTurnstileToken("");
@@ -209,25 +223,23 @@ export function CharterRequestForm({
       >
         <div className="ch-form__success" role="status" aria-live="polite">
           <h2 id="charter-request-heading" className="chr-display" ref={successRef} tabIndex={-1}>
-            Thank you.
+            {t.success.title}
           </h2>
-          <p>
-            Your private voyage inquiry has been received. Our charter team will
-            prepare a tailored response.
-          </p>
+          <p>{t.success.body}</p>
           {sentTo && receiptSent ? (
             <p className="ch-form__note">
-              A confirmation is on its way to <strong>{sentTo}</strong>. If it
-              does not arrive, write to{" "}
+              {t.success.receipt.before} <strong>{sentTo}</strong>
+              {t.success.receipt.after}{" "}
               <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a>.
             </p>
           ) : null}
           {sentTo && !receiptSent ? (
             <p className="ch-form__note">
-              Our team has your request, but we could not send a confirmation to{" "}
-              <strong>{sentTo}</strong>. Please check the address, or write to{" "}
-              <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a> so
-              we can reach you.
+              {t.success.noReceipt.before}{" "}
+              <strong>{sentTo}</strong>
+              {t.success.noReceipt.after}{" "}
+              <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a>{" "}
+              {t.success.noReceipt.end}
             </p>
           ) : null}
           <button
@@ -239,7 +251,7 @@ export function CharterRequestForm({
               setReceiptSent(true);
             }}
           >
-            Send another request
+            {t.success.again}
           </button>
         </div>
       </section>
@@ -254,19 +266,19 @@ export function CharterRequestForm({
     >
       {!compact ? (
         <div className="ch-request__intro">
-          <p className="chr-eyebrow">Private Concierge</p>
+          <p className="chr-eyebrow">{t.eyebrow}</p>
           <h2 id="charter-request-heading" className="chr-display">
-            {CHARTER_PRIVATE.inquiry.title}
+            {t.title}
           </h2>
-          <p>{CHARTER_PRIVATE.inquiry.lead}</p>
-          <p className="ch-request__route">Preferred · {preferredRoute}</p>
+          <p>{t.lead}</p>
+          <p className="ch-request__route">{copy.preferred(copy.place(preferredRoute))}</p>
           <p className="ch-request__email">
             <a href={`mailto:${PUBLIC_CONTACT.email}`}>{PUBLIC_CONTACT.email}</a>
           </p>
         </div>
       ) : (
         <h2 id="charter-request-heading" className="lx-sr">
-          {CHARTER_PRIVATE.inquiry.title}
+          {t.title}
         </h2>
       )}
 
@@ -278,14 +290,14 @@ export function CharterRequestForm({
       >
         {/* Spam trap, as on the contact form: people never see or fill it. */}
         <div hidden aria-hidden="true" style={{ display: "none" }}>
-          <label htmlFor={`${formId}-website`}>Website</label>
+          <label htmlFor={`${formId}-website`}>{t.website}</label>
           <input id={`${formId}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
 
         <div className="ch-form__row">
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-name`}>
-              Name
+              {t.name}
             </label>
             <input
               id={`${formId}-name`}
@@ -305,7 +317,7 @@ export function CharterRequestForm({
           </div>
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-email`}>
-              Email
+              {t.email}
             </label>
             <input
               id={`${formId}-email`}
@@ -327,7 +339,7 @@ export function CharterRequestForm({
         <div className="ch-form__row">
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-phone`}>
-              Phone
+              {t.phone}
             </label>
             <input
               id={`${formId}-phone`}
@@ -345,7 +357,7 @@ export function CharterRequestForm({
           </div>
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-tripType`}>
-              Trip Type
+              {t.tripType}
             </label>
             <select
               id={`${formId}-tripType`}
@@ -356,7 +368,7 @@ export function CharterRequestForm({
             >
               {CHARTER_PRIVATE.inquiry.tripTypes.map((type) => (
                 <option key={type} value={type}>
-                  {type}
+                  {t.tripTypes[type]}
                 </option>
               ))}
             </select>
@@ -366,14 +378,14 @@ export function CharterRequestForm({
         <div className="ch-form__row">
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-departure`}>
-              Departure
+              {t.departure}
             </label>
             <input
               id={`${formId}-departure`}
               name="departure"
               type="text"
               className="ch-form__input"
-              placeholder="e.g. Luxor"
+              placeholder={t.departurePlaceholder}
               maxLength={80}
               value={trip.departure}
               onChange={event => setTrip(current => ({ ...current, departure: event.target.value }))}
@@ -381,14 +393,14 @@ export function CharterRequestForm({
           </div>
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-destination`}>
-              Destination
+              {t.destination}
             </label>
             <input
               id={`${formId}-destination`}
               name="destination"
               type="text"
               className="ch-form__input"
-              placeholder="e.g. Aswan"
+              placeholder={t.destinationPlaceholder}
               maxLength={80}
               value={trip.destination}
               onChange={event => setTrip(current => ({ ...current, destination: event.target.value }))}
@@ -399,7 +411,7 @@ export function CharterRequestForm({
         <div className="ch-form__row">
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-checkIn`}>
-              Preferred start date
+              {t.startDate}
             </label>
             <input
               id={`${formId}-checkIn`}
@@ -418,7 +430,7 @@ export function CharterRequestForm({
           </div>
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-time`}>
-              Preferred Time
+              {t.time}
             </label>
             <input
               id={`${formId}-time`}
@@ -432,7 +444,7 @@ export function CharterRequestForm({
         <div className="ch-form__row">
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-route`}>
-              Preferred Route
+              {t.route}
             </label>
             <select
               id={`${formId}-route`}
@@ -443,14 +455,14 @@ export function CharterRequestForm({
             >
               {routes.map((option) => (
                 <option key={option} value={option}>
-                  {option}
+                  {copy.place(option)}
                 </option>
               ))}
             </select>
           </div>
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-adults`}>
-              Passengers (Adults)
+              {t.adults}
             </label>
             <input
               id={`${formId}-adults`}
@@ -473,7 +485,7 @@ export function CharterRequestForm({
         <div className="ch-form__row">
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-children`}>
-              Children
+              {t.children}
             </label>
             <input
               id={`${formId}-children`}
@@ -493,7 +505,7 @@ export function CharterRequestForm({
           </div>
           <div className="ch-form__field">
             <label className="ch-form__label" htmlFor={`${formId}-special`}>
-              Luggage / Special Requirements
+              {t.special}
             </label>
             <input
               id={`${formId}-special`}
@@ -501,14 +513,14 @@ export function CharterRequestForm({
               type="text"
               className="ch-form__input"
               maxLength={300}
-              placeholder="Accessibility, celebrations, dietary…"
+              placeholder={t.specialPlaceholder}
             />
           </div>
         </div>
 
         <div className="ch-form__field ch-form__field--full">
           <label className="ch-form__label" htmlFor={`${formId}-message`}>
-            Message
+            {t.message}
           </label>
           <textarea
             id={`${formId}-message`}
@@ -516,7 +528,7 @@ export function CharterRequestForm({
             rows={3}
             className="ch-form__input"
             maxLength={3000}
-            placeholder="Tell us how you wish to travel…"
+            placeholder={t.messagePlaceholder}
           />
         </div>
 
@@ -530,8 +542,8 @@ export function CharterRequestForm({
           {state === "error" ? <p>{errorMessage}</p> : null}
           {state === "error" && fallbackHref ? (
             <p className="ch-form__fallback">
-              Your details are safe — send them straight to our charter team:{" "}
-              <a href={fallbackHref}>email the request</a>
+              {t.fallback.lead}{" "}
+              <a href={fallbackHref}>{t.fallback.link}</a>
               {" · "}
               <a href={PUBLIC_CONTACT.whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp</a>
               {" · "}
@@ -548,7 +560,7 @@ export function CharterRequestForm({
           aria-busy={state === "submitting"}
         >
           <span>
-            {state === "submitting" ? "Sending…" : "Send Request"}
+            {state === "submitting" ? t.sending : t.send}
           </span>
         </button>
       </form>

@@ -9,6 +9,8 @@ import {
   useSelectionStore,
   useVoyageSelectionCount,
 } from "@/components/selection/SelectionProvider";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import "./SelectionHeaderControls.css";
 
 /**
@@ -27,15 +29,9 @@ export function SelectionHeaderControls() {
   const openFavorites = useSelectionStore((state) => state.openFavorites);
   const openVoyage = useSelectionStore((state) => state.openVoyage);
 
-  const favoritesLabel =
-    favoritesCount > 0
-      ? `My Favorites, ${favoritesCount} saved`
-      : "My Favorites, nothing saved yet";
-
-  const voyageLabel =
-    voyageCount > 0
-      ? `My Voyage, ${voyageCount} ${voyageCount === 1 ? "selection" : "selections"}`
-      : "My Voyage, nothing selected yet";
+  const copy = CHROME_COPY[usePublicLocale()].selection;
+  const favoritesLabel = copy.favoritesCount(favoritesCount);
+  const voyageLabel = copy.voyageCount(voyageCount);
 
   return (
     <>
@@ -45,7 +41,7 @@ export function SelectionHeaderControls() {
         onClick={openFavorites}
         aria-label={favoritesLabel}
         aria-haspopup="dialog"
-        title="My Favorites"
+        title={copy.myFavorites}
       >
         {/* Outline heart, per the navbar reference — the filled silhouette
             is the card/saved state, not the header mark. */}
@@ -66,7 +62,7 @@ export function SelectionHeaderControls() {
         onClick={openVoyage}
         aria-label={voyageLabel}
         aria-haspopup="dialog"
-        title="My Voyage"
+        title={copy.myVoyage}
       >
         <span className="hsc__mark" aria-hidden="true">
           <HathorCartIcon className="hsc__icon" />

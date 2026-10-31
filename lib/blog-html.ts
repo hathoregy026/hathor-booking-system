@@ -54,11 +54,13 @@ const INTERNAL_HOSTS = new Set([
 const CANONICAL_PATH_ALIASES: Readonly<Record<string, string>> = {
   "/Luxury-Royal-Suites-Nile-Dahabiya-Cruise": "/royal-suites",
   "/luxury-suites": "/rooms",
+  "/Nile-Cruise-Luxury-Suites": "/rooms",
   "/cruises": "/cruises-list",
   "/blog": "/blogs",
   "/journal": "/blogs",
   "/rooms/dahabiya-nile-cruise-aswan-to-luxor": "/voyages/aswan-to-luxor",
   "/rooms/dahabiya-nile-cruise-luxor-to-aswan": "/voyages/luxor-to-aswan",
+  "/rooms/dahabiya": "/voyages/luxor-aswan-luxor",
 };
 
 const SAFE_URL_SCHEMES = new Set(["http:", "https:", "mailto:", "tel:"]);
@@ -94,6 +96,24 @@ function normalizeInternalHref(value: string): string {
     return `${pathname}${url.search}${url.hash}`;
   } catch {
     return value;
+  }
+}
+
+/**
+ * Photos uploaded to the old site's /storage folder did not move with the
+ * domain: every one answers 404 now, and the CSP blocks that host anyway. They
+ * are hidden here rather than deleted from the posts, so a recovered copy can
+ * be mapped back in and each photo returns to its place.
+ */
+function isRetiredStorageImage(src: string): boolean {
+  try {
+    const url = new URL(src, "https://www.hathorcruise.com");
+    return (
+      INTERNAL_HOSTS.has(url.hostname.toLowerCase()) &&
+      url.pathname.startsWith("/storage/")
+    );
+  } catch {
+    return false;
   }
 }
 
@@ -157,6 +177,12 @@ export function sanitizeBlogHtml(html: string): string {
     }
   });
 
+  $("img").each((_, element) => {
+    if (!isRetiredStorageImage(element.attribs.src?.trim() ?? "")) return;
+    const figure = $(element).closest("figure");
+    (figure.length ? figure : $(element)).remove();
+  });
+
   return $.root().html() ?? "";
 }
 
@@ -178,11 +204,45 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+const INLINE_TAGS = new Set(["a", "strong", "em", "b", "i", "br", "span", "img"]);
+
+/**
+ * HTML parsing closes a <p> at a <figure>, so text the CMS wrote after a
+ * figure inside the same paragraph lands loose at the root. The block split
+ * below walks root elements only and would drop it, so every run of root text
+ * and inline elements that holds visible text is wrapped in its own <p>.
+ * Runs without text (a lone <br>, whitespace) are left exactly as they were.
+ */
+function wrapRootInlineRuns(html: string): string {
+  const $ = cheerio.load(html, null, false);
+  const nodes = $.root().contents().toArray();
+  let run: typeof nodes = [];
+
+  const flush = () => {
+    if (run.some((node) => node.type === "text" ? node.data.trim() : $(node).text().trim())) {
+      $(run[0]).before("<p></p>");
+      $(run[0]).prev().append(run);
+    }
+    run = [];
+  };
+
+  for (const node of nodes) {
+    const inline =
+      node.type === "text" ||
+      (node.type === "tag" && INLINE_TAGS.has(node.name.toLowerCase()));
+    if (inline) run.push(node);
+    else flush();
+  }
+  flush();
+
+  return $.root().html() ?? "";
+}
+
 export function prepareBlogContentForRender(content: string, excerpt: string): string {
   const raw = isBlogHtmlContent(content)
     ? content
     : plainTextToBlogHtml(content, excerpt);
-  return sanitizeBlogHtml(raw);
+  return wrapRootInlineRuns(sanitizeBlogHtml(raw));
 }
 
 /**

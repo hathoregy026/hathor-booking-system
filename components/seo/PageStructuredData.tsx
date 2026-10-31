@@ -1,6 +1,7 @@
 import { JsonLd } from "@/components/seo/JsonLd";
-import { organizationNode, websiteNode } from "@/components/seo/SiteStructuredData";
-import { seoAbsoluteUrl } from "@/lib/seo/site";
+import { organizationNode, websiteNode } from "@/components/seo/siteNodes";
+import { SEO_PLACE_WORDS, seoAbsoluteUrl } from "@/lib/seo/site";
+import { PUBLIC_LOCALE_HTML_LANG, splitLocalePath } from "@/lib/i18n/locale";
 
 export type BreadcrumbItem = {
   name: string;
@@ -47,7 +48,8 @@ export function PageStructuredData({
       url: pageUrl,
       name,
       description,
-      inLanguage: "en",
+      /* `/it/…` pages are Italian; everything else English. */
+      inLanguage: PUBLIC_LOCALE_HTML_LANG[splitLocalePath(path).locale],
       isPartOf: { "@id": `${origin}#website` },
       about: { "@id": `${origin}#organization` },
       breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
@@ -102,7 +104,10 @@ export function serviceNode(input: {
     description: input.description,
     serviceType: input.serviceType,
     provider: { "@id": `${origin}#organization` },
-    areaServed: { "@type": "Country", name: "Egypt" },
+    areaServed: {
+      "@type": "Country",
+      name: SEO_PLACE_WORDS[splitLocalePath(input.path).locale].country,
+    },
   };
 }
 

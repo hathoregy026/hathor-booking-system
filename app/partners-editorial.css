@@ -1302,4 +1302,22 @@ html:has(.partners-editorial) .public-fab {
   .partners-editorial .pn-line > * {
     white-space: normal;
   }
+
+  /* The stacked covenant gives its statement the full column: the desktop 16ch
+     box broke every line in two, and the rows ran into one another. */
+  .partners-editorial .pn-covenant__statement {
+    max-width: none;
+  }
+
+  /* Scene progress spans the whole stacked scene, so a line was still mid-slide
+     (and overlapping the next) while it sat on screen. Lines stay put here and
+     the clipped word rise carries the reveal. */
+  .partners-editorial .pn-line > * {
+    transform: none;
+    opacity: 1;
+  }
+
+  .partners-editorial .pn-line .anima-split-line {
+    overflow-y: clip;
+  }
 }

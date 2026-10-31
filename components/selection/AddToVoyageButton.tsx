@@ -2,10 +2,7 @@
 
 import { useCallback, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
-import {
-  describeRoomTypesOnCruise,
-  type StayDurationValue,
-} from "@/lib/booking-search-config";
+import type { StayDurationValue } from "@/lib/booking-search-config";
 import {
   findVoyage,
   isVoyageResidenceCompatible,
@@ -15,6 +12,9 @@ import {
 import { HathorCartIcon } from "@/components/selection/SelectionIcons";
 import { trackSelectionEvent } from "@/lib/selection-analytics";
 import { useSelectionStore, useVoyageSelection } from "@/components/selection/SelectionProvider";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { SELECTION_COPY } from "@/lib/i18n/selection-copy";
 import "./AddToVoyageButton.css";
 
 /**
@@ -27,17 +27,25 @@ import "./AddToVoyageButton.css";
  * from the project's existing describeRoomTypesOnCruise().
  *
  * A guest's selection is never discarded silently: replacing a journey that
- * would invalidate the chosen accommodation raises a confirmation first.
+ * would invalidate the chosen accommodation raises a confirmation first, and so
+ * does switching between a Private Charter and a scheduled journey — My Voyage
+ * holds one or the other, never both.
  */
 
-export type AddToVoyageKind = "voyage" | "residence" | "cabin";
+export type AddToVoyageKind = "voyage" | "residence" | "cabin" | "charter";
 export type AddToVoyageVariant = "card" | "inline" | "panel";
 
-type PendingChange = {
-  voyageSlug: StayDurationValue;
-  voyageLabel: string;
-  residenceName: string;
-};
+type PendingChange =
+  | {
+      kind: "residence";
+      voyageSlug: StayDurationValue;
+      voyageLabel: string;
+      residenceName: string;
+    }
+  /* Charter chosen while a scheduled journey or accommodation is selected. */
+  | { kind: "toCharter" }
+  /* Scheduled journey or accommodation chosen while the charter is selected. */
+  | { kind: "fromCharter" };
 
 export type AddToVoyageButtonProps = {
   kind: AddToVoyageKind;
@@ -68,8 +76,12 @@ export function AddToVoyageButton({
   const setResidence = useSelectionStore((state) => state.setResidence);
   const setSailingDate = useSelectionStore((state) => state.setSailingDate);
   const setGuests = useSelectionStore((state) => state.setGuests);
+  const setCharter = useSelectionStore((state) => state.setCharter);
   const openVoyage = useSelectionStore((state) => state.openVoyage);
 
+  const locale = usePublicLocale();
+  const copy = CHROME_COPY[locale].selection;
+  const t = SELECTION_COPY[locale];
   const [pending, setPending] = useState<PendingChange | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
@@ -77,7 +89,9 @@ export function AddToVoyageButton({
   const cabinPair = kind === "cabin" ? parseCabinSlug(slug) : null;
 
   const selected =
-    kind === "voyage"
+    kind === "charter"
+      ? selection.charter
+      : kind === "voyage"
       ? selection.voyageSlug === slug
       : kind === "cabin"
         ? Boolean(cabinPair) &&
@@ -95,13 +109,41 @@ export function AddToVoyageButton({
     [setResidence, setVoyage],
   );
 
-  const handleClick = useCallback(
-    async (event: MouseEvent<HTMLButtonElement>) => {
-      /* Safe inside linked cards: never navigate, never move the scroll. */
-      event.preventDefault();
-      event.stopPropagation();
-      setNotice(null);
-      if (checking) return;
+  /**
+   * `switchConfirmed` is true once the guest has accepted the charter /
+   * scheduled-journey swap in the confirmation dialog.
+   */
+  const select = useCallback(
+    async (switchConfirmed: boolean) => {
+      /*
+       * Private Charter is not a scheduled itinerary. It is the separate
+       * `charter` flag My Voyage renders and hands off to /charter, and it
+       * replaces any scheduled journey and accommodation.
+       */
+      if (kind === "charter") {
+        if (!selection.charter) {
+          if (selection.voyageSlug || selection.residenceSlug) {
+            if (!switchConfirmed) {
+              setPending({ kind: "toCharter" });
+              return;
+            }
+            setVoyage(null);
+            setResidence(null);
+          }
+          setCharter(true);
+          trackSelectionEvent("voyage_add", { voyage_slug: slug });
+        }
+        openVoyage();
+        return;
+      }
+
+      if (selection.charter) {
+        if (!switchConfirmed) {
+          setPending({ kind: "fromCharter" });
+          return;
+        }
+        setCharter(false);
+      }
 
       /*
        * A cabin listing is a cruise + cabin PAIR — one click sets both halves of
@@ -118,9 +160,7 @@ export function AddToVoyageButton({
             pairType,
           )
         ) {
-          setNotice(
-            `This journey offers ${describeRoomTypesOnCruise(cabinPair.voyageSlug as StayDurationValue)}.`,
-          );
+          setNotice(t.journeyOffers(cabinPair.voyageSlug as StayDurationValue));
           return;
         }
 
@@ -170,8 +210,9 @@ export function AddToVoyageButton({
           !isVoyageResidenceCompatible(voyageSlug, residenceType)
         ) {
           setPending({
+            kind: "residence",
             voyageSlug,
-            voyageLabel: voyage.ports,
+            voyageLabel: t.ports(voyage.ports),
             residenceName: selection.residenceSlug,
           });
           return;
@@ -188,9 +229,7 @@ export function AddToVoyageButton({
         selection.voyageSlug &&
         !isVoyageResidenceCompatible(selection.voyageSlug, residenceType)
       ) {
-        setNotice(
-          `This journey offers ${describeRoomTypesOnCruise(selection.voyageSlug)}.`,
-        );
+        setNotice(t.journeyOffers(selection.voyageSlug));
         return;
       }
 
@@ -198,31 +237,43 @@ export function AddToVoyageButton({
       trackSelectionEvent("accommodation_add", { residence_slug: slug });
 
       if (!selection.voyageSlug) {
-        setNotice("Choose a voyage to complete your selection.");
+        setNotice(t.chooseVoyage);
       }
       openVoyage();
     },
     [
       applyVoyage,
       cabinPair,
-      checking,
       context,
       kind,
       openVoyage,
+      selection.charter,
       selection.residenceSlug,
       selection.voyageSlug,
+      setCharter,
       setGuests,
       setResidence,
       setSailingDate,
       setVoyage,
       slug,
+      t,
       verify,
     ],
   );
 
-  const label = selected
-    ? `${name} is in My Voyage`
-    : `Add ${name} to My Voyage`;
+  const handleClick = useCallback(
+    async (event: MouseEvent<HTMLButtonElement>) => {
+      /* Safe inside linked cards: never navigate, never move the scroll. */
+      event.preventDefault();
+      event.stopPropagation();
+      setNotice(null);
+      if (checking) return;
+      await select(false);
+    },
+    [checking, select],
+  );
+
+  const label = selected ? copy.inVoyageLabel(name) : copy.addToVoyageLabel(name);
 
   const classes = [
     "hathor-atv",
@@ -235,14 +286,26 @@ export function AddToVoyageButton({
 
   const showText = variant !== "card";
 
+  const confirmCopy = !pending
+    ? null
+    : pending.kind === "toCharter"
+      ? { title: t.toCharterTitle, body: t.toCharterBody, keep: t.keepCurrent }
+      : pending.kind === "fromCharter"
+        ? { title: t.fromCharterTitle, body: t.fromCharterBody, keep: t.keepCharter }
+        : {
+            title: t.changeTitle,
+            body: t.changeBody(pending.voyageLabel),
+            keep: t.keepCurrent,
+          };
+
   const confirmDialog =
-    pending && typeof document !== "undefined"
+    pending && confirmCopy && typeof document !== "undefined"
       ? createPortal(
           <div className="hathor-atv-confirm" role="presentation">
             <button
               type="button"
               className="hathor-atv-confirm__backdrop"
-              aria-label="Keep current voyage"
+              aria-label={confirmCopy.keep}
               onClick={() => setPending(null)}
             />
             <div
@@ -251,33 +314,31 @@ export function AddToVoyageButton({
               aria-modal="true"
               aria-labelledby="hathor-atv-confirm-title"
             >
-              <p className="hathor-atv-confirm__eyebrow">My Voyage</p>
-              <h2 id="hathor-atv-confirm-title">
-                Changing your voyage may update your selected accommodation.
-              </h2>
-              <p>
-                {pending.voyageLabel} does not offer your current accommodation.
-                Continuing will keep the new journey and clear the accommodation
-                so you can choose again.
-              </p>
+              <p className="hathor-atv-confirm__eyebrow">{copy.myVoyage}</p>
+              <h2 id="hathor-atv-confirm-title">{confirmCopy.title}</h2>
+              <p>{confirmCopy.body}</p>
               <div className="hathor-atv-confirm__actions">
                 <button
                   type="button"
                   className="hathor-atv-confirm__primary"
                   onClick={() => {
-                    applyVoyage(pending.voyageSlug, true);
                     setPending(null);
-                    openVoyage();
+                    if (pending.kind === "residence") {
+                      applyVoyage(pending.voyageSlug, true);
+                      openVoyage();
+                    } else {
+                      void select(true);
+                    }
                   }}
                 >
-                  Continue
+                  {t.continue}
                 </button>
                 <button
                   type="button"
                   className="hathor-atv-confirm__secondary"
                   onClick={() => setPending(null)}
                 >
-                  Keep Current Voyage
+                  {confirmCopy.keep}
                 </button>
               </div>
             </div>
@@ -302,7 +363,7 @@ export function AddToVoyageButton({
         <HathorCartIcon className="hathor-atv__icon" filled={selected} />
         {showText ? (
           <span className="hathor-atv__label" aria-hidden="true">
-            {selected ? "In My Voyage" : "Add to My Voyage"}
+            {selected ? copy.inVoyage : copy.addToVoyage}
           </span>
         ) : null}
       </button>

@@ -1,3 +1,4 @@
+import { stripLocalePrefix } from "@/lib/i18n/locale";
 import type { HeroPageKey } from "@/lib/typography-settings-shared";
 
 /**
@@ -5,7 +6,7 @@ import type { HeroPageKey } from "@/lib/typography-settings-shared";
  * Used to scope per-page font and size overrides.
  */
 export function pathnameToWebsiteTextPage(pathname: string): HeroPageKey | null {
-  const path = pathname.replace(/\/+$/, "") || "/";
+  const path = stripLocalePrefix(pathname);
 
   if (path === "/" || path === "/home-2") return "home";
   if (path === "/about") return "about";

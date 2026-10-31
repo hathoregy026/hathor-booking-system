@@ -65,7 +65,7 @@ function PalmFrondPaths() {
 }
 
 /** A circular cancellation stamp, inked unevenly as if pressed onto the page. */
-export function Stamp({ className }: { className?: string }) {
+export function Stamp({ className, legend = "NILE CRUISE · EGYPT · NILE CRUISE · EGYPT ·" }: { className?: string; legend?: string }) {
   const id = useId().replace(/:/g, "");
   return (
     <svg className={className} viewBox="0 0 140 140" aria-hidden="true" focusable="false">
@@ -91,7 +91,7 @@ export function Stamp({ className }: { className?: string }) {
         <text fill={INK} fontSize="13" fontFamily="Georgia, 'Times New Roman', serif">
           {/* Fitted to the ring's circumference (2π × 45) so the legend closes on itself. */}
           <textPath href={`#gb-ring-${id}`} textLength="276" lengthAdjust="spacing">
-            NILE CRUISE · EGYPT · NILE CRUISE · EGYPT ·
+            {legend}
           </textPath>
         </text>
       </g>

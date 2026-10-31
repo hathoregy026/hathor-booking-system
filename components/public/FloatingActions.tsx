@@ -8,6 +8,8 @@ import { SocialBrandIcon } from "@/components/public/SocialBrandIcon";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { HOMEPAGE_HERO } from "@/lib/homepage-content";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { splitLocalePath } from "@/lib/i18n/locale";
 import {
   shouldShowDesktopBookNow,
   shouldShowDesktopChat,
@@ -16,6 +18,8 @@ import { useSelectionPanelOpen } from "@/components/selection/SelectionProvider"
 
 export function FloatingActions() {
   const pathname = usePathname();
+  const locale = splitLocalePath(pathname).locale;
+  const copy = CHROME_COPY[locale].contact;
   const [chatOpen, setChatOpen] = useState(false);
   const [nearFooter, setNearFooter] = useState(false);
   /*
@@ -100,7 +104,7 @@ export function FloatingActions() {
         <button
           type="button"
           className="public-fab__backdrop"
-          aria-label="Close contact links"
+          aria-label={copy.closeLinks}
           onClick={() => setChatOpen(false)}
         />
       ) : null}
@@ -109,7 +113,9 @@ export function FloatingActions() {
         {showBook ? (
           <div className="public-fab__book-slot public-fab__book-slot--visible">
             <BookNowTrigger className="public-fab__book">
-              <span className="public-fab__book-text">{HOMEPAGE_HERO.cta}</span>
+              <span className="public-fab__book-text">
+                {locale === "en" ? HOMEPAGE_HERO.cta : copy.bookNow}
+              </span>
             </BookNowTrigger>
           </div>
         ) : null}
@@ -160,7 +166,7 @@ export function FloatingActions() {
               href={`tel:${PUBLIC_CONTACT.phone}`}
               className="public-fab__icon-btn"
               role="menuitem"
-              aria-label={`Call ${PUBLIC_CONTACT.phoneDisplay}`}
+              aria-label={copy.call(PUBLIC_CONTACT.phoneDisplay)}
               style={{
                 transitionDelay: chatOpen
                   ? `${40 + (PUBLIC_SOCIAL_LINKS.length + 1) * 35}ms`
@@ -175,7 +181,7 @@ export function FloatingActions() {
             type="button"
             className="public-fab__chat-main"
             aria-expanded={chatOpen}
-            aria-label={chatOpen ? "Close contact links" : "Open contact links"}
+            aria-label={chatOpen ? copy.closeLinks : copy.openLinks}
             onClick={() => setChatOpen((open) => !open)}
           >
             {chatOpen ? (

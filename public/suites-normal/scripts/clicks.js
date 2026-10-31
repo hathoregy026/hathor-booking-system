@@ -31,7 +31,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
                 gsap.set(btnMenu, { '--color': 'var(--blue)'});
                 gsap.to(btnMenu.querySelector('span > span'),{y:'120%', duration: 0.33,  ease:"power2.out", 
                     onComplete: ()=>{
-                        btnMenu.querySelector('span > span').innerHTML = 'Cerrar';
+                        btnMenu.querySelector('span > span').innerHTML = btnMenu.dataset.closeLabel || 'Cerrar';
                         gsap.fromTo(btnMenu.querySelector('span > span'),{y:'-120%'},{y:'0%', duration: 0.33,  ease:"power2.out"})
                     }
                 })
@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
                 gsap.set(btnMenu, { '--color': 'var(--beige)'});
                 gsap.to(btnMenu.querySelector('span > span'),{y:'120%', duration: 0.33,  ease:"power2.out", 
                     onComplete: ()=>{
-                        btnMenu.querySelector('span > span').innerHTML = 'Menú';
+                        btnMenu.querySelector('span > span').innerHTML = btnMenu.dataset.openLabel || 'Menú';
                         gsap.fromTo(btnMenu.querySelector('span > span'),{y:'-120%'},{y:'0%', duration: 0.33,  ease:"power2.out"})
                         
                     }

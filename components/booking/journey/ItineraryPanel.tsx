@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
-import { HATHOR_VOYAGES, itineraryFor, type ItineraryCopy } from "@/lib/booking-itineraries";
+import type { ItineraryCopy } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
+import { bookingItinerary, bookingVoyages } from "@/lib/i18n/booking-itineraries-it";
+import { useBookingCopy } from "./useBookingCopy";
 
 const ITINERARY_THUMBS = [
   "/media/hathor/optimized/home-voyage-3n-aswan-luxor.webp",
@@ -20,14 +22,6 @@ function dayThumb(day: number) {
   return ITINERARY_THUMBS[(day - 1) % ITINERARY_THUMBS.length];
 }
 
-function placeFromPath(path: string) {
-  const first = path.split("→")[0]?.trim() ?? path;
-  return first
-    .replace(/^optional\s+/i, "")
-    .replace(/\s*(embarkation|disembarkation|breakfast\/check-out|breakfast|checkout).*$/i, "")
-    .trim();
-}
-
 export function VoyagePicker({
   value,
   onChange,
@@ -35,15 +29,17 @@ export function VoyagePicker({
   value: StayDurationValue;
   onChange: (duration: StayDurationValue) => void;
 }) {
+  const t = useBookingCopy();
+  const voyages = bookingVoyages(t.locale);
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [inView, setInView] = useState(() => Math.max(0, HATHOR_VOYAGES.findIndex(voyage => voyage.duration === value)));
+  const [inView, setInView] = useState(() => Math.max(0, voyages.findIndex(voyage => voyage.duration === value)));
 
   // Phone: the voyages are a swipe row. Open it on the chosen voyage, and keep
   // the dots under it on the card in view.
   useEffect(() => {
     const track = trackRef.current;
     if (!track || track.scrollWidth <= track.clientWidth + 2) return;
-    const card = track.children[HATHOR_VOYAGES.findIndex(voyage => voyage.duration === value)] as HTMLElement | undefined;
+    const card = track.children[voyages.findIndex(voyage => voyage.duration === value)] as HTMLElement | undefined;
     if (card) track.scrollLeft = card.offsetLeft - track.offsetLeft;
     // Only on first paint: later choices are made by tapping a card in view.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,8 +69,8 @@ export function VoyagePicker({
 
   return (
     <>
-      <div className="hj-voyages" role="radiogroup" aria-label="Choose your itinerary" ref={trackRef} onScroll={onScroll}>
-        {HATHOR_VOYAGES.map(voyage => {
+      <div className="hj-voyages" role="radiogroup" aria-label={t.voyage.chooseItinerary} ref={trackRef} onScroll={onScroll}>
+        {voyages.map(voyage => {
           const on = value === voyage.duration;
           return (
             <button
@@ -96,13 +92,13 @@ export function VoyagePicker({
               />
               <span className="hj-voyage__name">{voyage.title}</span>
               <span className="hj-voyage__meta hj-voyage__meta--route">{voyage.route}</span>
-              <span className="hj-voyage__caption">{voyage.departureDay}</span>
+              <span className="hj-voyage__caption">{t.voyage.departureCaption(voyage.departureDay)}</span>
             </button>
           );
         })}
       </div>
       <div className="hj-voyages__dots" aria-hidden>
-        {HATHOR_VOYAGES.map((voyage, index) => (
+        {voyages.map((voyage, index) => (
           <button
             key={voyage.duration}
             type="button"
@@ -137,7 +133,8 @@ function Copy({ copy }: { copy: ItineraryCopy }) {
  * immediately and collapses them again. Cabin choice never changes it.
  */
 export function ItineraryAccordion({ duration }: { duration: StayDurationValue }) {
-  const voyage = itineraryFor(duration);
+  const t = useBookingCopy();
+  const voyage = bookingItinerary(duration, t.locale);
   const [expanded, setExpanded] = useState<{ duration: StayDurationValue; days: number[] }>({ duration, days: [] });
   const open = expanded.duration === duration ? expanded.days : [];
   const setOpen = (days: number[]) => setExpanded({ duration, days });
@@ -146,13 +143,13 @@ export function ItineraryAccordion({ duration }: { duration: StayDurationValue }
   return (
     <div className="hj-itinerary">
       <div className="hj-itinerary__top">
-        <p className="hj-itinerary__route">Itinerary · {voyage.title}</p>
+        <p className="hj-itinerary__route">{t.voyage.itinerary(voyage.title)}</p>
         <button
           type="button"
           className="hj-linkbtn"
           onClick={() => setOpen(allOpen ? [] : voyage.days_.map(day => day.day))}
         >
-          {allOpen ? "Collapse all" : "Expand all"}
+          {allOpen ? t.voyage.collapseAll : t.voyage.expandAll}
         </button>
       </div>
 
@@ -171,8 +168,8 @@ export function ItineraryAccordion({ duration }: { duration: StayDurationValue }
                 >
                   <Image className="hj-day__thumb" src={dayThumb(day.day)} alt="" width={88} height={88} sizes="44px" />
                   <span>
-                    <span className="hj-day__num">Day {day.day}</span>
-                    <span className="hj-day__place">{placeFromPath(day.path)}</span>
+                    <span className="hj-day__num">{t.voyage.day(day.day)}</span>
+                    <span className="hj-day__place">{t.voyage.placeFromPath(day.path)}</span>
                     <span className="hj-day__title">{day.title}</span>
                   </span>
                   <span className="hj-day__chev" aria-hidden>›</span>

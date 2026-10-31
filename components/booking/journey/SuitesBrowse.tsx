@@ -4,13 +4,15 @@ import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { useRef, useState, type ReactNode } from "react";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { itineraryFor } from "@/lib/booking-itineraries";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { localizedHref } from "@/lib/i18n/locale";
 import type { PhysicalRoomType } from "@/lib/physical-inventory";
 import { occupants, shortName, type Arrangement, type Guest } from "./allocation";
-import { plural, type Sailing } from "./model";
+import type { Sailing } from "./model";
 import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { RESIDENCE_SLUG } from "./SuitesParts";
 import { useStickyFit } from "./useStickyFit";
+import { useBookingCopy } from "./useBookingCopy";
 import {
   IconBath,
   IconBed,
@@ -30,51 +32,16 @@ function gallerySrc(src: string): string {
   return src.includes("?") ? src : `${src}?v=2`;
 }
 
-/** What each type offers, from the room pages' own facts. The size comes from the live availability. */
-export const STORY: Record<PhysicalRoomType, { tagline: string; features: (size: number) => { icon: ReactNode; text: string }[] }> = {
-  "Luxury King Cabin": {
-    tagline: "A calm retreat for two.",
-    features: size => [
-      { icon: <IconBed />, text: "King bed" },
-      { icon: <IconSize />, text: `${size} m²` },
-      { icon: <IconView />, text: "Panoramic Nile view" },
-      { icon: <IconGuests />, text: "Up to 2 guests" },
-      { icon: <IconLink />, text: "Connected cabins available" },
-      { icon: <IconWifi />, text: "Wi-Fi, room service and daily minibar refill" },
-    ],
-  },
-  "Luxury Twin Cabin": {
-    tagline: "Twin beds and wide Nile glass.",
-    features: size => [
-      { icon: <IconBed />, text: "Twin beds" },
-      { icon: <IconSize />, text: `${size} m²` },
-      { icon: <IconView />, text: "Panoramic Nile view" },
-      { icon: <IconGuests />, text: "Up to 2 guests" },
-      { icon: <IconLink />, text: "Connected cabins available" },
-      { icon: <IconWifi />, text: "Wi-Fi, room service and daily minibar refill" },
-    ],
-  },
-  "Luxury Suite": {
-    tagline: "Generous space and a private Jacuzzi.",
-    features: size => [
-      { icon: <IconBath />, text: "Private Jacuzzi" },
-      { icon: <IconSize />, text: `${size} m² with a separate lounge` },
-      { icon: <IconView />, text: "Panoramic Nile view" },
-      { icon: <IconGuests />, text: "Up to 4 guests" },
-      { icon: <IconLink />, text: "Wide walkways for easy movement" },
-      { icon: <IconWifi />, text: "Wi-Fi, room service and daily minibar refill" },
-    ],
-  },
-  "Royal Suite": {
-    tagline: "Hathor’s most spacious residence.",
-    features: size => [
-      { icon: <IconView />, text: "Private balcony on the Main Deck" },
-      { icon: <IconBath />, text: "Two bathrooms" },
-      { icon: <IconSize />, text: `${size} m² with a private lounge` },
-      { icon: <IconGuests />, text: "Up to 4 guests" },
-      { icon: <IconWifi />, text: "Wi-Fi, room service and daily minibar refill" },
-    ],
-  },
+/**
+ * What each type offers, from the room pages' own facts: the icon of each
+ * line here, its words in the booking copy. The size comes from the live
+ * availability.
+ */
+const FEATURE_ICONS: Record<PhysicalRoomType, ReactNode[]> = {
+  "Luxury King Cabin": [<IconBed key="bed" />, <IconSize key="size" />, <IconView key="view" />, <IconGuests key="guests" />, <IconLink key="link" />, <IconWifi key="wifi" />],
+  "Luxury Twin Cabin": [<IconBed key="bed" />, <IconSize key="size" />, <IconView key="view" />, <IconGuests key="guests" />, <IconLink key="link" />, <IconWifi key="wifi" />],
+  "Luxury Suite": [<IconBath key="bath" />, <IconSize key="size" />, <IconView key="view" />, <IconGuests key="guests" />, <IconLink key="link" />, <IconWifi key="wifi" />],
+  "Royal Suite": [<IconView key="view" />, <IconBath key="bath" />, <IconSize key="size" />, <IconGuests key="guests" />, <IconWifi key="wifi" />],
 };
 
 /**
@@ -102,31 +69,32 @@ export function SuitesBrowse({
   /** Filters the cabin cards to this type and brings them into view. */
   onShowCabins: (type: PhysicalRoomType) => void;
 }) {
+  const t = useBookingCopy();
   const [photo, setPhoto] = useState<{ type: PhysicalRoomType; index: number }>({ type: previewType, index: 0 });
   const browseRef = useRef<HTMLElement | null>(null);
   useStickyFit(browseRef);
   /** Full-screen photographs: opened from the picture, closed with the X or Esc. */
   const viewer = useRef<HTMLDialogElement | null>(null);
 
-  const voyage = itineraryFor(duration);
+  const voyage = bookingItinerary(duration, t.locale);
   const type = sailing.types.find(entry => entry.roomType === previewType) ?? sailing.types[0];
   const visuals = getBookingRoomVisuals(type.roomType, type.roomType);
   const photoCount = visuals.gallery.length;
   const photoIndex = photo.type === type.roomType ? photo.index : 0;
   const showPhoto = (index: number) => setPhoto({ type: type.roomType, index: (index + photoCount) % photoCount });
-  const story = STORY[type.roomType];
+  const features = t.suites.browse.features[type.roomType](type.sizeSqm).map((text, index) => ({ icon: FEATURE_ICONS[type.roomType][index], text }));
   const placed = arrangement.cabins
     .filter(cabin => cabin.roomType === type.roomType)
     .reduce((sum, cabin) => sum + occupants(arrangement, guests, cabin.id).length, 0);
-  const roomHref = `/rooms/${RESIDENCE_SLUG[type.roomType]}`;
+  const roomHref = localizedHref(`/rooms/${RESIDENCE_SLUG[type.roomType]}`, t.locale);
 
   return (
-    <section className="hj-browse" aria-label={`${type.roomType} preview`} ref={browseRef}>
-      <div className="hj-gallery" aria-label={`${type.roomType} photos`}>
+    <section className="hj-browse" aria-label={t.suites.browse.preview(type.roomType)} ref={browseRef}>
+      <div className="hj-gallery" aria-label={t.suites.browse.photos(type.roomType)}>
         <div
           className="hj-gallery__frame"
           tabIndex={0}
-          aria-label={`Photo ${photoIndex + 1} of ${photoCount}. Use the arrow keys for more.`}
+          aria-label={t.suites.browse.photoOf(photoIndex + 1, photoCount)}
           onKeyDown={event => {
             if (event.key === "ArrowRight") showPhoto(photoIndex + 1);
             if (event.key === "ArrowLeft") showPhoto(photoIndex - 1);
@@ -138,27 +106,27 @@ export function SuitesBrowse({
             onClick={() => viewer.current?.showModal()}
             className="hj-gallery__img"
             src={gallerySrc(visuals.gallery[photoIndex])}
-            alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
+            alt={t.suites.browse.photoAlt(type.roomType, photoIndex + 1, photoCount)}
           />
           {placed > 0 ? (
-            <span className="hj-gallery__badge"><IconCheck /> In your booking</span>
+            <span className="hj-gallery__badge"><IconCheck /> {t.suites.browse.inBooking}</span>
           ) : null}
-          <button type="button" className="hj-gallery__nav hj-gallery__nav--prev" aria-label="Previous photo" onClick={() => showPhoto(photoIndex - 1)}>
+          <button type="button" className="hj-gallery__nav hj-gallery__nav--prev" aria-label={t.suites.browse.previousPhoto} onClick={() => showPhoto(photoIndex - 1)}>
             <IconChevron direction="left" />
           </button>
-          <button type="button" className="hj-gallery__nav hj-gallery__nav--next" aria-label="Next photo" onClick={() => showPhoto(photoIndex + 1)}>
+          <button type="button" className="hj-gallery__nav hj-gallery__nav--next" aria-label={t.suites.browse.nextPhoto} onClick={() => showPhoto(photoIndex + 1)}>
             <IconChevron direction="right" />
           </button>
           <span className="hj-gallery__count" aria-hidden>{photoIndex + 1} / {photoCount}</span>
-          <a className="hj-gallery__view" href={roomHref} target="_blank" rel="noopener noreferrer" aria-label={`View the ${type.roomType} (opens in a new tab)`}>
-            View room <IconOpen />
+          <a className="hj-gallery__view" href={roomHref} target="_blank" rel="noopener noreferrer" aria-label={t.suites.viewRoomLabel(type.roomType)}>
+            {t.suites.viewRoom} <IconOpen />
           </a>
         </div>
 
         <dialog
           className="hj-lightbox"
           ref={viewer}
-          aria-label={`${type.roomType} photos`}
+          aria-label={t.suites.browse.photos(type.roomType)}
           onKeyDown={event => {
             if (event.key === "ArrowRight") showPhoto(photoIndex + 1);
             if (event.key === "ArrowLeft") showPhoto(photoIndex - 1);
@@ -173,27 +141,27 @@ export function SuitesBrowse({
               key={`full-${visuals.gallery[photoIndex]}`}
               className="hj-lightbox__img"
               src={gallerySrc(visuals.gallery[photoIndex])}
-              alt={`${type.roomType}, photo ${photoIndex + 1} of ${photoCount}`}
+              alt={t.suites.browse.photoAlt(type.roomType, photoIndex + 1, photoCount)}
             />
           </div>
-          <button type="button" className="hj-lightbox__close" aria-label="Close photos" onClick={() => viewer.current?.close()}>
+          <button type="button" className="hj-lightbox__close" aria-label={t.suites.browse.closePhotos} onClick={() => viewer.current?.close()}>
             <IconClose />
           </button>
-          <button type="button" className="hj-lightbox__nav hj-lightbox__nav--prev" aria-label="Previous photo" onClick={() => showPhoto(photoIndex - 1)}>
+          <button type="button" className="hj-lightbox__nav hj-lightbox__nav--prev" aria-label={t.suites.browse.previousPhoto} onClick={() => showPhoto(photoIndex - 1)}>
             <IconChevron direction="left" />
           </button>
-          <button type="button" className="hj-lightbox__nav hj-lightbox__nav--next" aria-label="Next photo" onClick={() => showPhoto(photoIndex + 1)}>
+          <button type="button" className="hj-lightbox__nav hj-lightbox__nav--next" aria-label={t.suites.browse.nextPhoto} onClick={() => showPhoto(photoIndex + 1)}>
             <IconChevron direction="right" />
           </button>
           <span className="hj-lightbox__caption">{type.roomType} · {photoIndex + 1} / {photoCount}</span>
         </dialog>
-        <div className="hj-gallery__dots" role="group" aria-label="Photos">
+        <div className="hj-gallery__dots" role="group" aria-label={t.suites.browse.photosGroup}>
           {visuals.gallery.map((src, index) => (
             <button
               key={src}
               type="button"
               className="hj-gallery__dot"
-              aria-label={`Photo ${index + 1}`}
+              aria-label={t.suites.browse.photo(index + 1)}
               aria-pressed={index === photoIndex}
               onClick={() => showPhoto(index)}
             />
@@ -202,11 +170,11 @@ export function SuitesBrowse({
       </div>
 
       <div className="hj-detail">
-        <span className="hj-detail__kicker">Selected · {previewLabel}</span>
+        <span className="hj-detail__kicker">{t.suites.browse.selected(previewLabel)}</span>
         <span className="hj-detail__name">{type.roomType}</span>
-        <span className="hj-detail__tag">{story.tagline}</span>
+        <span className="hj-detail__tag">{t.suites.browse.tagline[type.roomType]}</span>
         <ul className="hj-detail__features">
-          {story.features(type.sizeSqm).map(feature => (
+          {features.map(feature => (
             <li key={feature.text}>
               <span className="hj-detail__icon" aria-hidden>{feature.icon}</span>
               <span>{feature.text}</span>
@@ -215,9 +183,9 @@ export function SuitesBrowse({
         </ul>
         <div className="hj-detail__price">
           <span className="hj-detail__row">
-            <span className="hj-detail__amount"><CurrencyAmount cents={type.priceCents} /><RoomPriceUnit roomType={type.roomType} /></span>
+            <span className="hj-detail__amount"><CurrencyAmount cents={type.priceCents} /><RoomPriceUnit roomType={type.roomType} locale={t.locale} /></span>
           </span>
-          <span className="hj-detail__per">Entire {voyage.nights}-night voyage, all meals and soft drinks included.</span>
+          <span className="hj-detail__per">{t.suites.browse.voyageMeals(voyage.nights)}</span>
         </div>
         <button
           type="button"
@@ -226,12 +194,12 @@ export function SuitesBrowse({
           onClick={() => onShowCabins(type.roomType)}
         >
           {type.availableCabins === 0
-            ? "Fully booked on this date"
-            : `Show the ${plural(type.totalCabins, shortName(type.roomType))} · ${type.availableCabins} free`}
+            ? t.suites.browse.fullyBooked
+            : t.suites.browse.showType(type.totalCabins, shortName(type.roomType), type.availableCabins)}
           <IconChevron direction="right" />
         </button>
         <a className="hj-detail__link" href={roomHref} target="_blank" rel="noopener noreferrer">
-          Full cabin details <span aria-hidden>›</span>
+          {t.suites.browse.fullDetails} <span aria-hidden>›</span>
         </a>
       </div>
     </section>

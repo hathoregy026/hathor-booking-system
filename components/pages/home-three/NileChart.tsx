@@ -2,6 +2,7 @@ import Image from "next/image";
 import rotatingWheel from "@/assets/LOGOS/rotating-wheel-hathor-cruise.png";
 import { H4_PATH, H4_STOPS } from "@/components/pages/home-four/atlas-data";
 import { NILE_TOTAL_KM } from "@/lib/nile-route";
+import type { HomeCopy } from "@/lib/i18n/home-copy";
 
 /**
  * The sailing chart — Home 4's geographic atlas, driven by Home 3's flow.
@@ -10,7 +11,7 @@ import { NILE_TOTAL_KM } from "@/lib/nile-route";
  * draws the course in, walks the needle, swings the helm and lights each
  * mooring from the same loop that moves the horizontal track.
  */
-export function NileChart() {
+export function NileChart({ copy }: { copy: HomeCopy["chart"] }) {
   return (
     <div className="h3-chart" data-h3-chart data-h3-total-km={NILE_TOTAL_KM}>
       <figure className="h3-chart__plate">
@@ -20,12 +21,8 @@ export function NileChart() {
           role="img"
           aria-labelledby="h3-chart-t h3-chart-d"
         >
-          <title id="h3-chart-t">The Nile between Luxor and Aswan</title>
-          <desc id="h3-chart-d">
-            North-up geographic overview with city locations. Dotted leaders
-            connect places to a generalized river course; they do not mark
-            berths. Sailing is shown southwards from Luxor to Aswan.
-          </desc>
+          <title id="h3-chart-t">{copy.mapTitle}</title>
+          <desc id="h3-chart-d">{copy.mapDescription}</desc>
           <defs>
             <pattern
               id="h3-atlas-grid"
@@ -56,7 +53,7 @@ export function NileChart() {
             transform="rotate(-90 32 360)"
             className="h3-map-region"
           >
-            WESTERN DESERT
+            {copy.westernDesert}
           </text>
           <text
             x="386"
@@ -64,7 +61,7 @@ export function NileChart() {
             transform="rotate(90 386 190)"
             className="h3-map-region"
           >
-            EASTERN DESERT
+            {copy.easternDesert}
           </text>
           <path d={H4_PATH} className="h3-chart__banks" />
           <path d={H4_PATH} className="h3-chart__ghost" />
@@ -86,7 +83,7 @@ export function NileChart() {
                 y={stop.y - 10}
                 textAnchor={i % 2 === 0 ? "end" : "start"}
               >
-                {stop.name}
+                {copy.place(stop.name)}
               </text>
             </g>
           ))}
@@ -99,7 +96,7 @@ export function NileChart() {
           </g>
         </svg>
         <figcaption className="h3-chart__caption">
-          Geographic overview · approximate city locations
+          {copy.caption}
           <br />
           <a
             href="https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-rivers-lake-centerlines/"
@@ -112,7 +109,7 @@ export function NileChart() {
           <a href="https://www.geonames.org/" target="_blank" rel="noreferrer">
             GeoNames
           </a>{" "}
-          · not a navigation chart
+          {copy.notNavigation}
         </figcaption>
       </figure>
     </div>
@@ -127,7 +124,7 @@ export function NileChart() {
  * was reporting on. The hook swings it from the same loop that walks the
  * vessel: a few degrees of course is many degrees of wheel.
  */
-export function NileHelm() {
+export function NileHelm({ heading }: { heading: string }) {
   return (
     <div className="h3-helm" data-h3-helm>
       <div className="h3-helm__dial" aria-hidden="true">
@@ -141,7 +138,7 @@ export function NileHelm() {
       </div>
       <p className="h3-helm__read">
         <span data-h3-heading>180</span>
-        <em>Heading</em>
+        <em>{heading}</em>
       </p>
     </div>
   );

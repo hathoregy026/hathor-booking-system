@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { useBookingCopy } from "@/components/booking/journey/useBookingCopy";
+import { localizedHref } from "@/lib/i18n/locale";
 
 /**
  * Error boundary for the whole booking flow.
@@ -14,6 +16,8 @@ import Link from "next/link";
  * written (the success page read, for instance). A guest who sees an error may
  * already have a confirmed booking, so this page must never imply the booking
  * failed, and must not push them to book again and double-pay.
+ *
+ * /it/booking uses this same screen; its words follow the address.
  */
 export default function BookingError({
   error,
@@ -22,11 +26,17 @@ export default function BookingError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const copy = useBookingCopy();
+  const t = copy.error;
   useEffect(() => {
     // Surface it in the server/browser logs — the previous behaviour swallowed
     // some of these silently, which made them very hard to trace.
     console.error("[booking] route error:", error);
   }, [error]);
+  /* The route's own title never loaded, so the tab would show the English default. */
+  useEffect(() => {
+    if (t.pageTitle) document.title = t.pageTitle;
+  }, [t.pageTitle]);
 
   return (
     <main className="hathor-booking-error">
@@ -34,13 +44,11 @@ export default function BookingError({
         <p className="hathor-booking-error__eyebrow">Hathor Dahabiya</p>
 
         <h1 className="hathor-booking-error__title">
-          Something interrupted your booking
+          {t.title}
         </h1>
 
         <p className="hathor-booking-error__body">
-          We hit a problem loading this page. <strong>If you had already
-          reached the confirmation step, your reservation may well have gone
-          through</strong> — please check your email before booking again.
+          {t.bodyBefore} <strong>{t.bodyStrong}</strong>{t.bodyAfter}
         </p>
 
         <div className="hathor-booking-error__actions">
@@ -49,25 +57,24 @@ export default function BookingError({
             onClick={reset}
             className="hathor-booking-error__btn hathor-booking-error__btn--primary"
           >
-            Try again
+            {t.tryAgain}
           </button>
           <Link
-            href="/"
+            href={localizedHref("/", copy.locale)}
             className="hathor-booking-error__btn hathor-booking-error__btn--ghost"
           >
-            Return home
+            {t.home}
           </Link>
         </div>
 
         <p className="hathor-booking-error__help">
-          Still stuck? Email{" "}
-          <a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a> and
-          we will complete your reservation by hand.
+          {t.helpBefore}{" "}
+          <a href="mailto:reservations@hathorcruise.com">reservations@hathorcruise.com</a> {t.helpAfter}
           {error.digest && (
             <>
               {" "}
               <span className="hathor-booking-error__ref">
-                Reference: {error.digest}
+                {t.reference} {error.digest}
               </span>
             </>
           )}

@@ -636,6 +636,7 @@
 /* Booked: the same tag the plan shows, then the dates. */
 .deck-atlas .da-status[data-state="closed"] { color: var(--da-ink); }
 .deck-atlas .da-status[data-state="closed"]::before { content: "Booked"; display: inline-block; margin: 0 0.55rem 0.15rem 0; padding: 0.32rem 0.5rem 0.28rem; border-radius: 999px; background: var(--da-ink); color: var(--da-paper); font: 600 0.5rem/1 var(--da-sans); letter-spacing: 0.14em; text-transform: uppercase; vertical-align: middle; }
+html[lang="it"] .deck-atlas .da-status[data-state="closed"]::before { content: "Prenotata"; }
 .deck-atlas .da-price { flex: none; font: 400 1.9rem/1 var(--da-display); text-align: right; }
 .deck-atlas .da-price small { display: block; margin-top: 0.3rem; font: 400 0.62rem/1.3 var(--da-sans); color: var(--da-muted); }
 .deck-atlas .da-detail__act { --hathor-btn-width: 100%; display: grid; gap: 0.55rem; }

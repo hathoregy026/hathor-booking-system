@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { exchangeRatesSchema, formatCurrency, isCurrency, type Currency, type ExchangeRates } from "@/lib/currency";
+import { CURRENCY_COPY } from "@/lib/i18n/currency-copy";
+import { splitLocalePath, type PublicLocale } from "@/lib/i18n/locale";
 
 const STORAGE_KEY = "hathor-display-currency-v1";
 type Snapshot = { preferred: Currency; rates: ExchangeRates | null; status: "loading" | "ready" | "error" };
@@ -35,16 +37,16 @@ function selectCurrency(currency: Currency) {
   try { localStorage.setItem(STORAGE_KEY, currency); } catch { /* The preference still works in memory. */ }
 }
 
-function useCurrencyState() {
+function useCurrencyState(locale: PublicLocale) {
   const state = useSyncExternalStore(subscribe, () => snapshot, () => initial);
   return useMemo(() => {
     const currency = state.rates ? state.preferred : "USD";
     return {
-      ...state, currency, selectCurrency, retry: loadRates,
-      formatPrice: (cents: number) => formatCurrency(cents, currency, state.rates),
-      money: (cents: number) => formatCurrency(cents, currency, state.rates, "money"),
+      ...state, currency, locale, selectCurrency, retry: loadRates,
+      formatPrice: (cents: number) => formatCurrency(cents, currency, state.rates, "price", locale),
+      money: (cents: number) => formatCurrency(cents, currency, state.rates, "money", locale),
     };
-  }, [state]);
+  }, [state, locale]);
 }
 type CurrencyContextValue = ReturnType<typeof useCurrencyState>;
 const CurrencyContext = createContext<CurrencyContextValue | null>(null);
@@ -52,7 +54,7 @@ const CurrencyContext = createContext<CurrencyContextValue | null>(null);
 export function CurrencyProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
-  const value = useCurrencyState();
+  const value = useCurrencyState(splitLocalePath(pathname).locale);
   useEffect(() => {
     if (isAdmin) return;
     const restore = () => {
@@ -90,7 +92,8 @@ export function CurrencyAmount({ cents }: { cents: number }) {
 }
 
 export function CurrencySettlementNote({ cents }: { cents?: number }) {
-  const { currency } = useCurrency();
+  const { currency, locale } = useCurrency();
   if (currency === "USD") return null;
-  return <p className="hathor-currency-settlement">{currency} amounts are estimates. {cents === undefined ? "Bookings and invoices are in USD." : `Booking and invoice total: ${formatCurrency(cents, "USD", null, "money")}.`}</p>;
+  const usdTotal = cents === undefined ? null : formatCurrency(cents, "USD", null, "money", locale);
+  return <p className="hathor-currency-settlement">{CURRENCY_COPY[locale].settlement(currency, usdTotal)}</p>;
 }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { PublicLocale } from "@/lib/i18n/locale";
 
 export const CURRENCIES = [
   { code: "EUR", name: "Euro", symbol: "€" },
@@ -37,12 +38,14 @@ export function convertUsdCents(cents: number, currency: Currency, rates: Exchan
   return converted;
 }
 
-export function formatCurrency(cents: number, currency: Currency = "USD", rates: ExchangeRates | null = null, style: "price" | "money" = "price"): string {
+export function formatCurrency(cents: number, currency: Currency = "USD", rates: ExchangeRates | null = null, style: "price" | "money" = "price", locale: PublicLocale = "en"): string {
   const converted = convertUsdCents(cents, currency, rates);
-  const amount = new Intl.NumberFormat("en-US", {
+  const grouped = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: style === "price" || converted % 100 !== 0 ? 2 : 0,
     maximumFractionDigits: 2,
   }).format(converted / 100);
+  // Italian pages swap the separators ($7.000,00), as every other Italian price does.
+  const amount = locale === "it" ? grouped.replace(/[,.]/g, mark => (mark === "," ? "." : ",")) : grouped;
   // Explicit ISO codes disambiguate the Egyptian and British pound.
   const prefix = style === "money" || currency === "EGP" || currency === "RUB"
     ? `${currency} `

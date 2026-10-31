@@ -6,6 +6,8 @@ import type { GuestReview, GuestReviewsData } from "@/lib/guest-reviews";
 import { HandNote, Stamp } from "@/components/public/guest-reviews/ephemera";
 import { PageCurl, type PageRect } from "@/components/public/guest-reviews/PageCurl";
 import { GoogleMark, Rating, SOURCE_LABEL, SourceMark, type ReviewSource } from "@/components/public/guest-reviews/marks";
+import type { PublicLocale } from "@/lib/i18n/locale";
+import { REVIEWS_COPY, type ReviewsCopy } from "@/lib/i18n/reviews-copy";
 
 /** The book's pages, measured from guest-book.webp (fractions of its size). */
 const WHOLE_BOOK: PageRect = { x0: 0.046, y0: 0.019, x1: 0.925, y1: 0.961 };
@@ -76,18 +78,20 @@ function ReviewNote({
   source,
   size,
   id,
+  t,
 }: {
   review: GuestReview;
   source: ReviewSource;
   size: "lead" | "page" | "card";
   id: string;
+  t: ReviewsCopy;
 }) {
   const label = SOURCE_LABEL[source];
   return (
     <figure className={`gb__note gb__note--${size}`}>
       <div className="gb__note-top">
         <span className="gb__mark" aria-hidden="true">&ldquo;</span>
-        <Rating value={review.rating} size="sm" id={id} source={source} />
+        <Rating value={review.rating} size="sm" id={id} source={source} label={t.rated(review.rating.toFixed(1), label)} />
         <span className="gb__src">
           {source === "tripadvisor" ? (
             // Tripadvisor's owl, from its own logo file.
@@ -98,11 +102,11 @@ function ReviewNote({
           )}
           {review.url ? (
             <a href={review.url} target="_blank" rel="noopener noreferrer nofollow" className="gb__when">
-              {review.when || `On ${label}`}
-              <span className="gb__sr"> — read this review by {review.author} on {label}</span>
+              {t.when(review.when) || t.onPlatform(label)}
+              <span className="gb__sr">{t.readThisReview(review.author, label)}</span>
             </a>
           ) : (
-            <span className="gb__when">{review.when}</span>
+            <span className="gb__when">{t.when(review.when)}</span>
           )}
         </span>
       </div>
@@ -120,7 +124,7 @@ function ReviewNote({
               review.author
             )}
           </cite>
-          <span className="gb__on">on {label}</span>
+          <span className="gb__on">{t.byLine(label)}</span>
         </span>
       </figcaption>
     </figure>
@@ -129,32 +133,30 @@ function ReviewNote({
 
 /* ------------------------------------------------------------------- book */
 
-function Score({ data }: { data: GuestReviewsData }) {
+function Score({ data, t }: { data: GuestReviewsData; t: ReviewsCopy }) {
   if (data.rating == null) return null;
   return (
     <div className="gb__score">
-      <span className="gb__figure">{data.rating.toFixed(1)}</span>
+      <span className="gb__figure">{t.figure(data.rating)}</span>
       <span className="gb__score-side">
-        <Rating value={data.rating} size="lg" id={`gb-score-${data.source}`} source={data.source} />
+        <Rating value={data.rating} size="lg" id={`gb-score-${data.source}`} source={data.source} label={t.rated(data.rating.toFixed(1), SOURCE_LABEL[data.source])} />
         {data.count != null ? (
-          <span className="gb__count">
-            Based on {data.count.toLocaleString("en-GB")} {data.count === 1 ? "review" : "reviews"}
-          </span>
+          <span className="gb__count">{t.basedOn(data.count)}</span>
         ) : null}
       </span>
     </div>
   );
 }
 
-function Actions({ data, fallback, className }: { data: GuestReviewsData | null; fallback: Fallback; className: string }) {
+function Actions({ data, fallback, className, t }: { data: GuestReviewsData | null; fallback: Fallback; className: string; t: ReviewsCopy }) {
   return (
     <div className={`gb__actions ${className}`}>
       <External href={data?.readUrl ?? fallback.googleUrl} className="room-pill gb__btn" primary>
-        Read reviews
+        {t.readReviews}
       </External>
       {data?.writeUrl ? (
         <External href={data.writeUrl} className="room-pill gb__btn">
-          Write a review
+          {t.writeReview}
         </External>
       ) : !data && fallback.tripadvisorUrl ? (
         <External href={fallback.tripadvisorUrl} className="room-pill gb__btn">
@@ -174,11 +176,14 @@ export function GuestBook({
   sources,
   headingId,
   fallback,
+  locale = "en",
 }: {
   sources: GuestReviewsData[];
   headingId: string;
   fallback: Fallback;
+  locale?: PublicLocale;
 }) {
+  const t = REVIEWS_COPY[locale];
   const [active, setActive] = useState<ReviewSource | null>(sources[0]?.source ?? null);
   const [spread, setSpread] = useState(0);
   /* While a page turns: which spread the turning leaf shows, and which way it goes. */
@@ -231,7 +236,7 @@ export function GuestBook({
 
   const tabs =
     sources.length > 1 ? (
-      <div className="gb__tabs" role="tablist" aria-label="Review source">
+      <div className="gb__tabs" role="tablist" aria-label={t.sourceSwitch}>
         {sources.map((source) => (
           <button
             key={source.source}
@@ -241,8 +246,8 @@ export function GuestBook({
             aria-selected={active === source.source}
             aria-controls={`${base}-panel`}
             className="room-pill gb__tab"
-            aria-label={`${SOURCE_LABEL[source.source]} reviews`}
-            title={`${SOURCE_LABEL[source.source]} reviews`}
+            aria-label={t.platformReviews(SOURCE_LABEL[source.source])}
+            title={t.platformReviews(SOURCE_LABEL[source.source])}
             onClick={() => choose(source.source)}
           >
             {/* The platform's own logo, a static file served as is. */}
@@ -266,10 +271,10 @@ export function GuestBook({
       <>
           <div className="gb__page gb__page--upper">
             {lead ? (
-              <ReviewNote review={lead} source={data!.source} size="lead" id={`${base}-${role}-lead`} />
+              <ReviewNote review={lead} source={data!.source} size="lead" id={`${base}-${role}-lead`} t={t} />
             ) : (
               <p className="gb__empty">
-                Read what guests say after a voyage aboard Hathor, on Google{fallback.tripadvisorUrl ? " and Tripadvisor" : ""}.
+                {t.fallbackLede(Boolean(fallback.tripadvisorUrl))}
               </p>
             )}
             <HandNote
@@ -277,17 +282,13 @@ export function GuestBook({
               width={300}
               height={170}
               rotate={-16}
-              lines={[
-                { text: "Slower", x: 12, y: 46 },
-                { text: "kinder", x: 46, y: 96, r: 2 },
-                { text: "more beautiful", x: 70, y: 148, r: -1 },
-              ]}
+              lines={t.handPage}
             />
           </div>
 
           <div className={`gb__page gb__page--lower${rest.length === 1 ? " gb__page--single" : ""}`}>
             {rest.map((review, i) => (
-              <ReviewNote key={`${index}-${i}`} review={review} source={data!.source} size="page" id={`${base}-${role}-p${i}`} />
+              <ReviewNote key={`${index}-${i}`} review={review} source={data!.source} size="page" id={`${base}-${role}-p${i}`} t={t} />
             ))}
             {rest.length > 1 ? <Lotus className="gb__lotus" /> : null}
           </div>
@@ -304,29 +305,27 @@ export function GuestBook({
         {/* The same sprig that rests on the book, for the phone's journal page. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="gb__palm gb__palm--head" src="/media/hathor/reviews/sprig.webp" width={206} height={377} alt="" aria-hidden="true" />
-        <p className="gb__kicker">Guest reviews</p>
+        <p className="gb__kicker">{t.kicker}</p>
         <h2 id={headingId} className="gb__title">
-          <span>In their</span>
-          <span className="gb__title-accent">own words</span>
+          <span>{t.titleLead}</span>
+          <span className="gb__title-accent">{t.titleAccent}</span>
         </h2>
         <span className="gb__dash" aria-hidden="true" />
-        <p className="gb__lede">
-          More than a journey, a collection of memories. Here are the words of our guests, written from the heart.
-        </p>
-        <p className="gb__subtitle">Real journeys. Genuine stories.</p>
+        <p className="gb__lede">{t.lede}</p>
+        <p className="gb__subtitle">{t.subtitle}</p>
 
         <div className="gb__summary">
           {data ? (
-            <Score data={data} />
+            <Score data={data} t={t} />
           ) : (
             <p className="gb__badge-source">
               <GoogleMark className="gb__src-mark" />
-              Google reviews
+              {t.googleReviews}
             </p>
           )}
         </div>
         {tabs}
-        <Actions data={data} fallback={fallback} className="gb__actions--aside" />
+        <Actions data={data} fallback={fallback} className="gb__actions--aside" t={t} />
 
         <figure className="gb__etching" aria-hidden="true">
           <Image src="/media/hathor/reviews/hathor-engraving.webp" alt="" width={1100} height={470} sizes="(max-width: 950px) 92vw, 34vw" />
@@ -336,12 +335,7 @@ export function GuestBook({
             height={210}
             rotate={-14}
             underline
-            lines={[
-              { text: "Different", x: 10, y: 50 },
-              { text: "waters,", x: 44, y: 96, r: 2 },
-              { text: "richer", x: 70, y: 142, r: -1 },
-              { text: "stories", x: 92, y: 188, r: 1 },
-            ]}
+            lines={t.handEtching}
           />
         </figure>
       </div>
@@ -382,17 +376,17 @@ export function GuestBook({
             <Image src="/media/hathor/reviews/hathor-postcard.webp" alt="" width={560} height={680} sizes="15rem" loading="eager" />
             <span className="gb__gloss" />
           </div>
-          <Stamp className="gb__stamp" />
+          <Stamp className="gb__stamp" legend={t.stamp} />
         </div>
 
         {spreads.length > 1 ? (
-          <nav className="gb__pager" aria-label="Review pages">
+          <nav className="gb__pager" aria-label={t.pagesLabel}>
             <button
               type="button"
               className="gb__turn"
               onClick={() => turnTo(spread - 1)}
               disabled={spread === 0}
-              aria-label="Previous page of reviews"
+              aria-label={t.previousPage}
             >
               ←
             </button>
@@ -404,7 +398,7 @@ export function GuestBook({
               className="gb__turn"
               onClick={() => turnTo(spread + 1)}
               disabled={spread >= spreads.length - 1}
-              aria-label="Next page of reviews"
+              aria-label={t.nextPage}
             >
               →
             </button>
@@ -412,30 +406,30 @@ export function GuestBook({
         ) : null}
         {data ? (
           <p className="gb__source">
-            Ratings and reviews from {SOURCE_LABEL[data.source]}, shown as written by guests.
+            {t.attribution(SOURCE_LABEL[data.source])}
           </p>
         ) : null}
       </div>
 
       {/* ----------------------------------------- phone: journal cards */}
-      <div className="gb__deck-wrap" {...(sources.length > 1 && active ? { role: "region", "aria-label": `${SOURCE_LABEL[active]} reviews` } : {})}>
+      <div className="gb__deck-wrap" {...(sources.length > 1 && active ? { role: "region", "aria-label": t.platformReviews(SOURCE_LABEL[active]) } : {})}>
         {reviews.length ? (
           <>
-            <ol className="gb__deck" ref={deck} onScroll={onDeckScroll} aria-label={`Reviews from ${data ? SOURCE_LABEL[data.source] : ""}`}>
+            <ol className="gb__deck" ref={deck} onScroll={onDeckScroll} aria-label={t.reviewsFrom(data ? SOURCE_LABEL[data.source] : "")}>
               {reviews.map((review, index) => (
                 <li key={`${data!.source}-${index}`} className="gb__card">
-                  <ReviewNote review={review} source={data!.source} size="card" id={`${base}-c${index}`} />
+                  <ReviewNote review={review} source={data!.source} size="card" id={`${base}-c${index}`} t={t} />
                 </li>
               ))}
             </ol>
             {reviews.length > 1 ? (
-              <div className="gb__dots" role="group" aria-label="Choose a review">
+              <div className="gb__dots" role="group" aria-label={t.chooseReview}>
                 {reviews.map((review, index) => (
                   <button
                     key={index}
                     type="button"
                     className="gb__dot"
-                    aria-label={`Review ${index + 1} of ${reviews.length}`}
+                    aria-label={t.reviewOf(index + 1, reviews.length)}
                     aria-current={slide === index ? "true" : undefined}
                     onClick={() => goToSlide(index)}
                   />
@@ -445,10 +439,10 @@ export function GuestBook({
           </>
         ) : (
           <p className="gb__card gb__empty">
-            Read what guests say after a voyage aboard Hathor, on Google{fallback.tripadvisorUrl ? " and Tripadvisor" : ""}.
+            {t.fallbackLede(Boolean(fallback.tripadvisorUrl))}
           </p>
         )}
-        <Actions data={data} fallback={fallback} className="gb__actions--deck" />
+        <Actions data={data} fallback={fallback} className="gb__actions--deck" t={t} />
         <figure className="gb__etching gb__etching--deck" aria-hidden="true">
           <Image src="/media/hathor/reviews/hathor-engraving.webp" alt="" width={1100} height={470} sizes="92vw" />
           <HandNote
@@ -456,11 +450,7 @@ export function GuestBook({
             width={420}
             height={190}
             rotate={-10}
-            lines={[
-              { text: "More than", x: 8, y: 44 },
-              { text: "a cruise —", x: 30, y: 92, r: 2 },
-              { text: "a story worth sharing", x: 52, y: 142, r: -1 },
-            ]}
+            lines={t.handDeck}
           />
         </figure>
       </div>

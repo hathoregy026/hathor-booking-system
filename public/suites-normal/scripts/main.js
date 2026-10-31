@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         swup = new Swup({
             containers: ['#smooth-wrapper','#wrap-modals'],
-            linkSelector: 'a[href]:not([href="contacto"]):not([href="disponibilidad"]):not([target="_blank"])',
+            linkSelector: 'a[href]:not([href="contacto"]):not([href="disponibilidad"]):not([target="_blank"]):not([target="_top"])',
             animateHistoryBrowsing: true,
             cache: false
         });

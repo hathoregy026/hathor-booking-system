@@ -48,18 +48,21 @@ export function Rating({
   size,
   id,
   source,
+  label,
 }: {
   value: number;
   size: "lg" | "sm";
   id: string;
   source: ReviewSource;
+  /** The rating spoken by screen readers; English unless the page passes its own. */
+  label?: string;
 }) {
   const rounded = Math.round(value * 2) / 2;
   return (
     <span
       className={`gr__stars gr__stars--${size} gr__stars--${source}`}
       role="img"
-      aria-label={`Rated ${value.toFixed(1)} out of 5 on ${SOURCE_LABEL[source]}`}
+      aria-label={label ?? `Rated ${value.toFixed(1)} out of 5 on ${SOURCE_LABEL[source]}`}
     >
       {[0, 1, 2, 3, 4].map((index) => {
         const fill = rounded >= index + 1 ? "full" : rounded >= index + 0.5 ? "half" : "none";

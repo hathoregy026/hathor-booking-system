@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { COUNTRIES, findCountry, type Country } from "@/lib/countries";
+import type { BookingCopy } from "@/lib/i18n/booking-copy";
+import { useBookingCopy } from "./useBookingCopy";
 
 /** Room the list wants below the field; the phone and tablet dock covers the bottom 5.5rem. */
 const LIST_SPACE = 300;
@@ -12,11 +14,13 @@ function bottomObstruction() {
   return window.innerWidth <= DOCK_BREAKPOINT ? 96 : 12;
 }
 
-function search(query: string): Country[] {
+/** Searches the names the guest reads; the chosen country still carries its English name. */
+function search(query: string, t: BookingCopy): Country[] {
   const text = query.trim().toLowerCase().replace(/^\+/, "");
   if (!text) return [...COUNTRIES];
-  const starts = COUNTRIES.filter(country => country.name.toLowerCase().startsWith(text) || country.dial.startsWith(text));
-  const contains = COUNTRIES.filter(country => !starts.includes(country) && country.name.toLowerCase().includes(text));
+  const shown = (country: Country) => t.countryName(country.code, country.name).toLowerCase();
+  const starts = COUNTRIES.filter(country => shown(country).startsWith(text) || country.dial.startsWith(text));
+  const contains = COUNTRIES.filter(country => !starts.includes(country) && shown(country).includes(text));
   return [...starts, ...contains];
 }
 
@@ -37,6 +41,7 @@ export function CountryPicker({
   labelledBy: string;
   invalid?: boolean;
 }) {
+  const t = useBookingCopy();
   const listId = useId();
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -47,7 +52,8 @@ export function CountryPicker({
   const [maxHeight, setMaxHeight] = useState(LIST_SPACE);
 
   const selected = findCountry(value);
-  const matches = useMemo(() => search(query), [query]);
+  const selectedName = selected ? t.countryName(selected.code, selected.name) : null;
+  const matches = useMemo(() => search(query, t), [query, t]);
 
   /** Space below the field, inside the window and above the phone dock. */
   const spaceBelow = useCallback(() => {
@@ -145,8 +151,8 @@ export function CountryPicker({
         aria-activedescendant={open && matches[active] ? `${listId}-${matches[active].code}` : undefined}
         autoComplete="off"
         spellCheck={false}
-        placeholder={selected ? selected.name : "Search your country"}
-        value={open ? query : selected?.name ?? ""}
+        placeholder={selectedName ?? t.details.countrySearch}
+        value={open ? query : selectedName ?? ""}
         onFocus={() => { if (!open) openList(); }}
         onClick={() => { if (!open) openList(); }}
         onChange={event => {
@@ -160,7 +166,7 @@ export function CountryPicker({
       {open ? (
         <ul className="hj-country__list" id={listId} role="listbox" ref={listRef} style={{ maxHeight }}>
           {matches.length === 0 ? (
-            <li className="hj-country__empty" role="presentation">No country matches “{query}”.</li>
+            <li className="hj-country__empty" role="presentation">{t.details.noCountry(query)}</li>
           ) : (
             matches.map((country, index) => (
               <li
@@ -174,7 +180,7 @@ export function CountryPicker({
                 onMouseEnter={() => setActive(index)}
                 onClick={() => choose(country)}
               >
-                <span>{country.name}</span>
+                <span>{t.countryName(country.code, country.name)}</span>
                 <span className="hj-country__dial">+{country.dial}</span>
               </li>
             ))

@@ -1,6 +1,12 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { HATHOR_ICON_GOLD_SRC } from "@/lib/branding";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
+import { PublicThemeProvider } from "@/components/public/PublicThemeProvider";
 import { freshMediaSrc } from "@/lib/fresh-media-src";
+import { COMING_SOON_COPY } from "@/lib/i18n/system-pages-copy";
+import { splitLocalePath } from "@/lib/i18n/locale";
 import { DEFAULT_LIVE_SITE_BG_SRC } from "@/lib/live-site-settings-shared";
 
 type SiteComingSoonProps = {
@@ -13,7 +19,10 @@ type SiteComingSoonProps = {
 export function SiteComingSoon({
   backgroundImageUrl = DEFAULT_LIVE_SITE_BG_SRC,
 }: SiteComingSoonProps) {
+  const locale = splitLocalePath(usePathname()).locale;
   return (
+    /* Every caller is outside the theme provider, which the navbar needs. */
+    <PublicThemeProvider>
     <div className="public-site hathor-site site-coming-soon-shell">
       <PublicNavbar />
       <div className="site-coming-soon" role="status" aria-live="polite">
@@ -32,9 +41,10 @@ export function SiteComingSoon({
           height={220}
           decoding="async"
         />
-        <p className="site-coming-soon__label">Coming Soon</p>
+        <p className="site-coming-soon__label" lang={locale}>{COMING_SOON_COPY[locale]}</p>
       </div>
     </div>
     </div>
+    </PublicThemeProvider>
   );
 }

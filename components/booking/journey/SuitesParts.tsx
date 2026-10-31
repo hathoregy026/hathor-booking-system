@@ -4,22 +4,11 @@ import { useState, type PointerEvent as ReactPointerEvent } from "react";
 import { roomCapacity, type PhysicalRoomType } from "@/lib/physical-inventory";
 import { guestLabel, shortName, type Guest } from "./allocation";
 import type { DragState } from "./useGuestDrag";
-import { plural, type Sailing } from "./model";
+import type { Sailing } from "./model";
 import { IconAdult, IconChild } from "./icons";
+import { useBookingCopy } from "./useBookingCopy";
 
 /** Shared by the phone/tablet list and the desktop board, so both place guests the same way. */
-
-export const CABIN_NOTE: Record<PhysicalRoomType, string> = {
-  "Luxury King Cabin": "King bed · panoramic Nile view",
-  "Luxury Twin Cabin": "Twin beds · panoramic Nile view",
-  "Luxury Suite": "Separate lounge · panoramic Nile view",
-  "Royal Suite": "Private lounge · premium Nile view",
-};
-
-export const CABIN_BED: Partial<Record<PhysicalRoomType, string>> = {
-  "Luxury King Cabin": "King bed",
-  "Luxury Twin Cabin": "Twin beds",
-};
 
 /** Public room pages and the stable slugs Favorites and the cart store. */
 export const RESIDENCE_SLUG: Record<PhysicalRoomType, string> = {
@@ -44,6 +33,7 @@ export function Counter({
   max: number;
   onChange: (next: number) => void;
 }) {
+  const t = useBookingCopy();
   return (
     <div className="hj-counter">
       <span className="hj-counter__copy">
@@ -51,9 +41,9 @@ export function Counter({
         <span className="hj-counter__hint">{hint}</span>
       </span>
       <span className="hj-counter__ctrl">
-        <button type="button" className="hj-counter__btn" aria-label={`One fewer ${label.toLowerCase()}`} disabled={value <= min} onClick={() => onChange(value - 1)}>−</button>
+        <button type="button" className="hj-counter__btn" aria-label={t.counters.fewer(label)} disabled={value <= min} onClick={() => onChange(value - 1)}>−</button>
         <output className="hj-counter__value" aria-live="polite">{value}</output>
-        <button type="button" className="hj-counter__btn" aria-label={`One more ${label.toLowerCase()}`} disabled={value >= max} onClick={() => onChange(value + 1)}>+</button>
+        <button type="button" className="hj-counter__btn" aria-label={t.counters.more(label)} disabled={value >= max} onClick={() => onChange(value + 1)}>+</button>
       </span>
     </div>
   );
@@ -74,19 +64,20 @@ export function GuestTile({
   onBegin: (event: ReactPointerEvent<HTMLElement>, guestId: string) => void;
   onTap: (guestId: string) => void;
 }) {
+  const t = useBookingCopy();
   return (
     <button
       type="button"
       className={`hj-tile hj-tile--${guest.kind}${picked ? " hj-tile--picked" : ""}${lifted ? " hj-tile--lifted" : ""}`}
       aria-pressed={picked}
-      aria-label={`${guestLabel(guest)}, ${where ? `in ${where}` : "waiting for a cabin"}. Drag to a cabin, or press and then choose a cabin.`}
+      aria-label={t.suites.tile(guestLabel(guest, t), where)}
       data-guest={guest.id}
       onPointerDown={event => onBegin(event, guest.id)}
       onClick={() => onTap(guest.id)}
     >
       <span className="hj-tile__icon" aria-hidden>{guest.kind === "adult" ? <IconAdult /> : <IconChild />}</span>
       <span className="hj-tile__label" aria-hidden>
-        {guest.kind === "adult" ? "Adult" : "Child"} <b>{guest.number}</b>
+        {t.suites.kind(guest.kind)} <b>{guest.number}</b>
       </span>
     </button>
   );
@@ -99,17 +90,18 @@ export function CountMenu({
   options,
   onChoose,
 }: {
-  label: "Adults" | "Children";
+  label: string;
   cabinLabelText: string;
   options: { current: number; limit: number; reachable: number };
   onChoose: (count: number) => void;
 }) {
+  const t = useBookingCopy();
   return (
     <label className="hj-cab__menu">
       <span>{label}</span>
       <select
         value={options.current}
-        aria-label={`${label} in ${cabinLabelText}`}
+        aria-label={t.suites.menuLabel(label, cabinLabelText)}
         onChange={event => onChoose(Number(event.target.value))}
       >
         {Array.from({ length: options.limit + 1 }, (_, count) => (
@@ -136,13 +128,14 @@ export function ArrangeChooser({
   onArrange: (types: PhysicalRoomType[]) => string | null;
   onClose: () => void;
 }) {
+  const t = useBookingCopy();
   const [types, setTypes] = useState<PhysicalRoomType[]>(initial);
   const [problem, setProblem] = useState<string | null>(null);
 
   return (
     <div className="hj-arrange" role="group" aria-labelledby="hj-arrange-title">
-      <p className="hj-arrange__title" id="hj-arrange-title">Which cabins would you like?</p>
-      <p className="hj-arrange__lede">Choose one or more types. We will place all {plural(guestCount, "guest")} within each cabin&apos;s limit.</p>
+      <p className="hj-arrange__title" id="hj-arrange-title">{t.suites.arrange.title}</p>
+      <p className="hj-arrange__lede">{t.suites.arrange.lede(guestCount)}</p>
       <div className="hj-arrange__types">
         {sailing.types.map(type => {
           const free = type.availableCabins;
@@ -160,7 +153,7 @@ export function ArrangeChooser({
               />
               <span>
                 <strong>{shortName(type.roomType)}</strong>
-                <span>{free === 0 ? "Unavailable for this date" : `${free} free · up to ${roomCapacity(type.roomType)} guests each`}</span>
+                <span>{free === 0 ? t.suites.unavailableDate : t.suites.arrange.freeEach(free, roomCapacity(type.roomType))}</span>
               </span>
             </label>
           );
@@ -178,22 +171,23 @@ export function ArrangeChooser({
             else onClose();
           }}
         >
-          Arrange my guests
+          {t.suites.arrange.go}
         </button>
-        <button type="button" className="hj-btn hj-btn--ghost" onClick={onClose}>Cancel</button>
+        <button type="button" className="hj-btn hj-btn--ghost" onClick={onClose}>{t.suites.arrange.cancel}</button>
       </div>
     </div>
   );
 }
 
 export function DragGhost({ drag, guests }: { drag: DragState | null; guests: Guest[] }) {
+  const t = useBookingCopy();
   if (!drag) return null;
   const guest = guests.find(entry => entry.id === drag.guestId);
   if (!guest) return null;
   return (
     <div className={`hj-ghost hj-tile hj-tile--${guest.kind}`} style={{ left: drag.x, top: drag.y }} aria-hidden>
       <span className="hj-tile__icon">{guest.kind === "adult" ? <IconAdult /> : <IconChild />}</span>
-      <span className="hj-tile__label">{guest.kind === "adult" ? "Adult" : "Child"} <b>{guest.number}</b></span>
+      <span className="hj-tile__label">{t.suites.kind(guest.kind)} <b>{guest.number}</b></span>
     </div>
   );
 }

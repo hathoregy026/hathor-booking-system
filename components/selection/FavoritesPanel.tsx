@@ -8,10 +8,7 @@ import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { ManagedImage } from "@/components/ui/ManagedImage";
 import { useRouter } from "next/navigation";
-import {
-  describeRoomTypesOnCruise,
-  type StayDurationValue,
-} from "@/lib/booking-search-config";
+import type { StayDurationValue } from "@/lib/booking-search-config";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 import { useCurrency } from "@/components/public/CurrencyProvider";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
@@ -32,6 +29,9 @@ import {
   useSelectionStore,
   useVoyageSelection,
 } from "@/components/selection/SelectionProvider";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
+import { favoriteIn, SELECTION_COPY } from "@/lib/i18n/selection-copy";
 import "./FavoritesPanel.css";
 
 /**
@@ -80,20 +80,22 @@ function PanelImage({
 function FavoritesView({ onClose }: { onClose: () => void }) {
   const favorites = useFavorites();
   const removeFavorite = useSelectionStore((state) => state.removeFavorite);
-  const items = useMemo(() => resolveFavorites(favorites), [favorites]);
+  const locale = usePublicLocale();
+  const t = SELECTION_COPY[locale];
+  const localHref = useLocalizedHref();
+  const items = useMemo(
+    () => resolveFavorites(favorites).map((item) => favoriteIn(item, locale)),
+    [favorites, locale],
+  );
 
   if (items.length === 0) {
     return (
       <div className="hfp__empty">
         <span className="hfp__empty-rule" aria-hidden="true" />
-        <h3>Nothing saved yet</h3>
-        <p>
-          Explore Hathor&apos;s voyages, cabins and suites, and save the
-          experiences that speak to you. They will be waiting here when you
-          return.
-        </p>
-        <Link href="/voyages" className="hfp__cta" onClick={onClose}>
-          Explore Hathor
+        <h3>{t.nothingSaved}</h3>
+        <p>{t.nothingSavedBody}</p>
+        <Link href={localHref("/voyages")} className="hfp__cta" onClick={onClose}>
+          {t.exploreHathor}
         </Link>
       </div>
     );
@@ -114,7 +116,7 @@ function FavoritesView({ onClose }: { onClose: () => void }) {
 
             <div className="hfp__actions">
               <Link href={item.href} className="hfp__action" onClick={onClose}>
-                View Details
+                {t.viewDetails}
               </Link>
 
               {/*
@@ -123,7 +125,8 @@ function FavoritesView({ onClose }: { onClose: () => void }) {
               */}
               {item.ref.type === "voyage" ||
               item.ref.type === "residence" ||
-              item.ref.type === "cabin" ? (
+              item.ref.type === "cabin" ||
+              item.ref.type === "charter" ? (
                 <AddToVoyageButton
                   kind={item.ref.type}
                   slug={item.ref.slug}
@@ -142,9 +145,9 @@ function FavoritesView({ onClose }: { onClose: () => void }) {
                     item_slug: item.ref.slug,
                   });
                 }}
-                aria-label={`Remove ${item.title} from Favorites`}
+                aria-label={t.removeLabel(item.title)}
               >
-                Remove
+                {t.remove}
               </button>
             </div>
           </div>
@@ -169,6 +172,7 @@ function GuestCounter({
   min: number;
   onChange: (next: number) => void;
 }) {
+  const t = SELECTION_COPY[usePublicLocale()];
   return (
     <div className="hfp__counter">
       <span className="hfp__counter-label">{label}</span>
@@ -177,7 +181,7 @@ function GuestCounter({
           type="button"
           onClick={() => onChange(value - 1)}
           disabled={value <= min}
-          aria-label={`Decrease ${label}`}
+          aria-label={t.decrease(label)}
         >
           <Minus aria-hidden="true" focusable="false" />
         </button>
@@ -185,7 +189,7 @@ function GuestCounter({
         <button
           type="button"
           onClick={() => onChange(value + 1)}
-          aria-label={`Increase ${label}`}
+          aria-label={t.increase(label)}
         >
           <Plus aria-hidden="true" focusable="false" />
         </button>
@@ -203,6 +207,9 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
   const setCharter = useSelectionStore((state) => state.setCharter);
   const router = useRouter();
   const [handoffNotice, setHandoffNotice] = useState<string | null>(null);
+  const locale = usePublicLocale();
+  const t = SELECTION_COPY[locale];
+  const localHref = useLocalizedHref();
 
   const voyage = selection.voyageSlug ? findVoyage(selection.voyageSlug) : null;
   const residence = selection.residenceSlug
@@ -225,7 +232,7 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
     indicativeFromPriceCents(selection.voyageSlug, luxuryType);
 
   const sailingLabel = selection.sailingDate
-    ? new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    ? new Intl.DateTimeFormat(t.dateLocale, { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
         .format(new Date(`${selection.sailingDate}T00:00:00Z`))
     : null;
 
@@ -240,20 +247,20 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
 
     if (selection.charter) {
       onClose();
-      router.push("/charter");
+      router.push(localHref("/charter"));
       return;
     }
 
     const duration = selection.voyageSlug as StayDurationValue | null;
     if (!duration) {
-      setHandoffNotice("Choose a voyage to complete your selection.");
+      setHandoffNotice(t.chooseVoyage);
       return;
     }
 
     const saved = selection.residenceSlug ? findResidence(selection.residenceSlug) : null;
     const residenceType = saved ? luxuryTypeForResidence(saved) : null;
     if (residenceType && !isVoyageResidenceCompatible(duration, residenceType)) {
-      setHandoffNotice(`This journey offers ${describeRoomTypesOnCruise(duration)}.`);
+      setHandoffNotice(t.journeyOffers(duration));
       return;
     }
 
@@ -266,16 +273,18 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
     if (selection.sailingDate) params.set("sailing", selection.sailingDate);
 
     onClose();
-    router.push(`/booking?${params.toString()}`);
+    router.push(localHref(`/booking?${params.toString()}`));
   }, [
     adults,
     children,
+    localHref,
     onClose,
     router,
     selection.charter,
     selection.residenceSlug,
     selection.sailingDate,
     selection.voyageSlug,
+    t,
   ]);
 
   const empty = !voyage && !residence && !selection.charter;
@@ -284,13 +293,10 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
     return (
       <div className="hfp__empty">
         <span className="hfp__empty-rule" aria-hidden="true" />
-        <h3>Your voyage begins here</h3>
-        <p>
-          Choose a journey and accommodation to begin shaping your experience
-          aboard Hathor.
-        </p>
-        <Link href="/voyages" className="hfp__cta" onClick={onClose}>
-          Explore Voyages
+        <h3>{t.beginsTitle}</h3>
+        <p>{t.beginsBody}</p>
+        <Link href={localHref("/voyages")} className="hfp__cta" onClick={onClose}>
+          {t.exploreVoyages}
         </Link>
       </div>
     );
@@ -298,46 +304,53 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="hfp__voyage">
+      {/*
+        My Voyage holds a charter OR a scheduled journey. A charter hides any
+        journey/accommodation left over from before that rule (they reappear
+        if the charter is removed).
+      */}
+      {!selection.charter ? (
       <section className="hfp__section">
-        <h3 className="hfp__section-title">Journey</h3>
+        <h3 className="hfp__section-title">{t.journey}</h3>
         {voyage ? (
           <div className="hfp__section-body">
-            <p className="hfp__name">{voyage.ports}</p>
+            <p className="hfp__name">{t.ports(voyage.ports)}</p>
             <p className="hfp__meta">
-              {voyage.nights} Nights / {voyage.days} Days · Departs{" "}
-              {voyage.departureDay}
+              {t.nightsDays(voyage.nights, voyage.days)} ·{" "}
+              {t.departs(voyage.departureDay)}
             </p>
             {sailingLabel ? (
-              <p className="hfp__meta">Sailing {sailingLabel}</p>
+              <p className="hfp__meta">{t.sailing(sailingLabel)}</p>
             ) : null}
             <div className="hfp__actions">
-              <Link href="/voyages" className="hfp__action" onClick={onClose}>
-                Change Journey
+              <Link href={localHref("/voyages")} className="hfp__action" onClick={onClose}>
+                {t.changeJourney}
               </Link>
               <button
                 type="button"
                 className="hfp__remove"
                 onClick={() => setVoyage(null)}
               >
-                Remove
+                {t.remove}
               </button>
             </div>
           </div>
         ) : (
           <div className="hfp__section-body">
-            <p className="hfp__prompt">Choose a voyage to complete your selection.</p>
+            <p className="hfp__prompt">{t.chooseVoyage}</p>
             <div className="hfp__actions">
-              <Link href="/voyages" className="hfp__action" onClick={onClose}>
-                Explore Voyages
+              <Link href={localHref("/voyages")} className="hfp__action" onClick={onClose}>
+                {t.exploreVoyages}
               </Link>
             </div>
           </div>
         )}
       </section>
+      ) : null}
 
-      {residence ? (
+      {residence && !selection.charter ? (
         <section className="hfp__section">
-          <h3 className="hfp__section-title">Accommodation</h3>
+          <h3 className="hfp__section-title">{t.accommodation}</h3>
           <div className="hfp__item hfp__item--flush">
             <div className="hfp__media">
               <PanelImage
@@ -347,22 +360,22 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
             <div className="hfp__copy">
               <p className="hfp__name">{residence.name}</p>
               <p className="hfp__meta">
-                {residence.sizeSqm} m² · Up to {residence.capacity} guests
+                {t.sizeCapacity(residence.sizeSqm, residence.capacity)}
               </p>
               <div className="hfp__actions">
                 <Link
-                  href={`/rooms/${residence.slug}`}
+                  href={localHref(`/rooms/${residence.slug}`)}
                   className="hfp__action"
                   onClick={onClose}
                 >
-                  View Suite
+                  {t.viewSuite}
                 </Link>
                 <button
                   type="button"
                   className="hfp__remove"
                   onClick={() => setResidence(null)}
                 >
-                  Remove
+                  {t.remove}
                 </button>
               </div>
             </div>
@@ -371,55 +384,50 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       ) : null}
 
       <section className="hfp__section">
-        <h3 className="hfp__section-title">Guests</h3>
+        <h3 className="hfp__section-title">{t.guests}</h3>
         <div className="hfp__counters">
           <GuestCounter
-            label="Adults"
+            label={t.adults}
             value={adults}
             min={1}
             onChange={(next) => setGuests(next, children)}
           />
           <GuestCounter
-            label="Children"
+            label={t.children}
             value={children}
             min={0}
             onChange={(next) => setGuests(adults, next)}
           />
         </div>
-        <p className="hfp__note">
-          Your whole party. You choose their cabins when you continue booking.
-        </p>
+        <p className="hfp__note">{t.partyNote}</p>
       </section>
 
       {selection.charter ? (
         <section className="hfp__section">
-          <h3 className="hfp__section-title">Private Charter</h3>
+          <h3 className="hfp__section-title">{t.privateCharter}</h3>
           <div className="hfp__section-body">
-            <p className="hfp__meta">The Dahabiya, yours alone.</p>
+            <p className="hfp__meta">{t.charterMeta}</p>
             <div className="hfp__actions">
-              <Link href="/charter" className="hfp__action" onClick={onClose}>
-                View Charter
+              <Link href={localHref("/charter")} className="hfp__action" onClick={onClose}>
+                {t.viewCharter}
               </Link>
               <button
                 type="button"
                 className="hfp__remove"
                 onClick={() => setCharter(false)}
               >
-                Remove
+                {t.remove}
               </button>
             </div>
           </div>
         </section>
       ) : null}
 
-      {indicativeCents !== null ? (
+      {indicativeCents !== null && !selection.charter ? (
         <section className="hfp__section hfp__section--price">
-          <p className="hfp__price-label">Indicative from</p>
-          <p className="hfp__price">{formatPrice(indicativeCents)}<RoomPriceUnit roomType={luxuryType} /></p>
-          <p className="hfp__note">
-            Indicative catalog rate per cabin. Final pricing and availability are
-            confirmed by our reservations team.
-          </p>
+          <p className="hfp__price-label">{t.indicativeFrom}</p>
+          <p className="hfp__price">{formatPrice(indicativeCents)}<RoomPriceUnit roomType={luxuryType} locale={locale} /></p>
+          <p className="hfp__note">{t.priceNote}</p>
         </section>
       ) : null}
 
@@ -432,10 +440,10 @@ function MyVoyageView({ onClose }: { onClose: () => void }) {
       <div className="hfp__primary">
         {/* Private Charter is not a scheduled sailing: it keeps its enquiry. */}
         <button type="button" className="hfp__cta" onClick={handleContinueBooking}>
-          {selection.charter ? "Request This Voyage" : "Continue Booking"}
+          {selection.charter ? t.requestVoyage : t.continueBooking}
         </button>
-        <Link href="/voyages" className="hfp__action" onClick={onClose}>
-          Continue Exploring
+        <Link href={localHref("/voyages")} className="hfp__action" onClick={onClose}>
+          {t.continueExploring}
         </Link>
       </div>
     </div>
@@ -452,6 +460,9 @@ export function SelectionPanel() {
   const closePanel = useSelectionStore((state) => state.closePanel);
   const openPanel = useSelectionStore((state) => state.openPanel);
   const favoritesCount = useFavorites().items.length;
+  const locale = usePublicLocale();
+  const t = SELECTION_COPY[locale];
+  const chrome = CHROME_COPY[locale].selection;
 
   const sheetRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -518,7 +529,7 @@ export function SelectionPanel() {
       <button
         type="button"
         className="hfp__backdrop"
-        aria-label="Close selection"
+        aria-label={t.closeSelection}
         tabIndex={open ? 0 : -1}
         onClick={handleClose}
       />
@@ -528,26 +539,26 @@ export function SelectionPanel() {
         className="hfp__sheet"
         role="dialog"
         aria-modal="true"
-        aria-label={isFavorites ? "My Favorites" : "My Voyage"}
+        aria-label={isFavorites ? chrome.myFavorites : chrome.myVoyage}
       >
         <header className="hfp__head">
           <div>
-            <p className="hfp__eyebrow">Your selections</p>
-            <h2 className="hfp__title">{isFavorites ? "My Favorites" : "My Voyage"}</h2>
+            <p className="hfp__eyebrow">{t.eyebrow}</p>
+            <h2 className="hfp__title">{isFavorites ? chrome.myFavorites : chrome.myVoyage}</h2>
           </div>
           <button
             ref={closeRef}
             type="button"
             className="hfp__close"
             onClick={handleClose}
-            aria-label="Close"
+            aria-label={t.close}
           >
             <span aria-hidden="true">×</span>
           </button>
         </header>
 
         {/* The switch lives inside the sheet, so phones need only one header control. */}
-        <div className="hfp__tabs" role="tablist" aria-label="Selections">
+        <div className="hfp__tabs" role="tablist" aria-label={t.tabsLabel}>
           <button
             type="button"
             role="tab"
@@ -557,7 +568,7 @@ export function SelectionPanel() {
             className={`hfp__tab${isFavorites ? " is-active" : ""}`}
             onClick={() => openPanel("favorites")}
           >
-            Favorites
+            {t.favoritesTab}
             {favoritesCount > 0 ? (
               <span className="hfp__tab-count" aria-hidden="true">
                 {favoritesCount}
@@ -573,7 +584,7 @@ export function SelectionPanel() {
             className={`hfp__tab${!isFavorites ? " is-active" : ""}`}
             onClick={() => openPanel("voyage")}
           >
-            My Voyage
+            {chrome.myVoyage}
           </button>
         </div>
 

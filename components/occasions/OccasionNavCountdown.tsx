@@ -2,19 +2,14 @@
 
 import "./occasions.css";
 import { useEffect, useRef } from "react";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import { countdownParts, padCountdownUnit } from "@/lib/occasions";
 
-type Unit = readonly ["days" | "hours" | "minutes" | "seconds", string, string];
+type Unit = "days" | "hours" | "minutes" | "seconds";
 
-/* [part, label, phone label] */
-const LEFT_OF_LOGO: readonly Unit[] = [
-  ["days", "Days", "Days"],
-  ["hours", "Hours", "Hrs"],
-];
-const RIGHT_OF_LOGO: readonly Unit[] = [
-  ["minutes", "Minutes", "Min"],
-  ["seconds", "Seconds", "Sec"],
-];
+const LEFT_OF_LOGO: readonly Unit[] = ["days", "hours"];
+const RIGHT_OF_LOGO: readonly Unit[] = ["minutes", "seconds"];
 
 /**
  * Days and hours left of the menu-bar logo, minutes and seconds right of it,
@@ -26,6 +21,7 @@ const RIGHT_OF_LOGO: readonly Unit[] = [
  */
 export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const copy = CHROME_COPY[usePublicLocale()].occasion;
 
   useEffect(() => {
     const root = ref.current;
@@ -71,12 +67,12 @@ export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: str
   }, []);
 
   const parts = countdownParts(ms);
-  const cell = ([key, label, short]: Unit) => (
+  const cell = (key: Unit) => (
     <span key={key} className="occasion-nav-cd__cell">
       <span className="occasion-nav-cd__num">{padCountdownUnit(parts[key])}</span>
       <span className="occasion-nav-cd__unit">
-        <span className="occasion-nav-cd__long">{label}</span>
-        <span className="occasion-nav-cd__short">{short}</span>
+        <span className="occasion-nav-cd__long">{copy.units[key][0]}</span>
+        <span className="occasion-nav-cd__short">{copy.units[key][1]}</span>
       </span>
     </span>
   );
@@ -86,7 +82,7 @@ export function OccasionNavCountdown({ ms, caption }: { ms: number; caption: str
       ref={ref}
       className="occasion-nav-cd"
       role="timer"
-      aria-label={`${caption}: ${parts.days} days, ${parts.hours} hours, ${parts.minutes} minutes`}
+      aria-label={copy.timer(caption, parts.days, parts.hours, parts.minutes)}
     >
       <div className="occasion-nav-cd__side occasion-nav-cd__side--start" aria-hidden="true">
         {LEFT_OF_LOGO.map(cell)}

@@ -87,6 +87,8 @@ export const LEGACY_HATHORCRUISE_REDIRECTS: ReadonlyArray<readonly [source: stri
   ["/rooms/luxury-king-bed-cabin", "/luxury-cabins-Nile-Cruise"],
   ["/rooms/luxury-suite-3-nights-4-days-Luxor-Aswan", "/rooms"],
   ["/rooms/Traditional-Nile-River-boat", "/rooms"],
+  ["/rooms/dahabiya", "/voyages/luxor-aswan-luxor"], // journal link "7 Nights Luxor Aswan"; 404 on the live site
+  ["/rooms/dahabiya-nile-sailing", "/luxury-cabins-Nile-Cruise"], // 404 in Search Console; named like /rooms/nile-sailing-cruise
 
   /* Leftover WooCommerce product URL, still getting Search Console impressions. */
   ["/product/3-nights-itinerary-aswan-to-luxor-copy-copy-2", "/voyages/aswan-to-luxor"],

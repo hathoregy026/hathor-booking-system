@@ -43,6 +43,12 @@ import {
   unlockBodyScroll,
 } from "@/lib/body-scroll-lock";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
+import { localizedHref, splitLocalePath } from "@/lib/i18n/locale";
+import {
+  CHROME_COPY,
+  localizeNavItems,
+  type ChromeCopy,
+} from "@/lib/i18n/chrome-copy";
 
 const EXPLORE_LOCK_OWNER = "explore-panel" as const;
 
@@ -51,30 +57,32 @@ function ExplorePanel({
   onClose,
   onNavigate,
   navItems,
+  copy,
 }: {
   open: boolean;
   onClose: () => void;
   onNavigate: (href: string) => void;
   navItems: HeaderNavItem[];
+  copy: ChromeCopy["header"];
 }) {
   if (!open) return null;
 
   return (
-    <div className="hathor-explore" role="dialog" aria-modal="true" aria-label="Explore menu">
+    <div className="hathor-explore" role="dialog" aria-modal="true" aria-label={copy.exploreMenu}>
       <button
         type="button"
         className="hathor-explore__backdrop"
-        aria-label="Close explore menu"
+        aria-label={copy.closeExplore}
         onClick={onClose}
       />
       <div className="hathor-explore__panel">
         <div className="hathor-explore__header">
-          <p className="hathor-explore__label">Explore</p>
+          <p className="hathor-explore__label">{copy.exploreLabel}</p>
           <button
             type="button"
             className="hathor-header-icon-btn"
             onClick={onClose}
-            aria-label="Close menu"
+            aria-label={copy.closeMenu}
           >
             <X className="h-5 w-5" aria-hidden />
           </button>
@@ -133,7 +141,7 @@ function ExplorePanel({
         </div>
 
         <div className="hathor-explore__footer">
-          <p className="hathor-explore__follow">Follow Us</p>
+          <p className="hathor-explore__follow">{copy.followUs}</p>
           <div className="flex flex-wrap gap-4 text-sm">
             <a
               href={`mailto:${PUBLIC_CONTACT.email}`}
@@ -169,7 +177,12 @@ function isNavItemActive(pathname: string, item: HeaderNavItem): boolean {
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const navItems = HEADER_NAV_ITEMS;
+  const { locale, path: routePath } = splitLocalePath(pathname);
+  const copy = CHROME_COPY[locale].header;
+  const navItems = useMemo(
+    () => localizeNavItems(HEADER_NAV_ITEMS, locale),
+    [locale],
+  );
   const { left: navLeft, right: navRight } = useMemo(
     () => splitHeaderNavItems(navItems),
     [navItems],
@@ -177,10 +190,10 @@ export function Header() {
   const editorialNav = usesEditorialOverlayNav(pathname);
   /* The cached homepage HTML renders as /index; hydration keeps its class until a re-render. */
   const isHome =
-    pathname === "/" ||
-    pathname === "/index" ||
-    pathname === "/ex" ||
-    pathname === "/home-2";
+    routePath === "/" ||
+    routePath === "/index" ||
+    routePath === "/ex" ||
+    routePath === "/home-2";
   const [exploreOpen, setExploreOpen] = useState(false);
   const chromeNav = true;
   const phoneViewportRef = useRef(false);
@@ -354,7 +367,7 @@ export function Header() {
     cleanups.push(() =>
       window.removeEventListener("hathor:suites-scroll", onSuitesScroll),
     );
-    if (!(pathname === "/suites" || pathname.startsWith("/suites/"))) {
+    if (!(routePath === "/suites" || routePath.startsWith("/suites/"))) {
       setSuitesNavTone(null);
     }
 
@@ -393,7 +406,7 @@ export function Header() {
     return () => {
       cleanups.forEach((fn) => fn());
     };
-  }, [pathname]);
+  }, [pathname, routePath]);
 
   useEffect(() => {
     if (!openDropdown) return;
@@ -467,7 +480,7 @@ export function Header() {
             <button
               type="button"
               className="hathor-header__dropdown-toggle"
-              aria-label={`Show ${item.label} pages`}
+              aria-label={copy.showGroupPages(item.label)}
               aria-expanded={dropdownOpen}
               onClick={() => {
                 cancelDropdownClose();
@@ -480,7 +493,7 @@ export function Header() {
           <div
             className={`hathor-header__dropdown${dropdownOpen ? " is-open" : ""}`}
             role="menu"
-            aria-label={`${item.label} pages`}
+            aria-label={copy.groupPages(item.label)}
           >
             <ul className="hathor-header__dropdown-list">
               {item.links.map((link) => {
@@ -536,7 +549,7 @@ export function Header() {
               className="hathor-header__menu-btn hathor-header__menu-btn--left"
               onClick={toggleExplore}
               aria-expanded={exploreOpen}
-              aria-label={exploreOpen ? "Close menu" : "Open menu"}
+              aria-label={exploreOpen ? copy.closeMenu : copy.openMenu}
             >
               <Menu className="h-10 w-10" aria-hidden />
             </button>
@@ -551,7 +564,7 @@ export function Header() {
             {chromeNav ? null : (
               <nav
                 className="hathor-header__col hathor-header__col--nav-left"
-                aria-label="Primary navigation left"
+                aria-label={copy.navLeft}
               >
                 <ul className="hathor-header__nav hathor-header__nav--left">
                   {navLeft.map(renderNavItem)}
@@ -560,7 +573,7 @@ export function Header() {
             )}
 
             <div className="hathor-header__col hathor-header__col--logo">
-              <Link href="/" prefetch={false} className="hathor-header__brand">
+              <Link href={localizedHref("/", locale)} prefetch={false} className="hathor-header__brand">
                 <Image
                   src={
                     chromeNav || menuHovered
@@ -579,7 +592,7 @@ export function Header() {
             {chromeNav ? null : (
               <nav
                 className="hathor-header__col hathor-header__col--nav-right"
-                aria-label="Primary navigation right"
+                aria-label={copy.navRight}
               >
                 <ul className="hathor-header__nav hathor-header__nav--right">
                   {navRight.map(renderNavItem)}
@@ -595,7 +608,7 @@ export function Header() {
                 className="hathor-header__menu-btn"
                 onClick={toggleExplore}
                 aria-expanded={exploreOpen}
-                aria-label={exploreOpen ? "Close menu" : "Open menu"}
+                aria-label={exploreOpen ? copy.closeMenu : copy.openMenu}
               >
                 <Menu className="h-5 w-5" aria-hidden />
               </button>
@@ -624,7 +637,7 @@ export function Header() {
             <div
               className="hathor-phone-dock"
               role="toolbar"
-              aria-label="Phone tools"
+              aria-label={copy.phoneTools}
             >
               <SelectionHeaderControls />
               {shouldShowFloatingActions(pathname) ? (
@@ -652,6 +665,7 @@ export function Header() {
           onClose={closeExploreSync}
           onNavigate={navigateFromExplore}
           navItems={navItems}
+          copy={copy}
         />
       )}
     </>

@@ -4,7 +4,10 @@ import { useCallback, useEffect, useRef } from "react";
 import { PublicNavbar } from "@/components/layout/PublicNavbar";
 import { useWebsiteText } from "@/components/public/WebsiteTextProvider";
 import { usePublicTheme } from "@/components/public/PublicThemeProvider";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
 import { EMBEDDED_PUBLIC_THEME_CSS } from "@/lib/embedded-public-theme";
+import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
+import { localizeSuitesClone, SUITES_PAGE_LABELS } from "@/lib/i18n/suites-copy";
 import { slotNameFromSuitesImageUrl } from "@/lib/suites-normal-image-map";
 import {
   applySuitesReferenceHeroImages,
@@ -39,6 +42,8 @@ import {
   SUITES_TERMS_STAGE_CSS,
 } from "@/lib/suites-typography-shared";
 import type { SuitesLiveText } from "@/lib/suites-live-text";
+
+const SUITES_CLONE_SRC = "/suites-normal/index.html?v=hathor-suites-horizon-cta-20260916";
 
 const CLONE_HREF_MAP: ReadonlyArray<readonly [RegExp, string]> = [
   [/normalisboring\.es\/lasolana/i, "/luxury-cabins-Nile-Cruise"],
@@ -619,6 +624,11 @@ function alreadySplitAs(element: Element, value: string) {
 function setDecoratedLine(element: Element | undefined, value: string) {
   if (!element) return;
   if (alreadySplitAs(element, value)) return;
+  /* Split as other words: patching around the chars would leave those on show. */
+  if (element.querySelector(".char")) {
+    element.textContent = value;
+    return;
+  }
   const directSpans = Array.from(element.children).filter(
     (child) => child.tagName === "SPAN",
   );
@@ -734,6 +744,12 @@ function applySuitesLiveText(doc: Document, copy: SuitesLiveText) {
   setText(doc, ".mod-content__text p:first-child", copy.closingBody);
 }
 
+/** Website Text plus the iframe's own words in the page's language. */
+function applySuitesCopy(doc: Document, copy: SuitesLiveText, locale: PublicLocale) {
+  applySuitesLiveText(doc, copy);
+  localizeSuitesClone(doc, locale);
+}
+
 export function SuitesNormalHomepagePage({
   images: serverImages,
   css: serverCss = "",
@@ -745,6 +761,8 @@ export function SuitesNormalHomepagePage({
   const { theme } = usePublicTheme();
   const { pages } = useWebsiteText();
   const suitesCopy = pages.suites;
+  const locale = usePublicLocale();
+  const labels = SUITES_PAGE_LABELS[locale];
 
   const themeRef = useRef(theme);
   const imagesRef = useRef<Record<string, string>>({
@@ -797,7 +815,7 @@ export function SuitesNormalHomepagePage({
       );
       if (!prepared) return;
       const { doc, cms } = prepared;
-      applySuitesLiveText(doc, suitesCopy);
+      applySuitesCopy(doc, suitesCopy, locale);
 
       if (!doc.getElementById("hathor-bitho-ready-boot")) {
         const boot = doc.createElement("script");
@@ -830,7 +848,7 @@ export function SuitesNormalHomepagePage({
       injectSuitesLuxFooter(doc);
       neutralizeSuitesCloneIntroMotion(doc);
       layoutSuitesMobileScenes(doc);
-      applySuitesLiveText(doc, suitesCopy);
+      applySuitesCopy(doc, suitesCopy, locale);
 
       if (!doc.documentElement.dataset.hathorNavBound) {
         doc.documentElement.dataset.hathorNavBound = "1";
@@ -847,7 +865,7 @@ export function SuitesNormalHomepagePage({
             if (!next) return;
             event.preventDefault();
             event.stopPropagation();
-            window.top?.location.assign(next);
+            window.top?.location.assign(localizedHref(next, locale));
           },
           true,
         );
@@ -862,7 +880,7 @@ export function SuitesNormalHomepagePage({
       await waitForCloneBoot(doc);
       layoutSuitesCollectionRail(doc);
       layoutSuitesMobileScenes(doc);
-      applySuitesLiveText(doc, suitesCopy);
+      applySuitesCopy(doc, suitesCopy, locale);
       keepSplitWordsWhole(doc);
 
       try {
@@ -894,7 +912,7 @@ export function SuitesNormalHomepagePage({
         .then((data) =>
           softApplyConfig(doc, cms, data).then(() => {
             layoutSuitesMobileScenes(doc);
-            applySuitesLiveText(doc, suitesCopy);
+            applySuitesCopy(doc, suitesCopy, locale);
             keepSplitWordsWhole(doc);
           }),
         )
@@ -902,7 +920,7 @@ export function SuitesNormalHomepagePage({
     } finally {
       applyLockRef.current = false;
     }
-  }, [loadSuitesConfig, softApplyConfig, suitesCopy]);
+  }, [loadSuitesConfig, locale, softApplyConfig, suitesCopy]);
 
   useEffect(() => {
     let dispose: (() => void) | undefined;
@@ -937,27 +955,43 @@ export function SuitesNormalHomepagePage({
 
     const mountAtParseTime = () => {
       const iframe = iframeRef.current;
-      if (
+      const prepared =
         iframe &&
         prepareSuitesReferenceHero(
           iframe,
           themeRef.current,
           imagesRef.current,
           cssRef.current,
-        )
-      ) {
+        );
+      if (prepared) {
+        /*
+         * The clone splits its titles into letters on DOMContentLoaded and
+         * animates those letters, so other-language words must be in place
+         * first. Capture runs ahead of the clone's own listener.
+         */
+        if (locale !== "en" && prepared.doc.readyState === "loading") {
+          prepared.doc.addEventListener(
+            "DOMContentLoaded",
+            () => applySuitesCopy(prepared.doc, suitesCopy, locale),
+            { capture: true, once: true },
+          );
+        }
         return;
       }
       attempts += 1;
       if (active && attempts < 600) frame = requestAnimationFrame(mountAtParseTime);
     };
 
+    /* Other languages load the clone here, once this page can reach it in time. */
+    if (locale !== "en" && iframeRef.current) {
+      iframeRef.current.src = SUITES_CLONE_SRC;
+    }
     frame = requestAnimationFrame(mountAtParseTime);
     return () => {
       active = false;
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [locale, suitesCopy]);
 
   useEffect(() => {
     themeRef.current = theme;
@@ -965,14 +999,14 @@ export function SuitesNormalHomepagePage({
   }, [theme]);
 
   return (
-    <main className="suites-normal-clone" aria-label="Hathor Suites">
+    <main className="suites-normal-clone" aria-label={labels.frameTitle}>
       {/*
        * Everything visible below lives in the iframe document, which search
        * engines and screen readers treat as a separate page — so this page
        * had no heading of its own. Mirror the hero's visible kicker and
        * copy here (visually hidden, never different from what is shown).
        */}
-      <h1 className="sr-only">Nile Dahabiya Suites</h1>
+      <h1 className="sr-only">{labels.heading}</h1>
       <p className="sr-only">{suitesCopy.heroBody.replace(/\n/g, " ")}</p>
       <div className="public-site suites-normal-clone__nav">
         <PublicNavbar />
@@ -980,8 +1014,8 @@ export function SuitesNormalHomepagePage({
       <iframe
         ref={iframeRef}
         className="suites-normal-clone__frame"
-        src="/suites-normal/index.html?v=hathor-suites-horizon-cta-20260916"
-        title="Hathor Suites"
+        src={locale === "en" ? SUITES_CLONE_SRC : undefined}
+        title={labels.frameTitle}
         onLoad={() => {
           void apply();
         }}

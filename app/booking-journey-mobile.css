@@ -358,13 +358,18 @@
   .hj-mtile__icon .hj-icon { width: 1.15rem; height: 1.15rem; }
   .hj-mtile__text { display: grid; gap: 0.12rem; min-width: 0; }
   .hj .hj-mtile__label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hj-ink-soft); }
+  /* A long value ("1 Adulto · 2 Bambini") takes a second line instead of
+     an ellipsis; two lines at most. */
   .hj .hj-mtile__value {
+    display: -webkit-box;
     overflow: hidden;
     font-family: var(--hj-display);
     font-size: 1.04rem;
     line-height: 1.2;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    text-wrap: balance;
   }
   .hj .hj-mtile--todo { border-color: var(--hj-gold); box-shadow: 0 0 0 1px var(--hj-gold) inset, var(--hj-card-shadow); }
   .hj .hj-mtile--todo .hj-mtile__value { color: var(--hj-gold-deep); }
@@ -942,6 +947,38 @@
   /* Wide enough for each count to sit beside its name. */
   .hj-party .hj-counter { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
   .hj-party .hj-counter__ctrl { justify-content: flex-end; gap: 0.75rem; }
+}
+
+/* Phones: beside the action the price had ~150px and clipped ("From USD 7,0…").
+   The summary takes the full width, the price and its note share one line,
+   and the action becomes a full-width pill below. */
+@media (max-width: 430px) {
+  .hj-mbar__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+  .hj-mbar__sum {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "label label"
+      "amount sub";
+    align-items: baseline;
+    column-gap: 0.75rem;
+  }
+  .hj .hj-mbar__label { grid-area: label; }
+  .hj .hj-mbar__amount { grid-area: amount; overflow: visible; text-overflow: clip; }
+  .hj .hj-mbar__sub {
+    grid-area: sub;
+    justify-self: end;
+    text-align: right;
+    white-space: normal;
+    overflow: visible;
+  }
+  .hj .hj-mbar__go {
+    width: 100%;
+    height: var(--hathor-btn-height, 2.85rem);
+    min-height: var(--hathor-btn-height, 2.85rem);
+  }
 }
 
 /* Sticky map: only where the screen is tall enough to spare the room. */

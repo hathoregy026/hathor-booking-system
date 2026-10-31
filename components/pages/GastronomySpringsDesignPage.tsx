@@ -12,6 +12,8 @@ import { diningPlateSlotName } from "@/lib/gastronomy-dining-media";
 import { siteImageAnchorId } from "@/lib/site-image-preview";
 import { getSiteImageSlot } from "@/lib/site-image-slots";
 import { toVercelOptimizedSrc } from "@/lib/local-optimized-site-images";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { GASTRONOMY_COPY } from "@/lib/i18n/gastronomy-copy";
 
 const typeStyle = {
   "--nib-display": '"Bitho Luxury", cursive',
@@ -140,6 +142,7 @@ function Plate({
 }) {
   const slotName = diningPlateSlotName(number);
   const image = useSiteImage(slotName);
+  const plateAlt = GASTRONOMY_COPY[usePublicLocale()].plateAlt;
   /* A removed plate must stay blank. Missing slots otherwise fall back to the hero. */
   if (!getSiteImageSlot(slotName) || !image.src.trim()) return null;
   return (
@@ -150,7 +153,7 @@ function Plate({
       id={siteImageAnchorId(image.slot ?? slotName)}
       style={style}
     >
-      <img src={toVercelOptimizedSrc(image.src)} alt={image.alt} />
+      <img src={toVercelOptimizedSrc(image.src)} alt={plateAlt ?? image.alt} />
     </figure>
   );
 }
@@ -177,6 +180,7 @@ function StoryPanel({
   };
 }) {
   const image = useSiteImage(story.slot);
+  const localHref = useLocalizedHref();
   return (
     <Panel className="nib-story nib-surface--cream">
       <SlotImage
@@ -188,7 +192,7 @@ function StoryPanel({
         <span>{story.time}</span>
         <span>{story.place}</span>
         <span>{story.number}</span>
-        <a href="/contact">{story.cta}</a>
+        <a href={localHref("/contact")}>{story.cta}</a>
       </div>
       <h2 data-anima-title>{story.title}</h2>
     </Panel>
@@ -196,10 +200,13 @@ function StoryPanel({
 }
 
 export function GastronomySpringsDesignPage() {
+  const t = GASTRONOMY_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const copy = pages.gastronomy;
   const liveStories = stories.map((story, index) => ({
     ...story,
+    alt: t.storyAlts[index] ?? story.alt,
     ...(copy.stories[index] ?? {}),
   }));
 
@@ -215,11 +222,11 @@ export function GastronomySpringsDesignPage() {
           <i data-nib-progress />
         </div>
 
-        <section className="nib-horizontal" data-nib-horizontal aria-label="The Hathor dining story">
+        <section className="nib-horizontal" data-nib-horizontal aria-label={t.storyLabel}>
           <div className="nib-horizontal__sticky">
             <div className="nib-fixed-brand" aria-hidden>HATHOR</div>
             <div className="nib-fixed-rail" aria-hidden>
-              <span>DINING</span><span>MOVE</span><span>REST</span>
+              <span>{t.rail[0]}</span><span>{t.rail[1]}</span><span>{t.rail[2]}</span>
             </div>
             <div className="nib-track" data-nib-track>
               <Panel className="nib-intro nib-surface--cream">
@@ -237,21 +244,21 @@ export function GastronomySpringsDesignPage() {
               <Panel className="nib-principal nib-surface--cream">
                 <SlotImage
                   slot={DINING_LIVE_SLOTS.introHero}
-                  alt="Dining beside the Nile aboard Hathor"
+                  alt={t.alts.introHero}
                   className="nib-principal__main"
                 />
                 <SlotFlipImage
                   className="nib-principal__top"
                   frontSlot={DINING_LIVE_SLOTS.courses}
                   backSlot={DINING_LIVE_SLOTS.chef}
-                  alt="A sequence of Hathor tasting courses"
+                  alt={t.alts.courses}
                   axis="up"
                 />
                 <SlotFlipImage
                   className="nib-principal__bottom"
                   frontSlot={DINING_LIVE_SLOTS.service}
                   backSlot={DINING_LIVE_SLOTS.table}
-                  alt="Warm attentive service aboard Hathor"
+                  alt={t.alts.service}
                   axis="up"
                 />
                 <span className="nib-side-label">{copy.tableLabel}</span>
@@ -270,14 +277,14 @@ export function GastronomySpringsDesignPage() {
                   className="nib-image-text__wide"
                   frontSlot={DINING_LIVE_SLOTS.restaurant}
                   backSlot={DINING_LIVE_SLOTS.wine}
-                  alt="Hathor's intimate dining salon"
+                  alt={t.alts.salon}
                   axis="right"
                 />
                 <SlotFlipImage
                   className="nib-image-text__small"
                   frontSlot={DINING_LIVE_SLOTS.celebration}
                   backSlot={DINING_LIVE_SLOTS.suite}
-                  alt="A candlelit celebration on Hathor"
+                  alt={t.alts.celebration}
                   axis="left"
                 />
                 <p>{copy.riverBody}</p>
@@ -316,7 +323,7 @@ export function GastronomySpringsDesignPage() {
                   <span>02</span><h2 data-anima-title>{copy.values[1]?.title}</h2>
                   <SlotImage
                     slot={DINING_LIVE_SLOTS.fitness}
-                    alt="Hathor onboard fitness"
+                    alt={t.alts.fitness}
                     className="nib-value__image"
                   />
                 </div>
@@ -325,7 +332,7 @@ export function GastronomySpringsDesignPage() {
                   <span>03</span><h2 data-anima-title>{copy.values[2]?.title}</h2>
                   <SlotImage
                     slot={DINING_LIVE_SLOTS.suite}
-                    alt="A calm Hathor suite"
+                    alt={t.alts.suite}
                     className="nib-value__image"
                     previewAnchor={false}
                   />
@@ -345,14 +352,14 @@ export function GastronomySpringsDesignPage() {
                 <span className="nib-chapter">{copy.closingChapter}</span>
                 <h2 data-anima-title>{copy.closingTitle.split("\n").map((line, index, lines) => <span key={line}>{index === lines.length - 1 ? <em>{line}</em> : line}{index < lines.length - 1 ? <br /> : null}</span>)}</h2>
                 <p>{copy.closingBody}</p>
-                <a className="public-btn-outline-gold nib-button" href="/booking"><span>{copy.closingCta}</span></a>
+                <a className="public-btn-outline-gold nib-button" href={localHref("/booking")}><span>{copy.closingCta}</span></a>
               </Panel>
 
               <Panel className="nib-close nib-surface--gold">
                 <SlotFlipImage
                   frontSlot={DINING_LIVE_SLOTS.wine}
                   backSlot={DINING_LIVE_SLOTS.introHero}
-                  alt="The last golden hour at the Hathor table"
+                  alt={t.alts.goldenHour}
                   axis="up"
                 />
                 <Plate number={4} className="nib-close__plate" />
@@ -369,12 +376,12 @@ export function GastronomySpringsDesignPage() {
         <section className="nib-double nib-surface--cream" data-nib-reveal>
           <SlotImage
             slot={DINING_LIVE_SLOTS.table}
-            alt="A Hathor table prepared beside the river"
+            alt={t.alts.table}
             previewAnchor={false}
           />
           <SlotImage
             slot={DINING_LIVE_SLOTS.fitness}
-            alt="Hathor's onboard gym"
+            alt={t.alts.gym}
             previewAnchor={false}
           />
         </section>
@@ -392,7 +399,7 @@ export function GastronomySpringsDesignPage() {
         </section>
 
         <section className="nib-contact-action nib-surface--cream" data-nib-reveal>
-          <a className="public-btn-outline-gold nib-button nib-button--large" href="/contact">
+          <a className="public-btn-outline-gold nib-button nib-button--large" href={localHref("/contact")}>
             <span>{copy.conciergeCta}</span>
           </a>
         </section>
@@ -406,7 +413,7 @@ export function GastronomySpringsDesignPage() {
             <span>{copy.featureLabel}</span>
             <SlotImage
               slot={DINING_LIVE_SLOTS.celebration}
-              alt="A private celebration on Hathor"
+              alt={t.alts.privateCelebration}
               previewAnchor={false}
             />
             <h3>{copy.featureTitle}</h3>

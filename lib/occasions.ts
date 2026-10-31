@@ -252,9 +252,9 @@ export function countdownParts(ms: number) {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export function formatCountdown(ms: number): string {
+export function formatCountdown(ms: number, dayLetter = "d"): string {
   const { days, hours, minutes, seconds } = countdownParts(ms);
-  return `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+  return `${days}${dayLetter} ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
 }
 
 export function padCountdownUnit(n: number): string {

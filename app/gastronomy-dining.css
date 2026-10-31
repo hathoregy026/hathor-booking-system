@@ -1026,7 +1026,7 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
 
   .nib-story-end { min-height: 112svh; padding: 12rem 1.5rem 3rem; }
   .nib-story-end .nib-chapter { top: 8rem; left: 1.5rem; }
-  .nib-story-end h2 { font-size: clamp(4.2rem, 15.5vw, 7rem); }
+  .nib-story-end h2 { font-size: clamp(3.4rem, 14.5vw, 7rem); }
   .nib-story-end > p { right: 1.5rem; bottom: 17vh; width: calc(100% - 3rem); }
   .nib-story-end > .nib-button { left: 1.5rem; right: auto; bottom: 8vh; }
 
@@ -1035,7 +1035,8 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
   .nib-close__plate { right: -8vw; bottom: 2vh; width: 56vw; }
 
   .nib-contact { min-height: 72svh; padding-top: 16vh; }
-  .nib-contact h2 { font-size: clamp(5rem, 19vw, 9rem); }
+  /* Sized so "CONCIERGE" fits the column at every tablet width. */
+  .nib-contact h2 { font-size: clamp(3.4rem, 17vw, 8.5rem); }
 
   .nib-double { grid-template-columns: 1fr; }
   .nib-double figure:first-child { height: 76svh; }
@@ -1057,8 +1058,12 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
   .nib-dining p { font-size: clamp(0.98rem, 4.6vw, 1.12rem); }
   .nib-intro__titles h1,
   .nib-intro__titles h2 { font-size: clamp(3.2rem, 15vw, 5rem); }
-  .nib-atelier__copy h2,
-  .nib-story-end h2 { font-size: clamp(3.8rem, 17vw, 5.8rem); }
+  .nib-atelier__copy h2 { font-size: clamp(3.8rem, 17vw, 5.8rem); }
+  /* The longest words ("FUNCTIONAL?", "CONCIERGE") fit the phone column whole. */
+  .nib-story-end h2 { font-size: clamp(2.6rem, 13.5vw, 4.6rem); }
+  .nib-contact h2 { font-size: clamp(3rem, 16vw, 5rem); }
+  /* Unchanged from 370px up; narrower phones scale down so no word leaves the column. */
+  .nib-lines h2 { font-size: clamp(3.4rem, 19.5vw, 4.5rem); }
   /*
    * Keep the editorial scale without letting long chapter names leave the
    * phone canvas. These headings remain animated; only their narrow-screen

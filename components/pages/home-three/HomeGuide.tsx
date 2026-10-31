@@ -6,12 +6,9 @@ import { useCurrency } from "@/components/public/CurrencyProvider";
 import { livePriceFor } from "@/lib/cabin-prices-shared";
 import { RoomPriceUnit } from "@/components/ui/RoomPriceUnit";
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
-import {
-  GUIDE_FAQ,
-  GUIDE_INTRO,
-  GUIDE_VOYAGES,
-  guidePriceAnswer,
-} from "@/lib/home-guide-content";
+import { usePublicLocale } from "@/hooks/usePublicLocale";
+import { localizedHref } from "@/lib/i18n/locale";
+import { localizedGuide } from "@/lib/i18n/route-copy";
 
 /**
  * 11 · the guide — a ledger and a set of questions in the vertical document,
@@ -22,6 +19,8 @@ import {
 export function HomeGuide() {
   const { money: guideUsd } = useCurrency();
   const cabinPrices = useCabinPrices();
+  const locale = usePublicLocale();
+  const guide = localizedGuide(locale);
 
   /* the dashboard's lowest cabin price for a voyage, when it has one */
   const fromFare = (slug: string, fallbackCents: number) => {
@@ -45,57 +44,61 @@ export function HomeGuide() {
     >
       <div className="h3-guide__grid">
         <div className="h3-guide__head">
-          <p className="h3-kicker">05 — The guide</p>
+          <p className="h3-kicker">{guide.kicker}</p>
           <h2 id="h3-guide-title" className="h3-guide__title">
-            <span>Dahabiya</span> <span>Nile cruise</span>
+            <span>{guide.title[0]}</span> <span>{guide.title[1]}</span>
           </h2>
-          <p className="h3-support h3-guide__lead">{GUIDE_INTRO}</p>
+          <p className="h3-support h3-guide__lead">{guide.intro}</p>
         </div>
 
         <div className="h3-guide__ledger">
-          <h3 className="h3-guide__label">Three voyages from Luxor and Aswan</h3>
+          <h3 className="h3-guide__label">{guide.ledgerLabel}</h3>
           <ul className="h3-guide__voyages">
-            {GUIDE_VOYAGES.map((voyage) => {
+            {guide.voyages.map((voyage) => {
               const fare = fromFare(voyage.slug, voyage.fromCents);
               return (
                 <li key={voyage.slug} className="h3-guide__voyage">
-                  <Link href={voyage.href} className="h3-guide__voyage-link">
+                  <Link
+                    href={localizedHref(voyage.href, locale)}
+                    className="h3-guide__voyage-link"
+                  >
                     <span className="h3-guide__nights">
                       {voyage.nightsLabel}{" "}
-                      <em>{voyage.days} days</em>
+                      <em>{guide.days(voyage.days)}</em>
                     </span>{" "}
                     <span className="h3-guide__route">
                       {voyage.route}{" "}
-                      <em>{voyage.departureDay}s</em>
+                      <em>{guide.departureDay(voyage.departureDay)}</em>
                     </span>{" "}
                     <span className="h3-guide__from">
-                      <em>from</em>{" "}
-                      {fare.price}<RoomPriceUnit roomType={fare.roomType} />
+                      <em>{guide.from}</em>{" "}
+                      {fare.price}<RoomPriceUnit roomType={fare.roomType} locale={locale} />
                     </span>
                   </Link>
                 </li>
               );
             })}
           </ul>
-          <p className="h3-guide__note">
-            Per cabin, for the whole voyage. Taxes and service charges included.
-          </p>
+          <p className="h3-guide__note">{guide.note}</p>
         </div>
       </div>
 
       <div className="h3-guide__faq">
-        <h3 className="h3-guide__label">Questions before you sail</h3>
+        <h3 className="h3-guide__label">{guide.faqLabel}</h3>
         <div className="h3-guide__qs">
-          {GUIDE_FAQ.map((item) => (
+          {guide.faq.map((item) => (
             <details key={item.question} className="h3-guide__q">
               <summary>
                 <span className="h3-guide__question">{item.question}</span>
                 <i aria-hidden="true" />
               </summary>
               <div className="h3-guide__answer">
-                <p>{item.kind === "price" ? guidePriceAnswer(guideUsd) : item.answer}</p>
+                <p>{item.kind === "price" ? guide.priceAnswer(guideUsd) : item.answer}</p>
                 {item.link ? (
-                  <Link href={item.link.href} className="h3-text-link">
+                  <Link
+                    href={localizedHref(item.link.href, locale)}
+                    className="h3-text-link"
+                  >
                     {item.link.label}
                   </Link>
                 ) : null}

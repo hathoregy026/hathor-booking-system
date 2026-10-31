@@ -16,6 +16,8 @@ import {
   normalizeOptionalText,
   stackedHeroLines,
 } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { CRUISES_COPY } from "@/lib/i18n/cruises-copy";
 
 function Scene({
   className = "",
@@ -44,6 +46,8 @@ export function CruisesIntroHero() {
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   useCruisesIntroScroll({ runRef, trackRef });
+  const t = CRUISES_COPY[usePublicLocale()].intro;
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const typography = useTypographySettings();
   const cruisesHero = resolveHeroPageCopy(typography, "cruises");
@@ -53,23 +57,23 @@ export function CruisesIntroHero() {
     CRUISES_PAGE.hero.subtitle;
 
   return (
-    <div className="cr-intro" aria-label="Cruises introduction">
+    <div className="cr-intro" aria-label={t.label}>
       <section ref={runRef} className="cr-intro__run">
         <div className="cr-intro__stage">
           <div className="cr-intro__progress" aria-hidden="true">
             <i data-cr-intro-progress />
           </div>
           <div ref={trackRef} className="cr-intro__track">
-            <Scene className="cr-intro__copy" aria-label="Cruises">
-              <nav className="cr-intro__nav" aria-label="Cruises page sections">
-                <a href="#cruises-listing">Cruises</a>
-                <Link href="/voyages">Voyages</Link>
-                <Link href="/suites">Suites</Link>
-                <Link href="/contact">Contact</Link>
+            <Scene className="cr-intro__copy" aria-label={t.scene}>
+              <nav className="cr-intro__nav" aria-label={t.nav}>
+                <a href="#cruises-listing">{t.links.cruises}</a>
+                <Link href={localHref("/voyages")}>{t.links.voyages}</Link>
+                <Link href={localHref("/suites")}>{t.links.suites}</Link>
+                <Link href={localHref("/contact")}>{t.links.contact}</Link>
               </nav>
 
               <div className="cr-intro__inner">
-                <p className="cr-intro__eyebrow">Cruises</p>
+                <p className="cr-intro__eyebrow">{t.eyebrow}</p>
 
                 <div className="cr-intro__title" data-anima-title>
                   <h1 className="cr-intro__display wt-page-hero">
@@ -92,7 +96,7 @@ export function CruisesIntroHero() {
               </p>
               <p className="cr-intro__scroll">
                 <i />
-                Scroll
+                {t.scroll}
               </p>
             </Scene>
 
@@ -131,7 +135,7 @@ export function CruisesIntroHero() {
                 </figure>
               </div>
               <p className="cr-intro__caption">
-                <span>Aboard</span> Luxor — Aswan
+                <span>{t.aboard}</span> {t.route}
               </p>
             </Scene>
           </div>

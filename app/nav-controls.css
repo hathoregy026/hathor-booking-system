@@ -1778,6 +1778,28 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     content: "Language";
   }
 
+  /* Italian pages (/it/…): the same captions in Italian. */
+  html[lang="it"] .hathor-phone-dock > .hsc:not(#_):first-of-type::after {
+    content: "Salvati";
+  }
+
+  html[lang="it"] .hathor-phone-dock > .hsc--voyage:not(#_)::after,
+  html[lang="it"] .hathor-phone-dock > .hsc.hsc--voyage:not(#_)::after {
+    content: "Viaggio";
+  }
+
+  html[lang="it"] .hathor-phone-dock > .hpd-book:not(#_)::after {
+    content: "Prenota";
+  }
+
+  html[lang="it"] .hathor-phone-dock .hpd-contact__toggle:not(#_)::after {
+    content: "Contatti";
+  }
+
+  html[lang="it"] .hathor-phone-dock .public-lang-toggle:not(#_)::after {
+    content: "Lingua";
+  }
+
   .hathor-phone-dock > .hsc:not(#_)::after,
   .hathor-phone-dock > .hpd-book:not(#_)::after,
   .hathor-phone-dock .hpd-contact__toggle:not(#_)::after,

@@ -20,6 +20,8 @@ import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { resolveHeroPageCopy } from "@/lib/typography-settings-shared";
 import { stackedHeroLines } from "@/lib/website-text-shared";
+import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
+import { WELLNESS_COPY } from "@/lib/i18n/wellness-copy";
 
 function WellnessMedia({
   slot,
@@ -118,48 +120,23 @@ function splitDisplayLines(text: string, maxWords = 3): string[] {
   return lines;
 }
 
+/* The four rituals; their words come from WELLNESS_COPY.rituals, in this order. */
 const RITUALS = [
-  {
-    number: "01",
-    word: "Massage",
-    detail: "Warm-oil recovery after temple days",
-    meta: "Seneb · 60–90 min",
-    slot: "wellness-hero",
-  },
-  {
-    number: "02",
-    word: "Botanical",
-    detail: "Egyptian plant therapies for skin and calm",
-    meta: "Signature · daily",
-    slot: "home-story-craft-large",
-  },
-  {
-    number: "03",
-    word: "Recovery",
-    detail: "Quieting treatments between shore and sail",
-    meta: "Balance · as needed",
-    slot: "room-suite",
-  },
-  {
-    number: "04",
-    word: "Stillness",
-    detail: "Private suite rest as part of the ritual",
-    meta: "Cabin · continuous",
-    slot: "room-royal",
-  },
+  { number: "01", slot: "wellness-hero" },
+  { number: "02", slot: "home-story-craft-large" },
+  { number: "03", slot: "room-suite" },
+  { number: "04", slot: "room-royal" },
 ] as const;
 
-const INDEX = [
-  { href: "#seneb", label: "Seneb" },
-  { href: "#rituals", label: "Rituals" },
-  { href: "#historia", label: "Historia" },
-  { href: "#reserve", label: "Reserve" },
-] as const;
+/* Chapter anchors; labels come from WELLNESS_COPY.index, in this order. */
+const INDEX = ["#seneb", "#rituals", "#historia", "#reserve"] as const;
 
 export function WellnessEditorialPageContent() {
   const rootRef = useRef<HTMLDivElement>(null);
   const runRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const t = WELLNESS_COPY[usePublicLocale()];
+  const localHref = useLocalizedHref();
   const { pages } = useWebsiteText();
   const wellness = pages.wellness;
   const typography = useTypographySettings();
@@ -176,9 +153,7 @@ export function WellnessEditorialPageContent() {
   ] as const;
   useWellnessEditorialScroll({ rootRef, runRef, trackRef });
 
-  const introBody =
-    wellness.heroSupport.trim() ||
-    "In a world that rarely pauses, Hathor creates time for the body to soften. Seneb Spa, Historia Fitness, and restful suites move with you between Luxor and Aswan.";
+  const introBody = wellness.heroSupport.trim() || t.introFallback;
 
   const spaTitle = wellness.spaTitle.trim() || WELLNESS_PAGE.spa.title;
   const spaTitleLines = splitDisplayLines(spaTitle, 3);
@@ -201,25 +176,25 @@ export function WellnessEditorialPageContent() {
         <section
           ref={runRef}
           className="we-run"
-          aria-label="Hathor wellness on the Nile"
+          aria-label={t.runLabel}
         >
           <div className="we-stage">
             <div ref={trackRef} className="we-track">
               {/* 01 — Threshold with portrait media */}
               <Scene className="we-threshold">
-                <ol className="we-threshold__index" aria-label="Wellness chapters">
-                  {INDEX.map((item, i) => (
-                    <li key={item.href}>
-                      <a href={item.href}>
+                <ol className="we-threshold__index" aria-label={t.indexLabel}>
+                  {INDEX.map((href, i) => (
+                    <li key={href}>
+                      <a href={href}>
                         <span>{String(i + 1).padStart(2, "0")}</span>
-                        {item.label}
+                        {t.index[i]}
                       </a>
                     </li>
                   ))}
                 </ol>
 
                 <div className="we-threshold__field">
-                  <Eyebrow>Wellness</Eyebrow>
+                  <Eyebrow>{t.eyebrow}</Eyebrow>
                   <div
                     className="we-threshold__title"
                     id="wellness"
@@ -241,17 +216,17 @@ export function WellnessEditorialPageContent() {
 
                 <WellnessMedia
                   slot="wellness-hero"
-                  alt="Seneb Spa aboard Hathor Dahabiya"
+                  alt={t.alt("Seneb Spa aboard Hathor Dahabiya")}
                   priority
                   className="we-threshold__media"
                   ratio="3 / 4"
                 />
 
                 <p className="we-threshold__mark">
-                  Luxor <i /> Aswan
+                  {t.route[0]} <i /> {t.route[1]}
                 </p>
                 <p className="we-threshold__cue">
-                  Drift
+                  {t.cue}
                   <i />
                 </p>
               </Scene>
@@ -264,13 +239,13 @@ export function WellnessEditorialPageContent() {
                   ratio="3 / 4"
                   front="wellness-fitness"
                   back="home-call-to-action"
-                  frontAlt="Seneb Spa aboard Hathor"
-                  backAlt="Open-air calm on the Nile deck"
+                  frontAlt={t.alt("Seneb Spa aboard Hathor")}
+                  backAlt={t.alt("Open-air calm on the Nile deck")}
                 />
                 <p className="we-inhale__lyric we-edit">
-                  Health, in the Egyptian sense —
-                  <em> seneb </em>
-                  as quiet continuity.
+                  {t.lyric[0]}
+                  <em>{t.lyric[1]}</em>
+                  {t.lyric[2]}
                 </p>
               </Scene>
 
@@ -279,7 +254,7 @@ export function WellnessEditorialPageContent() {
                 <div className="we-seneb__visual">
                   <WellnessMedia
                     slot="wellness-hero"
-                    alt="Restorative spa treatments aboard Hathor"
+                    alt={t.alt("Restorative spa treatments aboard Hathor")}
                     className="we-seneb__main"
                     ratio="1279 / 960"
                   />
@@ -289,8 +264,8 @@ export function WellnessEditorialPageContent() {
                     ratio="668 / 554"
                     front="room-suite"
                     back="wellness-fitness"
-                    frontAlt="Suite rest aboard Hathor"
-                    backAlt="Historia Fitness overlooking the Nile"
+                    frontAlt={t.alt("Suite rest aboard Hathor")}
+                    backAlt={t.alt("Historia Fitness overlooking the Nile")}
                   />
                 </div>
 
@@ -315,7 +290,7 @@ export function WellnessEditorialPageContent() {
                   </div>
                   <WellnessMedia
                     slot="home-story-legacy-large"
-                    alt="Egyptian character aboard Hathor"
+                    alt={t.alt("Egyptian character aboard Hathor")}
                     className="we-seneb__accent"
                     ratio="5 / 3"
                   />
@@ -325,47 +300,47 @@ export function WellnessEditorialPageContent() {
               {/* 04 — Ritual catalogue with thumbnails */}
               <Scene className="we-rituals" id="rituals">
                 <div className="we-rituals__head">
-                  <Eyebrow>Onboard rituals</Eyebrow>
-                  <p className="we-meta-copy">
-                    Four ways the body returns to itself while the Nile keeps
-                    moving.
-                  </p>
+                  <Eyebrow>{t.ritualsEyebrow}</Eyebrow>
+                  <p className="we-meta-copy">{t.ritualsIntro}</p>
                 </div>
 
                 <ol className="we-rituals__list">
-                  {RITUALS.map((ritual) => (
-                    <li key={ritual.number} className="we-rite">
-                      <span className="we-rite__num">{ritual.number}</span>
-                      <WellnessMedia
-                        slot={ritual.slot}
-                        alt={`${ritual.word} ritual aboard Hathor`}
-                        className="we-rite__media"
-                        ratio="1 / 1"
-                      />
-                      <h3 className="we-rite__word we-display">{ritual.word}</h3>
-                      <div className="we-rite__detail">
-                        <p className="we-rite__meta">{ritual.meta}</p>
-                        <p className="we-rite__text">{ritual.detail}</p>
-                      </div>
-                    </li>
-                  ))}
+                  {RITUALS.map((ritual, index) => {
+                    const words = t.rituals[index];
+                    return (
+                      <li key={ritual.number} className="we-rite">
+                        <span className="we-rite__num">{ritual.number}</span>
+                        <WellnessMedia
+                          slot={ritual.slot}
+                          alt={t.ritualAlt(words.word)}
+                          className="we-rite__media"
+                          ratio="1 / 1"
+                        />
+                        <h3 className="we-rite__word we-display">{words.word}</h3>
+                        <div className="we-rite__detail">
+                          <p className="we-rite__meta">{words.meta}</p>
+                          <p className="we-rite__text">{words.detail}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ol>
               </Scene>
 
               {/* 05 — Image gallery bridge */}
-              <Scene className="we-gallery" aria-label="Wellness imagery">
+              <Scene className="we-gallery" aria-label={t.galleryLabel}>
                 <FlipImage
                   className="we-gallery__a"
                   axis="up"
                   ratio="4 / 5"
                   front="wellness-fitness"
                   back="home-amenities-13"
-                  frontAlt="Historia Fitness aboard Hathor"
-                  backAlt="Active wellness overlooking the Nile"
+                  frontAlt={t.alt("Historia Fitness aboard Hathor")}
+                  backAlt={t.alt("Active wellness overlooking the Nile")}
                 />
                 <WellnessMedia
                   slot="room-luxury"
-                  alt="Luxury cabin repose aboard Hathor"
+                  alt={t.alt("Luxury cabin repose aboard Hathor")}
                   className="we-gallery__b"
                   ratio="5 / 4"
                 />
@@ -375,8 +350,8 @@ export function WellnessEditorialPageContent() {
                   ratio="3 / 4"
                   front="home-story-way-of-life"
                   back="home-split-courtyard"
-                  frontAlt="Life aboard Hathor"
-                  backAlt="Deck living aboard Hathor"
+                  frontAlt={t.alt("Life aboard Hathor")}
+                  backAlt={t.alt("Deck living aboard Hathor")}
                 />
               </Scene>
 
@@ -384,10 +359,10 @@ export function WellnessEditorialPageContent() {
               <Scene className="we-historia" id="historia">
                 <div className="we-historia__frame">
                   <span className="we-historia__corner we-historia__corner--tl">
-                    Fitness
+                    {t.historia.tl}
                   </span>
                   <span className="we-historia__corner we-historia__corner--tr">
-                    Nile view
+                    {t.historia.tr}
                   </span>
 
                   <p className="we-historia__datum we-edit">
@@ -399,23 +374,23 @@ export function WellnessEditorialPageContent() {
                   <p className="we-historia__body we-meta-copy">{fitnessBody}</p>
 
                   <span className="we-historia__corner we-historia__corner--bl">
-                    Daily · open
+                    {t.historia.bl}
                   </span>
                   <span className="we-historia__corner we-historia__corner--br">
-                    Movement
+                    {t.historia.br}
                   </span>
                 </div>
 
                 <div className="we-historia__media-col">
                   <WellnessMedia
                     slot="wellness-fitness"
-                    alt="Historia Fitness Center with panoramic Nile views"
+                    alt={t.alt("Historia Fitness Center with panoramic Nile views")}
                     className="we-historia__media"
                     ratio="4 / 5"
                   />
                   <WellnessMedia
                     slot="home-call-to-action"
-                    alt="River light from the fitness deck"
+                    alt={t.alt("River light from the fitness deck")}
                     className="we-historia__media we-historia__media--small"
                     ratio="5 / 3"
                   />
@@ -431,60 +406,56 @@ export function WellnessEditorialPageContent() {
                     ratio="3 / 4"
                     front="wellness-fitness"
                     back="home-voyage-nile-majesty"
-                    frontAlt="Movement aboard Hathor"
-                    backAlt="Sailing the Nile aboard Hathor"
+                    frontAlt={t.alt("Movement aboard Hathor")}
+                    backAlt={t.alt("Sailing the Nile aboard Hathor")}
                   />
                   <WellnessMedia
                     slot="room-royal"
-                    alt="Royal Suite repose aboard Hathor"
+                    alt={t.alt("Royal Suite repose aboard Hathor")}
                     className="we-essay__wide"
                     ratio="5 / 3"
                   />
                   <WellnessMedia
                     slot="home-story-craft-large"
-                    alt="Crafted detail aboard Hathor"
+                    alt={t.alt("Crafted detail aboard Hathor")}
                     className="we-essay__peek"
                     ratio="1 / 1"
                   />
                 </div>
                 <div className="we-essay__copy">
-                  <Eyebrow>After movement</Eyebrow>
+                  <Eyebrow>{t.essayEyebrow}</Eyebrow>
                   <div data-anima-title>
                     <h2 className="we-edit we-edit--xl">
                       <span className="we-line">
-                        <AnimaSplitLine line={0}>Rest is not</AnimaSplitLine>
+                        <AnimaSplitLine line={0}>{t.essayLines[0]}</AnimaSplitLine>
                       </span>
                       <span className="we-line we-line--indent">
-                        <AnimaSplitLine line={1}>the absence of</AnimaSplitLine>
+                        <AnimaSplitLine line={1}>{t.essayLines[1]}</AnimaSplitLine>
                       </span>
                       <span className="we-line">
-                        <AnimaSplitLine line={2}>the voyage</AnimaSplitLine>
+                        <AnimaSplitLine line={2}>{t.essayLines[2]}</AnimaSplitLine>
                       </span>
                     </h2>
                   </div>
-                  <p className="we-meta-copy">
-                    Suites become part of the ritual: soft morning light, deep
-                    sleep, and the rare luxury of waking beside a different Nile
-                    horizon.
-                  </p>
-                  <Link href="/suites" className="we-btn">
-                    <span>Explore suites</span>
+                  <p className="we-meta-copy">{t.essayBody}</p>
+                  <Link href={localHref("/suites")} className="we-btn">
+                    <span>{t.exploreSuites}</span>
                   </Link>
                 </div>
               </Scene>
 
               {/* 08 — Pulse with image */}
-              <Scene className="we-pulse" aria-label="Quiet pause">
+              <Scene className="we-pulse" aria-label={t.pauseLabel}>
                 <WellnessMedia
                   slot="home-cinematic-still"
-                  alt="Quiet river light aboard Hathor"
+                  alt={t.alt("Quiet river light aboard Hathor")}
                   className="we-pulse__media"
                   ratio="4 / 5"
                 />
                 <p className="we-pulse__phrase we-edit">
-                  The river keeps time —
+                  {t.pulse[0]}
                   <br />
-                  so you do not have to.
+                  {t.pulse[1]}
                 </p>
               </Scene>
 
@@ -496,12 +467,12 @@ export function WellnessEditorialPageContent() {
                   ratio="1483 / 960"
                   front="home-voyage-nile-majesty"
                   back="wellness-hero"
-                  frontAlt="Sailing the Nile aboard Hathor"
-                  backAlt="Seneb Spa calm aboard Hathor"
+                  frontAlt={t.alt("Sailing the Nile aboard Hathor")}
+                  backAlt={t.alt("Seneb Spa calm aboard Hathor")}
                 />
                 <div className="we-closing__copy">
-                  <Eyebrow>Next</Eyebrow>
-                  <p className="we-display we-display--l">Book stillness</p>
+                  <Eyebrow>{t.nextEyebrow}</Eyebrow>
+                  <p className="we-display we-display--l">{t.nextTitle}</p>
                 </div>
               </Scene>
             </div>
@@ -510,13 +481,13 @@ export function WellnessEditorialPageContent() {
 
         <section className="we-epilogue" id="reserve">
           <header className="we-epilogue__head">
-            <Eyebrow>Reserve</Eyebrow>
+            <Eyebrow>{t.reserveEyebrow}</Eyebrow>
             <h2 className="we-display we-display--xl" data-anima-title>
               <span className="we-line">
-                <AnimaSplitLine line={0}>A quieter Nile</AnimaSplitLine>
+                <AnimaSplitLine line={0}>{t.reserveLines[0]}</AnimaSplitLine>
               </span>
               <span className="we-line we-line--indent">
-                <AnimaSplitLine line={1}>awaits</AnimaSplitLine>
+                <AnimaSplitLine line={1}>{t.reserveLines[1]}</AnimaSplitLine>
               </span>
             </h2>
           </header>
@@ -524,28 +495,25 @@ export function WellnessEditorialPageContent() {
           <div className="we-epilogue__pair">
             <WellnessMedia
               slot="wellness-fitness"
-              alt="Historia Fitness aboard Hathor"
+              alt={t.alt("Historia Fitness aboard Hathor")}
               ratio="668 / 554"
             />
             <WellnessMedia
               slot="wellness-hero"
-              alt="Seneb Spa aboard Hathor"
+              alt={t.alt("Seneb Spa aboard Hathor")}
               ratio="668 / 720"
             />
           </div>
 
           <div className="we-epilogue__board">
             <div className="we-epilogue__statement">
-              <p className="we-edit we-edit--l">
-                Shape a private voyage with time for Seneb Spa, Historia Fitness,
-                restorative suite rituals, and the temples of Egypt.
-              </p>
+              <p className="we-edit we-edit--l">{t.statement}</p>
               <div className="we-epilogue__pills">
                 <BookNowTrigger className="we-btn we-btn--solid">
-                  <span>Book Now</span>
+                  <span>{t.bookNow}</span>
                 </BookNowTrigger>
-                <Link href="/contact" className="we-btn">
-                  <span>Enquire</span>
+                <Link href={localHref("/contact")} className="we-btn">
+                  <span>{t.enquire}</span>
                 </Link>
               </div>
               <a
@@ -557,18 +525,18 @@ export function WellnessEditorialPageContent() {
             </div>
 
             <aside className="we-epilogue__card">
-              <span className="we-card__tag">Floating oasis</span>
+              <span className="we-card__tag">{t.cardTag}</span>
               <WellnessMedia
                 slot="room-royal"
-                alt="Royal Suite repose aboard Hathor"
+                alt={t.alt("Royal Suite repose aboard Hathor")}
                 className="we-epilogue__card-media"
                 ratio="356 / 460"
               />
               <h3 className="we-display">Seneb</h3>
               <p className="we-epilogue__card-body">
-                Spa · Fitness · Suite rest
+                {t.cardBody[0]}
                 <br />
-                between Luxor and Aswan
+                {t.cardBody[1]}
               </p>
               <div className="we-epilogue__card-links">
                 <a
@@ -579,8 +547,8 @@ export function WellnessEditorialPageContent() {
                 >
                   Instagram
                 </a>
-                <Link className="we-link" href="/suites">
-                  Suites
+                <Link className="we-link" href={localHref("/suites")}>
+                  {t.suites}
                 </Link>
               </div>
             </aside>
