@@ -4,17 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { usePublicRoute } from "@/hooks/usePublicLocale";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
-import { pathInLocale, type PublicLocale } from "@/lib/i18n/locale";
-
-/** `locale` marks a language the site speaks; the rest are announced as forthcoming. */
-const LANGUAGES = [
-  { code: "AR", locale: null },
-  { code: "EN", locale: "en" },
-  { code: "DE", locale: null },
-  { code: "IT", locale: "it" },
-  { code: "RU", locale: null },
-] as const satisfies readonly { code: string; locale: PublicLocale | null }[];
-type Language = (typeof LANGUAGES)[number];
+import { pathInLocale, PUBLIC_LOCALES, type PublicLocale } from "@/lib/i18n/locale";
 
 /** Fine-line meridian globe — same stroke language as the wishlist and cart marks. */
 function GlobeIcon() {
@@ -64,8 +54,9 @@ function DockCloseIcon() {
 }
 
 /**
- * English and Italian switch the page; the others are announced as forthcoming.
- * A page not yet translated opens the Italian homepage instead.
+ * Lists only the languages live on the site: a new one appears here as soon as
+ * it joins PUBLIC_LOCALES. A page not yet translated opens that language's
+ * homepage instead.
  *
  * The menu stays mounted and is driven by an `is-open` class so it can animate
  * both in and out — unmounting it would make the close instant.
@@ -79,7 +70,6 @@ export function PublicLanguageToggle({
   const { locale, path } = usePublicRoute();
   const copy = CHROME_COPY[locale].language;
   const [open, setOpen] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef(false);
   const isDock = variant === "dock";
@@ -113,26 +103,15 @@ export function PublicLanguageToggle({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!notice) return;
-    const timer = window.setTimeout(() => setNotice(null), 2600);
-    return () => window.clearTimeout(timer);
-  }, [notice]);
-
-  const chooseLanguage = (language: Language) => {
-    closeMenu();
-    if (!language.locale) {
-      setNotice(copy.comingSoon(copy.names[language.code]));
-      return;
-    }
-    setNotice(null);
-    if (language.locale === locale) return;
-    const target = pathInLocale(path, language.locale);
+  const chooseLanguage = (language: PublicLocale) => {
+    setOpen(false);
+    if (language === locale) return;
+    const target = pathInLocale(path, language);
     /* Same page, same state: a booking link's token and a filter survive the switch. */
     router.push(
       target
         ? `${target}${window.location.search}${window.location.hash}`
-        : (pathInLocale("/", language.locale) ?? "/"),
+        : (pathInLocale("/", language) ?? "/"),
     );
   };
 
@@ -194,10 +173,10 @@ export function PublicLanguageToggle({
           className="public-lang-menu__list"
           role="menu"
         >
-          {LANGUAGES.map((language, index) => {
-            const isActive = language.locale === locale;
+          {PUBLIC_LOCALES.map((language, index) => {
+            const isActive = language === locale;
             return (
-              <li key={language.code} role="none" className="public-lang-menu__row">
+              <li key={language} role="none" className="public-lang-menu__row">
                 <button
                   type="button"
                   role="menuitem"
@@ -211,11 +190,11 @@ export function PublicLanguageToggle({
                       ? { transitionDelay: open ? `${40 + index * 35}ms` : "0ms" }
                       : undefined
                   }
-                  lang={language.locale ?? undefined}
+                  lang={language}
                   onClick={() => chooseLanguage(language)}
                 >
-                  <span className="public-lang-menu__code">{language.code}</span>
-                  <span className="public-lang-menu__name">{copy.names[language.code]}</span>
+                  <span className="public-lang-menu__code">{language.toUpperCase()}</span>
+                  <span className="public-lang-menu__name">{copy.names[language]}</span>
                   <span className="public-lang-menu__mark" aria-hidden="true" />
                 </button>
               </li>
@@ -223,12 +202,6 @@ export function PublicLanguageToggle({
           })}
         </ul>
       </div>
-
-      {notice ? (
-        <div className="public-lang-notice" role="status" aria-live="polite">
-          {notice}
-        </div>
-      ) : null}
     </div>
   );
 }

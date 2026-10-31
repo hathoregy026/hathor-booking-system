@@ -1017,23 +1017,9 @@
   background: var(--nav-lux-gold);
 }
 
-/* Notice: same card language as the menu. */
-.public-lang-notice {
-  top: 4.25rem;
-  border: 1px solid var(--nav-lux-gold-soft);
-  border-radius: 2px;
-  background: var(--nav-lux-cream);
-  color: var(--nav-lux-ink);
-  box-shadow: 0 14px 34px rgb(20 18 16 / 0.16);
-  font-size: 0.5rem;
-  font-weight: 600;
-  letter-spacing: 0.17em;
-}
-
 /* Night canvas: the card inverts, the gold stays. */
 html[data-public-theme="night"] .public-lang-menu,
-html[data-public-theme="night"] .public-lang-menu::before,
-html[data-public-theme="night"] .public-lang-notice {
+html[data-public-theme="night"] .public-lang-menu::before {
   background: #16130f;
   border-color: var(--nav-lux-gold-soft);
 }
@@ -1042,8 +1028,7 @@ html[data-public-theme="night"] .public-lang-menu__eyebrow {
   color: color-mix(in srgb, var(--nav-lux-cream) 52%, transparent);
 }
 
-html[data-public-theme="night"] .public-lang-menu__option,
-html[data-public-theme="night"] .public-lang-notice {
+html[data-public-theme="night"] .public-lang-menu__option {
   color: var(--nav-lux-cream);
 }
 
@@ -2132,31 +2117,11 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     display: block !important;
   }
 
-  .hathor-phone-dock .public-lang-notice {
-    top: auto !important;
-    right: auto !important;
-    left: 50% !important;
-    bottom: calc(100% + 0.7rem) !important;
-    z-index: 40 !important;
-    background: #ece8df !important;
-    background-color: #ece8df !important;
-    opacity: 1 !important;
-    transform: translateX(-50%) !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-
   html[data-public-theme="night"] .hathor-phone-dock .public-lang-menu__option {
     background: #16130f !important;
     background-color: #16130f !important;
     border-color: var(--nav-lux-gold, #b69f64) !important;
     color: var(--nav-lux-gold, #b69f64) !important;
-  }
-
-  html[data-public-theme="night"] .hathor-phone-dock .public-lang-notice {
-    background: #16130f !important;
-    background-color: #16130f !important;
-    border-color: color-mix(in srgb, var(--nav-lux-cream) 18%, transparent) !important;
   }
 
   /* Hide dock while the full-screen editorial menu is open. */
