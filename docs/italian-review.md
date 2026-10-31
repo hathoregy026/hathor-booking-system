@@ -39,12 +39,8 @@ thing. No action is needed beyond reading the new Italian sentences for tone.
 
 ## 3. Legal page
 
-`/it/terms-and-conditions` is a full translation of the English terms. A legal check by someone
-qualified in Italian consumer law is needed before relying on it. In particular, please confirm:
-
-- the prevailing-language clause in section 19 (English prevails unless the applicable law requires otherwise);
-- the payment, cancellation and refund sections;
-- the limitation of liability and governing law sections.
+`/it/terms-and-conditions` is an exact translation of the live English terms, clause by clause. The
+English terms are unchanged. Hathor asked for a translation only, with no change to the wording.
 
 ## 4. Other choices to confirm
 
@@ -92,54 +88,18 @@ qualified in Italian consumer law is needed before relying on it. In particular,
 | Long journal titles | Decided: the search titles were shortened where they ran past what search results show. |
 | Tone | Please read the short-imperative buttons next to the "Lei" sentences on a few pages (`/it/charter`, `/it/booking`) and say whether the mix feels natural. |
 
-## 6. Legal page: points for the legal check
+## 6. Legal page: translation notes
 
-### Fixed in both languages (wording only, October 2026)
+Decided by Hathor on 31 October 2026: the English terms stay exactly as they are live, and the Italian
+says the same thing, no more and no less. An earlier rewrite of the terms in both languages was
+removed.
 
-- **VAT note:** it no longer reads like an internal comment. Section 7 now says the published price
-  includes taxes and service charges, then "These include **14% VAT and the service charge**." /
-  "Sono compresi **l’IVA al 14% e il costo del servizio**." The meaning is unchanged.
-- **Office address:** the terms now match the contact page, footer and structured data: "One Kattamiya,
-  Tower 211, Floor 11, Flat 111, Ring Road, Cairo, Egypt" / "One Kattamiya, Torre 211, 11º piano,
-  int. 111, Ring Road, Il Cairo, Egitto" ("Nasr City" dropped, as Hathor confirmed).
-- **Soft All-Inclusive (section 5)** is now defined: all meals and soft drinks (tea, coffee, soft
-  drinks and fresh juices); alcoholic drinks are not included (see section 6, Exclusions).
+Three lines of the English are translated as they stand:
 
-### Consumer-protection rewrite (both languages, October 2026)
-
-Hathor asked for the clauses most likely to conflict with EU package-travel and Italian consumer
-law (Directive 2015/2302, Codice del Turismo, Codice del Consumo) to be rewritten. The English and
-Italian texts say the same thing, section by section.
-
-| Section | Before | Now |
-| --- | --- | --- |
-| 1 | Payments "must equal 50%" by 60 days | "must reach at least 50%" |
-| 2 | No free cancellation; no transfer right | Free cancellation with a full refund within 14 days when unavoidable and extraordinary circumstances significantly affect the voyage; the booking can be transferred to another person (written notice, 7 days before) |
-| 2 | No refund for "unused" services | No refund for services the guest *chooses* not to use |
-| 8 | Responsibility limited to on-board services | Responsible for every service in the booking, including transfers and tours by partners |
-| 10, 11 | "No liability", no refunds for weather or authorities | No compensation for unavoidable circumstances; price reduction and full-refund rights kept (sections 2, 12, 13) |
-| 12 | Any change, no refunds, "not a breach" | Minor changes allowed; significant changes let the guest cancel with a full refund; price reduction for services not provided |
-| 13 | Rescheduled date or non-refundable voucher at Hathor's discretion; cash refunds not guaranteed | Full refund within 14 days; new date or voucher only if the guest prefers; compensation possible when Hathor cancels for operational reasons |
-| 14 | Force majeure only | Adds that refund and price-reduction rights are not affected |
-| 17 | Liability capped at the amount paid | Capped at three times the total price, never for personal injury or damage caused intentionally or negligently |
-| 18 | Exclusive Egyptian courts | Egyptian law and courts, but consumers keep their home country's mandatory protections and may sue there |
-| 19 | No language clause | English prevails if the versions differ, unless the applicable law requires otherwise |
-
-The cancellation percentages in section 2 (25% / 50% / 100%) are unchanged: they are Hathor's
-commercial terms and the admin cancellation-fee calculation uses them.
-
-### Still for the lawyer
-
-- Review the rewritten clauses above before relying on them.
-- Whether 100% at 45 days or less before embarkation is a "reasonable" termination fee.
-- **Insolvency protection** (Codice del Turismo art. 47): a guarantee or insurance that refunds
-  guests and brings them home if the company fails. Hathor needs an actual policy; the terms do not
-  claim one yet.
-- **Standard information form** for packages, shown before the guest books (art. 34).
-- **Admin system:** cancelling a confirmed booking offers only "Guest cancelled", "No-show" and
-  "Early departure", each with the section 2 fee, and the database refuses a refund larger than
-  what was paid minus that fee. A cancellation by Hathor, or for unavoidable circumstances, needs a
-  zero-fee reason before the full refund promised in sections 2, 12 and 13 can be recorded.
+- the VAT note, "The client-supplied Terms & Conditions state that this includes 14% VAT and service
+  charge";
+- the office address, which includes Nasr City and differs from the contact page;
+- "Soft All-Inclusive service", with no further definition.
 
 ## 7. `/it/suites` (machine-drafted, October 2026)
 
@@ -169,9 +129,8 @@ descriptions). The footer reuses the site footer's wording.
 | Button | "Request Suite Availability" | "Richiedi la disponibilità" | Decided |
 | Search result | "Luxury Nile Cruise Suites \| Hathor Dahabiya" | "Suite di lusso per la crociera sul Nilo \| Hathor Dahabiya" | Decided |
 
-One point in the English source to check, carried into the Italian as it stands: the Luxury Cabins card
-says "UPPER DECK" ("PONTE SUPERIORE"), but the deck plan and About page put the cabins and suites on
-the lower deck. Which is correct?
+Decided by Hathor on 31 October 2026: the cabins are on the lower deck ("PONTE INFERIORE"). The English
+card's words come from the dashboard's Website Text, so Hathor's team changes that line there.
 
 ## 8. Wording decisions (October 2026)
 
