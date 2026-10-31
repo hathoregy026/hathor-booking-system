@@ -45,7 +45,7 @@ const PAGES_IT: Partial<Pages> = {
     collectionBody:
       "Tre modi di vivere a bordo di Hathor, dalle cabine raccolte alle nostre Royal Suite, le più ampie: ciascuno concepito intorno alla privacy, alle proporzioni e alle viste aperte sul Nilo.",
     cabinMeta: "8 CABINE",
-    cabinDeck: "PONTE SUPERIORE",
+    cabinDeck: "PONTE INFERIORE",
     cabinTitle: "Luxury Rooms",
     suiteMeta: "2 SUITE",
     suiteDeck: "PONTE INFERIORE",
