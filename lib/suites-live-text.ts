@@ -66,7 +66,7 @@ export const DEFAULT_SUITES_LIVE_TEXT: SuitesLiveText = {
   collectionLabel: "Suite Collection",
   collectionBody: "Three expressions of Hathor living—from intimate cabins to our most generous Royal Suites—each composed around privacy, proportion, and uninterrupted Nile views.",
   cabinMeta: "8 CABINS",
-  cabinDeck: "UPPER DECK",
+  cabinDeck: "LOWER DECK",
   cabinTitle: "Luxury Cabins",
   suiteMeta: "2 SUITES",
   suiteDeck: "LOWER DECK",

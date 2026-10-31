@@ -1,7 +1,6 @@
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { resolveEmailBody, resolveEmailHeading } from "@/lib/email-templates";
 import type { BookingEmailDetails } from "@/lib/email-types";
-import { EMAIL_COPY } from "@/lib/i18n/email-copy";
 import { TeamMessage } from "./components/BookingBlocks";
 import { EmailLayout } from "./components/EmailLayout";
 import { EmailBodyText, EmailCtaButton, EmailEyebrow, EmailHeading, GoldDivider } from "./components/EmailUi";
@@ -19,6 +18,9 @@ export const PreviewProps: BookingMessageEmailProps = {
   message: sampleTeamMessage,
 };
 
+const DEFAULT_HERO = "A Note From Hathor";
+const DEFAULT_BODY = "Simply reply to this email with any questions — our reservations team reads every message.";
+
 export default function BookingMessageEmail({
   guestName = sampleGuestName,
   details = sampleBookingDetails,
@@ -31,18 +33,14 @@ export default function BookingMessageEmail({
   heroHeading,
   bodyText,
 }: BookingMessageEmailProps) {
-  const locale = details.locale ?? "en";
-  const shared = EMAIL_COPY[locale];
-  const copy = shared.message;
   const vars = { guestName, bookingCode: details.bookingCode ?? details.bookingId };
-  const { heading } = resolveEmailHeading(heroHeading, copy.hero, vars);
-  const body = resolveEmailBody(bodyText, copy.body, vars);
+  const { heading } = resolveEmailHeading(heroHeading, DEFAULT_HERO, vars);
+  const body = resolveEmailBody(bodyText, DEFAULT_BODY, vars);
   const code = details.bookingCode ?? details.bookingId;
 
   return (
     <EmailLayout
-      preview={copy.preview(code)}
-      locale={locale}
+      preview={`A message about your Hathor booking ${code}`}
       footerVariant="guest-reply"
       logoUrl={logoUrl}
       heroImageUrl={heroImageUrl}
@@ -50,13 +48,13 @@ export default function BookingMessageEmail({
       backgroundColor={backgroundColor}
       footer={footer}
     >
-      <EmailEyebrow>{copy.eyebrow}</EmailEyebrow>
+      <EmailEyebrow>Reservations</EmailEyebrow>
       <EmailHeading size="medium">{heading}</EmailHeading>
-      <EmailBodyText>{copy.dear}{guestName}{copy.booking}{code}</EmailBodyText>
+      <EmailBodyText>Dear {guestName} · Booking {code}</EmailBodyText>
       <GoldDivider />
       <TeamMessage text={message} spaceAfter />
       <EmailBodyText muted>{body}</EmailBodyText>
-      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label={shared.trackLabel} /> : null}
+      {details.bookingUrl ? <EmailCtaButton href={details.bookingUrl} label="Track Your Booking" /> : null}
     </EmailLayout>
   );
 }

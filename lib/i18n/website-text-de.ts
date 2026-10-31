@@ -40,7 +40,7 @@ export const PAGES_DE: Partial<Pages> = {
     collectionBody:
       "Drei Ausdrucksformen des Lebens an Bord der Hathor, von den behaglichen Kabinen bis zu unseren größten Royal Suites: jede rund um Privatsphäre, Proportion und freien Blick auf den Nil gestaltet.",
     cabinMeta: "8 KABINEN",
-    cabinDeck: "OBERDECK",
+    cabinDeck: "UNTERDECK",
     cabinTitle: "Luxury Cabins",
     suiteMeta: "2 SUITEN",
     suiteDeck: "UNTERDECK",

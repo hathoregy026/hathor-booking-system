@@ -47,12 +47,10 @@ The English rows and the Italian copy were corrected in October 2026, and the Ge
 Two points in the English source are carried over as they stand, for Hathor to confirm:
 
 - `nile-cruise-or-luxury-dahabiya-which-one-to-choose` says "6 bis 12 Kabinen"; Hathor has twelve rooms.
-- The Suites page's Luxury Cabins card says "OBERDECK", but the deck plan and About page put the cabins and suites on the lower deck.
 
 ## 4. Legal page
 
-`/de/terms-and-conditions` is a translation of the English terms, including the October 2026
-consumer-protection rewrite. It shows a visible draft notice (`draftNotice` in
+`/de/terms-and-conditions` is an exact translation of the live English terms, clause by clause (Hathor's decision of 31 October 2026, as for Italian). It shows a visible draft notice (`draftNotice` in
 `lib/i18n/terms-copy-de.ts`) until a lawyer qualified in German consumer law has approved it. Remove
 that notice only after approval. No company detail or registration number was added.
 
@@ -62,11 +60,13 @@ Please check in particular:
   under the German rules on package travel (§§ 651a ff. BGB).
 - The insolvency protection and pre-contract information requirements for packages (§ 651r BGB,
   Art. 250 EGBGB). Hathor needs an actual policy; the terms do not claim one.
-- Limitation of liability, governing law, and the clause that the English text prevails.
+- Limitation of liability and governing law. The English caps liability at the amount paid and gives the Egyptian courts exclusive jurisdiction; neither has been softened for German consumers.
+- Three lines translated as they stand: the VAT note ("The client-supplied Terms & Conditions state…"), the office address (includes Nasr City, differs from the contact page) and "Soft All-Inclusive service", with no further definition.
+- There is no clause saying which language prevails, because the English has none.
 - Whether the site needs a German-law legal notice (Impressum, § 5 DDG) and privacy notice before
   it opens to German visitors. Neither has been added.
 
-Guest emails are in German too (`lib/i18n/email-copy-de.ts`, also a machine draft). Dashboard-edited email wording stays English: German emails use built-in text with the dashboard's colours, as Italian does.
+Guest emails and the dashboard stay English, as for Italian: Hathor wants the public site translated only.
 
 ## 5. To resolve later
 
@@ -75,13 +75,9 @@ here was guessed: the German keeps the English meaning until someone decides.
 
 ### Decisions for Hathor
 
-- **Terms, section 19.** The English says it is published "in English and Italian" and that "the
-  Italian version" prevails or applies (`lib/terms-and-conditions-content.ts:349`). The German says
-  "auf Englisch und in Übersetzungen" and "die deutsche Fassung" (`lib/i18n/terms-copy-de.ts:292`).
-  The English needs updating before German opens.
 - **Price format in the booking journey.** It shows "7.000 USD", mirroring the English "USD 7,000",
   while the rest of the site shows "7.000 $" (`lib/currency.ts`, `deMoney` in `booking-copy-de.ts:29`).
-- **Occasions text.** Standard occasions now read in German from built-in text (`lib/i18n/occasions-copy.ts`), and the dashboard has a German field for custom messages. A custom message with neither is left off German pages rather than shown in English.
+- **Occasions text.** Standard occasions read in German from built-in text (`lib/i18n/occasions-copy.ts`). A custom message with no line there is left off German pages rather than shown in English.
 - **Dashboard edits do not reach German.** German overlays live in `lib/i18n/website-text-de.ts` and
   replace whole sections, so a dashboard change to the English needs a matching change there until the
   planned SEO section exists.
@@ -99,7 +95,7 @@ here was guessed: the German keeps the English meaning until someone decides.
 - `dahabiya-cruise-cost-explained-whats-included`: "8 to 20 guests" and "$300-$800 per night".
 - Footer "Daily working hours", Contact "Day off: Friday", structured data "Sa-Th"
   (`components/seo/HomeThreeStructuredData.tsx:140`).
-- Deck: Suites card says upper deck; charter and rooms say lower deck.
+- Deck: decided by Hathor on 31 October 2026, cabins are on the lower deck ("UNTERDECK").
 - Naming: "Luxury Cabins" (dashboard text) against "Luxury Rooms" (nav), and `lib/room-price-unit.ts:16`
   says "pro Zimmer" where the site says "Kabine". The English says "per room".
 - The menu's Privacy and Terms links both go to `/contact`, as they do in English.

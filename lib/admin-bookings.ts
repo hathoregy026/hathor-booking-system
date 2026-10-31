@@ -32,8 +32,6 @@ export type AdminBookingDto = {
   specialRequests: string | null;
   customerEmail: string;
   country: string | null;
-  /** Set when the guest booked in a language other than English. */
-  guestLocale?: "it" | "de";
   status: string;
   cruiseName: string;
   /** The voyage's slug (e.g. "4-nights-luxor-aswan"); the ship map opens on it. */

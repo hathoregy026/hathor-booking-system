@@ -264,7 +264,6 @@ export function BookingDetailView({
               ) : "—"}
             </Row>
             <Row label="Country">{booking.country ?? "—"}</Row>
-            {booking.guestLocale ? <Row label="Guest language">{booking.guestLocale === "it" ? "Italian: automatic emails go in Italian" : "German: automatic emails go in German"}</Row> : null}
             <Row label="Marketing emails">{marketingOptIn ? "Yes" : "No"}</Row>
           </Panel>
 

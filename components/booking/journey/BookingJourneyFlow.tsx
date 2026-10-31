@@ -533,7 +533,6 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             bookingId: held.bookingId,
             accessToken: held.accessToken,
             turnstileToken: requestVerification,
-            locale: t.locale,
             firstName: form.firstName.trim(),
             lastName: form.lastName.trim(),
             email: form.email.trim(),

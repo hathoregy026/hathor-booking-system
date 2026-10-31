@@ -3,7 +3,6 @@ import { PublicRequestError } from "@/lib/public-api-security";
 import type { TurnstileAction } from "@/lib/turnstile-actions";
 
 const TEST_SECRET = "1x0000000000000000000000000000000AA";
-// Translated pages translate these refusals in lib/i18n/form-errors.ts; reword both together.
 const responseSchema = z.object({
   success: z.boolean(), hostname: z.string().max(253).optional(),
   action: z.string().max(32).optional(), challenge_ts: z.iso.datetime({ offset: true }).optional(),

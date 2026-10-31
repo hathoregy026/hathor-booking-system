@@ -22,7 +22,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
       { emphasis: "30 % des Gesamtbuchungswerts sind bei der Bestätigung fällig.", text: "" },
       {
         emphasis:
-          "Bis 60 Tage vor der Einschiffung müssen die Zahlungen insgesamt mindestens 50 % des Gesamtbuchungswerts erreichen.",
+          "Bis 60 Tage vor der Einschiffung müssen die Zahlungen insgesamt 50 % des Gesamtbuchungswerts betragen.",
         text: "",
       },
       {
@@ -63,10 +63,8 @@ const SECTIONS_DE: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Nach Beginn der Reise erfolgt keine Erstattung für Mahlzeiten, Nächte oder andere Teile der gebuchten Reise, die der Gast nicht in Anspruch nehmen möchte.",
+      "Nach Beginn der Reise erfolgt keine Erstattung für nicht in Anspruch genommene Mahlzeiten, Nächte oder andere nicht genutzte Teile der gebuchten Reise.",
       "Ist nach dem obigen Stornoplan eine Erstattung fällig, wird der erstattungsfähige Betrag nach Anwendung der jeweiligen Gebühr auf den Gesamtbuchungswert berechnet.",
-      "Es fällt keine Gebühr an, wenn unvermeidbare, außergewöhnliche Umstände am Bestimmungsort oder in dessen unmittelbarer Nähe, etwa die Sperrung des Nils für die Schifffahrt oder eine ernste Sicherheitslage, die Reise erheblich beeinträchtigen. In diesem Fall erstattet Hathor Dahabiya alle geleisteten Zahlungen innerhalb von 14 Tagen vollständig, ohne weitere Entschädigung.",
-      "Der Gast kann die Buchung auf eine andere Person übertragen, die alle Bedingungen der Reise erfüllt, wenn er Hathor Dahabiya mindestens 7 Tage vor der Einschiffung schriftlich informiert. Der ursprüngliche und der neue Gast haften gesamtschuldnerisch für den noch offenen Betrag und für angemessene Mehrkosten der Übertragung, die Hathor Dahabiya angibt und belegt.",
     ],
   },
   {
@@ -89,9 +87,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
       "Sofern in der bestätigten Route oder Buchung nicht anders angegeben, umfasst das Hathor-Reisepaket:",
     ],
     list: [
-      {
-        text: "Soft All-Inclusive, also alle Mahlzeiten und alkoholfreien Getränke (Tee, Kaffee, Softdrinks und frische Säfte); alkoholische Getränke sind nicht enthalten (siehe Nicht enthaltene Leistungen).",
-      },
+      { text: "Soft-All-Inclusive-Service." },
       {
         text: "Drei Mahlzeiten täglich, vom Mittagessen am Tag der Einschiffung bis zum Frühstück am Tag der Ausschiffung.",
       },
@@ -134,10 +130,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
     id: "company-responsibility",
     number: 8,
     title: "Verantwortung des Unternehmens",
-    paragraphs: [
-      "Hathor Dahabiya ist für die Erbringung aller in der bestätigten Buchung enthaltenen Reiseleistungen verantwortlich, einschließlich Transfers und Besichtigungen, unabhängig davon, ob sie von Hathor Dahabiya oder von ihren Partnern erbracht werden.",
-      "Hathor Dahabiya übernimmt insbesondere die Verantwortung dafür:",
-    ],
+    paragraphs: ["Hathor Dahabiya übernimmt die Verantwortung dafür:"],
     list: [
       {
         text: "Speisen und Getränke bereitzustellen, die nach den geltenden Gesundheits-, Hygiene- und Sicherheitsvorschriften zubereitet sind.",
@@ -150,7 +143,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Diese Verantwortung erstreckt sich nicht auf Leistungen, die der Gast selbst organisiert und die nicht Teil der bestätigten Buchung sind.",
+      "Diese Verantwortung ist auf die an Bord der Hathor Dahabiya erbrachten Leistungen beschränkt und erstreckt sich nicht auf äußere Umstände außerhalb der angemessenen Kontrolle des Unternehmens.",
     ],
   },
   {
@@ -174,8 +167,8 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 10,
     title: "Wetter und Naturereignisse",
     paragraphs: [
-      "Ungünstige Wetterbedingungen, unter anderem Wind, Nebel, Stürme oder Schwankungen des Nilwasserstands, können zu Verzögerungen, Routenänderungen, Umleitungen oder Absagen führen.",
-      "Hathor Dahabiya leistet keine Entschädigung für Beeinträchtigungen durch solche unvermeidbaren, außergewöhnlichen Umstände. Die in den Abschnitten 2, 12 und 13 genannten Rechte des Gastes auf Preisminderung oder auf Rücktritt mit vollständiger Erstattung bleiben unberührt.",
+      "Hathor Dahabiya haftet nicht für Verzögerungen, Routenänderungen, Umleitungen oder Absagen infolge ungünstiger Wetterbedingungen, unter anderem Wind, Nebel, Stürme oder Schwankungen des Nilwasserstands.",
+      "Beeinträchtigungen durch natürliche oder umweltbedingte Umstände, die als höhere Gewalt gelten, begründen keinerlei Ansprüche auf Erstattung, Entschädigung oder sonstige Forderungen, sofern das anwendbare Recht nichts anderes vorschreibt.",
     ],
   },
   {
@@ -183,7 +176,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 11,
     title: "Vorschriften, Inspektionen und Behörden",
     paragraphs: [
-      "Verzögerungen, Unterbrechungen, Umleitungen oder Absagen können zurückzuführen sein auf:",
+      "Hathor Dahabiya ist nicht verantwortlich für Verzögerungen, Unterbrechungen, Umleitungen oder Absagen infolge von:",
     ],
     list: [
       { text: "Behördlich angeordnete Inspektionen." },
@@ -193,7 +186,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Hathor Dahabiya leistet für solche Umstände keine Entschädigung. Die in den Abschnitten 2, 12 und 13 genannten Rechte des Gastes bleiben unberührt.",
+      "Solche Umstände begründen keinen Anspruch der Gäste auf Erstattung, Entschädigung oder sonstige Forderungen, sofern das anwendbare Recht nichts anderes vorschreibt.",
     ],
   },
   {
@@ -201,10 +194,9 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 12,
     title: "Routenänderungen und betriebliche Anpassungen",
     paragraphs: [
-      "Hathor Dahabiya kann geringfügige Änderungen an Routen, Zeiten, Anlegestellen oder Leistungen vornehmen, wenn dies aus betrieblichen, nautischen oder Sicherheitsgründen erforderlich ist. Solche Änderungen stellen keine Vertragsverletzung dar, und Hathor Dahabiya wird den Gast klar und rechtzeitig darüber informieren.",
-      "Muss Hathor Dahabiya vor der Abreise ein Hauptmerkmal der Reise erheblich ändern, informiert sie den Gast unverzüglich. Der Gast kann die Änderung annehmen oder ohne Stornogebühr von der Buchung zurücktreten und erhält alle geleisteten Zahlungen innerhalb von 14 Tagen vollständig erstattet.",
-      "Kann eine in der Buchung enthaltene Leistung während der Reise nicht wie vereinbart erbracht werden, bietet Hathor Dahabiya, soweit möglich, ohne Mehrkosten eine Ersatzleistung gleicher oder höherer Qualität an. Wird eine Leistung nicht erbracht oder ist die Ersatzleistung von geringerer Qualität, hat der Gast Anspruch auf eine angemessene Preisminderung.",
-      "Über die Preisminderung hinaus ist keine Entschädigung geschuldet, wenn die Änderung oder Beeinträchtigung dem Gast, einem an den gebuchten Leistungen unbeteiligten Dritten oder unvermeidbaren, außergewöhnlichen Umständen zuzurechnen ist.",
+      "Hathor Dahabiya behält sich das Recht vor, Routen, Zeiten, Anlegestellen oder Leistungen zu ändern, wenn dies aus betrieblichen, nautischen oder Sicherheitsgründen für erforderlich gehalten wird.",
+      "Nach Ermessen des Unternehmens können gleichwertige Ersatzleistungen oder Ersatzaktivitäten angeboten werden.",
+      "Solche Änderungen gelten nicht als Vertragsverletzung und begründen keinen Anspruch auf Erstattung oder Entschädigung, sofern das anwendbare Recht nichts anderes vorschreibt.",
     ],
   },
   {
@@ -212,15 +204,15 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 13,
     title: "Absagen durch das Unternehmen",
     paragraphs: [
-      "Hathor Dahabiya kann eine Reise vor der Abreise in Ausnahmefällen wegen höherer Gewalt oder aus betrieblicher Notwendigkeit absagen.",
-      "Sagt Hathor Dahabiya die Reise ab, erhält der Gast alle geleisteten Zahlungen innerhalb von 14 Tagen nach der Absage vollständig erstattet. Wenn der Gast es wünscht, kann Hathor Dahabiya stattdessen anbieten:",
+      "In Ausnahmefällen höherer Gewalt oder betrieblicher Notwendigkeit behält sich Hathor Dahabiya das Recht vor, die Reise abzusagen.",
+      "Das Unternehmen kann nach eigenem alleinigem Ermessen anbieten:",
     ],
     list: [
       { text: "Einen neuen Abreisetermin; oder" },
-      { text: "Einen Gutschein für eine künftige Reise." },
+      { text: "Einen nicht erstattungsfähigen Gutschein zur späteren Verwendung." },
     ],
     paragraphsAfterList: [
-      "Sagt Hathor Dahabiya die Reise aus betrieblichen Gründen und nicht wegen unvermeidbarer, außergewöhnlicher Umstände ab, kann der Gast zusätzlich Anspruch auf eine angemessene Entschädigung haben.",
+      "Barerstattungen sind nicht garantiert, sofern das anwendbare Recht nichts anderes vorschreibt.",
     ],
   },
   {
@@ -239,9 +231,6 @@ const SECTIONS_DE: readonly TermsSection[] = [
       {
         text: "Andere natürliche, umweltbedingte oder betriebliche Umstände außerhalb der angemessenen Kontrolle des Unternehmens.",
       },
-    ],
-    paragraphsAfterList: [
-      "Die in den Abschnitten 2, 12 und 13 vorgesehenen Rechte des Gastes auf Erstattung oder Preisminderung bleiben unberührt.",
     ],
   },
   {
@@ -268,7 +257,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
     number: 17,
     title: "Haftungsbeschränkung",
     paragraphs: [
-      "Außer bei Personenschäden und bei vorsätzlich oder fahrlässig verursachten Schäden ist die Haftung von Hathor Dahabiya auf das Dreifache des Gesamtbuchungspreises begrenzt.",
+      "Die Haftung von Hathor Dahabiya ist auf den für die gebuchten Leistungen gezahlten Betrag begrenzt, soweit eine solche Beschränkung nach anwendbarem Recht nicht unzulässig ist.",
       "Soweit gesetzlich zulässig, haftet Hathor Dahabiya nicht für indirekte, beiläufige oder Folgeschäden.",
     ],
   },
@@ -278,8 +267,7 @@ const SECTIONS_DE: readonly TermsSection[] = [
     title: "Anwendbares Recht und Gerichtsstand",
     paragraphs: [
       "Diese Allgemeinen Geschäftsbedingungen unterliegen den Gesetzen der Arabischen Republik Ägypten und werden nach diesen ausgelegt.",
-      "Alle Streitigkeiten unterliegen der Zuständigkeit der ägyptischen Gerichte.",
-      "Ist der Gast ein Verbraucher mit Wohnsitz in einem anderen Land, entzieht ihm dies nicht den Schutz der zwingenden Bestimmungen des Rechts seines Wohnsitzlandes, und er kann auch vor den Gerichten dieses Landes klagen.",
+      "Alle Streitigkeiten unterliegen der ausschließlichen Zuständigkeit der ägyptischen Gerichte, sofern das anwendbare Recht nichts anderes vorschreibt.",
     ],
   },
   {
@@ -289,7 +277,6 @@ const SECTIONS_DE: readonly TermsSection[] = [
     paragraphs: [
       "Mit der Bestätigung einer Buchung erkennt der Gast diese Allgemeinen Geschäftsbedingungen an, nimmt sie an und verpflichtet sich, sie einzuhalten.",
       "Wird eine Buchung für mehrere Gäste vorgenommen, ist die buchende Person dafür verantwortlich, alle Mitglieder der Reisegruppe über die geltenden Allgemeinen Geschäftsbedingungen zu informieren.",
-      "Diese Allgemeinen Geschäftsbedingungen werden auf Englisch und in Übersetzungen veröffentlicht. Die deutsche Fassung dient der besseren Orientierung. Bei Abweichungen zwischen den Fassungen hat die englische Fassung Vorrang, sofern das auf die Buchung anwendbare Recht nichts anderes vorschreibt.",
     ],
   },
   {
@@ -338,12 +325,12 @@ export const TERMS_COPY_DE: TermsCopy = {
   toc: TERMS_TOC.map((item) => ({ id: item.id, label: TOC_DE[item.id] ?? item.label })),
   sections: SECTIONS_DE,
   vatNote: [
-    "Darin enthalten sind ",
+    "Die vom Kunden bereitgestellten Allgemeinen Geschäftsbedingungen besagen, dass darin ",
     "14 % Mehrwertsteuer und die Servicegebühr",
-    ".",
+    " enthalten sind.",
   ],
   headOffice: "Hauptsitz",
-  address: ["One Kattamiya, Tower 211, 11. Etage, Flat 111", "Ring Road", "Kairo, Ägypten"],
+  address: ["One Kattameya, Tower Nr. 211, Etage Nr. 11", "Ring Road, Nasr City", "Kairo, Ägypten"],
   telephone: "Telefon:",
   email: "E-Mail:",
   website: "Website:",

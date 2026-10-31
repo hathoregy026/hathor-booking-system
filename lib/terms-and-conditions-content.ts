@@ -76,7 +76,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       { emphasis: "30% of the total booking value is due upon confirmation.", text: "" },
       {
         emphasis:
-          "By 60 days before embarkation, total payments must reach at least 50% of the total booking value.",
+          "By 60 days before embarkation, total payments must equal 50% of the total booking value.",
         text: "",
       },
       {
@@ -120,10 +120,8 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "No refund shall be provided for meals, nights or other portions of the booked voyage that the guest chooses not to use after the journey has commenced.",
+      "No refund shall be provided for unused meals, unused nights or other unused portions of the booked voyage after the journey has commenced.",
       "Where a refund is due under the cancellation schedule above, the amount refundable shall be calculated after applying the relevant cancellation charge to the total booking value.",
-      "No cancellation charge applies if unavoidable and extraordinary circumstances at the destination or in its immediate vicinity, such as a closure of the Nile to navigation or a serious security situation, significantly affect the voyage. In that case Hathor Dahabiya refunds all payments made in full within 14 days, without further compensation.",
-      "The guest may transfer the booking to another person who meets all the conditions of the voyage by informing Hathor Dahabiya in writing at least 7 days before embarkation. The original guest and the new guest are jointly responsible for any balance still due and for any reasonable additional costs of the transfer, which Hathor Dahabiya will state and justify.",
     ],
   },
   {
@@ -146,9 +144,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       "Unless otherwise stated in the confirmed itinerary or booking, the Hathor voyage package includes:",
     ],
     list: [
-      {
-        text: "Soft All-Inclusive service, which covers all meals and soft drinks (tea, coffee, soft drinks and fresh juices); alcoholic drinks are not included (see Exclusions).",
-      },
+      { text: "Soft All-Inclusive service." },
       {
         text: "Three meals daily, beginning with lunch on the day of embarkation and ending with breakfast on the day of disembarkation.",
       },
@@ -191,10 +187,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     id: "company-responsibility",
     number: 8,
     title: "Company Responsibility",
-    paragraphs: [
-      "Hathor Dahabiya is responsible for the performance of all travel services included in the confirmed booking, including transfers and sightseeing tours, whether they are provided by Hathor Dahabiya or by its partners.",
-      "In particular, Hathor Dahabiya undertakes responsibility for:",
-    ],
+    paragraphs: ["Hathor Dahabiya undertakes responsibility for:"],
     list: [
       {
         text: "Providing food and beverages prepared in accordance with applicable health, hygiene and safety standards.",
@@ -207,7 +200,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "This responsibility does not extend to services that the guest arranges separately and that are not part of the confirmed booking.",
+      "This responsibility is limited to services provided onboard Hathor Dahabiya and does not extend to external factors beyond the company's reasonable control.",
     ],
   },
   {
@@ -231,8 +224,8 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     number: 10,
     title: "Weather Conditions & Natural Events",
     paragraphs: [
-      "Adverse weather conditions, including but not limited to wind, fog, storms or Nile water-level variations, may cause delays, itinerary modifications, route changes or cancellations.",
-      "Hathor Dahabiya does not pay compensation for disruption caused by such unavoidable and extraordinary circumstances. This does not affect the guest's rights to a price reduction or to cancel with a full refund, set out in sections 2, 12 and 13.",
+      "Hathor Dahabiya shall bear no liability for delays, itinerary modifications, route changes or cancellations caused by adverse weather conditions, including but not limited to wind, fog, storms or Nile water-level variations.",
+      "Any disruption resulting from natural or environmental circumstances classified as force majeure shall not constitute grounds for refunds, compensation or claims of any nature, except where required by applicable law.",
     ],
   },
   {
@@ -240,7 +233,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     number: 11,
     title: "Governmental Regulations, Inspections & Authorities",
     paragraphs: [
-      "Delays, interruptions, route changes or cancellations may result from:",
+      "Hathor Dahabiya shall not be responsible for delays, interruptions, route changes or cancellations resulting from:",
     ],
     list: [
       { text: "Government-mandated inspections." },
@@ -250,7 +243,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       },
     ],
     paragraphsAfterList: [
-      "Hathor Dahabiya does not pay compensation for such circumstances. This does not affect the guest's rights set out in sections 2, 12 and 13.",
+      "Such circumstances do not entitle guests to a refund, compensation or claim, except where required by applicable law.",
     ],
   },
   {
@@ -258,10 +251,9 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     number: 12,
     title: "Itinerary Changes & Operational Adjustments",
     paragraphs: [
-      "Hathor Dahabiya may make minor changes to itineraries, schedules, docking locations or services when necessary for operational, navigational or safety reasons. Minor changes are not a breach of contract, and Hathor Dahabiya will inform the guest of them clearly and promptly.",
-      "If Hathor Dahabiya has to change a main feature of the voyage significantly before departure, it will inform the guest without undue delay. The guest may accept the change or cancel the booking without a cancellation charge and receive a full refund of all payments made within 14 days.",
-      "If a service included in the booking cannot be provided as agreed during the voyage, Hathor Dahabiya will offer, where possible, a substitute of comparable or higher quality at no extra cost. Where a service is not provided, or a substitute is of lower quality, the guest is entitled to an appropriate price reduction.",
-      "Compensation beyond a price reduction is not due where the change or failure is caused by the guest, by a third party unconnected with the booked services, or by unavoidable and extraordinary circumstances.",
+      "Hathor Dahabiya reserves the right to amend itineraries, schedules, docking locations or services when deemed necessary for operational, navigational or safety reasons.",
+      "Substitute services or activities of comparable value may be provided at the company's discretion.",
+      "Such amendments shall not be considered a breach of contract and do not warrant refunds or compensation, except where required by applicable law.",
     ],
   },
   {
@@ -269,15 +261,15 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     number: 13,
     title: "Company-Initiated Cancellations",
     paragraphs: [
-      "Hathor Dahabiya may cancel a voyage before departure in exceptional cases of force majeure or operational necessity.",
-      "If Hathor Dahabiya cancels, the guest receives a full refund of all payments made within 14 days of the cancellation. If the guest prefers, Hathor Dahabiya can instead offer:",
+      "In exceptional cases of force majeure or operational necessity, Hathor Dahabiya reserves the right to cancel the trip.",
+      "The company may, at its sole discretion, offer:",
     ],
     list: [
       { text: "A rescheduled departure date; or" },
-      { text: "A credit voucher for a future voyage." },
+      { text: "A non-refundable credit voucher for future use." },
     ],
     paragraphsAfterList: [
-      "Where Hathor Dahabiya cancels for operational reasons rather than because of unavoidable and extraordinary circumstances, the guest may also be entitled to appropriate compensation.",
+      "Cash refunds are not guaranteed, except where required by applicable law.",
     ],
   },
   {
@@ -296,9 +288,6 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       {
         text: "Other natural, environmental or operational circumstances outside the company's reasonable control.",
       },
-    ],
-    paragraphsAfterList: [
-      "This does not affect the guest's rights to a refund or a price reduction under sections 2, 12 and 13.",
     ],
   },
   {
@@ -325,7 +314,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     number: 17,
     title: "Limitation of Liability",
     paragraphs: [
-      "Except for personal injury and damage caused intentionally or negligently, Hathor Dahabiya's liability is limited to three times the total price of the booking.",
+      "Hathor Dahabiya's liability is limited to the amount paid for the booked services, except where such limitation is prohibited by applicable law.",
       "To the fullest extent permitted by law, Hathor Dahabiya shall not be liable for indirect, incidental or consequential damages.",
     ],
   },
@@ -335,8 +324,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     title: "Governing Law & Jurisdiction",
     paragraphs: [
       "These Terms & Conditions shall be governed by and construed in accordance with the laws of the Arab Republic of Egypt.",
-      "Any disputes shall be subject to the jurisdiction of the Egyptian courts.",
-      "If the guest is a consumer resident in another country, this does not deprive the guest of the protection of the mandatory rules of the law of their country of residence, and the guest may also bring proceedings in the courts of that country.",
+      "Any disputes shall be subject to the exclusive jurisdiction of the Egyptian courts, unless applicable law requires otherwise.",
     ],
   },
   {
@@ -346,7 +334,6 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
     paragraphs: [
       "By confirming a booking, the guest acknowledges, accepts and agrees to be bound by these Terms & Conditions.",
       "Where a reservation is made on behalf of more than one guest, the person making the reservation is responsible for ensuring that all members of the travelling party are made aware of the applicable Terms & Conditions.",
-      "These Terms & Conditions are published in English and Italian. The Italian version is provided for convenience. If the two versions differ, the English version prevails, unless the law applicable to the booking requires otherwise.",
     ],
   },
   {

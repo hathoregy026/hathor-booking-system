@@ -1,27 +1,18 @@
 /**
- * Words of the occasions layer (lib/occasions.ts) that come from the dashboard.
- * Its per-language fields win; next comes the built-in text below, looked up by
- * the exact English the dashboard's templates write, so a standard occasion is
- * in that language the moment it is switched on. A custom message with neither is
- * left off translated pages rather than shown in English. The layer's fixed labels live
- * in chrome-copy.ts.
+ * Words of the occasions layer (lib/occasions.ts) that come from the dashboard,
+ * in other languages. The built-in text below is looked up by the exact English
+ * the dashboard's templates write, so a standard occasion is in that language the
+ * moment it is switched on. A custom message with no line here is left off
+ * translated pages rather than shown in English. The layer's fixed labels live in
+ * chrome-copy.ts.
  */
-import type { Occasion, OccasionLocaleText, OccasionStripeItem } from "@/lib/occasions";
+import type { Occasion, OccasionStripeItem } from "@/lib/occasions";
 import {
   localizedHref,
-  PUBLIC_LOCALES,
   splitLocalePath,
   type PublicLocale,
   type TranslatedLocale,
 } from "@/lib/i18n/locale";
-
-/** One dashboard field per language in this list. */
-export const OCCASION_TEXT_LOCALES = PUBLIC_LOCALES.filter(
-  (locale): locale is TranslatedLocale => locale !== "en",
-);
-
-/** For the dashboard, which stays in English. */
-export const OCCASION_LOCALE_LABELS: Record<TranslatedLocale, string> = { it: "Italian", de: "German" };
 
 /* English exactly as stored or as a template writes it. "2027" stands for any year. */
 const BUILT_IN_YEAR = "2027";
@@ -113,7 +104,7 @@ const COUNTDOWN_FALLBACK: Record<TranslatedLocale, string> = {
 };
 
 /** The built-in text for this English, in any year; null when there is none. */
-export function builtInOccasionText(english: string, locale: TranslatedLocale): string | null {
+function builtInOccasionText(english: string, locale: TranslatedLocale): string | null {
   const table = BUILT_IN_TEXT[locale];
   const key = english.trim();
   const exact = table.get(key);
@@ -121,10 +112,6 @@ export function builtInOccasionText(english: string, locale: TranslatedLocale): 
   const year = /\b20\d{2}\b/.exec(key)?.[0];
   if (!year) return null;
   return table.get(key.replace(year, BUILT_IN_YEAR))?.replaceAll(BUILT_IN_YEAR, year) ?? null;
-}
-
-function textIn(english: string, typed: OccasionLocaleText | undefined, locale: TranslatedLocale): string | null {
-  return typed?.[locale]?.trim() || builtInOccasionText(english, locale);
 }
 
 const OWN_SITE = /^https:\/\/(?:www\.)?hathorcruise\.com(?=[/?#]|$)/i;
@@ -146,7 +133,7 @@ export function occasionHref(href: string | null, locale: PublicLocale): string 
 export function localizedStripeItems(items: OccasionStripeItem[], locale: PublicLocale): OccasionStripeItem[] {
   if (locale === "en") return items;
   return items.flatMap((item) => {
-    const text = textIn(item.text, item.textByLocale, locale);
+    const text = builtInOccasionText(item.text, locale);
     return text ? [{ ...item, text, href: occasionHref(item.href, locale) }] : [];
   });
 }
@@ -159,7 +146,7 @@ export function occasionWords(
 ): { name: string; caption: string } {
   if (locale === "en") return { name: occasion.name, caption: englishCaption };
   return {
-    name: textIn(occasion.name, occasion.nameByLocale, locale) ?? "Hathor",
-    caption: textIn(englishCaption, occasion.countdownLabelByLocale, locale) ?? COUNTDOWN_FALLBACK[locale],
+    name: builtInOccasionText(occasion.name, locale) ?? "Hathor",
+    caption: builtInOccasionText(englishCaption, locale) ?? COUNTDOWN_FALLBACK[locale],
   };
 }

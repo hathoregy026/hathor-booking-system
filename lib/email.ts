@@ -148,7 +148,7 @@ export async function sendBookingInvoiceEmail(
   invoice: { paymentLink?: string; instructions?: string },
   attachments: ResendAttachment[] = [],
 ) {
-  const template = await getEmailTemplateForSend("BookingInvoice", bookingDetails.locale);
+  const template = await getEmailTemplateForSend("BookingInvoice");
   await sendEmail({
     to: guestEmail,
     bookingDetails,
@@ -167,7 +167,7 @@ export async function sendBookingDeclinedEmail(
   bookingDetails: BookingEmailDetails,
   message?: string,
 ) {
-  const template = await getEmailTemplateForSend("BookingDeclined", bookingDetails.locale);
+  const template = await getEmailTemplateForSend("BookingDeclined");
   await sendEmail({
     to: guestEmail,
     bookingDetails,
@@ -188,7 +188,7 @@ export async function sendBookingMessageEmail(
   subject?: string,
   attachments: ResendAttachment[] = [],
 ) {
-  const template = await getEmailTemplateForSend("BookingMessage", bookingDetails.locale);
+  const template = await getEmailTemplateForSend("BookingMessage");
   await sendEmail({
     to: guestEmail,
     bookingDetails,
@@ -206,7 +206,7 @@ export async function sendBookingReceivedEmail(
   guestName: string,
   bookingDetails: BookingEmailDetails,
 ) {
-  const template = await getEmailTemplateForSend("BookingReceived", bookingDetails.locale);
+  const template = await getEmailTemplateForSend("BookingReceived");
   const theme = buildEmailSendTheme(template);
 
   await sendEmail({
@@ -230,7 +230,7 @@ export async function sendBookingConfirmedEmail(
   bookingDetails: BookingEmailDetails,
   attachments: ResendAttachment[] = [],
 ) {
-  const template = await getEmailTemplateForSend("BookingConfirmed", bookingDetails.locale);
+  const template = await getEmailTemplateForSend("BookingConfirmed");
   const theme = buildEmailSendTheme(template);
 
   await sendEmail({

@@ -9,8 +9,6 @@ import {
 } from "@react-email/components";
 import type { EmailTemplateOverrides } from "@/lib/email-templates";
 import { interpolateEmailText } from "@/lib/email-templates";
-import { EMAIL_COPY } from "@/lib/i18n/email-copy";
-import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { resolveEmailTheme } from "./theme";
 import { EmailFooter } from "./components/EmailLayout";
 import {
@@ -23,17 +21,22 @@ import { sampleGuestName } from "./sample-data";
 
 type ContactReceivedEmailProps = {
   guestName: string;
-  /** The language of the page the guest wrote from; English when absent. */
-  locale?: PublicLocale;
 } & EmailTemplateOverrides;
 
 export const PreviewProps: ContactReceivedEmailProps = {
   guestName: sampleGuestName,
 };
 
+const DEFAULT_HEADING = "Thank you, {guestName}";
+const DEFAULT_BODY =
+  "Your note has reached the Hathor reservations desk. We will reply within 24 hours.";
+const REPLY_HINT =
+  "You may reply directly to this email if you wish to add anything to your request.";
+const SECURITY_NOTE =
+  "For your security, never send passwords or card details by email. Hathor will not request payment through an unverified link in response to a contact message.";
+
 export default function ContactReceivedEmail({
   guestName = sampleGuestName,
-  locale = "en",
   logoUrl,
   primaryColor,
   backgroundColor,
@@ -41,32 +44,31 @@ export default function ContactReceivedEmail({
   bodyText,
   footer,
 }: ContactReceivedEmailProps) {
-  const copy = EMAIL_COPY[locale].contact;
   const theme = resolveEmailTheme({ logoUrl, primaryColor, backgroundColor });
   const paper = theme.backgroundColor || emailColors.cream;
   const card = "#f5eacf";
-  const heading = interpolateEmailText(heroHeading?.trim() || copy.hero, {
+  const heading = interpolateEmailText(heroHeading?.trim() || DEFAULT_HEADING, {
     guestName,
   });
-  const body = interpolateEmailText(bodyText?.trim() || copy.body, {
+  const body = interpolateEmailText(bodyText?.trim() || DEFAULT_BODY, {
     guestName,
   });
   const siteUrl = SITE_URL.replace(/\/$/, "");
   const logoSrc = theme.logoUrl;
 
   return (
-    <Html lang={EMAIL_COPY[locale].htmlLang} dir="ltr">
+    <Html lang="en" dir="ltr">
       <Head>
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <link href={GOOGLE_FONTS_URL} rel="stylesheet" />
-        <title>{copy.title}</title>
+        <title>We received your message</title>
         <style>{`
           html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; background: ${paper} !important; }
         `}</style>
       </Head>
-      <Preview>{copy.preview}</Preview>
+      <Preview>We received your message — Hathor Dahabiya</Preview>
       <Body
         style={{
           backgroundColor: paper,
@@ -145,7 +147,7 @@ export default function ContactReceivedEmail({
                             color: theme.goldDark,
                           }}
                         >
-                          {copy.eyebrow}
+                          Message received
                         </Text>
                       </td>
                     </tr>
@@ -213,7 +215,7 @@ export default function ContactReceivedEmail({
                             color: emailColors.textSecondary,
                           }}
                         >
-                          {copy.replyHint}
+                          {REPLY_HINT}
                         </Text>
                       </td>
                     </tr>
@@ -226,7 +228,7 @@ export default function ContactReceivedEmail({
                         }}
                       >
                         <Button
-                          href={`${siteUrl}${localizedHref("/", locale)}`}
+                          href={`${siteUrl}/`}
                           style={{
                             display: "inline-block",
                             padding: "14px 34px",
@@ -242,7 +244,7 @@ export default function ContactReceivedEmail({
                             backgroundColor: card,
                           }}
                         >
-                          {copy.cta}
+                          Visit Dahabiya
                         </Button>
                       </td>
                     </tr>
@@ -265,7 +267,7 @@ export default function ContactReceivedEmail({
                             textAlign: "center",
                           }}
                         >
-                          {copy.security}
+                          {SECURITY_NOTE}
                         </Text>
                       </td>
                     </tr>

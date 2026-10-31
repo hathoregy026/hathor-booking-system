@@ -75,7 +75,7 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
  * code needs touching.
  */
 export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
-  it: true,
+  it: false,
   /* Off until the native and legal reviews in docs/german-review.md are done. */
   de: false,
 };

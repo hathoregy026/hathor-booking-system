@@ -41,7 +41,7 @@ export const ABOUT_COPY_DE: AboutCopy = {
     },
   ],
   stays: [
-    { meta: "22 m²", place: "Oberdeck", title: "Kabine" },
+    { meta: "22 m²", place: "Unterdeck", title: "Kabine" },
     { meta: "46 m²", place: "Unterdeck", title: "Suite" },
     { meta: "56 m²", place: "Hauptdeck", title: "Royal" },
   ],

@@ -89,7 +89,7 @@ export const ABOUT_COPY: Record<PublicLocale, AboutCopy> = {
       },
     ],
     stays: [
-      { meta: "22 sqm", place: "Upper Deck", title: "Cabin" },
+      { meta: "22 sqm", place: "Lower Deck", title: "Cabin" },
       { meta: "46 sqm", place: "Lower Deck", title: "Suite" },
       { meta: "56 sqm", place: "Main Deck", title: "Royal" },
     ],
@@ -143,7 +143,7 @@ export const ABOUT_COPY: Record<PublicLocale, AboutCopy> = {
       },
     ],
     stays: [
-      { meta: "22 m²", place: "Ponte superiore", title: "Cabina" },
+      { meta: "22 m²", place: "Ponte inferiore", title: "Cabina" },
       { meta: "46 m²", place: "Ponte inferiore", title: "Suite" },
       { meta: "56 m²", place: "Ponte principale", title: "Royal" },
     ],
