@@ -144,7 +144,7 @@ export function DeckAtlasRoomModal({ open, sheet, onClose }: { open: boolean; sh
               {room.price ? <p className="da-price">{room.price}<RoomPriceUnit roomType={room.roomType} locale={locale} /><small>{tx.entireVoyage}</small></p> : null}
             </div>
             <div className="da-modal__act">
-              {room.checkHref ? <Link className="btn" data-hathor-btn="primary" href={room.checkHref}>{room.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>
+              {room.checkHref ? <Link className="btn" data-hathor-btn="primary" href={localizedHref(room.checkHref, locale)}>{room.state === "closed" ? tx.seeOtherDates : tx.checkAvailability}</Link>
                 : <Link className="btn" data-hathor-btn="primary" href={localizedHref("/contact", locale)}>{tx.contactReservations}</Link>}
               {room.viewHref ? <Link className="btn" href={localizedHref(room.viewHref, locale)}>{tx.viewRoom}</Link> : null}
             </div>

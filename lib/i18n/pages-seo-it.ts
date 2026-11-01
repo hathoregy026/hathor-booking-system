@@ -1,42 +1,12 @@
-import type { Metadata } from "next";
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import { localePage } from "@/lib/i18n/pages-seo";
 
 /**
  * Search settings and structured-data words for the Italian content pages
  * (about, contact, dining, wellness, highlights, partners, terms). Language,
  * hreflang and the search switch come from the shared builder. Server-only.
  */
-type ItalianPage = {
-  path: string;
-  metadata: Metadata;
-  /** WebPage name and the page's own breadcrumb label. */
-  name: string;
-  crumb: string;
-  description: string;
-};
-
-const page = (input: {
-  path: string;
-  title: string;
-  description: string;
-  name: string;
-  crumb: string;
-  image?: { url: string; width: number; height: number; alt: string };
-}): ItalianPage => ({
-  path: input.path,
-  name: input.name,
-  crumb: input.crumb,
-  description: input.description,
-  metadata: buildPageMetadata({
-    title: input.title,
-    description: input.description,
-    path: input.path,
-    image: input.image,
-  }),
-});
-
 export const ITALIAN_PAGES = {
-  about: page({
+  about: localePage({
     path: "/it/about",
     title: "Crociera in dahabiya sul Nilo in Egitto | Chi siamo, Hathor",
     description:
@@ -44,7 +14,7 @@ export const ITALIAN_PAGES = {
     name: "Chi siamo: Hathor Dahabiya, una navigazione privata sul Nilo",
     crumb: "Chi siamo",
   }),
-  contact: page({
+  contact: localePage({
     path: "/it/contact",
     title: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
     description:
@@ -52,7 +22,7 @@ export const ITALIAN_PAGES = {
     name: "Contatti Hathor Dahabiya | Prenotazioni crociere sul Nilo",
     crumb: "Contatti",
   }),
-  gastronomy: page({
+  gastronomy: localePage({
     path: "/it/gastronomy",
     title: "La cucina di una crociera di lusso sul Nilo | Hathor",
     description:
@@ -60,7 +30,7 @@ export const ITALIAN_PAGES = {
     name: "La cucina sul Nilo | La gastronomia di Hathor Dahabiya",
     crumb: "Cucina",
   }),
-  suites: page({
+  suites: localePage({
     path: "/it/suites",
     title: "Suite di lusso per la crociera sul Nilo | Hathor Dahabiya",
     description:
@@ -74,7 +44,7 @@ export const ITALIAN_PAGES = {
       alt: "Suite di lusso a bordo di Hathor Dahabiya",
     },
   }),
-  wellness: page({
+  wellness: localePage({
     path: "/it/wellness",
     title: "Seneb Spa sul Nilo | Il benessere di Hathor Dahabiya",
     description:
@@ -82,7 +52,7 @@ export const ITALIAN_PAGES = {
     name: "Seneb Spa sul Nilo | Il benessere di Hathor Dahabiya",
     crumb: "Benessere",
   }),
-  highlights: page({
+  highlights: localePage({
     path: "/it/highlights",
     title: "Crociera sul Nilo: cosa vedere | Templi tra Luxor e Assuan",
     description:
@@ -96,7 +66,7 @@ export const ITALIAN_PAGES = {
       alt: "I templi da non perdere in una crociera sul Nilo con Hathor Dahabiya",
     },
   }),
-  partners: page({
+  partners: localePage({
     path: "/it/partners",
     title: "Partner di viaggio | Hathor Dahabiya",
     description:
@@ -104,7 +74,7 @@ export const ITALIAN_PAGES = {
     name: "Partner di viaggio | Hathor Dahabiya",
     crumb: "Partner",
   }),
-  terms: page({
+  terms: localePage({
     path: "/it/terms-and-conditions",
     title: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
     description:
@@ -112,7 +82,7 @@ export const ITALIAN_PAGES = {
     name: "Termini e condizioni | Prenotazioni Hathor Dahabiya",
     crumb: "Termini e condizioni",
   }),
-  blogs: page({
+  blogs: localePage({
     path: "/it/blogs",
     title: "Crociera di lusso sul Nilo: consigli e storie | Blog Hathor",
     description:

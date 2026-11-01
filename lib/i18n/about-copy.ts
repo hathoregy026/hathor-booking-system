@@ -4,6 +4,7 @@
  * are unchanged; only the words differ.
  */
 
+import { ABOUT_COPY_DE } from "@/lib/i18n/about-copy-de";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Principle = { title: string; text: string };
@@ -156,4 +157,5 @@ export const ABOUT_COPY: Record<PublicLocale, AboutCopy> = {
     cardTitle: "La dahabiya",
     cardBody: ["Tre ponti di quiete", "per una crociera privata sul Nilo"],
   },
+  de: ABOUT_COPY_DE,
 };

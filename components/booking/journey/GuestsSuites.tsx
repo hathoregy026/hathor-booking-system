@@ -8,7 +8,7 @@ import { AddToVoyageButton } from "@/components/selection/AddToVoyageButton";
 import { getBookingRoomVisuals } from "@/lib/booking-room-media";
 import { buildCabinSlug } from "@/lib/selection-catalog";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries";
 import { roomFolioPanels } from "@/lib/i18n/rooms-copy";
 import { localizedHref } from "@/lib/i18n/locale";
 import { PHYSICAL_ROOM_TYPES, roomCapacity, type PhysicalRoomType } from "@/lib/physical-inventory";

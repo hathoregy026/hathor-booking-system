@@ -8,6 +8,7 @@
  * Luxury Suite, Royal Suite.
  */
 
+import { CHROME_COPY_DE } from "@/lib/i18n/chrome-copy-de";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import type { HeaderNavItem } from "@/lib/public-nav";
@@ -162,6 +163,7 @@ const EN: ChromeCopy = {
       en: "English",
       /* A live language is always named in itself, so its speakers find it. */
       it: "Italiano",
+      de: "Deutsch",
     },
     toggleLabel: (active) => `Language: ${active}. Choose a language`,
     closeMenu: "Close language menu",
@@ -373,6 +375,7 @@ const IT: ChromeCopy = {
     names: {
       en: "Inglese",
       it: "Italiano",
+      de: "Deutsch",
     },
     toggleLabel: (active) => `Lingua: ${active}. Scelga una lingua`,
     closeMenu: "Chiudi il menu delle lingue",
@@ -491,7 +494,7 @@ const IT: ChromeCopy = {
   },
 };
 
-export const CHROME_COPY: Record<PublicLocale, ChromeCopy> = { en: EN, it: IT };
+export const CHROME_COPY: Record<PublicLocale, ChromeCopy> = { en: EN, it: IT, de: CHROME_COPY_DE };
 
 /**
  * The header / menu entries in a language: translated labels, and links that

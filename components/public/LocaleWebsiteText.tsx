@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { WebsiteTextProvider } from "@/components/public/WebsiteTextProvider";
-import { localizeWebsiteText } from "@/lib/i18n/website-text-it";
+import { localizeWebsiteText } from "@/lib/i18n/website-text";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 

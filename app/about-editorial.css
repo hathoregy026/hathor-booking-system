@@ -848,6 +848,17 @@ html:has(.about-boring) .public-fab {
   gap: clamp(0.9rem, 2vw, 1.6rem);
 }
 
+/* German lines run longer: a wider panel, and the copy clear of the overlapping photo. */
+@media (min-width: 951px) {
+  html[lang="de"] .ab-dining {
+    width: min(94vw, 92rem);
+  }
+
+  html[lang="de"] .ab-dining__copy {
+    padding-left: calc(var(--ab-col) * 1.25);
+  }
+}
+
 /* ----------------------------------------------------------- 08 · closing */
 .ab-closing {
   width: min(100vw, 70rem);

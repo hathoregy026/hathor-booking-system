@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ManagedSourceImage as Image } from "@/components/public/ManagedSourceImage";
 import type { ItineraryCopy } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
-import { bookingItinerary, bookingVoyages } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary, bookingVoyages } from "@/lib/i18n/booking-itineraries";
 import { useBookingCopy } from "./useBookingCopy";
 
 const ITINERARY_THUMBS = [

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { splitLocalePath, stripLocalePrefix } from "@/lib/i18n/locale";
-import { siteImageAltIn } from "@/lib/i18n/site-image-alts-it";
+import { siteImageAltIn } from "@/lib/i18n/site-image-alts";
 import { getDefaultSiteImage } from "@/lib/site-image-slots";
 import type { ResolvedSiteImage, SiteImageMap } from "@/lib/resolve-site-images";
 import { preferLocalOptimizedSiteImage } from "@/lib/local-optimized-site-images";

@@ -12,7 +12,7 @@ import {
   PUBLIC_LOCALE_OG,
   splitLocalePath,
 } from "@/lib/i18n/locale";
-import { siteImageAltIn } from "@/lib/i18n/site-image-alts-it";
+import { siteImageAltIn } from "@/lib/i18n/site-image-alts";
 
 export type SeoOgImage = {
   url: string;
@@ -35,7 +35,7 @@ export type BuildPageMetadataInput = {
 
 /*
  * Languages are handled here, once, for every page: the language comes from
- * `path` (`/it/…` is Italian), hreflang lists each indexed version of the page,
+ * `path` (`/it/…` is Italian, `/de/…` German), hreflang lists each indexed version of the page,
  * and a language whose search switch is off (LOCALE_INDEXED) is noindex.
  * A page that exists in English only gets exactly what it had before.
  */

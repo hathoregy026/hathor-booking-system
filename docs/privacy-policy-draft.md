@@ -95,3 +95,52 @@ Può chiederci una copia dei Suoi dati, oppure di correggerli o cancellarli. Pu�
 
 ### Modifiche
 Potremmo aggiornare questa informativa. In tal caso modificheremo la data indicata sopra.
+
+---
+
+## Deutsch
+
+Maschineller Entwurf, zusätzlich zu den [CONFIRM]-Punkten von einem Muttersprachler und rechtlich zu prüfen.
+
+**Stand:** [CONFIRM: Datum der Veröffentlichung]
+
+### Wer wir sind
+Hathor Dahabiya veranstaltet Luxusreisen auf dem Nil zwischen Luxor und Assuan. Verantwortlich für Ihre personenbezogenen Daten ist [CONFIRM: eingetragener Firmenname und Registernummer], One Kattameya, Tower Nr. 211, Etage Nr. 11, Ring Road, Nasr City, Kairo, Ägypten. Sie erreichen uns unter reservations@hathorcruise.com.
+
+### Welche Daten wir erheben
+- **Buchungsanfragen:** Ihr Name, Ihre E-Mail-Adresse, Telefonnummer und Ihr Land, die gewählte Reise und die Kabinen, die Anzahl der Gäste, Ihre bevorzugte Zahlungsart, von Ihnen notierte besondere Wünsche und ob Sie Werbung erhalten möchten.
+- **Anfragen und Charteranfragen:** Ihr Name, Ihre E-Mail-Adresse, Ihre Telefonnummer, falls angegeben, Reisedetails und Ihre Nachricht.
+- **Zahlungen:** Auf dieser Website erheben wir keine Kartennummern. Rechnungen und Zahlungshinweise werden separat per E-Mail gesendet.
+- **E-Mails:** Nachrichten zwischen Ihnen und unserem Team sowie angehängte Dateien.
+- **Technische Daten:** Ihre IP-Adresse, Angaben zu Browser und Gerät sowie Ihre Nutzung der Website, wie unten beschrieben.
+
+### Wofür wir sie verwenden
+- Um Ihre Anfrage zu beantworten, Ihre Buchung zu bearbeiten und Ihnen Rechnungen und Reisedetails zu senden.
+- Um Ihnen Werbe-E-Mails zu senden, wenn Sie zugestimmt haben. Jede enthält einen Abmeldelink.
+- Um unsere Formulare vor Missbrauch zu schützen und die Website sicher zu halten.
+- Um zu verstehen, wie die Website genutzt wird, und sie zu verbessern.
+- Um unsere gesetzlichen und buchhalterischen Pflichten zu erfüllen.
+
+[CONFIRM: die Rechtsgrundlage für jeden Zweck, für Gäste in der EU und im Vereinigten Königreich]
+
+### Dienste, die wir nutzen
+- **Supabase:** speichert unsere Datenbank und Dateien.
+- **Vercel:** betreibt die Website und misst Nutzung und Leistung der Website (Vercel Analytics und Speed Insights).
+- **Resend:** sendet und empfängt unsere E-Mails.
+- **Cloudflare Turnstile:** prüft, ob Formulare von einem Menschen gesendet werden, und liest dazu technische Daten Ihres Browsers.
+- **Google Analytics:** misst, wie Besucher die Website nutzen, und kann dazu Cookies verwenden.
+- **Google und Tripadvisor:** die Quelle der auf der Website gezeigten Gästebewertungen.
+
+Einige dieser Unternehmen verarbeiten Daten außerhalb Ihres Landes. [CONFIRM: die Garantien für internationale Datenübermittlungen]
+
+### Cookies und Browserspeicher
+Die Website nutzt Google Analytics und speichert einige Einstellungen in Ihrem Browser, etwa Ihre Währung, die Tag- oder Nachtdarstellung, die Sprache und Ihre gespeicherte Reiseauswahl. [CONFIRM: ob ein Cookie-Einwilligungsbanner nötig ist. Die Website hat derzeit keines.]
+
+### Wie lange wir Daten aufbewahren
+[CONFIRM: wie lange Buchungsunterlagen, Anfragen, E-Mails und Werbelisten aufbewahrt werden]
+
+### Ihre Rechte
+Sie können von uns eine Kopie Ihrer Daten verlangen oder deren Berichtigung oder Löschung fordern. Sie können der Nutzung auch widersprechen oder sie einschränken lassen und Ihre Einwilligung in Werbung jederzeit widerrufen. Schreiben Sie an reservations@hathorcruise.com. [CONFIRM: Ihr Recht auf Beschwerde bei einer Aufsichtsbehörde, und bei welcher]
+
+### Änderungen
+Wir können diese Datenschutzerklärung aktualisieren und ändern dann das oben genannte Datum.

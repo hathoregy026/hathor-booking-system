@@ -5,6 +5,7 @@
  */
 
 import type { PublicLocale } from "@/lib/i18n/locale";
+import { REVIEWS_COPY_DE } from "@/lib/i18n/reviews-copy-de";
 
 type HandLine = { text: string; x: number; y: number; r?: number };
 
@@ -37,6 +38,8 @@ export type ReviewsCopy = {
   nextPage: string;
   chooseReview: string;
   reviewOf: (index: number, total: number) => string;
+  /** The open spread in the pager. */
+  folio: (page: number, total: number) => string;
   fallbackLede: (withTripadvisor: boolean) => string;
   /** Pencilled notes, placed line by line inside fixed boxes (see ephemera.tsx). */
   handPage: HandLine[];
@@ -62,6 +65,7 @@ const AGO_IT: Record<string, readonly [string, string]> = {
 
 /** A wording it does not know is left as the platform gave it. */
 function reviewWhenIt(when: string): string {
+  if (/^in the last week$/i.test(when.trim())) return "nell’ultima settimana";
   const date = /^(\w+) (\d{4})$/.exec(when);
   if (date && MONTHS_IT[date[1]]) return `${MONTHS_IT[date[1]]} ${date[2]}`;
   const ago = /^(a|an|\d+) (minute|hour|day|week|month|year)s? ago$/.exec(when);
@@ -97,6 +101,7 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     nextPage: "Next page of reviews",
     chooseReview: "Choose a review",
     reviewOf: (index, total) => `Review ${index} of ${total}`,
+    folio: (page, total) => `Page ${page} of ${total}`,
     fallbackLede: (withTripadvisor) =>
       `Read what guests say after a voyage aboard Hathor, on Google${withTripadvisor ? " and Tripadvisor" : ""}.`,
     handPage: [
@@ -143,6 +148,7 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     nextPage: "Pagina successiva delle recensioni",
     chooseReview: "Scegli una recensione",
     reviewOf: (index, total) => `Recensione ${index} di ${total}`,
+    folio: (page, total) => `Pagina ${page} di ${total}`,
     fallbackLede: (withTripadvisor) =>
       `Legga che cosa raccontano gli ospiti dopo un viaggio a bordo di Hathor, su Google${withTripadvisor ? " e Tripadvisor" : ""}.`,
     handPage: [
@@ -163,4 +169,5 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     ],
     stamp: "CROCIERE SUL NILO · EGITTO · LUXOR · ASSUAN ·",
   },
+  de: REVIEWS_COPY_DE,
 };

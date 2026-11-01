@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCurrency } from "@/components/public/CurrencyProvider";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 import { paymentSchedule } from "@/lib/payment-schedule";
-import { bookingItinerary } from "@/lib/i18n/booking-itineraries-it";
+import { bookingItinerary } from "@/lib/i18n/booking-itineraries";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { roomPriceUnit } from "@/lib/room-price-unit";
 import { cardSurchargeCents, withCardSurcharge } from "@/lib/card-surcharge";

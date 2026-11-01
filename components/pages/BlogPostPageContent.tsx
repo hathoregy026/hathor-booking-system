@@ -24,7 +24,7 @@ import { blogCommercialLink } from "@/lib/seo/blog-commercial";
 import { SITE_IMAGE_QUALITY } from "@/lib/site-image-quality";
 import { originSrcForNextImage } from "@/lib/local-optimized-site-images";
 import { useLocalizedHref, usePublicLocale } from "@/hooks/usePublicLocale";
-import { blogPostHref } from "@/lib/i18n/blog-posts-it";
+import { blogPostHref } from "@/lib/i18n/blog-posts";
 import { ARTICLE_COPY } from "@/lib/i18n/journal-copy";
 
 /* ==========================================================================

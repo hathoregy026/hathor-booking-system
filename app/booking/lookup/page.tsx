@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useBookingCopy } from "@/components/booking/journey/useBookingCopy";
-import { formValidityIn } from "@/lib/i18n/form-validity-it";
+import { formValidityIn } from "@/lib/i18n/form-validity";
 import { localizedHref } from "@/lib/i18n/locale";
 
 /** Shared by /booking/lookup and /it/booking/lookup: the language follows the address. */

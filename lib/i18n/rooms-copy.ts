@@ -7,7 +7,13 @@
  * English; sizes, guests, images and links are unchanged.
  */
 
-import type { PublicLocale } from "@/lib/i18n/locale";
+import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
+import {
+  CONFIG_DE,
+  FOLIO_DE,
+  ROOMS_COPY_DE,
+  SHOWCASE_DE,
+} from "@/lib/i18n/rooms-copy-de";
 import {
   ROOM_COLLECTION_CONFIG,
   ROOM_COLLECTION_LINKS,
@@ -147,6 +153,10 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
   },
 };
 
+const CONFIGS: Record<
+  TranslatedLocale,
+  Record<RoomCollectionVariant, RoomCollectionEditorialConfig>
+> = { it: CONFIG_IT, de: CONFIG_DE };
 /** The collection names as menus and breadcrumbs print them ("Suite" has no plural in Italian). */
 const COLLECTION_LABELS_IT: Record<RoomCollectionVariant, string> = {
   cabins: "Luxury Rooms",
@@ -164,7 +174,7 @@ export function roomCollectionConfig(
   variant: RoomCollectionVariant,
   locale: PublicLocale,
 ): RoomCollectionEditorialConfig {
-  return locale === "it" ? CONFIG_IT[variant] : EN_CONFIG[variant];
+  return locale === "en" ? EN_CONFIG[variant] : CONFIGS[locale][variant];
 }
 
 /* ---------- Rooms: eyebrow and description (names stay English) ---------- */
@@ -192,8 +202,13 @@ const SHOWCASE_IT: Record<string, { eyebrow: string; description: string }> = {
   },
 };
 
+const SHOWCASES: Record<
+  TranslatedLocale,
+  Record<string, { eyebrow: string; description: string }>
+> = { it: SHOWCASE_IT, de: SHOWCASE_DE };
+
 export function roomShowcaseIn<T extends RoomShowcase>(room: T, locale: PublicLocale): T {
-  const words = locale === "it" ? SHOWCASE_IT[room.slug] : undefined;
+  const words = locale === "en" ? undefined : SHOWCASES[locale][room.slug];
   return words ? { ...room, ...words } : room;
 }
 
@@ -413,11 +428,16 @@ const FOLIO_IT: Record<RoomCollectionVariant, RoomFolioPanels> = {
   },
 };
 
+const FOLIOS: Record<TranslatedLocale, Record<RoomCollectionVariant, RoomFolioPanels>> = {
+  it: FOLIO_IT,
+  de: FOLIO_DE,
+};
+
 export function roomFolioPanels(
   variant: RoomCollectionVariant,
   locale: PublicLocale,
 ): RoomFolioPanels {
-  return locale === "it" ? FOLIO_IT[variant] : ROOM_FOLIO_PANELS[variant];
+  return locale === "en" ? ROOM_FOLIO_PANELS[variant] : FOLIOS[locale][variant];
 }
 
 /* ---------- Page words ---------- */
@@ -446,6 +466,7 @@ export type RoomsCopy = {
   continueToReserve: string;
   nile: string;
   detail: {
+    home: string;
     tabs: readonly [string, string, string, string, string];
     breadcrumb: string;
     sections: string;
@@ -519,7 +540,23 @@ export function roomDetailCopy(
   variant: RoomCollectionVariant,
 ): RoomsCopy["detail"] {
   const detail = ROOMS_COPY[locale].detail;
-  if (locale !== "it" || variant === "cabins") return detail;
+  if (locale === "en" || variant === "cabins") return detail;
+  if (locale === "de") {
+    return {
+      ...detail,
+      oneCabin: "1 Suite",
+      cabin: "Suite",
+      fareTitle: "Ihre Suite und der Preis",
+      ledgerHead: (nights) => [
+        "Unterkunft",
+        "Ihre Reise umfasst",
+        nights ? `Gesamt ${nights} Nächte` : "Gesamt",
+        "Suiten",
+      ],
+      totalLine: (nights, capacity) =>
+        `1 Suite · ${nights ? `${nights} Nächte` : "flexible Termine"} · bis zu ${capacity} Gäste`,
+    };
+  }
   return {
     ...detail,
     oneCabin: "1 suite",
@@ -562,6 +599,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     continueToReserve: "Continue to reserve",
     nile: "Nile",
     detail: {
+      home: "Home",
       tabs: ["Overview", "Availability", "Amenities", "Your voyage", "Good to know"],
       breadcrumb: "Breadcrumb",
       sections: "Sections of this room",
@@ -658,6 +696,7 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     continueToReserve: "Prosegui con la prenotazione",
     nile: "Nilo",
     detail: {
+      home: "Home",
       tabs: ["Panoramica", "Disponibilità", "Dotazioni", "Il Suo viaggio", "Da sapere"],
       breadcrumb: "Percorso di navigazione",
       sections: "Sezioni di questa residenza",
@@ -729,4 +768,5 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
       scheduledSailings: "Vedi le partenze programmate",
     },
   },
+  de: ROOMS_COPY_DE,
 };
