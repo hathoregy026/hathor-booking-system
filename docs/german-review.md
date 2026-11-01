@@ -101,6 +101,25 @@ The German keeps the English meaning in everything below.
 | `the-most-relaxing-way-to-explore-egypt-sailing-the-nile` | "Benefits include:" twice | Once, as in Italian |
 | `best-clothes-for-nile-cruise-weather-in-egypt`, `how-to-choose-the-right-cabin-on-a-dahabiya` | Sentence repeated in a block | Once |
 
+### Headings reworded to fit their panels
+
+These were cut by the next panel or covered nearby text on wide screens, so they are freer than a word-for-word translation. Don't lengthen them without checking 1920 and 1440 wide.
+
+| Page | English | German |
+| --- | --- | --- |
+| Cruises hero | Dahabiya Cruises on the Nile | Dahabiya Reisen auf dem Nil |
+| Wellness hero | A Floating Oasis | Schwimmende Oase |
+| Wellness essay | Rest is not the absence of the voyage | Ruhe ist ein Teil der Reise |
+| Wellness ritual | Recovery | Ruhe |
+| Highlights | Cruise in true elegance | Elegant reisen |
+| Voyages, charter panel | Your River, Your Rhythm | Ihr Fluss, Ihr Takt |
+| Partners | Shared standards. A private circle of trusted names | Geteilte Werte. Ein enger Kreis treuer Partner |
+| Partners | The art of hospitality | Gelebte Gastlichkeit |
+| Journal | Stories written for the journey ahead | Geschichten für die Reise vor Ihnen |
+| Gastronomy | Statement heading, four lines in German | EINE KÜCHE ZUM BLEIBEN AM FLUSS |
+
+The About dining panel has a German-only layout rule in `app/about-editorial.css`. English and Italian still have the problem it fixes: at 1920 wide the heading is cut and the photo covers the text and button.
+
 ### Shortened headings, to lengthen only if they fit
 
 In `lib/i18n/website-text-de.ts` unless noted:
