@@ -34,7 +34,7 @@ export const HIGHLIGHTS_COPY_DE: HighlightsCopy = {
     "Die Reise Nile Majesty an Bord der Hathor",
   ],
   leadCaption: "Nil · Luxor — Assuan",
-  manifesto: ["Erstes Licht", "Reisen in wahrer Eleganz", "auf dem Nil"],
+  manifesto: ["Erstes Licht", "Elegant reisen", "auf dem Nil"],
   slidesLabel: "Monumente an Land",
   ashore: "An Land",
   ashoreBody:

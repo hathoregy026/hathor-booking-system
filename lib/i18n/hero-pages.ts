@@ -24,11 +24,11 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
 
 /* Same line structure as Italian; each title has to fit the page's own ladder. */
 const HERO_PAGES_DE: Partial<HeroPages> = {
-  cruises: { main: "Dahabiya\nKreuzfahrten", second: "auf dem Nil" },
+  cruises: { main: "Dahabiya\nReisen", second: "auf dem Nil" },
   charter: { main: "Privater\nDahabiya Charter", second: "Exklusive Reise" },
   about: { main: "Kommen Sie an Bord", second: "Hathor Cruise" },
   contact: { main: "Kontakt", second: "Für jede Frage" },
-  wellness: { main: "Eine schwimmende Oase", second: "Ruhe und Training" },
+  wellness: { main: "Schwimmende Oase", second: "Ruhe und Training" },
   highlights: { main: "Dahabiya Kreuzfahrt", second: "Die Höhepunkte" },
   partners: { main: "Unsere Partner", second: "Weltweites Vertrauen" },
   blog: { main: "Reisen Sie", second: "auf dem Nil" },

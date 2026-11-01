@@ -117,7 +117,7 @@ export const PAGES_DE: Partial<Pages> = {
       "Die Menüs entstehen aus ägyptischen Zutaten und vertrauten internationalen Einflüssen, mit Gerichten, die dem Rhythmus und der Umgebung jedes Tages folgen. Küche, Bewegung und Ruhe verschmelzen zu einem einzigen, fortlaufenden Erlebnis.",
     tableLabel: "DIE TAFEL",
     statementChapter: "Das Erlebnis",
-    statementTitle: "EINE KÜCHE ZUM\nBLEIBEN, DIE SICH\nMIT DEM FLUSS\nBEWEGT",
+    statementTitle: "EINE KÜCHE\nZUM BLEIBEN\nAM FLUSS",
     statementBody:
       "Jede Tafel entsteht rund um die Menschen, die sich an ihr versammeln. Das Frühstück kommt mit dem ersten Licht, das Abendessen folgt der Brise, der Fitnessraum bleibt nah am Deck, und Ihre Suite weiß, wie Sie gern ruhen. Design, Geschmack und Lebensqualität treffen sich in einem einzigen Tag auf der Hathor.",
     riverBody:
@@ -304,7 +304,7 @@ export const PAGES_DE: Partial<Pages> = {
       },
     ],
     charterLabel: "Privatcharter",
-    charterTitle: "Ihr Fluss\nIhr Rhythmus",
+    charterTitle: "Ihr Fluss\nIhr Takt",
     charterScript: "Ihr Fluss. Ihr Rhythmus. Ganz für Sie.",
     charterBody:
       "Beim Privatcharter gehört die Hathor allein Ihrer Gruppe, und Sie gestalten die Reise frei nach Ihrem Rhythmus, Ihrer Küche und Ihren Landausflügen.",

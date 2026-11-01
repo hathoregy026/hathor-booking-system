@@ -51,7 +51,7 @@ export const JOURNAL_COPY_DE: JournalCopy = {
     bl: "Hathor Journal",
     br: "Luxor — Assuan",
   },
-  lyric: ["Geschichten", "für die Reise,", "die vor Ihnen liegt"],
+  lyric: ["Geschichten", "für die Reise", "vor Ihnen"],
   contents: "Inhalt",
   contentsBody:
     "Die neuesten Notizen: Tempel, Dörfer am Fluss, Tipps zum Packen und das ruhigere Tempo des Reisens mit der Dahabiya.",

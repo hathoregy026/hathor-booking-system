@@ -16,7 +16,7 @@ const WEEKDAYS_DE = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", 
 
 const deShortDate = (iso: string) => {
   const { day, month, year } = utcParts(iso);
-  return `${day}. ${MONTHS_SHORT_DE[month]} ${year}`;
+  return `${day}. ${MONTHS_SHORT_DE[month]} ${year}`;
 };
 const deLongDate = (iso: string) => {
   const { weekday, day, month, year } = utcParts(iso);

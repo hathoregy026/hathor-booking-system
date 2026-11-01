@@ -47,7 +47,7 @@ export const WELLNESS_COPY_DE: WellnessCopy = {
       meta: "Signature · täglich",
     },
     {
-      word: "Erholung",
+      word: "Ruhe",
       detail: "Beruhigende Behandlungen zwischen Landgang und Fahrt",
       meta: "Balance · nach Bedarf",
     },
@@ -63,7 +63,7 @@ export const WELLNESS_COPY_DE: WellnessCopy = {
   galleryLabel: "Bilder zu Wellness",
   historia: { tl: "Fitness", tr: "Nilblick", bl: "Täglich · geöffnet", br: "Bewegung" },
   essayEyebrow: "Nach der Bewegung",
-  essayLines: ["Auch die Ruhe", "ist ein Teil", "der Reise"],
+  essayLines: ["Ruhe ist", "ein Teil", "der Reise"],
   essayBody:
     "Die Suiten werden Teil des Rituals: weiches Morgenlicht, tiefer Schlaf und der seltene Luxus, vor einem neuen Horizont am Nil zu erwachen.",
   exploreSuites: "Suiten entdecken",
