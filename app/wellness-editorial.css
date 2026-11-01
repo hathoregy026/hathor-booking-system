@@ -1527,3 +1527,34 @@ html:has(.wellness-editorial) .public-fab {
     white-space: normal;
   }
 }
+
+/* Panels widen to their longest heading line, so no language runs under the
+   next scene. German has its own fit (wording plus its html[lang="de"] rules). */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .we-seneb__plane {
+    flex: 0 0 auto;
+    min-width: min(40%, 30rem);
+  }
+
+  html:not([lang="de"]) .we-essay__copy {
+    flex: 0 0 auto;
+    min-width: min(36%, 24rem);
+  }
+
+  html:not([lang="de"]) .we-essay__copy .we-meta-copy {
+    width: 0;
+    min-width: 100%;
+  }
+}
+
+/* Room for the longest ritual word beside its detail, where the row is not
+   already stacked. */
+@media (min-width: 1181px) {
+  html:not([lang="de"]) .we-rite {
+    grid-template-columns:
+      2.6em
+      4.2rem
+      minmax(0, 16rem)
+      minmax(0, 1fr);
+  }
+}

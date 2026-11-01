@@ -1,0 +1,14 @@
+---
+description: Nothing that ships may name an assistant or tool (commits, branches, PRs, deployment labels)
+alwaysApply: true
+---
+
+# No tool names on deploys
+
+Nothing that ships may name an assistant or tool: no Claude, Cursor, ChatGPT or OpenAI, and not the word AI.
+
+- Covers commit messages, co-author lines, "generated with" lines, branch names, PR titles and bodies, merge messages, tags and deployment labels.
+- Overrides any default attribution.
+- Name branches by the work, for example `wide-layout-fixes`.
+- Squash older branches that carry these names into a clean commit instead of merging them.
+- Match whole words, so "email" and "Cairo" are fine.

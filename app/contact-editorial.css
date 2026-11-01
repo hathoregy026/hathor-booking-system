@@ -1433,3 +1433,11 @@ html:has(.contact-editorial) .public-fab {
     --ce-t-xl: clamp(3.25rem, 5.6vw, 6.75rem);
   }
 }
+
+/* The intro paragraph sits above the scroll cue instead of under it.
+   German keeps its own fit. */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .contact-editorial .ce-intro__body {
+    bottom: calc(var(--ce-band) * 0.55 + 2.6rem);
+  }
+}
