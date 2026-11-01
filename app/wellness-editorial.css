@@ -1545,8 +1545,11 @@ html:has(.wellness-editorial) .public-fab {
     width: 0;
     min-width: 100%;
   }
+}
 
-  /* Room for the longest ritual word beside its detail. */
+/* Room for the longest ritual word beside its detail, where the row is not
+   already stacked. */
+@media (min-width: 1181px) {
   html:not([lang="de"]) .we-rite {
     grid-template-columns:
       2.6em
