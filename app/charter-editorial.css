@@ -2078,13 +2078,13 @@ html[data-public-theme="night"] .charter-editorial :is(.chr-key__count, .chr-fre
 }
 
 /* The security check shares the last form row with the message and send pill,
-   so the phone line under the form stays on screen. German keeps its own fit. */
+   so the phone line under the form stays on screen. */
 @media (min-width: 951px) and (prefers-reduced-motion: no-preference) {
-  html:not([lang="de"]) .charter-editorial .chr-request .ch-form__field--full {
+  html[lang] .charter-editorial .chr-request .ch-form__field--full {
     grid-column: 1 / span 2;
   }
 
-  html:not([lang="de"]) .charter-editorial .chr-request .ch-form .inquiry-verification {
+  html[lang] .charter-editorial .chr-request .ch-form .inquiry-verification {
     grid-column: 3;
     grid-row: 4;
     align-self: end;
@@ -2093,11 +2093,11 @@ html[data-public-theme="night"] .charter-editorial :is(.chr-key__count, .chr-fre
 }
 
 @media (min-width: 1200px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
-  html:not([lang="de"]) .charter-editorial .chr-request .ch-form__field--full {
+  html[lang] .charter-editorial .chr-request .ch-form__field--full {
     grid-column: 1;
   }
 
-  html:not([lang="de"]) .charter-editorial .chr-request .ch-form .inquiry-verification {
+  html[lang] .charter-editorial .chr-request .ch-form .inquiry-verification {
     grid-column: 2;
     grid-row: 5;
   }

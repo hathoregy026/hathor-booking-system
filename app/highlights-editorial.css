@@ -1862,9 +1862,9 @@ html.is-touch-device .highlights-editorial .hl-media__image {
 }
 
 /* Panels widen to their longest heading line, so no language runs under the
-   next scene. German has its own fit (wording plus its html[lang="de"] rules). */
+   next scene. */
 @media (min-width: 951px) {
-  html:not([lang="de"]) .hl-manifesto {
+  html[lang] .hl-manifesto {
     width: max-content;
     min-width: min(80vw, 64rem);
   }

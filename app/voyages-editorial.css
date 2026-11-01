@@ -850,9 +850,9 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
 }
 
 /* The charter title stays on two lines, so the paragraph and button fit the
-   screen instead of falling under the next scene. German keeps its own fit. */
+   screen instead of falling under the next scene. */
 @media (min-width: 951px) {
-  html:not([lang="de"]) .vb-charter__title {
+  html[lang] .vb-charter__title {
     font-size: clamp(2.5rem, 5.6vw, 6.4rem);
     white-space: nowrap;
   }
@@ -861,7 +861,15 @@ html:has(.voyages-boring) .public-fab { display: none !important; }
 /* On narrow desktops a smaller voyage title keeps to two lines, so it cannot
    push the dates and paragraph on top of each other. */
 @media (min-width: 951px) and (max-width: 1280px) {
-  html:not([lang="de"]) .vb-project__title {
+  html[lang] .vb-project__title {
     font-size: min(4.6vw, 8.6svh);
+  }
+}
+
+/* The German voyage names run longer, so their titles step down to stay on
+   two lines. */
+@media (min-width: 1281px) {
+  html[lang="de"] .vb-project__title {
+    font-size: min(5.4vw, 8.6svh);
   }
 }
