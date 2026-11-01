@@ -535,3 +535,11 @@ html[data-public-theme="night"] [data-charter-page] {
     margin-top: 1rem;
   }
 }
+
+/* The Cruises mark moves clear of the paragraph that can reach its line.
+   German keeps its own fit. */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .cr-intro .cr-intro__mark {
+    left: min(30vw, 34rem);
+  }
+}

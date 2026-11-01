@@ -1113,3 +1113,15 @@ html[data-public-theme="night"] .nib-button.public-btn-outline-gold {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* The last statement line stops short of the paragraph, and the second opening
+   title clears the first. German keeps its own fit. */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .nib-statement__title h2:nth-child(4) {
+    padding-right: calc(min(27rem, 30vw) + 3vw);
+  }
+
+  html:not([lang="de"]) .nib-intro__titles h2:nth-child(2) {
+    left: 46%;
+  }
+}

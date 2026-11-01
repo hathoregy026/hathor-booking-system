@@ -1278,3 +1278,33 @@ html:has(.about-boring) .public-fab {
     --ab-t-xl: clamp(3.25rem, 5.6vw, 6.75rem);
   }
 }
+
+/* Panels widen to their longest heading line, so no language runs under the
+   next scene. German has its own fit (wording plus its html[lang="de"] rules). */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .ab-dining {
+    width: max-content;
+    min-width: min(94vw, 92rem);
+    grid-template-columns:
+      calc(var(--ab-col) * 5.6 + var(--ab-gap) * 4)
+      minmax(max-content, 1fr);
+  }
+
+  /* Clear of the photo that overhangs the media column. */
+  html:not([lang="de"]) .ab-dining__copy {
+    padding-left: calc(var(--ab-col) * 1.25);
+  }
+
+  /* The paragraph fills the column without setting its width. */
+  html:not([lang="de"]) .ab-dining__copy .ab-meta-copy {
+    width: 0;
+    min-width: 100%;
+  }
+}
+
+/* The intro paragraph sits above the scroll cue instead of under it. */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .about-boring .ab-intro__body {
+    bottom: calc(var(--ab-band) * 0.55 + 2.6rem);
+  }
+}

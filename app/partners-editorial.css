@@ -1321,3 +1321,37 @@ html:has(.partners-editorial) .public-fab {
     overflow-y: clip;
   }
 }
+
+/* Panels widen to their longest heading line, so no language runs under the
+   next scene. German has its own fit (wording plus its html[lang="de"] rules). */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .pn-covenant {
+    width: max-content;
+    min-width: min(90vw, 68rem);
+    grid-template-columns:
+      minmax(max-content, 1fr)
+      calc(min(64svh, 30rem) * 835 / 1100);
+  }
+
+  html:not([lang="de"]) .pn-covenant__statement {
+    max-width: none;
+  }
+
+  html:not([lang="de"]) .pn-covenant .pn-covenant__lead {
+    width: 0;
+    min-width: min(100%, 34rem);
+  }
+
+  /* One heading line, starting below the fixed header. */
+  html:not([lang="de"]) .pn-orbit {
+    padding-top: max(calc(var(--pn-band) * 0.55), 7.5rem);
+  }
+
+  html:not([lang="de"]) .pn-orbit__head {
+    max-width: none;
+  }
+
+  html:not([lang="de"]) .pn-orbit__head .pn-meta-copy {
+    max-width: 40rem;
+  }
+}

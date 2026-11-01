@@ -1860,3 +1860,12 @@ html.is-touch-device .highlights-editorial .hl-media__image {
   position: static !important;
   inset: auto !important;
 }
+
+/* Panels widen to their longest heading line, so no language runs under the
+   next scene. German has its own fit (wording plus its html[lang="de"] rules). */
+@media (min-width: 951px) {
+  html:not([lang="de"]) .hl-manifesto {
+    width: max-content;
+    min-width: min(80vw, 64rem);
+  }
+}

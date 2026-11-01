@@ -16,7 +16,7 @@ const HERO_PAGES_IT: Partial<HeroPages> = {
   charter: { main: "Charter privato\nin dahabiya", second: "Viaggio esclusivo" },
   about: { main: "Salga a bordo", second: "Hathor Cruise" },
   contact: { main: "Ci contatti", second: "Per ogni domanda" },
-  wellness: { main: "Un’oasi galleggiante", second: "Relax e allenamento" },
+  wellness: { main: "Un’oasi sul Nilo", second: "Relax e fitness" },
   highlights: { main: "Crociera in dahabiya", second: "Da non perdere" },
   partners: { main: "I nostri partner", second: "Fiducia nel mondo" },
   blog: { main: "Navighi", second: "sul Nilo" },
