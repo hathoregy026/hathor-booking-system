@@ -31,6 +31,19 @@ function isSecureLink(value: string) {
   }
 }
 
+/** What the guest owes and every payment, cumulative; the database checks they add up. */
+const paymentPlanSchema = z.object({
+  totalCents: z.number().int().positive().max(20_000_000),
+  reason: z.string().trim().max(300).optional(),
+  stages: z.array(z.object({
+    milestone: z.string().trim().min(1).max(80),
+    dueOn: z.iso.date().nullable(),
+    cumulativeCents: z.number().int().positive().max(20_000_000),
+  }).strict()).min(1).max(8),
+}).strict();
+
+const PLAN_CHANGED_NOTE = "Your payment plan has been updated. The schedule in this email replaces the previous one.";
+
 export const staffActionSchema = z.discriminatedUnion("type", [
   // Confirm: accept the request and email the invoice with the payment link and/or payment instructions.
   z.object({
@@ -44,7 +57,9 @@ export const staffActionSchema = z.discriminatedUnion("type", [
       firstCents: z.number().int().positive().max(20_000_000),
       balanceDueOn: z.iso.date().optional(),
     }).strict().optional(),
+    plan: paymentPlanSchema.optional(),
   }).strict(),
+  z.object({ type: z.literal("set-plan"), plan: paymentPlanSchema, notify: z.boolean().default(false) }).strict(),
   z.object({ type: z.literal("decline"), message: teamText.optional(), notify: z.boolean().default(true) }).strict(),
   z.object({ type: z.literal("cancel"), reason: z.enum(CANCEL_REASONS).default("CANCELLATION") }).strict(),
   z.object({ type: z.literal("record-payment"), payment: z.object({
@@ -93,8 +108,18 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
       ...("paymentMethod" in action && action.paymentMethod ? { paymentMethod: action.paymentMethod } : {}),
       ...("split" in action && action.split ? { split: action.split } : {}),
     });
+    // After the method, whose surcharge rescales the schedule this plan replaces.
+    if ("plan" in action && action.plan) await administer(id, { type: "set-plan", plan: action.plan, recordedBySession: recordedBySession ?? undefined });
     const invoice = "instructions" in action ? { instructions: action.instructions, paymentLink: action.paymentLink } : {};
     return invoice.instructions || invoice.paymentLink ? { email: await sendInvoice(id, invoice, attachments) } : {};
+  }
+
+  if (action.type === "set-plan") {
+    const before = await status(id);
+    const after = await administer(id, { type: "set-plan", plan: action.plan, recordedBySession: recordedBySession ?? undefined });
+    // A smaller first payment can already be covered by what was received.
+    if (before !== "CONFIRMED" && after?.status === "CONFIRMED") return { email: await confirm(id) };
+    return action.notify ? { email: await sendInvoice(id, { instructions: PLAN_CHANGED_NOTE }) } : {};
   }
 
   if (action.type === "decline") {

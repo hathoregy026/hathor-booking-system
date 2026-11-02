@@ -20,6 +20,7 @@ type SqlRow = {
   confirmedAt: Date | null;
   cancelledAt: Date | null;
   cancellationReason: string | null;
+  cancellationFeeCents: number | null;
   guestEmailStatus: string;
   adminEmailStatus: string;
   deletedAt: Date | null;
@@ -36,6 +37,7 @@ type SqlRow = {
   paidCents: number;
   depositCents: number | null;
   schedule: AdminPaymentStage[] | null;
+  planCustomised: boolean;
 };
 
 const LIST_SQL = `
@@ -55,6 +57,7 @@ const LIST_SQL = `
     b."confirmedAt",
     b."cancelledAt",
     b."cancellationReason",
+    b."cancellationFeeCents",
     b."guestEmailStatus",
     b."adminEmailStatus",
     b."deletedAt",
@@ -111,7 +114,8 @@ const LIST_SQL = `
     (SELECT json_agg(json_build_object('milestone', s.milestone, 'cumulativeCents', s."cumulativeCents",
        'dueAt', to_char(s."dueAt", 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')) ORDER BY s."cumulativeCents")
      FROM "BookingPaymentSchedule" s
-     WHERE s."bookingId" = b.id) AS schedule
+     WHERE s."bookingId" = b.id) AS schedule,
+    EXISTS (SELECT 1 FROM "BookingPlanChange" pc WHERE pc."bookingId" = b.id) AS "planCustomised"
   FROM "Booking" b
   INNER JOIN "CruiseSchedule" cs ON cs.id = b."cruiseScheduleId"
   INNER JOIN "Cruise" c ON c.id = cs."cruiseId"
@@ -166,12 +170,14 @@ function mapRow(row: SqlRow): AdminBookingDto {
     paidCents,
     depositCents: row.depositCents,
     paymentSchedule: row.schedule ?? [],
+    planCustomised: row.planCustomised,
     paymentMethod: row.paymentMethod,
     requestedAt: iso(row.requestedAt),
     acceptedAt: iso(row.acceptedAt),
     confirmedAt: iso(row.confirmedAt),
     cancelledAt: iso(row.cancelledAt),
     cancellationReason: row.cancellationReason,
+    cancellationFeeCents: row.cancellationFeeCents,
     guestEmailStatus: row.guestEmailStatus,
     adminEmailStatus: row.adminEmailStatus,
     createdAt: row.createdAt.toISOString(),

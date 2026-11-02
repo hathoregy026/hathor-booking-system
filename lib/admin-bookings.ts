@@ -52,16 +52,44 @@ export type AdminBookingDto = {
   depositCents: number | null;
   /** Every stage of the payment schedule, cumulative, in order. */
   paymentSchedule: AdminPaymentStage[];
+  /** The team has set this booking's plan themselves. */
+  planCustomised: boolean;
   paymentMethod: string | null;
   requestedAt: string | null;
   acceptedAt: string | null;
   confirmedAt: string | null;
   cancelledAt: string | null;
   cancellationReason: string | null;
+  cancellationFeeCents: number | null;
   guestEmailStatus: string;
   adminEmailStatus: string;
   createdAt: string;
   deletedAt: string | null;
+};
+
+/** How a sale made outside the website reached Hathor. */
+export const CLOSURE_SALE_SOURCES = ["Phone", "Travel agent", "Walk-in", "Private charter", "Other"] as const;
+
+/** A cabin closure on Availability, shown among the bookings as the sale it stands for. */
+export type AdminClosureBooking = {
+  blockKey: string;
+  state: string;
+  note: string | null;
+  createdAt: string;
+  startsAt: string;
+  endsAt: string;
+  roomIds: string[];
+  roomNames: string[];
+  wholeShip: boolean;
+  voyage: string | null;
+  sale: {
+    guestName: string;
+    source: string;
+    customerEmail: string | null;
+    customerPhone: string | null;
+    totalPriceCents: number;
+    receivedCents: number;
+  } | null;
 };
 
 /** Reasons staff may give when cancelling; hathor_administer_booking refuses any other. */

@@ -1,12 +1,45 @@
 "use client";
 
+import { useState, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 import { ActionButton } from "@/components/admin/ActionButton";
-import { BookingCard } from "@/components/admin/bookings/BookingCard";
+import { BookingRow } from "@/components/admin/bookings/BookingCard";
 import type { BookingActionKind } from "@/components/admin/bookings/BookingActions";
 import type { AdminBookingDto } from "@/lib/admin-bookings";
 
+export type BookingGroup = { id: string; title: string; hint: string; bookings: AdminBookingDto[] };
+
+/** A titled, collapsible part of the list; bookings and Availability sales share it. */
+export function BookingsGroup({ title, hint, count, children }: { title: string; hint: string; count: number; children: ReactNode }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <section className="card bk-group" aria-label={title}>
+      <button type="button" className="bk-group__head" aria-expanded={open} onClick={() => setOpen(value => !value)}>
+        <h2>{title}</h2>
+        <span className="bk-group__count tabular">{count}</span>
+        <span className="bk-group__hint">{hint}</span>
+        <ChevronDown className="bk-group__chevron h-4 w-4" aria-hidden />
+      </button>
+      {open ? children : null}
+    </section>
+  );
+}
+
+export function BookingsColumns() {
+  return (
+    <div className="bk-cols" aria-hidden>
+      <span />
+      <span>Guest</span>
+      <span>Voyage</span>
+      <span>Cabin</span>
+      <span>Payment</span>
+      <span />
+    </div>
+  );
+}
+
 type BookingsListViewProps = {
-  bookings: AdminBookingDto[];
+  groups: BookingGroup[];
   viewMode: "active" | "bin";
   emptyMessage: string;
   isLoading: boolean;
@@ -18,7 +51,7 @@ type BookingsListViewProps = {
 };
 
 export function BookingsListView({
-  bookings,
+  groups,
   viewMode,
   emptyMessage,
   isLoading,
@@ -28,11 +61,20 @@ export function BookingsListView({
   onRetry,
   onAction,
 }: BookingsListViewProps) {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const toggleExpanded = (id: string) =>
+    setExpandedIds(current => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
   if (isLoading) {
     return (
-      <div className="space-y-4" aria-busy="true">
+      <div className="space-y-3" aria-busy="true">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="card h-52 animate-pulse" style={{ opacity: 0.55 }} />
+          <div key={index} className="card h-32 animate-pulse" style={{ opacity: 0.55 }} />
         ))}
       </div>
     );
@@ -49,7 +91,8 @@ export function BookingsListView({
     );
   }
 
-  if (bookings.length === 0) {
+  const shown = groups.filter(group => group.bookings.length > 0);
+  if (shown.length === 0) {
     return (
       <div className="card flex flex-col items-center justify-center gap-2 px-4 py-16 text-center">
         <p className="text-sm font-medium">No bookings here</p>
@@ -59,18 +102,24 @@ export function BookingsListView({
   }
 
   return (
-    <ul className="space-y-4">
-      {bookings.map((booking) => (
-        <li key={booking.id}>
-          <BookingCard
-            booking={booking}
-            viewMode={viewMode}
-            selected={selectedIds.has(booking.id)}
-            onToggleSelect={onToggleSelect}
-            onAction={onAction}
-          />
-        </li>
+    <div className="space-y-3">
+      <BookingsColumns />
+      {shown.map(group => (
+        <BookingsGroup key={group.id} title={group.title} hint={group.hint} count={group.bookings.length}>
+          {group.bookings.map(booking => (
+            <BookingRow
+              key={booking.id}
+              booking={booking}
+              viewMode={viewMode}
+              selected={selectedIds.has(booking.id)}
+              expanded={expandedIds.has(booking.id)}
+              onToggleExpanded={toggleExpanded}
+              onToggleSelect={onToggleSelect}
+              onAction={onAction}
+            />
+          ))}
+        </BookingsGroup>
       ))}
-    </ul>
+    </div>
   );
 }

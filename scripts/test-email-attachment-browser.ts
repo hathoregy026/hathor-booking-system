@@ -17,7 +17,7 @@ async function main() {
     rooms: [], roomTypes: [], cabins: [], totalPriceCents: 700000, cardSurchargeCents: 0, paidCents: 0, depositCents: 150000,
     paymentSchedule: [{ milestone: "INITIAL", cumulativeCents: 150000, dueAt: null }, { milestone: "BALANCE", cumulativeCents: 700000, dueAt: "2026-12-01T00:00:00Z" }],
     paymentMethod: "BANK_TRANSFER", requestedAt: "2026-10-04T10:00:00Z", acceptedAt: "2026-10-04T10:01:00Z", confirmedAt: null, cancelledAt: null,
-    cancellationReason: null, guestEmailStatus: "SENT", adminEmailStatus: "SENT", createdAt: "2026-10-04T10:00:00Z", deletedAt: null,
+    cancellationReason: null, cancellationFeeCents: null, planCustomised: false, guestEmailStatus: "SENT", adminEmailStatus: "SENT", createdAt: "2026-10-04T10:00:00Z", deletedAt: null,
   };
   const code = `import React from "react"; import {createRoot} from "react-dom/client"; import {EmailComposer} from "./components/admin/EmailComposer"; import {BookingActionDialog} from "./components/admin/bookings/BookingActions"; import {ToastProvider} from "./components/admin/ToastProvider"; import {AdminThemeProvider} from "./components/admin/ThemeProvider";
     const params=new URLSearchParams(location.search); const stage=params.get("stage"); const booking=${JSON.stringify(booking)};

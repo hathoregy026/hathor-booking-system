@@ -418,6 +418,8 @@ export const ModelName = {
   BookingGuest: 'BookingGuest',
   BookingPayment: 'BookingPayment',
   BookingPaymentSchedule: 'BookingPaymentSchedule',
+  BookingPlanChange: 'BookingPlanChange',
+  ClosureBooking: 'ClosureBooking',
   BookingTicket: 'BookingTicket',
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
@@ -446,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "mailAttachmentDownload" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "mailAttachmentDownload" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingPlanChange" | "closureBooking" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2004,6 +2006,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BookingPlanChange: {
+      payload: Prisma.$BookingPlanChangePayload<ExtArgs>
+      fields: Prisma.BookingPlanChangeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BookingPlanChangeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BookingPlanChangeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>
+        }
+        findFirst: {
+          args: Prisma.BookingPlanChangeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BookingPlanChangeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>
+        }
+        findMany: {
+          args: Prisma.BookingPlanChangeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>[]
+        }
+        create: {
+          args: Prisma.BookingPlanChangeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>
+        }
+        createMany: {
+          args: Prisma.BookingPlanChangeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BookingPlanChangeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>[]
+        }
+        delete: {
+          args: Prisma.BookingPlanChangeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>
+        }
+        update: {
+          args: Prisma.BookingPlanChangeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>
+        }
+        deleteMany: {
+          args: Prisma.BookingPlanChangeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BookingPlanChangeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BookingPlanChangeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>[]
+        }
+        upsert: {
+          args: Prisma.BookingPlanChangeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookingPlanChangePayload>
+        }
+        aggregate: {
+          args: Prisma.BookingPlanChangeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookingPlanChange>
+        }
+        groupBy: {
+          args: Prisma.BookingPlanChangeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingPlanChangeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BookingPlanChangeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BookingPlanChangeCountAggregateOutputType> | number
+        }
+      }
+    }
+    ClosureBooking: {
+      payload: Prisma.$ClosureBookingPayload<ExtArgs>
+      fields: Prisma.ClosureBookingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClosureBookingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClosureBookingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>
+        }
+        findFirst: {
+          args: Prisma.ClosureBookingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClosureBookingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>
+        }
+        findMany: {
+          args: Prisma.ClosureBookingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>[]
+        }
+        create: {
+          args: Prisma.ClosureBookingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>
+        }
+        createMany: {
+          args: Prisma.ClosureBookingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClosureBookingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>[]
+        }
+        delete: {
+          args: Prisma.ClosureBookingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>
+        }
+        update: {
+          args: Prisma.ClosureBookingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClosureBookingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClosureBookingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClosureBookingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClosureBookingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClosureBookingPayload>
+        }
+        aggregate: {
+          args: Prisma.ClosureBookingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClosureBooking>
+        }
+        groupBy: {
+          args: Prisma.ClosureBookingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClosureBookingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClosureBookingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClosureBookingCountAggregateOutputType> | number
+        }
+      }
+    }
     BookingTicket: {
       payload: Prisma.$BookingTicketPayload<ExtArgs>
       fields: Prisma.BookingTicketFieldRefs
@@ -3318,6 +3468,36 @@ export const BookingPaymentScheduleScalarFieldEnum = {
 export type BookingPaymentScheduleScalarFieldEnum = (typeof BookingPaymentScheduleScalarFieldEnum)[keyof typeof BookingPaymentScheduleScalarFieldEnum]
 
 
+export const BookingPlanChangeScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  previousTotalCents: 'previousTotalCents',
+  totalCents: 'totalCents',
+  reason: 'reason',
+  schedule: 'schedule',
+  recordedBySession: 'recordedBySession',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingPlanChangeScalarFieldEnum = (typeof BookingPlanChangeScalarFieldEnum)[keyof typeof BookingPlanChangeScalarFieldEnum]
+
+
+export const ClosureBookingScalarFieldEnum = {
+  blockKey: 'blockKey',
+  guestName: 'guestName',
+  source: 'source',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  totalPriceCents: 'totalPriceCents',
+  receivedCents: 'receivedCents',
+  updatedBySession: 'updatedBySession',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClosureBookingScalarFieldEnum = (typeof ClosureBookingScalarFieldEnum)[keyof typeof ClosureBookingScalarFieldEnum]
+
+
 export const BookingTicketScalarFieldEnum = {
   id: 'id',
   bookingId: 'bookingId',
@@ -3852,6 +4032,8 @@ export type GlobalOmitConfig = {
   bookingGuest?: Prisma.BookingGuestOmit
   bookingPayment?: Prisma.BookingPaymentOmit
   bookingPaymentSchedule?: Prisma.BookingPaymentScheduleOmit
+  bookingPlanChange?: Prisma.BookingPlanChangeOmit
+  closureBooking?: Prisma.ClosureBookingOmit
   bookingTicket?: Prisma.BookingTicketOmit
   siteContent?: Prisma.SiteContentOmit
   blogPost?: Prisma.BlogPostOmit

@@ -85,9 +85,18 @@ const PAYMENT_GUARD_MESSAGES = new Map([
   ["Refund exceeds cancellation entitlement", "This refund is more than the guest is owed after the cancellation fee."],
 ]);
 
+export type StaffPaymentPlan = {
+  totalCents: number;
+  reason?: string;
+  stages: { milestone: string; dueOn: string | null; cumulativeCents: number }[];
+};
+
 export async function administerBooking(id: string, action: {
-  type: "accept" | "decline" | "cancel" | "record-payment";
+  type: "accept" | "decline" | "cancel" | "record-payment" | "set-plan";
   reason?: CancelReason;
+  /** Set-plan: what the guest now owes and every payment, cumulative, the first one named INITIAL. */
+  plan?: StaffPaymentPlan;
+  recordedBySession?: string;
   /** Accept only, before any payment: the method (Visa adds the 2.5% card surcharge) and the team's own first payment. */
   paymentMethod?: "VISA" | "BANK_TRANSFER";
   split?: { firstCents: number; balanceDueOn?: string };

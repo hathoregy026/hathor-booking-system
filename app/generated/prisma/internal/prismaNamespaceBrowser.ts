@@ -72,6 +72,8 @@ export const ModelName = {
   BookingGuest: 'BookingGuest',
   BookingPayment: 'BookingPayment',
   BookingPaymentSchedule: 'BookingPaymentSchedule',
+  BookingPlanChange: 'BookingPlanChange',
+  ClosureBooking: 'ClosureBooking',
   BookingTicket: 'BookingTicket',
   SiteContent: 'SiteContent',
   BlogPost: 'BlogPost',
@@ -414,6 +416,36 @@ export const BookingPaymentScheduleScalarFieldEnum = {
 } as const
 
 export type BookingPaymentScheduleScalarFieldEnum = (typeof BookingPaymentScheduleScalarFieldEnum)[keyof typeof BookingPaymentScheduleScalarFieldEnum]
+
+
+export const BookingPlanChangeScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  previousTotalCents: 'previousTotalCents',
+  totalCents: 'totalCents',
+  reason: 'reason',
+  schedule: 'schedule',
+  recordedBySession: 'recordedBySession',
+  createdAt: 'createdAt'
+} as const
+
+export type BookingPlanChangeScalarFieldEnum = (typeof BookingPlanChangeScalarFieldEnum)[keyof typeof BookingPlanChangeScalarFieldEnum]
+
+
+export const ClosureBookingScalarFieldEnum = {
+  blockKey: 'blockKey',
+  guestName: 'guestName',
+  source: 'source',
+  customerEmail: 'customerEmail',
+  customerPhone: 'customerPhone',
+  totalPriceCents: 'totalPriceCents',
+  receivedCents: 'receivedCents',
+  updatedBySession: 'updatedBySession',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClosureBookingScalarFieldEnum = (typeof ClosureBookingScalarFieldEnum)[keyof typeof ClosureBookingScalarFieldEnum]
 
 
 export const BookingTicketScalarFieldEnum = {

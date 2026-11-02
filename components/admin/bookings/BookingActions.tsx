@@ -7,8 +7,9 @@ import { useToast } from "@/components/admin/ToastProvider";
 import { CANCEL_REASONS, CANCELLATION_REASON_LABELS, ZERO_FEE_CANCEL_REASONS, paymentMethodLabel, type AdminBookingDto, type CancelReason } from "@/lib/admin-bookings";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch } from "@/lib/admin-fetch";
 import { formatPrice } from "@/lib/client-dates";
-import { paymentPlan, stageTitle } from "@/lib/booking-code";
+import { paymentPlan } from "@/lib/booking-code";
 import { CARD_SURCHARGE_PERCENT, cardSurchargeCents, rescaleSchedule } from "@/lib/card-surcharge";
+import { PaymentPlanEditor, parseUsd, usePaymentPlanEditor } from "./PaymentPlanEditor";
 import { ReplyAttachments, readyAttachments, type ReplyAttachment } from "./ReplyAttachments";
 
 export type BookingActionKind =
@@ -16,6 +17,7 @@ export type BookingActionKind =
   | "decline"
   | "reply"
   | "payment"
+  | "plan"
   | "cancel"
   | "delete"
   | "send-confirmation";
@@ -59,24 +61,13 @@ function rememberInstructions(method: string | null, text: string, amount: strin
   }
 }
 
-/** "1234.5" → 123450 cents, or null when it is not a USD amount with at most two decimals. */
-function parseUsd(text: string): number | null {
-  const value = text.trim();
-  if (!/^\d+(\.\d{1,2})?$/.test(value)) return null;
-  const [whole, fraction = ""] = value.split(".");
-  return Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
-}
-
-const isoDay = (date: Date) => date.toISOString().slice(0, 10);
-const longDay = (day: string) =>
-  new Date(`${day}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-
+/** What the guest is asked for next: the rest of the first payment not yet covered. */
 function dueNowCents(booking: AdminBookingDto) {
-  const deposit = booking.depositCents ?? booking.totalPriceCents;
-  return booking.paidCents < deposit ? deposit - booking.paidCents : booking.totalPriceCents - booking.paidCents;
+  const due = paymentPlan(booking.paymentSchedule, booking.paidCents).find(stage => stage.state === "due");
+  return due ? due.cumulativeCents - booking.paidCents : Math.max(0, booking.totalPriceCents - booking.paidCents);
 }
 
-function Dialog({ title, kicker, onClose, children }: { title: string; kicker?: string; onClose: () => void; children: ReactNode }) {
+export function Dialog({ title, kicker, onClose, children }: { title: string; kicker?: string; onClose: () => void; children: ReactNode }) {
   // At the top of the dashboard (inside its theme), above the phone's bottom menu, whatever card opened it.
   return createPortal(
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-4">
@@ -106,7 +97,7 @@ function Dialog({ title, kicker, onClose, children }: { title: string; kicker?: 
   );
 }
 
-function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="block">
       <span className="text-xs font-semibold uppercase tracking-wider text-muted">{label}</span>
@@ -116,7 +107,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+export function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl px-3 py-2.5" style={{ background: "var(--bg-secondary)" }}>
       <p className="text-[11px] font-medium uppercase tracking-wider text-muted">{label}</p>
@@ -125,7 +116,7 @@ function Fact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Footer({ busy, submitLabel, danger, onCancel }: { busy: boolean; submitLabel: string; danger?: boolean; onCancel: () => void }) {
+export function Footer({ busy, submitLabel, danger, onCancel }: { busy: boolean; submitLabel: string; danger?: boolean; onCancel: () => void }) {
   return (
     <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
       <button type="button" onClick={onCancel} className="btn-outline h-10 px-4 text-sm">Back</button>
@@ -164,42 +155,22 @@ export function BookingActionDialog({
   const dueNow = dueNowCents(booking);
 
   /* The invoice. Until a payment is recorded the team may change how the guest pays
-     (Visa / card adds the surcharge) and set the first payment and balance date themselves. */
-  const invoiceEditable = booking.paidCents === 0;
+     (Visa / card adds the surcharge); the plan itself stays theirs to change after that too. */
+  const invoiceEditable = kind !== "plan" && booking.paidCents === 0;
   const quoteCents = booking.totalPriceCents - booking.cardSurchargeCents;
   const [method, setMethod] = useState<"VISA" | "BANK_TRANSFER">(booking.paymentMethod === "BANK_TRANSFER" ? "BANK_TRANSFER" : "VISA");
   const invoiceSurcharge = invoiceEditable ? (method === "VISA" ? cardSurchargeCents(quoteCents) : 0) : booking.cardSurchargeCents;
   const invoiceTotal = quoteCents + invoiceSurcharge;
-  const [customSplit, setCustomSplit] = useState(false);
-  const [firstPayment, setFirstPayment] = useState("");
-  const [{ today, tomorrow }] = useState(() => {
-    const now = Date.now();
-    return { today: isoDay(new Date(now)), tomorrow: isoDay(new Date(now + 86_400_000)) };
-  });
-  const departureDay = booking.departureTime.slice(0, 10);
-  const lastDueDay = [...booking.paymentSchedule].reverse().find(stage => stage.dueAt)?.dueAt?.slice(0, 10);
-  const [balanceDueOn, setBalanceDueOn] = useState(lastDueDay && lastDueDay > today ? lastDueDay : departureDay);
-  const firstCents = invoiceEditable && customSplit ? parseUsd(firstPayment) : null;
-  const splitReady = firstCents !== null && firstCents > 0 && firstCents <= invoiceTotal;
-  /** Each payment with its own amount: the team's own split, or the booking's schedule at this total. */
-  const plan = paymentPlan(
-    splitReady
-      ? firstCents < invoiceTotal
-        ? [
-            { milestone: "INITIAL", dueAt: null, cumulativeCents: firstCents },
-            { milestone: "BALANCE", dueAt: `${balanceDueOn}T00:00:00.000Z`, cumulativeCents: invoiceTotal },
-          ]
-        : [{ milestone: "INITIAL", dueAt: null, cumulativeCents: invoiceTotal }]
-      : invoiceEditable
-        ? rescaleSchedule(booking.paymentSchedule, booking.totalPriceCents, invoiceTotal)
-        : booking.paymentSchedule,
-    booking.paidCents,
+  const editor = usePaymentPlanEditor(
+    booking,
+    invoiceEditable ? rescaleSchedule(booking.paymentSchedule, booking.totalPriceCents, invoiceTotal) : booking.paymentSchedule,
+    invoiceTotal,
   );
-  const invoiceDue = invoiceEditable
-    ? plan.find(stage => stage.state === "due")?.amountCents ?? Math.max(0, invoiceTotal - booking.paidCents)
-    : dueNow;
+  const [notifyPlan, setNotifyPlan] = useState(true);
+  const invoiceDue = editor.dueNowCents;
   const amountText = formatPrice(invoiceDue);
-  const duePercent = invoiceTotal > 0 && invoiceDue > 0 ? Math.round((invoiceDue / invoiceTotal) * 100) : null;
+  const planTotal = editor.totalCents ?? invoiceTotal;
+  const duePercent = planTotal > 0 && invoiceDue > 0 ? Math.round((invoiceDue / planTotal) * 100) : null;
   const [instructions, setInstructions] = useState(() =>
     readInstructions(method).split("{amount}").join(amountText).split("{code}").join(booking.code),
   );
@@ -215,10 +186,6 @@ export function BookingActionDialog({
     // An untouched note follows the method: bank details for a transfer, nothing extra for a card link.
     if (!noteTouched) setInstructions(readInstructions(next).split("{amount}").join(noteAmount).split("{code}").join(booking.code));
   }
-  function toggleSplit(on: boolean) {
-    setCustomSplit(on);
-    if (on && !firstPayment) setFirstPayment((invoiceDue / 100).toFixed(2));
-  }
   const [paymentLink, setPaymentLink] = useState("");
   const [declineMessage, setDeclineMessage] = useState("");
   const [notify, setNotify] = useState(true);
@@ -227,6 +194,8 @@ export function BookingActionDialog({
   const [replyFiles, setReplyFiles] = useState<ReplyAttachment[]>([]);
   const [cancelReason, setCancelReason] = useState<CancelReason>("CANCELLATION");
   const refund = booking.status === "CANCELLED";
+  const balanceCents = Math.max(0, booking.totalPriceCents - booking.paidCents);
+  const [paymentChoice, setPaymentChoice] = useState<"next" | "full" | "other">("next");
   const [payment, setPayment] = useState(() => ({
     amount: ((refund ? booking.paidCents : dueNow) / 100).toFixed(2),
     reference: "",
@@ -294,22 +263,14 @@ export function BookingActionDialog({
         if (/\[paste/i.test(note)) throw new Error("Replace the [paste …] placeholder in the note first.");
         const blank = note ? /^\s*(Bank|IBAN|SWIFT[^:\n]*|Account[^:\n]*):[ \t]*$/im.exec(note) : null;
         if (blank) throw new Error(`Fill in “${blank[1]}” in the note before sending the invoice.`);
-        let split: { firstCents: number; balanceDueOn?: string } | undefined;
-        if (invoiceEditable && customSplit) {
-          if (firstCents === null || firstCents <= 0) throw new Error("Enter the first payment in USD, with at most two decimals.");
-          if (firstCents > invoiceTotal) throw new Error(`The first payment cannot be more than the ${formatPrice(invoiceTotal)} total.`);
-          if (firstCents < invoiceTotal && !(balanceDueOn > today && balanceDueOn <= departureDay)) {
-            throw new Error("Choose when the remaining balance is due: after today and no later than departure.");
-          }
-          split = firstCents < invoiceTotal ? { firstCents, balanceDueOn } : { firstCents };
-        }
+        if (editor.error) throw new Error(editor.error);
         const result = await patch({
           type: "accept",
           paymentLink: link || undefined,
           instructions: note.length >= 10 ? note : undefined,
           attachments: attachedFiles(),
           ...(invoiceEditable ? { paymentMethod: method } : {}),
-          ...(split ? { split } : {}),
+          ...(editor.changed && editor.plan ? { plan: editor.plan } : {}),
         });
         if (note) rememberInstructions(method, note, amountText, booking.code);
         report(
@@ -317,6 +278,11 @@ export function BookingActionDialog({
           result.email,
           " Use “Resend invoice” to try again.",
         );
+        onDone(result.booking);
+      } else if (kind === "plan") {
+        if (editor.error || !editor.plan) throw new Error(editor.error ?? "Check the payment plan.");
+        const result = await patch({ type: "set-plan", plan: editor.plan, notify: notifyPlan });
+        report("Payment plan saved.", result.email, " Use “Reply” to tell the guest.");
         onDone(result.booking);
       } else if (kind === "decline") {
         const result = await patch({ type: "decline", message: declineMessage.trim() || undefined, notify });
@@ -388,14 +354,14 @@ export function BookingActionDialog({
       <Dialog title={booking.acceptedAt ? "Send the invoice again" : "Confirm & send invoice"} kicker={who} onClose={onClose}>
         <form onSubmit={submit}>
           <p className="text-sm text-muted">
-            The amounts are worked out from the voyage total, or set the first payment yourself. Paste your secure payment link: the guest&rsquo;s
-            invoice shows the amount due now as a &ldquo;Pay&rdquo; button, with the full payment schedule. The booking turns{" "}
-            <strong>Confirmed</strong> automatically when you record a payment that covers the first payment.
+            Choose how the guest pays, then paste your secure payment link: the guest&rsquo;s invoice shows the amount due now as a
+            &ldquo;Pay&rdquo; button, with the full payment plan. The booking turns <strong>Confirmed</strong> automatically when you
+            record a payment that covers the first payment.
           </p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             <Fact label="Pays by" value={paymentMethodLabel(invoiceEditable ? method : booking.paymentMethod)} />
             <Fact label={duePercent ? `Due now · ${duePercent}%` : "Due now"} value={amountText} />
-            <Fact label="Total" value={formatPrice(invoiceTotal)} />
+            <Fact label="Total" value={formatPrice(planTotal)} />
           </div>
           {invoiceEditable ? (
             <div className="mt-3 space-y-3 rounded-xl border p-3" style={{ borderColor: "var(--border)" }}>
@@ -414,66 +380,9 @@ export function BookingActionDialog({
               ) : invoiceSurcharge > 0 ? (
                 <p className="text-xs text-muted">Includes the {CARD_SURCHARGE_PERCENT}% card surcharge of {formatPrice(invoiceSurcharge)}.</p>
               ) : null}
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={customSplit} onChange={(e) => toggleSplit(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--accent)" }} />
-                Set the first payment and the remaining balance myself
-              </label>
-              {customSplit ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="First payment · this invoice (USD)">
-                    <input className="input h-10 px-3 text-sm tabular" inputMode="decimal" value={firstPayment} onChange={(e) => setFirstPayment(e.target.value)} required />
-                  </Field>
-                  <Field label="Remaining balance due by">
-                    <input
-                      className="input h-10 px-3 text-sm"
-                      type="date"
-                      value={balanceDueOn}
-                      min={tomorrow}
-                      max={departureDay}
-                      onChange={(e) => setBalanceDueOn(e.target.value)}
-                      disabled={splitReady && firstCents === invoiceTotal}
-                      required={!(splitReady && firstCents === invoiceTotal)}
-                    />
-                  </Field>
-                  <p className="text-xs text-muted sm:col-span-2">
-                    {!splitReady
-                      ? `Enter the first payment in USD, up to the ${formatPrice(invoiceTotal)} total.`
-                      : firstCents < invoiceTotal
-                        ? `Remaining after this invoice: ${formatPrice(invoiceTotal - firstCents)}, due by ${longDay(balanceDueOn)}. The booking is confirmed once the first payment is recorded.`
-                        : "The whole amount is due with this invoice."}
-                  </p>
-                </div>
-              ) : null}
             </div>
           ) : null}
-          {plan.length > 0 ? (
-            <ol className="mt-3 overflow-hidden rounded-xl border text-sm" style={{ borderColor: "var(--border)" }}>
-              {plan.map(stage => (
-                <li
-                  key={stage.milestone}
-                  className="flex items-center justify-between gap-3 border-b px-3 py-2 last:border-b-0"
-                  style={{ borderColor: "var(--border)", background: stage.state === "due" ? "var(--bg-secondary)" : undefined }}
-                >
-                  <span className="min-w-0">
-                    <span className="block font-medium">
-                      {stageTitle(stage.milestone, plan.length)}
-                      {invoiceTotal > 0 ? ` · ${Math.round((stage.amountCents / invoiceTotal) * 100)}%` : ""}
-                    </span>
-                    <span className="block text-xs text-muted">
-                      {stage.state === "paid"
-                        ? "Paid"
-                        : stage.milestone === "INITIAL"
-                          ? "With this invoice"
-                          : stage.dueAt
-                            ? `By ${new Date(stage.dueAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}`
-                            : "Before departure"}
-                    </span>
-                  </span>
-                  <span className="shrink-0 font-semibold tabular">{formatPrice(stage.amountCents)}</span>
-                </li>
-              ))}
-            </ol>
-          ) : null}
+          <div className="mt-3"><PaymentPlanEditor editor={editor} /></div>
           <div className="mt-5">
             <Field label="Secure payment link" hint={`Paste the link from your payment provider for ${amountText}. The email turns it into a “Pay ${amountText} securely” button.`}>
               <input
@@ -508,6 +417,27 @@ export function BookingActionDialog({
           <div className="mt-4">{attachmentsField}</div>
           {errorLine}
           <Footer busy={busy || uploading} submitLabel={booking.acceptedAt ? "Send invoice again" : "Confirm & send invoice"} onCancel={onClose} />
+        </form>
+      </Dialog>
+    );
+  }
+
+  if (kind === "plan") {
+    return (
+      <Dialog title="Payment plan" kicker={who} onClose={onClose}>
+        <form onSubmit={submit}>
+          <div className="grid grid-cols-3 gap-2">
+            <Fact label="Paid so far" value={formatPrice(booking.paidCents)} />
+            <Fact label="Guest pays next" value={amountText} />
+            <Fact label="Balance" value={formatPrice(Math.max(0, planTotal - booking.paidCents))} />
+          </div>
+          <div className="mt-3"><PaymentPlanEditor editor={editor} /></div>
+          <label className="mt-4 flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={notifyPlan} onChange={(e) => setNotifyPlan(e.target.checked)} className="h-4 w-4" style={{ accentColor: "var(--accent)" }} />
+            Email the guest the updated payment plan
+          </label>
+          {errorLine}
+          <Footer busy={busy} submitLabel="Save plan" onCancel={onClose} />
         </form>
       </Dialog>
     );
@@ -570,12 +500,35 @@ export function BookingActionDialog({
           </p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             <Fact label="Received" value={formatPrice(booking.paidCents)} />
-            <Fact label="Deposit" value={formatPrice(booking.depositCents ?? booking.totalPriceCents)} />
-            <Fact label="Total" value={formatPrice(booking.totalPriceCents)} />
+            <Fact label={refund ? "Total" : "Next payment"} value={formatPrice(refund ? booking.totalPriceCents : dueNow)} />
+            <Fact label="Balance" value={formatPrice(balanceCents)} />
           </div>
+          {!refund ? (
+            <div className="bk-plan__choice mt-3" role="group" aria-label="How much was received">
+              {([
+                { id: "next", label: "Next payment", hint: formatPrice(dueNow), cents: dueNow },
+                { id: "full", label: "Paid in full", hint: formatPrice(balanceCents), cents: balanceCents },
+                { id: "other", label: "Another amount", hint: "Type what arrived", cents: null },
+              ] as const).map(option => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className="bk-plan__option"
+                  aria-pressed={paymentChoice === option.id}
+                  onClick={() => {
+                    setPaymentChoice(option.id);
+                    if (option.cents !== null) setPayment({ ...payment, amount: (option.cents / 100).toFixed(2) });
+                  }}
+                >
+                  <strong>{option.label}</strong>
+                  <span>{option.hint}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <Field label="Amount (USD)">
-              <input className="input h-10 px-3 text-sm tabular" inputMode="decimal" value={payment.amount} onChange={(e) => setPayment({ ...payment, amount: e.target.value })} required />
+              <input className="input h-10 px-3 text-sm tabular" inputMode="decimal" value={payment.amount} onChange={(e) => { setPaymentChoice("other"); setPayment({ ...payment, amount: e.target.value }); }} required />
             </Field>
             <Field label="Method">
               <select className="input h-10 px-3 text-sm" value={payment.method} onChange={(e) => setPayment({ ...payment, method: e.target.value })}>
@@ -665,13 +618,13 @@ export function bookingActionsFor(booking: AdminBookingDto): { primary: BookingA
   const reply: BookingActionKind[] = canEmail ? ["reply"] : [];
   switch (booking.stage) {
     case "new":
-      return { primary: ["confirm", "decline"], secondary: [...reply, "payment", "delete"] };
+      return { primary: ["confirm", "decline"], secondary: [...reply, "payment", "plan", "delete"] };
     case "invoiced":
-      return { primary: ["payment", "decline"], secondary: [...reply, "confirm", "delete"] };
+      return { primary: ["payment", "decline"], secondary: [...reply, "plan", "confirm", "delete"] };
     case "confirmed":
-      return { primary: ["payment", ...reply], secondary: ["send-confirmation", "cancel", "delete"] };
+      return { primary: ["payment", ...reply], secondary: ["plan", "send-confirmation", "cancel", "delete"] };
     case "paid":
-      return { primary: reply, secondary: ["send-confirmation", "cancel", "delete"] };
+      return { primary: reply, secondary: ["plan", "send-confirmation", "cancel", "delete"] };
     case "cancelled":
     case "declined":
       return { primary: reply, secondary: [...(booking.paidCents > 0 ? ["payment" as const] : []), "delete"] };
@@ -690,6 +643,8 @@ export function actionLabel(kind: BookingActionKind, booking: AdminBookingDto): 
       return "Reply";
     case "payment":
       return booking.status === "CANCELLED" ? "Record refund" : "Record payment";
+    case "plan":
+      return "Edit payment plan";
     case "cancel":
       return "Cancel booking";
     case "delete":

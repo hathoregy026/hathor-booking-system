@@ -181,6 +181,7 @@ model Booking {
   guests BookingGuest[]
   payments BookingPayment[]
   paymentSchedule BookingPaymentSchedule[]
+  planChanges BookingPlanChange[]
   emailThread BookingEmailThread?
   messages BookingMessage[]
 
@@ -391,6 +392,32 @@ model BookingPaymentSchedule {
   cumulativeCents Int
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   @@unique([bookingId, milestone])
+}
+
+model BookingPlanChange {
+  id String @id @default(dbgenerated("(gen_random_uuid())::text"))
+  bookingId String
+  previousTotalCents Int
+  totalCents Int
+  reason String?
+  schedule Json
+  recordedBySession String?
+  createdAt DateTime @default(now())
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  @@index([bookingId])
+}
+
+model ClosureBooking {
+  blockKey String @id
+  guestName String
+  source String
+  customerEmail String?
+  customerPhone String?
+  totalPriceCents Int
+  receivedCents Int @default(0)
+  updatedBySession String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model BookingTicket {

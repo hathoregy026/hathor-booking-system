@@ -123,6 +123,16 @@ export type BookingPayment = Prisma.BookingPaymentModel
  */
 export type BookingPaymentSchedule = Prisma.BookingPaymentScheduleModel
 /**
+ * Model BookingPlanChange
+ * 
+ */
+export type BookingPlanChange = Prisma.BookingPlanChangeModel
+/**
+ * Model ClosureBooking
+ * 
+ */
+export type ClosureBooking = Prisma.ClosureBookingModel
+/**
  * Model BookingTicket
  * 
  */

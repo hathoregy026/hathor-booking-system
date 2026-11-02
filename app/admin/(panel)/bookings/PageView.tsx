@@ -4,26 +4,55 @@ import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "rea
 import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarDays, LayoutList, Loader2, RefreshCw, RotateCcw, Search, Trash2 } from "lucide-react";
 import { BookingCalendar } from "@/components/admin/BookingCalendar";
-import { BookingsListView } from "@/components/admin/BookingsListView";
+import { BookingsListView, type BookingGroup } from "@/components/admin/BookingsListView";
 import { BookingActionDialog, type BookingActionKind } from "@/components/admin/bookings/BookingActions";
+import { ClosureBookingsList } from "@/components/admin/bookings/ClosureBookings";
 import { useToast } from "@/components/admin/ToastProvider";
-import type { AdminBookingDto, AdminBookingStage } from "@/lib/admin-bookings";
+import type { AdminBookingDto, AdminBookingStage, AdminClosureBooking } from "@/lib/admin-bookings";
+import { formatPrice } from "@/lib/client-dates";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
 
-type StageFilter = "all" | "new" | "invoiced" | "confirmed" | "closed" | "other";
+type StageFilter = "all" | "new" | "invoiced" | "confirmed" | "availability" | "closed" | "other";
 type ViewMode = "active" | "bin";
 type LayoutView = "list" | "calendar";
 
-const FILTERS: { id: StageFilter; label: string; stages: AdminBookingStage[]; empty: string }[] = [
-  // Checkout holds that never became a request are noise here; they keep their own tab.
-  { id: "all", label: "All bookings", stages: ["new", "invoiced", "confirmed", "paid", "declined", "cancelled"], empty: "No bookings yet. They appear here as soon as a guest sends a request." },
-  { id: "new", label: "New requests", stages: ["new"], empty: "No new requests waiting for you." },
-  { id: "invoiced", label: "Awaiting payment", stages: ["invoiced"], empty: "No invoices waiting for payment." },
-  { id: "confirmed", label: "Confirmed", stages: ["confirmed", "paid"], empty: "No confirmed bookings yet." },
-  { id: "closed", label: "Declined & cancelled", stages: ["declined", "cancelled"], empty: "Nothing declined or cancelled." },
-  { id: "other", label: "Holds & expired", stages: ["hold", "expired"], empty: "No checkout holds or expired attempts." },
+const ACTIVE_STAGES: AdminBookingStage[] = ["new", "invoiced", "confirmed", "paid"];
+
+/** The lists. Cancelled and declined bookings never mix with active ones; checkout holds keep their own list. */
+const FILTERS: { id: StageFilter; label: string; hint: string; stages: AdminBookingStage[]; empty: string }[] = [
+  { id: "all", label: "All active", hint: "New, awaiting and confirmed", stages: ACTIVE_STAGES, empty: "No active bookings. They appear here as soon as a guest sends a request." },
+  { id: "new", label: "New requests", hint: "Confirm to send the invoice", stages: ["new"], empty: "No new requests waiting for you." },
+  { id: "invoiced", label: "Awaiting payment", hint: "Invoice sent, deposit not in", stages: ["invoiced"], empty: "No invoices waiting for payment." },
+  { id: "confirmed", label: "Confirmed", hint: "Deposit or more received", stages: ["confirmed", "paid"], empty: "No confirmed bookings yet." },
+  { id: "availability", label: "Via Availability", hint: "Sold outside the website", stages: [], empty: "" },
+  { id: "closed", label: "Cancelled", hint: "Cancelled and declined", stages: ["declined", "cancelled"], empty: "Nothing cancelled or declined." },
+  { id: "other", label: "Holds & expired", hint: "", stages: ["hold", "expired"], empty: "No checkout holds or expired attempts." },
 ];
+
+const STAGE_GROUPS: Record<Exclude<StageFilter, "availability">, { id: string; title: string; hint: string; stages: AdminBookingStage[] }[]> = {
+  all: [
+    { id: "new", title: "New requests", hint: "Review, then confirm to send the invoice", stages: ["new"] },
+    { id: "invoiced", title: "Awaiting payment", hint: "Invoice sent, deposit not in yet", stages: ["invoiced"] },
+    { id: "confirmed", title: "Confirmed", hint: "Soonest departure first", stages: ["confirmed", "paid"] },
+  ],
+  new: [{ id: "new", title: "New requests", hint: "Review, then confirm to send the invoice", stages: ["new"] }],
+  invoiced: [{ id: "invoiced", title: "Awaiting payment", hint: "Invoice sent, deposit not in yet", stages: ["invoiced"] }],
+  confirmed: [
+    { id: "balance", title: "Balance still due", hint: "Soonest departure first", stages: ["confirmed"] },
+    { id: "paid", title: "Paid in full", hint: "Nothing left to collect", stages: ["paid"] },
+  ],
+  closed: [
+    { id: "cancelled", title: "Cancelled", hint: "Cancelled by the guest or by Hathor", stages: ["cancelled"] },
+    { id: "declined", title: "Declined", hint: "Turned down, no fee charged", stages: ["declined"] },
+  ],
+  other: [
+    { id: "hold", title: "Checkout holds", hint: "Guest is still at checkout", stages: ["hold"] },
+    { id: "expired", title: "Expired", hint: "Checkout was never finished", stages: ["expired"] },
+  ],
+};
+
+const byDeparture = (a: AdminBookingDto, b: AdminBookingDto) => a.departureTime.localeCompare(b.departureTime);
 
 export default function AdminBookingsPage() {
   return (
@@ -58,6 +87,8 @@ function AdminBookingsPageInner() {
   const [layoutView, setLayoutView] = useState<LayoutView>("list");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [dialog, setDialog] = useState<{ booking: AdminBookingDto; kind: BookingActionKind } | null>(null);
+  const [closures, setClosures] = useState<AdminClosureBooking[]>([]);
+  const [closuresFailed, setClosuresFailed] = useState(false);
 
   const loadIdRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -106,11 +137,30 @@ function AdminBookingsPageInner() {
     }
   }, [showToast, viewMode]);
 
+  const loadClosures = useCallback(async () => {
+    try {
+      const response = await adminFetch("/api/admin/closure-bookings", {}, ADMIN_BOOKINGS_TIMEOUT_MS);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Failed to load");
+      setClosures(Array.isArray(data.closures) ? data.closures : []);
+      setClosuresFailed(false);
+    } catch {
+      setClosuresFailed(true);
+    }
+  }, []);
+
   useEffect(() => {
     void loadBookings(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
   }, [loadBookings]);
 
-  const refreshActivity = useCallback(() => { void loadBookings(loadedAt > 0); }, [loadBookings, loadedAt]);
+  useEffect(() => {
+    void loadClosures(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
+  }, [loadClosures]);
+
+  const refreshActivity = useCallback(() => {
+    void loadBookings(loadedAt > 0);
+    void loadClosures();
+  }, [loadBookings, loadClosures, loadedAt]);
   useAdminActivityRefresh("bookings", refreshActivity, Boolean(dialog) || isBulkWorking || isLoading);
 
   const searched = useMemo(() => {
@@ -135,27 +185,51 @@ function AdminBookingsPageInner() {
     );
   }, [bookings, query]);
 
+  const searchedClosures = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return closures;
+    return closures.filter((closure) =>
+      [closure.note, closure.voyage, closure.roomNames.join(" "), closure.sale?.guestName, closure.sale?.customerEmail, closure.sale?.customerPhone, closure.sale?.source]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(needle),
+    );
+  }, [closures, query]);
+
   const counts = useMemo(() => {
     const map = new Map<StageFilter, number>();
     for (const entry of FILTERS) {
-      map.set(entry.id, searched.filter((booking) => entry.stages.includes(booking.stage)).length);
+      map.set(entry.id, entry.id === "availability" ? searchedClosures.length : searched.filter((booking) => entry.stages.includes(booking.stage)).length);
     }
     return map;
-  }, [searched]);
+  }, [searched, searchedClosures]);
 
   const activeFilter = FILTERS.find((entry) => entry.id === filter) ?? FILTERS[0]!;
-  const visible = useMemo(
-    () => (viewMode === "bin" ? searched : searched.filter((booking) => activeFilter.stages.includes(booking.stage))),
-    [searched, activeFilter, viewMode],
-  );
+  const showingClosures = viewMode === "active" && filter === "availability";
 
-  const upcomingGuests = useMemo(
-    () =>
-      bookings
-        .filter((booking) => (booking.stage === "confirmed" || booking.stage === "paid") && Date.parse(booking.departureTime) > loadedAt)
-        .reduce((total, booking) => total + (booking.partySize ?? 0), 0),
-    [bookings, loadedAt],
-  );
+  const groups = useMemo<BookingGroup[]>(() => {
+    if (viewMode === "bin") return [{ id: "bin", title: "Recycle bin", hint: "Removed after 7 days", bookings: searched }];
+    if (filter === "availability") return [];
+    return STAGE_GROUPS[filter].map((group) => ({
+      id: group.id,
+      title: group.title,
+      hint: group.hint,
+      bookings: searched.filter((booking) => group.stages.includes(booking.stage)).sort(byDeparture),
+    }));
+  }, [searched, filter, viewMode]);
+
+  const visible = useMemo(() => groups.flatMap((group) => group.bookings), [groups]);
+
+  const { upcomingGuests, toCollectCents } = useMemo(() => {
+    const live = bookings.filter((booking) => (booking.stage === "confirmed" || booking.stage === "paid") && Date.parse(booking.departureTime) > loadedAt);
+    return {
+      upcomingGuests: live.reduce((total, booking) => total + (booking.partySize ?? 0), 0),
+      toCollectCents:
+        live.reduce((total, booking) => total + Math.max(0, booking.totalPriceCents - booking.paidCents), 0) +
+        closures.reduce((total, closure) => total + (closure.sale ? closure.sale.totalPriceCents - closure.sale.receivedCents : 0), 0),
+    };
+  }, [bookings, closures, loadedAt]);
 
   const calendarBookings = useMemo(() => searched.filter((booking) => booking.status === "REQUESTED" || booking.status === "CONFIRMED"), [searched]);
 
@@ -213,96 +287,71 @@ function AdminBookingsPageInner() {
     }
   };
 
-  const statTiles: { id: StageFilter; label: string; tone: string; hint: string }[] = [
-    { id: "new", label: "New requests", tone: "var(--accent)", hint: "Confirm to send the invoice" },
-    { id: "invoiced", label: "Awaiting payment", tone: "var(--info)", hint: "Invoice sent, deposit not yet in" },
-    { id: "confirmed", label: "Confirmed", tone: "var(--success)", hint: "Deposit received" },
-  ];
+  const openList = (id: StageFilter) => {
+    setLayoutView("list");
+    setFilter(id);
+    setSelectedIds(new Set());
+  };
+
+  const leaveBin = () => {
+    loadIdRef.current += 1;
+    setViewMode("active");
+    setLayoutView("list");
+    setFilter("all");
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="admin-page-title">Bookings</h1>
-        <p className="admin-page-subtitle">Confirm requests, send invoices, record payments and reply to guests.</p>
+      <div className="bk-pagehead">
+        <div>
+          <h1 className="admin-page-title">Bookings</h1>
+          <p className="admin-page-subtitle">Confirm requests, send invoices, record payments and reply to guests.</p>
+        </div>
+        <div className="bk-pulse">
+          <div><strong className="tabular">{isLoading ? "–" : upcomingGuests}</strong><span>guests sailing</span></div>
+          <div><strong className="tabular">{isLoading ? "–" : formatPrice(toCollectCents)}</strong><span>still to collect</span></div>
+        </div>
       </div>
 
       {viewMode === "active" && (
-        <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {statTiles.map((tile) => (
+        <section className="bk-tiles" aria-label="Booking lists">
+          {FILTERS.filter((entry) => entry.id !== "other").map((entry) => (
             <button
-              key={tile.id}
+              key={entry.id}
               type="button"
-              onClick={() => {
-                setLayoutView("list");
-                setFilter(filter === tile.id ? "all" : tile.id);
-              }}
-              aria-pressed={filter === tile.id && layoutView === "list"}
-              className="card bk-stat"
-              style={{ ["--bk-tone" as string]: tile.tone }}
+              onClick={() => openList(entry.id)}
+              aria-pressed={filter === entry.id && layoutView === "list"}
+              className="card bk-tile"
             >
-              <span className="bk-stat__label">{tile.label}</span>
-              <span className="bk-stat__value">{isLoading ? "–" : counts.get(tile.id) ?? 0}</span>
-              <span className="text-xs text-muted">{tile.hint}</span>
+              <span className="bk-tile__label">{entry.label}</span>
+              <span className="bk-tile__value tabular">{isLoading ? "–" : counts.get(entry.id) ?? 0}</span>
+              <span className="bk-tile__hint">{entry.hint}</span>
             </button>
           ))}
-          <div className="card bk-stat" style={{ ["--bk-tone" as string]: "var(--text-muted)" }}>
-            <span className="bk-stat__label">Guests sailing</span>
-            <span className="bk-stat__value">{isLoading ? "–" : upcomingGuests}</span>
-            <span className="text-xs text-muted">On upcoming confirmed voyages</span>
-          </div>
         </section>
       )}
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="-mx-4 flex overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 sm:pb-0">
-          <div className="flex min-w-max items-center gap-2">
-            {viewMode === "active" && (
-              <div className="mr-1 flex shrink-0 rounded-xl border p-1" style={{ borderColor: "var(--border)" }}>
-                <button
-                  type="button"
-                  onClick={() => setLayoutView("list")}
-                  className={`admin-filter-tab flex items-center gap-1.5 ${layoutView === "list" ? "admin-filter-tab--active" : ""}`}
-                >
-                  <LayoutList className="h-4 w-4" />
-                  List
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLayoutView("calendar")}
-                  className={`admin-filter-tab flex items-center gap-1.5 ${layoutView === "calendar" ? "admin-filter-tab--active" : ""}`}
-                >
-                  <CalendarDays className="h-4 w-4" />
-                  Calendar
-                </button>
-              </div>
-            )}
-            {viewMode === "active" && layoutView === "list" &&
-              FILTERS.map((entry) => (
-                <button
-                  key={entry.id}
-                  type="button"
-                  onClick={() => setFilter(entry.id)}
-                  className={`admin-filter-tab ${filter === entry.id ? "admin-filter-tab--active" : ""}`}
-                >
-                  {entry.label}
-                  {!isLoading ? <span className="ml-1.5 tabular opacity-70">{counts.get(entry.id) ?? 0}</span> : null}
-                </button>
-              ))}
+      <div className="bk-tools">
+        {viewMode === "active" && (
+          <div className="flex shrink-0 rounded-xl border p-1" style={{ borderColor: "var(--border)" }}>
             <button
               type="button"
-              onClick={() => {
-                loadIdRef.current += 1;
-                setViewMode(viewMode === "bin" ? "active" : "bin");
-                setLayoutView("list");
-                setFilter("all");
-              }}
-              className={`admin-filter-tab ${viewMode === "bin" ? "admin-filter-tab--danger-active" : "admin-filter-tab--danger"}`}
+              onClick={() => setLayoutView("list")}
+              className={`admin-filter-tab flex items-center gap-1.5 ${layoutView === "list" ? "admin-filter-tab--active" : ""}`}
             >
-              {viewMode === "bin" ? "Back to bookings" : "Recycle bin"}
+              <LayoutList className="h-4 w-4" />
+              List
+            </button>
+            <button
+              type="button"
+              onClick={() => setLayoutView("calendar")}
+              className={`admin-filter-tab flex items-center gap-1.5 ${layoutView === "calendar" ? "admin-filter-tab--active" : ""}`}
+            >
+              <CalendarDays className="h-4 w-4" />
+              Calendar
             </button>
           </div>
-        </div>
-
+        )}
         {layoutView === "list" && (
           <div className="relative w-full lg:max-w-xs">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" strokeWidth={1.9} />
@@ -315,9 +364,48 @@ function AdminBookingsPageInner() {
             />
           </div>
         )}
+        <span className="flex-1" />
+        {viewMode === "active" ? (
+          <button
+            type="button"
+            onClick={() => openList("other")}
+            className={`admin-filter-tab ${filter === "other" && layoutView === "list" ? "admin-filter-tab--active" : ""}`}
+          >
+            Holds &amp; expired
+            {!isLoading ? <span className="ml-1.5 tabular opacity-70">{counts.get("other") ?? 0}</span> : null}
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={() => {
+            if (viewMode === "bin") {
+              leaveBin();
+              return;
+            }
+            loadIdRef.current += 1;
+            setViewMode("bin");
+            setLayoutView("list");
+            setFilter("all");
+          }}
+          className={`admin-filter-tab ${viewMode === "bin" ? "admin-filter-tab--danger-active" : "admin-filter-tab--danger"}`}
+        >
+          {viewMode === "bin" ? "Back to bookings" : "Recycle bin"}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void loadBookings();
+            void loadClosures();
+          }}
+          disabled={isLoading}
+          className="btn-ghost h-9 px-3 text-sm disabled:opacity-50"
+        >
+          <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+          Refresh
+        </button>
       </div>
 
-      {layoutView === "list" && (
+      {layoutView === "list" && !showingClosures && (
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" onClick={toggleSelectAll} disabled={isLoading || visible.length === 0} className="btn-outline h-9 px-3.5 text-sm disabled:opacity-50">
             {allSelected ? "Deselect all" : "Select all"}
@@ -357,11 +445,6 @@ function AdminBookingsPageInner() {
           <span className="text-sm text-muted">
             {selectedIds.size > 0 ? `${selectedIds.size} selected` : `${visible.length} booking${visible.length === 1 ? "" : "s"}`}
           </span>
-          <span className="flex-1" />
-          <button type="button" onClick={() => void loadBookings()} disabled={isLoading} className="btn-ghost h-9 px-3 text-sm disabled:opacity-50">
-            <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-            Refresh
-          </button>
         </div>
       )}
 
@@ -380,9 +463,11 @@ function AdminBookingsPageInner() {
 
       {layoutView === "calendar" && viewMode === "active" ? (
         <BookingCalendar bookings={calendarBookings} isLoading={isLoading} />
+      ) : showingClosures ? (
+        <ClosureBookingsList closures={searchedClosures} loadFailed={closuresFailed} onChanged={() => void loadClosures()} />
       ) : (
         <BookingsListView
-          bookings={visible}
+          groups={groups}
           viewMode={viewMode}
           emptyMessage={viewMode === "bin" ? "The recycle bin is empty." : query ? "Nothing matches your search." : activeFilter.empty}
           isLoading={isLoading}
