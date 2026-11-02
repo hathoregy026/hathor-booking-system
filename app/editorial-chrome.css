@@ -536,10 +536,9 @@ html[data-public-theme="night"] [data-charter-page] {
   }
 }
 
-/* The Cruises mark moves clear of the paragraph that can reach its line.
-   German keeps its own fit. */
+/* The Cruises mark moves clear of the paragraph that can reach its line. */
 @media (min-width: 951px) {
-  html:not([lang="de"]) .cr-intro .cr-intro__mark {
+  html[lang] .cr-intro .cr-intro__mark {
     left: min(30vw, 34rem);
   }
 }
