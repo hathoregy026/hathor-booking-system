@@ -9,7 +9,7 @@ export function EmailMessageBody({ bodyText, formattedUrl }: { bodyText: string;
   const parts = splitEmailDisplayText(bodyText);
   const hasMessage = parts.some(part => part.kind === "message");
   return (
-    <div className="space-y-4 text-sm">
+    <div className="email-message-body space-y-4 text-sm">
       {!parts.length ? <p className="text-muted">No message text.</p> : null}
       {parts.map((part, index) => part.kind === "message" ? (
         <p key={index} className="whitespace-pre-wrap leading-relaxed" style={{ overflowWrap: "anywhere" }}>{part.text}</p>

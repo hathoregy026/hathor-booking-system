@@ -46,17 +46,17 @@ export function ReceivedEmailAttachment({ filename, contentType, transferUrl, di
 
   if (phase === "done") return <p role="status" className="text-sm text-muted">Attachment removed from the dashboard. Email kept. Resend retention still applies.</p>;
   if (!incomingAttachmentType(filename, contentType)) return (
-    <div className="text-sm">
+    <div className="mail-attachment text-sm">
       <p className="break-all font-medium">{filename} · Quarantined</p>
       <p className="mt-1 text-xs leading-relaxed text-muted">{INCOMING_ATTACHMENT_BLOCKED_MESSAGE}</p>
     </div>
   );
-  if (disabled && downloadOnlyHref) return <div className="text-sm">
+  if (disabled && downloadOnlyHref) return <div className="mail-attachment text-sm">
     <a className="btn-outline min-h-11 max-w-full whitespace-normal break-all" href={downloadOnlyHref} referrerPolicy="no-referrer">Download {filename}</a>
     <p className="mt-2 text-xs text-muted">Read-only access keeps the dashboard attachment. Editing permission is required to remove it.</p>
   </div>;
   return (
-    <div className="max-w-full text-sm">
+    <div className="mail-attachment max-w-full text-sm">
       <p className="break-all font-medium">{filename}</p>
       <p className="my-2 max-w-xl text-xs leading-relaxed text-muted">Download only files you expected. Images are rebuilt as PNGs; text is checked. Maximum 4 MB. After saving, this attachment is removed from the dashboard. The email and Zoho copy stay; Resend keeps its copy under its retention policy.</p>
       {phase === "idle" ? <button type="button" className="btn-outline min-h-11 max-w-full whitespace-normal break-all" disabled={disabled} onClick={() => void download()}>Download & remove {filename}</button> : null}
