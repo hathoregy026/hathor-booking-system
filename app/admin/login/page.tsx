@@ -7,7 +7,7 @@ import { ADMIN_SESSION_COOKIE, getAdminIdentity } from "@/lib/admin-auth";
 export const dynamic = "force-dynamic";
 
 const plusJakarta = localFont({
-  src: "../fonts/plus-jakarta-sans-latin.woff2",
+  src: "../../../public/fonts/plus-jakarta-sans-latin.woff2",
   display: "swap",
   variable: "--font-admin",
   weight: "400 700",

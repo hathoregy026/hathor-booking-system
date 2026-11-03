@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
-import { Inter, Italiana, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Italiana, Playfair_Display } from "next/font/google";
 import { BookingPageLayout } from "@/components/booking/BookingPageLayout";
 import { SiteComingSoon } from "@/components/public/SiteComingSoon";
 import { SiteImagesProvider } from "@/components/public/SiteImagesProvider";
@@ -57,10 +57,11 @@ const gamgote = localFont({
   declarations: [{ prop: "font-synthesis", value: "none" }],
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
+const plusJakarta = localFont({
+  src: "../../public/fonts/plus-jakarta-sans-latin.woff2",
+  display: "swap",
   variable: "--font-hathor-body",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "300 700",
 });
 
 export const metadata: Metadata = {

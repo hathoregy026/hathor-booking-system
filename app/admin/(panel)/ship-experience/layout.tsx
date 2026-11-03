@@ -7,7 +7,7 @@ import localFont from "next/font/local";
  * fall back to the dashboard's own font and no longer match the live section.
  */
 const plusJakarta = localFont({
-  src: "../../fonts/plus-jakarta-sans-latin.woff2",
+  src: "../../../../public/fonts/plus-jakarta-sans-latin.woff2",
   display: "swap",
   variable: "--font-hathor-body",
   weight: "400 600",

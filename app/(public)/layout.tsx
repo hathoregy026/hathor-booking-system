@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { ComingSoonGate } from "@/components/public/ComingSoonGate";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import { PageVisibilityProvider } from "@/components/public/PageVisibilityProvider";
@@ -82,10 +81,11 @@ const quietLuxury = localFont({
   display: "swap",
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
+const plusJakarta = localFont({
+  src: "../../public/fonts/plus-jakarta-sans-latin.woff2",
+  display: "swap",
   variable: "--font-hathor-body",
-  weight: ["400", "500", "600"],
+  weight: "400 600",
 });
 
 /*
