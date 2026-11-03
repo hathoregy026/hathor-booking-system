@@ -35,16 +35,19 @@ no merge, no deploy.** The dashboard and all emails stay English.
 
 - [x] Back up the live journal posts and website text (`russian-work/backup/*.backup-2026-11-03.json`, read-only).
 - [x] Terms: remove the drafting note from the tax line; office address = Contact page address (EN, IT, DE). Local commit.
-- [ ] Four agents list the journal mistakes (`russian-work/english-fixes/BRIEF.md` → `group-1..4-fixes.json`).
-- [ ] Merge and check the lists; apply the Italian and German fixes in code; write `docs/english-fixes.md` (before → after).
-- [ ] Write corrected English to `russian-work/english-fixes/BlogPost.corrected.json` (translators use this, not the live rows).
+- [x] Four agents list the journal mistakes (`russian-work/english-fixes/BRIEF.md` → `group-1..4-fixes.json`).
+- [x] Merge and check the lists; apply the Italian and German fixes in code; write `docs/english-fixes.md` (before → after).
+- [x] Write corrected English to `russian-work/english-fixes/BlogPost.corrected.json` (translators use this, not the live rows).
 - [ ] OWNER: approve the live database script `russian-work/english-fixes/apply-to-live.cjs` (journal rows + `/suites` cabin deck
-      "UPPER DECK" → "LOWER DECK"). Blocked by the auto-mode check on 2026-11-03; does not block Phase 2.
+      "UPPER DECK" → "LOWER DECK"). Dry run passed 2026-11-03: 379 of 379 fixes match the live rows. Blocked by the auto-mode check on 2026-11-03; does not block Phase 2.
 
 ## Phase 2: Russian
 
-- [ ] Groundwork: `ru` locale, `/ru` routes, formats, plurals, fonts, language menu, `-ru` copy files as typed templates.
-- [ ] Translate (10 agents, `russian-work/ru-brief.md`): chrome+home+SEO, booking, rooms+suites+website text, voyages+route+
+- [x] Groundwork: `ru` locale, `/ru` routes, formats, plurals, fonts, language menu, `-ru` copy files as typed templates.
+- [ ] Translate (10 agents, started 2026-11-03 ~22:30; site agents write the -ru files, journal agents write
+      blog-articles-ru batches + russian-work/journal/posts-J1..4.json, which the coordinator merges into blog-posts-ru.ts.
+      A resumed run: check which -ru files still hold German with russian-work/tools/scan-ru.cjs and redo only those;
+      briefs in russian-work/ru-brief.md and russian-work/journal-brief.md. Assignment, `russian-work/ru-brief.md`): chrome+home+SEO, booking, rooms+suites+website text, voyages+route+
       highlights+charter, about+contact+gastronomy+wellness+partners+alts+system pages, Terms, journal ×4.
 - [ ] Proofread against English (2 agents): site, journal.
 - [ ] Layout check at 1440×900, 1920×1080, 1024×1366, 768×1024, 390×844, 375×667; shorten overflowing headings.
