@@ -1,23 +1,25 @@
 "use client";
 
+import { FloatingEmailComposer } from "./mail/FloatingEmailComposer";
 import { MailConversation } from "./mail/MailConversation";
 import { useAdminAccess } from "./AdminAccessProvider";
 import { allowedMailboxIds } from "@/lib/admin-mailbox-access";
 import { hasAdminPermission } from "@/lib/admin-permissions";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type UIEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
-import { ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, ChevronDown, ChevronUp, FolderInput, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
+import { Ban, ShieldAlert, Menu, X, Maximize2, Minimize2, ArrowDownLeft, ArrowLeft, ArrowUpRight, CheckCheck, ChevronDown, ChevronUp, FolderInput, Inbox, Mail, Paperclip, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { EmailMessageBody } from "@/components/admin/EmailMessageBody";
 import { ReceivedEmailAttachment } from "@/components/admin/ReceivedEmailAttachment";
-import { EmailComposer, type EmailDraft } from "@/components/admin/EmailComposer";
+import { type EmailDraft } from "@/components/admin/EmailComposer";
 import { correspondentInitials, correspondentLabel } from "@/lib/email-correspondent";
 import { type InboxCounts, type InboxDetail, type InboxFilter, type InboxPage, type InboxSource, type InboxSummary } from "@/lib/inbox-types";
 import { EMAIL_MAILBOXES, emailMailbox, type MailboxId, type MailboxSummary } from "@/lib/email-mailboxes";
 import { ADMIN_ACTIVITY_EVENT } from "@/lib/admin-notification-types";
 import { MAIL_REASON_LABELS, type MailFolder } from "@/lib/mail-folders";
 
+const rowTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Cairo", month: "short", day: "numeric" });
 const messageTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Cairo", dateStyle: "medium", timeStyle: "short" });
 const keyOf = (message: { source: InboxSource; id: string }) => `${message.source}/${message.id}`;
 const filters: { value: InboxFilter; label: string }[] = [{ value: "all", label: "All emails" }, { value: "unread", label: "Unread" }, { value: "received", label: "Received" }, { value: "sent", label: "Sent" }];
@@ -62,14 +64,31 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const detailRef = useRef<HTMLElement>(null);
   const listScrollRef = useRef<HTMLDivElement>(null);
   const revealPhoneList = useRef(false);
+  const moveDialog = useRef<HTMLDialogElement>(null);
+  const navigationRef = useRef<HTMLElement>(null);
+  const [navigationOpen, setNavigationOpen] = useState(false);
+  const [readerExpanded, setReaderExpanded] = useState(false);
+  useEffect(() => {
+    if (!navigationOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const panel = navigationRef.current;
+    panel?.querySelector<HTMLButtonElement>("button")?.focus();
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); setNavigationOpen(false); }
+      if (event.key !== "Tab" || !panel) return;
+      const items = [...panel.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], summary, input:not(:disabled)')].filter(item => item.getClientRects().length);
+      const first = items[0], last = items.at(-1);
+      if (!panel.contains(document.activeElement)) { event.preventDefault(); first?.focus(); }
+      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener("keydown", keydown);
+    return () => { document.body.style.overflow = previousOverflow; document.removeEventListener("keydown", keydown); previous?.focus({ preventScroll: true }); };
+  }, [navigationOpen]);
   const [compactControls, setCompactControls] = useState(false);
 
-  function scrollWorkspace(event: UIEvent<HTMLDivElement>) {
-    if (draft || editingHandler) return;
-    if (event.target !== listScrollRef.current && event.target !== detailRef.current) return;
-    const top = (event.target as HTMLElement).scrollTop;
-    if (top > 48) setCompactControls(true);
-  }
 
   const refresh = useCallback(() => { setCursor(null); setVersion(current => current + 1); }, [setCursor, setVersion]);
   useAdminActivityRefresh("emails", refresh, batching || selection.length > 0);
@@ -137,12 +156,12 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       } catch { if (!controller.signal.aborted) setDetailError("This email could not be opened. Return to Emails and try again."); }
     }
     void load();
-    detailRef.current?.focus();
+    detailRef.current?.focus({ preventScroll: true });
     return () => controller.abort();
   }, [selected]);
 
   useEffect(() => {
-    if ((!selected && !draft?.key) || !window.matchMedia("(max-width: 480px)").matches) return;
+    if (!selected || draft?.key || !window.matchMedia("(max-width: 1023px)").matches) return;
     const panel = detailRef.current;
     panel?.focus({ preventScroll: true });
     panel?.scrollIntoView({ block: "start" });
@@ -201,13 +220,12 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
     const sender = initial.mailboxId ?? (mailbox !== "all" && sendIds.includes(mailbox) ? mailbox : sendIds[0]);
     if (draft || batching || !sender || !sendIds.includes(sender)) return;
     setSelection([]);
-    selectMessage(null);
     setNotice(null);
     setDraft({ ...initial, mailboxId: sender, key: crypto.randomUUID() });
   }
 
-  function sent(id: string) {
-    if (draft?.mailboxId) setMailbox(draft.mailboxId);
+  function sent(id: string, senderId?: MailboxId) {
+    if (senderId || draft?.mailboxId) setMailbox(senderId ?? draft!.mailboxId!);
     setDraft(null);
     setSearch("");
     setQuery("");
@@ -218,7 +236,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   }
 
   function chooseMailbox(value: MailboxId | "all") {
-    if (draft || savingHandler || batching) return;
+    if (savingHandler || batching) return;
     revealPhoneList.current = true;
     setSelection([]);
     setMoveTarget("");
@@ -232,6 +250,16 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
     selectMessage(null);
     setNotice(null);
     setEditingHandler(false);
+    setVersion(current => current + 1);
+  }
+
+  function clearMailFilter(kind: "mailbox" | "folder" | "status" | "search" | "all") {
+    if (batching || savingHandler) return;
+    if (kind === "mailbox" || kind === "all") { setMailbox("all"); setEditingHandler(false); }
+    if (kind === "folder" || kind === "all") setFolder("inbox");
+    if (kind === "status" || kind === "all") setFilter("all");
+    if (kind === "search" || kind === "all") { setSearch(""); setQuery(""); }
+    setSelection([]); setCursor(null); setMessages([]); setBusy(true); selectMessage(null);
     setVersion(current => current + 1);
   }
 
@@ -295,8 +323,8 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
       ? current.filter(item => keyOf(item) !== keyOf(message)) : current.length < 100 ? [...current, message] : current);
   }
 
-  async function manageSelection(action: "move" | "delete") {
-    if (!selection.length || batching || draft || (action === "move" && !moveTarget)) return;
+  async function manageSelection(action: "move" | "delete", target = moveTarget) {
+    if (!selection.length || batching || draft || (action === "move" && !target)) return;
     const items = selection.map(({ source, id }) => ({ source, id }));
     if (action === "delete" && !window.confirm(`Remove ${items.length} selected email${items.length === 1 ? "" : "s"} from the dashboard only? Original Zoho and Resend emails and booking history will be kept.`)) return;
     setBatching(true);
@@ -305,12 +333,12 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
     try {
       const response = await adminFetch("/api/admin/inbox/bulk", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(action === "move" ? { action, messages: items, mailboxId: moveTarget } : { action, messages: items, confirm: true }),
+        body: JSON.stringify(action === "move" ? { action, messages: items, mailboxId: target } : { action, messages: items, confirm: true }),
       });
       if (!response.ok || (await response.json() as { affected: number }).affected !== items.length) throw new Error();
       setSelection([]);
       selectMessage(null);
-      setNotice(action === "move" ? `${items.length} email${items.length === 1 ? "" : "s"} moved to ${emailMailbox(moveTarget as MailboxId).label} in the dashboard. Original mailbox history is unchanged.`
+      setNotice(action === "move" ? `${items.length} email${items.length === 1 ? "" : "s"} moved to ${emailMailbox(target as MailboxId).label} in the dashboard. Original mailbox history is unchanged.`
         : `${items.length} email${items.length === 1 ? "" : "s"} removed from the dashboard only. Original mailbox history is unchanged.`);
       setMoveTarget("");
       refresh();
@@ -325,7 +353,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
   const allLoadedSelected = selectable.length > 0 && selectable.every(message => selectedKeys.has(keyOf(message)));
 
   return (
-    <div className="emails-page" data-compact={compactControls && !editingHandler && !draft}>
+    <div className="emails-page mail-workbench" data-navigation-open={navigationOpen} data-reader-expanded={readerExpanded} data-reading={Boolean(selected)} data-compact={compactControls && !editingHandler && !draft}>
       <header className="emails-page__header">
         <div>
           <p className="emails-eyebrow">Hathor correspondence</p>
@@ -333,40 +361,50 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
           <p className="admin-page-subtitle">Six mailboxes. One clear view of every conversation.</p>
           <p className="emails-page__caption" aria-live="polite">{unread} unread · Times shown in Cairo</p>
         </div>
-        <div className="emails-page__actions">
+        <div className="emails-page__actions"><button type="button" className="email-icon-button mail-navigation-toggle" aria-label="Open mail navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen(true)}><Menu size={18} /></button>
         <button type="button" className="btn-outline emails-controls-toggle" aria-label={compactControls ? "Expand email controls" : "Compact email controls"} aria-expanded={!compactControls} onClick={() => setCompactControls(current => !current)}>{compactControls ? <ChevronDown size={16} aria-hidden /> : <ChevronUp size={16} aria-hidden />}<span>{compactControls ? "Expand" : "Compact"}</span></button>
         <button type="button" className="btn-outline" onClick={() => { setSelection([]); refresh(); }} disabled={busy || batching}>
           <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden /><span>Refresh emails</span>
         </button>
-        <button type="button" className="btn-primary" onClick={() => compose()} disabled={!canSend || Boolean(draft) || batching}><Plus size={17} aria-hidden />Send new email</button>
+        <button type="button" className="btn-primary" aria-label="Compose" onClick={() => { compose(); setNavigationOpen(false); }} disabled={!canSend || Boolean(draft) || batching}><Pencil size={17} aria-hidden /><span>Compose</span></button>
         </div>
-      </header>
-      <div className="emails-layout">
-        <aside className="emails-rail" aria-label="Mail navigation">      <nav className="emails-folders" aria-label="Email folders">
-        {(["inbox", "spam", "security"] as const).map(item => <button type="button" key={item} className="btn-outline"
-          aria-pressed={folder === item} disabled={Boolean(draft) || batching || marking}
-          onClick={() => { setFolder(item); setFilter("all"); setCursor(null); setSelection([]); selectMessage(null); }}>
-          {item === "inbox" ? "Inbox" : item === "spam" ? "Spam" : "Security quarantine"}
-        </button>)}
-      </nav>
-      {folder !== "inbox" ? <p className="text-sm text-muted">Held messages do not trigger normal Inbox alerts. Read the reason before restoring. Links, formatted views and attachments remain blocked until restored.</p> : null}
-      <nav className="emails-mailboxes" aria-label="Choose mailbox">
-        <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox("all")} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">ALL MAILBOXES</span><span className="emails-mailbox__handler">Accessible mailboxes</span><span className="emails-mailbox__count">{mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread · {mailboxes.reduce((sum, item) => sum + item.total, 0)} total</span></button>
-        {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={Boolean(draft) || savingHandler || batching} onClick={() => chooseMailbox(item.id)} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count" title={`${item.total} total`}>{item.unread} unread{compactControls && !editingHandler && !draft ? "" : ` · ${item.total} total`}</span></button>)}
-      </nav>
-        <details className="emails-setup"><summary>Zoho forwarding setup</summary><div className="emails-setup__panel"><p>In each Zoho mailbox’s forwarding settings, add its matching destination below, verify it, and keep the original copy. Existing history is not imported. Do not change your main MX records.</p><ul>{EMAIL_MAILBOXES.filter(item => visibleIds.includes(item.id)).map(item => <li key={item.id}><strong>{item.address}</strong><span>→ {item.forwardingAddress}</span></li>)}</ul></div></details></aside>
-      <div className="dashboard-inbox__workspace" data-selected={Boolean(selected || draft)} onScrollCapture={scrollWorkspace}>
-        <section className="card dashboard-inbox__list" aria-label="Email list" aria-busy={busy}>
-      <div className="emails-controls">
-
-      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} disabled={batching} onClick={() => chooseFilter(item.value)}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div>
-      {selection.length ? <div className="emails-bulk-actions" role="group" aria-label="Selected email actions"><strong aria-live="polite">{selection.length} selected</strong><label className="sr-only" htmlFor="email-move-target">Move selected emails to</label><select id="email-move-target" className="admin-input" value={moveTarget} disabled={batching} onChange={event => setMoveTarget(event.target.value as MailboxId | "")}><option value="">Choose mailbox…</option>{EMAIL_MAILBOXES.filter(item => visibleIds.includes(item.id)).map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><button type="button" className="btn-outline" disabled={!canManage || batching || !moveTarget} onClick={() => void manageSelection("move")}><FolderInput size={15} aria-hidden />Move selected</button><button type="button" className="btn-outline emails-delete" disabled={!canManage || batching} onClick={() => void manageSelection("delete")}><Trash2 size={15} aria-hidden />Delete selected</button><button type="button" className="btn-outline" disabled={batching} onClick={() => setSelection([])}>Clear selection</button>{batching ? <span role="status">Saving dashboard changes…</span> : null}</div> : null}
       <form onSubmit={submitSearch} className="dashboard-inbox__toolbar">
         <label className="sr-only" htmlFor="inbox-search">Search name, email, or subject</label>
         <input id="inbox-search" className="admin-input" type="search" maxLength={120} value={search} disabled={batching} onChange={event => setSearch(event.target.value)} placeholder="Search a name, email address, or subject…" />
         <button className="btn-outline" type="submit" disabled={batching}><Search className="h-4 w-4" aria-hidden />Search</button>
 
       </form>
+      </header>
+      <div className="mail-phone-filters" aria-label="Quick email filters">{filters.map(item => <button type="button" key={item.value} aria-pressed={filter === item.value} disabled={Boolean(draft) || batching} onClick={() => chooseFilter(item.value)}>{item.label === "All emails" ? "All mail" : item.label}{counts[item.value] > 0 && <span>{counts[item.value]}</span>}</button>)}</div>
+      <div className="emails-layout">
+        <aside ref={navigationRef} role={navigationOpen ? "dialog" : undefined} aria-modal={navigationOpen || undefined} className="emails-rail" aria-label="Mail navigation"><header className="mail-drawer-heading"><strong>Hathor mail</strong><button type="button" aria-label="Close mail navigation" className="email-icon-button" onClick={() => setNavigationOpen(false)}><X size={18} /></button></header><button type="button" className="btn-primary mail-rail-compose" onClick={() => { compose(); setNavigationOpen(false); }} disabled={!canSend || Boolean(draft) || batching}><Pencil size={18} />Compose</button>      <div className="emails-filters" role="group" aria-label="Filter emails">{filters.map(item => <button type="button" key={item.value} data-tone={item.value} aria-pressed={filter === item.value} disabled={batching} onClick={() => { chooseFilter(item.value); setNavigationOpen(false); }}><span className="emails-dot" aria-hidden />{item.label}<span className="emails-filters__count">{counts[item.value]}</span></button>)}</div><p className="mail-section-label">Held for review</p>      <nav className="emails-folders" aria-label="Email folders">
+        {(["inbox", "spam", "security"] as const).map(item => <button type="button" key={item} className="btn-outline"
+          aria-pressed={folder === item} disabled={Boolean(draft) || batching || marking}
+          onClick={() => { setNavigationOpen(false); setFolder(item); setFilter("all"); setCursor(null); setSelection([]); selectMessage(null); }}>
+          {item === "inbox" ? "Inbox" : item === "spam" ? "Spam" : "Security quarantine"}
+        </button>)}
+      </nav>
+      {folder !== "inbox" ? <p className="text-sm text-muted">Held messages do not trigger normal Inbox alerts. Read the reason before restoring. Links, formatted views and attachments remain blocked until restored.</p> : null}
+      <p className="mail-section-label">Mailboxes</p><nav className="emails-mailboxes" aria-label="Choose mailbox">
+        <button type="button" className="emails-mailbox" aria-pressed={mailbox === "all"} disabled={savingHandler || batching} onClick={() => { chooseMailbox("all"); setNavigationOpen(false); }} style={{ "--mailbox-color": "var(--accent)" } as CSSProperties}><span className="emails-mailbox__role">All mailboxes</span><span className="emails-mailbox__handler">Accessible mailboxes</span><span className="emails-mailbox__count" title={`${mailboxes.reduce((sum, item) => sum + item.total, 0)} total`} aria-label={`${mailboxes.reduce((sum, item) => sum + item.unread, 0)} unread, ${mailboxes.reduce((sum, item) => sum + item.total, 0)} total`}>{mailboxes.reduce((sum, item) => sum + item.unread, 0)}</span></button>
+        {mailboxes.map(item => <button type="button" key={item.id} className="emails-mailbox" data-mailbox={item.id} aria-pressed={mailbox === item.id} disabled={savingHandler || batching} onClick={() => { chooseMailbox(item.id); setNavigationOpen(false); }} style={{ "--mailbox-color": item.color } as CSSProperties}><span className="emails-mailbox__role">{item.label}</span><span className="emails-mailbox__handler">{item.handlerName || "Handler not assigned"}</span><span className="emails-mailbox__count" title={`${item.total} total`} aria-label={`${item.unread} unread, ${item.total} total`}>{item.unread}</span></button>)}
+      </nav>
+        <details className="emails-setup"><summary>Zoho forwarding setup</summary><div className="emails-setup__panel"><p>In each Zoho mailbox’s forwarding settings, add its matching destination below, verify it, and keep the original copy. Existing history is not imported. Do not change your main MX records.</p><ul>{EMAIL_MAILBOXES.filter(item => visibleIds.includes(item.id)).map(item => <li key={item.id}><strong>{item.address}</strong><span>→ {item.forwardingAddress}</span></li>)}</ul></div></details></aside>
+      <div className="dashboard-inbox__workspace" data-selected={Boolean(selected)}>
+        <section className="card dashboard-inbox__list" aria-label="Email list" aria-busy={busy}>
+      <div className="emails-controls">
+      {(mailbox !== "all" || folder !== "inbox" || filter !== "all" || query) && <div className="mail-active-filters" aria-label="Active mail filters">
+        {mailbox !== "all" && <button type="button" disabled={batching} onClick={() => clearMailFilter("mailbox")} aria-label="Clear mailbox filter">{emailMailbox(mailbox).label}<X size={12} /></button>}
+        {folder !== "inbox" && <button type="button" disabled={batching} onClick={() => clearMailFilter("folder")} aria-label="Clear folder filter">{folder === "spam" ? "Spam" : "Security quarantine"}<X size={12} /></button>}
+        {filter !== "all" && <button type="button" disabled={batching} onClick={() => clearMailFilter("status")} aria-label="Clear status filter">{filters.find(item => item.value === filter)?.label}<X size={12} /></button>}
+        {query && <button type="button" disabled={batching} onClick={() => clearMailFilter("search")} aria-label="Clear search filter">{query}<X size={12} /></button>}
+        <button type="button" className="mail-active-filters__clear" disabled={batching} onClick={() => clearMailFilter("all")}>Clear all</button>
+      </div>}
+
+
+
+      {selection.length ? <div className="emails-bulk-actions" role="group" aria-label="Selected email actions"><strong aria-live="polite">{selection.length} selected</strong><button type="button" className="btn-outline mail-phone-move" disabled={!canManage || batching} onClick={() => moveDialog.current?.showModal()}><FolderInput size={17} />Move selected</button><label className="sr-only" htmlFor="email-move-target">Move selected emails to</label><select id="email-move-target" className="admin-input" value={moveTarget} disabled={batching} onChange={event => setMoveTarget(event.target.value as MailboxId | "")}><option value="">Choose mailbox…</option>{EMAIL_MAILBOXES.filter(item => visibleIds.includes(item.id)).map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><button type="button" className="btn-outline" disabled={!canManage || batching || !moveTarget} onClick={() => void manageSelection("move")}><FolderInput size={15} aria-hidden />Move selected</button><button type="button" className="btn-outline emails-delete" disabled={!canManage || batching} onClick={() => void manageSelection("delete")}><Trash2 size={15} aria-hidden />Delete selected</button><button type="button" className="btn-outline" disabled={batching} onClick={() => setSelection([])}>Clear selection</button>{batching ? <span role="status">Saving dashboard changes…</span> : null}</div> : null}
+
       {activeMailbox ? <div className="emails-handler-bar"><span className="emails-mailbox-chip" style={{ "--mailbox-color": activeMailbox.color } as CSSProperties}>{activeMailbox.label}</span><span>{activeMailbox.address}</span><button type="button" className="btn-outline" disabled={!canManage || Boolean(draft)} onClick={() => { setHandlerName(activeMailbox.handlerName); setEditingHandler(current => !current); }}><Pencil size={14} aria-hidden />{activeMailbox.handlerName ? "Edit handler name" : "Add handler name"}</button></div> : null}
       {editingHandler && activeMailbox ? <form className="emails-handler-editor" onSubmit={event => void saveHandler(event)}><label htmlFor="mailbox-handler">Who handles {activeMailbox.label}?</label><input id="mailbox-handler" className="admin-input" maxLength={80} value={handlerName} onChange={event => setHandlerName(event.target.value)} placeholder="Full name (optional)" disabled={savingHandler} /><button type="submit" className="btn-primary" disabled={savingHandler}>{savingHandler ? "Saving…" : "Save name"}</button><button type="button" className="btn-outline" disabled={savingHandler} onClick={() => setEditingHandler(false)}>Cancel</button></form> : null}
       {error ? <p role="alert" className="text-sm" style={{ color: "var(--danger)" }}>{error}</p> : null}
@@ -382,13 +420,13 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
               return (
               <li key={keyOf(message)} className="emails-selectable-row" data-checked={selectedKeys.has(keyOf(message))}>
                 <label className="emails-row-selector" title={message.status === "PENDING" ? "Resolve sending status before selecting this email" : "Select email"}><input type="checkbox" aria-label={`Select email: ${message.subject || "(No subject)"}`} checked={selectedKeys.has(keyOf(message))} disabled={batching || Boolean(draft) || message.status === "PENDING" || (selection.length >= 100 && !selectedKeys.has(keyOf(message)))} onChange={() => toggleSelection(message)} /></label>
-                <button type="button" className="dashboard-inbox__message" data-tone={toneOf(message)} aria-pressed={selected === keyOf(message)} disabled={Boolean(draft) || batching} onClick={() => { if (selected !== keyOf(message)) selectMessage(keyOf(message)); }}>
-                  <div className="emails-message__top"><span className="emails-mailbox-chip" style={{ "--mailbox-color": emailMailbox(message.mailboxId ?? "reservations").color } as CSSProperties}>{emailMailbox(message.mailboxId ?? "reservations").label}</span><span className="emails-status">{statusOf(message)}</span></div>
-                  <div className="emails-message__contact"><span className="emails-avatar" aria-hidden>{correspondentInitials(name)}</span><div><p className="emails-message__name">{name}</p><p className="emails-message__address">{message.direction === "OUTBOUND" ? "TO" : "FROM"} · {address}</p></div></div>
+                <button type="button" className="dashboard-inbox__message" data-tone={toneOf(message)} aria-pressed={selected === keyOf(message)} disabled={batching} onClick={() => { if (selected !== keyOf(message)) selectMessage(keyOf(message)); }}>
+                  <div className="emails-message__top"><span className="emails-mailbox-chip" style={{ "--mailbox-color": emailMailbox(message.mailboxId ?? "reservations").color } as CSSProperties}>{emailMailbox(message.mailboxId ?? "reservations").label}</span><span className="emails-status" data-failed={message.status === "FAILED"}>{statusOf(message)}</span></div>
+                  <div className="emails-message__contact" title={address}><span className="emails-avatar" aria-hidden>{correspondentInitials(name)}</span><div><p className="emails-message__name">{name}</p><p className="emails-message__address">{message.direction === "OUTBOUND" ? "TO" : "FROM"} · {address}</p></div></div>
                   <p className="emails-message__subject">{message.subject || "(No subject)"}</p>
                   <p className="emails-message__preview">{message.preview || "(No message text)"}</p>
                   <div className="emails-message__meta"><span className="emails-status" data-failed={message.status === "FAILED"}>{message.direction === "OUTBOUND" ? <ArrowUpRight size={13} aria-hidden /> : <ArrowDownLeft size={13} aria-hidden />}{statusOf(message)}</span><span>{message.source === "booking" ? "Booking" : "Personal"}</span>{message.attachmentCount ? <span><Paperclip size={12} aria-hidden />{message.attachmentCount}</span> : null}</div>
-                  <time className="emails-message__time" dateTime={message.createdAt}>{messageTime.format(new Date(message.createdAt))}</time>
+                  <time className="emails-message__time" dateTime={message.createdAt} title={messageTime.format(new Date(message.createdAt))}>{rowTime.format(new Date(message.createdAt))}</time>
                 </button>
               </li>
             ); })}
@@ -396,23 +434,23 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
           {hasOlder ? <div className="p-4"><button type="button" className="btn-outline w-full" disabled={busy || batching} onClick={() => setCursor(messages[messages.length - 1] ?? null)}>Load older emails</button></div> : null}
           </div>
         </section>
-        <section ref={detailRef} tabIndex={-1} className="card dashboard-inbox__detail" aria-label="Email details">
-          {draft ? <EmailComposer key={draft.key} initial={draft} handlerName={mailboxes.find(item => item.id === draft.mailboxId)?.handlerName} onClose={() => setDraft(null)} onSent={sent} /> : <div className="emails-detail-content">
+        <section ref={detailRef} tabIndex={-1} className="card dashboard-inbox__detail" aria-label="Email details"><button type="button" className="email-icon-button mail-reader-toggle" aria-label={readerExpanded ? "Restore split view" : "Expand email"} onClick={() => setReaderExpanded(value => !value)}>{readerExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}</button>
+          <div className="emails-detail-content">
           {selected ? <button type="button" className="btn-outline mb-5" onClick={() => selectMessage(null)}><ArrowLeft className="h-4 w-4" aria-hidden />Back to emails</button> : null}
           {detailError ? <p role="alert" className="mb-4 text-sm" style={{ color: "var(--danger)" }}>{detailError}</p> : null}
           {!detail ? <div className="emails-detail-empty"><span><Mail size={32} aria-hidden /></span><h2>{selected ? detailError ? "Unable to open email" : "Opening email…" : "Every conversation, in focus"}</h2><p>{selected ? "Your message will appear here." : "Choose a message to read its details, or write a personal note in Hathor’s signature style."}</p>{!selected ? <button type="button" className="btn-outline" disabled={!canSend} onClick={() => compose()}><Plus size={16} aria-hidden />Write a new email</button> : null}</div> : (
-            <article className="min-w-0">
+            <article className="min-w-0 mail-reader-content">
               <div className="emails-detail-contact" data-tone={toneOf(detail)}><span className="emails-avatar" aria-hidden>{correspondentInitials(correspondentLabel(detail.correspondentName, contactOf(detail)))}</span><div><p>{correspondentLabel(detail.correspondentName, contactOf(detail))}</p><span className="emails-status">{statusOf(detail)}{detail.direction === "OUTBOUND" ? " · From Hathor" : " · Received by Hathor"}</span></div><span className="emails-mailbox-chip" style={{ "--mailbox-color": emailMailbox(detail.mailboxId ?? "reservations").color } as CSSProperties}>{emailMailbox(detail.mailboxId ?? "reservations").label}</span></div>
               <h2 className="break-words text-xl font-semibold">{detail.subject || "(No subject)"}</h2>
-              <dl className="emails-detail-metadata"><div><dt>From</dt><dd>{detail.sender}</dd></div><div><dt>To</dt><dd>{detail.recipient}</dd></div><div><dt>{detail.direction === "OUTBOUND" ? "Recorded" : "Received"}</dt><dd><time dateTime={detail.createdAt}>{messageTime.format(new Date(detail.createdAt))}</time></dd></div><div><dt>Handled by</dt><dd>{mailboxes.find(item => item.id === detail.mailboxId)?.handlerName || "Not assigned"}</dd></div></dl>
+              <details className="mail-message-details"><summary>Message details</summary><dl className="emails-detail-metadata"><div><dt>From</dt><dd>{detail.sender}</dd></div><div><dt>To</dt><dd>{detail.recipient}</dd></div><div><dt>{detail.direction === "OUTBOUND" ? "Recorded" : "Received"}</dt><dd><time dateTime={detail.createdAt}>{messageTime.format(new Date(detail.createdAt))}</time></dd></div><div><dt>Handled by</dt><dd>{mailboxes.find(item => item.id === detail.mailboxId)?.handlerName || "Not assigned"}</dd></div></dl></details>
               {!detail.senderMatchesGuest ? <p className="mt-4 text-sm text-muted">This sender differs from the booking’s guest email. Verify their identity before taking action.</p> : null}
               {detail.screeningReasons?.length ? <aside className="emails-screening" aria-label="Screening reasons"><p className="font-semibold">{(detail.folder ?? "inbox") === "inbox" ? "Review history" : detail.folder === "spam" ? "Why this is in Spam" : "Why this is quarantined"}</p><ul>{detail.screeningReasons.map(reason => <li key={reason}>{MAIL_REASON_LABELS[reason] ?? "Held for review."}</li>)}</ul></aside> : null}
-              <div className="my-6 flex flex-wrap gap-3">
-                {detail.direction !== "OUTBOUND" ? <button type="button" className="btn-outline" disabled={!canManage || marking} onClick={() => void markRead()}>{marking ? "Saving…" : detail.readAt ? "Mark unread" : "Mark read"}</button> : null}
+              <div className="emails-detail-actions my-6 flex flex-wrap gap-3">
+                {detail.direction !== "OUTBOUND" ? <button type="button" className="btn-outline" aria-label={detail.readAt ? "Mark unread" : "Mark read"} title={detail.readAt ? "Mark unread" : "Mark read"} disabled={!canManage || marking} onClick={() => void markRead()}><Mail size={17} aria-hidden /><span>{marking ? "Saving…" : detail.readAt ? "Mark unread" : "Mark read"}</span></button> : null}
                 {(detail.folder ?? "inbox") !== "inbox" ? <button type="button" className="btn-primary" disabled={!canManage || marking || batching} onClick={() => void moveToFolder("inbox")}>{detail.folder === "spam" ? "Not spam · Move to Inbox" : "Restore to Inbox"}</button> : detail.bookingId && hasAdminPermission(access, "bookings.view") ? <Link className="btn-primary" href={`/admin/bookings/${encodeURIComponent(detail.bookingId)}`}>Open booking & reply</Link> : <button type="button" className="btn-primary" disabled={!sendIds.includes(detail.mailboxId)} onClick={() => compose({ to: contactOf(detail), recipientName: detail.correspondentName ?? "", mailboxId: detail.mailboxId ?? "reservations", subject: /^re:/i.test(detail.subject) ? detail.subject : `Re: ${detail.subject}`.slice(0, 180) })}>{detail.direction === "OUTBOUND" ? "Send another email" : "Reply from dashboard"}</button>}
-                {detail.direction === "INBOUND" && detail.folder !== "spam" ? <button type="button" className="btn-outline" disabled={marking || batching} onClick={() => void moveToFolder("spam")}>Mark as spam</button> : null}
-                {detail.direction === "INBOUND" && detail.folder !== "security" ? <button type="button" className="btn-outline" disabled={marking || batching} onClick={() => void moveToFolder("security")}>Flag security threat</button> : null}
-                <button type="button" className="btn-outline emails-delete" disabled={!canManage || deleting || batching || detail.status === "PENDING"} onClick={() => void removeMessage()}><Trash2 size={15} aria-hidden />{deleting ? "Removing…" : "Delete from dashboard"}</button>
+                {detail.direction === "INBOUND" && detail.folder !== "spam" ? <button type="button" className="btn-outline" aria-label="Mark as spam" title="Mark as spam" disabled={!canManage || marking || batching} onClick={() => void moveToFolder("spam")}><Ban size={17} aria-hidden /><span>Mark as spam</span></button> : null}
+                {detail.direction === "INBOUND" && detail.folder !== "security" ? <button type="button" className="btn-outline" aria-label="Flag security threat" title="Flag security threat" disabled={!canManage || marking || batching} onClick={() => void moveToFolder("security")}><ShieldAlert size={17} aria-hidden /><span>Flag security threat</span></button> : null}
+                <button type="button" className="btn-outline emails-delete" aria-label="Delete from dashboard" title="Delete from dashboard" disabled={!canManage || deleting || batching || detail.status === "PENDING"} onClick={() => void removeMessage()}><Trash2 size={15} aria-hidden /><span>{deleting ? "Removing…" : "Delete from dashboard"}</span></button>
               </div>
               {detail.direction === "OUTBOUND" && detail.status !== "SENT" ? <p className="email-composer__notice">{detail.status === "FAILED" ? "The provider did not accept this email." : "Sending has not been confirmed. Check the original send request before creating a second copy."}</p> : null}
               <MailConversation key={`${detail.bookingId}/${detail.folder}`} detail={detail} onSent={refresh} refreshPaused={batching || selection.length > 0}>
@@ -427,10 +465,13 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
               </MailConversation>
             </article>
           )}
-          </div>}
+          </div>
         </section>
       </div>
       </div>
+      <dialog ref={moveDialog} className="mail-move-sheet" aria-labelledby="mail-move-title"><h2 id="mail-move-title">Move {selection.length} emails to…</h2><p>Only the dashboard changes. Your Zoho mailboxes stay as they are.</p><div>{EMAIL_MAILBOXES.filter(item => visibleIds.includes(item.id)).map(item => <button type="button" key={item.id} disabled={!canManage || batching || Boolean(draft)} onClick={() => { setMoveTarget(item.id); moveDialog.current?.close(); void manageSelection("move", item.id); }}><span style={{ backgroundColor: item.color }} />{item.label}</button>)}</div><button type="button" className="btn-outline" onClick={() => moveDialog.current?.close()}>Cancel</button></dialog>
+      {draft && <FloatingEmailComposer mailboxes={mailboxes} key={draft.key} initial={draft} handlerName={mailboxes.find(item => item.id === draft.mailboxId)?.handlerName} onClose={() => setDraft(null)} onSent={sent} />}
+      {navigationOpen && <button type="button" className="mail-drawer-shade" aria-label="Dismiss mail navigation" onClick={() => setNavigationOpen(false)} />}
     </div>
   );
 }

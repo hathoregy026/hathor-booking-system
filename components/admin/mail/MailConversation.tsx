@@ -97,20 +97,20 @@ export function MailConversation({ detail, children, onSent, refreshPaused = fal
   return <section className="mail-conversation" aria-label="Booking conversation">
     <header><h3>Conversation · {messages.length}{hasOlder ? "+" : ""} messages</h3><button className="btn-outline" disabled={busy} onClick={() => setVersion(value => value + 1)}>Refresh conversation</button></header>
     {!messages.some(item => item.id === detail.id) && <div aria-label="Selected email">{children}</div>}
-    <ol>{[...messages].reverse().map(item => <li key={item.id} className="mail-conversation__message" data-direction={item.direction}>
+    <ol>{[...messages].reverse().map((item, index) => <li key={item.id} className="mail-conversation__message" data-direction={item.direction}><details open={item.id === detail.id || index === messages.length - 1}><summary>
       <header><strong>{item.direction === "INBOUND" ? "Guest" : "Hathor team"}</strong><span className="emails-status">{item.status === "RECEIVED" ? "Received" : item.status === "SENT" ? "Sent" : item.status === "FAILED" ? "Failed to send" : "Send result pending"}</span><time dateTime={item.createdAt}>{time.format(new Date(item.createdAt))}</time></header>
-      <p className="mail-conversation__address">{item.sender}</p><h4>{item.subject || "(No subject)"}</h4>
+      <p className="mail-conversation__address">{item.sender}</p><h4>{item.subject || "(No subject)"}</h4></summary>
       {item.direction === "INBOUND" && !item.senderMatchesGuest && <p className="email-composer__notice">This sender differs from the booking contact. Verify their identity before taking action.</p>}
       <EmailMessageBody key={item.attachments.map(file => file.id).join(",")} bodyText={item.bodyText} formattedUrl={item.direction === "INBOUND" ? `/api/admin/inbox/booking/${item.id}/formatted` : undefined} />
       {!!item.attachments.length && <ul className="mail-conversation__attachments">{item.attachments.map(file => <li key={file.id}>{item.direction === "INBOUND" ? <ReceivedEmailAttachment filename={file.filename} contentType={file.contentType} disabled={!hasAdminPermission(access, "inbox.manage")} transferUrl={`/api/admin/inbox/booking/${item.id}/attachments/${file.id}/transfer`} downloadOnlyHref={`/api/admin/bookings/${encodeURIComponent(bookingId)}/messages/${item.id}/attachments/${file.id}`} onRemoved={() => { setMessages(current => current?.map(row => row.id === item.id ? { ...row, attachments: row.attachments.filter(attachment => attachment.id !== file.id) } : row) ?? null); onSent(); setNotice("Attachment removed from the dashboard. The email and Zoho copy are kept. Resend’s copy remains under its retention policy."); }} /> : <a target="_blank" rel="noopener noreferrer" href={`/api/admin/bookings/${encodeURIComponent(bookingId)}/messages/${item.id}/attachments/${file.id}`}>{file.filename}</a>}</li>)}</ul>}
-    </li>)}</ol>
+    </details></li>)}</ol>
     {hasOlder && <button className="btn-outline" disabled={loadingOlder} onClick={() => void older()}>{loadingOlder ? "Loading…" : "Load older messages"}</button>}
     {notice && <p role="status" className="email-composer__notice">{notice}</p>}
-    {canReply && <form className="mail-reply" onSubmit={event => void send(event)}>
+    {canReply && <details className="mail-reply-disclosure"><summary>Reply to guest</summary><form className="mail-reply" onSubmit={event => void send(event)}>
       <h3>Reply to guest</h3><label htmlFor="mail-reply-subject">Subject (optional)</label><input id="mail-reply-subject" className="admin-input" value={subject} maxLength={200} disabled={busy || uncertain} onChange={event => setSubject(event.target.value)} />
       <label htmlFor="mail-reply-message">Message</label><textarea id="mail-reply-message" className="admin-input" value={message} required minLength={2} maxLength={4000} rows={5} disabled={busy || uncertain} onChange={event => setMessage(event.target.value)} /><span>{message.length} / 4,000</span>
       <ReplyAttachments bookingId={bookingId} items={files} onChange={setFiles} disabled={busy || uncertain} />
       <footer className="mail-reply__actions"><Link className="btn-outline" href={`/admin/bookings/${encodeURIComponent(bookingId)}`}>Open booking</Link><button className="btn-primary" type="submit" disabled={busy || uncertain || files.some(file => file.status !== "ready")}>{busy ? "Sending…" : "Send reply"}</button></footer>
-    </form>}
+    </form></details>}
   </section>;
 }
