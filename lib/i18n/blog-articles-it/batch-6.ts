@@ -92,7 +92,7 @@ La dahabiya permette un viaggio lento e ricco di significato. Non si limita a ve
 
 <p>Immagini di svegliarsi con i suoni delicati del Nilo, di gustare il caffè del mattino sul ponte solarium e di esplorare antichi templi mano nella mano. Una crociera in dahabiya svela tesori nascosti del Nilo e luoghi fuori dai percorsi abituali, che le grandi navi da crociera non possono raggiungere. La Sua luna di miele diventa un’esperienza davvero unica e indimenticabile.</p>
 
-<p>A bordo di una <strong>crociera sul Nilo in suite VIP</strong>, le coppie possono scoprire angoli tranquilli e appartati lungo il fiume, perfetti per immortalare momenti romantici e creare insieme ricordi duraturi.</p>
+<p>A bordo di una <strong>crociera sul Nilo in Royal Suite</strong>, le coppie possono scoprire angoli tranquilli e appartati lungo il fiume, perfetti per immortalare momenti romantici e creare insieme ricordi duraturi.</p>
 
 <h2><span class="hathor-blog-accent">Ecco 5 luoghi segreti che renderanno indimenticabili le foto della Sua luna di miele</span></h2>
 
@@ -106,7 +106,7 @@ La dahabiya permette un viaggio lento e ricco di significato. Non si limita a ve
 
 <p>Si allontani dalla solita folla e visiti le Tombe dei Nobili a Luxor. Queste tombe meno conosciute offrono un’atmosfera serena e affascinante, impreziosita da straordinarie pitture murali che creano uno splendido sfondo storico per le foto della Sua luna di miele. Rientrando nella loro <strong>suite per la luna di miele sul Nilo</strong>, gli ospiti possono continuare a godersi la serenità e l’esclusività di questo viaggio unico.</p>
 
-<p>Lontano dal rumore dei siti turistici più affollati, questo tesoro nascosto offre un’esperienza intima che completa alla perfezione il comfort e la riservatezza di una <strong>crociera sul Nilo in suite VIP</strong>, rendendo ancora più memorabile ogni momento della Sua luna di miele.</p>
+<p>Lontano dal rumore dei siti turistici più affollati, questo tesoro nascosto offre un’esperienza intima che completa alla perfezione il comfort e la riservatezza di una <strong>crociera sul Nilo in Royal Suite</strong>, rendendo ancora più memorabile ogni momento della Sua luna di miele.</p>
 
 <h3><span class="hathor-blog-accent">Kom Ombo,&nbsp;un bagliore romantico</span></h3>
 
@@ -132,7 +132,7 @@ Una luna di miele in Egitto dovrebbe concedersi qualche momento come questo: tra
 
 <p>È giunto il momento di partire per la crociera di nozze sul Nilo che ha sempre sognato? Entri in un mondo di eleganza con un’esperienza di lusso in dahabiya, dove ogni momento è pensato per l’amore, il relax e i ricordi che restano. Si rilassi nella <strong>suite per la luna di miele sul Nilo</strong>, godendo di un comfort eccezionale e di panorami mozzafiato sul Nilo per tutto il viaggio.</p>
 
-<p>Viva un’incantevole luna di miele in Egitto sul Nilo, navigando tra paesaggi splendidi e meraviglie senza tempo che rendono questo viaggio davvero straordinario. Le coppie in cerca della fuga romantica per eccellenza possono godersi l’esclusività di una <strong>crociera sul Nilo in suite VIP</strong>, dove riservatezza, lusso e servizio personalizzato si fondono alla perfezione.</p>
+<p>Viva un’incantevole luna di miele in Egitto sul Nilo, navigando tra paesaggi splendidi e meraviglie senza tempo che rendono questo viaggio davvero straordinario. Le coppie in cerca della fuga romantica per eccellenza possono godersi l’esclusività di una <strong>crociera sul Nilo in Royal Suite</strong>, dove riservatezza, lusso e servizio personalizzato si fondono alla perfezione.</p>
 
 <p>Scatti fotografie bellissime, crei ricordi preziosi e assapori ogni momento, mentre romanticismo, cultura e tranquillità scorrono insieme lungo il Nilo. Inizi oggi il Suo viaggio e scopra una luna di miele di lusso in dahabiya: una fuga indimenticabile, ricca di romanticismo, storia ed esperienze uniche nella vita.</p>`,
 
@@ -150,9 +150,9 @@ Una luna di miele in Egitto dovrebbe concedersi qualche momento come questo: tra
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/valley-of-the-kings-1756880844ePuAy.jpg" alt="Valle dei Re" loading="lazy"></figure></p>
 
-<p>La Valle dei Re, in Egitto, è una vasta necropoli sulla riva occidentale del Nilo, vicino alla celebre città di Luxor. È nota soprattutto come l’ultima dimora dei re e delle regine dell’antico Egitto, oltre 3.000 anni fa. A differenza di chi aveva innalzato le piramidi in altre parti dell’Egitto, i faraoni e altri nobili scelsero di farsi seppellire qui, in tombe scavate nella roccia.</p>
+<p>La Valle dei Re, in Egitto, è una vasta necropoli sulla riva occidentale del Nilo, vicino alla celebre città di Luxor. È nota soprattutto come l’ultima dimora dei re dell’antico Egitto, oltre 3.000 anni fa. A differenza di chi aveva innalzato le piramidi in altre parti dell’Egitto, i faraoni e altri nobili scelsero di farsi seppellire qui, in tombe scavate nella roccia.</p>
 
-<p>Le pitture che accompagnano i testi geroglifici e ieratici, scritti e incisi sulle pareti, raccontano le storie dei re, fino alla loro fine e alle gioie dell’aldilà. Qui si trova anche la tomba del celebre Tutankhamon, chiamato «re Tut»: fu scoperta dagli archeologi nel 1922, ancora intatta. La tomba custodisce numerosi oggetti che esprimono non solo ricchezza ma anche autorità, a conferma del potere e della presenza di questi sovrani nel loro tempo.</p>
+<p>Le pitture che accompagnano i testi geroglifici e ieratici, scritti e incisi sulle pareti, raccontano le storie dei re, fino alla loro fine e alle gioie dell’aldilà. Qui si trova anche la tomba del celebre Tutankhamon, chiamato «re Tut»: fu scoperta dagli archeologi nel 1922, ancora intatta. La tomba custodiva numerosi oggetti che esprimono non solo ricchezza ma anche autorità, a conferma del potere e della presenza di questi sovrani nel loro tempo.</p>
 
 <p>Esplorare questi luoghi reali nel corso di una crociera di lusso sul Nilo aggiunge comfort ed eleganza al viaggio nella storia. La Valle dei Re e le sue tombe furono concepite per custodire i sovrani in un riposo tranquillo e sicuro.</p>
 
@@ -175,7 +175,7 @@ Entrare nelle tombe della Valle dei Re è come tornare indietro nel tempo, fino 
 <br>
 Le tombe, al contrario, sono fresche e buie, con pareti dai colori vivaci che raffigurano divinità, animali e figure della mitologia egizia. Si credeva che queste pitture accompagnassero i re nel loro viaggio nell’aldilà.<br>
 <br>
-Non tutte le tombe sono accessibili, ma quelle aperte al pubblico offrono uno sguardo sulla vita e sulla morte nell’antichità. La celebre tomba di Tutankhamon è una di quelle da non perdere. È più piccola di molte altre, ma è colma di tesori e reperti che raccontano la storia di uno dei re più giovani d’Egitto.<br>
+Non tutte le tombe sono accessibili, ma quelle aperte al pubblico offrono uno sguardo sulla vita e sulla morte nell’antichità. La celebre tomba di Tutankhamon è una di quelle da non perdere. È più piccola di molte altre, ma fu trovata colma di tesori e reperti che raccontano la storia di uno dei re più giovani d’Egitto.<br>
 Oltre alle tombe, nei dintorni si possono esplorare templi e musei per scoprire di più sul fastoso passato dell’Egitto. Se preferisce un’esperienza di crociera di lusso sul Nilo, questo itinerario attraverso la Valle dei Re offre tutto ciò che si può desiderare, con facilità e comfort. La crociera in dahabiya con visita alla Valle dei Re è pensata perché non debba mai affrettarsi né stancarsi, ma solo assaporare il panorama splendido e un servizio impeccabile sul fiume, curato fino all’ultimo dettaglio. Il viaggio permette di vivere pienamente ogni istante, soprattutto durante la visita alle straordinarie tombe della Valle dei Re, scavate in profondità nelle colline.<br>
 <br>
 Torni indietro nel tempo e si lasci trasportare nel cuore della grandezza dell’Egitto con una crociera di prim’ordine a bordo di <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> e la visita alla Valle dei Re.<br>
@@ -183,7 +183,7 @@ Durante il viaggio potrà godere di praticità e comfort sotto ogni aspetto, com
 
   "sailing-to-karnak-temple": `<h2><span class="hathor-blog-accent">Il complesso templare di Karnak, il Tempio degli Dèi</span></h2>
 
-<p>Immagini di scivolare in silenzio sul Nilo a bordo della <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, in crociera da Assuan a Luxor, quando in lontananza si innalzano possenti portali e colonne di pietra. Ecco il Tempio di Karnak: una meraviglia antica che esiste da oltre 2.000 anni. Non è un semplice tempio: è una storia scolpita nella pietra, in cui risuonano ancora le voci di faraoni e dèi.<br>
+<p>Immagini di scivolare in silenzio sul Nilo a bordo della <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, in crociera da Assuan a Luxor, quando in lontananza si innalzano possenti portali e colonne di pietra. Ecco il Tempio di Karnak: una meraviglia antica costruita nell’arco di oltre 2.000 anni. Non è un semplice tempio: è una storia scolpita nella pietra, in cui risuonano ancora le voci di faraoni e dèi.<br>
 Le diamo il benvenuto in uno dei luoghi sacri più grandi e potenti mai eretti dall’uomo, un’attrazione turistica imperdibile in Egitto.</p>
 
 <h2><br>
@@ -263,7 +263,7 @@ Se preferisce un viaggio più breve, la crociera sul Nilo <a href="https://www.h
 
 <p>L’avventura comincia a <a href="/blogs/explore-luxor-in-luxury">Luxor</a>, considerata il più grande museo a cielo aperto del mondo. Passeggiare per Luxor significa entrare in un capitolo della storia antica. Il maestoso <a href="/blogs/sailing-to-karnak-temple">Tempio di Karnak</a>, con i suoi pilastri altissimi e il lago sacro, è forse uno dei complessi religiosi più imponenti mai costruiti. A pochi chilometri di distanza, il Tempio di Luxor si staglia sotto l’ampio cielo del deserto e nelle ore serali si illumina in modo splendido.<br>
 <br>
-Attraversando il possente Nilo si raggiunge la riva occidentale, con <a href="/blogs/discover-the-valley-of-the-kings">la Valle dei Re</a>. Qui, in tombe profonde scavate nelle falesie, riposano i corpi di sovrani come Ramses II e il giovane re Tutankhamon. Sono più che semplici tombe: sono splendidi ambienti ricoperti di pitture e geroglifici che descrivono l’aldilà. Vivere tutto questo con una crociera in dahabiya sul Nilo da Assuan a Luxor aggiunge al viaggio un comfort e un fascino impareggiabili.<br>
+Attraversando il possente Nilo si raggiunge la riva occidentale, con <a href="/blogs/discover-the-valley-of-the-kings">la Valle dei Re</a>. Qui, in tombe profonde scavate nelle falesie, furono sepolti sovrani come Ramses II e il giovane re Tutankhamon. Sono più che semplici tombe: sono splendidi ambienti ricoperti di pitture e geroglifici che descrivono l’aldilà. Vivere tutto questo con una crociera in dahabiya sul Nilo da Assuan a Luxor aggiunge al viaggio un comfort e un fascino impareggiabili.<br>
 <br>
 A Luxor la storia scorre ovunque. Vista nello splendore di una crociera di lusso sul Nilo, quella storia afferma con forza la sua presenza. Il dolce sciabordio del fiume, accanto alla grandiosità austera dei templi colossali, crea un’atmosfera davvero speciale.</p>
 
@@ -304,7 +304,7 @@ Che si lasci stupire dalla bellezza di Karnak, incantare dalla Valle dei Re o ra
 <br>
 Non è soltanto un insieme di belle rovine antiche. È una saga audace e nobile, tradotta in pietra da una regina che cambiò davvero il corso della storia. Se arriverà navigando sul Nilo a bordo di una dahabiya di lusso, la magia del Suo primo sguardo su questo tempio non svanirà mai.<br>
 <br>
-Inizi la giornata a bordo della lussuosa&nbsp;<a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, in piedi sul ponte, stringendo tra le mani una tazza calda&nbsp;di tè alla menta mentre risale il Nilo verso Luxor. Presto aprirà la porta di quel luogo speciale dove la storia risveglia regine, dèi e pietre senza età.<br>
+Inizi la giornata a bordo della lussuosa&nbsp;<a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, in piedi sul ponte, stringendo tra le mani una tazza calda&nbsp;di tè alla menta mentre discende il Nilo verso Luxor. Presto aprirà la porta di quel luogo speciale dove la storia risveglia regine, dèi e pietre senza età.<br>
 <br>
 È la bellezza silenziosa della dahabiya stessa a rendere l’esperienza memorabile. A differenza delle navi più grandi e affollate, la Sua dahabiya di lusso offre un modo sereno e riservato di vivere il Nilo, e Le permette di entrare in sintonia con il paesaggio e con le storie antiche che custodisce. Mentre naviga, e sembra che sia il tempo stesso a scivolare via, il suono attutito dell’acqua contro lo scafo e il calore del vento del deserto preparano la mente alla vista maestosa che La attende.<br>
 <br>
@@ -318,7 +318,7 @@ Arrivare presto al Tempio di Hatshepsut significa poter salire e scendere le sue
 
 <p>La storia di Hatshepsut è tutt’altro che ordinaria. In un’epoca lontana, in cui raramente una donna saliva al trono d’Egitto, lei conquistò il potere e regnò per 20 anni. Invece di occupare il trono in silenzio, Hatshepsut governò con audacia, coraggio e intelligenza, e con una nobile visione di pace e prosperità.<br>
 <br>
-Il tempio è molto diverso dalle gigantesche piramidi e dalle tombe segrete che forse conosce. Sorge incastonato nelle falesie di Deir el-Bahari, in perfetta armonia con l’ambiente naturale. Le terrazze del tempio, disposte su più di tre livelli, sono collegate da rampe altissime e fiancheggiate da colonne eleganti che sembrano intonare una dolce melodia del deserto e del fiume.<br>
+Il tempio è molto diverso dalle gigantesche piramidi e dalle tombe segrete che forse conosce. Sorge incastonato nelle falesie di Deir el-Bahari, in perfetta armonia con l’ambiente naturale. Le terrazze del tempio, disposte su tre livelli, sono collegate da rampe altissime e fiancheggiate da colonne eleganti che sembrano intonare una dolce melodia del deserto e del fiume.<br>
 <br>
 All’interno del tempio, pitture colorate e rilievi raffinati, opera di maestri artigiani, raccontano la vita della regina di nascita divina, la celebre spedizione commerciale nella misteriosa Terra di Punt e il suo stretto legame con gli dèi che sostennero il suo regno.<br>
 <br>
@@ -633,7 +633,7 @@ Entrambe promettono ricordi da custodire per sempre, ma la differenza tra una cr
 
 <p><strong>Crociera sul Nilo: </strong>Pensi a un resort galleggiante. Queste grandi navi fluviali sono come alberghi sull’acqua, con camere climatizzate, ristorazione a buffet, piscine e intrattenimento a bordo. Le attività di gruppo sono divertenti e forse un po’ rumorose: l’ambiente ideale per chi ama questo tipo di atmosfera.</p>
 
-<p><strong>Dahabiya di lusso in Egitto: </strong>Un palazzo galleggiante d’altri tempi. Hathor Luxury Dahabiya è una barca a vela esclusiva, costruita artigianalmente e spinta dal vento, con appena da 6 a 12 cabine arredate con eleganza, dalle <a href="https://hathorcruise.com/luxury-suites" target="_blank" rel="noopener noreferrer">Luxury Suite</a> alle lussuose Royal Suite, che garantiscono la massima pace e riservatezza. Nessun rumore di motore a rompere il silenzio, nessun ponte affollato a coprire uno dei tramonti più spettacolari del Nilo: solo il sussurro delle vele e il tenue bagliore del fiume. Il lusso discreto nella sua forma migliore!</p>
+<p><strong>Dahabiya di lusso in Egitto: </strong>Un palazzo galleggiante d’altri tempi. Hathor Luxury Dahabiya è una barca a vela esclusiva, costruita artigianalmente e spinta dal vento, con appena 12 cabine e suite arredate con eleganza, tra cui le <a href="https://hathorcruise.com/luxury-suites" target="_blank" rel="noopener noreferrer">Luxury Suite</a> e le lussuose Royal Suite, che garantiscono la massima pace e riservatezza. Nessun rumore di motore a rompere il silenzio, nessun ponte affollato a coprire uno dei tramonti più spettacolari del Nilo: solo il sussurro delle vele e il tenue bagliore del fiume. Il lusso discreto nella sua forma migliore!</p>
 
 <p><br>
 <span style="color:#16a085"><strong>2. Itinerario ed esperienza</strong></span><br>

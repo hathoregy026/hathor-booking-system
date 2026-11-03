@@ -11,7 +11,7 @@ Conoscere le differenze tra dahabiya e crociera sul Nilo aiuta a scegliere il mo
 
 <p>Nel confronto tra dahabiya e crociera sul Nilo, la differenza più grande riguarda le dimensioni. La dahabiya è molto più piccola di una nave da crociera tradizionale sul Nilo: la maggior parte delle dahabiya ha soltanto da 6 a 12 cabine. Questo significa pochi ospiti a bordo e un’atmosfera più personale.</p>
 
-<p>Una grande nave da crociera sul Nilo, invece, può avere da 60 a 100 cabine o anche di più, e trasportare decine di passeggeri contemporaneamente. L’esperienza somiglia più a quella di un albergo galleggiante che a quella di una barca privata.</p>
+<p>Una grande nave da crociera sul Nilo, invece, può avere da 60 a 100 cabine o anche di più, e trasportare ben più di cento passeggeri contemporaneamente. L’esperienza somiglia più a quella di un albergo galleggiante che a quella di una barca privata.</p>
 
 <p>Grazie alle dimensioni ridotte, una piccola crociera sul Nilo in Egitto offre più spazio per ogni ospite e spazi comuni più tranquilli. Per questo molti viaggiatori che cercano la migliore crociera in dahabiya sul Nilo preferiscono una soluzione boutique, soprattutto su itinerari come la crociera boutique sul Nilo tra Luxor e Assuan, dove il viaggio conta quanto la destinazione.</p>
 
@@ -69,7 +69,7 @@ Hathor Dahabiya punta su un servizio personalizzato e su un viaggio dal ritmo le
 <span class="hathor-blog-accent">Perché scegliere Hathor Cruise per un’esperienza in dahabiya?</span></h2>
 
 <p>Ecco perché Hathor Dahabiya è la migliore dahabiya: scegliere Hathor Cruise significa vivere un’esperienza di navigazione sul Nilo intima e completa.<br>
-A bordo di Hathor Luxury Dahabiya gli ospiti possono scegliere tra due tipologie di sistemazione: le <a href="https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites" target="_blank" rel="noopener noreferrer">cabine di lusso</a>, curate in ogni dettaglio, e le eleganti Luxury Suite, che uniscono elementi del design tradizionale e comfort moderni. L’imbarcazione in legno lavorata a mano, le viste panoramiche e un equipaggio dedicato creano sul Nilo un ambiente esclusivo. Il viaggio offre un’atmosfera serena e un servizio personalizzato.<br>
+A bordo di Hathor Luxury Dahabiya gli ospiti possono scegliere tra tre tipologie di sistemazione: le <a href="https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites" target="_blank" rel="noopener noreferrer">cabine di lusso</a>, curate in ogni dettaglio, le eleganti Luxury Suite e le Royal Suite, che uniscono elementi del design tradizionale e comfort moderni. L’imbarcazione in legno lavorata a mano, le viste panoramiche e un equipaggio dedicato creano sul Nilo un ambiente esclusivo. Il viaggio offre un’atmosfera serena e un servizio personalizzato.<br>
 A bordo si preparano piatti eccellenti: potrà gustare la cucina di Hathor Flavors in un’atmosfera elegante ma rilassata. Hathor Luxury Dahabiya è un’ottima scelta per coppie e famiglie: faccia il primo passo e si regali un viaggio esclusivo sul Nilo con Hathor Cruise.</p>`,
 
   "why-choose-a-dahabiya-cruise-in-egypt": `<p>La crociera di lusso in dahabiya in Egitto si svolge a bordo di eleganti velieri di piccole dimensioni, che offrono ai passeggeri un’esperienza più riservata ed esclusiva rispetto alle navi da crociera tradizionali. Questo modo unico di scoprire il Nilo permette di viaggiare con i propri tempi, lontano dagli spazi comuni affollati e dagli orari rigidi.<br>
@@ -89,7 +89,7 @@ Una crociera privata in dahabiya sul Nilo è quindi una scelta eccellente per ch
 
 <h2><span class="hathor-blog-accent">Crociera di lusso in dahabiya in Egitto: itinerario ed esperienza</span></h2>
 
-<p>La maggior parte delle crociere in dahabiya naviga tra Luxor e Assuan, un percorso che conduce nel cuore dell’identità storica dell’Egitto e del suo passato più antico. Nel complesso del Tempio di Karnak si può vivere un momento di riflessione più intima, senza nessun altro intorno.<br>
+<p>La maggior parte delle crociere in dahabiya naviga tra Luxor e Assuan, un percorso che conduce nel cuore dell’identità storica dell’Egitto e del suo passato più antico. Nel complesso del Tempio di Karnak si può vivere un momento di riflessione più intima, con meno persone intorno.<br>
 I paesaggi che scorrono lenti tra una sosta e l’altra lungo il Nilo accompagnano la storia e la cultura di queste regioni e La portano a scoprire <a href="/blogs/best-places-to-visit-along-the-nile-with-a-dahabiya-cruise">i luoghi più belli lungo il Nilo</a> con una crociera in dahabiya. Più che un semplice giro turistico, la quiete di questo viaggio senza fretta diventa un viaggio interiore nel passato dell’Egitto e tra le sue meraviglie naturali.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/img-0306-17744300712elLf.jpg" alt="" loading="lazy"></figure></p>
@@ -165,7 +165,7 @@ Il ritmo lento e le dimensioni ridotte dell’imbarcazione rendono facile scopri
 
 <h2><span class="hathor-blog-accent">Che cos’è una crociera in dahabiya sul Nilo?</span></h2>
 
-<p>Al centro dell’esperienza della crociera in dahabiya sul Nilo&nbsp;c’è un veliero egiziano che anticamente era usato dagli aristocratici e che oggi chi viaggia sceglie per scoprire l’autentica cultura locale.<br>
+<p>Al centro dell’esperienza della crociera in dahabiya sul Nilo&nbsp;c’è un veliero egiziano che nei secoli passati era usato dagli aristocratici e che oggi chi viaggia sceglie per scoprire l’autentica cultura locale.<br>
 Con pochi passeggeri a bordo, la crociera sul Nilo da Assuan a Luxor&nbsp;diventa un’esperienza tranquilla e intima, con un’atmosfera ben diversa da quella delle grandi navi da crociera.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-axp-photography-500641970-18991596-1-1774791954T4mFS.jpg" alt="" loading="lazy"></figure></h2>
@@ -220,7 +220,7 @@ Man mano che ci si avvicina a Luxor, il viaggio La accompagna dolcemente verso i
 
 <h2><span class="hathor-blog-accent">Il fiume Nilo in Egitto</span></h2>
 
-<p>Il Nilo è un elemento spirituale che esalta il carattere sacro di questo pellegrinaggio. È la risorsa vitale dell’Egitto e da oltre due millenni sostiene le comunità umane. Navigando su queste acque, Lei vive insieme le tre dimensioni del suo patrimonio: storica, culturale e naturale.</p>
+<p>Il Nilo è un elemento spirituale che esalta il carattere sacro di questo pellegrinaggio. È la risorsa vitale dell’Egitto e da oltre cinque millenni sostiene le comunità umane. Navigando su queste acque, Lei vive insieme le tre dimensioni del suo patrimonio: storica, culturale e naturale.</p>
 
 <p>Il fiume scorre con un ritmo tranquillo e riflette il cielo e la natura circostante. Questa armonia naturale crea un’atmosfera serena ed equilibrata. Per tante persone che lo percorrono, il Nilo diventa uno spazio di meditazione, perché le aiuta a raggiungere una pace interiore che le mette in contatto con qualcosa che va oltre la propria esperienza personale.</p>
 
@@ -401,7 +401,7 @@ Esna è famosa per il magico Tempio di Khnum, un monumento della grande storia a
 
 <p>Passeggi tra le stradine fiancheggiate da case tradizionali e botteghe. Questa zona è considerata uno dei luoghi migliori da visitare a Esna durante una crociera sul Nilo.</p>
 
-<p>Una sosta a Esna durante la Sua crociera di lusso sul Nilo da Luxor a Esna con <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor&nbsp;Dahabiya</a> Le permetterà di vivere tutta la ricca storia e il fascino culturale che questa cittadina sa offrire.</p>
+<p>Una sosta a Esna durante la Sua crociera di lusso sul Nilo da Luxor ad Assuan con <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor&nbsp;Dahabiya</a> Le permetterà di vivere tutta la ricca storia e il fascino culturale che questa cittadina sa offrire.</p>
 
 <p>&nbsp;</p>
 

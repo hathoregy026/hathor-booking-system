@@ -90,7 +90,7 @@ Die Dahabiya ermöglicht eine langsame, bedeutungsvolle Reise. Sie sehen die St�
 
 <p>Stellen Sie sich vor, Sie erwachen mit den sanften Klängen des Nils, genießen Ihren Morgenkaffee auf dem Sonnendeck und erkunden Hand in Hand antike Tempel. Eine Dahabiya-Kreuzfahrt enthüllt verborgene Schätze des Nils und Orte abseits der üblichen Wege, die große Kreuzfahrtschiffe nicht erreichen. Ihre Flitterwochen werden zu einem wahrhaft einzigartigen, unvergesslichen Erlebnis.</p>
 
-<p>Auf einer <strong>Nilkreuzfahrt in der VIP-Suite</strong> entdecken Paare ruhige, abgeschiedene Winkel am Fluss, perfekt, um romantische Momente festzuhalten und gemeinsam bleibende Erinnerungen zu schaffen.</p>
+<p>Auf einer <strong>Nilkreuzfahrt in der Royal Suite</strong> entdecken Paare ruhige, abgeschiedene Winkel am Fluss, perfekt, um romantische Momente festzuhalten und gemeinsam bleibende Erinnerungen zu schaffen.</p>
 
 <h2><span class="hathor-blog-accent">5 geheime Orte, die Ihre Hochzeitsreisefotos unvergesslich machen</span></h2>
 
@@ -104,7 +104,7 @@ Die Dahabiya ermöglicht eine langsame, bedeutungsvolle Reise. Sie sehen die St�
 
 <p>Lassen Sie die üblichen Menschenmassen hinter sich und besuchen Sie die Gräber der Noblen in Luxor. Diese weniger bekannten Gräber bieten eine ruhige, faszinierende Atmosphäre, bereichert durch außergewöhnliche Wandmalereien, die eine herrliche historische Kulisse für Ihre Hochzeitsreisefotos bilden. Zurück in ihrer <strong>Honeymoon-Suite auf dem Nil</strong> genießen die Gäste weiter die Ruhe und Exklusivität dieser einzigartigen Reise.</p>
 
-<p>Fern vom Lärm der meistbesuchten Touristenstätten bietet dieser verborgene Schatz ein intimes Erlebnis, das Komfort und Privatsphäre einer <strong>Nilkreuzfahrt in der VIP-Suite</strong> perfekt ergänzt und jeden Moment Ihrer Flitterwochen noch eindrucksvoller macht.</p>
+<p>Fern vom Lärm der meistbesuchten Touristenstätten bietet dieser verborgene Schatz ein intimes Erlebnis, das Komfort und Privatsphäre einer <strong>Nilkreuzfahrt in der Royal Suite</strong> perfekt ergänzt und jeden Moment Ihrer Flitterwochen noch eindrucksvoller macht.</p>
 
 <h3><span class="hathor-blog-accent">Kom Ombo,&nbsp;ein romantisches Leuchten</span></h3>
 
@@ -130,7 +130,7 @@ Zu Flitterwochen in Ägypten sollten einige solcher Momente gehören: ruhig, ein
 
 <p>Ist es Zeit für die Hochzeitsreise auf dem Nil, von der Sie immer geträumt haben? Treten Sie mit einem Luxuserlebnis auf der Dahabiya in eine Welt der Eleganz ein, in der jeder Moment für Liebe, Entspannung und bleibende Erinnerungen gestaltet ist. Entspannen Sie in der <strong>Honeymoon-Suite auf dem Nil</strong> und genießen Sie während der ganzen Reise außergewöhnlichen Komfort und atemberaubende Blicke auf den Nil.</p>
 
-<p>Erleben Sie zauberhafte Flitterwochen in Ägypten auf dem Nil, zwischen herrlichen Landschaften und zeitlosen Wundern, die diese Reise wahrhaft außergewöhnlich machen. Paare auf der Suche nach der romantischen Auszeit schlechthin genießen die Exklusivität einer <strong>Nilkreuzfahrt in der VIP-Suite</strong>, in der Privatsphäre, Luxus und persönlicher Service perfekt verschmelzen.</p>
+<p>Erleben Sie zauberhafte Flitterwochen in Ägypten auf dem Nil, zwischen herrlichen Landschaften und zeitlosen Wundern, die diese Reise wahrhaft außergewöhnlich machen. Paare auf der Suche nach der romantischen Auszeit schlechthin genießen die Exklusivität einer <strong>Nilkreuzfahrt in der Royal Suite</strong>, in der Privatsphäre, Luxus und persönlicher Service perfekt verschmelzen.</p>
 
 <p>Machen Sie wunderschöne Fotos, schaffen Sie kostbare Erinnerungen und genießen Sie jeden Moment, während Romantik, Kultur und Ruhe gemeinsam den Nil entlangfließen. Beginnen Sie noch heute Ihre Reise und entdecken Sie Luxus-Flitterwochen auf der Dahabiya: eine unvergessliche Auszeit voller Romantik, Geschichte und einmaliger Erlebnisse.</p>`,
 };

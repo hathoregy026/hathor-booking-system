@@ -57,7 +57,7 @@ Der Tempel blickt auf den Nil und bietet einen herrlichen Anblick. Bei Sonnenauf
 
 <p>Zu den spektakulärsten Orten und verborgenen Schätzen des Nils, die Sie auf einer Luxuskreuzfahrt mit der Dahabiya in Ägypten besuchen können, gehört der Philae-Tempel, der Göttin Isis geweiht. Er steht auf der Insel Agilkia bei Assuan: Der Tempelkomplex wurde mit großer Sorgfalt hierher versetzt, als der Bau des Assuan-Hochdamms seinen ursprünglichen Standort bedrohte.<br>
 <br>
-Vor der Kulisse einer ruhigen Insellandschaft schaffen die Erinnerungen der Geschichte und die detailreichen Reliefs eine unvergessliche Atmosphäre. Mit Ihrer Dahabiya kommen Sie über das Wasser an, mit einem Gefühl von Exklusivität und Gelassenheit. Abendliche Besuche, wenn die Beleuchtung die antiken Mauern zur Geltung bringt, sind von außergewöhnlichem Zauber.</p>
+Vor der Kulisse einer ruhigen Insellandschaft schaffen die Erinnerungen der Geschichte und die detailreichen Reliefs eine unvergessliche Atmosphäre. Auf Ihrer Dahabiya-Kreuzfahrt erreichen Sie die Insel per Boot, mit einem Gefühl von Exklusivität und Gelassenheit. Abendliche Besuche, wenn die Beleuchtung die antiken Mauern zur Geltung bringt, sind von außergewöhnlichem Zauber.</p>
 
 <p>&nbsp;</p>
 
@@ -238,7 +238,7 @@ Beide versprechen Erinnerungen fürs Leben, doch der Unterschied zwischen einer 
 
 <p><strong>Nilkreuzfahrt: </strong>Denken Sie an ein schwimmendes Resort. Diese großen Flussschiffe sind wie Hotels auf dem Wasser, mit klimatisierten Zimmern, Buffets, Pools und Unterhaltung an Bord. Die Gruppenaktivitäten machen Spaß und sind vielleicht lauter als gewohnt: die ideale Umgebung für alle, die diese Art von Atmosphäre lieben.</p>
 
-<p><strong>Luxus-Dahabiya in Ägypten: </strong>Ein schwimmender Palast aus einer anderen Zeit. Die Hathor Luxury Dahabiya ist ein exklusives, handwerklich gebautes Segelschiff, vom Wind angetrieben, mit nur 6 bis 12 elegant eingerichteten Kabinen, von den <a href="https://hathorcruise.com/luxury-suites" target="_blank" rel="noopener noreferrer">Luxury Suites</a> bis zu den luxuriösen Royal Suites, die höchste Ruhe und Privatsphäre garantieren. Kein Motorenlärm durchbricht die Stille, kein volles Deck verdeckt einen der spektakulärsten Sonnenuntergänge am Nil: nur das Flüstern der Segel und der sanfte Schimmer des Flusses. Diskreter Luxus in seiner besten Form!</p>
+<p><strong>Luxus-Dahabiya in Ägypten: </strong>Ein schwimmender Palast aus einer anderen Zeit. Die Hathor Luxury Dahabiya ist ein exklusives, handwerklich gebautes Segelschiff, vom Wind angetrieben, mit nur 12 elegant eingerichteten Kabinen und Suiten, darunter die <a href="https://hathorcruise.com/luxury-suites" target="_blank" rel="noopener noreferrer">Luxury Suites</a> und die luxuriösen Royal Suites, die höchste Ruhe und Privatsphäre garantieren. Kein Motorenlärm durchbricht die Stille, kein volles Deck verdeckt einen der spektakulärsten Sonnenuntergänge am Nil: nur das Flüstern der Segel und der sanfte Schimmer des Flusses. Diskreter Luxus in seiner besten Form!</p>
 
 <p><br>
 <span style="color:#16a085"><strong>2. Route und Erlebnis</strong></span><br>

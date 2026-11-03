@@ -92,7 +92,7 @@ A bordo della dahabiya i viaggiatori trovano <a href="https://www.hathorcruise.c
 <h2><span class="hathor-blog-accent">Dove si trovano i Colossi di Memnone?</span></h2>
 
 <p>Le statue si trovano nella necropoli tebana, sulla riva occidentale del Nilo a Luxor, vicino ad alcuni dei siti antichi più importanti d’Egitto.<br>
-La zona è vicina alla <a href="/blogs/discover-the-valley-of-the-kings">Valle dei Re</a>, al <a href="/blogs/sailing-to-karnak-temple">Tempio di Karnak</a> e al <a href="/blogs/luxor-temple-facts">Tempio di Luxor</a>: un’area archeologica tra le più preziose d’Egitto, che riunisce molte delle attrazioni di Luxor.<br>
+La zona è vicina alla <a href="/blogs/discover-the-valley-of-the-kings">Valle dei Re</a> e si trova di fronte al <a href="/blogs/sailing-to-karnak-temple">Tempio di Karnak</a> e al <a href="/blogs/luxor-temple-facts">Tempio di Luxor</a>, sull’altra sponda del fiume: un’area archeologica tra le più preziose d’Egitto, che riunisce molte delle attrazioni di Luxor.<br>
 In origine i Colossi sorgevano all’ingresso del grande tempio funerario del faraone Amenhotep III.</p>
 
 <h2><span class="hathor-blog-accent">Che cosa sono i Colossi di Memnone?</span></h2>
@@ -119,7 +119,7 @@ Le loro dimensioni, la loro storia e il loro leggendario mistero ne fanno una ta
 
   "aswan-nubian-villages": `<h2><span class="hathor-blog-accent">Scopra la magia dei villaggi nubiani di Assuan</span></h2>
 
-<p>Nel cuore dell’Egitto si trova la Nubia, con i vivaci villaggi nubiani di Assuan. Lontani dalle strade affollate di turisti, questi villaggi coloratissimi lungo il fiume custodiscono una delle culture più antiche del mondo ancora viventi.<br>
+<p>Nell’estremo sud dell’Egitto si trova la Nubia, con i vivaci villaggi nubiani di Assuan. Lontani dalle strade affollate di turisti, questi villaggi coloratissimi lungo il fiume custodiscono una delle culture più antiche del mondo ancora viventi.<br>
 Per chi cerca esclusività, serenità totale e una cultura vivace e autentica, una crociera in dahabiya unita alla visita di un villaggio nubiano di Assuan regala un’esperienza unica nella vita. I villaggi nubiani sono tra i <a href="/blogs/golden-gems-of-aswan">tesori di Assuan</a> da non perdere durante il viaggio.</p>
 
 <h2><span class="hathor-blog-accent">Che cosa rende così speciali i villaggi nubiani di Assuan?</span></h2>
@@ -162,7 +162,7 @@ Eppure la loro cultura è sopravvissuta, e ha trovato nuova forza.</p>
 	<li>Vivere l’Egitto con i propri tempi</li>
 </ul>
 
-<p>Navigando oltre il <a href="/blogs/discovering-the-secrets-of-philae-temple">Tempio di Philae</a>, lungo rive incontaminate, la Sua dahabiya Le offre un’occasione rara di incontrare davvero i nubiani.</p>
+<p>Navigando lungo le rive incontaminate di Assuan, porta d’accesso al <a href="/blogs/discovering-the-secrets-of-philae-temple">Tempio di Philae</a>, la Sua dahabiya Le offre un’occasione rara di incontrare davvero i nubiani.</p>
 
 <h2><span class="hathor-blog-accent">Un’esperienza culturale senza pari nei villaggi nubiani di Assuan</span></h2>
 

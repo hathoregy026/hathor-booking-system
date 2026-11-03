@@ -18,9 +18,9 @@ Es ist die perfekte Verbindung aus der Erkundung der antiken Welt und dem Komfor
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/valley-of-the-kings-1756880844ePuAy.jpg" alt="Tal der Könige" loading="lazy"></figure></p>
 
-<p>Das Tal der Könige in Ägypten ist eine weitläufige Nekropole am Westufer des Nils, nahe der berühmten Stadt Luxor. Bekannt ist es vor allem als letzte Ruhestätte der Könige und Königinnen des alten Ägypten, aus einer Zeit vor mehr als 3.000 Jahren. Anders als die Erbauer der Pyramiden in anderen Teilen Ägyptens ließen sich die Pharaonen und andere Adlige hier bestatten, in Gräbern, die in den Fels gehauen sind.</p>
+<p>Das Tal der Könige in Ägypten ist eine weitläufige Nekropole am Westufer des Nils, nahe der berühmten Stadt Luxor. Bekannt ist es vor allem als letzte Ruhestätte der Könige des alten Ägypten, aus einer Zeit vor mehr als 3.000 Jahren. Anders als die Erbauer der Pyramiden in anderen Teilen Ägyptens ließen sich die Pharaonen und andere Adlige hier bestatten, in Gräbern, die in den Fels gehauen sind.</p>
 
-<p>Die Malereien zu den hieroglyphischen und hieratischen Texten, die auf die Wände geschrieben und in sie eingraviert wurden, sollten Geschichten über die Könige erzählen, bis zu ihrem Ende und den Freuden des Jenseits. Hier liegt auch das Grab des berühmten Tutanchamun, genannt „König Tut“: Archäologen entdeckten es 1922 noch unversehrt. Das Grab birgt zahlreiche Gegenstände, die nicht nur Reichtum, sondern auch Autorität ausdrücken, und bezeugt die Macht und Präsenz dieser Herrscher in ihrer Zeit.</p>
+<p>Die Malereien zu den hieroglyphischen und hieratischen Texten, die auf die Wände geschrieben und in sie eingraviert wurden, sollten Geschichten über die Könige erzählen, bis zu ihrem Ende und den Freuden des Jenseits. Hier liegt auch das Grab des berühmten Tutanchamun, genannt „König Tut“: Archäologen entdeckten es 1922 noch unversehrt. Das Grab barg zahlreiche Gegenstände, die nicht nur Reichtum, sondern auch Autorität ausdrücken, und bezeugt die Macht und Präsenz dieser Herrscher in ihrer Zeit.</p>
 
 <p>Diese königlichen Stätten auf einer Luxuskreuzfahrt auf dem Nil zum Tal der Könige zu erkunden, verleiht der Reise in die Geschichte Komfort und Eleganz. Das Tal der Könige und seine Gräber wurden geschaffen, um den Herrschern eine friedliche und sichere Ruhe zu gewähren.</p>
 
@@ -43,7 +43,7 @@ Die Gräber im Tal der Könige zu betreten, ist wie eine Zeitreise bis in die Zi
 <br>
 Die Gräber dagegen sind kühl und dunkel, mit leuchtend bunten Wänden, die Gottheiten, Tiere und Gestalten der ägyptischen Mythologie zeigen. Man glaubte, diese Malereien begleiteten die Könige auf ihrer Reise ins Jenseits.<br>
 <br>
-Nicht alle Gräber sind zugänglich, doch die öffentlich zugänglichen gewähren einen Blick auf Leben und Tod in der Antike. Das berühmte Grab des Tutanchamun sollten Sie nicht versäumen. Es ist kleiner als viele andere, aber voller Schätze und Fundstücke, die die Geschichte eines der jüngsten Könige Ägyptens erzählen.<br>
+Nicht alle Gräber sind zugänglich, doch die öffentlich zugänglichen gewähren einen Blick auf Leben und Tod in der Antike. Das berühmte Grab des Tutanchamun sollten Sie nicht versäumen. Es ist kleiner als viele andere, wurde aber voller Schätze und Fundstücke entdeckt, die die Geschichte eines der jüngsten Könige Ägyptens erzählen.<br>
 Neben den Gräbern lassen sich in der Umgebung Tempel und Museen erkunden, um mehr über die prunkvolle Vergangenheit Ägyptens zu erfahren. Wenn Sie ein Luxuserlebnis auf dem Nil bevorzugen, bietet diese Reise durch das Tal der Könige alles, was man sich wünschen kann, mühelos und komfortabel. Die Dahabiya-Kreuzfahrt mit Besuch im Tal der Könige ist so gestaltet, dass Sie sich nie beeilen oder ermüden müssen, sondern einfach die herrliche Aussicht und einen tadellosen Service auf dem Fluss genießen, bis ins letzte Detail umsorgt. Auf dieser Reise erleben Sie jeden Augenblick ganz bewusst, besonders beim Besuch der außergewöhnlichen Gräber des Tals der Könige, die tief in die Hügel gehauen sind.<br>
 <br>
 Reisen Sie in der Zeit zurück und lassen Sie sich mit einer erstklassigen Kreuzfahrt der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> und dem Besuch im Tal der Könige ins Herz der Größe Ägyptens tragen.<br>
@@ -51,7 +51,7 @@ Auf dieser Reise genießen Sie in jeder Hinsicht Bequemlichkeit und Komfort, ein
 
   "sailing-to-karnak-temple": `<h2><span class="hathor-blog-accent">Der Tempelkomplex von Karnak, der Tempel der Götter</span></h2>
 
-<p>Stellen Sie sich vor, Sie gleiten still über den Nil an Bord der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, auf der Fahrt von Assuan nach Luxor, und in der Ferne erheben sich mächtige Tore und Säulen aus Stein. Das ist der Karnak-Tempel: ein antikes Wunder, das seit über 2.000 Jahren besteht. Er ist nicht einfach ein Tempel, sondern in Stein gemeißelte Geschichte, in der die Stimmen von Pharaonen und Göttern noch nachhallen.<br>
+<p>Stellen Sie sich vor, Sie gleiten still über den Nil an Bord der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, auf der Fahrt von Assuan nach Luxor, und in der Ferne erheben sich mächtige Tore und Säulen aus Stein. Das ist der Karnak-Tempel: ein antikes Wunder, das über mehr als 2.000 Jahre hinweg erbaut wurde. Er ist nicht einfach ein Tempel, sondern in Stein gemeißelte Geschichte, in der die Stimmen von Pharaonen und Göttern noch nachhallen.<br>
 Wir heißen Sie willkommen an einem der größten und mächtigsten heiligen Orte, die Menschen je errichtet haben, einer Sehenswürdigkeit in Ägypten, die Sie nicht versäumen sollten.</p>
 
 <h2><br>
@@ -131,7 +131,7 @@ Wenn Sie eine kürzere Reise bevorzugen, bietet die Nilkreuzfahrt <a href="https
 
 <p>Das Abenteuer beginnt in <a href="/blogs/explore-luxor-in-luxury">Luxor</a>, das als größtes Freilichtmuseum der Welt gilt. Durch Luxor zu spazieren heißt, ein Kapitel der antiken Geschichte zu betreten. Der majestätische <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempel</a> mit seinen aufragenden Säulen und dem heiligen See ist vielleicht einer der eindrucksvollsten religiösen Komplexe, die je gebaut wurden. Nur wenige Kilometer entfernt zeichnet sich der Luxor-Tempel unter dem weiten Wüstenhimmel ab und erstrahlt in den Abendstunden wunderschön.<br>
 <br>
-Jenseits des mächtigen Nils liegt das Westufer mit dem <a href="/blogs/discover-the-valley-of-the-kings">Tal der Könige</a>. Hier ruhen in tiefen, in die Felsen gehauenen Gräbern Herrscher wie Ramses II. und der junge König Tutanchamun. Es sind mehr als bloße Gräber: Es sind prachtvolle Räume voller Malereien und Hieroglyphen, die das Jenseits beschreiben. All dies auf einer Dahabiya-Kreuzfahrt auf dem Nil von Assuan nach Luxor zu erleben, verleiht der Reise unvergleichlichen Komfort und Charme.<br>
+Jenseits des mächtigen Nils liegt das Westufer mit dem <a href="/blogs/discover-the-valley-of-the-kings">Tal der Könige</a>. Hier wurden in tiefen, in die Felsen gehauenen Gräbern Herrscher wie Ramses II. und der junge König Tutanchamun bestattet. Es sind mehr als bloße Gräber: Es sind prachtvolle Räume voller Malereien und Hieroglyphen, die das Jenseits beschreiben. All dies auf einer Dahabiya-Kreuzfahrt auf dem Nil von Assuan nach Luxor zu erleben, verleiht der Reise unvergleichlichen Komfort und Charme.<br>
 <br>
 In Luxor ist die Geschichte überall gegenwärtig. Erlebt im Glanz einer Luxuskreuzfahrt auf dem Nil, wird diese Präsenz besonders stark. Das sanfte Plätschern des Flusses neben der strengen Größe der gewaltigen Tempel schafft eine ganz besondere Atmosphäre.</p>
 
@@ -172,7 +172,7 @@ Ob die Schönheit von Karnak Sie in Staunen versetzt, das Tal der Könige Sie ve
 <br>
 Er ist nicht nur eine Ansammlung schöner antiker Ruinen. Er ist eine kühne und edle Saga, in Stein übertragen von einer Königin, die den Lauf der Geschichte wirklich verändert hat. Wenn Sie auf einer Luxus-Dahabiya über den Nil anreisen, wird der Zauber Ihres ersten Blicks auf diesen Tempel nie verblassen.<br>
 <br>
-Beginnen Sie den Tag an Bord der luxuriösen&nbsp;<a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, auf dem Deck stehend, mit einer warmen Tasse&nbsp;Minztee in den Händen, während Sie den Nil hinauf in Richtung Luxor fahren. Bald öffnen Sie die Tür zu jenem besonderen Ort, an dem die Geschichte Königinnen, Götter und alterslose Steine zum Leben erweckt.<br>
+Beginnen Sie den Tag an Bord der luxuriösen&nbsp;<a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, auf dem Deck stehend, mit einer warmen Tasse&nbsp;Minztee in den Händen, während Sie den Nil hinab in Richtung Luxor fahren. Bald öffnen Sie die Tür zu jenem besonderen Ort, an dem die Geschichte Königinnen, Götter und alterslose Steine zum Leben erweckt.<br>
 <br>
 Es ist die stille Schönheit der Dahabiya selbst, die dieses Erlebnis unvergesslich macht. Anders als die größeren, volleren Schiffe bietet Ihre Luxus-Dahabiya eine ruhige und private Art, den Nil zu erleben, und bringt Sie in Einklang mit der Landschaft und den alten Geschichten, die sie birgt. Während Sie fahren und die Zeit selbst dahinzugleiten scheint, schaffen das gedämpfte Geräusch des Wassers am Rumpf und die Wärme des Wüstenwinds die Stimmung, in der sich der Geist auf den majestätischen Anblick einstellt, der Sie erwartet.<br>
 <br>
@@ -186,7 +186,7 @@ Früh am Tempel der Hatschepsut anzukommen bedeutet, seine großen Terrassen hin
 
 <p>Die Geschichte der Hatschepsut ist alles andere als gewöhnlich. In einer fernen Zeit, in der selten eine Frau den Thron Ägyptens bestieg, errang sie die Macht und herrschte 20 Jahre lang. Statt den Thron still einzunehmen, regierte Hatschepsut mit Kühnheit, Mut und Klugheit und mit einer edlen Vision von Frieden und Wohlstand.<br>
 <br>
-Der Tempel unterscheidet sich stark von den gewaltigen Pyramiden und verborgenen Gräbern, die Sie vielleicht kennen. Er liegt eingebettet in die Felsen von Deir el-Bahari, in vollkommener Harmonie mit der natürlichen Umgebung. Die Terrassen des Tempels, auf mehr als drei Ebenen angelegt, sind durch hoch aufragende Rampen verbunden und von eleganten Säulen gesäumt, die eine sanfte Melodie aus Wüste und Fluss anzustimmen scheinen.<br>
+Der Tempel unterscheidet sich stark von den gewaltigen Pyramiden und verborgenen Gräbern, die Sie vielleicht kennen. Er liegt eingebettet in die Felsen von Deir el-Bahari, in vollkommener Harmonie mit der natürlichen Umgebung. Die Terrassen des Tempels, auf drei Ebenen angelegt, sind durch hoch aufragende Rampen verbunden und von eleganten Säulen gesäumt, die eine sanfte Melodie aus Wüste und Fluss anzustimmen scheinen.<br>
 <br>
 Im Inneren des Tempels erzählen farbenfrohe Malereien und feine Reliefs meisterhafter Handwerker vom Leben der Königin göttlicher Herkunft, von der berühmten Handelsexpedition ins geheimnisvolle Land Punt und von ihrer engen Verbindung zu den Göttern, die ihre Herrschaft stützten.<br>
 <br>

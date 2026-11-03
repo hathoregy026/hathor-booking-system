@@ -92,7 +92,7 @@ An Bord der Dahabiya finden die Reisenden <a href="https://www.hathorcruise.com/
 <h2><span class="hathor-blog-accent">Wo stehen die Memnonkolosse?</span></h2>
 
 <p>Die Statuen stehen in der thebanischen Nekropole am Westufer des Nils in Luxor, unweit einiger der wichtigsten antiken Stätten Ägyptens.<br>
-Das Gebiet liegt in der Nähe des <a href="/blogs/discover-the-valley-of-the-kings">Tals der Könige</a>, des <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempels</a> und des <a href="/blogs/luxor-temple-facts">Luxor-Tempels</a>: eines der wertvollsten archäologischen Areale Ägyptens, das viele Sehenswürdigkeiten Luxors vereint.<br>
+Das Gebiet liegt in der Nähe des <a href="/blogs/discover-the-valley-of-the-kings">Tals der Könige</a> und gegenüber dem <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempel</a> und dem <a href="/blogs/luxor-temple-facts">Luxor-Tempel</a> am anderen Nilufer: eines der wertvollsten archäologischen Areale Ägyptens, das viele Sehenswürdigkeiten Luxors vereint.<br>
 Ursprünglich standen die Kolosse am Eingang des großen Totentempels von Pharao Amenhotep III.</p>
 
 <h2><span class="hathor-blog-accent">Was sind die Memnonkolosse?</span></h2>
@@ -119,7 +119,7 @@ Ihre Größe, ihre Geschichte und ihr legendäres Geheimnis machen sie zu einem 
 
   "aswan-nubian-villages": `<h2><span class="hathor-blog-accent">Entdecken Sie den Zauber der nubischen Dörfer von Assuan</span></h2>
 
-<p>Im Herzen Ägyptens liegt Nubien mit den lebhaften nubischen Dörfern von Assuan. Fern der von Touristen überfüllten Straßen bewahren diese farbenfrohen Dörfer am Fluss eine der ältesten noch lebendigen Kulturen der Welt.<br>
+<p>Im äußersten Süden Ägyptens liegt Nubien mit den lebhaften nubischen Dörfern von Assuan. Fern der von Touristen überfüllten Straßen bewahren diese farbenfrohen Dörfer am Fluss eine der ältesten noch lebendigen Kulturen der Welt.<br>
 Für alle, die Exklusivität, vollkommene Ruhe und eine lebendige, authentische Kultur suchen, ist eine Dahabiya-Kreuzfahrt mit dem Besuch eines nubischen Dorfes bei Assuan ein einmaliges Erlebnis. Die nubischen Dörfer gehören zu den <a href="/blogs/golden-gems-of-aswan">Schätzen Assuans</a>, die Sie auf Ihrer Reise nicht verpassen sollten.</p>
 
 <h2><span class="hathor-blog-accent">Was macht die nubischen Dörfer von Assuan so besonders?</span></h2>
@@ -162,7 +162,7 @@ Dennoch hat ihre Kultur überlebt und neue Kraft gefunden.</p>
 	<li>Ägypten in Ihrem eigenen Tempo zu erleben</li>
 </ul>
 
-<p>Auf der Fahrt vorbei am <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a> und entlang unberührter Ufer bietet Ihnen Ihre Dahabiya eine seltene Gelegenheit, den Nubiern wirklich zu begegnen.</p>
+<p>Auf der Fahrt entlang der unberührten Ufer von Assuan, dem Tor zum <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a>, bietet Ihnen Ihre Dahabiya eine seltene Gelegenheit, den Nubiern wirklich zu begegnen.</p>
 
 <h2><span class="hathor-blog-accent">Ein einzigartiges Kulturerlebnis in den nubischen Dörfern von Assuan</span></h2>
 
