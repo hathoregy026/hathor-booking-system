@@ -616,3 +616,15 @@
 .mail-workbench .mail-active-filters button { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--border); border-radius:999px; padding:4px 8px; min-height:30px; font-size:11px; color:var(--text-secondary); max-width:100%; overflow-wrap:anywhere; }
 .mail-workbench .mail-active-filters .mail-active-filters__clear { border:0; color:var(--accent); }
 @media(max-width:1023px) { .mail-workbench .mail-active-filters button { min-height:36px; } }
+/* The existing dashboard sidebar leaves room for two mail panes on small desktops. */
+@media(min-width:1024px) and (max-width:1279px) {
+ .mail-workbench .emails-layout { grid-template-columns:180px minmax(0,1fr); }
+ .mail-workbench .dashboard-inbox__workspace { grid-template-columns:minmax(0,1fr); }
+ .mail-workbench .dashboard-inbox__workspace[data-selected=false] .dashboard-inbox__detail { display:none; }
+ .mail-workbench .dashboard-inbox__workspace[data-selected=true] .dashboard-inbox__list { display:none; }
+ .mail-workbench .mail-reader-toggle { display:none; }
+ .mail-workbench .emails-page__header { grid-template-columns:140px minmax(160px,1fr) auto; gap:12px; }
+ .mail-workbench .emails-page__actions { gap:4px; flex-wrap:nowrap; }
+ .mail-workbench .emails-page__actions > .btn-outline { width:40px; padding:8px; }
+ .mail-workbench .emails-page__actions > .btn-outline > span { display:none; }
+}

@@ -363,7 +363,7 @@ export function DashboardInbox({ requestedEmail }: { requestedEmail?: string | n
         </div>
         <div className="emails-page__actions"><button type="button" className="email-icon-button mail-navigation-toggle" aria-label="Open mail navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen(true)}><Menu size={18} /></button>
         <button type="button" className="btn-outline emails-controls-toggle" aria-label={compactControls ? "Expand email controls" : "Compact email controls"} aria-expanded={!compactControls} onClick={() => setCompactControls(current => !current)}>{compactControls ? <ChevronDown size={16} aria-hidden /> : <ChevronUp size={16} aria-hidden />}<span>{compactControls ? "Expand" : "Compact"}</span></button>
-        <button type="button" className="btn-outline" onClick={() => { setSelection([]); refresh(); }} disabled={busy || batching}>
+        <button type="button" className="btn-outline" aria-label="Refresh emails" title="Refresh emails" onClick={() => { setSelection([]); refresh(); }} disabled={busy || batching}>
           <RefreshCw className={`h-4 w-4${busy ? " animate-spin" : ""}`} aria-hidden /><span>Refresh emails</span>
         </button>
         <button type="button" className="btn-primary" aria-label="Compose" onClick={() => { compose(); setNavigationOpen(false); }} disabled={!canSend || Boolean(draft) || batching}><Pencil size={17} aria-hidden /><span>Compose</span></button>
