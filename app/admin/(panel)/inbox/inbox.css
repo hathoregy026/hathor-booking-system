@@ -653,7 +653,7 @@
 .mail-workbench .mail-technical-link summary { display:flex; align-items:center; min-height:36px; font-size:11px; cursor:pointer; color:var(--text-secondary); }
 .mail-workbench .mail-technical-link details > p { white-space:pre-wrap; overflow-wrap:anywhere; max-height:180px; overflow-y:auto; font-size:11px; }
 @media(max-width:1023px) {
- .emails-page.mail-workbench .mail-compose-window[data-mode=dock] { inset:auto 12px calc(5rem + env(safe-area-inset-bottom,0px)); width:calc(100% - 24px); height:min(640px,calc(100dvh - 156px)); max-height:calc(100dvh - 156px); margin:0; border-radius:18px; z-index:120; box-shadow:0 12px 48px #0009; }
+ .emails-page.mail-workbench .mail-compose-window[data-mode=dock] { inset:auto 12px calc(5rem + env(safe-area-inset-bottom,0px)) auto; width:min(580px,calc(100% - 24px)); height:min(640px,calc(100dvh - 156px)); max-height:calc(100dvh - 156px); margin:0; border-radius:18px; z-index:120; box-shadow:0 12px 48px #0009; }
  .emails-page.mail-workbench .mail-compose-window[data-mode=expanded] { inset:12px; width:calc(100% - 24px); height:calc(100dvh - 24px); max-height:calc(100dvh - 24px); border-radius:18px; }
  .mail-workbench .mail-compose-window[data-mode=minimized] { inset:auto 12px calc(5rem + env(safe-area-inset-bottom,0px)) auto; z-index:120; border-radius:14px; }
  .mail-workbench .mail-compose-window__controls > button:nth-child(2) { display:inline-flex; }
