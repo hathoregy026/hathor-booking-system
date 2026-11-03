@@ -307,7 +307,7 @@
 @font-face {
   font-family: "Agraham";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -315,7 +315,7 @@
 @font-face {
   font-family: "Baginda";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -323,7 +323,7 @@
 @font-face {
   font-family: "Bastliga One";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -331,7 +331,7 @@
 @font-face {
   font-family: "Bastliga Two";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -339,7 +339,7 @@
 @font-face {
   font-family: "Bastliga Three";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -347,7 +347,7 @@
 @font-face {
   font-family: "Bastliga Four";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -355,7 +355,7 @@
 @font-face {
   font-family: "Bastliga Five";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -363,7 +363,7 @@
 @font-face {
   font-family: "Bastliga Tail";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -371,15 +371,15 @@
 @font-face {
   font-family: "Bitho Luxury";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
   font-family: "Brittany Signature";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -387,7 +387,7 @@
 @font-face {
   font-family: "Cylburn";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -395,23 +395,7 @@
 @font-face {
   font-family: "Dynalight";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Playfair Display";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Playfair Display Italic";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -419,7 +403,7 @@
 @font-face {
   font-family: "Gabigaile";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -427,7 +411,7 @@
 @font-face {
   font-family: "Gamgote";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -435,7 +419,7 @@
 @font-face {
   font-family: "Lavenir";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -443,15 +427,15 @@
 @font-face {
   font-family: "Michiko";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
   font-family: "Quiet Luxury";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -459,7 +443,7 @@
 @font-face {
   font-family: "Quiet Luxury Serif";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -467,7 +451,7 @@
 @font-face {
   font-family: "Rollgates Luxury";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -475,15 +459,15 @@
 @font-face {
   font-family: "Rollgates Luxury Italic";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
   font-family: "Rolling Fonte";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -491,7 +475,7 @@
 @font-face {
   font-family: "Adobe Bloom";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -499,7 +483,7 @@
 @font-face {
   font-family: "Adorebloom";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -507,7 +491,7 @@
 @font-face {
   font-family: "Besty Script";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -515,7 +499,7 @@
 @font-face {
   font-family: "Canthira";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -523,7 +507,7 @@
 @font-face {
   font-family: "Carista";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -531,47 +515,7 @@
 @font-face {
   font-family: "Italiana";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Editorialnew-Ultralight";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Editorialnew-Regular";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Editorialnew-UltralightItalic";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Izmir-Regular";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-@font-face {
-  font-family: "Juana-Light";
-  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -579,7 +523,7 @@
 @font-face {
   font-family: "Juana-Medium";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 100;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
@@ -587,7 +531,47 @@
 @font-face {
   font-family: "Juana-Regular";
   src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Juana-Light";
+  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Editorialnew-Ultralight";
+  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Editorialnew-Regular";
+  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Izmir-Regular";
+  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Editorialnew-UltralightItalic";
+  src: url("/fonts/cyrillic/forum-cyrillic.woff2") format("woff2");
+  font-weight: 100;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
