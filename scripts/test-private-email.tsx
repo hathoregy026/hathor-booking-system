@@ -13,11 +13,11 @@ import type { bookingQuery } from "../lib/booking-database";
 import { privateEmailAttachmentScope, type PrivateEmailAttachment } from "../lib/mail-attachments";
 import { POST as uploadPOST } from "../app/api/admin/inbox/attachments/route";
 
-function fixture(options: { uncertain?: boolean; failed?: boolean; noLease?: boolean; finishFails?: boolean; attachments?: boolean } = {}) {
+function fixture(options: { uncertain?: boolean; failed?: boolean; noLease?: boolean; finishFails?: boolean; attachments?: boolean; cc?: string[] } = {}) {
   const draftId = randomUUID();
   const fileId = randomUUID();
   const file = { path: `bookings/${privateEmailAttachmentScope("session", draftId)}/${fileId}-receipt.pdf`, name: "receipt.pdf" };
-  const input = privateEmailSendSchema.parse({ requestId: randomUUID(), to: "guest@example.com", recipientName: "Amira", subject: "Your Hathor note", message: "Hello\n\nYour private message.", ...(options.attachments ? { draftId, attachments: [file] } : {}) });
+  const input = privateEmailSendSchema.parse({ requestId: randomUUID(), to: "guest@example.com", recipientName: "Amira", subject: "Your Hathor note", message: "Hello\n\nYour private message.", ...(options.cc ? { cc: options.cc } : {}), ...(options.attachments ? { draftId, attachments: [file] } : {}) });
   let row: Record<string, unknown> | undefined;
   let calls = 0;
   const payloads: unknown[] = [];
@@ -66,6 +66,17 @@ async function main() {
   assert.ok(!html.includes("<script>alert(1)</script>"));
   assert.ok(!html.includes("<img src=x"));
   assert.ok(!buildEmailHtmlDocument(html).includes("<img"));
+  const ccAddresses = ["one@example.com", "two@example.com", "three@example.com", "four@example.com"];
+  assert.equal(privateEmailContentSchema.safeParse({ ...valid, cc: ccAddresses }).success, true);
+  for (const cc of [[...ccAddresses, "five@example.com"], ["guest@example.com"], ["one@example.com", "ONE@example.com"], ["bad\r\nBcc: other@example.com"], ["not-an-email"]]) assert.equal(privateEmailContentSchema.safeParse({ ...valid, cc }).success, false);
+  const copies = fixture({ cc: ccAddresses, uncertain: true });
+  assert.equal((await sendPrivateEmail(copies.input, "session", copies)).status, "PENDING");
+  assert.equal((await sendPrivateEmail(copies.input, "session", copies)).status, "SENT");
+  assert.deepEqual(copies.payloads[0], copies.payloads[1], "CC delivery and retry must reuse the stored recipient list");
+  assert.deepEqual((copies.payloads[0] as { cc: string[] }).cc, ccAddresses);
+  assert.deepEqual((copies.payloads[0] as { to: string[] }).to, ["guest@example.com"]);
+  assert.equal(copies.row()!.recipient, ["guest@example.com", ...ccAddresses].join(", "));
+  await assert.rejects(sendPrivateEmail({ ...copies.input, cc: ["different@example.com"] }, "session", copies));
   const normal = fixture();
   assert.equal((await sendPrivateEmail(normal.input, "session", normal)).status, "SENT");
   assert.equal((await sendPrivateEmail(normal.input, "session", normal)).status, "SENT");

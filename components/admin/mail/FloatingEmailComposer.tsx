@@ -16,7 +16,8 @@ export function FloatingEmailComposer(props: { initial: EmailDraft; handlerName?
     const element = dialog.current;
     if (!element) return;
     element.close();
-    if (mode === "expanded" || (mode !== "minimized" && window.matchMedia("(max-width: 1023px)").matches)) element.showModal(); else element.show();
+    if (mode === "expanded") element.showModal(); else element.show();
+    if (mode !== "minimized" && window.matchMedia("(min-width: 1024px)").matches) element.querySelector<HTMLInputElement>('input[name="to"]')?.focus({ preventScroll: true });
     if (mode === "minimized") element.querySelector<HTMLButtonElement>('[aria-label="Restore draft"]')?.focus();
   }, [mode]);
   return <dialog ref={dialog} className="mail-compose-window" data-mode={mode} aria-label="Compose email" onKeyDown={event => { if (event.key === "Escape") { event.preventDefault(); dialog.current?.querySelector<HTMLButtonElement>('[aria-label="Close new email"]')?.click(); } }} onCancel={event => { event.preventDefault(); dialog.current?.querySelector<HTMLButtonElement>('[aria-label="Close new email"]')?.click(); }}>

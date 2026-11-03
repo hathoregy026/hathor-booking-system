@@ -628,3 +628,39 @@
  .mail-workbench .emails-page__actions > .btn-outline { width:40px; padding:8px; }
  .mail-workbench .emails-page__actions > .btn-outline > span { display:none; }
 }
+/* Compact, evenly spaced mail controls. */
+.mail-workbench .email-composer__header { display:flex; align-items:center; gap:4px; padding:8px 12px; min-height:52px; }
+.mail-workbench .email-composer__header > div:first-child { flex:1; min-width:0; margin:0; }
+.mail-workbench .email-composer__header h2 { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; line-height:1.4; }
+.mail-workbench .mail-compose-window__controls { display:flex; flex:none; gap:4px; align-items:center; }
+.mail-workbench .email-composer__header .email-icon-button { width:36px; height:36px; min-height:36px; flex-shrink:0; padding:0; border:1px solid var(--border); border-radius:10px; background:transparent; }
+.mail-workbench .email-composer__header .email-icon-button:hover { background:var(--bg-glass-hover); }
+.mail-workbench .mail-compose-window[data-mode=minimized] { height:auto; overflow:visible; }
+.mail-workbench .mail-compose-window[data-mode=minimized] .email-composer__header { position:static; border:0; }
+.mail-workbench .email-composer__fields { overflow-y:auto; overscroll-behavior:contain; }
+.mail-workbench .email-composer__fields > label:has(input) { gap:10px; padding-inline:18px; }
+.mail-workbench .email-composer__fields > label:has(input) { display:grid; grid-template-columns:42px minmax(0,1fr); }
+.mail-workbench .email-composer__fields > label:has(input) input { min-width:0; }
+.mail-workbench .email-composer__footer { gap:8px; padding:12px 18px; }
+.mail-workbench .email-composer__footer > div { display:flex; align-items:center; gap:8px; width:100%; }
+.mail-workbench .email-composer__footer > div > button { min-height:44px; padding:10px 16px; border-radius:10px; flex:0 1 auto; white-space:nowrap; }
+.mail-workbench .emails-detail-actions { display:flex; align-items:center; gap:8px; }
+.mail-workbench .emails-detail-actions > .btn-outline { width:40px; height:40px; min-height:40px; border:1px solid var(--border); border-radius:10px; padding:0; background:var(--bg-secondary); }
+.mail-workbench .emails-detail-actions > .btn-primary { order:1; margin-left:auto; min-height:40px; border-radius:10px; padding:10px 16px; font-size:12px; }
+.mail-workbench .mail-technical-link { display:block; white-space:normal; border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin:10px 0; background:var(--bg-secondary); }
+.mail-workbench .mail-technical-link > a { display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; min-height:36px; font-weight:600; color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+.mail-workbench .mail-technical-link > a > span { font-weight:400; font-size:11px; color:var(--text-secondary); overflow-wrap:anywhere; }
+.mail-workbench .mail-technical-link summary { display:flex; align-items:center; min-height:36px; font-size:11px; cursor:pointer; color:var(--text-secondary); }
+.mail-workbench .mail-technical-link details > p { white-space:pre-wrap; overflow-wrap:anywhere; max-height:180px; overflow-y:auto; font-size:11px; }
+@media(max-width:1023px) {
+ .emails-page.mail-workbench .mail-compose-window[data-mode=dock] { inset:auto 12px calc(5rem + env(safe-area-inset-bottom,0px)); width:calc(100% - 24px); height:min(640px,calc(100dvh - 156px)); max-height:calc(100dvh - 156px); margin:0; border-radius:18px; z-index:120; box-shadow:0 12px 48px #0009; }
+ .emails-page.mail-workbench .mail-compose-window[data-mode=expanded] { inset:12px; width:calc(100% - 24px); height:calc(100dvh - 24px); max-height:calc(100dvh - 24px); border-radius:18px; }
+ .mail-workbench .mail-compose-window[data-mode=minimized] { inset:auto 12px calc(5rem + env(safe-area-inset-bottom,0px)) auto; z-index:120; border-radius:14px; }
+ .mail-workbench .mail-compose-window__controls > button:nth-child(2) { display:inline-flex; }
+ .mail-workbench .email-composer__footer > div > button { flex:1; padding-inline:10px; font-size:12px; }
+ .mail-workbench .emails-detail-actions { gap:6px; }
+ .mail-workbench .emails-detail-actions > .btn-primary { font-size:11px; padding-inline:12px; }
+ .mail-workbench .emails-detail-actions > .btn-outline { width:36px; height:40px; }
+}
+.mail-workbench .emails-filters button { white-space:nowrap; gap:7px; padding:10px; font-size:12px; }
+.mail-workbench .emails-folders button { white-space:nowrap; padding:10px; font-size:12px; }

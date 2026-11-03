@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { splitEmailDisplayText } from "@/lib/email-display";
+import { splitTechnicalEmailLinks, splitEmailDisplayText } from "@/lib/email-display";
 
-export function EmailMessageBody({ bodyText, formattedUrl }: { bodyText: string; formattedUrl?: string }) {
+export function EmailMessageBody({ bodyText, formattedUrl, collapseTechnicalLinks = false }: { bodyText: string; formattedUrl?: string; collapseTechnicalLinks?: boolean }) {
   const [formatted, setFormatted] = useState(false);
   const [images, setImages] = useState(false);
   const parts = splitEmailDisplayText(bodyText);
@@ -12,7 +12,7 @@ export function EmailMessageBody({ bodyText, formattedUrl }: { bodyText: string;
     <div className="email-message-body space-y-4 text-sm">
       {!parts.length ? <p className="text-muted">No message text.</p> : null}
       {parts.map((part, index) => part.kind === "message" ? (
-        <p key={index} className="whitespace-pre-wrap leading-relaxed" style={{ overflowWrap: "anywhere" }}>{part.text}</p>
+        <div key={index} className="whitespace-pre-wrap leading-relaxed" style={{ overflowWrap: "anywhere" }}>{collapseTechnicalLinks ? splitTechnicalEmailLinks(part.text).map((piece, key) => piece.kind === "text" ? <span key={key}>{piece.text}</span> : <div className="mail-technical-link" key={key}><a href={piece.text} target="_blank" rel="noopener noreferrer">{piece.label}<span>{piece.hostname} ↗</span></a><details><summary>Show full link</summary><p>{piece.text}</p></details></div>) : part.text}</div>
       ) : (
         <details key={index} open={!hasMessage} className="border-l-2 pl-4" style={{ borderColor: "var(--border)" }}>
           <summary className="flex min-h-11 cursor-pointer items-center text-sm text-muted">{part.history ? "Show previous messages" : "Show quoted text"}</summary>

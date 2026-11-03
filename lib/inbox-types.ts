@@ -15,6 +15,7 @@ export type InboxSummary = {
   source: InboxSource;
   bookingId: string | null;
   sender: string;
+  /** Outbound personal mail stores To first, followed by comma-separated CC addresses. */
   recipient: string;
   correspondentName: string | null;
   direction: "INBOUND" | "OUTBOUND";

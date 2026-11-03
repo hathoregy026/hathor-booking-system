@@ -67,7 +67,7 @@ export async function fetchDashboardInbox(input: z.infer<typeof inboxQuerySchema
     ...mailbox, handlerName: handlers[mailbox.id], total: totals.find(row => row.mailboxId === mailbox.id)?.total ?? 0,
     unread: totals.find(row => row.mailboxId === mailbox.id)?.unread ?? 0,
   }));
-  return { messages: rows.slice(0, 25).map(row => ({ ...dates(row), preview: emailDisplayPreview(row.preview) })), hasOlder: rows.length > 25, unreadCount: counts.unread, counts, mailboxes };
+  return { messages: rows.slice(0, 25).map(row => ({ ...dates(row), preview: emailDisplayPreview(row.preview, (row.folder ?? "inbox") === "inbox") })), hasOlder: rows.length > 25, unreadCount: counts.unread, counts, mailboxes };
 }
 
 export async function fetchInboxDetail(source: InboxSource, id: string, query = bookingQuery, allowed: readonly MailboxId[] = []): Promise<InboxDetail | null> {

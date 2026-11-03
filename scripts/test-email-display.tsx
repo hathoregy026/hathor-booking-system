@@ -33,6 +33,20 @@ async function main() {
   assert.equal(load(escaped)("script").length, 0);
   assert.ok(escaped.includes("&lt;script&gt;"));
 
+  const payment = "https://payment.example.com/payInvoice/" + "a".repeat(100) + "?token=synthetic-token";
+  const plain = `Dear guest,\nPlease use this payment link: ${payment}\nThank you.`;
+  const cleanView = load(renderToStaticMarkup(<EmailMessageBody bodyText={plain} collapseTechnicalLinks />));
+  assert.equal(cleanView(".mail-technical-link > a").attr("href"), payment);
+  assert.equal(cleanView(".mail-technical-link details").attr("open"), undefined);
+  assert.ok(cleanView(".mail-technical-link > a").text().includes("payment.example.com"));
+  assert.ok(cleanView.text().includes("Dear guest,"));
+  const securityView = load(renderToStaticMarkup(<EmailMessageBody bodyText={plain} collapseTechnicalLinks={false} />));
+  assert.equal(securityView(".mail-technical-link").length, 0);
+  assert.ok(securityView.text().includes(payment), "Security review must preserve the visible raw address");
+  assert.ok(!emailDisplayPreview(plain, true).includes("synthetic-token"));
+  assert.ok(emailDisplayPreview(plain, false).includes("https://payment.example.com"));
+  assert.equal(load(renderToStaticMarkup(<EmailMessageBody bodyText="A reference code ABC123" collapseTechnicalLinks />))(".mail-technical-link").length, 0, "Ordinary reference numbers remain visible");
+
   const hostile = `<head><style>@import 'https://evil.example.com/track';</style><meta http-equiv="refresh" content="0;url=https://evil.example.com"></head>
     <div style="display:none">Hidden preheader</div><div aria-hidden="true">Hidden signature padding</div>
     <script>parent.inboxInjected=true</script><svg onload="alert(1)"></svg><iframe src="https://evil.example.com"></iframe>
@@ -62,7 +76,7 @@ async function main() {
   const emailId = randomUUID();
   const attachmentId = randomUUID();
   const requests: string[] = [];
-  const query = (async (sql: string, values: unknown[]) => { assert.match(sql, /FROM "BookingMessage".*direction = 'INBOUND'/); assert.equal(values.length, 1); return [{ resendEmailId: emailId }]; }) as typeof bookingQuery;
+  const query = (async (sql: string, values: unknown[]) => { assert.match(sql, /FROM "BookingMessage".*direction = 'INBOUND'/); assert.equal(values.length, 1); return [{ resendEmailId: emailId, direction: "INBOUND", attachments: [{ id: attachmentId }] }]; }) as typeof bookingQuery;
   const request = async (url: string) => {
     requests.push(url);
     if (url.endsWith("/attachments")) return { data: [{ id: attachmentId, content_id: "logo", content_type: "image/png", download_url: "https://inbound-cdn.resend.com/logo.png" }] };
@@ -77,7 +91,8 @@ async function main() {
   await assert.rejects(receivedEmailHtmlDocument("general", randomUUID(), false, { query: (async () => []) as typeof bookingQuery, request }));
   const response = await GET(new NextRequest("https://www.hathorcruise.com/api/admin/inbox/general/id/formatted"), { params: Promise.resolve({ source: "general", id: randomUUID() }) });
   assert.equal(response.status, 401);
-  assert.match(response.headers.get("Content-Security-Policy") ?? "", /sandbox/);
+  assert.match(response.headers.get("Content-Type") ?? "", /application\/json/);
+  assert.doesNotMatch(await response.text(), /<(?:html|script|iframe)/i, "Unauthenticated responses must not expose an email document");
   assert.equal(response.headers.get("Cache-Control"), "private, no-store");
   console.log("Email display tests passed: quote cleanup, inline replies, Unicode, original preservation, HTML sanitization, image opt-in, message binding and authorization.");
 }

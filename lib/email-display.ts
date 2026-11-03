@@ -1,3 +1,25 @@
+export type ReadableEmailPart = { kind: "text"; text: string } | { kind: "link"; text: string; hostname: string; label: string };
+
+/** Collapse only long web addresses and token-bearing links; keep the stored email intact. */
+export function splitTechnicalEmailLinks(value: string): ReadableEmailPart[] {
+  const parts: ReadableEmailPart[] = [];
+  let offset = 0;
+  for (const match of value.matchAll(/https?:\/\/[^\s<>"']+/g)) {
+    const text = match[0];
+    let url: URL;
+    try { url = new URL(text); } catch { continue; }
+    if (url.username || url.password) continue;
+    const technical = text.length >= 90 || [...url.searchParams.keys()].some(key => /^(?:token|signature|sig|jwt|access_token|auth|key)$/i.test(key));
+    if (!technical) continue;
+    if (match.index > offset) parts.push({ kind: "text", text: value.slice(offset, match.index) });
+    const label = /pay|invoice/i.test(url.pathname) ? "Payment link" : /book|reservation/i.test(url.pathname) ? "Booking link" : "Open link";
+    parts.push({ kind: "link", text, hostname: url.hostname, label });
+    offset = match.index + text.length;
+  }
+  if (offset < value.length) parts.push({ kind: "text", text: value.slice(offset) });
+  return parts;
+}
+
 export type EmailTextPart = { kind: "message" | "quote"; text: string; history?: boolean };
 
 export function cleanEmailDisplayText(value: string): string {
@@ -42,8 +64,9 @@ export function splitEmailDisplayText(value: string): EmailTextPart[] {
   return parts;
 }
 
-export function emailDisplayPreview(value: string): string {
+export function emailDisplayPreview(value: string, collapseTechnicalLinks = false): string {
   const parts = splitEmailDisplayText(value);
   const messages = parts.filter(part => part.kind === "message");
-  return (messages.length ? messages : parts).map(part => part.text).join(" ").replace(/\s+/g, " ").slice(0, 160);
+  const text = (messages.length ? messages : parts).map(part => part.text).join(" ");
+  return (collapseTechnicalLinks ? splitTechnicalEmailLinks(text).map(part => part.kind === "link" ? `${part.label} (${part.hostname})` : part.text).join(" ") : text).replace(/\s+/g, " ").slice(0, 160);
 }

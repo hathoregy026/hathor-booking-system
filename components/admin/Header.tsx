@@ -108,6 +108,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const profileTrigger = useRef<HTMLButtonElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
   const urlQuery = searchParams.get("q") ?? "";
   const [query, setQuery] = useState(urlQuery);
@@ -130,6 +131,13 @@ export function Header({ onMenuToggle }: HeaderProps) {
   useEffect(() => {
     if (searchOpen) mobileSearchRef.current?.focus();
   }, [searchOpen]);
+
+  useEffect(() => {
+    if (!profileOpen) return;
+    const dismiss = (event: KeyboardEvent) => { if (event.key === "Escape") { event.preventDefault(); setProfileOpen(false); profileTrigger.current?.focus(); } };
+    document.addEventListener("keydown", dismiss);
+    return () => document.removeEventListener("keydown", dismiss);
+  }, [profileOpen]);
 
   const handlePreview = () => {
     window.open("/", "_blank", "noopener,noreferrer");
@@ -224,9 +232,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
       </nav>
 
       {/* Mobile (<640px): current page title only, so you always know where you are. */}
-      <p className="admin-crumbs__current min-w-0 flex-1 text-sm sm:hidden">
-        {currentTitle}
-      </p>
+      <p className="admin-mobile-location min-w-0 flex-1 text-sm sm:hidden"><span>Admin</span><strong>{currentTitle}</strong></p>
 
       {/* Desktop search (>=1024px) — no longer competes for the whole bar. */}
       {canSeeBookings && <form
@@ -236,7 +242,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         {searchField}
       </form>}
 
-      <div className="ml-auto flex items-center gap-1 sm:gap-2">
+      <div className="admin-header__actions ml-auto flex items-center gap-1 sm:gap-2">
         {canSeeBookings && <button
           type="button"
           onClick={() => setSearchOpen((open) => !open)}
@@ -263,15 +269,17 @@ export function Header({ onMenuToggle }: HeaderProps) {
         </button>
         {canSeeBookings && <NotificationBell />}
 
-        <div className="relative hidden sm:block">
+        <div className="admin-profile relative">
           <button
             type="button"
             onClick={() => setProfileOpen((open) => !open)}
+            ref={profileTrigger}
+            aria-label={`Account: ${access.displayName}`}
             aria-haspopup="menu"
             aria-expanded={profileOpen}
             className="flex items-center gap-2 rounded-lg px-1.5 py-1.5 transition-colors hover:bg-[var(--bg-glass-hover)]"
           >
-            <span className="admin-user-avatar !h-8 !w-8 text-[11px]">H</span>
+            <span className="admin-user-avatar !h-8 !w-8 text-[11px]">{access.displayName.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join("").toUpperCase() || "H"}</span>
             <span className="hidden text-left leading-tight lg:block">
               <span className="block max-w-[10rem] truncate text-sm font-medium">{access.displayName}</span>
               <span className="block max-w-[10rem] truncate text-[11px] text-muted">{access.isOwner ? "Administrator" : access.roleName ?? "No role"}</span>
@@ -304,6 +312,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
                       : { duration: 0.18, ease: EASE_OUT_QUART }
                   }
                 >
+                  <div className="admin-profile__identity"><strong>{access.displayName}</strong><span>{access.isOwner ? "Administrator" : access.roleName ?? "No role"}</span></div>
                   <Link
                     href="/admin/settings"
                     role="menuitem"

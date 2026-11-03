@@ -1,3 +1,4 @@
+import { PRIVATE_EMAIL_RECIPIENT_LIMIT, privateRecipientAddresses } from "@/lib/private-email-recipients";
 import { createHash } from "node:crypto";
 import { render } from "@react-email/render";
 import { z } from "zod";
@@ -20,17 +21,18 @@ const singleLine = z.string().trim().refine(value => !/[\u0000-\u001f\u007f]/.te
 export const privateEmailContentSchema = z.object({
   mailboxId: mailboxIdSchema.default("reservations"),
   to: z.email().max(254).transform(value => value.toLowerCase()),
+  cc: z.array(z.email().max(254).transform(value => value.toLowerCase())).max(PRIVATE_EMAIL_RECIPIENT_LIMIT - 1).optional(),
   recipientName: singleLine.max(160).default(""),
   subject: singleLine.min(1).max(180),
   message: z.string().trim().min(1).max(6000).refine(value => !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(value), "Invalid message characters"),
   draftId: z.uuid().optional(),
   attachments: mailAttachmentRefsSchema.optional(),
-}).strict().refine(value => !value.attachments?.length || !!value.draftId, "Attachments need an email draft");
+}).strict().refine(value => new Set([value.to, ...(value.cc ?? [])]).size === 1 + (value.cc?.length ?? 0), "Use unique recipients in To and CC").refine(value => !value.attachments?.length || !!value.draftId, "Attachments need an email draft");
 export const privateEmailSendSchema = privateEmailContentSchema.safeExtend({ requestId: z.uuid() });
 export type PrivateEmailContent = z.infer<typeof privateEmailContentSchema>;
 export type PrivateEmailResult = { id: string; status: "SENT" | "PENDING" | "FAILED" };
 
-type DeliveryPayload = { from: string; to: string[]; subject: string; html: string; text: string; reply_to: string; attachments?: { filename: string; content: string }[] };
+type DeliveryPayload = { from: string; to: string[]; cc?: string[]; subject: string; html: string; text: string; reply_to: string; attachments?: { filename: string; content: string }[] };
 type StoredEmail = { id: string; mailboxId: string; status: PrivateEmailResult["status"]; sender: string; recipient: string; subject: string; bodyText: string; bodyHtml: string; correspondentName: string | null; requestFingerprint: string; recordedBySession: string; createdAt: Date; attachments?: (BookingAttachment & { contentHash: string })[] };
 
 export class PrivateEmailDeliveryError extends Error {
@@ -71,6 +73,7 @@ export async function sendPrivateEmail(input: z.infer<typeof privateEmailSendSch
   const mailbox = emailMailbox(parsed.mailboxId);
   const content = [parsed.to, parsed.recipientName, parsed.subject, parsed.message];
   const fingerprintContent: unknown[] = parsed.mailboxId === "reservations" ? content : [...content, parsed.mailboxId];
+  if (parsed.cc?.length) fingerprintContent.push({ cc: parsed.cc });
   if (parsed.attachments?.length) fingerprintContent.push(parsed.draftId, parsed.attachments);
   const fingerprint = createHash("sha256").update(JSON.stringify(fingerprintContent)).digest("hex");
   const resolve = dependencies.resolveAttachments ?? resolvePrivateEmailAttachments;
@@ -85,7 +88,7 @@ export async function sendPrivateEmail(input: z.infer<typeof privateEmailSendSch
     const html = await (dependencies.render ?? renderPrivateEmail)(parsed, handlerName);
     await query(`INSERT INTO "InboxMessage" (id, direction, status, sender, recipient, "correspondentName", subject, "bodyText", "bodyHtml", "requestFingerprint", "recordedBySession", "mailboxId", attachments)
       VALUES ($1, 'OUTBOUND', 'PENDING', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb) ON CONFLICT (id) DO NOTHING`,
-    [parsed.requestId, from, parsed.to, parsed.recipientName || null, parsed.subject, parsed.message, html, fingerprint, sessionId, parsed.mailboxId,
+    [parsed.requestId, from, [parsed.to, ...(parsed.cc ?? [])].join(", "), parsed.recipientName || null, parsed.subject, parsed.message, html, fingerprint, sessionId, parsed.mailboxId,
       JSON.stringify(files.map(file => ({ id: file.id, filename: file.filename, contentType: file.contentType, storagePath: file.storagePath, contentHash: file.contentHash })))]);
     [stored] = await query<StoredEmail>(`SELECT * FROM "InboxMessage" WHERE id = $1 AND direction = 'OUTBOUND'`, [parsed.requestId]);
   }
@@ -101,8 +104,10 @@ export async function sendPrivateEmail(input: z.infer<typeof privateEmailSendSch
   if (!lease.length) return { id: stored.id, status: "PENDING" };
   const senderName = mailboxDisplayName(stored.sender);
   const signatureName = senderName?.startsWith(`Hathor ${mailbox.label}`) ? senderName : "The Hathor team";
+  // The immutable history address list stores To first, followed by CC. Legacy single-address rows remain valid.
+  const recipients = z.array(z.email()).min(1).max(PRIVATE_EMAIL_RECIPIENT_LIMIT).parse(privateRecipientAddresses(stored.recipient));
   const payload: DeliveryPayload = {
-    from: stored.sender, to: [stored.recipient], subject: stored.subject, html: stored.bodyHtml, reply_to: mailbox.address,
+    from: stored.sender, to: [recipients[0]], ...(recipients.length > 1 ? { cc: recipients.slice(1) } : {}), subject: stored.subject, html: stored.bodyHtml, reply_to: mailbox.address,
     text: `${stored.correspondentName ? `Dear ${stored.correspondentName},` : "Hello,"}\n\n${stored.bodyText}\n\nWarm regards,\n${signatureName}\n${mailbox.address}\n+20 127 049 6896`,
     ...(files.length ? { attachments: files.map(file => ({ filename: file.filename, content: file.content })) } : {}),
   };
