@@ -101,6 +101,7 @@ export const CHROME_COPY_DE: ChromeCopy = {
       en: "English",
       it: "Italiano",
       de: "Deutsch",
+      ru: "Русский",
     },
     toggleLabel: (active) => `Sprache: ${active}. Wählen Sie eine Sprache`,
     closeMenu: "Sprachmenü schließen",

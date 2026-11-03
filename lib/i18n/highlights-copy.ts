@@ -16,6 +16,7 @@ import {
   HIGHLIGHTS_PRINCIPLES,
 } from "@/lib/highlights-content";
 import { HIGHLIGHTS_COPY_DE } from "@/lib/i18n/highlights-copy-de";
+import { HIGHLIGHTS_COPY_RU } from "@/lib/i18n/highlights-copy-ru";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Landmark = { category: string; location: string; caption: string; title: string };
@@ -325,4 +326,5 @@ export const HIGHLIGHTS_COPY: Record<PublicLocale, HighlightsCopy> = {
     exploreCruises: "Scopri le crociere",
   },
   de: HIGHLIGHTS_COPY_DE,
+  ru: HIGHLIGHTS_COPY_RU,
 };

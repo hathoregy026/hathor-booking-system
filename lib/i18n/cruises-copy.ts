@@ -6,6 +6,7 @@
  */
 
 import { CRUISES_COPY_DE } from "@/lib/i18n/cruises-copy-de";
+import { CRUISES_COPY_RU } from "@/lib/i18n/cruises-copy-ru";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 export type CruisesSortKey = "price-asc" | "price-desc" | "nights-asc" | "nights-desc";
@@ -220,4 +221,5 @@ export const CRUISES_COPY: Record<PublicLocale, CruisesCopy> = {
     },
   },
   de: CRUISES_COPY_DE,
+  ru: CRUISES_COPY_RU,
 };

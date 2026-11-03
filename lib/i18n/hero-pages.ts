@@ -34,10 +34,23 @@ const HERO_PAGES_DE: Partial<HeroPages> = {
   blog: { main: "Reisen Sie", second: "auf dem Nil" },
 };
 
+/* Placeholder until translated: same line structure as Italian and German. */
+const HERO_PAGES_RU: Partial<HeroPages> = {
+  cruises: { main: "Dahabiya\nReisen", second: "auf dem Nil" },
+  charter: { main: "Privater\nDahabiya Charter", second: "Exklusive Reise" },
+  about: { main: "Kommen Sie an Bord", second: "Hathor Cruise" },
+  contact: { main: "Kontakt", second: "Für jede Frage" },
+  wellness: { main: "Schwimmende Oase", second: "Ruhe und Training" },
+  highlights: { main: "Dahabiya Kreuzfahrt", second: "Die Höhepunkte" },
+  partners: { main: "Unsere Partner", second: "Weltweites Vertrauen" },
+  blog: { main: "Reisen Sie", second: "auf dem Nil" },
+};
+
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {
   en: {},
   it: HERO_PAGES_IT,
   de: HERO_PAGES_DE,
+  ru: HERO_PAGES_RU,
 };
 
 /** The settings with this language's hero titles; English gets the same object back. */

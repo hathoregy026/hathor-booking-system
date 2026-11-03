@@ -8,6 +8,7 @@
 
 import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { CHARTER_COPY_DE } from "@/lib/i18n/charter-copy-de";
+import { CHARTER_COPY_RU } from "@/lib/i18n/charter-copy-ru";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { CHARTER_PAGE } from "@/lib/page-content";
 
@@ -545,4 +546,4 @@ const IT: CharterCopy = {
   },
 };
 
-export const CHARTER_COPY: Record<PublicLocale, CharterCopy> = { en: EN, it: IT, de: CHARTER_COPY_DE };
+export const CHARTER_COPY: Record<PublicLocale, CharterCopy> = { en: EN, it: IT, de: CHARTER_COPY_DE, ru: CHARTER_COPY_RU };

@@ -9,6 +9,7 @@
  */
 
 import { CHROME_COPY_DE } from "@/lib/i18n/chrome-copy-de";
+import { CHROME_COPY_RU } from "@/lib/i18n/chrome-copy-ru";
 import { localizedHref, type PublicLocale } from "@/lib/i18n/locale";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import type { HeaderNavItem } from "@/lib/public-nav";
@@ -164,6 +165,7 @@ const EN: ChromeCopy = {
       /* A live language is always named in itself, so its speakers find it. */
       it: "Italiano",
       de: "Deutsch",
+      ru: "Русский",
     },
     toggleLabel: (active) => `Language: ${active}. Choose a language`,
     closeMenu: "Close language menu",
@@ -376,6 +378,7 @@ const IT: ChromeCopy = {
       en: "Inglese",
       it: "Italiano",
       de: "Deutsch",
+      ru: "Русский",
     },
     toggleLabel: (active) => `Lingua: ${active}. Scelga una lingua`,
     closeMenu: "Chiudi il menu delle lingue",
@@ -494,7 +497,7 @@ const IT: ChromeCopy = {
   },
 };
 
-export const CHROME_COPY: Record<PublicLocale, ChromeCopy> = { en: EN, it: IT, de: CHROME_COPY_DE };
+export const CHROME_COPY: Record<PublicLocale, ChromeCopy> = { en: EN, it: IT, de: CHROME_COPY_DE, ru: CHROME_COPY_RU };
 
 /**
  * The header / menu entries in a language: translated labels, and links that

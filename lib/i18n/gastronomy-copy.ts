@@ -5,6 +5,7 @@
  */
 
 import { GASTRONOMY_COPY_DE } from "@/lib/i18n/gastronomy-copy-de";
+import { GASTRONOMY_COPY_RU } from "@/lib/i18n/gastronomy-copy-ru";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 export type GastronomyCopy = {
@@ -80,4 +81,5 @@ export const GASTRONOMY_COPY: Record<PublicLocale, GastronomyCopy> = {
     plateAlt: "Una portata della cucina di Hathor",
   },
   de: GASTRONOMY_COPY_DE,
+  ru: GASTRONOMY_COPY_RU,
 };

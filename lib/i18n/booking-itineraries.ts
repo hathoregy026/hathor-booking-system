@@ -1,6 +1,7 @@
 import { HATHOR_ITINERARIES, type VoyageItinerary } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 import { HATHOR_ITINERARIES_DE } from "@/lib/i18n/booking-itineraries-de";
+import { HATHOR_ITINERARIES_RU } from "@/lib/i18n/booking-itineraries-ru";
 import { HATHOR_ITINERARIES_IT } from "@/lib/i18n/booking-itineraries-it";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
@@ -8,6 +9,7 @@ const ITINERARIES: Record<PublicLocale, Record<StayDurationValue, VoyageItinerar
   en: HATHOR_ITINERARIES,
   it: HATHOR_ITINERARIES_IT,
   de: HATHOR_ITINERARIES_DE,
+  ru: HATHOR_ITINERARIES_RU,
 };
 
 const VOYAGE_ORDER: StayDurationValue[] = ["3-nights-aswan-luxor", "4-nights-luxor-aswan", "7-nights-luxor-aswan-luxor"];

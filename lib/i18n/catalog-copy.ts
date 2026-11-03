@@ -13,7 +13,16 @@ import {
   VOYAGE_NAMES_DE,
   WEEKDAYS_DE,
 } from "@/lib/i18n/catalog-copy-de";
+import {
+  AMENITIES_RU,
+  AMENITY_CAPTION_OVERRIDES_RU,
+  AMENITY_KIND_CAPTIONS_RU,
+  PLACES_RU,
+  VOYAGE_NAMES_RU,
+  WEEKDAYS_RU,
+} from "@/lib/i18n/catalog-copy-ru";
 import { usdTextDe } from "@/lib/i18n/format-de";
+import { usdTextRu } from "@/lib/i18n/format-ru";
 import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
 
 type Words = Record<string, string>;
@@ -26,14 +35,14 @@ const VOYAGE_NAMES_IT: Record<string, string> = {
   "nile-majesty": "Charter privato — Nile Majesty",
 };
 
-const VOYAGE_NAMES: Record<TranslatedLocale, Words> = { it: VOYAGE_NAMES_IT, de: VOYAGE_NAMES_DE };
+const VOYAGE_NAMES: Record<TranslatedLocale, Words> = { it: VOYAGE_NAMES_IT, de: VOYAGE_NAMES_DE, ru: VOYAGE_NAMES_RU };
 
 export function voyageNameIn(locale: PublicLocale, slug: string, fallback: string): string {
   return locale === "en" ? fallback : (VOYAGE_NAMES[locale][slug] ?? fallback);
 }
 
 const PLACES_IT: Record<string, string> = { Aswan: "Assuan", Cairo: "Il Cairo" };
-const PLACES: Record<TranslatedLocale, Words> = { it: PLACES_IT, de: PLACES_DE };
+const PLACES: Record<TranslatedLocale, Words> = { it: PLACES_IT, de: PLACES_DE, ru: PLACES_RU };
 
 /**
  * A dollar amount written US-style ("$7,000", "$3,000.00") with the reader’s
@@ -43,6 +52,7 @@ const PLACES: Record<TranslatedLocale, Words> = { it: PLACES_IT, de: PLACES_DE }
 export function usdIn(locale: PublicLocale, formatted: string): string {
   if (locale === "en") return formatted;
   if (locale === "de") return usdTextDe(formatted);
+  if (locale === "ru") return usdTextRu(formatted);
   return formatted.replace(/[,.]/g, (mark) => (mark === "," ? "." : ","));
 }
 
@@ -62,7 +72,7 @@ const WEEKDAYS_IT: Record<string, string> = {
   Sunday: "domenica",
 };
 
-const WEEKDAYS: Record<TranslatedLocale, Words> = { it: WEEKDAYS_IT, de: WEEKDAYS_DE };
+const WEEKDAYS: Record<TranslatedLocale, Words> = { it: WEEKDAYS_IT, de: WEEKDAYS_DE, ru: WEEKDAYS_RU };
 
 /** A departure day as a word inside a sentence ("sabato"; English "Saturday"). */
 export function weekdayIn(locale: PublicLocale, day: string): string {
@@ -101,7 +111,7 @@ const AMENITIES_IT: Record<string, string> = {
   "Coffee machine, mini bar, air conditioning": "Macchina del caffè, minibar, aria condizionata",
 };
 
-const AMENITIES: Record<TranslatedLocale, Words> = { it: AMENITIES_IT, de: AMENITIES_DE };
+const AMENITIES: Record<TranslatedLocale, Words> = { it: AMENITIES_IT, de: AMENITIES_DE, ru: AMENITIES_RU };
 
 /** An amenity sentence in this language (the hover title and screen-reader text). */
 export function amenityIn(locale: PublicLocale, label: string): string {
@@ -153,4 +163,5 @@ export const AMENITY_CAPTIONS: Record<
 > = {
   it: { kinds: AMENITY_KIND_CAPTIONS_IT, overrides: AMENITY_CAPTION_OVERRIDES_IT },
   de: { kinds: AMENITY_KIND_CAPTIONS_DE, overrides: AMENITY_CAPTION_OVERRIDES_DE },
+  ru: { kinds: AMENITY_KIND_CAPTIONS_RU, overrides: AMENITY_CAPTION_OVERRIDES_RU },
 };

@@ -9,6 +9,7 @@ import { resolveComingSoonForRequest } from "@/lib/live-site-gate";
 import { getLiveSiteSettingsSafe } from "@/lib/live-site-settings";
 import { loadPublicCmsBundle } from "@/lib/public-cms-bundle";
 import "../public.css";
+import "../booking-fonts-cyrillic.css";
 import "../site-nav.css";
 import "../night-mode.css";
 import "../site-coming-soon.css";

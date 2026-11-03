@@ -1,10 +1,12 @@
 import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
 import { SITE_IMAGE_ALTS_DE } from "@/lib/i18n/site-image-alts-de";
+import { SITE_IMAGE_ALTS_RU } from "@/lib/i18n/site-image-alts-ru";
 import { SITE_IMAGE_ALTS_IT } from "@/lib/i18n/site-image-alts-it";
 
 const SITE_IMAGE_ALTS: Record<TranslatedLocale, Record<string, string>> = {
   it: SITE_IMAGE_ALTS_IT,
   de: SITE_IMAGE_ALTS_DE,
+  ru: SITE_IMAGE_ALTS_RU,
 };
 
 /** A site-image alt in the visitor's language; unknown alts pass through. */

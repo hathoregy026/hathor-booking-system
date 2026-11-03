@@ -7,6 +7,7 @@
 
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { WELLNESS_COPY_DE } from "@/lib/i18n/wellness-copy-de";
+import { WELLNESS_COPY_RU } from "@/lib/i18n/wellness-copy-ru";
 
 type Ritual = { word: string; detail: string; meta: string };
 
@@ -170,4 +171,5 @@ export const WELLNESS_COPY: Record<PublicLocale, WellnessCopy> = {
     alt: (english) => ALTS_IT[english] ?? english,
   },
   de: WELLNESS_COPY_DE,
+  ru: WELLNESS_COPY_RU,
 };

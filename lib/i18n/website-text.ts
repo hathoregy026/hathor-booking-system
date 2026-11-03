@@ -1,5 +1,6 @@
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { PAGES_DE } from "@/lib/i18n/website-text-de";
+import { PAGES_RU } from "@/lib/i18n/website-text-ru";
 import { PAGES_IT } from "@/lib/i18n/website-text-it";
 import type { WebsiteText } from "@/lib/website-text-shared";
 
@@ -7,6 +8,7 @@ const PAGES_BY_LOCALE: Record<PublicLocale, Partial<WebsiteText["pages"]>> = {
   en: {},
   it: PAGES_IT,
   de: PAGES_DE,
+  ru: PAGES_RU,
 };
 
 /** The dashboard text for a language: its translated sections over the live English. */

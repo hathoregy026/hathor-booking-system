@@ -17,6 +17,11 @@ const PRICE_UNITS: Record<PublicLocale, Record<LuxuryRoomTypeValue, string>> = {
     "luxury-suites": "pro Suite",
     "luxury-royal-suites": "pro Royal Suite",
   },
+  ru: {
+    "luxury-rooms": "pro Kabine",
+    "luxury-suites": "pro Suite",
+    "luxury-royal-suites": "pro Royal Suite",
+  },
 };
 
 /** Display copy only; never changes a rate or a booking total. */

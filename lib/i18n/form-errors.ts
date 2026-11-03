@@ -1,4 +1,5 @@
 import { INQUIRY_REFUSALS_DE } from "@/lib/i18n/contact-copy-de";
+import { INQUIRY_REFUSALS_RU } from "@/lib/i18n/contact-copy-ru";
 import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
 
 /**
@@ -28,12 +29,17 @@ const SERVER_ERRORS: Record<TranslatedLocale, Readonly<Record<string, string>>> 
     ...INQUIRY_REFUSALS_DE,
     "Request body is too large": "Ihr Text ist zu lang. Bitte kürzen Sie ihn und versuchen Sie es erneut.",
   },
+  ru: {
+    ...INQUIRY_REFUSALS_RU,
+    "Request body is too large": "Текст слишком длинный. Сократите его и попробуйте еще раз.",
+  },
 };
 
 /** fetch itself failed: the guest's connection, not a refusal. */
 const NETWORK_ERRORS: Record<TranslatedLocale, string> = {
   it: "Non è stato possibile raggiungere il nostro sistema. Controlli la connessione e riprovi.",
   de: "Unser System konnte nicht erreicht werden. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+  ru: "Не удалось связаться с нашей системой. Проверьте подключение к интернету и попробуйте еще раз.",
 };
 
 /** The sentence for a failed send. `error` carries the server's text, or is fetch's own TypeError. */

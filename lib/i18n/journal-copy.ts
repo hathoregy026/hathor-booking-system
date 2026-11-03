@@ -4,6 +4,7 @@
  */
 
 import { ARTICLE_COPY_DE, JOURNAL_COPY_DE } from "@/lib/i18n/journal-copy-de";
+import { ARTICLE_COPY_RU, JOURNAL_COPY_RU } from "@/lib/i18n/journal-copy-ru";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Theme = { word: string; note: string };
@@ -205,6 +206,7 @@ export const JOURNAL_COPY: Record<PublicLocale, JournalCopy> = {
     writeToUs: "Scrivici",
   },
   de: JOURNAL_COPY_DE,
+  ru: JOURNAL_COPY_RU,
 };
 
 /** A journal article's own words, around the post's text. */
@@ -322,4 +324,5 @@ export const ARTICLE_COPY: Record<PublicLocale, ArticleCopy> = {
     commercial: (label) => COMMERCIAL_IT[label] ?? label,
   },
   de: ARTICLE_COPY_DE,
+  ru: ARTICLE_COPY_RU,
 };

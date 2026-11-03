@@ -1,17 +1,21 @@
 import { BLOG_POSTS_DE } from "@/lib/i18n/blog-posts-de";
+import { BLOG_POSTS_RU } from "@/lib/i18n/blog-posts-ru";
 import { BLOG_POSTS_IT, type PostWords } from "@/lib/i18n/blog-posts-it";
 import { TRANSLATED_BLOG_SLUGS_DE } from "@/lib/i18n/blog-slugs-de";
+import { TRANSLATED_BLOG_SLUGS_RU } from "@/lib/i18n/blog-slugs-ru";
 import { TRANSLATED_BLOG_SLUGS_IT } from "@/lib/i18n/blog-slugs-it";
 import type { PublicLocale, TranslatedLocale } from "@/lib/i18n/locale";
 
 const BLOG_POSTS: Record<TranslatedLocale, Record<string, PostWords>> = {
   it: BLOG_POSTS_IT,
   de: BLOG_POSTS_DE,
+  ru: BLOG_POSTS_RU,
 };
 
 const TRANSLATED: Record<TranslatedLocale, Set<string>> = {
   it: new Set(TRANSLATED_BLOG_SLUGS_IT),
   de: new Set(TRANSLATED_BLOG_SLUGS_DE),
+  ru: new Set(TRANSLATED_BLOG_SLUGS_RU),
 };
 
 /** A post's title and excerpt in a language; English, and untranslated posts, pass through. */

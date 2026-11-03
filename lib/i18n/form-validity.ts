@@ -46,6 +46,17 @@ const VALIDITY_WORDS: Record<TranslatedLocale, ValidityWords> = {
     wholeNumber: "Bitte geben Sie eine ganze Zahl ein.",
     other: "Bitte prüfen Sie Ihre Eingabe.",
   },
+  ru: {
+    missing: "Bitte füllen Sie dieses Feld aus.",
+    email: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    tooShort: (length) => `Bitte geben Sie mindestens ${length} Zeichen ein.`,
+    tooLong: (length) => `Bitte geben Sie höchstens ${length} Zeichen ein.`,
+    dateTooEarly: "Bitte wählen Sie ein Datum ab dem angegebenen Tag.",
+    tooLow: (min) => `Bitte geben Sie einen Wert von mindestens ${min} ein.`,
+    tooHigh: (max) => `Bitte geben Sie einen Wert von höchstens ${max} ein.`,
+    wholeNumber: "Bitte geben Sie eine ganze Zahl ein.",
+    other: "Bitte prüfen Sie Ihre Eingabe.",
+  },
 };
 
 /** The browser's own message for a field, in the page's language. */

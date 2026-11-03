@@ -6,6 +6,7 @@
 
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { REVIEWS_COPY_DE } from "@/lib/i18n/reviews-copy-de";
+import { REVIEWS_COPY_RU } from "@/lib/i18n/reviews-copy-ru";
 
 type HandLine = { text: string; x: number; y: number; r?: number };
 
@@ -170,4 +171,5 @@ export const REVIEWS_COPY: Record<PublicLocale, ReviewsCopy> = {
     stamp: "CROCIERE SUL NILO · EGITTO · LUXOR · ASSUAN ·",
   },
   de: REVIEWS_COPY_DE,
+  ru: REVIEWS_COPY_RU,
 };

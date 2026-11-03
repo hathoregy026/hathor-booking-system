@@ -10,6 +10,7 @@
 
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { TERMS_COPY_DE } from "@/lib/i18n/terms-copy-de";
+import { TERMS_COPY_RU } from "@/lib/i18n/terms-copy-ru";
 import {
   TERMS_INTRO,
   TERMS_SECTIONS,
@@ -385,4 +386,5 @@ export const TERMS_COPY: Record<PublicLocale, TermsCopy> = {
     tocTitle: "In questa pagina",
   },
   de: TERMS_COPY_DE,
+  ru: TERMS_COPY_RU,
 };

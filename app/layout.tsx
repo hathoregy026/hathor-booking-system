@@ -27,6 +27,7 @@ import { SiteBookingChrome } from "@/components/public/SiteBookingChrome";
 import { SiteImagePreviewScroll } from "@/components/public/SiteImagePreviewScroll";
 import { SelectionProvider } from "@/components/selection/SelectionProvider";
 import "./hathor-fonts.css";
+import "./hathor-fonts-cyrillic.css";
 import "./globals.css";
 import "./mobile-touch.css";
 import "./floating-actions.css";

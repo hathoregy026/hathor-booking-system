@@ -9,8 +9,9 @@
 
 import { TRANSLATED_BLOG_SLUGS_DE } from "./blog-slugs-de";
 import { TRANSLATED_BLOG_SLUGS_IT } from "./blog-slugs-it";
+import { TRANSLATED_BLOG_SLUGS_RU } from "./blog-slugs-ru";
 
-export const PUBLIC_LOCALES = ["en", "it", "de"] as const;
+export const PUBLIC_LOCALES = ["en", "it", "de", "ru"] as const;
 
 export type PublicLocale = (typeof PUBLIC_LOCALES)[number];
 
@@ -23,6 +24,7 @@ export const PUBLIC_LOCALE_HTML_LANG: Record<PublicLocale, string> = {
   en: "en",
   it: "it",
   de: "de",
+  ru: "ru",
 };
 
 /** Every page but the journal articles, shared by all the added languages. */
@@ -66,6 +68,7 @@ const blogPaths = (slugs: readonly string[]) => slugs.map((slug) => `/blogs/${sl
 export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
   it: [...TRANSLATED_SITE_PATHS, ...blogPaths(TRANSLATED_BLOG_SLUGS_IT)],
   de: [...TRANSLATED_SITE_PATHS, ...blogPaths(TRANSLATED_BLOG_SLUGS_DE)],
+  ru: [...TRANSLATED_SITE_PATHS, ...blogPaths(TRANSLATED_BLOG_SLUGS_RU)],
 };
 
 /**
@@ -78,6 +81,8 @@ export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
   it: false,
   /* Off until Hathor opens German to search; see docs/german-review.md. */
   de: false,
+  /* Off until Hathor opens Russian to search; see docs/russian-review.md. */
+  ru: false,
 };
 
 /** `og:locale` value per language. */
@@ -85,6 +90,7 @@ export const PUBLIC_LOCALE_OG: Record<PublicLocale, string> = {
   en: "en_US",
   it: "it_IT",
   de: "de_DE",
+  ru: "ru_RU",
 };
 
 /** hreflang code per language. */
@@ -92,6 +98,7 @@ export const PUBLIC_LOCALE_HREFLANG: Record<PublicLocale, string> = {
   en: "en",
   it: "it",
   de: "de",
+  ru: "ru",
 };
 
 const PREFIXED_LOCALES = PUBLIC_LOCALES.filter(

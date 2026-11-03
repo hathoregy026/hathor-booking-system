@@ -9,6 +9,7 @@ import { describeRoomTypesOnCruise, type StayDurationValue } from "@/lib/booking
 import { localizedHref, type PublicLocale, type TranslatedLocale } from "@/lib/i18n/locale";
 import { placesIn, voyageNameIn, weekdayIn, weekdayLabelIn } from "@/lib/i18n/catalog-copy";
 import { SELECTION_COPY_DE, SUMMARY_WORDS_DE } from "@/lib/i18n/selection-copy-de";
+import { SELECTION_COPY_RU, SUMMARY_WORDS_RU } from "@/lib/i18n/selection-copy-ru";
 import {
   findResidence,
   findVoyage,
@@ -201,6 +202,7 @@ export const SELECTION_COPY: Record<PublicLocale, SelectionCopy> = {
     keepCharter: "Mantieni il charter privato",
   },
   de: SELECTION_COPY_DE,
+  ru: SELECTION_COPY_RU,
 };
 
 /**
@@ -291,6 +293,7 @@ const SUMMARY_WORDS: Record<TranslatedLocale, SummaryWords> = {
     guestWords: { Adult: "adulto", Adults: "adulti", Child: "bambino", Children: "bambini" },
   },
   de: SUMMARY_WORDS_DE,
+  ru: SUMMARY_WORDS_RU,
 };
 
 /**

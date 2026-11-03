@@ -18,6 +18,7 @@ import {
 import { italianWeekday } from "@/lib/i18n/home-copy";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { GUIDE_COPY_DE, MOORINGS_DE } from "@/lib/i18n/route-copy-de";
+import { GUIDE_COPY_RU, MOORINGS_RU } from "@/lib/i18n/route-copy-ru";
 import { NILE_MOORINGS, type Mooring } from "@/lib/nile-route";
 
 export type MooringWords = Pick<Mooring, "name" | "day" | "imageAlt" | "note"> & {
@@ -150,6 +151,7 @@ const MOORINGS_BY_LOCALE: Record<PublicLocale, readonly Mooring[]> = {
   en: NILE_MOORINGS,
   it: overlayMoorings(MOORINGS_IT),
   de: overlayMoorings(MOORINGS_DE),
+  ru: overlayMoorings(MOORINGS_RU),
 };
 
 export function localizedMoorings(locale: PublicLocale): readonly Mooring[] {
@@ -300,6 +302,7 @@ const GUIDE_BY_LOCALE: Record<PublicLocale, GuideCopy> = {
     })),
   },
   de: GUIDE_COPY_DE,
+  ru: GUIDE_COPY_RU,
 };
 
 export function localizedGuide(locale: PublicLocale): GuideCopy {

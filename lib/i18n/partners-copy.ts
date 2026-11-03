@@ -6,6 +6,7 @@
 
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { PARTNERS_COPY_DE } from "@/lib/i18n/partners-copy-de";
+import { PARTNERS_COPY_RU } from "@/lib/i18n/partners-copy-ru";
 
 type Circle = { role: string; region: string; note: string };
 
@@ -224,4 +225,5 @@ export const PARTNERS_COPY: Record<PublicLocale, PartnersCopy> = {
     writeToUs: "Scrivici",
   },
   de: PARTNERS_COPY_DE,
+  ru: PARTNERS_COPY_RU,
 };

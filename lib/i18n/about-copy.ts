@@ -5,6 +5,7 @@
  */
 
 import { ABOUT_COPY_DE } from "@/lib/i18n/about-copy-de";
+import { ABOUT_COPY_RU } from "@/lib/i18n/about-copy-ru";
 import type { PublicLocale } from "@/lib/i18n/locale";
 
 type Principle = { title: string; text: string };
@@ -158,4 +159,5 @@ export const ABOUT_COPY: Record<PublicLocale, AboutCopy> = {
     cardBody: ["Tre ponti di quiete", "per una crociera privata sul Nilo"],
   },
   de: ABOUT_COPY_DE,
+  ru: ABOUT_COPY_RU,
 };

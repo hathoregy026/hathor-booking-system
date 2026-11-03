@@ -7,6 +7,7 @@
 import { voyageNameIn } from "@/lib/i18n/catalog-copy";
 import type { PublicLocale } from "@/lib/i18n/locale";
 import { VOYAGES_COPY_DE } from "@/lib/i18n/voyages-copy-de";
+import { VOYAGES_COPY_RU } from "@/lib/i18n/voyages-copy-ru";
 
 export type VoyagesCopy = {
   runLabel: string;
@@ -82,4 +83,5 @@ export const VOYAGES_COPY: Record<PublicLocale, VoyagesCopy> = {
     slotAlt: (slot) => SLOT_ALTS_IT[slot] ?? "",
   },
   de: VOYAGES_COPY_DE,
+  ru: VOYAGES_COPY_RU,
 };

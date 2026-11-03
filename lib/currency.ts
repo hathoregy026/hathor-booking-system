@@ -44,13 +44,16 @@ export function formatCurrency(cents: number, currency: Currency = "USD", rates:
     minimumFractionDigits: style === "price" || converted % 100 !== 0 ? 2 : 0,
     maximumFractionDigits: 2,
   }).format(converted / 100);
-  // Italian and German pages swap the separators ($7.000,00), as their other prices do.
-  const amount = locale === "en" ? grouped : grouped.replace(/[,.]/g, mark => (mark === "," ? "." : ","));
+  // Italian and German pages swap the separators ($7.000,00), as their other prices do;
+  // Russian groups with a no-break space (7 000,00).
+  const amount = locale === "en"
+    ? grouped
+    : grouped.replace(/[,.]/g, mark => (mark === "," ? (locale === "ru" ? " " : ".") : ","));
   // Explicit ISO codes disambiguate the Egyptian and British pound.
   const prefix = style === "money" || currency === "EGP" || currency === "RUB"
     ? `${currency} `
     : CURRENCIES.find(item => item.code === currency)!.symbol;
-  // German writes the currency after the amount ("7.000,00 $", "≈ 6.500,00 €").
-  if (locale === "de") return `${currency === "USD" ? "" : "≈ "}${amount}\u00a0${prefix.trim()}`;
+  // German and Russian write the currency after the amount ("7.000,00 $", "7 000,00 $").
+  if (locale === "de" || locale === "ru") return `${currency === "USD" ? "" : "≈ "}${amount}\u00a0${prefix.trim()}`;
   return `${currency === "USD" ? "" : "≈ "}${prefix}${amount}`;
 }

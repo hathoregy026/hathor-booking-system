@@ -15,6 +15,12 @@ import {
   SHOWCASE_DE,
 } from "@/lib/i18n/rooms-copy-de";
 import {
+  CONFIG_RU,
+  FOLIO_RU,
+  ROOMS_COPY_RU,
+  SHOWCASE_RU,
+} from "@/lib/i18n/rooms-copy-ru";
+import {
   ROOM_COLLECTION_CONFIG,
   ROOM_COLLECTION_LINKS,
   type RoomCollectionEditorialConfig,
@@ -27,6 +33,7 @@ import {
   type RoomFolioRoute,
 } from "@/lib/room-folio-panels";
 import type { RoomShowcase } from "@/lib/room-showcase";
+import { countRu, NIGHTS_RU, upToGuestsRu } from "@/lib/i18n/format-ru";
 
 /* ---------- Collection pages: the variant config ---------- */
 
@@ -156,7 +163,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
 const CONFIGS: Record<
   TranslatedLocale,
   Record<RoomCollectionVariant, RoomCollectionEditorialConfig>
-> = { it: CONFIG_IT, de: CONFIG_DE };
+> = { it: CONFIG_IT, de: CONFIG_DE, ru: CONFIG_RU };
 /** The collection names as menus and breadcrumbs print them ("Suite" has no plural in Italian). */
 const COLLECTION_LABELS_IT: Record<RoomCollectionVariant, string> = {
   cabins: "Luxury Rooms",
@@ -205,7 +212,7 @@ const SHOWCASE_IT: Record<string, { eyebrow: string; description: string }> = {
 const SHOWCASES: Record<
   TranslatedLocale,
   Record<string, { eyebrow: string; description: string }>
-> = { it: SHOWCASE_IT, de: SHOWCASE_DE };
+> = { it: SHOWCASE_IT, de: SHOWCASE_DE, ru: SHOWCASE_RU };
 
 export function roomShowcaseIn<T extends RoomShowcase>(room: T, locale: PublicLocale): T {
   const words = locale === "en" ? undefined : SHOWCASES[locale][room.slug];
@@ -431,6 +438,7 @@ const FOLIO_IT: Record<RoomCollectionVariant, RoomFolioPanels> = {
 const FOLIOS: Record<TranslatedLocale, Record<RoomCollectionVariant, RoomFolioPanels>> = {
   it: FOLIO_IT,
   de: FOLIO_DE,
+  ru: FOLIO_RU,
 };
 
 export function roomFolioPanels(
@@ -541,6 +549,22 @@ export function roomDetailCopy(
 ): RoomsCopy["detail"] {
   const detail = ROOMS_COPY[locale].detail;
   if (locale === "en" || variant === "cabins") return detail;
+  if (locale === "ru") {
+    return {
+      ...detail,
+      oneCabin: "1 люкс",
+      cabin: "люкс",
+      fareTitle: "Ваш люкс и стоимость",
+      ledgerHead: (nights) => [
+        "Размещение",
+        "В ваше путешествие входит",
+        nights ? `Итого за ${countRu(nights, NIGHTS_RU)}` : "Итого",
+        "Люксы",
+      ],
+      totalLine: (nights, capacity) =>
+        `1 люкс · ${nights ? countRu(nights, NIGHTS_RU) : "гибкие даты"} · ${upToGuestsRu(capacity)}`,
+    };
+  }
   if (locale === "de") {
     return {
       ...detail,
@@ -769,4 +793,5 @@ export const ROOMS_COPY: Record<PublicLocale, RoomsCopy> = {
     },
   },
   de: ROOMS_COPY_DE,
+  ru: ROOMS_COPY_RU,
 };
