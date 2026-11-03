@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/admin/LoginForm";
@@ -6,10 +6,11 @@ import { ADMIN_SESSION_COOKIE, getAdminIdentity } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
+const plusJakarta = localFont({
+  src: "../fonts/plus-jakarta-sans-latin.woff2",
+  display: "swap",
   variable: "--font-admin",
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
 });
 
 type AdminLoginPageProps = {
