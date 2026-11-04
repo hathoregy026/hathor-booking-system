@@ -605,7 +605,7 @@ export const SITE_IMAGE_BASE_SLOTS: SiteImageSlot[] = [
   },
   {
     name: "scraped-luxsuite-6",
-    altText: "Accessible Hathor Suite aboard Hathor Dahabiya",
+    altText: "Hathor Luxury Suite aboard Hathor Dahabiya",
     url: "/media/hathor/scraped/luxsuite-6.webp",
     category: "suite",
     pagePath: "/rooms",

@@ -458,7 +458,7 @@ export const LUXURY_SUITES_PAGE = {
   },
   overview: {
     title: "Luxury Suites",
-    subtitle: "Accessible Hathor Suite",
+    subtitle: "Hathor Luxury Suite",
     body: "The suites provide additional space for guests who value greater privacy, generous proportions and uninterrupted river views.",
   },
   intro: [

@@ -74,7 +74,7 @@ export const CONFIG_DE: Record<RoomCollectionVariant, RoomCollectionEditorialCon
     manifesto: {
       label: "Suiten",
       headline: ["Sechsundvierzig", "Quadratmeter", "zum Loslassen"],
-      body: "Mehr Raum, mehr Privatsphäre, mehr Fluss: Die Accessible Hathor Suite ist für alle gedacht, die durchatmen möchten, ohne den Nil je zu verlassen.",
+      body: "Mehr Raum, mehr Privatsphäre, mehr Fluss: Die Hathor Luxury Suite ist für alle gedacht, die durchatmen möchten, ohne den Nil je zu verlassen.",
     },
     ledger: [
       { value: "46", label: "Quadratmeter", note: "Grundriss der Suite" },
@@ -235,8 +235,8 @@ const ROUND_TRIP_DAYS_DE: readonly RoomFolioDay[] = [
     body: "Frühstück auf dem Nil, während die Hathor nach Süden Richtung Esna fährt. Einem Mittagessen ohne Eile und dem Nachmittagstee an Deck folgen ein Abendessen bei Kerzenlicht und die Übernachtung in Esna.",
   },
   {
-    title: "Tag 3 · Edfu und die Insel Ramadi",
-    body: "Durchfahrt der Schleuse von Esna und weiter nach Edfu zum Horus-Tempel. Mittagessen an Bord, dann Fahrt zur Insel Ramadi zu einem Abendessen vom Holzkohlegrill und zur Übernachtung am stillen Ufer.",
+    title: "Tag 3 · Edfu und die Insel El Ramady",
+    body: "Durchfahrt der Schleuse von Esna und weiter nach Edfu zum Horus-Tempel. Mittagessen an Bord, dann Fahrt zur Insel El Ramady zu einem Abendessen vom Holzkohlegrill und zur Übernachtung am stillen Ufer.",
   },
   {
     title: "Tag 4 · Gebel el-Silsila, Kom Ombo und Assuan",
@@ -329,9 +329,9 @@ export const FOLIO_DE: Record<RoomCollectionVariant, RoomFolioPanels> = {
   },
   suites: {
     overview: {
-      lead: "Accessible Hathor Suite · 46 Quadratmeter · Panoramablick auf den Nil",
+      lead: "Hathor Luxury Suite · 46 Quadratmeter · Panoramablick auf den Nil",
       paragraphs: [
-        "Die barrierearmen Kabinen und Suiten der Hathor haben die Eleganz eines bernsteinfarbenen Sonnenuntergangs, ergänzt durch durchdachte Zugänglichkeit und mühelosen Komfort: ein privater Rückzugsort auf dem Nil für alle, die feine Bewegungsfreiheit schätzen.",
+        "Die Kabinen und Suiten der Hathor haben die Eleganz eines bernsteinfarbenen Sonnenuntergangs, ergänzt durch durchdachtes Design und mühelosen Komfort: ein privater Rückzugsort auf dem Nil für alle, die kultivierte Leichtigkeit schätzen.",
         "Weitläufig und gestaltet wie ein Kunstwerk, bietet die Suite offene Räume, natürliche Materialien, breite Durchgänge und Panoramafenster. Jedes Detail ist vom ägyptischen Erbe inspiriert und lädt dazu ein, zu entspannen oder einfach den langsamen Rhythmus des Flusses zu genießen.",
         "Die Luxury Suite bietet mehr Raum für Gäste, die mehr Privatsphäre, großzügige Proportionen und einen freien Blick auf den Fluss suchen: eine Residenz auf dem Unterdeck mit privatem Jacuzzi.",
       ],

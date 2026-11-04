@@ -54,7 +54,7 @@ export const DEFAULT_GASTRONOMY_LIVE_TEXT: GastronomyLiveText = {
   experiencesChapter: "Experiences",
   experiencesBody: "Luxury does not need to announce itself. It is felt in exact timing, a favourite drink remembered, room to move and the freedom to dine wherever the river looks best.",
   stories: [
-    { time: "SUNRISE", place: "UPPER DECK", title: "BREAKFAST", cta: "Open Story" },
+    { time: "SUNRISE", place: "SUN DECK", title: "BREAKFAST", cta: "Open Story" },
     { time: "EVENING", place: "DINING SALON", title: "CHEF'S TABLE", cta: "Open Story" },
     { time: "GOLDEN HOUR", place: "RIVER DECK", title: "NILE SUPPER", cta: "Open Story" },
     { time: "DAILY", place: "FITNESS DECK", title: "MOVE", cta: "Open Story" },

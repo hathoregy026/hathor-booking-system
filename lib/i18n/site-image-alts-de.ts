@@ -17,8 +17,8 @@ export const SITE_IMAGE_ALTS_DE: Record<string, string> = {
   "A table for two on the open deck of Hathor at sunset":
     "Ein Tisch für zwei auf dem offenen Deck der Hathor bei Sonnenuntergang",
   "A voyage composed around your itinerary": "Eine Reise, ganz auf Ihre Route abgestimmt",
-  "Accessible Hathor Suite aboard Hathor Dahabiya":
-    "Barrierearme Suite an Bord der Hathor Dahabiya",
+  "Hathor Luxury Suite aboard Hathor Dahabiya":
+    "Hathor Luxury Suite an Bord der Hathor Dahabiya",
   "Amenities sequence — fullscreen intro aboard Hathor": "Die Ausstattung an Bord der Hathor",
   "Amenities sequence — opening card, fourth photo": "Ein Moment des Komforts an Bord der Hathor",
   "Ancient landmarks along the Nile": "Antike Monumente entlang des Nils",

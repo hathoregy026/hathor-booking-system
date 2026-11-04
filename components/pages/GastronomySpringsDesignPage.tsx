@@ -41,7 +41,7 @@ const stories = [
   {
     number: "01",
     time: "SUNRISE",
-    place: "UPPER DECK",
+    place: "SUN DECK",
     title: "BREAKFAST",
     slot: DINING_LIVE_SLOTS.introHero,
     alt: "Breakfast served aboard Hathor in the Nile morning light",

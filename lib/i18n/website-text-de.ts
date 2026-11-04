@@ -149,7 +149,7 @@ export const PAGES_DE: Partial<Pages> = {
     experiencesBody:
       "Luxus muss sich nicht ankündigen. Man spürt ihn im perfekten Timing, im Lieblingsgetränk, an das sich die Crew erinnert, im Raum zur Bewegung und in der Freiheit, dort zu speisen, wo der Fluss am schönsten ist.",
     stories: [
-      { time: "SONNENAUFGANG", place: "OBERDECK", title: "FRÜHSTÜCK", cta: "Geschichte öffnen" },
+      { time: "SONNENAUFGANG", place: "SONNENDECK", title: "FRÜHSTÜCK", cta: "Geschichte öffnen" },
       { time: "ABEND", place: "SPEISESAAL", title: "CHEF'S TABLE", cta: "Geschichte öffnen" },
       { time: "GOLDENE STUNDE", place: "FLUSSDECK", title: "DINNER AM NIL", cta: "Geschichte öffnen" },
       { time: "TÄGLICH", place: "FITNESSDECK", title: "BEWEGUNG", cta: "Geschichte öffnen" },
@@ -209,7 +209,7 @@ export const PAGES_DE: Partial<Pages> = {
     overviewIntro:
       "Erleben Sie die Kreuzfahrt Hathor Dahabiya, die Authentizität und Luxus zu einer unvergesslichen Reise auf dem zeitlosen Nil verbindet.\n\nOb Sie unsere eleganten Suiten oder die Royal Suites mit Panoramablick auf den Nil wählen: Sie finden unvergleichlichen Komfort und exklusive Privatsphäre.",
     amenitiesIntro:
-      "Entdecken Sie den mühelosen Luxus der Accessible Hathor Suite: ein weiter, eleganter Rückzugsort für Komfort, Bewegungsfreiheit und feines Wohnen. Jedes Detail ist darauf ausgerichtet, dass sich jeder Gast ohne Kompromisse wie zu Hause fühlt.",
+      "Entdecken Sie den mühelosen Luxus der Hathor Luxury Suite: ein weiter, eleganter Rückzugsort für Komfort, Leichtigkeit und feines Wohnen. Jedes Detail ist darauf ausgerichtet, dass sich jeder Gast ohne Kompromisse wie zu Hause fühlt.",
     amenitiesTitle: "In Ihrem Aufenthalt inklusive",
   },
   royal: {
@@ -275,7 +275,7 @@ export const PAGES_DE: Partial<Pages> = {
         title: "Von Assuan nach Luxor",
         durationLabel: "3 Nächte / 4 Tage",
         meta: "Assuan → Luxor",
-        body: "Eine intime Passage von Süden nach Norden: Philae, Kom Ombo und Edfu zeigen sich im gemächlichen Tempo einer Dahabiya, bis zu den Tempeln von Luxor.",
+        body: "Eine intime Passage von Süden nach Norden: Philae und Kom Ombo zeigen sich im gemächlichen Tempo einer Dahabiya, bis zu den Tempeln von Luxor.",
         cta: "Reise entdecken",
       },
       {

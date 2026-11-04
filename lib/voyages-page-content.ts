@@ -126,7 +126,7 @@ export const VOYAGES_ITINERARY_CMS_DEFAULTS: VoyagesItineraryCms[] = [
     title: "Aswan to Luxor",
     durationLabel: "3 Nights / 4 Days",
     meta: "Aswan → Luxor",
-    body: "An intimate south-to-north passage — Philae, Kom Ombo and Edfu unfold at a Dahabiya’s unhurried pace, ending among Luxor’s temples.",
+    body: "An intimate south-to-north passage — Philae and Kom Ombo unfold at a Dahabiya’s unhurried pace, ending among Luxor’s temples.",
     cta: "View Voyage",
   },
   {

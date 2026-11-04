@@ -328,7 +328,7 @@ const PAGES = [
       flatsStat2: "22 m<sup>2</sup> · Nile view",
       flatsStat3: "For two guests",
       townStat1: "2 Elegant Suites",
-      townStat2: "Accessible Hathor Suite",
+      townStat2: "Hathor Luxury Suite",
       townStat3: "Refined suite living",
       townStatExtra: "Nile-facing calm",
       pentStat1: "2 Royal Suites",

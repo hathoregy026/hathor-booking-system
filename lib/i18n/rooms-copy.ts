@@ -97,7 +97,7 @@ const CONFIG_IT: Record<RoomCollectionVariant, RoomCollectionEditorialConfig> = 
     manifesto: {
       label: "Suite",
       headline: ["Quarantasei", "metri quadrati", "per lasciarsi andare"],
-      body: "Più spazio, più privacy, più fiume: l’Accessible Hathor Suite è pensata per chi desidera respirare senza mai lasciare il Nilo.",
+      body: "Più spazio, più privacy, più fiume: la Hathor Luxury Suite è pensata per chi desidera respirare senza mai lasciare il Nilo.",
     },
     ledger: [
       { value: "46", label: "Metri quadrati", note: "Pianta della suite" },
@@ -274,8 +274,8 @@ const LUXOR_TO_ASWAN_DAYS_IT: readonly RoomFolioDay[] = [
     body: "Dopo la colazione, visita alla Valle dei Re, al Tempio di Hatshepsut e ai Colossi di Memnone. Rientro per il pranzo mentre Hathor naviga verso Esna. Cena e pernottamento a Esna.",
   },
   {
-    title: "Giorno 3 · Edfu e l’isola di Ramadi",
-    body: "Colazione, poi le tombe rupestri di El Kab e il Tempio di Horus a Edfu. Pranzo a bordo e navigazione verso l’isola di Ramadi per la cena e il pernottamento.",
+    title: "Giorno 3 · Edfu e l’isola di El Ramady",
+    body: "Colazione, poi le tombe rupestri di El Kab e il Tempio di Horus a Edfu. Pranzo a bordo e navigazione verso l’isola di El Ramady per la cena e il pernottamento.",
   },
   {
     title: "Giorno 4 · Gebel el-Silsila, Kom Ombo e Assuan",
@@ -297,8 +297,8 @@ const ROUND_TRIP_DAYS_IT: readonly RoomFolioDay[] = [
     body: "Colazione sul Nilo mentre Hathor naviga verso sud, in direzione di Esna. Un pranzo senza fretta e il tè del pomeriggio sul ponte precedono una cena a lume di candela e il pernottamento a Esna.",
   },
   {
-    title: "Giorno 3 · Edfu e l’isola di Ramadi",
-    body: "Passaggio della chiusa di Esna e proseguimento verso Edfu per il Tempio di Horus. Pranzo a bordo, poi navigazione verso l’isola di Ramadi per una cena alla brace e il pernottamento sulla riva tranquilla.",
+    title: "Giorno 3 · Edfu e l’isola di El Ramady",
+    body: "Passaggio della chiusa di Esna e proseguimento verso Edfu per il Tempio di Horus. Pranzo a bordo, poi navigazione verso l’isola di El Ramady per una cena alla brace e il pernottamento sulla riva tranquilla.",
   },
   {
     title: "Giorno 4 · Gebel el-Silsila, Kom Ombo e Assuan",
@@ -391,9 +391,9 @@ const FOLIO_IT: Record<RoomCollectionVariant, RoomFolioPanels> = {
   },
   suites: {
     overview: {
-      lead: "Accessible Hathor Suite · 46 metri quadrati · vista panoramica sul Nilo",
+      lead: "Hathor Luxury Suite · 46 metri quadrati · vista panoramica sul Nilo",
       paragraphs: [
-        "Le cabine e le suite accessibili di Hathor hanno l’eleganza di un tramonto color ambra, con un’accessibilità studiata e un comfort senza sforzo: un rifugio privato sul Nilo per chi apprezza muoversi con facilità.",
+        "Le cabine e le suite di Hathor hanno l’eleganza di un tramonto color ambra, con un design studiato e un comfort senza sforzo: un rifugio privato sul Nilo per chi apprezza una comodità raffinata.",
         "Ampia e curata come un’opera d’arte, la suite offre spazi aperti, materiali naturali, passaggi larghi e finestre panoramiche. Ispirato al patrimonio egiziano, ogni dettaglio invita a rilassarsi o semplicemente a godersi il ritmo lento del fiume.",
         "La Luxury Suite offre più spazio agli ospiti che cercano maggiore privacy, proporzioni generose e una vista ininterrotta sul fiume: una residenza sul ponte inferiore con jacuzzi privata.",
       ],

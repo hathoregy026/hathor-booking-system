@@ -154,7 +154,7 @@ export const PAGES_IT: Partial<Pages> = {
     experiencesBody:
       "Il lusso non ha bisogno di annunciarsi. Si avverte nei tempi perfetti, nella bevanda preferita che l’equipaggio ricorda, nello spazio per muoversi e nella libertà di cenare dove il fiume è più bello.",
     stories: [
-      { time: "ALBA", place: "PONTE SUPERIORE", title: "COLAZIONE", cta: "Apri la storia" },
+      { time: "ALBA", place: "PONTE SOLE", title: "COLAZIONE", cta: "Apri la storia" },
       { time: "SERA", place: "SALA DA PRANZO", title: "DALLO CHEF", cta: "Apri la storia" },
       { time: "ORA DORATA", place: "PONTE SUL FIUME", title: "CENA SUL NILO", cta: "Apri la storia" },
       { time: "OGNI GIORNO", place: "PONTE FITNESS", title: "MOVIMENTO", cta: "Apri la storia" },
@@ -214,7 +214,7 @@ export const PAGES_IT: Partial<Pages> = {
     overviewIntro:
       "Scopra la crociera Hathor Dahabiya, che unisce autenticità e lusso in un viaggio indimenticabile sul Nilo senza tempo.\n\nChe scelga le nostre eleganti suite o le Royal Suite con vista panoramica sul Nilo, troverà un comfort impareggiabile e una privacy esclusiva.",
     amenitiesIntro:
-      "Scopra il lusso senza sforzo dell’Accessible Hathor Suite: un rifugio ampio ed elegante, pensato per il comfort, la facilità di movimento e una vita raffinata. Ogni dettaglio è curato perché ciascun ospite si senta davvero a casa, senza compromessi.",
+      "Scopra il lusso senza sforzo della Hathor Luxury Suite: un rifugio ampio ed elegante, pensato per il comfort, l’agio e una vita raffinata. Ogni dettaglio è curato perché ciascun ospite si senta davvero a casa, senza compromessi.",
     amenitiesTitle: "Incluso nel Suo soggiorno",
   },
   royal: {
@@ -280,7 +280,7 @@ export const PAGES_IT: Partial<Pages> = {
         title: "Da Assuan a Luxor",
         durationLabel: "3 notti / 4 giorni",
         meta: "Assuan → Luxor",
-        body: "Una traversata intima da sud a nord: Philae, Kom Ombo ed Edfu si svelano al passo senza fretta di una dahabiya, fino ai templi di Luxor.",
+        body: "Una traversata intima da sud a nord: Philae e Kom Ombo si svelano al passo senza fretta di una dahabiya, fino ai templi di Luxor.",
         cta: "Scopri il viaggio",
       },
       {

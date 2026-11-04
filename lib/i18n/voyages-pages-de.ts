@@ -64,20 +64,20 @@ export const GERMAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
     ...page(
       "/de/voyages/aswan-to-luxor",
       "Nilkreuzfahrt von Assuan nach Luxor | Hathor Dahabiya",
-      "Drei Nächte von Assuan nach Luxor auf der Hathor Dahabiya: Philae, Kom Ombo und Edfu, dann die Tempel von Luxor, mit nur 32 Gästen an Bord.",
+      "Drei Nächte von Assuan nach Luxor auf der Hathor Dahabiya: Philae und Kom Ombo, dann die Tempel von Luxor, mit nur 32 Gästen an Bord.",
     ),
     name: "Nilkreuzfahrt von Assuan nach Luxor | Hathor Dahabiya",
     crumb: "Von Assuan nach Luxor",
     trip: {
       name: "Nilkreuzfahrt von Assuan nach Luxor an Bord der Hathor Dahabiya",
       description:
-        "Drei Nächte von Assuan nach Luxor auf der Hathor Dahabiya: Philae, Kom Ombo und Edfu, dann die Tempel von Luxor, mit nur 32 Gästen an Bord.",
+        "Drei Nächte von Assuan nach Luxor auf der Hathor Dahabiya: Philae und Kom Ombo, dann die Tempel von Luxor, mit nur 32 Gästen an Bord.",
       departure: "Assuan",
       arrival: "Luxor",
     },
     heroLines: ["Von Assuan", "nach Luxor", "auf dem Nil"],
     statement:
-      "Eine intime Passage von Süden nach Norden: drei Nächte mit Philae, Kom Ombo und Edfu im gemächlichen Tempo des Flusses bis zu den Tempeln von Luxor, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+      "Eine intime Passage von Süden nach Norden: drei Nächte mit Philae und Kom Ombo im gemächlichen Tempo des Flusses bis zu den Tempeln von Luxor, an Bord einer Luxus-Dahabiya für 32 Gäste.",
     detailsHref: "/cruises-list",
   },
   "luxor-aswan-luxor": {

@@ -120,7 +120,7 @@ export const ROOM_COLLECTION_CONFIG: Record<
     manifesto: {
       label: "Suites",
       headline: ["Forty-six", "square metres", "to drift"],
-      body: "More space, more privacy, more river — the Accessible Hathor Suite is crafted for guests who want room to breathe without leaving the Nile.",
+      body: "More space, more privacy, more river — the Hathor Luxury Suite is crafted for guests who want room to breathe without leaving the Nile.",
     },
     ledger: [
       { value: "46", label: "Square metres", note: "Suite floorplan" },

@@ -40,13 +40,12 @@ const PANEL_BY_SLUG: Record<string, VoyagePanelContent> = {
     durationLabel: "3 Nights / 4 Days",
     routeTitle: "Aswan to Luxor",
     summary:
-      "An intimate south-to-north passage — Philae, Kom Ombo and Edfu unfold at a Dahabiya’s unhurried pace, ending among Luxor’s temples.",
+      "An intimate south-to-north passage — Philae and Kom Ombo unfold at a Dahabiya’s unhurried pace, ending among Luxor’s temples.",
     railQuote: "Four days on the Nile. A lifetime of golden light.",
     features: SHARED_FEATURES,
     highlights: [
       "Philae Temple by private boat",
       "Kom Ombo at golden hour",
-      "Edfu Temple of Horus",
     ],
     priceCaption: "Per Person",
     detailsLabel: "View Voyage",

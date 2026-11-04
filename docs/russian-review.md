@@ -83,11 +83,19 @@ word-for-word translation (most follow the cuts German made for the same panels)
 
 ## 5. To confirm (the Russian says what the English says)
 
-- "Accessible Hathor Suite" → «Люкс Hathor с доступной средой»; and "inclusive cabins" «инклюзивные». Is the suite really
-  accessible?
-- One island, two names: "El Ramady" (4-night itinerary) and "Ramadi" (7-night).
-- Aswan → Luxor search description and route statement list Edfu; the 3-night day-by-day itinerary has no Edfu stop.
-- Gastronomy story card says breakfast on the "UPPER DECK"; Hathor's decks are lower, main and sun deck.
+**Answered by the owner on 4 November 2026, changed in English, Italian, German and Russian:**
+
+- The suite is not set up for guests with special needs: "Accessible Hathor Suite" is now "Hathor Luxury Suite", and the
+  "inclusive cabins … thoughtful accessibility … ease of movement" sentence now speaks of thoughtful design and refined ease.
+- The island is "El Ramady" everywhere (Russian «Эль-Рамади»); the 7-night itinerary said "Ramadi".
+- Edfu is not on the 3-night day-by-day, so it is gone from the Aswan → Luxor search description, opening statement and
+  voyage card ("Philae and Kom Ombo"). The 4- and 7-night trips, which do stop at Edfu, keep it.
+- Breakfast is on the sun deck: the Gastronomy card reads "SUN DECK" (PONTE SOLE, SONNENDECK, СОЛНЕЧНАЯ ПАЛУБА).
+- Three of these English texts are dashboard Website Text in the database; they change at go-live with
+  `russian-work/english-fixes/owner-answers-website-text.sql` (see section 7).
+
+**Still open (not blocking):**
+
 - Suites ledger "1 Residence · Lower deck" against "2 Luxury Suites aboard".
 - Journal posts: "downstream towards Luxor" then "cruise southward" (Hatshepsut); Beni Hasan offered on the 3-night trip though
   far off that route (hidden gems); "all Egyptian historical sites" on the 7-night trip; "more than eighteen pharaohs" against
@@ -119,6 +127,9 @@ phone width in every language.
 1. Done 4 November: English journal + /suites deck fixes are live.
 2. Merge `claude/russian-site` into a branch cut from the then-current GitHub main (local main is far behind), run
    `npx tsc --noEmit -p .` and the production build, push to main only with the owner's go-ahead (push = deploy).
+   Right after the push, run `russian-work/english-fixes/owner-answers-website-text.sql` (the owner's 4 November answers
+   for the English dashboard Website Text: suite name, 3-night Edfu, sun deck). It writes only if Website Text is
+   unchanged since it was checked; if it returns no row, re-run the dry run first.
 3. Keep `LOCALE_INDEXED.ru` false until Hathor wants Russian in search.
 4. Dashboard edits do not reach Russian: overlays in `lib/i18n/website-text-ru.ts` replace whole sections, as for Italian
    and German, until the planned dashboard SEO section exists.

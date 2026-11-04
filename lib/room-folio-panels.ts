@@ -113,8 +113,8 @@ const ROUND_TRIP_DAYS: readonly RoomFolioDay[] = [
     body: "Breakfast on the Nile as Hathor sails south toward Esna. A leisurely lunch and afternoon tea on deck precede a candlelit dinner and overnight in Esna.",
   },
   {
-    title: "Day 3 · Edfu & Ramadi Island",
-    body: "Pass the Esna Lock and continue toward Edfu for the Temple of Horus. Lunch on board, then sail to Ramadi Island for a charcoal-grilled dinner and overnight on the quiet shore.",
+    title: "Day 3 · Edfu & El Ramady Island",
+    body: "Pass the Esna Lock and continue toward Edfu for the Temple of Horus. Lunch on board, then sail to El Ramady Island for a charcoal-grilled dinner and overnight on the quiet shore.",
   },
   {
     title: "Day 4 · Gebel el-Silsila, Kom Ombo & Aswan",
@@ -218,9 +218,9 @@ export const ROOM_FOLIO_PANELS: Record<RoomCollectionVariant, RoomFolioPanels> =
   },
   suites: {
     overview: {
-      lead: "Accessible Hathor Suite · 46 square metres · panoramic Nile view",
+      lead: "Hathor Luxury Suite · 46 square metres · panoramic Nile view",
       paragraphs: [
-        "The Hathor inclusive cabins and suites embody the elegance of an oil-drop sunset, complemented by thoughtful accessibility and effortless comfort — a private sanctuary on the Nile for travellers who value refined ease of movement.",
+        "Hathor’s cabins and suites embody the elegance of an oil-drop sunset, complemented by thoughtful design and effortless comfort — a private sanctuary on the Nile for travellers who value refined ease.",
         "Spacious and artistically designed, the suite features open spaces, natural textures, wide walkways and panoramic windows. Inspired by Egypt’s heritage, every detail invites guests to unwind or simply enjoy the mellow pace of the river.",
         "The Luxury Suite offers additional space for guests who value greater privacy, generous proportions and uninterrupted river views — a lower-deck residence with a private Jacuzzi.",
       ],

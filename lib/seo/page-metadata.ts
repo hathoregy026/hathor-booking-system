@@ -47,7 +47,7 @@ export const LUXOR_TO_ASWAN_SEO = buildPageMetadata({
 export const ASWAN_TO_LUXOR_SEO = buildPageMetadata({
   title: "Aswan to Luxor Nile Cruise | Hathor Dahabiya",
   description:
-    "A three-night Aswan to Luxor Nile cruise on Hathor Dahabiya — Philae, Kom Ombo and Edfu, then Luxor’s temples, with 32 guests aboard.",
+    "A three-night Aswan to Luxor Nile cruise on Hathor Dahabiya — Philae and Kom Ombo, then Luxor’s temples, with 32 guests aboard.",
   path: SEO_KEYWORD_MAP.aswanToLuxor.path,
   keywords: [
     "Aswan to Luxor Nile Cruise",
