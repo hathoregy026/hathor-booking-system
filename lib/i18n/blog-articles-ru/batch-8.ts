@@ -1,278 +1,275 @@
 /**
- * Journal articles in Russian, batch 6, part three: the last four posts. Same
- * HTML structure as the Italian articles.
+ * Journal articles in Russian, batch 8: the last four posts. Same HTML
+ * structure as the English rows.
  * Headings avoid hyphens (the display face draws none).
  */
 export const BLOG_ARTICLES_RU_8: Record<string, string> = {
-  "best-places-to-visit-along-the-nile-with-a-dahabiya-cruise": `<h2><span class="hathor-blog-accent">Im Luxus zu den Wahrzeichen des Nils in Ägypten</span></h2>
+  "best-places-to-visit-along-the-nile-with-a-dahabiya-cruise": `<h2><span class="hathor-blog-accent">Роскошное плавание мимо великих памятников египетского Нила</span></h2>
 
-<p>Gleiten Sie auf einer Luxuskreuzfahrt mit der Dahabiya über den Nil und bewundern Sie die berühmten Wahrzeichen Ägyptens entlang des Flusses, von antiken Tempeln bis zu historischen Schätzen. Sie erwartet eine elegante Reise voller Inspiration und Geschichte. Die Luxus-Dahabiya in Ägypten schenkt Erlebnisse, die Sie immer begleiten werden, zusammen mit Ausblicken von großer Schönheit.</p>
+<p>Отправьтесь в круиз на дахабии класса люкс и любуйтесь знаменитыми символами Египта на берегах Нила — от древних храмов до исторических сокровищ. Вас ждет элегантное путешествие, полное вдохновения и истории. Дахабия класса люкс в Египте дарит прекрасные виды и впечатления, которые навсегда останутся в памяти.</p>
 
-<p>Wenn Sie von einer ruhigen und prachtvollen Art träumen, die Wunder Ägyptens zu bestaunen, ist die Luxus-Dahabiya von Hathor Cruise die erste Wahl. Mit dem Reiz frischer, junger Eleganz und persönlicher Atmosphäre bietet die Nilkreuzfahrt der Hathor Dahabiya eine außergewöhnliche Art, atemberaubende Schönheit und reiche Geschichte entlang des Nils zu entdecken. Von den Wahrzeichen des Nils in Ägypten bis zu seinen verborgenen Schätzen: Hier sind die vier Orte, die Sie auf Ihrer Reise an Bord der Luxus-Dahabiya auf dem Nil in Ägypten nicht versäumen sollten.</p>
+<p>Если вы мечтаете о безмятежном и роскошном способе увидеть чудеса, которыми одарен Египет, дахабия класса люкс от Hathor Cruise — лучший выбор. Сочетая очарование свежей, молодой элегантности с камерной атмосферой, круиз по Нилу на Hathor Dahabiya дарит необыкновенную возможность увидеть захватывающую дух красоту и богатую историю берегов Нила. От знаменитых достопримечательностей Нила в Египте до его скрытых жемчужин: вот четыре места, которые обязательно стоит посетить во время путешествия на борту дахабии класса люкс по Нилу в Египте.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Der Tempel von Luxor: das Herz des antiken Theben</span></h2>
+<h2><span class="hathor-blog-accent">Луксорский храм: сердце древних Фив</span></h2>
 
 <p><br>
-Auf der Luxuskreuzfahrt mit der Dahabiya beginnt die Reise mit dem Besuch des außergewöhnlichen Luxor-Tempels, mitten im Herzen der antiken Stadt Theben. Dieser berühmte Tempel, um 1400 v. Chr. erbaut und dem Gott Amun geweiht, ist bekannt für seine großen Kolonnaden und die gewaltigen Statuen der Pharaonen. Während Ihre Luxus-Dahabiya langsam am Ufer anlegt, genießen Sie exklusive Führungen, die die faszinierenden Legenden und architektonischen Wunder des Tempels offenbaren. Unter den berühmtesten Tempeln und Gräbern Ägyptens bietet der Luxor-Tempel eine tiefe Verbindung zum alten spirituellen Erbe des Landes.<br>
+В круизе на дахабии класса люкс вы начнете знакомство с удивительного Луксорского храма в самом сердце древних Фив. Этот знаменитый храм, построенный, по всей видимости, около 1400 года до н. э. и посвященный богу Амону, славится величественными колоннадами и высокими статуями фараонов. Пока ваша дахабия неспешно подходит к берегу, вас ждут эксклюзивные экскурсии с гидом, которые раскроют интересные легенды и архитектурные чудеса храма. Луксорский храм, один из самых прославленных среди храмов и гробниц Египта, дарит глубокую связь с древним духовным наследием страны.<br>
 <br>
-Wenn sich der Sandstein des Tempels im Morgen- oder Abendlicht erwärmt und die Dahabiya direkt davor vertäut liegt, ist der perfekte Moment für ein Foto. Durch seine Geschichte, seine Spiritualität und seinen künstlerischen Reiz wird der Luxor-Tempel zweifellos zu einer unvergesslichen Station am Nil.</p>
+Когда песчаник храма прогревается в лучах утреннего или вечернего солнца, а дахабия стоит у причала прямо рядом, наступает идеальный момент для фотографий. Благодаря своей истории, духовности и художественной притягательности Луксорский храм непременно станет незабываемой остановкой на Ниле.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Das Tal der Könige: die letzte Ruhestätte der Pharaonen</span></h2>
+<h2><span class="hathor-blog-accent">Долина царей: место упокоения фараонов</span></h2>
 
 <p>&nbsp;</p>
 
-<p><span class="hathor-blog-accent"><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/valley-of-the-kings-egypt-tours-portal-1-1756813569keb4r.jpg" alt="Tal der Könige" loading="lazy"></figure></span></p>
+<p><span class="hathor-blog-accent"><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/valley-of-the-kings-egypt-tours-portal-1-1756813569keb4r.jpg" alt="Долина царей" loading="lazy"></figure></span></p>
 
-<p>Eine Station, die keine Luxuskreuzfahrt mit der Dahabiya auslassen darf: die legendäre Grabstätte der größten Pharaonen Ägyptens, darunter der berühmte Tutanchamun.<br>
+<p>Круиз на дахабии класса люкс непременно должен включать эту остановку: легендарное место погребения величайших фараонов Египта, в том числе знаменитого Тутанхамона.<br>
 <br>
-Das Tal liegt am Westufer des Nils, nahe Luxor, und zählt mehr als 60 Gräber voller Hieroglyphen und Wandmalereien, die vom altägyptischen Glauben an das Jenseits erzählen. Unter den faszinierendsten Tempeln und Gräbern Ägyptens ist es für Geschichtsliebhaber wahrhaft einer der verborgenen Schätze des Nils.<br>
+В долине, расположенной на Западном берегу Нила недалеко от Луксора, более 60 гробниц с обширными иероглифическими надписями и росписями, которые рассказывают древние истории о представлениях египтян о загробной жизни. Будучи одним из самых увлекательных мест среди храмов и гробниц Египта, она по праву считается одной из скрытых жемчужин Нила для любителей истории.<br>
 <br>
-Auf einer Nilkreuzfahrt der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> haben Sie das Privileg, diese exklusiven Orte auf privaten Touren und in kleinen Gruppen zu besuchen, fern der großen Reisegruppen. Stellen Sie sich vor, Sie wandeln in aller Ruhe zwischen den Gräbern, begleitet von erfahrenen Ägyptologen, die die Geschichte lebendig werden lassen. Ein so außergewöhnlicher Ort, verbunden mit dem Erlebnis einer Luxuskreuzfahrt, prägt diese Erinnerung noch tiefer in Ihr Herz ein.</p>
+Круиз по Нилу на <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> дарит роскошь посещать такие исключительные места на частных экскурсиях в небольших группах, вдали от больших туристических толп. Представьте себе неторопливую прогулку по гробницам с известными египтологами, которые оживляют историю. Неудивительно, что такое место в сочетании с роскошным круизом навсегда запечатлеет эти воспоминания в вашем сердце.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Der Tempel von Kom Ombo: der einzigartige Doppeltempel am Nil</span></h2>
+<h2><span class="hathor-blog-accent">Ком Омбо: уникальный двойной храм на Ниле</span></h2>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/kom-ombo-temple-1756813926iyjXz.jpg" alt="Tempel von Kom Ombo" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/kom-ombo-temple-1756813926iyjXz.jpg" alt="Ком-Омбо" loading="lazy"></figure></p>
 
 <p><br>
-Weiter den Nil entlang bietet der <a href="/blogs/kom-ombo-temple">Tempel von Kom Ombo</a> eine herrliche Kulisse, die Sie an Bord einer Luxus-Dahabiya auf dem Nil bewundern können. Der Tempel von Kom Ombo ist einzigartig, weil er zwei Gottheiten zugleich geweiht ist: Sobek, dem Krokodilgott, und Horus, dem falkenköpfigen Gott. Diese doppelte Weihe spiegelt sich im Aufbau des Tempels selbst wider: Jedes Element ist doppelt vorhanden, mit zwei Reihen von Kapellen, Sälen und Heiligtümern.</p>
+Чуть дальше по Нилу находится <a href="/blogs/kom-ombo-temple">храм Ком-Омбо</a>, прекрасное зрелище с борта дахабии класса люкс. Уникальность храма Ком-Омбо в том, что он посвящен паре богов: Собеку, богу-крокодилу, и Гору, богу с головой сокола. Это двойное посвящение выражено в самом устройстве храма: все в нем удвоено, здесь по две часовни, два зала и два святилища.</p>
 
 <p><br>
-Der Tempel blickt auf den Nil und bietet einen herrlichen Anblick. Bei Sonnenauf- und Sonnenuntergang schenkt er atemberaubende Ausblicke, die Sie ganz entspannt vom Deck Ihrer Dahabiya genießen können. Unter den Wahrzeichen des Nils in Ägypten verbindet dieser Besuch kulturellen Glanz und Naturschönheit: perfekt für alle, die jedes Detail des ägyptischen Erbes lieben.</p>
+Храм величественно возвышается над Нилом и дарит туристам захватывающие виды на рассвете и закате, которыми можно наслаждаться, отдыхая на палубе дахабии. Посещение одной из знаменитых достопримечательностей Нила в Египте сочетает культурное великолепие и природную красоту — идеально для тех, кто ценит каждую мельчайшую деталь египетского наследия.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Der Tempel von Philae: das Heiligtum der Isis auf der Insel</span></h2>
+<h2><span class="hathor-blog-accent">Храм Филе: островное святилище Исиды</span></h2>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/egypt-philae-temple-1756813407KH5TP.jpg" alt="Philae-Tempel" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/egypt-philae-temple-1756813407KH5TP.jpg" alt="Храм Филе" loading="lazy"></figure></p>
 
-<p>Zu den spektakulärsten Orten und verborgenen Schätzen des Nils, die Sie auf einer Luxuskreuzfahrt mit der Dahabiya in Ägypten besuchen können, gehört der Philae-Tempel, der Göttin Isis geweiht. Er steht auf der Insel Agilkia bei Assuan: Der Tempelkomplex wurde mit großer Sorgfalt hierher versetzt, als der Bau des Assuan-Hochdamms seinen ursprünglichen Standort bedrohte.<br>
+<p>Одно из самых впечатляющих зрелищ и скрытых жемчужин Нила, которые можно увидеть во время круиза по Нилу на дахабии класса люкс, — храм Филе, посвященный богине Исиде. Этот храмовый комплекс на острове Агилкия недалеко от Асуана был бережно перенесен сюда, когда строительство Асуанской плотины поставило под угрозу его первоначальное местоположение.<br>
 <br>
-Vor der Kulisse einer ruhigen Insellandschaft schaffen die Erinnerungen der Geschichte und die detailreichen Reliefs eine unvergessliche Atmosphäre. Mit Ihrer Dahabiya kommen Sie über das Wasser an, mit einem Gefühl von Exklusivität und Gelassenheit. Abendliche Besuche, wenn die Beleuchtung die antiken Mauern zur Geltung bringt, sind von außergewöhnlichem Zauber.</p>
+На фоне безмятежного островного пейзажа живая память истории и тонкие рельефы создают атмосферу, которая навсегда останется в памяти. Ваша дахабия позволяет прибыть сюда по воде, что придает визиту ощущение исключительности и безмятежности. Вечерние посещения, когда древние стены озаряет великолепная подсветка, поистине волшебны.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Entdecken Sie die verborgenen Schätze Ägyptens am Nil</span></h2>
+<h2><span class="hathor-blog-accent">Откройте скрытые жемчужины Египта на Ниле</span></h2>
 
 <p>&nbsp;</p>
 
-<p>Im Luxus zu einer Dahabiya-Kreuzfahrt auf dem Nil aufzubrechen, ist mehr als eine einfache Besichtigungstour: Es ist eine Reise in die Geschichte, im Rahmen von Eleganz und Exklusivität. Eine Route von den riesigen Tempeln Luxors bis zur Stille von Philae erzählt tausend Geschichten des alten Ägypten.<br>
+<p>Отправиться в роскошный круиз на дахабии по Нилу — это нечто большее, чем просто экскурсионная поездка: это путешествие сквозь историю в обрамлении элегантности и исключительности. Путь от огромных храмов Луксора до спокойного величия Филе рассказывает тысячу историй о Древнем Египте.<br>
 <br>
-Wenn Sie diese Wunder mit unvergleichlichem Komfort entdecken möchten, ist die Nilkreuzfahrt der Hathor Dahabiya die perfekte Wahl. Besuchen Sie die berühmtesten Orte Ägyptens und schaffen Sie Erinnerungen fürs Leben, auf einer Luxuskreuzfahrt mit der Dahabiya auf dem Nil in Ägypten.</p>`,
-
-  "explore-luxor-in-luxury": `<h2><span class="hathor-blog-accent">Entdecken Sie Luxor: das Herz des alten Ägypten</span></h2>
+Если вы хотите увидеть эти чудеса в непревзойденном комфорте, круиз по Нилу на Hathor Dahabiya станет идеальным выбором. Посетите самые знаменитые достопримечательности Египта и подарите себе воспоминания на всю жизнь в круизе по Нилу на дахабии класса люкс.</p>`,
+  "explore-luxor-in-luxury": `<h2><span class="hathor-blog-accent">Откройте Луксор: сердце Древнего Египта</span></h2>
 
 <p><br>
-Wenn Sie davon träumen, die berühmteste antike Stadt Ägyptens zu erkunden, gibt es keinen besseren Weg als eine Luxuskreuzfahrt mit der Dahabiya auf dem Nil. Luxor liegt an den Ufern des Flusses und wird oft „das größte Freilichtmuseum aller Zeiten“ genannt: Es ist reich an Tempeln und Gräbern von außergewöhnlicher Architektur, an Geschichte und Kultur, die darauf warten, mit Komfort und Stil erkundet zu werden.</p>
+Если вы мечтаете увидеть самый знаменитый древний город Египта, нет способа лучше, чем круиз по Нилу на дахабии класса люкс. Луксор, раскинувшийся на берегах реки, часто называют «величайшим музеем под открытым небом в мире»: он полон храмов и гробниц с удивительной архитектурой, историей и культурой, которые ждут, когда вы откроете их для себя с комфортом и стилем.</p>
 
-<p>Luxor ist zweifellos die berühmteste Stadt Ägyptens, mit prachtvollen Wahrzeichen wie dem Luxor-Tempel und dem weitläufigen Karnak-Tempel voller großer Säulen, Statuen und detailreicher Hieroglyphen. Direkt am anderen Nilufer, am Westufer, liegt das legendäre Tal der Könige, wo Pharaonen wie Tutanchamun in reich verzierten Gräbern bestattet wurden. Es gibt keine bessere Art, Luxor zu erkunden, als in seine antiken Wunder einzutauchen, im eigenen Tempo.<br>
+<p>Луксор, бесспорно, самый знаменитый город Египта: здесь находятся такие величественные достопримечательности, как Луксорский храм и огромный Карнакский храм с его грандиозными колоннами, статуями и сложными иероглифическими надписями. Напротив, на Западном берегу Нила, лежит легендарная Долина царей, где в богато украшенных гробницах были погребены фараоны, в том числе Тутанхамон. Нет лучшего способа узнать Луксор, чем погрузиться в его древние чудеса в собственном ритме.<br>
 <br>
-Auf einer Luxuskreuzfahrt mit der Dahabiya erreichen Sie die Wunder des Nils bei einem privaten, geführten Besuch, der Sie die Orte nicht nur in Ruhe genießen lässt, sondern auch die Erzählungen der Jahrhunderte zum Leben erweckt und neue hinzufügt. Während Sie sich in den eleganten Kabinen Ihrer Dahabiya entspannen, bewundern Sie die herrlichen Ausblicke auf den Nil, die Wüste und die grünen Palmenhaine: der Inbegriff der Entspannung.</p>
+В круизе на дахабии класса люкс вам откроются чудеса Нила во время частной экскурсии с рассказом гида: она не только позволит неспешно насладиться видами, но и оживит предания веков и поведает вам новые истории. Отдыхая в изысканных каютах своей дахабии, вы сможете любоваться великолепными видами на Нил, пустыню и зеленые пальмовые рощи, и это воплощение настоящего отдыха.</p>
 
 <h2><br>
-<span class="hathor-blog-accent">Warum Luxor mit der Dahabiya entdecken?</span></h2>
+<span class="hathor-blog-accent">Почему стоит открывать Луксор на дахабии?</span></h2>
 
 <p><br>
-Anders als die riesigen Kreuzfahrtschiffe auf dem Nil bietet die <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> eine langsame und ruhige Reise. Diese eleganten Segelschiffe gleiten still über den Fluss und erreichen verborgene Orte, für private Erlebnisse fern der Menge. Wenn die Dahabiya in Luxor vor Anker liegt, nehmen Sie sich alle Zeit, um jeden Winkel zu bewundern, ohne den Lärm großer Gruppen, die vorbeieilen. Dies gilt als die authentischste Art, den Nil zu erleben.</p>
+В отличие от огромных круизных теплоходов на Ниле, <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабия Hathor</a> дарит неспешное и спокойное путешествие. Эти элегантные парусники бесшумно скользят по реке и позволяют попасть в укромные места и наслаждаться уединением вдали от толп. Во время стоянки в Луксоре не торопитесь и любуйтесь каждой деталью без шума больших экскурсионных групп, проносящихся мимо. Это считается самым подлинным способом познакомиться с Нилом.</p>
 
 <h2><br>
-<span class="hathor-blog-accent">Die Sehenswürdigkeiten von Luxor</span></h2>
+<span class="hathor-blog-accent">Достопримечательности Луксора</span></h2>
 
 <h3><br>
-<span class="hathor-blog-accent">Der Komplex des Tempels von Karnak</span></h3>
+<span class="hathor-blog-accent">Карнакский храмовый комплекс</span></h3>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak-temple-1756817776zzj8A.jpg" alt="Karnak-Tempel" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak-temple-1756817776zzj8A.jpg" alt="Карнакский храм" loading="lazy"></figure></p>
 
-<p>Dieser weitläufige Tempelkomplex ist eine der größten und eindrucksvollsten antiken Stätten Ägyptens. Wer zwischen seinen massiven Säulen, den Statuen und den heiligen Seen spaziert, hat das Gefühl, Tausende von Jahren zurückzureisen. Mit einer Dahabiya können Sie den <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempel</a> zu den ruhigeren Zeiten besuchen, früh am Morgen oder spät am Abend, wenn ein magisches Licht den Tempel umhüllt. Er ist wahrhaft einer der besten Orte in Luxor, um die Größe des alten Ägypten zu erleben.</p>
+<p>Этот огромный храмовый комплекс — один из крупнейших и самых впечатляющих древних памятников Египта. Бродя среди его исполинских колонн, статуй и священных озер, можно почувствовать, будто перенесся на тысячи лет назад. Дахабия позволяет увидеть <a href="/blogs/sailing-to-karnak-temple">Карнакский храм</a> в менее многолюдные часы, рано утром или поздно вечером, когда Карнак озарен волшебным светом. Это поистине одно из лучших мест Луксора, где можно ощутить величие Древнего Египта.</p>
 
 <h3><br>
-<span class="hathor-blog-accent">Der Tempel von Luxor</span></h3>
+<span class="hathor-blog-accent">Луксорский храм</span></h3>
 
 <p>&nbsp;</p>
 
-<p><span class="hathor-blog-accent"><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/luxor-temple89-1756817942Mnysc.jpg" alt="Luxor-Tempel" loading="lazy"></figure></span></p>
+<p><span class="hathor-blog-accent"><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/luxor-temple89-1756817942Mnysc.jpg" alt="Луксорский храм" loading="lazy"></figure></span></p>
 
-<p>Der Luxor-Tempel liegt im Zentrum der Stadt und zeigt sich bei Sonnenuntergang von seiner schönsten Seite. Die herrlichen Statuen und die große Sphingenallee zu bewundern, ist ein wunderbares Erlebnis bei einem entspannten Abendspaziergang. Bei Sonnenuntergang legt sich das goldene Licht auf den Stein des Tempels und schafft mit seinen Reflexen eine magische Stimmung. Nachts ist der Tempel elegant beleuchtet und lässt sich auf ganz besondere Weise erleben.<br>
-Man versteht, warum der <a href="/blogs/luxor-temple-facts">Luxor-Tempel</a> als einer der besten Orte in Luxor für Geschichte und Fotografie gilt.</p>
+<p>Луксорский храм находится в центре города, и лучше всего посетить его на закате. Величественные статуи и грандиозная аллея сфинксов — чудесное зрелище, которым можно насладиться во время неспешной вечерней прогулки. На закате камни храма заливает золотой свет, и его отблески создают волшебную атмосферу. Ночью храм изящно подсвечен, и гости могут увидеть его совсем по-новому.<br>
+Неудивительно, что <a href="/blogs/luxor-temple-facts">Луксорский храм</a> считается одним из лучших мест Луксора для знакомства с историей и фотосъемки.</p>
 
 <h3><br>
-<span class="hathor-blog-accent">Das Tal der Könige</span></h3>
+<span class="hathor-blog-accent">Долина царей</span></h3>
 
 <p>&nbsp;</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/w1024-1774798152Dft3h.jpg" alt="" loading="lazy"></figure></p>
 
-<p>Am anderen Flussufer erstreckt sich das <a href="/blogs/discover-the-valley-of-the-kings">Tal der Könige</a>, das die Gräber vieler Pharaonen birgt, darunter das des Tutanchamun. Die Dahabiya-Kreuzfahrt mit ihrem gelasseneren Rhythmus lässt mehr Zeit, dieses historische Tal zu erkunden und in den Gräbern die farbenreichen Wandmalereien mit Szenen aus dem Jenseits zu bewundern.</p>
+<p>На другом берегу реки лежит <a href="/blogs/discover-the-valley-of-the-kings">Долина царей</a>, где находятся гробницы многих фараонов, в том числе Тутанхамона. Круиз на дахабии с его более свободной программой дает больше времени, чтобы исследовать эту историческую долину и полюбоваться красочными росписями внутри гробниц, изображающими сцены загробной жизни.</p>
 
 <p>&nbsp;</p>
 
-<h3><span class="hathor-blog-accent">Der Totentempel der Hatschepsut</span></h3>
+<h3><span class="hathor-blog-accent">Заупокойный храм Хатшепсут</span></h3>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/hatshepsut-temple-1756815686AMGet.jpg" alt="Tempel der Hatschepsut" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/hatshepsut-temple-1756815686AMGet.jpg" alt="Храм Хатшепсут" loading="lazy"></figure></p>
 
-<p>Der Tempel der Hatschepsut liegt eingebettet in die Felsen von Deir el-Bahari und ehrt die große Pharaonin Ägyptens, mit atemberaubender Architektur und ebensolchen Ausblicken. Seine einzigartigen Terrassen fügen ihn in die natürliche Landschaft und die umliegenden Monumente ein und bewahren beide.<br>
-Besucher können die detailreichen Inschriften aus nächster Nähe bewundern, die von den wichtigsten Ereignissen der Herrschaft der Königin Hatschepsut und von ihrer göttlichen Geburt erzählen. Unter den Bauwerken des alten Ägypten sticht dieser Tempel durch seine außergewöhnliche Schönheit hervor.</p>
+<p>Храм Хатшепсут, встроенный в скалы Дейр-эль-Бахри, увековечивает великую женщину-фараона Египта и поражает архитектурой и видами. Уникальные террасы связывают сооружение с естественным рельефом и окружающими памятниками, сохраняя и оберегая и то и другое.<br>
+Гости могут своими глазами увидеть подробные надписи, которые рассказывают о важнейших событиях правления царицы Хатшепсут и о ее божественном рождении. Это сооружение поразительно выделяется среди других построек Древнего Египта.</p>
 
 <h3><br>
-<span class="hathor-blog-accent">Die Memnonkolosse</span></h3>
+<span class="hathor-blog-accent">Колоссы Мемнона</span></h3>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/colossi-of-memnon-17568175564roft.jpg" alt="Memnonkolosse" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/colossi-of-memnon-17568175564roft.jpg" alt="Колоссы Мемнона" loading="lazy"></figure></p>
 
-<p>Zwei gewaltige Steinstatuen, die über das Westufer wachen, gehören zu den bekanntesten Monumenten, die vom Fluss aus zu sehen sind. Diese „Kolosse“ stellen sitzende Pharaonen dar, tragen eingravierte Hieroglyphen und verkörpern den Geist der Macht. Seit Jahrhunderten ziehen diese imposanten Figuren die Blicke der Reisenden auf sich: Sie sind das Symbol für die Stärke der Herrscher der altägyptischen Zivilisation.</p>
+<p>Две огромные каменные статуи, охраняющие Западный берег, — одни из самых известных памятников, которые видны с реки. Эти исполинские изваяния изображают сидящих фараонов; покрытые иероглифами «колоссы» воплощают дух могущества. На протяжении веков эти огромные фигуры привлекают внимание путешественников, оставаясь символом силы правителей древнеегипетской цивилизации.</p>
 
 <h3><br>
-<span class="hathor-blog-accent">Medinet Habu</span></h3>
+<span class="hathor-blog-accent">Мединет Абу</span></h3>
 
 <p>&nbsp;</p>
 
-<p><span class="hathor-blog-accent"><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/templo-de-medinet-habu-luxor-1756815983TKmHs.jpg" alt="Medinet Habu" loading="lazy"></figure></span></p>
+<p><span class="hathor-blog-accent"><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/templo-de-medinet-habu-luxor-1756815983TKmHs.jpg" alt="Мединет-Абу" loading="lazy"></figure></span></p>
 
-<p>Dieses stille Juwel, Sitz des Tempels von Ramses III., liegt etwas abseits der belebtesten Stätten. Geschätzt wird es für seine leuchtenden, fein und sorgfältig erhaltenen Reliefs und seine imposante Tempelarchitektur. Medinet Habu ist der Palast und Tempel, in dem die Schlachten Ramses’ III. im Detail dargestellt sind. Seine gut erhaltenen Wandmalereien gewähren einen wertvollen Blick auf Religion, Politik und Alltag im alten Ägypten während des Neuen Reichs.</p>
+<p>Эта тихая жемчужина с храмом Рамсеса III находится немного в стороне от самых оживленных мест. Ее ценят за сияющие, тонкие и бережно сохраненные рельефы и впечатляющую храмовую архитектуру. Мединет-Абу — дворцово-храмовый комплекс, где подробно изображены батальные сцены войн Рамсеса III. Хорошо сохранившиеся росписи дают ценное представление о религии, политике и повседневной жизни Древнего Египта в эпоху Нового царства.</p>
 
 <h2><br>
-<span class="hathor-blog-accent">Luxor mit der Dahabiya erleben</span></h2>
+<span class="hathor-blog-accent">Луксор в ритме дахабии</span></h2>
 
-<p>In Luxor an Bord einer Dahabiya anzukommen, ist ein wahres Vergnügen: Alles ist ruhig, ohne große Menschenmengen und ohne Eile; es gibt nur Ihre Gruppe, Ihre erfahrenen Reiseleiter und die friedliche Landschaft des Nils. Speisen Sie elegant auf dem Deck, bei köstlichen Gerichten und dem Blick auf die vom Sonnenuntergang erleuchteten Tempel, oder betreten Sie still, früh am Morgen, die antiken Ruinen. Es ist die perfekte Art, einige der schönsten Orte Luxors zu erleben, fern von Lärm und Hast des Massentourismus.</p>`,
-
-  "best-time-for-dahabiya-nile-cruise": `<h2><span style="color:#16a085">Wann ist die beste Zeit für eine Nilkreuzfahrt der absoluten Luxusklasse?</span></h2>
-
+<p>Прибытие в Луксор на борту дахабии — настоящее удовольствие: спокойно и без больших толп; никакой спешки, только ваша группа, ваши знающие гиды и безмятежные пейзажи Нила. Изысканно ужинайте на палубе, наслаждаясь вкусной кухней и видом на храмы в лучах заката, или рано утром тихо входите в древние руины. Это идеальный способ увидеть лучшие места Луксора без шума и суеты массового туризма.</p>`,
+  "best-time-for-dahabiya-nile-cruise": `<h2><span style="color:#16a085">Какое</span> &nbsp;<span style="color:#16a085">время</span> <span style="color:#16a085">года</span> <span style="color:#16a085">лучше</span> <span style="color:#16a085">всего</span> <span style="color:#16a085">подходит</span> <span style="color:#16a085">для</span> <span style="color:#16a085">круиза</span> <span style="color:#16a085">по</span> <span style="color:#16a085">Нилу</span> <span style="color:#16a085">класса ультралюкс?&nbsp;</span>&nbsp;&nbsp;&nbsp;</h2>
 
 
-<p>Mit der Dahabiya auf dem Nil zu fahren ist mehr als eine einfache Kreuzfahrt: Es ist ein zeitloses Erlebnis.</p>
 
-<p>Unter herrlichen Segeln auf ruhigem Wasser, in intimer Atmosphäre, verläuft die Reise mit der Dahabiya in einem gelassenen Rhythmus, in dem Sie die reiche Geschichte Ägyptens elegant auskosten. Während die Kreuzfahrtschiffe den Fluss füllen, bietet die Dahabiya Raum, Frieden und ein sanftes Gefühl von Nostalgie. Das ist weit besser, als die Stunden auf der Uhr zu zählen.</p>
+<p>Плавание по Нилу на дахабии — больше, чем просто круиз: это впечатление вне времени.</p>
 
-<p>Bei Hathor Cruise empfangen wir das ganze Jahr über Gäste. Zu wissen, wann Sie Ihre <strong>Nilkreuzfahrt der absoluten Luxusklasse</strong> am besten genießen, macht jedoch den Unterschied zwischen einem guten und einem außergewöhnlichen Erlebnis. Hier ist ein kurzer Leitfaden für die Wahl der besten Reisezeit für eine Nilkreuzfahrt.</p>
+<p>Красивые паруса над безмятежной водой и камерная обстановка позволяют наслаждаться путешествием по Нилу на дахабии в неспешном ритме и элегантно знакомиться с богатой историей Египта. Пока круизные теплоходы заполняют реку, дахабия дарит простор, покой и ностальгию. Это гораздо лучше, чем просто отсчитывать часы.</p>
 
-<p>&nbsp;</p>
-
-<h2><span style="color:#16a085">Die Jahreszeiten für Ihre Reise mit der Dahabiya auf dem Nil:</span></h2>
+<p>Мы в Hathor Cruise принимаем гостей круглый год. И все же от того, когда вы отправитесь в <strong>круиз по Нилу класса ультралюкс</strong>, зависит, будет ли путешествие просто хорошим или по-настоящему великолепным. Вот краткий гид о том, когда лучше всего отправиться в круиз по Нилу.</p>
 
 <p>&nbsp;</p>
 
-<p><strong>Oktober bis April: Hochsaison (das beste Klima)</strong></p>
-
-<p>Dies ist die gefragteste Zeit für eine <strong>Nilkreuzfahrt der absoluten Luxusklasse</strong> in Ägypten und die beste Zeit, um auf dem Nil zu fahren: Die Tage sind sehr mild (20 bis 28 °C), die Abende kühl und der Himmel klar, ideal für Besichtigungen und Fotoausflüge.</p>
-
-<p>Ideal für: Paare, Familien, Fotoliebhaber und Luxusreisende</p>
-
-<p>Hinweis: Buchen Sie frühzeitig, denn dies ist die Hochsaison für Dahabiya-Kreuzfahrten auf dem Nil.</p>
-
-<p><strong>März und April: die Gelassenheit des Frühlings</strong></p>
-
-<p>Die Landschaft füllt sich mit Wildblumen, die Sonnenuntergänge färben sich golden, und die Menge lichtet sich. Es ist eine ruhige Zeit für die Fahrt auf dem Nil.</p>
-
-<p>Ideal für: Naturliebhaber, Paare und alle, die die Menschenmengen im Winter meiden möchten</p>
-
-<p><strong>Mai bis September: Nebensaison (sehr heiß, aber wenige Touristen)</strong></p>
-
-<p>Heiße Tage (sehr oft über 40 °C), weniger Touristen und bessere Angebote. Hathor Cruise passt das Programm an, mit Ausflügen am frühen Morgen und viel Schatten an Bord.</p>
-
-<p>Ideal für: Reisende mit kleinerem Budget sowie erfahrene und abenteuerlustige Gäste</p>
-
-<p><strong>Weitere Zeiten, die Sie bedenken sollten</strong></p>
-
-<p>Ramadan: ein besonderes kulturelles Erlebnis in langsamem Rhythmus</p>
-
-<p>Weihnachten und Neujahr: festliche, elegante Feiern an Bord</p>
-
-<p>Ostern: eine herzliche, familienfreundliche Atmosphäre</p>
-
-<p>Wann also mit der Dahabiya auf dem Nil fahren?</p>
-
-<p>Für perfektes Klima: Oktober bis April</p>
-
-<p>Für weniger Menschen und gute Angebote: Mai bis September</p>
-
-<p>Für Romantik oder Kulturausflüge: März und April oder die Feiertage</p>
-
-<p>Bei Hathor Cruise hat jede Jahreszeit ihren eigenen Reiz. Lassen Sie den Fluss Ihr Ziel wählen.</p>
+<h2><span style="color:#16a085">Гид по сезонам для путешествия на дахабии по Нилу:</span></h2>
 
 <p>&nbsp;</p>
 
-<h2><span style="color:#16a085">Warum die Kreuzfahrt mit der Hathor Dahabiya</span></h2>
+<p><strong>С октября по апрель: высокий сезон (лучшая погода)</strong></p>
+
+<p>Это самый популярный сезон для <strong>круиза по Нилу класса ультралюкс</strong> в Египте и лучшее время для круиза по Нилу: в этот период стоят очень мягкие дни (20–28 °C), прохладные вечера и ясное небо — идеальные условия для экскурсий и фотографий.</p>
+
+<p>Для кого: пары, семьи, фотографы и ценители роскоши</p>
+
+<p>Обратите внимание: бронируйте заранее, ведь это пик сезона круизов по Нилу на дахабии.</p>
+
+<p><strong>Март и апрель: весенняя безмятежность</strong></p>
+
+<p>Окрестности утопают в полевых цветах, закаты отливают золотом, а туристов немного. Спокойное время для плавания.</p>
+
+<p>Для кого: любители природы, пары и те, кто хочет избежать зимних толп</p>
+
+<p><strong>С мая по сентябрь: низкий сезон (очень жарко, зато спокойно)</strong></p>
+
+<p>Жаркие дни (нередко выше 40 °C), меньше туристов и более выгодные предложения. Hathor Cruise переносит экскурсии на раннее утро и создает на борту много тени.</p>
+
+<p>Для кого: путешественники с ограниченным бюджетом и опытные искатели приключений</p>
+
+<p><strong>Другие периоды, на которые стоит обратить внимание</strong></p>
+
+<p>Рамадан: особое культурное впечатление в неспешном ритме</p>
+
+<p>Рождество и Новый год: праздничные и элегантные торжества на борту</p>
+
+<p>Пасха: теплая семейная атмосфера</p>
+
+<p>Так когда же отправиться в плавание по Нилу на дахабии?</p>
+
+<p>Ради идеальной погоды: с октября по апрель</p>
+
+<p>Ради меньшего числа туристов и выгодных цен: с мая по сентябрь</p>
+
+<p>Ради романтики или культурных экскурсий: март и апрель или праздничные дни</p>
+
+<p>С Hathor Cruise у каждого сезона свое очарование. Пусть река сама выберет вашу судьбу.</p>
 
 <p>&nbsp;</p>
 
-<p>Mit der Dahabiya auf dem Nil zu fahren bietet ein seltenes Gleichgewicht aus Komfort, Kultur und Ruhe, und Hathor Cruise setzt es wunderbar um.<br>
-Mit wenigen Kabinen garantiert Hathor einen schlichten, persönlichen Service, fern der Passagiermengen, die man auf jedem Riesenschiff unweigerlich findet.<br>
-Genießen Sie die eleganten Royal Suites, die klimatisierten Zimmer und die geräumigen Decks, die für echte Entspannung geschaffen sind.<br>
+<h2><span style="color:#16a085">Почему стоит выбрать круиз на Hathor Dahabiya</span></h2>
+
+<p>&nbsp;</p>
+
+<p>Плавание по Нилу на дахабии — редкое сочетание комфорта, культуры и покоя, и Hathor Cruise воплощает его прекрасно.<br>
+Hathor предлагает простой и камерный сервис: кают совсем немного, поэтому здесь нет толп пассажиров, неизбежных на любом гигантском судне.<br>
+Наслаждайтесь элегантными люксами Royal Suite, каютами с кондиционером и просторными палубами, созданными для настоящего отдыха.<br>
 <br>
-Die Köche an Bord servieren köstliche Gerichte aus frischen, lokalen Zutaten: Jeder Gang ist bis ins kleinste Detail durchdacht.<br>
-Auf der <strong>Nilkreuzfahrt der absoluten Luxusklasse mit der Dahabiya</strong> haben Sie die Freiheit, berühmte Monumente wie die Tempel von <a href="/blogs/kom-ombo-temple">Kom Ombo</a> und <a href="/blogs/discover-edfu-temple">Edfu</a> in Ruhe zu entdecken. Außerdem begleiten wir Sie in stille Dörfer und ruhige Tempel, die für die meisten Touristen ein Geheimnis bleiben.<br>
+Повара на борту готовят вкусные блюда из свежих местных продуктов, вкладывая душу в каждое из них.<br>
+В <strong>круизе по Нилу класса ультралюкс на дахабии</strong> вы вольны осматривать такие знаменитые памятники, как храмы <a href="/blogs/kom-ombo-temple">Ком-Омбо</a> и <a href="/blogs/discover-edfu-temple">Эдфу</a>, в удобном для себя ритме. Кроме того, гиды проведут вас в тихие деревни и спокойные храмы, о которых большинство туристов даже не догадывается.<br>
 <br>
-Das ist mehr als eine einfache Besichtigung: Es ist eine Verbindung zur Seele Ägyptens, begleitet von erfahrenem Personal und herzlicher Gastfreundschaft.<br>
-Ob romantische Auszeit oder kulturelles Abenteuer: Hathor macht jede Reise persönlich.<br>
-Die beste Zeit für eine Nilkreuzfahrt sind die kühleren Monate (Oktober bis April), und in dieser Jahreszeit zeigt sich Hathor von ihrer besten Seite.<br>
+Это больше, чем осмотр достопримечательностей: это связь с душой Египта, которую дарят опытная команда и теплое гостеприимство.<br>
+Романтическое уединение или культурное приключение: Hathor сделает его по-настоящему личным.<br>
+Лучшее время для круиза по Нилу — прохладные месяцы (с октября по апрель), и в этот сезон Hathor работает безупречно.<br>
 <br>
-Mit ihrem zeitlosen Reiz und ihrem diskreten Luxus verwandelt Hathor Cruise jeden Tag auf dem Nil in eine Erinnerung.<br>
-Wenn Sie ein echtes Segelerlebnis wünschen, das nicht auf Komfort verzichtet, ist dies die richtige Kreuzfahrt für Sie. Die <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> begleitet Sie anmutig auf dem Nil, und jeder Abschnitt seines Wassers wiegt Sie sanft wie Musik.</p>`,
+Благодаря вечному очарованию и тихой роскоши Hathor Cruise превращает каждый день на Ниле в воспоминание.<br>
+Если вам нужно подлинное плавание под парусом без ущерба для комфорта, этот круиз создан для вас. <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> бережно ведет вас по Нилу, и каждая пядь его вод несет вас мягко, словно музыка.</p>`,
+  "nile-cruise-or-luxury-dahabiya-which-one-to-choose": `<h2><span style="color:#16a085">Круизный теплоход или дахабия: в чем разница?</span></h2>
 
-  "nile-cruise-or-luxury-dahabiya-which-one-to-choose": `<h2><span style="color:#16a085">Nilkreuzfahrt oder Dahabiya: Was ist der Unterschied?</span></h2>
-
-<p>Auf dem Nil zu fahren ist wie der Gang durch ein lebendiges Museum: Jede Flussbiegung öffnet neue Fenster zu zeitlosen Wundern, von in Stein gehauenen Tempeln bis zu gewaltigen Gräbern an palmengesäumten Ufern. Es ist eine der zauberhaftesten Arten, Ägypten zu entdecken.<br>
-Doch bei der Wahl der Flussreise stehen viele vor einem Dilemma: besser eine moderne Nilkreuzfahrt oder eine traditionelle Dahabiya?<br>
-Beide versprechen Erinnerungen fürs Leben, doch der Unterschied zwischen einer Nilkreuzfahrt und einer Dahabiya-Kreuzfahrt liegt im Rhythmus der Fahrt und darin, wie sich die Reise anfühlt und erleben lässt. Wir helfen Ihnen, die passende Form für Ihren Traumurlaub zu wählen.<br>
+<p>Круиз по Нилу — словно плавание по живому музею: каждый изгиб реки открывает новые окна в мир вечных чудес, от высеченных в камне храмов до гигантских гробниц на берегах, окаймленных пальмами. Это один из самых волшебных способов узнать Египет.<br>
+Но когда дело доходит до выбора речного путешествия, туристы оказываются перед дилеммой: выбрать современный круизный теплоход или традиционную дахабию?<br>
+Оба варианта обещают воспоминания на всю жизнь, но разница между круизом на теплоходе и на дахабии заключается в темпе плавания и в том, как оно ощущается и переживается. Мы поможем вам выбрать то, что лучше всего подходит для отпуска вашей мечты.<br>
 &nbsp;</p>
 
-<h2><span style="color:#16a085">Nilkreuzfahrt und Hathor Luxury Dahabiya im Vergleich</span></h2>
+<h2><span style="color:#16a085">Круизный теплоход или дахабия класса люкс Hathor</span></h2>
 
 <h3><br>
 <br>
-<span style="color:#16a085"><strong>1. Stil und Atmosphäre</strong></span></h3>
+<span style="color:#16a085"><strong>1. Стиль и атмосфера</strong></span></h3>
 
-<p><strong>Nilkreuzfahrt: </strong>Denken Sie an ein schwimmendes Resort. Diese großen Flussschiffe sind wie Hotels auf dem Wasser, mit klimatisierten Zimmern, Buffets, Pools und Unterhaltung an Bord. Die Gruppenaktivitäten machen Spaß und sind vielleicht lauter als gewohnt: die ideale Umgebung für alle, die diese Art von Atmosphäre lieben.</p>
+<p><strong>Круизный теплоход: </strong>Представьте себе плавучий курорт. Эти большие речные суда похожи на отели на воде: каюты с кондиционером, питание по системе шведского стола, бассейны и развлечения на борту. Общение и досуг на таких судах веселые и, пожалуй, шумнее обычного: отличная компания для тех, кому нравится такая обстановка.&nbsp;</p>
 
-<p><strong>Luxus-Dahabiya in Ägypten: </strong>Ein schwimmender Palast aus einer anderen Zeit. Die Hathor Luxury Dahabiya ist ein exklusives, handwerklich gebautes Segelschiff, vom Wind angetrieben, mit nur 6 bis 12 elegant eingerichteten Kabinen, von den <a href="https://hathorcruise.com/luxury-suites" target="_blank" rel="noopener noreferrer">Luxury Suites</a> bis zu den luxuriösen Royal Suites, die höchste Ruhe und Privatsphäre garantieren. Kein Motorenlärm durchbricht die Stille, kein volles Deck verdeckt einen der spektakulärsten Sonnenuntergänge am Nil: nur das Flüstern der Segel und der sanfte Schimmer des Flusses. Diskreter Luxus in seiner besten Form!</p>
+<p><strong>Дахабия класса люкс в Египте: </strong>Плавучий дворец в духе былых времен. Дахабия класса люкс Hathor — эксклюзивное парусное судно ручной работы, которое движется силой ветра. На борту всего 12 элегантно обставленных кают и люксов, в том числе <a href="https://hathorcruise.com/luxury-suites" target="_blank" rel="noopener noreferrer">люксы Luxury Suite</a> и Royal Suite, и это дарит полный покой и уединение. Никакого шума двигателя, нарушающего тишину; никаких шумных, переполненных палуб, заслоняющих один из самых потрясающих закатов на Ниле, только шепот парусов и мягкое сияние Нила. Сдержанная роскошь в лучшем ее проявлении!</p>
 
 <p><br>
-<span style="color:#16a085"><strong>2. Route und Erlebnis</strong></span><br>
+<span style="color:#16a085"><strong>2. Маршрут и впечатления</strong></span><br>
 <br>
-<strong>Nilkreuzfahrt:</strong> Sie folgt festen Routen von Luxor nach Assuan, mit Halten an den wichtigsten Orten wie dem Karnak-Tempel, dem Tal der Könige und Philae. Die Größe des Schiffes schränkt jedoch seine Flexibilität ein.<br>
+<strong>Круизный теплоход:</strong> У таких судов фиксированные маршруты из Луксора в Асуан с остановками у главных достопримечательностей, таких как Карнакский храм, Долина царей и Филе. Однако большие размеры ограничивают их гибкость.<br>
 <br>
-<strong>Private Nilkreuzfahrt mit der Dahabiya:</strong> Langsamer, sanfter, seelenvoller. Die Hathor Dahabiya fährt im Rhythmus der Natur und erreicht stille Dörfer und abgelegene Tempel, zu denen andere Kreuzfahrten nicht gelangen. Das ist Slow Travel in seiner schönsten Form, wie das Durchblättern eines vergessenen Märchenbuchs.</p>
+<strong>Частный круиз по Нилу на дахабии:</strong> Медленнее, мягче и душевнее. Hathor Dahabiya плывет в ритме природы, заходя в тихие деревни и к отдаленным храмам, куда не могут добраться другие суда. Это неспешное путешествие в лучшем его проявлении, словно листаешь страницы забытой книги сказок.</p>
 
-<p><span style="color:#16a085"><strong>3. Privatsphäre und persönliche Note</strong></span></p>
+<p><span style="color:#16a085"><strong>3. Уединение и индивидуальный подход</strong></span></p>
 
-<p><strong>Nilkreuzfahrt:</strong> Weniger Intimität und über 100 Passagiere: Diese Kreuzfahrten setzen auf Zweckmäßigkeit. Der Service ist gut, verteilt sich aber auf alle Passagiere.</p>
+<p><strong>Круизный теплоход:</strong> Меньше камерности: на борту более 100 пассажиров, зато такие круизы удобны. Обслуживание хорошее, но оно рассчитано на всех пассажиров сразу.</p>
 
-<p><strong>Dahabiya-Kreuzfahrt:</strong> Hier sind Suiten und Service reiner Luxus. An Bord der Hathor Luxury Dahabiya ist die Behandlung ohne jeden Zweifel königlich: Das Personal kennt Ihren Namen, Ihr Lieblingsgericht und vielleicht auch die Uhrzeit, zu der Sie am liebsten zu Abend essen. Deshalb ist sie perfekt für Paare, Familien und private Gruppen.</p>
+<p><strong>Круиз на дахабии:</strong> Здесь и люксы, и сервис воплощают роскошь. На борту дахабии класса люкс Hathor вас, вне всякого сомнения, ждет королевский прием. Здесь персонал знает ваше имя, ваше любимое блюдо и, возможно, время, когда вы предпочитаете ужинать. Поэтому это идеальный выбор для пар, семей или частных компаний.</p>
 
-<p><span style="color:#16a085"><strong>4. Nachhaltigkeit und Gelassenheit</strong></span></p>
+<p><span style="color:#16a085"><strong>4. Экологичность и безмятежность</strong></span></p>
 
-<p><strong>Nilkreuzfahrt:</strong> Das Motorschiff ist oft laut und die Atmosphäre ein wenig chaotisch: ein Miteinander, das funktioniert, aber selten auf Ruhe achtet.</p>
+<p><strong>Круизный теплоход:</strong> Судно с двигателем часто шумное и немного суетливое: все устроено практично, но о тишине и покое здесь думают редко.</p>
 
-<p><strong>Luxus-Dahabiya in Ägypten:</strong> Die Eleganz der Dahabiya liegt darin, dass sie nur von leichten Winden getragen über den Nil gleitet: eine stille Note im Einklang mit der Umwelt. Und diese Stille gibt den Träumen derer eine Stimme, die fotografieren, schreiben und Schönheit zu erkennen wissen.</p>
+<p><strong>Дахабия класса люкс в Египте:</strong> Изящество дахабии — в плавном скольжении по Нилу, которое приводят в движение лишь легкие ветра: тихо и бережно по отношению к природе. И эта тишина созвучна мечтам фотографов, писателей и ценителей.&nbsp;</p>
 
-<p><span style="color:#16a085"><strong>5. Kosten und Wert</strong></span></p>
+<p><span style="color:#16a085"><strong>5. Стоимость и ценность</strong></span></p>
 
-<p><strong>Nilkreuzfahrt:</strong> Diese günstigeren Kreuzfahrten richten sich an ein breites Publikum. Sie sind ideal für alle, die ein bequemes All-inclusive-Paket suchen.</p>
+<p><strong>Круизный теплоход:</strong> Такие круизы доступнее по цене и рассчитаны на широкую аудиторию. Они прекрасно подходят тем, кому нужен комфортный пакет «все в одном».</p>
 
-<p><strong>Dahabiya-Kreuzfahrt:</strong> Eine private Nilkreuzfahrt mit der Dahabiya kann einiges kosten, doch die Erlebnisse, die sie schenkt, sind unbezahlbar. Denken Sie an die <a href="https://www.hathorcruise.com/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_blank" rel="noopener noreferrer">luxuriösen Royal Suites</a>, den persönlichen Service und wirklich private Besichtigungen: eine Investition in unvergessliche Erinnerungen.</p>
+<p><strong>Круиз на дахабии:</strong> Частный круиз по Нилу на дахабии может стоить немалых денег, но впечатления бесценны. Представьте себе <a href="https://www.hathorcruise.com/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_blank" rel="noopener noreferrer">люксы Royal Suite</a>, индивидуальное обслуживание и по-настоящему уединенное знакомство с достопримечательностями: это вложение в незабываемые воспоминания.</p>
 
 <p>&nbsp;</p>
 
-<h2><span style="color:#16a085">Für welche Reise entscheiden Sie sich?</span></h2>
+<h2><span style="color:#16a085">Какое путешествие выберете вы?</span></h2>
 
 <p><br>
-Die Wahl zwischen einer Nilkreuzfahrt und der Hathor Luxury Dahabiya ist wie die Wahl zwischen einem großen Ballsaal und einer privaten Villa. Das eine steht für Zweckmäßigkeit und Geselligkeit, das andere für Frieden, Charme und zeitlose Eleganz.<br>
-Wenn Sie davon träumen, still durch Ägypten zu gleiten, während der Wind den Kurs bestimmt und die Geschichte an Ihnen vorüberzieht, ist ein Abenteuer auf einer Luxus-Dahabiya in Ägypten wie für Sie gemacht. Wenn Sie dagegen ein Schiff mit vielen Annehmlichkeiten wünschen, ein Deck zum Ausstrecken, ein Abendessen in Gesellschaft anderer Reisender und vielleicht ein paar Tanzschritte, ist eine gute Nilkreuzfahrt die richtige Wahl.<br>
-In beiden Fällen ist das Erlebnis auf dem Nil nicht nur eine Reise: Es ist eine Reise durch die Zeit, gehüllt in Luxus und ewige Schönheit.</p>
+Выбирать между круизным теплоходом и дахабией класса люкс Hathor — все равно что выбирать между большим бальным залом и частной виллой. Первый олицетворяет удобство и оживление, вторая — покой, очарование и вечную элегантность.<br>
+Если вы мечтаете бесшумно скользить по Египту, когда ветер ведет вас вперед, а история проплывает мимо, то путешествие на дахабии класса люкс в Египте создано именно для вас. Если же вам нужно судно с максимумом удобств, где есть палуба, чтобы растянуться и отдохнуть, ужин в компании попутчиков и, может быть, немного танцев, то правильным выбором станет хороший круизный теплоход.<br>
+В любом случае плавание по Нилу — не просто поездка. Это путешествие сквозь время, окутанное роскошью и вечной красотой.</p>
 
 <p>&nbsp;</p>`,
 };
