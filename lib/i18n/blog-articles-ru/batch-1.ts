@@ -5,205 +5,205 @@
  * Headings avoid hyphens: the display face draws none.
  */
 export const BLOG_ARTICLES_RU_1: Record<string, string> = {
-  "unplugged-travel-no-wifi-experience-on-a-dahabiya": `<h2>Offline reisen in Ägypten: eine einzigartige Auszeit auf der Dahabiya</h2>
+  "unplugged-travel-no-wifi-experience-on-a-dahabiya": `<h2>Путешествие по Египту офлайн: особый отдых в круизе на дахабии</h2>
 
-<p>Offline durch Ägypten zu reisen bietet die Gelegenheit, sich von den Geräten zu lösen und ganz im Moment zu leben.<br>
-Statt WLAN und Benachrichtigungen entdecken Sie stille Landschaften und eine Kultur von großer Tiefe, während Sie langsam auf dem Nil unterwegs sind.<br>
-Am authentischsten erleben Sie diesen Reisestil auf einer Dahabiya-Kreuzfahrt in Ägypten: Das traditionelle Segelschiff bietet persönliche, komfortable Reisen und eine echte Flucht aus dem Alltag.</p>
+<p>Путешествие по Египту офлайн дает возможность отложить гаджеты и по-настоящему прожить каждый момент.<br>
+Вместо Wi-Fi и уведомлений — спокойные пейзажи и глубина культуры, пока вы неспешно плывете по Нилу.<br>
+Лучше всего прочувствовать такой образ жизни позволяет традиционный круиз на дахабии по Египту: на старинном парусном судне путешествие становится камерным и комфортным, а отдых от повседневности — настоящим.</p>
 
-<h2>Die Kreuzfahrt mit der Dahabiya in Ägypten: langsam und authentisch reisen</h2>
+<h2>Круиз на дахабии по Египту: неспешное и подлинное путешествие</h2>
 
-<p>Eine Dahabiya-Kreuzfahrt ist ein Boutique-Erlebnis auf dem Nil in Ägypten. Anders als große Kreuzfahrtschiffe bietet die Dahabiya vollständige Privatsphäre, gleitet leise dahin und kommt langsam voran, vom Wind getragen.<br>
-So entsteht eine Reise, die persönlichen Freiraum, eine ruhige Umgebung und eine tiefe Verbindung zu den uralten Landschaften Ägyptens vereint: vom Ostufer Luxors bis zu den Schätzen Assuans, eine einzigartige Auszeit in der antiken Geschichte.</p>
+<p>Круиз на дахабии по Египту — это бутик-круиз по Нилу. Дахабия устроена иначе, чем обычный круиз по Нилу: она дарит полное уединение, идет бесшумно и неспешно, под парусами, силой ветра.<br>
+Так рождается путешествие, в котором есть личное пространство, спокойная обстановка и глубокая связь с древними пейзажами Египта, от Восточного берега Луксора до сокровищ Асуана: уникальная возможность уйти от суеты в древнюю историю.</p>
 
-<h2>Slow Travel in Ägypten: das Land anders entdecken</h2>
+<h2>Неспешное путешествие по Египту: иной способ открыть страну</h2>
 
-<p>Wer Slow Travel in Ägypten wählt, konzentriert sich auf die authentische ägyptische Kultur.<br>
-Statt von einer Sehenswürdigkeit zur nächsten zu eilen, nimmt man sich Zeit für jeden Moment, jeden Ausblick und jede kulturelle Begegnung: Das ist der Hauptgrund, warum <a href="/blogs/why-travelers-love-slow-travel-on-the-nile">Reisende Slow Travel</a> auf dem Nil lieben.<br>
-Auf einer Dahabiya-Kreuzfahrt stellt sich diese Haltung ganz von selbst ein, während das Schiff zwischen altägyptischen Tempeln, Gemeinschaften am Ufer und unberührten Nillandschaften dahingleitet.</p>
+<p>Те, кто выбирает неспешное путешествие по Египту, по-настоящему погружаются в подлинную египетскую культуру.<br>
+Вместо того чтобы спешить от одной достопримечательности к другой, путешественники никуда не торопятся и проживают каждый момент, каждый вид, каждую культурную встречу — именно поэтому <a href="/blogs/why-travelers-love-slow-travel-on-the-nile">путешественники так любят неспешный отдых</a> на Ниле.<br>
+В круизе на дахабии по Египту эта философия воплощается сама собой: судно проплывает мимо древнеегипетских храмов, прибрежных селений и нетронутых пейзажей Нила.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-daniela-laura-gonzalez-644788877-34137936-1-1778751586wcCtx.jpg" alt="" loading="lazy"></figure></h2>
 
-<h2>Ohne WLAN an Bord der Dahabiya: Digital Detox auf dem Nil</h2>
+<h2>Без интернета на дахабии: цифровой детокс на Ниле</h2>
 
-<p>Das Reisen ohne WLAN gehört zu den besonderen Seiten der Dahabiya. Ohne ständige Verbindung finden die Gäste in einen langsameren, bewussteren Lebensrhythmus.</p>
+<p>Отсутствие Wi-Fi — одна из самых необычных особенностей дахабии. Без постоянного доступа к интернету гости переходят на более медленный и осознанный ритм жизни.</p>
 
-<p><strong>Was dieses Erlebnis besonders macht:</strong></p>
+<p><strong>Что делает этот опыт особенным:</strong></p>
 
 <ul>
-	<li>Ohne digitale Ablenkung und Unterbrechungen durch soziale Medien wird das Erlebnis intensiver</li>
-	<li>Sie finden wieder Zeit zum Lesen, Nachdenken und Entspannen</li>
-	<li>Der Kontakt mit der Natur und dem Nil schenkt ein Gefühl von Stille und Frieden</li>
-	<li>Die Reise fördert tiefe Gespräche und besondere gemeinsame Momente</li>
-	<li>Sie entfernen sich ganz vom modernen Leben, seinem Stress und seinem hektischen Tempo</li>
+	<li>Без цифровых отвлечений и уведомлений из социальных сетей впечатления становятся ярче</li>
+	<li>Появляется свободное время для чтения, размышлений и отдыха</li>
+	<li>Близость к природе и Нилу дарит тишину и душевный покой</li>
+	<li>Есть время для долгих задушевных разговоров и особых моментов вместе</li>
+	<li>Можно полностью отключиться от современной жизни, ее стрессов и стремительного темпа</li>
 </ul>
 
-<p>Dieses Digital Detox macht die Reise zu etwas Bedeutsamem und Erholsamem.</p>
+<p>Такой цифровой детокс превращает путешествие в нечто осмысленное и восстанавливающее силы.</p>
 
-<h2>Offline reisen in Ägypten: das Leben an Bord der Dahabiya</h2>
+<h2>Путешествие по Египту офлайн: жизнь на борту дахабии</h2>
 
-<p>Sich für das Offline-Reisen in Ägypten zu entscheiden bedeutet, auf dem Nil ein Erlebnis zu wählen, das das Wesentliche und die authentische ägyptische Kultur in den Mittelpunkt stellt.<br>
-An Bord der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Dahabiya</a> finden die Gäste drei Kabinentypen, elegante Räume und Außenbereiche und beobachten auf der ruhigen Fahrt den Nil.<br>
-Das Restaurant serviert frisch zubereitete Gerichte, und bei Sonnenuntergang blickt man in den Himmel statt auf Bildschirme.<br>
-Jeder Bereich ist so gestaltet, dass sich die Gäste gelassen und wohl fühlen und miteinander in Kontakt kommen.</p>
+<p>Выбрав путешествие по Египту офлайн, вы получите на Ниле опыт, в центре которого простые радости и подлинная египетская культура.<br>
+На <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии</a> гостей ждут каюты трех типов, элегантные интерьеры и открытые пространства, а неспешный ход позволяет любоваться Нилом.<br>
+В ресторане подают свежеприготовленные блюда, а закат здесь встречают, глядя на небо, а не в экраны.<br>
+Все пространство продумано так, чтобы вы чувствовали покой и уют и легко находили общий язык с другими.</p>
 
-<h2>Warum die Dahabiya das Wesen des Slow Travel in Ägypten ist</h2>
+<h2>Почему круиз на дахабии воплощает неспешный Египет</h2>
 
-<p>Die Dahabiya-Kreuzfahrt ist ein unverzichtbares Reiseerlebnis für alle, die Ägypten besuchen und ganz in die Kultur eintauchen möchten.<br>
-Hier erreicht das ägyptische Slow Travel seinen Höhepunkt: Die Zeit vergeht langsamer und erlaubt es, die Umgebung intensiver zu erleben.<br>
-Wer offline durch Ägypten reist, genießt Ruhe und Stille, die unberührte Natur und den Wert, ganz im Hier und Jetzt zu sein.<br>
-Das fehlende WLAN an Bord einer Dahabiya schafft ein Erlebnis, das über klassische Besichtigungen hinausgeht: eine erholsame Reise auf dem ägyptischen Nil.</p>`,
+<p>Круиз на дахабии по Египту — незаменимый опыт для тех, кто приезжает в Египет и хочет полностью погрузиться в его культуру.<br>
+Именно так неспешное путешествие по Египту достигает своей вершины: время течет медленнее, и окружающий мир воспринимается глубже.<br>
+Путешествие по Египту офлайн позволяет ощутить покой тишины, красоту нетронутой природы и ценность полного присутствия в настоящем моменте.<br>
+Отсутствие Wi-Fi на дахабии превращает поездку в нечто большее, чем обычный осмотр достопримечательностей: это путешествие по египетскому Нилу, которое полностью восстанавливает силы.</p>`,
 
-  "the-magic-of-sleeping-on-the-nile-river": `<h2>Auf dem Nil schlafen: das Erlebnis</h2>
+  "the-magic-of-sleeping-on-the-nile-river": `<h2>Ночь на Ниле: особое впечатление</h2>
 
-<p>Auf dem Nil zu schlafen gehört zu den magischsten Arten, Ägypten zu entdecken.<br>
-Es ist eine seltene Gelegenheit, in einem langsameren Rhythmus zu leben und dabei antike historische Stätten zu erkunden.<br>
-Fern der überlaufenen Touristenattraktionen gleiten Sie sanft den Nil entlang, zwischen goldenen Sonnenuntergängen, stillem Wasser und zeitlosen Naturlandschaften.<br>
-Das ist mehr als eine Reise: eine Auszeit auf dem Wasser, die jede Nacht zu einer bleibenden Erinnerung macht.</p>
+<p>Ночевать прямо на Ниле — один из самых волшебных способов узнать Египет.<br>
+Это редкая возможность пожить в более медленном ритме, открывая для себя древние исторические места.<br>
+Вместо многолюдных туристических объектов — спокойное скольжение по Нилу, золотые закаты, тихая вода и вечные природные пейзажи.<br>
+Точнее всего назвать это плавучим убежищем, где каждая ночь становится воспоминанием на всю жизнь.</p>
 
-<h2>Die Nilkreuzfahrt in Ägypten: eine Reise in die Zeit</h2>
+<h2>Круиз по Нилу в Египте: путешествие во времени</h2>
 
-<p>Die Nilkreuzfahrt verläuft zwischen <a href="/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise">Luxor und Assuan</a> und zeigt den Passagieren Tempel, Dörfer und Ufer, die seit Tausenden von Jahren bestehen.<br>
-Jeder Halt auf der Strecke führt die Besucher in eine authentische historische Vergangenheit.</p>
+<p>Круиз по Нилу в Египте проходит между <a href="/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise">Луксором и Асуаном</a> и показывает гостям храмы, деревни и берега, которым тысячи лет.<br>
+Каждая остановка на маршруте переносит путешественников в подлинное историческое прошлое.</p>
 
-<h2>Eine Luxuskreuzfahrt auf dem Nil: Komfort auf dem Wasser</h2>
+<h2>Круиз по Нилу класса люкс: комфорт на воде</h2>
 
-<p>Eine Nilkreuzfahrt bietet eine luxuriöse Art, das Land zu entdecken. Die eleganten Kabinen mit freiem Blick auf den Fluss und die ruhige Landschaft schaffen eine gelassene Atmosphäre.<br>
-Der Tag auf dem Nil beginnt mit einem stillen Morgen, weichem Licht und der langsamen Bewegung des Wassers.</p>
+<p>Круиз по Нилу — роскошный способ познакомиться с Египтом. Элегантные каюты с открытым видом на реку и ее тихие берега создают на борту атмосферу покоя.<br>
+День на Ниле начинается с тихого утра: мягкий свет и легкое движение воды задают ему настроение.</p>
 
-<h2>Der Zauber, nachts auf dem Nil zu schlafen</h2>
+<h2>Волшебство ночи на Ниле</h2>
 
-<p>Nachts wird der Nil zu einem ruhigen Spiegel, der den Himmel reflektiert.<br>
-Die Luft wird kühler, der Fluss stiller und das Erlebnis intimer.<br>
-Auf dem Nil schlafen Sie unter dem Sternenhimmel, begleitet vom Klang der Wellen, in vollkommener Entspannung, zwischen den Besuchen der <a href="/blogs/golden-gems-of-aswan">verborgenen Schätze Assuans</a> und der <a href="/blogs/explore-luxor-in-luxury">Monumente von Luxor</a>.</p>
+<p>Ночью Нил превращается в спокойное зеркало, в котором отражается звездное небо.<br>
+Воздух становится прохладнее, река тише, а впечатления сокровеннее.<br>
+На Ниле вы засыпаете под звездным небом, слушая тихий плеск волн и полностью расслабляясь, и все это в путешествии, где вас ждут <a href="/blogs/golden-gems-of-aswan">скрытые сокровища Асуана</a> и <a href="/blogs/explore-luxor-in-luxury">достопримечательности Луксора</a>.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/139193-71f284e0-1778753486Nqkll.webp" alt="" loading="lazy"></figure></p>
 
-<h2>Eine Nacht auf der Nilkreuzfahrt</h2>
+<h2>Круиз по Нилу с ночевками на борту</h2>
 
-<p>Eine Nacht auf der Nilkreuzfahrt erlaubt es Ihnen zu schlafen, während Sie sanft durch die Geschichte gleiten.<br>
-Ihre Kabine bewegt sich mit dem Fluss, und jeder Morgen bietet einen anderen Blick.<br>
-Jeder Sonnenaufgang enthüllt neue Tempel am Nil, neue Dörfer und neue Landschaften.</p>
+<p>В круизе по Нилу с ночевками на борту вы спите, пока судно мягко скользит сквозь историю.<br>
+Ваша каюта движется вместе с рекой, и каждое утро за окном новый вид.<br>
+Каждый рассвет открывает новые храмы на берегах Нила, новые деревни и новые пейзажи.</p>
 
-<h2>Eine romantische, ruhige Reise auf dem Nil</h2>
+<h2>Романтичное и спокойное путешествие по Нилу</h2>
 
-<p>Auf dem Nil zu schlafen ist auch zutiefst romantisch: perfekt für Paare und für alle, die eine ruhige Auszeit suchen.<br>
-Die stimmungsvollen Sonnenuntergänge und der langsame Rhythmus des Flusses schaffen eine schöne, stille und gelassene Atmosphäre.<br>
-Der Nil bietet eine Kulisse aus Schönheit, Besinnung und Intimität.</p>
+<p>Ночи на Ниле еще и очень романтичны: это идеальный вариант для пар и для тех, кто ищет тихого уединения.<br>
+Атмосферные закаты и неспешный ритм реки создают красивую, тихую и умиротворенную обстановку.<br>
+Нил дарит обстановку, полную красоты, размышлений и близости.</p>
 
-<h2>Warum eine Nacht auf dem Nil unvergesslich ist</h2>
+<h2>Почему ночь на Ниле незабываема</h2>
 
-<p>Die Reise wird gerade durch ihre Einfachheit unvergesslich.<br>
-Keine Menschenmengen, keine Ablenkungen: Der Fluss fließt ruhig, und die Landschaften zeigen ihre ganze natürliche Schönheit. Die Nachtstunden schenken Momente der Stille, den Blick auf historische Stätten und tiefe Entspannung für alle, die Natur und Geschichte dieser Orte gemeinsam erleben möchten.<br>
-Diese seltene Erfahrung vollkommener Stille bleibt Reisenden auch nach der Rückkehr im Gedächtnis.</p>
+<p>Вся поездка становится незабываемой благодаря своей простоте.<br>
+Здесь нет толп и отвлекающих факторов: река течет спокойно, а окрестные пейзажи раскрывают свою природную красоту. Ночные часы дарят тишину, виды на исторические места и глубокий отдых тем, кто хочет прочувствовать и природу, и историю этих мест.<br>
+Это редкое ощущение полной тишины путешественники хранят в памяти и после возвращения домой.</p>
 
-<h2>Der wahre Zauber des Nils</h2>
+<h2>Подлинное волшебство Нила</h2>
 
-<p>Auf dem Nil zu schlafen ist mehr als eine Kreuzfahrt: Es wird zu einer ruhigen Reise durch die Geschichte, ganz im Zeichen des Slow Travel. Wer auf dem Nil unterwegs ist, hat die einzigartige Gelegenheit, den modernen Lärm hinter sich zu lassen und eine ewige Verbindung zur Geschichte wiederzufinden.<br>
-Die eindrücklichsten Reiseerlebnisse entstehen in den stillen Momenten, die sonst niemand bemerkt.</p>`,
+<p>Ночь на Ниле — это больше, чем круиз: она превращается в спокойное путешествие по истории в духе неспешного отдыха. Плывя по Нилу, вы получаете уникальную возможность оставить позади шум современного мира и ощутить вечную связь с историей.<br>
+Самые запоминающиеся впечатления в путешествиях рождаются в тихие моменты, которых другие даже не замечают.</p>`,
 
-  "secret-spots-between-luxor-and-aswan": `<h2>Die geheime Route zwischen Luxor und Assuan</h2>
+  "secret-spots-between-luxor-and-aswan": `<h2>Тайный маршрут между Луксором и Асуаном</h2>
 
-<p>Der Abschnitt von Luxor nach Assuan ist der faszinierendste Teil des Nils in Ägypten.<br>
-Die geheimen Orte zwischen <a href="/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya">Luxor und Assuan</a> offenbaren verborgene Winkel mit antiken Tempeln, historischen Städten und Ufern, die von der ägyptischen Zivilisation erzählen.</p>
+<p>Маршрут из Луксора в Асуан проходит по самому интересному участку Нила в Египте.<br>
+Тайные места между <a href="/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya">Луксором и Асуаном</a> — это скрытые уголки с древними храмами, историческими городками и прибрежными районами, в которых раскрывается египетская цивилизация.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-axp-photography-500641970-18991526-1778763689Btak4.webp" alt="" loading="lazy"></figure></h2>
 
-<h2>Der Tempel von Edfu: der am besten erhaltene Tempel des alten Ägypten</h2>
+<h2>Храм Эдфу: лучше всего сохранившийся храм Древнего Египта</h2>
 
-<p>Einer der wichtigsten Halte auf dieser Route ist der <a href="/blogs/discover-edfu-temple">Tempel von Edfu</a>, dem Falkengott Horus geweiht: die Hauptattraktion der Strecke.<br>
-In ptolemäischer Zeit erbaut, gehört er zu den vollständigsten und am besten erhaltenen Tempeln Ägyptens.<br>
-Seine mächtigen Mauern, die feinen Reliefs und die hohen Eingangspylonen zeugen von der Frömmigkeit der alten Ägypter und von ihrer Macht am Nil.</p>
+<p>Одна из важнейших остановок на этом маршруте — <a href="/blogs/discover-edfu-temple">храм Эдфу</a>. Посвященный богу-соколу Гору, он главная достопримечательность всего пути.<br>
+Построенный в эпоху Птолемеев, храм остается одним из самых целых и хорошо сохранившихся в Египте.<br>
+Огромные стены, тонкая резьба и высокие входные пилоны свидетельствуют о религиозном рвении древних египтян и об их могуществе на берегах Нила.</p>
 
-<h2>Der Tempel von Kom Ombo: der Doppeltempel von Sobek und Horus</h2>
+<h2>Храм Ком Омбо: двойной храм Собека и Гора</h2>
 
-<p>Der Tempel von Kom Ombo liegt an einer herrlichen Nilbiegung und ist berühmt für seine besondere Architektur mit zwei getrennten Eingängen.<br>
-Der <a href="/blogs/kom-ombo-temple">Tempel von Kom Ombo</a> ist zwei Gottheiten geweiht: Sobek, dem Krokodilgott der Fruchtbarkeit, und Horus dem Älteren, dem Himmelsgott.<br>
-Sein symmetrischer Aufbau zeugt vom Glauben der alten Ägypter an ein vollkommenes Gleichgewicht zwischen Naturkräften und göttlichen Mächten und macht ihn zu einem der faszinierendsten verborgenen Ziele zwischen Luxor und Assuan.</p>
+<p>Храм Ком-Омбо стоит на живописной излучине Нила и знаменит необычной архитектурой с двумя отдельными входами.<br>
+<a href="/blogs/kom-ombo-temple">Храм Ком-Омбо</a> посвящен двум божествам: Собеку, богу-крокодилу и покровителю плодородия, и Гору Старшему, богу неба.<br>
+Симметричная планировка храма свидетельствует о вере древних египтян в равновесие природных стихий и божественных сил и делает его одним из самых захватывающих скрытых мест между Луксором и Асуаном.</p>
 
-<h2>Die Schleuse von Esna: eine lebendige Verbindung von Vergangenheit und Gegenwart</h2>
+<h2>Шлюз в Эсне: живая связь прошлого и настоящего</h2>
 
-<p>Die Schleuse von Esna ist kein antiker Tempel, sondern ein moderner Orientierungspunkt am Nil.<br>
-Ihr hydraulisches System erlaubt es Schiffen, zwischen den verschiedenen Wasserständen des Flusses zu wechseln.<br>
-Rund um die Schleuse entdecken Reisende historische Straßen und lokale Märkte, die den traditionellen ägyptischen Alltag zeigen, an einem Ort, an dem die Geschichte mit der heutigen Flusskultur verschmilzt.</p>
+<p>Шлюз в Эсне — не древний храм, а современная достопримечательность на Ниле.<br>
+Благодаря гидравлическому механизму шлюза суда переходят между разными уровнями воды в реке.<br>
+В окрестностях шлюза путешественники найдут старинные улочки и местные рынки, где видна традиционная повседневная жизнь египтян, а история переплетается с современной речной культурой.</p>
 
-<h2>Die Dörfer am Ufer: Alltag entlang des Nils</h2>
+<h2>Прибрежные деревни: повседневная жизнь на Ниле</h2>
 
-<p>Die kleinen Dörfer am Ufer zeigen, wie man zwischen den großen Tempeln des Nils lebt.<br>
-Seit der Antike leben diese Gemeinschaften dank des Flusses von Landwirtschaft und Fischerei.<br>
-Ihr Alltag hilft, ein Ägypten jenseits der berühmten historischen Stätten zu verstehen, ebenso wie die tiefe, dauerhafte Verbindung zwischen den Ägyptern und dem Nil.</p>
+<p>Небольшие прибрежные деревни показывают, как живут люди между великими храмами Нила.<br>
+С древних времен здешние общины зависят от реки: она питает их поля и дает рыбу.<br>
+Повседневная жизнь этих мест помогает лучше понять Египет за пределами знаменитых исторических памятников, а также ту прочную связь, что соединяет египтян с Нилом.</p>
 
-<h2>Die lebendige Geschichte des Nils</h2>
+<h2>Живая история Нила</h2>
 
-<p>Die geheimen Orte zwischen Luxor und Assuan sind historische Stätten, die Ägyptens Erbe bewahren.<br>
-Die Strecke zwischen Edfu und Kom Ombo, die noch immer arbeitende Schleuse von Esna und die stillen Dörfer erzählen von der fortwährenden Entwicklung der ägyptischen Zivilisation und ihrer religiösen Praxis und von der dauerhaften Verbindung zum Nil.</p>`,
+<p>Тайные места между Луксором и Асуаном — это исторические памятники, хранящие наследие Египта.<br>
+Путь между Эдфу и Ком-Омбо, действующий шлюз в Эсне и тихие деревни рассказывают о непрерывном развитии египетской цивилизации и ее религиозных традиций и о неизменной связи с Нилом.</p>`,
 
-  "hidden-islands-you-can-only-see-on-a-dahabiya": `<h2>Die verborgenen Inseln des Nils</h2>
+  "hidden-islands-you-can-only-see-on-a-dahabiya": `<h2>Скрытые острова Нила</h2>
 
-<p>Der Nil ist eine historische und natürliche Landschaft, die auch Winkel großer Stille birgt.<br>
-Die verborgenen Inseln des Nils sind sein kostbarstes Geheimnis, denn nur eine Dahabiya-Kreuzfahrt erreicht diese abgelegenen Orte.<br>
-Die <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Dahabiya-Kreuzfahrten</a> in Ägypten fahren langsam auf dem Nil und eröffnen den Zugang zu fernen Inseln und stillen Naturgebieten, die vom Massentourismus verschont geblieben sind.</p>
+<p>Нил — это исторический и природный ландшафт, в котором есть и уголки полного покоя.<br>
+Скрытые острова — его самая удивительная тайна: добраться до этих отдаленных мест можно только в круизе на дахабии.<br>
+Суда для <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">круизов на дахабии</a> по Египту неспешно идут по Нилу и открывают путь к далеким островам и тихим природным уголкам, куда не добрался массовый туризм.</p>
 
-<h2>Die Kreuzfahrt mit der Dahabiya: der einzige Weg zu den verborgenen Inseln</h2>
+<h2>Круиз на дахабии: единственный путь к скрытым островам</h2>
 
-<p>Die Dahabiya-Kreuzfahrt bietet ein traditionelles Segelerlebnis, das es erlaubt, die abgeschiedensten Wasserwege Ägyptens in Ruhe zu entdecken.<br>
-Dank seiner überschaubaren Größe und des Segelantriebs erreicht dieses Boutique-Schiff Inseln und abgelegene Ufer, die größeren Schiffen verschlossen bleiben.<br>
-Unterwegs sehen Sie die großen Stätten am Nil aus der Nähe: die Tempel von Luxor und Karnak am Ostufer, das Tal der Könige am <a href="/blogs/discover-the-timeless-luxor-west-bank">Westufer</a> und die gut erhaltenen Tempel von <a href="/blogs/kom-ombo-temple">Kom Ombo</a> und Edfu zwischen Luxor und Assuan.<br>
-So wird der Nil zu einem exklusiven Erlebnis, das Sie ganz persönlich entdecken.</p>
+<p>Круиз на дахабии по Египту — это традиционное плавание под парусом, позволяющее неспешно исследовать Нил по его укромным протокам.<br>
+Благодаря небольшим размерам и парусам судно бутик-круиза по Нилу подходит к островам и отдаленным берегам, недоступным для крупных теплоходов.<br>
+По пути можно вблизи увидеть главные достопримечательности Нила: храмы Луксора и Карнака на Восточном берегу, Долину царей на <a href="/blogs/discover-the-timeless-luxor-west-bank">Западном берегу</a>, а между Луксором и Асуаном прекрасно сохранившиеся храмы <a href="/blogs/kom-ombo-temple">Ком-Омбо</a> и Эдфу.<br>
+Так Нил становится эксклюзивным впечатлением, которое каждый открывает для себя по-своему.</p>
 
-<h2>Die verborgenen Inseln des Nils: Natur und Stille</h2>
+<h2>Скрытые острова Нила: природа и тишина</h2>
 
-<p>Die verborgenen Inseln des Nils sind ruhige Naturgebiete, die der Fluss über Jahrhunderte geformt hat. Palmen und fruchtbares Land bilden einen überraschenden Gegensatz zur umliegenden Wüste.<br>
-In diesen Gegenden begegnen Sie einigen der außergewöhnlichsten Wunder des Nils, etwa der Insel Philae mit ihrem herrlichen <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a>, der Isis geweiht ist, und den unberührten Flussinseln bei Assuan.<br>
-Das Schiff gleitet durch ruhiges Wasser, zwischen Vögeln und goldenen Sonnenuntergängen über dem Nil: ein seltenes Erlebnis vollkommenen Friedens an den Ufern Ägyptens.</p>
+<p>Скрытые острова Нила — тихие природные уголки, которые река формировала сотни лет. Пальмы и плодородная земля создают здесь поразительный контраст с окружающей пустыней.<br>
+Проплывая по этим местам, вы увидите самые необыкновенные достопримечательности Нила, среди них остров Филе с прекрасным <a href="/blogs/discovering-the-secrets-of-philae-temple">храмом Филе</a>, посвященным Исиде, и нетронутые речные острова близ Асуана.<br>
+Судно идет по спокойной воде, мимо птиц, под золотыми закатами над Нилом, и на египетских берегах рождается редкое ощущение ничем не нарушаемого покоя.</p>
 
-<h2>Slow Travel in Ägypten: den Nil anders erleben</h2>
+<h2>Неспешное путешествие по Египту: другой взгляд на Нил</h2>
 
-<p>Die verborgenen Inseln zu erkunden gehört zum Slow Travel in Ägypten, bei dem die Reise mehr zählt als die Geschwindigkeit.<br>
-An Bord einer Dahabiya erlaubt die langsame Fahrt auf dem Nil, jeden Moment und jede Landschaft ganz auszukosten.</p>
+<p>Знакомство со скрытыми островами — часть неспешного путешествия по Египту, где сам путь важнее скорости.<br>
+Плавный ход дахабии по Нилу позволяет в полной мере прочувствовать каждый момент и каждый пейзаж.</p>
 
-<p>Dieser ruhigere Rhythmus offenbart die stille Schönheit der Dörfer, der Natur und des Lebens am Ufer.</p>
+<p>Такой неторопливый ритм открывает тихую красоту деревень, природы и жизни на берегах.</p>
 
-<h2>Geheime Halte entlang des Nils</h2>
+<h2>Тайные остановки на Ниле</h2>
 
-<p>Eine Dahabiya-Kreuzfahrt kann an verborgenen Inseln, ländlichen Ufern und stillen Orten halten, die großen Schiffen unzugänglich sind. Diese Stopps schenken besondere Momente der Entdeckung und lassen Sie den Nil authentischer erleben.</p>
+<p>В круизе на дахабии по Египту можно останавливаться у скрытых островов, сельских берегов и тихих мест, недоступных крупным круизным судам. Такие остановки дарят особые минуты открытий и позволяют увидеть Нил более подлинным.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-tarekhagrassph-13420331-1-1778761469ILBdN.webp" alt="" loading="lazy"></figure></p>
 
-<h2>Eine Luxuskreuzfahrt auf dem Nil und ihre verborgene Seite</h2>
+<h2>Круиз по Нилу класса люкс и его скрытая сторона</h2>
 
-<p>Die Luxuskreuzfahrt mit der Dahabiya verbindet Komfort und Entdeckung. Auch wenn die Gäste an Bord elegante Annehmlichkeiten finden, liegt der wahre Reiz der Reise im Entdecken verborgener Inseln und unberührter Flussabschnitte.<br>
-So bietet der Nil zwei Erlebnisse: gelassene Entspannung und die Gelegenheit, einzigartige Naturlandschaften zu sehen.</p>
+<p>Люкс-круиз по Нилу на дахабии сочетает для гостей два удовольствия: комфорт и открытия. На борту вас ждут элегантные удобства, но главная прелесть круиза в исследовании укромных островов и нетронутых участков реки.<br>
+Так Нил дарит путешественникам сразу два впечатления: безмятежный отдых и возможность увидеть уникальные природные пейзажи.</p>
 
-<h2>Die geheime Schönheit des Nils</h2>
+<h2>Тайная красота Нила</h2>
 
-<p>Die verborgenen Inseln des Nils zeigen eine stille Seite Ägyptens, die nur eine Dahabiya-Kreuzfahrt erschließt. Sie sind ein ruhiger Rückzugsort voller Natur und historischer Stätten, für Reisen ohne Eile.<br>
-Seine authentischste Schönheit zeigt der Nil in den abgelegenen, unerforschten Gebieten, weit jenseits der bekannten Touristenorte.</p>`,
+<p>Скрытые острова Нила открывают тихую сторону Египта, доступную только в круизе на дахабии. Здесь путешественника ждет безмятежное убежище: природные красоты, исторические места и возможность путешествовать без спешки.<br>
+Свою подлинную красоту Нил раскрывает в отдаленных, неизведанных уголках, далеко за пределами популярных туристических мест.</p>`,
 
-  "untouched-nature-along-the-nile-river": `<h2>Die Natur des Nils in Ägypten</h2>
+  "untouched-nature-along-the-nile-river": `<h2>Природа Нила в Египте</h2>
 
-<p>Der Nil ist berühmt für seine antike Geschichte, bietet aber auch einige der schönsten Naturlandschaften Ägyptens.<br>
-Die Schönheit der Natur am Nil zeigt sich im ruhigen Wasser, auf grünen Inseln, in den Palmen und in den stillen Dörfern an den Ufern.<br>
-Auf der Fahrt auf dem Nil entdecken Sie ruhige Landschaften fern der Städte, wie die <a href="/blogs/aswan-nubian-villages">nubischen Dörfer</a> und vieles mehr.</p>
+<p>Нил известен своей древней историей, но здесь же можно увидеть одни из самых красивых природных пейзажей Египта.<br>
+Красота природы Нила в Египте — это спокойная вода, зеленые острова, пальмы и тихие деревни вдоль берегов.<br>
+Плывя по Нилу, путешественники видят мирные пейзажи вдали от городов, например <a href="/blogs/aswan-nubian-villages">нубийские деревни</a>, и многое другое.</p>
 
-<h2>Unberührte Natur entlang des Nils</h2>
+<h2>Нетронутая природа на берегах Нила</h2>
 
-<p>Der Nil birgt unberührte Naturräume, in denen grüne Felder einen herrlichen Gegensatz zur nahen Wüste bilden.<br>
-Die Reise bietet eine Kulisse aus kleinen Inseln, natürlichen Sandbänken und Höfen am Ufer. Die Schiffe auf dem Nil fahren langsam und lassen Sie ruhige Landschaften bewundern, begleitet vom entspannenden Klang des Wassers.</p>
+<p>На Ниле сохранились нетронутые природные уголки, где зеленые поля красиво контрастируют с соседней пустыней.<br>
+В пути вас ждут живописные виды: маленькие острова, природные песчаные отмели и прибрежные фермы. Суда на Ниле идут медленно, и можно любоваться мирными пейзажами под успокаивающий плеск воды.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-diego-f-parra-33199-15131538-1-1778766183awx7T.webp" alt="" loading="lazy"></figure><br>
-Die ruhigen Landschaften des Nils</h2>
+Мирные пейзажи Нила</h2>
 
-<p>Die ruhigen Landschaften des Nils gehören zu den schönsten Erinnerungen der Reise.<br>
-Sonnenaufgänge und Sonnenuntergänge tauchen den Fluss in herrliche Farben, während die Stille des Nils ein tiefes Gefühl der Ruhe schenkt.<br>
-Die natürliche Schönheit des Nils hat eine zeitlose Präsenz, die zur Entspannung einlädt.</p>
+<p>Мирные пейзажи Нила — одно из самых ярких воспоминаний о путешествии.<br>
+Рассветы и закаты окрашивают реку в прекрасные цвета, а тишина Нила дарит глубокое чувство покоя.<br>
+Природная красота Нила вечна, и рядом с ней приходит полное расслабление.</p>
 
-<h2>Die Kreuzfahrt mit der Dahabiya: ein Naturerlebnis</h2>
+<h2>Круиз на дахабии: встреча с природой</h2>
 
-<p>Eine <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Dahabiya</a>-Kreuzfahrt auf dem Nil gilt als eine der besten Arten, die natürliche Schönheit des Flusses zu entdecken: Der ruhige Rhythmus der Fahrt ohne Eile erlaubt es, jeden atemberaubenden Ausblick zu genießen, auf dem Weg zu den grünen, unberührten Inseln Ägyptens.</p>
+<p>Круиз по Нилу на <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии</a> считается одним из лучших способов познакомиться с природной красотой реки: спокойный, неторопливый ход позволяет насладиться каждым захватывающим видом, пока вы открываете для себя нетронутые, малоизвестные зеленые острова Египта.</p>
 
-<h2>Die stille Schönheit des Nils</h2>
+<h2>Тихая красота Нила</h2>
 
-<p>Die unberührte Natur des Nils zeigt eine ruhige Seite Ägyptens jenseits seiner berühmten historischen Stätten.<br>
-Der Nil bietet ein besonderes Erlebnis zwischen grünen Inseln, ruhigem Wasser und malerischen Landschaften, um die Natur und den Fluss Ägyptens ohne Eile zu entdecken.</p>`,
+<p>Нетронутая природа Нила показывает спокойную сторону Египта, которая лежит за пределами его знаменитых исторических памятников.<br>
+Зеленые острова, тихая вода и живописные пейзажи складываются на Ниле в особое впечатление: для знакомства с природой и неспешного путешествия по египетскому Нилу.</p>`,
 };

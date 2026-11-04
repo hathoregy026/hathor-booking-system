@@ -3,221 +3,221 @@
  * rows; headings avoid hyphens (the display face draws none).
  */
 export const BLOG_ARTICLES_RU_4: Record<string, string> = {
-  "history-of-dahabiya-boats-in-egypt": `<h2><span class="hathor-blog-accent">Geschichte und Kultur der Dahabiyas in Ägypten</span></h2>
+  "history-of-dahabiya-boats-in-egypt": `<h2><span class="hathor-blog-accent">Круизы на дахабии: история и культура</span></h2>
 
-<p>Die Geschichte der Dahabiyas in Ägypten erzählt von der tiefen Verbindung zwischen dem Nil und der ägyptischen Zivilisation.<br>
-Diese eleganten <strong>Luxussegler auf dem Nil</strong> trugen Adlige und Reisende, die den Fluss gemächlich und stilvoll befahren wollten.<br>
-Die Dahabiya-Kreuzfahrt in Ägypten bewahrt dieses kulturelle Erbe und bietet den Passagieren ein besonderes Erlebnis, das Tradition, modernen Komfort und die Freude am Entdecken verbindet.<br>
-Reisende lieben es, die <a href="/blogs/niles-hidden-gems-by-dahabiya">verborgenen Schätze des Nils mit der Dahabiya</a> zu entdecken, wo kleine <a href="/blogs/aswan-nubian-villages">nubische Dörfer</a> und unberührte Ufer die authentische Schönheit Ägyptens offenbaren.</p>
+<p>История дахабий в Египте отражает глубокую связь Нила с египетской цивилизацией.<br>
+На этих элегантных судах, <strong>парусниках класса люкс на Ниле</strong>, путешествовали знать и странники, желавшие плыть по реке неспешно и изысканно.<br>
+Круиз на дахабии по Египту хранит это культурное наследие и дарит гостям особый опыт, в котором традиции сочетаются с современным комфортом и радостью открытий.<br>
+Путешественники особенно любят открывать <a href="/blogs/niles-hidden-gems-by-dahabiya">скрытые сокровища Нила на дахабии</a>, где небольшие <a href="/blogs/aswan-nubian-villages">нубийские деревни</a> и нетронутые берега раскрывают подлинную красоту Египта.</p>
 
-<h2><span class="hathor-blog-accent">Was ist eine Dahabiya auf dem Nil?</span></h2>
+<h2><span class="hathor-blog-accent">Что такое дахабия на Ниле</span></h2>
 
-<p>Die Dahabiya ist ein traditionelles hölzernes Segelschiff, das vom Wind angetrieben wird und für eine ruhige Fahrt auf dem Nil gebaut ist.<br>
-Ägyptische Dahabiyas bieten ihren Passagieren ein intimes Reiseerlebnis, ganz anders als auf großen Kreuzfahrtschiffen.<br>
-Viele Reisende entscheiden sich heute für diese Art des Reisens, für eine Luxus-Dahabiya-Kreuzfahrt auf dem Nil: weite Decks, wenige Kabinen und eine ruhige Atmosphäre fern der Menge, dazu ein luxuriöser Aufenthalt in den eleganten <a href="https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites" target="_blank" rel="noopener noreferrer">Luxury Suites</a> mit Panoramablick.</p>
+<p>Дахабия — традиционное деревянное парусное судно, которое движется силой ветра и создано для спокойного плавания по Нилу.<br>
+Египетские дахабии предлагают гостям камерное плавание, совсем не похожее на путешествие на больших круизных теплоходах.<br>
+Многие современные путешественники выбирают такой формат, круиз по Нилу на дахабии класса люкс: просторные палубы, немного кают и спокойная атмосфера вдали от толп, а также роскошное проживание в элегантных люксах <a href="https://www.hathorcruise.com/Nile-Cruise-Luxury-Suites" target="_blank" rel="noopener noreferrer">Luxury Suite</a> с панорамными видами.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/5-history-1777365215Ix4Lo.jpg" alt="" loading="lazy"></figure></h2>
 
-<h2><span class="hathor-blog-accent">Die Boote des alten Ägypten und die Dahabiya</span></h2>
+<h2><span class="hathor-blog-accent">Древнеегипетские лодки и дахабия</span></h2>
 
-<p>Die Boote des alten Ägypten dienten vor allem Handel, Transport und religiösen Zeremonien und waren oft aus Papyrus oder Holz gebaut. Mit der Zeit entwickelten sich diese frühen Formen zu immer eleganteren Schiffen, bis hin zur Boutique-Kreuzfahrt auf dem Nil.<br>
-Beide sind mit dem Nil verbunden, doch Dahabiyas stellen den Komfort der Passagiere und die Freude am Reisen in den Mittelpunkt.<br>
-Heute vergleichen Reisende sie oft, wenn sie ein Erlebnis an Bord eines <strong>Luxusseglers auf dem Nil</strong> planen: ein Vergleich, der zeigt, wie sehr sich das Reisen auf dem Fluss gewandelt hat.</p>
+<p>Древнеегипетские лодки, часто сделанные из папируса или дерева, служили в основном для торговли, перевозок и религиозных церемоний. Со временем ранние конструкции превратились в совершенные суда, вплоть до бутик-круиза по Нилу.<br>
+И те и другие связаны с Нилом, но дахабии в первую очередь ориентированы на комфорт и отдых пассажиров.<br>
+Сегодня путешественники часто сравнивают их, планируя плавание на <strong>паруснике класса люкс на Ниле</strong>, и это сравнение показывает, как далеко шагнули путешествия по Нилу.</p>
 
-<h2><span class="hathor-blog-accent">Die beste Kreuzfahrt mit der Dahabiya von Assuan nach Luxor</span></h2>
+<h2><span class="hathor-blog-accent">Лучший круиз на дахабии из Асуана в Луксор</span></h2>
 
-<p>Eine der berühmtesten Routen für eine Dahabiya-Kreuzfahrt in Ägypten verläuft zwischen Luxor und Assuan.<br>
-Diese private Nilkreuzfahrt von Assuan nach Luxor führt zu Tempeln, Inseln und Szenen des Alltags am Fluss, vorbei an den lebhaften Farben der nubischen Dörfer, mit Stationen wie dem majestätischen <a href="/blogs/kom-ombo-temple">Tempel von Kom Ombo</a>, dem herrlichen, gut erhaltenen <a href="/blogs/discover-edfu-temple">Tempel von Edfu</a> und dem wunderbaren <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a>.<br>
-Sie ist auch für besondere Erlebnisse beliebt, etwa für eine Hochzeitsreise in der Suite auf dem Nil, bei der Paare Privatsphäre, Romantik und unvergessliche Ausblicke finden, während sie durch die geschichtsreichsten Landschaften Ägyptens fahren.</p>
+<p>Один из самых знаменитых маршрутов круиза на дахабии по Египту проходит между Луксором и Асуаном.<br>
+Этот частный круиз по Нилу из Асуана в Луксор открывает храмы, острова и местную жизнь на берегах реки: от ярких нубийских деревень до таких остановок, как величественный <a href="/blogs/kom-ombo-temple">храм Ком-Омбо</a>, прекрасно сохранившийся <a href="/blogs/discover-edfu-temple">храм Эдфу</a> и потрясающий <a href="/blogs/discovering-the-secrets-of-philae-temple">храм Филе</a>.<br>
+Он популярен и для особых поводов, например для медового месяца в люксе во время круиза по Нилу: пары наслаждаются уединением, романтикой и незабываемыми видами, проплывая через самые исторические пейзажи Египта.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/whatsapp-image-2026-03-30-at-93507-pm-1777367574V2tTp.webp" alt="" loading="lazy"></figure></h2>
 
-<h2><span class="hathor-blog-accent">Das Erlebnis einer Luxuskreuzfahrt mit der Dahabiya in Ägypten</span></h2>
+<h2><span class="hathor-blog-accent">Круиз по Нилу на дахабии класса люкс</span></h2>
 
-<p>Die moderne Luxus-Dahabiya-Kreuzfahrt auf dem Nil verbindet Tradition und Eleganz: eine kultivierte Art, den Fluss stilvoll zu erleben.<br>
-Eine Luxus-Dahabiya wie die <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Luxury Dahabiya</a> bietet ihren Gästen elegante Kabinen, persönlichen Service und eine ruhige Fahrt in exklusiver, intimer Atmosphäre.<br>
-Viele wählen diese Art zu reisen, weil sie höchsten Komfort mit Räumen bietet, die die Privatsphäre wahren, und dazu die zeitlose Schönheit des Nils.<br>
-Die Kreuzfahrt mit der Hathor Dahabiya bietet die <a href="https://www.hathorcruise.com/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_blank" rel="noopener noreferrer">Royal Suites</a> mit großzügigen Räumen, erlesenem Design und hochwertigen Annehmlichkeiten für alle, die sich ein noch exklusiveres Nilerlebnis wünschen.<br>
+<p>Современный круиз по Нилу на дахабии класса люкс сочетает традиции и элегантность и позволяет увидеть Нил со вкусом.<br>
+Круиз на дахабии класса люкс, например на <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Luxury Dahabiya</a>, — это элегантные каюты, персональный сервис и спокойное плавание в атмосфере эксклюзивности и уединения.<br>
+Путешественники часто выбирают такой формат, потому что круиз на дахабии класса люкс дает полный комфорт: все устроено так, чтобы оберегать приватность гостей и позволять им наслаждаться вечной красотой Нила.<br>
+В круизе на Hathor Dahabiya гостей ждут <a href="https://www.hathorcruise.com/Luxury-Royal-Suites-Nile-Dahabiya-Cruise" target="_blank" rel="noopener noreferrer">люксы Royal Suite</a>: просторные, с изысканным дизайном и первоклассными удобствами, для тех, кто хочет увидеть Нил на самом высоком уровне.<br>
 <br>
-Die Geschichte der Dahabiyas in Ägypten ist eine unvergessliche Reise, von den alten Fahrten auf dem Fluss bis zu den modernen Luxuskreuzfahrten.<br>
-Diese Schiffe bieten die besondere Gelegenheit, Ägypten ruhig und elegant zu entdecken: Man erreicht verborgene Orte am Fluss, entspannt in romantischen, luxuriösen Suiten und erlebt die stille Schönheit der berühmtesten Landschaften des Landes.</p>`,
+История дахабий в Египте — это незабываемый путь от древних речных путешествий к сегодняшним круизам класса люкс.<br>
+Эти суда дарят особую возможность увидеть Египет, путешествуя спокойно и изящно: открывать тайные места на берегах реки, отдыхать в роскошных романтичных люксах и наслаждаться тихой красотой самых знаменитых пейзажей страны.</p>`,
 
-  "what-is-a-dahabiya-nile-cruise-complete-beginner-guide": `<h2><span class="hathor-blog-accent">Was ist eine Kreuzfahrt mit der Dahabiya auf dem Nil in Ägypten?</span></h2>
+  "what-is-a-dahabiya-nile-cruise-complete-beginner-guide": `<h2><span class="hathor-blog-accent">Что такое круиз на дахабии по Нилу в Египте?</span></h2>
 
-<p>Die Dahabiya-Kreuzfahrt auf dem Nil in Ägypten bietet ein traditionelles Segelerlebnis, um den Fluss ruhig und luxuriös zu entdecken. Die Gäste genießen den Komfort <strong>kleiner Luxuskabinen</strong> und bewundern dabei die atemberaubenden Ausblicke entlang der Ufer.</p>
+<p>Круиз на дахабии по Нилу в Египте — это традиционное плавание под парусом, позволяющее познакомиться с Нилом спокойно и в роскоши. Гости наслаждаются комфортом <strong>небольших кают класса люкс в круизе по Нилу</strong> и любуются захватывающими видами берегов.</p>
 
-<p>Dahabiyas, kleine und elegante traditionelle ägyptische Schiffe, bieten ein privates, komfortables Erlebnis, bei dem die Passagiere in die authentische lokale Kultur eintauchen. Die intime Atmosphäre dieser <strong>kleinen Luxuskabinen</strong> macht jeden Moment der Reise besonders und sorgt für eine wahrhaft exklusive, unvergessliche Fahrt auf dem Nil. Sie ist auch perfekt für die Hochzeitsreise: Diese Boutique-Kreuzfahrt auf dem Nil führt Sie zu den <a href="/blogs/5-quiet-nile-spots-for-stunning-honeymoon-captures">idealen Orten am Nil für Hochzeitsreisefotos</a>.<br>
-Diese Art zu reisen lässt Sie die Ufer des Flusses mit ihren Naturlandschaften, historischen Stätten und dem Leben der örtlichen Gemeinschaften erleben, dank langer Abschnitte gemächlicher Fahrt.<br>
-Während die private Dahabiya sanft zwischen <a href="/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya">Luxor und Assuan</a> dahingleitet, bewundern die Reisenden die herrlichen Ausblicke auf den Nil, entdecken berühmte historische Orte und verborgene Winkel des Flusses und fahren an den farbenfrohen nubischen Dörfern vorbei. Die Reise umfasst auch Besuche der wichtigsten Sehenswürdigkeiten von Luxor, wo Tempel und antike Monumente von der Größe der ägyptischen Zivilisation erzählen. Das Dahabiya-Erlebnis verbindet Entspannung und Reisen zu einer authentischen Entdeckung Ägyptens.</p>
+<p>Небольшие элегантные дахабии, традиционные египетские суда, дарят уединение и комфорт и позволяют погрузиться в подлинную местную культуру. Камерная обстановка этих <strong>небольших кают класса люкс в круизе по Нилу</strong> делает каждый момент путешествия особенным, превращая плавание по Нилу в по-настоящему эксклюзивное и запоминающееся событие. Такой круиз идеален и для медового месяца: бутик-круиз по Нилу откроет вам <a href="/blogs/5-quiet-nile-spots-for-stunning-honeymoon-captures">места на Ниле для фотографий медового месяца</a>.<br>
+Благодаря долгим часам неспешного плавания гости видят берега реки во всей полноте: природные пейзажи, исторические места и жизнь местных общин.<br>
+Пока частный круиз на дахабии мягко скользит между <a href="/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya">Луксором и Асуаном</a>, путешественники любуются захватывающими видами Нила, открывают знаменитые исторические места и скрытые речные уголки и проплывают мимо разноцветных нубийских деревень. В программу входят и важнейшие достопримечательности Луксора, где древние храмы и памятники отражают величие древнеегипетской цивилизации. Дахабия позволяет по-настоящему открыть Египет, соединяя отдых и путешествие.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/hathor-d-1777384046YRwYc.webp" alt="" loading="lazy"></figure></h2>
 
-<h2><span class="hathor-blog-accent">Der vollständige Leitfaden zur Dahabiya auf dem Nil</span></h2>
+<h2><span class="hathor-blog-accent">Полный путеводитель по круизу на дахабии</span></h2>
 
-<p>Die Dahabiya-Kreuzfahrt auf dem Nil folgt ihrer Route zwischen Luxor und Assuan und bietet den Passagieren ein authentisches Reiseerlebnis, anders als auf großen Kreuzfahrtschiffen. Die Gäste der <strong>kleinen Luxuskabinen</strong> erleben eine intimere, persönlichere Reise und entdecken die zeitlose Schönheit des Flusses.<br>
-Die Reisenden besuchen berühmte Orte wie den Komplex des <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempels</a>, ein gewaltiges Heiligtum, und das <a href="/blogs/discover-the-valley-of-the-kings">Tal der Könige</a>, in dem die wichtigsten Pharaonen Ägyptens bestattet wurden.<br>
+<p>Круиз на дахабии по Нилу идет по установленному маршруту между Луксором и Асуаном и дарит подлинное путешествие, не похожее на плавание на больших круизных теплоходах. Гости, живущие в <strong>небольших каютах класса люкс в круизе по Нилу</strong>, получают более камерное и персональное путешествие, открывая для себя вечную красоту Нила.<br>
+Путешественники посещают знаменитые места, среди них комплекс <a href="/blogs/sailing-to-karnak-temple">Карнакского храма</a>, огромный религиозный центр, и <a href="/blogs/discover-the-valley-of-the-kings">Долину царей</a>, где хоронили самых значимых фараонов Египта.<br>
 <br>
-Unterwegs offenbart die Kreuzfahrt weitere verborgene Schätze: stille Tempel, unberührte Flussinseln und authentische ländliche Landschaften.<br>
-Der intensivste Moment der Reise ist die Entdeckung der <a href="/blogs/golden-gems-of-aswan">verborgenen Schätze Assuans</a>, eines Ortes, der ein authentisches Ägypten-Erlebnis bietet, noch fern der Touristenmengen.<br>
-An Bord der Dahabiya finden die Reisenden <a href="https://www.hathorcruise.com/luxury-cabins-Nile-Cruise" target="_blank" rel="noopener noreferrer">Luxuskabinen</a>, eine Küche mit frisch zubereiteten Gerichten und einen umfassenden Service, der das Erlebnis der Dahabiya-Kreuzfahrt in Ägypten noch angenehmer macht.</p>
+По пути круиз открывает и другие скрытые сокровища: тихие храмы, нетронутые речные острова и подлинные сельские пейзажи.<br>
+Кульминация путешествия — знакомство со <a href="/blogs/golden-gems-of-aswan">скрытыми сокровищами Асуана</a>: здесь можно увидеть подлинный Египет, еще не тронутый туристическими толпами.<br>
+На борту дахабии путешественников ждут <a href="https://www.hathorcruise.com/luxury-cabins-Nile-Cruise" target="_blank" rel="noopener noreferrer">каюты класса люкс</a>, ресторан со свежеприготовленными блюдами и полный сервис, который делает круиз на дахабии по Египту еще комфортнее.</p>
 
-<h2><span class="hathor-blog-accent">Ein Kulturerlebnis auf dem Nil und eine spirituelle Reise nach Ägypten</span></h2>
+<h2><span class="hathor-blog-accent">Культура Нила и духовное путешествие в Египет</span></h2>
 
-<p>Die Dahabiya-Kreuzfahrt ist mehr als ein Urlaub: Sie ist eine <a href="/blogs/spiritual-journey-to-egypt">spirituelle Reise nach Ägypten</a>, die den Reisenden das historische und kulturelle Erbe des Landes näherbringt.</p>
+<p>Круиз на дахабии — это больше, чем отпуск. Это <a href="/blogs/spiritual-journey-to-egypt">духовное путешествие в Египет</a>, которое соединяет путешественников с историческим и культурным наследием страны.</p>
 
-<p>Das Schiff fährt langsam den Nil hinab und lässt die Gäste den Alltag an den Ufern beobachten: Bauern bei der Arbeit auf den Feldern und Kinder, die am Wasser spielen.</p>
+<p>Судно неспешно спускается по Нилу, и гости могут наблюдать за повседневной жизнью на берегах: за крестьянами, работающими в полях, и детьми, играющими у воды.</p>
 
-<p>Die intime Atmosphäre der <strong>Boutique-Suiten</strong> an Bord lässt Sie die ägyptische Kultur in Momenten der Stille und Besinnung erleben, die die tiefe Verbindung zwischen Ägypten und seinem Fluss zeigen. Die Gäste unserer <strong>Boutique-Kabinen</strong> genießen freie Ausblicke und die ganze Ruhe der Reise.</p>
+<p>Камерная атмосфера <strong>люксов бутик-круиза по Нилу</strong> позволяет прочувствовать египетскую культуру в спокойные минуты размышлений, которые подчеркивают вечную связь Египта с Нилом. Гости наших <strong>кают бутик-круиза по Нилу</strong> наслаждаются ничем не заслоненными видами и безмятежностью путешествия.</p>
 
-<p>Besuche in Dörfern am Fluss und an antiken Stätten bereichern die Reisenden mit Wissen und spiritueller Inspiration. Der langsame Rhythmus der Fahrt in einer der schönsten <strong>Boutique-Suiten auf einer Dahabiya in Ägypten</strong> schenkt ein Gefühl der Ruhe, das modernes Reisen selten bietet.</p>
+<p>Знакомство с прибрежными деревнями и древними памятниками дарит путешественникам и новые знания, и духовное вдохновение. Плавный ритм плавания в одном из лучших <strong>бутик-люксов на дахабии в Египте</strong> дает редкое чувство покоя, которое современные путешествия дарят нечасто.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/great-view-of-the-blue-nile-in-the-city-of-aswan-in-egypt-1777384429BxDZE.webp" alt="" loading="lazy"></figure></p>
 
-<h2><span class="hathor-blog-accent">Warum eine ruhige Reise auf dem Nil mit der Dahabiya?</span></h2>
+<h2><span class="hathor-blog-accent">Почему стоит выбрать спокойное путешествие по Нилу на дахабии?</span></h2>
 
-<p>Eine Dahabiya-Kreuzfahrt in Ägypten zu wählen bedeutet, den Nil authentisch zu erleben, auf ruhigen Routen, die überfüllte Gebiete und große Kreuzfahrtschiffe meiden.</p>
+<p>Выбрать круиз на дахабии в Египте — значит увидеть подлинный Нил, путешествуя тихими маршрутами в стороне от людных мест и оживленных круизных теплоходов.</p>
 
-<p>Der Nil bietet eine luxuriöse, gelassene Atmosphäre im Einklang mit der herrlichen Naturlandschaft. Die Gäste unserer <strong>Boutique-Suiten</strong> können in die Ruhe der Reise eintauchen, und das bei außergewöhnlichem Komfort.</p>
+<p>Нил дарит атмосферу роскоши и покоя, почти не нарушая великолепной природы вокруг. Гости наших <strong>люксов бутик-круиза по Нилу</strong> могут полностью погрузиться в безмятежность путешествия, наслаждаясь исключительным комфортом.</p>
 
-<p>Dieses Erlebnis ist für alle gedacht, die Ruhe, Privatsphäre und authentische kulturelle Entdeckungen suchen. Die elegante Umgebung unserer <strong>Boutique-Kabinen</strong> ist der perfekte Rückzugsort nach einem Tag voller Erkundungen.</p>
+<p>Это путешествие создано для тех, кто ищет тишины, уединения и подлинных культурных открытий. Элегантная обстановка наших <strong>кают бутик-круиза по Нилу</strong> становится идеальным убежищем после дня экскурсий.</p>
 
-<p>Die atemberaubenden Sonnenuntergänge über der antiken Silhouette von Luxor schenken unvergessliche Momente und bleibende Erinnerungen. Der langsame Rhythmus der Reise in einer der schönsten <strong>Boutique-Suiten auf einer Dahabiya in Ägypten</strong> lässt Sie die natürliche Schönheit, die historischen Monumente und die reichen kulturellen Traditionen Ägyptens ganz auskosten.</p>`,
+<p>Захватывающие закаты над древними силуэтами Луксора дарят незабываемые моменты и воспоминания на всю жизнь. Неспешный ритм путешествия в одном из лучших <strong>бутик-люксов на дахабии в Египте</strong> позволяет в полной мере оценить природную красоту Египта, его исторические памятники и богатые культурные традиции.</p>`,
 
-  "colossi-of-memnon": `<h2><span class="hathor-blog-accent">Die Memnonkolosse in Luxor: Geschichte und Geheimnis</span></h2>
+  "colossi-of-memnon": `<h2><span class="hathor-blog-accent">Колоссы Мемнона в Луксоре: история и тайна</span></h2>
 
-<p>Die Memnonkolosse sind zwei gewaltige Steinstatuen am Westufer von Luxor in Ägypten. Seit über 3.400 Jahren gehören sie zu den berühmtesten Sehenswürdigkeiten Luxors: Wächter der altägyptischen Zivilisation und ein außergewöhnliches Beispiel ihrer Ingenieurskunst und monumentalen Architektur.</p>
+<p>Колоссы Мемнона — две огромные каменные статуи на Западном берегу Луксора в Египте. Уже более 3400 лет они стоят здесь как самая знаменитая достопримечательность Луксора, хранители древнеегипетской цивилизации и замечательный образец древнеегипетского инженерного искусства и монументальной архитектуры.</p>
 
-<p>Besucher aus aller Welt kommen nach Theben, um diese berühmten Statuen des Pharaos Amenhotep III. zu sehen und ihre Geschichte, ihr Geheimnis und ihre wichtige Rolle in der Vergangenheit des antiken Theben kennenzulernen.</p>
+<p>Люди со всего мира приезжают в Фивы, чтобы увидеть эти знаменитые статуи фараона Аменхотепа III, узнать их историю и тайны и понять, какую важную роль они играли в древнем прошлом Фив.</p>
 
-<h2><span class="hathor-blog-accent">Wo stehen die Memnonkolosse?</span></h2>
+<h2><span class="hathor-blog-accent">Где находятся Колоссы Мемнона?</span></h2>
 
-<p>Die Statuen stehen in der thebanischen Nekropole am Westufer des Nils in Luxor, unweit einiger der wichtigsten antiken Stätten Ägyptens.<br>
-Das Gebiet liegt in der Nähe des <a href="/blogs/discover-the-valley-of-the-kings">Tals der Könige</a>, des <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempels</a> und des <a href="/blogs/luxor-temple-facts">Luxor-Tempels</a>: eines der wertvollsten archäologischen Areale Ägyptens, das viele Sehenswürdigkeiten Luxors vereint.<br>
-Ursprünglich standen die Kolosse am Eingang des großen Totentempels von Pharao Amenhotep III.</p>
+<p>Статуи стоят в Фиванском некрополе на Западном берегу Нила в Луксоре, рядом с одними из важнейших древних памятников Египта.<br>
+Это место находится недалеко от <a href="/blogs/discover-the-valley-of-the-kings">Долины царей</a> и на другом берегу реки напротив <a href="/blogs/sailing-to-karnak-temple">Карнакского храма</a> и <a href="/blogs/luxor-temple-facts">Луксорского храма</a>, что делает его самой ценной археологической зоной Египта, где собраны многие достопримечательности Луксора.<br>
+Изначально колоссы стояли у входа в величественный заупокойный храм фараона Аменхотепа III.</p>
 
-<h2><span class="hathor-blog-accent">Was sind die Memnonkolosse?</span></h2>
+<h2><span class="hathor-blog-accent">Что такое Колоссы Мемнона?</span></h2>
 
-<p>Die Memnonkolosse in Luxor sind zwei Zwillingsstatuen, die Pharao Amenhotep III. darstellen.<br>
-Sie wurden zur Zeit des Neuen Reichs aus Quarzit-Sandstein gehauen.<br>
-Etwa 18 Meter hoch, gehörten sie zu einem weitläufigen, heute verschwundenen Tempelkomplex und zählen zu den wichtigsten antiken Zeugnissen, die in Theben erhalten sind.<br>
-Heute sind sie mächtige Symbole der Vergangenheit Ägyptens und ein fester Programmpunkt für alle, die die Sehenswürdigkeiten am Westufer von Luxor besuchen.</p>
+<p>Колоссы Мемнона в Луксоре — две одинаковые статуи, изображающие фараона Аменхотепа III.<br>
+Они высечены из кварцитового песчаника в эпоху Нового царства.<br>
+Высота статуй составляет около 18 метров. Когда-то они входили в огромный храмовый комплекс, который с тех пор исчез, и потому стали самыми значимыми из уцелевших древних памятников Фив.<br>
+Сегодня это могучие символы древнего прошлого Египта и обязательная остановка для всех, кто знакомится с достопримечательностями Западного берега Луксора.</p>
 
-<h2><span class="hathor-blog-accent">Warum sind die Memnonkolosse so berühmt?</span></h2>
+<h2><span class="hathor-blog-accent">Чем знамениты Колоссы Мемнона?</span></h2>
 
-<p>Die Memnonkolosse sind wegen ihrer gewaltigen Größe, der antiken Bautechniken und ihrer historischen Bedeutung ein sehr beliebtes Reiseziel.<br>
-Mit ihnen ist die alte Legende der „singenden Statue“ verbunden: Man glaubte, eine der Statuen lasse bei Sonnenaufgang einen Gesang hören.<br>
-Noch heute gehören sie zu den meistbesuchten und meistfotografierten <a href="/blogs/explore-luxor-in-luxury">Monumenten von Luxor</a>.</p>
+<p>Колоссы Мемнона популярны у туристов благодаря огромным размерам, уникальным древним строительным приемам и историческому значению.<br>
+С ними связана древняя легенда о «поющей статуе»: считалось, что одна из статуй на рассвете издает поющие звуки.<br>
+И сегодня они остаются одной из самых популярных и часто фотографируемых <a href="/blogs/explore-luxor-in-luxury">достопримечательностей Луксора</a>.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/colossi-of-memnon-1777294304xRwsE.webp" alt="" loading="lazy"></figure></h2>
 
-<h2><span class="hathor-blog-accent">Was ist das Geheimnis der Memnonkolosse?</span></h2>
+<h2><span class="hathor-blog-accent">В чем тайна Колоссов Мемнона?</span></h2>
 
-<p>Die Statuen entstanden zwischen 1350 und 1340 v. Chr., als Amenhotep III. sie zum Schutz seines Totentempels errichten ließ. Erdbeben und natürliche Erosion zerstörten später den Komplex, und die Kolosse sind sein einziger erhaltener Teil.<br>
-In der Antike wurde eine der Statuen für die geheimnisvollen Klänge berühmt, die sie bei Sonnenaufgang von sich gab, wenn die Risse im Stein auf den Temperaturwechsel reagierten. Das Phänomen zog Besucher aus der ganzen antiken Welt an.<br>
-Die Memnonkolosse in Luxor bleiben eines der mächtigsten antiken Symbole Ägyptens.<br>
-Ihre Größe, ihre Geschichte und ihr legendäres Geheimnis machen sie zu einem Muss in Luxor, besonders für alle, die <a href="/blogs/discover-the-timeless-luxor-west-bank">das Westufer</a> und die umliegenden Tempel erkunden.</p>`,
+<p>Статуи были созданы между 1350 и 1340 годами до н. э.: Аменхотеп III воздвиг их, чтобы охранять свой заупокойный храм. Позднее землетрясения и природная эрозия разрушили комплекс, и колоссы остались единственным уцелевшим сооружением.<br>
+В древности одна из статуй прославилась загадочными звуками, которые раздавались на рассвете, когда трещины в камне реагировали на перепад температуры. Это явление привлекало гостей со всех концов древнего мира.<br>
+Колоссы Мемнона в Луксоре по-прежнему остаются одним из самых мощных древних символов Египта.<br>
+Размеры, история и легендарная тайна делают их достопримечательностью Луксора, которую обязательно стоит увидеть, особенно если вы исследуете <a href="/blogs/discover-the-timeless-luxor-west-bank">Западный берег</a> и окрестные храмы.</p>`,
 
-  "aswan-nubian-villages": `<h2><span class="hathor-blog-accent">Entdecken Sie den Zauber der nubischen Dörfer von Assuan</span></h2>
+  "aswan-nubian-villages": `<h2><span class="hathor-blog-accent">Откройте волшебство нубийских деревень Асуана</span></h2>
 
-<p>Im Herzen Ägyptens liegt Nubien mit den lebhaften nubischen Dörfern von Assuan. Fern der von Touristen überfüllten Straßen bewahren diese farbenfrohen Dörfer am Fluss eine der ältesten noch lebendigen Kulturen der Welt.<br>
-Für alle, die Exklusivität, vollkommene Ruhe und eine lebendige, authentische Kultur suchen, ist eine Dahabiya-Kreuzfahrt mit dem Besuch eines nubischen Dorfes bei Assuan ein einmaliges Erlebnis. Die nubischen Dörfer gehören zu den <a href="/blogs/golden-gems-of-aswan">Schätzen Assuans</a>, die Sie auf Ihrer Reise nicht verpassen sollten.</p>
+<p>На крайнем юге Египта лежит Нубия с яркими нубийскими деревнями Асуана. В отличие от шумных улиц, запруженных туристами, эти разноцветные деревни на берегу реки хранят одну из старейших сохранившихся культур мира.<br>
+Тем, кто ищет эксклюзивности, полной безмятежности и нетронутой, живой культуры, круиз на дахабии в сочетании с посещением любой из нубийских деревень Асуана подарит каждому впечатления на всю жизнь. Нубийские деревни считаются одним из <a href="/blogs/golden-gems-of-aswan">золотых сокровищ Асуана</a>, которые нельзя пропустить во время поездки в Асуан.</p>
 
-<h2><span class="hathor-blog-accent">Was macht die nubischen Dörfer von Assuan so besonders?</span></h2>
+<h2><span class="hathor-blog-accent">Чем так уникальны нубийские деревни Асуана?</span></h2>
 
-<p>Der Reiz der nubischen Dörfer von Assuan liegt in den bunten Häusern, der herzlichen Gastfreundschaft und den tief verwurzelten Traditionen.<br>
-Sie liegen an den Ufern des Nils nahe Assuan und sind berühmt für ihre blau, gelb und oft rosa gestrichenen Häuser, Ausdruck der nubischen Ornamentik und ihrer Symbole.<br>
+<p>Очарование нубийских деревень Асуана — в разноцветных домах, радушном гостеприимстве и глубоких традициях.<br>
+Деревни раскинулись на берегах Нила близ Асуана и славятся домами, выкрашенными в синий, желтый, а нередко и розовый цвет: это часть нубийского декоративного искусства и его символических узоров.<br>
 <br>
-Die Nubier leben seit Jahrhunderten in dieser Umgebung und haben in all dieser Zeit ein sehr ausgeprägtes kulturelles Erbe bewahrt.<br>
-Während Ihres Aufenthalts in Assuan ist ein Besuch der nubischen Dörfer ein Kulturerlebnis, das Sie nicht verpassen sollten.</p>
+Само собой разумеется, нубийцы живут в этих краях веками и все это время сохраняют свое богатое культурное наследие.<br>
+Побывав в нубийских деревнях Асуана, гость может по-настоящему прикоснуться к их культуре.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/nubian-village-aswan-egypt-photograph-1-our-tour-of-the-nubian-village-included-a-chance-to-visit-and-shop-at-a-variety-of-shops-and-street-stalls-1777290976vhh5V.webp" alt="" loading="lazy"></figure></p>
 
-<h2><span class="hathor-blog-accent">Die nubische Kultur in Ägypten: ein lebendiges Erbe</span></h2>
+<h2><span class="hathor-blog-accent">Нубийская культура Египта: живое наследие</span></h2>
 
-<p>Die nubische Kultur in Ägypten zu entdecken ist, als beträte man ein lebendiges Museum.<br>
-Nubien hat eine sehr reiche Geschichte, die Tausende von Jahren zurückreicht, noch vor die Entstehung des modernen Ägypten.<br>
-Der Bau des <a href="/blogs/aswan-high-dam">Assuan-Hochdamms</a> erschütterte das traditionelle nubische Leben und zwang viele Gemeinden zur Umsiedlung.<br>
-Dennoch hat ihre Kultur überlebt und neue Kraft gefunden.</p>
+<p>Знакомство с нубийской культурой Египта похоже на шаг в живой музей.<br>
+У Нубии богатая история: она уходит в глубь веков на тысячи лет, в те времена, когда современный Египет еще даже не начал складываться.<br>
+Строительство <a href="/blogs/aswan-high-dam">Асуанской плотины</a>, которое можно считать главной причиной разрушения традиционного нубийского уклада, привело к переселению нубийцев.<br>
+И все же их культура выжила и обрела новую силу.</p>
 
-<h3>Besucher können entdecken:</h3>
-
-<ul>
-	<li>Traditionelle nubische Musik und Tänze</li>
-	<li>Lokales Kunsthandwerk und feine handgefertigte Stoffe</li>
-	<li>Eine authentische Küche voller Aromen und Geschichte</li>
-	<li>Eine einzigartige Architektur, geschaffen für das Wüstenklima</li>
-</ul>
-
-<p>Diese kulturelle Authentizität begeistert alle Reisenden, die mehr suchen als nur historische Stätten.</p>
-
-<h2><span class="hathor-blog-accent">Wie besuchen Sie die nubischen Dörfer stilvoll von Assuan aus?</span></h2>
-
-<p>Wenn Sie wissen möchten, wie Sie die nubischen Dörfer von Assuan aus besuchen, sollten Sie wissen, dass die Fahrt selbst Teil des Erlebnisses ist. Das Motorboot ist das gängigste Verkehrsmittel, doch nichts gleicht der eleganten Ankunft an Bord einer <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Luxus-Dahabiya</a>.<br>
-<strong>Eine private Dahabiya-Kreuzfahrt ermöglicht Ihnen:</strong></p>
+<h3>Что ждет гостей:</h3>
 
 <ul>
-	<li>Auf einer kleinen Luxuskreuzfahrt auf dem Nil zu entspannen, fern von Lärm und großen Schiffen</li>
-	<li>Anzuhalten und verborgene nubische Dörfer abseits der Wege des Massentourismus zu entdecken</li>
-	<li>Persönlichen Service und flexible Routen zu genießen</li>
-	<li>Ägypten in Ihrem eigenen Tempo zu erleben</li>
+	<li>Традиционная нубийская музыка и танцы.</li>
+	<li>Изделия ручной работы и изысканный текстиль.</li>
+	<li>Подлинная кухня, богатая вкусами и историей.</li>
+	<li>Уникальная архитектура, приспособленная к пустынному климату.</li>
 </ul>
 
-<p>Auf der Fahrt vorbei am <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a> und entlang unberührter Ufer bietet Ihnen Ihre Dahabiya eine seltene Gelegenheit, den Nubiern wirklich zu begegnen.</p>
+<p>Эта культурная подлинность притягивает всех, кто хочет увидеть больше, чем исторические достопримечательности.</p>
 
-<h2><span class="hathor-blog-accent">Ein einzigartiges Kulturerlebnis in den nubischen Dörfern von Assuan</span></h2>
+<h2><span class="hathor-blog-accent">Как со вкусом посетить нубийские деревни из Асуана?</span></h2>
 
-<p>Der Besuch der nubischen Dörfer von Assuan ist mehr als eine Besichtigung: Er ist eine echte menschliche Begegnung.<br>
-Wenn Sie durch die bunten Gassen spazieren und traditionelle Häuser betreten, erwarten Sie ein herzliches Lächeln, alte Geschichten und manchmal eine Tasse Hibiskustee.<br>
+<p>Если вы думаете, как добраться до нубийских деревень из Асуана, знайте: сама дорога становится частью впечатлений. Чаще всего туда плывут на моторной лодке, но ничто не сравнится с элегантным прибытием на <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии класса люкс</a>.<br>
+<strong>Частный круиз на дахабии позволяет:</strong></p>
+
+<ul>
+	<li>Отдыхать в небольшом круизе по Нилу класса люкс вдали от шума и больших круизных теплоходов.</li>
+	<li>Останавливаться и открывать скрытые нубийские деревни, куда не добираются толпы туристов.</li>
+	<li>Наслаждаться персональным сервисом и гибкими маршрутами.</li>
+	<li>Открывать Египет в собственном ритме.</li>
+</ul>
+
+<p>Плывя вдоль чистых берегов Асуана, ворот к <a href="/blogs/discovering-the-secrets-of-philae-temple">храму Филе</a>, ваша дахабия дарит поистине редкую возможность живого общения с нубийцами.</p>
+
+<h2><span class="hathor-blog-accent">Неповторимая культура нубийских деревень Асуана</span></h2>
+
+<p>Посещение нубийских деревень Асуана больше, чем экскурсия: это настоящая человеческая связь.<br>
+Пока вы бродите по разноцветным переулкам и заходите в традиционные дома, вас встречают теплые улыбки, старинные истории, а иногда и чашка чая из гибискуса.<br>
 <br>
-Das Kulturerlebnis in den nubischen Dörfern von Assuan bedeutet, ihre Symbole kennenzulernen, Alltag und Bräuche zu verstehen und eine echte, spontane Beziehung zu den Bewohnern aufzubauen.<br>
-Sie können auch eine der faszinierendsten Traditionen des Dorfes entdecken: kleine Krokodile, die als Symbol für Schutz und Glück gehalten werden.<br>
-Schließlich gehört zu diesen einfachen Erlebnissen auch der Kauf von Souvenirs, um greifbare Erinnerungen an den Tag mit nach Hause zu nehmen.</p>
+Знакомство с культурой нубийских деревень Асуана — это возможность узнать их символы, понять повседневную жизнь и обычаи и искренне, непринужденно пообщаться с жителями.<br>
+Вы можете увидеть и одну из самых удивительных деревенских традиций: здесь держат маленьких крокодилов как символ защиты и удачи.<br>
+А завершают эти простые радости покупки сувениров, чтобы увезти с собой осязаемые воспоминания об этом дне.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/in-the-way-to-the-nubian-village-in-aswan-egypt-1-1-1777291116NDlZk.webp" alt="" loading="lazy"></figure></p>
 
-<p>Viele Reisen misst man in Entfernungen; die nubischen Dörfer von Assuan dagegen misst man an ihrer Bedeutung. Am Nil bei Assuan ist die nubische Kultur mit dem Alltag verwoben: Sie zeigt sich in den Momenten, die den Blick verändern, in gemeinsamen Erinnerungen und in den aufrichtigen Bindungen, die sie mit allen knüpft, die ihr nahekommen. So wird aus einem unvergesslichen Besuch eine persönliche Erinnerung.</p>`,
+<p>Многие путешествия измеряются расстояниями, а нубийские деревни Асуана — смыслом и значением. На Ниле в Асуане нубийская культура Египта вплетена в саму ткань повседневной жизни: она видна в моментах, меняющих взгляд на жизнь, в общих воспоминаниях и в настоящих связях, которые возникают с каждым, кто подходит к ней ближе. Так незабываемый визит превращается в глубоко личное воспоминание.</p>`,
 
-  "luxor-temple-facts": `<h2><span class="hathor-blog-accent">Ein zeitloses Wunder im Herzen des alten Ägypten</span></h2>
+  "luxor-temple-facts": `<h2><span class="hathor-blog-accent">Вечное чудо в сердце Древнего Египта</span></h2>
 
 <p><br>
-Der Luxor-Tempel gehört zu den wichtigsten und renommiertesten archäologischen Stätten Ägyptens und zu den Monumenten, die die meisten Besucher nach <a href="/blogs/explore-luxor-in-luxury">Luxor</a> ziehen.<br>
-Er liegt am Ostufer des Nils. Die <strong>Geschichte und Bedeutung des Luxor-Tempels</strong> reichen weit zurück: Er wurde unter dem mächtigen Pharao Amenhotep III. erbaut und später von Ramses II. erweitert, der seinen majestätischen Eingang schuf.<br>
+Луксорский храм — знаменитый исторический и археологический памятник Египта и одна из самых притягательных достопримечательностей <a href="/blogs/explore-luxor-in-luxury">Луксора</a>, ради которой сюда едут многие туристы.<br>
+Храм стоит на восточном берегу Нила, и <strong>история и значение Луксорского храма</strong> огромны: его возвели в правление могущественного фараона Аменхотепа III, а позднее расширил Рамсес II, пристроивший величественный вход.<br>
 <br>
-Heute ist der Luxor-Tempel ein sehr beliebtes Ziel für alle, die Geschichte, Architektur und Kultur des alten Ägypten lieben. Die Stätte ist gut gepflegt und wird abends beleuchtet, was den Besuchern ein unvergessliches Erlebnis schenkt.<br>
-Anders als klassische ägyptische Tempel war der Luxor-Tempel nicht einem einzelnen Gott oder Pharao geweiht: Er spielte vielmehr eine wichtige Rolle bei königlichen Zeremonien und religiösen Festen, besonders beim berühmten Opet-Fest. Das sind nur einige der Besonderheiten, die den Luxor-Tempel in der Geschichte des alten Ägypten einzigartig machen.<br>
-Sein historischer Wert und seine herrliche Architektur machen ihn zu einer der wichtigsten Sehenswürdigkeiten Ägyptens für alle, die antike Zivilisationen entdecken möchten.</p>
+Сегодня в Луксорский храм стремятся туристы, увлеченные историей, архитектурой и культурой Древнего Египта. Храм ухожен, а по вечерам подсвечен, и его посещение становится незабываемым.<br>
+В отличие от типичных египетских храмов, Луксорский храм не был посвящен одному богу или фараону. Он играл важную роль в царских церемониях и религиозных праздниках, прежде всего в знаменитом празднике Опет. Это лишь некоторые из удивительных фактов о Луксорском храме, которые подчеркивают его особое место в истории Древнего Египта.<br>
+Историческое значение и изысканная архитектура делают Луксорский храм одной из главных достопримечательностей Египта для тех, кто хочет познакомиться с древними цивилизациями.</p>
 
-<h2><span class="hathor-blog-accent">Der Tempel von Luxor: Geschichte und Wissenswertes</span><br>
+<h2><span class="hathor-blog-accent">Луксорский храм: факты и история</span><br>
 &nbsp;</h2>
 
-<figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-atman-bouba-106556929-31266914-1773064829Jd2gW.jpg" alt="" loading="lazy"></figure>
-
-<p><strong>Der Bau des Tempels</strong></p>
-
-<p>Der Luxor-Tempel wurde um 1400 v. Chr. unter Amenhotep III. erbaut, der seine inneren Teile errichten ließ und dort ein Heiligtum für Amun schuf, eine der wichtigsten Gottheiten der ägyptischen Religion.</p>
-
-<p>Später fügte der große Pharao Ramses II. den prachtvollen Eingang, die Kolossalstatuen und den mächtigen ersten Pylon am Tempeleingang hinzu. Durch diese Ergänzungen wurde der Luxor-Tempel zu einem der herrlichsten religiösen Komplexe des alten Ägypten.</p>
-
-<p><strong>Die Rolle des Opet-Festes</strong></p>
-
-<p>Das Opet-Fest erreichte seinen Höhepunkt mit den wichtigsten Feierlichkeiten am Luxor-Tempel am <a href="/blogs/luxors-sacred-east-bank">Ostufer von Luxor</a>. Dieses jährliche religiöse Fest ehrte den Gott Amun und bestätigte die göttliche Autorität des Pharaos.<br>
-Während der Feier wurden die heiligen Götterstatuen in prächtige Gewänder gehüllt und in einer herrlichen Prozession vom Karnak-Tempel getragen, entlang einer zeremoniellen Allee, gesäumt von Sphingen mit Löwenkörper und Menschenkopf, bis zum Luxor-Tempel.<br>
-Das Opet-Fest zog Tausende Menschen aus dem ganzen Niltal an und war eine der wichtigsten religiösen Feiern des alten Ägypten, Ausdruck sowohl der kulturellen Einheit als auch der königlichen Macht.</p>
-
-<p><strong>Der Wandel durch die Kulturen</strong></p>
-
-<p>Im Laufe der Jahrhunderte nutzten verschiedene Kulturen den Luxor-Tempel für ihre eigenen Zwecke. In römischer Zeit wurde ein Teil des Tempels sogar zu einem Militärlager! Innerhalb seiner Mauern befindet sich auch eine Kirche.</p>
-
-<p>In islamischer Zeit wurde auf dem antiken Bau die schöne Abu-el-Haggag-Moschee errichtet, ein Zeichen dafür, dass der Ort für viele Generationen wichtig blieb. Diese Verflechtung der Kulturen macht den Luxor-Tempel zu einem einzigartigen historischen Monument.</p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-atman-bouba-106556929-31266914-1773064829Jd2gW.jpg" alt="" loading="lazy"></figure><br>
+<br>
+<strong>Строительство храма</strong><br>
+<br>
+Луксорский храм построен около 1400 года до н. э., в правление Аменхотепа III. Возводя внутренние части храма, фараон устроил святилище Амона, одного из важнейших богов древнеегипетской религии.<br>
+<br>
+Позднее великий фараон Рамсес II создал великолепный вход, колоссальные статуи и впечатляющий первый пилон у входа в храм. Благодаря его пристройкам Луксорский храм стал одним из самых величественных религиозных комплексов Древнего Египта.<br>
+<br>
+<strong>Роль праздника Опет</strong><br>
+<br>
+Своей кульминации праздник Опет достигал во время главных торжеств в Луксорском храме на <a href="/blogs/luxors-sacred-east-bank">Восточном берегу Луксора</a>. Этот ежегодный религиозный праздник прославлял бога Амона и подтверждал божественную власть фараона.<br>
+Во время торжеств священные статуи богов облачали в роскошные одеяния и несли в великолепной процессии из Карнакского храма. Шествие двигалось по церемониальной аллее, вдоль которой до самого Луксорского храма стояли сфинксы с телом льва и головой человека.<br>
+Праздник Опет собирал тысячи людей со всей долины Нила, ведь он стал одним из важнейших религиозных торжеств Древнего Египта. Это религиозное празднество демонстрировало единство культуры и царскую власть.<br>
+<br>
+<strong>Перемены при разных цивилизациях</strong><br>
+<br>
+В прошлом разные цивилизации использовали Луксорский храм в своих целях. В римскую эпоху часть храма даже превратилась в военный гарнизон! А в стенах храма укрылась церковь.<br>
+<br>
+В исламский период поверх древнего сооружения возвели красивую мечеть Абу-ль-Хаггаг: это показывает, что место оставалось важным для многих поколений. Такое смешение культур делает Луксорский храм уникальным историческим памятником.</p>
 
 <h2><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/pexels-francesco-albanese-2150950215-31730178-1773064627uQaaE.jpg" alt="" loading="lazy"></figure><br>
 <br>
-<span class="hathor-blog-accent">Den Tempel von Luxor mit einer luxuriösen Dahabiya besuchen</span></h2>
+<span class="hathor-blog-accent">Луксорский храм в круизе на дахабии класса люкс</span></h2>
 
 <p><br>
-Viele Touristen besuchen den Luxor-Tempel mit dem Auto oder auf klassischen Touren, doch das Erlebnis wird erst mit einer Nilkreuzfahrt an Bord einer <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Luxus-Dahabiya</a> wirklich besonders. Die ruhige Fahrt auf dem Nil schenkt eine Gelassenheit, wie sie schon die Forschungsreisenden des 19. Jahrhunderts kannten.<br>
-Im Vergleich zu großen Kreuzfahrtschiffen bietet die Luxus-Dahabiya-Kreuzfahrt auf dem Nil eine privatere, entspanntere Reise mit persönlichem Service und atemberaubenden Blicken auf den Fluss. Der Aufenthalt in Luxuskabinen mit Blick auf den Nil bringt zusätzlichen Komfort, und zu den schönsten Momenten gehört es, zum Sonnenaufgang aufzuwachen.<br>
-Nach einem ruhigen Morgen auf dem Nil ist der Besuch des Luxor-Tempels noch magischer: die majestätischen Statuen Ramses’ II., die hohen Säulen und die heiligen Opferhallen.<br>
+Многие туристы приезжают к Луксорскому храму на машине или с обычными экскурсиями, но по-настоящему особенным знакомство становится в круизе по Нилу на <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии класса люкс</a>. Спокойное плавание по Нилу дарит безмятежность, какую знали первопроходцы девятнадцатого века.<br>
+В отличие от больших круизных теплоходов, круиз по Нилу на дахабии класса люкс — это более уединенное и расслабленное путешествие с персональным сервисом и захватывающими видами на Нил. Проживание в каютах класса люкс с видом на реку добавляет комфорта, а одно из самых ярких впечатлений — проснуться и увидеть красоту рассвета.<br>
+После спокойного утра на Ниле посещение Луксорского храма становится еще волшебнее. Вас ждут впечатляющие статуи Рамсеса II, устремленные ввысь колонны и священные залы приношений.<br>
 <br>
-Eine Luxus-Dahabiya-Kreuzfahrt auf dem Nil mit dem Besuch des Luxor-Tempels zu verbinden bedeutet, die ideale Balance aus Entspannung, Kultur und Geschichte zu finden, auf einem herrlichen Fluss: ein Ägypten-Erlebnis, das allen, denen dieses Glück zuteilwird, sehr viel schenkt.</p>`,
+Соедините круиз по Нилу на дахабии класса люкс с посещением Луксорского храма, и вы получите идеальное сочетание отдыха, культуры и истории в плавании по прекрасному Нилу: удивительный Египет, который щедро одаривает каждого счастливца, кому довелось его узнать.</p>`,
 };
