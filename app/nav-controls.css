@@ -1807,6 +1807,28 @@ html[data-public-theme="night"] .public-lang-toggle__code {
     content: "Sprache";
   }
 
+  /* Russian pages (/ru/…): the same captions, short enough for the dock. */
+  html[lang="ru"] .hathor-phone-dock > .hsc:not(#_):first-of-type::after {
+    content: "Избранное";
+  }
+
+  html[lang="ru"] .hathor-phone-dock > .hsc--voyage:not(#_)::after,
+  html[lang="ru"] .hathor-phone-dock > .hsc.hsc--voyage:not(#_)::after {
+    content: "Поездка";
+  }
+
+  html[lang="ru"] .hathor-phone-dock > .hpd-book:not(#_)::after {
+    content: "Бронь";
+  }
+
+  html[lang="ru"] .hathor-phone-dock .hpd-contact__toggle:not(#_)::after {
+    content: "Контакты";
+  }
+
+  html[lang="ru"] .hathor-phone-dock .public-lang-toggle:not(#_)::after {
+    content: "Язык";
+  }
+
   .hathor-phone-dock > .hsc:not(#_)::after,
   .hathor-phone-dock > .hpd-book:not(#_)::after,
   .hathor-phone-dock .hpd-contact__toggle:not(#_)::after,

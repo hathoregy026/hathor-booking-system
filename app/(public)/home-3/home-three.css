@@ -6451,3 +6451,14 @@ html[lang="de"] .home-three {
   --h3-meta: "Piloner Thin", "Hathor Accent Fill", var(--font-hathor-body),
     "Plus Jakarta Sans", Arial, sans-serif;
 }
+
+/* Russian: the hero's second line is a script face laid over the first line
+   in Latin; Cyrillic draws it in upright Forum, which would collide, so it
+   sits just under the first line at a smaller size. */
+html[lang="ru"] .public-site .home-hero-container .hero-heading .hero-line--left:not(.hero-line--wordmark),
+html[lang="ru"][data-ex-experience] .ex-root .home-three-hero .home-hero-container.home-hero--clear-video .hero-content .hero-heading .hero-line.hero-line--left.hero-line--plain {
+  font-size: calc(var(--h3-hero-m, 6rem) * 0.8) !important;
+  line-height: 1.05 !important;
+  top: 0 !important;
+  margin-top: 0.12em !important;
+}
