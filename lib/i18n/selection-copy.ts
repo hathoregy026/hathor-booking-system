@@ -332,6 +332,8 @@ export function summaryLineIn(
           .replace(/\bup to (\d+) guests\b/g, words.upToGuests)
           .replace(/\b(\d+) (Adults?|Child(?:ren)?)\b/g, (_, n: string, word: string) => `${n} ${words.guestWords[word] ?? word}`),
       );
+      /* Russian writes square metres in Cyrillic (22 м²). */
+      if (locale === "ru") value = value.replace(/m²/g, "м²");
   }
   return { label, value };
 }

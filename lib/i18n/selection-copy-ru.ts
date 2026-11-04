@@ -33,7 +33,7 @@ export const SELECTION_COPY_RU: SelectionCopy = {
     const types = describeRoomTypesOnCruise(duration);
     return types === "a different room type"
       ? "В этом путешествии предлагается другой тип размещения."
-      : `В этом путешествии доступны: ${types.replace(/\bLuxury Rooms\b/, "каюты люкс").replace(/, or /, " или ")}.`;
+      : `В этом путешествии доступны: ${types.replace(/, or /, " или ")}.`;
   },
   beginsTitle: "Ваше путешествие начинается здесь",
   beginsBody:

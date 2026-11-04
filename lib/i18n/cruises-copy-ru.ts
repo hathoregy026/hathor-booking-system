@@ -58,14 +58,14 @@ export const CRUISES_COPY_RU: CruisesCopy = {
   onboard: "На борту",
   continueLabel: "Продолжить знакомство",
   explore: [
-    { label: "Каюты", title: "Каюты люкс", hint: "Каюты с видом на реку" },
+    { label: "Каюты", title: "Luxury Rooms", hint: "Каюты с видом на реку" },
     { label: "Люксы", title: "Luxury Suites", hint: "Просторные люксы на Ниле" },
     { label: "Royal", title: "Royal Suites", hint: "Высшая привилегия" },
     { label: "Кухня", title: "Hathor Flavors", hint: "Гастрономия на борту" },
   ],
   reserveLabel: "Забронировать путешествие",
   reserveEyebrow: "Путешествия",
-  luxuryRooms: "Каюты люкс",
+  luxuryRooms: "Luxury Rooms",
   continueTitleFallback: "Откройте больше\nна борту Hathor",
   ctaTitleFallback: "Забронируйте путешествие",
   intro: {
