@@ -9,223 +9,223 @@ import type { PostWords } from "@/lib/i18n/blog-posts-it";
 
 export const BLOG_POSTS_RU: Record<string, PostWords> = {
   "unplugged-travel-no-wifi-experience-on-a-dahabiya": {
-    title: "Ohne WLAN: offline reisen auf der Dahabiya",
+    title: "Путешествие офлайн: дахабия без интернета",
     excerpt:
-      "Erleben Sie eine Offline-Reise in Ägypten an Bord einer Luxus-Dahabiya: Slow Travel, Digital Detox ohne WLAN und eine ruhige Fahrt auf dem Nil, mit authentischen Kulturerlebnissen und zeitlosen Landschaften.",
+      "Путешествие по Египту офлайн в круизе на дахабии класса люкс: неспешный отдых, цифровой детокс без Wi-Fi и спокойное плавание по Нилу с подлинной культурой и вечными пейзажами.",
   },
   "the-magic-of-sleeping-on-the-nile-river": {
-    title: "Der Zauber, auf dem Nil zu schlafen",
+    title: "Волшебство ночи на Ниле",
     excerpt:
-      "Entdecken Sie den Zauber einer Nacht auf dem Nil in Ägypten: eine ruhige Fahrt auf dem Fluss, vorbei an uralten Landschaften, stillem Wasser und unvergesslichen Sonnenuntergängen, für ein wahrhaft zeitloses Reiseerlebnis.",
+      "Ощутите волшебство ночи на Ниле в Египте: спокойный круиз с ночевками на борту среди древних пейзажей, тихой воды и незабываемых закатов. Поистине вечное путешествие.",
   },
   "secret-spots-between-luxor-and-aswan": {
-    title: "Geheime Orte zwischen Luxor und Assuan",
+    title: "Тайные места между Луксором и Асуаном",
     excerpt:
-      "Entdecken Sie die geheimen Orte zwischen Luxor und Assuan auf einer Nilkreuzfahrt in Ägypten: den Tempel von Edfu, den Tempel von Kom Ombo, die Schleuse von Esna und die stillen Dörfer am zeitlosen Nil.",
+      "Откройте тайные места между Луксором и Асуаном в круизе по Нилу в Египте: храм Эдфу, храм Ком-Омбо, шлюз в Эсне и тихие прибрежные деревни на берегах вечного Нила.",
   },
   "hidden-islands-you-can-only-see-on-a-dahabiya": {
-    title: "Verborgene Inseln, die nur die Dahabiya erreicht",
+    title: "Скрытые острова, которые видно только с дахабии",
     excerpt:
-      "Entdecken Sie die verborgenen Inseln des Nils, die nur eine Dahabiya-Kreuzfahrt in Ägypten erreicht: Slow Travel, unberührte Landschaften und eine luxuriöse Reise unter Segeln zu geheimen Orten am Fluss.",
+      "Откройте скрытые острова Нила, до которых можно добраться только в круизе на дахабии по Египту: неспешное путешествие, нетронутые пейзажи и уникальное плавание класса люкс по тайным уголкам Нила.",
   },
   "untouched-nature-along-the-nile-river": {
-    title: "Unberührte Natur entlang des Nils",
+    title: "Нетронутая природа на берегах Нила",
     excerpt:
-      "Entdecken Sie die unberührte Natur entlang des Nils in Ägypten, wo stille Landschaften, grüne Inseln, Vögel und eindrucksvolle Ausblicke die Nilkreuzfahrt zu einem entspannten, authentischen Erlebnis machen.",
+      "Откройте нетронутую природу на берегах Нила в Египте, где мирные пейзажи, зеленые острова, птицы и живописные виды делают круиз по Нилу спокойным и подлинным.",
   },
   "why-travelers-love-slow-travel-on-the-nile": {
-    title: "Warum Reisende Slow Travel auf dem Nil lieben",
+    title: "Почему путешественники любят неспешные путешествия по Нилу",
     excerpt:
-      "Entdecken Sie die Schönheit des Slow Travel auf dem Nil mit einer entspannten Kreuzfahrt in Ägypten von Luxor nach Assuan, mit antiken Tempeln, Blicken auf den Fluss und unvergesslichen Kulturerlebnissen.",
+      "Откройте для себя красоту неспешного путешествия по Нилу в спокойном круизе по Египту из Луксора в Асуан: древние храмы, живописные виды на реку и незабываемые культурные впечатления.",
   },
   "the-most-relaxing-way-to-explore-egypt-sailing-the-nile": {
-    title: "Die entspannteste Art, Ägypten zu entdecken: auf dem Nil",
+    title: "Самый спокойный способ узнать Египет: плавание по Нилу",
     excerpt:
-      "Entdecken Sie Ägypten auf die entspannteste Art mit einer Nilkreuzfahrt von Luxor nach Assuan, mit antiken Tempeln, herrlichen Blicken auf den Fluss und unvergesslichen Luxuserlebnissen.",
+      "Откройте Египет самым спокойным способом в круизе по Нилу из Луксора в Асуан: древние храмы, потрясающие виды на Нил и незабываемые впечатления в атмосфере роскоши.",
   },
   "tips-for-first-time-travelers-on-the-nile": {
-    title: "Tipps für die erste Reise auf dem Nil",
+    title: "Советы тем, кто впервые отправляется в круиз по Нилу",
     excerpt:
-      "Die wichtigsten Tipps für Ihre erste Nilkreuzfahrt in Ägypten: Ratschläge von Fachleuten, eine vollständige Packliste und was Sie von einer Luxuskreuzfahrt auf dem Nil erwarten dürfen.",
+      "Главные советы для тех, кто впервые отправляется в круиз по Нилу в Египте: рекомендации экспертов, полный список вещей в дорогу с полезными подсказками и то, чего ожидать от люкс-круиза по Нилу в Египте.",
   },
   "why-a-dahabiya-cruise-feels-like-time-travel": {
-    title: "Warum sich eine Dahabiya wie eine Zeitreise anfühlt",
+    title: "Почему круиз на дахабии похож на путешествие во времени",
     excerpt:
-      "Entdecken Sie den Reiz einer Dahabiya-Kreuzfahrt in Ägypten und erleben Sie den Nil authentisch auf der Fahrt zwischen Luxor und Assuan. Die zeitlose Schönheit Ägyptens, in traditionellem, ruhigem Luxus.",
+      "Откройте для себя очарование круиза на дахабии по Египту и подлинное знакомство с Нилом в плавании между Луксором и Асуаном. Вечная красота Египта в спокойном, традиционном стиле роскоши.",
   },
   "best-clothes-for-nile-cruise-weather-in-egypt": {
-    title: "Was Sie auf der Nilkreuzfahrt tragen: Klima und Kleidung",
+    title: "Как одеться по погоде в круизе по Нилу в Египте",
     excerpt:
-      "Erfahren Sie, was Sie auf einer Nilkreuzfahrt in Ägypten tragen sollten, mit einfachen Tipps für Tag und Abend: die besten Kleidungsstücke und wie Sie sich bequem für das Klima von Luxor und Assuan anziehen.",
+      "Что надеть в круиз по Нилу в Египте: простые советы по одежде на день и вечер. Узнайте, какая одежда лучше всего подходит для круиза по Нилу и как удобно одеться по погоде в Луксоре и Асуане.",
   },
   "dahabiya-cruise-cost-explained-whats-included": {
-    title: "Was eine Dahabiya in Ägypten kostet und was inklusive ist",
+    title: "Стоимость круиза на дахабии в Египте: что входит в цену",
     excerpt:
-      "Die wahren Kosten einer Dahabiya-Kreuzfahrt in Ägypten: der Preis im Detail, was inklusive ist und was nicht, welche Faktoren ihn beeinflussen und warum diese Luxusfahrt zwischen Luxor und Assuan zu den ruhigsten und exklusivsten Arten gehört, den Nil zu entdecken.",
+      "Узнайте реальную стоимость круиза на дахабии в Египте: подробная структура цены, что в нее входит, а что нет. Сколько стоит круиз по Нилу на дахабии, от чего зависит цена и почему роскошное плавание между Луксором и Асуаном — один из самых спокойных и эксклюзивных способов познакомиться с Нилом.",
   },
   "what-to-pack-for-a-dahabiya-nile-cruise": {
-    title: "Was Sie für die Dahabiya auf dem Nil einpacken sollten",
+    title: "Что взять с собой в круиз по Нилу на дахабии",
     excerpt:
-      "Ein einfacher Leitfaden zum Packen für eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten: die wichtigste Kleidung, die örtlichen Kleiderregeln und Tipps für die erste Reise, für eine bequeme und unvergessliche Fahrt.",
+      "Узнайте из этого простого путеводителя, что взять с собой в круиз по Нилу на дахабии в Египте: необходимая одежда, местные правила приличия в одежде и советы по сборам для тех, кто путешествует впервые, чтобы круиз по Нилу был комфортным и незабываемым.",
   },
   "how-to-choose-the-right-cabin-on-a-dahabiya": {
-    title: "So wählen Sie die richtige Kabine auf der Dahabiya",
+    title: "Как выбрать подходящую каюту на дахабии",
     excerpt:
-      "So wählen Sie die richtige Kabine auf einer Dahabiya und finden die romantischste für Ihre Nilkreuzfahrt in Ägypten: private Kabinen, kleine Luxusunterkünfte und die verschiedenen Typen im Überblick, für eine bequeme und unvergessliche Fahrt.",
+      "Узнайте, как выбрать подходящую каюту на дахабии, и откройте для себя лучшую романтическую каюту для круиза по Нилу в Египте. Мы расскажем об уединенных каютах, небольших роскошных номерах и разных типах кают на дахабии, чтобы вы выбрали идеальный вариант для комфортного и незабываемого плавания по Нилу.",
   },
   "history-of-dahabiya-boats-in-egypt": {
-    title: "Die Geschichte der Dahabiyas in Ägypten",
+    title: "История дахабий в Египте",
     excerpt:
-      "Die Geschichte der Dahabiyas in Ägypten: wie diese eleganten Segelschiffe von den alten Nilreisen zur heutigen Dahabiya-Kreuzfahrt wurden. Ihre kulturellen Wurzeln, ihr einzigartiges Design und ihr Luxus.",
+      "Узнайте историю дахабий в Египте и то, как эти элегантные парусные суда прошли путь от древних плаваний по Нилу до сегодняшнего круиза на дахабии. Откройте их культурные корни, уникальную конструкцию и роскошь.",
   },
   "why-the-nile-was-the-most-important-trade-route-in-ancient-egypt": {
-    title: "Der Nil, wichtigste Handelsroute des alten Ägypten",
+    title: "Почему Нил был главным торговым путем Древнего Египта",
     excerpt:
-      "Der Handel auf dem Nil war im alten Ägypten entscheidend für Transport, Wirtschaft und Austausch: Er verband die Regionen des Landes und trug eine der größten Zivilisationen der Geschichte.",
+      "Торговля на Ниле в Древнем Египте была жизненно важна для перевозок, экономики и коммерции: она связывала области страны и поддерживала одну из величайших цивилизаций в истории.",
   },
   "what-is-a-dahabiya-nile-cruise-complete-beginner-guide": {
-    title: "Was ist eine Dahabiya? Der vollständige Leitfaden",
+    title: "Что такое круиз на дахабии по Нилу? Полный путеводитель",
     excerpt:
-      "Eine Dahabiya-Kreuzfahrt auf dem Nil in Ägypten findet auf einem kleinen traditionellen Segelschiff statt: eine ruhige Luxusreise auf dem Fluss mit einem kulturellen, authentischen Erlebnis.",
+      "Круиз на дахабии по Нилу в Египте проходит на небольшом традиционном парусном судне: это спокойное путешествие класса люкс по Нилу, полное культуры и подлинных впечатлений.",
   },
   "is-the-nile-safe-for-sailing-today": {
-    title: "Ist eine Fahrt auf dem Nil heute sicher?",
+    title: "Безопасно ли сегодня плавать по Нилу?",
     excerpt:
-      "Ist eine Fahrt auf dem Nil sicher? Dieser Leitfaden betrachtet die aktuelle Sicherheitslage für Nilkreuzfahrten in Ägypten, erklärt, wie sicher das Reisen für Touristen heute ist, und gibt nützliche Tipps und aktuelle Hinweise für eine ruhige, angenehme Reise.",
+      "Безопасно ли плавать по Нилу? В этом путеводителе мы рассказываем, как сегодня обстоят дела с безопасностью круизов по Нилу в Египте и насколько они безопасны для туристов прямо сейчас, а также делимся главными советами и новостями для надежного и приятного путешествия.",
   },
   "colossi-of-memnon": {
-    title: "Die Memnonkolosse",
+    title: "Колоссы Мемнона",
     excerpt:
-      "Die Memnonkolosse in Luxor sind die berühmten antiken Statuen des Pharaos Amenhotep III., bekannt für ihre gewaltige Größe, ihre reiche Geschichte und die geheimnisvolle Legende vom „Gesang“ bei Sonnenaufgang.",
+      "Колоссы Мемнона в Луксоре — знаменитые древние статуи фараона Аменхотепа III, известные огромными размерами, богатой историей и загадочной легендой о «пении» на рассвете.",
   },
   "aswan-nubian-villages": {
-    title: "Die nubischen Dörfer von Assuan",
+    title: "Нубийские деревни Асуана",
     excerpt:
-      "Entdecken Sie die nubischen Dörfer von Assuan und die lebendige nubische Kultur in Ägypten: ein Blick auf farbenfrohe Dörfer, Traditionen und das authentische Leben an den Ufern des Nils.",
+      "Откройте нубийские деревни Асуана и яркую нубийскую культуру Египта. Короткий путеводитель по разноцветным деревням Асуана, их традициям и подлинной жизни на берегах Нила.",
   },
   "luxor-temple-facts": {
-    title: "Der Tempel von Luxor: Geschichte und Wissenswertes",
+    title: "Факты о Луксорском храме",
     excerpt:
-      "Der Luxor-Tempel ist ein antiker ägyptischer Tempel am Ostufer des Nils. Berühmt für seine großen Statuen, gewaltigen Säulen und seine historische Bedeutung, zeugt er von der reichen Kultur und Architektur Ägyptens und zieht Besucher aus aller Welt an.",
+      "Луксорский храм — древнеегипетский храм на восточном берегу Нила. Знаменитый величественными статуями, высокими колоннами и историческим значением, он свидетельствует о богатой культуре и архитектуре Египта и привлекает гостей со всего мира.",
   },
   "how-is-a-dahabiya-different-from-a-nile-cruise": {
-    title: "Worin unterscheidet sich die Dahabiya von der Nilkreuzfahrt?",
+    title: "Чем дахабия отличается от круиза по Нилу?",
     excerpt:
-      "Der wahre Unterschied zwischen einer Dahabiya und einer klassischen Nilkreuzfahrt: Größe, Privatsphäre, Luxus und Reisestil im Vergleich, damit Sie das passende Nilerlebnis für Ihre Ägyptenreise wählen.",
+      "Узнайте, чем на самом деле дахабия отличается от классического круиза по Нилу. Сравните размер, уединенность, уровень роскоши и стиль путешествия, чтобы выбрать лучший вариант для поездки в Египет.",
   },
   "what-is-the-best-dahabiya-nile-cruise": {
-    title: "Welche ist die beste Dahabiya auf dem Nil?",
+    title: "Какой круиз по Нилу на дахабии лучший?",
     excerpt:
-      "Entdecken Sie die beste Dahabiya-Kreuzfahrt auf dem Nil: eine private, entspannte Fahrt mit Hathor Cruise, bei der persönlicher Service und ein ruhiges Tempo eine einzigartige, authentische Art schaffen, Ägypten zu entdecken.",
+      "Откройте для себя лучший круиз по Нилу на дахабии и уединенное, неспешное плавание по реке с Hathor Cruise, где индивидуальный сервис и неторопливый ритм делают знакомство с Египтом уникальным и подлинным.",
   },
   "why-choose-a-dahabiya-cruise-in-egypt": {
-    title: "Warum eine Kreuzfahrt mit der Dahabiya in Ägypten?",
+    title: "Почему стоит выбрать круиз на дахабии в Египте?",
     excerpt:
-      "Entdecken Sie die Vorzüge einer privaten Dahabiya-Kreuzfahrt und erleben Sie den Nil als exklusives Boutique-Erlebnis mit Hathor Cruise, bei dem Komfort und persönlicher Service die Reise unvergesslich machen.",
+      "Узнайте о преимуществах частного круиза на дахабии и откройте для себя Нил в эксклюзивном бутик-формате с Hathor Cruise, где комфорт и индивидуальный сервис делают путешествие незабываемым.",
   },
   "discover-the-timeless-luxor-west-bank": {
-    title: "Das zeitlose Westufer von Luxor entdecken",
+    title: "Вечный Западный берег Луксора",
     excerpt:
-      "Fahren Sie an Bord einer Luxus-Dahabiya zum Westufer von Luxor und entdecken Sie Ägypten in seiner eleganten, zeitlosen Schönheit. Eine private Dahabiya-Kreuzfahrt ermöglicht Ihnen authentische Besuche an Orten wie dem Tal der Könige, mit persönlichem Service und jedem Komfort.",
+      "Отправьтесь к Западному берегу Луксора в круизе по Нилу на дахабии класса люкс и откройте Египет во всей его элегантной и вечной красоте. Частный круиз на дахабии позволяет увидеть такие главные достопримечательности, как Долина царей, в подлинной обстановке, наслаждаясь безупречной роскошью и индивидуальным сервисом.",
   },
   "luxury-travel-in-egypt-what-to-expect-on-a-dahabiya-cruise": {
-    title: "Luxusreisen in Ägypten: was Sie auf der Dahabiya erwartet",
+    title: "Роскошный отдых в Египте: чего ждать от круиза на дахабии",
     excerpt:
-      "Für eine Luxusreise in Ägypten sind nur wenige Erlebnisse mit einer Dahabiya-Kreuzfahrt auf dem Nil vergleichbar. Mit ihrer Verbindung aus Eleganz, Privatsphäre und authentischem Segeln bietet die Dahabiya eine einzigartige Art, die Schätze des Nils in Komfort und Exklusivität zu entdecken.",
+      "Когда речь заходит о роскошном отдыхе в Египте, мало что сравнится с круизом по Нилу на дахабии. Соединяя элегантность, уединение и подлинное плавание под парусом, дахабия предлагает уникальный способ открыть сокровища Нила в комфорте и эксклюзивной обстановке.",
   },
   "sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise": {
-    title: "Mit der Dahabiya von Assuan nach Luxor auf dem Nil",
+    title: "Из Асуана в Луксор на дахабии по Нилу",
     excerpt:
-      "Die Fahrt auf dem Nil gehört zu den magischsten Arten, Ägypten zu erleben, und die Reise von Assuan nach Luxor mit der Dahabiya ist wahrhaft unvergesslich. Anders als große, volle Schiffe ist die Dahabiya ein traditionelles Segelschiff, das Intimität, Komfort und die Möglichkeit bietet, die verborgenen Schätze am Nil in Ruhe zu entdecken.",
+      "Плавание по Нилу — один из самых волшебных способов познакомиться с Египтом, а путешествие из Асуана в Луксор в круизе по Нилу на дахабии поистине незабываемо. В отличие от переполненных больших теплоходов, дахабия — традиционное парусное судно, которое дарит камерность, комфорт и возможность неспешно открывать скрытые жемчужины на берегах Нила.",
   },
   "spiritual-journey-to-egypt": {
-    title: "Eine spirituelle Reise nach Ägypten",
+    title: "Духовное путешествие в Египет",
     excerpt:
-      "Wenn Sie in Ägypten mehr suchen als reine Besichtigungen, erleben Sie eine ruhige, spirituelle Reise an Bord einer Dahabiya auf dem Nil und fahren Sie langsam von Assuan nach Luxor, auf der Suche nach Schönheit, Kultur und der Stille des Flusses.",
+      "Если в Египте вы ищете больше, чем осмотр достопримечательностей, отправьтесь в спокойное духовное путешествие в круизе по Нилу на дахабии: неспешно плывите из Асуана в Луксор, открывая красоту, культуру и безмятежность египетского Нила.",
   },
   "discover-edfu-temple": {
-    title: "Den Tempel von Edfu entdecken",
+    title: "Откройте для себя храм Эдфу",
     excerpt:
-      "Entdecken Sie den Tempel von Edfu, den Tempel des Horus, eine der eindrucksvollsten antiken Stätten Ägyptens: gewaltige Pylonen, feine Reliefs und heilige Hallen. Ein Muss auf jeder Dahabiya-Reise, das die Geschichte lebendig macht.",
+      "Посетите храм Эдфу, храм Гора, и войдите в одно из самых впечатляющих древних мест Египта. Полюбуйтесь его высокими пилонами, тонкими рельефами и священными залами. Жемчужина любого путешествия на дахабии, этот храм ярко оживляет историю.",
   },
   "discovering-the-secrets-of-philae-temple": {
-    title: "Die Geheimnisse des Tempels von Philae",
+    title: "Тайны храма Филе",
     excerpt:
-      "Entdecken Sie den majestätischen Philae-Tempel in Assuan, der Göttin Isis geweiht. Als eine der zauberhaftesten Sehenswürdigkeiten Assuans vereint er antike Geschichte, atemberaubende Architektur und die Schönheit des Nils: ein Besuch, den Sie nicht verpassen sollten.",
+      "Откройте для себя величественный храм Филе в Асуане, посвященный богине Исиде. Одна из самых чарующих достопримечательностей Асуана, этот храм соединяет древнюю историю, захватывающую архитектуру и красоту Нила в место, которое обязательно стоит увидеть.",
   },
   "golden-gems-of-aswan": {
-    title: "Die goldenen Schätze von Assuan",
+    title: "Золотые сокровища Асуана",
     excerpt:
-      "Entdecken Sie das goldene Assuan und den Zauber des Nils: Vom majestätischen Abu Simbel über den heiligen Philae-Tempel bis zu den farbenfrohen nubischen Dörfern machen die Wunder Assuans die Dahabiya-Reise unvergesslich.",
+      "Откройте золотой Асуан и окунитесь в волшебство Нила: от величественного Абу-Симбела до священного храма Филе и ярких нубийских деревень — чудеса Асуана превращают тур на дахабии в незабываемое путешествие по Нилу.",
   },
   "aswan-high-dam": {
-    title: "Der Hochdamm von Assuan",
+    title: "Асуанская плотина",
     excerpt:
-      "Entdecken Sie den Assuan-Hochdamm, das Symbol ägyptischer Ingenieurskunst und ein Wahrzeichen moderner Zivilisation: seine faszinierende Geschichte, seinen Bau und wie er den Nil reguliert, die Landwirtschaft stützt und Ägypten selbst prägt.",
+      "Откройте для себя Асуанскую плотину — высокотехнологичный символ инженерного гения Египта и веху современной цивилизации. Узнайте ее увлекательную историю и то, как она была построена, и поймите, как она управляет Нилом, поддерживает сельское хозяйство и формирует сам Египет.",
   },
   "exploring-esna-temples-history-nile-charm": {
-    title: "Esna entdecken: Tempel, Geschichte und Zauber des Nils",
+    title: "Эсна: храмы, история и очарование Нила",
     excerpt:
-      "Fahren Sie mit einer Luxuskreuzfahrt auf dem Nil nach Esna und entdecken Sie das Beste dieser historischen Stadt: den Chnum-Tempel, lebhafte Märkte und verborgene Schätze am Fluss. Die reiche Geschichte, außergewöhnliche Architektur und der zeitlose Reiz Esnas auf einer unvergesslichen Reise.",
+      "Отправьтесь в Эсну в люкс-круизе по Нилу и откройте для себя лучшие места этого исторического города. Посетите храм Хнума, прогуляйтесь по оживленным местным рынкам и найдите скрытые жемчужины на берегах Нила. Прочувствуйте богатую историю, потрясающую архитектуру и вечное очарование Эсны в незабываемом путешествии.",
   },
   "luxors-sacred-east-bank": {
-    title: "Das heilige Ostufer von Luxor",
+    title: "Священный Восточный берег Луксора",
     excerpt:
-      "Gehen Sie die heiligen Alleen entlang, auf denen einst Pharaonen herrschten, und hören Sie das Echo alter Zeremonien. Bewundern Sie gewaltige Säulen und feine Hieroglyphen, die zeitlose Geschichten von Göttern und Königen erzählen.",
+      "Пройдите по священным аллеям, где когда-то правили фараоны, и прислушайтесь к отголоскам древних обрядов. Полюбуйтесь высокими колоннами и тонкими иероглифическими надписями, которые рассказывают вечные истории о богах и царях.",
   },
   "kom-ombo-temple": {
-    title: "Der Tempel von Kom Ombo",
+    title: "Храм Ком Омбо",
     excerpt:
-      "Entdecken Sie auf einer Dahabiya-Kreuzfahrt auf dem Nil den einzigartigen Tempel von Kom Ombo, einen herrlichen Tempel am Fluss, der dem Krokodilgott Sobek und Horus dem Älteren geweiht ist. Besuchen Sie ihn bei Sonnenuntergang für ein ruhiges, unvergessliches Erlebnis, und sehen Sie echte Krokodilmumien im nahen Museum.",
+      "Откройте уникальный храм Ком-Омбо в круизе по Нилу на дахабии: потрясающий храм на берегу реки, посвященный богу-крокодилу Собеку и Гору Старшему. Приходите на закате ради спокойных и незабываемых впечатлений и посмотрите настоящих мумифицированных крокодилов в соседнем музее.",
   },
   "5-quiet-nile-spots-for-stunning-honeymoon-captures": {
-    title: "5 stille Orte am Nil für Flitterwochen in der Suite",
+    title: "5 тихих мест на Ниле для медового месяца в люксе",
     excerpt:
-      "Entdecken Sie 5 stille, romantische Orte am Nil, perfekt für Ihre Hochzeitsreisefotos, und erleben Sie Schönheit und Luxus einer Dahabiya-Kreuzfahrt, während Sie unvergessliche Erinnerungen in Ägypten festhalten.",
+      "Откройте 5 тихих и романтичных мест на Ниле, идеальных для фотографий медового месяца. Ощутите красоту и роскошь круиза на дахабии, сохраняя незабываемые воспоминания о Египте.",
   },
   "discover-the-valley-of-the-kings": {
-    title: "Das Tal der Könige entdecken",
+    title: "Откройте для себя Долину царей",
     excerpt:
-      "Treten Sie mit einer Luxuskreuzfahrt auf dem Nil bis zum Tal der Könige ins alte Ägypten ein: Erkunden Sie die Königsgräber und genießen Sie die stille Schönheit des Nils an Bord einer eleganten Dahabiya.",
+      "Перенеситесь в древнее прошлое Египта в люкс-круизе по Нилу с посещением Долины царей. Осмотрите царские гробницы и насладитесь безмятежной красотой Нила в стильном круизе на дахабии.",
   },
   "sailing-to-karnak-temple": {
-    title: "Auf dem Weg zum Tempel von Karnak",
+    title: "Под парусом к Карнакскому храму",
     excerpt:
-      "Der Tempelkomplex von Karnak, der Tempel von Amun, Mut und Chons in Luxor, ist ein gewaltiges antikes Heiligtum. Mit seinen mächtigen Säulen und Kolossalstatuen ist er das spirituelle Herz des alten Ägypten in all seiner Pracht.",
+      "Храмовый комплекс Карнак — огромный древний храм Амона, Мут и Хонсу в Луксоре, в Египте. Он славится высокими колоннами и колоссальными статуями и остается духовным сердцем Древнего Египта во всем его великолепии.",
   },
   "exploring-luxor-and-aswan-on-a-luxury-dahabiya": {
-    title: "Luxor und Assuan an Bord einer luxuriösen Dahabiya",
+    title: "Луксор и Асуан на борту роскошной дахабии",
     excerpt:
-      "Entdecken Sie die Wunder von Luxor und Assuan auf einer Luxuskreuzfahrt auf dem Nil, wo Geschichte, Kultur und atemberaubende Ausblicke zu einer unvergesslichen Ägyptenreise verschmelzen.",
+      "Откройте для себя чудеса Луксора и Асуана в люкс-круизе по Нилу, где история, культура и захватывающие пейзажи сливаются в незабываемое путешествие по Египту.",
   },
   "where-history-lives-the-temple-of-hatshepsut": {
-    title: "Wo Geschichte lebt: der Tempel der Hatschepsut",
+    title: "Где живет история: храм Хатшепсут",
     excerpt:
-      "Reisen Sie zurück in die Zeit des antiken Totentempels der Hatschepsut, eines eindrucksvollen Wunders am Fuß der Felsen von Luxor, und genießen Sie seine Geschichte auf einer ruhigen, luxuriösen Dahabiya auf dem Nil.",
+      "Позвольте душе перенестись в прошлое, к истории древнего заупокойного храма Хатшепсут, живописного чуда у подножия скал в Луксоре, и насладитесь этой историей, неспешно проплывая мимо в безмятежном роскошном круизе по Нилу на дахабии.",
   },
   "niles-hidden-gems-by-dahabiya": {
-    title: "Die verborgenen Schätze des Nils mit der Dahabiya",
+    title: "Скрытые жемчужины Нила на дахабии",
     excerpt:
-      "Verlassen Sie die übliche Nilroute und entdecken Sie abgelegene Tempel, stille Ufer und historische Stätten, die nur die Dahabiya erreicht. Dieser Artikel erzählt von den exklusiven Erlebnissen, die eine Dahabiya-Fahrt auf dem Nil unvergesslich machen.",
+      "Отправьтесь за пределы привычного маршрута круизов по Нилу и откройте для себя уединенные храмы, тихие берега и исторические места, куда можно попасть только на дахабии. В этой статье — эксклюзивные впечатления, благодаря которым плавание по Нилу на дахабии становится поистине незабываемым.",
   },
   "best-places-to-visit-along-the-nile-with-a-dahabiya-cruise": {
-    title: "Die schönsten Orte am Nil auf einer Reise mit der Dahabiya",
+    title: "Лучшие места на берегах Нила в круизе на дахабии",
     excerpt:
-      "Reisen Sie stilvoll an Bord einer Luxus-Dahabiya und entdecken Sie die bekanntesten Orte am Nil, von antiken Tempeln bis zu historischen Schätzen. Es erwartet Sie eine exklusive Reise voller Eleganz und Geschichte, mit unvergesslichen Kulturerlebnissen und atemberaubenden Ausblicken.",
+      "Отправьтесь в стильный круиз на дахабии класса люкс и откройте самые знаменитые достопримечательности Нила в Египте, от древних храмов до исторических сокровищ. Вас ждет эксклюзивное путешествие, полное элегантности и истории. Незабываемые культурные впечатления и захватывающие виды на борту дахабии класса люкс в Египте.",
   },
   "explore-luxor-in-luxury": {
-    title: "Luxor im Luxus",
+    title: "Роскошное путешествие по Луксору",
     excerpt:
-      "Entdecken Sie Luxor, das Land der Wunder, an Bord einer Luxus-Dahabiya: verborgene Tempel, das Tal der Könige und stille Ausblicke auf den Nil, auf einer authentischen, exklusiven Reise abseits der Menge.",
+      "Откройте Луксор, землю чудес, и посетите его сокровища в круизе на дахабии класса люкс. Скрытые храмы, Долина царей и безмятежные виды на Нил: подлинное эксклюзивное путешествие по Египту вдали от безумных толп.",
   },
   "best-time-for-dahabiya-nile-cruise": {
-    title: "Die beste Reisezeit für die Dahabiya auf dem Nil",
+    title: "Лучшее время для круиза на дахабии по Нилу в Египте",
     excerpt:
-      "Eine Fahrt auf dem Nil mit der Dahabiya gehört zu den außergewöhnlichsten und luxuriösesten Arten, Ägypten zu erleben. Mit ihren majestätischen Segeln und ihrer intensiven Atmosphäre wirkt die Dahabiya-Kreuzfahrt fast zeitlos, ganz anders als die großen Flussschiffe neuer Generation.",
+      "Плавание по Нилу на дахабии — один из самых необычных и роскошных способов познакомиться с Египтом. Благодаря величественным парусам и особой атмосфере неспешный круиз на дахабии кажется почти вне времени, в отличие от более крупных речных судов нового поколения.",
   },
   "nile-cruise-or-luxury-dahabiya-which-one-to-choose": {
-    title: "Nilkreuzfahrt oder Dahabiya: Was wählen Sie in Ägypten?",
+    title: "Теплоход или дахабия: какой круиз по Нилу лучше?",
     excerpt:
-      "Entdecken Sie die Wunder des Nils, von den Leistungen alter Kulturen bis zur Schönheit der Natur, und den Unterschied zwischen einer klassischen Kreuzfahrt und einer Dahabiya. Für eine authentische Reise ohne Gedränge ist die Hathor Luxury Dahabiya die perfekte Wahl: Stil, Tradition und Entspannung auf dem Nil.",
+      "Откройте для себя чудеса Нила, от древних шедевров цивилизации до красоты природы. И всегда помните, чем круиз на теплоходе отличается от круиза на дахабии. Для подлинного путешествия без толп идеальным выбором станет дахабия класса люкс Hathor. Дахабия класса люкс в Египте — идеальное сочетание стиля, традиций и отдыха на Ниле.",
   },
 };
