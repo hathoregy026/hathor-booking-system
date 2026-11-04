@@ -66,7 +66,7 @@ export const CURRENCY_COPY: Record<PublicLocale, CurrencyCopy> = {
       `Beträge in ${currency} sind Richtwerte. ${usdTotal === null ? "Buchungen und Rechnungen lauten auf USD." : `Gesamtbetrag von Buchung und Rechnung: ${usdTotal}.`}`,
   },
   ru: {
-    trigger: (currency) => `Валюта: ${currency}. Выберите валюту`,
+    trigger: (currency) => `Валюта: ${currency}. Выбрать валюту`,
     eyebrow: "Предпочитаемая валюта",
     menuLabel: "Выбрать валюту для отображения цен",
     names: { EUR: "Евро", USD: "Доллар США", GBP: "Британский фунт", EGP: "Египетский фунт", RUB: "Российский рубль" },

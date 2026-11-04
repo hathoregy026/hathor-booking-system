@@ -69,7 +69,7 @@ export const INQUIRY_FORM_COPY_RU: InquiryFormCopy = {
   email: "Электронная почта",
   phone: "Телефон",
   address: "Адрес",
-  checkIn: "Дата заезда",
+  checkIn: "Дата посадки",
   adults: "Взрослые",
   children: "Дети",
   message: "Сообщение",

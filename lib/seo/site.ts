@@ -77,7 +77,7 @@ export const SEO_PLACE_WORDS = {
     country: "Ägypten",
   },
   ru: {
-    streetAddress: "One Kattamiya, Tower 211, этаж 11, офис 111, Ring Road",
+    streetAddress: "One Kattamiya, Tower 211, 11-й этаж, кв. 111, Ring Road",
     addressLocality: "Каир",
     country: "Египет",
   },

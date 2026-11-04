@@ -11,7 +11,7 @@ import { SEO_DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 
 const image = {
   ...SEO_DEFAULT_OG_IMAGE,
-  alt: "Hathor Dahabiya в роскошном круизе по Нилу между Луксором и Асуаном",
+  alt: "Hathor Dahabiya в люкс-круизе по Нилу между Луксором и Асуаном",
 };
 
 const page = (

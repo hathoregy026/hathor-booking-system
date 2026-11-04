@@ -337,7 +337,7 @@ export const TERMS_COPY_RU: TermsCopy = {
     ".",
   ],
   headOffice: "Головной офис",
-  address: ["One Kattamiya, Tower 211, этаж 11, офис 111", "Ring Road", "Каир, Египет"],
+  address: ["One Kattamiya, Tower 211, 11-й этаж, кв. 111", "Ring Road", "Каир, Египет"],
   telephone: "Телефон:",
   email: "Эл. почта:",
   website: "Сайт:",

@@ -35,7 +35,7 @@ export const WELLNESS_COPY_RU: WellnessCopy = {
   route: ["Луксор", "Асуан"],
   cue: "Плыть",
   // "seneb" stays in Latin: it is the Egyptian word behind the Seneb Spa name.
-  lyric: ["Здоровье в египетском понимании:", " seneb, ", "как тихое постоянство."],
+  lyric: ["Здоровье в египетском понимании:", " seneb ", "как тихое постоянство."],
   rituals: [
     {
       word: "Массаж",
@@ -45,7 +45,7 @@ export const WELLNESS_COPY_RU: WellnessCopy = {
     {
       word: "Травы",
       detail: "Египетская фитотерапия для кожи и душевного покоя",
-      meta: "Фирменный · ежедневно",
+      meta: "Фирменный ритуал · ежедневно",
     },
     {
       /* The ritual word sits in a narrow column; «Восстановление» crowds its text. */

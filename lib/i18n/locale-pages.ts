@@ -87,7 +87,7 @@ export const LOCALE_CHARTER_SEO: Record<TranslatedLocale, CharterSeo> = {
   ru: {
     metadata: CHARTER_SEO_RU,
     title: CHARTER_SEO_TITLE_RU,
-    crumb: "Чартер дахабии",
+    crumb: "Чартер дахабии по Нилу",
     serviceType: "Частный чартерный круиз по Нилу",
     catalogName: "Маршруты частного чартера по Нилу",
   },
@@ -227,7 +227,7 @@ export const LOCALE_BOOKING_META: Record<
     lookup: {
       title: "Отследить бронирование",
       description:
-        "Введите код бронирования и адрес электронной почты, указанный в запросе, чтобы найти свой запрос на путешествие на борту Hathor Dahabiya.",
+        "Введите код бронирования и адрес электронной почты, указанный при бронировании, чтобы найти свой запрос на путешествие на борту Hathor Dahabiya.",
     },
     success: {
       title: "Запрос на бронирование отправлен",
