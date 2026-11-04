@@ -46,6 +46,8 @@ type Occupancy = {
   sale?: ClosureSale | null;
   /** Every cabin of the closure this cabin belongs to. */
   blockRoomIds?: string[] | null;
+  /** A booking whose payments cover what the guest owes. */
+  paidInFull?: boolean;
 };
 type Room = { id: string; name: string; roomType: string; capacity: number; shipName?: string | null };
 type Overlap = { voyage: string; slug: string; departure: string; arrival: string };
@@ -139,10 +141,13 @@ const STATUS_OF: Record<string, [StatusKey, string]> = {
   MANUAL_BLOCK: ["closed", "Closed"],
 };
 
+/** A request already paid in full is as settled as a confirmed booking: it reads Closed. */
+const effectiveState = (entry: Occupancy) => (entry.kind === "booking" && entry.state === "REQUESTED" && entry.paidInFull ? "CONFIRMED" : entry.state);
+
 function statusOf(list: Occupancy[] | undefined): CabinStatus {
   if (!list?.length) return { key: "open", label: "Open", occupancy: null, reopenable: false };
-  const first = [...list].sort((a, b) => (STATUS_RANK[a.state] ?? 9) - (STATUS_RANK[b.state] ?? 9))[0];
-  const [key, label] = STATUS_OF[first.state] ?? ["closed", "Closed"];
+  const first = [...list].sort((a, b) => (STATUS_RANK[effectiveState(a)] ?? 9) - (STATUS_RANK[effectiveState(b)] ?? 9))[0];
+  const [key, label] = STATUS_OF[effectiveState(first)] ?? ["closed", "Closed"];
   const reopenable = list.every(entry => entry.kind === "closure" && entry.blockKey);
   return { key, label, occupancy: first, reopenable };
 }
@@ -150,6 +155,9 @@ function statusOf(list: Occupancy[] | undefined): CabinStatus {
 const voyageShort = (slug: string | null, fallback: string | null) =>
   VOYAGES.find(voyage => voyage.slug === slug)?.nights ?? fallback ?? "another voyage";
 
+const STATUS_NAME: Record<StatusKey, string> = {
+  open: "Open", requested: "Requested", held: "On hold", closed: "Closed", maintenance: "Maintenance", charter: "Charter",
+};
 const STATUS_TEXT: Record<StatusKey, string> = {
   open: "open", requested: "requested", held: "on hold", closed: "closed", maintenance: "in maintenance", charter: "chartered",
 };
@@ -215,7 +223,13 @@ function Modal({ title, onClose, children, footer, busy }: {
 export default function AdminAvailabilityPage() {
   const { showToast } = useToast();
   const [shown, setShown] = useState<VoyageSlug[]>(ALL_VOYAGES);
-  const [statusFilter, setStatusFilter] = useState<StatusKey | null>(null);
+  /** The statuses shown; none chosen shows every cabin. */
+  const [statusFilter, setStatusFilter] = useState<StatusKey[]>([]);
+  const filtering = statusFilter.length > 0;
+  const toggleStatus = (key: StatusKey) => {
+    setStatusFilter(current => (current.includes(key) ? current.filter(entry => entry !== key) : STATUS_KEYS.filter(entry => entry === key || current.includes(entry))));
+    setSelected([]);
+  };
   const [details, setDetails] = useState<AdminClosureBooking | null>(null);
   const [month, setMonth] = useState(thisMonth);
   const [board, setBoard] = useState<Board | null>(null);
@@ -486,7 +500,7 @@ export default function AdminAvailabilityPage() {
                 {(board?.sailings ?? []).map(entry => {
                   const entryStatuses = (board?.rooms ?? []).map(room => statusOf(entry.cabins[room.id]).key);
                   const open = entryStatuses.filter(key => key === "open").length;
-                  const matching = statusFilter ? entryStatuses.filter(key => key === statusFilter).length : 0;
+                  const matching = filtering ? entryStatuses.filter(key => statusFilter.includes(key)).length : 0;
                   const closed = entryStatuses.filter(key => key === "closed" || key === "maintenance" || key === "charter").length;
                   const on = entry.scheduleId === scheduleId;
                   return (
@@ -503,8 +517,8 @@ export default function AdminAvailabilityPage() {
                         {shown.length > 1 ? <span className="cav-date__voyage">{VOYAGES.find(voyageEntry => voyageEntry.slug === entry.slug)?.nights}</span> : null}
                         <span className="cav-date__week">{weekday(entry.departure)} → {shortDay(entry.arrival)}</span>
                         <span className="cav-date__meta">
-                          {statusFilter ? (
-                            <><b>{matching}</b> {STATUS_TEXT[statusFilter]}</>
+                          {filtering ? (
+                            <><b>{matching}</b> {statusFilter.length === 1 ? STATUS_TEXT[statusFilter[0]!] : "matching"}</>
                           ) : (
                             <>
                               <b>{open}</b> of {entryStatuses.length} open
@@ -549,28 +563,46 @@ export default function AdminAvailabilityPage() {
                 <p className="cav-note">A private charter needs every cabin free; guests already have cabins on this sailing.</p>
               ) : null}
 
-              <div className={`cav-legend${statusFilter ? " cav-legend--filtering" : ""}`} role="group" aria-label="Show only cabins that are">
-                {STATUS_KEYS.map(key => (
+              <div className="cav-filter" role="group" aria-label="Show cabins by status">
+                <span className="cav-filter__label">Show</span>
+                <div className="cav-filter__options">
+                  {STATUS_KEYS.map(key => {
+                    const on = statusFilter.includes(key);
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        className={`cav-filter__btn cav-filter__btn--${key}${on ? " is-on" : ""}`}
+                        aria-pressed={on}
+                        onClick={() => toggleStatus(key)}
+                      >
+                        <span className="cav-filter__dot" aria-hidden />
+                        <span className="cav-filter__name">{STATUS_NAME[key]}</span>
+                        <span className="cav-filter__count">{statusCounts[key]}</span>
+                      </button>
+                    );
+                  })}
                   <button
-                    key={key}
                     type="button"
-                    className={`cav-legend__btn${statusFilter === key ? " is-on" : ""}`}
-                    aria-pressed={statusFilter === key}
-                    title={statusFilter === key ? "Show every cabin" : `Show only ${STATUS_TEXT[key]} cabins`}
-                    onClick={() => { setStatusFilter(current => (current === key ? null : key)); setSelected([]); }}
+                    className={`cav-filter__btn cav-filter__btn--all${filtering ? "" : " is-on"}`}
+                    aria-pressed={!filtering}
+                    onClick={() => { setStatusFilter([]); setSelected([]); }}
                   >
-                    <StatusPill status={key} />
-                    <span className="cav-legend__count">{statusCounts[key]}</span>
+                    <span className="cav-filter__name">All cabins</span>
+                    <span className="cav-filter__count">{statuses.size}</span>
                   </button>
-                ))}
-                {statusFilter ? <button type="button" className="cav-link" onClick={() => setStatusFilter(null)}>Show all</button> : null}
+                </div>
               </div>
-              {statusFilter && statusCounts[statusFilter] === 0 ? (
-                <p className="cav-filter-empty">No {STATUS_TEXT[statusFilter]} cabins on this sailing.</p>
+              {filtering && statusFilter.every(key => statusCounts[key] === 0) ? (
+                <p className="cav-filter-empty">
+                  {statusFilter.length === 1
+                    ? `No cabins are ${STATUS_TEXT[statusFilter[0]!]} on this sailing.`
+                    : "No cabins on this sailing match these statuses."}
+                </p>
               ) : null}
 
               {groups.map(group => {
-                const groupRooms = statusFilter ? group.rooms.filter(room => statuses.get(room.id)?.key === statusFilter) : group.rooms;
+                const groupRooms = filtering ? group.rooms.filter(room => statusFilter.includes(statuses.get(room.id)?.key ?? "open")) : group.rooms;
                 if (!groupRooms.length) return null;
                 const ids = groupRooms.map(room => room.id);
                 const open = ids.filter(id => statuses.get(id)?.key === "open");

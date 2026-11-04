@@ -159,6 +159,8 @@ export function bookingStage(input: {
     case "PENDING_HOLD":
       return "hold";
     case "REQUESTED":
+      // Paid in full is settled, whether or not the request was confirmed first.
+      if (input.totalPriceCents > 0 && input.paidCents >= input.totalPriceCents) return "paid";
       return input.acceptedAt ? "invoiced" : "new";
     case "CONFIRMED":
       return input.totalPriceCents > 0 && input.paidCents >= input.totalPriceCents ? "paid" : "confirmed";

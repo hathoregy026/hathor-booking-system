@@ -60,6 +60,7 @@ type OccupancyRow = {
   sourceSlug: string | null;
   sale: Record<string, unknown> | null;
   blockRoomIds: string[] | null;
+  paidInFull: boolean | null;
 };
 type OverlapRow = { scheduleId: string; voyage: string; slug: string; departureTime: Date; arrivalTime: Date };
 type ClosureRow = {
@@ -124,6 +125,12 @@ async function readBoard(slug: string, month: string) {
                  COALESCE(NULLIF(trim(concat_ws(' ', b."firstName", b."lastName")), ''), b."customerName") AS "guestName",
                  src.name AS "sourceVoyage", src.slug AS "sourceSlug",
                  to_jsonb(d) AS sale,
+                 CASE WHEN b.id IS NOT NULL THEN
+                   COALESCE(b."totalPriceCents", 0) > 0 AND COALESCE((
+                     SELECT SUM(CASE WHEN p.kind = 'REFUND' THEN -p."amountCents" ELSE p."amountCents" END)
+                     FROM "BookingPayment" p WHERE p."bookingId" = b.id
+                   ), 0) >= COALESCE(b."totalPriceCents", 0) + b."cardSurchargeCents"
+                 END AS "paidInFull",
                  CASE WHEN a."blockKey" IS NOT NULL AND a."bookingRoomId" IS NULL THEN (
                    SELECT array_agg(x."roomId" ORDER BY x."roomId") FROM "InventoryAllocation" x
                    WHERE x."blockKey" = a."blockKey" AND x.active AND x."bookingRoomId" IS NULL
@@ -196,6 +203,7 @@ function toOccupancy(row: OccupancyRow, sailing: SailingRow) {
     sameSailing: row.startsAt.getTime() === sailing.departureTime.getTime() && row.endsAt.getTime() === sailing.arrivalTime.getTime(),
     source: { voyage: row.sourceVoyage, slug: row.sourceSlug, departure: iso(row.startsAt), arrival: iso(row.endsAt) },
     sale: booking ? null : closureSaleFromJson(row.sale),
+    paidInFull: booking ? row.paidInFull === true : false,
     blockRoomIds: booking ? null : row.blockRoomIds ?? [row.roomId],
   };
 }

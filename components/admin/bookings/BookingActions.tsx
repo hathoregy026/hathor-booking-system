@@ -624,7 +624,8 @@ export function bookingActionsFor(booking: AdminBookingDto): { primary: BookingA
     case "confirmed":
       return { primary: ["payment", ...reply], secondary: ["plan", "send-confirmation", "cancel", "delete"] };
     case "paid":
-      return { primary: reply, secondary: ["plan", "send-confirmation", "cancel", "delete"] };
+      // A request paid before it was confirmed has no confirmation email to resend.
+      return { primary: reply, secondary: ["plan", ...(booking.status === "CONFIRMED" ? ["send-confirmation" as const] : []), "cancel", "delete"] };
     case "cancelled":
     case "declined":
       return { primary: reply, secondary: [...(booking.paidCents > 0 ? ["payment" as const] : []), "delete"] };
