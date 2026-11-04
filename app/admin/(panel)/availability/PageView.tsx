@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
 import {
   Anchor,
   CalendarOff,
@@ -21,6 +20,7 @@ import {
 import { ActionButton } from "@/components/admin/ActionButton";
 import { useToast } from "@/components/admin/ToastProvider";
 import { SaleDialog, SaleFields, saleFormFrom, salePayload, type SaleFormState } from "@/components/admin/bookings/ClosureBookings";
+import { GuestDetailsDialog } from "@/components/admin/bookings/GuestDetailsDialog";
 import { submitManualBooking } from "@/components/admin/bookings/ManualBooking";
 import type { AdminClosureBooking, ClosureSale } from "@/lib/admin-bookings";
 import { adminFetch } from "@/lib/admin-fetch";
@@ -412,6 +412,8 @@ export default function AdminAvailabilityPage() {
   const allShown = shown.length === ALL_VOYAGES.length;
 
   /** A closed cabin's details, as the closure it belongs to. */
+  const [guestFor, setGuestFor] = useState<{ bookingId: string; cabin: string } | null>(null);
+
   function openDetails(room: Room, occupancy: Occupancy) {
     if (!sailing || !occupancy.blockKey) return;
     const roomIds = occupancy.blockRoomIds?.length ? occupancy.blockRoomIds : [room.id];
@@ -631,7 +633,7 @@ export default function AdminAvailabilityPage() {
                           : occupancy?.sale?.guestName
                             ? occupancy.sale.guestName
                             : occupancy?.reason && !DEFAULT_REASONS.has(occupancy.reason) ? occupancy.reason : null;
-                        const editable = status.key !== "open" && status.reopenable && occupancy?.kind === "closure" && Boolean(occupancy.blockKey);
+                        const editable = status.key !== "open" && occupancy?.kind === "closure" && Boolean(occupancy.blockKey) && occupancy.state !== "MAINTENANCE";
                         const body = (
                           <>
                             <span className="cav-tile__top">
@@ -665,10 +667,17 @@ export default function AdminAvailabilityPage() {
                           </>
                         );
                         if (occupancy?.kind === "booking" && occupancy.bookingId) {
+                          const bookingId = occupancy.bookingId;
                           return (
-                            <Link key={room.id} href={`/admin/bookings/${occupancy.bookingId}`} className={`cav-tile cav-tile--${status.key}`} title="Open this booking">
+                            <div key={room.id} className={`cav-tile cav-tile--${status.key} cav-tile--hit`}>
+                              <button
+                                type="button"
+                                className="cav-tile__hit"
+                                aria-label={`${cabinName(room, room.id)}: open the guest details`}
+                                onClick={() => setGuestFor({ bookingId, cabin: cabinName(room, room.id) })}
+                              />
                               {body}
-                            </Link>
+                            </div>
                           );
                         }
                         if (editable && occupancy) {
@@ -798,6 +807,16 @@ export default function AdminAvailabilityPage() {
             setDetails(null);
             setDialog({ kind: "reopen-block", closure });
           }}
+        />
+      ) : null}
+
+      {guestFor ? (
+        <GuestDetailsDialog
+          key={guestFor.bookingId}
+          bookingId={guestFor.bookingId}
+          cabinLabel={guestFor.cabin}
+          onClose={() => setGuestFor(null)}
+          onSaved={() => { setGuestFor(null); reload(); }}
         />
       ) : null}
 

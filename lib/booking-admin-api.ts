@@ -8,6 +8,7 @@ import { administerBooking, netPaid } from "@/lib/booking-engine";
 import { sendConfirmation, sendDeclined, sendInvoice, sendPaymentReceipt, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
 import { CANCEL_REASONS } from "@/lib/admin-bookings";
+import { bookingQuery } from "@/lib/booking-database";
 import { mailAttachmentRefsSchema, resolveAttachments } from "@/lib/mail-attachments";
 
 /**
@@ -44,6 +45,17 @@ const paymentPlanSchema = z.object({
 
 const PLAN_CHANGED_NOTE = "Your payment plan has been updated. The schedule in this email replaces the previous one.";
 
+/** The guest on a booking, as staff may correct it (phone in international form, as the database requires). */
+export const guestDetailsSchema = z.object({
+  type: z.literal("update-guest"),
+  firstName: z.string().trim().min(1, "Enter the guest's first name.").max(80),
+  lastName: z.string().trim().min(1, "Enter the guest's last name.").max(80),
+  email: z.email("Enter a valid email address.").max(200),
+  phone: z.string().trim().max(40).refine(value => /^\+[1-9][0-9]{6,14}$/.test(value.replace(/[\s()-]/g, "")), "Enter the phone with its country code, for example +20 100 123 4567."),
+  country: z.string().trim().min(1, "Enter the guest's country.").max(80),
+  specialRequests: z.string().trim().max(2000).nullable().optional(),
+}).strict();
+
 export const staffActionSchema = z.discriminatedUnion("type", [
   // Confirm: accept the request and email the invoice with the payment link and/or payment instructions.
   z.object({
@@ -71,9 +83,21 @@ export const staffActionSchema = z.discriminatedUnion("type", [
   }).strict(), attachments: mailAttachmentRefsSchema.optional() }).strict(),
   z.object({ type: z.literal("message"), subject: z.string().trim().max(200).regex(/^[^\r\n\u0000]*$/).optional(), message: teamText.min(2), attachments: mailAttachmentRefsSchema.optional() }).strict(),
   z.object({ type: z.literal("send-confirmation"), attachments: mailAttachmentRefsSchema.optional() }).strict(),
+  guestDetailsSchema,
 ]);
 
 export type StaffActionResult = { email?: MailResult };
+
+/** Saves the guest's contact details on a booking; the database keeps them complete. */
+async function saveGuestDetails(id: string, guest: z.infer<typeof guestDetailsSchema>) {
+  const rows = await bookingQuery<{ id: string }>(`
+    UPDATE "Booking" SET "firstName" = $2, "lastName" = $3, "customerName" = $2 || ' ' || $3,
+      "customerEmail" = $4, "customerPhone" = $5, country = $6, "specialRequests" = $7, "updatedAt" = clock_timestamp()
+    WHERE id = $1 AND "deletedAt" IS NULL AND status IN ('REQUESTED', 'CONFIRMED')
+    RETURNING id`,
+  [id, guest.firstName, guest.lastName, guest.email.toLowerCase(), guest.phone.replace(/[\s()-]/g, ""), guest.country, guest.specialRequests || null]);
+  if (!rows.length) throw new PublicRequestError("Only an active booking's guest details can be edited.", 404);
+}
 
 type Administered = Awaited<ReturnType<typeof administerBooking>>;
 
@@ -108,6 +132,11 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
   if (action.type === "message") {
     const attachments = await resolve(id, action.attachments ?? []);
     return { email: await sendTeamReply(id, action.message, action.subject, recordedBySession ?? undefined, attachments) };
+  }
+
+  if (action.type === "update-guest") {
+    await saveGuestDetails(id, action);
+    return {};
   }
 
   if (action.type === "send-confirmation") {
