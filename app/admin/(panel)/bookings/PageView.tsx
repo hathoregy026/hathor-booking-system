@@ -339,11 +339,12 @@ function AdminBookingsPageInner() {
 
       <div className="bk-tools">
         {viewMode === "active" && (
-          <div className="flex shrink-0 rounded-xl border p-1" style={{ borderColor: "var(--border)" }}>
+          <div className="bk-view" role="group" aria-label="Bookings view">
             <button
               type="button"
               onClick={() => setLayoutView("list")}
-              className={`admin-filter-tab flex items-center gap-1.5 ${layoutView === "list" ? "admin-filter-tab--active" : ""}`}
+              aria-pressed={layoutView === "list"}
+              className={`bk-view__btn${layoutView === "list" ? " is-on" : ""}`}
             >
               <LayoutList className="h-4 w-4" />
               List
@@ -351,7 +352,8 @@ function AdminBookingsPageInner() {
             <button
               type="button"
               onClick={() => setLayoutView("calendar")}
-              className={`admin-filter-tab flex items-center gap-1.5 ${layoutView === "calendar" ? "admin-filter-tab--active" : ""}`}
+              aria-pressed={layoutView === "calendar"}
+              className={`bk-view__btn${layoutView === "calendar" ? " is-on" : ""}`}
             >
               <CalendarDays className="h-4 w-4" />
               Calendar

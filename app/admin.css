@@ -4471,6 +4471,34 @@ textarea.wt-field__input {
   gap: 0.5rem;
 }
 
+/* List / Calendar: two separate buttons with the search field's box. */
+.admin-shell .bk-view {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+.admin-shell .bk-view__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  min-width: 7.5rem;
+  padding: 0 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.admin-shell .bk-view__btn:hover { border-color: var(--border-strong, var(--accent)); }
+.admin-shell .bk-view__btn:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.admin-shell .bk-view__btn.is-on { border-color: var(--accent); background: var(--accent); color: #ffffff; }
+@media (prefers-reduced-motion: reduce) { .admin-shell .bk-view__btn { transition: none; } }
+
 .admin-shell .bk-group {
   overflow: hidden;
 }

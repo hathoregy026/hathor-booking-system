@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useAdminAccess } from "./AdminAccessProvider";
 import { hasAdminPermission } from "@/lib/admin-permissions";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronDown, ChevronRight, Eye, Menu, Search, X } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isAdminCmsPath, isAdminInventoryPath } from "@/lib/admin-nav";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
+import { GlobalSearch } from "./GlobalSearch";
 
 const PAGE_META: Record<string, { section: string; title: string }> = {
   "/admin": { section: "Overview", title: "Dashboard" },
@@ -91,34 +92,19 @@ function buildCrumbs(pathname: string) {
   return crumbs;
 }
 
-function bookingsSearchHref(query: string) {
-  const next = query.trim();
-  return next
-    ? `/admin/bookings?q=${encodeURIComponent(next)}`
-    : "/admin/bookings";
-}
-
 export function Header({ onMenuToggle }: HeaderProps) {
   const pathname = usePathname();
   const access = useAdminAccess();
   const canSeeBookings = hasAdminPermission(access, "bookings.view");
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const reduceMotion = useReducedMotion();
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const profileTrigger = useRef<HTMLButtonElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
-  const urlQuery = searchParams.get("q") ?? "";
-  const [query, setQuery] = useState(urlQuery);
-  const onBookingsPage = pathname === "/admin/bookings";
   const crumbs = buildCrumbs(pathname);
   const currentTitle = crumbs[crumbs.length - 1]?.label ?? "Dashboard";
 
-  useEffect(() => {
-    setQuery(urlQuery); // eslint-disable-line react-hooks/set-state-in-effect -- sync header draft with ?q=
-  }, [urlQuery]);
 
   // Elevate the glass header once content scrolls beneath it.
   useEffect(() => {
@@ -148,49 +134,6 @@ export function Header({ onMenuToggle }: HeaderProps) {
     // Full reload: drops the client router cache so no dashboard data lingers.
     window.location.replace("/admin/login");
   };
-
-  const applyBookingsQuery = (value: string) => {
-    const href = bookingsSearchHref(value);
-    if (onBookingsPage) {
-      router.replace(href);
-      return;
-    }
-    router.push(href);
-  };
-
-  const handleSearch = (event: FormEvent) => {
-    event.preventDefault();
-    applyBookingsQuery(query.trim());
-    setSearchOpen(false);
-  };
-
-  const handleQueryChange = (value: string) => {
-    setQuery(value);
-    if (onBookingsPage) {
-      const href = value
-        ? `/admin/bookings?q=${encodeURIComponent(value)}`
-        : "/admin/bookings";
-      router.replace(href);
-    }
-  };
-
-  const searchField = (
-    <>
-      <Search
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
-        style={{ color: "var(--text-muted)" }}
-        aria-hidden
-      />
-      <input
-        type="search"
-        value={query}
-        onChange={(event) => handleQueryChange(event.target.value)}
-        placeholder="Search bookings…"
-        aria-label="Search bookings"
-        className="input"
-      />
-    </>
-  );
 
   return (
     <header
@@ -235,19 +178,14 @@ export function Header({ onMenuToggle }: HeaderProps) {
       <p className="admin-mobile-location min-w-0 flex-1 text-sm sm:hidden"><span>Admin</span><strong>{currentTitle}</strong></p>
 
       {/* Desktop search (>=1024px) — no longer competes for the whole bar. */}
-      {canSeeBookings && <form
-        onSubmit={handleSearch}
-        className="admin-search hidden w-full max-w-xs lg:block"
-      >
-        {searchField}
-      </form>}
+      <GlobalSearch className="admin-gsearch--desktop hidden w-full max-w-xs lg:block" />
 
       <div className="admin-header__actions ml-auto flex items-center gap-1 sm:gap-2">
-        {canSeeBookings && <button
+        {<button
           type="button"
           onClick={() => setSearchOpen((open) => !open)}
-          className="btn-ghost h-11 w-11 px-0 lg:hidden"
-          aria-label="Search bookings"
+          className="admin-gsearch-toggle btn-ghost h-11 w-11 px-0 lg:hidden"
+          aria-label="Search the dashboard"
           aria-expanded={searchOpen}
         >
           {searchOpen ? (
@@ -354,10 +292,9 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
       {/* Expanding search sheet for mobile/tablet. */}
       <AnimatePresence>
-        {canSeeBookings && searchOpen && (
-          <motion.form
-            onSubmit={handleSearch}
-            className="admin-search absolute inset-x-0 top-full mx-4 mt-2 lg:hidden"
+        {searchOpen && (
+          <motion.div
+            className="absolute inset-x-0 top-full mx-4 mt-2 lg:hidden"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -365,21 +302,8 @@ export function Header({ onMenuToggle }: HeaderProps) {
               reduceMotion ? { duration: 0 } : { duration: 0.2, ease: EASE_OUT_QUART }
             }
           >
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
-              style={{ color: "var(--text-muted)" }}
-              aria-hidden
-            />
-            <input
-              ref={mobileSearchRef}
-              type="search"
-              value={query}
-              onChange={(event) => handleQueryChange(event.target.value)}
-              placeholder="Search bookings…"
-              aria-label="Search bookings"
-              className="input shadow-lg"
-            />
-          </motion.form>
+            <GlobalSearch inputRef={mobileSearchRef} onNavigate={() => setSearchOpen(false)} />
+          </motion.div>
         )}
       </AnimatePresence>
     </header>
