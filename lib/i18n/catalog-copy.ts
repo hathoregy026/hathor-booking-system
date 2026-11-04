@@ -56,10 +56,15 @@ export function usdIn(locale: PublicLocale, formatted: string): string {
   return formatted.replace(/[,.]/g, (mark) => (mark === "," ? "." : ","));
 }
 
-/** Place names inside a route or sentence ("Luxor → Aswan" → "Luxor → Assuan"). */
+/**
+ * Place names inside a route or sentence ("Luxor → Aswan" → "Luxor → Assuan").
+ * Each language lists only the names it changes; Russian changes them all.
+ */
 export function placesIn(locale: PublicLocale, text: string): string {
   if (locale === "en") return text;
-  return text.replace(/\b(Aswan|Cairo)\b/g, (place) => PLACES[locale][place] ?? place);
+  const names = PLACES[locale];
+  const pattern = new RegExp(`\\b(${Object.keys(names).join("|")})\\b`, "g");
+  return text.replace(pattern, (place) => names[place] ?? place);
 }
 
 const WEEKDAYS_IT: Record<string, string> = {

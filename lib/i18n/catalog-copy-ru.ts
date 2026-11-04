@@ -2,80 +2,113 @@
 import type { AmenityCaption } from "@/lib/i18n/catalog-copy";
 
 export const VOYAGE_NAMES_RU: Record<string, string> = {
-  "3-nights-aswan-luxor": "3 Nächte / 4 Tage — von Assuan nach Luxor",
-  "4-nights-luxor-aswan": "4 Nächte / 5 Tage — von Luxor nach Assuan",
-  "7-nights-luxor-aswan-luxor": "7 Nächte / 8 Tage — von Luxor nach Assuan und zurück",
-  "nile-majesty": "Privatcharter — Nile Majesty",
+  "3-nights-aswan-luxor": "3 ночи / 4 дня — из Асуана в Луксор",
+  "4-nights-luxor-aswan": "4 ночи / 5 дней — из Луксора в Асуан",
+  "7-nights-luxor-aswan-luxor": "7 ночей / 8 дней — из Луксора в Асуан и обратно",
+  "nile-majesty": "Частный чартер — Nile Majesty",
 };
 
-export const PLACES_RU: Record<string, string> = { Aswan: "Assuan", Cairo: "Kairo" };
+/** English place names in a route and their Russian names. */
+export const PLACES_RU: Record<string, string> = {
+  Aswan: "Асуан",
+  Cairo: "Каир",
+  Luxor: "Луксор",
+  Esna: "Эсна",
+  Edfu: "Эдфу",
+  "Kom Ombo": "Ком-Омбо",
+};
 
+/** Every place in an English route, in Russian ("Luxor → Aswan" → «Луксор → Асуан»). */
+export const placesRu = (text: string) =>
+  text.replace(/\b(Kom Ombo|Luxor|Aswan|Cairo|Esna|Edfu)\b/g, (place) => PLACES_RU[place] ?? place);
+
+/** A departure day as a word inside a sentence: nominative, lower case («суббота»). */
 export const WEEKDAYS_RU: Record<string, string> = {
-  Monday: "Montag",
-  Tuesday: "Dienstag",
-  Wednesday: "Mittwoch",
-  Thursday: "Donnerstag",
-  Friday: "Freitag",
-  Saturday: "Samstag",
-  Sunday: "Sonntag",
+  Monday: "понедельник",
+  Tuesday: "вторник",
+  Wednesday: "среда",
+  Thursday: "четверг",
+  Friday: "пятница",
+  Saturday: "суббота",
+  Sunday: "воскресенье",
 };
+
+const EVERY_WEEKDAY_RU: Record<string, string> = {
+  понедельник: "по понедельникам",
+  вторник: "по вторникам",
+  среда: "по средам",
+  четверг: "по четвергам",
+  пятница: "по пятницам",
+  суббота: "по субботам",
+  воскресенье: "по воскресеньям",
+};
+
+/**
+ * A departure day as a repeating day, for "Departs Saturdays": «по субботам».
+ * Takes the English day ("Saturday", "Saturdays") or the Russian one («Суббота»).
+ */
+export function everyWeekdayRu(day: string): string {
+  const trimmed = day.trim();
+  const word = (WEEKDAYS_RU[trimmed.replace(/s$/, "")] ?? trimmed).toLowerCase();
+  return EVERY_WEEKDAY_RU[word] ?? word;
+}
 
 export const AMENITIES_RU: Record<string, string> = {
-  "LED Satellite Screen": "LED-Bildschirm mit Satellitenempfang",
-  "Bathtub or Walk-In Shower": "Badewanne oder begehbare Dusche",
-  "Safe box": "Safe",
-  "Tea & Coffee Facilities": "Tee- und Kaffeezubereitung",
-  Telephone: "Telefon",
-  "High-Speed Internet Access": "Highspeed-Internet",
-  "All cabins are non-smoking areas": "Alle Kabinen sind Nichtraucherkabinen",
-  "Panoramic Nile view": "Panoramablick auf den Nil",
-  "22 Square Metres": "22 Quadratmeter",
-  Minibar: "Minibar",
-  "Laundry Service": "Wäscheservice",
-  "Smart System": "Smart-System",
-  "Doctor On Call": "Arzt auf Abruf",
-  "Room Service": "Zimmerservice",
-  "Air Conditioner": "Klimaanlage",
-  "Hair Dryer": "Haartrockner",
-  "Jacuzzi & dual toilets": "Jacuzzi und zwei Toiletten",
-  "Hair dryer & mini bar": "Haartrockner und Minibar",
-  "Smart entertainment system": "Smart-Entertainment-System",
-  "Room & laundry service": "Zimmer- und Wäscheservice",
-  "Air conditioning & high-speed Wi-Fi": "Klimaanlage und schnelles WLAN",
-  "Jacuzzi & two luxurious bathrooms": "Jacuzzi und zwei luxuriöse Badezimmer",
-  "Coffee machine, mini bar, air conditioning": "Kaffeemaschine, Minibar, Klimaanlage",
+  "LED Satellite Screen": "Светодиодный экран со спутниковым ТВ",
+  "Bathtub or Walk-In Shower": "Ванна или душ открытого типа",
+  "Safe box": "Сейф",
+  "Tea & Coffee Facilities": "Принадлежности для чая и кофе",
+  Telephone: "Телефон",
+  "High-Speed Internet Access": "Высокоскоростной интернет",
+  "All cabins are non-smoking areas": "Курение во всех каютах запрещено",
+  "Panoramic Nile view": "Панорамный вид на Нил",
+  "22 Square Metres": "22 квадратных метра",
+  Minibar: "Мини-бар",
+  "Laundry Service": "Услуги прачечной",
+  "Smart System": "Умная система управления",
+  "Doctor On Call": "Врач по вызову",
+  "Room Service": "Обслуживание в каюте",
+  "Air Conditioner": "Кондиционер",
+  "Hair Dryer": "Фен",
+  "Jacuzzi & dual toilets": "Джакузи и два туалета",
+  "Hair dryer & mini bar": "Фен и мини-бар",
+  "Smart entertainment system": "Умная развлекательная система",
+  "Room & laundry service": "Обслуживание в каюте и прачечная",
+  "Air conditioning & high-speed Wi-Fi": "Кондиционер и высокоскоростной Wi-Fi",
+  "Jacuzzi & two luxurious bathrooms": "Джакузи и две роскошные ванные комнаты",
+  "Coffee machine, mini bar, air conditioning": "Кофемашина, мини-бар, кондиционер",
 };
 
 export const AMENITY_KIND_CAPTIONS_RU: Record<string, AmenityCaption> = {
-  screen: { wide: "TV", tight: "TV" },
-  bath: { wide: "Bad / Dusche", tight: "Bad" },
-  safe: { wide: "Safe", tight: "Safe" },
-  coffee: { wide: "Tee und Kaffee", tight: "Kaffee" },
-  wifi: { wide: "WLAN", tight: "WLAN" },
-  phone: { wide: "Telefon", tight: "Telefon" },
-  minibar: { wide: "Minibar", tight: "Minibar" },
-  laundry: { wide: "Wäscheservice", tight: "Wäsche" },
-  smart: { wide: "Smart-Steuerung", tight: "Smart" },
-  doctor: { wide: "Arzt", tight: "Arzt" },
-  service: { wide: "Zimmerservice", tight: "Service" },
-  ac: { wide: "Klimaanlage", tight: "Klima" },
-  hair: { wide: "Haartrockner", tight: "Föhn" },
-  view: { wide: "Nilblick", tight: "Nilblick" },
-  jacuzzi: { wide: "Jacuzzi", tight: "Jacuzzi" },
-  smoke: { wide: "Nichtraucher", tight: "Rauchfrei" },
-  space: { wide: "Wohnfläche", tight: "Fläche" },
+  screen: { wide: "ТВ", tight: "ТВ" },
+  bath: { wide: "Ванна / душ", tight: "Ванна" },
+  safe: { wide: "Сейф", tight: "Сейф" },
+  coffee: { wide: "Чай и кофе", tight: "Кофе" },
+  wifi: { wide: "Wi-Fi", tight: "Wi-Fi" },
+  phone: { wide: "Телефон", tight: "Телефон" },
+  minibar: { wide: "Мини-бар", tight: "Мини-бар" },
+  laundry: { wide: "Прачечная", tight: "Прачечная" },
+  smart: { wide: "Умное управление", tight: "Смарт" },
+  doctor: { wide: "Врач", tight: "Врач" },
+  service: { wide: "Рум-сервис", tight: "Сервис" },
+  ac: { wide: "Кондиционер", tight: "Климат" },
+  hair: { wide: "Фен", tight: "Фен" },
+  view: { wide: "Вид на Нил", tight: "Вид на Нил" },
+  jacuzzi: { wide: "Джакузи", tight: "Джакузи" },
+  smoke: { wide: "Для некурящих", tight: "Без курения" },
+  space: { wide: "Площадь", tight: "Площадь" },
   default: { wide: "", tight: "" },
 };
 
 export const AMENITY_CAPTION_OVERRIDES_RU: Record<string, AmenityCaption> = {
-  "jacuzzi & dual toilets": { wide: "Jacuzzi und 2 WCs", tight: "Jacuzzi, WC" },
-  "jacuzzi & two luxurious bathrooms": { wide: "Jacuzzi und Bäder", tight: "Jacuzzi, Bad" },
-  "hair dryer & mini bar": { wide: "Föhn und Minibar", tight: "Föhn, Bar" },
-  "smart entertainment system": { wide: "Smart-System", tight: "Smart" },
-  "room & laundry service": { wide: "Zimmer und Wäsche", tight: "Wäsche" },
-  "air conditioning & high-speed wi-fi": { wide: "Klima und WLAN", tight: "Klima, WLAN" },
+  "jacuzzi & dual toilets": { wide: "Джакузи и 2 туалета", tight: "Джакузи, WC" },
+  "jacuzzi & two luxurious bathrooms": { wide: "Джакузи и ванные", tight: "Джакузи, ванные" },
+  "hair dryer & mini bar": { wide: "Фен и мини-бар", tight: "Фен и бар" },
+  "smart entertainment system": { wide: "Смарт-система", tight: "Смарт" },
+  "room & laundry service": { wide: "Сервис и прачечная", tight: "Прачечная" },
+  "air conditioning & high-speed wi-fi": { wide: "Кондиционер и Wi-Fi", tight: "Климат, Wi-Fi" },
   "coffee machine, mini bar, air conditioning": {
-    wide: "Kaffee · Bar · Klima",
-    tight: "Kaffee, Bar",
+    wide: "Кофе · Бар · Климат",
+    tight: "Кофе и бар",
   },
 };

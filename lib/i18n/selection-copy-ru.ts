@@ -1,89 +1,103 @@
 /** The selection sheet and the Add to My Voyage dialog in Russian; see selection-copy.ts. */
 
 import { describeRoomTypesOnCruise } from "@/lib/booking-search-config";
-import { placesIn, weekdayIn } from "@/lib/i18n/catalog-copy";
+import { everyWeekdayRu, placesRu } from "@/lib/i18n/catalog-copy-ru";
+import { DAYS_RU, NIGHTS_RU, countRu, upToGuestsRu } from "@/lib/i18n/format-ru";
 import type { SelectionCopy, SummaryWords } from "@/lib/i18n/selection-copy";
+
+/** "До 4 гостей": the capacity at the start of a line. */
+const upToRu = (capacity: number) => {
+  const text = upToGuestsRu(capacity);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
 
 export const SELECTION_COPY_RU: SelectionCopy = {
   dateLocale: "ru-RU",
-  eyebrow: "Ihre Auswahl",
-  tabsLabel: "Auswahl",
-  favoritesTab: "Favoriten",
-  closeSelection: "Auswahl schließen",
-  close: "Schließen",
-  nothingSaved: "Noch nichts gemerkt",
+  eyebrow: "Ваш выбор",
+  tabsLabel: "Выбранное",
+  favoritesTab: "Избранное",
+  closeSelection: "Закрыть панель выбора",
+  close: "Закрыть",
+  nothingSaved: "Пока ничего не сохранено",
   nothingSavedBody:
-    "Entdecken Sie die Reisen, Kabinen und Suiten der Hathor und merken Sie sich, was Sie anspricht: Hier finden Sie alles wieder, wenn Sie zurückkommen.",
-  exploreHathor: "Hathor entdecken",
-  viewDetails: "Details",
-  remove: "Entfernen",
-  removeLabel: (title) => `${title} aus den Favoriten entfernen`,
-  decrease: (label) => `${label}: eine Person weniger`,
-  increase: (label) => `${label}: eine Person mehr`,
-  chooseVoyage: "Wählen Sie eine Reise, um Ihre Auswahl abzuschließen.",
+    "Познакомьтесь с путешествиями, каютами и люксами Hathor и сохраните то, что вам по душе. Все это будет ждать вас здесь, когда вы вернетесь.",
+  exploreHathor: "Познакомиться с Hathor",
+  viewDetails: "Подробнее",
+  remove: "Удалить",
+  removeLabel: (title) => `Удалить ${title} из избранного`,
+  decrease: (label) => `${label}: на одного меньше`,
+  increase: (label) => `${label}: на одного больше`,
+  chooseVoyage: "Выберите путешествие, чтобы завершить выбор.",
   journeyOffers: (duration) => {
+    // The catalog names the accommodation types in English; only the words around them change.
     const types = describeRoomTypesOnCruise(duration);
-    return `Diese Reise bietet ${types === "a different room type" ? "einen anderen Unterkunftstyp" : types}.`;
+    return types === "a different room type"
+      ? "В этом путешествии предлагается другой тип размещения."
+      : `В этом путешествии доступны: ${types.replace(/\bLuxury Rooms\b/, "каюты люкс").replace(/, or /, " или ")}.`;
   },
-  beginsTitle: "Ihre Reise beginnt hier",
+  beginsTitle: "Ваше путешествие начинается здесь",
   beginsBody:
-    "Wählen Sie Route und Unterkunft und gestalten Sie so Ihr Erlebnis an Bord der Hathor.",
-  exploreVoyages: "Reisen entdecken",
-  journey: "Route",
-  ports: (ports) => placesIn("de", ports),
-  nightsDays: (nights, days) => `${nights} Nächte / ${days} Tage`,
-  departs: (day) => `Abfahrt am ${weekdayIn("de", day)}`,
-  sailing: (date) => `Einschiffung: ${date}`,
-  changeJourney: "Route ändern",
-  accommodation: "Unterkunft",
-  upTo: (capacity) => `Bis zu ${capacity} Gäste`,
-  sizeCapacity: (sizeSqm, capacity) => `${sizeSqm} m² · Bis zu ${capacity} Gäste`,
-  voyageType: "Reise",
-  charterType: "Charter",
-  viewSuite: "Suite ansehen",
-  guests: "Gäste",
-  adults: "Erwachsene",
-  children: "Kinder",
-  partyNote: "Ihre ganze Gruppe. Die Kabinen wählen Sie im weiteren Buchungsverlauf.",
-  privateCharter: "Privatcharter",
-  charterMeta: "Die Dahabiya ganz für Sie allein.",
-  viewCharter: "Charter ansehen",
-  indicativeFrom: "Richtpreis ab",
+    "Выберите маршрут и размещение, чтобы начать создавать свое путешествие на борту Hathor.",
+  exploreVoyages: "Смотреть маршруты",
+  journey: "Путешествие",
+  ports: (ports) => placesRu(ports),
+  nightsDays: (nights, days) => `${countRu(nights, NIGHTS_RU)} / ${countRu(days, DAYS_RU)}`,
+  departs: (day) => `Отправление ${everyWeekdayRu(day)}`,
+  sailing: (date) => `Рейс: ${date}`,
+  changeJourney: "Изменить маршрут",
+  accommodation: "Размещение",
+  upTo: (capacity) => upToRu(capacity),
+  sizeCapacity: (sizeSqm, capacity) => `${sizeSqm} м² · ${upToRu(capacity)}`,
+  voyageType: "Путешествие",
+  charterType: "Чартер",
+  viewSuite: "Смотреть люкс",
+  guests: "Гости",
+  adults: "Взрослые",
+  children: "Дети",
+  partyNote: "Вся ваша группа. Каюты для гостей вы выберете, когда продолжите бронирование.",
+  privateCharter: "Частный чартер",
+  charterMeta: "Дахабия только для вас.",
+  viewCharter: "Смотреть чартер",
+  indicativeFrom: "Ориентировочно от",
   priceNote:
-    "Unverbindlicher Katalogpreis pro Kabine. Endpreis und Verfügbarkeit bestätigt Ihnen unsere Reservierung.",
-  requestVoyage: "Diese Reise anfragen",
-  continueBooking: "Buchung fortsetzen",
-  continueExploring: "Weiter entdecken",
-  changeTitle: "Wenn Sie die Reise ändern, kann sich Ihre gewählte Unterkunft ändern.",
+    "Ориентировочная цена по каталогу за каюту. Окончательную стоимость и наличие мест подтверждает наш отдел бронирования.",
+  requestVoyage: "Запросить это путешествие",
+  continueBooking: "Продолжить бронирование",
+  continueExploring: "Продолжить знакомство",
+  changeTitle: "При смене путешествия выбранное размещение может измениться.",
   changeBody: (voyage) =>
-    `${voyage} bietet Ihre aktuelle Unterkunft nicht an. Wenn Sie fortfahren, wird die neue Route übernommen und die Unterkunft zurückgesetzt, damit Sie neu wählen können.`,
-  continue: "Fortfahren",
-  keepCurrent: "Aktuelle Reise behalten",
-  toCharterTitle: "Mit dem Wechsel zum Privatcharter wird Ihre gewählte Route gelöscht.",
+    `На маршруте ${voyage} нет вашего текущего размещения. Если вы продолжите, новое путешествие сохранится, а размещение будет сброшено, чтобы вы могли выбрать его заново.`,
+  continue: "Продолжить",
+  keepCurrent: "Оставить текущее путешествие",
+  toCharterTitle: "При переходе на частный чартер выбранное путешествие будет сброшено.",
   toCharterBody:
-    "Beim Privatcharter gehört Ihrer Gruppe die ganze Dahabiya mit eigener Route. Er ersetzt daher die Reise mit festem Termin und die Unterkunft in Meiner Reise.",
-  fromCharterTitle: "Mit einer Reise mit festem Termin entfällt Ihr Privatcharter.",
+    "Частный чартер предоставляет вашей группе всю дахабию с собственным маршрутом, поэтому он заменяет путешествие по расписанию и размещение в разделе «Мое путешествие».",
+  fromCharterTitle: "При выборе путешествия по расписанию частный чартер будет удален.",
   fromCharterBody:
-    "Meine Reise enthält entweder einen Privatcharter oder eine Reise mit festem Termin. Wenn Sie fortfahren, wird der Charter entfernt und stattdessen diese Auswahl hinzugefügt.",
-  keepCharter: "Privatcharter behalten",
+    "В разделе «Мое путешествие» может быть либо частный чартер, либо путешествие по расписанию. Если вы продолжите, чартер будет удален, а вместо него добавится этот выбор.",
+  keepCharter: "Оставить частный чартер",
 };
 
+/*
+ * These are fixed replacement patterns ($1, $2 are the numbers), so the counts
+ * use abbreviations that read right with any number: «3 ноч. / 4 дн.», «2 взр.».
+ */
 export const SUMMARY_WORDS_RU: SummaryWords = {
   labels: {
-    "Enquiry type": "Art der Anfrage",
-    "Selected Journey": "Gewählte Reise",
-    Route: "Route",
-    Duration: "Dauer",
-    "Departure day": "Abfahrtstag",
-    "Selected Accommodation": "Gewählte Unterkunft",
-    "Accommodation detail": "Details zur Unterkunft",
-    Guests: "Gäste",
-    "Guest also saved": "Außerdem gemerkt",
+    "Enquiry type": "Тип запроса",
+    "Selected Journey": "Выбранное путешествие",
+    Route: "Маршрут",
+    Duration: "Продолжительность",
+    "Departure day": "День отправления",
+    "Selected Accommodation": "Выбранное размещение",
+    "Accommodation detail": "Подробности размещения",
+    Guests: "Гости",
+    "Guest also saved": "Также в избранном",
   },
-  notCarriedOver: "Nicht übernommen: Die gemerkte Unterkunft ist auf dieser Route nicht verfügbar.",
-  privateCharter: "Privatcharter",
-  nightsDays: "$1 Nächte / $2 Tage",
-  nightsShort: "($1 Nächte, ",
-  upToGuests: "bis zu $1 Gäste",
-  guestWords: { Adult: "Erwachsener", Adults: "Erwachsene", Child: "Kind", Children: "Kinder" },
+  notCarriedOver: "Не перенесено — сохраненное размещение не предлагается на этом маршруте.",
+  privateCharter: "Частный чартер",
+  nightsDays: "$1 ноч. / $2 дн.",
+  nightsShort: "($1 ноч., ",
+  upToGuests: "до $1 гостей",
+  guestWords: { Adult: "взр.", Adults: "взр.", Child: "реб.", Children: "реб." },
 };
