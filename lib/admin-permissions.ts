@@ -33,7 +33,7 @@ export function hasAdminPermission(access: AdminAccess, requirement: AdminRequir
   return false;
 }
 const API_AREAS: Record<string, AdminArea> = {
-  dashboard: "dashboard", analytics: "analytics", bookings: "bookings", "closure-bookings": "bookings", inbox: "inbox",
+  dashboard: "dashboard", analytics: "analytics", bookings: "bookings", "closure-bookings": "bookings", charters: "bookings", search: "bookings", inbox: "inbox",
   notifications: "bookings", "cabin-closures": "availability", inventory: "availability",
   cruises: "cruises", rooms: "cruises", "cabin-prices": "prices", "sailing-prices": "prices",
   content: "website", images: "website", "website-text": "website", typography: "website",

@@ -12,6 +12,9 @@ type DashboardStats = {
   confirmedBookings: number;
   pendingBookings: number;
   totalCruises: number;
+  /** Booked value of every confirmed booking: website bookings plus sales closed on Availability. */
+  confirmedRevenueCents: number;
+  confirmedRevenueCount: number;
 };
 
 const EMPTY_STATS: DashboardStats = {
@@ -19,6 +22,8 @@ const EMPTY_STATS: DashboardStats = {
   confirmedBookings: 0,
   pendingBookings: 0,
   totalCruises: 0,
+  confirmedRevenueCents: 0,
+  confirmedRevenueCount: 0,
 };
 
 function computeTotalCents(
@@ -51,7 +56,20 @@ export async function GET() {
           (SELECT COUNT(*)::int FROM "Booking" WHERE "deletedAt" IS NULL) AS "totalBookings",
           (SELECT COUNT(*)::int FROM "Booking" WHERE status = 'CONFIRMED' AND "deletedAt" IS NULL) AS "confirmedBookings",
           (SELECT COUNT(*)::int FROM "Booking" WHERE status = 'PENDING_HOLD' AND "deletedAt" IS NULL) AS "pendingBookings",
-          (SELECT COUNT(*)::int FROM "Cruise" WHERE "deletedAt" IS NULL) AS "totalCruises"
+          (SELECT COUNT(*)::int FROM "Cruise" WHERE "deletedAt" IS NULL) AS "totalCruises",
+          (
+            (SELECT COALESCE(SUM(COALESCE(b."totalPriceCents", (SELECT SUM(br."unitPriceCents") FROM "BookingRoom" br WHERE br."bookingId" = b.id), 0)), 0)
+               FROM "Booking" b WHERE b.status = 'CONFIRMED' AND b."deletedAt" IS NULL)
+            +
+            (SELECT COALESCE(SUM(d."totalPriceCents"), 0) FROM "ClosureBooking" d
+              WHERE EXISTS (SELECT 1 FROM "InventoryAllocation" a WHERE a."blockKey" = d."blockKey" AND a.active AND a."bookingRoomId" IS NULL))
+          )::float8 AS "confirmedRevenueCents",
+          (
+            (SELECT COUNT(*) FROM "Booking" WHERE status = 'CONFIRMED' AND "deletedAt" IS NULL)
+            +
+            (SELECT COUNT(*) FROM "ClosureBooking" d
+              WHERE EXISTS (SELECT 1 FROM "InventoryAllocation" a WHERE a."blockKey" = d."blockKey" AND a.active AND a."bookingRoomId" IS NULL))
+          )::int AS "confirmedRevenueCount"
       `,
       ),
       withDb(() =>

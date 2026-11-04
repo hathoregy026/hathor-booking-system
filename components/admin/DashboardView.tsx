@@ -32,6 +32,8 @@ type DashboardStats = {
   confirmedBookings: number;
   pendingBookings: number;
   totalCruises: number;
+  confirmedRevenueCents?: number;
+  confirmedRevenueCount?: number;
 };
 
 type RecentBooking = {
@@ -192,21 +194,9 @@ export function DashboardView() {
   const refreshActivity = useCallback(() => { void loadDashboard(stats !== null); }, [loadDashboard, stats]);
   useAdminActivityRefresh("bookings", refreshActivity, isLoading);
 
-  // NOTE: this sums only the CONFIRMED rows inside `recentBookings`, which the
-  // API caps at the latest few. It is deliberately labelled "Recent Revenue"
-  // rather than "Revenue" so the tile does not overstate what it measures.
-  const recentRevenueCents = useMemo(
-    () =>
-      recentBookings
-        .filter((booking) => booking.status === "CONFIRMED")
-        .reduce((sum, booking) => sum + booking.totalPriceCents, 0),
-    [recentBookings],
-  );
-
-  const confirmedRecentCount = useMemo(
-    () => recentBookings.filter((booking) => booking.status === "CONFIRMED").length,
-    [recentBookings],
-  );
+  // Every confirmed booking: website bookings once confirmed, and sales closed on Availability.
+  const confirmedRevenueCents = stats?.confirmedRevenueCents ?? 0;
+  const confirmedRevenueCount = stats?.confirmedRevenueCount ?? 0;
 
   const confirmedRate = useMemo(() => {
     if (!stats || stats.totalBookings === 0) return null;
@@ -289,13 +279,13 @@ export function DashboardView() {
         <motion.div className="col-span-2 lg:row-span-2" {...tileMotion}>
           <StatCard
             feature
-            label="Recent Revenue"
-            value={formatPrice(recentRevenueCents)}
+            label="Confirmed revenue"
+            value={formatPrice(confirmedRevenueCents)}
             icon={DollarSign}
             hint={
-              confirmedRecentCount > 0
-                ? `From ${confirmedRecentCount} confirmed booking${confirmedRecentCount === 1 ? "" : "s"} in the latest batch`
-                : "No confirmed bookings in the latest batch"
+              confirmedRevenueCount > 0
+                ? `From ${confirmedRevenueCount} confirmed booking${confirmedRevenueCount === 1 ? "" : "s"}, website and manual`
+                : "No confirmed bookings yet"
             }
             isLoading={isLoading}
             className="h-full"

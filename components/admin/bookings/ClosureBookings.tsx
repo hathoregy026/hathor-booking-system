@@ -3,12 +3,13 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { format, formatDistanceToNow, parseISO } from "date-fns";
-import { ChevronDown, ExternalLink, Loader2, LockOpen, PencilLine } from "lucide-react";
+import { Anchor, ChevronDown, ExternalLink, Loader2, LockOpen, Mail, PencilLine } from "lucide-react";
 import { BookingsColumns, BookingsGroup } from "@/components/admin/BookingsListView";
 import { useAdminPermission } from "@/components/admin/AdminAccessProvider";
 import { useToast } from "@/components/admin/ToastProvider";
 import { CLOSURE_SALE_SOURCES, type AdminClosureBooking, type ClosureSale } from "@/lib/admin-bookings";
 import { adminFetch } from "@/lib/admin-fetch";
+import { charterRequestHref, type CharterRequestDto } from "@/lib/admin-charters";
 import { formatPrice } from "@/lib/client-dates";
 import { Dialog, Field, Footer } from "./BookingActions";
 import { voyageDates, voyageTiming } from "./BookingCard";
@@ -58,16 +59,17 @@ function ClosureRow({
       ? { text: "Paid in full", tone: "good" as const }
       : { text: `${formatPrice(balance)} to collect · ${formatPrice(sale.receivedCents)} received` };
   const editLabel = !sale ? "Add guest details" : balance > 0 ? "Update payment" : "Edit details";
+  const charter = closure.state === "CHARTER_BLOCK";
 
   return (
-    <article className="bk-entry" data-stage={sale ? "confirmed" : "hold"} data-open={expanded ? "true" : undefined}>
+    <article className="bk-entry" data-stage={sale ? "confirmed" : "hold"} data-charter={charter ? "true" : undefined} data-open={expanded ? "true" : undefined}>
       <div className="bk-row">
         <span />
         <div className="bk-row__guest">
-          <span className="bk-avatar" aria-hidden>{closure.wholeShip ? "PC" : closure.roomIds.length}</span>
+          <span className="bk-avatar" aria-hidden>{charter ? <Anchor className="h-4 w-4" /> : closure.wholeShip ? "PC" : closure.roomIds.length}</span>
           <div className="min-w-0">
-            <p className="truncate font-semibold">{name}</p>
-            <p className="truncate text-xs text-muted">Via Availability{sale ? ` · ${sale.source}` : ""}</p>
+            <p className="flex min-w-0 items-center gap-2 font-semibold"><span className="truncate">{name}</span>{charter ? <span className="bk-charter-badge">Charter</span> : null}</p>
+            <p className="truncate text-xs text-muted">{charter ? "Private charter" : "Via Availability"}{sale ? ` · ${sale.source}` : ""}</p>
           </div>
         </div>
         <div className="bk-row__cell">
@@ -147,6 +149,43 @@ function ClosureRow({
           </footer>
         </div>
       ) : null}
+    </article>
+  );
+}
+
+/** A request from the website's charter form; the reply happens in Emails. */
+function CharterRequestRow({ request }: { request: CharterRequestDto }) {
+  return (
+    <article className="bk-entry" data-stage="new" data-charter="true">
+      <div className="bk-row">
+        <span />
+        <div className="bk-row__guest">
+          <span className="bk-avatar" aria-hidden><Anchor className="h-4 w-4" /></span>
+          <div className="min-w-0">
+            <p className="flex min-w-0 items-center gap-2 font-semibold"><span className="truncate">{request.name}</span><span className="bk-charter-badge">Charter</span></p>
+            <p className="truncate text-xs text-muted">Website charter request</p>
+          </div>
+        </div>
+        <div className="bk-row__cell">
+          <p className="truncate font-medium" title={request.subject}>{request.subject}</p>
+          <p className="truncate text-xs text-muted" title={request.preview}>{request.preview || "Open the request to read it."}</p>
+        </div>
+        <div className="bk-row__cell">
+          <p className="truncate font-medium">{request.email}</p>
+          <p className="truncate text-xs text-muted">{request.read ? "Read" : "Unread"}</p>
+        </div>
+        <div className="bk-row__cell">
+          <span className="font-semibold tabular" title={format(parseISO(request.createdAt), "d MMM yyyy, HH:mm")}>{format(parseISO(request.createdAt), "d MMM yyyy")}</span>
+          <p className="mt-0.5 truncate text-xs text-muted">Received {formatDistanceToNow(parseISO(request.createdAt), { addSuffix: true })}</p>
+        </div>
+        <div className="bk-row__actions">
+          <Link href={charterRequestHref(request.id)} className="btn-primary h-9 px-3 text-[13px]">
+            <Mail className="h-4 w-4" aria-hidden />
+            Open request
+          </Link>
+          <span />
+        </div>
+      </div>
     </article>
   );
 }
@@ -327,7 +366,20 @@ export function SaleDialog({
   );
 }
 
-export function ClosureBookingsList({ closures, loadFailed, onChanged }: { closures: AdminClosureBooking[]; loadFailed: boolean; onChanged: () => void }) {
+export function ClosureBookingsList({
+  closures,
+  loadFailed,
+  onChanged,
+  mode = "availability",
+  requests = [],
+}: {
+  closures: AdminClosureBooking[];
+  loadFailed: boolean;
+  onChanged: () => void;
+  /** "charter": whole-ship charters plus the website's charter requests. */
+  mode?: "availability" | "charter";
+  requests?: CharterRequestDto[];
+}) {
   const { showToast } = useToast();
   const [expanded, setExpanded] = useState<string | null>(null);
   const [editing, setEditing] = useState<AdminClosureBooking | null>(null);
@@ -357,16 +409,20 @@ export function ClosureBookingsList({ closures, loadFailed, onChanged }: { closu
       </div>
     );
   }
-  if (closures.length === 0) {
+  if (closures.length === 0 && requests.length === 0) {
     return (
       <div className="card flex flex-col items-center justify-center gap-2 px-4 py-16 text-center">
         <p className="text-sm font-medium">Nothing here</p>
-        <p className="text-sm text-muted">No cabins are closed for sales made outside the website.</p>
+        <p className="text-sm text-muted">{mode === "charter"
+          ? "No charters yet. Charter requests from the website and charters closed on Availability appear here."
+          : "No cabins are closed for sales made outside the website."}</p>
       </div>
     );
   }
 
-  const groups = [
+  const groups = mode === "charter" ? [
+    { id: "charters", title: "Charters on the calendar", hint: "The whole ship, closed on Availability", closures },
+  ].filter(group => group.closures.length > 0) : [
     { id: "missing", title: "Needs guest details", hint: "Closed on Availability, no guest or price yet", closures: closures.filter(closure => !closure.sale) },
     { id: "complete", title: "Details complete", hint: "Tracked with your other bookings", closures: closures.filter(closure => closure.sale) },
   ].filter(group => group.closures.length > 0);
@@ -374,6 +430,11 @@ export function ClosureBookingsList({ closures, loadFailed, onChanged }: { closu
   return (
     <div className="space-y-3">
       <BookingsColumns />
+      {mode === "charter" && requests.length ? (
+        <BookingsGroup title="Website charter requests" hint="Sent through the charter form, newest first" count={requests.length}>
+          {requests.map(request => <CharterRequestRow key={request.id} request={request} />)}
+        </BookingsGroup>
+      ) : null}
       {groups.map(group => (
         <BookingsGroup key={group.id} title={group.title} hint={group.hint} count={group.closures.length}>
           {group.closures.map(closure => (
@@ -388,7 +449,9 @@ export function ClosureBookingsList({ closures, loadFailed, onChanged }: { closu
           ))}
         </BookingsGroup>
       ))}
-      <p className="px-0.5 text-xs text-muted">Maintenance closures stay on the Availability page. They are not sales, so they do not appear here.</p>
+      <p className="px-0.5 text-xs text-muted">{mode === "charter"
+        ? "To hold the ship for a charter, close it as Charter on Availability. Requests stay in Emails, where you reply to them."
+        : "Maintenance closures stay on the Availability page, and charters have their own list. They do not appear here."}</p>
       {editing ? (
         <SaleDialog
           key={editing.blockKey}

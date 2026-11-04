@@ -4430,10 +4430,10 @@ textarea.wt-field__input {
   gap: 0.6rem;
 }
 @media (min-width: 640px) {
-  .admin-shell .bk-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .admin-shell .bk-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
-@media (min-width: 1180px) {
-  .admin-shell .bk-tiles { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (min-width: 1400px) {
+  .admin-shell .bk-tiles { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 }
 .admin-shell .bk-tile {
   display: flex;
@@ -4483,7 +4483,6 @@ textarea.wt-field__input {
   justify-content: center;
   gap: 0.5rem;
   height: 2.5rem;
-  min-width: 7.5rem;
   padding: 0 1rem;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
@@ -4497,6 +4496,29 @@ textarea.wt-field__input {
 .admin-shell .bk-view__btn:hover { border-color: var(--border-strong, var(--accent)); }
 .admin-shell .bk-view__btn:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .admin-shell .bk-view__btn.is-on { border-color: var(--accent); background: var(--accent); color: #ffffff; }
+.admin-shell .bk-view__count { margin-left: 0.125rem; opacity: 0.7; }
+.admin-shell .bk-view .bk-view__btn { min-width: 7.5rem; }
+/* Charters stand apart from cabin bookings: blue rule, anchor avatar, badge. */
+.admin-shell .bk-entry[data-charter="true"] { box-shadow: inset 3px 0 0 var(--info); }
+.admin-shell .bk-entry[data-charter="true"] .bk-avatar { background: color-mix(in srgb, var(--info) 16%, transparent); color: var(--info); }
+.admin-shell .bk-charter-badge {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 1.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--info) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--info) 12%, transparent);
+  color: var(--info);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.admin-shell .bk-view__btn--danger { border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); color: var(--danger); }
+.admin-shell .bk-view__btn--danger:hover { border-color: var(--danger); }
+.admin-shell .bk-view__btn--danger.is-on { border-color: var(--danger); background: var(--danger); color: #ffffff; }
 @media (prefers-reduced-motion: reduce) { .admin-shell .bk-view__btn { transition: none; } }
 
 .admin-shell .bk-group {

@@ -11,11 +11,12 @@ import { ManualBookingDialog } from "@/components/admin/bookings/ManualBooking";
 import { useAdminPermission } from "@/components/admin/AdminAccessProvider";
 import { useToast } from "@/components/admin/ToastProvider";
 import type { AdminBookingDto, AdminBookingStage, AdminClosureBooking } from "@/lib/admin-bookings";
+import type { CharterRequestDto } from "@/lib/admin-charters";
 import { formatPrice } from "@/lib/client-dates";
 import { ADMIN_BOOKINGS_TIMEOUT_MS, adminFetch, isTransientFetchError } from "@/lib/admin-fetch";
 import { useAdminActivityRefresh } from "@/hooks/useAdminActivityRefresh";
 
-type StageFilter = "all" | "new" | "invoiced" | "confirmed" | "availability" | "closed" | "other";
+type StageFilter = "all" | "new" | "invoiced" | "confirmed" | "availability" | "charter" | "closed" | "other";
 type ViewMode = "active" | "bin";
 type LayoutView = "list" | "calendar";
 
@@ -28,11 +29,12 @@ const FILTERS: { id: StageFilter; label: string; hint: string; stages: AdminBook
   { id: "invoiced", label: "Awaiting payment", hint: "Invoice sent, deposit not in", stages: ["invoiced"], empty: "No invoices waiting for payment." },
   { id: "confirmed", label: "Confirmed", hint: "Deposit or more received", stages: ["confirmed", "paid"], empty: "No confirmed bookings yet." },
   { id: "availability", label: "Via Availability", hint: "Sold outside the website", stages: [], empty: "" },
+  { id: "charter", label: "Charters", hint: "Whole ship and requests", stages: [], empty: "" },
   { id: "closed", label: "Cancelled", hint: "Cancelled and declined", stages: ["declined", "cancelled"], empty: "Nothing cancelled or declined." },
   { id: "other", label: "Holds & expired", hint: "", stages: ["hold", "expired"], empty: "No checkout holds or expired attempts." },
 ];
 
-const STAGE_GROUPS: Record<Exclude<StageFilter, "availability">, { id: string; title: string; hint: string; stages: AdminBookingStage[] }[]> = {
+const STAGE_GROUPS: Record<Exclude<StageFilter, "availability" | "charter">, { id: string; title: string; hint: string; stages: AdminBookingStage[] }[]> = {
   all: [
     { id: "new", title: "New requests", hint: "Review, then confirm to send the invoice", stages: ["new"] },
     { id: "invoiced", title: "Awaiting payment", hint: "Invoice sent, deposit not in yet", stages: ["invoiced"] },
@@ -84,7 +86,9 @@ function AdminBookingsPageInner() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [isBulkWorking, setIsBulkWorking] = useState(false);
-  const [filter, setFilter] = useState<StageFilter>("all");
+  const listParam = searchParams.get("list");
+  const [filter, setFilter] = useState<StageFilter>(() => (listParam === "charter" ? "charter" : "all"));
+  const [charterRequests, setCharterRequests] = useState<CharterRequestDto[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("active");
   const [layoutView, setLayoutView] = useState<LayoutView>("list");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -143,7 +147,25 @@ function AdminBookingsPageInner() {
     }
   }, [showToast, viewMode]);
 
+  // The header's charter alert links here with ?list=charter.
+  useEffect(() => {
+    if (listParam === "charter") {
+      queueMicrotask(() => { setViewMode("active"); setLayoutView("list"); setFilter("charter"); });
+    }
+  }, [listParam]);
+
+  const loadCharters = useCallback(async () => {
+    try {
+      const response = await adminFetch("/api/admin/charters", { cache: "no-store" });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && Array.isArray(data.requests)) setCharterRequests(data.requests);
+    } catch {
+      /* the charter list still shows what Availability holds */
+    }
+  }, []);
+
   const loadClosures = useCallback(async () => {
+    void loadCharters();
     try {
       const response = await adminFetch("/api/admin/closure-bookings", {}, ADMIN_BOOKINGS_TIMEOUT_MS);
       const data = await response.json();
@@ -153,7 +175,7 @@ function AdminBookingsPageInner() {
     } catch {
       setClosuresFailed(true);
     }
-  }, []);
+  }, [loadCharters]);
 
   useEffect(() => {
     void loadBookings(); // eslint-disable-line react-hooks/set-state-in-effect -- dashboard data load
@@ -203,20 +225,33 @@ function AdminBookingsPageInner() {
     );
   }, [closures, query]);
 
+  const availabilityClosures = useMemo(() => searchedClosures.filter((closure) => closure.state !== "CHARTER_BLOCK"), [searchedClosures]);
+  const charterClosures = useMemo(() => searchedClosures.filter((closure) => closure.state === "CHARTER_BLOCK"), [searchedClosures]);
+  const searchedRequests = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return charterRequests;
+    return charterRequests.filter((request) => [request.name, request.email, request.subject, request.preview].join(" ").toLowerCase().includes(needle));
+  }, [charterRequests, query]);
+
   const counts = useMemo(() => {
     const map = new Map<StageFilter, number>();
     for (const entry of FILTERS) {
-      map.set(entry.id, entry.id === "availability" ? searchedClosures.length : searched.filter((booking) => entry.stages.includes(booking.stage)).length);
+      map.set(
+        entry.id,
+        entry.id === "availability" ? availabilityClosures.length
+          : entry.id === "charter" ? charterClosures.length + searchedRequests.length
+            : searched.filter((booking) => entry.stages.includes(booking.stage)).length,
+      );
     }
     return map;
-  }, [searched, searchedClosures]);
+  }, [searched, availabilityClosures, charterClosures, searchedRequests]);
 
   const activeFilter = FILTERS.find((entry) => entry.id === filter) ?? FILTERS[0]!;
-  const showingClosures = viewMode === "active" && filter === "availability";
+  const showingClosures = viewMode === "active" && (filter === "availability" || filter === "charter");
 
   const groups = useMemo<BookingGroup[]>(() => {
     if (viewMode === "bin") return [{ id: "bin", title: "Recycle bin", hint: "Removed after 7 days", bookings: searched }];
-    if (filter === "availability") return [];
+    if (filter === "availability" || filter === "charter") return [];
     return STAGE_GROUPS[filter].map((group) => ({
       id: group.id,
       title: group.title,
@@ -297,6 +332,13 @@ function AdminBookingsPageInner() {
     setLayoutView("list");
     setFilter(id);
     setSelectedIds(new Set());
+    // Drop ?list= so the charter alert can open the Charters list again later.
+    if (listParam) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("list");
+      const qs = params.toString();
+      router.replace(qs ? `/admin/bookings?${qs}` : "/admin/bookings");
+    }
   };
 
   const leaveBin = () => {
@@ -361,7 +403,7 @@ function AdminBookingsPageInner() {
           </div>
         )}
         {layoutView === "list" && (
-          <div className="relative w-full lg:max-w-xs">
+          <div className="relative w-full min-w-[12rem] lg:w-auto lg:flex-[0_1_18rem]">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" strokeWidth={1.9} />
             <input
               value={query}
@@ -374,7 +416,7 @@ function AdminBookingsPageInner() {
         )}
         <span className="flex-1" />
         {viewMode === "active" && canAddBooking ? (
-          <button type="button" onClick={() => setAddingBooking(true)} className="btn-primary h-9 px-3.5 text-sm">
+          <button type="button" onClick={() => setAddingBooking(true)} className="bk-view__btn is-on">
             <Plus className="h-4 w-4" aria-hidden />
             Add booking
           </button>
@@ -383,10 +425,10 @@ function AdminBookingsPageInner() {
           <button
             type="button"
             onClick={() => openList("other")}
-            className={`admin-filter-tab ${filter === "other" && layoutView === "list" ? "admin-filter-tab--active" : ""}`}
+            className={`bk-view__btn${filter === "other" && layoutView === "list" ? " is-on" : ""}`}
           >
             Holds &amp; expired
-            {!isLoading ? <span className="ml-1.5 tabular opacity-70">{counts.get("other") ?? 0}</span> : null}
+            {!isLoading ? <span className="bk-view__count tabular">{counts.get("other") ?? 0}</span> : null}
           </button>
         ) : null}
         <button
@@ -401,7 +443,7 @@ function AdminBookingsPageInner() {
             setLayoutView("list");
             setFilter("all");
           }}
-          className={`admin-filter-tab ${viewMode === "bin" ? "admin-filter-tab--danger-active" : "admin-filter-tab--danger"}`}
+          className={`bk-view__btn bk-view__btn--danger${viewMode === "bin" ? " is-on" : ""}`}
         >
           {viewMode === "bin" ? "Back to bookings" : "Recycle bin"}
         </button>
@@ -412,7 +454,7 @@ function AdminBookingsPageInner() {
             void loadClosures();
           }}
           disabled={isLoading}
-          className="btn-ghost h-9 px-3 text-sm disabled:opacity-50"
+          className="bk-view__btn disabled:opacity-50"
         >
           <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
           Refresh
@@ -478,7 +520,11 @@ function AdminBookingsPageInner() {
       {layoutView === "calendar" && viewMode === "active" ? (
         <BookingCalendar bookings={calendarBookings} isLoading={isLoading} />
       ) : showingClosures ? (
-        <ClosureBookingsList closures={searchedClosures} loadFailed={closuresFailed} onChanged={() => void loadClosures()} />
+        filter === "charter" ? (
+          <ClosureBookingsList mode="charter" closures={charterClosures} requests={searchedRequests} loadFailed={closuresFailed} onChanged={() => void loadClosures()} />
+        ) : (
+          <ClosureBookingsList closures={availabilityClosures} loadFailed={closuresFailed} onChanged={() => void loadClosures()} />
+        )
       ) : (
         <BookingsListView
           groups={groups}

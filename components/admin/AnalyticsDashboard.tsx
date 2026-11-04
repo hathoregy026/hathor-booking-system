@@ -590,17 +590,6 @@ export function AnalyticsDashboard() {
         </div>
       )}
 
-      {(report?.alerts.length ?? 0) > 0 && (
-        <div className="space-y-3">
-          {report?.alerts.map((alert) => (
-            <div key={alert.id} className="admin-alert admin-alert--danger" role="status">
-              <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden />
-              <p className="text-sm">{alert.message}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
       <LiveMonitor live={live} isLoading={liveLoading} />
 
       <motion.section className="admin-bento" aria-label="Traffic summary" {...gridMotion}>

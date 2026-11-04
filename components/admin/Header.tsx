@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { isAdminCmsPath, isAdminInventoryPath } from "@/lib/admin-nav";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./NotificationBell";
+import { CharterBell } from "./CharterBell";
 import { GlobalSearch } from "./GlobalSearch";
 
 const PAGE_META: Record<string, { section: string; title: string }> = {
@@ -197,14 +198,18 @@ export function Header({ onMenuToggle }: HeaderProps) {
 
         }
         <ThemeToggle compact />
-        <button
-          type="button"
-          onClick={handlePreview}
-          className="btn-ghost hidden h-11 w-11 px-0 sm:inline-flex"
-          aria-label="Preview public site"
-        >
-          <Eye className="h-5 w-5" aria-hidden />
-        </button>
+        <span className="hidden sm:inline-flex">
+          <button
+            type="button"
+            onClick={handlePreview}
+            className="admin-header-icon-btn"
+            aria-label="View the public site"
+            title="View the public site"
+          >
+            <Eye className="h-4 w-4" style={{ color: "var(--accent)" }} aria-hidden />
+          </button>
+        </span>
+        {canSeeBookings && <CharterBell />}
         {canSeeBookings && <NotificationBell />}
 
         <div className="admin-profile relative">
