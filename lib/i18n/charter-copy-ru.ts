@@ -1,7 +1,7 @@
 /**
  * The private charter page and its request form in Russian; see charter-copy.ts.
  * Route and trip-type values stay English for the reservations desk; only
- * their labels change. The two guest quotes stay in their original English.
+ * their labels change.
  */
 import type { CharterCopy } from "@/lib/i18n/charter-copy";
 
@@ -162,16 +162,16 @@ export const CHARTER_COPY_RU: CharterCopy = {
       "Каюты, люксы и Royal Suite",
       "Индивидуальные маршруты по Нилу",
     ],
-    /* Guest quotes stay in their original English; only the labels are Russian. */
+    /* The page's own quotes, translated like the Italian and German (not the live review feed). */
     quotes: [
       {
         quote:
-          "We asked for privacy and received a floating house that understood our pace. Nothing felt rushed; everything felt considered.",
+          "Мы просили об уединении и получили плавучий дом, который понял наш ритм. Ничто не казалось торопливым, все было продумано.",
         attribution: "A.M. · Семейный чартер, Лондон",
       },
       {
         quote:
-          "The itinerary moved when we wanted it to. Temples at first light, dinner when the river cooled — seamless from request to boarding.",
+          "Маршрут менялся тогда, когда этого хотели мы. Храмы с первыми лучами солнца, ужин, когда над рекой спадала жара, — все безупречно, от запроса до посадки на борт.",
         attribution: "R.K. · Ретрит для руководителей",
       },
     ],
