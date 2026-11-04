@@ -97,42 +97,42 @@ const BUILT_IN_TEXT: Record<TranslatedLocale, ReadonlyMap<string, string>> = {
   ]),
   ru: new Map([
     /* Occasion names */
-    ["New Year's Eve", "Silvester"],
-    ["Christmas", "Weihnachten"],
-    ["Ramadan & Eid", "Ramadan und Eid"],
-    ["National day", "Nationalfeiertag"],
-    ["Abu Simbel Sun Festival", "Sonnenfest von Abu Simbel"],
-    ["Valentine's & honeymoon", "Valentinstag und Flitterwochen"],
-    ["New occasion", "Neuer Anlass"],
+    ["New Year's Eve", "Канун Нового года"],
+    ["Christmas", "Рождество"],
+    ["Ramadan & Eid", "Рамадан и Ураза-байрам"],
+    ["National day", "Национальный праздник"],
+    ["Abu Simbel Sun Festival", "Праздник солнца в Абу-Симбеле"],
+    ["Valentine's & honeymoon", "День святого Валентина и медовый месяц"],
+    ["New occasion", "Новое событие"],
     /* Countdown captions */
-    ["Until New Year", "Bis Neujahr"],
-    ["Until New Year's Eve", "Bis Silvester"],
-    ["Until the sun festival", "Bis zum Sonnenfest"],
+    ["Until New Year", "До Нового года"],
+    ["Until New Year's Eve", "До новогодней ночи"],
+    ["Until the sun festival", "До праздника солнца"],
     /* New Year */
-    ["2027 begins in {countdown}", "2027 beginnt in {countdown}"],
-    ["Season's greetings from everyone aboard Hathor", "Frohe Festtage von allen an Bord der Hathor"],
-    ["Plan your 2027 Nile voyage", "Planen Sie Ihre Nilreise 2027"],
-    ["Happy New Year 2027 from everyone aboard Hathor", "Frohes neues Jahr 2027 von allen an Bord der Hathor"],
+    ["2027 begins in {countdown}", "2027 год наступит через {countdown}"],
+    ["Season's greetings from everyone aboard Hathor", "С праздниками — от всех нас на борту Hathor"],
+    ["Plan your 2027 Nile voyage", "Спланируйте путешествие по Нилу в 2027 году"],
+    ["Happy New Year 2027 from everyone aboard Hathor", "С Новым 2027 годом — от всех нас на борту Hathor"],
     /* Christmas */
-    ["Merry Christmas from the crew of Hathor", "Frohe Weihnachten von der Crew der Hathor"],
-    ["Coptic Christmas, 7 January, celebrated in Luxor", "Das koptische Weihnachtsfest am 7. Januar wird in Luxor gefeiert"],
-    /* Ramadan & Eid: the greetings are the same in German */
-    ["Ramadan Kareem · رمضان كريم", "Ramadan Kareem · رمضان كريم"],
-    ["Eid Mubarak · عيد مبارك", "Eid Mubarak · عيد مبارك"],
+    ["Merry Christmas from the crew of Hathor", "С Рождеством — от экипажа Hathor"],
+    ["Coptic Christmas, 7 January, celebrated in Luxor", "Коптское Рождество 7 января празднуют в Луксоре"],
+    /* Ramadan & Eid: the Arabic greetings, written in Cyrillic, with the Arabic beside them */
+    ["Ramadan Kareem · رمضان كريم", "Рамадан Карим · رمضان كريم"],
+    ["Eid Mubarak · عيد مبارك", "Ид Мубарак · عيد مبارك"],
     /* National day */
-    ["Happy National Day", "Einen schönen Nationalfeiertag"],
+    ["Happy National Day", "С национальным праздником"],
     /* Abu Simbel Sun Festival */
     [
       "The sun reaches the inner sanctuary of Abu Simbel in {countdown}",
-      "Die Sonne erreicht das innere Heiligtum von Abu Simbel in {countdown}",
+      "Солнце достигнет внутреннего святилища Абу-Симбела через {countdown}",
     ],
-    ["Twice a year, on 22 February and 22 October", "Zweimal im Jahr, am 22. Februar und am 22. Oktober"],
-    ["Today the sun lights the sanctuary of Abu Simbel", "Heute erhellt die Sonne das Heiligtum von Abu Simbel"],
+    ["Twice a year, on 22 February and 22 October", "Дважды в год: 22 февраля и 22 октября"],
+    ["Today the sun lights the sanctuary of Abu Simbel", "Сегодня солнце освещает святилище Абу-Симбела"],
     /* Valentine's & honeymoon */
-    ["Honeymoon on the Nile", "Flitterwochen auf dem Nil"],
-    ["Celebrate together aboard Hathor", "Gemeinsam feiern an Bord der Hathor"],
+    ["Honeymoon on the Nile", "Медовый месяц на Ниле"],
+    ["Celebrate together aboard Hathor", "Празднуйте вместе на борту Hathor"],
     /* Blank occasion */
-    ["Your message here", "Ihre Nachricht hier"],
+    ["Your message here", "Ваше сообщение здесь"],
   ]),
 };
 
@@ -140,7 +140,7 @@ const BUILT_IN_TEXT: Record<TranslatedLocale, ReadonlyMap<string, string>> = {
 const COUNTDOWN_FALLBACK: Record<TranslatedLocale, string> = {
   it: "Conto alla rovescia",
   de: "Countdown",
-  ru: "Countdown",
+  ru: "Обратный отсчет",
 };
 
 /** The built-in text for this English, in any year; null when there is none. */

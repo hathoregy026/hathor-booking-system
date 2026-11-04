@@ -47,15 +47,18 @@ const VALIDITY_WORDS: Record<TranslatedLocale, ValidityWords> = {
     other: "Bitte prüfen Sie Ihre Eingabe.",
   },
   ru: {
-    missing: "Bitte füllen Sie dieses Feld aus.",
-    email: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-    tooShort: (length) => `Bitte geben Sie mindestens ${length} Zeichen ein.`,
-    tooLong: (length) => `Bitte geben Sie höchstens ${length} Zeichen ein.`,
-    dateTooEarly: "Bitte wählen Sie ein Datum ab dem angegebenen Tag.",
-    tooLow: (min) => `Bitte geben Sie einen Wert von mindestens ${min} ein.`,
-    tooHigh: (max) => `Bitte geben Sie einen Wert von höchstens ${max} ein.`,
-    wholeNumber: "Bitte geben Sie eine ganze Zahl ein.",
-    other: "Bitte prüfen Sie Ihre Eingabe.",
+    missing: "Заполните это поле.",
+    email: "Введите корректный адрес электронной почты.",
+    /* Genitive after «не менее» / «не более»: 1 символа, 2 символов, 21 символа. */
+    tooShort: (length) =>
+      `Введите не менее ${length} ${length % 10 === 1 && length % 100 !== 11 ? "символа" : "символов"}.`,
+    tooLong: (length) =>
+      `Введите не более ${length} ${length % 10 === 1 && length % 100 !== 11 ? "символа" : "символов"}.`,
+    dateTooEarly: "Выберите дату не ранее указанной.",
+    tooLow: (min) => `Введите значение не меньше ${min}.`,
+    tooHigh: (max) => `Введите значение не больше ${max}.`,
+    wholeNumber: "Введите целое число.",
+    other: "Проверьте введенное значение.",
   },
 };
 

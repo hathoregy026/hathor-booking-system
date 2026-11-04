@@ -10,7 +10,7 @@ export const COMING_SOON_COPY: Record<PublicLocale, string> = {
   en: "Coming Soon",
   it: "Prossimamente",
   de: "Demnächst",
-  ru: "Demnächst",
+  ru: "Скоро открытие",
 };
 
 type ErrorCopy = {
@@ -43,12 +43,12 @@ export const ERROR_COPY: Record<TranslatedLocale, ErrorCopy> = {
     reference: "Referenz:",
   },
   ru: {
-    pageTitle: "Es ist ein Problem aufgetreten | Hathor Dahabiya",
+    pageTitle: "Произошла ошибка | Hathor Dahabiya",
     eyebrow: "Hathor Dahabiya",
-    title: "Es ist ein Problem aufgetreten",
-    lede: "Diese Seite konnte nicht geladen werden. Bitte versuchen Sie es in einigen Augenblicken erneut oder kehren Sie zur Startseite zurück. Besteht das Problem weiterhin, schreiben Sie uns an",
-    retry: "Erneut versuchen",
-    home: "Zur Startseite",
-    reference: "Referenz:",
+    title: "Произошла ошибка",
+    lede: "Не удалось загрузить эту страницу. Попробуйте еще раз через несколько секунд или вернитесь на главную страницу. Если ошибка повторится, напишите нам по адресу",
+    retry: "Повторить попытку",
+    home: "На главную",
+    reference: "Код ошибки:",
   },
 };

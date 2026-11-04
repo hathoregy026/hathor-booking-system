@@ -58,7 +58,7 @@ export const LOCALE_HOME_SEO: Record<TranslatedLocale, Metadata> = {
 export const LOCALE_CRUMBS: Record<TranslatedLocale, { home: string; journal: string }> = {
   it: { home: "Home", journal: "Journal" },
   de: { home: "Startseite", journal: "Journal" },
-  ru: { home: "Startseite", journal: "Journal" },
+  ru: { home: "Главная", journal: "Журнал" },
 };
 
 type CharterSeo = {
@@ -85,11 +85,11 @@ export const LOCALE_CHARTER_SEO: Record<TranslatedLocale, CharterSeo> = {
     catalogName: "Routen des Privatcharters auf dem Nil",
   },
   ru: {
-    metadata: CHARTER_SEO_DE,
-    title: CHARTER_SEO_TITLE_DE,
-    crumb: "Privater Dahabiya-Charter",
-    serviceType: "Private Nilkreuzfahrt als Charter",
-    catalogName: "Routen des Privatcharters auf dem Nil",
+    metadata: CHARTER_SEO_RU,
+    title: CHARTER_SEO_TITLE_RU,
+    crumb: "Чартер дахабии",
+    serviceType: "Частный чартерный круиз по Нилу",
+    catalogName: "Маршруты частного чартера по Нилу",
   },
 };
 
@@ -149,19 +149,19 @@ export const LOCALE_ROOM_PAGE_WORDS: Record<TranslatedLocale, RoomPageWords> = {
   },
   ru: {
     parents: {
-      "luxury-king-room": { name: "Kabinen", path: "/de/luxury-cabins-Nile-Cruise" },
-      "luxury-twin-room": { name: "Kabinen", path: "/de/luxury-cabins-Nile-Cruise" },
-      "luxury-suite": { name: "Luxury Suite", path: "/de/rooms" },
-      "royal-suite": { name: "Royal Suite", path: "/de/royal-suites" },
+      "luxury-king-room": { name: "Каюты", path: "/ru/luxury-cabins-Nile-Cruise" },
+      "luxury-twin-room": { name: "Каюты", path: "/ru/luxury-cabins-Nile-Cruise" },
+      "luxury-suite": { name: "Luxury Suite", path: "/ru/rooms" },
+      "royal-suite": { name: "Royal Suite", path: "/ru/royal-suites" },
     },
     kinds: {
-      "luxury-king-room": "Kabine mit Nilblick",
-      "luxury-twin-room": "Kabine mit Nilblick",
-      "luxury-suite": "Suite mit Nilblick",
-      "royal-suite": "Suite auf dem Hauptdeck",
+      "luxury-king-room": "каюта с видом на Нил",
+      "luxury-twin-room": "каюта с видом на Нил",
+      "luxury-suite": "люкс с видом на Нил",
+      "royal-suite": "люкс на главной палубе",
     },
-    fallbackKind: "an Bord",
-    imageAlt: (room) => `${room} an Bord der Hathor Dahabiya`,
+    fallbackKind: "на борту",
+    imageAlt: (room) => `${room} на борту Hathor Dahabiya`,
   },
 };
 
@@ -182,17 +182,17 @@ export const LOCALE_SUITES_WORDS: Record<
       "Suiten mit Nilblick an Bord der Hathor Dahabiya, einer Luxusfahrt für 32 Gäste zwischen Luxor und Assuan.",
   },
   ru: {
-    pageLabel: "Suiten",
-    roomName: "Die Luxussuiten der Hathor für die Nilkreuzfahrt",
+    pageLabel: "Люксы",
+    roomName: "Роскошные люксы Hathor для круиза по Нилу",
     roomDescription:
-      "Suiten mit Nilblick an Bord der Hathor Dahabiya, einer Luxusfahrt für 32 Gäste zwischen Luxor und Assuan.",
+      "Люксы с видом на Нил на борту Hathor Dahabiya — роскошное плавание для 32 гостей между Луксором и Асуаном.",
   },
 };
 
 export const LOCALE_BLOG_WORDS: Record<TranslatedLocale, { notFound: string }> = {
   it: { notFound: "Articolo non trovato" },
   de: { notFound: "Artikel nicht gefunden" },
-  ru: { notFound: "Artikel nicht gefunden" },
+  ru: { notFound: "Статья не найдена" },
 };
 
 export const LOCALE_BOOKING_META: Record<
@@ -225,14 +225,14 @@ export const LOCALE_BOOKING_META: Record<
   },
   ru: {
     lookup: {
-      title: "Verfolgen Sie Ihre Buchung",
+      title: "Отследить бронирование",
       description:
-        "Geben Sie Buchungscode und E-Mail-Adresse ein, um Ihre Reiseanfrage für die Hathor Dahabiya wiederzufinden.",
+        "Введите код бронирования и адрес электронной почты, указанный в запросе, чтобы найти свой запрос на путешествие на борту Hathor Dahabiya.",
     },
     success: {
-      title: "Buchungsanfrage gesendet",
+      title: "Запрос на бронирование отправлен",
       description:
-        "Ihre Buchungsanfrage für die Hathor Dahabiya wurde gesendet: Hier finden Sie die Zusammenfassung Ihrer Reise und die nächsten Schritte.",
+        "Ваш запрос на бронирование на борту Hathor Dahabiya отправлен. Здесь вы найдете сводку путешествия и дальнейшие шаги.",
     },
   },
 };

@@ -33,14 +33,14 @@ export const NOT_FOUND_COPY: Record<TranslatedLocale, NotFoundCopy> = {
     voyages: "Zu den Reisen",
   },
   ru: {
-    metaTitle: "Seite nicht gefunden | Hathor Dahabiya",
+    metaTitle: "Страница не найдена | Hathor Dahabiya",
     metaDescription:
-      "Die aufgerufene Seite existiert nicht oder wurde verschoben. Kehren Sie zur Startseite der Hathor Dahabiya zurück oder wählen Sie Ihre Nilreise.",
-    eyebrow: "Fehler 404",
-    title: "Seite nicht gefunden",
-    lede: "Die aufgerufene Seite existiert nicht oder wurde verschoben. Sie können zur Startseite zurückkehren oder Ihre Nilreise wählen.",
-    home: "Startseite",
-    voyages: "Zu den Reisen",
+      "Запрошенной страницы не существует или она была перемещена. Вернитесь на главную страницу Hathor Dahabiya или выберите свое путешествие по Нилу.",
+    eyebrow: "Ошибка 404",
+    title: "Страница не найдена",
+    lede: "Запрошенной страницы не существует или она была перемещена. Вы можете вернуться на главную страницу или выбрать свое путешествие по Нилу.",
+    home: "На главную",
+    voyages: "Смотреть путешествия",
   },
 };
 

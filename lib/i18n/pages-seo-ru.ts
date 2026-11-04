@@ -3,98 +3,98 @@ import { localePage } from "@/lib/i18n/pages-seo";
 /**
  * Search settings and structured-data words for the Russian content pages.
  * Language, hreflang and the search switch come from the shared builder.
- * Titles lead with the Russian head terms ("Nilkreuzfahrt", "Dahabiya").
- * Server-only.
+ * Titles lead with the Russian head terms («круиз по Нилу на дахабии»,
+ * «люкс-круиз по Нилу»). Server-only.
  */
 export const RUSSIAN_PAGES = {
   about: localePage({
     path: "/ru/about",
-    title: "Dahabiya-Kreuzfahrt auf dem Nil | Über die Hathor",
+    title: "Круиз по Нилу на дахабии в Египте | О Hathor",
     description:
-      "Die Hathor ist eine Luxus-Dahabiya für 32 Gäste auf dem Nil: acht Kabinen, zwei Suiten und zwei Royal Suites zwischen Luxor und Assuan, mit eigener Crew.",
-    name: "Über uns: Hathor Dahabiya, eine private Fahrt auf dem Nil",
-    crumb: "Über uns",
+      "Hathor — дахабия класса люкс для 32 гостей, круиз по Нилу в Египте: восемь кают, два люкса и два Royal Suite между Луксором и Асуаном, свой экипаж.",
+    name: "О Hathor Dahabiya | Частное плавание по Нилу",
+    crumb: "О нас",
   }),
   contact: localePage({
     path: "/ru/contact",
-    title: "Kontakt Hathor Dahabiya | Buchung von Nilkreuzfahrten",
+    title: "Контакты Hathor Dahabiya | Бронирование круизов по Нилу",
     description:
-      "Kontaktieren Sie die Reservierung der Hathor in Kairo zu Abfahrten, Privatchartern und freien Suiten. Täglich 09:00–17:00 Uhr, freitags geschlossen.",
-    name: "Kontakt Hathor Dahabiya | Buchung von Nilkreuzfahrten",
-    crumb: "Kontakt",
+      "Свяжитесь с отделом бронирования Hathor в Каире: даты путешествий, частный чартер и наличие мест в люксах. Ежедневно 09:00–17:00, пятница — выходной.",
+    name: "Контакты Hathor Dahabiya | Бронирование круизов по Нилу",
+    crumb: "Контакты",
   }),
   gastronomy: localePage({
     path: "/ru/gastronomy",
-    title: "Küche an Bord der Nilkreuzfahrt | Hathor Dahabiya",
+    title: "Кухня люкс-круиза по Нилу | Гастрономия на борту Hathor",
     description:
-      "Die Küche der Hathor Dahabiya, einer Luxuskreuzfahrt auf dem Nil: ägyptische Aromen und aufmerksamer Service im Saal und an Deck zwischen Luxor und Assuan.",
-    name: "Küche auf dem Nil | Die Gastronomie der Hathor Dahabiya",
-    crumb: "Küche",
+      "Гастрономия люкс-круиза по Нилу на борту Hathor Dahabiya: египетские вкусы, внимательный сервис и трапезы в зале и на палубе между Луксором и Асуаном.",
+    name: "Кухня на Ниле | Гастрономия Hathor Dahabiya",
+    crumb: "Кухня",
   }),
   suites: localePage({
     path: "/ru/suites",
-    title: "Luxussuiten für die Nilkreuzfahrt | Hathor Dahabiya",
+    title: "Роскошные люксы для круиза по Нилу | Hathor Dahabiya",
     description:
-      "Die Suiten der Hathor auf dem Nil: weite Residenzen mit Panoramafenstern, diskreter Komfort und die überschaubare Größe einer Dahabiya für 32 Gäste.",
-    name: "Luxussuiten für die Nilkreuzfahrt | Hathor Dahabiya",
-    crumb: "Suiten",
+      "Откройте для себя люксы Hathor для круиза по Нилу: просторные апартаменты с панорамным остеклением, уединенный комфорт и камерность дахабии на 32 гостя.",
+    name: "Роскошные люксы для круиза по Нилу | Hathor Dahabiya",
+    crumb: "Люксы",
     image: {
       url: "/media/hathor/optimized/scraped-suites-hero.webp",
       width: 1920,
       height: 1280,
-      alt: "Luxussuite an Bord der Hathor Dahabiya",
+      alt: "Роскошные люксы на борту Hathor Dahabiya",
     },
   }),
   wellness: localePage({
     path: "/ru/wellness",
-    title: "Seneb Spa auf dem Nil | Wellness der Hathor Dahabiya",
+    title: "Seneb Spa на Ниле | Велнес на борту Hathor Dahabiya",
     description:
-      "Das Seneb Spa und Historia Fitness an Bord der Hathor Dahabiya: wohltuende Behandlungen und Bewegung mit Blick auf den Fluss, zwischen Luxor und Assuan.",
-    name: "Seneb Spa auf dem Nil | Wellness der Hathor Dahabiya",
-    crumb: "Wellness",
+      "Seneb Spa и Historia Fitness на борту Hathor Dahabiya: восстанавливающие процедуры и тренировки с видом на реку между Луксором и Асуаном.",
+    name: "Seneb Spa на Ниле | Велнес на борту Hathor Dahabiya",
+    crumb: "Велнес",
   }),
   highlights: localePage({
     path: "/ru/highlights",
-    title: "Nilkreuzfahrt: Tempel von Luxor bis Assuan | Hathor Dahabiya",
+    title: "Что увидеть в круизе по Нилу | Храмы от Луксора до Асуана",
     description:
-      "Die Tage an Land mit der Hathor Dahabiya: Karnak, das Tal der Könige, Edfu, Kom Ombo und Philae, in Ruhe besucht und nicht als Liste zum Abhaken.",
-    name: "Nilkreuzfahrt: Tempel von Luxor bis Assuan | Hathor Dahabiya",
-    crumb: "Höhepunkte",
+      "Дни на берегу с Hathor Dahabiya: Карнак, Долина царей, Эдфу, Ком-Омбо и Филе — неспешные визиты, а не список для галочки.",
+    name: "Что увидеть в круизе по Нилу | Храмы от Луксора до Асуана",
+    crumb: "Достопримечательности",
     image: {
       url: "/media/hathor/r2/highlights-hero.webp",
       width: 1920,
       height: 1280,
-      alt: "Die Tempel einer Nilkreuzfahrt mit der Hathor Dahabiya",
+      alt: "Храмы на маршруте круиза по Нилу с Hathor Dahabiya",
     },
   }),
   partners: localePage({
     path: "/ru/partners",
-    title: "Reisepartner | Hathor Dahabiya",
+    title: "Туристические партнеры | Hathor Dahabiya",
     description:
-      "Die Partner aus Reise und Gastgewerbe, die die Standards der Hathor Dahabiya für private Nilkreuzfahrten und die Betreuung der Gäste in Ägypten teilen.",
-    name: "Reisepartner | Hathor Dahabiya",
-    crumb: "Partner",
+      "Партнеры в сфере туризма и гостеприимства, которые разделяют стандарты Hathor Dahabiya в частных путешествиях по Нилу и заботе о гостях в Египте.",
+    name: "Туристические партнеры | Hathor Dahabiya",
+    crumb: "Партнеры",
   }),
   terms: localePage({
     path: "/ru/terms-and-conditions",
-    title: "Allgemeine Geschäftsbedingungen | Hathor Dahabiya",
+    title: "Правила и условия Hathor Dahabiya | Условия бронирования",
     description:
-      "Buchungs-, Zahlungs- und Stornobedingungen der Hathor Dahabiya: Inklusivleistungen, Pflichten der Gäste und Reiseregeln auf dem Nil.",
-    name: "Allgemeine Geschäftsbedingungen | Hathor Dahabiya",
-    crumb: "AGB",
+      "Ознакомьтесь с условиями Hathor Dahabiya: бронирование, оплата, отмена, что включено, обязанности гостей и правила путешествий по Нилу между Луксором и Асуаном.",
+    name: "Правила и условия Hathor Dahabiya | Условия бронирования",
+    crumb: "Условия",
   }),
   blogs: localePage({
     path: "/ru/blogs",
-    title: "Nilkreuzfahrt: Tipps und Geschichten | Hathor Dahabiya",
+    title: "Блог о люкс-круизе по Нилу в Египте | Советы и истории",
     description:
-      "Tipps und Geschichten für Ihre Nilkreuzfahrt: beste Reisezeit, Tempel von Luxor und Assuan, Packen, Kabinen und der ruhigere Rhythmus der Dahabiya Hathor.",
-    name: "Nilkreuzfahrt: Tipps und Geschichten | Hathor Dahabiya",
-    crumb: "Journal",
+      "Советы и истории о люкс-круизе по Нилу в Египте: когда плыть на дахабии, храмы Луксора и Асуана, сборы в дорогу, каюты и неспешный ритм путешествий Hathor.",
+    name: "Журнал о круизах по Нилу | Истории Hathor Dahabiya",
+    crumb: "Журнал",
     image: {
       url: "/media/hathor/r2/blog-hero.webp",
       width: 1920,
       height: 1280,
-      alt: "Geschichten aus dem Journal der Hathor vom Nil in Ägypten",
+      alt: "Истории журнала Hathor с Нила в Египте",
     },
   }),
 } as const;

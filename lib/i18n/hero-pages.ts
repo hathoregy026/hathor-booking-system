@@ -34,16 +34,17 @@ const HERO_PAGES_DE: Partial<HeroPages> = {
   blog: { main: "Reisen Sie", second: "auf dem Nil" },
 };
 
-/* Placeholder until translated: same line structure as Italian and German. */
+/* Same line structure as Italian and German; no hyphens (the display face draws none). */
 const HERO_PAGES_RU: Partial<HeroPages> = {
-  cruises: { main: "Dahabiya\nReisen", second: "auf dem Nil" },
-  charter: { main: "Privater\nDahabiya Charter", second: "Exklusive Reise" },
-  about: { main: "Kommen Sie an Bord", second: "Hathor Cruise" },
-  contact: { main: "Kontakt", second: "Für jede Frage" },
-  wellness: { main: "Schwimmende Oase", second: "Ruhe und Training" },
-  highlights: { main: "Dahabiya Kreuzfahrt", second: "Die Höhepunkte" },
-  partners: { main: "Unsere Partner", second: "Weltweites Vertrauen" },
-  blog: { main: "Reisen Sie", second: "auf dem Nil" },
+  cruises: { main: "Круизы\nна дахабии", second: "по Нилу" },
+  /* Two words per phrase, as the charter page breaks them. */
+  charter: { main: "Чартер\nна дахабии", second: "Частный круиз" },
+  about: { main: "Добро пожаловать на борт", second: "Hathor Cruise" },
+  contact: { main: "Свяжитесь с нами", second: "По любому вопросу" },
+  wellness: { main: "Плавучий оазис", second: "Отдых и фитнес" },
+  highlights: { main: "Круиз на дахабии", second: "Что увидеть" },
+  partners: { main: "Наши партнеры", second: "Доверие во всем мире" },
+  blog: { main: "Под парусом", second: "по Нилу" },
 };
 
 const HERO_PAGES_BY_LOCALE: Record<PublicLocale, Partial<HeroPages>> = {

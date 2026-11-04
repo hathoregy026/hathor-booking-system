@@ -12,7 +12,7 @@ const SILK_ROWS: Record<PublicLocale, readonly string[]> = {
   en: ["TAKE YOUR", "VOYAGE", "TODAY"],
   it: ["PRENOTI IL", "SUO VIAGGIO", "OGGI"],
   de: ["BUCHEN SIE", "IHRE REISE", "NOCH HEUTE"],
-  ru: ["BUCHEN SIE", "IHRE REISE", "NOCH HEUTE"],
+  ru: ["ОТПРАВЬТЕСЬ", "В ПУТЬ", "СЕГОДНЯ"],
 };
 
 /*

@@ -6,47 +6,48 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
  * Russian search settings for the homepage, private charter and scheduled
  * sailings. Language, hreflang, og:locale and the search switch
  * (LOCALE_INDEXED in lib/i18n/locale.ts) come from the shared builder.
+ * Head terms: «круиз по Нилу на дахабии», «люкс-круиз по Нилу», «чартер дахабии».
  */
 export const HOME_SEO_RU: Metadata = buildPageMetadata({
-  title: "Nilkreuzfahrt mit der Luxus-Dahabiya | Hathor Dahabiya",
+  title: "Люкс-круиз по Нилу на дахабии | Hathor Dahabiya",
   description:
-    "Nilkreuzfahrt mit der Luxus-Dahabiya zwischen Luxor und Assuan: 32 Gäste, Suiten mit Nilblick, feine Küche und Tempelbesuche ohne Eile an Bord der Hathor.",
-  path: "/de",
+    "Частная дахабия класса люкс на Ниле между Луксором и Асуаном: 32 гостя, люксы с видом на Нил, изысканная кухня и неспешные дни у храмов на борту Hathor.",
+  path: "/ru",
   image: {
     url: HATHOR_HERO_POSTER_SRC,
     width: 1920,
     height: 1080,
-    alt: "Hathor Dahabiya, Luxus-Dahabiya-Kreuzfahrt auf dem Nil zwischen Luxor und Assuan",
+    alt: "Hathor Dahabiya — люкс-круиз по Нилу на дахабии между Луксором и Асуаном",
   },
 });
 
-export const CHARTER_SEO_TITLE_RU = "Privater Dahabiya-Charter auf dem Nil | Hathor Dahabiya";
+export const CHARTER_SEO_TITLE_RU = "Чартер дахабии | Частный круиз по Нилу в Египте | Hathor";
 
 export const CHARTER_SEO_RU: Metadata = buildPageMetadata({
   title: CHARTER_SEO_TITLE_RU,
   description:
-    "Chartern Sie die Hathor exklusiv, eine Luxus-Dahabiya für bis zu 32 Gäste, mit Crew und Küchenchef: eine private Nilkreuzfahrt von Luxor nach Assuan.",
+    "Арендуйте дахабию класса люкс целиком: все судно Hathor для группы до 32 гостей, свой экипаж и шеф-повар, частный круиз по Нилу в Египте из Луксора в Асуан.",
   path: "/ru/charter",
   image: {
     url: "/media/hathor/r2/charter-hero.webp",
     width: 1920,
     height: 1280,
-    alt: "Privatcharter der Hathor Dahabiya auf dem Nil in Ägypten",
+    alt: "Hathor Dahabiya в частном чартере под парусом на Ниле в Египте",
   },
 });
 
 export const CRUISES_LIST_SEO_RU: Metadata = buildPageMetadata({
-  title: "Termine und Kabinen der Nilkreuzfahrten | Hathor Dahabiya",
+  title: "Расписание рейсов Hathor | Забронировать круиз по Нилу",
   description:
-    "Sehen Sie die Abfahrten und freien Kabinen der Hathor Dahabiya: Nilkreuzfahrten mit drei, vier und sieben Nächten zwischen Luxor und Assuan.",
+    "Даты отправления и наличие мест в каютах Hathor Dahabiya: круизы по Нилу на дахабии на три, четыре и семь ночей между Луксором и Асуаном.",
   path: "/ru/cruises-list",
 });
 
 export const CRUISES_LIST_PAGE_RU = {
-  name: "Abfahrtstermine der Hathor | Dahabiya-Kreuzfahrt auf dem Nil buchen",
+  name: "Расписание рейсов Hathor | Забронировать круиз по Нилу на дахабии",
   breadcrumbs: [
-    { name: "Startseite", path: "/de" },
-    { name: "Reisen", path: "/ru/voyages" },
-    { name: "Abfahrtstermine", path: "/ru/cruises-list" },
+    { name: "Главная", path: "/ru" },
+    { name: "Путешествия", path: "/ru/voyages" },
+    { name: "Расписание рейсов", path: "/ru/cruises-list" },
   ],
 } as const;
