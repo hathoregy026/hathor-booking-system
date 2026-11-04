@@ -38,7 +38,7 @@ no merge, no deploy.** The dashboard and all emails stay English.
 - [x] Four agents list the journal mistakes (`russian-work/english-fixes/BRIEF.md` → `group-1..4-fixes.json`).
 - [x] Merge and check the lists; apply the Italian and German fixes in code; write `docs/english-fixes.md` (before → after).
 - [x] Write corrected English to `russian-work/english-fixes/BlogPost.corrected.json` (translators use this, not the live rows).
-- [ ] OWNER: approve the live database script `russian-work/english-fixes/apply-to-live.cjs` (journal rows + `/suites` cabin deck
+- [x] OWNER (approved and applied 2026-11-04): the live database script `russian-work/english-fixes/apply-to-live.cjs` (journal rows + `/suites` cabin deck
       "UPPER DECK" → "LOWER DECK"). Dry run passed 2026-11-03: 379 of 379 fixes match the live rows. Blocked by the auto-mode check on 2026-11-03; does not block Phase 2.
 
 ## Phase 2: Russian

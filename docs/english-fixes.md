@@ -2,10 +2,10 @@
 
 The owner approved fixing the English mistakes on 3 November 2026, and the same mistakes where the Italian and German repeat them.
 
-- **Journal posts (English, live database):** 379 fixes — 200 grammar, 31 fact, 143 garbled, 5 duplicate. Not yet live: the database write waits for the owner (script `russian-work/english-fixes/apply-to-live.cjs`). Backup: `russian-work/backup/BlogPost.backup-2026-11-03.json`.
+- **Journal posts (English, live database):** 379 fixes — 200 grammar, 31 fact, 143 garbled, 5 duplicate. Live since 4 November 2026 (owner-approved): all 44 posts verified identical to the corrected text. Backup: `russian-work/backup/BlogPost.backup-2026-11-03.json`.
 - **Italian and German journal copies (code):** 40 fixes where they repeated a factual error.
 - **Terms (code, all three languages):** the tax line showed a drafting note ("The client-supplied Terms & Conditions state that…"); it now reads "This includes 14% VAT and service charge." The office address now matches the Contact page.
-- **/suites cabin card (dashboard Website Text, live database):** "UPPER DECK" → "LOWER DECK". Waits for the owner with the journal write.
+- **/suites cabin card (dashboard Website Text, live database):** "UPPER DECK" → "LOWER DECK". Live since 4 November 2026.
 
 Left as they are on purpose: general market figures ("6 to 12 cabins", "8 to 20 guests", "$300–$800 per person per night"), search phrases, titles and slugs, awkward but correct sentences.
 

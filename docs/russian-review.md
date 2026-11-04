@@ -23,10 +23,10 @@ Every change is listed before → after in `docs/english-fixes.md`.
   copied 40 of the factual errors; those are fixed in code.
 - **/suites cabin card (dashboard Website Text, database):** "UPPER DECK" → "LOWER DECK".
 
-**Waiting for the owner:** the two database changes above. The auto-mode safety check blocks live database writes, so they
-are a ready script: `russian-work/english-fixes/apply-to-live.cjs` (run without `--apply` for a dry run; on 3 November all 379
-fixes matched the live rows). It skips any post edited in the dashboard since the backup
-(`russian-work/backup/BlogPost.backup-2026-11-03.json`) and writes everything in one transaction.
+**Applied on 4 November 2026 with the owner's approval:** both database changes are live. Each post was written only if it
+still matched the 3 November backup (`russian-work/backup/BlogPost.backup-2026-11-03.json`) and the result equalled the
+corrected text; afterwards all 44 posts were checked identical to it (content, excerpt, title). The Terms fixes are in code
+and go live with the Russian site.
 
 ## 2. How the Russian reads
 
@@ -116,7 +116,7 @@ phone width in every language.
 
 ## 7. Before going live
 
-1. The owner runs or approves `apply-to-live.cjs` (English journal + /suites deck) — independent of the Russian.
+1. Done 4 November: English journal + /suites deck fixes are live.
 2. Merge `claude/russian-site` into a branch cut from the then-current GitHub main (local main is far behind), run
    `npx tsc --noEmit -p .` and the production build, push to main only with the owner's go-ahead (push = deploy).
 3. Keep `LOCALE_INDEXED.ru` false until Hathor wants Russian in search.
