@@ -46,6 +46,14 @@ const MONTHS_GENITIVE_RU: Record<string, string> = {
 };
 
 const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+/**
+ * `cabinLabel` names a cabin "King Cabin 1" (indeclinable) and falls back to
+ * `arrangement.thatCabin` («эта каюта») when it cannot; the sentences decline the fallback.
+ */
+const THAT_CABIN_RU = "эта каюта";
+const cabinIn = (cabin: string) => (cabin === THAT_CABIN_RU ? "этой каюте" : cabin);
+const cabinOutOf = (cabin: string) => (cabin === THAT_CABIN_RU ? "этой каюты" : cabin);
+const cabinAcc = (cabin: string) => (cabin === THAT_CABIN_RU ? "эту каюту" : cabin);
 /** "3 нояб. 2026": the short form, without the trailing «г.» so the voyage bar stays on one line. */
 const ruShortDate = (iso: string) => SHORT_DATE_RU.format(new Date(iso)).replace(/\s*г\.$/, "");
 /** "вторник, 3 ноября 2026 г." */
@@ -157,8 +165,8 @@ export const BOOKING_COPY_RU: BookingCopy = {
   stepOf: (step, of) => `Шаг ${step} из ${of}`,
   bannerOf: "из 04",
   bannerKicker: (step, kicker) => `Шаг ${step} из 4 · ${kicker}`,
-  bandLine: ["Медленнее путь,", "больше Египта"],
-  bandWords: "Роскошь. Наследие. Причастность.",
+  bandLine: ["Чем медленнее путь,", "тем больше Египта"],
+  bandWords: "Роскошь. Наследие. Сопричастность.",
   scroll: "Листайте",
   guideHeading: "Ваш ориентир на этом шаге",
   done: "(готово)",
@@ -223,7 +231,7 @@ export const BOOKING_COPY_RU: BookingCopy = {
     total: cabins => (cabins > 1 ? `Итого · ${countRu(cabins, CABINS_RU)}` : "Итого за путешествие"),
     pending: "Выберите размещение",
     pendingFine: "Итоговая стоимость появится, когда у всех гостей будет каюта.",
-    fine: nights => `Все путешествие на ${countRu(nights, NIGHTS_RU)}, цены за каюту. Налоги и сервисные сборы включены.`,
+    fine: nights => `Цены за каюту на все путешествие (${countRu(nights, NIGHTS_RU)}). Налоги и сервисные сборы включены.`,
     tagline: "Иной ритм",
   },
 
@@ -316,14 +324,14 @@ export const BOOKING_COPY_RU: BookingCopy = {
     viewRoom: "Смотреть каюту",
     unavailableDate: "Недоступно на эту дату",
     seatsTaken: (inside, capacity) => `Занято мест: ${inside} из ${capacity}`,
-    menuLabel: (label, cabin) => `${label} в ${cabin}`,
-    empty: label => `Освободить ${label}`,
+    menuLabel: (label, cabin) => `${label} в ${cabinIn(cabin)}`,
+    empty: label => `Освободить ${cabinAcc(label)}`,
     needsAdult: "В каждой каюте должен быть хотя бы один взрослый.",
     inclusions: "Что входит в стоимость, а что нет",
     included: "Включено",
     notIncluded: "Не включено",
     // Guest labels («Взрослый 1») read as names, so they follow a colon instead of being declined.
-    placeIn: (guest, cabin) => `Разместить в ${cabin}: ${guest}`,
+    placeIn: (guest, cabin) => `Разместить в ${cabinIn(cabin)}: ${guest}`,
     placeHere: "Разместить здесь",
     more: (count, shortName) => `${shortName}: еще ${count}`,
     free: count => `свободно: ${count}`,
@@ -344,20 +352,20 @@ export const BOOKING_COPY_RU: BookingCopy = {
     howTo: "Нажмите на гостя, затем на каюту — или перетащите его.",
     toPlace: count => `Осталось разместить: ${countRu(count, GUESTS_RU)}`,
     everyoneHasCabin: "Все гости размещены",
-    takeOut: (guest, cabin) => `Убрать из ${cabin}: ${guest}`,
+    takeOut: (guest, cabin) => `Убрать из ${cabinOutOf(cabin)}: ${guest}`,
     continueToDetails: "Перейти к данным",
     backToJourney: "Назад к путешествию",
     back: "Назад",
     notices: {
       waiting: guest => `${guest} ждет размещения.`,
-      placed: (guest, cabin) => `${guest} — в ${cabin}.`,
-      counted: (cabin, count) => `${cabin}: ${count}.`,
-      emptied: cabin => `В ${cabin} больше никого нет: гости ждут в разделе «Кто путешествует».`,
+      placed: (guest, cabin) => `${guest} — в ${cabinIn(cabin)}.`,
+      counted: (cabin, count) => `${capitalise(cabin)}: ${count}.`,
+      emptied: cabin => `В ${cabinIn(cabin)} больше никого нет: гости ждут в разделе «Кто путешествует».`,
       arranged: "Ваши гости размещены по каютам. Вы можете переместить любого из них.",
       undone: "Размещение полностью отменено. Ваши гости ждут в разделе «Кто путешествует».",
     },
     tile: (guest, where) =>
-      `${guest}, ${where ? `в ${where}` : "ждет размещения"}. Перетащите в каюту или выберите гостя, а затем каюту.`,
+      `${guest}, ${where ? `в ${cabinIn(where)}` : "ждет размещения"}. Перетащите в каюту или нажмите, а затем выберите каюту.`,
     kind: kind => (kind === "adult" ? "Взрослый" : "Ребенок"),
     arrange: {
       title: "Какие каюты вы предпочитаете?",
@@ -449,18 +457,18 @@ export const BOOKING_COPY_RU: BookingCopy = {
 
   arrangement: {
     guest: (kind, number) => `${kind === "adult" ? "Взрослый" : "Ребенок"} ${number}`,
-    thatCabin: "эта каюта",
+    thatCabin: THAT_CABIN_RU,
     gone: "Этого гостя больше нет в вашей группе.",
-    notAvailable: cabin => `${cabin} нельзя забронировать на эту дату.`,
-    full: (cabin, capacity) => `В ${cabin} больше нет мест: вместимость — ${upToGuestsRu(capacity)}.`,
-    childLimit: (cabin, max) => `В ${cabin} уже ${countRu(max, CHILDREN_RU)}.`,
-    takesUpTo: (cabin, capacity) => `${cabin} вмещает ${upToGuestsRu(capacity)}.`,
+    notAvailable: cabin => `${capitalise(cabinAcc(cabin))} нельзя забронировать на эту дату.`,
+    full: (cabin, capacity) => `В ${cabinIn(cabin)} больше нет мест: вместимость — ${upToGuestsRu(capacity)}.`,
+    childLimit: (cabin, max) => `В ${cabinIn(cabin)} уже ${countRu(max, CHILDREN_RU)}.`,
+    takesUpTo: (cabin, capacity) => `${capitalise(cabin)} вмещает ${upToGuestsRu(capacity)}.`,
     noneWaiting: kind =>
       `Нет ожидающих ${kind === "adult" ? "взрослых" : "детей"}. Добавьте их в разделе «Кто путешествует» или переместите кого-нибудь из другой каюты.`,
     onlyWaiting: (count, kind) =>
       `Размещения ${pluralRu(count, ["ждет", "ждут", "ждут"])} только ${countRu(count, kind === "adult" ? ADULTS_RU : CHILDREN_RU)}. Сначала добавьте гостей в разделе «Кто путешествует».`,
     stillNeed: count => `${countRu(count, GUESTS_RU)} пока без каюты.`,
-    needsAdult: cabin => `В ${cabin} должен быть хотя бы один взрослый.`,
+    needsAdult: cabin => `В ${cabinIn(cabin)} должен быть хотя бы один взрослый.`,
     listStillNeeds: list => `${list} пока без каюты.`,
   },
 
@@ -547,7 +555,7 @@ export const BOOKING_COPY_RU: BookingCopy = {
     paymentSub: bank =>
       bank
         ? "Счет и инструкции по оплате придут по электронной почте."
-        : `При оплате взимается комиссия ${SURCHARGE_RU} за оплату картой. Счет и инструкции по оплате придут по электронной почте.`,
+        : `При оплате картой добавляется комиссия ${SURCHARGE_RU}. Счет и инструкции по оплате придут по электронной почте.`,
     withSurcharge: partySub => `${partySub} · вкл. комиссию ${SURCHARGE_RU} за оплату картой`,
     changePayment: "Изменить способ оплаты",
     reviewTitle: "Проверьте ваше путешествие",
@@ -669,7 +677,7 @@ export const BOOKING_COPY_RU: BookingCopy = {
     titleOther: "Ваше бронирование",
     ledeSent: "Благодарим вас за выбор Hathor. Мы свяжемся с вами и пришлем счет.",
     ledeOther: "Текущий статус вашего путешествия по Нилу.",
-    quote: "Роскошь. Наследие. Причастность.",
+    quote: "Роскошь. Наследие. Сопричастность.",
     submitted: "Ваш запрос на бронирование успешно отправлен.",
     confirmedText: "В Hathor приняли ваше бронирование и зарегистрировали необходимый платеж.",
     currentStatus: "Это текущий статус вашего бронирования.",
@@ -741,6 +749,6 @@ export const BOOKING_COPY_RU: BookingCopy = {
   meta: {
     title: "Забронируйте люкс-круиз на дахабии",
     description:
-      "Выберите путешествие по Нилу, дату рейса и каюту на борту Hathor Dahabiya, затем отправьте запрос на бронирование в наш отдел бронирования.",
+      "Выберите путешествие по Нилу, дату рейса и каюту на борту Hathor Dahabiya, затем отправьте запрос нашему отделу бронирования.",
   },
 };

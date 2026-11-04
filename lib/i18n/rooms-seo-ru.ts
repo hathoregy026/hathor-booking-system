@@ -50,7 +50,7 @@ export const RUSSIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, LocaleRoomC
     englishPath: "/royal-suites",
     title: "Люкс Royal Suite для круиза по Нилу | Hathor Dahabiya",
     description:
-      "Royal Suite на Hathor — люкс 56 м² на Ниле с видом с главной палубы и двумя ванными: самое уединенное размещение в этом люкс-круизе на дахабии.",
+      "Royal Suite на Hathor — люкс 56 м² на главной палубе с видом на Нил и двумя ванными: самое уединенное размещение в этом люкс-круизе на дахабии.",
     pageLabel: "Royal Suite",
     name: "Люкс Royal Suite для круиза по Нилу | Hathor Dahabiya",
     crumb: "Royal Suite",
@@ -61,7 +61,7 @@ export const RUSSIAN_ROOM_COLLECTIONS: Record<RoomCollectionVariant, LocaleRoomC
     room: {
       name: "Hathor Royal Suite",
       description:
-        "Royal Suite на Hathor — люкс 56 м² на Ниле с видом с главной палубы и двумя ванными: самое уединенное размещение в этом люкс-круизе на дахабии.",
+        "Royal Suite на Hathor — люкс 56 м² на главной палубе с видом на Нил и двумя ванными: самое уединенное размещение в этом люкс-круизе на дахабии.",
       occupancy: 4,
       floorSizeSqm: 56,
     },

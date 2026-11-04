@@ -77,8 +77,9 @@ export const REVIEWS_COPY_RU: ReviewsCopy = {
   handEtching: [
     { text: "Иные", x: 10, y: 50 },
     { text: "воды,", x: 44, y: 96, r: 2 },
-    { text: "богаче", x: 70, y: 142, r: -1 },
-    { text: "истории", x: 92, y: 188, r: 1 },
+    /* "richer stories": «истории богаче», since «богаче истории» reads as "richer than history". */
+    { text: "истории", x: 70, y: 142, r: -1 },
+    { text: "богаче", x: 92, y: 188, r: 1 },
   ],
   handDeck: [
     { text: "Больше чем", x: 8, y: 44 },

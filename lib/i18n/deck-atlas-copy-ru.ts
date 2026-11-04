@@ -17,8 +17,11 @@ const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1
  * ("нижняя палуба"); the sentences need it declined. A name the dashboard
  * has reworded is left as it is.
  */
-const deckIn = (deck: string) => deck.replace(/ая(\s+)палуба$/, "ой$1палубе");
-const deckTo = (deck: string) => deck.replace(/ая(\s+)палуба$/, "ую$1палубу");
+/* «главная/солнечная» end in -ая, «нижняя» in -яя: each declines its own way. */
+const deckIn = (deck: string) =>
+  deck.replace(/ая(\s+)палуба$/, "ой$1палубе").replace(/яя(\s+)палуба$/, "ей$1палубе");
+const deckTo = (deck: string) =>
+  deck.replace(/ая(\s+)палуба$/, "ую$1палубу").replace(/яя(\s+)палуба$/, "юю$1палубу");
 
 export const DECK_ATLAS_COPY_RU: DeckAtlasCopy = {
   dateLocale: "ru-RU",
@@ -87,10 +90,10 @@ export const DECK_ATLAS_COPY_RU: DeckAtlasCopy = {
   departing: (date) => `Отправление ${date}.`,
   allCabins: "Все каюты этой палубы",
   viewPhotos: "Смотреть фотографии каюты",
-  perCabin: "за каюту · все путешествие",
+  perCabin: "за каюту · за все путешествие",
   entireVoyage: "за все путешествие",
-  perCabinHead: "За каюту · все путешествие",
-  seeOtherDates: "Другие даты",
+  perCabinHead: "За каюту · за все путешествие",
+  seeOtherDates: "Смотреть другие даты",
   checkAvailability: "Проверить наличие мест",
   contactReservations: "Связаться с отделом бронирования",
   viewRoom: "Смотреть каюту",
@@ -143,7 +146,7 @@ export const CONFIG_RU: ConfigWords = {
   eyebrow: "Искусство жизни на борту",
   title: "Ваше место на Ниле",
   introduction:
-    "Три палубы. Целый мир для вас. Поднимитесь на борт Hathor, осмотрите каждое пространство и найдите то, что станет вашим.",
+    "Три палубы. Ваш собственный мир. Поднимитесь на борт Hathor, осмотрите каждую каюту и найдите ту, что станет вашей.",
   decks: {
     lower: {
       name: "Нижняя палуба",
@@ -188,5 +191,6 @@ export const CONFIG_RU: ConfigWords = {
     "fac-loungers": { name: "Шезлонги", line: "Ряды шезлонгов по обе стороны бассейнов и рядом с террасой — для долгих дней на солнце." },
     "fac-sun-terrace": { name: "Открытая терраса", line: "Столы под зонтиками на носу, с видом вперед, вверх по реке." },
   },
-  roomName: (name) => name.replace(/^Room\b/, "Каюта"),
+  /* "Room 1" → «Каюта 1», "Suite 1" → «Люкс 1»; "Royal Suite 1" keeps its product name. */
+  roomName: (name) => name.replace(/^Room\b/, "Каюта").replace(/^Suite\b/, "Люкс"),
 };

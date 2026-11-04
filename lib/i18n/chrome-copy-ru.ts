@@ -24,7 +24,7 @@ export const CHROME_COPY_RU: ChromeCopy = {
         description: "Роскошное уединение на борту Hathor",
       },
       "/luxury-cabins-Nile-Cruise": {
-        label: "Каюты люкс",
+        label: "Luxury Rooms",
         description: "Каюты с видом на Нил и сдержанной элегантностью",
       },
       "/rooms": {
