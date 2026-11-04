@@ -413,6 +413,10 @@ model ClosureBooking {
   source String
   customerEmail String?
   customerPhone String?
+  country String?
+  adults Int?
+  children Int?
+  notes String?
   totalPriceCents Int
   receivedCents Int @default(0)
   updatedBySession String?

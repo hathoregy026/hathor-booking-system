@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CalendarDays, LayoutList, Loader2, RefreshCw, RotateCcw, Search, Trash2 } from "lucide-react";
+import { CalendarDays, LayoutList, Loader2, Plus, RefreshCw, RotateCcw, Search, Trash2 } from "lucide-react";
 import { BookingCalendar } from "@/components/admin/BookingCalendar";
 import { BookingsListView, type BookingGroup } from "@/components/admin/BookingsListView";
 import { BookingActionDialog, type BookingActionKind } from "@/components/admin/bookings/BookingActions";
 import { ClosureBookingsList } from "@/components/admin/bookings/ClosureBookings";
+import { ManualBookingDialog } from "@/components/admin/bookings/ManualBooking";
+import { useAdminPermission } from "@/components/admin/AdminAccessProvider";
 import { useToast } from "@/components/admin/ToastProvider";
 import type { AdminBookingDto, AdminBookingStage, AdminClosureBooking } from "@/lib/admin-bookings";
 import { formatPrice } from "@/lib/client-dates";
@@ -89,6 +91,10 @@ function AdminBookingsPageInner() {
   const [dialog, setDialog] = useState<{ booking: AdminBookingDto; kind: BookingActionKind } | null>(null);
   const [closures, setClosures] = useState<AdminClosureBooking[]>([]);
   const [closuresFailed, setClosuresFailed] = useState(false);
+  const [addingBooking, setAddingBooking] = useState(false);
+  const canManageBookings = useAdminPermission("bookings.manage");
+  const canManageAvailability = useAdminPermission("availability.manage");
+  const canAddBooking = canManageBookings && canManageAvailability;
 
   const loadIdRef = useRef(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -161,7 +167,7 @@ function AdminBookingsPageInner() {
     void loadBookings(loadedAt > 0);
     void loadClosures();
   }, [loadBookings, loadClosures, loadedAt]);
-  useAdminActivityRefresh("bookings", refreshActivity, Boolean(dialog) || isBulkWorking || isLoading);
+  useAdminActivityRefresh("bookings", refreshActivity, Boolean(dialog) || addingBooking || isBulkWorking || isLoading);
 
   const searched = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -365,6 +371,12 @@ function AdminBookingsPageInner() {
           </div>
         )}
         <span className="flex-1" />
+        {viewMode === "active" && canAddBooking ? (
+          <button type="button" onClick={() => setAddingBooking(true)} className="btn-primary h-9 px-3.5 text-sm">
+            <Plus className="h-4 w-4" aria-hidden />
+            Add booking
+          </button>
+        ) : null}
         {viewMode === "active" ? (
           <button
             type="button"
@@ -478,6 +490,17 @@ function AdminBookingsPageInner() {
           onAction={(booking, kind) => setDialog({ booking, kind })}
         />
       )}
+
+      {addingBooking ? (
+        <ManualBookingDialog
+          onClose={() => setAddingBooking(false)}
+          onSaved={() => {
+            setAddingBooking(false);
+            void loadClosures();
+            openList("availability");
+          }}
+        />
+      ) : null}
 
       {dialog ? (
         <BookingActionDialog

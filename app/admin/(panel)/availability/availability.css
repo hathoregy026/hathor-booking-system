@@ -80,11 +80,15 @@
 
 .cav-controls { display: grid; gap: 0.9rem; padding: 0.75rem; }
 @media (min-width: 900px) {
-  .cav-controls { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 0.75rem 1rem; }
+  .cav-controls { padding: 0.75rem 1rem; }
+}
+/* Four package choices need the full width; the month sits beside them only on wide screens. */
+@media (min-width: 1680px) {
+  .cav-controls { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
 }
 .cav-segment {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.25rem;
   padding: 0.25rem;
   border: 1px solid var(--border);
@@ -111,7 +115,7 @@
 @media (max-width: 420px) { .cav-segment__sub { display: none; } }
 
 .cav-month { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-@media (min-width: 900px) { .cav-month { justify-content: flex-end; } }
+@media (min-width: 1680px) { .cav-month { justify-content: flex-end; } }
 .cav-month__label { min-width: 9.5rem; text-align: center; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
 
 /* ---------- departures ---------- */
@@ -410,3 +414,51 @@
   .cav-tile, .cav-date, .cav-segment__item, .cav-check, .cav-reason, .cav-date-chip { transition: none; }
   .cav-tile:active:not(:disabled) { transform: none; }
 }
+
+/* ---------- package and status filters ---------- */
+
+@media (max-width: 520px) {
+  .cav-segment { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.cav-date__voyage { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+.cav-legend { align-items: center; }
+.cav-legend__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.9rem;
+  padding: 0.15rem 0.45rem 0.15rem 0.15rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+.cav-legend__btn:hover { border-color: var(--border-strong); }
+.cav-legend__btn.is-on { border-color: var(--accent); background: var(--bg-secondary); color: var(--text-primary); }
+.cav-legend--filtering .cav-legend__btn:not(.is-on) { opacity: 0.55; }
+.cav-legend__count { min-width: 0.9rem; text-align: center; font-weight: 600; }
+.cav-filter-empty { margin-top: 1rem; font-size: 0.82rem; color: var(--text-secondary); }
+
+/* A closed cabin opens its details; its checkbox still selects it for reopening. */
+.cav-tile--hit { cursor: default; }
+.cav-tile__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+.cav-tile__hit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cav-tile--hit > :not(.cav-tile__hit) { position: relative; z-index: 1; pointer-events: none; }
+.cav-tile--hit .cav-check-btn { pointer-events: auto; }
+.cav-check-btn { padding: 0; margin: -0.35rem -0.35rem 0 0; border: 0; background: none; width: 2rem; height: 2rem; display: grid; place-items: center; cursor: pointer; }
+.cav-check-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 8px; }
+.cav-closure__guest { font-size: 0.74rem; font-style: italic; color: var(--text-secondary); }
+@media (prefers-reduced-motion: reduce) { .cav-legend__btn { transition: none; } }

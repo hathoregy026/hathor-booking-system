@@ -68,7 +68,40 @@ export type AdminBookingDto = {
 };
 
 /** How a sale made outside the website reached Hathor. */
-export const CLOSURE_SALE_SOURCES = ["Phone", "Travel agent", "Walk-in", "Private charter", "Other"] as const;
+export const CLOSURE_SALE_SOURCES = ["Phone", "WhatsApp", "Email", "Travel agent", "Walk-in", "Private charter", "Other"] as const;
+
+/** The guest and the money behind a cabin closed for a sale made outside the website. */
+export type ClosureSale = {
+  guestName: string;
+  source: string;
+  customerEmail: string | null;
+  customerPhone: string | null;
+  country: string | null;
+  adults: number | null;
+  children: number | null;
+  notes: string | null;
+  totalPriceCents: number;
+  receivedCents: number;
+};
+
+/** Reads a ClosureBooking row sent as JSON (to_jsonb), whichever columns it has. */
+export function closureSaleFromJson(row: Record<string, unknown> | null | undefined): ClosureSale | null {
+  if (!row || typeof row.guestName !== "string") return null;
+  const text = (value: unknown) => (typeof value === "string" && value.trim() ? value : null);
+  const count = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : null);
+  return {
+    guestName: row.guestName,
+    source: text(row.source) ?? "Other",
+    customerEmail: text(row.customerEmail),
+    customerPhone: text(row.customerPhone),
+    country: text(row.country),
+    adults: count(row.adults),
+    children: count(row.children),
+    notes: text(row.notes),
+    totalPriceCents: count(row.totalPriceCents) ?? 0,
+    receivedCents: count(row.receivedCents) ?? 0,
+  };
+}
 
 /** A cabin closure on Availability, shown among the bookings as the sale it stands for. */
 export type AdminClosureBooking = {
@@ -82,14 +115,7 @@ export type AdminClosureBooking = {
   roomNames: string[];
   wholeShip: boolean;
   voyage: string | null;
-  sale: {
-    guestName: string;
-    source: string;
-    customerEmail: string | null;
-    customerPhone: string | null;
-    totalPriceCents: number;
-    receivedCents: number;
-  } | null;
+  sale: ClosureSale | null;
 };
 
 /** Reasons staff may give when cancelling; hathor_administer_booking refuses any other. */

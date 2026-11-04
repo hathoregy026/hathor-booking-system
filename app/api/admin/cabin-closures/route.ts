@@ -8,6 +8,8 @@ import { readPublicJsonBody, requireIdempotencyKey } from "@/lib/public-api-secu
 import { handleRouteError } from "@/lib/api";
 import { adminIdentityFromRequest } from "@/lib/admin-server-auth";
 import { readShipRoomNames } from "@/lib/ship-room-names";
+import { closureSaleFromJson } from "@/lib/admin-bookings";
+import { CLOSURE_STATES, VESSEL_LOCK, cabinId, closeOnSailing, type SailingResult } from "@/lib/cabin-closures";
 
 /*
  * Dashboard → Availability. Closing a cabin writes the same inventory block the
@@ -19,13 +21,11 @@ import { readShipRoomNames } from "@/lib/ship-room-names";
  */
 
 const VOYAGES = ["3-nights-aswan-luxor", "4-nights-luxor-aswan", "7-nights-luxor-aswan-luxor"] as const;
-const CLOSURE_STATES = ["MANUAL_BLOCK", "MAINTENANCE", "CHARTER_BLOCK"] as const;
 const STATE_LABEL: Record<(typeof CLOSURE_STATES)[number], string> = {
   MANUAL_BLOCK: "Closed from the dashboard",
   MAINTENANCE: "Maintenance",
   CHARTER_BLOCK: "Private charter",
 };
-const cabinId = z.string().regex(/^(K0[1-6]|T0[12]|S0[12]|R0[12])$/);
 const voyageSchema = z.enum(VOYAGES);
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
 
@@ -58,6 +58,8 @@ type OccupancyRow = {
   guestName: string | null;
   sourceVoyage: string | null;
   sourceSlug: string | null;
+  sale: Record<string, unknown> | null;
+  blockRoomIds: string[] | null;
 };
 type OverlapRow = { scheduleId: string; voyage: string; slug: string; departureTime: Date; arrivalTime: Date };
 type ClosureRow = {
@@ -70,90 +72,8 @@ type ClosureRow = {
   roomIds: string[];
   voyage: string | null;
   slug: string | null;
+  guestName: string | null;
 };
-
-/** The vessel-wide lock every booking write takes (lib/booking-engine lockVessel). */
-const VESSEL_LOCK = 734821901;
-
-type CloseRow = {
-  sailing: { id: string; departure: string } | null;
-  existing: string[];
-  wanted: number;
-  taken: { roomId: string; state: string; booking: boolean }[];
-  inserted: string[];
-};
-
-/**
- * Closes cabins on one sailing in a single atomic statement, the way this
- * codebase writes inventory: one statement per connection, so a dropped link
- * can never leave a transaction open holding the vessel lock. Inside it: take
- * the vessel lock, expire stale holds, read the sailing and what already
- * occupies each cabin, and insert blocks only for the free ones. A charter
- * inserts nothing unless every cabin is free. A retry with the same block key
- * inserts nothing and returns what the first attempt wrote. The exclusion
- * constraint still refuses any overlap a concurrent booking might create.
- */
-async function closeOnSailing(
-  scheduleId: string,
-  blockKey: string,
-  state: (typeof CLOSURE_STATES)[number],
-  roomIds: string[],
-  reason: string,
-): Promise<SailingResult> {
-  const [row] = await bookingQuery<CloseRow>(`
-    WITH vessel AS MATERIALIZED (SELECT pg_advisory_xact_lock(${VESSEL_LOCK}) AS locked),
-    expired AS MATERIALIZED (SELECT hathor_expire_holds() AS done FROM vessel),
-    sailing AS MATERIALIZED (
-      SELECT s.id, s."departureTime", s."arrivalTime", s."cruiseId"
-      FROM "CruiseSchedule" s JOIN "Cruise" c ON c.id = s."cruiseId", expired
-      WHERE s.id = $1 AND s."isBookable" AND s."departureTime" > clock_timestamp() AND c."deletedAt" IS NULL
-    ),
-    existing AS MATERIALIZED (
-      SELECT a."roomId" FROM "InventoryAllocation" a, vessel WHERE a."blockKey" = $2
-    ),
-    wanted AS MATERIALIZED (
-      SELECT r.id FROM sailing s
-      JOIN "_CruiseRooms" cr ON cr."A" = s."cruiseId"
-      JOIN "Room" r ON r.id = cr."B"
-      WHERE r."deletedAt" IS NULL AND ($3 = 'CHARTER_BLOCK' OR r.id = ANY($4::text[]))
-    ),
-    taken AS MATERIALIZED (
-      SELECT DISTINCT ON (a."roomId") a."roomId", a.state, a."bookingRoomId" IS NOT NULL AS booking
-      FROM "InventoryAllocation" a JOIN wanted w ON w.id = a."roomId", sailing s
-      WHERE a.active AND a."startsAt" < s."arrivalTime" AND a."endsAt" > s."departureTime"
-        AND (a."expiresAt" IS NULL OR a."expiresAt" > clock_timestamp())
-      ORDER BY a."roomId", a."bookingRoomId" NULLS LAST
-    ),
-    inserted AS (
-      INSERT INTO "InventoryAllocation" ("roomId", "startsAt", "endsAt", state, "blockKey", reason)
-      SELECT w.id, s."departureTime", s."arrivalTime", $3, $2, $5
-      FROM wanted w, sailing s
-      WHERE NOT EXISTS (SELECT 1 FROM existing)
-        AND NOT EXISTS (SELECT 1 FROM taken t WHERE t."roomId" = w.id)
-        AND NOT ($3 = 'CHARTER_BLOCK' AND EXISTS (SELECT 1 FROM taken))
-      RETURNING "roomId"
-    )
-    SELECT
-      (SELECT json_build_object('id', id, 'departure', to_char("departureTime", 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')) FROM sailing) AS sailing,
-      (SELECT coalesce(json_agg("roomId" ORDER BY "roomId"), '[]'::json) FROM existing) AS existing,
-      (SELECT count(*)::int FROM wanted) AS wanted,
-      (SELECT coalesce(json_agg(json_build_object('roomId', "roomId", 'state', state, 'booking', booking)), '[]'::json) FROM taken) AS taken,
-      (SELECT coalesce(json_agg("roomId" ORDER BY "roomId"), '[]'::json) FROM inserted) AS inserted
-  `, [scheduleId, blockKey, state, roomIds, reason]);
-
-  if (!row?.sailing) return { scheduleId, departure: null, closed: [], skipped: [], error: "This sailing is no longer open." };
-  const departure = row.sailing.departure;
-  if (row.existing.length) return { scheduleId, departure, closed: row.existing, skipped: [] };
-  if (!row.wanted) return { scheduleId, departure, closed: [], skipped: [], error: "None of these cabins sails on this voyage." };
-  const skipped = row.taken.map(entry => ({
-    roomId: entry.roomId,
-    why: entry.booking ? (entry.state === "HELD" ? "on hold for a guest" : entry.state === "CONFIRMED" ? "booked" : "requested by a guest") : "already closed",
-  }));
-  if (state === "CHARTER_BLOCK" && skipped.length) {
-    return { scheduleId, departure, closed: [], skipped, error: "Not every cabin is free on this date, so the ship was not chartered." };
-  }
-  return { scheduleId, departure, closed: row.inserted, skipped };
-}
 
 async function requireSession(request: NextRequest) {
   return (await adminIdentityFromRequest(request)) !== null;
@@ -202,13 +122,19 @@ async function readBoard(slug: string, month: string) {
                  a."startsAt", a."endsAt", a."expiresAt",
                  b.id AS "bookingId", b.status::text AS "bookingStatus",
                  COALESCE(NULLIF(trim(concat_ws(' ', b."firstName", b."lastName")), ''), b."customerName") AS "guestName",
-                 src.name AS "sourceVoyage", src.slug AS "sourceSlug"
+                 src.name AS "sourceVoyage", src.slug AS "sourceSlug",
+                 to_jsonb(d) AS sale,
+                 CASE WHEN a."blockKey" IS NOT NULL AND a."bookingRoomId" IS NULL THEN (
+                   SELECT array_agg(x."roomId" ORDER BY x."roomId") FROM "InventoryAllocation" x
+                   WHERE x."blockKey" = a."blockKey" AND x.active AND x."bookingRoomId" IS NULL
+                 ) END AS "blockRoomIds"
           FROM "CruiseSchedule" s
           JOIN "InventoryAllocation" a
             ON a.active AND a."startsAt" < s."arrivalTime" AND a."endsAt" > s."departureTime"
            AND (a."expiresAt" IS NULL OR a."expiresAt" > clock_timestamp())
           LEFT JOIN "BookingRoom" br ON br.id = a."bookingRoomId"
           LEFT JOIN "Booking" b ON b.id = br."bookingId"
+          LEFT JOIN "ClosureBooking" d ON d."blockKey" = a."blockKey" AND a."bookingRoomId" IS NULL
           LEFT JOIN LATERAL (
             SELECT c2.name, c2.slug FROM "CruiseSchedule" s2 JOIN "Cruise" c2 ON c2.id = s2."cruiseId"
             WHERE s2."departureTime" = a."startsAt" AND s2."arrivalTime" = a."endsAt"
@@ -269,6 +195,8 @@ function toOccupancy(row: OccupancyRow, sailing: SailingRow) {
     guestName: row.guestName,
     sameSailing: row.startsAt.getTime() === sailing.departureTime.getTime() && row.endsAt.getTime() === sailing.arrivalTime.getTime(),
     source: { voyage: row.sourceVoyage, slug: row.sourceSlug, departure: iso(row.startsAt), arrival: iso(row.endsAt) },
+    sale: booking ? null : closureSaleFromJson(row.sale),
+    blockRoomIds: booking ? null : row.blockRoomIds ?? [row.roomId],
   };
 }
 
@@ -277,8 +205,9 @@ async function readUpcoming() {
   const rows = await bookingQuery<ClosureRow>(`
     SELECT a."blockKey", a.state, a.reason, min(a."createdAt") AS "createdAt", a."startsAt", a."endsAt",
            array_agg(a."roomId" ORDER BY a."roomId") AS "roomIds",
-           src.name AS voyage, src.slug
+           src.name AS voyage, src.slug, d."guestName"
     FROM "InventoryAllocation" a
+    LEFT JOIN "ClosureBooking" d ON d."blockKey" = a."blockKey"
     LEFT JOIN LATERAL (
       SELECT c2.name, c2.slug FROM "CruiseSchedule" s2 JOIN "Cruise" c2 ON c2.id = s2."cruiseId"
       WHERE s2."departureTime" = a."startsAt" AND s2."arrivalTime" = a."endsAt"
@@ -287,7 +216,7 @@ async function readUpcoming() {
     ) src ON true
     WHERE a.active AND a."bookingRoomId" IS NULL AND a."blockKey" IS NOT NULL
       AND a."endsAt" > clock_timestamp()
-    GROUP BY a."blockKey", a.state, a.reason, a."startsAt", a."endsAt", src.name, src.slug
+    GROUP BY a."blockKey", a.state, a.reason, a."startsAt", a."endsAt", src.name, src.slug, d."guestName"
     ORDER BY a."startsAt", min(a."createdAt")
     LIMIT 400
   `);
@@ -301,6 +230,7 @@ async function readUpcoming() {
     roomIds: row.roomIds,
     voyage: row.voyage,
     slug: row.slug,
+    guestName: row.guestName,
   }));
 }
 
@@ -337,13 +267,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-type SailingResult = {
-  scheduleId: string;
-  departure: string | null;
-  closed: string[];
-  skipped: { roomId: string; why: string }[];
-  error?: string;
-};
 
 /**
  * Closes the chosen cabins on each chosen sailing, one atomic statement per

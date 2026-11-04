@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { NextRequest } from "next/server";
 import { adminIdentityFromRequest, type AdminIdentity } from "@/lib/admin-server-auth";
 import { assertTrustedPublicJsonRequest, PublicRequestError } from "@/lib/public-api-security";
-import { administerBooking } from "@/lib/booking-engine";
+import { administerBooking, netPaid } from "@/lib/booking-engine";
 import { sendConfirmation, sendDeclined, sendInvoice, sendPaymentReceipt, sendTeamReply, type MailResult } from "@/lib/booking-guest-mail";
 import { fetchBookingStatus } from "@/lib/admin-bookings-fetch";
 import { CANCEL_REASONS } from "@/lib/admin-bookings";
@@ -75,6 +75,20 @@ export const staffActionSchema = z.discriminatedUnion("type", [
 
 export type StaffActionResult = { email?: MailResult };
 
+type Administered = Awaited<ReturnType<typeof administerBooking>>;
+
+/**
+ * A request the team never accepted stays a "new request" in the database even
+ * once it is paid, because only an accepted request confirms. Money covering
+ * the whole booking is the team's acceptance: accept it, and the database
+ * confirms it in the same call.
+ */
+function paidInFullAwaitingAccept(booking: Administered | undefined): boolean {
+  if (!booking || booking.status !== "REQUESTED" || booking.acceptedAt || !Array.isArray(booking.payments)) return false;
+  const owed = (booking.totalPriceCents ?? 0) + (booking.cardSurchargeCents ?? 0);
+  return owed > 0 && netPaid(booking.payments) >= owed;
+}
+
 export async function applyStaffBookingAction(id: string, body: unknown, recordedBySession: string | null = null, dependencies: {
   resolveAttachments?: typeof resolveAttachments; administerBooking?: typeof administerBooking;
   fetchBookingStatus?: typeof fetchBookingStatus; sendConfirmation?: typeof sendConfirmation; sendPaymentReceipt?: typeof sendPaymentReceipt;
@@ -116,7 +130,8 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
 
   if (action.type === "set-plan") {
     const before = await status(id);
-    const after = await administer(id, { type: "set-plan", plan: action.plan, recordedBySession: recordedBySession ?? undefined });
+    let after = await administer(id, { type: "set-plan", plan: action.plan, recordedBySession: recordedBySession ?? undefined });
+    if (paidInFullAwaitingAccept(after)) after = await administer(id, { type: "accept" });
     // A smaller first payment can already be covered by what was received.
     if (before !== "CONFIRMED" && after?.status === "CONFIRMED") return { email: await confirm(id) };
     return action.notify ? { email: await sendInvoice(id, { instructions: PLAN_CHANGED_NOTE }) } : {};
@@ -134,7 +149,8 @@ export async function applyStaffBookingAction(id: string, body: unknown, recorde
 
   const attachments = await resolve(id, action.attachments ?? []);
   const before = await status(id);
-  const after = await administer(id, { type: "record-payment", payment: { ...action.payment, recordedBySession: recordedBySession ?? undefined } });
+  let after = await administer(id, { type: "record-payment", payment: { ...action.payment, recordedBySession: recordedBySession ?? undefined } });
+  if (paidInFullAwaitingAccept(after)) after = await administer(id, { type: "accept" });
   // The database confirms a booking once the recorded payments cover the deposit; tell the guest then.
   if (before !== "CONFIRMED" && after?.status === "CONFIRMED") return { email: await confirm(id, attachments) };
   return { email: await (dependencies.sendPaymentReceipt ?? sendPaymentReceipt)(id, action.payment, recordedBySession ?? undefined, attachments) };

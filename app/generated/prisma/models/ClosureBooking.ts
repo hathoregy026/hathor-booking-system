@@ -27,11 +27,15 @@ export type AggregateClosureBooking = {
 }
 
 export type ClosureBookingAvgAggregateOutputType = {
+  adults: number | null
+  children: number | null
   totalPriceCents: number | null
   receivedCents: number | null
 }
 
 export type ClosureBookingSumAggregateOutputType = {
+  adults: number | null
+  children: number | null
   totalPriceCents: number | null
   receivedCents: number | null
 }
@@ -42,6 +46,10 @@ export type ClosureBookingMinAggregateOutputType = {
   source: string | null
   customerEmail: string | null
   customerPhone: string | null
+  country: string | null
+  adults: number | null
+  children: number | null
+  notes: string | null
   totalPriceCents: number | null
   receivedCents: number | null
   updatedBySession: string | null
@@ -55,6 +63,10 @@ export type ClosureBookingMaxAggregateOutputType = {
   source: string | null
   customerEmail: string | null
   customerPhone: string | null
+  country: string | null
+  adults: number | null
+  children: number | null
+  notes: string | null
   totalPriceCents: number | null
   receivedCents: number | null
   updatedBySession: string | null
@@ -68,6 +80,10 @@ export type ClosureBookingCountAggregateOutputType = {
   source: number
   customerEmail: number
   customerPhone: number
+  country: number
+  adults: number
+  children: number
+  notes: number
   totalPriceCents: number
   receivedCents: number
   updatedBySession: number
@@ -78,11 +94,15 @@ export type ClosureBookingCountAggregateOutputType = {
 
 
 export type ClosureBookingAvgAggregateInputType = {
+  adults?: true
+  children?: true
   totalPriceCents?: true
   receivedCents?: true
 }
 
 export type ClosureBookingSumAggregateInputType = {
+  adults?: true
+  children?: true
   totalPriceCents?: true
   receivedCents?: true
 }
@@ -93,6 +113,10 @@ export type ClosureBookingMinAggregateInputType = {
   source?: true
   customerEmail?: true
   customerPhone?: true
+  country?: true
+  adults?: true
+  children?: true
+  notes?: true
   totalPriceCents?: true
   receivedCents?: true
   updatedBySession?: true
@@ -106,6 +130,10 @@ export type ClosureBookingMaxAggregateInputType = {
   source?: true
   customerEmail?: true
   customerPhone?: true
+  country?: true
+  adults?: true
+  children?: true
+  notes?: true
   totalPriceCents?: true
   receivedCents?: true
   updatedBySession?: true
@@ -119,6 +147,10 @@ export type ClosureBookingCountAggregateInputType = {
   source?: true
   customerEmail?: true
   customerPhone?: true
+  country?: true
+  adults?: true
+  children?: true
+  notes?: true
   totalPriceCents?: true
   receivedCents?: true
   updatedBySession?: true
@@ -219,6 +251,10 @@ export type ClosureBookingGroupByOutputType = {
   source: string
   customerEmail: string | null
   customerPhone: string | null
+  country: string | null
+  adults: number | null
+  children: number | null
+  notes: string | null
   totalPriceCents: number
   receivedCents: number
   updatedBySession: string | null
@@ -255,6 +291,10 @@ export type ClosureBookingWhereInput = {
   source?: Prisma.StringFilter<"ClosureBooking"> | string
   customerEmail?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
+  country?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
+  adults?: Prisma.IntNullableFilter<"ClosureBooking"> | number | null
+  children?: Prisma.IntNullableFilter<"ClosureBooking"> | number | null
+  notes?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
   totalPriceCents?: Prisma.IntFilter<"ClosureBooking"> | number
   receivedCents?: Prisma.IntFilter<"ClosureBooking"> | number
   updatedBySession?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
@@ -268,6 +308,10 @@ export type ClosureBookingOrderByWithRelationInput = {
   source?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  adults?: Prisma.SortOrderInput | Prisma.SortOrder
+  children?: Prisma.SortOrderInput | Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
   updatedBySession?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -284,6 +328,10 @@ export type ClosureBookingWhereUniqueInput = Prisma.AtLeast<{
   source?: Prisma.StringFilter<"ClosureBooking"> | string
   customerEmail?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
   customerPhone?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
+  country?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
+  adults?: Prisma.IntNullableFilter<"ClosureBooking"> | number | null
+  children?: Prisma.IntNullableFilter<"ClosureBooking"> | number | null
+  notes?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
   totalPriceCents?: Prisma.IntFilter<"ClosureBooking"> | number
   receivedCents?: Prisma.IntFilter<"ClosureBooking"> | number
   updatedBySession?: Prisma.StringNullableFilter<"ClosureBooking"> | string | null
@@ -297,6 +345,10 @@ export type ClosureBookingOrderByWithAggregationInput = {
   source?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   customerPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  adults?: Prisma.SortOrderInput | Prisma.SortOrder
+  children?: Prisma.SortOrderInput | Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
   updatedBySession?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -318,6 +370,10 @@ export type ClosureBookingScalarWhereWithAggregatesInput = {
   source?: Prisma.StringWithAggregatesFilter<"ClosureBooking"> | string
   customerEmail?: Prisma.StringNullableWithAggregatesFilter<"ClosureBooking"> | string | null
   customerPhone?: Prisma.StringNullableWithAggregatesFilter<"ClosureBooking"> | string | null
+  country?: Prisma.StringNullableWithAggregatesFilter<"ClosureBooking"> | string | null
+  adults?: Prisma.IntNullableWithAggregatesFilter<"ClosureBooking"> | number | null
+  children?: Prisma.IntNullableWithAggregatesFilter<"ClosureBooking"> | number | null
+  notes?: Prisma.StringNullableWithAggregatesFilter<"ClosureBooking"> | string | null
   totalPriceCents?: Prisma.IntWithAggregatesFilter<"ClosureBooking"> | number
   receivedCents?: Prisma.IntWithAggregatesFilter<"ClosureBooking"> | number
   updatedBySession?: Prisma.StringNullableWithAggregatesFilter<"ClosureBooking"> | string | null
@@ -331,6 +387,10 @@ export type ClosureBookingCreateInput = {
   source: string
   customerEmail?: string | null
   customerPhone?: string | null
+  country?: string | null
+  adults?: number | null
+  children?: number | null
+  notes?: string | null
   totalPriceCents: number
   receivedCents?: number
   updatedBySession?: string | null
@@ -344,6 +404,10 @@ export type ClosureBookingUncheckedCreateInput = {
   source: string
   customerEmail?: string | null
   customerPhone?: string | null
+  country?: string | null
+  adults?: number | null
+  children?: number | null
+  notes?: string | null
   totalPriceCents: number
   receivedCents?: number
   updatedBySession?: string | null
@@ -357,6 +421,10 @@ export type ClosureBookingUpdateInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adults?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  children?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalPriceCents?: Prisma.IntFieldUpdateOperationsInput | number
   receivedCents?: Prisma.IntFieldUpdateOperationsInput | number
   updatedBySession?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -370,6 +438,10 @@ export type ClosureBookingUncheckedUpdateInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adults?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  children?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalPriceCents?: Prisma.IntFieldUpdateOperationsInput | number
   receivedCents?: Prisma.IntFieldUpdateOperationsInput | number
   updatedBySession?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -383,6 +455,10 @@ export type ClosureBookingCreateManyInput = {
   source: string
   customerEmail?: string | null
   customerPhone?: string | null
+  country?: string | null
+  adults?: number | null
+  children?: number | null
+  notes?: string | null
   totalPriceCents: number
   receivedCents?: number
   updatedBySession?: string | null
@@ -396,6 +472,10 @@ export type ClosureBookingUpdateManyMutationInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adults?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  children?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalPriceCents?: Prisma.IntFieldUpdateOperationsInput | number
   receivedCents?: Prisma.IntFieldUpdateOperationsInput | number
   updatedBySession?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -409,6 +489,10 @@ export type ClosureBookingUncheckedUpdateManyInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adults?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  children?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalPriceCents?: Prisma.IntFieldUpdateOperationsInput | number
   receivedCents?: Prisma.IntFieldUpdateOperationsInput | number
   updatedBySession?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -422,6 +506,10 @@ export type ClosureBookingCountOrderByAggregateInput = {
   source?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
   updatedBySession?: Prisma.SortOrder
@@ -430,6 +518,8 @@ export type ClosureBookingCountOrderByAggregateInput = {
 }
 
 export type ClosureBookingAvgOrderByAggregateInput = {
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
 }
@@ -440,6 +530,10 @@ export type ClosureBookingMaxOrderByAggregateInput = {
   source?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
   updatedBySession?: Prisma.SortOrder
@@ -453,6 +547,10 @@ export type ClosureBookingMinOrderByAggregateInput = {
   source?: Prisma.SortOrder
   customerEmail?: Prisma.SortOrder
   customerPhone?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
   updatedBySession?: Prisma.SortOrder
@@ -461,6 +559,8 @@ export type ClosureBookingMinOrderByAggregateInput = {
 }
 
 export type ClosureBookingSumOrderByAggregateInput = {
+  adults?: Prisma.SortOrder
+  children?: Prisma.SortOrder
   totalPriceCents?: Prisma.SortOrder
   receivedCents?: Prisma.SortOrder
 }
@@ -473,6 +573,10 @@ export type ClosureBookingSelect<ExtArgs extends runtime.Types.Extensions.Intern
   source?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
+  country?: boolean
+  adults?: boolean
+  children?: boolean
+  notes?: boolean
   totalPriceCents?: boolean
   receivedCents?: boolean
   updatedBySession?: boolean
@@ -486,6 +590,10 @@ export type ClosureBookingSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   source?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
+  country?: boolean
+  adults?: boolean
+  children?: boolean
+  notes?: boolean
   totalPriceCents?: boolean
   receivedCents?: boolean
   updatedBySession?: boolean
@@ -499,6 +607,10 @@ export type ClosureBookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   source?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
+  country?: boolean
+  adults?: boolean
+  children?: boolean
+  notes?: boolean
   totalPriceCents?: boolean
   receivedCents?: boolean
   updatedBySession?: boolean
@@ -512,6 +624,10 @@ export type ClosureBookingSelectScalar = {
   source?: boolean
   customerEmail?: boolean
   customerPhone?: boolean
+  country?: boolean
+  adults?: boolean
+  children?: boolean
+  notes?: boolean
   totalPriceCents?: boolean
   receivedCents?: boolean
   updatedBySession?: boolean
@@ -519,7 +635,7 @@ export type ClosureBookingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ClosureBookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"blockKey" | "guestName" | "source" | "customerEmail" | "customerPhone" | "totalPriceCents" | "receivedCents" | "updatedBySession" | "createdAt" | "updatedAt", ExtArgs["result"]["closureBooking"]>
+export type ClosureBookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"blockKey" | "guestName" | "source" | "customerEmail" | "customerPhone" | "country" | "adults" | "children" | "notes" | "totalPriceCents" | "receivedCents" | "updatedBySession" | "createdAt" | "updatedAt", ExtArgs["result"]["closureBooking"]>
 
 export type $ClosureBookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ClosureBooking"
@@ -530,6 +646,10 @@ export type $ClosureBookingPayload<ExtArgs extends runtime.Types.Extensions.Inte
     source: string
     customerEmail: string | null
     customerPhone: string | null
+    country: string | null
+    adults: number | null
+    children: number | null
+    notes: string | null
     totalPriceCents: number
     receivedCents: number
     updatedBySession: string | null
@@ -963,6 +1083,10 @@ export interface ClosureBookingFieldRefs {
   readonly source: Prisma.FieldRef<"ClosureBooking", 'String'>
   readonly customerEmail: Prisma.FieldRef<"ClosureBooking", 'String'>
   readonly customerPhone: Prisma.FieldRef<"ClosureBooking", 'String'>
+  readonly country: Prisma.FieldRef<"ClosureBooking", 'String'>
+  readonly adults: Prisma.FieldRef<"ClosureBooking", 'Int'>
+  readonly children: Prisma.FieldRef<"ClosureBooking", 'Int'>
+  readonly notes: Prisma.FieldRef<"ClosureBooking", 'String'>
   readonly totalPriceCents: Prisma.FieldRef<"ClosureBooking", 'Int'>
   readonly receivedCents: Prisma.FieldRef<"ClosureBooking", 'Int'>
   readonly updatedBySession: Prisma.FieldRef<"ClosureBooking", 'String'>
