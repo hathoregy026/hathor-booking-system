@@ -1,11 +1,12 @@
 /**
  * The booking journey's itineraries in Russian: the same days, routes and
  * reading links as lib/booking-itineraries.ts. Paths open with the place; a
- * detail after it follows a comma (see placeFromPath in booking-copy-de.ts).
- * The reading links open the Russian journal articles, the same ones the English
- * links reach through lib/seo/legacy-redirects.ts. ItineraryPanel renders each
- * href as it stands, so they carry /de themselves. DIRECTION_COMPARE and
- * ITINERARY_GUIDE have no Russian article, so they open the Russian voyages page.
+ * detail after it follows a comma or a bracket (see placeFromPath in
+ * booking-copy-ru.ts). The reading links open the Russian journal articles,
+ * the same ones the English links reach through lib/seo/legacy-redirects.ts.
+ * ItineraryPanel renders each href as it stands, so they carry /ru themselves.
+ * DIRECTION_COMPARE and ITINERARY_GUIDE have no Russian article, so they open
+ * the Russian voyages page.
  */
 
 import {
@@ -16,53 +17,54 @@ import {
 } from "@/lib/booking-itineraries";
 import type { StayDurationValue } from "@/lib/booking-search-config";
 
-const PHILAE: ItineraryLink = { label: "Philae-Tempel", href: "/ru/blogs/discovering-the-secrets-of-philae-temple" };
-/** The same link inside a sentence, where Russian grammar changes the ending. */
-const PHILAE_GENITIVE: ItineraryLink = { ...PHILAE, label: "Philae-Tempels" };
-const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Sehenswertes in Assuan", href: "/ru/blogs/golden-gems-of-aswan" };
-const ASWAN_TO_LUXOR: ItineraryLink = { label: "Von Assuan nach Luxor mit der Dahabiya", href: "/ru/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise" };
-const KOM_OMBO: ItineraryLink = { label: "Tempel von Kom Ombo", href: "/ru/blogs/kom-ombo-temple" };
-const DIRECTION_COMPARE: ItineraryLink = { label: "Die Reisen in beide Richtungen vergleichen", href: "/ru/voyages" };
-const EAST_BANK: ItineraryLink = { label: "Karnak-Tempel und Luxor-Tempel", href: "/ru/blogs/luxors-sacred-east-bank" };
-const EAST_BANK_READING: ItineraryLink = { label: "Die antiken Wunder am Ostufer von Luxor", href: "/ru/blogs/luxors-sacred-east-bank" };
-const ITINERARY_GUIDE: ItineraryLink = { label: "Die Routen unserer Nilreisen entdecken", href: "/ru/voyages" };
-const COLOSSI: ItineraryLink = { label: "Memnonkolosse", href: "/ru/blogs/colossi-of-memnon" };
-const COLOSSI_DATIVE: ItineraryLink = { ...COLOSSI, label: "Memnonkolossen" };
-const GREATEST_LANDMARKS: ItineraryLink = { label: "Ägyptens große Monumente am Nil", href: "/ru/blogs/best-places-to-visit-along-the-nile-with-a-dahabiya-cruise" };
-const EXPLORING: ItineraryLink = { label: "Luxor und Assuan an Bord einer Luxus-Dahabiya", href: "/ru/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya" };
-const SILSILA: ItineraryLink = { label: "Gebel el-Silsila", href: "/ru/blogs/niles-hidden-gems-by-dahabiya" };
-const SILSILA_READING: ItineraryLink = { label: "Verborgene Schätze am Nil: Gebel el-Silsila", href: "/ru/blogs/niles-hidden-gems-by-dahabiya" };
-const HATHOR_BLOG: ItineraryLink = { label: "Das Journal der Hathor", href: "/ru/blogs" };
-const SLOW_TRAVEL: ItineraryLink = { label: "Langsam reisen auf dem Nil", href: "/ru/blogs/why-travelers-love-slow-travel-on-the-nile" };
-const HIDDEN_SPOTS: ItineraryLink = { label: "Verborgene Winkel am Nil", href: "/ru/blogs/5-quiet-nile-spots-for-stunning-honeymoon-captures" };
+const PHILAE: ItineraryLink = { label: "Храм Филе", href: "/ru/blogs/discovering-the-secrets-of-philae-temple" };
+/** The same links inside a sentence, where Russian grammar changes the ending. */
+const PHILAE_GENITIVE: ItineraryLink = { ...PHILAE, label: "храма Филе" };
+const ASWAN_ATTRACTIONS: ItineraryLink = { label: "Достопримечательности Асуана", href: "/ru/blogs/golden-gems-of-aswan" };
+const ASWAN_TO_LUXOR: ItineraryLink = { label: "Из Асуана в Луксор на дахабии", href: "/ru/blogs/sailing-from-aswan-to-luxor-on-a-dahabiya-nile-cruise" };
+const KOM_OMBO: ItineraryLink = { label: "Храм Ком-Омбо", href: "/ru/blogs/kom-ombo-temple" };
+const KOM_OMBO_DATIVE: ItineraryLink = { ...KOM_OMBO, label: "храму Ком-Омбо" };
+const DIRECTION_COMPARE: ItineraryLink = { label: "Из Луксора в Асуан или из Асуана в Луксор", href: "/ru/voyages" };
+const EAST_BANK: ItineraryLink = { label: "Карнакский и Луксорский храмы", href: "/ru/blogs/luxors-sacred-east-bank" };
+const EAST_BANK_READING: ItineraryLink = { label: "Древние чудеса Восточного берега Луксора", href: "/ru/blogs/luxors-sacred-east-bank" };
+const ITINERARY_GUIDE: ItineraryLink = { label: "Маршруты круизов по Нилу на дахабии", href: "/ru/voyages" };
+const COLOSSI: ItineraryLink = { label: "Колоссы Мемнона", href: "/ru/blogs/colossi-of-memnon" };
+const GREATEST_LANDMARKS: ItineraryLink = { label: "Величайшие памятники Египта на Ниле", href: "/ru/blogs/best-places-to-visit-along-the-nile-with-a-dahabiya-cruise" };
+const EXPLORING: ItineraryLink = { label: "Луксор и Асуан на роскошной дахабии", href: "/ru/blogs/exploring-luxor-and-aswan-on-a-luxury-dahabiya" };
+/** Inside a sentence it follows «в местности», so the name keeps its own form. */
+const SILSILA: ItineraryLink = { label: "Гебель-эль-Сильсила", href: "/ru/blogs/niles-hidden-gems-by-dahabiya" };
+const SILSILA_READING: ItineraryLink = { label: "Скрытые жемчужины Нила: Гебель-эль-Сильсила", href: "/ru/blogs/niles-hidden-gems-by-dahabiya" };
+const HATHOR_BLOG: ItineraryLink = { label: "Блог Hathor", href: "/ru/blogs" };
+const SLOW_TRAVEL: ItineraryLink = { label: "Неспешное путешествие по Нилу", href: "/ru/blogs/why-travelers-love-slow-travel-on-the-nile" };
+const HIDDEN_SPOTS: ItineraryLink = { label: "Укромные уголки Нила", href: "/ru/blogs/5-quiet-nile-spots-for-stunning-honeymoon-captures" };
 
 const THREE_NIGHT: ItineraryDay[] = [
   {
     day: 1,
-    title: "Assuan, der Beginn Ihrer Reise",
-    path: "Assuan, Einschiffung → Philae-Tempel → Assuan-Hochdamm → Nacht in Assuan",
-    copy: ["Ankunft mit Willkommensgetränk, Einschiffung und Mittagessen an Bord. Besuch des ", PHILAE_GENITIVE, " und des Assuan-Hochdamms. Rückkehr an Bord der Hathor zu Abendessen und Übernachtung in Assuan."],
+    title: "Асуан, начало вашего путешествия",
+    path: "Асуан, посадка на борт → храм Филе → Асуанская плотина → ночевка в Асуане",
+    copy: ["Прибытие и приветственный напиток, посадка и обед на борту. Посещение ", PHILAE_GENITIVE, " и Асуанской плотины. Возвращение на Hathor к ужину, ночевка в Асуане."],
     reading: [PHILAE, ASWAN_ATTRACTIONS, ASWAN_TO_LUXOR],
   },
   {
     day: 2,
-    title: "Kom Ombo und Esna entdecken",
-    path: "Assuan → Kom Ombo → Esna → Nacht in Esna",
-    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Frühstück an Bord, dann Fahrt nach Norden zum ", KOM_OMBO, ". Weiter nach Esna zu Abendessen und Übernachtung."],
+    title: "Знакомство с Ком-Омбо и Эсной",
+    path: "Асуан → Ком-Омбо → Эсна → ночевка в Эсне",
+    copy: ["Ранним утром экскурсия в Абу-Симбел по желанию. Завтрак на борту, затем переход на север к ", KOM_OMBO_DATIVE, ". Дальше путь в Эсну, где вас ждут ужин и ночевка."],
     reading: [KOM_OMBO, DIRECTION_COMPARE],
   },
   {
     day: 3,
-    title: "Esna und das Ostufer von Luxor",
-    path: "Esna-Tempel → Fahrt Esna → Luxor → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
-    copy: ["Frühstück und Besuch des Esna-Tempels. Fahrt nach Luxor mit Mittagessen an Bord, dann Besuch des Ostufers mit ", EAST_BANK, ". Abendessen und Übernachtung in Luxor."],
+    title: "Эсна и Восточный берег Луксора",
+    path: "Храм в Эсне → переход Эсна → Луксор → Карнакский храм → Луксорский храм → ночевка в Луксоре",
+    copy: ["Завтрак, затем посещение храма в Эсне. Переход в Луксор с обедом на борту, затем осмотр Восточного берега, включая ", EAST_BANK, ". Ужин и ночевка в Луксоре."],
     reading: [EAST_BANK_READING, ITINERARY_GUIDE],
   },
   {
     day: 4,
-    title: "Abschied in Luxor",
-    path: "Luxor, Ausschiffung → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse",
-    copy: ["Frühstück und Check-out. Besuch des Westufers von Luxor mit dem Tal der Könige, dem Hatschepsut-Tempel und den ", COLOSSI_DATIVE, "."],
+    title: "Прощание с Луксором",
+    path: "Луксор, сход на берег → Долина царей → храм Хатшепсут → Колоссы Мемнона",
+    copy: ["Завтрак и выезд. Осмотр Западного берега Луксора, включая Долину царей, храм Хатшепсут и ", COLOSSI, "."],
     reading: [COLOSSI, GREATEST_LANDMARKS],
   },
 ];
@@ -70,37 +72,37 @@ const THREE_NIGHT: ItineraryDay[] = [
 const FOUR_NIGHT: ItineraryDay[] = [
   {
     day: 1,
-    title: "Willkommen in Luxor und am Ostufer",
-    path: "Luxor, Einschiffung → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
-    copy: ["Willkommensgetränk und Check-in, gefolgt vom Mittagessen an Bord. Besuch des Ostufers mit ", EAST_BANK, ". Rückkehr an Bord der Hathor zu Abendessen und Übernachtung in Luxor."],
+    title: "Добро пожаловать в Луксор и на Восточный берег",
+    path: "Луксор, посадка на борт → Карнакский храм → Луксорский храм → ночевка в Луксоре",
+    copy: ["Приветственный напиток и заселение, затем обед на борту. Осмотр Восточного берега, включая ", EAST_BANK, ". Возвращение на Hathor к ужину, ночевка в Луксоре."],
     reading: [EAST_BANK_READING, EXPLORING],
   },
   {
     day: 2,
-    title: "Das Westufer von Luxor und die Fahrt nach Esna",
-    path: "Westufer von Luxor → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse → Fahrt Luxor → Esna → Nacht in Esna",
-    copy: ["Frühstück, dann Besuch des Westufers: Tal der Könige, Hatschepsut-Tempel und ", COLOSSI, ". Rückkehr zum Mittagessen, während die Hathor nach Esna fährt. Abendessen und Übernachtung in Esna."],
+    title: "Западный берег Луксора и переход в Эсну",
+    path: "Западный берег Луксора → Долина царей → храм Хатшепсут → Колоссы Мемнона → переход Луксор → Эсна → ночевка в Эсне",
+    copy: ["Завтрак, затем осмотр Западного берега: Долина царей, храм Хатшепсут и ", COLOSSI, ". Возвращение к обеду, пока Hathor идет в Эсну. Ужин и ночевка в Эсне."],
     reading: [COLOSSI, GREATEST_LANDMARKS],
   },
   {
     day: 3,
-    title: "Der Tempel von Edfu und die Insel El Ramady",
-    path: "Esna → Edfu → Horus-Tempel → Insel El Ramady → Nacht in El Ramady",
-    copy: ["Frühstück und Fahrt nach Süden bis Edfu. Besuch des Horus-Tempels, Rückkehr zum Mittagessen, dann weiter zur Insel El Ramady zu Abendessen und Übernachtung."],
+    title: "Храм в Эдфу и остров Эль-Рамади",
+    path: "Эсна → Эдфу → храм Гора → остров Эль-Рамади → ночевка на Эль-Рамади",
+    copy: ["Завтрак и переход на юг, в Эдфу. Посещение храма Гора, возвращение к обеду, затем путь к острову Эль-Рамади, где вас ждут ужин и ночевка."],
     reading: [ITINERARY_GUIDE, HATHOR_BLOG],
   },
   {
     day: 4,
-    title: "Gebel el-Silsila, Kom Ombo und die Fahrt nach Assuan",
-    path: "El Ramady → Gebel el-Silsila → Kom Ombo → Assuan → Nacht in Assuan",
-    copy: ["Besuch der antiken Steinbrüche und Heiligtümer von ", SILSILA, ", dann weiter zum ", KOM_OMBO, ". Fahrt nach Assuan mit Mittagessen an Bord. Abendessen und Übernachtung in Assuan."],
+    title: "Гебель-эль-Сильсила, Ком-Омбо и переход в Асуан",
+    path: "Эль-Рамади → Гебель-эль-Сильсила → Ком-Омбо → Асуан → ночевка в Асуане",
+    copy: ["Посещение древних каменоломен и святилищ в местности ", SILSILA, ", затем путь к ", KOM_OMBO_DATIVE, ". Переход в Асуан с обедом на борту. Ужин и ночевка в Асуане."],
     reading: [SILSILA_READING, KOM_OMBO],
   },
   {
     day: 5,
-    title: "Abschied in Assuan",
-    path: "Abu Simbel (optional) → Frühstück und Check-out → Philae-Tempel → Assuan-Hochdamm → Ende in Assuan",
-    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Frühstück und Check-out, dann Besuch des ", PHILAE_GENITIVE, " und des Assuan-Hochdamms."],
+    title: "Прощание с Асуаном",
+    path: "Абу-Симбел (по желанию) → завтрак и выезд → храм Филе → Асуанская плотина → окончание в Асуане",
+    copy: ["Ранняя экскурсия в Абу-Симбел по желанию. Завтрак и выезд, затем посещение ", PHILAE_GENITIVE, " и Асуанской плотины."],
     reading: [PHILAE, ASWAN_ATTRACTIONS],
   },
 ];
@@ -108,83 +110,86 @@ const FOUR_NIGHT: ItineraryDay[] = [
 const SEVEN_NIGHT: ItineraryDay[] = [
   {
     day: 1,
-    title: "Willkommen an Bord in Luxor",
-    path: "Luxor, Einschiffung → Karnak-Tempel → Luxor-Tempel → Nacht in Luxor",
-    copy: ["Willkommensgetränk und Check-in, gefolgt vom Mittagessen. Besuch des Ostufers von Luxor mit ", EAST_BANK, ". Abendessen und Übernachtung in Luxor."],
+    title: "Добро пожаловать на борт в Луксоре",
+    path: "Луксор, посадка на борт → Карнакский храм → Луксорский храм → ночевка в Луксоре",
+    copy: ["Приветственный напиток и заселение, затем обед. Осмотр Восточного берега Луксора, включая ", EAST_BANK, ". Ужин и ночевка в Луксоре."],
     reading: [EAST_BANK_READING, EXPLORING],
   },
   {
     day: 2,
-    title: "Von Luxor nach Esna",
-    path: "Luxor → Fahrt auf dem Nil → Esna → Nacht in Esna",
-    copy: ["Frühstück und ein entspannter Tag auf dem Fluss Richtung Esna, mit Mittagessen und traditionellem Tee an Deck. Abendessen bei Kerzenlicht und Übernachtung in Esna."],
+    title: "Из Луксора в Эсну",
+    path: "Луксор → плавание по Нилу → Эсна → ночевка в Эсне",
+    copy: ["Завтрак и неспешный день плавания в сторону Эсны, с обедом и традиционным чаем на палубе. Ужин при свечах и ночевка в Эсне."],
     reading: [ITINERARY_GUIDE, SLOW_TRAVEL],
   },
   {
     day: 3,
-    title: "Von Esna über Edfu nach Ramadi",
-    path: "Esna → Schleuse von Esna → Edfu → Horus-Tempel → Insel Ramadi → Nacht in Ramadi",
-    copy: ["Durchfahrt der Schleuse von Esna und Fahrt nach Edfu. Besuch des Horus-Tempels, dann weiter zur Insel Ramadi zu einem traditionellen Abendessen auf der Insel und zur Übernachtung."],
+    title: "Из Эсны в Рамади через Эдфу",
+    path: "Эсна → шлюз в Эсне → Эдфу → храм Гора → остров Рамади → ночевка на Рамади",
+    copy: ["Проход через шлюз в Эсне и переход в Эдфу. Посещение храма Гора, затем путь к острову Рамади: традиционный ужин на острове и ночевка."],
     reading: [ITINERARY_GUIDE, HIDDEN_SPOTS],
   },
   {
     day: 4,
-    title: "Von Gebel el-Silsila nach Assuan",
-    path: "Ramadi → Gebel el-Silsila → Kom Ombo → Assuan → Nacht in Assuan",
-    copy: ["Besuch von ", SILSILA, ", weiter zum ", KOM_OMBO, ", dann Fahrt nach Assuan mit Mittagessen an Bord. Abendessen und Übernachtung in Assuan."],
+    title: "От Гебель-эль-Сильсилы до Асуана",
+    path: "Рамади → Гебель-эль-Сильсила → Ком-Омбо → Асуан → ночевка в Асуане",
+    copy: ["Осмотр местности ", SILSILA, ", затем путь к ", KOM_OMBO_DATIVE, " и переход в Асуан с обедом на борту. Ужин и ночевка в Асуане."],
     reading: [SILSILA_READING, KOM_OMBO],
   },
   {
     day: 5,
-    title: "Die Wunder von Assuan",
-    path: "Abu Simbel (optional) → Philae-Tempel → Assuan-Hochdamm → Nacht in Assuan",
-    copy: ["Optionaler Ausflug nach Abu Simbel am frühen Morgen. Besuch des ", PHILAE_GENITIVE, " und des Assuan-Hochdamms. Rückkehr an Bord der Hathor zu Mittagessen, Abendessen und Übernachtung in Assuan."],
+    title: "Чудеса Асуана",
+    path: "Абу-Симбел (по желанию) → храм Филе → Асуанская плотина → ночевка в Асуане",
+    copy: ["Ранняя экскурсия в Абу-Симбел по желанию. Осмотр ", PHILAE_GENITIVE, " и Асуанской плотины. Возвращение на Hathor к обеду, ужин и ночевка в Асуане."],
     reading: [PHILAE, ASWAN_ATTRACTIONS],
   },
   {
     day: 6,
-    title: "Zurück nach Esna",
-    path: "Assuan → Fahrt nach Norden auf dem Nil → Esna → Nacht in Esna",
-    copy: ["Frühstück und ein ganzer entspannter Tag auf dem Fluss nach Norden, von Assuan nach Esna, mit Mittag- und Abendessen an Bord. Übernachtung in Esna."],
+    title: "Обратный путь в Эсну",
+    path: "Асуан → плавание по Нилу на север → Эсна → ночевка в Эсне",
+    copy: ["Завтрак и целый неспешный день плавания на север, из Асуана в сторону Эсны, с обедом и ужином на борту. Ночевка в Эсне."],
     reading: [SLOW_TRAVEL, DIRECTION_COMPARE],
   },
   {
     day: 7,
-    title: "Von Esna zu den zeitlosen Tempeln von Luxor",
-    path: "Esna-Tempel → Fahrt Esna → Luxor → Tal der Könige → Hatschepsut-Tempel → Memnonkolosse → Nacht in Luxor",
-    copy: ["Besuch des Esna-Tempels, dann Rückfahrt nach Luxor mit Mittagessen an Bord. Besuch des Westufers: Tal der Könige, Hatschepsut-Tempel und ", COLOSSI, ". Abendessen und Übernachtung in Luxor."],
+    title: "Из Эсны к вечным храмам Луксора",
+    path: "Храм в Эсне → переход Эсна → Луксор → Долина царей → храм Хатшепсут → Колоссы Мемнона → ночевка в Луксоре",
+    copy: ["Посещение храма в Эсне, затем возвращение в Луксор с обедом на борту. Осмотр Западного берега: Долина царей, храм Хатшепсут и ", COLOSSI, ". Ужин и ночевка в Луксоре."],
     reading: [COLOSSI, GREATEST_LANDMARKS],
   },
   {
     day: 8,
-    title: "Abschied vom Nil",
-    path: "Luxor, Frühstück → Check-out und Ausschiffung → Ende in Luxor",
-    copy: ["Letztes Frühstück an Bord und Check-out in Luxor."],
+    title: "Прощание с Нилом",
+    path: "Луксор, завтрак → выезд и сход на берег → окончание в Луксоре",
+    copy: ["Последний завтрак на борту и выезд в Луксоре."],
     reading: [EXPLORING, ITINERARY_GUIDE],
   },
 ];
 
-/** `departureDay` is the weekday alone; the copy says "jeden Mittwoch" where a sentence needs it. */
+/**
+ * `departureDay` is the weekday alone, in the nominative ("Среда"); the copy
+ * builds the form a sentence needs ("каждую среду", "по средам").
+ */
 export const HATHOR_ITINERARIES_RU: Record<StayDurationValue, VoyageItinerary> = {
   "3-nights-aswan-luxor": {
     ...HATHOR_ITINERARIES["3-nights-aswan-luxor"],
-    title: "3 Nächte / 4 Tage",
-    route: "Assuan → Luxor",
-    departureDay: "Mittwoch",
+    title: "3 ночи / 4 дня",
+    route: "Асуан → Луксор",
+    departureDay: "Среда",
     days_: THREE_NIGHT,
   },
   "4-nights-luxor-aswan": {
     ...HATHOR_ITINERARIES["4-nights-luxor-aswan"],
-    title: "4 Nächte / 5 Tage",
-    route: "Luxor → Assuan",
-    departureDay: "Samstag",
+    title: "4 ночи / 5 дней",
+    route: "Луксор → Асуан",
+    departureDay: "Суббота",
     days_: FOUR_NIGHT,
   },
   "7-nights-luxor-aswan-luxor": {
     ...HATHOR_ITINERARIES["7-nights-luxor-aswan-luxor"],
-    title: "7 Nächte / 8 Tage",
-    route: "Luxor → Assuan → Luxor",
-    departureDay: "Samstag",
+    title: "7 ночей / 8 дней",
+    route: "Луксор → Асуан → Луксор",
+    departureDay: "Суббота",
     days_: SEVEN_NIGHT,
   },
 };

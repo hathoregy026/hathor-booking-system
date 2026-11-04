@@ -1,209 +1,227 @@
 /** The homepage chart's moorings and the homepage guide in Russian; see route-copy.ts. */
 import { HATHOR_CRUISES } from "@/lib/hathor-catalog";
 import { GUIDE_FAQ, GUIDE_VOYAGES, type GuideVoyage } from "@/lib/home-guide-content";
-import { PLACES_RU, WEEKDAYS_RU } from "@/lib/i18n/catalog-copy-ru";
-import { usdRu } from "@/lib/i18n/format-ru";
+import { DAYS_RU, NBSP, NIGHTS_RU, countRu, pluralRu, usdRu } from "@/lib/i18n/format-ru";
 import type { GuideCopy, MooringWords } from "@/lib/i18n/route-copy";
+
+/** "ок. 2000 г. до н. э." and "237 г. до н. э.", kept on one line. */
+const bc = (year: string) => `${year}${NBSP}г.${NBSP}до${NBSP}н.${NBSP}э.`;
+const circa = (year: string) => `ок.${NBSP}${bc(year)}`;
 
 /* Same order as MOORING_COPY in lib/nile-route.ts: Luxor, Esna, Edfu, Kom Ombo, Aswan. */
 export const MOORINGS_RU: readonly MooringWords[] = [
   {
-    name: "Luxor",
-    day: "Tag eins",
-    imageAlt: "Das Tal der Könige am Westufer von Luxor",
-    note: "Die Hathor empfängt ihre 32 Gäste in der Abenddämmerung, während Karnak am Ostufer noch im Licht liegt.",
+    name: "Луксор",
+    day: "День первый",
+    imageAlt: "Долина царей на Западном берегу Луксора",
+    note: "Hathor принимает на борт 32 гостя в сумерках, когда Карнак на Восточном берегу еще освещен.",
     sites: [
       {
-        name: "Karnak-Tempel",
-        era: "ca. 2000 v. Chr.",
-        note: "Rund achtzig Hektar Heiligtümer, erbaut über zwei Jahrtausende hinweg.",
+        name: "Карнакский храм",
+        era: circa("2000"),
+        note: "Около восьмидесяти гектаров святилищ, возводившихся на протяжении двух тысяч лет.",
       },
       {
-        name: "Tal der Könige",
-        era: "ca. 1539 v. Chr.",
-        note: "Dreiundsechzig Königsgräber, in den Fels des Westufers geschlagen.",
+        name: "Долина царей",
+        era: circa("1539"),
+        note: "Шестьдесят три царские гробницы, высеченные в скалах Западного берега.",
       },
       {
-        name: "Hatschepsut-Tempel",
-        era: "ca. 1479 v. Chr.",
-        note: "Drei Säulenterrassen vor der Felswand von Deir el-Bahari.",
+        name: "Храм Хатшепсут",
+        era: circa("1479"),
+        note: "Три террасы с колоннадами, вплотную примыкающие к скале в Дейр-эль-Бахри.",
       },
     ],
   },
   {
-    name: "Esna",
-    day: "Tag zwei",
-    imageAlt: "Der Nil vom Deck der Hathor aus gesehen",
-    note: "Im ersten Licht geht es durch die Schleuse. Danach ist auf dem Fluss kaum noch ein Motor zu hören.",
+    name: "Эсна",
+    day: "День второй",
+    imageAlt: "Нил с палубы Hathor",
+    note: "С первыми лучами солнца — проход через шлюз. За ним моторных судов на реке почти не остается.",
     sites: [
       {
-        name: "Chnum-Tempel",
-        era: "ca. 180 v. Chr.",
-        note: "Eine Säulenhalle neun Meter unter dem Niveau der Stadt, die bemalte Decke noch an ihrem Platz.",
+        name: "Храм Хнума",
+        era: circa("180"),
+        note: "Гипостильный зал на девять метров ниже уровня города, с сохранившимся расписным потолком.",
       },
       {
-        name: "Die Schleuse von Esna",
+        name: "Шлюз в Эсне",
         era: "1906",
-        note: "Die einzige Schleuse auf diesem Abschnitt: das Tor, auf das jede Dahabiya wartet.",
+        note: "Единственный шлюз на этом участке реки — ворота, которых ждет каждая дахабия.",
       },
     ],
   },
   {
-    name: "Edfu",
-    day: "Tag drei",
-    imageAlt: "Antike Monumente entlang des Nils",
-    note: "Der am besten erhaltene Tempel Ägyptens, nur ein kurzes Stück vom Liegeplatz der Hathor entfernt.",
+    name: "Эдфу",
+    day: "День третий",
+    imageAlt: "Древние памятники на берегах Нила",
+    note: "Лучше всего сохранившийся храм Египта, совсем недалеко от стоянки Hathor.",
     sites: [
       {
-        name: "Horus-Tempel",
-        era: "237 v. Chr.",
-        note: "Der am vollständigsten erhaltene Tempel Ägyptens, sein Dach steht noch.",
+        name: "Храм Гора",
+        era: bc("237"),
+        note: "Самый полно сохранившийся храм Египта: его кровля цела до сих пор.",
       },
       {
-        name: "Gebel el-Silsila",
-        era: "ca. 1500 v. Chr.",
-        note: "Der Sandsteinbruch, aus dem Karnak, Luxor und Edfu entstanden.",
+        name: "Гебель-эль-Сильсила",
+        era: circa("1500"),
+        note: "Каменоломня, давшая песчаник для Карнака, Луксора и Эдфу.",
       },
     ],
   },
   {
-    name: "Kom Ombo",
-    day: "Tag vier",
-    imageAlt: "Die Hathor unterwegs vorbei an altägyptischen Monumenten",
-    note: "Ein Doppeltempel direkt am Ufer. Sie legen an, gehen zu Fuß hinauf und sind vor dem Abendessen zurück.",
+    name: "Ком-Омбо",
+    day: "День четвертый",
+    imageAlt: "Hathor проходит мимо древнеегипетских памятников",
+    note: "Двойной храм стоит прямо на берегу. Причалить, подняться к нему пешком и вернуться до ужина.",
     sites: [
       {
-        name: "Tempel des Sobek und Haroeris",
-        era: "180 v. Chr.",
-        note: "Ein Tempel aus zwei spiegelgleichen Hälften: auf der einen Seite der Krokodilgott, auf der anderen der Falke.",
+        name: "Храм Собека и Хароэриса",
+        era: bc("180"),
+        note: "Один храм из двух зеркальных половин: с одной стороны бог-крокодил, с другой — сокол.",
       },
       {
-        name: "Krokodilmuseum",
+        name: "Музей крокодилов",
         era: "2012",
-        note: "Dreihundert mumifizierte Krokodile aus dem Tempelbezirk selbst.",
+        note: "Триста мумифицированных крокодилов, найденных на территории самого храма.",
       },
     ],
   },
   {
-    name: "Assuan",
-    day: "Tag fünf",
-    imageAlt: "Der unvollendete Obelisk in seinem Steinbruch in Assuan",
-    note: "Granitinseln, das weichste Licht des Flusses und der Steinbruch, der seinen Obelisken nie freigab.",
+    name: "Асуан",
+    day: "День пятый",
+    imageAlt: "Незаконченный обелиск в каменоломне Асуана",
+    note: "Гранитные острова, самый мягкий свет на реке и каменоломня, так и не отдавшая свой обелиск.",
     sites: [
       {
-        name: "Philae-Tempel",
-        era: "280 v. Chr.",
-        note: "Stein für Stein auf die Insel Agilkia versetzt, um ihn vor dem steigenden Wasser zu retten.",
+        name: "Храм Филе",
+        era: bc("280"),
+        note: "Перенесен камень за камнем на остров Агилкия, чтобы спасти его от поднимающейся воды.",
       },
       {
-        name: "Der unvollendete Obelisk",
-        era: "ca. 1500 v. Chr.",
-        note: "Er ruht noch im gewachsenen Fels: Fertiggestellt hätte er zweiundvierzig Meter gemessen.",
+        name: "Незаконченный обелиск",
+        era: circa("1500"),
+        note: "Он по-прежнему лежит в материнской скале; законченный, он поднялся бы на сорок два метра.",
       },
       {
-        name: "Insel Elephantine",
-        era: "ca. 3000 v. Chr.",
-        note: "Ägyptens südliche Grenzstadt, schon bewohnt, bevor die Pyramiden entstanden.",
+        name: "Остров Элефантина",
+        era: circa("3000"),
+        note: "Южный пограничный город Египта, заселенный еще до того, как были возведены пирамиды.",
       },
     ],
   },
 ];
 
-const NIGHTS_RU: Record<number, string> = { 3: "Drei", 4: "Vier", 7: "Sieben" };
-const placeRu = (name: string) => PLACES_RU[name] ?? name;
+const NIGHT_WORDS_RU: Record<number, string> = { 3: "Три", 4: "Четыре", 7: "Семь" };
+/** "Из Асуана в Луксор": the start takes the genitive, the end the accusative. */
+const FROM_RU: Record<string, string> = { Luxor: "Луксора", Aswan: "Асуана", Cairo: "Каира" };
+const TO_RU: Record<string, string> = { Luxor: "Луксор", Aswan: "Асуан", Cairo: "Каир" };
+/** "Saturdays" → "по субботам". */
+const WEEKDAYS_ON_RU: Record<string, string> = {
+  Monday: "по понедельникам",
+  Tuesday: "по вторникам",
+  Wednesday: "по средам",
+  Thursday: "по четвергам",
+  Friday: "по пятницам",
+  Saturday: "по субботам",
+  Sunday: "по воскресеньям",
+};
 
 const GUIDE_VOYAGES_RU: GuideVoyage[] = GUIDE_VOYAGES.map((voyage) => {
   const cruise = HATHOR_CRUISES.find((item) => item.slug === voyage.slug);
-  const stops = (cruise?.ports ?? "").split("→").map((stop) => placeRu(stop.trim()));
+  const stops = (cruise?.ports ?? "").split("→").map((stop) => stop.trim());
+  const from = FROM_RU[stops[0] ?? ""] ?? stops[0] ?? "";
+  const to = TO_RU[stops[1] ?? ""] ?? stops[1] ?? "";
+  const word = NIGHT_WORDS_RU[voyage.nights];
   return {
     ...voyage,
-    nightsLabel: `${NIGHTS_RU[voyage.nights] ?? voyage.nights} Nächte`,
-    route:
-      stops.length > 2
-        ? `Von ${stops[0]} nach ${stops[1]} und zurück`
-        : `Von ${stops[0]} nach ${stops[1] ?? ""}`,
+    nightsLabel: word
+      ? `${word} ${pluralRu(voyage.nights, NIGHTS_RU)}`
+      : countRu(voyage.nights, NIGHTS_RU),
+    route: stops.length > 2 ? `Из ${from} в ${to} и обратно` : `Из ${from} в ${to}`,
   };
 });
 
-function germanPriceAnswer(formatPrice: (cents: number) => string = usdRu): string {
+function russianPriceAnswer(formatPrice: (cents: number) => string = usdRu): string {
   const byNights = (nights: number) =>
     GUIDE_VOYAGES.find((voyage) => voyage.nights === nights);
   const three = byNights(3);
   const four = byNights(4);
   const seven = byNights(7);
   if (!three || !four || !seven) {
-    return "Die Preise gelten pro Kabine und für die gesamte Reise, einschließlich Steuern und Servicegebühren.";
+    return "Цены указаны за каюту за все путешествие, включая налоги и сервисные сборы.";
   }
   return (
-    `Kabinen gibt es ab ${formatPrice(three.fromCents)} für drei Nächte von Assuan nach Luxor, ` +
-    `ab ${formatPrice(four.fromCents)} für vier Nächte von Luxor nach Assuan und ` +
-    `ab ${formatPrice(seven.fromCents)} für die Rundreise mit sieben Nächten. ` +
-    "Die Preise gelten pro Kabine und für die gesamte Reise, einschließlich Steuern und Servicegebühren; Suiten und Royal Suites liegen über den Kabinenpreisen."
+    `Стоимость каюты — от ${formatPrice(three.fromCents)} за три ночи из Асуана в Луксор, ` +
+    `от ${formatPrice(four.fromCents)} за четыре ночи из Луксора в Асуан и ` +
+    `от ${formatPrice(seven.fromCents)} за путешествие на семь ночей туда и обратно. ` +
+    "Цены указаны за каюту за все путешествие, включая налоги и сервисные сборы; люксы, в том числе Royal Suite, стоят дороже кают."
   );
 }
 
 /* Same order and links as GUIDE_FAQ in lib/home-guide-content.ts. */
 const FAQ_RU = [
   {
-    question: "Was ist eine Dahabiya-Kreuzfahrt auf dem Nil?",
+    question: "Что такое круиз по Нилу на дахабии?",
     answer:
-      "Die Dahabiya ist ein traditionelles ägyptisches Segelschiff. Da sie unter Segeln statt mit Motorkraft fährt und nur sehr wenige Gäste aufnimmt, legt sie an stilleren Plätzen an, als große Kreuzfahrtschiffe sie erreichen, und die Tage richten sich nach dem Fluss statt nach einem Fahrplan.",
+      "Дахабия — традиционное египетское парусное судно. Поскольку дахабия идет под парусом, а не на моторе, и принимает совсем немного гостей, она швартуется в более тихих местах, чем те, куда может подойти большой круизный теплоход, а дни подчиняются ритму реки, а не расписанию.",
   },
   {
-    question: "Was kostet eine Dahabiya-Kreuzfahrt mit der Hathor?",
-    answer: germanPriceAnswer(),
+    question: "Сколько стоит круиз по Нилу на дахабии Hathor?",
+    answer: russianPriceAnswer(),
   },
   {
-    question: "Was ist im Preis enthalten?",
+    question: "Что входит в стоимость?",
     answer:
-      "Feine Küche und ausgewählte Getränke, geführte Tempelbesuche und Landausflüge sowie aufmerksamer Service von der Einschiffung bis zum Abschied. Steuern und Servicegebühren sind im Kabinenpreis enthalten.",
+      "Изысканная кухня и избранные напитки, экскурсии по храмам с гидом и дни на берегу, а также внимательный сервис от посадки на борт до прощания. Налоги и сервисные сборы включены в стоимость каюты.",
   },
   {
-    question: "Wo fährt die Hathor und wie lange?",
+    question: "Куда ходит Hathor и сколько длится путешествие?",
     answer:
-      "Zwischen Luxor und Assuan, mit Halten in Esna, Edfu und Kom Ombo. Sie wählen drei Nächte von Assuan nach Luxor mit Abfahrt am Mittwoch, vier Nächte von Luxor nach Assuan mit Abfahrt am Samstag oder die Rundreise mit sieben Nächten ab Luxor mit Abfahrt am Samstag.",
+      "Между Луксором и Асуаном, со стоянками в Эсне, Эдфу и Ком-Омбо. Выберите три ночи из Асуана в Луксор с отправлением по средам, четыре ночи из Луксора в Асуан с отправлением по субботам или путешествие на семь ночей из Луксора и обратно с отправлением по субботам.",
   },
   {
-    question: "Wie viele Gäste nimmt die Hathor auf?",
+    question: "Сколько гостей принимает Hathor?",
     answer:
-      "32 Gäste. Die Hathor erstreckt sich über drei Decks, mit acht Kabinen von 22 m², zwei Suiten von 46 m² und zwei Royal Suites von 56 m².",
+      "32 гостя. На трех палубах Hathor расположены восемь кают по 22 м², два люкса по 46 м² и два люкса Royal Suite по 56 м².",
   },
   {
-    question: "Worin unterscheidet sich eine Dahabiya von einem Nil-Kreuzfahrtschiff?",
+    question: "Чем дахабия отличается от круизного теплохода на Ниле?",
     answer:
-      "Ein Nil-Kreuzfahrtschiff nimmt meist hundert Gäste oder mehr auf, die Hathor 32. Eine Dahabiya hat nur wenig mehr als einen Meter Tiefgang und kann deshalb an Ufern ohne Anleger festmachen und Liegeplätze erreichen, an denen große Schiffe nur vorbeifahren.",
+      "Круизный теплоход на Ниле обычно принимает сто гостей и больше, Hathor — 32. Осадка дахабии лишь немногим больше метра, поэтому она может причалить к берегу, где нет никакой пристани, и подойти к стоянкам, мимо которых проходят большие суда.",
   },
   {
-    question: "Können wir die ganze Dahabiya chartern?",
+    question: "Можно ли взять в чартер всю дахабию?",
     answer:
-      "Ja. Beim Privatcharter hat Ihre Gruppe die Hathor für sich allein, mit Route, Küche und Landausflügen nach Maß.",
+      "Да. Частный чартер предоставляет вашей группе Hathor в исключительное пользование, а маршрут, кухня и дни на берегу выстраиваются под вашу компанию.",
   },
 ] as const;
 
 const FAQ_LINK_LABELS_RU = [
-  "Der vollständige Leitfaden",
-  "Abfahrtstermine und Preise",
-  "Alle Inklusivleistungen",
-  "Alle Reisen",
-  "Kabinen und Suiten",
-  "Kreuzfahrtschiff oder Dahabiya",
-  "Privatcharter",
+  "Полный путеводитель",
+  "Даты рейсов и цены",
+  "Все, что входит в стоимость",
+  "Все путешествия",
+  "Каюты и люксы",
+  "Круизный теплоход или дахабия",
+  "Частный чартер",
 ] as const;
 
 export const GUIDE_COPY_RU: GuideCopy = {
-  kicker: "05 — Der Leitfaden",
-  title: ["Dahabiya", "auf dem Nil"],
+  kicker: "05 — Путеводитель",
+  /* Two short display lines, like the German, which drops "cruise" to fit. */
+  title: ["На дахабии", "по Нилу"],
   intro:
-    "Eine Dahabiya-Kreuzfahrt befährt den Nil auf die traditionelle Art: ein Segelschiff, wenige Gäste und der Fluss zwischen Luxor und Assuan, ganz ohne Eile. Die Hathor nimmt 32 Gäste in zwölf Kabinen und Suiten auf und legt deshalb an stillen Ufern an, an denen schwimmende Hotels nur vorbeiziehen.",
-  ledgerLabel: "Drei Reisen ab Luxor und Assuan",
+    "Круиз по Нилу на дахабии — это путешествие по реке в традиционном духе: парусное судно, совсем немного гостей и Нил между Луксором и Асуаном в неспешном ритме. Hathor принимает 32 гостя в двенадцати каютах и люксах, поэтому швартуется у тихих берегов, мимо которых проходят плавучие отели.",
+  ledgerLabel: "Три путешествия из Луксора и Асуана",
   voyages: GUIDE_VOYAGES_RU,
-  days: (days) => `${days} Tage`,
-  departureDay: (weekday) => `jeden ${WEEKDAYS_RU[weekday] ?? weekday}`,
-  from: "ab",
+  days: (days) => countRu(days, DAYS_RU),
+  departureDay: (weekday) => WEEKDAYS_ON_RU[weekday] ?? weekday,
+  from: "от",
   price: usdRu,
-  priceAnswer: germanPriceAnswer,
-  note: "Pro Kabine, für die gesamte Reise. Steuern und Servicegebühren inklusive.",
-  faqLabel: "Fragen vor der Abreise",
+  priceAnswer: russianPriceAnswer,
+  note: "За каюту, за все путешествие. Налоги и сервисные сборы включены.",
+  faqLabel: "Вопросы перед отплытием",
   faq: GUIDE_FAQ.map((item, index) => ({
     kind: item.kind,
     question: FAQ_RU[index]?.question ?? item.question,

@@ -6,12 +6,12 @@ import { SEO_DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 /**
  * The four Russian Voyages pages: search settings, structured data words and
  * the page-specific hero / statement. Titles lead with the Russian head terms
- * ("Nilkreuzfahrt", "Luxor", "Assuan"). Server-only.
+ * ("круиз по Нилу", "Луксор", "Асуан"). Server-only.
  */
 
 const image = {
   ...SEO_DEFAULT_OG_IMAGE,
-  alt: "Die Hathor Dahabiya auf dem Nil, Luxuskreuzfahrt zwischen Luxor und Assuan",
+  alt: "Hathor Dahabiya в роскошном круизе по Нилу между Луксором и Асуаном",
 };
 
 const page = (
@@ -23,81 +23,87 @@ const page = (
   metadata: buildPageMetadata({ title, description, path, image }),
 });
 
+/* As in English, each route page's search description doubles as its trip description. */
+const LUXOR_TO_ASWAN_DESCRIPTION =
+  "Классический круиз по Нилу из Луксора в Асуан на четыре ночи на Hathor Dahabiya: Карнак, Долина царей, Эдфу, Ком-Омбо и Филе в ритме приватного плавания.";
+const ASWAN_TO_LUXOR_DESCRIPTION =
+  "Круиз по Нилу из Асуана в Луксор на три ночи на Hathor Dahabiya: Филе, Ком-Омбо и Эдфу, затем храмы Луксора; на борту 32 гостя.";
+const ROUND_TRIP_DESCRIPTION =
+  "Полный маршрут Hathor Dahabiya на 7 ночей и 8 дней, Луксор — Асуан — Луксор: все храмы по пути в ритме приватного плавания, на роскошной дахабии для 32 гостей.";
+
 export const RUSSIAN_VOYAGE_PAGES: Record<VoyagePageKey, LocaleVoyagePage> = {
   voyages: {
     ...page(
       "/ru/voyages",
-      "Nilkreuzfahrten zwischen Luxor und Assuan | Hathor Dahabiya",
-      "Wählen Sie Ihre Dahabiya-Route zwischen Luxor und Assuan: drei, vier oder sieben Nächte private Fahrt, Tempelbesuche und Leben an Bord, alles inklusive.",
+      "Круизы по Нилу из Луксора и Асуана | Hathor Dahabiya",
+      "Выберите маршрут Hathor Dahabiya между Луксором и Асуаном: три, четыре или семь ночей приватного плавания, храмы и жизнь на борту по системе «все включено».",
     ),
-    name: "Nilkreuzfahrten zwischen Luxor und Assuan | Hathor Dahabiya",
-    crumb: "Reisen",
+    name: "Круизы по Нилу из Луксора и Асуана | Hathor Dahabiya",
+    crumb: "Путешествия",
     trip: {
-      name: "Die Routen der Hathor Dahabiya auf dem Nil",
-      description: "Reisen mit drei, vier und sieben Nächten mit der Hathor zwischen Luxor und Assuan.",
-      departure: "Luxor",
-      arrival: "Assuan",
+      name: "Маршруты Hathor Dahabiya по Нилу",
+      description: "Путешествия на Hathor на три, четыре и семь ночей между Луксором и Асуаном.",
+      departure: "Луксор",
+      arrival: "Асуан",
     },
-    heroLines: ["Unsere Reisen", "geformt", "vom Nil"],
+    heroLines: ["Наши путешествия", "по воле", "Нила"],
   },
   "luxor-to-aswan": {
     ...page(
       "/ru/voyages/luxor-to-aswan",
-      "Nilkreuzfahrt von Luxor nach Assuan | Hathor Dahabiya",
-      "Klassische Kreuzfahrt mit vier Nächten von Luxor nach Assuan auf der Hathor Dahabiya: Karnak, das Tal der Könige, Edfu, Kom Ombo und Philae, ganz privat.",
+      "Круиз по Нилу из Луксора в Асуан | Hathor Dahabiya",
+      LUXOR_TO_ASWAN_DESCRIPTION,
     ),
-    name: "Nilkreuzfahrt von Luxor nach Assuan | Hathor Dahabiya",
-    crumb: "Von Luxor nach Assuan",
+    name: "Круиз по Нилу из Луксора в Асуан | Hathor Dahabiya",
+    crumb: "Из Луксора в Асуан",
     trip: {
-      name: "Nilkreuzfahrt von Luxor nach Assuan an Bord der Hathor Dahabiya",
-      description:
-        "Die klassische Kreuzfahrt mit vier Nächten von Luxor nach Assuan an Bord der Hathor Dahabiya: Karnak, das Tal der Könige, Edfu, Kom Ombo und Philae im Rhythmus einer privaten Fahrt.",
-      departure: "Luxor",
-      arrival: "Assuan",
+      name: "Круиз по Нилу из Луксора в Асуан на борту Hathor Dahabiya",
+      description: LUXOR_TO_ASWAN_DESCRIPTION,
+      departure: "Луксор",
+      arrival: "Асуан",
     },
-    heroLines: ["Von Luxor", "nach Assuan", "auf dem Nil"],
+    heroLines: ["Из Луксора", "в Асуан", "по Нилу"],
     statement:
-      "Die klassische Nilreise, von den monumentalen Ufern Luxors zur stillen Anmut Assuans: vier Nächte mit Tempeln, Feluken und Sonnenuntergängen auf dem Fluss, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+      "Классическое путешествие по Нилу от монументальных берегов Луксора к тихому очарованию Асуана: четыре ночи храмов, фелук и вечеров в отблесках речного заката на борту роскошной дахабии для 32 гостей.",
     detailsHref: "/cruises-list",
   },
   "aswan-to-luxor": {
     ...page(
       "/ru/voyages/aswan-to-luxor",
-      "Nilkreuzfahrt von Assuan nach Luxor | Hathor Dahabiya",
-      "Drei Nächte von Assuan nach Luxor auf der Hathor Dahabiya: Philae, Kom Ombo und Edfu, dann die Tempel von Luxor, mit nur 32 Gästen an Bord.",
+      "Круиз по Нилу из Асуана в Луксор | Hathor Dahabiya",
+      ASWAN_TO_LUXOR_DESCRIPTION,
     ),
-    name: "Nilkreuzfahrt von Assuan nach Luxor | Hathor Dahabiya",
-    crumb: "Von Assuan nach Luxor",
+    name: "Круиз по Нилу из Асуана в Луксор | Hathor Dahabiya",
+    crumb: "Из Асуана в Луксор",
     trip: {
-      name: "Nilkreuzfahrt von Assuan nach Luxor an Bord der Hathor Dahabiya",
-      description:
-        "Drei Nächte von Assuan nach Luxor auf der Hathor Dahabiya: Philae, Kom Ombo und Edfu, dann die Tempel von Luxor, mit nur 32 Gästen an Bord.",
-      departure: "Assuan",
-      arrival: "Luxor",
+      name: "Круиз по Нилу из Асуана в Луксор на борту Hathor Dahabiya",
+      description: ASWAN_TO_LUXOR_DESCRIPTION,
+      departure: "Асуан",
+      arrival: "Луксор",
     },
-    heroLines: ["Von Assuan", "nach Luxor", "auf dem Nil"],
+    heroLines: ["Из Асуана", "в Луксор", "по Нилу"],
     statement:
-      "Eine intime Passage von Süden nach Norden: drei Nächte mit Philae, Kom Ombo und Edfu im gemächlichen Tempo des Flusses bis zu den Tempeln von Luxor, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+      "Камерное путешествие с юга на север: три ночи через Филе, Ком-Омбо и Эдфу в неспешном ритме дахабии и финал среди храмов Луксора — на борту роскошной дахабии для 32 гостей.",
     detailsHref: "/cruises-list",
   },
   "luxor-aswan-luxor": {
     ...page(
       "/ru/voyages/luxor-aswan-luxor",
-      "7 Nächte Nilkreuzfahrt Luxor–Assuan–Luxor | Hathor Dahabiya",
-      "Die Rundreise mit 7 Nächten und 8 Tagen von Luxor nach Assuan und zurück: jeder Tempel entlang der Strecke, an Bord der Hathor Dahabiya, für nur 32 Gäste.",
+      /* The English keeps hathorcruise.com's "7 night" ranking phrase. */
+      "Круиз по Нилу на 7 ночей Луксор — Асуан | Hathor Dahabiya",
+      ROUND_TRIP_DESCRIPTION,
     ),
-    name: "Nilkreuzfahrt mit 7 Nächten von Luxor nach Assuan und zurück | Hathor Dahabiya",
-    crumb: "Luxor, Assuan und Luxor",
+    name: "Круиз по Нилу на 7 ночей Луксор — Асуан | Hathor Dahabiya",
+    crumb: "Луксор, Асуан и Луксор",
     trip: {
-      name: "Nilkreuzfahrt mit 7 Nächten von Luxor nach Assuan und zurück an Bord der Hathor Dahabiya",
-      description:
-        "Die ganze Rundreise mit 7 Nächten und 8 Tagen auf der Hathor Dahabiya: von Luxor nach Assuan und zurück, mit jedem Tempel entlang der Strecke, an Bord einer Luxus-Dahabiya für 32 Gäste.",
-      departure: "Luxor",
-      arrival: "Luxor",
+      name: "Круиз по Нилу на 7 ночей Луксор — Асуан на борту Hathor Dahabiya",
+      description: ROUND_TRIP_DESCRIPTION,
+      departure: "Луксор",
+      arrival: "Луксор",
     },
-    heroLines: ["Luxor, Assuan", "und Luxor", "auf dem Nil"],
+    heroLines: ["Луксор, Асуан", "и Луксор", "по Нилу"],
     statement:
-      "Die ganze Nilreise zwischen Luxor und Assuan, hin und zurück: sieben Nächte und acht Tage, mit Zeit für jeden Tempel, für das Licht des Flusses und für die stilleren Tage, die nur eine ganze Reise schenkt, an Bord einer Luxus-Dahabiya für 32 Gäste.",
+      "Полный круг по Нилу из Луксора в Асуан и обратно: семь ночей и восемь дней, когда хватает времени на каждый храм, на речной свет и на те тихие дни, которые дарит только путешествие по всему кругу, — на борту роскошной дахабии для 32 гостей.",
     detailsHref: "/cruises-list",
   },
 };
