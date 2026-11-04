@@ -1,269 +1,269 @@
 /**
- * Journal articles in Russian, batch 6, part two. Same HTML structure as the
- * Italian articles, garbled English sentences rendered by their evident meaning.
+ * Journal articles in Russian, batch 7. Same HTML structure as the corrected
+ * English rows; unclear English sentences rendered by their evident meaning.
  * Headings avoid hyphens (the display face draws none).
  */
 export const BLOG_ARTICLES_RU_7: Record<string, string> = {
-  "discover-the-valley-of-the-kings": `<h2><span class="hathor-blog-accent">Die Erhabenheit des Tals der Könige&nbsp;auf einer Luxuskreuzfahrt auf dem Nil</span></h2>
+  "discover-the-valley-of-the-kings": `<h2><span class="hathor-blog-accent">Величие Долины царей&nbsp;в роскошном круизе по Нилу</span></h2>
 
-<p>Wer eines der berühmtesten Reiseziele Ägyptens erleben möchte, setzt das Tal der Könige natürlich ganz oben auf seine Reiseliste. Dieser Ort ist durchdrungen von Geschichte, Staunen&nbsp;und Faszination, mit wahrhaft unglaublichen Gräbern. Das geheimnisvolle Tal der Könige mit dem Luxus einer modernen Nilkreuzfahrt zu erreichen, verbindet Komfort und Erlebnis und führt zu einem der bedeutendsten Vermächtnisse, die eine Zivilisation hinterlassen hat.<br>
+<p>Всем, кто хочет увидеть одно из самых знаменитых мест Египта, конечно же, стоит поставить Долину царей на первое место в списке мечты. Здесь все дышит историей, вызывает изумление и восторг, а гробницы поистине невероятны. Поездка в загадочную Долину царей в Египте в рамках люкс-круиза по Нилу сочетает комфорт с открытием одного из важнейших наследий, когда-либо оставленных цивилизацией.<br>
 <br>
-Es ist die perfekte Verbindung aus der Erkundung der antiken Welt und dem Komfort, den der Nil schenkt. Möchten Sie im Einzelnen erfahren, was diesen Ort so faszinierend macht? Und warum eine Dahabiya-Kreuzfahrt mit Besuch im Tal der Könige die beste Wahl für Ihren Urlaub sein kann?</p>
+Благодаря Нилу здесь идеально сочетаются знакомство с древним миром и комфорт. Хотите узнать подробнее, чем так завораживает это место? И почему тур в Долину царей в рамках круиза на дахабии может стать лучшим вариантом для вашего отпуска?</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Die Geschichte des&nbsp;Tals der Könige</span></h2>
+<h2><span class="hathor-blog-accent">История&nbsp;Долины царей</span></h2>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/valley-of-the-kings-1756880844ePuAy.jpg" alt="Tal der Könige" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/valley-of-the-kings-1756880844ePuAy.jpg" alt="Долина царей" loading="lazy"></figure></p>
 
-<p>Das Tal der Könige in Ägypten ist eine weitläufige Nekropole am Westufer des Nils, nahe der berühmten Stadt Luxor. Bekannt ist es vor allem als letzte Ruhestätte der Könige und Königinnen des alten Ägypten, aus einer Zeit vor mehr als 3.000 Jahren. Anders als die Erbauer der Pyramiden in anderen Teilen Ägyptens ließen sich die Pharaonen und andere Adlige hier bestatten, in Gräbern, die in den Fels gehauen sind.</p>
+<p>Долина царей в Египте — обширный некрополь на западном берегу Нила, неподалеку от знаменитого Луксора. Это место хорошо известно как последнее пристанище царей Древнего Египта, живших более 3 000 лет назад. В отличие от более ранних царей, возводивших пирамиды в других частях Египта, здешние фараоны и знать выбирали высеченные в скале гробницы: их хоронили в гробницах Долины царей, а не в усыпальницах в форме пирамид.</p>
 
-<p>Die Malereien zu den hieroglyphischen und hieratischen Texten, die auf die Wände geschrieben und in sie eingraviert wurden, sollten Geschichten über die Könige erzählen, bis zu ihrem Ende und den Freuden des Jenseits. Hier liegt auch das Grab des berühmten Tutanchamun, genannt „König Tut“: Archäologen entdeckten es 1922 noch unversehrt. Das Grab birgt zahlreiche Gegenstände, die nicht nur Reichtum, sondern auch Autorität ausdrücken, und bezeugt die Macht und Präsenz dieser Herrscher in ihrer Zeit.</p>
+<p>Росписи, сопровождающие иероглифические и иератические тексты, написанные и высеченные на стенах гробниц, рассказывают о царях, вплоть до их смерти и радостей загробного мира. Здесь находится и гробница знаменитого Тутанхамона, которого называют «царем Тутом»; археологи обнаружили ее нетронутой в 1922 году. В гробнице нашли множество предметов, говорящих не только о богатстве, но и о власти: они подтверждают, насколько могущественны и влиятельны были эти правители в свое время.</p>
 
-<p>Diese königlichen Stätten auf einer Luxuskreuzfahrt auf dem Nil zum Tal der Könige zu erkunden, verleiht der Reise in die Geschichte Komfort und Eleganz. Das Tal der Könige und seine Gräber wurden geschaffen, um den Herrschern eine friedliche und sichere Ruhe zu gewähren.</p>
+<p>Знакомство с этими царскими памятниками в рамках люкс-круиза по Нилу с посещением Долины царей придает историческому путешествию комфорт и изысканность. Долина царей и ее гробницы были созданы для того, чтобы монархи покоились в мире и безопасности.</p>
 
 <p><br>
-Einige der Grabtexte sind sehr kunstvolle Kompositionen, andere lange religiöse Schriften, darunter Segensformeln. Entlang der Gänge sieht man detailreiche Malereien in zarten Tönen mit ihren dekorativen Motiven.<br>
+Одни тексты в гробницах — сложнейшие композиции, другие — длинные записи религиозного назначения, в том числе благословения. Вдоль коридоров можно увидеть подробные росписи в нежных тонах с их характерными мотивами.<br>
 <br>
-Ihre Eleganz liegt in ihrem ausgezeichneten Erhaltungszustand: Die Farben der Erde verbinden sich harmonisch mit den Zierformen der Wände und machen die Wandbilder lebendig.<br>
+Их изящество — в прекрасной сохранности: краски земли гармонично сочетаются с яркими орнаментами на стенах, и росписи словно оживают.<br>
 <br>
-Bootstouren auf dem Nil und entlang seiner Ufer, auf den Spuren von König Tut, sind bei Reisenden besonders beliebt. Viele gönnen sich gerne das Erlebnis einer Luxuskreuzfahrt auf dem Nil mit Besuch im Tal der Könige und anschließenden Ausflügen zu den Tempeln der Umgebung.<br>
+Особой популярностью у туристов пользуются речные туры по Нилу и его берегам по следам Тутанхамона: путешественники охотно платят за люкс-круиз по Нилу с посещением Долины царей и последующими экскурсиями по местным храмам.<br>
 <br>
-Die Gräber im Tal der Könige zu betreten, ist wie eine Zeitreise bis in die Zivilisation des alten Ägypten. Man versteht ihre Kultur durch Glauben, Kunst und Geschichte, auf die außergewöhnlichste Weise. Eine Luxuskreuzfahrt auf dem Nil mit Besuch im Tal der Könige lässt Sie sowohl diese wunderbare Geschichte als auch die ruhige, ewige Schönheit des Nils genießen und macht die Reise noch reicher.</p>
+Войти в гробницы Долины царей — все равно что перенестись в древнеегипетскую цивилизацию. Здесь самым удивительным образом постигаешь культуру египтян через их веру, искусство и историю. А люкс-круиз по Нилу с посещением Долины царей позволяет насладиться и этой удивительной историей, и спокойной, вечной красотой Нила, делая поездку еще богаче.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Das Tal der Könige entdecken: was Sie sehen werden</span></h2>
+<h2><span class="hathor-blog-accent">Долина царей: что вы увидите</span></h2>
 
 <p>&nbsp;</p>
 
-<p>Das Erste, was Ihnen bei der Ankunft im Tal der Könige auffällt, ist ein stilles Wüstental, umgeben von mächtigen Felswänden. Für den Schutz dieser Gräber wird alles getan, daher müssen Besucher einige Regeln beachten, etwa die Wände nicht zu berühren und in den Gräbern des Tals der Könige kein Blitzlicht zu verwenden.<br>
+<p>Прибыв в Долину царей, вы прежде всего увидите тихую пустынную долину в кольце высоких скал. Для сохранности гробниц делается все возможное, поэтому посетители должны соблюдать определенные правила: например, не трогать стены и не фотографировать со вспышкой внутри гробниц Долины царей.<br>
 <br>
-Die Gräber dagegen sind kühl und dunkel, mit leuchtend bunten Wänden, die Gottheiten, Tiere und Gestalten der ägyptischen Mythologie zeigen. Man glaubte, diese Malereien begleiteten die Könige auf ihrer Reise ins Jenseits.<br>
+В гробницах же, напротив, прохладно и темно, а стены ярко расписаны сценами с богами, животными и персонажами египетской мифологии. Считалось, что эти росписи помогут царям в загробной жизни.<br>
 <br>
-Nicht alle Gräber sind zugänglich, doch die öffentlich zugänglichen gewähren einen Blick auf Leben und Tod in der Antike. Das berühmte Grab des Tutanchamun sollten Sie nicht versäumen. Es ist kleiner als viele andere, aber voller Schätze und Fundstücke, die die Geschichte eines der jüngsten Könige Ägyptens erzählen.<br>
-Neben den Gräbern lassen sich in der Umgebung Tempel und Museen erkunden, um mehr über die prunkvolle Vergangenheit Ägyptens zu erfahren. Wenn Sie ein Luxuserlebnis auf dem Nil bevorzugen, bietet diese Reise durch das Tal der Könige alles, was man sich wünschen kann, mühelos und komfortabel. Die Dahabiya-Kreuzfahrt mit Besuch im Tal der Könige ist so gestaltet, dass Sie sich nie beeilen oder ermüden müssen, sondern einfach die herrliche Aussicht und einen tadellosen Service auf dem Fluss genießen, bis ins letzte Detail umsorgt. Auf dieser Reise erleben Sie jeden Augenblick ganz bewusst, besonders beim Besuch der außergewöhnlichen Gräber des Tals der Könige, die tief in die Hügel gehauen sind.<br>
+Открыты не все гробницы, но те, что доступны для посещения, позволяют заглянуть в жизнь и смерть древних египтян. Особенно выделяется знаменитая гробница Тутанхамона, которую никак нельзя пропустить. Она меньше многих других, но ее нашли до отказа заполненной сокровищами и артефактами, которые рассказывают историю одного из самых юных царей Египта.<br>
+Помимо гробниц, можно осмотреть расположенные неподалеку храмы и музеи, чтобы больше узнать о богатом прошлом Египта. Если вы предпочитаете люкс-круиз по Нилу, это путешествие в одну сторону с посещением Долины царей легко и с комфортом подарит все, о чем мечтает путешественник. Тур в Долину царей в рамках круиза на дахабии устроен так, чтобы вы никогда не спешили и не уставали, а просто наслаждались великолепными видами и безупречным, продуманным до мелочей обслуживанием на реке. В таком туре вы проживаете каждое мгновение в полной мере, особенно когда посещаете удивительные гробницы Долины царей, высеченные глубоко в склонах холмов.<br>
 <br>
-Reisen Sie in der Zeit zurück und lassen Sie sich mit einer erstklassigen Kreuzfahrt der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> und dem Besuch im Tal der Könige ins Herz der Größe Ägyptens tragen.<br>
-Auf dieser Reise genießen Sie in jeder Hinsicht Bequemlichkeit und Komfort, einschließlich der geführten Besuche der außergewöhnlichen Gräber im Tal der Könige. Nutzen Sie Ihre Luxuskreuzfahrt auf dem Nil zum Tal der Könige voll aus und bewahren Sie sie in schöner Erinnerung.</p>`,
+Совершите путешествие в прошлое и перенеситесь в самое сердце египетского величия в первоклассном туре в Долину царей на <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии Hathor</a>.<br>
+Во время этого тура вас ждут удобство и комфорт во всем, включая посещение с гидом впечатляющих гробниц Долины царей. Возьмите от люкс-круиза по Нилу с посещением Долины царей все и сохраните о нем счастливые воспоминания.</p>`,
 
-  "sailing-to-karnak-temple": `<h2><span class="hathor-blog-accent">Der Tempelkomplex von Karnak, der Tempel der Götter</span></h2>
+  "sailing-to-karnak-temple": `<h2><span class="hathor-blog-accent">Храмовый комплекс Карнак, храм богов</span></h2>
 
-<p>Stellen Sie sich vor, Sie gleiten still über den Nil an Bord der <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, auf der Fahrt von Assuan nach Luxor, und in der Ferne erheben sich mächtige Tore und Säulen aus Stein. Das ist der Karnak-Tempel: ein antikes Wunder, das seit über 2.000 Jahren besteht. Er ist nicht einfach ein Tempel, sondern in Stein gemeißelte Geschichte, in der die Stimmen von Pharaonen und Göttern noch nachhallen.<br>
-Wir heißen Sie willkommen an einem der größten und mächtigsten heiligen Orte, die Menschen je errichtet haben, einer Sehenswürdigkeit in Ägypten, die Sie nicht versäumen sollten.</p>
+<p>Представьте, что вы неспешно скользите по Нилу на тихой <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии Hathor</a> в круизе из Асуана в Луксор, а вдали вырастают могучие ворота и каменные колонны. Добро пожаловать в Карнакский храм — древнее чудо, которое строили более 2 000 лет. Это не обычный храм: это история, высеченная в камне, в которой звучат голоса фараонов и богов.<br>
+Добро пожаловать в одно из самых больших и могущественных святилищ, когда-либо возведенных человеком, — в достопримечательность Египта, которую нельзя пропустить.</p>
 
 <h2><br>
-<span class="hathor-blog-accent">Ein Spaziergang unter Giganten</span></h2>
+<span class="hathor-blog-accent">Прогулка среди великанов</span></h2>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak-temple-11-1757487978AF37z.jpg" alt="Karnak-Tempel" loading="lazy"></figure></p>
-
-<p>&nbsp;</p>
-
-<p>In dem Moment, in dem Sie Ihre Luxus-Dahabiya verlassen und durch die Tore von Karnak schreiten, werden Ihre Sinne bereits überwältigt. Die berühmte Hypostylhalle besteht aus 134 gewaltigen Säulen, alle in Form der Papyruspflanze gemeißelt. Die höchsten Säulen ragen über 20 Meter auf, und die steinernen Architrave darüber tragen die eingemeißelten Geschichten der Götter. Dieser atemberaubende Ort gehört zu den wichtigsten Sehenswürdigkeiten Ägyptens. Er zeugt von der Größe der Tempel des alten Ägypten.</p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak-temple-11-1757487978AF37z.jpg" alt="Карнак" loading="lazy"></figure></p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Ein heiliger Ort, über Jahrhunderte gebaut</span></h2>
+<p>Стоит вам сойти с роскошной дахабии и пройти через ворота Карнака, как чувства начинают захлестывать вас. Знаменитый Гипостильный зал насчитывает 134 гигантские колонны, высеченные в форме стеблей папируса. Самые высокие из них поднимаются более чем на 20 метров, а лежащие на них каменные балки покрыты резными сказаниями о богах. Это захватывающее место — одна из главных достопримечательностей Египта. Оно служит свидетельством величия древнеегипетских храмов.</p>
+
+<p>&nbsp;</p>
+
+<h2><span class="hathor-blog-accent">Святыня, которую строили веками</span></h2>
 
 <p><br>
-Der Bau des Karnak-Tempels war nicht das Werk eines einzigen Pharaos, sondern eine lebendige Baustelle, die rund dreißig Herrscher im Lauf von zwei Jahrtausenden immer weiter vergrößerten. Der Komplex war vor allem dem Kult des Amun-Re geweiht, aber auch der Gemahlin des Gottes, Mut, und ihrem Sohn Chons. Deshalb heißt Karnak auch der Tempel der Götter.<br>
+Карнакский храм — творение не одного фараона, а живой проект, который около 30 правителей дополняли на протяжении двух тысячелетий. Комплекс был возведен главным образом для поклонения Амону-Ра, но посвящен также его супруге Мут и их сыну Хонсу. Вот почему Карнак называют еще и храмом богов.<br>
 <br>
-Hier sehen Sie mächtige Pylonen, große Obelisken, heilige Seen und Kapellen zu Ehren von Herrschern wie Hatschepsut, Ramses II. und Sethos I. Jeder Teil des Komplexes ist wie ein Kapitel einer sehr langen Geschichte.<br>
-In Ägypten gibt es sehr viele herrliche Tempel, doch was Karnak wirklich einzigartig macht, ist nicht seine Größe, sondern die Art, wie er die alte religiöse Überlieferung und die Macht verkörpert.</p>
+Здесь вы увидите массивные пилоны, величайшие обелиски, священные озера и часовни, воздвигнутые в честь отдельных правителей, таких как Хатшепсут, Рамсес II и Сети I. Каждая часть комплекса — словно глава очень длинной истории.<br>
+По Египту разбросано немало прекрасных храмов, но Карнак уникален не размерами, а тем, как он воплощает древнюю религиозную традицию и могущество.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Von der Dahabiya zum Göttlichen: die authentischste und kostbarste Reise</span></h2>
+<h2><span class="hathor-blog-accent">С дахабии к божествам: самое подлинное путешествие</span></h2>
 
 <p><br>
-Der wahre Zauber beginnt, wenn Sie Karnak am Ende einer Dahabiya-Kreuzfahrt auf dem Nil von Assuan nach Luxor erreichen. Die ruhige Fahrt hat bereits die richtige Stimmung geschaffen: Palmen und Tempel ziehen langsam vorüber, wie seit Jahrhunderten, die Stunden vergehen von einer Tasse Tee zur nächsten, und der Fluss murmelt leise im Hintergrund. Dann legen Sie neben einem der größten antiken Monumente der Welt an.<br>
-Das macht eine Luxuskreuzfahrt mit der Dahabiya noch besonderer. Keine Eile. Keine Menschenmassen. Sie kommen in Karnak mit all der Energie an, die es braucht, um die Kraft dieses Ortes zu spüren und ihn ganz zu erleben. Wahrscheinlich stehen Sie noch auf dem Deck Ihres Schiffes, fast tanzend vor Freude, wenn Sie in der Ferne die gewaltigen Eingänge zum Tempel erblicken. Unter den berühmtesten Tempeln des alten Ägypten sticht Karnak wahrhaft als außergewöhnliche Sehenswürdigkeit des Landes hervor.<br>
-Genau diese Verbindung aus Entspannung und Entdeckung macht die Reise unvergesslich.</p>
+Настоящее волшебство начинается, когда вы прибываете в Карнак после круиза по Нилу на дахабии из Асуана в Луксор. Безмятежное плавание уже создало нужное настроение: мимо медленно проплывают пальмы и храмы, как и много веков назад, часы незаметно летят за чашкой чая, а река негромко шумит где-то рядом. И вот вы сходите на берег у одного из величайших древних памятников мира.<br>
+Именно этим роскошный круиз на дахабии особенно хорош. Никакой спешки. Никаких толп. Вы приезжаете в Карнак полными сил, готовыми ощутить всю мощь этого места и прочувствовать его до конца. Возможно, вы еще будете стоять на палубе с легким сердцем, когда далеко впереди, на пути к храму, покажутся его колоссальные входы. Как один из самых знаменитых храмов Древнего Египта, он по праву выделяется среди достопримечательностей страны.<br>
+Именно это сочетание отдыха и открытий делает путешествие незабываемым.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Das Vermächtnis von Karnak: der Tempel, der alles erzählt</span></h2>
+<h2><span class="hathor-blog-accent">Наследие Карнака: храм, который расскажет все</span></h2>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak7876-1756883196DESix.jpg" alt="Karnak-Tempel" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/karnak7876-1756883196DESix.jpg" alt="Карнак" loading="lazy"></figure></p>
 
-<p>Der Komplex des Karnak-Tempels, des Tempels der Götter, ist weit mehr als ein Ausflugsziel: Er ist einer der Höhepunkte Oberägyptens und Ihr Tor zum Glauben und zum Genie der alten Ägypter. Ihn während Ihrer Dahabiya-Kreuzfahrt auf dem Nil zu besuchen, verleiht dem Erlebnis eine persönliche und emotionale Dimension und gewährt einen echten Blick ins Herz der Geheimnisse Ägyptens.<br>
+<p>Храмовый комплекс Карнак, храм богов, — больше чем просто место, которое вы посетите: это жемчужина Верхнего Египта и ваша дверь в мир верований и гения древних египтян. Посещение Карнака во время круиза по Нилу на дахабии добавляет личное, эмоциональное измерение и позволяет по-настоящему заглянуть в самое сердце египетских тайн.<br>
 <br>
-Hier liegt die Geschichte nicht hinter Glas: Sie ist unter Ihren Füßen und über Ihrem Kopf. Die aufragenden Säulen, die heiligen Schreine, die goldenen Wände und das stille Wasser rund um den Tempel schaffen einen Raum, in dem die Zeit stillzustehen scheint.<br>
+Здесь история не за стеклом витрины: она у вас под ногами и над головой. Высокие колонны, святилища, золотистые стены и неподвижная вода вокруг храма создают пространство, где время словно остановилось.<br>
 <br>
-Für alle, die auf der Suche nach Schönheit und Bedeutung reisen, ist Karnak ein Muss und ein unvergesslicher Teil einer Luxuskreuzfahrt mit der Dahabiya im zeitlosen Herzen Ägyptens.</p>
+Для каждого исследователя, который ищет и красоту, и смысл, Карнак обязателен к посещению: это незабываемая часть роскошного круиза на дахабии через вечное сердце Египта.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Träume auf dem Nil, antike Echos</span></h2>
+<h2><span class="hathor-blog-accent">Мечты о Ниле, эхо древности</span></h2>
 
 <p><br>
-Der Karnak-Tempel ist von einer Energie erfüllt, die weit über seine hohen Mauern hinausreicht. Während die Dahabiya den Fluss entlanggleitet, füllt sich Ihre Erinnerung mit dem Bild der großen steinernen Tore des Tempels, der Granitmonumente und der herrlichen Reliefs aus Sandstein. Zusammen ergeben sie eine einzigartige Mischung aus Ehrfurcht, Stolz und Respekt.<br>
+Карнакский храм пронизан энергией, которая выходит даже за пределы его высоких стен. Пока дахабия скользит по реке, в вашей памяти встают огромные каменные ворота храма, гранитные монументы и прекрасная резьба по песчанику. Все это рождает неповторимую смесь благоговения, гордости и уважения.<br>
 <br>
-Karnak ist nicht nur ein Haufen Steine, sondern ein kunstvoller Ort voller spiritueller Erinnerung an eine Zeit, in der die Religion alles war. Auf einer Luxuskreuzfahrt auf dem Nil sollten Sie ihn nicht versäumen. Oft besucht man ihn direkt nach dem Luxor-Tempel oder zusammen mit ihm, als schönste Sehenswürdigkeit Ägyptens.<br>
+Карнак — не просто груда камней, а изысканное место, наполненное духовной памятью о временах, когда религия была всем. Его не стоит пропускать во время люкс-круиза по Нилу; часто его посещают сразу после Луксорского храма или вместе с ним как лучшую достопримечательность Египта.<br>
 <br>
-Es zählt nicht nur, was man sieht, sondern auch, was man fühlt. Die Empfindungen, die Karnak weckt, bleiben unvergesslich, wie die zeitlosen Inschriften auf seinen Steinpfeilern.<br>
+Важно не только то, что вы видите, но и то, что вы чувствуете. Чувства, которые пробуждает Карнак, незабываемы, как вечные надписи на его каменных колоннах.<br>
 <br>
-Über den Karnak-Tempel lässt sich viel lesen, ebenso wie über andere Tempel des alten Ägypten, doch das ist nicht dasselbe, wie selbst dort zu stehen. Und ob Sie nach Süden in Richtung Assuan fahren oder nach Norden: Wenn Sie diese beiden Tempel, Karnak und Luxor, in Ihre Kreuzfahrt aufnehmen, reisen Sie noch weiter zurück in die heilige Geschichte Ägyptens.</p>`,
+О Карнакском храме, как и о других храмах Древнего Египта, можно прочесть очень многое, но это совсем не то же самое, что побывать там лично. И направляетесь ли вы на юг, в Асуан, или плывете на север, включите в круиз эти два храма, Карнакский и Луксорский: они уведут вас еще глубже в священную историю Египта.</p>`,
 
-  "exploring-luxor-and-aswan-on-a-luxury-dahabiya": `<h2><span class="hathor-blog-accent">Der Zauber von Luxor und Assuan auf einer Luxuskreuzfahrt auf dem Nil</span></h2>
+  "exploring-luxor-and-aswan-on-a-luxury-dahabiya": `<h2><span class="hathor-blog-accent">Волшебство Луксора и Асуана в роскошном круизе по Нилу</span></h2>
 
 <p><br>
-Auf dem Nil zwischen Luxor und Assuan, zwei der schönsten Städte Ägyptens, zu fahren, ist ein wahres Abenteuer voller unvergesslicher Erlebnisse und atemberaubender Augenblicke. Eine Luxuskreuzfahrt auf dem Nil von Luxor nach Assuan ist eine Reise durch Geschichte und Zeit, die man nicht vergisst, bereichert durch Besuche an den schönsten Orten von Assuan, wo zeitlose Schönheit, antike Tempel und kulturelle Schätze auf Sie warten.</p>
+Плавание по Нилу между двумя самыми чудесными городами Египта, Луксором и Асуаном, — настоящее приключение, полное незабываемых впечатлений и захватывающих моментов. Люкс-круиз по Нилу из Луксора в Асуан — это путешествие сквозь историю и время, которое никогда не забудется; его обогащают посещения лучших мест Асуана, где вас ждут вечная красота, древние храмы и культурные сокровища.</p>
 
-<p>Luxor und Assuan sind nicht nur wunderbare Reiseziele: Sie sind wahre lebendige Museen voller antiker Wunder, außergewöhnlicher Tempel und in Stein geschriebener Geschichten. Auf einer Luxuskreuzfahrt auf dem Nil erlebt, wird dieser mystische Flussabschnitt zu einer eleganten Passage ins Herz der Geschichte und Erhabenheit Ägyptens.</p>
+<p>Луксор и Асуан — не просто чудесные места для путешествия: лучшие места Луксора и Асуана — это живые музеи, полные древних чудес, необыкновенных храмов и историй, высеченных в камне. Во время люкс-круиза по Нилу этот таинственный участок реки превращается в изысканное путешествие через самое сердце истории и величия Египта.</p>
 
-<h2><span class="hathor-blog-accent">So erleben Sie Luxor und Assuan an Bord der Hathor Dahabiya</span></h2>
+<h2><span class="hathor-blog-accent">Как открыть Луксор и Асуан на борту Hathor Dahabiya</span></h2>
 
-<p>Das Erlebnis von Luxor und Assuan wird vollkommen, wenn Sie an Bord der Hathor Luxury Dahabiya reisen, die ihren Gästen authentische ägyptische Erlebnisse in Luxus und Komfort bietet.<br>
-Die luxuriöse <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a> schenkt dank ihrer intimen, ruhigen Atmosphäre ein vollständiges Nilerlebnis, in dem Sie die ewige Schönheit des Flusses spüren.<br>
+<p>Знакомство с Луксором и Асуаном становится полным, когда вы путешествуете на дахабии класса люкс Hathor, которая дарит гостям роскошные, комфортные и подлинно египетские впечатления.<br>
+Роскошная <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабия Hathor</a> позволяет прочувствовать Нил во всей полноте: ее камерная и спокойная атмосфера открывает вечную красоту реки.<br>
 <br>
-An Bord genießen Sie die langsame Fahrt unter Segeln, geräumige Decks und einen persönlichen Service.<br>
-Auf dieser Reise können Sie entspannen, ohne darauf zu verzichten, berühmte Orte wie die Tempel von Luxor, Kom Ombo und Edfu sowie die Schönheit Assuans zu erkunden.<br>
-Das Erlebnis der Hathor Dahabiya drückt Luxus in seiner reinsten Form aus: ruhige Morgen, herrliche Sonnenuntergänge auf dem Nil und sorgfältig geführte Ausflüge, die Ihnen die Geschichte des alten Ägypten ohne Eile näherbringen.<br>
-Unter ihren zahlreichen maßgeschneiderten Luxusreisen bietet die Hathor Luxury Dahabiya für eine tiefere, intensivere Reise <a href="https://www.hathorcruise.com/voyages/luxor-aswan-luxor" target="_blank" rel="noopener noreferrer">7 Nächte zwischen Luxor und Assuan</a> voller ruhiger Entdeckungen an, bei denen Sie alle historischen Stätten Ägyptens, sein kulturelles Erbe und die Naturschönheit des Landes kennenlernen.<br>
-Wenn Sie eine kürzere Reise bevorzugen, bietet die Nilkreuzfahrt <a href="https://www.hathorcruise.com/rooms/dahabiya-nile-cruise-aswan-to-luxor" target="_blank" rel="noopener noreferrer">3 Nächte und 4 Tage von Assuan nach Luxor</a> ein perfektes Gleichgewicht aus Komfort und Entdeckung: Sie führt zu den wichtigsten Orten und schenkt dennoch ein reiches Dahabiya-Erlebnis.</p>
+На борту вас ждут неспешное плавание под парусом, просторные палубы и персональный сервис.<br>
+Путешествие позволяет отдыхать и при этом осматривать знаменитые места: храмы Луксора, Ком-Омбо и Эдфу, а также красоты Асуана.<br>
+Путешествие на Hathor Dahabiya — это роскошь в чистом виде: спокойные утра, потрясающие закаты над Нилом и тщательно продуманные экскурсии с гидом, которые без спешки приближают вас к древней истории Египта.<br>
+Среди множества индивидуальных роскошных туров для более глубокого погружения дахабия класса люкс Hathor предлагает <a href="https://www.hathorcruise.com/rooms/dahabiya" target="_blank" rel="noopener noreferrer">7 ночей: Луксор и Асуан</a>, неспешное путешествие, которое позволит вам открыть все исторические места Египта, его культурное наследие и природную красоту страны.<br>
+Если вы предпочитаете поездку покороче, круиз по Нилу <a href="https://www.hathorcruise.com/rooms/dahabiya-nile-cruise-aswan-to-luxor" target="_blank" rel="noopener noreferrer">Асуан — Луксор на 3 ночи и 4 дня</a> предлагает идеальный баланс комфорта и открытий: он охватывает главные достопримечательности и при этом дарит насыщенные впечатления от плавания на дахабии.</p>
 
-<h2><span class="hathor-blog-accent">Luxor: die Krone des alten Ägypten</span></h2>
+<h2><span class="hathor-blog-accent">Луксор: корона Древнего Египта</span></h2>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/egypt-luxor-temple-of-karnak-1756882379lKK8W.jpg" alt="Luxor" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/egypt-luxor-temple-of-karnak-1756882379lKK8W.jpg" alt="Луксор" loading="lazy"></figure></p>
 
-<p>Das Abenteuer beginnt in <a href="/blogs/explore-luxor-in-luxury">Luxor</a>, das als größtes Freilichtmuseum der Welt gilt. Durch Luxor zu spazieren heißt, ein Kapitel der antiken Geschichte zu betreten. Der majestätische <a href="/blogs/sailing-to-karnak-temple">Karnak-Tempel</a> mit seinen aufragenden Säulen und dem heiligen See ist vielleicht einer der eindrucksvollsten religiösen Komplexe, die je gebaut wurden. Nur wenige Kilometer entfernt zeichnet sich der Luxor-Tempel unter dem weiten Wüstenhimmel ab und erstrahlt in den Abendstunden wunderschön.<br>
+<p>Приключение начинается в <a href="/blogs/explore-luxor-in-luxury">Луксоре</a>, который называют величайшим музеем под открытым небом в мире. Прогулка по Луксору — это погружение в главу древней истории. Величественный <a href="/blogs/sailing-to-karnak-temple">Карнакский храм</a> с высокими колоннами и священным озером — пожалуй, один из самых грандиозных религиозных комплексов, когда-либо построенных. Всего в нескольких километрах от него под бескрайним небом пустыни стоит Луксорский храм, великолепно подсвеченный по вечерам.<br>
 <br>
-Jenseits des mächtigen Nils liegt das Westufer mit dem <a href="/blogs/discover-the-valley-of-the-kings">Tal der Könige</a>. Hier ruhen in tiefen, in die Felsen gehauenen Gräbern Herrscher wie Ramses II. und der junge König Tutanchamun. Es sind mehr als bloße Gräber: Es sind prachtvolle Räume voller Malereien und Hieroglyphen, die das Jenseits beschreiben. All dies auf einer Dahabiya-Kreuzfahrt auf dem Nil von Assuan nach Luxor zu erleben, verleiht der Reise unvergleichlichen Komfort und Charme.<br>
+Переправившись через могучий Нил, вы окажетесь на Западном берегу, в <a href="/blogs/discover-the-valley-of-the-kings">Долине царей</a>. Здесь, в глубоких гробницах, высеченных в скалах, похоронены такие цари, как Рамсес II и юный фараон Тутанхамон. Это не просто гробницы: это прекрасные сооружения, покрытые росписями и иероглифами, которые повествуют о загробной жизни. Увидеть все это во время круиза по Нилу на дахабии из Асуана в Луксор — значит придать путешествию непревзойденный комфорт и очарование.<br>
 <br>
-In Luxor ist die Geschichte überall gegenwärtig. Erlebt im Glanz einer Luxuskreuzfahrt auf dem Nil, wird diese Präsenz besonders stark. Das sanfte Plätschern des Flusses neben der strengen Größe der gewaltigen Tempel schafft eine ganz besondere Atmosphäre.</p>
+История пронизывает весь Луксор. Когда видишь ее во всем блеске люкс-круиза по Нилу, она заявляет о себе с особой силой. Тихий плеск реки рядом с суровым величием колоссальных храмов создает совершенно особую атмосферу.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Außergewöhnliche Momente und verborgene Schätze</span></h2>
+<h2><span class="hathor-blog-accent">Удивительные мгновения и скрытые сокровища</span></h2>
 
 <p><br>
-Die Luxuskreuzfahrt auf dem Nil bringt Sie nach Süden, in eine Welt voller Zauber. Ihre Tage verlaufen ruhig und langsam, im Rhythmus des Wassers. Bei einem Tee auf dem Deck beobachten Sie Fischer, die ihre Netze auswerfen, und fahren an zeitlosen Dörfern am Ufer vorbei, nachdem Sie die schönsten Orte von Luxor erkundet haben, etwa den Karnak-Tempel, das Tal der Könige und den Luxor-Tempel, wo die antike Geschichte lebendig wird.<br>
-Majestätische Tempel gliedern Ihre Fahrt. Der Tempel von Edfu, dem falkenköpfigen Gott Horus geweiht, ist einer der am besten erhaltenen antiken Tempel Ägyptens. Dann erreichen Sie Kom Ombo, einen Doppeltempel zu Ehren zweier Gottheiten, Sobek und Horus. In der Antike waren die Tempel vollständig mit Reliefs, Statuen und Wandmalereien bedeckt.</p>
+Роскошный круиз по Нилу унесет вас на юг, в мир настоящего волшебства. Ваши дни станут спокойными и неспешными, подчиненными ритму воды. Потягивая чай на палубе, наблюдайте, как рыбаки забрасывают сети, и проплывайте мимо вековых деревень, прильнувших к берегам, — и все это после знакомства с лучшими местами Луксора: Карнакским храмом, Долиной царей и Луксорским храмом, где древняя история оживает во всей яркости.<br>
+Ваш путь отмечен величественными храмами. Храм Эдфу, посвященный богу-соколу Гору, — один из наиболее хорошо сохранившихся древних храмов Египта. Затем мы прибываем в Ком-Омбо, двойной храм, построенный в честь двух богов, Собека и Гора. В древности храмы были сплошь покрыты резьбой, статуями и росписями.</p>
 
-<p>Komfort vom Anfang bis zum Ende! Dieses einzigartige Erlebnis verbindet absoluten Luxus mit der tiefen Bedeutung des Entdeckens, auf einer Luxuskreuzfahrt auf dem Nil von Luxor nach Assuan.</p>
+<p>Комфорт на всем пути! Люкс-круиз по Нилу из Луксора в Асуан — неповторимое путешествие, в котором абсолютная роскошь сочетается с глубоким смыслом открытий.</p>
 
-<p>Für alle, die einen traditionelleren, ruhigeren Rhythmus bevorzugen, bietet die Dahabiya-Kreuzfahrt auf dem Nil von Assuan nach Luxor eine elegante und intime Art, die zeitlose Schönheit des Flusses zu erleben, mit Erinnerungen, die ein Leben lang bleiben. Diese Dahabiya-Reise auf dem Nil von Assuan nach Luxor verbindet Entspannung und kulturellen Reichtum auf perfekte Weise.</p>
+<p>Тем, кто предпочитает более традиционный и спокойный темп, круиз по Нилу на дахабии из Асуана в Луксор предлагает элегантный и камерный способ познать вечную красоту реки и подарит воспоминания на всю жизнь. Это путешествие на дахабии из Асуана в Луксор идеально сочетает отдых и культурное богатство.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Assuan: Frieden, Kultur und Naturschönheit</span></h2>
+<h2><span class="hathor-blog-accent">Асуан: покой, культура и красота природы</span></h2>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/aswan4545-1756882261JZazH.jpg" alt="Assuan" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/aswan4545-1756882261JZazH.jpg" alt="Асуан" loading="lazy"></figure></p>
 
-<p>In Assuan anzukommen heißt, in die gelassenste und spirituellste Seele Ägyptens einzutauchen. Die Luft ist ruhig und mild.<br>
-Der herrliche <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a> leuchtet im Licht, das Kronjuwel von Assuan. Philae ist der Tempel der Göttin Isis:&nbsp;Stilles Wasser umgibt die Anlage und spiegelt die Größe ihrer majestätischen Säulen.<br>
+<p>Прибыть в Асуан — значит попасть в мирный, одухотворенный уголок Египта. Воздух здесь спокойный и теплый.<br>
+Прекрасный <a href="/blogs/discovering-the-secrets-of-philae-temple">храм Филе</a> сияет как главная жемчужина Асуана. Филе — храм богини Исиды; спокойные воды окружают храм, отражая величие его колонн.<br>
 <br>
-Eine weitere berühmte Stätte ist der Unvollendete Obelisk in seinem Granitsteinbruch:&nbsp;Hier erfährt man viel über die antike Ingenieurskunst und den Ehrgeiz jener Zivilisation.<br>
-Assuan vollendet auf perfekte Weise, was Luxor begonnen hat: Gemeinsam verschmelzen die beiden Städte zu einer einzigen, harmonischen Luxuskreuzfahrt auf dem Nil, einem wahrhaft einmaligen Erlebnis.</p>
+Еще одна известная достопримечательность — Незаконченный обелиск, лежащий в своем гранитном карьере. Здесь вы поймете, каким было древнее инженерное искусство и как велики были замыслы той цивилизации.<br>
+Прекрасно завершая то, что начал Луксор, Асуан сливается с ним в единое путешествие люкс-круиза по Нилу и дарит впечатления, которые бывают раз в жизни.</p>
 
 <h2><br>
-<span class="hathor-blog-accent">Von Luxor nach Assuan,&nbsp;eine Reise ohnegleichen</span></h2>
+<span class="hathor-blog-accent">Из Луксора в Асуан,&nbsp;путешествие без равных</span></h2>
 
-<p>Der Zauber von Luxor und Assuan liegt nicht nur in ihren Tempeln: Er liegt in den Wänden, die Geschichten erzählen und der Vergangenheit eine Stimme geben, und im stillen Nil, der langsam zwischen den beiden Städten fließt. Diese Reise auf einer Dahabiya-Kreuzfahrt auf dem Nil von Assuan nach Luxor zu erleben, verleiht ihr eine einzigartige Note von Eleganz und Ruhe und lässt Sie das reiche historische Erbe Ägyptens tief und ohne Eile erfahren. Eine Luxuskreuzfahrt auf dem Nil von Luxor nach Assuan lässt diese antike Welt wunderbar aufleben, mit unvergleichlichem Komfort und tiefem Eintauchen: keine bloße Reise, sondern ein wahrhaft unvergessliches Erlebnis.<br>
+<p>Волшебство Луксора и Асуана не только в их храмах, чьи стены рассказывают истории и словно говорят вслух, но и в безмолвном Ниле, неспешно текущем мимо них. Это путешествие на борту дахабии в круизе по Нилу из Асуана в Луксор добавит неповторимую ноту элегантности и покоя и позволит неторопливо и спокойно прикоснуться к богатому историческому наследию Египта. Люкс-круиз по Нилу из Луксора в Асуан оживляет этот древний мир во всей красе, даря непревзойденный комфорт и глубокое погружение, и делает поездку не просто путешествием, а поистине незабываемым впечатлением.<br>
 <br>
-Ob die Schönheit von Karnak Sie in Staunen versetzt, das Tal der Könige Sie verzaubert oder die Ruhe des Philae-Tempels Sie gefangen nimmt, an diese Reise werden Sie sich lange erinnern. Eine Luxuskreuzfahrt auf dem Nil ist keine bloße Reise: Sie ist eine Geschichte, in die man eintritt.</p>`,
+Восхитит ли вас красота Карнака, очарует ли Долина царей или увлечет безмятежность храма Филе, вы надолго запомните это путешествие. Люкс-круиз по Нилу — не поездка, а история, в которую вы входите.</p>`,
 
-  "where-history-lives-the-temple-of-hatshepsut": `<h2><span class="hathor-blog-accent">Entdecken Sie den Tempel der Hatschepsut in Luxor: eine Reise ins goldene Zeitalter</span></h2>
+  "where-history-lives-the-temple-of-hatshepsut": `<h2><span class="hathor-blog-accent">Храм Хатшепсут в Луксоре: путешествие в золотой век</span></h2>
 
-<p>Stellen Sie sich vor, Sie stehen am Fuß der aufragenden Felsen des Westufers und genießen die ersten Strahlen der Morgensonne. Vor Ihnen öffnet sich einer der schönsten Tempelkomplexe am Nil: der Tempel der Königin Hatschepsut.<br>
+<p>Представьте, что вы стоите у подножия высоких скал Западного берега и наслаждаетесь мягким прикосновением первых утренних лучей. Перед вами раскинулся один из самых красивых храмовых садов на Ниле — храм царицы Хатшепсут.<br>
 <br>
-Er ist nicht nur eine Ansammlung schöner antiker Ruinen. Er ist eine kühne und edle Saga, in Stein übertragen von einer Königin, die den Lauf der Geschichte wirklich verändert hat. Wenn Sie auf einer Luxus-Dahabiya über den Nil anreisen, wird der Zauber Ihres ersten Blicks auf diesen Tempel nie verblassen.<br>
+Это не просто добротные древние руины. Это смелая и благородная сага, воплощенная в камне царицей, которая действительно изменила ход истории. Если вы приплыли сюда по Нилу на роскошной дахабии, волшебное впечатление от этого храма не померкнет никогда.<br>
 <br>
-Beginnen Sie den Tag an Bord der luxuriösen&nbsp;<a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Hathor Dahabiya</a>, auf dem Deck stehend, mit einer warmen Tasse&nbsp;Minztee in den Händen, während Sie den Nil hinauf in Richtung Luxor fahren. Bald öffnen Sie die Tür zu jenem besonderen Ort, an dem die Geschichte Königinnen, Götter und alterslose Steine zum Leben erweckt.<br>
+Начните день на борту роскошной&nbsp;<a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии Hathor</a>: стоя на палубе с чашкой теплого мятного чая в руках, вы плывете вниз по Нилу к Луксору. Совсем скоро перед вами откроется особое место, где история пробуждает цариц, богов и вечный камень.<br>
 <br>
-Es ist die stille Schönheit der Dahabiya selbst, die dieses Erlebnis unvergesslich macht. Anders als die größeren, volleren Schiffe bietet Ihre Luxus-Dahabiya eine ruhige und private Art, den Nil zu erleben, und bringt Sie in Einklang mit der Landschaft und den alten Geschichten, die sie birgt. Während Sie fahren und die Zeit selbst dahinzugleiten scheint, schaffen das gedämpfte Geräusch des Wassers am Rumpf und die Wärme des Wüstenwinds die Stimmung, in der sich der Geist auf den majestätischen Anblick einstellt, der Sie erwartet.<br>
+Тихая красота самой дахабии делает это путешествие незабываемым. В отличие от больших шумных судов, ваша роскошная дахабия предлагает спокойный и уединенный способ познакомиться с Нилом, позволяя ощутить связь с пейзажем и древними историями, которые он хранит. Вы плывете, и кажется, будто само время ускользает, а приглушенный плеск воды о корпус и тепло пустынного ветра создают атмосферу, в которой мысли обращаются к величественному зрелищу впереди.<br>
 <br>
-Früh am Tempel der Hatschepsut anzukommen bedeutet, seine großen Terrassen hinauf- und hinabzusteigen und in heiliger Stille zwischen seinen eleganten Säulen hindurchzugehen und dabei jedes Detail der wunderbar erhaltenen Reliefs und der leuchtend bunten Hieroglyphen auszukosten. Dieser langsamere, intimere Rhythmus des Entdeckens, der die Schätze von Luxor ins Licht rückt, ist das Kennzeichen einer echten Luxuskreuzfahrt auf dem Nil, bei der jeder Moment auf Ihren Komfort und Ihr Vergnügen ausgerichtet ist.</p>
+Приехав к храму Хатшепсут рано, вы сможете в священной тишине подниматься и спускаться по его величественным террасам среди изящных колонн, впитывая каждую деталь прекрасно сохранившихся рельефов и ярко раскрашенных иероглифов. Такой неспешный, более личный темп знакомства с сокровищами Луксора — отличительная черта настоящего люкс-круиза по Нилу, где каждое мгновение подчинено вашему комфорту и удовольствию.</p>
 
-<h2><span class="hathor-blog-accent">Eine Königin, die die Regeln brach und Spuren hinterließ</span></h2>
+<h2><span class="hathor-blog-accent">Царица, которая нарушила правила и оставила свой след</span></h2>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/hatshepsut-statue-1756819790tkmgz.jpg" alt="Statue der Hatschepsut" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/hatshepsut-statue-1756819790tkmgz.jpg" alt="Хатшепсут" loading="lazy"></figure></p>
 
-<p>Die Geschichte der Hatschepsut ist alles andere als gewöhnlich. In einer fernen Zeit, in der selten eine Frau den Thron Ägyptens bestieg, errang sie die Macht und herrschte 20 Jahre lang. Statt den Thron still einzunehmen, regierte Hatschepsut mit Kühnheit, Mut und Klugheit und mit einer edlen Vision von Frieden und Wohlstand.<br>
+<p>История Хатшепсут какая угодно, только не обычная. В давние времена, когда женщины редко становились царями Древнего Египта, она пришла к власти и правила 20 лет. Хатшепсут не просто тихо восседала на троне, а правила смело, проявляя отвагу, ум и благородное стремление к миру и процветанию.<br>
 <br>
-Der Tempel unterscheidet sich stark von den gewaltigen Pyramiden und verborgenen Gräbern, die Sie vielleicht kennen. Er liegt eingebettet in die Felsen von Deir el-Bahari, in vollkommener Harmonie mit der natürlichen Umgebung. Die Terrassen des Tempels, auf mehr als drei Ebenen angelegt, sind durch hoch aufragende Rampen verbunden und von eleganten Säulen gesäumt, die eine sanfte Melodie aus Wüste und Fluss anzustimmen scheinen.<br>
+Этот храм совсем не похож на гигантские пирамиды и тайные гробницы, которые вы, возможно, знаете. Он врезан глубоко в скалы Дейр-эль-Бахри и гармонично сливается с окружающей природой. Три террасы храма соединены очень высокими пандусами и обрамлены изящными колоннами, которые словно напевают тихую мелодию пустыни и реки.<br>
 <br>
-Im Inneren des Tempels erzählen farbenfrohe Malereien und feine Reliefs meisterhafter Handwerker vom Leben der Königin göttlicher Herkunft, von der berühmten Handelsexpedition ins geheimnisvolle Land Punt und von ihrer engen Verbindung zu den Göttern, die ihre Herrschaft stützten.<br>
+Внутри храма красочные росписи и тонкая резьба, созданные искусными мастерами, рассказывают историю жизни царицы божественного происхождения, о знаменитой торговой экспедиции в загадочную страну Пунт и о ее близких отношениях с богами, которые поддерживали ее правление.<br>
 <br>
-Dank Ihrer Dahabiya-Kreuzfahrt können Sie an diesem außergewöhnlichen Ort organisierte Gruppen und hastige Besichtigungen vermeiden: Nehmen Sie sich alle Zeit, die Sie möchten, um in die Geschichte einzutauchen und sich von diesen Mauern gefangen nehmen zu lassen.</p>
+Благодаря круизу на дахабии вы сможете избежать больших туристических групп, а значит, и торопливых пробежек по этому удивительному месту: не спешите, впитывайте историю и позвольте себе почувствовать связь с этими стенами.</p>
 
 <p>&nbsp;</p>
 
-<h2><span class="hathor-blog-accent">Mit der luxuriösen Hathor Dahabiya zum Tempel der Hatschepsut</span></h2>
+<h2><span class="hathor-blog-accent">Храм Хатшепсут с борта роскошной дахабии Hathor</span></h2>
 
 <p>&nbsp;</p>
 
-<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/mortuary-temple-of-hatshepsut768768-1756819117OkvMu.jpg" alt="Tempel der Hatschepsut" loading="lazy"></figure></p>
+<p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/mortuary-temple-of-hatshepsut768768-1756819117OkvMu.jpg" alt="храм Хатшепсут" loading="lazy"></figure></p>
 
 <p><br>
-Sie spüren die Stille und&nbsp;erwachen sanft an Bord der eleganten Dahabiya, während das erste Licht der Morgendämmerung seinen goldenen Schimmer auf den glitzernden Nil legt.<br>
-Hier gibt es keine Eile. Es ist die Zeit der Stille in einer privaten Kabine und des sanften Schaukelns des Flusses unter Ihren Füßen. Während Sie die frische Morgenluft atmen, freuen Sie sich darauf, von Ihrem erfahrenen Reiseleiter Wissenswertes über das Ziel des Tages zu hören: den prachtvollen Tempel der Hatschepsut.<br>
+Вы ощущаете покой и мягко просыпаетесь на борту элегантной дахабии, когда первые лучи рассвета озаряют золотым сиянием мерцающий Нил.<br>
+Здесь некуда спешить. Это время тишины уединенной каюты и мягкого покачивания реки под ногами. Вдыхая свежий утренний воздух, вы с нетерпением ждете, когда знающий гид поделится интригующими подробностями о цели сегодняшнего дня — великолепном храме Хатшепсут.<br>
 <br>
-Durch die frühe Ankunft stehen Sie fast allein auf den weiten Terrassen und zwischen den hohen Säulen des Tempels: ein seltener Moment des Friedens, der Sie emotional mit den in Stein gemeißelten Geschichten verbindet. Jedes Relief und jede Malerei erzählen von alten menschlichen Sehnsüchten und göttlicher Macht und werden durch die Erinnerung an dieses Erlebnis in der Stille noch schöner.<br>
+Приехав рано, вы оказываетесь почти в одиночестве на просторных террасах среди высоких колонн храма: редкий миг покоя, который эмоционально связывает вас с высеченными в камне историями. Каждый рельеф и каждая роспись рассказывают о древних человеческих устремлениях и божественной власти и становятся еще прекраснее в памяти об этих минутах наедине с храмом.<br>
 <br>
-Später können Sie sich auf dem Deck der Hathor Dahabiya bei einem kühlen Getränk entspannen und in exklusivem Komfort nach Süden fahren, durch die zeitlose Schönheit des Nils und die reiche Geschichte Ägyptens.<br>
+Позже вы сможете отдохнуть на палубе дахабии Hathor с прохладительным напитком, продолжая путь на юг среди вечной красоты Нила и богатой истории Египта в исключительном комфорте.<br>
 <br>
-Jeder Moment dieser Reise wird zu einer unvergesslichen Verbindung aus Komfort und tiefer Nähe zur Vergangenheit: ein wahrer Luxus, den nur die Hathor Dahabiya bieten kann.</p>`,
+Каждое мгновение этого путешествия становится незабываемым сочетанием комфорта и прочной связи с прошлым — настоящей роскошью, которую предлагает только Hathor Dahabiya.</p>`,
 
-  "niles-hidden-gems-by-dahabiya": `<h2><span class="hathor-blog-accent">Die Sehenswürdigkeiten des Nils</span></h2>
+  "niles-hidden-gems-by-dahabiya": `<h2><span class="hathor-blog-accent">Достопримечательности Нила</span></h2>
 
-<p>Können Sie sich vorstellen, still den Nil entlangzugleiten, nur die Brise auf der Wasseroberfläche, fern vom Lärm der großen Kreuzfahrtschiffe? Die weniger besuchten Tempel, die verschlafenen Dörfer am Ufer und die winzigen Inseln, einige der weniger bekannten Sehenswürdigkeiten des Nils, die dem Touristenstrom noch entgehen, bleiben verborgen und zeigen sich an Bord einer <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">Luxus-Dahabiya</a>.<br>
-Diese verborgenen Schätze, die nur kleine, edle Schiffe wie die Dahabiya erreichen, gewähren einen Blick auf den wahren Geist des Niltals. Hier sind drei landschaftliche Wunder, die Sie nur an Bord einer Dahabiya erkunden können.<br>
-Wer diese Orte erkundet, erlebt authentische Kultur, unberührte Landschaften und unvergessliche Momente entlang des Flusses, wie am <a href="/blogs/discovering-the-secrets-of-philae-temple">Philae-Tempel</a> und an vielen anderen Orten.<br>
-Die Erinnerungen bleiben wirklich ein Leben lang, auf einer Reise, die Sie auf unerklärliche Weise mit der Geschichte verbindet und die ruhige Schönheit der Natur offenbart.<br>
-Die Sehenswürdigkeiten des Nils bieten eine einzigartige Art, Ägypten jenseits der üblichen Routen zu entdecken.</p>
+<p>Можете ли вы представить, как бесшумно скользите по Нилу вдали от шума больших круизных теплоходов, а легкий ветерок лишь касается водной глади? Редко посещаемые храмы, сонные деревни на берегах и крошечные острова — малоизвестные достопримечательности Нила, до которых еще не добрались толпы туристов, — остаются скрытыми, пока вы не откроете их на борту <a href="https://www.hathorcruise.com/" target="_blank" rel="noopener noreferrer">дахабии класса люкс</a>.<br>
+Эти скрытые жемчужины, доступные лишь небольшим изысканным судам вроде дахабии, позволяют проникнуться подлинным духом долины Нила. Вот три живописных чуда, которые можно увидеть только с борта дахабии.<br>
+Знакомство с этими местами дарит путешественникам подлинную культуру, нетронутые пейзажи и незабываемые мгновения на реке, как в <a href="/blogs/discovering-the-secrets-of-philae-temple">храме Филе</a> и во многих других местах.<br>
+Воспоминания о путешествии, которое необъяснимым образом привязывает вас к истории и раскрывает мирную красоту природы, поистине остаются на всю жизнь.<br>
+Достопримечательности Нила открывают уникальную возможность узнать Египет за пределами привычных маршрутов.</p>
 
 
 
-<h2><span class="hathor-blog-accent">1. Gebel el Silsila: die Tempel im Steinbruch&nbsp;</span></h2>
+<h2><span class="hathor-blog-accent">1. Джебель Сильсила: храмы в каменоломне&nbsp;</span></h2>
 
-<figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/gebel-el-silsila63-1756885822TxVRJ.jpg" alt="Gebel el Silsila" loading="lazy"></figure>
+<figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/gebel-el-silsila63-1756885822TxVRJ.jpg" alt="Джебель Сильсила" loading="lazy"></figure>
 
 <h3><br>
-&nbsp;<span class="hathor-blog-accent">Wo die Tempel entstehen</span></h3>
+&nbsp;<span class="hathor-blog-accent">Где рождаются храмы</span></h3>
 
-<p>Aus dieser engen Sandsteinschlucht stammte der Stein für den Bau der wichtigsten Tempel Ägyptens. Die Felswände verbergen kleine Heiligtümer und Kapellen, in einer Gegend, die die meisten Menschen nie besuchen.<br>
-Die Stätte zeigt das Können der antiken Baumeister, die Ägyptens berühmteste Monumente schufen, indem sie große Steinblöcke aus den natürlichen Felsvorkommen brachen. Sie gewährt einen außergewöhnlichen Blick in die Vergangenheit und bietet zugleich unberührte Naturschönheit: Deshalb ist sie ein so besonderer Ort für einen Besuch.</p>
+<p>В этом узком ущелье из песчаника добывали камень для строительства важнейших храмов Египта. В склонах скал скрываются небольшие святилища и часовни, отмечающие место, где большинство людей так и не побывает.<br>
+Это место показывает, как древние строители создавали самые знаменитые памятники Египта, вырубая огромные каменные блоки прямо из природной породы. Оно открывает редкую возможность заглянуть в прошлое и любоваться нетронутой природной красотой, поэтому побывать здесь — исключительное впечатление.</p>
 
 <h3><br>
-<span class="hathor-blog-accent">&nbsp;Ein Sonnenuntergang wie kein anderer</span><br>
+<span class="hathor-blog-accent">&nbsp;Неповторимый закат</span><br>
 &nbsp;</h3>
 
-<p>Die Dahabiyas ankern direkt am Rand des Steinbruchs: Der Landgang ist einfach, und in der goldenen Stunde lässt sich zwischen den Felsen spazieren. Manche Kreuzfahrten richten hier sogar ein privates Abendessen aus, in einer von Kerzen und Geschichte erleuchteten Atmosphäre.</p>
+<p>Дахабии встают на якорь прямо у края каменоломни, так что можно легко сойти на берег и прогуляться среди скал в золотой час. Некоторые круизы даже устраивают здесь частный ужин, и все вокруг озаряется светом свечей и дыханием истории.</p>
 
-<h2><span class="hathor-blog-accent">2. Beni Hasan: die Gräber einer uralten Welt</span></h2>
-
-<h3><br>
-<span class="hathor-blog-accent">Ein Einblick in das Leben im Mittleren Reich</span></h3>
-
-<p><br>
-Abseits der üblichen Route zwischen Luxor und Assuan ist Beni Hasan ein selten besuchter Ort, der tief ins Mittlere Reich eintauchen lässt. Die in den Fels gehauenen Gräber gehörten Provinzgouverneuren; ihre Dekorationen zeigen lebhafte Szenen von Ringkampf, Jagd und Alltag, ein Schatz für Reisende und Historiker.</p>
+<h2><span class="hathor-blog-accent">2. Бени Хасан: гробницы древнего мира</span></h2>
 
 <h3><br>
-<span class="hathor-blog-accent">&nbsp;Authentisch, fernab der Menge</span></h3>
+<span class="hathor-blog-accent">Жизнь Среднего царства</span></h3>
 
 <p><br>
-Die Anreise nach Beni Hasan ist langsam und eindrucksvoll,&nbsp;wie geschaffen für eine Dahabiya. Die Stille des Ortes und die Pracht der Gräber schenken ein authentisches, erfüllendes Erlebnis. Hier&nbsp;fühlen Sie sich eher als Entdecker denn als Tourist.</p>
+Бени-Хасан, лежащий далеко от привычного маршрута Луксор — Асуан, почти никто не посещает, и здесь можно глубоко погрузиться в эпоху Среднего царства. Высеченные в скале гробницы принадлежали правителям провинций; их убранство передает яркие сцены борьбы, охоты и повседневной жизни, которыми не устают восхищаться путешественники и историки.</p>
+
+<h3><br>
+<span class="hathor-blog-accent">&nbsp;Подлинно и безлюдно</span></h3>
+
+<p><br>
+Путь в Бени-Хасан — неспешное и увлекательное путешествие, идеально подходящее для дахабии. Спокойствие этого места и великолепие гробниц дарят подлинные и щедрые впечатления. Здесь вы чувствуете себя скорее исследователем, чем туристом.</p>
 
 <p><figure class="hathor-blog-figure"><img src="https://hathorcruise.com/storage/04ee20c6-30b4-4497-a898-1d9a4aa379ec-day-tour-in-el-tod-temple-luxor-17748816054Pnzw.png" alt="" loading="lazy"></figure></p>
 
-<h2><span class="hathor-blog-accent">3. El Tod: ein Tempel für einen vergessenen Gott</span></h2>
+<h2><span class="hathor-blog-accent">3. Тод: храм забытого бога</span></h2>
 
 <h3><br>
-<span class="hathor-blog-accent">Der Tempel des Month</span></h3>
+<span class="hathor-blog-accent">Храм Монту</span></h3>
 
-<p>Südlich von Luxor verborgen, ist El Tod eine wenig bekannte Stätte, die Month geweiht ist, dem falkenköpfigen Gott des Krieges. Die vom Alter gezeichneten Reliefs bewahren noch immer das Echo alter Rituale. Anders als die Tempel von Karnak oder Luxor bietet El Tod ein seltenes Gefühl von Abgeschiedenheit und Ruhe.</p>
+<p>Укрывшийся к югу от Луксора Тод — малоизвестное святилище, посвященное Монту, сокологоловому богу войны. Его рельефы, хоть и выветрились, до сих пор хранят отголоски древних ритуалов. В отличие от храмов Карнака и Луксора, Тод дарит редкое ощущение уединения и тишины.</p>
 
 <h2><br>
-<span class="hathor-blog-accent">Der Vorteil der Dahabiya</span></h2>
+<span class="hathor-blog-accent">Преимущество дахабии</span></h2>
 
-<p>Anders als große Kreuzfahrtschiffe reisen Dahabiyas langsam und halten individuell an fast unberührten Orten. Keine Menschenmassen, kein Lärm: nur das sanfte Plätschern des Nils, während Sie die weniger bekannten Wunder Ägyptens und die verborgenen Sehenswürdigkeiten des Nils erkunden.</p>
+<p>В отличие от больших круизных теплоходов, дахабии плывут неспешно и делают индивидуальные остановки в почти нетронутых местах. Ни толп, ни шума — лишь тихий плеск Нила, пока вы исследуете малоизвестные чудеса Египта и скрытые достопримечательности Нила.</p>
 
-<p>Beginnen Sie Ihre Reise abseits der ausgetretenen Pfade und genießen Sie&nbsp;die Sehenswürdigkeiten des Nils.<br>
-Die Luxuskreuzfahrt mit der Dahabiya lässt Sie die antiken verborgenen Schätze des Nils erkunden, die in ihrem ursprünglichen Zustand erhalten geblieben sind. Entdecken Sie sie auf unserer&nbsp;<a href="https://www.hathorcruise.com/rooms/dahabiya-nile-cruise-aswan-to-luxor" target="_blank" rel="noopener noreferrer">Luxusreise über 3 Nächte von Assuan nach Luxor</a>: einer exklusiven Route, die atemberaubende Landschaften und historische Stätten verbindet und allen, die diesen Weg wählen, authentische ägyptische Erlebnisse schenkt.</p>`,
+<p>Отправьтесь в путешествие по нехоженым маршрутам и насладитесь достопримечательностями Нила.<br>
+Роскошный круиз на дахабии позволяет увидеть древние скрытые сокровища Нила, сохранившиеся в первозданном виде. Откройте их для себя в нашем&nbsp;<a href="https://www.hathorcruise.com/rooms/dahabiya-nile-cruise-aswan-to-luxor" target="_blank" rel="noopener noreferrer">роскошном туре на 3 ночи из Асуана в Луксор</a>: это эксклюзивное путешествие с потрясающими пейзажами и историческими памятниками дарит подлинно египетские впечатления всем, кто проходит этот маршрут.</p>`,
 };
