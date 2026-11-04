@@ -44,14 +44,19 @@ no merge, no deploy.** The dashboard and all emails stay English.
 ## Phase 2: Russian
 
 - [x] Groundwork: `ru` locale, `/ru` routes, formats, plurals, fonts, language menu, `-ru` copy files as typed templates.
-- [ ] Translate (10 agents — all done except booking-copy/selection/catalog/cruises and rooms/rooms-seo/website-text/deck-atlas/suites as of 03:20;, started 2026-11-03 ~22:30; site agents write the -ru files, journal agents write
+- [x] Translate (10 agents — all done except booking-copy/selection/catalog/cruises and rooms/rooms-seo/website-text/deck-atlas/suites as of 03:20;, started 2026-11-03 ~22:30; site agents write the -ru files, journal agents write
       blog-articles-ru batches + russian-work/journal/posts-J1..4.json, which the coordinator merges into blog-posts-ru.ts.
       A resumed run: check which -ru files still hold German with russian-work/tools/scan-ru.cjs and redo only those;
       briefs in russian-work/ru-brief.md and russian-work/journal-brief.md. Assignment, `russian-work/ru-brief.md`): chrome+home+SEO, booking, rooms+suites+website text, voyages+route+
       highlights+charter, about+contact+gastronomy+wellness+partners+alts+system pages, Terms, journal ×4.
-- [ ] Proofread against English — 6 agents instead of 2 (each must fit English + Russian side by side): journal A (batches 5, 1),
+- [x] Proofread against English — 6 agents instead of 2 (each must fit English + Russian side by side): journal A (batches 5, 1),
       B (7, 3, 6), C (2, 8, 4) started 2026-11-04 ~03:20; site proofreaders start when booking + rooms/suites translators finish.
       Brief: russian-work/proof-brief.md. A resumed run: proofread any part not listed as done in russian-work/review-notes.md.
-- [ ] Layout check at 1440×900, 1920×1080, 1024×1366, 768×1024, 390×844, 375×667; shorten overflowing headings.
-- [ ] Type-check and production build; leftover-English/German scan of every `-ru` file.
-- [ ] `docs/russian-review.md` written; final local commit. Stop and leave it for the owner.
+- [x] Layout check at 1440×900, 1920×1080, 1024×1366, 768×1024, 390×844, 375×667; shorten overflowing headings.
+- [x] Type-check and production build; leftover-English/German scan of every `-ru` file.
+- [x] `docs/russian-review.md` written; final local commit. Stop and leave it for the owner.
+
+## Done (2026-11-04)
+
+All steps finished except the OWNER item. Production build passed (`next build --webpack`, first attempt failed on a
+Google Fonts download on this network and passed on retry). Everything is local on `claude/russian-site`.

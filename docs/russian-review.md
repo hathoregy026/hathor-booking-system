@@ -56,8 +56,9 @@ Browsers fetch these files only when a page contains Cyrillic, so English, Itali
 exception: the language menu's «Русский» is Cyrillic, so every page loads the 14 KB Manrope file. The `/suites` frame gets the
 same faces in `public/hathor-fonts.css`; the booking journey's Inter and Playfair already draw Cyrillic.
 
-The homepage hero's second line is a script face laid over the first line in Latin. Forum draws Cyrillic upright, which
-would collide, so on Russian pages that line sits just under the first at a smaller size (`home-three.css`).
+The homepage hero and the footer each have a script line laid over the title in Latin. Forum draws Cyrillic upright, which
+would collide, so on Russian pages those lines sit just under their title at a smaller size (`home-three.css`,
+`site-footer.css`).
 
 ## 4. Headings shortened or reworded to fit
 
@@ -102,9 +103,12 @@ word-for-word translation (most follow the cuts German made for the same panels)
 ## 6. Layout
 
 Checked with Playwright at 1440×900, 1920×1080, 1024×1366, 768×1024, 390×844 and 375×667 on every page, each Russian page
-compared with its English (`russian-work/tools/layout-check.cjs`): no page overflow and no clipped text that English does not
-also have. Found and fixed: the homepage hero overlap, English phone-dock captions (they are CSS text per language, now in
-Russian), the deck plan's "Booked" tag.
+compared with its English (`russian-work/tools/layout-check.cjs`), then on the production build: where each line of text
+actually ends (`textedge-check.cjs`, catches text a parent clips) and whether any two texts overlap, scene by scene through the
+horizontal pages (`overlap-check.cjs`). Found and fixed: the homepage hero and the footer, whose script lines collided in
+Forum (both now sit under their title); the footer title, too wide on phones (one size down below 680 px); the footer's
+Highlights link, too wide for its phone column (now «Что увидеть»); English phone-dock captions (CSS text per language, now in
+Russian); the deck plan's "Booked" tag. After the fixes nothing runs off screen or overlaps that English does not also have.
 
 Not changed, because English and German have it too: on the room collection pages at 1440 the floating booking pill covers
 the hero's inline booking button. The room page's section tabs scroll sideways by design, so the fourth tab is partly hidden at
