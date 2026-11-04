@@ -197,7 +197,8 @@ export const CHROME_COPY_RU: ChromeCopy = {
           { href: "/voyages", label: "Все путешествия" },
           { href: "/voyages/luxor-to-aswan", label: "Из Луксора в Асуан" },
           { href: "/voyages/aswan-to-luxor", label: "Из Асуана в Луксор" },
-          { href: "/highlights", label: "Достопримечательности" },
+          /* The footer column is narrow on phones: the Highlights page's own short title. */
+          { href: "/highlights", label: "Что увидеть" },
         ],
       },
     ],

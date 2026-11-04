@@ -786,3 +786,18 @@
     flex-basis: 100% !important;
   }
 }
+
+/* Russian: the script line is laid over the title in Latin; Forum draws
+   Cyrillic upright and wide, so it sits under the title on one line. */
+html[lang="ru"] .hf .hf__script {
+  margin-top: 0.2em;
+  font-size: clamp(1.5rem, 2.9vw, 2.9rem);
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  /* "НАЧИНАЕТСЯ ЗДЕСЬ" is the longest line in any language: one step down on phones. */
+  html[lang="ru"] .hf .hf__title {
+    font-size: clamp(1.6rem, 9.2vw, 2.6rem);
+  }
+}
