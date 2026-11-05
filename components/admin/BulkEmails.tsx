@@ -2,7 +2,7 @@
 
 import { MailDisclosure } from "./mail/MailDisclosure";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { History, ArrowLeft, ArrowRight, Check, CheckCircle2, Eye, FileUp, Mail, Pencil, Plus, RefreshCw, Send, Trash2, Users, X } from "lucide-react";
+import { History, Search, ArrowLeft, ArrowRight, Check, CheckCircle2, Eye, FileUp, Mail, Pencil, Plus, RefreshCw, Send, Trash2, Users, X } from "lucide-react";
 import { adminFetch } from "@/lib/admin-fetch";
 import { BULK_RECIPIENT_LIMIT, BULK_UPLOAD_LIMIT, type BulkCampaignView, type BulkEmailTemplate, type BulkSettings, type RecipientImport } from "@/lib/bulk-email-types";
 import { bulkBannerPreviewSrc } from "@/lib/bulk-email-images";
@@ -11,6 +11,7 @@ import { BulkEmailLivePreview, type BulkPreviewFocus } from "./BulkEmailLivePrev
 import { BULK_JOURNAL_MESSAGE, BULK_JOURNAL_DEFAULTS, BULK_JOURNAL_IMAGE_PATHS } from "@/lib/bulk-email-journal";
 import { bulkDraftIssues, type BulkFieldIssue } from "@/lib/bulk-email-validation";
 import { BulkFieldMessage, BulkGrowingTextarea, BulkJournalEditor, bulkInvalidProps, type BulkFieldIssues, type BulkJournalImageSlot } from "./BulkJournalEditor";
+import { BulkHistorySearchResults, bulkExactDate, bulkHistoryActive, bulkSentAt, searchBulkHistory, type BulkHistoryQuery } from "./BulkHistorySearch";
 
 const STATUS: Record<BulkCampaignView["status"], string> = { queued: "Ready to send", sending: "Sending", accepted: "Accepted by Resend", simulated: "Preview completed", failed: "Needs attention", uncertain: "Result not confirmed", cancelled: "Cancelled" };
 const date = (value: string) => new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
@@ -59,6 +60,7 @@ export function BulkEmails() {
   const [showAllRecipients, setShowAllRecipients] = useState(false);
   const [allResults, setAllResults] = useState(false);
   const [historyFilter, setHistoryFilter] = useState<"all" | "send" | "preview">("all");
+  const [historyQuery, setHistoryQuery] = useState<BulkHistoryQuery>({ text: "", from: "", to: "" });
   const [deleteTarget, setDeleteTarget] = useState<BulkCampaignView | null>(null);
   const previewDialog = useRef<HTMLDialogElement>(null);
   const deleteDialog = useRef<HTMLDialogElement>(null);
@@ -246,7 +248,11 @@ export function BulkEmails() {
   const visibleEmails = emails.filter(email => email.includes(search.toLowerCase()));
   const complete = selected?.recipients.filter(row => row.status === "accepted" || row.status === "simulated").length || 0;
   const skipped = selected?.recipients.filter(row => row.status === "skipped").length || 0;
-  const visibleCampaigns = campaigns.filter(campaign => historyFilter === "all" || campaign.mode === historyFilter);
+  const historySearching = bulkHistoryActive(historyQuery);
+  const historySearch = searchBulkHistory(campaigns.filter(campaign => historyFilter === "all" || campaign.mode === historyFilter), historyQuery);
+  const visibleCampaigns = historySearch.campaigns;
+  const searchText = historyQuery.text.trim().toLowerCase();
+  function changeHistoryQuery(changes: Partial<BulkHistoryQuery>) { setHistoryQuery(current => ({ ...current, ...changes })); setSelected(null); }
 
   const blockerList = warned && blockers.length > 0 && <div className="bulk-emails__blockers" role="alert" tabIndex={-1} ref={warningRef}>
     <strong>{blockers.length === 1 ? "One thing is needed before you can continue." : `${blockers.length} things are needed before you can continue.`}</strong>
@@ -353,8 +359,9 @@ export function BulkEmails() {
           {stage < 2 && <button className="btn-gold" disabled={!!busy} onClick={continueFlow}>{stage === 0 ? "Write your message" : !emails.length ? "Add recipients" : "Review email"}<ArrowRight size={16} /></button>}
         </div>
       </> : selected ? <section className="bulk-emails__panel bulk-emails__result" aria-live="polite">
+        {historySearching && <button type="button" className="bulk-emails__text-button bulk-emails__back-to-search" onClick={() => setSelected(null)}><ArrowLeft size={14} />Back to search results</button>}
         <p className="bulk-emails__eyebrow">{selected.mode === "preview" ? "Simulated campaign" : "Campaign history"}</p><h2>{STATUS[selected.status]}</h2><h3>{selected.subject}</h3>
-        <p className="bulk-emails__muted">{date(selected.createdAt)} · {selected.mode === "preview" ? "Preview" : "Real send"}</p>
+        <p className="bulk-emails__muted">{selected.firstAttemptAt ? `Sent ${bulkExactDate(selected.firstAttemptAt)}` : `Created ${bulkExactDate(selected.createdAt)}`} · {selected.mode === "preview" ? "Preview" : "Real send"}</p>
         <details className="bulk-emails__details"><summary>View message</summary><p className="bulk-emails__saved-message">{selected.message}</p></details>
         <div className="bulk-emails__counts"><div><strong>{selected.recipients.length}</strong><span>Recipients</span></div><div><strong>{complete}</strong><span>{selected.mode === "preview" ? "Simulated" : "Accepted"}</span></div><div><strong>{skipped}</strong><span>Unsubscribed / skipped</span></div></div>
         <progress max={selected.recipients.length} value={complete + skipped} aria-label="Campaign progress" /><p className="bulk-emails__hint">{selected.recipients.length ? Math.round((complete + skipped) / selected.recipients.length * 100) : 0}% processed</p>
@@ -364,10 +371,16 @@ export function BulkEmails() {
         {selected.error && <p className="bulk-emails__warning">{selected.error}</p>}
         <div className="bulk-emails__actions">{canRecover(selected) && <button className="btn-gold" disabled={!!busy} onClick={() => void recover(selected)}><RefreshCw size={16} />{selected.firstAttemptAt ? "Retry safely" : selected.mode === "preview" ? "Run preview" : "Send this campaign"}</button>}{selected.status === "queued" && !selected.firstAttemptAt && <button className="btn-outline" disabled={!!busy} onClick={() => void cancel(selected)}>Cancel campaign</button>}<button className="btn-outline" disabled={!!busy} onClick={() => { void request<{ campaign: BulkCampaignView }>(`/api/admin/bulk-emails/${selected.id}`).then(result => updateCampaign(result.campaign)).catch(err => setError(err.message)); }}>Refresh status</button><button type="button" className="btn-outline bulk-emails__phone-only" disabled={!!busy} onClick={editEmail}>Use as new email</button><button type="button" className="btn-outline bulk-emails__phone-only" disabled={!!busy} onClick={() => void openTemplatePreview()}>Preview email template</button></div>
         <details className="bulk-emails__details" open><summary>Recipient results</summary><ul className="bulk-emails__recipients">{(allResults ? selected.recipients : selected.recipients.slice(0, 6)).map(row => <li key={row.email}><span>{row.email}</span><span className="bulk-emails__muted" data-recipient-status={row.status}>{row.status === "accepted" ? "Accepted" : row.status === "simulated" ? "Simulated" : row.status === "skipped" ? "Skipped" : "Not confirmed"}</span></li>)}</ul>{selected.recipients.length > 6 && <button type="button" className="btn-outline" onClick={() => setAllResults(value => !value)}>{allResults ? "Show fewer" : `Show all ${selected.recipients.length}`}</button>}</details>
-      </section> : null}
+      </section> : view === "history" ? <BulkHistorySearchResults query={historyQuery} hits={historySearch.hits} campaignCount={historySearch.campaigns.length} onOpen={showCampaign} /> : null}
       {view === "history" && <section className="bulk-emails__history"><div className="bulk-emails__panel-heading"><div><p className="bulk-emails__eyebrow">Your correspondence</p><h2>Email history</h2></div><button className="bulk-emails__text-button" disabled={!!busy} onClick={() => { void load().catch(err => setError(err.message)); }}><RefreshCw size={16} />Refresh</button></div>
         <div className="bulk-emails__history-filters" role="group" aria-label="Filter email history">{([ ["all", "All"], ["send", "Real sends"], ["preview", "Previews"] ] as const).map(([value, label]) => <button key={value} aria-pressed={historyFilter === value} onClick={() => setHistoryFilter(value)}>{label}</button>)}</div>
-        {visibleCampaigns.length ? <ul>{visibleCampaigns.map(campaign => <li key={campaign.id} className="bulk-emails__history-row" data-status={campaign.status} data-selected={selected?.id === campaign.id}><button className="bulk-emails__history-open" onClick={() => showCampaign(campaign)} disabled={!!busy}><div><strong>{campaign.subject}</strong><span>{date(campaign.createdAt)} · {campaign.recipients.length} recipients · {campaign.mode === "preview" ? "Preview · no email sent" : "Real send"}</span></div><span className="bulk-emails__history-status">{STATUS[campaign.status]}<ArrowRight size={16} /></span></button><button className="btn-outline bulk-emails__history-delete" aria-label={`Delete history for ${campaign.subject}`} title={canDelete(campaign) ? "Delete from history" : "Resolve the sending result before deleting"} disabled={!!busy || !canDelete(campaign)} onClick={() => confirmDelete(campaign)}><Trash2 size={16} /><span>Delete</span></button></li>)}</ul> : <p className="bulk-emails__muted">{historyFilter === "send" ? "No real sending campaigns yet." : historyFilter === "preview" ? "No simulated campaigns yet." : "Your previews and sending history will appear here."}</p>}
+        <form className="bulk-emails__history-search-form" role="search" aria-label="Search sent emails" onSubmit={event => event.preventDefault()}>
+          <label className="bulk-emails__label" htmlFor="bulk-history-search">Search sent emails</label>
+          <div className="bulk-emails__history-search-field"><Search size={15} aria-hidden="true" /><input id="bulk-history-search" className="input" type="search" autoComplete="off" spellCheck={false} value={historyQuery.text} onChange={event => changeHistoryQuery({ text: event.target.value })} placeholder="Recipient email or subject" /></div>
+          <div className="bulk-emails__history-dates"><label htmlFor="bulk-history-from">From<input id="bulk-history-from" className="input" type="date" value={historyQuery.from} max={historyQuery.to || undefined} onChange={event => changeHistoryQuery({ from: event.target.value })} /></label><label htmlFor="bulk-history-to">To<input id="bulk-history-to" className="input" type="date" value={historyQuery.to} min={historyQuery.from || undefined} onChange={event => changeHistoryQuery({ to: event.target.value })} /></label></div>
+          {historySearching && <button type="button" className="bulk-emails__text-button" onClick={() => changeHistoryQuery({ text: "", from: "", to: "" })}><X size={14} />Clear search</button>}
+        </form>
+        {visibleCampaigns.length ? <ul>{visibleCampaigns.map(campaign => <li key={campaign.id} className="bulk-emails__history-row" data-status={campaign.status} data-selected={selected?.id === campaign.id}><button className="bulk-emails__history-open" onClick={() => showCampaign(campaign)} disabled={!!busy}><div><strong>{campaign.subject}</strong><span title={bulkExactDate(bulkSentAt(campaign))}>{date(bulkSentAt(campaign))} · {campaign.recipients.length} recipients · {campaign.mode === "preview" ? "Preview · no email sent" : "Real send"}{searchText && campaign.recipients.some(row => row.email.includes(searchText)) ? ` · ${campaign.recipients.filter(row => row.email.includes(searchText)).length} matching` : ""}</span></div><span className="bulk-emails__history-status">{STATUS[campaign.status]}<ArrowRight size={16} /></span></button><button className="btn-outline bulk-emails__history-delete" aria-label={`Delete history for ${campaign.subject}`} title={canDelete(campaign) ? "Delete from history" : "Resolve the sending result before deleting"} disabled={!!busy || !canDelete(campaign)} onClick={() => confirmDelete(campaign)}><Trash2 size={16} /><span>Delete</span></button></li>)}</ul> : <p className="bulk-emails__muted">{historySearching ? "No email in this list matches your search." : historyFilter === "send" ? "No real sending campaigns yet." : historyFilter === "preview" ? "No simulated campaigns yet." : "Your previews and sending history will appear here."}</p>}
       </section>}
     </>}
     {busy && <p className="bulk-emails__busy" role="status">{busy}</p>}

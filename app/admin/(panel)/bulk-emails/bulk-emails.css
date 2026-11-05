@@ -397,3 +397,36 @@
  .bulk-emails .bulk-emails__phone-new { display:flex; position:fixed; bottom:calc(4.5rem + env(safe-area-inset-bottom,0px)); left:16px; right:16px; width:calc(100% - 32px); z-index:30; margin-bottom:12px; }
  .bulk-emails .bulk-emails__result > .bulk-emails__actions > .bulk-emails__phone-only:last-child { grid-column:1/-1; }
 }
+
+/* Email history search: controls above the list, results in the right column. */
+.bulk-emails .bulk-emails__history-search-form { display:grid; gap:8px; margin:0 0 12px; }
+.bulk-emails .bulk-emails__history-search-form .bulk-emails__label { margin:0; }
+.bulk-emails .bulk-emails__history-search-field { position:relative; }
+.bulk-emails .bulk-emails__history-search-field svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-secondary); pointer-events:none; }
+.bulk-emails .bulk-emails__history-search-field input { padding-left:36px; }
+.bulk-emails .bulk-emails__history-dates { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.bulk-emails .bulk-emails__history-dates label { display:grid; gap:4px; min-width:0; font-size:11px; color:var(--text-secondary); }
+.bulk-emails .bulk-emails__history-dates input { min-width:0; color-scheme:light dark; }
+.bulk-emails .bulk-emails__history-search-form > .bulk-emails__text-button { justify-self:start; min-height:32px; }
+.bulk-emails[data-view=history] .bulk-emails__history-search { position:static; }
+.bulk-emails .bulk-emails__back-to-search { align-self:flex-start; min-height:32px; }
+.bulk-emails .bulk-emails__search-hits { list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.bulk-emails .bulk-emails__search-hits button { display:grid; grid-template-columns:minmax(150px,.8fr) minmax(0,1.4fr) auto 14px; align-items:center; gap:12px; width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg-secondary); text-align:left; }
+.bulk-emails .bulk-emails__search-hits button:hover { border-color:var(--mail-gold); }
+.bulk-emails .bulk-emails__search-hits button > span { min-width:0; display:grid; gap:3px; font-size:11px; color:var(--text-secondary); overflow-wrap:anywhere; }
+.bulk-emails .bulk-emails__search-hits strong { font-size:12px; font-weight:600; color:var(--text-primary); }
+.bulk-emails .bulk-emails__search-hits svg { color:var(--accent); }
+.bulk-emails .bulk-emails__search-status { width:fit-content; padding:3px 7px; border-radius:999px; font-size:10px; background:var(--warning-bg); color:var(--warning); white-space:nowrap; }
+.bulk-emails .bulk-emails__search-status:is([data-recipient-status=accepted],[data-recipient-status=simulated]) { background:var(--success-bg); color:var(--success); }
+/* Phone and tablet: search, then its results, then the list it narrows. */
+@media (max-width: 1023px) {
+  .bulk-emails[data-view=history] { display:flex; flex-direction:column; }
+  .bulk-emails[data-view=history] .bulk-emails__history { display:contents; }
+  .bulk-emails[data-view=history] .bulk-emails__result { order:1; margin:0 0 16px; }
+  .bulk-emails[data-view=history] .bulk-emails__history > :is(ul, .bulk-emails__muted) { order:2; }
+}
+@media (max-width: 767px) {
+  .bulk-emails .bulk-emails__search-hits button { grid-template-columns:minmax(0,1fr) 14px; }
+  .bulk-emails .bulk-emails__search-hits button > span { grid-column:1; }
+  .bulk-emails .bulk-emails__search-hits svg { grid-column:2; grid-row:1 / span 3; }
+}
