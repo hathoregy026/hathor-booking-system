@@ -518,7 +518,7 @@ function AdminBookingsPageInner() {
       )}
 
       {layoutView === "calendar" && viewMode === "active" ? (
-        <BookingCalendar bookings={calendarBookings} isLoading={isLoading} />
+        <BookingCalendar bookings={calendarBookings} closures={searchedClosures} closuresFailed={closuresFailed} isLoading={isLoading} />
       ) : showingClosures ? (
         filter === "charter" ? (
           <ClosureBookingsList mode="charter" closures={charterClosures} requests={searchedRequests} loadFailed={closuresFailed} onChanged={() => void loadClosures()} />
