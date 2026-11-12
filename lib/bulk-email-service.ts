@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { bulkCampaignSchema, bulkEmailAddress } from "@/lib/bulk-email-validation";
-import { BULK_RECIPIENT_LIMIT, type BulkCampaign, type BulkCampaignView, type BulkSettings } from "@/lib/bulk-email-types";
+import { BULK_RECIPIENT_LIMIT, RESEND_BATCH_SIZE, type BulkCampaign, type BulkCampaignView, type BulkSettings } from "@/lib/bulk-email-types";
 import { listBulkRecords, openBulkValue, readBulkRecord, sealBulkValue, suppressedBulkEmails, suppressionId, updateBulkRecord } from "@/lib/bulk-email-store";
 import { bulkBranding, renderBulkMessage } from "@/lib/bulk-email-render";
 import { getResendFromAddress } from "@/lib/resend-config";
@@ -19,7 +19,7 @@ export function campaignView(campaign: BulkCampaign): BulkCampaignView {
   void _payload; void _session; void _lease; void _preview;
   return view;
 }
-export async function bulkHistory() { return (await listBulkRecords<BulkCampaign>()).map(campaignView); }
+export async function bulkHistory() { return listBulkRecords<BulkCampaign, BulkCampaignView>(campaignView); }
 export async function getBulkCampaign(id: string) {
   uuid.parse(id);
   const campaign = await readBulkRecord<BulkCampaign>(`campaign:${id}`);
@@ -77,20 +77,34 @@ export async function createBulkCampaign(body: unknown, session: string, origin?
 type BatchResult = { kind: "accepted"; ids: string[] } | { kind: "failed" | "uncertain"; error: string };
 export type BulkBatchSender = (campaign: BulkCampaign) => Promise<BatchResult>;
 export const sendBulkBatch: BulkBatchSender = async campaign => {
-  try {
-    const response = await fetch("https://api.resend.com/emails/batch", {
-      method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": `hathor-bulk/${campaign.id}` },
-      body: JSON.stringify(campaign.payload), signal: AbortSignal.timeout(15000),
-    });
-    if (!response.ok) {
-      if ([400, 401, 403, 404, 422, 429].includes(response.status)) return { kind: "failed", error: response.status === 429 ? "Resend's sending limit was reached. Wait, then retry this campaign." : "Resend rejected this batch. Check your account and verified sender, then retry this campaign." };
-      return { kind: "uncertain", error: "Resend did not confirm the result. Use Retry safely to check the same batch without sending duplicates." };
-    }
-    const body: unknown = await response.json();
-    const result = z.object({ data: z.array(z.object({ id: z.string().min(1).max(200) })) }).safeParse(body);
-    if (!result.success || result.data.data.length !== campaign.payload.length) return { kind: "uncertain", error: "The batch result could not be confirmed. Retry safely; do not create a duplicate campaign." };
-    return { kind: "accepted", ids: result.data.data.map(row => row.id) };
-  } catch { return { kind: "uncertain", error: "The connection was interrupted. Retry safely to check the same batch without sending duplicates." }; }
+  const ids: string[] = [];
+  // Resend accepts at most 100 emails per batch request. The payload is frozen
+  // when the campaign is created, so chunk boundaries and idempotency keys stay
+  // identical on every retry: chunks Resend already accepted are never resent.
+  // A campaign of up to 100 keeps its original single key.
+  for (let offset = 0; offset < campaign.payload.length; offset += RESEND_BATCH_SIZE) {
+    const payload = campaign.payload.slice(offset, offset + RESEND_BATCH_SIZE);
+    const key = campaign.payload.length <= RESEND_BATCH_SIZE ? `hathor-bulk/${campaign.id}` : `hathor-bulk/${campaign.id}/chunk-${offset / RESEND_BATCH_SIZE}`;
+    // Pace requests to stay under Resend's per-second API rate limit.
+    if (offset) await new Promise(resolve => setTimeout(resolve, 600));
+    try {
+      const response = await fetch("https://api.resend.com/emails/batch", {
+        method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json", "Idempotency-Key": key },
+        body: JSON.stringify(payload), signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) {
+        // After the first chunk, earlier chunks are already accepted: report
+        // "uncertain" so the campaign keeps its safe retry and cannot be deleted.
+        if ([400, 401, 403, 404, 422, 429].includes(response.status)) return { kind: offset ? "uncertain" : "failed", error: response.status === 429 ? "Resend's sending limit was reached. Wait, then retry this campaign." : "Resend rejected this batch. Check your account and verified sender, then retry this campaign." };
+        return { kind: "uncertain", error: "Resend did not confirm the result. Use Retry safely to check the same batch without sending duplicates." };
+      }
+      const body: unknown = await response.json();
+      const result = z.object({ data: z.array(z.object({ id: z.string().min(1).max(200) })) }).safeParse(body);
+      if (!result.success || result.data.data.length !== payload.length) return { kind: "uncertain", error: "The batch result could not be confirmed. Retry safely; do not create a duplicate campaign." };
+      ids.push(...result.data.data.map(row => row.id));
+    } catch { return { kind: "uncertain", error: "The connection was interrupted. Retry safely to check the same batch without sending duplicates." }; }
+  }
+  return { kind: "accepted", ids };
 };
 
 /** Claim durably before sending; every recovery uses the exact frozen payload and same provider key. */

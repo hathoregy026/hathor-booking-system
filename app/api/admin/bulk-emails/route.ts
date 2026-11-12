@@ -19,7 +19,9 @@ export async function GET(request: NextRequest) {
     return response;
   }
 }
+// A full journal template, the message and up to 300 maximum-length addresses.
+const CREATE_BODY_LIMIT = 192 * 1024;
 export async function POST(request: NextRequest) {
-  try { const session = await requireBulkAdmin(request, "create"); const campaign = await createBulkCampaign(await readBulkJson(request), session, request.headers.get("origin")!); return NextResponse.json({ campaign: campaignView(campaign) }, { headers: bulkHeaders }); }
+  try { const session = await requireBulkAdmin(request, "create"); const campaign = await createBulkCampaign(await readBulkJson(request, CREATE_BODY_LIMIT), session, request.headers.get("origin")!); return NextResponse.json({ campaign: campaignView(campaign) }, { headers: bulkHeaders }); }
   catch (error) { return bulkRouteError(error); }
 }

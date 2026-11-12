@@ -13,7 +13,7 @@ import { readBulkRecord, suppressedBulkEmails, updateBulkRecord } from "../lib/b
 import { POST as importRoute } from "../app/api/admin/bulk-emails/import/route";
 import { POST as createRoute } from "../app/api/admin/bulk-emails/route";
 import { POST as sendRoute } from "../app/api/admin/bulk-emails/[id]/route";
-import type { BulkCampaignView } from "../lib/bulk-email-types";
+import { BULK_RECIPIENT_LIMIT, type BulkCampaign, type BulkCampaignView } from "../lib/bulk-email-types";
 import { combineBulkRecipientSources, type BulkRecipientSource } from "../lib/bulk-email-recipient-sources";
 import { POST as savedPreviewRoute } from "../app/api/admin/bulk-emails/[id]/preview/route";
 import { GET as unsubscribeGet, POST as unsubscribePost } from "../app/bulk-email/unsubscribe/route";
@@ -113,7 +113,9 @@ async function main() {
   const extracted = extractBulkRecipients(["One <Person+tag@example.com>; PERSON+TAG@example.com, invalid@\nsecond@example.com."]);
   assert.deepEqual(extracted.emails, ["person+tag@example.com", "second@example.com"]); assert.equal(extracted.duplicates, 1); assert.deepEqual(extracted.invalid, ["invalid@"]);
   assert.equal(bulkCampaignSchema.safeParse({ id: randomUUID(), subject: "x\r\nBcc: attacker@example.com", message: "text", emails: ["a@example.com"], confirmed: true }).success, false);
-  assert.equal(bulkCampaignSchema.safeParse({ id: randomUUID(), subject: "x", message: "text", emails: Array.from({ length: 101 }, (_, i) => `person${i}@example.com`), confirmed: true }).success, false);
+  assert.equal(BULK_RECIPIENT_LIMIT, 300);
+  assert.equal(bulkCampaignSchema.safeParse({ id: randomUUID(), subject: "x", message: "text", emails: Array.from({ length: BULK_RECIPIENT_LIMIT }, (_, i) => `person${i}@example.com`), confirmed: true }).success, true);
+  assert.equal(bulkCampaignSchema.safeParse({ id: randomUUID(), subject: "x", message: "text", emails: Array.from({ length: BULK_RECIPIENT_LIMIT + 1 }, (_, i) => `person${i}@example.com`), confirmed: true }).success, false);
   const csv = await importBulkRecipients(new File(["Email\nfirst@example.com\nFIRST@example.com\nbad@"], "guests.csv")); assert.equal(csv.emails.length, 1); assert.equal(csv.duplicates, 1);
   const xlsx = await importBulkRecipients(new File([Buffer.from(xlsxFixture())], "guests.xlsx")); assert.deepEqual(xlsx.emails, ["guest@example.com", "second@example.com"]); assert.equal(xlsx.duplicates, 1); assert.deepEqual(xlsx.invalid, ["broken@"]);
   const pdf = await importBulkRecipients(new File([pdfFixture()], "guests.pdf")); assert.deepEqual(pdf.emails, ["pdfguest@example.com"]);
@@ -165,6 +167,35 @@ async function main() {
     assert.equal((await sendBulkBatch({ ...campaign, mode: "send" })).kind, "accepted"); await sendBulkBatch({ ...campaign, mode: "send" }); assert.equal(keys[0], keys[1]); assert.equal(payloads[0], payloads[1]);
     globalThis.fetch = async () => { throw new Error("synthetic network loss"); }; assert.equal((await sendBulkBatch(campaign)).kind, "uncertain");
     globalThis.fetch = async () => Response.json({}, { status: 429 }); assert.equal((await sendBulkBatch(campaign)).kind, "failed");
+    assert.equal(keys[0], `hathor-bulk/${id}`, "Campaigns of up to 100 keep their original single idempotency key");
+
+    // A full 300-recipient campaign is stored, read back, and sent as Resend batches of at most 100.
+    const large = await createBulkCampaign({ id: randomUUID(), subject: "A large Hathor test", message: "Hello from Hathor.", emails: Array.from({ length: BULK_RECIPIENT_LIMIT }, (_, i) => `large${i}@example.com`), confirmed: true }, "synthetic-session", undefined, theme);
+    assert.equal((await readBulkRecord<BulkCampaign>(`campaign:${large.id}`))!.payload.length, BULK_RECIPIENT_LIMIT, "A full campaign can be read back from storage");
+    const calls: Array<{ key: string; to: string[] }> = [];
+    const resend: typeof fetch = async (_url, init) => {
+      const rows = JSON.parse(String(init!.body)) as Array<{ to: string }>;
+      calls.push({ key: (init!.headers as Record<string, string>)["Idempotency-Key"], to: rows.map(row => row.to) });
+      return Response.json({ data: rows.map(row => ({ id: `provider-${row.to}` })) });
+    };
+    globalThis.fetch = resend;
+    const full = await sendBulkBatch({ ...large, mode: "send" });
+    assert.deepEqual(calls.map(call => call.to.length), [100, 100, 100]);
+    assert.deepEqual(calls.map(call => call.key), [0, 1, 2].map(n => `hathor-bulk/${large.id}/chunk-${n}`));
+    assert.deepEqual(calls.flatMap(call => call.to), large.payload.map(row => row.to), "Every recipient is sent once, in order");
+    assert.deepEqual(full.kind === "accepted" && full.ids, large.payload.map(row => `provider-${row.to}`), "Provider ids line up with recipients");
+    const partial = { ...large, mode: "send" as const, payload: large.payload.slice(0, 250) };
+    calls.length = 0; assert.equal((await sendBulkBatch(partial)).kind, "accepted"); assert.deepEqual(calls.map(call => call.to.length), [100, 100, 50]);
+    const firstKeys = calls.map(call => call.key);
+    // A failure after the first chunk is uncertain, because earlier chunks were accepted.
+    let request = 0; calls.length = 0;
+    globalThis.fetch = async (url, init) => ++request === 3 ? Response.json({}, { status: 429 }) : resend(url, init);
+    assert.equal((await sendBulkBatch(partial)).kind, "uncertain");
+    request = 0; globalThis.fetch = async (url, init) => ++request === 1 ? Response.json({}, { status: 429 }) : resend(url, init);
+    assert.equal((await sendBulkBatch(partial)).kind, "failed", "A rejected first chunk means nothing was sent");
+    // A retry sends the same chunks with the same keys, so Resend never delivers twice.
+    calls.length = 0; globalThis.fetch = resend;
+    assert.equal((await sendBulkBatch(partial)).kind, "accepted"); assert.deepEqual(calls.map(call => call.key), firstKeys);
   } finally { globalThis.fetch = originalFetch; }
   const cookie = `${ADMIN_SESSION_COOKIE}=${createSessionToken()}`;
   const req = (body: unknown, origin = "http://localhost:3010", withAuth = true) => new NextRequest("http://localhost:3010/api/admin/bulk-emails", { method: "POST", headers: { "Content-Type": "application/json", Origin: origin, ...(withAuth ? { Cookie: cookie } : {}) }, body: JSON.stringify(body) });
@@ -177,6 +208,6 @@ async function main() {
   assert.equal((await readBulkRecord<BulkCampaignView>(`campaign:${id}`))!.status, "simulated");
   await mkdir("output/bulk-emails", { recursive: true });
   await writeFile("output/bulk-emails/sample-recipients.xlsx", xlsxFixture()); await writeFile("output/bulk-emails/sample-recipients.pdf", pdfFixture());
-  console.log("PASS: PDF/Excel/CSV imports, ZIP limits, 100-recipient preview, privacy, escaping, encryption, unsubscribes, concurrent sends, stable retries, expired recovery, authentication, origin and body limits.");
+  console.log("PASS: PDF/Excel/CSV imports, ZIP limits, 100-recipient preview, 300-recipient Resend batching, privacy, escaping, encryption, unsubscribes, concurrent sends, stable retries, expired recovery, authentication, origin and body limits.");
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

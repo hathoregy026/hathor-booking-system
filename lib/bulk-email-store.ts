@@ -58,6 +58,11 @@ export async function sealBulkValue(value: unknown, context: string) {
   const encrypted = Buffer.concat([cipher.update(plaintext), cipher.final()]);
   return Buffer.concat([iv, cipher.getAuthTag(), encrypted]).toString("base64url");
 }
+// A campaign keeps one rendered HTML and text copy per recipient. 300
+// recipients with the largest journal and message unpack to about 48 MB, so
+// the cap leaves headroom. Only data this server encrypted (and the GCM tag
+// authenticated) is ever unpacked.
+const CAMPAIGN_JSON_LIMIT = 128 * 1024 * 1024;
 export async function openBulkValue<T>(value: string, context: string): Promise<T> {
   const data = Buffer.from(value, "base64url");
   if (data.length < 29) throw new Error("Invalid encrypted value.");
@@ -65,7 +70,7 @@ export async function openBulkValue<T>(value: string, context: string): Promise<
   cipher.setAuthTag(data.subarray(12, 28)); cipher.setAAD(Buffer.from(context));
   const plaintext = Buffer.concat([cipher.update(data.subarray(28)), cipher.final()]);
   const json = context.startsWith("campaign:") && plaintext[0] === 0x1f && plaintext[1] === 0x8b
-    ? gunzipSync(plaintext, { maxOutputLength: 32 * 1024 * 1024 }) : plaintext;
+    ? gunzipSync(plaintext, { maxOutputLength: CAMPAIGN_JSON_LIMIT }) : plaintext;
   return JSON.parse(json.toString("utf8")) as T;
 }
 export async function suppressionId(email: string) {
@@ -160,21 +165,23 @@ export async function updateBulkRecord<T>(id: string, mutation: (current: T | nu
   throw new Error("Bulk email history is busy. Please retry.");
 }
 
-export async function listBulkRecords<T extends { deletedAt?: string }>(): Promise<T[]> {
+/** `view` runs as each record is read, so history never holds every campaign's full payload at once. */
+export async function listBulkRecords<T extends { deletedAt?: string }, V = T>(view: (record: T) => V = record => record as unknown as V): Promise<V[]> {
   if (!bulkUsesLocalStorage()) {
-    const records: T[] = [];
+    const records: V[] = [];
     // Deleted markers must not crowd older messages out of the 50-row history.
     for (let offset = 0; records.length < 50; offset += 50) {
       const rows = await bookingQuery<{ id: string }>('SELECT id FROM bulk_mail.records WHERE id LIKE $1 ORDER BY "updatedAt" DESC, id DESC LIMIT 50 OFFSET $2', ["campaign:%", offset]);
-      const page: Array<T | null> = new Array(rows.length);
+      const page: Array<V | null> = new Array(rows.length);
       let nextRecord = 0;
       await Promise.all(Array.from({ length: Math.min(3, rows.length) }, async () => {
         while (nextRecord < rows.length) {
           const index = nextRecord++;
-          page[index] = await readBulkRecord<T>(rows[index].id);
+          const record = await readBulkRecord<T>(rows[index].id);
+          page[index] = record && !record.deletedAt ? view(record) : null;
         }
       }));
-      for (const row of page) if (row && !row.deletedAt) records.push(row as T);
+      for (const row of page) if (row) records.push(row);
       if (rows.length < 50) break;
     }
     return records.slice(0, 50);
@@ -185,7 +192,7 @@ export async function listBulkRecords<T extends { deletedAt?: string }>(): Promi
     const row = JSON.parse(await readFile(path.join(localDirectory(), name), "utf8")) as RecordEnvelope;
     return { updatedAt: row.updatedAt, value: await openBulkValue<T>(row.payload, `campaign:${name.slice(9, -5)}`) };
   }));
-  return records.filter(row => !row.value.deletedAt).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 50).map(row => row.value);
+  return records.filter(row => !row.value.deletedAt).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 50).map(row => view(row.value));
 }
 
 export async function suppressedBulkEmails(emails: string[]): Promise<Set<string>> {

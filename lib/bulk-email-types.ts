@@ -1,4 +1,6 @@
-export const BULK_RECIPIENT_LIMIT = 100;
+export const BULK_RECIPIENT_LIMIT = 300;
+/** Resend's batch endpoint accepts at most 100 emails per request, on every plan. */
+export const RESEND_BATCH_SIZE = 100;
 export const BULK_UPLOAD_LIMIT = 2 * 1024 * 1024;
 export type BulkJournalImage = { show: boolean; url?: string; alt: string };
 export type BulkJournalTemplate = {

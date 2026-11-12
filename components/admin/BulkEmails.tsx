@@ -295,7 +295,7 @@ export function BulkEmails() {
             <div className="bulk-emails__panel-heading"><div><p className="bulk-emails__eyebrow">Ready for review</p><h2>{emails.length} recipients</h2></div><Users size={24} /></div>
             <progress max={BULK_RECIPIENT_LIMIT} value={Math.min(emails.length, BULK_RECIPIENT_LIMIT)} aria-label="Recipient limit" /><div className="bulk-emails__recipient-quality"><span>{duplicates} duplicates removed</span><span>{excluded.length} invalid addresses excluded</span><small>Up to {BULK_RECIPIENT_LIMIT} per email</small></div>
             {warnings.map(warning => <p className="bulk-emails__warning" key={warning}>{warning}</p>)}
-            {emails.length > BULK_RECIPIENT_LIMIT && <p className="bulk-emails__warning">Select no more than 100 recipients for this email. Remove extra addresses below.</p>}
+            {emails.length > BULK_RECIPIENT_LIMIT && <p className="bulk-emails__warning">Select no more than {BULK_RECIPIENT_LIMIT} recipients for this email. Remove extra addresses below.</p>}
             {emails.length ? <>
               <label className="bulk-emails__label" htmlFor="bulk-search">Find an address</label><input id="bulk-search" className="input" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search recipients" />
               <ul className="bulk-emails__recipients">{(showAllRecipients ? visibleEmails : visibleEmails.slice(0, 8)).map(email => <li key={email}><span>{email}</span><button aria-label={`Remove ${email}`} disabled={!!busy} onClick={() => { setRemoved(current => [...current, email]); setConfirmed(false); setDraftId(null); }}><X size={16} /></button></li>)}</ul>

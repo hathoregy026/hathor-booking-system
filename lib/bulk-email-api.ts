@@ -6,6 +6,7 @@ import { hasAdminPermission } from "@/lib/admin-permissions";
 import { PublicRequestError, RateLimitExceededError, enforcePublicRateLimit } from "@/lib/public-api-security";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { bulkUsesLocalStorage } from "@/lib/bulk-email-store";
+import { BULK_RECIPIENT_LIMIT } from "@/lib/bulk-email-types";
 import { bulkFieldIssues } from "@/lib/bulk-email-validation";
 
 export const bulkHeaders = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff" };
@@ -52,9 +53,9 @@ export async function readBulkBody(request: Request, maximum = 96 * 1024): Promi
   } finally { reader.releaseLock(); }
   return Buffer.concat(chunks);
 }
-export async function readBulkJson(request: Request): Promise<unknown> {
+export async function readBulkJson(request: Request, maximum?: number): Promise<unknown> {
   if (request.headers.get("content-type")?.split(";")[0] !== "application/json") throw new PublicRequestError("Use a JSON request.", 415);
-  try { return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(await readBulkBody(request))); }
+  try { return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(await readBulkBody(request, maximum))); }
   catch (error) { if (error instanceof PublicRequestError) throw error; throw new PublicRequestError("Invalid request.", 400); }
 }
 export function bulkRouteError(error: unknown) {
@@ -62,7 +63,7 @@ export function bulkRouteError(error: unknown) {
   if (error instanceof PublicRequestError) return NextResponse.json({ error: error.message }, { status: error.status, headers: bulkHeaders });
   if (error instanceof ZodError) {
     const fields = bulkFieldIssues(error.issues).filter(issue => issue.id);
-    return NextResponse.json({ error: fields.length ? `Check these fields. ${fields.map(issue => `${issue.label}: ${issue.message}`).join(" ")}` : "Check the subject, message and recipient list. Select between 1 and 100 unique, valid addresses." }, { status: 400, headers: bulkHeaders });
+    return NextResponse.json({ error: fields.length ? `Check these fields. ${fields.map(issue => `${issue.label}: ${issue.message}`).join(" ")}` : `Check the subject, message and recipient list. Select between 1 and ${BULK_RECIPIENT_LIMIT} unique, valid addresses.` }, { status: 400, headers: bulkHeaders });
   }
   // Log fixed diagnostic labels only: never include addresses, payloads, SQL,
   // connection strings or the error's free-form message in runtime logs.
