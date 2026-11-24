@@ -1,6 +1,6 @@
 # German site: notes
 
-The German pages live under `/de`. The German is machine-translated and machine-proofread. **Hathor decided on 31 October 2026 that no lawyer will review it.** The pages stay out of search while `LOCALE_INDEXED.de` in `lib/i18n/locale.ts` is false; that one switch opens every German page to search at once.
+The German pages live under `/de`. The German is machine-translated and machine-proofread. **Hathor decided on 31 October 2026 that no lawyer will review it.** Hathor opened the German pages to search on 24 November 2026 (`LOCALE_INDEXED.de` in `lib/i18n/locale.ts`); setting it back to false takes every German page out of search at once.
 
 The copy uses the formal "Sie". Product names stay in English (Hathor, Hathor Dahabiya, Luxury Suite,
 Royal Suite, Seneb Spa, Historia Fitness). Place names are "Assuan" and "Kairo". Prices read

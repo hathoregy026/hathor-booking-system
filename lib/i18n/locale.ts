@@ -78,9 +78,9 @@ export const TRANSLATED_PATHS: Record<TranslatedLocale, readonly string[]> = {
  * code needs touching.
  */
 export const LOCALE_INDEXED: Record<TranslatedLocale, boolean> = {
-  it: false,
-  /* Off until Hathor opens German to search; see docs/german-review.md. */
-  de: false,
+  /* Italian and German opened to search on 24 November 2026. */
+  it: true,
+  de: true,
   /* Off until Hathor opens Russian to search; see docs/russian-review.md. */
   ru: false,
 };
