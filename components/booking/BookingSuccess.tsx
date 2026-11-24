@@ -14,6 +14,7 @@ import { CurrencyAmount } from "@/components/public/CurrencyProvider";
 import { VoyageBarFrame } from "@/components/booking/journey/VoyageRail";
 import { PaymentPlan } from "@/components/booking/journey/PaymentPlan";
 import { IconCalendar, IconMail, IconPhone } from "@/components/booking/journey/icons";
+import { BookingConversionPing } from "@/components/analytics/BookingConversionPing";
 
 export type BookingSuccessSearchParams = Promise<{ bookingId?: string; token?: string }>;
 
@@ -101,6 +102,8 @@ export async function BookingSuccess({ searchParams, locale }: { searchParams: B
   );
 
   return (
+    <>
+      <BookingConversionPing bookingId={details.bookingId} />
     <Shell
       scene={voyage?.image}
       wide
@@ -267,5 +270,6 @@ export async function BookingSuccess({ searchParams, locale }: { searchParams: B
         </div>
       </section>
     </Shell>
+    </>
   );
 }

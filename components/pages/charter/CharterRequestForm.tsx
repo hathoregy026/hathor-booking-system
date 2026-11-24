@@ -190,6 +190,7 @@ export function CharterRequestForm({
       setReceiptSent(result?.receiptSent !== false);
       setState("success");
       trackGaEvent("generate_lead", { lead_type: "charter" });
+      trackGaEvent("charter_form_success", { lead_type: "charter" });
       form.reset();
     } catch (error) {
       setState("error");

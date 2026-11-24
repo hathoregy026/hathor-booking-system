@@ -150,6 +150,7 @@ export function InquiryForm({
 
       setState("success");
       trackGaEvent("generate_lead", { lead_type: type });
+      trackGaEvent(type === "charter" ? "charter_form_success" : "contact_form_success", { lead_type: type });
       form.reset();
     } catch (error) {
       setState("error");
