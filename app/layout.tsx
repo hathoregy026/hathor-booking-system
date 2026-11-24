@@ -4,6 +4,7 @@ import { SiteAnalytics } from "@/components/public/SiteAnalytics";
 import { isCustomDomainLive } from "@/lib/public-url";
 import { HATHOR_FAVICON_SRC } from "@/lib/branding";
 import { SiteStructuredData } from "@/components/seo/SiteStructuredData";
+import { LeadTracking } from "@/components/analytics/LeadTracking";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
@@ -198,6 +199,7 @@ gtag('js', new Date());
         <SelectionProvider>
           <SiteBookingChrome>
             <SiteStructuredData />
+            <LeadTracking />
             {children}
           </SiteBookingChrome>
         </SelectionProvider>

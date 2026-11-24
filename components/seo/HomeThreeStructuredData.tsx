@@ -1,4 +1,5 @@
 import { localizedGuide } from "@/lib/i18n/route-copy";
+import { GUIDE_VOYAGES } from "@/lib/home-guide-content";
 import {
   indexedSiteLanguages,
   localizedHref,
@@ -100,6 +101,34 @@ const PAGE_WORDS: Record<
  * the vessel, the twelve rooms, the moorings, the three itinerary lengths and
  * the contact channels — so the markup describes the page rather than padding it.
  */
+/*
+ * Each voyage's lowest cabin price, from the same catalogue as the visible
+ * guide ("Cabins start from ..."), so the markup states only what the page does.
+ */
+const LOWEST_FROM_CENTS = GUIDE_VOYAGES.length
+  ? Math.min(...GUIDE_VOYAGES.map((voyage) => voyage.fromCents))
+  : 0;
+
+function voyageTrip(nights: number, name: string, url: string) {
+  const voyage = GUIDE_VOYAGES.find((entry) => entry.nights === nights);
+  return {
+    "@type": "TouristTrip",
+    name,
+    url,
+    provider: { "@id": `${SITE}/#organization` },
+    ...(voyage ? {
+      offers: {
+        "@type": "Offer",
+        price: (voyage.fromCents / 100).toFixed(2),
+        priceCurrency: "USD",
+        url: `${SITE}/cruises-list`,
+        availability: "https://schema.org/InStock",
+        description: "Per cabin for the whole voyage, taxes and service charges included",
+      },
+    } : {}),
+  };
+}
+
 export function HomeThreeStructuredData({ locale = "en" }: { locale?: PublicLocale }) {
   const words = PAGE_WORDS[locale];
   const PAGE_URL = words.url;
@@ -163,31 +192,31 @@ export function HomeThreeStructuredData({ locale = "en" }: { locale?: PublicLoca
       provider: { "@id": `${SITE}/#organization` },
       departureBoatTerminal: { "@type": "BoatTerminal", name: words.departure },
       arrivalBoatTerminal: { "@type": "BoatTerminal", name: words.arrival },
+      ...(LOWEST_FROM_CENTS ? {
+        offers: {
+          "@type": "AggregateOffer",
+          lowPrice: (LOWEST_FROM_CENTS / 100).toFixed(2),
+          priceCurrency: "USD",
+          offerCount: GUIDE_VOYAGES.length,
+          url: pageUrl("/cruises-list"),
+        },
+      } : {}),
     },
     {
       "@type": "ItemList",
       "@id": `${PAGE_URL}#itineraries`,
       name: words.itineraries,
       itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: words.voyages[0],
-          url: pageUrl("/voyages/aswan-to-luxor"),
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: words.voyages[1],
-          url: pageUrl("/voyages/luxor-to-aswan"),
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: words.voyages[2],
-          url: pageUrl("/voyages"),
-        },
-      ],
+        { nights: 3, name: words.voyages[0], url: pageUrl("/voyages/aswan-to-luxor") },
+        { nights: 4, name: words.voyages[1], url: pageUrl("/voyages/luxor-to-aswan") },
+        { nights: 7, name: words.voyages[2], url: pageUrl("/voyages") },
+      ].map((voyage, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: voyage.name,
+        url: voyage.url,
+        item: voyageTrip(voyage.nights, voyage.name, voyage.url),
+      })),
     },
     {
       "@type": "FAQPage",

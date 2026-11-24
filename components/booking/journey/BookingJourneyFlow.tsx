@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { readAttribution } from "@/lib/ad-attribution";
+import { rememberBookingConversion } from "@/lib/booking-conversion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCurrency } from "@/components/public/CurrencyProvider";
@@ -249,6 +251,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         if (!alive) return;
         if (["REQUESTED", "CONFIRMED"].includes(current.status)) {
           clearAttempt();
+          rememberBookingConversion(saved.hold.bookingId, saved.hold.totalPriceCents ?? null);
           router.replace(successUrl(saved.hold.bookingId, saved.hold.accessToken, t.locale));
           return;
         }
@@ -501,6 +504,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
       held = await requestHold(current.key, rooms, holdVerification);
       if (["REQUESTED", "CONFIRMED"].includes(held.status)) {
         clearAttempt();
+        rememberBookingConversion(held.bookingId, held.totalPriceCents ?? null);
         router.push(successUrl(held.bookingId, held.accessToken, t.locale));
         return;
       }
@@ -543,11 +547,13 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
             marketingOptIn: form.marketingOptIn,
             termsAccepted: true,
             passengers: passengersPayload(arrangement, guests, names),
+            attribution: readAttribution() ?? undefined,
           }),
         }),
         translate,
       );
       clearAttempt();
+      rememberBookingConversion(result.bookingId, held.totalPriceCents ?? null);
       router.push(successUrl(result.bookingId, result.accessToken, t.locale));
     } catch (error) {
       if (held) {
@@ -556,6 +562,7 @@ export function BookingJourneyFlow({ start }: { start: JourneyStart | null }) {
         const status = await releaseHold(held);
         if (status === "REQUESTED" || status === "CONFIRMED") {
           clearAttempt();
+          rememberBookingConversion(held.bookingId, held.totalPriceCents ?? null);
           router.push(successUrl(held.bookingId, held.accessToken, t.locale));
           return;
         }
