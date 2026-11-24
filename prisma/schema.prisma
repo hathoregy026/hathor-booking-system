@@ -170,6 +170,8 @@ model Booking {
   /// 2.5% online card surcharge, snapshotted with the request; the guest owes totalPriceCents + this.
   cardSurchargeCents Int                @default(0)
   currency         String               @default("USD")
+  /// Which ad or link brought the request (Google Ads click id, UTM tags, landing page). No personal data.
+  attribution      Json?
   priceSnapshotAt  DateTime?
   deletedAt        DateTime?
   createdAt        DateTime             @default(now())
