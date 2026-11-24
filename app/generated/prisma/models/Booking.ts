@@ -150,6 +150,7 @@ export type BookingCountAggregateOutputType = {
   totalPriceCents: number
   cardSurchargeCents: number
   currency: number
+  attribution: number
   priceSnapshotAt: number
   deletedAt: number
   createdAt: number
@@ -282,6 +283,7 @@ export type BookingCountAggregateInputType = {
   totalPriceCents?: true
   cardSurchargeCents?: true
   currency?: true
+  attribution?: true
   priceSnapshotAt?: true
   deletedAt?: true
   createdAt?: true
@@ -407,6 +409,7 @@ export type BookingGroupByOutputType = {
   totalPriceCents: number | null
   cardSurchargeCents: number
   currency: string
+  attribution: runtime.JsonValue | null
   priceSnapshotAt: Date | null
   deletedAt: Date | null
   createdAt: Date
@@ -468,6 +471,7 @@ export type BookingWhereInput = {
   totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
   cardSurchargeCents?: Prisma.IntFilter<"Booking"> | number
   currency?: Prisma.StringFilter<"Booking"> | string
+  attribution?: Prisma.JsonNullableFilter<"Booking">
   priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -515,6 +519,7 @@ export type BookingOrderByWithRelationInput = {
   totalPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   cardSurchargeCents?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  attribution?: Prisma.SortOrderInput | Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -566,6 +571,7 @@ export type BookingWhereUniqueInput = Prisma.AtLeast<{
   totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
   cardSurchargeCents?: Prisma.IntFilter<"Booking"> | number
   currency?: Prisma.StringFilter<"Booking"> | string
+  attribution?: Prisma.JsonNullableFilter<"Booking">
   priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -613,6 +619,7 @@ export type BookingOrderByWithAggregationInput = {
   totalPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   cardSurchargeCents?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  attribution?: Prisma.SortOrderInput | Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -659,6 +666,7 @@ export type BookingScalarWhereWithAggregatesInput = {
   totalPriceCents?: Prisma.IntNullableWithAggregatesFilter<"Booking"> | number | null
   cardSurchargeCents?: Prisma.IntWithAggregatesFilter<"Booking"> | number
   currency?: Prisma.StringWithAggregatesFilter<"Booking"> | string
+  attribution?: Prisma.JsonNullableWithAggregatesFilter<"Booking">
   priceSnapshotAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Booking"> | Date | string
@@ -696,6 +704,7 @@ export type BookingCreateInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -743,6 +752,7 @@ export type BookingUncheckedCreateInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -788,6 +798,7 @@ export type BookingUpdateInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -835,6 +846,7 @@ export type BookingUncheckedUpdateInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -881,6 +893,7 @@ export type BookingCreateManyInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -918,6 +931,7 @@ export type BookingUpdateManyMutationInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -956,6 +970,7 @@ export type BookingUncheckedUpdateManyInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1009,6 +1024,7 @@ export type BookingCountOrderByAggregateInput = {
   totalPriceCents?: Prisma.SortOrder
   cardSurchargeCents?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  attribution?: Prisma.SortOrder
   priceSnapshotAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -1313,6 +1329,7 @@ export type BookingCreateWithoutCruiseScheduleInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1358,6 +1375,7 @@ export type BookingUncheckedCreateWithoutCruiseScheduleInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1433,6 +1451,7 @@ export type BookingScalarWhereInput = {
   totalPriceCents?: Prisma.IntNullableFilter<"Booking"> | number | null
   cardSurchargeCents?: Prisma.IntFilter<"Booking"> | number
   currency?: Prisma.StringFilter<"Booking"> | string
+  attribution?: Prisma.JsonNullableFilter<"Booking">
   priceSnapshotAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"Booking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Booking"> | Date | string
@@ -1470,6 +1489,7 @@ export type BookingCreateWithoutEmailThreadInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1516,6 +1536,7 @@ export type BookingUncheckedCreateWithoutEmailThreadInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1576,6 +1597,7 @@ export type BookingUpdateWithoutEmailThreadInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1622,6 +1644,7 @@ export type BookingUncheckedUpdateWithoutEmailThreadInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1666,6 +1689,7 @@ export type BookingCreateWithoutMessagesInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1712,6 +1736,7 @@ export type BookingUncheckedCreateWithoutMessagesInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1772,6 +1797,7 @@ export type BookingUpdateWithoutMessagesInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1818,6 +1844,7 @@ export type BookingUncheckedUpdateWithoutMessagesInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1862,6 +1889,7 @@ export type BookingCreateWithoutBookingRoomsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1908,6 +1936,7 @@ export type BookingUncheckedCreateWithoutBookingRoomsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -1968,6 +1997,7 @@ export type BookingUpdateWithoutBookingRoomsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2014,6 +2044,7 @@ export type BookingUncheckedUpdateWithoutBookingRoomsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2058,6 +2089,7 @@ export type BookingCreateWithoutGuestsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2104,6 +2136,7 @@ export type BookingUncheckedCreateWithoutGuestsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2164,6 +2197,7 @@ export type BookingUpdateWithoutGuestsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2210,6 +2244,7 @@ export type BookingUncheckedUpdateWithoutGuestsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2254,6 +2289,7 @@ export type BookingCreateWithoutPaymentsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2300,6 +2336,7 @@ export type BookingUncheckedCreateWithoutPaymentsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2360,6 +2397,7 @@ export type BookingUpdateWithoutPaymentsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2406,6 +2444,7 @@ export type BookingUncheckedUpdateWithoutPaymentsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2450,6 +2489,7 @@ export type BookingCreateWithoutPaymentScheduleInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2496,6 +2536,7 @@ export type BookingUncheckedCreateWithoutPaymentScheduleInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2556,6 +2597,7 @@ export type BookingUpdateWithoutPaymentScheduleInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2602,6 +2644,7 @@ export type BookingUncheckedUpdateWithoutPaymentScheduleInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2646,6 +2689,7 @@ export type BookingCreateWithoutPlanChangesInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2692,6 +2736,7 @@ export type BookingUncheckedCreateWithoutPlanChangesInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2752,6 +2797,7 @@ export type BookingUpdateWithoutPlanChangesInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2798,6 +2844,7 @@ export type BookingUncheckedUpdateWithoutPlanChangesInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2842,6 +2889,7 @@ export type BookingCreateWithoutBookingTicketsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2888,6 +2936,7 @@ export type BookingUncheckedCreateWithoutBookingTicketsInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -2948,6 +2997,7 @@ export type BookingUpdateWithoutBookingTicketsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2994,6 +3044,7 @@ export type BookingUncheckedUpdateWithoutBookingTicketsInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3038,6 +3089,7 @@ export type BookingCreateManyCruiseScheduleInput = {
   totalPriceCents?: number | null
   cardSurchargeCents?: number
   currency?: string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Date | string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -3075,6 +3127,7 @@ export type BookingUpdateWithoutCruiseScheduleInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3120,6 +3173,7 @@ export type BookingUncheckedUpdateWithoutCruiseScheduleInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3165,6 +3219,7 @@ export type BookingUncheckedUpdateManyWithoutCruiseScheduleInput = {
   totalPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cardSurchargeCents?: Prisma.IntFieldUpdateOperationsInput | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  attribution?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   priceSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3288,6 +3343,7 @@ export type BookingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   totalPriceCents?: boolean
   cardSurchargeCents?: boolean
   currency?: boolean
+  attribution?: boolean
   priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -3336,6 +3392,7 @@ export type BookingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   totalPriceCents?: boolean
   cardSurchargeCents?: boolean
   currency?: boolean
+  attribution?: boolean
   priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -3375,6 +3432,7 @@ export type BookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   totalPriceCents?: boolean
   cardSurchargeCents?: boolean
   currency?: boolean
+  attribution?: boolean
   priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -3414,13 +3472,14 @@ export type BookingSelectScalar = {
   totalPriceCents?: boolean
   cardSurchargeCents?: boolean
   currency?: boolean
+  attribution?: boolean
   priceSnapshotAt?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "paymentStatus" | "idempotencyKey" | "holdExpiresAt" | "customerEmail" | "customerName" | "customerPhone" | "adultCount" | "childCount" | "specialRequests" | "marketingOptIn" | "marketingOptInAt" | "termsAcceptedAt" | "firstName" | "lastName" | "country" | "paymentMethod" | "requestedAt" | "acceptedAt" | "confirmedAt" | "cancelledAt" | "cancellationFeeCents" | "cancellationReason" | "requestFingerprint" | "guestEmailStatus" | "adminEmailStatus" | "totalPriceCents" | "cardSurchargeCents" | "currency" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+export type BookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cruiseScheduleId" | "status" | "paymentStatus" | "idempotencyKey" | "holdExpiresAt" | "customerEmail" | "customerName" | "customerPhone" | "adultCount" | "childCount" | "specialRequests" | "marketingOptIn" | "marketingOptInAt" | "termsAcceptedAt" | "firstName" | "lastName" | "country" | "paymentMethod" | "requestedAt" | "acceptedAt" | "confirmedAt" | "cancelledAt" | "cancellationFeeCents" | "cancellationReason" | "requestFingerprint" | "guestEmailStatus" | "adminEmailStatus" | "totalPriceCents" | "cardSurchargeCents" | "currency" | "attribution" | "priceSnapshotAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
 export type BookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cruiseSchedule?: boolean | Prisma.CruiseScheduleDefaultArgs<ExtArgs>
   bookingRooms?: boolean | Prisma.Booking$bookingRoomsArgs<ExtArgs>
@@ -3488,6 +3547,10 @@ export type $BookingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      */
     cardSurchargeCents: number
     currency: string
+    /**
+     * Which ad or link brought the request (Google Ads click id, UTM tags, landing page). No personal data.
+     */
+    attribution: runtime.JsonValue | null
     priceSnapshotAt: Date | null
     deletedAt: Date | null
     createdAt: Date
@@ -3955,6 +4018,7 @@ export interface BookingFieldRefs {
   readonly totalPriceCents: Prisma.FieldRef<"Booking", 'Int'>
   readonly cardSurchargeCents: Prisma.FieldRef<"Booking", 'Int'>
   readonly currency: Prisma.FieldRef<"Booking", 'String'>
+  readonly attribution: Prisma.FieldRef<"Booking", 'Json'>
   readonly priceSnapshotAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"Booking", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Booking", 'DateTime'>
