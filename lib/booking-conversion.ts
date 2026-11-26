@@ -1,4 +1,5 @@
 import { trackGaEvent } from "@/lib/ga-browser";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 /*
  * A booking request counts as a conversion exactly once: the journey marks the
@@ -22,6 +23,14 @@ export function rememberBookingConversion(bookingId: string, valueCents: number 
   } catch {
     /* storage blocked: the request still goes through */
   }
+  /*
+   * Meta hears about the request here, on the journey page, because the
+   * success page address carries the guest's access token. The booking id is
+   * the event id the server copy also uses, so Meta counts it once.
+   */
+  const params: Record<string, string | number> = { currency: currency || "USD", content_name: "booking_request" };
+  if (typeof valueCents === "number" && valueCents > 0) params.value = Math.round(valueCents) / 100;
+  trackMetaEvent("Purchase", params, bookingId);
 }
 
 function alreadySent(bookingId: string): boolean {

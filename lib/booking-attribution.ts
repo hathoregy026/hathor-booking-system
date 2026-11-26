@@ -62,3 +62,19 @@ export async function recordBookingAttribution(bookingId: string, attribution: B
     console.error("[booking] attribution not stored");
   }
 }
+
+/** One readable line for the team: how the guest reached the site. */
+export function describeAttributionSource(attribution: BookingAttribution | undefined): string {
+  const touch = attribution?.last;
+  if (!touch) return "no ad click or outside link recorded";
+  const parts: string[] = [];
+  if (touch.fbclid) parts.push("Meta ad click");
+  else if (touch.gclid || touch.gbraid || touch.wbraid) parts.push("Google Ads click");
+  else if (touch.msclkid) parts.push("Microsoft Ads click");
+  const utm = [touch.utm_source, touch.utm_medium, touch.utm_campaign].filter(Boolean).join(" / ");
+  if (utm) parts.push(utm);
+  if (touch.utm_content) parts.push(`ad: ${touch.utm_content}`);
+  if (parts.length === 0 && touch.referrer) parts.push(`link from ${touch.referrer}`);
+  if (touch.landing) parts.push(`landed on ${touch.landing}`);
+  return parts.length > 0 ? parts.join(" · ") : "no ad click or outside link recorded";
+}

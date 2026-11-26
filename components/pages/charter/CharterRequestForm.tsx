@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { trackGaEvent } from "@/lib/ga-browser";
+import { newMetaEventId, trackMetaEvent } from "@/lib/meta-pixel";
+import { readAttribution } from "@/lib/ad-attribution";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 import { CHARTER_PRIVATE } from "@/lib/charter-private-content";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
@@ -171,11 +173,19 @@ export function CharterRequestForm({
       ...(chosenRoute ? { preferredRoute: chosenRoute } : {}),
     };
 
+    /* Shared with the server copy of this Lead, so Meta counts it once. */
+    const metaEventId = newMetaEventId();
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, turnstileToken }),
+        body: JSON.stringify({
+          ...payload,
+          turnstileToken,
+          metaEventId,
+          attribution: readAttribution() ?? undefined,
+        }),
       });
 
       const result = (await response.json().catch(() => null)) as {
@@ -191,6 +201,7 @@ export function CharterRequestForm({
       setState("success");
       trackGaEvent("generate_lead", { lead_type: "charter" });
       trackGaEvent("charter_form_success", { lead_type: "charter" });
+      trackMetaEvent("Lead", { content_name: "charter" }, metaEventId);
       form.reset();
     } catch (error) {
       setState("error");

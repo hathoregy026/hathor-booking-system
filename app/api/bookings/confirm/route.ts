@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
+import { sendMetaServerEvent } from "@/lib/meta-capi";
 import { z } from "zod";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { handleRouteError } from "@/lib/api";
@@ -24,6 +25,22 @@ export async function POST(request: NextRequest) {
     const { booking, replay } = await submitBookingRequest(parsed, key);
     if (!replay) {
       await recordBookingAttribution(booking.id, attribution);
+      /* Meta's server copy of the browser Purchase (same event id), sent after the reply. */
+      after(() => sendMetaServerEvent({
+        eventName: "Purchase",
+        eventId: booking.id,
+        request,
+        sourcePath: "/booking",
+        email: parsed.email,
+        phone: parsed.phone,
+        firstName: parsed.firstName,
+        lastName: parsed.lastName,
+        fbclid: attribution?.last.fbclid ?? attribution?.first.fbclid,
+        clickTs: attribution?.last.fbclid ? attribution.last.ts : attribution?.first.ts,
+        value: typeof booking.totalPriceCents === "number" ? booking.totalPriceCents / 100 : undefined,
+        currency: booking.currency ?? "USD",
+        contentName: "booking_request",
+      }));
       try {
         await sendRequestEmails(booking.id, parsed.accessToken);
       } catch { console.error("[booking] request notification status unavailable"); }

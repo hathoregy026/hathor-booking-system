@@ -6,6 +6,8 @@ import { Check } from "lucide-react";
 import { InquiryVerification } from "@/components/pages/InquiryVerification";
 import "./InquiryForm.css";
 import { trackGaEvent } from "@/lib/ga-browser";
+import { newMetaEventId, trackMetaEvent } from "@/lib/meta-pixel";
+import { readAttribution } from "@/lib/ad-attribution";
 import type { InquiryPayload } from "@/lib/inquiry-email";
 import {
   buildSelectionEnquiry,
@@ -134,11 +136,19 @@ export function InquiryForm({
       selection,
     };
 
+    /* Shared with the server copy of this Lead, so Meta counts it once. */
+    const metaEventId = newMetaEventId();
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, turnstileToken }),
+        body: JSON.stringify({
+          ...payload,
+          turnstileToken,
+          metaEventId,
+          attribution: readAttribution() ?? undefined,
+        }),
       });
 
       if (!response.ok) {
@@ -151,6 +161,7 @@ export function InquiryForm({
       setState("success");
       trackGaEvent("generate_lead", { lead_type: type });
       trackGaEvent(type === "charter" ? "charter_form_success" : "contact_form_success", { lead_type: type });
+      trackMetaEvent("Lead", { content_name: type }, metaEventId);
       form.reset();
     } catch (error) {
       setState("error");

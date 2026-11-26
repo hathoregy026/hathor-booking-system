@@ -5,6 +5,7 @@ import { isCustomDomainLive } from "@/lib/public-url";
 import { HATHOR_FAVICON_SRC } from "@/lib/branding";
 import { SiteStructuredData } from "@/components/seo/SiteStructuredData";
 import { LeadTracking } from "@/components/analytics/LeadTracking";
+import { getMetaPixelBootScript } from "@/lib/meta-pixel";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
 import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
@@ -40,6 +41,9 @@ import "./nav-controls.css";
  * until the domain moves, the rebuild reports to its own test property.
  */
 const GA_MEASUREMENT_ID = isCustomDomainLive() ? "G-XH35BQ76FN" : "G-3QKFST6VXE";
+
+/* Test deployments never report to the live ad account's pixel. */
+const META_PIXEL_ENABLED = isCustomDomainLive();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -180,6 +184,18 @@ gtag('js', new Date());
 })();`,
           }}
         />
+        {/*
+          Meta pixel ("Hathor Cruise website") — hathorcruise.com only, never on
+          staff pages or booking links that carry an access token. Page views
+          are sent by LeadTracking on each route.
+        */}
+        {META_PIXEL_ENABLED ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: getMetaPixelBootScript(),
+            }}
+          />
+        ) : null}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

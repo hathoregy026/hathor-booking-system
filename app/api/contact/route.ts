@@ -1,5 +1,8 @@
-import { NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
+import { after, NextResponse } from "next/server";
 import { z } from "zod";
+import { bookingAttributionSchema } from "@/lib/booking-attribution";
+import { sendMetaServerEvent } from "@/lib/meta-capi";
 import { sendInquiryEmail } from "@/lib/inquiry-email";
 import { screenInquiry } from "@/lib/mail-screening";
 import { quarantineInquiry } from "@/lib/inquiry-quarantine";
@@ -130,6 +133,10 @@ const inquirySchema = z.object({
   // Hidden honeypot. Real visitors never fill this; simple form bots usually do.
   website: z.string().max(300).optional(),
   turnstileToken: z.string().max(2048).optional(),
+  /* Where the visitor came from (ad click id, UTM tags). A bad value is dropped, never an error. */
+  attribution: bookingAttributionSchema.optional().catch(undefined),
+  /* Event id shared with the browser's Meta Lead event, so Meta counts it once. */
+  metaEventId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/).optional().catch(undefined),
 });
 
 async function limitInquiries(request: Request): Promise<void> {
@@ -156,7 +163,7 @@ export async function POST(request: Request) {
     }
 
     // Verification credentials never enter stored mail or branded templates.
-    const { turnstileToken, ...payload } = parsed.data;
+    const { turnstileToken, attribution, metaEventId, ...payload } = parsed.data;
     const screening = screenInquiry(payload);
     if (payload.website) {
       await quarantineInquiry(payload, screening);
@@ -176,7 +183,24 @@ export async function POST(request: Request) {
       limit: 3,
       windowMs: 60 * 60_000,
     });
-    const { receiptSent } = await sendInquiryEmail(payload);
+    const { receiptSent } = await sendInquiryEmail({ ...payload, attribution });
+    /* After the reply is sent, so the guest never waits on Meta. */
+    after(() => {
+      const [firstName, ...rest] = payload.name.trim().split(/\s+/);
+      return sendMetaServerEvent({
+        eventName: "Lead",
+        eventId: metaEventId ?? randomUUID(),
+        request,
+        sourcePath: payload.type === "charter" ? "/charter" : "/contact",
+        email: payload.email,
+        phone: payload.phone,
+        firstName,
+        lastName: rest.join(" ") || undefined,
+        fbclid: attribution?.last.fbclid ?? attribution?.first.fbclid,
+        clickTs: attribution?.last.fbclid ? attribution.last.ts : attribution?.first.ts,
+        contentName: payload.type,
+      });
+    });
     return NextResponse.json(
       { ok: true, receiptSent },
       { headers: { "Cache-Control": "no-store" } },

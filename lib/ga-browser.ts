@@ -1,3 +1,5 @@
+import { forwardEventToMeta } from "@/lib/meta-pixel";
+
 type GtagFn = (...args: unknown[]) => void;
 
 function getGtag(): GtagFn | null {
@@ -14,6 +16,7 @@ export function trackGaEvent(
   params?: Record<string, string | number | boolean>,
 ): void {
   if (!EVENT_NAME.test(name)) return;
+  forwardEventToMeta(name);
   try {
     const gtag = getGtag();
     if (!gtag) return;

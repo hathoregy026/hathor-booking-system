@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { captureAttribution } from "@/lib/ad-attribution";
 import { trackGaEvent } from "@/lib/ga-browser";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 /*
  * Site-wide lead signals for Google Analytics (and the Google Ads goals that
@@ -26,6 +27,8 @@ export function LeadTracking() {
 
   useEffect(() => {
     captureAttribution();
+    /* One Meta page view per route; skipped on staff pages and token links. */
+    trackMetaEvent("PageView");
   }, [pathname]);
 
   useEffect(() => {
