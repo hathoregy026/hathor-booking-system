@@ -14,6 +14,7 @@ import {
 } from "@/lib/email-templates";
 import { getAdminNotificationEmail, getResendFromAddress } from "@/lib/resend-config";
 import { recordInquiryInbox } from "@/lib/inquiry-inbox";
+import { describeAttributionSource, type BookingAttribution } from "@/lib/booking-attribution";
 import { emailMailbox } from "@/lib/email-mailboxes";
 import {
   resolveSelectionSummary,
@@ -45,6 +46,8 @@ export type InquiryPayload = {
   website?: string;
   /** Bounded My Voyage selection. Slugs and integers only — never a price. */
   selection?: SelectionEnquiry;
+  /** Where the guest came from (validated ad click id / UTM tags). Team copy only. */
+  attribution?: BookingAttribution;
 };
 
 /*
@@ -74,6 +77,8 @@ export async function sendInquiryEmail(payload: InquiryPayload, dependencies: {
    * client-supplied price, name or route reaches this block.
    */
   const selectionLines = resolveSelectionSummary(payload.selection);
+  /* The team sees which ad (if any) brought this enquiry; the guest's receipt never does. */
+  const sourceLine = describeAttributionSource(payload.attribution);
   const detailLines: ContactAlertLine[] = [
     payload.phone ? { label: "Phone", value: payload.phone } : null,
     payload.address ? { label: "Address", value: payload.address } : null,
@@ -84,6 +89,7 @@ export async function sendInquiryEmail(payload: InquiryPayload, dependencies: {
     payload.children !== undefined ? { label: "Children", value: String(payload.children) } : null,
     payload.preferredRoute ? { label: "Preferred route", value: payload.preferredRoute } : null,
     ...selectionLines.map(line => ({ label: `Voyage selection · ${line.label}`, value: line.value })),
+    { label: "Came from", value: sourceLine },
   ].filter((line): line is ContactAlertLine => line !== null);
 
   const adminText = [
@@ -98,6 +104,7 @@ export async function sendInquiryEmail(payload: InquiryPayload, dependencies: {
     payload.adults !== undefined ? `Adults: ${payload.adults}` : "",
     payload.children !== undefined ? `Children: ${payload.children}` : "",
     payload.preferredRoute ? `Preferred route: ${payload.preferredRoute}` : "",
+    `Came from: ${sourceLine}`,
     ...(selectionLines.length > 0
       ? [
           "",
