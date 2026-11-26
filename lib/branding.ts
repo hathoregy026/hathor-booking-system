@@ -29,7 +29,19 @@ export const HATHOR_FOOTER_LOGO_SRC =
 export const HATHOR_FOOTER_LOGO_DAY_SRC =
   "/branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-black.svg";
 
-export const HATHOR_FAVICON_SRC = "/branding/hathor-logo-nile-cruise-favicon.webp";
+/*
+ * Site icons — the plain Hathor mark, built by scripts/generate-share-assets.mjs.
+ * The SVG follows the browser's light/dark setting (black mark on light, white
+ * on dark). The ICO fallback is the black mark: Google draws site icons on a
+ * white circle, where the old white-on-transparent icon showed as an empty
+ * circle, and it needs a square multiple of 48 px (the ICO carries 48).
+ */
+export const HATHOR_FAVICON_SRC = "/branding/hathor-icon.svg";
+export const HATHOR_FAVICON_ICO_SRC = "/favicon.ico";
+/** iOS home screen: white mark on ink (iOS fills transparency with black). */
+export const HATHOR_APPLE_TOUCH_ICON_SRC = "/apple-touch-icon.png";
+/** Square logo for structured data: black mark on white, as Google shows it. */
+export const HATHOR_LOGO_SQUARE_SRC = "/branding/hathor-logo-square-512.png";
 
 /** Full-screen welcome splash shown before the public site on land */
 export const HATHOR_WELCOME_ABOARD_SRC = "/branding/hathor-welcome-aboard.webp";

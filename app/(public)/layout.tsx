@@ -14,7 +14,7 @@ import { getCabinPriceTable } from "@/lib/cabin-prices";
 import { CabinPricesProvider } from "@/components/public/CabinPricesProvider";
 import { OccasionsProvider } from "@/components/occasions/OccasionsProvider";
 import { TEMPORARY_DEPLOYMENT_ROBOTS } from "@/lib/temporary-deployment-seo";
-import { SEO_SITE_ORIGIN } from "@/lib/seo/site";
+import { SEO_DEFAULT_OG_IMAGE, SEO_SITE_ORIGIN } from "@/lib/seo/site";
 import {
   heroLogoTuneToImportantCss,
   heroLogoTuneToNarrowImportantCss,
@@ -111,12 +111,14 @@ export const metadata: Metadata = {
       "A private 32-guest Dahabiya sailing between Luxor and Aswan.",
     locale: "en_US",
     type: "website",
+    images: [SEO_DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Luxury Dahabiya Nile Cruise | Hathor Dahabiya",
     description:
       "A private 32-guest Dahabiya sailing between Luxor and Aswan.",
+    images: [SEO_DEFAULT_OG_IMAGE.url],
   },
   robots: TEMPORARY_DEPLOYMENT_ROBOTS,
 };

@@ -2,7 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteAnalytics } from "@/components/public/SiteAnalytics";
 import { isCustomDomainLive } from "@/lib/public-url";
-import { HATHOR_FAVICON_SRC } from "@/lib/branding";
+import {
+  HATHOR_APPLE_TOUCH_ICON_SRC,
+  HATHOR_FAVICON_ICO_SRC,
+  HATHOR_FAVICON_SRC,
+} from "@/lib/branding";
 import { SiteStructuredData } from "@/components/seo/SiteStructuredData";
 import { LeadTracking } from "@/components/analytics/LeadTracking";
 import { getMetaPixelBootScript } from "@/lib/meta-pixel";
@@ -70,8 +74,12 @@ export const metadata: Metadata = {
   description:
     "Sail a private luxury Dahabiya on the Nile between Luxor and Aswan. 32 guests, Nile-view suites and unhurried temple days aboard Hathor.",
   icons: {
-    icon: HATHOR_FAVICON_SRC,
-    apple: HATHOR_FAVICON_SRC,
+    /* ICO first as the fallback; browsers that read SVG icons prefer the adaptive one. */
+    icon: [
+      { url: HATHOR_FAVICON_ICO_SRC, sizes: "48x48" },
+      { url: HATHOR_FAVICON_SRC, type: "image/svg+xml" },
+    ],
+    apple: [{ url: HATHOR_APPLE_TOUCH_ICON_SRC, sizes: "180x180" }],
   },
   robots: TEMPORARY_DEPLOYMENT_ROBOTS,
 };

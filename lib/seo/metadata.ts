@@ -13,6 +13,7 @@ import {
   splitLocalePath,
 } from "@/lib/i18n/locale";
 import { siteImageAltIn } from "@/lib/i18n/site-image-alts";
+import { shareCardFor } from "@/lib/seo/share-cards";
 
 export type SeoOgImage = {
   url: string;
@@ -67,6 +68,13 @@ export function buildPageMetadata({
     : follow
       ? NOINDEX_ROBOTS
       : { index: false, follow: false };
+  /* Link previews use the branded JPEG card for the page photo when one exists. */
+  const card = shareCardFor(image.url);
+  const ogImage = card ?? {
+    url: image.url,
+    width: image.width ?? 1920,
+    height: image.height ?? 1080,
+  };
 
   return {
     metadataBase: new URL(SEO_SITE_ORIGIN),
@@ -84,20 +92,13 @@ export function buildPageMetadata({
       ...(alternateLocale.length ? { alternateLocale } : {}),
       type: ogType,
       publishedTime,
-      images: [
-        {
-          url: image.url,
-          width: image.width ?? 1920,
-          height: image.height ?? 1080,
-          alt: siteImageAltIn(locale, image.alt),
-        },
-      ],
+      images: [{ ...ogImage, alt: siteImageAltIn(locale, image.alt) }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: descriptionClipped,
-      images: [image.url],
+      images: [ogImage.url],
     },
   };
 }

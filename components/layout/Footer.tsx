@@ -8,7 +8,7 @@ import { HATHOR_FOOTER_VIDEO_SRC } from "@/lib/branding";
 import { ensurePublicScrollController } from "@/lib/public-scroll-controller";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
-import { SEO_PLACE_WORDS, SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
+import { SEO_LOGO_PATH, SEO_PLACE_WORDS, SEO_SITE_ORIGIN, seoAbsoluteUrl } from "@/lib/seo/site";
 import { CHROME_COPY } from "@/lib/i18n/chrome-copy";
 import { localizedHref, splitLocalePath, type PublicLocale } from "@/lib/i18n/locale";
 
@@ -90,7 +90,7 @@ function FooterStructuredData({ locale }: { locale: PublicLocale }) {
     "@id": `${SEO_SITE_ORIGIN}/#organization`,
     name: "Hathor Dahabiya",
     url: `${SEO_SITE_ORIGIN}/`,
-    logo: seoAbsoluteUrl("/branding/hathor-logo-nile-cruise-favicon.webp"),
+    logo: seoAbsoluteUrl(SEO_LOGO_PATH),
     email: PUBLIC_CONTACT.email,
     telephone: PUBLIC_CONTACT.phone,
     address: {

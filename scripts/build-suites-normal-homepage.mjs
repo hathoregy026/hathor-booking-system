@@ -227,14 +227,9 @@ $("link[href], script[src]").each((_, element) => {
   node.attr(attribute, localizeResource(node.attr(attribute)));
 });
 
-$("link[rel='icon'], link[rel='apple-touch-icon']").attr(
-  "href",
-  "/branding/hathor-logo-nile-cruise-favicon.webp",
-);
-$("meta[name='msapplication-TileImage']").attr(
-  "content",
-  "/branding/hathor-logo-nile-cruise-favicon.webp",
-);
+$("link[rel='icon']").attr("href", "/branding/hathor-icon.svg").attr("type", "image/svg+xml").removeAttr("sizes");
+$("link[rel='apple-touch-icon']").attr("href", "/apple-touch-icon.png");
+$("meta[name='msapplication-TileImage']").attr("content", "/apple-touch-icon.png");
 
 let photoIndex = 0;
 $("img").each((_, element) => {

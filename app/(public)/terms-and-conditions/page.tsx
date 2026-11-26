@@ -9,6 +9,7 @@ import {
   pageLanguageVersions,
   PUBLIC_LOCALE_OG,
 } from "@/lib/i18n/locale";
+import { SEO_DEFAULT_OG_IMAGE } from "@/lib/seo/site";
 import "../../terms-and-conditions-editorial.css";
 import "../../editorial-chrome.css";
 
@@ -33,11 +34,13 @@ export const metadata: Metadata = {
     type: "website",
     url: termsPageMetadata.canonicalPath,
     ...(alternateLocale.length ? { alternateLocale } : {}),
+    images: [SEO_DEFAULT_OG_IMAGE],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: termsPageMetadata.title,
     description: termsPageMetadata.description,
+    images: [SEO_DEFAULT_OG_IMAGE.url],
   },
 };
 

@@ -6,7 +6,7 @@ import {
   PUBLIC_LOCALE_HTML_LANG,
   type PublicLocale,
 } from "@/lib/i18n/locale";
-import { SEO_PLACE_WORDS, SEO_SITE_ORIGIN } from "@/lib/seo/site";
+import { SEO_DEFAULT_OG_IMAGE, SEO_PLACE_WORDS, SEO_SITE_ORIGIN } from "@/lib/seo/site";
 
 const SITE = SEO_SITE_ORIGIN;
 
@@ -158,7 +158,7 @@ export function HomeThreeStructuredData({ locale = "en" }: { locale?: PublicLoca
     {
       "@type": "ImageObject",
       "@id": `${PAGE_URL}#primaryimage`,
-      url: `${SITE}/media/hathor/home-hero-poster.webp`,
+      url: `${SITE}${SEO_DEFAULT_OG_IMAGE.url}`,
       caption: words.caption,
     },
     {

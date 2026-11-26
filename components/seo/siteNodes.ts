@@ -2,6 +2,7 @@ import { indexedSiteLanguages, type PublicLocale } from "@/lib/i18n/locale";
 import {
   SEO_BRAND_NAME,
   SEO_CONTACT,
+  SEO_DEFAULT_OG_IMAGE,
   SEO_LEGAL_NAME,
   SEO_LOGO_PATH,
   SEO_PLACE_WORDS,
@@ -23,7 +24,7 @@ export function organizationNode(locale: PublicLocale = "en") {
     email: SEO_CONTACT.email,
     telephone: SEO_CONTACT.telephone,
     logo: seoAbsoluteUrl(SEO_LOGO_PATH),
-    image: seoAbsoluteUrl("/media/hathor/home-hero-poster.webp"),
+    image: seoAbsoluteUrl(SEO_DEFAULT_OG_IMAGE.url),
     address: {
       "@type": "PostalAddress",
       streetAddress: place.streetAddress,

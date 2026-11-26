@@ -1,4 +1,4 @@
-import { HATHOR_FAVICON_SRC, HATHOR_HERO_POSTER_SRC } from "@/lib/branding";
+import { HATHOR_LOGO_SQUARE_SRC } from "@/lib/branding";
 import { PUBLIC_CONTACT } from "@/lib/public-contact";
 import { PUBLIC_SOCIAL_LINKS } from "@/lib/public-social";
 
@@ -19,14 +19,20 @@ export const SEO_SITE_NAME = "Hathor Dahabiya";
 export const SEO_LOCALE = "en_US";
 export const SEO_LANGUAGE = "en";
 
+/*
+ * Link-preview card for WhatsApp, Telegram, iMessage, Facebook and X: Hathor
+ * at sunset before the temple, with the translucent Hathor mark, 1200×630
+ * JPEG. The homepage poster it replaces is a flat gold still that previewed as
+ * an empty tile.
+ */
 export const SEO_DEFAULT_OG_IMAGE = {
-  url: HATHOR_HERO_POSTER_SRC,
-  width: 1920,
-  height: 1080,
+  url: "/media/hathor/share/hathor-dahabiya-nile-cruise.jpg",
+  width: 1200,
+  height: 630,
   alt: "Hathor Dahabiya sailing a luxury Nile cruise between Luxor and Aswan",
 } as const;
 
-export const SEO_LOGO_PATH = HATHOR_FAVICON_SRC;
+export const SEO_LOGO_PATH = HATHOR_LOGO_SQUARE_SRC;
 
 export function seoAbsoluteUrl(path = "/"): string {
   const cleaned = path.trim() || "/";
