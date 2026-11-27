@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { captureAttribution } from "@/lib/ad-attribution";
+import { captureAttribution, readAttribution } from "@/lib/ad-attribution";
 import { trackGaEvent } from "@/lib/ga-browser";
 import { trackMetaEvent } from "@/lib/meta-pixel";
 
@@ -20,6 +20,28 @@ function leadEventFor(href: string): string | null {
   if (value.startsWith("tel:")) return "phone_click";
   if (value.startsWith("mailto:")) return "email_click";
   return null;
+}
+
+const TAP_KINDS: Record<string, "whatsapp" | "phone" | "email"> = {
+  whatsapp_click: "whatsapp",
+  phone_click: "phone",
+  email_click: "email",
+};
+
+/* Saves the tap for the team (kind, page, ad source). Fire-and-forget: survives the tap leaving the page. */
+function saveContactTap(eventName: string, page: string): void {
+  const kind = TAP_KINDS[eventName];
+  if (!kind) return;
+  const attribution = readAttribution();
+  void fetch("/api/contact-tap", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind, page, ...(attribution ? { attribution } : {}) }),
+    keepalive: true,
+    credentials: "same-origin",
+  }).catch(() => {
+    /* never block the tap */
+  });
 }
 
 export function LeadTracking() {
@@ -40,7 +62,9 @@ export function LeadTracking() {
         if (!link) return;
         const name = leadEventFor(link.getAttribute("href") ?? "");
         if (!name) return;
-        trackGaEvent(name, { link_location: window.location.pathname.slice(0, 100) });
+        const page = window.location.pathname.slice(0, 100);
+        trackGaEvent(name, { link_location: page });
+        saveContactTap(name, page);
       } catch {
         /* never block the tap */
       }
