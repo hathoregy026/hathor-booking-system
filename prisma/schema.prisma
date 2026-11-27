@@ -632,3 +632,16 @@ model AdminInvitation {
   createdAt DateTime  @default(now())
   user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+/// One WhatsApp, phone or email tap on the public site, with the page and the
+/// ad or link that brought the visitor. Never holds guest contact details.
+model ContactTap {
+  id          String   @id @default(dbgenerated("gen_random_uuid()::text"))
+  kind        String
+  page        String
+  source      String
+  attribution Json?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}

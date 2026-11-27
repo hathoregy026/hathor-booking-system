@@ -432,7 +432,8 @@ export const ModelName = {
   SiteImage: 'SiteImage',
   SiteSetting: 'SiteSetting',
   AdminRole: 'AdminRole',
-  AdminInvitation: 'AdminInvitation'
+  AdminInvitation: 'AdminInvitation',
+  ContactTap: 'ContactTap'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -448,7 +449,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "mailAttachmentDownload" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingPlanChange" | "closureBooking" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation"
+    modelProps: "cruise" | "cruiseSchedule" | "room" | "ticketType" | "sailingPrice" | "booking" | "bookingEmailThread" | "bookingMessage" | "inboxMessage" | "dashboardEmailDeletion" | "dashboardEmailPlacement" | "dashboardNotificationSeen" | "mailAttachmentDownload" | "apiRateLimit" | "bookingRoom" | "sailingSector" | "scheduleSector" | "inventoryAllocation" | "bookingGuest" | "bookingPayment" | "bookingPaymentSchedule" | "bookingPlanChange" | "closureBooking" | "bookingTicket" | "siteContent" | "blogPost" | "adminProfile" | "adminUser" | "adminSession" | "adminRecoveryCode" | "adminAuthEvent" | "emailTemplate" | "siteImage" | "siteSetting" | "adminRole" | "adminInvitation" | "contactTap"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3116,6 +3117,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ContactTap: {
+      payload: Prisma.$ContactTapPayload<ExtArgs>
+      fields: Prisma.ContactTapFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactTapFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactTapFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>
+        }
+        findFirst: {
+          args: Prisma.ContactTapFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactTapFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>
+        }
+        findMany: {
+          args: Prisma.ContactTapFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>[]
+        }
+        create: {
+          args: Prisma.ContactTapCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>
+        }
+        createMany: {
+          args: Prisma.ContactTapCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactTapCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>[]
+        }
+        delete: {
+          args: Prisma.ContactTapDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>
+        }
+        update: {
+          args: Prisma.ContactTapUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactTapDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactTapUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactTapUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactTapUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactTapPayload>
+        }
+        aggregate: {
+          args: Prisma.ContactTapAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContactTap>
+        }
+        groupBy: {
+          args: Prisma.ContactTapGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactTapGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactTapCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactTapCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3687,6 +3762,18 @@ export const AdminInvitationScalarFieldEnum = {
 export type AdminInvitationScalarFieldEnum = (typeof AdminInvitationScalarFieldEnum)[keyof typeof AdminInvitationScalarFieldEnum]
 
 
+export const ContactTapScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  page: 'page',
+  source: 'source',
+  attribution: 'attribution',
+  createdAt: 'createdAt'
+} as const
+
+export type ContactTapScalarFieldEnum = (typeof ContactTapScalarFieldEnum)[keyof typeof ContactTapScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4060,6 +4147,7 @@ export type GlobalOmitConfig = {
   siteSetting?: Prisma.SiteSettingOmit
   adminRole?: Prisma.AdminRoleOmit
   adminInvitation?: Prisma.AdminInvitationOmit
+  contactTap?: Prisma.ContactTapOmit
 }
 
 /* Types for Logging */
