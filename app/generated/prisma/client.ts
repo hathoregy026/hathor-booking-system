@@ -225,3 +225,9 @@ export type AdminRole = Prisma.AdminRoleModel
  * Single-use password setup link; only a random-token fingerprint is stored.
  */
 export type AdminInvitation = Prisma.AdminInvitationModel
+/**
+ * Model ContactTap
+ * One WhatsApp, phone or email tap on the public site, with the page and the
+ * ad or link that brought the visitor. Never holds guest contact details.
+ */
+export type ContactTap = Prisma.ContactTapModel

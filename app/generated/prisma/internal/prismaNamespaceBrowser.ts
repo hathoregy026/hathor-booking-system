@@ -86,7 +86,8 @@ export const ModelName = {
   SiteImage: 'SiteImage',
   SiteSetting: 'SiteSetting',
   AdminRole: 'AdminRole',
-  AdminInvitation: 'AdminInvitation'
+  AdminInvitation: 'AdminInvitation',
+  ContactTap: 'ContactTap'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -635,6 +636,18 @@ export const AdminInvitationScalarFieldEnum = {
 } as const
 
 export type AdminInvitationScalarFieldEnum = (typeof AdminInvitationScalarFieldEnum)[keyof typeof AdminInvitationScalarFieldEnum]
+
+
+export const ContactTapScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  page: 'page',
+  source: 'source',
+  attribution: 'attribution',
+  createdAt: 'createdAt'
+} as const
+
+export type ContactTapScalarFieldEnum = (typeof ContactTapScalarFieldEnum)[keyof typeof ContactTapScalarFieldEnum]
 
 
 export const SortOrder = {
