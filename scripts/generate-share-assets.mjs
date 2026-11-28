@@ -4,10 +4,12 @@
  *
  *   node scripts/generate-share-assets.mjs
  *
- * Icons: the plain Hathor mark. The SVG icon follows the browser's light/dark
- * setting (black mark on light, white mark on dark); the ICO fallback is the
- * black mark, because Google draws site icons on a white circle and the old
- * white-on-transparent icon showed there as an empty circle.
+ * Icons: the browser-tab SVG is the plain Hathor mark and follows the
+ * browser's light/dark setting (black mark on light, white mark on dark).
+ * Every other icon — favicon.ico, the Apple touch icon Google uses in search
+ * results, and the structured-data logo — is the owner's cream tile with the
+ * gold mark, opaque so it reads the same on light and dark pages. (The old
+ * white-on-transparent icon showed in Google as an empty circle.)
  *
  * Share cards: 1200×630 JPEGs (WhatsApp, Telegram, iMessage, Facebook, X) —
  * the photo itself with the Hathor mark laid over it, translucent, top centre
@@ -27,6 +29,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC = path.join(ROOT, "public");
 
 const INK = "#14120e";
+/* The owner's icon reference: gold mark on warm cream, mark ~54% of the height. */
+const CREAM = "#ece9e1";
+const GOLD = "#b79965";
+const TILE_MARK_HEIGHT = 0.536;
 const MARK_SVG = "branding/hathor-logo-nile-cruise-panorama-on-nile-visit-egypt-HATHOR-ICON.svg";
 
 /**
@@ -78,6 +84,29 @@ function markSvg(shapes, fill, { stroke = 0, ground = null, scale = 1 } = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" width="250" height="250">${bg}<g transform="translate(${offset} ${offset + 2 * scale}) scale(${scale})" fill="${fill}"${outline}>${shapes}</g></svg>`;
 }
 
+/** Ink bounding box of the mark in its 250×250 units, measured from a render. */
+async function markBox(shapes) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" width="1000" height="1000"><g fill="#000">${shapes}</g></svg>`;
+  const { info } = await sharp(Buffer.from(svg))
+    .flatten({ background: "#ffffff" })
+    .trim({ background: "#ffffff", threshold: 10 })
+    .toBuffer({ resolveWithObject: true });
+  const k = 250 / 1000;
+  return { x: -info.trimOffsetLeft * k, y: -info.trimOffsetTop * k, w: info.width * k, h: info.height * k };
+}
+
+/*
+ * Site icon tile: the gold mark centred on cream, opaque, so it reads the same
+ * on Google's light and dark result pages and on any home screen.
+ */
+function brandTileSvg(shapes, box, { height = TILE_MARK_HEIGHT, stroke = 0 } = {}) {
+  const s = (height * 250) / box.h;
+  const tx = 125 - (box.x + box.w / 2) * s;
+  const ty = 125 - (box.y + box.h / 2) * s;
+  const outline = stroke ? ` stroke="${GOLD}" stroke-width="${stroke}" stroke-linejoin="round"` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" width="250" height="250"><rect width="250" height="250" fill="${CREAM}"/><g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${s.toFixed(4)})" fill="${GOLD}"${outline}>${shapes}</g></svg>`;
+}
+
 async function renderPng(svg, px) {
   return sharp(Buffer.from(svg), { density: Math.max(72, Math.ceil((72 * px) / 250) * 4) })
     .resize(px, px)
@@ -113,23 +142,25 @@ async function writeIcons() {
   const adaptive = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250"><style>g{fill:#000}@media (prefers-color-scheme:dark){g{fill:#fff}}</style><g>${shapes}</g></svg>`;
   await writeFile(path.join(PUBLIC, "branding/hathor-icon.svg"), adaptive);
 
-  /* Fallback for browsers without SVG icons, and what Google shows on its white circle. */
+  /*
+   * Everything else is the cream-and-gold tile: Google picks one of these for
+   * search results (it took the Apple touch icon) and shows it in light and
+   * dark mode alike. The 16/32 px entries enlarge and thicken the mark so it
+   * survives tab size in browsers without SVG icons.
+   */
+  const box = await markBox(shapes);
   const ico = buildIco([
-    { size: 16, png: await renderPng(markSvg(shapes, "#000", { stroke: 9 }), 16) },
-    { size: 32, png: await renderPng(markSvg(shapes, "#000", { stroke: 5 }), 32) },
-    { size: 48, png: await renderPng(markSvg(shapes, "#000"), 48) },
+    { size: 16, png: await renderPng(brandTileSvg(shapes, box, { height: 0.7, stroke: 10 }), 16) },
+    { size: 32, png: await renderPng(brandTileSvg(shapes, box, { height: 0.64, stroke: 6 }), 32) },
+    { size: 48, png: await renderPng(brandTileSvg(shapes, box), 48) },
   ]);
   await writeFile(path.join(PUBLIC, "favicon.ico"), ico);
-
-  /* iOS fills transparency with black and rounds corners itself: white mark on ink. */
-  await writeFile(
-    path.join(PUBLIC, "apple-touch-icon.png"),
-    await renderPng(markSvg(shapes, "#fff", { ground: INK, scale: 0.62 }), 180),
-  );
-  /* Organisation logo for structured data: Google shows it on white, so black on white. */
+  /* iOS rounds the corners itself. */
+  await writeFile(path.join(PUBLIC, "apple-touch-icon.png"), await renderPng(brandTileSvg(shapes, box), 180));
+  /* Organisation logo for structured data. */
   await writeFile(
     path.join(PUBLIC, "branding/hathor-logo-square-512.png"),
-    await renderPng(markSvg(shapes, "#000", { ground: "#ffffff", scale: 0.7 }), 512),
+    await renderPng(brandTileSvg(shapes, box), 512),
   );
   console.log("icons: favicon.ico, branding/hathor-icon.svg, apple-touch-icon.png, branding/hathor-logo-square-512.png");
 }
